@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import './index.css';
+import { Provider } from 'react-redux';
+import { applyRouterMiddleware, Router, browserHistory } from 'react-router';
+
+import Main from './pages/Main/Main';
+
+import configureStore from './store';
+
+const initialState = {};
+const store = configureStore(initialState, browserHistory);
+
+class App extends Component {
+  render() {
+    return (
+      <Provider store = {store}>
+        <Main />
+      </Provider>
+    );
+  }
+}
 
 ReactDOM.render(
   <App />,
