@@ -1,10 +1,13 @@
 import React from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+import NavbarContainer from '../Navbar/NavbarContainer';
 
 const Main = () => {
   return (
-    <div>
-      Hello World
-    </div>
+    <MuiThemeProvider>
+        <NavbarContainer />
+    </MuiThemeProvider>
   )
 }
 
