@@ -3,6 +3,7 @@ import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
 import Badge from 'material-ui/Badge';
 import IconMenu from 'material-ui/IconMenu';
+import Subheader from 'material-ui/Subheader';
 
 
 import colors from '../../colors'
@@ -44,6 +45,7 @@ const PeerInfoIcon = (props) => {
       anchorOrigin={{horizontal: 'left', vertical: 'top'}}
       targetOrigin={{horizontal: 'right', vertical: 'top'}}
     >
+      <Subheader>Connected peers</Subheader>
       {amount > 0 ? list: <MenuItem primaryText="No peers" disabled/>}
     </IconMenu>
   </Badge>
