@@ -1,5 +1,6 @@
 export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR';
 export const FETCH_PEERS = 'FETCH_PEERS';
+export const FETCH_PEERS_SUCCESS = 'FETCH_PEERS_SUCCESS';
 
 export function toggleSidebar() {
   return {

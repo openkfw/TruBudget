@@ -1,14 +1,13 @@
 import React from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import NavbarContainer from '../Navbar/NavbarContainer';
-import Overview from '../Overview/Overview';
+import OverviewContainer from '../Overview/OverviewContainer';
 
 const Main = () => {
   return (
     <div>
         <NavbarContainer />
-        <Overview />
+        <OverviewContainer />
     </div>
   )
 }

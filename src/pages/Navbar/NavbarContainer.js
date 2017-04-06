@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { toggleSidebar } from './actions';
+import { toggleSidebar, fetchPeers } from './actions';
 import Navbar from './Navbar';
 
-const NavbarContainer = (props) => <Navbar {...props}/>
+class NavbarContainer extends Component {
+  componentWillMount() {
+    this.props.fetchPeers();
+  }
+  render() {
+    return <Navbar {...this.props}/>
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onToggleSidebar: () => dispatch(toggleSidebar())
+    onToggleSidebar: () => dispatch(toggleSidebar()),
+    fetchPeers: () => dispatch(fetchPeers())
   };
 }
 
 const mapStateToProps = (state) => {
   return {
-    showSidebar: state.getIn(['navbar','showSidebar'])
+    showSidebar: state.getIn(['navbar','showSidebar']),
+    peers: state.getIn(['navbar','peers'])
   }
 }
 

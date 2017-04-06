@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
 import MenuItem from 'material-ui/MenuItem';
 import Badge from 'material-ui/Badge';
 import IconMenu from 'material-ui/IconMenu';
 
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import colors from '../../colors'
 
@@ -15,6 +13,7 @@ class Icon extends Component {
     return (
       <IconButton 
           iconClassName="material-icons"
+          iconStyle={{color: colors.lightColor}}
           tooltip="Peers"
           {...this.props}>
           device_hub
@@ -23,9 +22,20 @@ class Icon extends Component {
   }
 
 }
-const PeerInfoIcon = (props) => (
+
+const transformPeers = (peers = []) => {
+  const amount=peers.length || 0;
+  const list = peers.map((peer, index) => {
+    return <MenuItem key={index} primaryText={peer.addr}/>
+  });
+
+  return { amount, list };
+}
+const PeerInfoIcon = (props) => {
+  const { amount, list } = transformPeers(props.peers);
+  return (
   <Badge
-    badgeContent={4}
+    badgeContent={amount}
     secondary={true}
     style={{ padding: 0 }}
     badgeStyle={{ height: '18px', width: '18px' }}>
@@ -34,13 +44,9 @@ const PeerInfoIcon = (props) => (
       anchorOrigin={{horizontal: 'left', vertical: 'top'}}
       targetOrigin={{horizontal: 'right', vertical: 'top'}}
     >
-      <MenuItem primaryText="Refresh" />
-      <MenuItem primaryText="Send feedback" />
-      <MenuItem primaryText="Settings" />
-      <MenuItem primaryText="Help" />
-      <MenuItem primaryText="Sign out" />
+      {amount > 0 ? list: <MenuItem primaryText="No peers" disabled/>}
     </IconMenu>
   </Badge>
-)
+)}
 
 export default PeerInfoIcon;

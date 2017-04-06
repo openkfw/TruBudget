@@ -9,10 +9,12 @@ const Navbar = (props) => (
     <AppBar 
       title="ACMECorp Chain"
       onLeftIconButtonTouchTap={props.onToggleSidebar} 
-      iconElementRight={<PeerInfoIcon />}
+      iconElementRight={<PeerInfoIcon peers={props.peers}/>}
       style={{height: '250px'}}
     />
-    <SideNav onToggleSidebar={props.onToggleSidebar} showSidebar={props.showSidebar}/>
+    <SideNav 
+      onToggleSidebar={props.onToggleSidebar} 
+      showSidebar={props.showSidebar} />
   </div>
 );
 
