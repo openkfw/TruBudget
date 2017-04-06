@@ -2,12 +2,14 @@ import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import NavbarContainer from '../Navbar/NavbarContainer';
+import Overview from '../Overview/Overview';
 
 const Main = () => {
   return (
-    <MuiThemeProvider>
+    <div>
         <NavbarContainer />
-    </MuiThemeProvider>
+        <Overview />
+    </div>
   )
 }
 

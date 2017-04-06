@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { applyRouterMiddleware, Router, browserHistory } from 'react-router';
 import injectTapEventPlugin from "react-tap-event-plugin";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 
 import Main from './pages/Main/Main';
 import configureStore from './store';
@@ -16,7 +18,9 @@ class App extends Component {
   render() {
     return (
       <Provider store = {store}>
-        <Main />
+        <MuiThemeProvider>
+          <Main />
+        </MuiThemeProvider>
       </Provider>
     );
   }
