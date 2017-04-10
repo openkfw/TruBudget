@@ -6,14 +6,19 @@ import NavbarContainer from '../Navbar/NavbarContainer';
 import OverviewContainer from '../Overview/OverviewContainer';
 import NotFound from '../NotFound/NotFound';
 
+import Detailview from '../Detailview/Detailview';
+
 const Main = () => {
   return (
     <div>
         <NavbarContainer />
+
         <Switch>
           <Route exact path="/" component={OverviewContainer}/>
+          <Route exact path="/details" component={Detailview}
           <Route component={NotFound}/>
         </Switch>
+
     </div>
   )
 }

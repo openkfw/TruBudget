@@ -12,12 +12,9 @@ const Overview = ({ streams }) => (
     zIndex: 1100,
 
   }}>
-    <CardTitle title="Streams" subtitle="Overview of existing streams" />
+    <CardTitle title="Streams" subtitle="Overview of existing workflows" />
     <CardText>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-      Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-      Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+      All workflows are listed below.
     </CardText>
     <OverviewTable streams={streams}/>
   </Card>
