@@ -6,14 +6,14 @@ import PeerInfoIcon from './PeerInfoIcon';
 
 const Navbar = (props) => (
   <div>
-    <AppBar 
+    <AppBar
       title="ACMECorp Chain"
-      onLeftIconButtonTouchTap={props.onToggleSidebar} 
+      onLeftIconButtonTouchTap={props.onToggleSidebar}
       iconElementRight={<PeerInfoIcon peers={props.peers}/>}
-      style={{height: '250px'}}
+      style={{height: '300px'}}
     />
-    <SideNav 
-      onToggleSidebar={props.onToggleSidebar} 
+    <SideNav
+      onToggleSidebar={props.onToggleSidebar}
       showSidebar={props.showSidebar} />
   </div>
 );
