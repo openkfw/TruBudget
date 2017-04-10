@@ -1,9 +1,11 @@
 import React from 'react';
 
-import {Card, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardTitle} from 'material-ui/Card';
 
 import ProcessSelection from './ProcessSelection';
 import OriginatingStep from './OriginatingStep';
+import { showNext } from './actions';
+import { connect } from 'react-redux';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -18,6 +20,7 @@ const Detailview = () => (
   }}>
     <CardTitle title="Workflow Steps" subtitle="Add steps to the workflow" />
     <OriginatingStep/>
+
   </Card>
 );
 

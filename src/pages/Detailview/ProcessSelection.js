@@ -1,49 +1,47 @@
 import React from 'react';
-import IconMenu from 'material-ui/IconMenu';
+import { fromJS } from 'immutable';
+import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import AttachMoney from 'material-ui/svg-icons/editor/attach-money';
-import CheckCircle from 'material-ui/svg-icons/action/check-circle';
-import Description from 'material-ui/svg-icons/action/description';
-import Report from 'material-ui/svg-icons/content/report';
+var fieldValue;
+
+
+
+const defaultState =  fromJS({
+  fieldValue: 1
+});
+
+let state = defaultState
+
+
 
 const ProcessSelection = () => (
+
   <div style={{
+    width: '40%',
     left: '20%',
     position: 'relative',
     zIndex: 1100,
 
   }}>
-    <IconMenu
-      iconButtonElement={<IconButton><Description /></IconButton>}
-      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-      targetOrigin={{horizontal: 'right', vertical: 'top'}}
-      >
-        <MenuItem primaryText="Definition of purpose/scope" />
-    </IconMenu>
-    <IconMenu
-      iconButtonElement={<IconButton><AttachMoney /></IconButton>}
-      anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-      targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
-      >
-        <MenuItem primaryText="Submission of financing agreement" />
-    </IconMenu>
-    <IconMenu
-      iconButtonElement={<IconButton><Report /></IconButton>}
-      anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-      targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
-      >
-        <MenuItem primaryText="Approval report tender evaluation" />
-    </IconMenu>
-    <IconMenu
-      iconButtonElement={<IconButton><CheckCircle /></IconButton>}
-      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-      targetOrigin={{horizontal: 'right', vertical: 'top'}}
-      >
-        <MenuItem primaryText="Invoice approval" />
-    </IconMenu>
-</div>
-);
+    <SelectField
+          floatingLabelText="Originating Step"
+          onChange={handleChange}
+          value = {state.get('fieldValue')}
+          style = {{width: 300}}
+          >
+          <MenuItem value={1} primaryText="Defintion of purpose" />
+          <MenuItem value={2} primaryText="Submission of financing agreement" />
+          <MenuItem value={3} primaryText="Approval report tender evaluation" />
+          <MenuItem value={4} primaryText="Invoice approval" />
+        </SelectField>
 
+
+  </div>
+);
+function  handleChange(event, index, value){
+
+
+  state.set('fieldValue', value);
+}
 
 export default ProcessSelection;
