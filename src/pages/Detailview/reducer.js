@@ -1,15 +1,16 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_STREAMS_SUCCESS } from './actions';
+import { SHOW_NEXT } from './actions';
 
 const defaultState =  fromJS({
-  streams: []
+  showNext: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_STREAMS_SUCCESS:
-      return state.set('streams', action.streams);
+    case SHOW_NEXT:
+        console.log('Show Next')
+        return state.set('showNext', !state.get('showNext'));
     default:
       return state
   }
