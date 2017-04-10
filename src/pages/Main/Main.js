@@ -13,13 +13,11 @@ const Main = () => {
   return (
     <div>
         <NavbarContainer />
-
         <Switch>
           <Route exact path="/" component={OverviewContainer}/>
-          <Route exact path="/details" component={DetailviewContainer}
+          <Route exact path="/details" component={DetailviewContainer}/>
           <Route component={NotFound}/>
         </Switch>
-
     </div>
   )
 }

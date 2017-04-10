@@ -7,7 +7,7 @@ import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import Divider from 'material-ui/Divider';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Avatar from 'material-ui/Avatar';
-
+import {Link} from 'react-router';
 import colors from '../../colors';
 
 const SideNavCard = () => (
@@ -40,7 +40,7 @@ const SideNavCard = () => (
     </div>
     <List>
         <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
-        <ListItem primaryText="Starred" leftIcon={<ActionGrade />} />
+        <ListItem primaryText = "Add Workflow" leftIcon={<ActionGrade />} />
         <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} />
         <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} />
         <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />

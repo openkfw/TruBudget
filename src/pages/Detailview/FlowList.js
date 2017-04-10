@@ -11,7 +11,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 
 
-class DetailWorkflowView extends Component {
+class FlowList extends Component {
 
   componentWillMount() {
     this.props.showNext();
@@ -81,4 +81,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DetailWorkflowView);
+export default connect(mapStateToProps, mapDispatchToProps)(FlowList);
