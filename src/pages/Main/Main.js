@@ -15,7 +15,7 @@ const Main = () => {
         <NavbarContainer />
         <Switch>
           <Route exact path="/" component={OverviewContainer}/>
-          <Route exact path="/details" component={DetailviewContainer}/>
+          <Route exact path="/details/:flow" component={DetailviewContainer}/>
           <Route component={NotFound}/>
         </Switch>
     </div>

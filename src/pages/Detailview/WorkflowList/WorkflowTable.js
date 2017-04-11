@@ -5,10 +5,11 @@ const getTableEntries = (streamItems) => {
   console.log('StreamItems ' + streamItems)
   return streamItems.map((streamItem, index) => {
     console.log('Stream Item ' + streamItem);
+    var time = new Date(streamItem.timereceived * 1000)
     return (
       <TableRow key={index}>
-        <TableRowColumn>{streamItem.name}</TableRowColumn>
-        <TableRowColumn>{streamItem.confirmed}</TableRowColumn>
+        <TableRowColumn>{streamItem.key}</TableRowColumn>
+        <TableRowColumn>{time.toString()}</TableRowColumn>
       </TableRow>
     );
   });
@@ -20,13 +21,16 @@ const WorkflowTable = (props) => {
 
   return (
     <Table>
-    <TableHeader>
+    <TableHeader displaySelectAll={false}
+              adjustForCheckbox={false}>
       <TableRow>
-        <TableHeaderColumn>Name</TableHeaderColumn>
-        <TableHeaderColumn>Confirmations</TableHeaderColumn>
+        <TableHeaderColumn>Key</TableHeaderColumn>
+        <TableHeaderColumn>Time</TableHeaderColumn>
       </TableRow>
     </TableHeader>
-    <TableBody>
+    <TableBody displayRowCheckbox={false}
+              adjustForCheckbox={false}>
+
       {tableEntries}
     </TableBody>
   </Table>
