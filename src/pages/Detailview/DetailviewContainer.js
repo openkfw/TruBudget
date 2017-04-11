@@ -10,7 +10,7 @@ class DetailviewContainer extends Component {
       return (
         <div>
         <DetailWorkflowView/>
-        <FlowList/>
+        <FlowList {...this.props}/>
         </div>
 
     )

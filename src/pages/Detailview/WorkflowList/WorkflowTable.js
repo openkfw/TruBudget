@@ -5,7 +5,7 @@ const getTableEntries = (streamItems) => {
   console.log('StreamItems ' + streamItems)
   return streamItems.map((streamItem, index) => {
     console.log('Stream Item ' + streamItem);
-    var time = new Date(streamItem.timereceived * 1000)
+    var time = new Date(streamItem.time * 1000)
     return (
       <TableRow key={index}>
         <TableRowColumn>{streamItem.key}</TableRowColumn>

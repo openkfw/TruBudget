@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import {Card, CardTitle} from 'material-ui/Card';
-import { fetchStremItems } from './actions';
+import { fetchStreamItems } from './actions';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
 import { connect } from 'react-redux';
@@ -10,11 +10,13 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
 
+let streamName;
 
 class FlowListContainer extends Component {
 
   componentWillMount() {
-    this.props.fetchStremItems();
+     streamName =this.props.location.pathname.substring(9)
+     this.props.fetchStremItems(streamName);
   }
 
 
@@ -30,9 +32,10 @@ class FlowListContainer extends Component {
     }
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
+
   return {
-    fetchStremItems: () => dispatch(fetchStremItems())
+    fetchStremItems: () => dispatch(fetchStreamItems(ownProps.location.pathname.substring(9)))
   };
 }
 
