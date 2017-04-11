@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import {Card, CardTitle} from 'material-ui/Card';
-import { showNext } from './actions';
 
 import {
   Step,
@@ -23,9 +22,6 @@ import MenuItem from 'material-ui/MenuItem';
 
 class DetailWorkflowView extends Component {
 
-  componentWillMount() {
-    this.props.showNext();
-  }
 
 
   state = {
@@ -118,17 +114,6 @@ class DetailWorkflowView extends Component {
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    showNext: () => dispatch(showNext())
-  };
-}
 
-const mapStateToProps = (state) => {
-  console.log('Show Next is '+state.getIn(['detailview','showNext']) )
-  return {
-    showNext: state.getIn(['detailview','showNext'])
-  }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(DetailWorkflowView);
+export default DetailWorkflowView;
