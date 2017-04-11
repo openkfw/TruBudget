@@ -22,8 +22,7 @@ const Overview = ({ streams, history }) => (
         position: 'absolute',
         right: '-28px',
         top: '16px'
-      }}
-      tooltip="test">
+      }}>
       <ContentAdd />
     </FloatingActionButton>
   </Card>

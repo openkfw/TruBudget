@@ -1,16 +1,16 @@
 import React from 'react';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 
-const getTableEntries = ({streams, history}) => {
+const getTableEntries = ({ streams, history }) => {
   return streams.map((stream, index) => {
     return (
       <TableRow key={index} selectable={false}>
         <TableRowColumn>{stream.name}</TableRowColumn>
         <TableRowColumn>{stream.confirmed}</TableRowColumn>
-
-          <TableRowColumn></TableRowColumn>
-         <FlatButton label="Select" onTouchTap={() => history.push('/details/' + stream.name)} secondary={true} />
+        <TableRowColumn>
+          <FlatButton label="Select" onTouchTap={() => history.push('/details/' + stream.name)} secondary={true} />
+        </TableRowColumn>
       </TableRow>
     );
   });
@@ -21,21 +21,21 @@ const OverviewTable = (props) => {
 
   return (
     <Table>
-    <TableHeader displaySelectAll={false}
-              adjustForCheckbox={false}>
-      <TableRow>
-        <TableHeaderColumn>Name</TableHeaderColumn>
-        <TableHeaderColumn>Confirmations</TableHeaderColumn>
-        <TableHeaderColumn></TableHeaderColumn>
+      <TableHeader displaySelectAll={false}
+        adjustForCheckbox={false}>
+        <TableRow>
+          <TableHeaderColumn>Name</TableHeaderColumn>
+          <TableHeaderColumn>Confirmations</TableHeaderColumn>
+          <TableHeaderColumn></TableHeaderColumn>
 
-        <TableHeaderColumn></TableHeaderColumn>
-      </TableRow>
-    </TableHeader>
-    <TableBody displayRowCheckbox={false}
-              adjustForCheckbox={false}>>
+          <TableHeaderColumn></TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+      <TableBody displayRowCheckbox={false}
+        adjustForCheckbox={false}>>
       {tableEntries}
-    </TableBody>
-  </Table>
+      </TableBody>
+    </Table>
   )
 }
 
