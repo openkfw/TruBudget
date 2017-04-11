@@ -1,14 +1,24 @@
 import { put, takeEvery } from 'redux-saga/effects'
-import { fetchPeers, fetchStreams } from './api.js';
+import { fetchPeers, fetchStreams, fetchStreamItems } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS } from './pages/Navbar/actions';
 import { FETCH_STREAMS, FETCH_STREAMS_SUCCESS } from './pages/Overview/actions';
+import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS } from './pages/Detailview/WorkflowList/actions';
+
 
 export function* fetchPeersSaga(action) {
   const peers = yield fetchPeers();
   yield put({
     type: FETCH_PEERS_SUCCESS,
     peers: peers.data
+  });
+}
+
+export function* fetchStreamItemsSaga(action) {
+  const streamItems = yield fetchStreamItems();
+  yield put({
+    type: FETCH_STREAM_ITEMS_SUCCESS,
+    streamItems: streamItems.data
   });
 }
 
@@ -28,9 +38,15 @@ export function* watchFetchStreams() {
   yield takeEvery(FETCH_STREAMS, fetchStreamsSaga)
 }
 
+export function* watchFetchStreamItems() {
+  yield takeEvery(FETCH_STREAM_ITEMS, fetchStreamItemsSaga)
+}
+
+
 export default function* rootSaga() {
   yield [
     watchFetchPeers(),
-    watchFetchStreams()
+    watchFetchStreams(),
+    watchFetchStreamItems()
   ]
 }
