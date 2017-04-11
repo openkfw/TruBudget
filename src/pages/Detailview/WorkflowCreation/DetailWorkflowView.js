@@ -72,7 +72,7 @@ class DetailWorkflowView extends Component {
           zIndex: 1100,
 
         }}>
-    <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
+
         <Stepper activeStep={stepIndex}>
           <Step>
             <StepLabel>Originating Step</StepLabel>
@@ -108,7 +108,7 @@ class DetailWorkflowView extends Component {
             </div>
 
         </div>
-      </div>
+
         </Card>
     )
   }

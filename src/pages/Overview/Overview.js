@@ -5,7 +5,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import OverviewTable from './OverviewTable';
 
-const Overview = ({ streams }) => (
+const Overview = ({ streams, history }) => (
   <Card style={{
     width: '60%',
     left: '20%',
@@ -13,11 +13,11 @@ const Overview = ({ streams }) => (
     position: 'absolute',
     zIndex: 1100,
   }}>
-    <CardTitle title="Streams" subtitle="Overview of existing workflows" />
+    <CardTitle title="Workflows" subtitle="Overview of existing workflows" />
     <CardText>
       All workflows are listed below.
     </CardText>
-    <OverviewTable streams={streams}/>
+    <OverviewTable streams={streams} history={history}/>
     <FloatingActionButton secondary style={{
         position: 'absolute',
         right: '-28px',

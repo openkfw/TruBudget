@@ -15,6 +15,7 @@ export function* fetchPeersSaga(action) {
 }
 
 export function* fetchStreamItemsSaga(action) {
+
   const streamItems = yield fetchStreamItems();
   yield put({
     type: FETCH_STREAM_ITEMS_SUCCESS,

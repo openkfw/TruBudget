@@ -16,27 +16,23 @@ let state = defaultState
 
 const OriginatingStep = () => (
 
-  <div style={{
+  <SelectField style={{
     width: '40%',
     left: '20%',
     position: 'relative',
-    zIndex: 1100,
-
-  }}>
-    <SelectField
-          floatingLabelText="Originating Step"
-          onChange={handleChange}
-          value = {state.get('fieldValue')}>
-          <MenuItem value={1} primaryText="First Step" />
-          <MenuItem value={2} primaryText="Other" />
-        </SelectField>
+    zIndex: 1100}}
+        floatingLabelText="Originating Step"
+        onChange={handleChange}
+        value = {state.get('fieldValue')}>
+        <MenuItem value={1} primaryText="First Step" />
+        <MenuItem value={2} primaryText="Other" />
+      </SelectField>
 
 
-  </div>
+
+
 );
 function  handleChange(event, index, value){
-
-
   state.set('fieldValue', value);
 }
 

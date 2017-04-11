@@ -39,7 +39,7 @@ const SideNavCard = () => (
       </div>
     </div>
     <List>
-        <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
+        <ListItem primaryText="Workflows" leftIcon={<ContentInbox />} />
         <ListItem primaryText = "Add Workflow" leftIcon={<ActionGrade />} />
         <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} />
         <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} />

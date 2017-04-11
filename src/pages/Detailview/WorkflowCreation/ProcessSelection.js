@@ -16,18 +16,19 @@ let state = defaultState
 
 const ProcessSelection = () => (
 
-  <div style={{
-    width: '40%',
-    left: '20%',
-    position: 'relative',
-    zIndex: 1100,
 
-  }}>
     <SelectField
-          floatingLabelText="Originating Step"
+          floatingLabelText="New Step"
           onChange={handleChange}
           value = {state.get('fieldValue')}
-          style = {{width: 300}}
+          style={{
+           width: '40%',
+           left: '20%',
+           width: '300px',
+           position: 'relative',
+           zIndex: 1100,
+
+         }}
           >
           <MenuItem value={1} primaryText="Defintion of purpose" />
           <MenuItem value={2} primaryText="Submission of financing agreement" />
@@ -35,8 +36,6 @@ const ProcessSelection = () => (
           <MenuItem value={4} primaryText="Invoice approval" />
         </SelectField>
 
-
-  </div>
 );
 function  handleChange(event, index, value){
 
