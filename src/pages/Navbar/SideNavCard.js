@@ -14,7 +14,7 @@ const SideNavCard = () => (
   <div>
     <div
       style={{
-        background: "url('mdl_back_small.jpeg') no-repeat",
+        background: "url('/mdl_back_small.jpeg') no-repeat",
         backgroundSize: 'cover',
         height: "200px",
         position: "relative"
@@ -25,7 +25,7 @@ const SideNavCard = () => (
           }}>
         <Avatar
           size={60}
-          src="avatar.png"
+          src="/avatar.png"
           style={{
             marginLeft: "16px"
           }}
