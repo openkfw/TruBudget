@@ -41,17 +41,9 @@ const SideNavCard = () => (
     <List>
         <ListItem primaryText="Workflows" leftIcon={<ContentInbox />} />
         <ListItem primaryText = "Add Workflow" leftIcon={<ActionGrade />} />
-        <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} />
-        <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} />
-        <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
+
       </List>
       <Divider />
-      <List>
-        <ListItem primaryText="All mail" rightIcon={<ActionInfo />} />
-        <ListItem primaryText="Trash" rightIcon={<ActionInfo />} />
-        <ListItem primaryText="Spam" rightIcon={<ActionInfo />} />
-        <ListItem primaryText="Follow up" rightIcon={<ActionInfo />} />
-      </List>
     </div>
 );
 

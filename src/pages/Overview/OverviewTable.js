@@ -7,7 +7,6 @@ const getTableEntries = ({ streams, history }) => {
     return (
       <TableRow key={index} selectable={false}>
         <TableRowColumn>{stream.name}</TableRowColumn>
-        <TableRowColumn>{stream.confirmed}</TableRowColumn>
         <TableRowColumn>
           <FlatButton label="Select" onTouchTap={() => history.push('/details/' + stream.name)} secondary={true} />
         </TableRowColumn>
@@ -25,9 +24,6 @@ const OverviewTable = (props) => {
         adjustForCheckbox={false}>
         <TableRow>
           <TableHeaderColumn>Name</TableHeaderColumn>
-          <TableHeaderColumn>Confirmations</TableHeaderColumn>
-          <TableHeaderColumn></TableHeaderColumn>
-
           <TableHeaderColumn></TableHeaderColumn>
         </TableRow>
       </TableHeader>

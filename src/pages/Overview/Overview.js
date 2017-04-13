@@ -13,9 +13,9 @@ const Overview = ({ streams, history }) => (
     position: 'absolute',
     zIndex: 1100,
   }}>
-    <CardTitle title="Workflows" subtitle="Overview of existing workflows" />
+    <CardTitle title="Projects" subtitle="Overview of the ongoing projects" />
     <CardText>
-      All workflows are listed below.
+      All Projects are listed below.
     </CardText>
     <OverviewTable streams={streams} history={history}/>
     <FloatingActionButton secondary style={{
