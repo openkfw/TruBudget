@@ -10,7 +10,7 @@ import Avatar from 'material-ui/Avatar';
 import {Link} from 'react-router';
 import colors from '../../colors';
 
-const SideNavCard = () => (
+const SideNavCard = ({history}) => (
   <div>
     <div
       style={{
@@ -39,7 +39,7 @@ const SideNavCard = () => (
       </div>
     </div>
     <List>
-        <ListItem primaryText="Workflows" leftIcon={<ContentInbox />} />
+        <ListItem primaryText="Projects" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/')}/>
         <ListItem primaryText = "Add Workflow" leftIcon={<ActionGrade />} />
 
       </List>

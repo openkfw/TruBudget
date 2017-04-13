@@ -4,17 +4,18 @@ import AppBar from 'material-ui/AppBar';
 import SideNav from './SideNav';
 import PeerInfoIcon from './PeerInfoIcon';
 
-const Navbar = (props) => (
+const Navbar = ({onToggleSidebar, peers, showSidebar, history}) => (
   <div>
     <AppBar
       title="ACMECorp Chain"
-      onLeftIconButtonTouchTap={props.onToggleSidebar}
-      iconElementRight={<PeerInfoIcon peers={props.peers}/>}
+      onLeftIconButtonTouchTap={onToggleSidebar}
+      iconElementRight={<PeerInfoIcon peers={peers}/>}
       style={{height: '700px'}}
     />
     <SideNav
-      onToggleSidebar={props.onToggleSidebar}
-      showSidebar={props.showSidebar} />
+      onToggleSidebar={onToggleSidebar}
+      showSidebar={showSidebar}
+      history={history}/>
   </div>
 );
 

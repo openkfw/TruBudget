@@ -9,10 +9,10 @@ import DetailviewContainer from '../Detailview/DetailviewContainer';
 
 
 
-const Main = () => {
+const Main = (props) => {
   return (
     <div>
-        <NavbarContainer />
+        <Route component={NavbarContainer}/>
         <Switch>
           <Route exact path="/" component={OverviewContainer}/>
           <Route exact path="/details/:flow" component={DetailviewContainer}/>
