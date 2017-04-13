@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardText} from 'material-ui/Card';
 
 const NotFound = () => (
   <Card style={{
@@ -15,7 +15,7 @@ const NotFound = () => (
     }}>
       <h4>404 - Sorry, I couldn't find the page you requested</h4>
       <br/>
-      <img src="404.gif"/>
+      <img src="404.gif" alt="I am sorry :("/>
     </CardText>
   </Card>
 )
