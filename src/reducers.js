@@ -9,7 +9,7 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 
 import navbarReducer from './pages/Navbar/reducer';
 import overviewReducer from './pages/Overview/reducer';
-import detailviewFlowListReducer from './pages/Detailview/WorkflowList/reducer';
+import subProjectReducer from './pages/Detailview/WorkflowList/reducer';
 
 /*
  * routeReducer
@@ -49,7 +49,7 @@ export default function createReducer(asyncReducers) {
     route: routeReducer,
     navbar: navbarReducer,
     overview: overviewReducer,
-    detailview: detailviewFlowListReducer,
+    detailview: subProjectReducer,
     ...asyncReducers,
   });
 }

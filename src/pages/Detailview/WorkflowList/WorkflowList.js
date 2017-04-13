@@ -4,7 +4,7 @@ import { fetchStremItems } from './actions';
 
 import WorkflowTable from './WorkflowTable';
 
-const WorkflowList = ({ streamItems, history }) => (
+const WorkflowList = ({ streamItems, history, workflowDialogVisible, showWorkflowDialog,hideWorkflowDialog }) => (
       <Card style={{
         width: '74%',
         left: '13%',
@@ -15,7 +15,7 @@ const WorkflowList = ({ streamItems, history }) => (
 
       }}>
 
-        <WorkflowTable streamItems={streamItems} history = {history}/>
+        <WorkflowTable streamItems={streamItems} history = {history} workflowDialogVisible={workflowDialogVisible} showWorkflowDialog = {showWorkflowDialog} hideWorkflowDialog = {hideWorkflowDialog}/>
       </Card>
 
 );

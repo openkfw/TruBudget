@@ -5,9 +5,9 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
+import DetailWorkflowView from '../WorkflowCreation/DetailWorkflowView'
 
-
-const getTableEntries = ({streamItems, history}) => {
+const getTableEntries = (streamItems) => {
   console.log('StreamItems ' + streamItems)
   return streamItems.map((streamItem, index) => {
     console.log('Stream Item ' + streamItem);
@@ -25,33 +25,16 @@ const getTableEntries = ({streamItems, history}) => {
   });
 }
 
-function handleClose(){
+const WorkflowTable = ({showWorkflowDialog, hideWorkflowDialog, streamItems, workflowDialogVisible}) => {
+  console.log("Props " + streamItems);
+  const tableEntries = getTableEntries(streamItems);
 
-
-
-}
-const WorkflowTable = (props) => {
-  console.log("Props " + props.streamItems);
-  const tableEntries = getTableEntries(props);
-  const actions = [
-        <FlatButton
-          label="Cancel"
-          primary={true}
-          onTouchTap={handleClose}
-        />,
-        <FlatButton
-          label="Submit"
-          primary={true}
-          disabled={true}
-          onTouchTap={handleClose}
-        />,
-      ];
-
+  console.log('Open Workflow ' + workflowDialogVisible)
   return (
     <Table>
     <TableHeader displaySelectAll={false}
               adjustForCheckbox={false}>
-      <FloatingActionButton secondary onTouchTap={() => props.history.push('/')} style={{
+      <FloatingActionButton secondary onTouchTap={showWorkflowDialog} style={{
           position: 'absolute',
           right: '-28px',
           top: '16px'
@@ -60,12 +43,12 @@ const WorkflowTable = (props) => {
       </FloatingActionButton>
 
       <Dialog
-         title="Dialog With Actions"
-         actions={actions}
+         title="New Sub-Project"
+
          modal={true}
-         open={false}
+         open={workflowDialogVisible}
        >
-         Only actions can close this dialog.
+         <DetailWorkflowView hideWorkflowDialog = {hideWorkflowDialog}/>
        </Dialog>
 
       <TableRow>

@@ -34,12 +34,18 @@ class DetailWorkflowView extends Component {
     const {stepIndex} = this.state;
     this.setState({
       stepIndex: stepIndex + 1,
-      finished: stepIndex >= 3,
+      finished: stepIndex >= 0,
     });
+    if (stepIndex == 0){
+        this.props.hideWorkflowDialog();
+    }
   };
 
   handlePrev = () => {
     const {stepIndex} = this.state;
+    if (stepIndex == 0 ){
+        this.props.hideWorkflowDialog();
+    }
     if (stepIndex > 0) {
       this.setState({stepIndex: stepIndex - 1});
     }
@@ -48,14 +54,8 @@ class DetailWorkflowView extends Component {
 
 
   getStepContent(stepIndex) {
-   switch (stepIndex) {
-     case 0:
-       return <OriginatingStep/>
-     case 1:
-       return <ProcessSelection/>
-     case 2:
-       return  <AdditionalData/>
-    case 3:
+   switch (stepIndex){
+    case 0:
        return <Origin/>
 
    }
@@ -64,27 +64,11 @@ class DetailWorkflowView extends Component {
     const {finished, stepIndex} = this.state;
     const contentStyle = {margin: '0 16px'};
       return (
-        <Card style={{
-          width: '40%',
-          left: '2%',
-          top: '100px',
-          position: 'absolute',
-          zIndex: 1100,
-
-        }}>
+  <div>
 
         <Stepper activeStep={stepIndex}>
           <Step>
-            <StepLabel>Originating Step</StepLabel>
-          </Step>
-          <Step>
             <StepLabel>New Step</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>Additional Data</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>Origin</StepLabel>
           </Step>
         </Stepper>
         <div style={contentStyle}>
@@ -94,12 +78,11 @@ class DetailWorkflowView extends Component {
               <div style={{marginTop: 12}}>
                 <FlatButton
                   label="Back"
-                  disabled={stepIndex === 0}
                   onTouchTap={this.handlePrev}
                   style={{marginRight: 360}}
                 />
                 <RaisedButton
-                  label={stepIndex === 3 ? 'Finish' : 'Next'}
+                  label={stepIndex === 0 ? 'Finish' : 'Next'}
                   primary={true}
                     style={{}}
                   onTouchTap={this.handleNext}
@@ -109,7 +92,7 @@ class DetailWorkflowView extends Component {
 
         </div>
 
-        </Card>
+        </div>
     )
   }
 };

@@ -3,7 +3,7 @@ import { fetchPeers, fetchStreams, fetchStreamItems } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS } from './pages/Navbar/actions';
 import { FETCH_STREAMS, FETCH_STREAMS_SUCCESS } from './pages/Overview/actions';
-import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS } from './pages/Detailview/WorkflowList/actions';
+import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, OPEN_WORKFLOW_DIALOG, OPEN_WORKFLOW_DIALOG_SUCCESS} from './pages/Detailview/WorkflowList/actions';
 
 
 export function* fetchPeersSaga(action) {
@@ -15,7 +15,7 @@ export function* fetchPeersSaga(action) {
 }
 
 export function* fetchStreamItemsSaga(action) {
-  const streamItems = yield fetchStreamItems(action.pathName);
+  const streamItems = yield fetchStreamItems(action.streamName);
 
   yield put({
     type: FETCH_STREAM_ITEMS_SUCCESS,
