@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import {Card, CardTitle} from 'material-ui/Card';
-import { fetchStreamItems, showWorkflowDialog } from './actions';
+import { fetchStreamItems, showWorkflowDialog, createSubProjectItem } from './actions';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
 import { connect } from 'react-redux';
@@ -26,13 +26,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchStremItems: (streamName) => dispatch(fetchStreamItems(streamName)),
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
+    createSubProjectItem: (parentName, subprojectName) => dispatch(createSubProjectItem(parentName, subprojectName)),
+
   };
 }
 
 const mapStateToProps = (state) => {
   return {
     streamItems: state.getIn(['detailview','streamItems']),
-    workflowDialogVisible: state.getIn(['detailview','workflowDialogVisible'])
+    workflowDialogVisible: state.getIn(['detailview','workflowDialogVisible']),
   }
 }
 
