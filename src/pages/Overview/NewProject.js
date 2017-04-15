@@ -10,13 +10,13 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
-import Origin from './Origin';
+import NewProjectTextfield from './NewProjectTextfield';
 import { connect } from 'react-redux';
 import { storeStreamName} from './actions';
 
 
 
-class DetailWorkflowView extends Component {
+class NewProject extends Component {
 
 
 
@@ -25,11 +25,10 @@ class DetailWorkflowView extends Component {
     stepIndex: 0,
   };
 
-
   handleNext = () => {
     const {stepIndex} = this.state;
     if (stepIndex == 0){
-        this.props.createSubProjectItem(this.props.location.pathname.substring(9), this.props.streamName)
+       this.props.createProject(this.props.projectName, '0')
         this.props.hideWorkflowDialog();
     }
   };
@@ -50,11 +49,9 @@ class DetailWorkflowView extends Component {
 
    switch (stepIndex){
     case 0:
-
-      // return <Origin storeStreamName = {this.props.storeStreamName} />
-      return <Origin  storeStreamName = {this.props.storeStreamName}/>
-
+      return <NewProjectTextfield  storeProjectName={this.props.storeProjectName}/>
    }
+
  }
   render() {
     const {finished, stepIndex} = this.state;
@@ -94,17 +91,4 @@ class DetailWorkflowView extends Component {
 };
 
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-
-  return {
-    storeStreamName: (name) => dispatch(storeStreamName(name))
-  };
-}
-
-const mapStateToProps = (state) => {
-  return {
-    streamName: state.getIn(['subprojectCreation', 'streamName'])
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DetailWorkflowView);
+export default NewProject;

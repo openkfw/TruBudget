@@ -19,8 +19,7 @@ const OriginatingStep = () => (
   <SelectField style={{
     width: '40%',
     left: '20%',
-    position: 'relative',
-    zIndex: 1100}}
+    position: 'relative'}}
         floatingLabelText="Originating Step"
         onChange={handleChange}
         value = {state.get('fieldValue')}>
