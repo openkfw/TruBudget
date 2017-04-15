@@ -41,7 +41,7 @@ const SideNavCard = ({history}) => (
     <List>
         <ListItem primaryText="Projects" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/')}/>
         <ListItem primaryText = "Add Workflow" leftIcon={<ActionGrade />} />
-
+        <ListItem primaryText="Dashboard" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/dashboard')}/>
       </List>
       <Divider />
     </div>
