@@ -6,3 +6,4 @@ export const postStream = (flowName) => axios.get('/streams/list/item/' + flowNa
 export const fetchStreamItems = (flowName) => axios.get('/streams/list/item/' + flowName);
 export const postSubProject = (parentProject, subProjectName) => axios.post('/project/create/subproject', { parentStream: parentProject, newStream: subProjectName})
 export const postProject = (name, parent) => axios.post('/project/create', { newStream: name, parent: parent})
+export const fetchNodeInformation = () => axios.get('/node/information');

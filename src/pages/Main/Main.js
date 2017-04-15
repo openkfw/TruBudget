@@ -6,7 +6,7 @@ import NavbarContainer from '../Navbar/NavbarContainer';
 import OverviewContainer from '../Overview/OverviewContainer';
 import NotFound from '../NotFound/NotFound';
 import DetailviewContainer from '../Detailview/DetailviewContainer';
-import Dashboard from '../Dashboard/Dashboard';
+import DashboardContainer from '../Dashboard/DashboardContainer';
 
 
 
@@ -17,7 +17,7 @@ const Main = (props) => {
         <Switch>
           <Route exact path="/" component={OverviewContainer}/>
           <Route exact path="/details/:flow" component={DetailviewContainer}/>
-          <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/dashboard" component={DashboardContainer} />
           <Route component={NotFound}/>
         </Switch>
     </div>

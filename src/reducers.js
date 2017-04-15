@@ -11,6 +11,8 @@ import navbarReducer from './pages/Navbar/reducer';
 import overviewReducer from './pages/Overview/reducer';
 import subProjectReducer from './pages/Detailview/SubProject/reducer';
 import subProjectCreationReducer from './pages/Detailview/WorkflowCreation/reducer';
+import dashboardReducer from './pages/Dashboard/reducer';
+
 /*
  * routeReducer
  *
@@ -51,6 +53,7 @@ export default function createReducer(asyncReducers) {
     overview: overviewReducer,
     detailview: subProjectReducer,
     subprojectCreation: subProjectCreationReducer,
+    dashboard: dashboardReducer,
     ...asyncReducers,
   });
 }

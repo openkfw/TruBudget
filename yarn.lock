@@ -3250,6 +3250,10 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
+leaflet@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.0.3.tgz#1f401b98b45c8192134c6c8d69686253805007c8"
+
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/levn/-/levn-0.3.0.tgz#3b09924edf9f083c0490fdd4c0bc4421e04764ee"
@@ -4232,7 +4236,7 @@ promise@7.1.1, promise@^7.0.3, promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.0.0, prop-types@^15.5.4:
+prop-types@^15.0.0, prop-types@^15.5.0, prop-types@^15.5.4:
   version "15.5.6"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.6.tgz#797a915b1714b645ebb7c5d6cc690346205bd2aa"
   dependencies:
@@ -4399,6 +4403,14 @@ react-faux-dom@^2.1.0:
   dependencies:
     query-selector "^1.0.9"
     style-attr "^1.0.1"
+
+react-leaflet@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-1.1.6.tgz#a3a42cbe1d32168223f7e47e6d9f89a52fa358ab"
+  dependencies:
+    lodash "^4.0.0"
+    prop-types "^15.5.0"
+    warning "^3.0.0"
 
 react-redux@^5.0.3:
   version "5.0.4"
