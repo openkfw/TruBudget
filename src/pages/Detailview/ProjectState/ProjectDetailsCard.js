@@ -34,18 +34,17 @@ const tilesData = [
 
 ];
 
-const ProjectDetailsCard = () => (
+const ProjectDetailsCard = (props) => (
       <Card style={{
         width: '74%',
         left: '13%',
         right: '13%',
         top: '100px',
         position: 'absolute',
-        zIndex: 1100,
-
+            zIndex: 1100,
       }}>
       <CardHeader
-       title="Project: School"
+       title= {props.location.pathname.substring(9)}
        subtitle="Status: Ongoing"
        actAsExpander={true}
        showExpandableButton={true}
@@ -54,7 +53,6 @@ const ProjectDetailsCard = () => (
         width: '20%',
         right: '5%',
         position: 'absolute',
-        zIndex: 1100,
 
       }}
       mode="determinate" value='30' />

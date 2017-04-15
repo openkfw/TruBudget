@@ -8,7 +8,6 @@ const AdditionalData = () => (
     width: '40%',
     left: '20%',
     position: 'relative',
-    zIndex: 1100,
 
   }}>
     <TextField

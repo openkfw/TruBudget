@@ -4,7 +4,7 @@ import { FETCH_STREAM_ITEMS_SUCCESS, SHOW_WORKFLOW_DIALOG } from './actions';
 
 const defaultState =  fromJS({
   streamItems: [],
-  workflowDialogVisible: false
+  workflowDialogVisible: false,
 });
 
 export default function detailviewReducer(state = defaultState, action) {

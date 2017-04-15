@@ -8,9 +8,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import DetailWorkflowView from '../WorkflowCreation/DetailWorkflowView'
 
 const getTableEntries = (streamItems) => {
-  console.log('StreamItems ' + streamItems)
+
   return streamItems.map((streamItem, index) => {
-    console.log('Stream Item ' + streamItem);
     var time = new Date(streamItem.time * 1000)
     return (
       <TableRow key={index} selectable={false}>
@@ -25,11 +24,11 @@ const getTableEntries = (streamItems) => {
   });
 }
 
-const WorkflowTable = ({showWorkflowDialog, hideWorkflowDialog, streamItems, workflowDialogVisible}) => {
-  console.log("Props " + streamItems);
+const WorkflowTable = ({showWorkflowDialog, hideWorkflowDialog, streamItems, workflowDialogVisible, location,createSubProjectItem, streamName, storeStreamName}) => {
+
   const tableEntries = getTableEntries(streamItems);
 
-  console.log('Open Workflow ' + workflowDialogVisible)
+
   return (
     <Table>
     <TableHeader displaySelectAll={false}
@@ -48,7 +47,7 @@ const WorkflowTable = ({showWorkflowDialog, hideWorkflowDialog, streamItems, wor
          modal={true}
          open={workflowDialogVisible}
        >
-         <DetailWorkflowView hideWorkflowDialog = {hideWorkflowDialog}/>
+         <DetailWorkflowView hideWorkflowDialog = {hideWorkflowDialog} location = {location} createSubProjectItem = {createSubProjectItem} streamName ={streamName} storeStreamName = {storeStreamName}/>
        </Dialog>
 
       <TableRow>
