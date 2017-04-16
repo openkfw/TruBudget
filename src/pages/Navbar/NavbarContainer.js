@@ -9,7 +9,7 @@ class NavbarContainer extends Component {
     this.props.fetchPeers();
   }
   render() {
-    return <Navbar {...this.props}/>
+    return <Navbar {...this.props} />
   }
 }
 
@@ -22,8 +22,8 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    showSidebar: state.getIn(['navbar','showSidebar']),
-    peers: state.getIn(['navbar','peers'])
+    showSidebar: state.getIn(['navbar', 'showSidebar']),
+    peers: state.getIn(['navbar', 'peers'])
   }
 }
 

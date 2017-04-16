@@ -13,14 +13,14 @@ export function fetchStreamItems(streamName) {
     streamName: streamName
   }
 }
+
 export function createSubProjectItem(parentName, subProjectName) {
   return {
     type: CREATE_SUBPROJECT_ITEM,
     parentName: parentName,
-    subProjectName:subProjectName
+    subProjectName: subProjectName
   }
 }
-
 
 export function showWorkflowDialog(show) {
   return {

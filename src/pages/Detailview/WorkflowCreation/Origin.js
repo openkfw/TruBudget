@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-
 import TextField from 'material-ui/TextField';
 
 class Origin extends Component {
@@ -9,29 +8,27 @@ class Origin extends Component {
     this.state = {
       value: 'Property Value',
     };
-}
+  }
 
-handleChange = (event) => {
-  this.props.storeStreamName(event.target.value);
-};
+  handleChange = (event) => {
+    this.props.storeStreamName(event.target.value);
+  };
 
-
-render() {
- return (
-   <div style={{
-     width: '40%',
-     left: '20%',
-     position: 'relative',
-
-    }}>
-     <TextField
-       floatingLabelText="Origin"
-       hintText="e.g. your name or your institute"
-       onChange={this.handleChange}
-     />
-   </div>
- );
-}
+  render() {
+    return (
+      <div style={{
+        width: '40%',
+        left: '20%',
+        position: 'relative',
+      }}>
+        <TextField
+          floatingLabelText="Origin"
+          hintText="e.g. your name or your institute"
+          onChange={this.handleChange}
+        />
+      </div>
+    );
+  }
 }
 
 export default Origin;

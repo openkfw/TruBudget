@@ -17,5 +17,4 @@ const Loading = (props) => (
   </div>
 );
 
-
 export default Loading;

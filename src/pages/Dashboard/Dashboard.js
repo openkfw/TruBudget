@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardTitle, CardText} from 'material-ui/Card';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
 
 import NetworkMap from './NetworkMap';
 

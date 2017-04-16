@@ -2,7 +2,7 @@ import { fromJS } from 'immutable';
 
 import { TOGGLE_SIDEBAR, FETCH_PEERS_SUCCESS } from './actions';
 
-const defaultState =  fromJS({
+const defaultState = fromJS({
   showSidebar: false,
   peers: []
 });

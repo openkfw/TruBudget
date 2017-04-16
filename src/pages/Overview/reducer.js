@@ -1,8 +1,8 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_STREAMS_SUCCESS,SHOW_WORKFLOW_DIALOG,PROJECT_NAME } from './actions';
+import { FETCH_STREAMS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME } from './actions';
 
-const defaultState =  fromJS({
+const defaultState = fromJS({
   streams: [],
   workflowDialogVisible: false,
 });

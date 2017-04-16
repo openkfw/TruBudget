@@ -2,8 +2,8 @@ import { put, takeEvery } from 'redux-saga/effects'
 import { fetchPeers, fetchStreams, fetchStreamItems, postSubProject, postProject, fetchNodeInformation } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS } from './pages/Navbar/actions';
-import { FETCH_STREAMS, FETCH_STREAMS_SUCCESS, CREATE_PROJECT} from './pages/Overview/actions';
-import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM} from './pages/Detailview/SubProject/actions';
+import { FETCH_STREAMS, FETCH_STREAMS_SUCCESS, CREATE_PROJECT } from './pages/Overview/actions';
+import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM } from './pages/Detailview/SubProject/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 
 export function* fetchPeersSaga(action) {
@@ -31,7 +31,7 @@ export function* fetchStreamsSaga(action) {
   });
 }
 
-export function* createProject(action){
+export function* createProject(action) {
   yield postProject(action.name, action.parent)
   const streams = yield fetchStreams();
   yield put({
@@ -70,15 +70,15 @@ export function* watchFetchStreamItems() {
   yield takeEvery(FETCH_STREAM_ITEMS, fetchStreamItemsSaga)
 }
 
-export function* watchCreateSubProject(){
-  yield takeEvery(CREATE_SUBPROJECT_ITEM,createSubProjectSaga)
+export function* watchCreateSubProject() {
+  yield takeEvery(CREATE_SUBPROJECT_ITEM, createSubProjectSaga)
 }
 
-export function* watchCreateProject(){
+export function* watchCreateProject() {
   yield takeEvery(CREATE_PROJECT, createProject)
 }
 
-export function* watchFetchNodeInformation(){
+export function* watchFetchNodeInformation() {
   yield takeEvery(FETCH_NODE_INFORMATION, fetchNodeInformationSaga)
 }
 

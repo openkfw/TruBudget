@@ -22,7 +22,7 @@ class App extends Component {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <MuiThemeProvider>
-            <Main/>
+            <Main />
           </MuiThemeProvider>
         </ConnectedRouter>
       </Provider>

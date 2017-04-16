@@ -1,14 +1,7 @@
 import React from 'react';
-import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
+import { Card, CardHeader, CardText } from 'material-ui/Card';
 import LinearProgress from 'material-ui/LinearProgress';
-import {GridList, GridTile} from 'material-ui/GridList';
-import IconButton from 'material-ui/IconButton';
-import Subheader from 'material-ui/Subheader';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
-
-const styles = {
-
-};
+import { GridList, GridTile } from 'material-ui/GridList';
 
 const tilesData = [
   {
@@ -35,48 +28,45 @@ const tilesData = [
 ];
 
 const ProjectDetailsCard = (props) => (
-      <Card style={{
-        width: '74%',
-        left: '13%',
-        right: '13%',
-        top: '100px',
-        position: 'absolute',
-            zIndex: 1100,
-      }}>
-      <CardHeader
-       title= {props.location.pathname.substring(9)}
-       subtitle="Status: Ongoing"
-       actAsExpander={true}
-       showExpandableButton={true}
-     >
+  <Card style={{
+    width: '74%',
+    left: '13%',
+    right: '13%',
+    top: '100px',
+    position: 'absolute',
+    zIndex: 1100,
+  }}>
+    <CardHeader
+      title={props.location.pathname.substring(9)}
+      subtitle="Status: Ongoing"
+      actAsExpander={true}
+      showExpandableButton={true}
+    >
       <LinearProgress style={{
         width: '20%',
         right: '5%',
         position: 'absolute',
 
       }}
-      mode="determinate" value='30' />
-     </CardHeader>
+        mode="determinate" value='30' />
+    </CardHeader>
 
-     <CardText expandable={true}>
-     <GridList
-      cellHeight={50}
-      style={{
-        width: '100%',
-        overflowY: 'auto',
-      }}
-    >
-      {tilesData.map((tile) => (
-        <GridTile
-
-          title={'Value'}
-        >
-
-        </GridTile>
-      ))}
-    </GridList>
-     </CardText>
-   </Card>
+    <CardText expandable={true}>
+      <GridList
+        cellHeight={50}
+        style={{
+          width: '100%',
+          overflowY: 'auto',
+        }}
+      >
+        {tilesData.map((tile) => (
+          <GridTile
+            title={'Value'}
+          />
+        ))}
+      </GridList>
+    </CardText>
+  </Card>
 
 );
 

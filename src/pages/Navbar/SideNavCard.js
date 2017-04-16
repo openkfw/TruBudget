@@ -1,16 +1,12 @@
 import React from 'react';
-import {List, ListItem} from 'material-ui/List';
+import { List, ListItem } from 'material-ui/List';
 import ContentInbox from 'material-ui/svg-icons/content/inbox';
 import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentSend from 'material-ui/svg-icons/content/send';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import Divider from 'material-ui/Divider';
-import ActionInfo from 'material-ui/svg-icons/action/info';
 import Avatar from 'material-ui/Avatar';
-import {Link} from 'react-router';
 import colors from '../../colors';
 
-const SideNavCard = ({history}) => (
+const SideNavCard = ({ history }) => (
   <div>
     <div
       style={{
@@ -20,9 +16,9 @@ const SideNavCard = ({history}) => (
         position: "relative"
       }}>
       <div style={{
-            bottom: 0,
-            position: 'absolute'
-          }}>
+        bottom: 0,
+        position: 'absolute'
+      }}>
         <Avatar
           size={60}
           src="/avatar.png"
@@ -31,20 +27,20 @@ const SideNavCard = ({history}) => (
           }}
         />
         <ListItem
-          primaryText={<div style={{color: colors.lightColor}}>Jure Zakotnik</div>}
-          secondaryText={<div style={{color: colors.lightColor}}>ACMECorp</div>}
+          primaryText={<div style={{ color: colors.lightColor }}>Jure Zakotnik</div>}
+          secondaryText={<div style={{ color: colors.lightColor }}>ACMECorp</div>}
           disabled
-          style={{paddingTop: '16px'}}
+          style={{ paddingTop: '16px' }}
         />
       </div>
     </div>
     <List>
-        <ListItem primaryText="Projects" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/')}/>
-        <ListItem primaryText = "Add Workflow" leftIcon={<ActionGrade />} />
-        <ListItem primaryText="Dashboard" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/dashboard')}/>
-      </List>
-      <Divider />
-    </div>
+      <ListItem primaryText="Projects" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/')} />
+      <ListItem primaryText="Add Workflow" leftIcon={<ActionGrade />} />
+      <ListItem primaryText="Dashboard" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/dashboard')} />
+    </List>
+    <Divider />
+  </div>
 );
 
 export default SideNavCard;

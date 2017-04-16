@@ -1,8 +1,8 @@
 import { fromJS } from 'immutable';
 
-import {  SUBPROJECT_NAME } from './actions';
+import { SUBPROJECT_NAME } from './actions';
 
-const defaultState =  fromJS({
+const defaultState = fromJS({
   streamName: ''
 });
 

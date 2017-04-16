@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import { Map, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
-import { CardHeader } from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
-import ListItem from 'material-ui/List/ListItem';
 
 export default class NetworkMap extends Component {
   parseAddresses(nodeInformation) {
-
-    console.log("<<<< input: ", nodeInformation);
     let addresses = [];
 
     for (let node in nodeInformation) {
@@ -15,7 +10,7 @@ export default class NetworkMap extends Component {
         addresses.push(nodeInformation[node]);
       }
     }
-    console.log("<<<< addresses: ", addresses);
+
     return addresses;
   }
 
@@ -41,7 +36,7 @@ export default class NetworkMap extends Component {
           });
       }
     }
-    console.log("<<<< alldirections: ", allDirections);
+
     const mesh = {
       "type": "FeatureCollection",
       "features": allDirections
@@ -52,8 +47,9 @@ export default class NetworkMap extends Component {
 
   createPoints(addresses) {
     const points = addresses.map((address, index) => {
+      const position = [parseFloat(address.lat), parseFloat(address.lng)];
       return (
-        <Marker key={index} position={[address.lat, address.lng]}>
+        <Marker key={index} position={position}>
           <Popup>
             <div>
               {address.country} - {address.description}
@@ -65,8 +61,10 @@ export default class NetworkMap extends Component {
 
     return points
   }
-  renderMap(mesh, points) {
+  renderMap(addresses) {
     const position = [15, 0];
+    const mesh = this.createMesh(addresses);
+    const points = this.createPoints(addresses);
 
     return (
       <Map
@@ -87,15 +85,10 @@ export default class NetworkMap extends Component {
   }
 
   render() {
-    console.log('render');
     const nodeInformation = this.props.nodeInformation;
     const addresses = this.parseAddresses(nodeInformation);
-    const mesh = this.createMesh(addresses);
-    const points = this.createPoints(addresses);
-    console.log(mesh, points);
 
-    return (addresses.length > 0 ? this.renderMap(mesh, points) : null);
-
+    return (addresses.length > 0 ? this.renderMap(addresses) : null);
   }
 }
 
