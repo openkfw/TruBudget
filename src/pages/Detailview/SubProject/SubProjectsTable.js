@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import DetailWorkflowView from '../WorkflowCreation/DetailWorkflowView'
+import SubProjectCreationStepper from './SubProjectCreationStepper'
 
 const getTableEntries = (streamItems) => {
   return streamItems.map((streamItem, index) => {
@@ -19,7 +19,7 @@ const getTableEntries = (streamItems) => {
   });
 }
 
-const WorkflowTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible, location, createSubProjectItem, streamName, storeStreamName }) => {
+const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible, location, createSubProjectItem, subProjectName, storeSubProjectName }) => {
   const tableEntries = getTableEntries(streamItems);
 
   return (
@@ -32,7 +32,7 @@ const WorkflowTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible,
           modal={true}
           open={workflowDialogVisible}
         >
-          <DetailWorkflowView hideWorkflowDialog={hideWorkflowDialog} location={location} createSubProjectItem={createSubProjectItem} streamName={streamName} storeStreamName={storeStreamName} />
+          <SubProjectCreationStepper hideWorkflowDialog={hideWorkflowDialog} location={location} createSubProjectItem={createSubProjectItem} subProjectName={subProjectName} storeSubProjectName={storeSubProjectName} />
         </Dialog>
 
         <TableRow>
@@ -51,4 +51,4 @@ const WorkflowTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible,
   )
 }
 
-export default WorkflowTable;
+export default SubProjectsTable;

@@ -3,9 +3,9 @@ import { Card } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-import WorkflowTable from './WorkflowTable';
+import SubProjectsTable from './SubProjectsTable';
 
-const WorkflowList = ({ streamItems, location, workflowDialogVisible, showWorkflowDialog, hideWorkflowDialog, createSubProjectItem, streamName, storeStreamName }) => (
+const SubProjects = ({ streamItems, location, workflowDialogVisible, showWorkflowDialog, hideWorkflowDialog, createSubProjectItem, subProjectName, storeSubProjectName }) => (
   <Card style={{
     width: '74%',
     left: '13%',
@@ -14,14 +14,14 @@ const WorkflowList = ({ streamItems, location, workflowDialogVisible, showWorkfl
     position: 'absolute',
     zIndex: 1100,
   }}>
-    <WorkflowTable streamItems={streamItems}
+    <SubProjectsTable streamItems={streamItems}
       location={location}
       workflowDialogVisible={workflowDialogVisible}
       showWorkflowDialog={showWorkflowDialog}
       hideWorkflowDialog={hideWorkflowDialog}
       createSubProjectItem={createSubProjectItem}
-      streamName={streamName}
-      storeStreamName={storeStreamName} />
+      subProjectName={subProjectName}
+      storeSubProjectName={storeSubProjectName} />
     <FloatingActionButton secondary onTouchTap={showWorkflowDialog} style={{
       position: 'absolute',
       right: '-28px',
@@ -32,4 +32,4 @@ const WorkflowList = ({ streamItems, location, workflowDialogVisible, showWorkfl
   </Card>
 );
 
-export default WorkflowList;
+export default SubProjects;

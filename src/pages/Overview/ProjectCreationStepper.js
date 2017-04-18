@@ -3,9 +3,9 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
-import NewProjectTextfield from './NewProjectTextfield';
+import ProjectCreationTextfield from './ProjectCreationTextfield';
 
-class NewProject extends Component {
+class ProjectCreationStepper extends Component {
   state = {
     finished: false,
     stepIndex: 0,
@@ -32,7 +32,7 @@ class NewProject extends Component {
   getStepContent(stepIndex, ) {
     switch (stepIndex) {
       case 0:
-        return <NewProjectTextfield storeProjectName={this.props.storeProjectName} />
+        return <ProjectCreationTextfield storeProjectName={this.props.storeProjectName} />
       default:
         return null;
     }
@@ -44,13 +44,16 @@ class NewProject extends Component {
     return (
       <div>
         <Stepper activeStep={stepIndex}>
-          <Step>
-            <StepLabel>New Step</StepLabel>
-          </Step>
+        <Step>
+          <StepLabel>New Step</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Done</StepLabel>
+        </Step>
         </Stepper>
         <div style={contentStyle}>
           <div>
-            <p>{this.getStepContent(stepIndex)}</p>
+            <div>{this.getStepContent(stepIndex)}</div>
             <div style={{ marginTop: 12 }}>
               <FlatButton
                 label="Back"
@@ -71,4 +74,4 @@ class NewProject extends Component {
   }
 };
 
-export default NewProject;
+export default ProjectCreationStepper;

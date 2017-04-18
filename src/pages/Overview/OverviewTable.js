@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import NewProject from './NewProject'
+import ProjectCreationStepper from './ProjectCreationStepper'
 
 const getTableEntries = ({ streams, history }) => {
   return streams.map((stream, index) => {
@@ -27,7 +27,7 @@ const OverviewTable = (props) => {
           title="New Project"
           modal={true}
           open={props.workflowDialogVisible}>
-          <NewProject hideWorkflowDialog={props.hideWorkflowDialog} createProject={props.createProject} storeProjectName={props.storeProjectName} projectName={props.projectName} />
+          <ProjectCreationStepper hideWorkflowDialog={props.hideWorkflowDialog} createProject={props.createProject} storeProjectName={props.storeProjectName} projectName={props.projectName} />
         </Dialog>
         <TableRow>
           <TableHeaderColumn>Name</TableHeaderColumn>

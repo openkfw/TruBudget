@@ -6,11 +6,19 @@ export const SHOW_WORKFLOW_DIALOG_SUCCESS = 'SHOW_WORKFLOW_DIALOG_SUCCESS';
 
 export const CREATE_SUBPROJECT_ITEM = 'CREATE_SUBPROJECT_ITEM';
 export const CREATE_SUBPROJECT_ITEM_SUCCESS = 'CREATE_SUBPROJECT_ITEM_SUCCESS';
+export const SUBPROJECT_NAME = 'SUBPROJECT_NAME';
 
 export function fetchStreamItems(streamName) {
   return {
     type: FETCH_STREAM_ITEMS,
     streamName: streamName
+  }
+}
+
+export function storeSubProjectName(name) {
+  return {
+    type: SUBPROJECT_NAME,
+    name: name
   }
 }
 
