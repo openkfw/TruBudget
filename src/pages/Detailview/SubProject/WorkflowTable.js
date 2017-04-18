@@ -1,8 +1,6 @@
 import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
 import Dialog from 'material-ui/Dialog';
 import DetailWorkflowView from '../WorkflowCreation/DetailWorkflowView'
 
@@ -21,21 +19,13 @@ const getTableEntries = (streamItems) => {
   });
 }
 
-const WorkflowTable = ({ showWorkflowDialog, hideWorkflowDialog, streamItems, workflowDialogVisible, location, createSubProjectItem, streamName, storeStreamName }) => {
+const WorkflowTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible, location, createSubProjectItem, streamName, storeStreamName }) => {
   const tableEntries = getTableEntries(streamItems);
 
   return (
     <Table>
       <TableHeader displaySelectAll={false}
         adjustForCheckbox={false}>
-        <FloatingActionButton secondary onTouchTap={showWorkflowDialog} style={{
-          position: 'absolute',
-          right: '-28px',
-          top: '16px'
-        }}>
-          <ContentAdd />
-        </FloatingActionButton>
-
         <Dialog
           title="New Sub-Project"
 

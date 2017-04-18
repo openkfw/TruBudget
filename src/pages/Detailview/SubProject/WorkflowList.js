@@ -1,5 +1,7 @@
 import React from 'react';
 import { Card } from 'material-ui/Card';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import WorkflowTable from './WorkflowTable';
 
@@ -20,6 +22,13 @@ const WorkflowList = ({ streamItems, location, workflowDialogVisible, showWorkfl
       createSubProjectItem={createSubProjectItem}
       streamName={streamName}
       storeStreamName={storeStreamName} />
+    <FloatingActionButton secondary onTouchTap={showWorkflowDialog} style={{
+      position: 'absolute',
+      right: '-28px',
+      top: '16px'
+    }}>
+      <ContentAdd />
+    </FloatingActionButton>
   </Card>
 );
 

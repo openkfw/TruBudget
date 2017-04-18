@@ -46,9 +46,8 @@ const ProjectDetailsCard = (props) => (
         width: '20%',
         right: '5%',
         position: 'absolute',
-
       }}
-        mode="determinate" value='30' />
+        mode="determinate" value={30} />
     </CardHeader>
 
     <CardText expandable={true}>
@@ -59,8 +58,9 @@ const ProjectDetailsCard = (props) => (
           overflowY: 'auto',
         }}
       >
-        {tilesData.map((tile) => (
+        {tilesData.map((tile, index) => (
           <GridTile
+            key={index + 'tile'}
             title={'Value'}
           />
         ))}

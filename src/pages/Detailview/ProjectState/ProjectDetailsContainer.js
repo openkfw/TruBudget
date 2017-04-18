@@ -9,11 +9,11 @@ class ProjectDetailsContainer extends Component {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  return undefined
+  return {}
 }
 
 const mapStateToProps = (state) => {
-  return undefined
+  return {}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectDetailsContainer);
