@@ -37,7 +37,7 @@ class DetailWorkflowView extends Component {
         // return <Origin storeStreamName = {this.props.storeStreamName} />
         return <Origin storeStreamName={this.props.storeStreamName} />
       default:
-        return null;
+        return <span>Done</span>;
     }
   }
 
@@ -50,10 +50,13 @@ class DetailWorkflowView extends Component {
           <Step>
             <StepLabel>New Step</StepLabel>
           </Step>
+          <Step>
+            <StepLabel>Done</StepLabel>
+          </Step>
         </Stepper>
         <div style={contentStyle}>
           <div>
-            <p>{this.getStepContent(stepIndex)}</p>
+            <div>{this.getStepContent(stepIndex)}</div>
             <div style={{ marginTop: 12 }}>
               <FlatButton
                 label="Back"
