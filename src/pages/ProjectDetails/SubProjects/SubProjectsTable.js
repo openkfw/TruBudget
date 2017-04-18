@@ -10,7 +10,8 @@ const getTableEntries = (streamItems, location, history) => {
     return (
       <TableRow key={index} selectable={false}>
         <TableRowColumn>{streamItem.key}</TableRowColumn>
-        <TableRowColumn>{time.toString()}</TableRowColumn>
+        <TableRowColumn>{streamItem.amount}</TableRowColumn>
+        <TableRowColumn>{streamItem.status}</TableRowColumn>
         <TableRowColumn>
           <FlatButton label="Select" onTouchTap={() => history.push('/details/' + location.pathname.substring(9)+ '/'+ streamItem.key)}secondary={true} />
         </TableRowColumn>
@@ -41,8 +42,8 @@ const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisib
 
         <TableRow>
           <TableHeaderColumn>Sub-Project</TableHeaderColumn>
-          <TableHeaderColumn>Open </TableHeaderColumn>
-          <TableHeaderColumn> </TableHeaderColumn>
+          <TableHeaderColumn>Amount</TableHeaderColumn>
+          <TableHeaderColumn>Status</TableHeaderColumn>
           <TableHeaderColumn> </TableHeaderColumn>
         </TableRow>
       </TableHeader>

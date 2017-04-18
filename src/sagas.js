@@ -42,7 +42,7 @@ export function* createProject(action) {
 
 }
 export function* createSubProjectSaga(action) {
-  yield postSubProject(action.parentName, action.subProjectName);
+  yield postSubProject(action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectPurpose);
   const streamItems = yield fetchStreamItems(action.parentName);
 
   yield put({

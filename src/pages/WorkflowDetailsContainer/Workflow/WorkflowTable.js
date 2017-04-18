@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
@@ -42,7 +41,7 @@ const getTableEntries = (streamItems, location, history) => {
   return streamItems.map((tableData, index) => {
   //  var time = new Date(streamItem.time * 1000)
     return (
-      <TableRow key={index} selectable={false}>
+      <TableRow key={index} >
         <TableRowColumn>{tableData.name}</TableRowColumn>
         <TableRowColumn>{tableData.status}</TableRowColumn>
         <TableRowColumn>
@@ -69,9 +68,8 @@ const WorkflowTable = ({  history, location }) => {
         adjustForCheckbox={false}>
 
         <TableRow>
-          <TableHeaderColumn>Sub-Project</TableHeaderColumn>
-          <TableHeaderColumn>Open </TableHeaderColumn>
-          <TableHeaderColumn> </TableHeaderColumn>
+          <TableHeaderColumn>Workflow</TableHeaderColumn>
+          <TableHeaderColumn>Status</TableHeaderColumn>
           <TableHeaderColumn> </TableHeaderColumn>
         </TableRow>
       </TableHeader>

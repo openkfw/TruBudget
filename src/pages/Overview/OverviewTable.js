@@ -9,7 +9,8 @@ const getTableEntries = ({ streams, history }) => {
     return (
       <TableRow key={index} selectable={false}>
         <TableRowColumn>{stream.name}</TableRowColumn>
-        <TableRowColumn>{stream.amount}</TableRowColumn>
+        <TableRowColumn>{stream.details.amount}</TableRowColumn>
+        <TableRowColumn>{stream.details.status}</TableRowColumn>
         <TableRowColumn>
           <FlatButton label="Select" onTouchTap={() => history.push('/details/' + stream.name)} secondary={true} />
         </TableRowColumn>
@@ -37,6 +38,7 @@ const OverviewTable = (props) => {
         <TableRow>
           <TableHeaderColumn>Name</TableHeaderColumn>
           <TableHeaderColumn>Amount</TableHeaderColumn>
+          <TableHeaderColumn>Status</TableHeaderColumn>
           <TableHeaderColumn></TableHeaderColumn>
         </TableRow>
       </TableHeader>

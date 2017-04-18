@@ -29,7 +29,7 @@ export function createSubProjectItem(parentName, subProjectName, subProjectAmoun
   return {
     type: CREATE_SUBPROJECT_ITEM,
     parentName: parentName,
-    subProjectName: subProjectName,
+    subProjectName:subProjectName,
     subProjectAmount:subProjectAmount,
     subProjectPurpose:subProjectPurpose
   }
