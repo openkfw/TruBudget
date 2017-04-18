@@ -27,7 +27,7 @@ const tilesData = [
 
 ];
 
-const ProjectDetailsCard = (props) => (
+const ProjectState = (props) => (
   <Card style={{
     width: '74%',
     left: '13%',
@@ -70,4 +70,4 @@ const ProjectDetailsCard = (props) => (
 
 );
 
-export default ProjectDetailsCard;
+export default ProjectState;

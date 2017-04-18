@@ -20,7 +20,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case SUBPROJECT_AMOUNT:
       return state.set('subProjectAmount', action.amount);
     case SUBPROJECT_PURPOSE:
-      return state.set('ubProjectPurpose', action.purpose);
+      return state.set('subProjectPurpose', action.purpose);
     default:
       return state
   }
