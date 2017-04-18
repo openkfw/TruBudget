@@ -1,9 +1,13 @@
 import React from 'react';
 import { List, ListItem } from 'material-ui/List';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
+import SocialNotificationIcon from 'material-ui/svg-icons/social/notifications-active';
+import NetworkIcon from 'material-ui/svg-icons/hardware/device-hub'
+import ProjectIcon from 'material-ui/svg-icons/communication/business'
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
+import Toggle from 'material-ui/Toggle';
+import Subheader from 'material-ui/Subheader';
+
 import colors from '../../colors';
 
 const SideNavCard = ({ history }) => (
@@ -35,11 +39,18 @@ const SideNavCard = ({ history }) => (
       </div>
     </div>
     <List>
-      <ListItem primaryText="Projects" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/')} />
-      <ListItem primaryText="Add Workflow" leftIcon={<ActionGrade />} />
-      <ListItem primaryText="Dashboard" leftIcon={<ContentInbox />} onTouchTap={() => history.push('/dashboard')} />
+      <Subheader>Selections</Subheader>
+      <ListItem primaryText="Projects" leftIcon={<ProjectIcon />} onTouchTap={() => history.push('/')} />
+      <ListItem primaryText="Notifications" leftIcon={<SocialNotificationIcon />} onTouchTap={() => history.push('/notifications')} />
+      <ListItem primaryText="Network" leftIcon={<NetworkIcon />} onTouchTap={() => history.push('/dashboard')} />
     </List>
     <Divider />
+    <List>
+      <Subheader>Options</Subheader>
+      <ListItem primaryText="Real-time Updates" rightToggle={<Toggle />} />
+      <ListItem primaryText="Calls" rightToggle={<Toggle />} />
+      <ListItem primaryText="Messages" rightToggle={<Toggle />} />
+    </List>
   </div>
 );
 
