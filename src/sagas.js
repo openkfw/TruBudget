@@ -32,7 +32,8 @@ export function* fetchStreamsSaga(action) {
 }
 
 export function* createProject(action) {
-  yield postProject(action.name, action.parent)
+  console.log('Action Amount' + action.amount);
+  yield postProject(action.name, action.parent, action.amount, action.purpose);
   const streams = yield fetchStreams();
   yield put({
     type: FETCH_STREAMS_SUCCESS,

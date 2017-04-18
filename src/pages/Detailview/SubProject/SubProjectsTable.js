@@ -19,7 +19,7 @@ const getTableEntries = (streamItems) => {
   });
 }
 
-const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible, location, createSubProjectItem, subProjectName, storeSubProjectName }) => {
+const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose }) => {
   const tableEntries = getTableEntries(streamItems);
 
   return (
@@ -32,7 +32,11 @@ const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisib
           modal={true}
           open={workflowDialogVisible}
         >
-          <SubProjectCreationStepper hideWorkflowDialog={hideWorkflowDialog} location={location} createSubProjectItem={createSubProjectItem} subProjectName={subProjectName} storeSubProjectName={storeSubProjectName} />
+          <SubProjectCreationStepper hideWorkflowDialog={hideWorkflowDialog} location={location} createSubProjectItem={createSubProjectItem} subProjectName={subProjectName} storeSubProjectName={storeSubProjectName}
+          subProjectAmount={subProjectAmount}
+            storeSubProjectAmount={storeSubProjectAmount}
+            subProjectPurpose={subProjectPurpose}
+            storeSubProjectPurpose={storeSubProjectPurpose} />
         </Dialog>
 
         <TableRow>

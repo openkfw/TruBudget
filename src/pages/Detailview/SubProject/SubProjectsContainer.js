@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchStreamItems, showWorkflowDialog, createSubProjectItem, storeSubProjectName} from './actions';
+import { fetchStreamItems, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose} from './actions';
 import SubProjects from './SubProjects'
 
 class SubProjectsContainer extends Component {
@@ -22,6 +22,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
     createSubProjectItem: (parentName, subprojectName) => dispatch(createSubProjectItem(parentName, subprojectName)),
+    storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
+    storeSubProjectPurpose: (purpose) => dispatch(storeSubProjectPurpose(purpose)),
+
   };
 }
 
@@ -29,7 +32,9 @@ const mapStateToProps = (state) => {
   return {
     streamItems: state.getIn(['detailview', 'streamItems']),
     workflowDialogVisible: state.getIn(['detailview', 'workflowDialogVisible']),
-    subProjectName: state.getIn(['detailview', 'subProjectName'])
+    subProjectName: state.getIn(['detailview', 'subProjectName']),
+    subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
+    subProjectPurpose: state.getIn(['detailview', 'subProjectPurpose'])
   }
 }
 

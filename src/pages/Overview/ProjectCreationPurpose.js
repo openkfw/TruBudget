@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import TextField from 'material-ui/TextField';
 
-class Origin extends Component {
+class ProjectCreationPurpose extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,7 +11,7 @@ class Origin extends Component {
   }
 
   handleChange = (event) => {
-    this.props.storeSubProjectName(event.target.value);
+    this.props.storeProjectPurpose(event.target.value);
   };
 
   render() {
@@ -19,11 +19,11 @@ class Origin extends Component {
       <div style={{
         width: '40%',
         left: '20%',
-        position: 'relative',
+        position: 'relative'
       }}>
         <TextField
-          floatingLabelText="Origin"
-          hintText="e.g. your name or your institute"
+          floatingLabelText="Project Purpose"
+          hintText="Define the purpose of your project"
           onChange={this.handleChange}
         />
       </div>
@@ -31,4 +31,4 @@ class Origin extends Component {
   }
 }
 
-export default Origin;
+export default ProjectCreationPurpose;
