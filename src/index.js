@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
 import injectTapEventPlugin from "react-tap-event-plugin";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import createHistory from 'history/createBrowserHistory'
 
