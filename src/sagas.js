@@ -3,7 +3,7 @@ import { fetchPeers, fetchStreams, fetchStreamItems, postSubProject, postProject
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS } from './pages/Navbar/actions';
 import { FETCH_STREAMS, FETCH_STREAMS_SUCCESS, CREATE_PROJECT } from './pages/Overview/actions';
-import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM } from './pages/Detailview/SubProject/actions';
+import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM } from './pages/ProjectDetails/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 
 export function* fetchPeersSaga(action) {
@@ -32,7 +32,8 @@ export function* fetchStreamsSaga(action) {
 }
 
 export function* createProject(action) {
-  yield postProject(action.name, action.parent)
+  console.log('Action Amount' + action.amount);
+  yield postProject(action.name, action.parent, action.amount, action.purpose);
   const streams = yield fetchStreams();
   yield put({
     type: FETCH_STREAMS_SUCCESS,
@@ -41,7 +42,7 @@ export function* createProject(action) {
 
 }
 export function* createSubProjectSaga(action) {
-  yield postSubProject(action.parentName, action.subProjectName);
+  yield postSubProject(action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectPurpose);
   const streamItems = yield fetchStreamItems(action.parentName);
 
   yield put({

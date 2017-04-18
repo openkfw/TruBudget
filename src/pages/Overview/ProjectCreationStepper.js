@@ -3,9 +3,11 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
-import NewProjectTextfield from './NewProjectTextfield';
+import ProjectCreationName from './ProjectCreationName';
+import ProjectCreationAmount from './ProjectCreationAmount';
+import ProjectCreationPurpose from './ProjectCreationPurpose'
 
-class NewProject extends Component {
+class ProjectCreationStepper extends Component {
   state = {
     finished: false,
     stepIndex: 0,
@@ -13,8 +15,11 @@ class NewProject extends Component {
 
   handleNext = () => {
     const { stepIndex } = this.state;
-    if (stepIndex === 0) {
-      this.props.createProject(this.props.projectName, '0')
+    this.setState({
+     stepIndex: stepIndex + 1,
+   });
+    if (stepIndex === 2) {
+      this.props.createProject(this.props.projectName, '0', this.props.projectAmount, this.props.projectPurpose)
       this.props.hideWorkflowDialog();
     }
   };
@@ -29,10 +34,16 @@ class NewProject extends Component {
     }
   };
 
-  getStepContent(stepIndex, ) {
+  getStepContent(stepIndex) {
+
     switch (stepIndex) {
       case 0:
-        return <NewProjectTextfield storeProjectName={this.props.storeProjectName} />
+        return <ProjectCreationName storeProjectName={this.props.storeProjectName} />
+      case 1:
+        return <ProjectCreationAmount storeProjectAmount={this.props.storeProjectAmount}/>
+      case 2:
+        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeProjectPurpose}/>
+
       default:
         return null;
     }
@@ -44,13 +55,22 @@ class NewProject extends Component {
     return (
       <div>
         <Stepper activeStep={stepIndex}>
-          <Step>
-            <StepLabel>New Step</StepLabel>
-          </Step>
+        <Step>
+          <StepLabel>Project Name</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Project Amount</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Project Purpose</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Done</StepLabel>
+        </Step>
         </Stepper>
         <div style={contentStyle}>
           <div>
-            <p>{this.getStepContent(stepIndex)}</p>
+            <div>{this.getStepContent(stepIndex)}</div>
             <div style={{ marginTop: 12 }}>
               <FlatButton
                 label="Back"
@@ -58,7 +78,7 @@ class NewProject extends Component {
                 style={{ marginRight: 360 }}
               />
               <RaisedButton
-                label={stepIndex === 0 ? 'Finish' : 'Next'}
+                label={stepIndex === 2 ? 'Finish' : 'Next'}
                 primary={true}
                 style={{}}
                 onTouchTap={this.handleNext}
@@ -71,4 +91,4 @@ class NewProject extends Component {
   }
 };
 
-export default NewProject;
+export default ProjectCreationStepper;
