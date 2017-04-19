@@ -7,18 +7,17 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import createHistory from 'history/createBrowserHistory'
 
-//import {blue900} from 'material-ui/styles/colors';
-//import {blueGrey800} from 'material-ui/styles/colors';
-import {ACMECorpLightgrey} from './colors'
-import {ACMECorpGrey} from './colors'
-import {ACMECorpDarkgrey} from './colors'
-import {ACMECorpLightgreen} from './colors'
-import {ACMECorpGreen} from './colors'
-import {ACMECorpBlueGreen} from './colors'
-import {ACMECorpLightblue} from './colors'
-import {ACMECorpBlue} from './colors'
-import {ACMECorpDarkBlue} from './colors'
-
+import {
+  ACMECorpLightgrey,
+  ACMECorpGrey,
+  ACMECorpDarkgrey,
+  ACMECorpLightgreen,
+  ACMECorpGreen,
+  ACMECorpBlueGreen,
+  ACMECorpLightblue,
+  ACMECorpBlue,
+  ACMECorpDarkBlue
+} from './colors'
 
 import Main from './pages/Main/Main';
 import configureStore from './store';
