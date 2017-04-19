@@ -5,7 +5,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import WorkflowTable from './WorkflowTable';
 
-const Workflow = ({  location, history}) => (
+const Workflow = ({  location, history, workflowItems}) => (
   <Card style={{
     width: '74%',
     left: '13%',
@@ -17,7 +17,7 @@ const Workflow = ({  location, history}) => (
     <WorkflowTable
       location={location}
       history={history}
-
+      workflowItems={workflowItems}
       />
     <FloatingActionButton secondary style={{
       position: 'absolute',

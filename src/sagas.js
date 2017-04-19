@@ -1,11 +1,13 @@
 import { put, takeEvery, takeLatest } from 'redux-saga/effects'
-import { fetchPeers, fetchStreams, fetchStreamItems, postSubProject, postProject, fetchNodeInformation, fetchNotifications } from './api.js';
+import { fetchPeers, fetchStreams, fetchStreamItems, postSubProject, postProject, fetchNodeInformation, fetchNotifications, fetchWorkflowItems } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS } from './pages/Navbar/actions';
 import { FETCH_STREAMS, FETCH_STREAMS_SUCCESS, CREATE_PROJECT } from './pages/Overview/actions';
 import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM } from './pages/ProjectDetails/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS } from './pages/Notifications/actions';
+import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS} from './pages/WorkflowDetailsContainer/Workflow/actions';
+
 
 export function* fetchPeersSaga(action) {
   const peers = yield fetchPeers();
@@ -32,8 +34,15 @@ export function* fetchStreamsSaga(action) {
   });
 }
 
+export function* fetchWorkflowItemsSaga(action){
+  const workflowItems = yield fetchWorkflowItems(action.streamName);
+  yield put({
+    type:FETCH_WORKFLOW_ITEMS_SUCCESS,
+    workflowItems: workflowItems.data
+  })
+}
+
 export function* createProject(action) {
-  console.log('Currency ' + action.currency);
   yield postProject(action.name, action.parent, action.amount, action.purpose, action.currency);
   const streams = yield fetchStreams();
   yield put({
@@ -80,6 +89,10 @@ export function* watchFetchStreamItems() {
   yield takeEvery(FETCH_STREAM_ITEMS, fetchStreamItemsSaga)
 }
 
+export function* watchFetchWorkflowItems() {
+  yield takeEvery(FETCH_WORKFLOW_ITEMS, fetchWorkflowItemsSaga)
+}
+
 export function* watchCreateSubProject() {
   yield takeEvery(CREATE_SUBPROJECT_ITEM, createSubProjectSaga)
 }
@@ -105,5 +118,6 @@ export default function* rootSaga() {
     watchCreateProject(),
     watchFetchNodeInformation(),
     watchFetchNotifications(),
+    watchFetchWorkflowItems(),
   ]
 }

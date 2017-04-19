@@ -37,7 +37,7 @@ const ProjectState = (props) => (
     zIndex: 1100,
   }}>
     <CardHeader
-      title={props.location.pathname.substring(9)}
+      title={props.location.pathname.split('/')[2]}
       subtitle="Status: Ongoing"
       actAsExpander={true}
       showExpandableButton={true}
