@@ -16,9 +16,9 @@ const Main = (props) => {
       <Route component={NavbarContainer} />
       <Switch>
         <Route exact path="/" component={Placeholder} />
-        <Route exact path="/project" component={OverviewContainer} />
-        <Route exact path="/project/:project" component={ProjectDetailsContainer} />
-        <Route exact path="/project/:project/:subproject" component={WorkflowDetailsContainer} />
+        <Route exact path="/projects" component={OverviewContainer} />
+        <Route exact path="/projects/:project" component={ProjectDetailsContainer} />
+        <Route exact path="/projects/:project/:subproject" component={WorkflowDetailsContainer} />
         <Route exact path="/dashboard" component={DashboardContainer} />
         <Route exact path="/notifications" component={NotificationPageContainer} />
         <Route component={NotFound} />
