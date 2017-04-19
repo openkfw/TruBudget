@@ -34,7 +34,7 @@ class ProjectCreationCurrency extends Component {
               left: '5px',
               position: 'relative'
             }}
-              floatingLabelText="Frequency"
+              floatingLabelText="Currency"
              value={this.state.value}
              onChange={this.handleChange}
            >
