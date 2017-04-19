@@ -7,9 +7,17 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import createHistory from 'history/createBrowserHistory'
 
-import {blue900} from 'material-ui/styles/colors';
-import {blueGrey800} from 'material-ui/styles/colors';
-
+import {
+  ACMECorpLightgrey,
+  ACMECorpGrey,
+  ACMECorpDarkgrey,
+  ACMECorpLightgreen,
+  ACMECorpGreen,
+  ACMECorpBlueGreen,
+  ACMECorpLightblue,
+  ACMECorpBlue,
+  ACMECorpDarkBlue
+} from './colors'
 
 import Main from './pages/Main/Main';
 import configureStore from './store';
@@ -23,8 +31,13 @@ injectTapEventPlugin();
 
 const muiTheme = getMuiTheme({
   palette: {
-    primary1Color: blue900,
-    accent1Color: blueGrey800,
+    primary1Color: ACMECorpLightgreen,
+    primary2Color: ACMECorpBlue,
+    primary3Color: ACMECorpLightgrey,
+    accent1Color: ACMECorpGreen,
+    accent2Color: ACMECorpLightblue,
+    accent3Color: ACMECorpGrey,
+    alternateTextColor: ACMECorpLightgrey,
   },
 });
 

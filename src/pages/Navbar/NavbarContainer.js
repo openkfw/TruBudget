@@ -27,7 +27,8 @@ const mapStateToProps = (state) => {
   return {
     showSidebar: state.getIn(['navbar', 'showSidebar']),
     peers: state.getIn(['navbar', 'peers']),
-    unreadNotifications: state.getIn(['navbar', 'unreadNotifications'])
+    unreadNotifications: state.getIn(['navbar', 'unreadNotifications']),
+    route: state.getIn(['route', 'locationBeforeTransitions']).toObject()
   }
 }
 
