@@ -4,12 +4,32 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import ProjectCreationStepper from './ProjectCreationStepper'
 
+
+const prepareAmount = (inputAmount, currency) => {
+  var decimals = ',00'
+  var tempCurrency = ' €'
+  if (inputAmount.includes('.')){
+    decimals = inputAmount.substr(inputAmount.indexOf('.'), inputAmount.length-1);
+    decimals = decimals.replace('.',',');
+    if (decimals.length === 2){
+      decimals += '0';
+    }
+  }
+  if(currency === 'USD'){
+    tempCurrency = " $"
+  }
+  var formattedAmount =  parseInt(inputAmount).toLocaleString();
+  return formattedAmount + decimals + tempCurrency;
+}
+
 const getTableEntries = ({ streams, history }) => {
   return streams.map((stream, index) => {
+
+    var amount = prepareAmount(stream.details.amount, stream.details.currency)
     return (
       <TableRow key={index} selectable={false}>
         <TableRowColumn>{stream.name}</TableRowColumn>
-        <TableRowColumn>{stream.details.amount}</TableRowColumn>
+        <TableRowColumn>{amount}</TableRowColumn>
         <TableRowColumn>{stream.details.status}</TableRowColumn>
         <TableRowColumn>
           <FlatButton label="Select" onTouchTap={() => history.push('/details/' + stream.name)} secondary={true} />
@@ -33,7 +53,9 @@ const OverviewTable = (props) => {
           storeProjectAmount={props.storeProjectAmount}
           projectPurpose={props.projectPurpose}
           storeProjectPurpose={props.storeProjectPurpose}
-          projectAmount={props.projectAmount} />
+          projectAmount={props.projectAmount}
+          storeProjectCurrency={props.storeProjectCurrency}
+          projectCurrency={props.projectCurrency}/>
         </Dialog>
         <TableRow>
           <TableHeaderColumn>Name</TableHeaderColumn>

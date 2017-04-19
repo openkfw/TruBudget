@@ -15,6 +15,12 @@ class ProjectCreationPurpose extends Component {
   };
 
   render() {
+    var hintText = "Define the purpose of your project"
+    var floatingLabelText = "Project Purpose"
+    if (this.props.subProject){
+      floatingLabelText="Sub-Project Purpose"
+      hintText="Define the purpose of your project"
+    }
     return (
       <div style={{
         width: '40%',
@@ -22,8 +28,10 @@ class ProjectCreationPurpose extends Component {
         position: 'relative'
       }}>
         <TextField
-          floatingLabelText="Project Purpose"
-          hintText="Define the purpose of your project"
+          multiLine={true}
+          rows={2}
+          floatingLabelText={floatingLabelText}
+          hintText={hintText}
           onChange={this.handleChange}
         />
       </div>
