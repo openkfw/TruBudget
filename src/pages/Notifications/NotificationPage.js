@@ -20,17 +20,17 @@ const NotificationPage = ({list}) => {
         <Tab
           icon={<UnreadIcon />}
           label="Unread">
-          <NotificationTable notifications={list}/>
+          <NotificationTable notifications={list} filter="unread"/>
         </Tab>
         <Tab
           icon={<ReadIcon />}
           label="Read">
-          <NotificationTable notifications={list}/>
+          <NotificationTable notifications={list} filter="read"/>
         </Tab>
         <Tab
           icon={<AllIcon />}
           label="All">
-          <NotificationTable notifications={list}/>
+          <NotificationTable notifications={list} filter="all"/>
         </Tab>
       </Tabs>
     </Card>

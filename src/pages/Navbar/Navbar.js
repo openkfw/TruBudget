@@ -2,14 +2,14 @@ import React from 'react';
 import AppBar from 'material-ui/AppBar';
 
 import SideNav from './SideNav';
-import PeerInfoIcon from './PeerInfoIcon';
+import NavbarIcons from './NavbarIcons';
 
-const Navbar = ({ onToggleSidebar, peers, showSidebar, history }) => (
+const Navbar = ({ onToggleSidebar, peers, unreadNotifications, showSidebar, history }) => (
   <div>
     <AppBar
       title="ACMECorp Chain"
       onLeftIconButtonTouchTap={onToggleSidebar}
-      iconElementRight={<PeerInfoIcon peers={peers} />}
+      iconElementRight={<NavbarIcons unreadNotifications={unreadNotifications} peers={peers} history={history}/>}
       style={{
         height: '500px',
         backgroundImage: 'url("/navbar_back3.jpg")',

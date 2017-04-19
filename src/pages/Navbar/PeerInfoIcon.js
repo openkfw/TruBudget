@@ -4,6 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Badge from 'material-ui/Badge';
 import IconMenu from 'material-ui/IconMenu';
 import Subheader from 'material-ui/Subheader';
+import NetworkIcon from 'material-ui/svg-icons/hardware/device-hub';
 
 import colors from '../../colors'
 
@@ -11,15 +12,13 @@ class Icon extends Component {
   render() {
     return (
       <IconButton
-        iconClassName="material-icons"
-        iconStyle={{ color: colors.lightColor }}
-        tooltip="Peers"
-        {...this.props}>
-        device_hub
+        {...this.props}
+        tooltip="Peers">
+        <NetworkIcon color={colors.lightColor} />
       </IconButton>
-    );
+    )
   }
-}
+};
 
 const transformPeers = (peers = []) => {
   const amount = peers.length || 0;

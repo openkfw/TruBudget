@@ -1,4 +1,4 @@
-import { put, takeEvery } from 'redux-saga/effects'
+import { put, takeEvery, takeLatest } from 'redux-saga/effects'
 import { fetchPeers, fetchStreams, fetchStreamItems, postSubProject, postProject, fetchNodeInformation, fetchNotifications } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS } from './pages/Navbar/actions';
@@ -93,7 +93,7 @@ export function* watchFetchNodeInformation() {
 }
 
 export function* watchFetchNotifications() {
-  yield takeEvery(FETCH_NOTIFICATIONS, fetchNotificationSaga)
+  yield takeLatest(FETCH_NOTIFICATIONS, fetchNotificationSaga)
 }
 
 export default function* rootSaga() {
