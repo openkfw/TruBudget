@@ -6,7 +6,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import OverviewTable from './OverviewTable';
 
 const Overview = ({ streams, history, showWorkflowDialog, workflowDialogVisible, hideWorkflowDialog, createProject, storeProjectName, projectName, storeProjectAmount,
-  projectAmount, projectPurpose, storeProjectPurpose, storeProjectCurrency, projectCurrency }) => (
+  projectAmount, projectPurpose, storeProjectPurpose, storeProjectCurrency, projectCurrency, openSnackBar, storeSnackBarMessage }) => (
   <Card style={{
     width: '60%',
     left: '20%',
@@ -38,7 +38,9 @@ const Overview = ({ streams, history, showWorkflowDialog, workflowDialogVisible,
       projectPurpose={projectPurpose}
       storeProjectPurpose={storeProjectPurpose}
       storeProjectCurrency={storeProjectCurrency}
-      projectCurrency={projectCurrency}/>
+      projectCurrency={projectCurrency}
+      openSnackBar={openSnackBar}
+      storeSnackBarMessage={storeSnackBarMessage}/>
   </Card>
 );
 

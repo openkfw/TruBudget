@@ -1,15 +1,21 @@
 import { fromJS } from 'immutable';
-
-import { FETCH_NOTIFICATIONS_SUCCESS } from './actions';
+import { SHOW_SNACKBAR, SNACKBAR_MESSAGE, FETCH_NOTIFICATIONS_SUCCESS } from './actions';
 
 const defaultState = fromJS({
-  list: []
+  list: [],
+  showSnackBar: false,
+  snackBarMessage:'New Project added'
 });
+
 
 export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_NOTIFICATIONS_SUCCESS:
       return state.set('list', action.notifications);
+    case SHOW_SNACKBAR:
+      return state.set('showSnackBar', action.show);
+    case SNACKBAR_MESSAGE:
+      return state.set('snackBarMessage', action.message)
     default:
       return state
   }

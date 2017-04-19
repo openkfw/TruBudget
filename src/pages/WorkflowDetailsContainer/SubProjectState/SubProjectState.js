@@ -14,7 +14,7 @@ const SubProjectState = (props) => (
     zIndex: 1100,
   }}>
     <CardHeader
-      title={props.location.pathname.substring(9)}
+      title={props.location.pathname.split('/')[3]}
       subtitle="Status: Ongoing"
     >
       <LinearProgress style={{

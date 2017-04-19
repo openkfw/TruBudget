@@ -8,3 +8,4 @@ export const postSubProject = (parentProject, subProjectName, subProjectAmount, 
 export const postProject = (name, parent, amount, purpose, currency) => axios.post('/project/create', { newStream: name, parent: parent, amount: amount, purpose:purpose, currency: currency})
 export const fetchNodeInformation = () => axios.get('/node/information');
 export const fetchNotifications = (user) => axios.get('/notifications/' + user);
+export const fetchWorkflowItems = (subProjectName) => axios.get('/project/list/'+subProjectName+'/workflows')
