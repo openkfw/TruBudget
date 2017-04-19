@@ -22,8 +22,8 @@ class SubProjectCreationAmount extends Component {
         position: 'relative'
       }}>
         <TextField
-          floatingLabelText="Sub-Project Amount"
-          hintText="Amount for your project"
+          floatingLabelText="Sub-Project budget amount"
+          hintText="Budget amount for your project"
           onChange={this.handleChange}
         />
       </div>

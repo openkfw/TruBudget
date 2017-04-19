@@ -23,7 +23,7 @@ class SubProjectCreationName extends Component {
       }}>
         <TextField
           floatingLabelText="Name"
-          hintText="Name of your Sub-Project"
+          hintText="Title of the Sub-project"
           onChange={this.handleChange}
         />
       </div>
