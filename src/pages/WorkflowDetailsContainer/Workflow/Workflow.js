@@ -4,8 +4,10 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import WorkflowTable from './WorkflowTable';
+import WorkflowCreationDialog from './WorkflowCreationDialog';
 
-const Workflow = ({  location, history, workflowItems}) => (
+
+const Workflow = ({  location, history, workflowItems, showWorkflow, openWorkflowDialog, hideWorkflowDialog}) => (
   <Card style={{
     width: '74%',
     left: '13%',
@@ -19,13 +21,14 @@ const Workflow = ({  location, history, workflowItems}) => (
       history={history}
       workflowItems={workflowItems}
       />
-    <FloatingActionButton secondary style={{
+    <FloatingActionButton  onTouchTap={openWorkflowDialog} secondary style={{
       position: 'absolute',
       right: '-28px',
       top: '16px'
     }}>
       <ContentAdd />
     </FloatingActionButton>
+    <WorkflowCreationDialog showWorkflow={showWorkflow} openWorkflowDialog={openWorkflowDialog} hideWorkflowDialog={hideWorkflowDialog} />
   </Card>
 );
 

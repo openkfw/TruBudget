@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {fetchWorkflowItems} from './actions';
+import {fetchWorkflowItems, showWorkflowDialog} from './actions';
 import Workflow from './Workflow';
 
 class WorkflowContainer extends Component {
@@ -17,13 +17,15 @@ class WorkflowContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
-
+    openWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
+    hideWorkflowDialog: () => dispatch(showWorkflowDialog(false))
   };
 }
 
 const mapStateToProps = (state) => {
   return {
     workflowItems: state.getIn(['workflow', 'workflowItems']),
+    showWorkflow: state.getIn(['workflow', 'showWorkflow'])
   }
 }
 
