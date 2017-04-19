@@ -5,45 +5,15 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 
-const tableData = [
-  {
-    name: 'John Smith',
-    status: 'Employed',
-  },
-  {
-    name: 'Randal White',
-    status: 'Unemployed',
-  },
-  {
-    name: 'Stephanie Sanders',
-    status: 'Employed',
-    selected: true,
-  },
-  {
-    name: 'Steve Brown',
-    status: 'Employed',
-  },
-  {
-    name: 'Joyce Whitten',
-    status: 'Employed',
-  },
-  {
-    name: 'Samuel Roberts',
-    status: 'Employed',
-  },
-  {
-    name: 'Adam Moore',
-    status: 'Employed',
-  },
-];
 
-const getTableEntries = (streamItems, location, history) => {
-  return streamItems.map((tableData, index) => {
-  //  var time = new Date(streamItem.time * 1000)
+const getTableEntries = (workflowItems, location, history) => {
+  return workflowItems.map((item, index) => {
+
+    console.log('item ' + item)
     return (
       <TableRow key={index} >
-        <TableRowColumn>{tableData.name}</TableRowColumn>
-        <TableRowColumn>{tableData.status}</TableRowColumn>
+        <TableRowColumn>{item.key}</TableRowColumn>
+        <TableRowColumn>{item.status}</TableRowColumn>
         <TableRowColumn>
         <IconMenu
     iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
@@ -59,8 +29,8 @@ const getTableEntries = (streamItems, location, history) => {
   });
 }
 
-const WorkflowTable = ({  history, location }) => {
-  const tableEntries = getTableEntries(tableData, location, history);
+const WorkflowTable = ({  history, location, workflowItems }) => {
+  const tableEntries = getTableEntries(workflowItems, location, history);
 
   return (
     <Table>

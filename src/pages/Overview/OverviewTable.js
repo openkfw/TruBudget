@@ -55,7 +55,9 @@ const OverviewTable = (props) => {
           storeProjectPurpose={props.storeProjectPurpose}
           projectAmount={props.projectAmount}
           storeProjectCurrency={props.storeProjectCurrency}
-          projectCurrency={props.projectCurrency}/>
+          projectCurrency={props.projectCurrency}
+          openSnackBar={props.openSnackBar}
+          storeSnackBarMessage={props.storeSnackBarMessage}/>
         </Dialog>
         <TableRow>
           <TableHeaderColumn>Name</TableHeaderColumn>

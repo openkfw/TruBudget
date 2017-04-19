@@ -32,14 +32,14 @@ const getTableEntries = (streamItems, location, history) => {
         <TableRowColumn>{amount}</TableRowColumn>
         <TableRowColumn>{streamItem.status}</TableRowColumn>
         <TableRowColumn>
-          <FlatButton label="Select" onTouchTap={() => history.push('/details/' + location.pathname.substring(9)+ '/'+ streamItem.key)}secondary={true} />
+          <FlatButton label="Select" onTouchTap={() => history.push('/details/' + location.pathname.split('/')[2]+ '/'+ streamItem.key)}secondary={true} />
         </TableRowColumn>
       </TableRow>
     );
   });
 }
 
-const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible, history, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose, subProjectCurrency, storeSubProjectCurrency }) => {
+const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible, history, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose, subProjectCurrency, storeSubProjectCurrency, showSnackBar, storeSnackBarMessage}) => {
   const tableEntries = getTableEntries(streamItems, location, history);
 
   return (
@@ -58,7 +58,9 @@ const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisib
             subProjectPurpose={subProjectPurpose}
             storeSubProjectPurpose={storeSubProjectPurpose}
             subProjectCurrency={subProjectCurrency}
-            storeSubProjectCurrency={storeSubProjectCurrency}/>
+            storeSubProjectCurrency={storeSubProjectCurrency}
+            showSnackBar={showSnackBar}
+            storeSnackBarMessage={storeSnackBarMessage}/>
         </Dialog>
 
         <TableRow>

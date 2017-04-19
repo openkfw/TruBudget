@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 
 import { fetchStreamItems, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose} from './actions';
 import SubProjects from './SubProjects'
+import {showSnackBar, storeSnackBarMessage} from '../../Notifications/actions';
+
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
-    this.props.fetchStremItems(this.props.location.pathname.substring(9));
+    this.props.fetchStreamItems(this.props.location.pathname.split('/')[2]);
   }
 
   render() {
@@ -17,15 +19,16 @@ class SubProjectsContainer extends Component {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchStremItems: (streamName) => dispatch(fetchStreamItems(streamName)),
+    fetchStreamItems: (streamName) => dispatch(fetchStreamItems(streamName)),
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
     createSubProjectItem: (parentName, subprojectName, amount, purpose, currency) => dispatch(createSubProjectItem(parentName, subprojectName, amount, purpose, currency)),
     storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectPurpose: (purpose) => dispatch(storeSubProjectPurpose(purpose)),
-    storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency))
-
+    storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency)),
+    showSnackBar:() => dispatch(showSnackBar(true)),
+    storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message))
   };
 }
 
