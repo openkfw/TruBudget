@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { fetchStreams, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectPurpose,storeProjectCurrency} from './actions';
 import Overview from './Overview';
-
+import {showSnackBar, storeSnackBarMessage} from '../Notifications/actions';
 class OverviewContainer extends Component {
   componentWillMount() {
     this.props.fetchStreams();
@@ -23,7 +23,9 @@ const mapDispatchToProps = (dispatch) => {
     storeProjectName: (name) => dispatch(storeProjectName(name)),
     storeProjectAmount: (amount) => dispatch(storeProjectAmount(amount)),
     storeProjectPurpose: (purpose) => dispatch(storeProjectPurpose(purpose)),
-    storeProjectCurrency: (currency) => dispatch(storeProjectCurrency(currency))
+    storeProjectCurrency: (currency) => dispatch(storeProjectCurrency(currency)),
+    openSnackBar: () => dispatch(showSnackBar(true)),
+    storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message))
   };
 }
 

@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import { fetchStreamItems, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose} from './actions';
 import SubProjects from './SubProjects'
+import {showSnackBar, storeSnackBarMessage} from '../../Notifications/actions';
+
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
@@ -24,8 +26,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     createSubProjectItem: (parentName, subprojectName, amount, purpose, currency) => dispatch(createSubProjectItem(parentName, subprojectName, amount, purpose, currency)),
     storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectPurpose: (purpose) => dispatch(storeSubProjectPurpose(purpose)),
-    storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency))
-
+    storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency)),
+    showSnackBar:() => dispatch(showSnackBar(true)),
+    storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message))
   };
 }
 
