@@ -16,7 +16,7 @@ const Overview = ({ streams, history, showWorkflowDialog, workflowDialogVisible,
   }}>
     <CardTitle title="Projects" subtitle="Overview of ongoing projects" />
     <CardText>
-      The projects saved are saved below. Click on select to view more details.
+      The list of currently ongoing projects is shown below. Click on the select link to view additional details.
     </CardText>
     <FloatingActionButton secondary onTouchTap={showWorkflowDialog} style={{
       position: 'absolute',

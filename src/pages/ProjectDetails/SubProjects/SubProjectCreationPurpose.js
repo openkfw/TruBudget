@@ -22,8 +22,8 @@ class SubProjectCreationPurpose extends Component {
         position: 'relative'
       }}>
         <TextField
-          floatingLabelText="Sub-Project Purpose"
-          hintText="Define the purpose of your project"
+          floatingLabelText="Sub-project purpose"
+          hintText="Define the purpose of the sub-project"
           onChange={this.handleChange}
         />
       </div>

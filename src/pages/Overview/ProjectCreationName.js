@@ -22,8 +22,8 @@ class ProjectCreationName extends Component {
         position: 'relative'
       }}>
         <TextField
-          floatingLabelText="Project Name"
-          hintText="Name of your project"
+          floatingLabelText="Project title"
+          hintText="Name of the project"
           onChange={this.handleChange}
         />
       </div>
