@@ -32,7 +32,7 @@ const getTableEntries = (streamItems, location, history) => {
         <TableRowColumn>{amount}</TableRowColumn>
         <TableRowColumn>{streamItem.status}</TableRowColumn>
         <TableRowColumn>
-          <FlatButton label="Select" onTouchTap={() => history.push('/details/' + location.pathname.substring(9)+ '/'+ streamItem.key)}secondary={true} />
+          <FlatButton label="Select" onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2]+ '/'+ streamItem.key)}secondary={true} />
         </TableRowColumn>
       </TableRow>
     );
