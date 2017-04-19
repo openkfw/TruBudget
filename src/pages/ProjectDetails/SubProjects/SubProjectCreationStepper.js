@@ -4,8 +4,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
 import SubProjectCreationName from './SubProjectCreationName';
-import SubProjectCreationAmount from './SubProjectCreationAmount';
-import SubProjectCreationPurpose from './SubProjectCreationPurpose';
+import ProjectCreationPurpose from '../../Overview/ProjectCreationPurpose';
+import ProjectCreationAmount from '../../Overview/ProjectCreationAmount';
 class SubProjectCreationStepper extends Component {
   state = {
     stepIndex: 0
@@ -18,7 +18,8 @@ class SubProjectCreationStepper extends Component {
     });
     console.log('Stepindex ' + stepIndex);
     if (stepIndex === 2) {
-      this.props.createSubProjectItem(this.props.location.pathname.substring(9), this.props.subProjectName, this.props.subProjectAmount, this.props.subProjectPurpose)
+    
+      this.props.createSubProjectItem(this.props.location.pathname.substring(9), this.props.subProjectName, this.props.subProjectAmount, this.props.subProjectPurpose, this.props.subProjectCurrency)
       this.props.hideWorkflowDialog();
     }
   };
@@ -41,9 +42,9 @@ class SubProjectCreationStepper extends Component {
       case 0:
         return <SubProjectCreationName storeSubProjectName={this.props.storeSubProjectName}/>
       case 1:
-        return <SubProjectCreationAmount storeSubProjectAmount={this.props.storeSubProjectName}/>
+        return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} subProject={true}/>
       case 2:
-        return <SubProjectCreationPurpose storeSubProjectPurpose={this.props.storeSubProjectName}/>
+        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose} subProject={true}/>
       default:
         return <span>Done</span>;
     }

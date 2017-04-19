@@ -7,9 +7,9 @@ export const SHOW_WORKFLOW_DIALOG_SUCCESS = 'SHOW_WORKFLOW_DIALOG_SUCCESS';
 export const CREATE_SUBPROJECT_ITEM = 'CREATE_SUBPROJECT_ITEM';
 export const CREATE_SUBPROJECT_ITEM_SUCCESS = 'CREATE_SUBPROJECT_ITEM_SUCCESS';
 export const SUBPROJECT_NAME = 'SUBPROJECT_NAME';
-export const SUBPROJECT_AMOUNT = 'SUBPROJECT_NAME';
-export const SUBPROJECT_PURPOSE = 'SUBPROJECT_NAME';
-
+export const SUBPROJECT_AMOUNT = 'SUBPROJECT_AMOUNT';
+export const SUBPROJECT_PURPOSE = 'SUBPROJECT_PURPOSE';
+export const SUBPROJECT_CURRENCY = 'SUBPROJECT_CURRENCY';
 
 export function fetchStreamItems(streamName) {
   return {
@@ -25,13 +25,14 @@ export function storeSubProjectName(name) {
   }
 }
 
-export function createSubProjectItem(parentName, subProjectName, subProjectAmount, subProjectPurpose) {
+export function createSubProjectItem(parentName, subProjectName, subProjectAmount, subProjectPurpose,subProjectCurrency) {
   return {
     type: CREATE_SUBPROJECT_ITEM,
     parentName: parentName,
     subProjectName:subProjectName,
     subProjectAmount:subProjectAmount,
-    subProjectPurpose:subProjectPurpose
+    subProjectPurpose:subProjectPurpose,
+    subProjectCurrency: subProjectCurrency
   }
 }
 
@@ -46,6 +47,13 @@ export function storeSubProjectAmount(amount){
   return {
     type: SUBPROJECT_AMOUNT,
     amount: amount
+  }
+}
+
+export function storeSubProjectCurrency(currency){
+  return {
+    type: SUBPROJECT_CURRENCY,
+    currency: currency
   }
 }
 

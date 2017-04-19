@@ -1,31 +1,35 @@
 import React, { Component } from 'react';
 
 import TextField from 'material-ui/TextField';
-
+import ProjectCreationCurrency from './ProjectCreationCurrency';
 class ProjectCreationAmount extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 'Property Value',
-    };
-  }
+
 
   handleChange = (event) => {
+
     this.props.storeProjectAmount(event.target.value);
   };
 
   render() {
+    var hintText = "Amount for your project"
+    var floatingLabelText = "Project Amount"
+    if (this.props.subProject){
+      floatingLabelText="Sub-Project Amount"
+      hintText="Amount for your project"
+    }
     return (
       <div style={{
-        width: '40%',
+        width: '90%',
         left: '20%',
         position: 'relative'
       }}>
         <TextField
-          floatingLabelText="Project Amount"
-          hintText="Amount for your project"
+          floatingLabelText={floatingLabelText}
+          hintText={hintText}
+          type='number'
           onChange={this.handleChange}
         />
+        <ProjectCreationCurrency storeProjectCurrency={this.props.storeProjectCurrency}/>
       </div>
     );
   }

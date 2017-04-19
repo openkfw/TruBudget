@@ -19,7 +19,7 @@ class ProjectCreationStepper extends Component {
      stepIndex: stepIndex + 1,
    });
     if (stepIndex === 2) {
-      this.props.createProject(this.props.projectName, '0', this.props.projectAmount, this.props.projectPurpose)
+      this.props.createProject(this.props.projectName, '0', this.props.projectAmount, this.props.projectPurpose, this.props.projectCurrency)
       this.props.hideWorkflowDialog();
     }
   };
@@ -40,7 +40,7 @@ class ProjectCreationStepper extends Component {
       case 0:
         return <ProjectCreationName storeProjectName={this.props.storeProjectName} />
       case 1:
-        return <ProjectCreationAmount storeProjectAmount={this.props.storeProjectAmount}/>
+        return <ProjectCreationAmount storeProjectAmount={this.props.storeProjectAmount} storeProjectCurrency={this.props.storeProjectCurrency}/>
       case 2:
         return <ProjectCreationPurpose storeProjectPurpose={this.props.storeProjectPurpose}/>
 
