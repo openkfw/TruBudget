@@ -7,7 +7,7 @@ import NotFound from '../NotFound/NotFound';
 import ProjectDetailsContainer from '../ProjectDetails/ProjectDetailsContainer';
 import DashboardContainer from '../Dashboard/DashboardContainer';
 import WorkflowDetailsContainer from '../WorkflowDetailsContainer/WorkflowDetailsContainer'
-import Notifications from '../Notifications/Notifications';
+import NotificationPageContainer from '../Notifications/NotificationPageContainer';
 
 const Main = (props) => {
   return (
@@ -18,7 +18,7 @@ const Main = (props) => {
         <Route exact path="/details/:project" component={ProjectDetailsContainer} />
         <Route exact path="/details/:project/:subproject" component={WorkflowDetailsContainer} />
         <Route exact path="/dashboard" component={DashboardContainer} />
-        <Route exact path="/notifications" component={Notifications} />
+        <Route exact path="/notifications" component={NotificationPageContainer} />
         <Route component={NotFound} />
       </Switch>
     </div>

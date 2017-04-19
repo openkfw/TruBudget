@@ -1,8 +1,8 @@
 import React from 'react';
 import { List, ListItem } from 'material-ui/List';
 import SocialNotificationIcon from 'material-ui/svg-icons/social/notifications-active';
-import NetworkIcon from 'material-ui/svg-icons/hardware/device-hub'
-import ProjectIcon from 'material-ui/svg-icons/communication/business'
+import NetworkIcon from 'material-ui/svg-icons/hardware/device-hub';
+import ProjectIcon from 'material-ui/svg-icons/communication/business';
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
 import Toggle from 'material-ui/Toggle';

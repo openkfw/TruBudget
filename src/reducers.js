@@ -11,6 +11,7 @@ import navbarReducer from './pages/Navbar/reducer';
 import overviewReducer from './pages/Overview/reducer';
 import subProjectReducer from './pages/ProjectDetails/SubProjects/reducer';
 import dashboardReducer from './pages/Dashboard/reducer';
+import notificationsReducer from './pages/Notifications/reducer';
 
 /*
  * routeReducer
@@ -52,6 +53,7 @@ export default function createReducer(asyncReducers) {
     overview: overviewReducer,
     detailview: subProjectReducer,
     dashboard: dashboardReducer,
+    notifications: notificationsReducer,
     ...asyncReducers,
   });
 }

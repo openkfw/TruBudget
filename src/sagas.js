@@ -1,10 +1,11 @@
 import { put, takeEvery } from 'redux-saga/effects'
-import { fetchPeers, fetchStreams, fetchStreamItems, postSubProject, postProject, fetchNodeInformation } from './api.js';
+import { fetchPeers, fetchStreams, fetchStreamItems, postSubProject, postProject, fetchNodeInformation, fetchNotifications } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS } from './pages/Navbar/actions';
 import { FETCH_STREAMS, FETCH_STREAMS_SUCCESS, CREATE_PROJECT } from './pages/Overview/actions';
 import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM } from './pages/ProjectDetails/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
+import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS } from './pages/Notifications/actions';
 
 export function* fetchPeersSaga(action) {
   const peers = yield fetchPeers();
@@ -59,6 +60,14 @@ export function* fetchNodeInformationSaga() {
   });
 }
 
+export function* fetchNotificationSaga({user}) {
+  const notifications = yield fetchNotifications(user)
+  yield put({
+    type: FETCH_NOTIFICATIONS_SUCCESS,
+    notifications: notifications.data
+  })
+}
+
 export function* watchFetchPeers() {
   yield takeEvery(FETCH_PEERS, fetchPeersSaga)
 }
@@ -83,6 +92,10 @@ export function* watchFetchNodeInformation() {
   yield takeEvery(FETCH_NODE_INFORMATION, fetchNodeInformationSaga)
 }
 
+export function* watchFetchNotifications() {
+  yield takeEvery(FETCH_NOTIFICATIONS, fetchNotificationSaga)
+}
+
 export default function* rootSaga() {
   yield [
     watchFetchPeers(),
@@ -91,5 +104,6 @@ export default function* rootSaga() {
     watchCreateSubProject(),
     watchCreateProject(),
     watchFetchNodeInformation(),
+    watchFetchNotifications(),
   ]
 }
