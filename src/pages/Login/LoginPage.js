@@ -49,7 +49,7 @@ const LoginPage = ({ users, login }) => {
         opacity: 0.9
       }}>
         <CardMedia
-          overlay={<CardTitle title="ACMECorp Blockchain" subtitle="A new way of fjsdklfjdkl" />}>
+          overlay={<CardTitle title="ACMECorp Blockchain" subtitle="Working together for a better world" />}>
           <img style={{
             marginTop: '10px',
             marginBottom: '90px'
@@ -58,11 +58,11 @@ const LoginPage = ({ users, login }) => {
             src="/do_logo.png" />
         </CardMedia>
         <List>
-          <Subheader>Choose your prefered User</Subheader>
+          <Subheader>Choose your user for login</Subheader>
           {createListItems(users, login)}
         </List>
         <CardText>
-          Brought to you by Emerging Technologies & Innovation @ Accenture
+          Developed by Emerging Technologies & Innovation @ Accenture
         </CardText>
       </Card>
     </div>
