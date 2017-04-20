@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-
-import SubProjectCreationName from './SubProjectCreationName';
+import ProjectCreationName from '../../Overview/ProjectCreationName';
 import ProjectCreationPurpose from '../../Overview/ProjectCreationPurpose';
 import ProjectCreationAmount from '../../Overview/ProjectCreationAmount';
-import ProjectCreationName from '../../Overview/ProjectCreationName';
-class SubProjectCreationStepper extends Component {
+import ProjectCreationAdditionalData from '../../Overview/ProjectCreationAdditionalData';
+
+class WorkflowCreationStepper extends Component {
   state = {
     stepIndex: 0
   };
@@ -18,11 +18,9 @@ class SubProjectCreationStepper extends Component {
      stepIndex: stepIndex + 1,
     });
     console.log('Stepindex ' + stepIndex);
-    if (stepIndex === 2) {
-      this.props.createSubProjectItem(this.props.location.pathname.split('/')[2], this.props.subProjectName, this.props.subProjectAmount, this.props.subProjectPurpose, this.props.subProjectCurrency)
-      this.props.hideWorkflowDialog();
-      this.props.storeSnackBarMessage(this.props.subProjectName + ' added to the Sub-Projects')
-      this.props.showSnackBar();
+    if (stepIndex === 5) {
+          this.props.createWorkflowItem(this.props.storeWorkflowName, this.props.storeWorkflowAmount, this.props.storeWorkflowCurrency, this.props.storeWorkflowPurpose, this.props.storeWorkflowAdditionalData)
+          this.props.hideWorkflowDialog();
     }
   };
 
@@ -38,17 +36,21 @@ class SubProjectCreationStepper extends Component {
     }
   };
 
-  getStepContent(stepIndex,) {
+  getStepContent(stepIndex) {
+  switch (stepIndex) {
 
-    switch (stepIndex) {
-      case 0:
-        return <ProjectCreationName storeProjectName={this.props.storeSubProjectName} type={'subproject'}/>
-      case 1:
-        return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} type={'subproject'}/>
-      case 2:
-        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose} type={'subproject'}/>
-      default:
-        return <span>Done</span>;
+    case 0:
+      return <ProjectCreationName storeProjectName={this.props.storeWorkflowName} type={'workflow'}/>
+    case 1:
+      return <ProjectCreationAmount storeProjectAmount={this.props.storeWorkflowAmount} storeProjectCurrency={this.props.storeWorkflowCurrency} type={'workflow'}/>
+    case 2:
+      return <ProjectCreationPurpose storeProjectPurpose={this.props.storeWorkflowPurpose} type={'workflow'}/>
+    case 3:
+      return <span>Done</span>
+    case 4:
+      return <ProjectCreationAdditionalData storeWorkflowAdditionalData={this.props.storeWorkflowAdditionalData} />
+    default:
+      return <span>Done</span>;
     }
   }
 
@@ -61,13 +63,19 @@ class SubProjectCreationStepper extends Component {
       <div>
         <Stepper activeStep={stepIndex}>
           <Step>
-            <StepLabel>Sub-Project Name</StepLabel>
+            <StepLabel>Name</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Sub-Project Amount</StepLabel>
+            <StepLabel>Amount</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Sub-Project Purpose</StepLabel>
+            <StepLabel>Purpose</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Documents</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Additional Data</StepLabel>
           </Step>
         </Stepper>
         <div style={contentStyle}>
@@ -79,7 +87,7 @@ class SubProjectCreationStepper extends Component {
               <FlatButton label="Back" onTouchTap={this.handlePrev} style={{
                 marginRight: 360
               }}/>
-              <RaisedButton label={stepIndex === 2
+              <RaisedButton label={stepIndex === 4
                 ? 'Finish'
                 : 'Next'} primary={true} style={{}} onTouchTap={this.handleNext}/>
             </div>
@@ -90,4 +98,4 @@ class SubProjectCreationStepper extends Component {
   }
 };
 
-export default SubProjectCreationStepper;
+export default WorkflowCreationStepper;

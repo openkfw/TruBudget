@@ -7,7 +7,7 @@ import WorkflowTable from './WorkflowTable';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 
 
-const Workflow = ({  location, history, workflowItems, showWorkflow, openWorkflowDialog, hideWorkflowDialog}) => (
+const Workflow = (props) => (
   <Card style={{
     width: '74%',
     left: '13%',
@@ -17,18 +17,18 @@ const Workflow = ({  location, history, workflowItems, showWorkflow, openWorkflo
     zIndex: 1100,
   }}>
     <WorkflowTable
-      location={location}
-      history={history}
-      workflowItems={workflowItems}
+      location={props.location}
+      history={props.history}
+      workflowItems={props.workflowItems}
       />
-    <FloatingActionButton  onTouchTap={openWorkflowDialog} secondary style={{
+    <FloatingActionButton  onTouchTap={props.openWorkflowDialog} secondary style={{
       position: 'absolute',
       right: '-28px',
       top: '16px'
     }}>
       <ContentAdd />
     </FloatingActionButton>
-    <WorkflowCreationDialog showWorkflow={showWorkflow} openWorkflowDialog={openWorkflowDialog} hideWorkflowDialog={hideWorkflowDialog} />
+    <WorkflowCreationDialog {...props} />
   </Card>
 );
 

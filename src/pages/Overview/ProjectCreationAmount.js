@@ -13,9 +13,13 @@ class ProjectCreationAmount extends Component {
   render() {
     var hintText = "Amount for your project"
     var floatingLabelText = "Project Amount"
-    if (this.props.subProject){
+    if (this.props.type==='subProject'){
       floatingLabelText="Sub-Project Amount"
-      hintText="Amount for your project"
+      hintText="Amount for your sub-project"
+    }else if (this.props.type==='workflow'){
+      floatingLabelText="Workflow Amount"
+      hintText="Amount for your workflow"
+
     }
     return (
       <div style={{

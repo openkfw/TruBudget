@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import TextField from 'material-ui/TextField';
 
-class ProjectCreationPurpose extends Component {
+class ProjectCreationAdditionalData extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,20 +11,13 @@ class ProjectCreationPurpose extends Component {
   }
 
   handleChange = (event) => {
-    this.props.storeProjectPurpose(event.target.value);
+    this.props.storeWorkflowAdditionalData(event.target.value);
   };
 
   render() {
-    var hintText = "Define the purpose of your project"
-    var floatingLabelText = "Project Purpose"
-    if (this.props.type==='subproject'){
-      floatingLabelText="Sub-Project Purpose"
-      hintText="Define the purpose of your sub-project"
-    }else if (this.props.type==='workflow'){
-      floatingLabelText="Workflow Purpose"
-      hintText="Define the purpose of your  workflow"
+    var hintText = "Add additional data"
+    var floatingLabelText = "Additional Data"
 
-    }
     return (
       <div style={{
         width: '40%',
@@ -43,4 +36,4 @@ class ProjectCreationPurpose extends Component {
   }
 }
 
-export default ProjectCreationPurpose;
+export default ProjectCreationAdditionalData;

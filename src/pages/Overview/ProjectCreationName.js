@@ -15,6 +15,15 @@ class ProjectCreationName extends Component {
   };
 
   render() {
+    var floatingLabelText="Project Name"
+    var hintText="Name of your project"
+    if (this.props.type==='subproject'){
+      floatingLabelText="Sub-Project Name"
+      hintText="Name of your sub-project"
+    }else if (this.props.type==='workflow'){
+      floatingLabelText="Workflow Name"
+      hintText="Name of your workflow"
+    }
     return (
       <div style={{
         width: '40%',
@@ -22,8 +31,8 @@ class ProjectCreationName extends Component {
         position: 'relative'
       }}>
         <TextField
-          floatingLabelText="Project Name"
-          hintText="Name of your project"
+          floatingLabelText={floatingLabelText}
+          hintText={hintText}
           onChange={this.handleChange}
         />
       </div>
