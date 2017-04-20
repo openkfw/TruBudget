@@ -6,7 +6,7 @@ import ProjectCreationName from '../../Overview/ProjectCreationName';
 import ProjectCreationPurpose from '../../Overview/ProjectCreationPurpose';
 import ProjectCreationAmount from '../../Overview/ProjectCreationAmount';
 import ProjectCreationAdditionalData from '../../Overview/ProjectCreationAdditionalData';
-
+import WorkflowStateAndAssignee from './WorkflowStateAndAssignee'
 class WorkflowCreationStepper extends Component {
   state = {
     stepIndex: 0
@@ -19,7 +19,7 @@ class WorkflowCreationStepper extends Component {
     });
     console.log('Stepindex ' + stepIndex);
     if (stepIndex === 5) {
-          this.props.createWorkflowItem(this.props.storeWorkflowName, this.props.storeWorkflowAmount, this.props.storeWorkflowCurrency, this.props.storeWorkflowPurpose, this.props.storeWorkflowAdditionalData)
+          this.props.createWorkflowItem(this.props.location.pathname.split('/')[3], this.props.workflowName, this.props.workflowAmount, this.props.workflowCurrency, this.props.workflowPurpose, this.props.workflowAdditionalData, this.props.workflowState, this.props.workflowAssignee)
           this.props.hideWorkflowDialog();
     }
   };
@@ -49,8 +49,9 @@ class WorkflowCreationStepper extends Component {
       return <span>Done</span>
     case 4:
       return <ProjectCreationAdditionalData storeWorkflowAdditionalData={this.props.storeWorkflowAdditionalData} />
-    default:
-      return <span>Done</span>;
+    case 5:
+      return <WorkflowStateAndAssignee {...this.props}/>
+
     }
   }
 
@@ -77,6 +78,9 @@ class WorkflowCreationStepper extends Component {
           <Step>
             <StepLabel>Additional Data</StepLabel>
           </Step>
+          <Step>
+            <StepLabel>Status & Assignee</StepLabel>
+          </Step>
         </Stepper>
         <div style={contentStyle}>
           <div>
@@ -87,7 +91,7 @@ class WorkflowCreationStepper extends Component {
               <FlatButton label="Back" onTouchTap={this.handlePrev} style={{
                 marginRight: 360
               }}/>
-              <RaisedButton label={stepIndex === 4
+              <RaisedButton label={stepIndex === 5
                 ? 'Finish'
                 : 'Next'} primary={true} style={{}} onTouchTap={this.handleNext}/>
             </div>

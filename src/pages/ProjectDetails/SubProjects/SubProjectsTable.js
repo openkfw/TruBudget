@@ -25,12 +25,12 @@ const prepareAmount = (inputAmount, currency) => {
 const getTableEntries = (streamItems, location, history) => {
 
   return streamItems.map((streamItem, index) => {
-    var amount = prepareAmount(streamItem.amount, streamItem.currency)
+    var amount = prepareAmount(streamItem.data.amount, streamItem.data.currency)
     return (
       <TableRow key={index} selectable={false}>
         <TableRowColumn>{streamItem.key}</TableRowColumn>
         <TableRowColumn>{amount}</TableRowColumn>
-        <TableRowColumn>{streamItem.status}</TableRowColumn>
+        <TableRowColumn>{streamItem.data.status}</TableRowColumn>
         <TableRowColumn>
           <FlatButton label="Select" onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2]+ '/'+ streamItem.key)}secondary={true} />
         </TableRowColumn>

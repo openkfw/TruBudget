@@ -8,10 +8,10 @@ export const WORKFLOW_AMOUNT = 'WORKFLOW_AMOUNT';
 export const WORKFLOW_PURPOSE = 'WORKFLOW_PURPOSE';
 export const WORKFLOW_ADDITIONAL_DATA = 'WORKFLOW_ADDITIONAL_DATA';
 export const WORKFLOW_CURRENCY = 'WORKFLOW_CURRENCY';
-
-
+export const WORKFLOW_STATE = 'WORKFLOW_State';
+export const WORKFLOW_ASSIGNEE = 'WORKFLOW_ASSIGNEE';
 export const CREATE_WORKFLOW = 'CREATE_WORKFLOW';
-
+export const WORKFLOW_EDIT = 'WORKFLOW_EDIT';
 
 export function fetchWorkflowItems(streamName) {
   return {
@@ -27,9 +27,10 @@ export function showWorkflowDialog(show) {
 }
 
 export function storeWorkflowName(name){
+
   return {
     type: WORKFLOW_NAME,
-    amount: name
+    name: name
   }
 }
 
@@ -61,13 +62,30 @@ export function storeWorkflowAdditionalData(addData){
   }
 }
 
-export function createWorkflowItem(name, amount, currency, purpose, addData){
+export function storeWorkflowAssignee(assignee){
+  console.log('Assignee' +assignee)
+  return{
+    type: WORKFLOW_ASSIGNEE,
+    assignee: assignee
+  }
+}
+export function storeWorkflowState(state){
+  return{
+    type: WORKFLOW_STATE,
+    assignee: state
+  }
+}
+
+export function createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee){
   return{
     type:CREATE_WORKFLOW,
-    name: name,
+    stream:stream,
+    workflowName: workflowName,
     amount: amount,
     currency: currency,
     purpose: purpose,
-    addData: addData
+    addData: addData,
+    assignee:assignee,
+    state:state
   }
 }

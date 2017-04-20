@@ -17,9 +17,7 @@ const Workflow = (props) => (
     zIndex: 1100,
   }}>
     <WorkflowTable
-      location={props.location}
-      history={props.history}
-      workflowItems={props.workflowItems}
+      {...props}
       />
     <FloatingActionButton  onTouchTap={props.openWorkflowDialog} secondary style={{
       position: 'absolute',

@@ -3,7 +3,6 @@ import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
-import SubProjectCreationName from './SubProjectCreationName';
 import ProjectCreationPurpose from '../../Overview/ProjectCreationPurpose';
 import ProjectCreationAmount from '../../Overview/ProjectCreationAmount';
 import ProjectCreationName from '../../Overview/ProjectCreationName';

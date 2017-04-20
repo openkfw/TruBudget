@@ -9,6 +9,8 @@ import {
   storeWorkflowCurrency,
   storeWorkflowAmount,
   storeWorkflowName,
+  storeWorkflowState,
+  storeWorkflowAssignee,
   createWorkflowItem
 } from './actions';
 import Workflow from './Workflow';
@@ -33,7 +35,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowCurrency: (currency) => dispatch(storeWorkflowCurrency(currency)),
     storeWorkflowAmount: (amount) => dispatch(storeWorkflowAmount(amount)),
     storeWorkflowName: (name) => dispatch(storeWorkflowName(name)),
-    createWorkflowItem:(name, amount, currency, purpose, addData) => dispatch(createWorkflowItem(name, amount, currency, purpose, addData))
+    storeWorkflowAssignee: (assignee) => dispatch(storeWorkflowAssignee(assignee)),
+    storeWorkflowState: (state) => dispatch(storeWorkflowState(state)),
+    editWorkflow: (name) => dispatch(storeWorkflowName(name), showWorkflowDialog(true)),
+    createWorkflowItem:(stream, workflowName, amount, currency, purpose, addData,state, assignee) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, addData,state, assignee))
+
   };
 }
 
@@ -46,6 +52,9 @@ const mapStateToProps = (state) => {
     workflowPurpose: state.getIn(['workflow', 'workflowPurpose']),
     workflowAdditionalData: state.getIn(['workflow', 'workflowAdditionalData']),
     workflowCurrency: state.getIn(['workflow', 'workflowCurrency']),
+    workflowState: state.getIn(['workflow', 'workflowState']),
+    workflowAssignee: state.getIn(['workflow', 'workflowAssignee']),
+
   }
 }
 

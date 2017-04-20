@@ -24,7 +24,6 @@ const prepareAmount = (inputAmount, currency) => {
 
 const getTableEntries = ({ streams, history }) => {
   return streams.map((stream, index) => {
-
     var amount = prepareAmount(stream.details.amount, stream.details.currency)
     return (
       <TableRow key={index} selectable={false}>
