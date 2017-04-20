@@ -36,6 +36,7 @@ class ProjectCreationPurpose extends Component {
           rows={2}
           floatingLabelText={floatingLabelText}
           hintText={hintText}
+          value={this.props.projectPurpose}
           onChange={this.handleChange}
         />
       </div>

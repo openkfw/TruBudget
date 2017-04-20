@@ -30,9 +30,10 @@ class ProjectCreationAmount extends Component {
           floatingLabelText={floatingLabelText}
           hintText={hintText}
           type='number'
+          value={this.props.projectAmount}
           onChange={this.handleChange}
         />
-        <ProjectCreationCurrency storeProjectCurrency={this.props.storeProjectCurrency}/>
+        <ProjectCreationCurrency storeProjectCurrency={this.props.storeProjectCurrency} projectCurrency={this.props.projectCurrency}/>
       </div>
     );
   }

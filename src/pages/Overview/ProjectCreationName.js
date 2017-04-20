@@ -33,6 +33,7 @@ class ProjectCreationName extends Component {
         <TextField
           floatingLabelText={floatingLabelText}
           hintText={hintText}
+          value={this.props.projectName}
           onChange={this.handleChange}
         />
       </div>

@@ -41,11 +41,11 @@ class SubProjectCreationStepper extends Component {
 
     switch (stepIndex) {
       case 0:
-        return <ProjectCreationName storeProjectName={this.props.storeSubProjectName} type={'subproject'}/>
+        return <ProjectCreationName storeProjectName={this.props.storeSubProjectName}  projectName={this.props.subProjectName} type={'subproject'}/>
       case 1:
-        return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} type={'subproject'}/>
+        return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} projectAmount={this.props.subProjectAmount} projectCurrency={this.props.subProjectCurrency} type={'subproject'}/>
       case 2:
-        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose} type={'subproject'}/>
+        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose}  projectPurpose={this.props.subProjectPurpose} type={'subproject'}/>
       default:
         return <span>Done</span>;
     }

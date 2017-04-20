@@ -35,11 +35,11 @@ class ProjectCreationCurrency extends Component {
               position: 'relative'
             }}
               floatingLabelText="Currency"
-             value={this.state.value}
+             value={this.props.projectCurrency}
              onChange={this.handleChange}
            >
-             <MenuItem value={1} primaryText="EUR" />
-             <MenuItem value={2} primaryText="USD" />
+             <MenuItem value='EUR' primaryText="EUR" />
+             <MenuItem value='USD' primaryText="USD" />
              </SelectField>
        );
 }

@@ -8,10 +8,12 @@ export const WORKFLOW_AMOUNT = 'WORKFLOW_AMOUNT';
 export const WORKFLOW_PURPOSE = 'WORKFLOW_PURPOSE';
 export const WORKFLOW_ADDITIONAL_DATA = 'WORKFLOW_ADDITIONAL_DATA';
 export const WORKFLOW_CURRENCY = 'WORKFLOW_CURRENCY';
-export const WORKFLOW_STATE = 'WORKFLOW_State';
+export const WORKFLOW_STATE = 'WORKFLOW_STATE';
 export const WORKFLOW_ASSIGNEE = 'WORKFLOW_ASSIGNEE';
 export const CREATE_WORKFLOW = 'CREATE_WORKFLOW';
 export const WORKFLOW_EDIT = 'WORKFLOW_EDIT';
+export const WORKFLOW_STATE_ENABLED = 'WORKFLOW_STATE_ENABLED';
+
 
 export function fetchWorkflowItems(streamName) {
   return {
@@ -63,7 +65,6 @@ export function storeWorkflowAdditionalData(addData){
 }
 
 export function storeWorkflowAssignee(assignee){
-  console.log('Assignee' +assignee)
   return{
     type: WORKFLOW_ASSIGNEE,
     assignee: assignee
@@ -72,7 +73,13 @@ export function storeWorkflowAssignee(assignee){
 export function storeWorkflowState(state){
   return{
     type: WORKFLOW_STATE,
-    assignee: state
+    state: state
+  }
+}
+export function disableWorkflowState(enabled){
+  return{
+    type: WORKFLOW_STATE_ENABLED,
+    enabled: enabled
   }
 }
 

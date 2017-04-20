@@ -29,6 +29,7 @@ class ProjectCreationAdditionalData extends Component {
           rows={2}
           floatingLabelText={floatingLabelText}
           hintText={hintText}
+          value={this.props.workflowAdditionalData}
           onChange={this.handleChange}
         />
       </div>

@@ -37,14 +37,13 @@ class ProjectCreationStepper extends Component {
   };
 
   getStepContent(stepIndex) {
-
     switch (stepIndex) {
       case 0:
-        return <ProjectCreationName storeProjectName={this.props.storeProjectName} />
+        return <ProjectCreationName storeProjectName={this.props.storeProjectName} projectName={this.props.projectName}/>
       case 1:
-        return <ProjectCreationAmount storeProjectAmount={this.props.storeProjectAmount} storeProjectCurrency={this.props.storeProjectCurrency}/>
+        return <ProjectCreationAmount storeProjectAmount={this.props.storeProjectAmount} storeProjectCurrency={this.props.storeProjectCurrency} projectAmount={this.props.projectAmount} projectCurrency={this.props.projectCurrency}/>
       case 2:
-        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeProjectPurpose}/>
+        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeProjectPurpose} projectPurpose={this.props.projectPurpose}/>
 
       default:
         return null;
