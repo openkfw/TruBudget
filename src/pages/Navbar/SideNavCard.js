@@ -10,11 +10,11 @@ import Subheader from 'material-ui/Subheader';
 
 import colors from '../../colors';
 
-const SideNavCard = ({ history }) => (
+const SideNavCard = ({ loggedInUser, history }) => (
   <div>
     <div
       style={{
-        background: "url('/mdl_back_small.jpeg') no-repeat",
+        background: `url('${loggedInUser.avatar_back}') no-repeat`,
         backgroundSize: 'cover',
         height: "200px",
         position: "relative"
@@ -25,14 +25,14 @@ const SideNavCard = ({ history }) => (
       }}>
         <Avatar
           size={60}
-          src="/avatar.png"
+          src={loggedInUser.avatar}
           style={{
             marginLeft: "16px"
           }}
         />
         <ListItem
-          primaryText={<div style={{ color: colors.lightColor }}>Jure Zakotnik</div>}
-          secondaryText={<div style={{ color: colors.lightColor }}>ACMECorp</div>}
+          primaryText={<div style={{ color: colors.lightColor }}>{loggedInUser.name}</div>}
+          secondaryText={<div style={{ color: colors.lightColor }}>{loggedInUser.organization}</div>}
           disabled
           style={{ paddingTop: '16px' }}
         />

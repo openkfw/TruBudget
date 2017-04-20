@@ -1,5 +1,16 @@
 import { put, takeEvery, takeLatest } from 'redux-saga/effects'
-import { fetchPeers, fetchStreams, fetchStreamItems, postSubProject, postProject, fetchNodeInformation, fetchNotifications, fetchWorkflowItems } from './api.js';
+import {
+  fetchPeers,
+  fetchStreams,
+  fetchStreamItems,
+  postSubProject,
+  postProject,
+  fetchNodeInformation,
+  fetchNotifications,
+  fetchWorkflowItems,
+  fetchUsers,
+  login
+} from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS } from './pages/Navbar/actions';
 import { FETCH_STREAMS, FETCH_STREAMS_SUCCESS, CREATE_PROJECT } from './pages/Overview/actions';
@@ -7,7 +18,7 @@ import { FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM 
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS} from './pages/WorkflowDetailsContainer/Workflow/actions';
-
+import { FETCH_USERS, FETCH_USERS_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
 
 export function* fetchPeersSaga(action) {
   const peers = yield fetchPeers();
@@ -77,6 +88,22 @@ export function* fetchNotificationSaga({user}) {
   })
 }
 
+export function* fetchUsersSaga(){
+  const users = yield fetchUsers();
+  yield put({
+    type:FETCH_USERS_SUCCESS,
+    users: users.data
+  })
+}
+
+export function* loginSaga({user}){
+  yield login(user.username, user.password);
+  yield put({
+    type:LOGIN_SUCCESS,
+    user
+  })
+}
+
 export function* watchFetchPeers() {
   yield takeEvery(FETCH_PEERS, fetchPeersSaga)
 }
@@ -109,6 +136,14 @@ export function* watchFetchNotifications() {
   yield takeLatest(FETCH_NOTIFICATIONS, fetchNotificationSaga)
 }
 
+export function* watchFetchUsers() {
+  yield takeLatest(FETCH_USERS, fetchUsersSaga)
+}
+
+export function* watchLogin() {
+  yield takeLatest(LOGIN, loginSaga)
+}
+
 export default function* rootSaga() {
   yield [
     watchFetchPeers(),
@@ -119,5 +154,7 @@ export default function* rootSaga() {
     watchFetchNodeInformation(),
     watchFetchNotifications(),
     watchFetchWorkflowItems(),
+    watchFetchUsers(),
+    watchLogin(),
   ]
 }
