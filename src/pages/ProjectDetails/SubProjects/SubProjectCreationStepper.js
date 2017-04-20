@@ -3,9 +3,9 @@ import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
-import SubProjectCreationName from './SubProjectCreationName';
 import ProjectCreationPurpose from '../../Overview/ProjectCreationPurpose';
 import ProjectCreationAmount from '../../Overview/ProjectCreationAmount';
+import ProjectCreationName from '../../Overview/ProjectCreationName';
 class SubProjectCreationStepper extends Component {
   state = {
     stepIndex: 0
@@ -41,11 +41,11 @@ class SubProjectCreationStepper extends Component {
 
     switch (stepIndex) {
       case 0:
-        return <SubProjectCreationName storeSubProjectName={this.props.storeSubProjectName}/>
+        return <ProjectCreationName storeProjectName={this.props.storeSubProjectName} type={'subproject'}/>
       case 1:
-        return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} subProject={true}/>
+        return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} type={'subproject'}/>
       case 2:
-        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose} subProject={true}/>
+        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose} type={'subproject'}/>
       default:
         return <span>Done</span>;
     }
@@ -67,9 +67,6 @@ class SubProjectCreationStepper extends Component {
           </Step>
           <Step>
             <StepLabel>Sub-project purpose</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>Done</StepLabel>
           </Step>
         </Stepper>
         <div style={contentStyle}>

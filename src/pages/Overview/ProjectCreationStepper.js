@@ -66,9 +66,6 @@ class ProjectCreationStepper extends Component {
         <Step>
           <StepLabel>Project Purpose</StepLabel>
         </Step>
-        <Step>
-          <StepLabel>Done</StepLabel>
-        </Step>
         </Stepper>
         <div style={contentStyle}>
           <div>

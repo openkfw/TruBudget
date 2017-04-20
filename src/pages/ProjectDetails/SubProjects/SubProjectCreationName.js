@@ -3,12 +3,7 @@ import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 
 class SubProjectCreationName extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 'Property Value',
-    };
-  }
+  
 
   handleChange = (event) => {
     this.props.storeSubProjectName(event.target.value);
