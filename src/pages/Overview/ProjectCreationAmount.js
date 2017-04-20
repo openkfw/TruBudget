@@ -11,15 +11,14 @@ class ProjectCreationAmount extends Component {
   };
 
   render() {
-    var hintText = "Amount for your project"
-    var floatingLabelText = "Project Amount"
+    var hintText = "Budget for the project"
+    var floatingLabelText = "Project budget amount"
     if (this.props.type==='subProject'){
-      floatingLabelText="Sub-Project Amount"
-      hintText="Amount for your sub-project"
+      floatingLabelText="Sub-project budget amount"
+      hintText="Budget amount for the project"
     }else if (this.props.type==='workflow'){
-      floatingLabelText="Workflow Amount"
-      hintText="Amount for your workflow"
-
+      floatingLabelText="Workflow budget amount"
+      hintText="Budget amount for the workflow"
     }
     return (
       <div style={{

@@ -10,7 +10,7 @@ const defaultState = fromJS({
 });
 
 const countUnreadNotifications = (notifications) => notifications.reduce((acc, {data}) => {
-  return data.read === 'False' ? acc + 1 : acc;
+  return data.read === false ? acc + 1 : acc;
 }, 0);
 
 export default function navbarReducer(state = defaultState, action) {

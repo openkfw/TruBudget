@@ -47,7 +47,7 @@ const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisib
       <TableHeader displaySelectAll={false}
         adjustForCheckbox={false}>
         <Dialog
-          title="New Sub-Project"
+          title="New Sub-project"
 
           modal={true}
           open={workflowDialogVisible}
@@ -64,8 +64,8 @@ const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisib
         </Dialog>
 
         <TableRow>
-          <TableHeaderColumn>Sub-Project</TableHeaderColumn>
-          <TableHeaderColumn>Amount</TableHeaderColumn>
+          <TableHeaderColumn>Sub-project</TableHeaderColumn>
+          <TableHeaderColumn>Budget</TableHeaderColumn>
           <TableHeaderColumn>Status</TableHeaderColumn>
           <TableHeaderColumn> </TableHeaderColumn>
         </TableRow>

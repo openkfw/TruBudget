@@ -15,15 +15,15 @@ class ProjectCreationPurpose extends Component {
   };
 
   render() {
-    var hintText = "Define the purpose of your project"
+    var hintText = "Define the purpose of the project"
     var floatingLabelText = "Project Purpose"
+
     if (this.props.type==='subproject'){
-      floatingLabelText="Sub-Project Purpose"
-      hintText="Define the purpose of your sub-project"
+      floatingLabelText="Sub-project purpose"
+      hintText="Define the purpose of the sub-project"
     }else if (this.props.type==='workflow'){
       floatingLabelText="Workflow Purpose"
       hintText="Define the purpose of your  workflow"
-
     }
     return (
       <div style={{

@@ -15,14 +15,14 @@ class ProjectCreationName extends Component {
   };
 
   render() {
-    var floatingLabelText="Project Name"
-    var hintText="Name of your project"
+    var floatingLabelText="Project title"
+    var hintText="Name of the project"
     if (this.props.type==='subproject'){
-      floatingLabelText="Sub-Project Name"
-      hintText="Name of your sub-project"
+      floatingLabelText="Sub-Project title"
+      hintText="Name of the sub-project"
     }else if (this.props.type==='workflow'){
-      floatingLabelText="Workflow Name"
-      hintText="Name of your workflow"
+      floatingLabelText="Workflow title"
+      hintText="Name of the workflow"
     }
     return (
       <div style={{

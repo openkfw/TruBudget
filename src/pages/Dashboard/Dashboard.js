@@ -5,15 +5,15 @@ import NetworkMap from './NetworkMap';
 
 const Dashboard = (props) => (
   <Card style={{
-    width: '60%',
-    left: '20%',
+    width: '80%',
+    left: '10%',
     top: '100px',
     position: 'absolute',
     zIndex: 1100,
   }}>
-    <CardTitle title="Network" subtitle="Connected Peers in the Network" />
+    <CardTitle title="The Blockchain network dashboard" subtitle="Connected peers in the blockchain network" />
     <CardText>
-      All Projects are listed below.
+      The connected blockchain nodes are shown in the map below. You can click on the respective markers to obtain the exact location.
     </CardText>
     <NetworkMap nodeInformation={props.nodeInformation} />
   </Card>

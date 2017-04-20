@@ -34,7 +34,7 @@ const MainNavbarNavigation = ({ onToggleSidebar, history, route }) => {
   return (
     <div>
       <div>
-        <span style={{ paddingRight: '50px' }}>ACMECorp Chain</span>
+        <span style={{ paddingRight: '50px' }}>ACMECorp Blockchain</span>
         {createBreadcrumb(route, history)}
       </div>
 

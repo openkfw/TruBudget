@@ -20,7 +20,7 @@ class SubProjectCreationStepper extends Component {
     if (stepIndex === 2) {
       this.props.createSubProjectItem(this.props.location.pathname.split('/')[2], this.props.subProjectName, this.props.subProjectAmount, this.props.subProjectPurpose, this.props.subProjectCurrency)
       this.props.hideWorkflowDialog();
-      this.props.storeSnackBarMessage(this.props.subProjectName + ' added to the Sub-Projects')
+      this.props.storeSnackBarMessage(this.props.subProjectName + ' added to Sub-projects')
       this.props.showSnackBar();
     }
   };
@@ -60,13 +60,13 @@ class SubProjectCreationStepper extends Component {
       <div>
         <Stepper activeStep={stepIndex}>
           <Step>
-            <StepLabel>Sub-Project Name</StepLabel>
+            <StepLabel>Sub-project name</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Sub-Project Amount</StepLabel>
+            <StepLabel>Sub-project budget amount</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Sub-Project Purpose</StepLabel>
+            <StepLabel>Sub-project purpose</StepLabel>
           </Step>
         </Stepper>
         <div style={contentStyle}>

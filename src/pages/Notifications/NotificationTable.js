@@ -5,7 +5,7 @@ import Checkbox from 'material-ui/Checkbox';
 
 const getNotifications = (notifications, filter = 'all') => {
   return notifications.reduce((acc, { data, blocktime }, index) => {
-    const notificationRead = data.read === 'True';
+    const notificationRead = data.read === true;
     const element = (
       <TableRow key={index} selected={notificationRead} selectable={false}>
         <TableRowColumn colSpan="1">
