@@ -17,10 +17,18 @@ class WorkflowCreationStepper extends Component {
     this.setState({
      stepIndex: stepIndex + 1,
     });
-    console.log('Stepindex ' + stepIndex);
     if (stepIndex === 5) {
           this.props.createWorkflowItem(this.props.location.pathname.split('/')[3], this.props.workflowName, this.props.workflowAmount, this.props.workflowCurrency, this.props.workflowPurpose, this.props.workflowAdditionalData, this.props.workflowState, this.props.workflowAssignee)
           this.props.hideWorkflowDialog();
+          this.props.hideWorkflowDialog();
+          this.props.storeWorkflowName('')
+          this.props.storeWorkflowAmount('')
+          this.props.storeWorkflowCurrency('EUR')
+          this.props.storeWorkflowPurpose('')
+          this.props.storeWorkflowAdditionalData('')
+          this.props.storeWorkflowAssignee('')
+          this.props.disableWorkflowState()
+          this.props.storeWorkflowState('Open')
     }
   };
 
@@ -28,6 +36,14 @@ class WorkflowCreationStepper extends Component {
     const {stepIndex} = this.state;
     if (stepIndex === 0) {
       this.props.hideWorkflowDialog();
+      this.props.storeWorkflowName('')
+      this.props.storeWorkflowAmount('')
+      this.props.storeWorkflowCurrency('EUR')
+      this.props.storeWorkflowPurpose('')
+      this.props.storeWorkflowAdditionalData('')
+      this.props.storeWorkflowAssignee('')
+      this.props.disableWorkflowState()
+      this.props.storeWorkflowState('Open')
     }
     if (stepIndex > 0) {
       this.setState({
@@ -40,17 +56,17 @@ class WorkflowCreationStepper extends Component {
   switch (stepIndex) {
 
     case 0:
-      return <ProjectCreationName storeProjectName={this.props.storeWorkflowName} type={'workflow'}/>
+      return <ProjectCreationName storeProjectName={this.props.storeWorkflowName} projectName={this.props.workflowName} type={'workflow'}/>
     case 1:
-      return <ProjectCreationAmount storeProjectAmount={this.props.storeWorkflowAmount} storeProjectCurrency={this.props.storeWorkflowCurrency} type={'workflow'}/>
+      return <ProjectCreationAmount storeProjectAmount={this.props.storeWorkflowAmount} storeProjectCurrency={this.props.storeWorkflowCurrency} projectAmount={this.props.workflowAmount} projectCurrency={this.props.workflowCurrency} type={'workflow'}/>
     case 2:
-      return <ProjectCreationPurpose storeProjectPurpose={this.props.storeWorkflowPurpose} type={'workflow'}/>
+      return <ProjectCreationPurpose storeProjectPurpose={this.props.storeWorkflowPurpose}  projectPurpose={this.props.workflowPurpose} type={'workflow'}/>
     case 3:
       return <span>Done</span>
     case 4:
-      return <ProjectCreationAdditionalData storeWorkflowAdditionalData={this.props.storeWorkflowAdditionalData} />
+      return <ProjectCreationAdditionalData storeWorkflowAdditionalData={this.props.storeWorkflowAdditionalData} workflowAdditionalData={this.props.workflowAdditionalData} />
     case 5:
-      return <WorkflowStateAndAssignee {...this.props}/>
+      return <WorkflowStateAndAssignee storeWorkflowState={this.props.storeWorkflowState} storeWorkflowAssignee={this.props.storeWorkflowAssignee} workflowAssignee={this.props.workflowAssignee} workflowState={this.props.workflowState} disabledWorkflowState={this.props.disabledWorkflowState}/>
 
     }
   }

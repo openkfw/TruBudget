@@ -8,6 +8,7 @@ import {
   WORKFLOW_PURPOSE,
   WORKFLOW_ADDITIONAL_DATA,
   WORKFLOW_CURRENCY,
+  WORKFLOW_STATE_ENABLED,
   WORKFLOW_STATE,
   WORKFLOW_ASSIGNEE
 } from './actions';
@@ -21,7 +22,8 @@ const defaultState = fromJS({
   workflowAdditionalData: '',
   workflowPurpose: '',
   workflowState:'Open',
-  workflowAssignee:''
+  workflowAssignee:'',
+  disabledWorkflowState: true
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -41,9 +43,11 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_CURRENCY:
       return state.set('workflowCurrency', action.currency)
     case WORKFLOW_STATE:
-      return state.set('workflowState' , action.status)
+      return state.set('workflowState' , action.state)
     case WORKFLOW_ASSIGNEE:
       return state.set('workflowAssignee', action.assignee)
+    case WORKFLOW_STATE_ENABLED:
+      return state.set('disabledWorkflowState', action.enabled)
     default:
       return state
   }

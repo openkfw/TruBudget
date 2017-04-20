@@ -11,7 +11,8 @@ import {
   storeWorkflowName,
   storeWorkflowState,
   storeWorkflowAssignee,
-  createWorkflowItem
+  createWorkflowItem,
+  disableWorkflowState
 } from './actions';
 import Workflow from './Workflow';
 
@@ -37,7 +38,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowName: (name) => dispatch(storeWorkflowName(name)),
     storeWorkflowAssignee: (assignee) => dispatch(storeWorkflowAssignee(assignee)),
     storeWorkflowState: (state) => dispatch(storeWorkflowState(state)),
-    editWorkflow: (name) => dispatch(storeWorkflowName(name), showWorkflowDialog(true)),
+    enableWorkflowState:() => dispatch(disableWorkflowState(false)),
+    disableWorkflowState:() => dispatch(disableWorkflowState(true)),
     createWorkflowItem:(stream, workflowName, amount, currency, purpose, addData,state, assignee) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, addData,state, assignee))
 
   };
@@ -54,7 +56,7 @@ const mapStateToProps = (state) => {
     workflowCurrency: state.getIn(['workflow', 'workflowCurrency']),
     workflowState: state.getIn(['workflow', 'workflowState']),
     workflowAssignee: state.getIn(['workflow', 'workflowAssignee']),
-
+    disabledWorkflowState: state.getIn(['workflow', 'disabledWorkflowState']),
   }
 }
 

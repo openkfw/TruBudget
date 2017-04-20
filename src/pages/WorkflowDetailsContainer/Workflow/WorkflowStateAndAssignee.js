@@ -9,7 +9,8 @@ class WorkflowStateAndAssignee extends Component {
     assigneeValue: '',
   };
 
-  handleStatus = (event, index, value) => {
+  handleState = (event, index, value) => {
+      console.log('value ' + value)
       this.props.storeWorkflowState(value);
 
    }
@@ -20,7 +21,6 @@ class WorkflowStateAndAssignee extends Component {
 
 
   render() {
-    console.log('WfState ' + this.props.workflowState)
     return (
 
       <div style={{
@@ -30,10 +30,10 @@ class WorkflowStateAndAssignee extends Component {
         alignItems: 'space-between'
       }}>
         <SelectField onChange={this.handleAssignee} value={this.props.workflowAssignee} floatingLabelText="Assign User" style={{}}>
-          <MenuItem value='UserA' primaryText="User A"/>
-          <MenuItem value='UserB' primaryText="User B"/>
+          <MenuItem value='User A' primaryText="User A"/>
+          <MenuItem value='User B' primaryText="User B"/>
         </SelectField>
-        <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState}  disabled={true} style={{}}>
+        <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState}  disabled={this.props.disabledWorkflowState} style={{}}>
           <MenuItem value='Open' primaryText="Open"/>
           <MenuItem value='In Progress' primaryText="In Progress"/>
           <MenuItem value='Donor Approval Missing' primaryText="Donor Approval Missing"/>
