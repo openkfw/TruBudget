@@ -12,7 +12,9 @@ import overviewReducer from './pages/Overview/reducer';
 import subProjectReducer from './pages/ProjectDetails/SubProjects/reducer';
 import dashboardReducer from './pages/Dashboard/reducer';
 import notificationsReducer from './pages/Notifications/reducer';
-import workflowReducer from './pages/WorkflowDetailsContainer/Workflow/reducer'
+import workflowReducer from './pages/WorkflowDetailsContainer/Workflow/reducer';
+import loginReducer from './pages/Login/reducer';
+
 /*
  * routeReducer
  *
@@ -55,6 +57,7 @@ export default function createReducer(asyncReducers) {
     dashboard: dashboardReducer,
     workflow: workflowReducer,
     notifications: notificationsReducer,
+    login: loginReducer,
     ...asyncReducers,
   });
 }

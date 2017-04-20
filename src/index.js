@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
+import { Route, Switch } from 'react-router';
 import injectTapEventPlugin from "react-tap-event-plugin";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import createHistory from 'history/createBrowserHistory'
+import createHistory from 'history/createBrowserHistory';
 
 import {
   ACMECorpLightgrey,
@@ -20,6 +21,9 @@ import {
 } from './colors'
 
 import Main from './pages/Main/Main';
+import LoginPageContainer from './pages/Login/LoginPageContainer';
+import PrivateRoute from './pages/Login/PrivateRoute';
+
 import configureStore from './store';
 
 const history = createHistory()
@@ -47,7 +51,10 @@ class App extends Component {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <MuiThemeProvider muiTheme={muiTheme}>
-            <Main />
+            <Switch>
+               <Route exact path="/login" component={LoginPageContainer} />
+               <PrivateRoute component={Main}/>
+            </Switch>
           </MuiThemeProvider>
         </ConnectedRouter>
       </Provider>

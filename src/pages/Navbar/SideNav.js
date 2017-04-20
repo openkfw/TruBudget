@@ -3,7 +3,7 @@ import Drawer from 'material-ui/Drawer'
 
 import SideNavCard from './SideNavCard'
 
-const SideNav = ({ showSidebar, onToggleSidebar, history }) => (
+const SideNav = ({ showSidebar, onToggleSidebar, history, loggedInUser }) => (
   <Drawer
     docked={false}
     width={300}
@@ -11,6 +11,7 @@ const SideNav = ({ showSidebar, onToggleSidebar, history }) => (
     onRequestChange={onToggleSidebar}>
     <SideNavCard
       history={history}
+      loggedInUser={loggedInUser}
     />
   </Drawer>
 );
