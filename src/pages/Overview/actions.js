@@ -1,5 +1,5 @@
-export const FETCH_STREAMS = 'FETCH_STREAMS';
-export const FETCH_STREAMS_SUCCESS = 'FETCH_STREAMS_SUCCESS';
+export const FETCH_PROJECTS = 'FETCH_PROJECTS';
+export const FETCH_PROJECTS_SUCCESS = 'FETCH_PROJECTS_SUCCESS';
 
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG'
@@ -9,9 +9,9 @@ export const PROJECT_PURPOSE = 'PROJECT_PURPOSE';
 export const PROJECT_CURRENCY = 'PROJECT_CURRENCY';
 
 
-export function fetchStreams() {
+export function fetchProjects() {
   return {
-    type: FETCH_STREAMS,
+    type: FETCH_PROJECTS,
   }
 }
 

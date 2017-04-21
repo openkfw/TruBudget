@@ -2,7 +2,7 @@ import {put, takeEvery, takeLatest} from 'redux-saga/effects'
 
 import {
   fetchPeers,
-  fetchStreams,
+  fetchProjects,
   fetchStreamItems,
   postSubProject,
   postProject,
@@ -15,7 +15,7 @@ import {
 } from './api.js';
 
 import {FETCH_PEERS, FETCH_PEERS_SUCCESS} from './pages/Navbar/actions';
-import {FETCH_STREAMS, FETCH_STREAMS_SUCCESS, CREATE_PROJECT} from './pages/Overview/actions';
+import {FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT} from './pages/Overview/actions';
 import {FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM} from './pages/ProjectDetails/SubProjects/actions';
 import {FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS} from './pages/Dashboard/actions';
 import {FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS} from './pages/Notifications/actions';
@@ -33,9 +33,9 @@ export function * fetchStreamItemsSaga(action) {
   yield put({type: FETCH_STREAM_ITEMS_SUCCESS, streamItems: streamItems.data});
 }
 
-export function * fetchStreamsSaga(action) {
-  const streams = yield fetchStreams();
-  yield put({type: FETCH_STREAMS_SUCCESS, streams: streams.data});
+export function * fetchProjectsSaga(action) {
+  const projects = yield fetchProjects();
+  yield put({type: FETCH_PROJECTS_SUCCESS, projects: projects.data});
 }
 
 export function * fetchWorkflowItemsSaga(action) {
@@ -45,8 +45,8 @@ export function * fetchWorkflowItemsSaga(action) {
 
 export function * createProject(action) {
   yield postProject(action.name, action.parent, action.amount, action.purpose, action.currency);
-  const streams = yield fetchStreams();
-  yield put({type: FETCH_STREAMS_SUCCESS, streams: streams.data});
+  const projects = yield fetchProjects();
+  yield put({type: FETCH_PROJECTS_SUCCESS, projects: projects.data});
 
 }
 export function * createSubProjectSaga(action) {
@@ -86,8 +86,8 @@ export function * watchFetchPeers() {
   yield takeEvery(FETCH_PEERS, fetchPeersSaga)
 }
 
-export function * watchFetchStreams() {
-  yield takeEvery(FETCH_STREAMS, fetchStreamsSaga)
+export function * watchFetchProjects() {
+  yield takeEvery(FETCH_PROJECTS, fetchProjectsSaga)
 }
 
 export function * watchFetchStreamItems() {
@@ -126,8 +126,9 @@ export function * watchLogin() {
 }
 
 export default function * rootSaga() {
-  yield[watchFetchPeers(),
-    watchFetchStreams(),
+  yield[
+    watchFetchPeers(),
+    watchFetchProjects(),
     watchFetchStreamItems(),
     watchCreateSubProject(),
     watchCreateWorkflowItem(),
