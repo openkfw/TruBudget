@@ -22,7 +22,7 @@ class SubProjectsContainer extends Component {
         position: 'absolute',
         zIndex: 1100,
       }}>
-        <ProjectDetails name={this.props.projectName} />
+        <ProjectDetails {...this.props}  />
         <SubProjects {...this.props} />
       </div>
     )
@@ -48,6 +48,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     projectName: state.getIn(['detailview', 'projectName']),
+    projectAmount: state.getIn(['detailview', 'projectAmount']),
+    projectPurpose: state.getIn(['detailview', 'projectPurpose']),
     subProjects: state.getIn(['detailview', 'subProjects']).toJS(),
     workflowDialogVisible: state.getIn(['detailview', 'workflowDialogVisible']),
     subProjectName: state.getIn(['detailview', 'subProjectName']),
