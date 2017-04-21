@@ -63,7 +63,7 @@ const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpos
         flexDirection: 'row',
         justifyContent: 'center'
       }}>
-        <Card>
+        <Card style={{margin: '20px'}}>
           <CardHeader
             title="Budget distribution"
             subtitle="Subtitle"
@@ -72,7 +72,7 @@ const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpos
             <Doughnut data={createAmountData(projectAmount, subProjects)} />
           </CardMedia>
         </Card>
-        <Card>
+        <Card style={{margin: '20px'}}>
           <CardHeader
             title="Task status"
             subtitle="Subtitle"
