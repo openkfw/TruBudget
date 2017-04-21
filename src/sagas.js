@@ -3,7 +3,7 @@ import {put, takeEvery, takeLatest} from 'redux-saga/effects'
 import {
   fetchPeers,
   fetchProjects,
-  fetchStreamItems,
+  fetchProjectDetails,
   postSubProject,
   postProject,
   fetchNodeInformation,
@@ -16,7 +16,7 @@ import {
 
 import {FETCH_PEERS, FETCH_PEERS_SUCCESS} from './pages/Navbar/actions';
 import {FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT} from './pages/Overview/actions';
-import {FETCH_STREAM_ITEMS, FETCH_STREAM_ITEMS_SUCCESS, CREATE_SUBPROJECT_ITEM} from './pages/ProjectDetails/SubProjects/actions';
+import {FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT_ITEM} from './pages/ProjectDetails/SubProjects/actions';
 import {FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS} from './pages/Dashboard/actions';
 import {FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS} from './pages/Notifications/actions';
 import {FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW} from './pages/WorkflowDetailsContainer/Workflow/actions';
@@ -27,10 +27,10 @@ export function * fetchPeersSaga(action) {
   yield put({type: FETCH_PEERS_SUCCESS, peers: peers.data});
 }
 
-export function * fetchStreamItemsSaga(action) {
-  const streamItems = yield fetchStreamItems(action.streamName);
+export function * fetchProjectDetailsSaga(action) {
+  const projectDetails = yield fetchProjectDetails(action.project);
 
-  yield put({type: FETCH_STREAM_ITEMS_SUCCESS, streamItems: streamItems.data});
+  yield put({type: FETCH_PROJECT_DETAILS_SUCCESS, projectDetails: projectDetails.data});
 }
 
 export function * fetchProjectsSaga(action) {
@@ -44,16 +44,16 @@ export function * fetchWorkflowItemsSaga(action) {
 }
 
 export function * createProject(action) {
-  yield postProject(action.name, action.parent, action.amount, action.purpose, action.currency);
+  yield postProject(action.name, action.amount, action.purpose, action.currency);
   const projects = yield fetchProjects();
   yield put({type: FETCH_PROJECTS_SUCCESS, projects: projects.data});
 
 }
 export function * createSubProjectSaga(action) {
   yield postSubProject(action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectPurpose, action.subProjectCurrency);
-  const streamItems = yield fetchStreamItems(action.parentName);
+  const projectDetails = yield fetchProjectDetails(action.parentName);
 
-  yield put({type: FETCH_STREAM_ITEMS_SUCCESS, streamItems: streamItems.data});
+  yield put({type: FETCH_PROJECT_DETAILS_SUCCESS, projectDetails: projectDetails.data});
 }
 
 export function * createWorkflowItem(action) {
@@ -90,8 +90,8 @@ export function * watchFetchProjects() {
   yield takeEvery(FETCH_PROJECTS, fetchProjectsSaga)
 }
 
-export function * watchFetchStreamItems() {
-  yield takeEvery(FETCH_STREAM_ITEMS, fetchStreamItemsSaga)
+export function * watchFetchProjectDetails() {
+  yield takeEvery(FETCH_PROJECT_DETAILS, fetchProjectDetailsSaga)
 }
 
 export function * watchFetchWorkflowItems() {
@@ -129,7 +129,7 @@ export default function * rootSaga() {
   yield[
     watchFetchPeers(),
     watchFetchProjects(),
-    watchFetchStreamItems(),
+    watchFetchProjectDetails(),
     watchCreateSubProject(),
     watchCreateWorkflowItem(),
     watchCreateProject(),

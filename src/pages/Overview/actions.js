@@ -15,11 +15,10 @@ export function fetchProjects() {
   }
 }
 
-export function createProject(name, parent, amount, purpose, currency) {
+export function createProject(name, amount, purpose, currency) {
   return {
     type: CREATE_PROJECT,
     name: name,
-    parent: parent,
     amount: amount,
     purpose:purpose,
     currency: currency

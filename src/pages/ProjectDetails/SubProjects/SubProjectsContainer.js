@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchStreamItems, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose} from './actions';
+import { fetchProjectDetails, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose} from './actions';
 import SubProjects from './SubProjects'
 import {showSnackBar, storeSnackBarMessage} from '../../Notifications/actions';
 
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
-    this.props.fetchStreamItems(this.props.location.pathname.split('/')[2]);
+    this.props.fetchProjectDetails(this.props.location.pathname.split('/')[2]);
   }
 
   render() {
@@ -19,7 +19,7 @@ class SubProjectsContainer extends Component {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchStreamItems: (streamName) => dispatch(fetchStreamItems(streamName)),
+    fetchProjectDetails: (project) => dispatch(fetchProjectDetails(project)),
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
@@ -34,7 +34,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const mapStateToProps = (state) => {
   return {
-    streamItems: state.getIn(['detailview', 'streamItems']),
+    projectName: state.getIn(['detailview', 'projectName']),
+    subProjects: state.getIn(['detailview', 'subProjects']).toJS(),
     workflowDialogVisible: state.getIn(['detailview', 'workflowDialogVisible']),
     subProjectName: state.getIn(['detailview', 'subProjectName']),
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),

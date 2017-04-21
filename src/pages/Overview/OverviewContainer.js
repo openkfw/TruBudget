@@ -17,7 +17,7 @@ class OverviewContainer extends Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchProjects: () => dispatch(fetchProjects()),
-    createProject: (name, parent, amount,purpose, currency) => dispatch(createProject(name, parent, amount,purpose, currency)),
+    createProject: (name, amount, purpose, currency) => dispatch(createProject(name, amount,purpose, currency)),
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeProjectName: (name) => dispatch(storeProjectName(name)),
