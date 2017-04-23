@@ -86,7 +86,7 @@ const StepDot = ({ status, selectable }) => {
   )
 };
 
-const getEditButtons = (status = 'open', editCB) => {
+const getEditButtons = (status = 'open', editCB, progressCB) => {
   const statusMapping = {
     open: {
       tooltip: 'Start Workflow',
@@ -103,7 +103,7 @@ const getEditButtons = (status = 'open', editCB) => {
   return (
     <TableRowColumn>
       <RaisedButton
-        onTouchTap={() => { }}
+        onTouchTap={() => progressCB()}
         style={styles.editButtons}
         primary
         icon={<Icon />}>
@@ -177,7 +177,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
               <TableRowColumn>{workflow.key}</TableRowColumn>
               <TableRowColumn>{amount}</TableRowColumn>
               <TableRowColumn>{statusMapping[status]}</TableRowColumn>
-              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, () => editWorkflow(workflow, props)) : <TableRowColumn />}
+              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn />}
             </TableRow>
 
           </TableBody>
@@ -199,6 +199,13 @@ const editWorkflow = ({ key, txid, data }, props) => {
   props.storeWorkflowState(status)
   props.storeWorkflowTxid(txid)
   props.openWorkflowDialog(true)
+}
+
+const changeProgress = ({ key, txid, data }, props) => {
+  const { amount, currency, purpose, addData, assignee, status } = data;
+
+  const nextStatus = status === 'open' ? 'in_progress' : 'done';
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, amount, currency, purpose, addData, nextStatus, assignee, txid)
 }
 
 const WorkflowList = (props) => {
