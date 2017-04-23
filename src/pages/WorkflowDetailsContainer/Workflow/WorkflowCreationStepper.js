@@ -33,7 +33,7 @@ class WorkflowCreationStepper extends Component {
       this.props.storeWorkflowAdditionalData('')
       this.props.storeWorkflowAssignee('')
       this.props.disableWorkflowState()
-      this.props.storeWorkflowState('Open')
+      this.props.storeWorkflowState('open')
     }
   };
 
@@ -48,7 +48,7 @@ class WorkflowCreationStepper extends Component {
       this.props.storeWorkflowAdditionalData('')
       this.props.storeWorkflowAssignee('')
       this.props.disableWorkflowState()
-      this.props.storeWorkflowState('Open')
+      this.props.storeWorkflowState('open')
     }
     if (stepIndex > 0) {
       this.setState({
