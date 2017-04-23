@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardTitle, CardText, CardMedia, CardHeader } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
+import TextField from 'material-ui/TextField';
 
 const createDoughnutData = (labels, data) => ({
   labels,
@@ -63,7 +64,7 @@ const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpos
         flexDirection: 'row',
         justifyContent: 'center'
       }}>
-        <Card style={{margin: '20px'}}>
+        <Card style={{ margin: '20px' }}>
           <CardHeader
             title="Budget distribution"
             subtitle="Subtitle"
@@ -71,8 +72,14 @@ const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpos
           <CardMedia>
             <Doughnut data={createAmountData(projectAmount, subProjects)} />
           </CardMedia>
+          <TextField
+            floatingLabelText="Sub-Project budget amount"
+            hintText="Budget amount for your project"
+            value={projectAmount}
+            disabled
+          />
         </Card>
-        <Card style={{margin: '20px'}}>
+        <Card style={{ margin: '20px' }}>
           <CardHeader
             title="Task status"
             subtitle="Subtitle"

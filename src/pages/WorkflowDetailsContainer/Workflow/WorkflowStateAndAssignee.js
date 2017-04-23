@@ -5,7 +5,7 @@ import MenuItem from 'material-ui/MenuItem';
 class WorkflowStateAndAssignee extends Component {
 
   state = {
-    stateValue: 'Open',
+    stateValue: 'open',
     assigneeValue: '',
   };
 
@@ -19,26 +19,35 @@ class WorkflowStateAndAssignee extends Component {
       this.props.storeWorkflowAssignee(value);
     }
 
+  createUserSelection = () => {
+    const { users } = this.props;
+    let menuItems = [];
+    let index = 0;
+
+    for (const id in users) {
+      const user = users[id];
+      menuItems.push(<MenuItem key={index} value={id} primaryText={user.name + ' - ' + user.organization} />)
+      index++;
+    }
+
+    return menuItems;
+  }
 
   render() {
     return (
-
       <div style={{
         display: 'flex',
         width: '90%',
         justifyContent: 'space-between',
         alignItems: 'space-between'
       }}>
-        <SelectField onChange={this.handleAssignee} value={this.props.workflowAssignee} floatingLabelText="Assign User" style={{}}>
-          <MenuItem value='User A' primaryText="User A"/>
-          <MenuItem value='User B' primaryText="User B"/>
+        <SelectField autoWidth={true} onChange={this.handleAssignee} value={this.props.workflowAssignee} floatingLabelText="Assign User" style={{}}>
+          {this.createUserSelection()}
         </SelectField>
         <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState}  disabled={this.props.disabledWorkflowState} style={{}}>
-          <MenuItem value='Open' primaryText="Open"/>
-          <MenuItem value='In Progress' primaryText="In Progress"/>
-          <MenuItem value='Donor Approval Missing' primaryText="Donor Approval Missing"/>
-          <MenuItem value='Approved' primaryText="Approved"/>
-          <MenuItem value='Closed' primaryText="Closed"/>
+          <MenuItem value='open' primaryText="Open"/>
+          <MenuItem value='in_progress' primaryText="In Progress"/>
+          <MenuItem value='done' primaryText="Done"/>
         </SelectField>
 
       </div>
