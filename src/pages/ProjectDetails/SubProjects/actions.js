@@ -1,5 +1,5 @@
-export const FETCH_STREAM_ITEMS = 'FETCH_STREAM_ITEMS';
-export const FETCH_STREAM_ITEMS_SUCCESS = 'FETCH_STREAM_ITEMS_SUCCESS';
+export const FETCH_PROJECT_DETAILS = 'FETCH_PROJECT_DETAILS';
+export const FETCH_PROJECT_DETAILS_SUCCESS = 'FETCH_PROJECT_DETAILS_SUCCESS';
 
 export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG';
 export const SHOW_WORKFLOW_DIALOG_SUCCESS = 'SHOW_WORKFLOW_DIALOG_SUCCESS';
@@ -11,10 +11,10 @@ export const SUBPROJECT_AMOUNT = 'SUBPROJECT_AMOUNT';
 export const SUBPROJECT_PURPOSE = 'SUBPROJECT_PURPOSE';
 export const SUBPROJECT_CURRENCY = 'SUBPROJECT_CURRENCY';
 
-export function fetchStreamItems(streamName) {
+export function fetchProjectDetails(project) {
   return {
-    type: FETCH_STREAM_ITEMS,
-    streamName: streamName
+    type: FETCH_PROJECT_DETAILS,
+    project
   }
 }
 

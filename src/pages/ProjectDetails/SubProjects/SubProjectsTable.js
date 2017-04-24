@@ -22,25 +22,24 @@ const prepareAmount = (inputAmount, currency) => {
   return formattedAmount + decimals + tempCurrency;
 }
 
-const getTableEntries = (streamItems, location, history) => {
-
-  return streamItems.map((streamItem, index) => {
-    var amount = prepareAmount(streamItem.data.amount, streamItem.data.currency)
+const getTableEntries = (subProjects, location, history) => {
+  return subProjects.map((subProject, index) => {
+    var amount = prepareAmount(subProject.details.amount, subProject.details.currency)
     return (
       <TableRow key={index} selectable={false}>
-        <TableRowColumn>{streamItem.key}</TableRowColumn>
+        <TableRowColumn>{subProject.name}</TableRowColumn>
         <TableRowColumn>{amount}</TableRowColumn>
-        <TableRowColumn>{streamItem.data.status}</TableRowColumn>
+        <TableRowColumn>{subProject.details.status}</TableRowColumn>
         <TableRowColumn>
-          <FlatButton label="Select" onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2]+ '/'+ streamItem.key)}secondary={true} />
+          <FlatButton label="Select" onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2]+ '/'+ subProject.name)}secondary={true} />
         </TableRowColumn>
       </TableRow>
     );
   });
 }
 
-const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisible, history, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose, subProjectCurrency, storeSubProjectCurrency, showSnackBar, storeSnackBarMessage}) => {
-  const tableEntries = getTableEntries(streamItems, location, history);
+const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisible, history, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose, subProjectCurrency, storeSubProjectCurrency, showSnackBar, storeSnackBarMessage}) => {
+  const tableEntries = getTableEntries(subProjects, location, history);
 
   return (
     <Table>
@@ -72,8 +71,7 @@ const SubProjectsTable = ({ hideWorkflowDialog, streamItems, workflowDialogVisib
       </TableHeader>
       <TableBody displayRowCheckbox={false}
         adjustForCheckbox={false}>
-
-        {tableEntries}
+       {tableEntries}
       </TableBody>
     </Table>
   )

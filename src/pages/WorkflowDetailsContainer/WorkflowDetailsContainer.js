@@ -7,7 +7,6 @@ class WorkflowDetailsContainer extends Component {
   render() {
     return (
       <div>
-        <SubProjectStateContainer {...this.props} />
         <WorkflowContainer {...this.props} />
       </div>
     )

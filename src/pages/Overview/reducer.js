@@ -1,9 +1,9 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_STREAMS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME,PROJECT_AMOUNT, PROJECT_PURPOSE, PROJECT_CURRENCY } from './actions';
+import { FETCH_PROJECTS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME,PROJECT_AMOUNT, PROJECT_PURPOSE, PROJECT_CURRENCY } from './actions';
 
 const defaultState = fromJS({
-  streams: [],
+  projects: [],
   workflowDialogVisible: false,
   projectName:'',
   projectAmount: '',
@@ -13,8 +13,8 @@ const defaultState = fromJS({
 
 export default function overviewReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_STREAMS_SUCCESS:
-      return state.set('streams', action.streams);
+    case FETCH_PROJECTS_SUCCESS:
+      return state.set('projects', action.projects);
     case SHOW_WORKFLOW_DIALOG:
       return state.set('workflowDialogVisible', action.show);
     case PROJECT_NAME:

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchStreams, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectPurpose,storeProjectCurrency} from './actions';
+import { fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectPurpose,storeProjectCurrency} from './actions';
 import Overview from './Overview';
 import {showSnackBar, storeSnackBarMessage} from '../Notifications/actions';
 class OverviewContainer extends Component {
   componentWillMount() {
-    this.props.fetchStreams();
+    this.props.fetchProjects();
   }
 
   render() {
@@ -16,8 +16,8 @@ class OverviewContainer extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchStreams: () => dispatch(fetchStreams()),
-    createProject: (name, parent, amount,purpose, currency) => dispatch(createProject(name, parent, amount,purpose, currency)),
+    fetchProjects: () => dispatch(fetchProjects()),
+    createProject: (name, amount, purpose, currency) => dispatch(createProject(name, amount,purpose, currency)),
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeProjectName: (name) => dispatch(storeProjectName(name)),
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    streams: state.getIn(['overview', 'streams']),
+    projects: state.getIn(['overview', 'projects']),
     workflowDialogVisible: state.getIn(['overview', 'workflowDialogVisible']),
     projectName: state.getIn(['overview', 'projectName']),
     projectAmount: state.getIn(['overview', 'projectAmount']),

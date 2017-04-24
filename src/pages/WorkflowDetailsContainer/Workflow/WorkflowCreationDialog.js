@@ -11,6 +11,7 @@ const WorkflowCreationDialog = (props) => (
          style={{width: '95%'}}
          open={props.showWorkflow}
          onRequestClose={props.hideWorkflowDialog}
+         editMode={props.editMode}
        >
          <WorkflowCreationStepper {...props}/>
        </Dialog>

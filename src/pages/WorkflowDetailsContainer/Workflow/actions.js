@@ -11,8 +11,10 @@ export const WORKFLOW_CURRENCY = 'WORKFLOW_CURRENCY';
 export const WORKFLOW_STATE = 'WORKFLOW_STATE';
 export const WORKFLOW_ASSIGNEE = 'WORKFLOW_ASSIGNEE';
 export const CREATE_WORKFLOW = 'CREATE_WORKFLOW';
+export const EDIT_WORKFLOW = 'EDIT_WORKFLOW';
 export const WORKFLOW_EDIT = 'WORKFLOW_EDIT';
 export const WORKFLOW_STATE_ENABLED = 'WORKFLOW_STATE_ENABLED';
+export const WORKFLOW_TXID = 'WORKFLOW_TXID';
 
 
 export function fetchWorkflowItems(streamName) {
@@ -21,10 +23,11 @@ export function fetchWorkflowItems(streamName) {
     streamName: streamName
   }
 }
-export function showWorkflowDialog(show) {
+export function showWorkflowDialog(show, editMode = false) {
   return {
     type: SHOW_WORKFLOW_DIALOG,
-    show: show
+    show: show,
+    editMode
   }
 }
 
@@ -83,6 +86,13 @@ export function disableWorkflowState(enabled){
   }
 }
 
+export function storeWorkflowTxid(txid){
+  return{
+    type: WORKFLOW_TXID,
+    txid
+  }
+}
+
 export function createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee){
   return{
     type:CREATE_WORKFLOW,
@@ -94,5 +104,20 @@ export function createWorkflowItem(stream, workflowName, amount, currency, purpo
     addData: addData,
     assignee:assignee,
     state:state
+  }
+}
+
+export function editWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, txid) {
+    return {
+    type:EDIT_WORKFLOW,
+    stream:stream,
+    workflowName: workflowName,
+    amount: amount,
+    currency: currency,
+    purpose: purpose,
+    addData: addData,
+    assignee:assignee,
+    state:state,
+    txid
   }
 }

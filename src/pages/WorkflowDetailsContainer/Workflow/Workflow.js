@@ -4,6 +4,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import WorkflowTable from './WorkflowTable';
+import WorkflowList from'./WorkflowList';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 
 
@@ -16,7 +17,7 @@ const Workflow = (props) => (
     position: 'absolute',
     zIndex: 1100,
   }}>
-    <WorkflowTable
+    <WorkflowList
       {...props}
       />
     <FloatingActionButton  onTouchTap={props.openWorkflowDialog} secondary style={{

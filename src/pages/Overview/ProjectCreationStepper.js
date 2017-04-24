@@ -19,7 +19,7 @@ class ProjectCreationStepper extends Component {
      stepIndex: stepIndex + 1,
    });
     if (stepIndex === 2) {
-      this.props.createProject(this.props.projectName, '0', this.props.projectAmount, this.props.projectPurpose, this.props.projectCurrency);
+      this.props.createProject(this.props.projectName, this.props.projectAmount, this.props.projectPurpose, this.props.projectCurrency);
       this.props.hideWorkflowDialog();
       this.props.storeSnackBarMessage(this.props.projectName + ' added to the Projects')
       this.props.openSnackBar();

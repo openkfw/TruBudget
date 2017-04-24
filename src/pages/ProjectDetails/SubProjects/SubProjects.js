@@ -5,16 +5,12 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import SubProjectsTable from './SubProjectsTable';
 
-const SubProjects = ({ streamItems, location, history, workflowDialogVisible, showWorkflowDialog, hideWorkflowDialog, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose,subProjectCurrency,storeSubProjectCurrency, showSnackBar, storeSnackBarMessage}) => (
+const SubProjects = ({ projectName, subProjects, location, history, workflowDialogVisible, showWorkflowDialog, hideWorkflowDialog, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose,subProjectCurrency,storeSubProjectCurrency, showSnackBar, storeSnackBarMessage}) => (
   <Card style={{
-    width: '74%',
-    left: '13%',
-    right: '13%',
-    top: '300px',
-    position: 'absolute',
-    zIndex: 1100,
+    position: 'relative'
   }}>
-    <SubProjectsTable streamItems={streamItems}
+    <SubProjectsTable
+      subProjects={subProjects}
       location={location}
       history={history}
       workflowDialogVisible={workflowDialogVisible}

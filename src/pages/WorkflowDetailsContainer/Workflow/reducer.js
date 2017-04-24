@@ -10,7 +10,8 @@ import {
   WORKFLOW_CURRENCY,
   WORKFLOW_STATE_ENABLED,
   WORKFLOW_STATE,
-  WORKFLOW_ASSIGNEE
+  WORKFLOW_ASSIGNEE,
+  WORKFLOW_TXID
 } from './actions';
 
 const defaultState = fromJS({
@@ -21,9 +22,11 @@ const defaultState = fromJS({
   workflowCurrency: 'EUR',
   workflowAdditionalData: '',
   workflowPurpose: '',
-  workflowState:'Open',
+  workflowState:'open',
   workflowAssignee:'',
-  disabledWorkflowState: true
+  disabledWorkflowState: true,
+  workflowTxid: '',
+  editMode: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -31,7 +34,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case FETCH_WORKFLOW_ITEMS_SUCCESS:
       return state.set('workflowItems', action.workflowItems);
     case SHOW_WORKFLOW_DIALOG:
-      return state.set('showWorkflow', action.show)
+      return state.merge({
+        showWorkflow: action.show,
+        editMode: action.editMode
+      })
     case WORKFLOW_NAME:
       return state.set('workflowName', action.name)
     case WORKFLOW_AMOUNT:
@@ -48,6 +54,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('workflowAssignee', action.assignee)
     case WORKFLOW_STATE_ENABLED:
       return state.set('disabledWorkflowState', action.enabled)
+    case WORKFLOW_TXID:
+      return state.set('workflowTxid', action.txid)
     default:
       return state
   }
