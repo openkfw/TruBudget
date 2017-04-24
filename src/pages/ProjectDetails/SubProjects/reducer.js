@@ -21,7 +21,7 @@ export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_PROJECT_DETAILS_SUCCESS:
       return state.merge({
-        projectName: action.projectDetails.name,
+        projectName: action.projectDetails.details.projectName,
         projectAmount: action.projectDetails.details.amount,
         projectCurrency: action.projectDetails.details.currency,
         projectPurpose: action.projectDetails.details.purpose,

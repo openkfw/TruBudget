@@ -27,7 +27,7 @@ const getTableEntries = (subProjects, location, history) => {
     var amount = prepareAmount(subProject.details.amount, subProject.details.currency)
     return (
       <TableRow key={index} selectable={false}>
-        <TableRowColumn>{subProject.name}</TableRowColumn>
+        <TableRowColumn>{subProject.details.projectName}</TableRowColumn>
         <TableRowColumn>{amount}</TableRowColumn>
         <TableRowColumn>{subProject.details.status}</TableRowColumn>
         <TableRowColumn>
