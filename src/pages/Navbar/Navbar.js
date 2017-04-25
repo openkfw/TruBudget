@@ -7,10 +7,10 @@ import MainNavbarNavigation from './MainNavbarNavigation';
 import NavbarIcons from './NavbarIcons';
 
 
-const Navbar = ({ onToggleSidebar, peers, unreadNotifications, showSidebar, history, route, loggedInUser, logout }) => (
+const Navbar = ({ onToggleSidebar, peers, unreadNotifications, showSidebar, history, route, loggedInUser, logout, streamNames }) => (
   <div>
     <AppBar
-      title={<MainNavbarNavigation history={history} route={route}/>}
+      title={<MainNavbarNavigation history={history} route={route} streamNames={streamNames}/>}
       iconElementLeft={<LeftNavbarNavigation onToggleSidebar={onToggleSidebar}/>}
       iconElementRight={<NavbarIcons unreadNotifications={unreadNotifications} peers={peers} history={history} logout={logout}/>}
       style={{

@@ -12,10 +12,11 @@ import {
   postWorkflowItem,
   editWorkflowItem,
   fetchUsers,
-  login
+  login,
+  fetchStreamNames
 } from './api.js';
 
-import {FETCH_PEERS, FETCH_PEERS_SUCCESS} from './pages/Navbar/actions';
+import {FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAMES_SUCCESS} from './pages/Navbar/actions';
 import {FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT} from './pages/Overview/actions';
 import {FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT_ITEM} from './pages/ProjectDetails/SubProjects/actions';
 import {FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS} from './pages/Dashboard/actions';
@@ -89,6 +90,11 @@ export function * loginSaga({user}) {
   yield put({type: LOGIN_SUCCESS, user})
 }
 
+export function * fetchStreamNamesSaga() {
+  const streamNames = yield fetchStreamNames();
+  yield put({type: FETCH_STREAM_NAMES_SUCCESS, streamNames: streamNames.data})
+}
+
 export function * watchFetchPeers() {
   yield takeEvery(FETCH_PEERS, fetchPeersSaga)
 }
@@ -137,6 +143,10 @@ export function * watchLogin() {
   yield takeLatest(LOGIN, loginSaga)
 }
 
+export function * watchFetchStreamNames() {
+  yield takeLatest(FETCH_STREAM_NAMES, fetchStreamNamesSaga)
+}
+
 export default function * rootSaga() {
   yield[
     watchFetchPeers(),
@@ -150,5 +160,7 @@ export default function * rootSaga() {
     watchFetchNotifications(),
     watchFetchWorkflowItems(),
     watchFetchUsers(),
-    watchLogin()]
+    watchLogin(),
+    watchFetchStreamNames()
+    ]
 }
