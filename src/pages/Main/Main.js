@@ -10,12 +10,14 @@ import WorkflowDetailsContainer from '../WorkflowDetailsContainer/WorkflowDetail
 import NotificationPageContainer from '../Notifications/NotificationPageContainer';
 import LiveNotificationContainer from '../Notifications/LiveNotificationContainer'
 import Placeholder from './Placeholder';
+import LiveUpdates from '../LiveUpdates/LiveUpdatesContainer';
 
 const Main = (props) => {
   return (
     <div>
       <Route component={NavbarContainer} />
       <Route component={LiveNotificationContainer} />
+      <Route component={LiveUpdates} />
       <Switch>
         <Route exact path="/" component={Placeholder} />
         <Route exact path="/projects" component={OverviewContainer} />
