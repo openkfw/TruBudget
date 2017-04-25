@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { toggleSidebar, fetchPeers } from './actions';
+import { toggleSidebar, fetchPeers, fetchStreamNames } from './actions';
 import { fetchNotifications } from '../Notifications/actions';
 import { logout } from '../Login/actions';
 
@@ -10,6 +10,7 @@ import Navbar from './Navbar';
 class NavbarContainer extends Component {
   componentWillMount() {
     this.props.fetchPeers();
+    this.props.fetchStreamNames();
     this.props.fetchNotifications('dummyUser');
   }
   render() {
@@ -22,7 +23,8 @@ const mapDispatchToProps = (dispatch) => {
     onToggleSidebar: () => dispatch(toggleSidebar()),
     fetchPeers: () => dispatch(fetchPeers()),
     fetchNotifications:(user) => dispatch(fetchNotifications(user)),
-    logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
+    fetchStreamNames: () => dispatch(fetchStreamNames()),
   };
 }
 
@@ -33,6 +35,7 @@ const mapStateToProps = (state) => {
     unreadNotifications: state.getIn(['navbar', 'unreadNotifications']),
     route: state.getIn(['route', 'locationBeforeTransitions']).toObject(),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
+    streamNames: state.getIn(['navbar', 'streamNames']),
   }
 }
 

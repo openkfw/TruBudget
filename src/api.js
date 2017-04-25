@@ -3,6 +3,7 @@ import axios from 'axios';
 export const fetchPeers = () => axios.get('/peerInfo');
 export const fetchProjects = () => axios.get('/projects');
 export const fetchProjectDetails = (project) => axios.get('/projects/' + project);
+export const fetchStreamNames = () => axios.get('/streams/names/');
 export const fetchStreamItems = (flowName) => axios.get('/streams/' + flowName);
 export const postSubProject = (parentProject, subProjectName, subProjectAmount, subProjectPurpose, subProjectCurrency) => axios.post('/projects/subprojects', { parentStream: parentProject, name: subProjectName, amount: subProjectAmount, purpose: subProjectPurpose, currency: subProjectCurrency, status: 'Open' })
 export const postProject = (name, amount, purpose, currency) => axios.post('/projects', { name, amount, purpose, currency })
