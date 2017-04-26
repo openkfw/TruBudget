@@ -19,7 +19,7 @@ const Workflow = (props) => (
     <WorkflowList
       {...props}
       />
-    <FloatingActionButton  onTouchTap={props.openWorkflowDialog} secondary style={{
+    <FloatingActionButton  onTouchTap={() => props.openWorkflowDialog(false)} secondary style={{
       position: 'absolute',
       right: '-28px',
       top: '16px'

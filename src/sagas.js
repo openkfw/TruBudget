@@ -21,7 +21,7 @@ import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_
 import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT_ITEM, CREATE_SUBPROJECT_ITEM_SUCCESS } from './pages/ProjectDetails/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS } from './pages/Notifications/actions';
-import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW } from './pages/WorkflowDetailsContainer/Workflow/actions';
+import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS } from './pages/WorkflowDetailsContainer/Workflow/actions';
 import { FETCH_USERS, FETCH_USERS_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
 
 export function* fetchPeersSaga(action) {
@@ -58,14 +58,14 @@ export function* createSubProjectSaga(action) {
 
 export function* createWorkflowItemSaga(action) {
   yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee);
-  const workflowItems = yield fetchWorkflowItems(action.stream);
-  yield put({ type: FETCH_WORKFLOW_ITEMS_SUCCESS, workflowItems: workflowItems.data })
+  yield put({ type: CREATE_WORKFLOW_SUCCESS});
+  yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream});
 }
 
 export function* editWorkflowItemSaga(action) {
   yield editWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee, action.txid);
-  const workflowItems = yield fetchWorkflowItems(action.stream);
-  yield put({ type: FETCH_WORKFLOW_ITEMS_SUCCESS, workflowItems: workflowItems.data })
+  yield put({ type: EDIT_WORKFLOW_SUCCESS});
+  yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream});
 }
 
 export function* fetchNodeInformationSaga() {
