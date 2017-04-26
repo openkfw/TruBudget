@@ -1,7 +1,7 @@
 import { fromJS } from 'immutable';
 
 
-import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_PURPOSE, SUBPROJECT_CURRENCY } from './actions';
+import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_PURPOSE, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS } from './actions';
 
 const defaultState = fromJS({
   projectName: '',
@@ -38,6 +38,13 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('subProjectPurpose', action.purpose);
     case SUBPROJECT_CURRENCY:
       return state.set('subProjectCurrency', action.currency);
+    case CREATE_SUBPROJECT_ITEM_SUCCESS:
+      return state.merge({
+        subProjectName: defaultState.subProjectName,
+        subProjectAmount: defaultState.subProjectAmount,
+        subProjectPurpose: defaultState.subProjectPurpose,
+        subProjectCurrency: defaultState.subProjectCurrency
+      });
     default:
       return state
   }

@@ -3,7 +3,6 @@ import { Card } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-import WorkflowTable from './WorkflowTable';
 import WorkflowList from'./WorkflowList';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 

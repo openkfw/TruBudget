@@ -2,29 +2,12 @@ import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import ProjectCreationStepper from './ProjectCreationStepper'
-
-
-const prepareAmount = (inputAmount, currency) => {
-  var decimals = ',00'
-  var tempCurrency = ' €'
-  if (inputAmount.includes('.')) {
-    decimals = inputAmount.substr(inputAmount.indexOf('.'), inputAmount.length - 1);
-    decimals = decimals.replace('.', ',');
-    if (decimals.length === 2) {
-      decimals += '0';
-    }
-  }
-  if (currency === 'USD') {
-    tempCurrency = " $"
-  }
-  var formattedAmount = parseInt(inputAmount).toLocaleString();
-  return formattedAmount + decimals + tempCurrency;
-}
+import ProjectCreationStepper from './ProjectCreationStepper';
+import { toAmountString } from '../../helper';
 
 const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {
-    var amount = prepareAmount(project.details.amount, project.details.currency)
+    var amount = toAmountString(project.details.amount, project.details.currency)
     return (
       <TableRow key={index} selectable={false}>
         <TableRowColumn>{project.details.projectName}</TableRowColumn>
