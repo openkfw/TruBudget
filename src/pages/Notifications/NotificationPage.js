@@ -7,30 +7,40 @@ import AllIcon from 'material-ui/svg-icons/communication/chat'
 
 import NotificationTable from './NotificationTable';
 
-const NotificationPage = ({list}) => {
+const styles = {
+  headline: {
+
+  },
+  card: {
+    width: '60%',
+    left: '20%',
+    top: '100px',
+    position: 'absolute',
+    zIndex: 1100,
+  }
+};
+
+const NotificationPage = ({ list }) => {
   return (
-    <Card style={{
-      width: '60%',
-      left: '20%',
-      top: '100px',
-      position: 'absolute',
-      zIndex: 1100,
-    }}>
+    <Card style={styles.card}>
       <Tabs>
         <Tab
+          style={styles.headline}
           icon={<UnreadIcon />}
           label="Unread">
-          <NotificationTable notifications={list} filter="unread"/>
+          <NotificationTable notifications={list} filter="unread" />
         </Tab>
         <Tab
+          style={styles.headline}
           icon={<ReadIcon />}
           label="Read">
-          <NotificationTable notifications={list} filter="read"/>
+          <NotificationTable notifications={list} filter="read" />
         </Tab>
         <Tab
+          style={styles.headline}
           icon={<AllIcon />}
           label="All">
-          <NotificationTable notifications={list} filter="all"/>
+          <NotificationTable notifications={list} filter="all" />
         </Tab>
       </Tabs>
     </Card>

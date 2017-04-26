@@ -25,6 +25,8 @@ const mapStateToProps = (state) => {
   return {
       showSnackBar: state.getIn(['notifications', 'showSnackBar']),
       snackBarMessage: state.getIn(['notifications', 'snackBarMessage']),
+      notifications: state.getIn(['notifications', 'list']),
+      users: state.getIn(['login', 'users']),
   }
 }
 

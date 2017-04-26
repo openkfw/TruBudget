@@ -11,7 +11,7 @@ class NavbarContainer extends Component {
   componentWillMount() {
     this.props.fetchPeers();
     this.props.fetchStreamNames();
-    this.props.fetchNotifications('dummyUser');
+    this.props.fetchNotifications(this.props.loggedInUser.id);
   }
   render() {
     return <Navbar {...this.props} />

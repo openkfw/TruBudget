@@ -1,0 +1,19 @@
+.example-enter {
+  position: absolute;
+  right: -999px;
+}
+
+.example-enter.example-enter-active {
+  right: 0px;
+  transition: all 500ms ease-in;
+}
+
+.example-leave {
+  position: absolute;
+  right: 0px;
+}
+
+.example-leave.example-leave-active {
+  right: -999px;
+  transition: all 300ms ease-in;
+}
