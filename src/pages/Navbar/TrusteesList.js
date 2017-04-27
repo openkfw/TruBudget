@@ -54,7 +54,6 @@ const getRoleDescription = ({ role }) => {
 }
 
 const createListItems = (users) => users.map((user, index) => {
-
   return (
     <ListItem
       key={index}
@@ -66,11 +65,12 @@ const createListItems = (users) => users.map((user, index) => {
   )
 });
 
-const TrusteesList = ({ users }) => {
+const TrusteesList = ({ users, loggedInUser }) => {
+  const otherUsers = _.values(users).filter((user) => user.id !== loggedInUser.id);
   return (
     <List>
-      <Subheader>Trustees</Subheader>
-      {createListItems(_.values(users))}
+      <Subheader>Other Trustees</Subheader>
+      {createListItems(otherUsers)}
     </List>
   )
 };

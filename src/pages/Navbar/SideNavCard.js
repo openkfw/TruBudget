@@ -24,6 +24,7 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
       <div style={{
         bottom: 0,
         position: 'absolute',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column'
       }}>
@@ -31,6 +32,7 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
           flex: 1,
           display: 'flex',
           flexDirection: 'row',
+          justifyContent: 'center',
         }}>
           <Avatar
             size={60}
@@ -70,8 +72,7 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
       <ListItem primaryText="Real-time Updates" rightToggle={<Toggle />} />
     </List>
     <Divider />
-    <TrusteesList users={users} />
-
+    <TrusteesList users={users} loggedInUser={loggedInUser}/>
   </div>
 );
 
