@@ -10,7 +10,9 @@ import Subheader from 'material-ui/Subheader';
 
 import colors from '../../colors';
 
-const SideNavCard = ({ loggedInUser, history }) => (
+import TrusteesList from './TrusteesList';
+
+const SideNavCard = ({ loggedInUser, users, history }) => (
   <div>
     <div
       style={{
@@ -48,9 +50,10 @@ const SideNavCard = ({ loggedInUser, history }) => (
     <List>
       <Subheader>Options</Subheader>
       <ListItem primaryText="Real-time Updates" rightToggle={<Toggle />} />
-      <ListItem primaryText="Calls" rightToggle={<Toggle />} />
-      <ListItem primaryText="Messages" rightToggle={<Toggle />} />
     </List>
+    <Divider />
+    <TrusteesList users={users}/>
+
   </div>
 );
 

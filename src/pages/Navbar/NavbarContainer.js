@@ -36,6 +36,7 @@ const mapStateToProps = (state) => {
     route: state.getIn(['route', 'locationBeforeTransitions']).toObject(),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     streamNames: state.getIn(['navbar', 'streamNames']),
+    users: state.getIn(['login', 'users']),
   }
 }
 

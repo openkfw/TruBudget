@@ -7,7 +7,7 @@ import MainNavbarNavigation from './MainNavbarNavigation';
 import NavbarIcons from './NavbarIcons';
 
 
-const Navbar = ({ onToggleSidebar, peers, unreadNotifications, showSidebar, history, route, loggedInUser, logout, streamNames }) => (
+const Navbar = ({ onToggleSidebar, peers, unreadNotifications, showSidebar, history, route, loggedInUser, logout, streamNames, users }) => (
   <div>
     <AppBar
       title={<MainNavbarNavigation history={history} route={route} streamNames={streamNames}/>}
@@ -24,7 +24,8 @@ const Navbar = ({ onToggleSidebar, peers, unreadNotifications, showSidebar, hist
       showSidebar={showSidebar}
       loggedInUser={loggedInUser}
       history={history}
-      logout={logout} />
+      logout={logout}
+      users={users} />
   </div>
 );
 

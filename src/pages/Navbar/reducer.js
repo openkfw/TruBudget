@@ -7,7 +7,7 @@ const defaultState = fromJS({
   showSidebar: false,
   peers: [],
   unreadNotifications: 0,
-  streamNames: {}
+  streamNames: {},
 });
 
 const countUnreadNotifications = (notifications) => notifications.reduce((acc, {data}) => {
