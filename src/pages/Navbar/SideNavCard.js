@@ -10,7 +10,7 @@ import Subheader from 'material-ui/Subheader';
 
 import colors from '../../colors';
 
-import TrusteesList from './TrusteesList';
+import TrusteesList, { getChipList } from './TrusteesList';
 
 const SideNavCard = ({ loggedInUser, users, history }) => (
   <div>
@@ -23,22 +23,40 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
       }}>
       <div style={{
         bottom: 0,
-        position: 'absolute'
+        position: 'absolute',
+        display: 'flex',
+        flexDirection: 'column'
       }}>
-        <Avatar
-          size={60}
-          src={loggedInUser.avatar}
-          style={{
-            marginLeft: "16px"
-          }}
-        />
-        <ListItem
-          primaryText={<div style={{ color: colors.lightColor }}>{loggedInUser.name}</div>}
-          secondaryText={<div style={{ color: colors.lightColor }}>{loggedInUser.organization}</div>}
-          disabled
-          style={{ paddingTop: '16px' }}
-        />
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+          <Avatar
+            size={60}
+            src={loggedInUser.avatar}
+            style={{
+              marginLeft: "16px"
+            }}
+          />
+          <ListItem
+            primaryText={<div style={{ color: colors.lightColor }}>{loggedInUser.name}</div>}
+            secondaryText={<div style={{ color: colors.lightColor }}>{loggedInUser.organization}</div>}
+            disabled
+            style={{ paddingTop: '16px' }}
+          />
+        </div>
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          marginLeft: '2px',
+          marginBottom: '16px'
+        }}>
+          {getChipList(loggedInUser.role)}
+        </div>
       </div>
+
     </div>
     <List>
       <Subheader>Selections</Subheader>
@@ -52,7 +70,7 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
       <ListItem primaryText="Real-time Updates" rightToggle={<Toggle />} />
     </List>
     <Divider />
-    <TrusteesList users={users}/>
+    <TrusteesList users={users} />
 
   </div>
 );

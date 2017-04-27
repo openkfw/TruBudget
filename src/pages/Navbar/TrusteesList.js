@@ -36,7 +36,7 @@ const createChip = (name, ok) => (
   </Chip>
 )
 
-const getChipList = (role) => (
+export const getChipList = (role) => (
   <div style={styles.container}>
     {createChip('Read', role.read)}
     {createChip('Write', role.write)}
