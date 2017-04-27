@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
+import { Step, Stepper, StepLabel, StepButton } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ProjectCreationName from '../../Overview/ProjectCreationName';
@@ -25,15 +25,6 @@ class WorkflowCreationStepper extends Component {
       }
 
       this.props.hideWorkflowDialog();
-      this.props.hideWorkflowDialog();
-      this.props.storeWorkflowName('')
-      this.props.storeWorkflowAmount('')
-      this.props.storeWorkflowCurrency('EUR')
-      this.props.storeWorkflowPurpose('')
-      this.props.storeWorkflowAdditionalData('')
-      this.props.storeWorkflowAssignee('')
-      this.props.disableWorkflowState()
-      this.props.storeWorkflowState('open')
     }
   };
 
@@ -83,24 +74,36 @@ class WorkflowCreationStepper extends Component {
     };
     return (
       <div>
-        <Stepper activeStep={stepIndex}>
+        <Stepper linear={!this.props.editMode} activeStep={stepIndex}>
           <Step>
-            <StepLabel>Name</StepLabel>
+            <StepButton onClick={() => this.setState({ stepIndex: 0 })}>
+              Name
+            </StepButton>
           </Step>
           <Step>
-            <StepLabel>Amount</StepLabel>
+            <StepButton onClick={() => this.setState({ stepIndex: 1 })}>
+              Amount
+            </StepButton>
           </Step>
           <Step>
-            <StepLabel>Purpose</StepLabel>
+            <StepButton onClick={() => this.setState({ stepIndex: 2 })}>
+              Purpose
+            </StepButton>
           </Step>
           <Step>
-            <StepLabel>Documents</StepLabel>
+            <StepButton onClick={() => this.setState({ stepIndex: 3 })}>
+              Documents
+            </StepButton>
           </Step>
           <Step>
-            <StepLabel>Additional Data</StepLabel>
+            <StepButton onClick={() => this.setState({ stepIndex: 4 })}>
+              Additional Data
+            </StepButton>
           </Step>
           <Step>
-            <StepLabel>Status & Assignee</StepLabel>
+            <StepButton onClick={() => this.setState({ stepIndex: 5 })}>
+              Status & Assignee
+            </StepButton>
           </Step>
         </Stepper>
         <div style={contentStyle}>

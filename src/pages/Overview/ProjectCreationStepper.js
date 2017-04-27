@@ -55,7 +55,7 @@ class ProjectCreationStepper extends Component {
     const contentStyle = { margin: '0 16px' };
     return (
       <div>
-        <Stepper activeStep={stepIndex}>
+        <Stepper linear={!this.props.editMode} activeStep={stepIndex}>
         <Step>
           <StepLabel>Project Name</StepLabel>
         </Step>

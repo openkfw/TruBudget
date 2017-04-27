@@ -1,4 +1,4 @@
-import {fromJS} from 'immutable';
+import { fromJS } from 'immutable';
 
 import {
   FETCH_WORKFLOW_ITEMS_SUCCESS,
@@ -11,7 +11,9 @@ import {
   WORKFLOW_STATE_ENABLED,
   WORKFLOW_STATE,
   WORKFLOW_ASSIGNEE,
-  WORKFLOW_TXID
+  WORKFLOW_TXID,
+  CREATE_WORKFLOW_SUCCESS,
+  EDIT_WORKFLOW_SUCCESS
 } from './actions';
 
 const defaultState = fromJS({
@@ -22,8 +24,8 @@ const defaultState = fromJS({
   workflowCurrency: 'EUR',
   workflowAdditionalData: '',
   workflowPurpose: '',
-  workflowState:'open',
-  workflowAssignee:'',
+  workflowState: 'open',
+  workflowAssignee: '',
   disabledWorkflowState: true,
   workflowTxid: '',
   editMode: false
@@ -49,13 +51,27 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_CURRENCY:
       return state.set('workflowCurrency', action.currency)
     case WORKFLOW_STATE:
-      return state.set('workflowState' , action.state)
+      return state.set('workflowState', action.state)
     case WORKFLOW_ASSIGNEE:
       return state.set('workflowAssignee', action.assignee)
     case WORKFLOW_STATE_ENABLED:
       return state.set('disabledWorkflowState', action.enabled)
     case WORKFLOW_TXID:
       return state.set('workflowTxid', action.txid)
+    case CREATE_WORKFLOW_SUCCESS:
+    case EDIT_WORKFLOW_SUCCESS:
+      return state.merge({
+        workflowName: defaultState.workflowName,
+        workflowAmount: defaultState.workflowAmount,
+        workflowCurrency: defaultState.workflowCurrency,
+        workflowAdditionalData: defaultState.workflowAdditionalData,
+        workflowPurpose: defaultState.workflowPurpose,
+        workflowState: defaultState.workflowState,
+        workflowAssignee: defaultState.workflowAssignee,
+        disabledWorkflowState: defaultState.disabledWorkflowStatetrue,
+        workflowTxid: defaultState.workflowTxid,
+        editMode: defaultState.editMode
+      });
     default:
       return state
   }

@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_PROJECTS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME,PROJECT_AMOUNT, PROJECT_PURPOSE, PROJECT_CURRENCY } from './actions';
+import { FETCH_PROJECTS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME,PROJECT_AMOUNT, PROJECT_PURPOSE, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS } from './actions';
 
 const defaultState = fromJS({
   projects: [],
@@ -25,6 +25,13 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set('projectPurpose', action.purpose);
     case PROJECT_CURRENCY:
       return state.set('projectCurrency', action.currency);
+    case CREATE_PROJECT_SUCCESS:
+      return state.merge({
+        projectName: defaultState.projectName,
+        projectAmount: defaultState.projectAmount,
+        projectPurpose: defaultState.projectPurpose,
+        projectCurrency: defaultState.projectCurrency
+      });
     default:
       return state
   }
