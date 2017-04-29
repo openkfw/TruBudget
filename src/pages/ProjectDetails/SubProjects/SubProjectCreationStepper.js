@@ -16,7 +16,6 @@ class SubProjectCreationStepper extends Component {
     this.setState({
      stepIndex: stepIndex + 1,
     });
-    console.log('Stepindex ' + stepIndex);
     if (stepIndex === 2) {
       this.props.createSubProjectItem(this.props.location.pathname.split('/')[2], this.props.subProjectName, this.props.subProjectAmount, this.props.subProjectPurpose, this.props.subProjectCurrency)
       this.props.hideWorkflowDialog();

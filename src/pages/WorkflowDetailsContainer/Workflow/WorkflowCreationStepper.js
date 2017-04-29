@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Step, Stepper, StepLabel, StepButton } from 'material-ui/Stepper';
+import { Step, Stepper, StepButton } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ProjectCreationName from '../../Overview/ProjectCreationName';
@@ -50,7 +50,6 @@ class WorkflowCreationStepper extends Component {
 
   getStepContent(stepIndex) {
     switch (stepIndex) {
-
       case 0:
         return <ProjectCreationName storeProjectName={this.props.storeWorkflowName} projectName={this.props.workflowName} type={'workflow'} />
       case 1:
@@ -63,7 +62,8 @@ class WorkflowCreationStepper extends Component {
         return <ProjectCreationAdditionalData storeWorkflowAdditionalData={this.props.storeWorkflowAdditionalData} workflowAdditionalData={this.props.workflowAdditionalData} />
       case 5:
         return <WorkflowStateAndAssignee users={this.props.users} storeWorkflowState={this.props.storeWorkflowState} storeWorkflowAssignee={this.props.storeWorkflowAssignee} workflowAssignee={this.props.workflowAssignee} workflowState={this.props.workflowState} disabledWorkflowState={this.props.disabledWorkflowState} />
-
+      default:
+        return <span>Done</span>
     }
   }
 

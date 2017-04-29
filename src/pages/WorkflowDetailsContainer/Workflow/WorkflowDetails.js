@@ -1,0 +1,88 @@
+import React from 'react';
+import Dialog from 'material-ui/Dialog';
+
+import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
+import {toAmountString} from '../../../helper';
+import Avatar from 'material-ui/Avatar';
+import {ListItem} from 'material-ui/List';
+import {statusMapping} from '../../../helper.js';
+
+const styles = {
+  textfield: {
+    right: -30
+  },
+  closeButton: {
+    left: 650,
+    position: 'absolute',
+    top: 20
+  },
+  avatarCard: {
+    width: '45%',
+    left: '35px'
+  },
+  dialog: {
+    width: '95%'
+  },
+  paper: {
+    width: '70%',
+    marginTop: '10px'
+  }
+};
+
+const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) => {
+  let workflowItem = {
+    key: '',
+    data: []
+  }
+
+  if (showWorkflowDetails) {
+    workflowItem = workflowItems.find((workflow) => workflow.txid === showDetailsItemId);
+  }
+
+  return workflowItem;
+}
+
+const WorkflowDetails = ({workflowItems, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, loggedInUser}) => {
+  console.log(loggedInUser)
+  const actions = [
+    <FlatButton label="Close"
+    onTouchTap={hideWorkflowDetails}
+    />];
+
+  const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
+
+  return (
+
+    <Dialog open={showWorkflowDetails} actions={actions} title={workflowItem.key} modal={false} style={styles.dialog}>
+      <div>
+        Amount:
+        <TextField disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false}/>
+        <Divider/>
+        Purpose:
+        <TextField disabled={true} hintText={workflowItem.data.purpose} style={styles.textfield} underlineShow={false}/>
+        <Divider/>
+        Documents:
+        <TextField disabled={true} hintText="Bring up the docs" style={styles.textfield} underlineShow={false}/>
+        <Divider/>
+        Additional Data:
+        <TextField disabled={true} hintText={workflowItem.data.addData} style={styles.textfield} underlineShow={false}/>
+        <Divider/>
+        Status:
+        <TextField disabled={true} hintText={statusMapping[workflowItem.data.status]} style={styles.textfield} underlineShow={false}/>
+        <Divider/>
+
+        <div style={styles.paper}>
+          Assignee:
+          <ListItem primaryText={loggedInUser.name} disabled={true} secondaryText={loggedInUser.organization} leftAvatar={< Avatar src={
+            loggedInUser.avatar
+          }/>}/>
+        </div>
+
+      </div>
+    </Dialog>
+  )
+};
+
+export default WorkflowDetails;

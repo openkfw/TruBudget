@@ -7,7 +7,7 @@ const WorkflowCreationDialog = (props) => (
 
     <Dialog
          title="Create Workflow Item"
-         modal={true}
+         modal={false}
          style={{width: '95%'}}
          open={props.showWorkflow}
          onRequestClose={props.hideWorkflowDialog}

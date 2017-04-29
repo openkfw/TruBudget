@@ -45,7 +45,6 @@ export const getChipList = (role) => (
 )
 
 const getRoleDescription = ({ role }) => {
-  const { roleName } = role;
   return (
     <ListItem key='role'>
       {getChipList(role)}

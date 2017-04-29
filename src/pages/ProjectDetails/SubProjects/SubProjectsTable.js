@@ -30,7 +30,7 @@ const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisib
         adjustForCheckbox={false}>
         <Dialog
           title="New Sub-project"
-          modal={true}
+          modal={false}
           open={workflowDialogVisible}
         >
           <SubProjectCreationStepper hideWorkflowDialog={hideWorkflowDialog} location={location} createSubProjectItem={createSubProjectItem} subProjectName={subProjectName} storeSubProjectName={storeSubProjectName}

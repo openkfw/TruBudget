@@ -13,10 +13,11 @@ import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
+import InfoIcon from 'material-ui/svg-icons/action/info';
 import RaisedButton from 'material-ui/RaisedButton';
+import WorkflowDetails from './WorkflowDetails'
 
-
-import { toAmountString } from '../../../helper.js';
+import { toAmountString, statusMapping } from '../../../helper.js';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen } from '../../../colors.js';
 
 
@@ -59,6 +60,12 @@ const styles = {
     marginLeft: '5px',
     marginRight: '5px',
     backgroundColor: 'white'
+  },
+  infoButton:{
+    minWidth: '40px',
+    marginLeft: '5px',
+    marginRight: '5px',
+    color: '#000000',
   }
 }
 
@@ -155,11 +162,6 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 
     const tableStyle = currentWorkflowSelectable ? styles[status] : { ...styles[status], opacity: 0.3 };
 
-    const statusMapping = {
-      done: 'Done',
-      'in_progress': 'In progress',
-      open: 'Open'
-    }
 
     return (
       <Card key={index} style={{
@@ -169,11 +171,22 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
         marginBottom: '15px',
         position: 'relative',
       }}>
+
         {createLine(index === 0, currentWorkflowSelectable)}
         <StepDot status={status} selectable={currentWorkflowSelectable} />
+
         <Table>
           <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
             <TableRow style={tableStyle} selectable={false} disabled={currentWorkflowSelectable}>
+              <TableRowColumn>
+              <RaisedButton
+                style={styles.infoButton}
+                default
+                onTouchTap={() => props.openWorkflowDetails(workflow.txid)}
+                icon={<InfoIcon />}>
+              </RaisedButton>
+
+              </TableRowColumn>
               <TableRowColumn>{workflow.key}</TableRowColumn>
               <TableRowColumn>{amount}</TableRowColumn>
               <TableRowColumn>{statusMapping[status]}</TableRowColumn>
@@ -186,6 +199,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
     )
   });
 }
+
 
 const editWorkflow = ({ key, txid, data }, props) => {
   const { amount, currency, purpose, addData, assignee, status } = data;
@@ -213,6 +227,7 @@ const WorkflowList = (props) => {
     <div>
       {createHeader()}
       {createWorkflowItems(props)}
+      <WorkflowDetails {...props}/>
     </div>
   )
 }

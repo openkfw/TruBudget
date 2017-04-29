@@ -10,7 +10,6 @@ class WorkflowStateAndAssignee extends Component {
   };
 
   handleState = (event, index, value) => {
-      console.log('value ' + value)
       this.props.storeWorkflowState(value);
 
    }
