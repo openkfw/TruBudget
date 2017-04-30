@@ -13,8 +13,11 @@ import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
-import InfoIcon from 'material-ui/svg-icons/action/info';
+import InfoIcon from 'material-ui/svg-icons/action/info-outline';
 import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
+
+
 import WorkflowDetails from './WorkflowDetails'
 
 import { toAmountString, statusMapping } from '../../../helper.js';
@@ -61,7 +64,7 @@ const styles = {
     marginRight: '5px',
     backgroundColor: 'white'
   },
-  infoButton:{
+  infoButton: {
     minWidth: '40px',
     marginLeft: '5px',
     marginRight: '5px',
@@ -108,19 +111,15 @@ const getEditButtons = (status = 'open', editCB, progressCB) => {
   const Icon = statusMapping[status].icon;
 
   return (
-    <TableRowColumn>
-      <RaisedButton
-        onTouchTap={() => progressCB()}
-        style={styles.editButtons}
-        primary
-        icon={<Icon />}>
-      </RaisedButton>
-      <RaisedButton
-        onTouchTap={() => editCB()}
-        style={styles.editButtons}
-        secondary
-        icon={<EditIcon />}>
-      </RaisedButton>
+    <TableRowColumn colSpan={2}>
+      <IconButton
+        onTouchTap={() => editCB()}>
+        <EditIcon />
+      </IconButton>
+      <IconButton
+        onTouchTap={() => progressCB()}>
+        <Icon />
+      </IconButton>
     </TableRowColumn>
   )
 }
@@ -141,10 +140,11 @@ const createHeader = () => (
     <Table>
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow displayBorder={false}>
-          <TableHeaderColumn>Workflow</TableHeaderColumn>
-          <TableHeaderColumn>Amount</TableHeaderColumn>
-          <TableHeaderColumn>Status</TableHeaderColumn>
-          <TableHeaderColumn></TableHeaderColumn>
+          <TableHeaderColumn colSpan={1}></TableHeaderColumn>
+          <TableHeaderColumn colSpan={4}>Workflow</TableHeaderColumn>
+          <TableHeaderColumn colSpan={2}>Amount</TableHeaderColumn>
+          <TableHeaderColumn colSpan={2}>Status</TableHeaderColumn>
+          <TableHeaderColumn colSpan={2}>Actions</TableHeaderColumn>
         </TableRow>
       </TableHeader>
     </Table>
@@ -178,19 +178,17 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
         <Table>
           <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
             <TableRow style={tableStyle} selectable={false} disabled={currentWorkflowSelectable}>
-              <TableRowColumn>
-              <RaisedButton
-                style={styles.infoButton}
-                default
-                onTouchTap={() => props.openWorkflowDetails(workflow.txid)}
-                icon={<InfoIcon />}>
-              </RaisedButton>
-
+              <TableRowColumn colSpan={1}>
+                <IconButton
+                  style={styles.infoButton}
+                  onTouchTap={() => props.openWorkflowDetails(workflow.txid)}>
+                  <InfoIcon />
+                </IconButton>
               </TableRowColumn>
-              <TableRowColumn>{workflow.key}</TableRowColumn>
-              <TableRowColumn>{amount}</TableRowColumn>
-              <TableRowColumn>{statusMapping[status]}</TableRowColumn>
-              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn />}
+              <TableRowColumn colSpan={4}>{workflow.key}</TableRowColumn>
+              <TableRowColumn colSpan={2}>{amount}</TableRowColumn>
+              <TableRowColumn colSpan={2}>{statusMapping[status]}</TableRowColumn>
+              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2}/>}
             </TableRow>
 
           </TableBody>
@@ -227,7 +225,7 @@ const WorkflowList = (props) => {
     <div>
       {createHeader()}
       {createWorkflowItems(props)}
-      <WorkflowDetails {...props}/>
+      <WorkflowDetails {...props} />
     </div>
   )
 }
