@@ -1,5 +1,6 @@
 import { fromJS } from 'immutable';
 import { SHOW_SNACKBAR, SNACKBAR_MESSAGE, FETCH_NOTIFICATIONS_SUCCESS } from './actions';
+import { LOGOUT } from '../Login/actions';
 
 const defaultState = fromJS({
   list: [],
@@ -16,6 +17,8 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set('showSnackBar', action.show);
     case SNACKBAR_MESSAGE:
       return state.set('snackBarMessage', action.message)
+    case LOGOUT:
+      return defaultState
     default:
       return state
   }

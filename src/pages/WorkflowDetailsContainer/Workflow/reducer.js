@@ -1,4 +1,4 @@
-import {fromJS} from 'immutable';
+import { fromJS } from 'immutable';
 
 import {
   FETCH_WORKFLOW_ITEMS_SUCCESS,
@@ -16,6 +16,8 @@ import {
   EDIT_WORKFLOW_SUCCESS,
   SHOW_WORKFLOW_DETAILS
 } from './actions';
+
+import { LOGOUT } from '../../Login/actions';
 
 const defaultState = fromJS({
   workflowItems: [],
@@ -39,7 +41,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case FETCH_WORKFLOW_ITEMS_SUCCESS:
       return state.set('workflowItems', action.workflowItems);
     case SHOW_WORKFLOW_DIALOG:
-      return state.merge({showWorkflow: action.show, editMode: action.editMode})
+      return state.merge({ showWorkflow: action.show, editMode: action.editMode })
     case WORKFLOW_NAME:
       return state.set('workflowName', action.name)
     case WORKFLOW_AMOUNT:
@@ -77,6 +79,8 @@ export default function detailviewReducer(state = defaultState, action) {
         showDetails: action.show,
         showDetailsItemId: action.txid
       })
+    case LOGOUT:
+      return defaultState;
     default:
       return state
   }
