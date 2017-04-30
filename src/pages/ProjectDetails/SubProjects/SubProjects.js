@@ -5,7 +5,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import SubProjectsTable from './SubProjectsTable';
 
-const SubProjects = ({ projectName, subProjects, location, history, workflowDialogVisible, showWorkflowDialog, hideWorkflowDialog, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose,subProjectCurrency,storeSubProjectCurrency, showSnackBar, storeSnackBarMessage}) => (
+const SubProjects = ({ projectName, subProjects, location, history, workflowDialogVisible, showWorkflowDialog, hideWorkflowDialog, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount,subProjectPurpose, storeSubProjectPurpose,subProjectCurrency,storeSubProjectCurrency, showSnackBar, storeSnackBarMessage, loggedInUser}) => (
   <Card style={{
     position: 'relative'
   }}>
@@ -28,7 +28,7 @@ const SubProjects = ({ projectName, subProjects, location, history, workflowDial
       showSnackBar={showSnackBar}
       storeSnackBarMessage={storeSnackBarMessage}
       />
-    <FloatingActionButton secondary onTouchTap={showWorkflowDialog} style={{
+    <FloatingActionButton secondary disabled={!loggedInUser.role.write}  onTouchTap={showWorkflowDialog} style={{
       position: 'absolute',
       right: '-28px',
       top: '16px'

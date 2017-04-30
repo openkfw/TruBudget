@@ -96,7 +96,7 @@ const StepDot = ({ status, selectable }) => {
   )
 };
 
-const getEditButtons = (status = 'open', editCB, progressCB) => {
+const getEditButtons = (status, role, editCB, progressCB) => {
   const statusMapping = {
     open: {
       tooltip: 'Start Workflow',
@@ -113,10 +113,12 @@ const getEditButtons = (status = 'open', editCB, progressCB) => {
   return (
     <TableRowColumn colSpan={2}>
       <IconButton
+        disabled={!role.write}
         onTouchTap={() => editCB()}>
         <EditIcon />
       </IconButton>
       <IconButton
+        disabled={!role.write}
         onTouchTap={() => progressCB()}>
         <Icon />
       </IconButton>
@@ -188,7 +190,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
               <TableRowColumn colSpan={4}>{workflow.key}</TableRowColumn>
               <TableRowColumn colSpan={2}>{amount}</TableRowColumn>
               <TableRowColumn colSpan={2}>{statusMapping[status]}</TableRowColumn>
-              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2}/>}
+              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2}/>}
             </TableRow>
 
           </TableBody>

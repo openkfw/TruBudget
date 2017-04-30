@@ -36,7 +36,8 @@ const mapStateToProps = (state) => {
     projectName: state.getIn(['overview', 'projectName']),
     projectAmount: state.getIn(['overview', 'projectAmount']),
     projectPurpose: state.getIn(['overview', 'projectPurpose']),
-    projectCurrency: state.getIn(['overview', 'projectCurrency'])
+    projectCurrency: state.getIn(['overview', 'projectCurrency']),
+    loggedInUser: state.getIn(['login', 'loggedInUser'])
   }
 }
 
