@@ -22,7 +22,7 @@ class SubProjectsContainer extends Component {
         position: 'absolute',
         zIndex: 1100,
       }}>
-        <ProjectDetails {...this.props}  />
+        <ProjectDetails {...this.props} />
         <SubProjects {...this.props} />
       </div>
     )
@@ -55,8 +55,8 @@ const mapStateToProps = (state) => {
     subProjectName: state.getIn(['detailview', 'subProjectName']),
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
     subProjectPurpose: state.getIn(['detailview', 'subProjectPurpose']),
-    subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency'])
-
+    subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
+    loggedInUser: state.getIn(['login', 'loggedInUser'])
   }
 }
 

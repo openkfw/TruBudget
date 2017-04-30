@@ -6,7 +6,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import OverviewTable from './OverviewTable';
 
 const Overview = ({ projects, history, showWorkflowDialog, workflowDialogVisible, hideWorkflowDialog, createProject, storeProjectName, projectName, storeProjectAmount,
-  projectAmount, projectPurpose, storeProjectPurpose, storeProjectCurrency, projectCurrency, openSnackBar, storeSnackBarMessage }) => (
+  projectAmount, projectPurpose, storeProjectPurpose, storeProjectCurrency, projectCurrency, openSnackBar, storeSnackBarMessage, loggedInUser }) => (
     <Card style={{
       width: '60%',
       left: '20%',
@@ -18,7 +18,7 @@ const Overview = ({ projects, history, showWorkflowDialog, workflowDialogVisible
       <CardText>
         The list of currently ongoing projects is shown below. Click on the select link to view additional details.
     </CardText>
-      <FloatingActionButton secondary onTouchTap={showWorkflowDialog} style={{
+      <FloatingActionButton secondary disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog} style={{
         position: 'absolute',
         right: '-28px',
         top: '16px'
