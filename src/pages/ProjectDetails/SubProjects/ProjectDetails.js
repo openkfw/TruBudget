@@ -23,8 +23,7 @@ const createDoughnutData = (labels, data) => ({
 
 const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = subProjects.reduce((acc, subProject) => {
-    console.log(subProject.details);
-    return acc + parseInt(subProject.details.amount)
+    return acc + parseInt(subProject.details.amount, 10)
   }, 0);
 
   const unspent = projectAmount - subProjectsAmount;

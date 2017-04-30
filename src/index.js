@@ -11,13 +11,10 @@ import createHistory from 'history/createBrowserHistory';
 import {
   ACMECorpLightgrey,
   ACMECorpGrey,
-  ACMECorpDarkgrey,
   ACMECorpLightgreen,
   ACMECorpGreen,
-  ACMECorpBlueGreen,
   ACMECorpLightblue,
-  ACMECorpBlue,
-  ACMECorpDarkBlue
+  ACMECorpBlue
 } from './colors'
 
 import Main from './pages/Main/Main';

@@ -29,7 +29,7 @@ const OverviewTable = (props) => {
         adjustForCheckbox={false}>
         <Dialog
           title="New Project"
-          modal={true}
+          modal={false}
           open={props.workflowDialogVisible}>
           <ProjectCreationStepper hideWorkflowDialog={props.hideWorkflowDialog} createProject={props.createProject} storeProjectName={props.storeProjectName} projectName={props.projectName}
             storeProjectAmount={props.storeProjectAmount}

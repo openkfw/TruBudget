@@ -18,6 +18,15 @@ export const WORKFLOW_EDIT = 'WORKFLOW_EDIT';
 export const WORKFLOW_STATE_ENABLED = 'WORKFLOW_STATE_ENABLED';
 export const WORKFLOW_TXID = 'WORKFLOW_TXID';
 
+export const SHOW_WORKFLOW_DETAILS= 'SHOW_WORKFLOW_DETAILS';
+
+export function showWorkflowDetails(show, txid){
+  return{
+    type: SHOW_WORKFLOW_DETAILS,
+    show,
+    txid
+  }
+}
 
 export function fetchWorkflowItems(streamName) {
   return {

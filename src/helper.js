@@ -12,7 +12,12 @@ export const toAmountString = (inputAmount, currency) => {
   if (currency === 'USD') {
     tempCurrency = " $"
   }
-  formattedAmount = parseInt(inputAmount).toLocaleString();
+  formattedAmount = parseInt(inputAmount, 10).toLocaleString();
   return formattedAmount + decimals + tempCurrency;
 };
 
+export const statusMapping = {
+  done: 'Done',
+  'in_progress': 'In progress',
+  open: 'Open'
+}
