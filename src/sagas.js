@@ -63,7 +63,7 @@ export function* createWorkflowItemSaga(action) {
 }
 
 export function* editWorkflowItemSaga(action) {
-  yield editWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee, action.txid);
+  yield editWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee, action.txid, action.previousState);
   yield put({ type: EDIT_WORKFLOW_SUCCESS});
   yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream});
 }

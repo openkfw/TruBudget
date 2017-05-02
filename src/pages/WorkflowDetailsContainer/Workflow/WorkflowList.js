@@ -68,7 +68,6 @@ const styles = {
     minWidth: '40px',
     marginLeft: '5px',
     marginRight: '5px',
-    color: '#000000',
   }
 }
 
@@ -219,7 +218,7 @@ const changeProgress = ({ key, txid, data }, props) => {
   const { amount, currency, purpose, addData, assignee, status } = data;
 
   const nextStatus = status === 'open' ? 'in_progress' : 'done';
-  props.editWorkflowItem(props.location.pathname.split('/')[3], key, amount, currency, purpose, addData, nextStatus, assignee, txid)
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, amount, currency, purpose, addData, nextStatus, assignee, txid, data)
 }
 
 const WorkflowList = (props) => {

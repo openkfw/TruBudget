@@ -118,7 +118,7 @@ export function createWorkflowItem(stream, workflowName, amount, currency, purpo
   }
 }
 
-export function editWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, txid) {
+export function editWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState) {
     return {
     type:EDIT_WORKFLOW,
     stream:stream,
@@ -129,6 +129,7 @@ export function editWorkflowItem(stream, workflowName, amount, currency, purpose
     addData: addData,
     assignee:assignee,
     state:state,
-    txid
+    txid,
+    previousState
   }
 }
