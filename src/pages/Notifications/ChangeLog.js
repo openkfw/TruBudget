@@ -1,27 +1,25 @@
 import React from 'react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import { Card, CardText, CardHeader } from 'material-ui/Card';
-import IconButton from 'material-ui/IconButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import { Card, CardHeader } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
 
 
 const getListEntries = (historyItems, users) => {
   return historyItems.map((item, index) => {
+    const userId = typeof item.data.from !== "undefined" ? item.data.from : 'jzakotnik'
     return (
       <ListItem key={index}
         primaryText={item.data.description}
-        leftAvatar={<Avatar src={users[item.data.from].avatar}/>}
+        leftAvatar={<Avatar src={users[userId].avatar}/>}
       />
     );
   });
 }
 
 
-const getSideBar = ({hideHistory, historyItems, users}) => {
+const getSideBar = (hideHistory, historyItems, users) => {
 const listEntries = getListEntries(historyItems, users)
  return (
    <Card key={"fsdf"} style={{
@@ -38,7 +36,7 @@ const listEntries = getListEntries(historyItems, users)
  )
 }
 
-const ChangeLog = (props) => {
+const ChangeLog = ({hideHistory, historyItems, users, showHistory}) => {
   return(
       <div style={{
         position: 'fixed',
@@ -51,7 +49,7 @@ const ChangeLog = (props) => {
           transitionName="history"
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500}>
-          {props.showHistory ? getSideBar(props) : null}
+          {showHistory ? getSideBar(hideHistory, historyItems, users) : null}
         </CSSTransitionGroup>
       </div>
 )

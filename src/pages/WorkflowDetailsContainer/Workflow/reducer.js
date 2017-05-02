@@ -16,7 +16,7 @@ import {
   EDIT_WORKFLOW_SUCCESS,
   SHOW_WORKFLOW_DETAILS,
   FETCH_HISTORY_SUCCESS,
-  OPEN_HISTORY
+  OPEN_HISTORY,
 } from './actions';
 
 import { LOGOUT } from '../../Login/actions';

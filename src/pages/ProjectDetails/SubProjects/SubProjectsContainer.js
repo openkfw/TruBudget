@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjectDetails, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose } from './actions';
+import { fetchProjectDetails, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose, showHistory, fetchHistoryItems } from './actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage } from '../../Notifications/actions';
-
 import ProjectDetails from './ProjectDetails';
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
     this.props.fetchProjectDetails(this.props.location.pathname.split('/')[2]);
+    this.props.fetchHistoryItems(this.props.location.pathname.split('/')[2]);
   }
 
   render() {
@@ -41,7 +41,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeSubProjectPurpose: (purpose) => dispatch(storeSubProjectPurpose(purpose)),
     storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency)),
     showSnackBar: () => dispatch(showSnackBar(true)),
-    storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message))
+    storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
+    openHistory: () => dispatch(showHistory(true)),
+    hideHistory: () => dispatch(showHistory(false)),
+    fetchHistoryItems:(project) => dispatch(fetchHistoryItems(project))
   };
 }
 
@@ -56,7 +59,10 @@ const mapStateToProps = (state) => {
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
     subProjectPurpose: state.getIn(['detailview', 'subProjectPurpose']),
     subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
-    loggedInUser: state.getIn(['login', 'loggedInUser'])
+    showHistory: state.getIn(['detailview', 'showHistory']),
+    historyItems: state.getIn(['detailview', 'historyItems']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    users: state.getIn(['login', 'users'])
   }
 }
 

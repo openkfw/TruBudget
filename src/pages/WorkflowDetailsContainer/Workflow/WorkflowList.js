@@ -14,7 +14,6 @@ import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
-import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 
 
@@ -95,7 +94,7 @@ const StepDot = ({ status, selectable }) => {
   )
 };
 
-const getEditButtons = (status, role, editCB, progressCB) => {
+const getEditButtons = (status = 'open', role, editCB, progressCB) => {
   const statusMapping = {
     open: {
       tooltip: 'Start Workflow',
@@ -106,6 +105,7 @@ const getEditButtons = (status, role, editCB, progressCB) => {
       icon: DoneIcon
     }
   }
+  console.log('Status ' + status)
 
   const Icon = statusMapping[status].icon;
 

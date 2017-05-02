@@ -28,6 +28,7 @@ class WorkflowContainer extends Component {
 
   }
 
+
   render() {
     return <Workflow {...this.props} />
   }
@@ -78,7 +79,6 @@ const mapStateToProps = (state) => {
     showHistory: state.getIn(['workflow', 'showHistory']),
     historyItems: state.getIn(['workflow', 'historyItems']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
-    users: state.getIn(['login', 'users'])
   }
 }
 
