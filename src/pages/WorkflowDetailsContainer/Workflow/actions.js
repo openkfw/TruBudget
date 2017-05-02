@@ -17,8 +17,14 @@ export const EDIT_WORKFLOW_SUCCESS = 'EDIT_WORKFLOW_SUCCESS';
 export const WORKFLOW_EDIT = 'WORKFLOW_EDIT';
 export const WORKFLOW_STATE_ENABLED = 'WORKFLOW_STATE_ENABLED';
 export const WORKFLOW_TXID = 'WORKFLOW_TXID';
-
 export const SHOW_WORKFLOW_DETAILS= 'SHOW_WORKFLOW_DETAILS';
+
+
+export const OPEN_HISTORY= 'OPEN_HISTORY';
+export const OPEN_HISTORY_SUCCESS= 'OPEN_HISTORY_SUCCESS';
+export const FETCH_HISTORY= 'FETCH_HISTORY';
+export const FETCH_HISTORY_SUCCESS= 'FETCH_HISTORY_SUCCESS';
+
 
 export function showWorkflowDetails(show, txid){
   return{
@@ -28,12 +34,27 @@ export function showWorkflowDetails(show, txid){
   }
 }
 
+export function showHistory(show){
+  return {
+    type: OPEN_HISTORY,
+    show
+  }
+}
+
 export function fetchWorkflowItems(streamName) {
   return {
     type: FETCH_WORKFLOW_ITEMS,
     streamName: streamName
   }
 }
+
+export function fetchHistoryItems(project){
+  return{
+    type: FETCH_HISTORY,
+    project
+  }
+}
+
 export function showWorkflowDialog(show, editMode = false) {
   return {
     type: SHOW_WORKFLOW_DIALOG,

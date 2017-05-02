@@ -13,7 +13,8 @@ import {
   editWorkflowItem,
   fetchUsers,
   login,
-  fetchStreamNames
+  fetchStreamNames,
+  fetchHistory
 } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAMES_SUCCESS } from './pages/Navbar/actions';
@@ -21,7 +22,7 @@ import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_
 import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT_ITEM, CREATE_SUBPROJECT_ITEM_SUCCESS } from './pages/ProjectDetails/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS } from './pages/Notifications/actions';
-import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS } from './pages/WorkflowDetailsContainer/Workflow/actions';
+import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY} from './pages/WorkflowDetailsContainer/Workflow/actions';
 import { FETCH_USERS, FETCH_USERS_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
 
 export function* fetchPeersSaga(action) {
@@ -92,6 +93,12 @@ export function* fetchStreamNamesSaga() {
   const streamNames = yield fetchStreamNames();
   yield put({ type: FETCH_STREAM_NAMES_SUCCESS, streamNames: streamNames.data })
 }
+export function* fetchHistorySaga({project}){
+  console.log("Project " + project)
+  const history = yield fetchHistory(project);
+  console.log(history)
+  yield put ({type: FETCH_HISTORY_SUCCESS, historyItems: history.data })
+}
 
 export function* watchFetchPeers() {
   yield takeEvery(FETCH_PEERS, fetchPeersSaga)
@@ -107,6 +114,10 @@ export function* watchFetchProjectDetails() {
 
 export function* watchFetchWorkflowItems() {
   yield takeEvery(FETCH_WORKFLOW_ITEMS, fetchWorkflowItemsSaga)
+}
+
+export function* watchFetchHistory(){
+  yield takeEvery(FETCH_HISTORY, fetchHistorySaga)
 }
 
 export function* watchCreateSubProject() {
@@ -159,6 +170,7 @@ export default function* rootSaga() {
     watchFetchWorkflowItems(),
     watchFetchUsers(),
     watchLogin(),
-    watchFetchStreamNames()
+    watchFetchStreamNames(),
+    watchFetchHistory()
   ]
 }

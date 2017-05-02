@@ -14,7 +14,9 @@ import {
   WORKFLOW_TXID,
   CREATE_WORKFLOW_SUCCESS,
   EDIT_WORKFLOW_SUCCESS,
-  SHOW_WORKFLOW_DETAILS
+  SHOW_WORKFLOW_DETAILS,
+  FETCH_HISTORY_SUCCESS,
+  OPEN_HISTORY
 } from './actions';
 
 import { LOGOUT } from '../../Login/actions';
@@ -34,6 +36,8 @@ const defaultState = fromJS({
   editMode: false,
   showDetails: false,
   showDetailsItemId: '',
+  showHistory: false,
+  historyItems:[],
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -60,6 +64,10 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('disabledWorkflowState', action.enabled)
     case WORKFLOW_TXID:
       return state.set('workflowTxid', action.txid)
+    case OPEN_HISTORY:
+      return state.set('showHistory', action.show)
+    case FETCH_HISTORY_SUCCESS:
+      return state.set('historyItems', action.historyItems)
     case CREATE_WORKFLOW_SUCCESS:
     case EDIT_WORKFLOW_SUCCESS:
       return state.merge({
