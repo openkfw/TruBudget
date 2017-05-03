@@ -3,7 +3,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import SubProjectCreationStepper from './SubProjectCreationStepper';
-import { toAmountString } from '../../../helper';
+import { toAmountString, statusMapping } from '../../../helper';
 
 const getTableEntries = (subProjects, location, history) => {
   return subProjects.map((subProject, index) => {
@@ -12,7 +12,7 @@ const getTableEntries = (subProjects, location, history) => {
       <TableRow key={index} selectable={false}>
         <TableRowColumn>{subProject.details.projectName}</TableRowColumn>
         <TableRowColumn>{amount}</TableRowColumn>
-        <TableRowColumn>{subProject.details.status}</TableRowColumn>
+        <TableRowColumn>{statusMapping[subProject.details.status]}</TableRowColumn>
         <TableRowColumn>
           <FlatButton label="Select" onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.name)} secondary={true} />
         </TableRowColumn>

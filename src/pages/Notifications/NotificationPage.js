@@ -12,18 +12,20 @@ const styles = {
 
   },
   card: {
-    width: '60%',
-    left: '20%',
-    top: '100px',
-    position: 'absolute',
-    zIndex: 1100,
+    width: '100%',
+    position: 'relative',
+    display: 'flex',
+    marginTop: '40px',
+    flexDirection: 'column',
+    alignItems:'center',
+    zIndex: 1100
   },
 };
 
 const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotificationAsRead }) => {
   return (
     <div style={styles.card}>
-    <Card style={{marginBottom: '10px'}}>
+    <Card style={{width: '60%', marginBottom: '10px'}}>
       <CardTitle title="Notifications" subtitle="Unread" />
       <CardText>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -39,7 +41,7 @@ const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotifica
         loggedInUser={loggedInUser}
         markNotificationAsRead={markNotificationAsRead}/>
     </Card>
-    <Card>
+    <Card style={{width: '60%'}}>
       <CardTitle subtitle="Read" />
       <NotificationTable notifications={list} filter="read" streamNames={streamNames} users={users} loggedInUser={loggedInUser}/>
     </Card>
