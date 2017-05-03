@@ -2,10 +2,10 @@ import React from 'react';
 import { Card } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-
+import HistoryIcon from 'material-ui/svg-icons/action/history';
 import WorkflowList from'./WorkflowList';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
-
+import ChangeLog from '../../Notifications/ChangeLog'
 
 const Workflow = (props) => (
   <Card style={{
@@ -26,6 +26,14 @@ const Workflow = (props) => (
     }}>
       <ContentAdd />
     </FloatingActionButton>
+    <FloatingActionButton  mini={true} onTouchTap={() => props.openHistory()} default style={{
+      position: 'absolute',
+      right: '-15px',
+      top: '80px'
+    }}>
+      <HistoryIcon />
+    </FloatingActionButton>
+    <ChangeLog {...props}/>
     <WorkflowCreationDialog {...props} />
   </Card>
 );
