@@ -37,7 +37,7 @@ export default class FlyInNotification extends Component {
     }
   }
 
-  filterNotifications = (notification) => notification.data.read === false
+  filterNotifications = (notification) => notification.data.done === false
 
   compareAndFireNotifications = (oldN, newN) => {
     if (!oldN.length) return;
@@ -46,6 +46,10 @@ export default class FlyInNotification extends Component {
     const newData = newN.map(this.mapNotifications).filter(this.filterNotifications).sort();
 
     const nothingChanged = _.isEqual(oldData, newData);
+    console.log("changed?", !nothingChanged);
+
+    console.log(newData);
+    console.log(oldData);
 
     const changedData = newData.filter((data) => !_.some(oldData, data));
 
