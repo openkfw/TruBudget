@@ -101,9 +101,7 @@ export function* fetchStreamNamesSaga() {
   yield put({ type: FETCH_STREAM_NAMES_SUCCESS, streamNames: streamNames.data })
 }
 export function* fetchHistorySaga({project}){
-  console.log("Project " + project)
   const history = yield fetchHistory(project);
-  console.log(history)
   yield put ({type: FETCH_HISTORY_SUCCESS, historyItems: history.data })
 }
 

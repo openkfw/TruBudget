@@ -16,16 +16,17 @@ import {
   disableWorkflowState,
   storeWorkflowTxid,
   showWorkflowDetails,
-  showHistory,
-  fetchHistoryItems
 } from './actions';
+import { setSelectedView } from '../../Navbar/actions';
+import { showHistory, fetchHistoryItems } from '../../Notifications/actions';
 import Workflow from './Workflow';
 
 class WorkflowContainer extends Component {
   componentWillMount() {
-    this.props.fetchWorkflowItems(this.props.location.pathname.split('/')[3]);
-    this.props.fetchHistoryItems(this.props.location.pathname.split('/')[3]);
-
+    const subProjectId = this.props.location.pathname.split('/')[3];
+    this.props.fetchWorkflowItems(subProjectId);
+    this.props.fetchHistoryItems(subProjectId);
+    this.props.setSelectedView(subProjectId, 'subProject');
   }
 
 
@@ -55,7 +56,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     openHistory: () => dispatch(showHistory(true)),
     hideHistory: () => dispatch(showHistory(false)),
-    fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName))
+    fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName)),
+    setSelectedView: (id, section) => dispatch(setSelectedView(id, section))
   };
 }
 
@@ -76,8 +78,8 @@ const mapStateToProps = (state) => {
     users: state.getIn(['login', 'users']),
     showWorkflowDetails: state.getIn(['workflow', 'showDetails']),
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),
-    showHistory: state.getIn(['workflow', 'showHistory']),
-    historyItems: state.getIn(['workflow', 'historyItems']),
+    showHistory: state.getIn(['notifications', 'showHistory']),
+    historyItems: state.getIn(['notifications', 'historyItems']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
   }
 }

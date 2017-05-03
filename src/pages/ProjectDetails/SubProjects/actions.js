@@ -11,13 +11,6 @@ export const SUBPROJECT_AMOUNT = 'SUBPROJECT_AMOUNT';
 export const SUBPROJECT_PURPOSE = 'SUBPROJECT_PURPOSE';
 export const SUBPROJECT_CURRENCY = 'SUBPROJECT_CURRENCY';
 
-export const OPEN_HISTORY= 'OPEN_HISTORY';
-export const OPEN_HISTORY_SUCCESS= 'OPEN_HISTORY_SUCCESS';
-export const FETCH_HISTORY= 'FETCH_HISTORY';
-export const FETCH_HISTORY_SUCCESS= 'FETCH_HISTORY_SUCCESS';
-
-
-
 export function fetchProjectDetails(project) {
   return {
     type: FETCH_PROJECT_DETAILS,
@@ -31,18 +24,7 @@ export function storeSubProjectName(name) {
     name: name
   }
 }
-export function showHistory(show){
-  return {
-    type: OPEN_HISTORY,
-    show
-  }
-}
-export function fetchHistoryItems(project){
-  return{
-    type: FETCH_HISTORY,
-    project
-  }
-}
+
 export function createSubProjectItem(parentName, subProjectName, subProjectAmount, subProjectPurpose,subProjectCurrency) {
   return {
     type: CREATE_SUBPROJECT_ITEM,
