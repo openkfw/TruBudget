@@ -8,7 +8,7 @@ import Avatar from 'material-ui/Avatar';
 const getNotifications = (notifications, filter = 'all', streamNames, users) => {
   return notifications.reduce((acc, { data, blocktime }, index) => {
     const issuer = users[data.issuer];
-    const notificationRead = data.read === true;
+    const notificationRead = data.done === true;
     const element = (
       <TableRow key={index} selected={notificationRead} selectable={false}>
         <TableRowColumn colSpan="1">
