@@ -19,8 +19,14 @@
 }
 
 .history-enter {
+  height: 100%;
   position: absolute;
   right: -999px;
+  top: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
 }
 
 .history-enter.history-enter-active {
@@ -29,8 +35,14 @@
 }
 
 .history-leave {
+  height: 100%;
   position: absolute;
   right: 0px;
+  top: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
 }
 
 .history-leave.history-leave-active {

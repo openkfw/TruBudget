@@ -50,7 +50,10 @@ const createTaskData = (subProjects) => {
 
 const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpose }) => {
   return (
+
     <Card style={{
+      width: '74%',
+      marginTop: '20px',
       marginBottom: '20px'
     }}>
       <CardTitle title={projectName} subtitle="Project details" />
@@ -61,9 +64,11 @@ const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpos
         display: 'flex',
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'space-around'
       }}>
-        <Card style={{ margin: '20px' }}>
+
+
+        <Card style={{ }}>
           <CardHeader
             title="Budget distribution"
             subtitle="Subtitle"
@@ -78,7 +83,10 @@ const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpos
             disabled
           />
         </Card>
-        <Card style={{ margin: '20px' }}>
+
+
+
+        <Card >
           <CardHeader
             title="Task status"
             subtitle="Subtitle"

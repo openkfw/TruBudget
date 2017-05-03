@@ -11,10 +11,19 @@ import NotificationPageContainer from '../Notifications/NotificationPageContaine
 import LiveNotificationContainer from '../Notifications/LiveNotificationContainer'
 import Placeholder from './Placeholder';
 import LiveUpdates from '../LiveUpdates/LiveUpdatesContainer';
+import Footer from './Footer';
+
 
 const Main = (props) => {
   return (
-    <div>
+    <div style={{
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    backgroundImage: 'url("/navbar_back3.jpg")',
+    backgroundSize: 'cover',
+    alignItems: 'space-between'
+    }}>
       <Route component={NavbarContainer} />
       <Route component={LiveNotificationContainer} />
       <Route component={LiveUpdates} />
@@ -27,6 +36,7 @@ const Main = (props) => {
         <Route exact path="/notifications" component={NotificationPageContainer} />
         <Route component={NotFound} />
       </Switch>
+      <Route component={Footer} />
 
     </div>
   )

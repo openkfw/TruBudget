@@ -8,16 +8,12 @@ import NavbarIcons from './NavbarIcons';
 
 
 const Navbar = ({ onToggleSidebar, peers, unreadNotifications, showSidebar, history, route, loggedInUser, logout, streamNames, users }) => (
-  <div>
+  <div >
     <AppBar
       title={<MainNavbarNavigation history={history} route={route} streamNames={streamNames}/>}
       iconElementLeft={<LeftNavbarNavigation onToggleSidebar={onToggleSidebar}/>}
       iconElementRight={<NavbarIcons unreadNotifications={unreadNotifications} peers={peers} history={history} logout={logout}/>}
-      style={{
-        height: '500px',
-        backgroundImage: 'url("/navbar_back3.jpg")',
-        backgroundSize: 'cover'
-      }}
+      style={{backgroundColor: 'transparent', boxShadow: 'transparent'}}
     />
     <SideNav
       onToggleSidebar={onToggleSidebar}

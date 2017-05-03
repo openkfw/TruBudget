@@ -7,24 +7,19 @@ import OverviewTable from './OverviewTable';
 
 const Overview = ({ projects, history, showWorkflowDialog, workflowDialogVisible, hideWorkflowDialog, createProject, storeProjectName, projectName, storeProjectAmount,
   projectAmount, projectPurpose, storeProjectPurpose, storeProjectCurrency, projectCurrency, openSnackBar, storeSnackBarMessage, loggedInUser }) => (
+    <div style={{display: 'flex', flexDirection: 'column', alignItems:'center'}}>
     <Card style={{
       width: '60%',
-      left: '20%',
-      top: '100px',
-      position: 'absolute',
-      zIndex: 1100,
+      position: 'relative',
+      marginTop: '40px'
     }}>
+    <FloatingActionButton primary disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog}  style={{position: 'absolute', right: '-26px', top: '16px'}}>
+        <ContentAdd />
+    </FloatingActionButton>
       <CardTitle title="Projects" subtitle="Overview of ongoing projects" />
       <CardText>
         The list of currently ongoing projects is shown below. Click on the select link to view additional details.
     </CardText>
-      <FloatingActionButton secondary disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog} style={{
-        position: 'absolute',
-        right: '-28px',
-        top: '16px'
-      }}>
-        <ContentAdd />
-      </FloatingActionButton>
       <OverviewTable
         projects={projects}
         history={history}
@@ -42,7 +37,9 @@ const Overview = ({ projects, history, showWorkflowDialog, workflowDialogVisible
         projectCurrency={projectCurrency}
         openSnackBar={openSnackBar}
         storeSnackBarMessage={storeSnackBarMessage} />
+
     </Card>
+    </div>
   );
 
 export default Overview;

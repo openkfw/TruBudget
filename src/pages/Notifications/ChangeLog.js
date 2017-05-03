@@ -24,10 +24,12 @@ const getListEntries = (historyItems, users) => {
 const getSideBar = (hideHistory, historyItems, users) => {
 const listEntries = getListEntries(historyItems, users)
  return (
+    <div style={{
+      flex: '1'
+    }}>
    <Card key={"fsdf"} style={{
      width: '300px',
      height: '655px',
-     marginBottom: '8px',
    }} >
       <CardHeader title='History'/>
         <List style={{overflowX: 'auto', height: '550px'}}>
@@ -37,6 +39,7 @@ const listEntries = getListEntries(historyItems, users)
       <FlatButton label="Close" onTouchTap={hideHistory} primary={true} />
       </div>
    </Card>
+   </div>
  )
 }
 
@@ -44,10 +47,14 @@ const ChangeLog = ({hideHistory, historyItems, users, showHistory}) => {
   return(
       <div style={{
         position: 'fixed',
-        top: '60px',
-        height: '100%',
-        right: '5px',
+        top: '0px',
+        right: '0px',
         zIndex: 2000,
+        display: 'flex',
+        flexDirection: 'row',
+        height: '100%',
+        alignItems: 'center',
+        flex: 1
       }}>
         <CSSTransitionGroup
           transitionName="history"

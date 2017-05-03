@@ -15,12 +15,9 @@ class SubProjectsContainer extends Component {
   render() {
     return (
       <div style={{
-        width: '74%',
-        left: '13%',
-        right: '13%',
-        top: '150px',
-        position: 'absolute',
-        zIndex: 1100,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
       }}>
         <ProjectDetails {...this.props} />
         <SubProjects {...this.props} />
