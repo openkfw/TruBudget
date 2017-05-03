@@ -19,7 +19,8 @@ class WorkflowCreationStepper extends Component {
     });
     if (stepIndex === 5) {
       if (this.props.editMode) {
-        this.props.editWorkflowItem(this.props.location.pathname.split('/')[3], this.props.workflowName, this.props.workflowAmount, this.props.workflowCurrency, this.props.workflowPurpose, this.props.workflowAdditionalData, this.props.workflowState, this.props.workflowAssignee, this.props.workflowTxid)
+        const currentWorkflowItem = this.props.workflowItems.find((item) => item.txid ===  this.props.workflowTxid);
+        this.props.editWorkflowItem(this.props.location.pathname.split('/')[3], this.props.workflowName, this.props.workflowAmount, this.props.workflowCurrency, this.props.workflowPurpose, this.props.workflowAdditionalData, this.props.workflowState, this.props.workflowAssignee, this.props.workflowTxid, currentWorkflowItem.data)
       } else {
         this.props.createWorkflowItem(this.props.location.pathname.split('/')[3], this.props.workflowName, this.props.workflowAmount, this.props.workflowCurrency, this.props.workflowPurpose, this.props.workflowAdditionalData, this.props.workflowState, this.props.workflowAssignee)
       }

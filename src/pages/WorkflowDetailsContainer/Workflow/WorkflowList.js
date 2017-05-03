@@ -14,7 +14,6 @@ import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
-import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 
 
@@ -68,7 +67,6 @@ const styles = {
     minWidth: '40px',
     marginLeft: '5px',
     marginRight: '5px',
-    color: '#000000',
   }
 }
 
@@ -96,7 +94,7 @@ const StepDot = ({ status, selectable }) => {
   )
 };
 
-const getEditButtons = (status, role, editCB, progressCB) => {
+const getEditButtons = (status = 'open', role, editCB, progressCB) => {
   const statusMapping = {
     open: {
       tooltip: 'Start Workflow',
@@ -107,6 +105,7 @@ const getEditButtons = (status, role, editCB, progressCB) => {
       icon: DoneIcon
     }
   }
+  console.log('Status ' + status)
 
   const Icon = statusMapping[status].icon;
 
@@ -219,7 +218,7 @@ const changeProgress = ({ key, txid, data }, props) => {
   const { amount, currency, purpose, addData, assignee, status } = data;
 
   const nextStatus = status === 'open' ? 'in_progress' : 'done';
-  props.editWorkflowItem(props.location.pathname.split('/')[3], key, amount, currency, purpose, addData, nextStatus, assignee, txid)
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, amount, currency, purpose, addData, nextStatus, assignee, txid, data)
 }
 
 const WorkflowList = (props) => {
