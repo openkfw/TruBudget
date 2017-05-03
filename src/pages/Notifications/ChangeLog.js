@@ -4,6 +4,7 @@ import { Card, CardHeader } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
+import moment from 'moment';
 
 
 const getListEntries = (historyItems, users) => {
@@ -13,6 +14,7 @@ const getListEntries = (historyItems, users) => {
       <ListItem key={index}
         primaryText={item.data.description}
         leftAvatar={<Avatar src={users[userId].avatar}/>}
+        secondaryText={moment(item.blocktime, 'X').fromNow()}
       />
     );
   });
@@ -24,14 +26,16 @@ const listEntries = getListEntries(historyItems, users)
  return (
    <Card key={"fsdf"} style={{
      width: '300px',
-     height: '90%',
-     marginBottom: '8px'
+     height: '655px',
+     marginBottom: '8px',
    }} >
       <CardHeader title='History'/>
-        <List>
+        <List style={{overflowX: 'auto', height: '550px'}}>
           {listEntries}
         </List>
+      <div style={{display: 'flex', flex: 1, justifyContent:'flex-end'}}>
       <FlatButton label="Close" onTouchTap={hideHistory} primary={true} />
+      </div>
    </Card>
  )
 }
