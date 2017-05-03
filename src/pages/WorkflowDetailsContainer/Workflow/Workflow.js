@@ -8,11 +8,7 @@ import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../../Notifications/ChangeLog'
 import { ACMECorpGrey } from '../../../colors.js'
 const Workflow = (props) => (
-  <div style={{
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  }}>
+
     <Card style={{
       width: '74%',
       marginTop: '80px',
@@ -27,7 +23,7 @@ const Workflow = (props) => (
         top: '16px',
         right: '-26px'
       }}>
-        <FloatingActionButton disabled={!props.loggedInUser.role.write} onTouchTap={() => props.openWorkflowDialog(false)} primary style={{
+        <FloatingActionButton disabled={!props.loggedInUser.role.write} onTouchTap={() => props.openWorkflowDialog(false)}  style={{
           position: 'relative'
         }}>
           <ContentAdd/>
@@ -45,7 +41,6 @@ const Workflow = (props) => (
       <ChangeLog {...props}/>
       <WorkflowCreationDialog {...props}/>
     </Card>
-  </div>
 );
 
 export default Workflow;

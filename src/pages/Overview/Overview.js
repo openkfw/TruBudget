@@ -13,7 +13,7 @@ const Overview = ({ projects, history, showWorkflowDialog, workflowDialogVisible
       position: 'relative',
       marginTop: '40px'
     }}>
-    <FloatingActionButton primary disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog}  style={{position: 'absolute', right: '-26px', top: '16px'}}>
+    <FloatingActionButton  disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog}  style={{position: 'absolute', right: '-26px', top: '16px'}}>
         <ContentAdd />
     </FloatingActionButton>
       <CardTitle title="Projects" subtitle="Overview of ongoing projects" />

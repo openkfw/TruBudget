@@ -20,7 +20,7 @@ import {
   fetchHistoryItems
 } from './actions';
 import Workflow from './Workflow';
-
+import SubProjectDetails from './SubProjectDetails'
 class WorkflowContainer extends Component {
   componentWillMount() {
     this.props.fetchWorkflowItems(this.props.location.pathname.split('/')[3]);
@@ -30,7 +30,16 @@ class WorkflowContainer extends Component {
 
 
   render() {
-    return <Workflow {...this.props} />
+    return(
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}>
+      <SubProjectDetails {...this.props} />
+      <Workflow {...this.props} />
+      </div>
+    )
   }
 }
 
@@ -78,6 +87,7 @@ const mapStateToProps = (state) => {
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),
     showHistory: state.getIn(['workflow', 'showHistory']),
     historyItems: state.getIn(['workflow', 'historyItems']),
+    subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
   }
 }

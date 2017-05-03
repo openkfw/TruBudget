@@ -45,7 +45,7 @@ const SubProjects = ({
       right: '-26px'
 
     }}>
-      <FloatingActionButton primary disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog} style={{
+      <FloatingActionButton  disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog} style={{
         position: 'relative'
 
       }}>
