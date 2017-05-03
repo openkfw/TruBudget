@@ -4,6 +4,18 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import Checkbox from 'material-ui/Checkbox';
 import { List, ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
+import IconButton from 'material-ui/IconButton';
+import ReadIcon from 'material-ui/svg-icons/navigation/check';
+
+import { ACMECorpGreen, ACMECorpLightgreen } from '../../colors.js';
+
+const styles = {
+  column: {
+    whiteSpace: 'normal',
+    wordWrap: 'break-word'
+  }
+}
+
 
 const getNotifications = (notifications, filter = 'all', streamNames, users, loggedInUser, markNotificationAsRead) => {
   return notifications.reduce((acc, { data, blocktime, key }, index) => {
@@ -11,17 +23,19 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
     const notificationRead = data.done === true;
     const element = (
       <TableRow key={index} selected={notificationRead} selectable={false}>
-        <TableRowColumn colSpan="1">
-          <Checkbox checked={notificationRead} disabled={notificationRead} onTouchTap={() => markNotificationAsRead(loggedInUser.id, key, data)}/>
-        </TableRowColumn>
-        <TableRowColumn colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
-        <TableRowColumn colSpan="3">{streamNames[data.subProject] ? streamNames[data.subProject] : data.subProject}</TableRowColumn>
-        <TableRowColumn colSpan="5">{data.description}</TableRowColumn>
-        <TableRowColumn colSpan="3">
+        <TableRowColumn style={styles.column} colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
+        <TableRowColumn style={styles.column} colSpan="3">{streamNames[data.subProject] ? streamNames[data.subProject] : data.subProject}</TableRowColumn>
+        <TableRowColumn style={styles.column} colSpan="5">{data.description}</TableRowColumn>
+        <TableRowColumn style={styles.column} colSpan="3">
           <ListItem
             primaryText={issuer.name}
             secondaryText={moment(blocktime, 'X').fromNow()}
           />
+        </TableRowColumn>
+        <TableRowColumn style={styles.column} colSpan="2">
+          <IconButton disabled={notificationRead} onTouchTap={() => markNotificationAsRead(loggedInUser.id, key, data)} tooltip="Mark as read">
+            <ReadIcon color={ACMECorpLightgreen} hoverColor={ACMECorpGreen}/>
+          </IconButton>
         </TableRowColumn>
       </TableRow>
     );
@@ -51,11 +65,11 @@ const NotificationTable = ({ notifications, filter, streamNames, users, loggedIn
         displaySelectAll={false}
         adjustForCheckbox={false}>
         <TableRow>
-          <TableHeaderColumn colSpan="1">Read</TableHeaderColumn>
-          <TableHeaderColumn colSpan="3">Project</TableHeaderColumn>
-          <TableHeaderColumn colSpan="3">Subproject</TableHeaderColumn>
-          <TableHeaderColumn colSpan="5">Description</TableHeaderColumn>
-          <TableHeaderColumn colSpan="3">By</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="3">Project</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="3">Subproject</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="5">Description</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="3">By</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="2"></TableHeaderColumn>
         </TableRow>
       </TableHeader>
       <TableBody
