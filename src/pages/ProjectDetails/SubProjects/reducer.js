@@ -1,7 +1,6 @@
 import { fromJS } from 'immutable';
 
-
-import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_PURPOSE, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS, OPEN_HISTORY, FETCH_HISTORY_SUCCESS} from './actions';
+import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_PURPOSE, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS } from './actions';
 import { LOGOUT } from '../../Login/actions';
 
 const defaultState = fromJS({
@@ -17,7 +16,7 @@ const defaultState = fromJS({
   subProjectPurpose: '',
   subProjectCurrency: 'EUR',
   showHistory: false,
-  historyItems:[],
+  historyItems: [],
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -41,10 +40,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('subProjectPurpose', action.purpose);
     case SUBPROJECT_CURRENCY:
       return state.set('subProjectCurrency', action.currency);
-    case OPEN_HISTORY:
-      return state.set('showHistory', action.show);
-    case FETCH_HISTORY_SUCCESS:
-      return state.set('historyItems', action.historyItems);
     case CREATE_SUBPROJECT_ITEM_SUCCESS:
       return state.merge({
         subProjectName: defaultState.subProjectName,

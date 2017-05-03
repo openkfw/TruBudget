@@ -16,16 +16,17 @@ import {
   disableWorkflowState,
   storeWorkflowTxid,
   showWorkflowDetails,
-  showHistory,
-  fetchHistoryItems
 } from './actions';
+import { setSelectedView } from '../../Navbar/actions';
+import { showHistory, fetchHistoryItems } from '../../Notifications/actions';
 import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 class WorkflowContainer extends Component {
   componentWillMount() {
-    this.props.fetchWorkflowItems(this.props.location.pathname.split('/')[3]);
-    this.props.fetchHistoryItems(this.props.location.pathname.split('/')[3]);
-
+    const subProjectId = this.props.location.pathname.split('/')[3];
+    this.props.fetchWorkflowItems(subProjectId);
+    this.props.fetchHistoryItems(subProjectId);
+    this.props.setSelectedView(subProjectId, 'subProject');
   }
 
 
@@ -64,7 +65,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     openHistory: () => dispatch(showHistory(true)),
     hideHistory: () => dispatch(showHistory(false)),
-    fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName))
+    fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName)),
+    setSelectedView: (id, section) => dispatch(setSelectedView(id, section))
   };
 }
 
@@ -85,9 +87,14 @@ const mapStateToProps = (state) => {
     users: state.getIn(['login', 'users']),
     showWorkflowDetails: state.getIn(['workflow', 'showDetails']),
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),
+<<<<<<< HEAD
     showHistory: state.getIn(['workflow', 'showHistory']),
     historyItems: state.getIn(['workflow', 'historyItems']),
     subProjects: state.getIn(['detailview', 'subProjects']),
+=======
+    showHistory: state.getIn(['notifications', 'showHistory']),
+    historyItems: state.getIn(['notifications', 'historyItems']),
+>>>>>>> 8de2e89e814758d6b7634318b7bf26b880d7aa7e
     loggedInUser: state.getIn(['login', 'loggedInUser']),
   }
 }
