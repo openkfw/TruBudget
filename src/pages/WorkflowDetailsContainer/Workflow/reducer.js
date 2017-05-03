@@ -21,6 +21,7 @@ import { LOGOUT } from '../../Login/actions';
 
 const defaultState = fromJS({
   workflowItems: [],
+  subProjectDetails: {},
   showWorkflow: false,
   workflowName: '',
   workflowAmount: '',
@@ -41,7 +42,7 @@ const defaultState = fromJS({
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_WORKFLOW_ITEMS_SUCCESS:
-      return state.set('workflowItems', action.workflowItems);
+      return state.merge({workflowItems: action.workflowItems.items, subProjectDetails: action.workflowItems.details});
     case SHOW_WORKFLOW_DIALOG:
       return state.merge({ showWorkflow: action.show, editMode: action.editMode })
     case WORKFLOW_NAME:

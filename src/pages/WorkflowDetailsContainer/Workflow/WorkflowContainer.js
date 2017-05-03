@@ -72,7 +72,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const mapStateToProps = (state) => {
   return {
-    workflowItems: state.getIn(['workflow', 'workflowItems']),
+    workflowItems: state.getIn(['workflow', 'workflowItems']).toJS(),
+    subProjectDetails:  state.getIn(['workflow', 'subProjectDetails']).toJS(),
     showWorkflow: state.getIn(['workflow', 'showWorkflow']),
     workflowName: state.getIn(['workflow', 'workflowName']),
     workflowAmount: state.getIn(['workflow', 'workflowAmount']),
@@ -87,14 +88,9 @@ const mapStateToProps = (state) => {
     users: state.getIn(['login', 'users']),
     showWorkflowDetails: state.getIn(['workflow', 'showDetails']),
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),
-<<<<<<< HEAD
-    showHistory: state.getIn(['workflow', 'showHistory']),
-    historyItems: state.getIn(['workflow', 'historyItems']),
-    subProjects: state.getIn(['detailview', 'subProjects']),
-=======
     showHistory: state.getIn(['notifications', 'showHistory']),
     historyItems: state.getIn(['notifications', 'historyItems']),
->>>>>>> 8de2e89e814758d6b7634318b7bf26b880d7aa7e
+    subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
   }
 }
