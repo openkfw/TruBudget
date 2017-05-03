@@ -8,6 +8,7 @@ import {
   postProject,
   fetchNodeInformation,
   fetchNotifications,
+  markNotificationAsRead,
   fetchWorkflowItems,
   postWorkflowItem,
   editWorkflowItem,
@@ -21,7 +22,7 @@ import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAME
 import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_SUCCESS } from './pages/Overview/actions';
 import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT_ITEM, CREATE_SUBPROJECT_ITEM_SUCCESS } from './pages/ProjectDetails/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
-import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS } from './pages/Notifications/actions';
+import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY} from './pages/WorkflowDetailsContainer/Workflow/actions';
 import { FETCH_USERS, FETCH_USERS_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
 
@@ -77,6 +78,12 @@ export function* fetchNodeInformationSaga() {
 export function* fetchNotificationSaga({ user }) {
   const notifications = yield fetchNotifications(user)
   yield put({ type: FETCH_NOTIFICATIONS_SUCCESS, notifications: notifications.data })
+}
+
+export function* markNotificationAsReadSaga({ user, id, data }) {
+  yield markNotificationAsRead(user, id, data);
+  yield put({ type: MARK_NOTIFICATION_AS_READ_SUCCESS });
+  yield put({ type: FETCH_NOTIFICATIONS, user });
 }
 
 export function* fetchUsersSaga() {
@@ -144,6 +151,10 @@ export function* watchFetchNotifications() {
   yield takeLatest(FETCH_NOTIFICATIONS, fetchNotificationSaga)
 }
 
+export function* watchMarkNotificationAsRead() {
+  yield takeLatest(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga)
+}
+
 export function* watchFetchUsers() {
   yield takeLatest(FETCH_USERS, fetchUsersSaga)
 }
@@ -167,6 +178,7 @@ export default function* rootSaga() {
     watchCreateProject(),
     watchFetchNodeInformation(),
     watchFetchNotifications(),
+    watchMarkNotificationAsRead(),
     watchFetchWorkflowItems(),
     watchFetchUsers(),
     watchLogin(),

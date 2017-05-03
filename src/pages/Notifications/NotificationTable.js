@@ -5,16 +5,16 @@ import Checkbox from 'material-ui/Checkbox';
 import { List, ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
-const getNotifications = (notifications, filter = 'all', streamNames, users) => {
-  return notifications.reduce((acc, { data, blocktime }, index) => {
+const getNotifications = (notifications, filter = 'all', streamNames, users, loggedInUser, markNotificationAsRead) => {
+  return notifications.reduce((acc, { data, blocktime, key }, index) => {
     const issuer = users[data.issuer];
     const notificationRead = data.done === true;
     const element = (
       <TableRow key={index} selected={notificationRead} selectable={false}>
         <TableRowColumn colSpan="1">
-          <Checkbox checked={notificationRead} disabled={notificationRead} />
+          <Checkbox checked={notificationRead} disabled={notificationRead} onTouchTap={() => markNotificationAsRead(loggedInUser.id, key, data)}/>
         </TableRowColumn>
-        <TableRowColumn colSpan="3">{data.project}</TableRowColumn>
+        <TableRowColumn colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
         <TableRowColumn colSpan="3">{streamNames[data.subProject] ? streamNames[data.subProject] : data.subProject}</TableRowColumn>
         <TableRowColumn colSpan="5">{data.description}</TableRowColumn>
         <TableRowColumn colSpan="3">
@@ -41,11 +41,11 @@ const getNotifications = (notifications, filter = 'all', streamNames, users) => 
   }, []);
 }
 
-const NotificationTable = ({ notifications, filter, streamNames, users }) => {
-  const tableEntries = getNotifications(notifications, filter, streamNames, users);
+const NotificationTable = ({ notifications, filter, streamNames, users, loggedInUser, markNotificationAsRead }) => {
+  const tableEntries = getNotifications(notifications, filter, streamNames, users, loggedInUser, markNotificationAsRead);
   return (
     <Table
-      multiSelectable={true}
+      multiSelectable={false}
     >
       <TableHeader
         displaySelectAll={false}

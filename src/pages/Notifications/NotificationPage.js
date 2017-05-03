@@ -20,7 +20,7 @@ const styles = {
   },
 };
 
-const NotificationPage = ({ list, streamNames, users }) => {
+const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotificationAsRead }) => {
   return (
     <div style={styles.card}>
     <Card style={{marginBottom: '10px'}}>
@@ -31,11 +31,17 @@ const NotificationPage = ({ list, streamNames, users }) => {
       Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
       Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
     </CardText>
-      <NotificationTable notifications={list} filter="unread" streamNames={streamNames} users={users}/>
+      <NotificationTable
+        notifications={list}
+        filter="unread"
+        streamNames={streamNames}
+        users={users}
+        loggedInUser={loggedInUser}
+        markNotificationAsRead={markNotificationAsRead}/>
     </Card>
     <Card>
       <CardTitle subtitle="Read" />
-      <NotificationTable notifications={list} filter="read" streamNames={streamNames} users={users}/>
+      <NotificationTable notifications={list} filter="read" streamNames={streamNames} users={users} loggedInUser={loggedInUser}/>
     </Card>
     </div>
   )
