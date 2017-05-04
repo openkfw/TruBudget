@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectPurpose,storeProjectCurrency} from './actions';
+import { fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectPurpose,storeProjectCurrency, setProjectCreationStep } from './actions';
 import Overview from './Overview';
 import {showSnackBar, storeSnackBarMessage} from '../Notifications/actions';
 class OverviewContainer extends Component {
@@ -24,15 +24,17 @@ const mapDispatchToProps = (dispatch) => {
     storeProjectAmount: (amount) => dispatch(storeProjectAmount(amount)),
     storeProjectPurpose: (purpose) => dispatch(storeProjectPurpose(purpose)),
     storeProjectCurrency: (currency) => dispatch(storeProjectCurrency(currency)),
-    openSnackBar: () => dispatch(showSnackBar(true)),
-    storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message))
+    showSnackBar: () => dispatch(showSnackBar(true)),
+    storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
+    setProjectCreationStep: (step) => dispatch(setProjectCreationStep(step))
   };
 }
 
 const mapStateToProps = (state) => {
   return {
     projects: state.getIn(['overview', 'projects']),
-    workflowDialogVisible: state.getIn(['overview', 'workflowDialogVisible']),
+    creationDialogShown: state.getIn(['overview', 'workflowDialogVisible']),
+    creationStep: state.getIn(['overview', 'creationStep']),
     projectName: state.getIn(['overview', 'projectName']),
     projectAmount: state.getIn(['overview', 'projectAmount']),
     projectPurpose: state.getIn(['overview', 'projectPurpose']),

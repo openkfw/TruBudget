@@ -1,41 +1,61 @@
 import React from 'react';
-import {Card} from 'material-ui/Card';
+import { Card } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/history';
+
 import SubProjectsTable from './SubProjectsTable';
-import ChangeLog from '../../Notifications/ChangeLog'
-import { ACMECorpGrey } from '../../../colors.js'
-const SubProjects = ({
-  projectName,
-  subProjects,
-  location,
-  history,
-  workflowDialogVisible,
-  showWorkflowDialog,
-  hideWorkflowDialog,
-  createSubProjectItem,
-  subProjectName,
-  storeSubProjectName,
-  subProjectAmount,
-  storeSubProjectAmount,
-  subProjectPurpose,
-  storeSubProjectPurpose,
-  subProjectCurrency,
-  storeSubProjectCurrency,
-  showSnackBar,
-  storeSnackBarMessage,
-  loggedInUser,
-  openHistory,
-  hideHistory,
-  showHistory,
-  historyItems,
-  users
-}) => (
+import ChangeLog from '../../Notifications/ChangeLog';
+import ProjectCreationDialog from '../../Overview/ProjectCreationDialog';
+import { ACMECorpGrey } from '../../../colors.js';
+
+// const exprops = {
+//   projectName,
+//   subProjects,
+//   location,
+//   history,
+//   workflowDialogVisible,
+//   showWorkflowDialog,
+//   hideWorkflowDialog,
+//   createSubProjectItem,
+//   subProjectName,
+//   storeSubProjectName,
+//   subProjectAmount,
+//   storeSubProjectAmount,
+//   subProjectPurpose,
+//   storeSubProjectPurpose,
+//   subProjectCurrency,
+//   storeSubProjectCurrency,
+//   showSnackBar,
+//   storeSnackBarMessage,
+//   loggedInUser,
+//   openHistory,
+//   hideHistory,
+//   showHistory,
+//   historyItems,
+//   users
+// }
+
+
+const SubProjects = (props) => (
   <Card style={{
     position: 'relative',
     width: '74%'
   }}>
+    <ProjectCreationDialog
+      {...props}
+      title="Add new Sub-project"
+      createProject={props.createSubProjectItem}
+      creationDialogShown={props.workflowDialogVisible}
+      projectName={props.subProjectName}
+      storeProjectName={props.storeSubProjectName}
+      projectAmount={props.subProjectAmount}
+      storeProjectAmount={props.storeSubProjectAmount}
+      projectPurpose={props.subProjectPurpose}
+      storeProjectPurpose={props.storeSubProjectPurpose}
+      projectCurrency={props.subProjectCurrency}
+      storeProjectCurrency={props.storeSubProjectCurrency}
+    />
     <div style={{
       display: 'flex',
       flexDirection: 'column',
@@ -45,13 +65,13 @@ const SubProjects = ({
       right: '-26px'
 
     }}>
-      <FloatingActionButton  disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog} style={{
+      <FloatingActionButton disabled={!props.loggedInUser.role.write} onTouchTap={props.showWorkflowDialog} style={{
         position: 'relative'
 
       }}>
-        <ContentAdd/>
+        <ContentAdd />
       </FloatingActionButton>
-      <FloatingActionButton mini={true} onTouchTap={() => openHistory()}  backgroundColor={ACMECorpGrey} style={{
+      <FloatingActionButton mini={true} onTouchTap={() => props.openHistory()} backgroundColor={ACMECorpGrey} style={{
         position: 'relative',
         marginTop: '8px'
       }}>
@@ -60,8 +80,8 @@ const SubProjects = ({
 
     </div>
 
-    <SubProjectsTable subProjects={subProjects} location={location} history={history} workflowDialogVisible={workflowDialogVisible} showWorkflowDialog={showWorkflowDialog} hideWorkflowDialog={hideWorkflowDialog} createSubProjectItem={createSubProjectItem} subProjectName={subProjectName} storeSubProjectName={storeSubProjectName} subProjectAmount={subProjectAmount} storeSubProjectAmount={storeSubProjectAmount} subProjectPurpose={subProjectPurpose} storeSubProjectPurpose={storeSubProjectPurpose} subProjectCurrency={subProjectCurrency} storeSubProjectCurrency={storeSubProjectCurrency} showSnackBar={showSnackBar} storeSnackBarMessage={storeSnackBarMessage}/>
-      <ChangeLog showHistory={showHistory} historyItems={historyItems} users={users} hideHistory={hideHistory}/>
+    <SubProjectsTable {...props} />
+    <ChangeLog {...props} />
   </Card>
 
 );

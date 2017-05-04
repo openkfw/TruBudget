@@ -8,7 +8,7 @@ export const PROJECT_NAME = 'PROJECT_NAME';
 export const PROJECT_AMOUNT = 'PROJECT_AMOUNT';
 export const PROJECT_PURPOSE = 'PROJECT_PURPOSE';
 export const PROJECT_CURRENCY = 'PROJECT_CURRENCY';
-
+export const SET_PROJECT_CREATION_STEP = 'SET_PROJECT_CREATION_STEP';
 
 export function fetchProjects() {
   return {
@@ -46,6 +46,7 @@ export function storeProjectAmount(amount){
     amount: amount
   }
 }
+
 export function storeProjectCurrency(currency){
   return {
     type: PROJECT_CURRENCY,
@@ -59,3 +60,11 @@ export function storeProjectPurpose(purpose){
     purpose: purpose
   }
 }
+
+export function setProjectCreationStep(step){
+  return {
+    type: SET_PROJECT_CREATION_STEP,
+    step
+  }
+}
+

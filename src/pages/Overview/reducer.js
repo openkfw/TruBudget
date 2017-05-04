@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_PROJECTS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_PURPOSE, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS } from './actions';
+import { FETCH_PROJECTS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_PURPOSE, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP } from './actions';
 import { LOGOUT } from '../Login/actions';
 
 const defaultState = fromJS({
@@ -9,7 +9,8 @@ const defaultState = fromJS({
   projectName: '',
   projectAmount: '',
   projectPurpose: '',
-  projectCurrency: 'EUR'
+  projectCurrency: 'EUR',
+  creationStep: 0,
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -33,6 +34,8 @@ export default function overviewReducer(state = defaultState, action) {
         projectPurpose: defaultState.projectPurpose,
         projectCurrency: defaultState.projectCurrency
       });
+    case SET_PROJECT_CREATION_STEP:
+      return state.set('creationStep', action.step);
     case LOGOUT:
       return defaultState;
     default:

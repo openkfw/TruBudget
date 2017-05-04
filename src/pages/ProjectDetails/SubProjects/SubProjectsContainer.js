@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchProjectDetails, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose } from './actions';
+import { setProjectCreationStep } from '../../Overview/actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../../Notifications/actions';
 import { setSelectedView } from '../../Navbar/actions';
@@ -44,8 +45,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     openHistory: () => dispatch(showHistory(true)),
     hideHistory: () => dispatch(showHistory(false)),
-    fetchHistoryItems:(project) => dispatch(fetchHistoryItems(project)),
-    setSelectedView: (id, section) => dispatch(setSelectedView(id, section))
+    fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
+    setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
+    setProjectCreationStep: (step) => dispatch(setProjectCreationStep(step))
   };
 }
 
@@ -63,7 +65,8 @@ const mapStateToProps = (state) => {
     showHistory: state.getIn(['notifications', 'showHistory']),
     historyItems: state.getIn(['notifications', 'historyItems']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
-    users: state.getIn(['login', 'users'])
+    users: state.getIn(['login', 'users']),
+    creationStep: state.getIn(['overview', 'creationStep'])
   }
 }
 

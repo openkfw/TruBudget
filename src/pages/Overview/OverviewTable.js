@@ -1,8 +1,6 @@
 import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import ProjectCreationStepper from './ProjectCreationStepper';
 import { toAmountString, statusMapping } from '../../helper';
 
 const getTableEntries = ({ projects, history }) => {
@@ -27,20 +25,6 @@ const OverviewTable = (props) => {
     <Table>
       <TableHeader displaySelectAll={false}
         adjustForCheckbox={false}>
-        <Dialog
-          title="New Project"
-          modal={false}
-          open={props.workflowDialogVisible}>
-          <ProjectCreationStepper hideWorkflowDialog={props.hideWorkflowDialog} createProject={props.createProject} storeProjectName={props.storeProjectName} projectName={props.projectName}
-            storeProjectAmount={props.storeProjectAmount}
-            projectPurpose={props.projectPurpose}
-            storeProjectPurpose={props.storeProjectPurpose}
-            projectAmount={props.projectAmount}
-            storeProjectCurrency={props.storeProjectCurrency}
-            projectCurrency={props.projectCurrency}
-            openSnackBar={props.openSnackBar}
-            storeSnackBarMessage={props.storeSnackBarMessage} />
-        </Dialog>
         <TableRow>
           <TableHeaderColumn>Name</TableHeaderColumn>
           <TableHeaderColumn>Amount</TableHeaderColumn>

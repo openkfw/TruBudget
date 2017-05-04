@@ -55,7 +55,7 @@ const handleSubmit = (props) => {
 const WorkflowCreationDialog = (props) => (
   <Dialog
     title="Create Workflow Item"
-    modal={false}
+    modal={true}
     bodyStyle={{
       minHeight: '200px'
     }}

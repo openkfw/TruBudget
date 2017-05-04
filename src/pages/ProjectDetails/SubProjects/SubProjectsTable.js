@@ -1,8 +1,6 @@
 import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import SubProjectCreationStepper from './SubProjectCreationStepper';
 import { toAmountString, statusMapping } from '../../../helper';
 
 const getTableEntries = (subProjects, location, history) => {
@@ -28,22 +26,6 @@ const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisib
     <Table>
       <TableHeader displaySelectAll={false}
         adjustForCheckbox={false}>
-        <Dialog
-          title="New Sub-project"
-          modal={false}
-          open={workflowDialogVisible}
-        >
-          <SubProjectCreationStepper hideWorkflowDialog={hideWorkflowDialog} location={location} createSubProjectItem={createSubProjectItem} subProjectName={subProjectName} storeSubProjectName={storeSubProjectName}
-            subProjectAmount={subProjectAmount}
-            storeSubProjectAmount={storeSubProjectAmount}
-            subProjectPurpose={subProjectPurpose}
-            storeSubProjectPurpose={storeSubProjectPurpose}
-            subProjectCurrency={subProjectCurrency}
-            storeSubProjectCurrency={storeSubProjectCurrency}
-            showSnackBar={showSnackBar}
-            storeSnackBarMessage={storeSnackBarMessage} />
-        </Dialog>
-
         <TableRow>
           <TableHeaderColumn>Sub-project</TableHeaderColumn>
           <TableHeaderColumn>Budget</TableHeaderColumn>
