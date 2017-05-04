@@ -4,12 +4,14 @@ export const toAmountString = (inputAmount, currency) => {
   let decimals = ',00'
   let tempCurrency = ' €'
   let formattedAmount = '0'
+  if (inputAmount !== 0){
   if (typeof inputAmount !== "undefined" && inputAmount.includes('.')) {
     decimals = inputAmount.substr(inputAmount.indexOf('.'), inputAmount.length - 1);
     decimals = decimals.replace('.', ',');
     if (decimals.length === 2) {
       decimals += '0';
     }
+  }
   }
   if (currency === 'USD') {
     tempCurrency = " $"

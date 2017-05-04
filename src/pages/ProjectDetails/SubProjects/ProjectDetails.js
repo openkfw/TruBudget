@@ -2,49 +2,66 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia, CardHeader } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 import TextField from 'material-ui/TextField';
-import { createAmountData, createTaskData } from '../../../helper.js'
+import { toAmountString, createAmountData, createTaskData, statusMapping } from '../../../helper.js'
+import { List, ListItem} from 'material-ui/List';
+
+import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
+import AmountIcon from 'material-ui/svg-icons/action/account-balance';
+import StatusIcon from 'material-ui/svg-icons/action/check-circle';
+import InfoIcon from 'material-ui/svg-icons/content/create';
 
 
-
-const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpose }) => {
+const ProjectDetails = ({ projectName, projectCurrency,  projectAmount, subProjects, projectPurpose, projectStatus }) => {
+  const amountString = toAmountString(projectAmount, projectCurrency)
+  console.log(statusMapping)
   return (
-
-    <Card style={{
-      width: '74%',
-      marginTop: '20px',
-      marginBottom: '20px'
-    }}>
-      <CardTitle title={projectName} subtitle="Project details" />
-      <CardText>
-        {projectPurpose}
-      </CardText>
-      <CardText style={{
-        display: 'flex',
+    <div style={{ display: 'flex',
+          marginTop: '20px',
+          height: '30%',
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        width: '74%',
+        marginBottom: '20px',
+        justifyContent: 'space-between'}}>
+
+      <Card style={{width: '30%'}}>
+      <CardTitle title={projectName} subtitle="Project details" />
+      <List>
+          <ListItem
+            disabled={true}
+            leftIcon={<PurposeIcon />}
+            secondaryText={projectPurpose}
+          />
+          <ListItem
+            disabled={true}
+            leftIcon={<AmountIcon />}
+            secondaryText={amountString}
+          />
+
+          <ListItem
+            disabled={true}
+            leftIcon={<StatusIcon />}
+            primaryText={statusMapping[projectStatus]}
+          />
+
+        </List>
+      <CardText style={{
       }}>
-
-
-        <Card style={{ }}>
+       </CardText>
+       </Card>
+        <Card style={{width: '30%'}}>
+          <CardMedia>
+            <img src='./school.jpg' alt='projectType' />
+          </CardMedia>
           <CardHeader
             title="Budget distribution"
-            subtitle="Subtitle"
+            subtitle={amountString}
           />
           <CardMedia>
             <Doughnut data={createAmountData(projectAmount, subProjects)} />
           </CardMedia>
-          <TextField
-            floatingLabelText="Sub-Project budget amount"
-            hintText="Budget amount for your project"
-            value={projectAmount}
-            disabled
-          />
         </Card>
-
-
-
-        <Card >
+        <Card style={{width: '30%'}}>
           <CardHeader
             title="Task status"
             subtitle="Subtitle"
@@ -53,8 +70,8 @@ const ProjectDetails = ({ projectName, projectAmount, subProjects, projectPurpos
             <Doughnut data={createTaskData(subProjects)} />
           </CardMedia>
         </Card>
-      </CardText>
-    </Card>
+     
+      </div>
   )
 }
 
