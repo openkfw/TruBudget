@@ -15,6 +15,7 @@ import {
   CREATE_WORKFLOW_SUCCESS,
   EDIT_WORKFLOW_SUCCESS,
   SHOW_WORKFLOW_DETAILS,
+  SET_WORKFLOW_CREATION_STEP,
 } from './actions';
 
 import { LOGOUT } from '../../Login/actions';
@@ -37,6 +38,7 @@ const defaultState = fromJS({
   showDetailsItemId: '',
   showHistory: false,
   historyItems:[],
+  creationStep: 0,
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -82,6 +84,8 @@ export default function detailviewReducer(state = defaultState, action) {
         showDetails: action.show,
         showDetailsItemId: action.txid
       })
+    case SET_WORKFLOW_CREATION_STEP:
+      return state.set('creationStep', action.step);
     case LOGOUT:
       return defaultState;
     default:

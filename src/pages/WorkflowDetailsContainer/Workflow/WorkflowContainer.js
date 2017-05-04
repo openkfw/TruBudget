@@ -16,6 +16,7 @@ import {
   disableWorkflowState,
   storeWorkflowTxid,
   showWorkflowDetails,
+  setWorkflowCreationStep
 } from './actions';
 import { setSelectedView } from '../../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../../Notifications/actions';
@@ -66,7 +67,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     openHistory: () => dispatch(showHistory(true)),
     hideHistory: () => dispatch(showHistory(false)),
     fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName)),
-    setSelectedView: (id, section) => dispatch(setSelectedView(id, section))
+    setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
+    setWorkflowCreationStep: (step) => dispatch(setWorkflowCreationStep(step))
   };
 }
 
@@ -85,6 +87,7 @@ const mapStateToProps = (state) => {
     workflowTxid: state.getIn(['workflow', 'workflowTxid']),
     disabledWorkflowState: state.getIn(['workflow', 'disabledWorkflowState']),
     editMode: state.getIn(['workflow', 'editMode']),
+    creationStep: state.getIn(['workflow', 'creationStep']),
     users: state.getIn(['login', 'users']),
     showWorkflowDetails: state.getIn(['workflow', 'showDetails']),
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),
