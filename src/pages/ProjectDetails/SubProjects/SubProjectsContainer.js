@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
-    createSubProjectItem: (parentName, subprojectName, amount, purpose, currency) => dispatch(createSubProjectItem(parentName, subprojectName, amount, purpose, currency)),
+    createSubProjectItem: (subprojectName, amount, purpose, currency, parentName) => dispatch(createSubProjectItem(parentName, subprojectName, amount, purpose, currency)),
     storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectPurpose: (purpose) => dispatch(storeSubProjectPurpose(purpose)),
     storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency)),
