@@ -1,20 +1,64 @@
 import React from 'react';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import FlatButton from 'material-ui/FlatButton';
-import { toAmountString, statusMapping } from '../../helper';
+
+import { toAmountString, statusMapping, tsToString } from '../../helper';
+import { Card, CardActions, CardMedia, CardTitle } from 'material-ui/Card';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import { List, ListItem } from 'material-ui/List';
+
+import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
+import DateIcon from 'material-ui/svg-icons/action/date-range';
+import AmountIcon from 'material-ui/svg-icons/action/account-balance';
+import InfoIcon from 'material-ui/svg-icons/content/create';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import { ACMECorpDarkBlue } from '../../colors';
+
 
 const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {
-    var amount = toAmountString(project.details.amount, project.details.currency)
+    const amount = toAmountString(project.details.amount, project.details.currency)
+    const status = 'Status: ' + statusMapping[project.details.status]
+    const purpose = project.details.purpose
+    const imagePath = project.details.projectName === 'School1' ? './school.jpg' : './hospital.jpg'
+    const dateString = tsToString(project.details.createTS)
     return (
-      <TableRow key={index} selectable={false}>
-        <TableRowColumn>{project.details.projectName}</TableRowColumn>
-        <TableRowColumn>{amount}</TableRowColumn>
-        <TableRowColumn>{statusMapping[project.details.status]}</TableRowColumn>
-        <TableRowColumn>
-          <FlatButton label="Select" onTouchTap={() => history.push('/projects/' + project.name)} secondary={true} />
-        </TableRowColumn>
-      </TableRow>
+      <Card key={project.details.projectName} style={{ margin: '20px', width: '25%' }}>
+        <Card>
+          <CardMedia
+            overlay={<CardTitle title={project.details.projectName} subtitle={status} />}
+          >
+            <img src={imagePath} alt='projectType' />
+          </CardMedia>
+        </Card>
+        <CardActions style={{ display: 'flex', flexDirection: 'column', height: '20px', alignItems: 'flex-end', marginTop: '-40px' }}>
+          <FloatingActionButton backgroundColor={ACMECorpDarkBlue} onTouchTap={() => history.push('/projects/' + project.name)} >
+            <InfoIcon />
+          </FloatingActionButton>
+        </CardActions>
+        <List>
+          <ListItem
+            disabled={true}
+            leftIcon={<PurposeIcon />}
+            primaryText={purpose}
+            secondaryText="Purpose"
+          />
+          <ListItem
+            disabled={true}
+            leftIcon={<AmountIcon />}
+            primaryText={amount}
+            secondaryText="Amount"
+          />
+
+          <ListItem
+            disabled={true}
+            leftIcon={<DateIcon />}
+            primaryText={dateString}
+            secondaryText="Created"
+          />
+
+        </List>
+
+      </Card >
+
     );
   });
 }
@@ -22,21 +66,18 @@ const getTableEntries = ({ projects, history }) => {
 const OverviewTable = (props) => {
   const tableEntries = getTableEntries(props);
   return (
-    <Table>
-      <TableHeader displaySelectAll={false}
-        adjustForCheckbox={false}>
-        <TableRow>
-          <TableHeaderColumn>Name</TableHeaderColumn>
-          <TableHeaderColumn>Amount</TableHeaderColumn>
-          <TableHeaderColumn>Status</TableHeaderColumn>
-          <TableHeaderColumn></TableHeaderColumn>
-        </TableRow>
-      </TableHeader>
-      <TableBody displayRowCheckbox={false}
-        adjustForCheckbox={false}>>
+    <div style={{ backgroundColor: 'transparent', height: '100%', width: '70%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       {tableEntries}
-      </TableBody>
-    </Table>
+      <Card style={{ margin: '20px', width: '25%', opacity: '0.7' }}>
+        <div style={{ display: 'flex', height: '450px', backgroundColor: 'lightgray', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+          <CardActions >
+            <FloatingActionButton disabled={!props.loggedInUser.role.write} onTouchTap={props.showWorkflowDialog} style={{ height: '100%', opacity: '1.0' }} >
+              <ContentAdd />
+            </FloatingActionButton>
+          </CardActions>
+        </div>
+      </Card>
+    </div>
   )
 }
 

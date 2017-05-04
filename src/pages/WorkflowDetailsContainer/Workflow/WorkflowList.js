@@ -70,6 +70,28 @@ const styles = {
   }
 }
 
+const editWorkflow = ({ key, txid, data }, props) => {
+  const { amount, currency, purpose, addData, assignee, status } = data;
+  props.storeWorkflowName(key)
+  props.storeWorkflowAmount(amount)
+  props.storeWorkflowCurrency(currency)
+  props.storeWorkflowPurpose(purpose)
+  props.storeWorkflowAdditionalData(addData)
+  props.storeWorkflowAssignee(assignee)
+  props.enableWorkflowState()
+  props.storeWorkflowState(status)
+  props.storeWorkflowTxid(txid)
+  props.openWorkflowDialog(true)
+}
+
+const changeProgress = ({ key, txid, data }, props) => {
+  const { amount, currency, purpose, addData, assignee, status } = data;
+
+  const nextStatus = status === 'open' ? 'in_progress' : 'done';
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, amount, currency, purpose, addData, nextStatus, assignee, txid, data)
+}
+
+
 const StepDot = ({ status, selectable }) => {
   let Icon;
 
@@ -105,8 +127,6 @@ const getEditButtons = (status = 'open', role, editCB, progressCB) => {
       icon: DoneIcon
     }
   }
-  console.log('Status ' + status)
-
   const Icon = statusMapping[status].icon;
 
   return (
@@ -189,7 +209,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
               <TableRowColumn colSpan={4}>{workflow.key}</TableRowColumn>
               <TableRowColumn colSpan={2}>{amount}</TableRowColumn>
               <TableRowColumn colSpan={2}>{statusMapping[status]}</TableRowColumn>
-              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2}/>}
+              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
             </TableRow>
 
           </TableBody>
@@ -200,26 +220,6 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 }
 
 
-const editWorkflow = ({ key, txid, data }, props) => {
-  const { amount, currency, purpose, addData, assignee, status } = data;
-  props.storeWorkflowName(key)
-  props.storeWorkflowAmount(amount)
-  props.storeWorkflowCurrency(currency)
-  props.storeWorkflowPurpose(purpose)
-  props.storeWorkflowAdditionalData(addData)
-  props.storeWorkflowAssignee(assignee)
-  props.enableWorkflowState()
-  props.storeWorkflowState(status)
-  props.storeWorkflowTxid(txid)
-  props.openWorkflowDialog(true)
-}
-
-const changeProgress = ({ key, txid, data }, props) => {
-  const { amount, currency, purpose, addData, assignee, status } = data;
-
-  const nextStatus = status === 'open' ? 'in_progress' : 'done';
-  props.editWorkflowItem(props.location.pathname.split('/')[3], key, amount, currency, purpose, addData, nextStatus, assignee, txid, data)
-}
 
 const WorkflowList = (props) => {
   return (

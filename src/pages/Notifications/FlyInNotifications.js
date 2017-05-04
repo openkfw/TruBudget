@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import { Card, CardTitle, CardText, CardHeader, CardActions } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+import { Card, CardText, CardHeader } from 'material-ui/Card';
 
 
 import _ from 'lodash';
@@ -47,9 +46,6 @@ export default class FlyInNotification extends Component {
 
     const nothingChanged = _.isEqual(oldData, newData);
     console.log("changed?", !nothingChanged);
-
-    console.log(newData);
-    console.log(oldData);
 
     const changedData = newData.filter((data) => !_.some(oldData, data));
 
