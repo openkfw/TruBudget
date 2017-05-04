@@ -22,7 +22,6 @@ const createListItems = (users, login) => {
           secondaryTextLines={1}
           onTouchTap={() => login({ ...data, username: user })}
         />
-        <Divider />
       </div>
     )
 
@@ -34,37 +33,38 @@ const createListItems = (users, login) => {
 const LoginPage = ({ users, login }) => {
   return (
     <div style={{
-      backgroundImage: 'url("/navbar_back2.jpg")',
+      backgroundImage: 'url("/welcome.jpg")',
       backgroundSize: 'cover',
       width: '100%',
       height: '100%',
-      position: 'absolute'
+      position: 'absolute',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column'
     }}>
       <Card style={{
-        width: '40%',
-        left: '30%',
-        top: '100px',
-        position: 'absolute',
+        width: '350px',
         zIndex: 1100,
         opacity: 0.9
       }}>
-        <CardMedia
-          overlay={<CardTitle title="ACMECorp Blockchain" subtitle="Working together for a better world" />}>
-          <img style={{
-            marginTop: '10px',
-            marginBottom: '90px'
-          }}
-            alt="Logo"
-            src="/do_logo.png" />
-        </CardMedia>
+        <CardTitle title="True Budget" subtitle="Blockchain solution" />
+        <Divider />
         <List>
           <Subheader>Choose your user for login</Subheader>
           {createListItems(users, login)}
         </List>
+        <Divider />
         <CardText>
           Developed by Emerging Technologies & Innovation @ Accenture
         </CardText>
       </Card>
+      <img style={{
+            marginTop: '40px',
+            width: '200px'
+          }}
+            alt="Logo"
+            src="/do_logo.png" />
     </div>
   )
 }
