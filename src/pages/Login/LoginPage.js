@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardMedia, CardTitle, CardText } from 'material-ui/Card';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
@@ -60,11 +60,11 @@ const LoginPage = ({ users, login }) => {
         </CardText>
       </Card>
       <img style={{
-            marginTop: '40px',
-            width: '200px'
-          }}
-            alt="Logo"
-            src="/do_logo.png" />
+        marginTop: '40px',
+        width: '200px'
+      }}
+        alt="Logo"
+        src="/do_logo.png" />
     </div>
   )
 }

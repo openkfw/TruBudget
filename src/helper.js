@@ -4,14 +4,14 @@ export const toAmountString = (inputAmount, currency) => {
   let decimals = ',00'
   let tempCurrency = ' €'
   let formattedAmount = '0'
-  if (inputAmount !== 0){
-  if (typeof inputAmount !== "undefined" && inputAmount.includes('.')) {
-    decimals = inputAmount.substr(inputAmount.indexOf('.'), inputAmount.length - 1);
-    decimals = decimals.replace('.', ',');
-    if (decimals.length === 2) {
-      decimals += '0';
+  if (inputAmount !== 0) {
+    if (typeof inputAmount !== "undefined" && inputAmount.includes('.')) {
+      decimals = inputAmount.substr(inputAmount.indexOf('.'), inputAmount.length - 1);
+      decimals = decimals.replace('.', ',');
+      if (decimals.length === 2) {
+        decimals += '0';
+      }
     }
-  }
   }
   if (currency === 'USD') {
     tempCurrency = " $"
@@ -21,7 +21,7 @@ export const toAmountString = (inputAmount, currency) => {
 };
 
 export const tsToString = (ts) => {
-  let dateString = moment(ts, 'x').format("D-MMM-YYYY");
+  let dateString = moment(ts, 'x').format("D.MMM.YYYY");
   return dateString;
 }
 
@@ -44,19 +44,22 @@ const createDoughnutData = (labels, data) => ({
   ]
 });
 
-export const createAmountData = (projectAmount, subProjects) => {
-
+export const calculateUnspentAmount = (subProjects) => {
   const subProjectsAmount = subProjects.reduce((acc, subProject) => {
     return acc + parseInt(subProject.details.amount, 10)
   }, 0);
+  return subProjectsAmount;
+}
 
+export const createAmountData = (projectAmount, subProjects) => {
+  const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
   return createDoughnutData(["Spent", "Unspent"], [subProjectsAmount, unspent]);
 }
 
 
 
-export const createTaskData = (subProjects) => {
+export const getProgressInformation = (subProjects) => {
   let startValue = {
     open: 0,
     inProgress: 0,
@@ -70,6 +73,11 @@ export const createTaskData = (subProjects) => {
       done: status === 'done' ? acc.done + 1 : acc.done,
     };
   }, startValue);
+  return projectStatus;
+}
 
+
+export const createTaskData = (subProjects) => {
+  const projectStatus = getProgressInformation(subProjects)
   return createDoughnutData(["Open", "In progress", "Done"], [projectStatus.open, projectStatus.inProgress, projectStatus.done]);
 }

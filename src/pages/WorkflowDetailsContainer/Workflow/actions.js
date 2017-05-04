@@ -157,7 +157,6 @@ export function editWorkflowItem(stream, workflowName, amount, currency, purpose
 }
 
 export function setWorkflowCreationStep(step) {
-  console.log("steeeeep", step)
   return {
     type: SET_WORKFLOW_CREATION_STEP,
     step
