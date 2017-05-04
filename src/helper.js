@@ -19,26 +19,14 @@ export const toAmountString = (inputAmount, currency) => {
 };
 
 export const tsToString = (ts) => {
-  console.log('ts', ts);
-   let baseString = 'Created: '
-   let dateString = moment(ts, 'x').format("DD-MM-YYYY HH:mm");
-   return baseString + dateString;
+  let dateString = moment(ts, 'x').format("D-MMM-YYYY");
+  return dateString;
 }
 
 export const statusMapping = {
   done: 'Done',
   'in_progress': 'In progress',
   open: 'Open'
-}
-
-export const createAmountData = (projectAmount, subProjects) => {
-
-  const subProjectsAmount = subProjects.reduce((acc, subProject) => {
-    return acc + parseInt(subProject.details.amount, 10)
-  }, 0);
-
-  const unspent = projectAmount - subProjectsAmount;
-  return createDoughnutData(["Spent", "Unspent"], [subProjectsAmount, unspent]);
 }
 
 const createDoughnutData = (labels, data) => ({
@@ -53,6 +41,18 @@ const createDoughnutData = (labels, data) => ({
     }
   ]
 });
+
+export const createAmountData = (projectAmount, subProjects) => {
+
+  const subProjectsAmount = subProjects.reduce((acc, subProject) => {
+    return acc + parseInt(subProject.details.amount, 10)
+  }, 0);
+
+  const unspent = projectAmount - subProjectsAmount;
+  return createDoughnutData(["Spent", "Unspent"], [subProjectsAmount, unspent]);
+}
+
+
 
 export const createTaskData = (subProjects) => {
   let startValue = {

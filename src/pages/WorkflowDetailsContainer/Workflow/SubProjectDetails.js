@@ -1,18 +1,17 @@
 import React from 'react';
-import {Card, CardTitle, CardText, CardMedia, CardHeader} from 'material-ui/Card';
-import {Doughnut} from 'react-chartjs-2';
+import { Card, CardTitle, CardText, CardMedia, CardHeader } from 'material-ui/Card';
+import { Doughnut } from 'react-chartjs-2';
 import TextField from 'material-ui/TextField';
-import {tsToString, createAmountData, createTaskData} from '../../../helper.js'
+import { tsToString, createAmountData, createTaskData } from '../../../helper.js'
 
 
 
 
 
 
-const SubProjectDetails = ({subProjectDetails, workflowItems}) => {
-  console.log(subProjectDetails.amount)
+const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const dateString = tsToString(subProjectDetails.createTS);
-  const items = workflowItems.map((item) => ({...item, details: item.data}));
+  const items = workflowItems.map((item) => ({ ...item, details: item.data }));
   return (
 
     <Card style={{
@@ -20,7 +19,7 @@ const SubProjectDetails = ({subProjectDetails, workflowItems}) => {
       marginTop: '20px',
       marginBottom: '20px'
     }}>
-      <CardTitle title={subProjectDetails.projectName} subtitle="Sub project details"/>
+      <CardTitle title={subProjectDetails.projectName} subtitle="Sub project details" />
       <CardText>
         {subProjectDetails.purpose}
       </CardText>
@@ -35,11 +34,11 @@ const SubProjectDetails = ({subProjectDetails, workflowItems}) => {
         justifyContent: 'space-around'
       }}>
         <Card style={{}}>
-          <CardHeader title="Budget distribution" subtitle="Subtitle"/>
+          <CardHeader title="Budget distribution" subtitle="Subtitle" />
           <CardMedia>
-            <Doughnut data={createAmountData(subProjectDetails.amount, items)}/>
+            <Doughnut data={createAmountData(subProjectDetails.amount, items)} />
           </CardMedia>
-          <TextField floatingLabelText="Sub-Project budget amount" hintText="Budget amount for your project" value={subProjectDetails.amount} disabled/>
+          <TextField floatingLabelText="Sub-Project budget amount" hintText="Budget amount for your project" value={subProjectDetails.amount} disabled />
         </Card>
         <Card >
           <CardHeader

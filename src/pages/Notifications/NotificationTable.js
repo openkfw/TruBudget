@@ -1,9 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import Checkbox from 'material-ui/Checkbox';
-import { List, ListItem } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
+import { ListItem } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
 import ReadIcon from 'material-ui/svg-icons/navigation/check';
 
@@ -34,7 +32,7 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
         </TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="2">
           <IconButton disabled={notificationRead} onTouchTap={() => markNotificationAsRead(loggedInUser.id, key, data)} tooltip="Mark as read">
-            <ReadIcon color={ACMECorpLightgreen} hoverColor={ACMECorpGreen}/>
+            <ReadIcon color={ACMECorpLightgreen} hoverColor={ACMECorpGreen} />
           </IconButton>
         </TableRowColumn>
       </TableRow>

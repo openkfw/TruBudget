@@ -1,25 +1,10 @@
 import React from 'react';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import OverviewTable from './OverviewTable';
 
 const Overview = ({ projects, history, showWorkflowDialog, workflowDialogVisible, hideWorkflowDialog, createProject, storeProjectName, projectName, storeProjectAmount,
   projectAmount, projectPurpose, storeProjectPurpose, storeProjectCurrency, projectCurrency, openSnackBar, storeSnackBarMessage, loggedInUser }) => (
-    <div style={{display: 'flex', flexDirection: 'column', alignItems:'center'}}>
-    <Card style={{
-      width: '60%',
-      position: 'relative',
-      marginTop: '40px'
-    }}>
-    <FloatingActionButton  disabled={!loggedInUser.role.write} onTouchTap={showWorkflowDialog}  style={{position: 'absolute', right: '-26px', top: '16px'}}>
-        <ContentAdd />
-    </FloatingActionButton>
-      <CardTitle title="Projects" subtitle="Overview of ongoing projects" />
-      <CardText>
-        The list of currently ongoing projects is shown below. Click on the select link to view additional details.
-    </CardText>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '40px' }}>
       <OverviewTable
         projects={projects}
         history={history}
@@ -36,9 +21,9 @@ const Overview = ({ projects, history, showWorkflowDialog, workflowDialogVisible
         storeProjectCurrency={storeProjectCurrency}
         projectCurrency={projectCurrency}
         openSnackBar={openSnackBar}
-        storeSnackBarMessage={storeSnackBarMessage} />
+        storeSnackBarMessage={storeSnackBarMessage}
+        loggedInUser={loggedInUser} />
 
-    </Card>
     </div>
   );
 
