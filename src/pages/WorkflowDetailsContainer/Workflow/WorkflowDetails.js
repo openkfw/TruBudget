@@ -43,15 +43,24 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
 
   return workflowItem;
 }
+const getUser = (userId, users, showWorkflowDetails) => {
+  let userProps = { }
 
-const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, loggedInUser }) => {
+  if (showWorkflowDetails) {
+    userProps = users[userId];
+  }
+
+  return userProps;
+}
+
+const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, users }) => {
   const actions = [
     <FlatButton label="Close"
       onTouchTap={hideWorkflowDetails}
     />];
 
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-
+  const assignedUser = getUser(workflowItem.data.assignee, users, showWorkflowDetails);
   return (
 
     <Dialog open={showWorkflowDetails} actions={actions} title={workflowItem.key} modal={false} style={styles.dialog}>
@@ -71,11 +80,10 @@ const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId
         Status:
         <TextField disabled={true} hintText={statusMapping[workflowItem.data.status]} style={styles.textfield} underlineShow={false} />
         <Divider />
-
-        <div style={styles.paper}>
+         <div style={styles.paper}>
           Assignee:
-          <ListItem primaryText={loggedInUser.name} disabled={true} secondaryText={loggedInUser.organization} leftAvatar={< Avatar src={
-            loggedInUser.avatar
+          <ListItem primaryText={assignedUser.name} disabled={true} secondaryText={assignedUser.organization} leftAvatar={< Avatar src={
+            assignedUser.avatar
           } />} />
         </div>
 
