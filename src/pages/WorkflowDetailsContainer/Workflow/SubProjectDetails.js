@@ -1,58 +1,151 @@
 import React from 'react';
-import { Card, CardTitle, CardText, CardMedia, CardHeader } from 'material-ui/Card';
+import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
-import TextField from 'material-ui/TextField';
-import { tsToString, createAmountData, createTaskData } from '../../../helper.js'
 
+import { toAmountString, createAmountData, createTaskData, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem } from '../../../helper.js'
+import { List, ListItem } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 
+import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
+import AmountIcon from 'material-ui/svg-icons/action/account-balance';
+import StatusIcon from 'material-ui/svg-icons/action/check-circle';
+import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
+import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
+import DateIcon from 'material-ui/svg-icons/action/date-range';
+import TodoIcon from 'material-ui/svg-icons/image/navigate-next';
 
 
 
 
 const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
-  const dateString = tsToString(subProjectDetails.createTS);
+  const name = subProjectDetails.projectName
+  const purpose = subProjectDetails.purpose
+  const amount = subProjectDetails.amount
+  const currency = subProjectDetails.currency
+  const amountString = toAmountString(amount, currency)
+  const status = statusMapping[subProjectDetails.status]
+  const date = tsToString(subProjectDetails.createTS)
+
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
+  const spentAmount = calculateUnspentAmount(items)
+  const unspentAmount = amount - spentAmount;
+  const spentAmountString = toAmountString(spentAmount.toString(), currency);
+  const unspentAmountString = toAmountString(unspentAmount.toString(), currency);
+  const statusDetails = getProgressInformation(items)
+  const nextIncompletedWorkflow = getNextIncompletedItem(items)
   return (
 
-    <Card style={{
-      width: '74%',
+    <div style={{
+      display: 'flex',
       marginTop: '20px',
-      marginBottom: '20px'
+      height: '30%',
+      flex: 1,
+      flexDirection: 'row',
+      width: '74%',
+      maxHeight: '500px',
+      marginBottom: '20px',
+      justifyContent: 'space-between'
     }}>
-      <CardTitle title={subProjectDetails.projectName} subtitle="Sub project details" />
-      <CardText>
-        {subProjectDetails.purpose}
-      </CardText>
-      <CardText>
-        {dateString}
-      </CardText>
 
-      <CardText style={{
-        display: 'flex',
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-around'
-      }}>
-        <Card style={{}}>
-          <CardHeader title="Budget distribution" subtitle="Subtitle" />
-          <CardMedia>
-            <Doughnut data={createAmountData(subProjectDetails.amount, items)} />
-          </CardMedia>
-          <TextField floatingLabelText="Sub-Project budget amount" hintText="Budget amount for your project" value={subProjectDetails.amount} disabled />
-        </Card>
-        <Card >
-          <CardHeader
-            title="Task status"
-            subtitle="Subtitle"
+      <Card style={{ width: '28%' }}>
+        <CardTitle title={name} />
+        <List>
+          <Divider />
+          <ListItem
+            disabled={true}
+            leftIcon={<PurposeIcon />}
+            primaryText={purpose}
+            secondaryText={'Purpose'}
           />
-          <CardMedia>
-            <Doughnut data={createTaskData(items)} />
-          </CardMedia>
-        </Card>
+          <Divider />
+          <ListItem
+            disabled={true}
+            leftIcon={<AmountIcon />}
+            primaryText={amountString}
+            secondaryText={'Budget'}
+          />
+          <Divider />
+          <ListItem
+            disabled={true}
+            leftIcon={<StatusIcon />}
+            primaryText={status}
+            secondaryText={'Status'}
+          />
+          <Divider />
+          <ListItem
+            disabled={true}
+            leftIcon={<DateIcon />}
+            primaryText={date}
+            secondaryText={'Created'}
+          />
+          <Divider />
+          <ListItem
+            disabled={true}
+            leftIcon={<TodoIcon />}
+            primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : ''}
+            secondaryText={'Todo'}
+          />
+          <Divider />
+        </List>
+        <CardText style={{
+        }}>
+        </CardText>
+      </Card>
+      <Card style={{ width: '28%' }}>
+        <CardTitle title="Budget distribution" />
+        <Divider />
+        <CardMedia style={{ marginBottom: '10px' }}>
+          <Doughnut data={createAmountData(amount, items)} />
+        </CardMedia>
+        <Divider />
+        <ListItem style={{ fontSize: 14 }}
+          disabled={true}
+          leftIcon={<UnspentIcon />}
+          primaryText={unspentAmountString}
+          secondaryText={'Unspent'}
+        />
+        <Divider />
+        <ListItem style={{ fontSize: 14 }}
+          disabled={true}
+          leftIcon={<SpentIcon />}
+          primaryText={spentAmountString}
+          secondaryText={'Spent'}
+        />
+      </Card>
+      <Card style={{ width: '28%' }}>
+        <CardTitle title="Task status" />
+        <Divider />
+        <CardMedia style={{ marginBottom: '10px' }}>
+          <Doughnut data={createTaskData(items)} />
+        </CardMedia>
+        <Divider />
+        <ListItem style={{ fontSize: 14 }}
+          disabled={true}
+          leftIcon={<UnspentIcon />}
+          primaryText={statusDetails.open.toString()}
+          secondaryText={'Open'}
+        />
+        <Divider />
+        <ListItem style={{ fontSize: 14 }}
+          disabled={true}
+          leftIcon={<UnspentIcon />}
+          primaryText={statusDetails.inProgress.toString()}
+          secondaryText={'In Progress'}
+        />
+        <Divider />
+        <ListItem style={{ fontSize: 14 }}
+          disabled={true}
+          leftIcon={<UnspentIcon />}
+          primaryText={statusDetails.done.toString()}
+          secondaryText={'Done'}
+        />
+        <Divider />
+
+      </Card>
+
+    </div>
 
 
-      </CardText>
-    </Card>
   )
 }
 

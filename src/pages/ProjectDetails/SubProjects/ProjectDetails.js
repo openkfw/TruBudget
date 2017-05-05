@@ -33,7 +33,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
       justifyContent: 'space-between'
     }}>
 
-      <Card style={{ width: '32%' }}>
+      <Card style={{ width: '28%' }}>
         <CardTitle title={projectName} />
         <List>
           <Divider />
@@ -70,7 +70,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         }}>
         </CardText>
       </Card>
-      <Card style={{ width: '32%' }}>
+      <Card style={{ width: '28%' }}>
         <CardTitle title="Budget distribution" />
         <Divider />
         <CardMedia style={{ marginBottom: '10px' }}>
@@ -92,7 +92,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
 
         />
       </Card>
-      <Card style={{ width: '32%' }}>
+      <Card style={{ width: '28%' }}>
         <CardTitle title="Task status" />
         <Divider />
         <CardMedia style={{ marginBottom: '10px' }}>
@@ -102,21 +102,21 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <ListItem style={{ fontSize: 14 }}
           disabled={true}
           leftIcon={<UnspentIcon />}
-          primaryText={statusDetails.open}
+          primaryText={statusDetails.open.toString()}
           secondaryText={'Open'}
         />
         <Divider />
         <ListItem style={{ fontSize: 14 }}
           disabled={true}
           leftIcon={<UnspentIcon />}
-          primaryText={statusDetails.inProgress}
+          primaryText={statusDetails.inProgress.toString()}
           secondaryText={'In Progress'}
         />
         <Divider />
         <ListItem style={{ fontSize: 14 }}
           disabled={true}
           leftIcon={<UnspentIcon />}
-          primaryText={statusDetails.done}
+          primaryText={statusDetails.done.toString()}
           secondaryText={'Done'}
         />
         <Divider />

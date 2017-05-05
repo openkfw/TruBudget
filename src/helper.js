@@ -44,11 +44,12 @@ const createDoughnutData = (labels, data) => ({
   ]
 });
 
-export const calculateUnspentAmount = (subProjects) => {
-  const subProjectsAmount = subProjects.reduce((acc, subProject) => {
-    return acc + parseInt(subProject.details.amount, 10)
+export const calculateUnspentAmount = (items) => {
+
+  const amount = items.reduce((acc, item) => {
+    return acc + parseInt(item.details.amount, 10)
   }, 0);
-  return subProjectsAmount;
+  return amount;
 }
 
 export const createAmountData = (projectAmount, subProjects) => {
@@ -59,14 +60,14 @@ export const createAmountData = (projectAmount, subProjects) => {
 
 
 
-export const getProgressInformation = (subProjects) => {
+export const getProgressInformation = (items) => {
   let startValue = {
     open: 0,
     inProgress: 0,
     done: 0
   }
-  const projectStatus = subProjects.reduce((acc, subProject) => {
-    const status = subProject.details.status;
+  const projectStatus = items.reduce((acc, item) => {
+    const status = item.details.status;
     return {
       open: status === 'open' ? acc.open + 1 : acc.open,
       inProgress: status === 'in_progress' ? acc.inProgress + 1 : acc.inProgress,
@@ -77,7 +78,11 @@ export const getProgressInformation = (subProjects) => {
 }
 
 
-export const createTaskData = (subProjects) => {
-  const projectStatus = getProgressInformation(subProjects)
+export const createTaskData = (items) => {
+  const projectStatus = getProgressInformation(items)
   return createDoughnutData(["Open", "In progress", "Done"], [projectStatus.open, projectStatus.inProgress, projectStatus.done]);
+}
+
+export const getNextIncompletedItem = (items) => {
+  return items.find((item) => item.details.status === 'open' | item.details.status === 'in_progress');
 }
