@@ -2,6 +2,8 @@ import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 import { toAmountString, statusMapping } from '../../../helper';
+import { Card, CardTitle, CardHeader } from 'material-ui/Card';
+import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightgreen } from '../../../colors.js';
 
 const getTableEntries = (subProjects, location, history) => {
   return subProjects.map((subProject, index) => {
@@ -23,21 +25,26 @@ const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisib
   const tableEntries = getTableEntries(subProjects, location, history);
 
   return (
-    <Table>
-      <TableHeader displaySelectAll={false}
-        adjustForCheckbox={false}>
-        <TableRow>
-          <TableHeaderColumn>Sub-project</TableHeaderColumn>
-          <TableHeaderColumn>Budget</TableHeaderColumn>
-          <TableHeaderColumn>Status</TableHeaderColumn>
-          <TableHeaderColumn> </TableHeaderColumn>
-        </TableRow>
-      </TableHeader>
-      <TableBody displayRowCheckbox={false}
-        adjustForCheckbox={false}>
-        {tableEntries}
-      </TableBody>
-    </Table>
+    <Card >
+      <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }}
+        title="Sub-projects"
+      />
+      <Table>
+        <TableHeader displaySelectAll={false}
+          adjustForCheckbox={false}>
+          <TableRow>
+            <TableHeaderColumn>Sub-project</TableHeaderColumn>
+            <TableHeaderColumn>Budget</TableHeaderColumn>
+            <TableHeaderColumn>Status</TableHeaderColumn>
+            <TableHeaderColumn> </TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody displayRowCheckbox={false}
+          adjustForCheckbox={false}>
+          {tableEntries}
+        </TableBody>
+      </Table>
+    </Card>
   )
 }
 

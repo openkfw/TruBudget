@@ -12,8 +12,11 @@ import StatusIcon from 'material-ui/svg-icons/action/check-circle';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
-import TodoIcon from 'material-ui/svg-icons/image/navigate-next';
-
+import ActiveIcon from 'material-ui/svg-icons/image/navigate-next';
+import OpenIcon from 'material-ui/svg-icons/navigation/close';
+import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
+import DoneIcon from 'material-ui/svg-icons/navigation/check';
+import IconButton from 'material-ui/IconButton';
 
 
 
@@ -37,17 +40,16 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
 
     <div style={{
       display: 'flex',
-      marginTop: '20px',
+      marginTop: '24px',
       height: '30%',
       flex: 1,
       flexDirection: 'row',
       width: '74%',
-      maxHeight: '500px',
-      marginBottom: '20px',
+      marginBottom: '16px',
       justifyContent: 'space-between'
     }}>
 
-      <Card style={{ width: '28%' }}>
+      <Card style={{ width: '31%' }}>
         <CardTitle title={name} />
         <List>
           <Divider />
@@ -79,19 +81,13 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
             secondaryText={'Created'}
           />
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<TodoIcon />}
-            primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : ''}
-            secondaryText={'Todo'}
-          />
-          <Divider />
+
         </List>
         <CardText style={{
         }}>
         </CardText>
       </Card>
-      <Card style={{ width: '28%' }}>
+      <Card style={{ width: '31%' }}>
         <CardTitle title="Budget distribution" />
         <Divider />
         <CardMedia style={{ marginBottom: '10px' }}>
@@ -112,38 +108,61 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           secondaryText={'Spent'}
         />
       </Card>
-      <Card style={{ width: '28%' }}>
+      <Card style={{ width: '31%' }}>
         <CardTitle title="Task status" />
         <Divider />
         <CardMedia style={{ marginBottom: '10px' }}>
           <Doughnut data={createTaskData(items)} />
         </CardMedia>
         <Divider />
-        <ListItem style={{ fontSize: 14 }}
+        <ListItem disabled={true}>
+          <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '33%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ fontSize: '14px' }}>
+                {statusDetails.open.toString()}
+              </div>
+              <div>
+                <IconButton disableTouchRipple tooltip="Open" style={{ padding: '0px', height: '0px' }} tooltipStyles={{ top: '12px' }} iconStyle={{ width: '14px', height: '20px' }} >
+                  < OpenIcon />
+                </IconButton>
+              </div>
+            </div>
+            <div style={{ width: '33%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ fontSize: '14px' }}>
+                {statusDetails.inProgress.toString()}
+              </div>
+              <div>
+                <IconButton disableTouchRipple tooltip="In progress" style={{ padding: '0px', height: '0px' }} tooltipStyles={{ top: '12px' }} iconStyle={{ width: '14px', height: '20px' }}>
+                  < InProgressIcon />
+                </IconButton>
+              </div>
+            </div>
+            <div style={{ width: '33%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ fontSize: '14px' }}>
+                {statusDetails.done.toString()}
+              </div>
+              <div>
+                <IconButton disableTouchRipple tooltip="Done" style={{ padding: '0px', height: '0px' }} tooltipStyles={{ top: '12px' }} iconStyle={{ width: '14px', height: '20px' }} >
+                  < DoneIcon />
+                </IconButton>
+              </div>
+            </div>
+          </div>
+        </ListItem>
+        <Divider />
+
+        <ListItem
           disabled={true}
-          leftIcon={<UnspentIcon />}
-          primaryText={statusDetails.open.toString()}
-          secondaryText={'Open'}
+          leftIcon={<ActiveIcon />}
+          primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}
+          secondaryText={'Active item '}
         />
         <Divider />
-        <ListItem style={{ fontSize: 14 }}
-          disabled={true}
-          leftIcon={<UnspentIcon />}
-          primaryText={statusDetails.inProgress.toString()}
-          secondaryText={'In Progress'}
-        />
-        <Divider />
-        <ListItem style={{ fontSize: 14 }}
-          disabled={true}
-          leftIcon={<UnspentIcon />}
-          primaryText={statusDetails.done.toString()}
-          secondaryText={'Done'}
-        />
         <Divider />
 
       </Card>
 
-    </div>
+    </div >
 
 
   )

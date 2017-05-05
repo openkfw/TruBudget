@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'material-ui/Card';
+import { Card, CardTitle, CardHeader } from 'material-ui/Card';
 import {
   Table,
   TableBody,
@@ -20,7 +20,7 @@ import IconButton from 'material-ui/IconButton';
 import WorkflowDetails from './WorkflowDetails'
 
 import { toAmountString, statusMapping } from '../../../helper.js';
-import { ACMECorpLightgrey, ACMECorpSuperLightgreen } from '../../../colors.js';
+import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightgreen } from '../../../colors.js';
 
 
 const styles = {
@@ -154,10 +154,10 @@ const createLine = (isFirst, selectable) => {
 };
 
 const createHeader = () => (
-  <Card style={{
-    paddingLeft: '50px',
-    paddingRight: '10px',
-  }}>
+  <Card >
+    <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }}
+      title="Workflow items"
+    />
     <Table>
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow displayBorder={false}>
@@ -169,7 +169,7 @@ const createHeader = () => (
         </TableRow>
       </TableHeader>
     </Table>
-  </Card>
+  </Card >
 )
 
 const createWorkflowItems = ({ workflowItems, ...props }) => {
@@ -223,11 +223,11 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 
 const WorkflowList = (props) => {
   return (
-    <div>
+    <div >
       {createHeader()}
       {createWorkflowItems(props)}
       <WorkflowDetails {...props} />
-    </div>
+    </div >
   )
 }
 

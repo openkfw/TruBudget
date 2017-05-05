@@ -1,4 +1,4 @@
-import {red100, red600} from 'material-ui/styles/colors';
+import { red100, red600 } from 'material-ui/styles/colors';
 
 const colors = {
   lightColor: 'white'

@@ -7,7 +7,7 @@ import HistoryIcon from 'material-ui/svg-icons/action/history';
 import SubProjectsTable from './SubProjectsTable';
 import ChangeLog from '../../Notifications/ChangeLog';
 import ProjectCreationDialog from '../../Overview/ProjectCreationDialog';
-import { ACMECorpGrey } from '../../../colors.js';
+import { ACMECorpGrey, ACMECorpDarkBlue } from '../../../colors.js';
 
 // const exprops = {
 //   projectName,
@@ -65,7 +65,7 @@ const SubProjects = (props) => (
       right: '-26px'
 
     }}>
-      <FloatingActionButton disabled={!props.loggedInUser.role.write} onTouchTap={props.showWorkflowDialog} style={{
+      <FloatingActionButton disabled={!props.loggedInUser.role.write} backgroundColor={ACMECorpDarkBlue} onTouchTap={props.showWorkflowDialog} style={{
         position: 'relative'
 
       }}>
