@@ -11,7 +11,7 @@ const createBreadcrumb = ({ pathname }, history, streamNames) => {
   if (paths.length < 2 || !paths[1]) return null;
 
   const accumulatedPath = paths.map((path, index, source) => {
-    return index ? '/' + source.slice(1,index+1).join('/') : '/';
+    return index ? '/' + source.slice(1, index + 1).join('/') : '/';
   });
 
   return paths.map((path, index) => {
@@ -35,7 +35,7 @@ const MainNavbarNavigation = ({ onToggleSidebar, history, route, streamNames }) 
   return (
     <div>
       <div>
-        <span style={{ paddingRight: '50px' }}>True Budget</span>
+        <span style={{ paddingRight: '50px' }}>TruBudget</span>
         {createBreadcrumb(route, history, streamNames)}
       </div>
 

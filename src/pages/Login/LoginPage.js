@@ -48,7 +48,7 @@ const LoginPage = ({ users, login }) => {
         zIndex: 1100,
         opacity: 0.9
       }}>
-        <CardTitle title="True Budget" subtitle="Blockchain solution" />
+        <CardTitle title="TruBudget" subtitle="Blockchain solution" />
         <Divider />
         <List>
           <Subheader>Choose your user for login</Subheader>
