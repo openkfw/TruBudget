@@ -54,6 +54,11 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
         <List>
           <Divider />
           <ListItem
+            style={{
+              whiteSpace: 'nowrap',
+              Overflow: 'hidden!important',
+              textOverflow: 'ellipsis'
+            }}
             disabled={true}
             leftIcon={<PurposeIcon />}
             primaryText={purpose}
