@@ -68,16 +68,16 @@ export default function detailviewReducer(state = defaultState, action) {
     case CREATE_WORKFLOW_SUCCESS:
     case EDIT_WORKFLOW_SUCCESS:
       return state.merge({
-        workflowName: defaultState.workflowName,
-        workflowAmount: defaultState.workflowAmount,
-        workflowCurrency: defaultState.workflowCurrency,
-        workflowAdditionalData: defaultState.workflowAdditionalData,
-        workflowPurpose: defaultState.workflowPurpose,
-        workflowState: defaultState.workflowState,
-        workflowAssignee: defaultState.workflowAssignee,
-        disabledWorkflowState: defaultState.disabledWorkflowStatetrue,
-        workflowTxid: defaultState.workflowTxid,
-        editMode: defaultState.editMode
+        workflowName: defaultState.get('workflowName'),
+        workflowAmount: defaultState.get('workflowAmount'),
+        workflowCurrency: defaultState.get('workflowCurrency'),
+        workflowAdditionalData: defaultState.get('workflowAdditionalData'),
+        workflowPurpose: defaultState.get('workflowPurpose'),
+        workflowState: defaultState.get('workflowState'),
+        workflowAssignee: defaultState.get('workflowAssignee'),
+        disabledWorkflowState: defaultState.get('disabledWorkflowStatetrue'),
+        workflowTxid: defaultState.get('workflowTxid'),
+        editMode: defaultState.get('editMode')
       });
     case SHOW_WORKFLOW_DETAILS:
       return state.merge({

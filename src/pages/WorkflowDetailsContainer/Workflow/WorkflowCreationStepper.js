@@ -20,7 +20,7 @@ const getStepContent = (props) => {
     case 4:
       return <ProjectCreationAdditionalData storeWorkflowAdditionalData={props.storeWorkflowAdditionalData} workflowAdditionalData={props.workflowAdditionalData} />
     case 5:
-      return <WorkflowStateAndAssignee users={props.users} storeWorkflowState={props.storeWorkflowState} storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} disabledWorkflowState={props.disabledWorkflowState} />
+      return <WorkflowStateAndAssignee users={props.users} storeWorkflowState={props.storeWorkflowState} storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
     default:
       return <span>Done</span>
   }

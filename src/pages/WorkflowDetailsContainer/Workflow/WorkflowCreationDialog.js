@@ -54,7 +54,7 @@ const handleSubmit = (props) => {
 
 const WorkflowCreationDialog = (props) => (
   <Dialog
-    title="Create Workflow Item"
+    title={ props.editMode ? 'Edit workflow item' : 'Create Workflow Item'}
     modal={true}
     bodyStyle={{
       minHeight: '200px'

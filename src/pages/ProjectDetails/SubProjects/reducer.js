@@ -45,10 +45,10 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('subProjectCurrency', action.currency);
     case CREATE_SUBPROJECT_ITEM_SUCCESS:
       return state.merge({
-        subProjectName: defaultState.subProjectName,
-        subProjectAmount: defaultState.subProjectAmount,
-        subProjectPurpose: defaultState.subProjectPurpose,
-        subProjectCurrency: defaultState.subProjectCurrency
+        subProjectName: defaultState.get('subProjectName'),
+        subProjectAmount: defaultState.get('subProjectAmount'),
+        subProjectPurpose: defaultState.get('subProjectPurpose'),
+        subProjectCurrency: defaultState.get('subProjectCurrency')
       });
     case LOGOUT:
       return defaultState;

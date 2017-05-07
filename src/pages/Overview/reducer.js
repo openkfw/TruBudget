@@ -29,10 +29,10 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set('projectCurrency', action.currency);
     case CREATE_PROJECT_SUCCESS:
       return state.merge({
-        projectName: defaultState.projectName,
-        projectAmount: defaultState.projectAmount,
-        projectPurpose: defaultState.projectPurpose,
-        projectCurrency: defaultState.projectCurrency
+        projectName: defaultState.get('projectName'),
+        projectAmount: defaultState.get('projectAmount'),
+        projectPurpose: defaultState.get('projectPurpose'),
+        projectCurrency: defaultState.get('projectCurrency')
       });
     case SET_PROJECT_CREATION_STEP:
       return state.set('creationStep', action.step);

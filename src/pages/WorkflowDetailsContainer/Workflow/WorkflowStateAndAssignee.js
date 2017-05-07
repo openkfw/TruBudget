@@ -43,7 +43,7 @@ class WorkflowStateAndAssignee extends Component {
         <SelectField autoWidth={true} onChange={this.handleAssignee} value={this.props.workflowAssignee} floatingLabelText="Assign User" style={{}}>
           {this.createUserSelection()}
         </SelectField>
-        <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState}  disabled={this.props.disabledWorkflowState} style={{}}>
+        <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState}  disabled={!this.props.editMode} style={{}}>
           <MenuItem value='open' primaryText="Open"/>
           <MenuItem value='in_progress' primaryText="In Progress"/>
           <MenuItem value='done' primaryText="Done"/>
