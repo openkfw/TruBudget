@@ -4,17 +4,22 @@ import FlatButton from 'material-ui/FlatButton';
 import { toAmountString, statusMapping } from '../../../helper';
 import { Card, CardTitle, CardHeader } from 'material-ui/Card';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightgreen } from '../../../colors.js';
+const styles = {
+  tableText: {
+    fontSize: '14px'
+  }
+};
 
 const getTableEntries = (subProjects, location, history) => {
   return subProjects.map((subProject, index) => {
     var amount = toAmountString(subProject.details.amount, subProject.details.currency)
     return (
       <TableRow key={index} selectable={false}>
-        <TableRowColumn>{subProject.details.projectName}</TableRowColumn>
-        <TableRowColumn>{amount}</TableRowColumn>
-        <TableRowColumn>{statusMapping[subProject.details.status]}</TableRowColumn>
+        <TableRowColumn style={styles.tableText}>{subProject.details.projectName}</TableRowColumn>
+        <TableRowColumn style={styles.tableText}>{amount}</TableRowColumn>
+        <TableRowColumn style={styles.tableText}>{statusMapping[subProject.details.status]}</TableRowColumn>
         <TableRowColumn>
-          <FlatButton label="Select" onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.name)} secondary={true} />
+          <FlatButton style={styles.tableText} label="Select" onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.name)} secondary={true} />
         </TableRowColumn>
       </TableRow>
     );
@@ -33,10 +38,10 @@ const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisib
         <TableHeader displaySelectAll={false}
           adjustForCheckbox={false}>
           <TableRow>
-            <TableHeaderColumn>Sub-project</TableHeaderColumn>
-            <TableHeaderColumn>Budget</TableHeaderColumn>
-            <TableHeaderColumn>Status</TableHeaderColumn>
-            <TableHeaderColumn> </TableHeaderColumn>
+            <TableHeaderColumn style={styles.tableText}>Sub-project</TableHeaderColumn>
+            <TableHeaderColumn style={styles.tableText}>Budget</TableHeaderColumn>
+            <TableHeaderColumn style={styles.tableText}>Status</TableHeaderColumn>
+            <TableHeaderColumn style={styles.tableText}> </TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={false}
