@@ -17,6 +17,8 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 
+import { budgetStatusColorPalette } from '../../../colors'
+
 const styles = {
   container: {
     display: 'flex',
@@ -55,7 +57,7 @@ const styles = {
   },
   iconButton: {
     padding: '0px',
-    height: '0px'
+    height: '0px',
   },
   tooltip: {
     top: '12px'
@@ -64,7 +66,7 @@ const styles = {
     marginBottom: '10px'
   },
   icon: {
-    width: '14px', height: '20px'
+    width: '16px', height: '20px'
   },
 }
 
@@ -134,14 +136,14 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<UnspentIcon />}
+          leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
           primaryText={unspentAmountString}
           secondaryText={'Unspent'}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<SpentIcon />}
+          leftIcon={<SpentIcon color={budgetStatusColorPalette[0]}/>}
           primaryText={spentAmountString}
           secondaryText={'Spent'}
         />
@@ -162,7 +164,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
-                  < OpenIcon />
+                  <OpenIcon/>
                 </IconButton>
               </div>
             </div>
@@ -172,7 +174,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
-                  < InProgressIcon />
+                  <InProgressIcon/>
                 </IconButton>
               </div>
             </div>
@@ -182,7 +184,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
-                  < DoneIcon />
+                  <DoneIcon/>
                 </IconButton>
               </div>
             </div>
