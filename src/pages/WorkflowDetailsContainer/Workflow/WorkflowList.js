@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardTitle, CardHeader } from 'material-ui/Card';
+import { Card, CardHeader } from 'material-ui/Card';
 import {
   Table,
   TableBody,
@@ -157,19 +157,19 @@ const createLine = (isFirst, selectable) => {
 
 const createTableHeader = () => (
   <Card>
-    <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }} title="Workflow items"/>
-    <div style={{marginLeft: '50px', marginRight: '10px', position: 'relative'}}>
-    <Table>
-      <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{borderBottom: '0px'}}>
-        <TableRow displayBorder={false}>
-          <TableHeaderColumn style={styles.listText} colSpan={1}></TableHeaderColumn>
-          <TableHeaderColumn style={styles.listText} colSpan={4}>Workflow</TableHeaderColumn>
-          <TableHeaderColumn style={styles.listText} colSpan={2}>Amount</TableHeaderColumn>
-          <TableHeaderColumn style={styles.listText} colSpan={2}>Status</TableHeaderColumn>
-          <TableHeaderColumn style={styles.listText} colSpan={2}>Actions</TableHeaderColumn>
-        </TableRow>
-      </TableHeader>
-    </Table>
+    <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }} title="Workflow items" />
+    <div style={{ marginLeft: '50px', marginRight: '10px', position: 'relative' }}>
+      <Table>
+        <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{ borderBottom: '0px' }}>
+          <TableRow displayBorder={false}>
+            <TableHeaderColumn style={styles.listText} colSpan={1}></TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={4}>Workflow</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={2}>Amount</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={2}>Status</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={2}>Actions</TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+      </Table>
     </div>
   </Card >
 )
@@ -225,7 +225,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 
 const WorkflowList = (props) => {
   return (
-    <div style={{paddingBottom: '8px'}}>
+    <div style={{ paddingBottom: '8px' }}>
       {createTableHeader()}
       {createWorkflowItems(props)}
       <WorkflowDetails {...props} />

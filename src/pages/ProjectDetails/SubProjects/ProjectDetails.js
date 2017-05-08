@@ -7,17 +7,15 @@ import Divider from 'material-ui/Divider';
 
 import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
-import StatusIcon from 'material-ui/svg-icons/action/check-circle';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
-import ActiveIcon from 'material-ui/svg-icons/image/navigate-next';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 
-import { budgetStatusColorPalette } from '../../../colors'
+import { budgetStatusColorPalette, red } from '../../../colors'
 
 const styles = {
   container: {
@@ -69,7 +67,9 @@ const styles = {
   icon: {
     width: '16px', height: '20px'
   },
-
+  overspent: {
+    color: red
+  },
 }
 
 const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectPurpose, projectStatus, projectTS }) => {
@@ -137,8 +137,12 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           disabled={true}
           leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
-          secondaryText={correctedUnspentAmount > 0 ? 'Spent' : 'Spent (Overspent)'}
-
+          secondaryText={correctedUnspentAmount > 0 ?
+            <span> {'Spent'} </span > :
+            <span> {'Spent'}
+              <span style={styles.overspent}> {'(Overspent)'}
+              </span>
+            </span>}
         />
         <Divider />
       </Card>

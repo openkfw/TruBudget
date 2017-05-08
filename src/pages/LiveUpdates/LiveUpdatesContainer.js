@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchUsers } from '../Login/actions';
@@ -67,12 +67,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchUsers: () => dispatch(fetchUsers()),
     fetchPeers: () => dispatch(fetchPeers()),
-    fetchNotifications:(user) => dispatch(fetchNotifications(user)),
+    fetchNotifications: (user) => dispatch(fetchNotifications(user)),
     fetchStreamNames: () => dispatch(fetchStreamNames()),
     fetchProjects: () => dispatch(fetchProjects()),
     fetchNodeInformation: () => dispatch(fetchNodeInformation()),
     fetchProjectDetails: (project) => dispatch(fetchProjectDetails(project)),
-    fetchHistoryItems:(project) => dispatch(fetchHistoryItems(project)),
+    fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
   };
 }

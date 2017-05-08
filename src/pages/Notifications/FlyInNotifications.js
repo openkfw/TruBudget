@@ -49,8 +49,6 @@ export default class FlyInNotification extends Component {
     const oldData = oldN.map(this.mapNotifications).filter(this.filterNotifications).sort();
     const newData = newN.map(this.mapNotifications).filter(this.filterNotifications).sort();
 
-    const nothingChanged = _.isEqual(oldData, newData);
-
     const changedData = newData.filter((data) => !_.some(oldData, data));
 
     changedData.map((notification) => this.showNotification(notification.data));

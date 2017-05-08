@@ -4,30 +4,6 @@ import FlatButton from 'material-ui/FlatButton';
 
 import ProjectCreationStepper from './ProjectCreationStepper';
 
-const ProjectCreationDialog = (props) => {
-  const { creationDialogShown, title } = props;
-
-  return (
-    <Dialog
-      title={title}
-      modal={true}
-      bodyStyle={{
-        minHeight: '200px'
-      }}
-      actionsContainerStyle={{
-        display: 'flex',
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-      }}
-      open={creationDialogShown}
-      actions={getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}
-    >
-      <ProjectCreationStepper {...props} />
-    </Dialog>
-  );
-}
-
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
   const isLastStep = props.creationStep === 2;
   const isFirstStep = props.creationStep === 0;
@@ -62,5 +38,31 @@ const handleSubmit = (props) => {
   props.showSnackBar();
   props.setProjectCreationStep(0);
 }
+
+
+const ProjectCreationDialog = (props) => {
+  const { creationDialogShown, title } = props;
+
+  return (
+    <Dialog
+      title={title}
+      modal={true}
+      bodyStyle={{
+        minHeight: '200px'
+      }}
+      actionsContainerStyle={{
+        display: 'flex',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }}
+      open={creationDialogShown}
+      actions={getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}
+    >
+      <ProjectCreationStepper {...props} />
+    </Dialog>
+  );
+}
+
 
 export default ProjectCreationDialog;

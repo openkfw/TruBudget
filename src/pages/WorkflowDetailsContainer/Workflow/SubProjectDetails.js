@@ -37,7 +37,7 @@ const styles = {
   },
 
   overspent: {
-    color: 'red'
+    color: red
   },
 
   tasksChart: {
