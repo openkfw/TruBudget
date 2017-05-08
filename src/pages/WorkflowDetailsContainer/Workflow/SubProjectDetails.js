@@ -26,7 +26,7 @@ const styles = {
     flex: 1,
     flexDirection: 'row',
     width: '100%',
-    marginBottom: '16px',
+    marginBottom: '24px',
     justifyContent: 'space-between'
   },
   card: {

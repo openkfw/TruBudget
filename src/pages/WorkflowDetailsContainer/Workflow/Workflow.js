@@ -19,7 +19,8 @@ const Workflow = (props) => (
       position: 'absolute',
       alignItems: 'center',
       top: '16px',
-      right: '-26px'
+      right: '-26px',
+      zIndex: 10
     }}>
       <FloatingActionButton disabled={!props.loggedInUser.role.write} backgroundColor={ACMECorpDarkBlue} onTouchTap={() => props.openWorkflowDialog(false)} style={{
         position: 'relative'
