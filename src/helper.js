@@ -1,4 +1,8 @@
+import React from 'react';
 import moment from 'moment';
+import OpenIcon from 'material-ui/svg-icons/navigation/close';
+import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
+import DoneIcon from 'material-ui/svg-icons/navigation/check';
 
 export const toAmountString = (inputAmount, currency) => {
   let decimals = ',00'
@@ -26,10 +30,16 @@ export const tsToString = (ts) => {
 }
 
 export const statusMapping = {
-  done: { text = 'Done' },
-  'in_progress': { text: 'In progress' },
-  open: { text: 'Open' }
+  done: 'Done',
+  'in_progress': 'In progress',
+  open: 'Open'
 }
+export const statusIconMapping = {
+  done: <DoneIcon />,
+  'in_progress': <InProgressIcon />,
+  open: <OpenIcon />,
+}
+
 
 const createDoughnutData = (labels, data) => ({
   labels,

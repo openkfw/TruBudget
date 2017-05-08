@@ -2,13 +2,12 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, createAmountData, createTaskData, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem } from '../../../helper.js'
+import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem } from '../../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
 import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
-import StatusIcon from 'material-ui/svg-icons/action/check-circle';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
@@ -76,7 +75,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const currency = subProjectDetails.currency
   const amountString = toAmountString(amount, currency)
   const status = statusMapping[subProjectDetails.status]
-  console.log(status)
+  const statusIcon = statusIconMapping[subProjectDetails.status]
   const date = tsToString(subProjectDetails.createTS)
 
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
@@ -108,8 +107,8 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           <Divider />
           <ListItem
             disabled={true}
-            leftIcon={<DoneIcon />}
-            primaryText={status.text}
+            leftIcon={statusIcon}
+            primaryText={status}
             secondaryText={'Status'}
           />
           <Divider />
