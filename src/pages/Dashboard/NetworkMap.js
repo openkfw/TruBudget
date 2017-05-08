@@ -62,7 +62,7 @@ export default class NetworkMap extends Component {
     return points
   }
   renderMap(addresses) {
-    const position = [15, 0];
+    const position = [30, 50];
     const mesh = this.createMesh(addresses);
     const points = this.createPoints(addresses);
 

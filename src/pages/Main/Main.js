@@ -17,27 +17,28 @@ import Footer from './Footer';
 const Main = (props) => {
   return (
     <div style={{
-    display: 'flex',
-    flex: '1',
-    flexDirection: 'column',
-    backgroundImage: 'url("/navbar_back3.jpg")',
-    backgroundSize: 'cover',
-    alignItems: 'space-between'
+      display: 'flex',
+      flex: '1',
+      flexDirection: 'column',
+      backgroundImage: 'url("/navbar_back3.jpg")',
+      backgroundSize: 'cover',
+      alignItems: 'center'
     }}>
-      <Route component={NavbarContainer} />
-      <Route component={LiveNotificationContainer} />
-      <Route component={LiveUpdates} />
-      <Switch>
-        <Route exact path="/" component={Placeholder} />
-        <Route exact path="/projects" component={OverviewContainer} />
-        <Route exact path="/projects/:project" component={ProjectDetailsContainer} />
-        <Route exact path="/projects/:project/:subproject" component={WorkflowDetailsContainer} />
-        <Route exact path="/dashboard" component={DashboardContainer} />
-        <Route exact path="/notifications" component={NotificationPageContainer} />
-        <Route component={NotFound} />
-      </Switch>
-      <Route component={Footer} />
-
+      <div className="container">
+        <Route component={NavbarContainer} />
+        <Route component={LiveNotificationContainer} />
+        <Route component={LiveUpdates} />
+        <Switch>
+          <Route exact path="/" component={Placeholder} />
+          <Route exact path="/projects" component={OverviewContainer} />
+          <Route exact path="/projects/:project" component={ProjectDetailsContainer} />
+          <Route exact path="/projects/:project/:subproject" component={WorkflowDetailsContainer} />
+          <Route exact path="/dashboard" component={DashboardContainer} />
+          <Route exact path="/notifications" component={NotificationPageContainer} />
+          <Route component={NotFound} />
+        </Switch>
+        <Route component={Footer} />
+      </div>
     </div>
   )
 }

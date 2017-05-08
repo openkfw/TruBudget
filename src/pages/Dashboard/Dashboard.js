@@ -4,9 +4,9 @@ import { Card, CardTitle, CardText } from 'material-ui/Card';
 import NetworkMap from './NetworkMap';
 
 const Dashboard = (props) => (
-  <div style={{ display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center', marginTop: '50px', }}>
+  <div style={{ display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center' }}>
     <Card style={{
-      width: '80%',
+      width: '100%',
       position: 'relative',
     }}>
       <CardTitle title="The Blockchain network dashboard" subtitle="Connected peers in the blockchain network" />

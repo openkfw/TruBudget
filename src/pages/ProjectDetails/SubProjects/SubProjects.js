@@ -9,38 +9,10 @@ import ChangeLog from '../../Notifications/ChangeLog';
 import ProjectCreationDialog from '../../Overview/ProjectCreationDialog';
 import { ACMECorpGrey, ACMECorpDarkBlue } from '../../../colors.js';
 
-// const exprops = {
-//   projectName,
-//   subProjects,
-//   location,
-//   history,
-//   workflowDialogVisible,
-//   showWorkflowDialog,
-//   hideWorkflowDialog,
-//   createSubProjectItem,
-//   subProjectName,
-//   storeSubProjectName,
-//   subProjectAmount,
-//   storeSubProjectAmount,
-//   subProjectPurpose,
-//   storeSubProjectPurpose,
-//   subProjectCurrency,
-//   storeSubProjectCurrency,
-//   showSnackBar,
-//   storeSnackBarMessage,
-//   loggedInUser,
-//   openHistory,
-//   hideHistory,
-//   showHistory,
-//   historyItems,
-//   users
-// }
-
-
 const SubProjects = (props) => (
   <Card style={{
     position: 'relative',
-    width: '74%'
+    width: '100%'
   }}>
     <ProjectCreationDialog
       {...props}

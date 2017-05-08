@@ -49,3 +49,15 @@
   right: -999px;
   transition: all 500ms ease-in;
 }
+
+.container {
+  flex: 1;
+  width: 74%;
+}
+
+@media (max-width: 1000px) {
+  .container {
+    flex: 1;
+    width: 95%;
+  }
+}

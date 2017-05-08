@@ -10,7 +10,6 @@ const styles = {
     width: '100%',
     position: 'relative',
     display: 'flex',
-    marginTop: '40px',
     flexDirection: 'column',
     alignItems: 'center',
     zIndex: 1100
@@ -20,7 +19,7 @@ const styles = {
 const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotificationAsRead }) => {
   return (
     <div style={styles.card}>
-      <Card style={{ width: '60%', marginBottom: '10px' }}>
+      <Card style={{ width: '100%', marginBottom: '10px' }}>
         <CardTitle title="Notifications" subtitle="Unread" />
         <CardText>
           Please find your current notifications below. These display action items or information items to be dealt with.
@@ -33,7 +32,7 @@ const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotifica
           loggedInUser={loggedInUser}
           markNotificationAsRead={markNotificationAsRead} />
       </Card>
-      <Card style={{ width: '60%' }}>
+      <Card>
         <CardTitle subtitle="Read" />
         <NotificationTable notifications={list} filter="read" streamNames={streamNames} users={users} loggedInUser={loggedInUser} />
       </Card>

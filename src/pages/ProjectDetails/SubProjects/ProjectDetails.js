@@ -29,11 +29,10 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   return (
     <div style={{
       display: 'flex',
-      marginTop: '20px',
       height: '30%',
       flex: 1,
       flexDirection: 'row',
-      width: '74%',
+      width: '100%',
       maxHeight: '500px',
       marginBottom: '32px',
       justifyContent: 'space-between'

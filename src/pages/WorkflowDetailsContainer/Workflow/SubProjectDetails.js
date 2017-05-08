@@ -40,11 +40,10 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
 
     <div style={{
       display: 'flex',
-      marginTop: '24px',
       height: '30%',
       flex: 1,
       flexDirection: 'row',
-      width: '74%',
+      width: '100%',
       marginBottom: '16px',
       justifyContent: 'space-between'
     }}>

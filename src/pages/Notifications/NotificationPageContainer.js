@@ -4,12 +4,17 @@ import { connect } from 'react-redux';
 import { fetchNotifications, markNotificationAsRead } from './actions';
 import NotificationPage from './NotificationPage';
 
+import globalStyles from '../../styles';
+
 class NotificationPageContainer extends Component {
   componentWillMount() {
     this.props.fetchNotifications(this.props.loggedInUser.id);
   }
   render() {
-    return <NotificationPage {...this.props} />
+    return (
+    <div style={globalStyles.innerContainer}>
+      <NotificationPage {...this.props} />
+    </div>)
   }
 }
 

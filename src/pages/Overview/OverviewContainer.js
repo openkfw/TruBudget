@@ -4,13 +4,20 @@ import { connect } from 'react-redux';
 import { fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectPurpose,storeProjectCurrency, setProjectCreationStep } from './actions';
 import Overview from './Overview';
 import {showSnackBar, storeSnackBarMessage} from '../Notifications/actions';
+
+import globalStyles from '../../styles';
+
 class OverviewContainer extends Component {
   componentWillMount() {
     this.props.fetchProjects();
   }
 
   render() {
-    return <Overview {...this.props} />
+    return (
+      <div style={globalStyles.innerContainer}>
+        <Overview {...this.props} />
+      </div>
+    )
   }
 }
 
