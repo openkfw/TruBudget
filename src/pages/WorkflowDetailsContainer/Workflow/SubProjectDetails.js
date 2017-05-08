@@ -17,7 +17,7 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 
-import { budgetStatusColorPalette } from '../../../colors'
+import { budgetStatusColorPalette, red } from '../../../colors'
 
 const styles = {
   container: {
@@ -35,6 +35,11 @@ const styles = {
   text: {
     fontSize: '14px',
   },
+
+  overspent: {
+    color: 'red'
+  },
+
   tasksChart: {
     width: '100%',
     height: '100%',
@@ -146,7 +151,12 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           disabled={true}
           leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
-          secondaryText={correctedUnspentAmount > 0 ? 'Spent' : 'Spent (Overspent)'}
+          secondaryText={correctedUnspentAmount > 0 ?
+            <span> {'Spent'} </span > :
+            <span> {'Spent'}
+              <span style={styles.overspent}> {'(Overspent)'}
+              </span>
+            </span>}
         />
         <Divider />
       </Card>
