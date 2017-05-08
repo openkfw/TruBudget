@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
+import React, { Component } from 'react';
+import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
@@ -12,9 +12,9 @@ class SubProjectCreationStepper extends Component {
   };
 
   handleNext = () => {
-    const {stepIndex} = this.state;
+    const { stepIndex } = this.state;
     this.setState({
-     stepIndex: stepIndex + 1,
+      stepIndex: stepIndex + 1,
     });
     if (stepIndex === 2) {
       this.props.createSubProjectItem(this.props.location.pathname.split('/')[2], this.props.subProjectName, this.props.subProjectAmount, this.props.subProjectPurpose, this.props.subProjectCurrency)
@@ -25,7 +25,7 @@ class SubProjectCreationStepper extends Component {
   };
 
   handlePrev = () => {
-    const {stepIndex} = this.state;
+    const { stepIndex } = this.state;
     if (stepIndex === 0) {
       this.props.hideWorkflowDialog();
     }
@@ -36,22 +36,22 @@ class SubProjectCreationStepper extends Component {
     }
   };
 
-  getStepContent(stepIndex,) {
+  getStepContent(stepIndex, ) {
 
     switch (stepIndex) {
       case 0:
-        return <ProjectCreationName storeProjectName={this.props.storeSubProjectName}  projectName={this.props.subProjectName} type={'subproject'}/>
+        return <ProjectCreationName storeProjectName={this.props.storeSubProjectName} projectName={this.props.subProjectName} type={'subProject'} />
       case 1:
-        return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} projectAmount={this.props.subProjectAmount} projectCurrency={this.props.subProjectCurrency} type={'subproject'}/>
+        return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} projectAmount={this.props.subProjectAmount} projectCurrency={this.props.subProjectCurrency} type={'subProject'} />
       case 2:
-        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose}  projectPurpose={this.props.subProjectPurpose} type={'subproject'}/>
+        return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose} projectPurpose={this.props.subProjectPurpose} type={'subProject'} />
       default:
         return <span>Done</span>;
     }
   }
 
   render() {
-    const {stepIndex} = this.state;
+    const { stepIndex } = this.state;
     const contentStyle = {
       margin: '0 16px'
     };
@@ -76,10 +76,10 @@ class SubProjectCreationStepper extends Component {
             }}>
               <FlatButton label="Back" onTouchTap={this.handlePrev} style={{
                 marginRight: 360
-              }}/>
+              }} />
               <RaisedButton label={stepIndex === 2
                 ? 'Finish'
-                : 'Next'} primary={true} style={{}} onTouchTap={this.handleNext}/>
+                : 'Next'} primary={true} style={{}} onTouchTap={this.handleNext} />
             </div>
           </div>
         </div>

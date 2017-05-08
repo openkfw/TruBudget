@@ -136,7 +136,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           disabled={true}
           leftIcon={<UnspentIcon />}
           primaryText={unspentAmountString}
-          secondaryText={'Unspent'}
+          secondaryText={unspentAmount < 0 ? "Overspent" : "Unspent"}
         />
         <Divider />
         <ListItem style={styles.text}

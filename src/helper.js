@@ -65,7 +65,8 @@ export const calculateUnspentAmount = (items) => {
 export const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
-  return createDoughnutData(["Spent", "Unspent"], [subProjectsAmount, unspent]);
+  const spentText = unspent < 0 ? "Overspent" : "Unspent"
+  return createDoughnutData(["Spent", spentText], [subProjectsAmount, 0]);
 }
 
 
