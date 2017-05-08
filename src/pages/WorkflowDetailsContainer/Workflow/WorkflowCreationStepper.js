@@ -46,12 +46,12 @@ const WorkflowCreationStepper = (props) => {
             </StepButton>
         </Step>
         <Step>
-          <StepButton onClick={() => props.setWorkflowCreationStep(4)}>
+          <StepButton onClick={() => props.setWorkflowCreationStep(3)}>
             Additional Data
             </StepButton>
         </Step>
         <Step>
-          <StepButton onClick={() => props.setWorkflowCreationStep(5)}>
+          <StepButton onClick={() => props.setWorkflowCreationStep(4)}>
             Status & Assignee
             </StepButton>
         </Step>

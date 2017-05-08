@@ -155,13 +155,12 @@ const createLine = (isFirst, selectable) => {
   )
 };
 
-const createHeader = () => (
-  <Card >
-    <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }}
-      title="Workflow items"
-    />
+const createTableHeader = () => (
+  <Card>
+    <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }} title="Workflow items"/>
+    <div style={{marginLeft: '50px', marginRight: '10px', position: 'relative'}}>
     <Table>
-      <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+      <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{borderBottom: '0px'}}>
         <TableRow displayBorder={false}>
           <TableHeaderColumn style={styles.listText} colSpan={1}></TableHeaderColumn>
           <TableHeaderColumn style={styles.listText} colSpan={4}>Workflow</TableHeaderColumn>
@@ -171,6 +170,7 @@ const createHeader = () => (
         </TableRow>
       </TableHeader>
     </Table>
+    </div>
   </Card >
 )
 
@@ -226,7 +226,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 const WorkflowList = (props) => {
   return (
     <div style={{paddingBottom: '8px'}}>
-      {createHeader()}
+      {createTableHeader()}
       {createWorkflowItems(props)}
       <WorkflowDetails {...props} />
     </div >

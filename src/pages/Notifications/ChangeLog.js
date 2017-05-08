@@ -14,7 +14,7 @@ const getListEntries = (historyItems, users) => {
       <ListItem key={index}
         primaryText={item.data.description}
         leftAvatar={<Avatar src={users[userId].avatar} />}
-        secondaryText={moment(item.blocktime, 'X').fromNow()}
+        secondaryText={item.blocktime ? moment(item.blocktime, 'X').fromNow() : 'Processing ...'}
       />
     );
   });
