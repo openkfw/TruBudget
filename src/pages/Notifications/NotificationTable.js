@@ -40,10 +40,11 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
         <TableRowColumn style={styles.column} colSpan="5">{data.description}</TableRowColumn>
         <TableRowColumn colSpan="3">
           <ListItem
+            disabled
             innerDivStyle={styles.listitem}
             style={styles.by}
             primaryText={<div style={styles.by}>{issuer.name}</div>}
-            secondaryText={<div style={styles.by}>{moment(blocktime, 'X').fromNow()}</div>}
+            secondaryText={<div style={styles.by}>{blocktime ? moment(blocktime, 'X').fromNow() : 'Processing ...'}</div>}
           />
         </TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="2">
