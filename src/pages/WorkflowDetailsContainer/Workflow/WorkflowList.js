@@ -22,13 +22,15 @@ import WorkflowDetails from './WorkflowDetails'
 import { toAmountString, statusMapping } from '../../../helper.js';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightgreen } from '../../../colors.js';
 
-
 const styles = {
   in_progress: {
     backgroundColor: ACMECorpLightgrey
   },
   done: {
     backgroundColor: ACMECorpSuperLightgreen
+  },
+  listText: {
+    fontSize: '14px'
   },
   open: {},
   dots: {
@@ -161,11 +163,11 @@ const createHeader = () => (
     <Table>
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow displayBorder={false}>
-          <TableHeaderColumn colSpan={1}></TableHeaderColumn>
-          <TableHeaderColumn colSpan={4}>Workflow</TableHeaderColumn>
-          <TableHeaderColumn colSpan={2}>Amount</TableHeaderColumn>
-          <TableHeaderColumn colSpan={2}>Status</TableHeaderColumn>
-          <TableHeaderColumn colSpan={2}>Actions</TableHeaderColumn>
+          <TableHeaderColumn style={styles.listText} colSpan={1}></TableHeaderColumn>
+          <TableHeaderColumn style={styles.listText} colSpan={4}>Workflow</TableHeaderColumn>
+          <TableHeaderColumn style={styles.listText} colSpan={2}>Amount</TableHeaderColumn>
+          <TableHeaderColumn style={styles.listText} colSpan={2}>Status</TableHeaderColumn>
+          <TableHeaderColumn style={styles.listText} colSpan={2}>Actions</TableHeaderColumn>
         </TableRow>
       </TableHeader>
     </Table>
@@ -206,9 +208,9 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
                   <InfoIcon />
                 </IconButton>
               </TableRowColumn>
-              <TableRowColumn colSpan={4}>{workflow.key}</TableRowColumn>
-              <TableRowColumn colSpan={2}>{amount}</TableRowColumn>
-              <TableRowColumn colSpan={2}>{statusMapping[status]}</TableRowColumn>
+              <TableRowColumn style={styles.listText} colSpan={4}>{workflow.key}</TableRowColumn>
+              <TableRowColumn style={styles.listText} colSpan={2}>{amount}</TableRowColumn>
+              <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
               {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
             </TableRow>
 

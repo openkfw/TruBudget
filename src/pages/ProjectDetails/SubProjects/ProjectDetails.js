@@ -97,6 +97,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           secondaryText={'Spent'}
 
         />
+        <Divider />
       </Card>
       <Card style={{ width: '31%' }}>
         <CardTitle title="Task status" />

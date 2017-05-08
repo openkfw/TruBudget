@@ -112,6 +112,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           primaryText={spentAmountString}
           secondaryText={'Spent'}
         />
+        <Divider />
       </Card>
       <Card style={{ width: '31%' }}>
         <CardTitle title="Task status" />
@@ -172,5 +173,4 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
 
   )
 }
-
 export default SubProjectDetails;
