@@ -2,7 +2,7 @@ import React from 'react';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import FlatButton from 'material-ui/FlatButton';
 
-import colors from '../../colors'
+import colors, { ACMECorpGrey } from '../../colors'
 
 const getPathName = (name, streamNames) => streamNames[name] ? streamNames[name] : name;
 
@@ -24,7 +24,7 @@ const createBreadcrumb = ({ pathname }, history, streamNames) => {
         <FlatButton
           label={index ? getPathName(path, streamNames) : 'Main'}
           disabled={isLastItem}
-          style={{ color: isLastItem ? null : colors.lightColor }}
+          style={{ color: isLastItem ? ACMECorpGrey : colors.lightColor }}
           onTouchTap={() => history.push(accumulatedPath[index])} />
       </span>
     );
