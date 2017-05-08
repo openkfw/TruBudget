@@ -18,7 +18,54 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 
-
+const styles = {
+  container: {
+    display: 'flex',
+    marginTop: '24px',
+    height: '30%',
+    flex: 1,
+    flexDirection: 'row',
+    width: '74%',
+    marginBottom: '16px',
+    justifyContent: 'space-between'
+  },
+  card: {
+    width: '31%'
+  },
+  text: {
+    fontSize: '14px'
+  },
+  tasksChart: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  taskChartItem: {
+    width: '33%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  purpose: {
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
+  },
+  iconButton: {
+    padding: '0px',
+    height: '0px'
+  },
+  tooltip: {
+    top: '12px'
+  },
+  cardMedia: {
+    marginBottom: '10px'
+  }
+}
 
 const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const name = subProjectDetails.projectName
@@ -38,30 +85,16 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
   return (
 
-    <div style={{
-      display: 'flex',
-      marginTop: '24px',
-      height: '30%',
-      flex: 1,
-      flexDirection: 'row',
-      width: '74%',
-      marginBottom: '16px',
-      justifyContent: 'space-between'
-    }}>
+    <div style={styles.container}>
 
-      <Card style={{ width: '31%' }}>
+      <Card style={styles.card} >
         <CardTitle title={name} />
         <List>
           <Divider />
           <ListItem
-            style={{
-              whiteSpace: 'nowrap',
-              Overflow: 'hidden!important',
-              textOverflow: 'ellipsis'
-            }}
             disabled={true}
             leftIcon={<PurposeIcon />}
-            primaryText={purpose}
+            primaryText={<div style={styles.purpose}>{purpose} </div>}
             secondaryText={'Purpose'}
           />
           <Divider />
@@ -92,21 +125,21 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
         }}>
         </CardText>
       </Card>
-      <Card style={{ width: '31%' }}>
+      <Card style={styles.card}>
         <CardTitle title="Budget distribution" />
         <Divider />
-        <CardMedia style={{ marginBottom: '10px' }}>
+        <CardMedia style={styles.cardMedia}>
           <Doughnut data={createAmountData(amount, items)} />
         </CardMedia>
         <Divider />
-        <ListItem style={{ fontSize: 14 }}
+        <ListItem style={styles.text}
           disabled={true}
           leftIcon={<UnspentIcon />}
           primaryText={unspentAmountString}
           secondaryText={'Unspent'}
         />
         <Divider />
-        <ListItem style={{ fontSize: 14 }}
+        <ListItem style={styles.text}
           disabled={true}
           leftIcon={<SpentIcon />}
           primaryText={spentAmountString}
@@ -114,41 +147,41 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
         />
         <Divider />
       </Card>
-      <Card style={{ width: '31%' }}>
+      <Card style={styles.card}>
         <CardTitle title="Task status" />
         <Divider />
-        <CardMedia style={{ marginBottom: '10px' }}>
+        <CardMedia style={styles.cardMedia}>
           <Doughnut data={createTaskData(items)} />
         </CardMedia>
         <Divider />
         <ListItem disabled={true}>
-          <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: '33%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontSize: '14px' }}>
+          <div style={styles.tasksChart}>
+            <div style={styles.taskChartItem}>
+              <div style={styles.text}>
                 {statusDetails.open.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Open" style={{ padding: '0px', height: '0px' }} tooltipStyles={{ top: '12px' }} iconStyle={{ width: '14px', height: '20px' }} >
+                <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }} >
                   < OpenIcon />
                 </IconButton>
               </div>
             </div>
-            <div style={{ width: '33%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontSize: '14px' }}>
+            <div style={styles.taskChartItem}>
+              <div style={styles.text}>
                 {statusDetails.inProgress.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="In progress" style={{ padding: '0px', height: '0px' }} tooltipStyles={{ top: '12px' }} iconStyle={{ width: '14px', height: '20px' }}>
+                <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }}>
                   < InProgressIcon />
                 </IconButton>
               </div>
             </div>
-            <div style={{ width: '33%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontSize: '14px' }}>
+            <div style={styles.taskChartItem}>
+              <div style={styles.text}>
                 {statusDetails.done.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Done" style={{ padding: '0px', height: '0px' }} tooltipStyles={{ top: '12px' }} iconStyle={{ width: '14px', height: '20px' }} >
+                <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }} >
                   < DoneIcon />
                 </IconButton>
               </div>
