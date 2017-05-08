@@ -11,6 +11,20 @@ const styles = {
   column: {
     whiteSpace: 'normal',
     wordWrap: 'break-word'
+  },
+  columnNonBreaking: {
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+  },
+  listitem: {
+    paddingLeft: '0px',
+    paddingRight: '0px',
+  },
+  by: {
+    fontSize: '13px',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
   }
 }
 
@@ -21,13 +35,15 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
     const notificationRead = data.done === true;
     const element = (
       <TableRow key={index} selected={notificationRead} selectable={false}>
-        <TableRowColumn style={styles.column} colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
-        <TableRowColumn style={styles.column} colSpan="3">{streamNames[data.subProject] ? streamNames[data.subProject] : data.subProject}</TableRowColumn>
+        <TableRowColumn style={styles.columnNonBreaking} colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
+        <TableRowColumn style={styles.columnNonBreaking} colSpan="3">{streamNames[data.subProject] ? streamNames[data.subProject] : data.subProject}</TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="5">{data.description}</TableRowColumn>
-        <TableRowColumn style={styles.column} colSpan="3">
+        <TableRowColumn colSpan="3">
           <ListItem
-            primaryText={issuer.name}
-            secondaryText={moment(blocktime, 'X').fromNow()}
+            innerDivStyle={styles.listitem}
+            style={styles.by}
+            primaryText={<div style={styles.by}>{issuer.name}</div>}
+            secondaryText={<div style={styles.by}>{moment(blocktime, 'X').fromNow()}</div>}
           />
         </TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="2">
