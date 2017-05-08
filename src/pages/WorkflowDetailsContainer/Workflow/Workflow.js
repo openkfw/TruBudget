@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import HistoryIcon from 'material-ui/svg-icons/action/history';
+import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 import WorkflowList from './WorkflowList';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../../Notifications/ChangeLog'
