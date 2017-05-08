@@ -225,7 +225,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 
 const WorkflowList = (props) => {
   return (
-    <div >
+    <div style={{paddingBottom: '8px'}}>
       {createHeader()}
       {createWorkflowItems(props)}
       <WorkflowDetails {...props} />

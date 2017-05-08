@@ -16,10 +16,8 @@ const getStepContent = (props) => {
     case 2:
       return <ProjectCreationPurpose storeProjectPurpose={props.storeWorkflowPurpose} projectPurpose={props.workflowPurpose} type={'workflow'} />
     case 3:
-      return <span>Done</span>
-    case 4:
       return <ProjectCreationAdditionalData storeWorkflowAdditionalData={props.storeWorkflowAdditionalData} workflowAdditionalData={props.workflowAdditionalData} />
-    case 5:
+    case 4:
       return <WorkflowStateAndAssignee users={props.users} storeWorkflowState={props.storeWorkflowState} storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
     default:
       return <span>Done</span>
@@ -45,11 +43,6 @@ const WorkflowCreationStepper = (props) => {
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(2)}>
             Purpose
-            </StepButton>
-        </Step>
-        <Step>
-          <StepButton onClick={() => props.setWorkflowCreationStep(3)}>
-            Documents
             </StepButton>
         </Step>
         <Step>
