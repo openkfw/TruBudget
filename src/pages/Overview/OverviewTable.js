@@ -45,7 +45,7 @@ const getTableEntries = ({ projects, history }) => {
             disabled={true}
             leftIcon={<AmountIcon />}
             primaryText={amount}
-            secondaryText="Amount"
+            secondaryText="Budget"
           />
 
           <ListItem

@@ -25,7 +25,7 @@ export const toAmountString = (inputAmount, currency) => {
 };
 
 export const tsToString = (ts) => {
-  let dateString = moment(ts, 'x').format("D.MMM.YYYY");
+  let dateString = moment(ts, 'x').format("MMM D, YYYY");
   return dateString;
 }
 

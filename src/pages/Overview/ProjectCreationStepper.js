@@ -30,7 +30,7 @@ class ProjectCreationStepper extends Component {
             <StepLabel>Project Name</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Project Amount</StepLabel>
+            <StepLabel>Project Budget</StepLabel>
           </Step>
           <Step>
             <StepLabel>Project Purpose</StepLabel>
