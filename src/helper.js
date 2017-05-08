@@ -4,7 +4,7 @@ import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 
-import { taskStatusColorPalette, budgetStatusColorPalette }  from './colors';
+import { taskStatusColorPalette, budgetStatusColorPalette } from './colors';
 
 export const toAmountString = (inputAmount, currency) => {
   let decimals = ',00'
@@ -27,7 +27,7 @@ export const toAmountString = (inputAmount, currency) => {
 };
 
 export const tsToString = (ts) => {
-  let dateString = moment(ts, 'x').format("D.MMM.YYYY");
+  let dateString = moment(ts, 'x').format("MMM D, YYYY");
   return dateString;
 }
 
@@ -43,7 +43,7 @@ export const statusIconMapping = {
 }
 
 
-const createDoughnutData = (labels, data, colors = taskStatusColorPalette,) => ({
+const createDoughnutData = (labels, data, colors = taskStatusColorPalette, ) => ({
   labels,
   datasets: [
     {
@@ -65,7 +65,8 @@ export const calculateUnspentAmount = (items) => {
 export const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
-  return createDoughnutData(["Spent", "Unspent"], [subProjectsAmount, unspent], budgetStatusColorPalette);
+  const spentText = unspent < 0 ? "Overspent" : "Unspent"
+  return createDoughnutData(["Spent", spentText], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
 }
 
 export const getProgressInformation = (items) => {

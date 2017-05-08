@@ -76,6 +76,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
   const unspentAmount = projectAmount - spentAmount;
+  const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
   const spentAmountString = toAmountString(spentAmount.toString(), projectCurrency);
   const unspentAmountString = toAmountString(unspentAmount.toString(), projectCurrency);
   const statusDetails = getProgressInformation(subProjects)
@@ -127,16 +128,16 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]}/>}
+          leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
           primaryText={unspentAmountString}
-          secondaryText={'Unspent'}
+          secondaryText={"Unspent"}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<SpentIcon color={budgetStatusColorPalette[0]}/>}
+          leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
-          secondaryText={'Spent'}
+          secondaryText={correctedUnspentAmount > 0 ? 'Spent' : 'Spent (Overspent)'}
 
         />
         <Divider />
