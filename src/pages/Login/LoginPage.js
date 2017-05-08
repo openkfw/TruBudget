@@ -55,7 +55,7 @@ const LoginPage = ({ users, login }) => {
           {createListItems(users, login)}
         </List>
         <Divider />
-        <CardText>
+        <CardText style={{fontSize: '11px'}}>
           Developed by Emerging Technologies & Innovation @ Accenture
         </CardText>
       </Card>

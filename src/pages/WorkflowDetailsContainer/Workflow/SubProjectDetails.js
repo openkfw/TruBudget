@@ -17,6 +17,8 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 
+import { budgetStatusColorPalette } from '../../../colors'
+
 const styles = {
   container: {
     display: 'flex',
@@ -31,7 +33,7 @@ const styles = {
     width: '31%'
   },
   text: {
-    fontSize: '14px'
+    fontSize: '14px',
   },
   tasksChart: {
     width: '100%',
@@ -55,7 +57,7 @@ const styles = {
   },
   iconButton: {
     padding: '0px',
-    height: '0px'
+    height: '0px',
   },
   tooltip: {
     top: '12px'
@@ -64,7 +66,7 @@ const styles = {
     marginBottom: '10px'
   },
   icon: {
-    width: '14px', height: '20px'
+    width: '16px', height: '20px'
   },
 }
 
@@ -81,8 +83,9 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
   const spentAmount = calculateUnspentAmount(items)
   const unspentAmount = amount - spentAmount;
+  const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
   const spentAmountString = toAmountString(spentAmount.toString(), currency);
-  const unspentAmountString = toAmountString(unspentAmount.toString(), currency);
+  const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), currency);
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
   return (
@@ -134,16 +137,16 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<UnspentIcon />}
+          leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
           primaryText={unspentAmountString}
-          secondaryText={unspentAmount < 0 ? "Overspent" : "Unspent"}
+          secondaryText={"Unspent"}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<SpentIcon />}
+          leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
-          secondaryText={'Spent'}
+          secondaryText={correctedUnspentAmount > 0 ? 'Spent' : 'Spent (Overspent)'}
         />
         <Divider />
       </Card>
@@ -162,7 +165,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
-                  < OpenIcon />
+                  <OpenIcon />
                 </IconButton>
               </div>
             </div>
@@ -172,7 +175,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
-                  < InProgressIcon />
+                  <InProgressIcon />
                 </IconButton>
               </div>
             </div>
@@ -182,7 +185,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
-                  < DoneIcon />
+                  <DoneIcon />
                 </IconButton>
               </div>
             </div>

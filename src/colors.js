@@ -17,4 +17,7 @@ export const ACMECorpDarkBlue = '#1b618c'
 export const lightRed = red100
 export const red = red600
 
+export const taskStatusColorPalette = [ACMECorpGrey, ACMECorpSuperLightgreen, ACMECorpGreen];
+export const budgetStatusColorPalette = [red, ACMECorpBlue];
+
 export default colors;

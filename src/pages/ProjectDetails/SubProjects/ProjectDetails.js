@@ -17,6 +17,8 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 
+import { budgetStatusColorPalette } from '../../../colors'
+
 const styles = {
   container: {
     display: 'flex',
@@ -65,7 +67,7 @@ const styles = {
     marginBottom: '10px'
   },
   icon: {
-    width: '14px', height: '20px'
+    width: '16px', height: '20px'
   },
 
 }
@@ -74,6 +76,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
   const unspentAmount = projectAmount - spentAmount;
+  const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
   const spentAmountString = toAmountString(spentAmount.toString(), projectCurrency);
   const unspentAmountString = toAmountString(unspentAmount.toString(), projectCurrency);
   const statusDetails = getProgressInformation(subProjects)
@@ -125,16 +128,16 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<UnspentIcon />}
+          leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
           primaryText={unspentAmountString}
-          secondaryText={unspentAmount < 0 ? "Overspent" : "Unspent"}
+          secondaryText={"Unspent"}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<SpentIcon />}
+          leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
-          secondaryText={'Spent'}
+          secondaryText={correctedUnspentAmount > 0 ? 'Spent' : 'Spent (Overspent)'}
 
         />
         <Divider />
