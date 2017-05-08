@@ -6,7 +6,7 @@ import WorkflowCreationStepper from './WorkflowCreationStepper';
 
 
 const getWorkflowActions = ( props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  const isLastStep = props.creationStep === 5;
+  const isLastStep = props.creationStep === 4;
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
 

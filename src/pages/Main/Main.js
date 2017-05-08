@@ -24,8 +24,10 @@ const Main = (props) => {
       backgroundSize: 'cover',
       alignItems: 'center'
     }}>
-      <div className="container">
+      <div style={{width: '100%'}}>
         <Route component={NavbarContainer} />
+      </div>
+      <div className="container">
         <Route component={LiveNotificationContainer} />
         <Route component={LiveUpdates} />
         <Switch>
