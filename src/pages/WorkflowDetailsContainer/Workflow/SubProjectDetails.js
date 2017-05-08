@@ -64,7 +64,10 @@ const styles = {
   },
   cardMedia: {
     marginBottom: '10px'
-  }
+  },
+  icon: {
+    width: '14px', height: '20px'
+  },
 }
 
 const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
@@ -74,6 +77,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const currency = subProjectDetails.currency
   const amountString = toAmountString(amount, currency)
   const status = statusMapping[subProjectDetails.status]
+  console.log(status)
   const date = tsToString(subProjectDetails.createTS)
 
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
@@ -107,8 +111,8 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           <Divider />
           <ListItem
             disabled={true}
-            leftIcon={<StatusIcon />}
-            primaryText={status}
+            leftIcon={<DoneIcon />}
+            primaryText={status.text}
             secondaryText={'Status'}
           />
           <Divider />
@@ -161,7 +165,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
                 {statusDetails.open.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }} >
+                <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   < OpenIcon />
                 </IconButton>
               </div>
@@ -171,7 +175,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
                 {statusDetails.inProgress.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }}>
+                <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
                   < InProgressIcon />
                 </IconButton>
               </div>
@@ -181,7 +185,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
                 {statusDetails.done.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }} >
+                <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   < DoneIcon />
                 </IconButton>
               </div>

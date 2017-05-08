@@ -64,7 +64,10 @@ const styles = {
   },
   cardMedia: {
     marginBottom: '10px'
-  }
+  },
+  icon: {
+    width: '14px', height: '20px'
+  },
 
 }
 
@@ -152,7 +155,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.open.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }} >
+                <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   < OpenIcon />
                 </IconButton>
               </div>
@@ -162,7 +165,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.inProgress.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }}>
+                <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
                   < InProgressIcon />
                 </IconButton>
               </div>
@@ -172,7 +175,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.done.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={{ width: '14px', height: '20px' }} >
+                <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   < DoneIcon />
                 </IconButton>
               </div>

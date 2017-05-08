@@ -26,9 +26,9 @@ export const tsToString = (ts) => {
 }
 
 export const statusMapping = {
-  done: 'Done',
-  'in_progress': 'In progress',
-  open: 'Open'
+  done: { text = 'Done' },
+  'in_progress': { text: 'In progress' },
+  open: { text: 'Open' }
 }
 
 const createDoughnutData = (labels, data) => ({
