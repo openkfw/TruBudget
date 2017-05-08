@@ -15,12 +15,19 @@ export default class FlyInNotification extends Component {
       notificationStack: []
     }
 
+    this.mountingTime = undefined;
+  }
+
+  componentDidMount = () => {
+    this.mountingTime = Date.now();
   }
 
   componentDidUpdate = (prevProps) => {
+    const isFirstRequest = this.mountingTime > (Date.now() - 2000);
+
     const oldNotifications = prevProps.notifications;
     const newNotifications = this.props.notifications;
-    if (newNotifications.length > 0) {
+    if (newNotifications.length > 0 && !isFirstRequest) {
       this.compareAndFireNotifications(oldNotifications, newNotifications);
     }
   }
@@ -39,8 +46,6 @@ export default class FlyInNotification extends Component {
   filterNotifications = (notification) => notification.data.done === false
 
   compareAndFireNotifications = (oldN, newN) => {
-    if (!oldN.length) return;
-
     const oldData = oldN.map(this.mapNotifications).filter(this.filterNotifications).sort();
     const newData = newN.map(this.mapNotifications).filter(this.filterNotifications).sort();
 
