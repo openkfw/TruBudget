@@ -7,6 +7,8 @@ import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../../Notifications/actions';
 import { setSelectedView } from '../../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
+import globalStyles from '../../../styles';
+
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
@@ -18,11 +20,7 @@ class SubProjectsContainer extends Component {
 
   render() {
     return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}>
+      <div style={globalStyles.innerContainer}>
         <ProjectDetails {...this.props} />
         <SubProjects {...this.props} />
       </div>

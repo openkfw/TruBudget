@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import globalStyles from '../../../styles';
+
+
 import {
   fetchWorkflowItems,
   showWorkflowDialog,
@@ -32,14 +35,10 @@ class WorkflowContainer extends Component {
 
 
   render() {
-    return(
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-      }}>
-      <SubProjectDetails {...this.props} />
-      <Workflow {...this.props} />
+    return (
+      <div style={globalStyles.innerContainer}>
+        <SubProjectDetails {...this.props} />
+        <Workflow {...this.props} />
       </div>
     )
   }
@@ -75,7 +74,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     workflowItems: state.getIn(['workflow', 'workflowItems']).toJS(),
-    subProjectDetails:  state.getIn(['workflow', 'subProjectDetails']).toJS(),
+    subProjectDetails: state.getIn(['workflow', 'subProjectDetails']).toJS(),
     showWorkflow: state.getIn(['workflow', 'showWorkflow']),
     workflowName: state.getIn(['workflow', 'workflowName']),
     workflowAmount: state.getIn(['workflow', 'workflowAmount']),

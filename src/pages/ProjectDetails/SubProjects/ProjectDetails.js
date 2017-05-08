@@ -20,11 +20,10 @@ import IconButton from 'material-ui/IconButton';
 const styles = {
   container: {
     display: 'flex',
-    marginTop: '20px',
     height: '30%',
     flex: 1,
     flexDirection: 'row',
-    width: '74%',
+    width: '100%',
     maxHeight: '500px',
     marginBottom: '32px',
     justifyContent: 'space-between'
@@ -80,7 +79,6 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   const statusDetails = getProgressInformation(subProjects)
   return (
     <div style={styles.container}>
-
       <Card style={styles.card}>
         <CardTitle title={projectName} />
         <List>

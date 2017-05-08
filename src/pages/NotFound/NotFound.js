@@ -1,10 +1,12 @@
 import React from 'react';
 import { Card, CardText } from 'material-ui/Card';
 
+import globalStyles from '../../styles';
+
 const NotFound = () => (
-  <div style={{ display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center', marginTop: '50px', }}>
+  <div style={{ ...globalStyles.innerContainer, flexDirection: 'column', alignItems: 'center' }}>
     <Card style={{
-      width: '60%',
+      width: '100%',
       position: 'relative',
       zIndex: 1100
     }}>

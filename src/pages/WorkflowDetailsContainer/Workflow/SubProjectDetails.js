@@ -21,11 +21,10 @@ import IconButton from 'material-ui/IconButton';
 const styles = {
   container: {
     display: 'flex',
-    marginTop: '24px',
     height: '30%',
     flex: 1,
     flexDirection: 'row',
-    width: '74%',
+    width: '100%',
     marginBottom: '16px',
     justifyContent: 'space-between'
   },
@@ -88,9 +87,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
   return (
-
     <div style={styles.container}>
-
       <Card style={styles.card} >
         <CardTitle title={name} />
         <List>

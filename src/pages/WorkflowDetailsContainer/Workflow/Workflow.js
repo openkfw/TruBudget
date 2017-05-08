@@ -10,11 +10,9 @@ import { ACMECorpGrey, ACMECorpDarkBlue } from '../../../colors.js'
 const Workflow = (props) => (
 
   <Card style={{
-    width: '74%',
-    marginTop: '24px',
+    width: '100%',
     position: 'relative'
   }}>
-
     <div style={{
       display: 'flex',
       flexDirection: 'column',
