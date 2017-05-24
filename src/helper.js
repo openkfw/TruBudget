@@ -7,12 +7,13 @@ import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import { taskStatusColorPalette, budgetStatusColorPalette } from './colors';
 
 export const toAmountString = (inputAmount, currency) => {
+  const input = typeof inputAmount === 'number' ? inputAmount.toString() : inputAmount
   let decimals = ',00'
   let tempCurrency = ' €'
   let formattedAmount = '0'
-  if (inputAmount !== 0) {
-    if (typeof inputAmount !== "undefined" && inputAmount.includes('.')) {
-      decimals = inputAmount.substr(inputAmount.indexOf('.'), inputAmount.length - 1);
+  if (input !== 0) {
+    if (typeof input !== "undefined" && input.includes('.')) {
+      decimals = input.substr(input.indexOf('.'), input.length - 1);
       decimals = decimals.replace('.', ',');
       if (decimals.length === 2) {
         decimals += '0';
@@ -22,7 +23,7 @@ export const toAmountString = (inputAmount, currency) => {
   if (currency === 'USD') {
     tempCurrency = " $"
   }
-  formattedAmount = parseInt(inputAmount, 10).toLocaleString();
+  formattedAmount = parseInt(input, 10).toLocaleString();
   return formattedAmount + decimals + tempCurrency;
 };
 
