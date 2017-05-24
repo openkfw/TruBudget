@@ -3,7 +3,8 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
 import ProjectCreationName from './ProjectCreationName';
 import ProjectCreationAmount from './ProjectCreationAmount';
-import ProjectCreationPurpose from './ProjectCreationPurpose'
+import ProjectCreationPurpose from './ProjectCreationPurpose';
+import ProjectCreationRoles from './ProjectCreationRoles';
 
 class ProjectCreationStepper extends Component {
   getStepContent(creationStep) {
@@ -14,7 +15,8 @@ class ProjectCreationStepper extends Component {
         return <ProjectCreationAmount storeProjectAmount={this.props.storeProjectAmount} storeProjectCurrency={this.props.storeProjectCurrency} projectAmount={this.props.projectAmount} projectCurrency={this.props.projectCurrency} />
       case 2:
         return <ProjectCreationPurpose storeProjectPurpose={this.props.storeProjectPurpose} projectPurpose={this.props.projectPurpose} />
-
+      case 3:
+        return <ProjectCreationRoles />
       default:
         return null;
     }
@@ -34,6 +36,9 @@ class ProjectCreationStepper extends Component {
           </Step>
           <Step>
             <StepLabel>Project Purpose</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Project Roles</StepLabel>
           </Step>
         </Stepper>
         <div style={contentStyle}>
