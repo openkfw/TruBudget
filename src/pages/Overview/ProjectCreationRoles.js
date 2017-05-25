@@ -1,7 +1,8 @@
 import React from 'react';
-import AutoComplete from 'material-ui/AutoComplete';
 
 import RoleSelection from './RoleSelection';
+import RoleSelectionContent from './RoleSelectionContent';
+
 
 const styles = {
   container: {
@@ -17,7 +18,7 @@ const getSteps = (dataSource) => [
     content: (
       <div>
         <p>Approver approves the fullfilement of workflows. The are also able to increase the budget line of the project.</p>
-        <AutoComplete dataSource={dataSource} />
+        <RoleSelectionContent dataSource={dataSource} />
       </div>
     )
   },
@@ -26,7 +27,7 @@ const getSteps = (dataSource) => [
     content: (
       <div>
         <p>The assignee is able to create and update sub-projects and workflows.</p>
-        <AutoComplete dataSource={dataSource} />
+        <RoleSelectionContent dataSource={dataSource} />
       </div>
     )
   },
@@ -35,7 +36,7 @@ const getSteps = (dataSource) => [
     content: (
       <div>
         <p>The financial processor is approving financial transaction for workflows.</p>
-        <AutoComplete dataSource={dataSource} />
+        <RoleSelectionContent dataSource={dataSource} />
       </div>
     )
   }
