@@ -13,6 +13,7 @@ import {
   postWorkflowItem,
   editWorkflowItem,
   fetchUsers,
+  fetchRoles,
   login,
   fetchStreamNames,
   fetchHistory
@@ -23,8 +24,8 @@ import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_
 import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT_ITEM, CREATE_SUBPROJECT_ITEM_SUCCESS } from './pages/ProjectDetails/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS } from './pages/Notifications/actions';
-import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY} from './pages/WorkflowDetailsContainer/Workflow/actions';
-import { FETCH_USERS, FETCH_USERS_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
+import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY } from './pages/WorkflowDetailsContainer/Workflow/actions';
+import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
 
 export function* fetchPeersSaga(action) {
   const peers = yield fetchPeers();
@@ -60,14 +61,14 @@ export function* createSubProjectSaga(action) {
 
 export function* createWorkflowItemSaga(action) {
   yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee);
-  yield put({ type: CREATE_WORKFLOW_SUCCESS});
-  yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream});
+  yield put({ type: CREATE_WORKFLOW_SUCCESS });
+  yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
 }
 
 export function* editWorkflowItemSaga(action) {
   yield editWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee, action.txid, action.previousState);
-  yield put({ type: EDIT_WORKFLOW_SUCCESS});
-  yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream});
+  yield put({ type: EDIT_WORKFLOW_SUCCESS });
+  yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
 }
 
 export function* fetchNodeInformationSaga() {
@@ -91,6 +92,11 @@ export function* fetchUsersSaga() {
   yield put({ type: FETCH_USERS_SUCCESS, users: users.data })
 }
 
+export function* fetchRolesSaga() {
+  const roles = yield fetchRoles();
+  yield put({ type: FETCH_ROLES_SUCCESS, roles: roles.data })
+}
+
 export function* loginSaga({ user }) {
   yield login(user.username, user.password);
   yield put({ type: LOGIN_SUCCESS, user })
@@ -100,9 +106,9 @@ export function* fetchStreamNamesSaga() {
   const streamNames = yield fetchStreamNames();
   yield put({ type: FETCH_STREAM_NAMES_SUCCESS, streamNames: streamNames.data })
 }
-export function* fetchHistorySaga({project}){
+export function* fetchHistorySaga({ project }) {
   const history = yield fetchHistory(project);
-  yield put ({type: FETCH_HISTORY_SUCCESS, historyItems: history.data })
+  yield put({ type: FETCH_HISTORY_SUCCESS, historyItems: history.data })
 }
 
 export function* watchFetchPeers() {
@@ -121,7 +127,7 @@ export function* watchFetchWorkflowItems() {
   yield takeEvery(FETCH_WORKFLOW_ITEMS, fetchWorkflowItemsSaga)
 }
 
-export function* watchFetchHistory(){
+export function* watchFetchHistory() {
   yield takeEvery(FETCH_HISTORY, fetchHistorySaga)
 }
 
@@ -157,6 +163,10 @@ export function* watchFetchUsers() {
   yield takeLatest(FETCH_USERS, fetchUsersSaga)
 }
 
+export function* watchFetchRoles() {
+  yield takeLatest(FETCH_ROLES, fetchRolesSaga)
+}
+
 export function* watchLogin() {
   yield takeLatest(LOGIN, loginSaga)
 }
@@ -179,6 +189,7 @@ export default function* rootSaga() {
     watchMarkNotificationAsRead(),
     watchFetchWorkflowItems(),
     watchFetchUsers(),
+    watchFetchRoles(),
     watchLogin(),
     watchFetchStreamNames(),
     watchFetchHistory()

@@ -21,7 +21,7 @@ export function createProject(name, amount, purpose, currency) {
     type: CREATE_PROJECT,
     name: name,
     amount: amount,
-    purpose:purpose,
+    purpose: purpose,
     currency: currency
   }
 }
@@ -40,28 +40,28 @@ export function storeProjectName(name) {
   }
 }
 
-export function storeProjectAmount(amount){
+export function storeProjectAmount(amount) {
   return {
     type: PROJECT_AMOUNT,
     amount: amount
   }
 }
 
-export function storeProjectCurrency(currency){
+export function storeProjectCurrency(currency) {
   return {
     type: PROJECT_CURRENCY,
     currency: currency
   }
 }
 
-export function storeProjectPurpose(purpose){
+export function storeProjectPurpose(purpose) {
   return {
-    type:PROJECT_PURPOSE,
+    type: PROJECT_PURPOSE,
     purpose: purpose
   }
 }
 
-export function setProjectCreationStep(step){
+export function setProjectCreationStep(step) {
   return {
     type: SET_PROJECT_CREATION_STEP,
     step

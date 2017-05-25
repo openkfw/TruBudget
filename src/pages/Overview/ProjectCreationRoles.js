@@ -11,13 +11,7 @@ const styles = {
   }
 }
 
-const dataSource = [
-  "test",
-  "foo",
-  "bar"
-]
-
-const steps = [
+const getSteps = (dataSource) => [
   {
     title: 'Select approver roles',
     content: (
@@ -48,6 +42,7 @@ const steps = [
 ]
 
 const ProjectCreationRoles = (props) => {
+  const steps = getSteps(props.roles);
   return (
     <div style={styles.container}>
       <RoleSelection
