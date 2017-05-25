@@ -48,7 +48,7 @@ const ProjectCreationDialog = (props) => {
       title={title}
       modal={true}
       bodyStyle={{
-        minHeight: '200px'
+        minHeight: '400px'
       }}
       actionsContainerStyle={{
         display: 'flex',
