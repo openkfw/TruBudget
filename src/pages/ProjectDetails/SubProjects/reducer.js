@@ -10,6 +10,9 @@ const defaultState = fromJS({
   projectPurpose: 'Default Purpose',
   projectStatus: 'open',
   projectTS: 0,
+  projectAssignee: [],
+  projectApprover: [],
+  projectBank: [],
   subProjects: [],
   subProjectName: '',
   workflowDialogVisible: false,
@@ -18,7 +21,7 @@ const defaultState = fromJS({
   subProjectCurrency: 'EUR',
   showHistory: false,
   historyItems: [],
-  
+
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -31,6 +34,9 @@ export default function detailviewReducer(state = defaultState, action) {
         projectPurpose: action.projectDetails.details.purpose,
         projectStatus: action.projectDetails.details.status,
         projectTS: action.projectDetails.details.createTS,
+        projectApprover: action.projectDetails.details.approver,
+        projectAssignee: action.projectDetails.details.assignee,
+        projectBank: action.projectDetails.details.bank,
         subProjects: action.projectDetails.subProjects,
       });
     case SHOW_WORKFLOW_DIALOG:
