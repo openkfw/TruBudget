@@ -49,7 +49,7 @@ export function* fetchWorkflowItemsSaga(action) {
 }
 
 export function* createProject(action) {
-  yield postProject(action.name, action.amount, action.purpose, action.currency);
+  yield postProject(action.name, action.amount, action.purpose, action.currency, action.approver, action.assignee, action.bank);
   yield put({ type: CREATE_PROJECT_SUCCESS });
   yield put({ type: FETCH_PROJECTS });
 }

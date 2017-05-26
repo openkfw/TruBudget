@@ -6,7 +6,7 @@ export const fetchProjectDetails = (project) => axios.get('/projects/' + project
 export const fetchStreamNames = () => axios.get('/streams/names/');
 export const fetchStreamItems = (flowName) => axios.get('/streams/' + flowName);
 export const postSubProject = (parentProject, subProjectName, subProjectAmount, subProjectPurpose, subProjectCurrency) => axios.post('/projects/subprojects', { parentStream: parentProject, name: subProjectName, amount: subProjectAmount, purpose: subProjectPurpose, currency: subProjectCurrency, status: 'open' })
-export const postProject = (name, amount, purpose, currency) => axios.post('/projects', { name, amount, purpose, currency })
+export const postProject = (name, amount, purpose, currency, approver, assignee, bank) => axios.post('/projects', { name, amount, purpose, currency, approver, assignee, bank })
 export const fetchNodeInformation = () => axios.get('/nodes');
 export const fetchNotifications = (user) => axios.get('/notifications/' + user);
 export const fetchWorkflowItems = (subProjectName) => axios.get('/projects/' + subProjectName + '/workflows');

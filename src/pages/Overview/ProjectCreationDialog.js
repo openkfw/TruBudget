@@ -32,7 +32,8 @@ const handleBack = (props) => props.setProjectCreationStep(props.creationStep - 
 const handleNext = (props) => props.setProjectCreationStep(props.creationStep + 1)
 
 const handleSubmit = (props) => {
-  props.createProject(props.projectName, props.projectAmount, props.projectPurpose, props.projectCurrency, props.location.pathname.split('/')[2]);
+  props.createProject(props.projectName, props.projectAmount, props.projectPurpose, props.projectCurrency, props.location.pathname.split('/')[2],
+    props.projectApprover, props.projectAssignee, props.projectBank);
   props.hideWorkflowDialog();
   props.storeSnackBarMessage('Added ' + props.projectName)
   props.showSnackBar();

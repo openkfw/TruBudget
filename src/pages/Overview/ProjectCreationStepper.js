@@ -16,7 +16,7 @@ class ProjectCreationStepper extends Component {
       case 2:
         return <ProjectCreationPurpose storeProjectPurpose={this.props.storeProjectPurpose} projectPurpose={this.props.projectPurpose} />
       case 3:
-        return <ProjectCreationRoles roles={this.props.roles} />
+        return <ProjectCreationRoles {...this.props} />
       default:
         return null;
     }

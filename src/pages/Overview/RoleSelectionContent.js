@@ -22,7 +22,6 @@ const styles = {
 
 class RoleSelectionContent extends Component {
   state = {
-    selectedRoles: [],
     searchText: '',
   }
 
@@ -39,16 +38,14 @@ class RoleSelectionContent extends Component {
   onSelect = (role, index) => {
     if (index > -1) {
       this.setState({
-        selectedRoles: _.uniq([...this.state.selectedRoles, role]),
         searchText: '',
       });
+      this.props.addSelection(role);
     }
   }
 
   onRemoveChip = (role) => {
-    this.setState({
-      selectedRoles: _.pull(this.state.selectedRoles, role)
-    });
+    this.props.removeSelection(role);
   }
 
   handleUpdateInput = (text) => {
@@ -58,7 +55,7 @@ class RoleSelectionContent extends Component {
   }
 
   render = () => {
-    const unSelectedDataSource = _.difference(this.props.dataSource, this.state.selectedRoles);
+    const unSelectedDataSource = _.difference(this.props.dataSource, this.props.selections);
     return (
       <div style={styles.container}>
         <AutoComplete
@@ -72,7 +69,7 @@ class RoleSelectionContent extends Component {
           menuCloseDelay={0}
         />
         <div style={styles.chipWrapper}>
-          {this.createChips(this.state.selectedRoles)}
+          {this.createChips(this.props.selections)}
         </div>
       </div >
     )
