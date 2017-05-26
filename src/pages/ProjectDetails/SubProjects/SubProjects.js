@@ -27,6 +27,7 @@ const SubProjects = (props) => (
       storeProjectPurpose={props.storeSubProjectPurpose}
       projectCurrency={props.subProjectCurrency}
       storeProjectCurrency={props.storeSubProjectCurrency}
+      numberOfSteps={3}
     />
     <div style={{
       display: 'flex',

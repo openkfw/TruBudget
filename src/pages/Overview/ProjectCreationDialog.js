@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import ProjectCreationStepper from './ProjectCreationStepper';
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  const isLastStep = props.creationStep === 3;
+  const isLastStep = props.creationStep === props.numberOfSteps - 1;
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
 
