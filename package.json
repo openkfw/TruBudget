@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "accounting": "^0.4.1",
     "axios": "^0.16.0",
     "chart.js": "^2.5.0",
     "history": "^4.6.1",

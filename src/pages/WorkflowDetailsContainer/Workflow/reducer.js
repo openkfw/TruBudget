@@ -19,13 +19,14 @@ import {
 } from './actions';
 
 import { LOGOUT } from '../../Login/actions';
+import { fromAmountString } from '../../../helper';
 
 const defaultState = fromJS({
   workflowItems: [],
   subProjectDetails: {},
   showWorkflow: false,
   workflowName: '',
-  workflowAmount: '',
+  workflowAmount: 0,
   workflowCurrency: 'EUR',
   workflowAdditionalData: '',
   workflowPurpose: '',
@@ -37,20 +38,20 @@ const defaultState = fromJS({
   showDetails: false,
   showDetailsItemId: '',
   showHistory: false,
-  historyItems:[],
+  historyItems: [],
   creationStep: 0,
 });
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_WORKFLOW_ITEMS_SUCCESS:
-      return state.merge({workflowItems: action.workflowItems.items, subProjectDetails: action.workflowItems.details});
+      return state.merge({ workflowItems: action.workflowItems.items, subProjectDetails: action.workflowItems.details });
     case SHOW_WORKFLOW_DIALOG:
       return state.merge({ showWorkflow: action.show, editMode: action.editMode })
     case WORKFLOW_NAME:
       return state.set('workflowName', action.name)
     case WORKFLOW_AMOUNT:
-      return state.set('workflowAmount', action.amount)
+      return state.set('workflowAmount', fromAmountString(action.amount))
     case WORKFLOW_PURPOSE:
       return state.set('workflowPurpose', action.purpose)
     case WORKFLOW_ADDITIONAL_DATA:

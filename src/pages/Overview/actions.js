@@ -10,19 +10,29 @@ export const PROJECT_PURPOSE = 'PROJECT_PURPOSE';
 export const PROJECT_CURRENCY = 'PROJECT_CURRENCY';
 export const SET_PROJECT_CREATION_STEP = 'SET_PROJECT_CREATION_STEP';
 
+export const ADD_ASSIGNEMENT_ROLE = 'ADD_ASSIGNEMENT_ROLE';
+export const ADD_APPROVER_ROLE = 'ADD_APPROVER_ROLE';
+export const ADD_BANK_ROLE = 'ADD_BANK_ROLE';
+export const REMOVE_ASSIGNEMENT_ROLE = 'REMOVE_ASSIGNEMENT_ROLE';
+export const REMOVE_APPROVER_ROLE = 'REMOVE_APPROVER_ROLE';
+export const REMOVE_BANK_ROLE = 'REMOVE_BANK_ROLE';
+
 export function fetchProjects() {
   return {
     type: FETCH_PROJECTS,
   }
 }
 
-export function createProject(name, amount, purpose, currency) {
+export function createProject(name, amount, purpose, currency, approver, assignee, bank) {
   return {
     type: CREATE_PROJECT,
     name: name,
     amount: amount,
-    purpose:purpose,
-    currency: currency
+    purpose: purpose,
+    currency: currency,
+    approver,
+    assignee,
+    bank
   }
 }
 
@@ -40,31 +50,71 @@ export function storeProjectName(name) {
   }
 }
 
-export function storeProjectAmount(amount){
+export function storeProjectAmount(amount) {
   return {
     type: PROJECT_AMOUNT,
     amount: amount
   }
 }
 
-export function storeProjectCurrency(currency){
+export function storeProjectCurrency(currency) {
   return {
     type: PROJECT_CURRENCY,
     currency: currency
   }
 }
 
-export function storeProjectPurpose(purpose){
+export function storeProjectPurpose(purpose) {
   return {
-    type:PROJECT_PURPOSE,
+    type: PROJECT_PURPOSE,
     purpose: purpose
   }
 }
 
-export function setProjectCreationStep(step){
+export function setProjectCreationStep(step) {
   return {
     type: SET_PROJECT_CREATION_STEP,
     step
+  }
+}
+
+export function addAssignmentRole(role) {
+  return {
+    type: ADD_ASSIGNEMENT_ROLE,
+    role
+  }
+}
+
+export function addApproverRole(role) {
+  return {
+    type: ADD_APPROVER_ROLE,
+    role
+  }
+}
+export function addBankRole(role) {
+  return {
+    type: ADD_BANK_ROLE,
+    role
+  }
+}
+
+export function removeAssignmentRole(role) {
+  return {
+    type: REMOVE_ASSIGNEMENT_ROLE,
+    role
+  }
+}
+
+export function removeApproverRole(role) {
+  return {
+    type: REMOVE_APPROVER_ROLE,
+    role
+  }
+}
+export function removeBankRole(role) {
+  return {
+    type: REMOVE_BANK_ROLE,
+    role
   }
 }
 

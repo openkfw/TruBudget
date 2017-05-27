@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import ProjectCreationStepper from './ProjectCreationStepper';
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  const isLastStep = props.creationStep === 2;
+  const isLastStep = props.creationStep === props.numberOfSteps - 1;
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
 
@@ -32,7 +32,8 @@ const handleBack = (props) => props.setProjectCreationStep(props.creationStep - 
 const handleNext = (props) => props.setProjectCreationStep(props.creationStep + 1)
 
 const handleSubmit = (props) => {
-  props.createProject(props.projectName, props.projectAmount, props.projectPurpose, props.projectCurrency, props.location.pathname.split('/')[2]);
+  props.createProject(props.projectName, props.projectAmount, props.projectPurpose, props.projectCurrency, props.location.pathname.split('/')[2],
+    props.projectApprover, props.projectAssignee, props.projectBank);
   props.hideWorkflowDialog();
   props.storeSnackBarMessage('Added ' + props.projectName)
   props.showSnackBar();
@@ -48,7 +49,7 @@ const ProjectCreationDialog = (props) => {
       title={title}
       modal={true}
       bodyStyle={{
-        minHeight: '200px'
+        minHeight: '400px'
       }}
       actionsContainerStyle={{
         display: 'flex',
