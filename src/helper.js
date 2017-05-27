@@ -3,29 +3,16 @@ import moment from 'moment';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
+import accounting from 'accounting';
+
+import currencies from './currency';
 
 import { taskStatusColorPalette, budgetStatusColorPalette } from './colors';
 
-export const toAmountString = (inputAmount, currency) => {
-  const input = typeof inputAmount === 'number' ? inputAmount.toString() : inputAmount
-  let decimals = ',00'
-  let tempCurrency = ' €'
-  let formattedAmount = '0'
-  if (input !== 0) {
-    if (typeof input !== "undefined" && input.includes('.')) {
-      decimals = input.substr(input.indexOf('.'), input.length - 1);
-      decimals = decimals.replace('.', ',');
-      if (decimals.length === 2) {
-        decimals += '0';
-      }
-    }
-  }
-  if (currency === 'USD') {
-    tempCurrency = " $"
-  }
-  formattedAmount = parseInt(input, 10).toLocaleString();
-  return formattedAmount + decimals + tempCurrency;
-};
+const getCurrencyFormat = (currency) => ({ decimal: ".", thousand: "", precision: 2, ...currencies[currency] })
+
+export const fromAmountString = (amount, currency) => accounting.unformat(amount, getCurrencyFormat(currency).decimal);
+export const toAmountString = (amount, currency) => accounting.formatMoney(amount, getCurrencyFormat(currency));
 
 export const tsToString = (ts) => {
   let dateString = moment(ts, 'x').format("MMM D, YYYY");

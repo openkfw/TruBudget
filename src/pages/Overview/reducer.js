@@ -7,11 +7,13 @@ import {
 } from './actions';
 import { LOGOUT } from '../Login/actions';
 
+import { fromAmountString } from '../../helper';
+
 const defaultState = fromJS({
   projects: [],
   workflowDialogVisible: false,
   projectName: '',
-  projectAmount: '',
+  projectAmount: 0,
   projectPurpose: '',
   projectCurrency: 'EUR',
   creationStep: 0,
@@ -29,7 +31,7 @@ export default function overviewReducer(state = defaultState, action) {
     case PROJECT_NAME:
       return state.set('projectName', action.name);
     case PROJECT_AMOUNT:
-      return state.set('projectAmount', action.amount);
+      return state.set('projectAmount', fromAmountString(action.amount));
     case PROJECT_PURPOSE:
       return state.set('projectPurpose', action.purpose);
     case PROJECT_CURRENCY:

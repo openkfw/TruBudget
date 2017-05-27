@@ -3,6 +3,8 @@ import { fromJS } from 'immutable';
 import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_PURPOSE, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS } from './actions';
 import { LOGOUT } from '../../Login/actions';
 
+import { fromAmountString } from '../../../helper';
+
 const defaultState = fromJS({
   projectName: '',
   projectAmount: 0,
@@ -16,7 +18,7 @@ const defaultState = fromJS({
   subProjects: [],
   subProjectName: '',
   workflowDialogVisible: false,
-  subProjectAmount: '',
+  subProjectAmount: 0,
   subProjectPurpose: '',
   subProjectCurrency: 'EUR',
   showHistory: false,
@@ -29,7 +31,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case FETCH_PROJECT_DETAILS_SUCCESS:
       return state.merge({
         projectName: action.projectDetails.details.projectName,
-        projectAmount: action.projectDetails.details.amount,
+        projectAmount: fromAmountString(action.projectDetails.details.amount),
         projectCurrency: action.projectDetails.details.currency,
         projectPurpose: action.projectDetails.details.purpose,
         projectStatus: action.projectDetails.details.status,
@@ -44,7 +46,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case SUBPROJECT_NAME:
       return state.set('subProjectName', action.name);
     case SUBPROJECT_AMOUNT:
-      return state.set('subProjectAmount', action.amount);
+      return state.set('subProjectAmount', fromAmountString(action.amount));
     case SUBPROJECT_PURPOSE:
       return state.set('subProjectPurpose', action.purpose);
     case SUBPROJECT_CURRENCY:
