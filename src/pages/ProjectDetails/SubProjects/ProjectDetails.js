@@ -13,6 +13,7 @@ import DateIcon from 'material-ui/svg-icons/action/date-range';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
+import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import IconButton from 'material-ui/IconButton';
 
 import { budgetStatusColorPalette, red } from '../../../colors'
@@ -72,7 +73,7 @@ const styles = {
   },
 }
 
-const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectPurpose, projectStatus, projectTS }) => {
+const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectPurpose, projectStatus, projectTS, projectAssignee }) => {
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
   const unspentAmount = projectAmount - spentAmount;
@@ -112,6 +113,13 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
             leftIcon={<DateIcon />}
             primaryText={tsToString(projectTS)}
             secondaryText={'Created'}
+          />
+          <Divider />
+          <ListItem
+            disabled={true}
+            leftIcon={<AssigneeIcon />}
+            primaryText={projectAssignee}
+            secondaryText={'Assignee'}
           />
           <Divider />
         </List>

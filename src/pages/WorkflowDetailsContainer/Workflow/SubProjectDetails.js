@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem } from '../../../helper.js'
+import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction } from '../../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -14,6 +14,7 @@ import DateIcon from 'material-ui/svg-icons/action/date-range';
 import ActiveIcon from 'material-ui/svg-icons/image/navigate-next';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
+import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 
@@ -80,6 +81,8 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const purpose = subProjectDetails.purpose
   const amount = subProjectDetails.amount
   const currency = subProjectDetails.currency
+  const assignee = subProjectDetails.assignee
+
   const amountString = toAmountString(amount, currency)
   const status = statusMapping[subProjectDetails.status]
   const statusIcon = statusIconMapping[subProjectDetails.status]
@@ -93,6 +96,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), currency);
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
+  const nextAction = getNextAction(nextIncompletedWorkflow, subProjectDetails.assignee, subProjectDetails.bank, subProjectDetails.approver)
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
@@ -127,7 +131,13 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
             secondaryText={'Created'}
           />
           <Divider />
-
+          <ListItem
+            disabled={true}
+            leftIcon={<AssigneeIcon />}
+            primaryText={assignee}
+            secondaryText={'Assignee'}
+          />
+          <Divider />
         </List>
         <CardText style={{
         }}>
@@ -206,11 +216,15 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
         <ListItem
           disabled={true}
           leftIcon={<ActiveIcon />}
-          primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}
-          secondaryText={'Active item '}
+          //  primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}
+          primaryText={<div>
+            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}</span> <br />
+            {nextAction}
+          </div>}
+          secondaryText={'Next step'}
         />
         <Divider />
-        <Divider />
+
 
       </Card>
 
