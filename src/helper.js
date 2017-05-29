@@ -94,7 +94,6 @@ export const getNextIncompletedItem = (items) => {
 }
 
 export const getNextAction = (item, assignee, bank, approver) => {
-  console.log(item)
   return !_.isUndefined(item) && !_.isUndefined(item.details.status)
     && !_.isEmpty(item.details.status)
     ? actionMapping(assignee, bank, approver)[item.details.status]

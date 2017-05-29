@@ -16,6 +16,8 @@ import {
   EDIT_WORKFLOW_SUCCESS,
   SHOW_WORKFLOW_DETAILS,
   SET_WORKFLOW_CREATION_STEP,
+  UPDATE_WORKFLOW_SORT,
+  ENABLE_WORKFLOW_SORT
 } from './actions';
 
 import { LOGOUT } from '../../Login/actions';
@@ -44,6 +46,7 @@ const defaultState = fromJS({
   showHistory: false,
   historyItems: [],
   creationStep: 0,
+  workflowSort: true,
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -91,8 +94,14 @@ export default function detailviewReducer(state = defaultState, action) {
       })
     case SET_WORKFLOW_CREATION_STEP:
       return state.set('creationStep', action.step);
+    case ENABLE_WORKFLOW_SORT:
+      return state.set('workflowSort', action.sort)
+    case UPDATE_WORKFLOW_SORT:
+      return state.merge({ workflowItems: action.items });
     case LOGOUT:
       return defaultState;
+
+
     default:
       return state
   }

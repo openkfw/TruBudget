@@ -16,6 +16,7 @@ import EditIcon from 'material-ui/svg-icons/image/edit';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
 import IconButton from 'material-ui/IconButton';
 
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 
 import WorkflowDetails from './WorkflowDetails'
 
@@ -174,56 +175,94 @@ const createTableHeader = () => (
   </Card >
 )
 
-const createWorkflowItems = ({ workflowItems, ...props }) => {
+const SortableItem = SortableElement(({ workflow, mapIndex, props, index }) => {
   let nextWorkflowNotSelectable = false;
+  const status = workflow.data.status;
+  const currentWorkflowSelectable = !nextWorkflowNotSelectable;
+  if (!nextWorkflowNotSelectable) nextWorkflowNotSelectable = status === 'open' || status === 'in_progress'
+  const amount = toAmountString(workflow.data.amount, workflow.data.currency);
+  const tableStyle = currentWorkflowSelectable ? styles[status] : { ...styles[status], opacity: 0.3 };
+
+  return (
+    <Card key={mapIndex} style={{
+      marginLeft: '50px',
+      marginRight: '10px',
+      marginTop: '15px',
+      marginBottom: '15px',
+      position: 'relative',
+    }}>
+
+      {createLine(mapIndex === 0, currentWorkflowSelectable)}
+      <StepDot status={status} selectable={currentWorkflowSelectable} />
+
+      <Table>
+        <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
+
+
+          <TableRow style={tableStyle} selectable={false} disabled={currentWorkflowSelectable}>
+            <TableRowColumn colSpan={1}>
+              <IconButton
+                style={styles.infoButton}
+                onTouchTap={() => props.openWorkflowDetails(workflow.txid)}>
+                <InfoIcon />
+              </IconButton>
+            </TableRowColumn>
+            <TableRowColumn style={styles.listText} colSpan={4}>{workflow.key}</TableRowColumn>
+            <TableRowColumn style={styles.listText} colSpan={2}>{amount}</TableRowColumn>
+            <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
+            {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
+          </TableRow>
+
+
+        </TableBody>
+      </Table>
+    </Card>
+  )
+});
+const getSortableItems = (workflowItems, props) => {
   return workflowItems.map((workflow, index) => {
-    const status = workflow.data.status;
-    const currentWorkflowSelectable = !nextWorkflowNotSelectable;
-    if (!nextWorkflowNotSelectable) nextWorkflowNotSelectable = status === 'open' || status === 'in_progress'
-
-    const amount = toAmountString(workflow.data.amount, workflow.data.currency);
-
-    const tableStyle = currentWorkflowSelectable ? styles[status] : { ...styles[status], opacity: 0.3 };
-
-
+    console.log(props.workflowSort && workflow.data.status !== 'done')
     return (
-      <Card key={index} style={{
-        marginLeft: '50px',
-        marginRight: '10px',
-        marginTop: '15px',
-        marginBottom: '15px',
-        position: 'relative',
-      }}>
-
-        {createLine(index === 0, currentWorkflowSelectable)}
-        <StepDot status={status} selectable={currentWorkflowSelectable} />
-
-        <Table>
-          <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
-            <TableRow style={tableStyle} selectable={false} disabled={currentWorkflowSelectable}>
-              <TableRowColumn colSpan={1}>
-                <IconButton
-                  style={styles.infoButton}
-                  onTouchTap={() => props.openWorkflowDetails(workflow.txid)}>
-                  <InfoIcon />
-                </IconButton>
-              </TableRowColumn>
-              <TableRowColumn style={styles.listText} colSpan={4}>{workflow.key}</TableRowColumn>
-              <TableRowColumn style={styles.listText} colSpan={2}>{amount}</TableRowColumn>
-              <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
-              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
-            </TableRow>
-
-          </TableBody>
-        </Table>
-      </Card>
-    )
+      <SortableItem disabled={props.workflowSort || workflow.data.status === 'done'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} props={props} />
+    );
   });
+}
+const SortableList = SortableContainer(({ workflowItems, props }) => {
+  const sortableItems = getSortableItems(workflowItems, props)
+  return (<div style={{
+    width: '100%',
+    height: '20%',
+    margin: '0 auto',
+    overflow: 'auto',
+    backgroundColor: '#f3f3f3',
+    border: '1px solid #EFEFEF',
+    borderRadius: 3,
+
+  }}>
+    {sortableItems}
+  </div>
+  )
+});
+
+
+const createWorkflowItems = ({ workflowItems, ...props }) => {
+
+
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    workflowItems = arrayMove(workflowItems, oldIndex, newIndex)
+    props.updateWorkflowSort(workflowItems)
+  };
+
+
+  return (
+    <SortableList lockAxis={'y'} workflowItems={workflowItems} props={props} onSortEnd={onSortEnd} />
+  )
 }
 
 
 
 const WorkflowList = (props) => {
+
   return (
     <div style={{ paddingBottom: '8px' }}>
       {createTableHeader()}

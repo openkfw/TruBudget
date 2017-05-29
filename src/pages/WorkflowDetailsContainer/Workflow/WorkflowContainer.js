@@ -19,7 +19,9 @@ import {
   disableWorkflowState,
   storeWorkflowTxid,
   showWorkflowDetails,
-  setWorkflowCreationStep
+  setWorkflowCreationStep,
+  updateWorkflowSort,
+  enableWorkflowSort,
 } from './actions';
 import { setSelectedView } from '../../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../../Notifications/actions';
@@ -67,7 +69,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(showHistory(false)),
     fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
-    setWorkflowCreationStep: (step) => dispatch(setWorkflowCreationStep(step))
+    setWorkflowCreationStep: (step) => dispatch(setWorkflowCreationStep(step)),
+    updateWorkflowSort: (items) => dispatch(updateWorkflowSort(items)),
+    enableWorkflowSort: () => dispatch(enableWorkflowSort(false)),
+    disableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
   };
 }
 
@@ -94,6 +99,7 @@ const mapStateToProps = (state) => {
     historyItems: state.getIn(['notifications', 'historyItems']),
     subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
+    workflowSort: state.getIn(['workflow', 'workflowSort']),
   }
 }
 

@@ -20,6 +20,8 @@ export const WORKFLOW_TXID = 'WORKFLOW_TXID';
 export const SHOW_WORKFLOW_DETAILS = 'SHOW_WORKFLOW_DETAILS';
 export const SET_WORKFLOW_CREATION_STEP = 'SET_WORKFLOW_CREATION_STEP';
 
+export const UPDATE_WORKFLOW_SORT = 'UPDATE_WORKFLOW_SORT';
+export const ENABLE_WORKFLOW_SORT = 'ENABLE_WORKFLOW_SORT';
 
 export const OPEN_HISTORY = 'OPEN_HISTORY';
 export const OPEN_HISTORY_SUCCESS = 'OPEN_HISTORY_SUCCESS';
@@ -32,6 +34,20 @@ export function showWorkflowDetails(show, txid) {
     type: SHOW_WORKFLOW_DETAILS,
     show,
     txid
+  }
+}
+
+export function enableWorkflowSort(sort) {
+  return {
+    type: ENABLE_WORKFLOW_SORT,
+    sort
+  }
+}
+
+export function updateWorkflowSort(items) {
+  return {
+    type: UPDATE_WORKFLOW_SORT,
+    items
   }
 }
 

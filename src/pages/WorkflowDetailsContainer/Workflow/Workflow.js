@@ -3,10 +3,13 @@ import { Card } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
+import EditIcon from 'material-ui/svg-icons/image/edit';
 import WorkflowList from './WorkflowList';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../../Notifications/ChangeLog'
 import { ACMECorpGrey, ACMECorpDarkBlue } from '../../../colors.js'
+import DoneIcon from 'material-ui/svg-icons/navigation/check';
+
 const Workflow = (props) => (
 
   <Card style={{
@@ -34,6 +37,7 @@ const Workflow = (props) => (
       }}>
         <HistoryIcon />
       </FloatingActionButton>
+      {props.workflowSort ? enableSort(props) : disableSort(props)}
     </div>
     <WorkflowList {...props} />
 
@@ -41,5 +45,27 @@ const Workflow = (props) => (
     <WorkflowCreationDialog {...props} />
   </Card>
 );
+
+
+const enableSort = (props) => (
+  <FloatingActionButton mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpGrey} style={{
+    position: 'relative',
+    marginTop: '8px',
+    zIndex: 2
+  }}>
+    <EditIcon />
+  </FloatingActionButton>
+)
+
+const disableSort = (props) => (
+  <FloatingActionButton mini={true} onTouchTap={() => props.disableWorkflowSort()} backgroundColor={ACMECorpGrey} style={{
+    position: 'relative',
+    marginTop: '8px',
+    zIndex: 2
+  }}>
+    <DoneIcon />
+  </FloatingActionButton>
+)
+
 
 export default Workflow;
