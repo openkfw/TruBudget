@@ -23,7 +23,11 @@ import { fromAmountString } from '../../../helper';
 
 const defaultState = fromJS({
   workflowItems: [],
-  subProjectDetails: {},
+  subProjectDetails: {
+    assignee: [],
+    approver: [],
+    bank: [],
+  },
   showWorkflow: false,
   workflowName: '',
   workflowAmount: 0,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
-import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation } from '../../../helper.js'
+import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getAssignedOrganization } from '../../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -118,8 +118,8 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
-            primaryText={projectAssignee}
-            secondaryText={'Assignee'}
+            primaryText={getAssignedOrganization(projectAssignee)}
+            secondaryText={'Assigned Organization'}
           />
           <Divider />
         </List>

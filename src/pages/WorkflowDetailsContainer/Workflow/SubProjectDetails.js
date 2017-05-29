@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction } from '../../../helper.js'
+import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -76,12 +76,18 @@ const styles = {
   },
 }
 
+
 const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const name = subProjectDetails.projectName
   const purpose = subProjectDetails.purpose
   const amount = subProjectDetails.amount
   const currency = subProjectDetails.currency
-  const assignee = subProjectDetails.assignee
+
+
+  const assignee = getAssignedOrganization(subProjectDetails.assignee)
+  const bank = subProjectDetails.bank
+  const approver = subProjectDetails.approver
+
 
   const amountString = toAmountString(amount, currency)
   const status = statusMapping[subProjectDetails.status]
@@ -96,7 +102,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), currency);
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
-  const nextAction = getNextAction(nextIncompletedWorkflow, subProjectDetails.assignee, subProjectDetails.bank, subProjectDetails.approver)
+  const nextAction = getNextAction(nextIncompletedWorkflow, assignee, bank, approver)
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
@@ -135,7 +141,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
             disabled={true}
             leftIcon={<AssigneeIcon />}
             primaryText={assignee}
-            secondaryText={'Assignee'}
+            secondaryText={'Assignee(s)'}
           />
           <Divider />
         </List>

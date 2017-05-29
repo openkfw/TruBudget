@@ -100,3 +100,9 @@ export const getNextAction = (item, assignee, bank, approver) => {
     ? actionMapping(assignee, bank, approver)[item.details.status]
     : "No actions required "
 }
+
+
+export const getAssignedOrganization = (organizations) => organizations.reduce((acc, organization, index) => {
+  const nextString = index ? `, ${organization}` : `${organization}`
+  return acc + nextString;
+}, "")
