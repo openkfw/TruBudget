@@ -10,6 +10,26 @@ import ChangeLog from '../Notifications/ChangeLog'
 import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 
+const enableWorkflowSort = (props) => (
+  <FloatingActionButton mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpGrey} style={{
+    position: 'relative',
+    marginTop: '8px',
+    zIndex: 2
+  }}>
+    <EditIcon />
+  </FloatingActionButton>
+)
+
+const disableWorkflowSort = (props) => (
+  <FloatingActionButton mini={true} onTouchTap={() => props.disableWorkflowSort()} backgroundColor={ACMECorpGrey} style={{
+    position: 'relative',
+    marginTop: '8px',
+    zIndex: 2
+  }}>
+    <DoneIcon />
+  </FloatingActionButton>
+)
+
 const Workflow = (props) => (
 
   <Card style={{
@@ -45,27 +65,5 @@ const Workflow = (props) => (
     <WorkflowCreationDialog {...props} />
   </Card>
 );
-
-
-const enableWorkflowSort = (props) => (
-  <FloatingActionButton mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpGrey} style={{
-    position: 'relative',
-    marginTop: '8px',
-    zIndex: 2
-  }}>
-    <EditIcon />
-  </FloatingActionButton>
-)
-
-const disableWorkflowSort = (props) => (
-  <FloatingActionButton mini={true} onTouchTap={() => props.disableWorkflowSort()} backgroundColor={ACMECorpGrey} style={{
-    position: 'relative',
-    marginTop: '8px',
-    zIndex: 2
-  }}>
-    <DoneIcon />
-  </FloatingActionButton>
-)
-
 
 export default Workflow;

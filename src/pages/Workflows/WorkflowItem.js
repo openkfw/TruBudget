@@ -16,7 +16,7 @@ import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 
 import IconButton from 'material-ui/IconButton';
-import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightgreen } from '../../colors.js';
+import { ACMECorpLightgrey, ACMECorpSuperLightgreen } from '../../colors.js';
 
 const styles = {
   in_progress: {
@@ -106,10 +106,8 @@ const getEditButtons = (status = 'open', role, editCB, progressCB) => {
   )
 }
 
-
 const StepDot = ({ status, selectable }) => {
   let Icon;
-
   switch (status) {
     case 'open':
       Icon = OpenIcon;
@@ -123,7 +121,6 @@ const StepDot = ({ status, selectable }) => {
     default:
       Icon = OpenIcon;
   }
-
   return (
     <Paper style={styles.dots} zDepth={2} circle={true}>
       <Icon style={{ width: '14px', height: '20px', opacity: selectable ? 1 : 0.3 }} />
@@ -152,8 +149,6 @@ const changeProgress = ({ key, txid, data }, props) => {
   const nextStatus = status === 'open' ? 'in_progress' : 'done';
   props.editWorkflowItem(props.location.pathname.split('/')[3], key, amount, currency, purpose, addData, nextStatus, assignee, txid, data)
 }
-
-
 
 const WorkflowItem = SortableElement(({ workflow, mapIndex, props, index }) => {
   let nextWorkflowNotSelectable = false;

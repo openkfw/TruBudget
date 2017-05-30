@@ -2,18 +2,15 @@ import React from 'react';
 import { Card, CardHeader } from 'material-ui/Card';
 import {
   Table,
-  TableBody,
   TableHeader,
   TableHeaderColumn,
-  TableRow,
-  TableRowColumn
+  TableRow
 } from 'material-ui/Table';
 
 
 import WorkflowDetails from './WorkflowDetails'
 import WorkflowList from './WorkflowList'
-import { statusMapping } from '../../helper.js';
-import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightgreen } from '../../colors.js';
+import { ACMECorpLightgreen } from '../../colors.js';
 import { arrayMove } from 'react-sortable-hoc';
 
 

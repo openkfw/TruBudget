@@ -1,6 +1,5 @@
 import React from 'react';
 import NavbarIcons from './NavbarIcons'
-import Chip from 'material-ui/Chip';
 import colors from '../../colors'
 
 const styles = {
