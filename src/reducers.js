@@ -9,7 +9,7 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 
 import navbarReducer from './pages/Navbar/reducer';
 import overviewReducer from './pages/Overview/reducer';
-import subProjectReducer from './pages/ProjectDetails/SubProjects/reducer';
+import subProjectReducer from './pages/SubProjects/reducer';
 import dashboardReducer from './pages/Dashboard/reducer';
 import notificationsReducer from './pages/Notifications/reducer';
 import workflowReducer from './pages/Workflows/reducer';

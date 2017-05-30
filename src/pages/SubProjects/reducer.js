@@ -1,9 +1,9 @@
 import { fromJS } from 'immutable';
 
 import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_PURPOSE, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS } from './actions';
-import { LOGOUT } from '../../Login/actions';
+import { LOGOUT } from '../Login/actions';
 
-import { fromAmountString } from '../../../helper';
+import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
   projectName: '',

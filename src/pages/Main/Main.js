@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router';
 import NavbarContainer from '../Navbar/NavbarContainer';
 import OverviewContainer from '../Overview/OverviewContainer';
 import NotFound from '../NotFound/NotFound';
-import ProjectDetailsContainer from '../ProjectDetails/ProjectDetailsContainer';
+import SubProjectsContainer from '../SubProjects/SubProjectsContainer';
 import DashboardContainer from '../Dashboard/DashboardContainer';
 import WorkflowContainer from '../Workflows/WorkflowContainer'
 import NotificationPageContainer from '../Notifications/NotificationPageContainer';
@@ -33,7 +33,7 @@ const Main = (props) => {
         <Switch>
           <Route exact path="/" component={Placeholder} />
           <Route exact path="/projects" component={OverviewContainer} />
-          <Route exact path="/projects/:project" component={ProjectDetailsContainer} />
+          <Route exact path="/projects/:project" component={SubProjectsContainer} />
           <Route exact path="/projects/:project/:subproject" component={WorkflowContainer} />
           <Route exact path="/dashboard" component={DashboardContainer} />
           <Route exact path="/notifications" component={NotificationPageContainer} />

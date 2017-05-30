@@ -6,7 +6,7 @@ import { fetchPeers, fetchStreamNames } from '../Navbar/actions';
 import { fetchNotifications, fetchHistoryItems } from '../Notifications/actions';
 import { fetchProjects } from '../Overview/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
-import { fetchProjectDetails } from '../ProjectDetails/SubProjects/actions';
+import { fetchProjectDetails } from '../SubProjects/actions';
 import { fetchWorkflowItems } from '../Workflows/actions';
 
 class LiveUpdates extends Component {

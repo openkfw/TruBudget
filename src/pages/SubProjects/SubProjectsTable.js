@@ -1,9 +1,9 @@
 import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
-import { toAmountString, statusMapping } from '../../../helper';
+import { toAmountString, statusMapping } from '../../helper';
 import { Card, CardHeader } from 'material-ui/Card';
-import { ACMECorpLightgreen } from '../../../colors.js';
+import { ACMECorpLightgreen } from '../../colors.js';
 const styles = {
   tableText: {
     fontSize: '14px'

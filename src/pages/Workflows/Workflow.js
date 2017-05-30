@@ -4,7 +4,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 import EditIcon from 'material-ui/svg-icons/image/edit';
-import WorkflowList from './WorkflowList';
+import WorkflowListContainer from './WorkflowListContainer';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../Notifications/ChangeLog'
 import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js'
@@ -39,7 +39,7 @@ const Workflow = (props) => (
       </FloatingActionButton>
       {!props.workflowSortEnabled ? enableWorkflowSort(props) : disableWorkflowSort(props)}
     </div>
-    <WorkflowList {...props} />
+    <WorkflowListContainer {...props} />
 
     <ChangeLog {...props} />
     <WorkflowCreationDialog {...props} />

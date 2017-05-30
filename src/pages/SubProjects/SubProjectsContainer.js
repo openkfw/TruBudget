@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchProjectDetails, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose } from './actions';
-import { setProjectCreationStep } from '../../Overview/actions';
+import { setProjectCreationStep } from '../Overview/actions';
 import SubProjects from './SubProjects'
-import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../../Notifications/actions';
-import { setSelectedView } from '../../Navbar/actions';
+import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../Notifications/actions';
+import { setSelectedView } from '../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
-import globalStyles from '../../../styles';
+import globalStyles from '../../styles';
 
 
 class SubProjectsContainer extends Component {
