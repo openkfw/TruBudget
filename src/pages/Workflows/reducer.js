@@ -26,8 +26,8 @@ import { fromAmountString } from '../../helper';
 const defaultState = fromJS({
   workflowItems: [],
   subProjectDetails: {
-    assignee: [],
     approver: [],
+    assignee: [],
     bank: [],
   },
   showWorkflow: false,
@@ -46,7 +46,7 @@ const defaultState = fromJS({
   showHistory: false,
   historyItems: [],
   creationStep: 0,
-  workflowSort: false,
+  workflowSortEnabled: false,
 });
 
 export default function detailviewReducer(state = defaultState, action) {

@@ -10,9 +10,10 @@ import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../Notifications/ChangeLog'
 import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
+import { getPermissions } from '../../permissions';
 
-const enableWorkflowSort = (props) => (
-  <IconButton mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpDarkBlue} style={{
+const enableWorkflowSort = (props, allowedToCreateWorkflows) => (
+  <IconButton disabled={!allowedToCreateWorkflows} mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpDarkBlue} style={{
     position: 'relative',
     marginTop: '8px',
     zIndex: 2
@@ -21,8 +22,8 @@ const enableWorkflowSort = (props) => (
   </IconButton>
 )
 
-const disableWorkflowSort = (props) => (
-  <FloatingActionButton mini={true} onTouchTap={() => props.disableWorkflowSort()} style={{
+const disableWorkflowSort = (props, allowedToCreateWorkflows) => (
+  <FloatingActionButton disabled={!allowedToCreateWorkflows} mini={true} onTouchTap={() => props.disableWorkflowSort()} style={{
     position: 'relative',
     marginTop: '8px',
     zIndex: 2
@@ -31,50 +32,57 @@ const disableWorkflowSort = (props) => (
   </FloatingActionButton>
 )
 
-const Workflow = (props) => (
+const Workflow = (props) => {
 
-  <Card style={{
-    width: '100%',
-    position: 'relative'
-  }}>
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'absolute',
-      alignItems: 'center',
-      top: '16px',
-      right: '-26px',
-      zIndex: 10
-    }}>
-      <FloatingActionButton disabled={!props.loggedInUser.role.write && props.workflowSortEnabled} backgroundColor={ACMECorpDarkBlue} onTouchTap={() => props.openWorkflowDialog(false)} style={{
-        position: 'relative'
-      }}>
-        <ContentAdd />
-      </FloatingActionButton>
-      <FloatingActionButton mini={true} disabled={props.workflowSortEnabled} onTouchTap={() => props.openHistory()} backgroundColor={ACMECorpGrey} style={{
-        position: 'relative',
-        marginTop: '8px',
-        zIndex: 2
-      }}>
-        <HistoryIcon />
-      </FloatingActionButton>
+  const { isAssignee, isApprover, isBank } = getPermissions(props.loggedInUser, props.subProjectDetails);
+  const allowedToWrite = props.loggedInUser.role.write;
+  const allowedToCreateWorkflows = allowedToWrite && isAssignee;
 
-    </div>
-    <div style={{
-      display: 'flex',
-      position: 'absolute',
-      alignItems: 'flex-start',
-      justifyContent: 'flex-start',
-      top: '46px',
-      left: '10px',
-      zIndex: 10
+  return (
+    <Card style={{
+      width: '100%',
+      position: 'relative'
     }}>
-      {!props.workflowSortEnabled ? enableWorkflowSort(props) : disableWorkflowSort(props)}
-    </div>
-    <WorkflowListContainer {...props} />
-    <ChangeLog {...props} />
-    <WorkflowCreationDialog {...props} />
-  </Card>
-);
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'absolute',
+        alignItems: 'center',
+        top: '16px',
+        right: '-26px',
+        zIndex: 10
+      }}>
+        {/* Button is disabled either if the user is not allowed to edit or the user is in "sort" mode */}
+        <FloatingActionButton disabled={props.workflowSortEnabled ? props.workflowSortEnabled : !allowedToCreateWorkflows} backgroundColor={ACMECorpDarkBlue} onTouchTap={() => props.openWorkflowDialog(false)} style={{
+          position: 'relative'
+        }}>
+          <ContentAdd />
+        </FloatingActionButton>
+        <FloatingActionButton mini={true} disabled={props.workflowSortEnabled} onTouchTap={() => props.openHistory()} backgroundColor={ACMECorpGrey} style={{
+          position: 'relative',
+          marginTop: '8px',
+          zIndex: 2
+        }}>
+          <HistoryIcon />
+        </FloatingActionButton>
+
+      </div>
+      <div style={{
+        display: 'flex',
+        position: 'absolute',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        top: '46px',
+        left: '10px',
+        zIndex: 10
+      }}>
+        {!props.workflowSortEnabled ? enableWorkflowSort(props, allowedToCreateWorkflows) : disableWorkflowSort(props, allowedToCreateWorkflows)}
+      </div>
+      <WorkflowListContainer {...props} permissions={{ isAssignee, isApprover, isBank }} />
+      <ChangeLog {...props} />
+      <WorkflowCreationDialog {...props} />
+    </Card >
+  )
+};
 
 export default Workflow;

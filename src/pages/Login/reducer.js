@@ -3,7 +3,14 @@ import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, LOGOUT } from 
 
 const defaultState = fromJS({
   users: [],
-  loggedInUser: {},
+  loggedInUser: {
+    role: {
+      roleName: '',
+      read: false,
+      write: false,
+      admin: false,
+    }
+  },
   roles: []
 });
 

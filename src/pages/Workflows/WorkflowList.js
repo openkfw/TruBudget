@@ -2,16 +2,17 @@ import React from 'react';
 import { SortableContainer } from 'react-sortable-hoc';
 import WorkflowItem from './WorkflowItem'
 
-const getSortableItems = (workflowItems, props) => {
+const getSortableItems = ({ workflowItems, permissions, ...props }) => {
+
   return workflowItems.map((workflow, index) => {
     return (
-      <WorkflowItem disabled={!props.workflowSortEnabled || workflow.data.status !== 'open'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} props={props} />
+      <WorkflowItem disabled={!props.workflowSortEnabled || workflow.data.status !== 'open'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} permissions={permissions} {...props} />
     );
   });
 }
 
-const WorkflowList = SortableContainer(({ workflowItems, props }) => {
-  const sortableItems = getSortableItems(workflowItems, props)
+const WorkflowList = SortableContainer((props) => {
+  const sortableItems = getSortableItems(props)
   return (<div style={{
     width: '100%',
     height: '20%',

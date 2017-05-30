@@ -77,7 +77,8 @@ const createLine = (isFirst, selectable) => {
   )
 };
 
-const getEditButtons = (status = 'open', role, editCB, progressCB) => {
+const getEditButtons = (status = 'open', role, permissions, editCB, progressCB) => {
+  console.log('permissions ' + JSON.stringify(permissions))
   const statusMapping = {
     open: {
       tooltip: 'Start Workflow',
@@ -90,15 +91,18 @@ const getEditButtons = (status = 'open', role, editCB, progressCB) => {
   }
   const Icon = statusMapping[status].icon;
 
+  const userAllowedToEdit = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
+  const userAllowedToProgress = (status === 'open' && permissions.isAssignee) || (status === 'in_progress' && permissions.isApprover);
+
   return (
     <TableRowColumn colSpan={2}>
       <IconButton
-        disabled={!role.write}
+        disabled={!role.write || !userAllowedToEdit}
         onTouchTap={() => editCB()}>
         <EditIcon />
       </IconButton>
       <IconButton
-        disabled={!role.write}
+        disabled={!role.write || !userAllowedToProgress}
         onTouchTap={() => progressCB()}>
         <Icon />
       </IconButton>
@@ -129,6 +133,7 @@ const StepDot = ({ status, selectable }) => {
 };
 
 
+
 const editWorkflow = ({ key, txid, data }, props) => {
   const { amount, currency, purpose, addData, assignee, status } = data;
   props.storeWorkflowName(key)
@@ -143,6 +148,8 @@ const editWorkflow = ({ key, txid, data }, props) => {
   props.openWorkflowDialog(true)
 }
 
+
+
 const changeProgress = ({ key, txid, data }, props) => {
   const { amount, currency, purpose, addData, assignee, status } = data;
   const nextStatus = status === 'open' ? 'in_progress' : 'done';
@@ -152,15 +159,18 @@ const changeProgress = ({ key, txid, data }, props) => {
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
   if (!workflowSortEnabled) {
     return (
+
       <IconButton
         style={styles.infoButton}
         onTouchTap={() => openWorkflowDetails(workflow.txid)}>
         <InfoIcon />
       </IconButton>
+
     )
   }
 }
-const WorkflowItem = SortableElement(({ workflow, mapIndex, props, index }) => {
+const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, ...props }) => {
+
   let nextWorkflowNotSelectable = false;
   const status = workflow.data.status;
   const currentWorkflowSelectable = !nextWorkflowNotSelectable;
@@ -189,7 +199,7 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, props, index }) => {
             <TableRowColumn style={styles.listText} colSpan={4}>{workflow.key}</TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={2}>{amount}</TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
-            {currentWorkflowSelectable && status !== 'done' && !props.workflowSortEnabled ? getEditButtons(status, props.loggedInUser.role, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
+            {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
           </TableRow>
 
 
