@@ -51,7 +51,10 @@ class LiveUpdates extends Component {
         break;
       case 'subProject':
         this.props.fetchHistoryItems(this.props.selectedId);
-        this.props.fetchWorkflowItems(this.props.selectedId);
+        // Stop reloading of items, otherwise the users sort would be gone
+        if (!this.props.workflowSortEnabled) {
+          this.props.fetchWorkflowItems(this.props.selectedId);
+        }
         break;
       default:
         break;
@@ -82,6 +85,7 @@ const mapStateToProps = (state) => {
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     selectedId: state.getIn(['navbar', 'selectedId']),
     selectedSection: state.getIn(['navbar', 'selectedSection']),
+    workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
   }
 }
 

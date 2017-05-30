@@ -37,7 +37,7 @@ const Workflow = (props) => (
       }}>
         <HistoryIcon />
       </FloatingActionButton>
-      {props.workflowSort ? enableSort(props) : disableSort(props)}
+      {!props.workflowSortEnabled ? enableWorkflowSort(props) : disableWorkflowSort(props)}
     </div>
     <WorkflowList {...props} />
 
@@ -47,7 +47,7 @@ const Workflow = (props) => (
 );
 
 
-const enableSort = (props) => (
+const enableWorkflowSort = (props) => (
   <FloatingActionButton mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpGrey} style={{
     position: 'relative',
     marginTop: '8px',
@@ -57,7 +57,7 @@ const enableSort = (props) => (
   </FloatingActionButton>
 )
 
-const disableSort = (props) => (
+const disableWorkflowSort = (props) => (
   <FloatingActionButton mini={true} onTouchTap={() => props.disableWorkflowSort()} backgroundColor={ACMECorpGrey} style={{
     position: 'relative',
     marginTop: '8px',

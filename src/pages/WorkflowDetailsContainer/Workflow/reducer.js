@@ -46,7 +46,7 @@ const defaultState = fromJS({
   showHistory: false,
   historyItems: [],
   creationStep: 0,
-  workflowSort: true,
+  workflowSort: false,
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -95,9 +95,9 @@ export default function detailviewReducer(state = defaultState, action) {
     case SET_WORKFLOW_CREATION_STEP:
       return state.set('creationStep', action.step);
     case ENABLE_WORKFLOW_SORT:
-      return state.set('workflowSort', action.sort)
+      return state.set('workflowSortEnabled', action.sortEnabled)
     case UPDATE_WORKFLOW_SORT:
-      return state.merge({ workflowItems: action.items });
+      return state.merge({ workflowItems: action.workflowItems });
     case LOGOUT:
       return defaultState;
 

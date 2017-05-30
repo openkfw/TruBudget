@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import WorkflowCreationStepper from './WorkflowCreationStepper';
 
 
-const getWorkflowActions = ( props, handleCancel, handleBack, handleNext, handleSubmit) => {
+const getWorkflowActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
   const isLastStep = props.creationStep === 4;
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
@@ -54,7 +54,7 @@ const handleSubmit = (props) => {
 
 const WorkflowCreationDialog = (props) => (
   <Dialog
-    title={ props.editMode ? 'Edit workflow item' : 'Create Workflow Item'}
+    title={props.editMode ? 'Edit workflow item' : 'Create Workflow Item'}
     modal={true}
     bodyStyle={{
       minHeight: '200px'

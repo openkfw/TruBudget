@@ -71,8 +71,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     setWorkflowCreationStep: (step) => dispatch(setWorkflowCreationStep(step)),
     updateWorkflowSort: (items) => dispatch(updateWorkflowSort(items)),
-    enableWorkflowSort: () => dispatch(enableWorkflowSort(false)),
-    disableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
+    enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
+    disableWorkflowSort: () => dispatch(enableWorkflowSort(false)),
   };
 }
 
@@ -99,7 +99,7 @@ const mapStateToProps = (state) => {
     historyItems: state.getIn(['notifications', 'historyItems']),
     subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
-    workflowSort: state.getIn(['workflow', 'workflowSort']),
+    workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
   }
 }
 

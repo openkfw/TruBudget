@@ -221,9 +221,8 @@ const SortableItem = SortableElement(({ workflow, mapIndex, props, index }) => {
 });
 const getSortableItems = (workflowItems, props) => {
   return workflowItems.map((workflow, index) => {
-    console.log(props.workflowSort && workflow.data.status !== 'done')
     return (
-      <SortableItem disabled={props.workflowSort || workflow.data.status === 'done'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} props={props} />
+      <SortableItem disabled={!props.workflowSortEnabled || workflow.data.status === 'done'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} props={props} />
     );
   });
 }

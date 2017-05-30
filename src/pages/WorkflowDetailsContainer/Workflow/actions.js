@@ -37,17 +37,17 @@ export function showWorkflowDetails(show, txid) {
   }
 }
 
-export function enableWorkflowSort(sort) {
+export function enableWorkflowSort(sortEnabled) {
   return {
     type: ENABLE_WORKFLOW_SORT,
-    sort
+    sortEnabled
   }
 }
 
-export function updateWorkflowSort(items) {
+export function updateWorkflowSort(workflowItems) {
   return {
     type: UPDATE_WORKFLOW_SORT,
-    items
+    workflowItems
   }
 }
 
