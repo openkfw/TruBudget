@@ -118,7 +118,7 @@ const StepDot = ({ status, selectable }) => {
   )
 };
 
-const getEditButtons = (status = 'open', role, editCB, progressCB) => {
+const getEditButtons = (status = 'open', role, permissions, editCB, progressCB) => {
   const statusMapping = {
     open: {
       tooltip: 'Start Workflow',
@@ -131,15 +131,18 @@ const getEditButtons = (status = 'open', role, editCB, progressCB) => {
   }
   const Icon = statusMapping[status].icon;
 
+  const userAllowedToEdit = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
+  const userAllowedToProgress = (status === 'open' && permissions.isAssignee) || (status === 'in_progress' && permissions.isApprover);
+
   return (
     <TableRowColumn colSpan={2}>
       <IconButton
-        disabled={!role.write}
+        disabled={!role.write || !userAllowedToEdit}
         onTouchTap={() => editCB()}>
         <EditIcon />
       </IconButton>
       <IconButton
-        disabled={!role.write}
+        disabled={!role.write || !userAllowedToProgress}
         onTouchTap={() => progressCB()}>
         <Icon />
       </IconButton>
@@ -174,7 +177,7 @@ const createTableHeader = () => (
   </Card >
 )
 
-const createWorkflowItems = ({ workflowItems, ...props }) => {
+const createWorkflowItems = ({ workflowItems, permissions, ...props }) => {
   let nextWorkflowNotSelectable = false;
   return workflowItems.map((workflow, index) => {
     const status = workflow.data.status;
@@ -211,7 +214,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
               <TableRowColumn style={styles.listText} colSpan={4}>{workflow.key}</TableRowColumn>
               <TableRowColumn style={styles.listText} colSpan={2}>{amount}</TableRowColumn>
               <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
-              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
+              {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
             </TableRow>
 
           </TableBody>
