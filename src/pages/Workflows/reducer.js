@@ -20,8 +20,8 @@ import {
   ENABLE_WORKFLOW_SORT
 } from './actions';
 
-import { LOGOUT } from '../../Login/actions';
-import { fromAmountString } from '../../../helper';
+import { LOGOUT } from '../Login/actions';
+import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
   workflowItems: [],

@@ -20,8 +20,8 @@ import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-ho
 
 import WorkflowDetails from './WorkflowDetails'
 
-import { toAmountString, statusMapping } from '../../../helper.js';
-import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightgreen } from '../../../colors.js';
+import { toAmountString, statusMapping } from '../../helper.js';
+import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightgreen } from '../../colors.js';
 
 const styles = {
   in_progress: {
@@ -222,7 +222,7 @@ const SortableItem = SortableElement(({ workflow, mapIndex, props, index }) => {
 const getSortableItems = (workflowItems, props) => {
   return workflowItems.map((workflow, index) => {
     return (
-      <SortableItem disabled={!props.workflowSortEnabled || workflow.data.status === 'done'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} props={props} />
+      <SortableItem disabled={!props.workflowSortEnabled || workflow.data.status !== 'open'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} props={props} />
     );
   });
 }

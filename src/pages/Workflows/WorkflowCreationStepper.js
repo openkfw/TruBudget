@@ -1,9 +1,9 @@
 import React from 'react';
 import { Step, Stepper, StepButton } from 'material-ui/Stepper';
-import ProjectCreationName from '../../Overview/ProjectCreationName';
-import ProjectCreationPurpose from '../../Overview/ProjectCreationPurpose';
-import ProjectCreationAmount from '../../Overview/ProjectCreationAmount';
-import ProjectCreationAdditionalData from '../../Overview/ProjectCreationAdditionalData';
+import ProjectCreationName from '../Overview/ProjectCreationName';
+import ProjectCreationPurpose from '../Overview/ProjectCreationPurpose';
+import ProjectCreationAmount from '../Overview/ProjectCreationAmount';
+import ProjectCreationAdditionalData from '../Overview/ProjectCreationAdditionalData';
 import WorkflowStateAndAssignee from './WorkflowStateAndAssignee'
 
 

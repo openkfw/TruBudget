@@ -6,8 +6,8 @@ import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import WorkflowList from './WorkflowList';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
-import ChangeLog from '../../Notifications/ChangeLog'
-import { ACMECorpGrey, ACMECorpDarkBlue } from '../../../colors.js'
+import ChangeLog from '../Notifications/ChangeLog'
+import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 
 const Workflow = (props) => (

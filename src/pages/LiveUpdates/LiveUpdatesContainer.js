@@ -7,7 +7,7 @@ import { fetchNotifications, fetchHistoryItems } from '../Notifications/actions'
 import { fetchProjects } from '../Overview/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
 import { fetchProjectDetails } from '../ProjectDetails/SubProjects/actions';
-import { fetchWorkflowItems } from '../WorkflowDetailsContainer/Workflow/actions';
+import { fetchWorkflowItems } from '../Workflows/actions';
 
 class LiveUpdates extends Component {
   constructor(props) {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import globalStyles from '../../../styles';
+import globalStyles from '../../styles';
 
 
 import {
@@ -23,8 +23,8 @@ import {
   updateWorkflowSort,
   enableWorkflowSort,
 } from './actions';
-import { setSelectedView } from '../../Navbar/actions';
-import { showHistory, fetchHistoryItems } from '../../Notifications/actions';
+import { setSelectedView } from '../Navbar/actions';
+import { showHistory, fetchHistoryItems } from '../Notifications/actions';
 import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 class WorkflowContainer extends Component {
