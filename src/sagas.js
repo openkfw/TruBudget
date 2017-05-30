@@ -95,7 +95,7 @@ export function* createSubProjectSaga(action) {
 
 export function* createWorkflowItemSaga(action) {
   try {
-    yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee);
+    yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee, action.workflowType);
     yield put({ type: CREATE_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {

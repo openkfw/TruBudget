@@ -22,6 +22,7 @@ import {
   setWorkflowCreationStep,
   updateWorkflowSort,
   enableWorkflowSort,
+  storeWorkflowType,
 } from './actions';
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -61,7 +62,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowTxid: (txid) => dispatch(storeWorkflowTxid(txid)),
     enableWorkflowState: () => dispatch(disableWorkflowState(false)),
     disableWorkflowState: () => dispatch(disableWorkflowState(true)),
-    createWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee)),
+    createWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType)),
     editWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState) => dispatch(editWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState)),
     openWorkflowDetails: (txid) => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
@@ -73,6 +74,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateWorkflowSort: (items) => dispatch(updateWorkflowSort(items)),
     enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
     disableWorkflowSort: () => dispatch(enableWorkflowSort(false)),
+    storeWorkflowType: (value) => dispatch(storeWorkflowType(value))
   };
 }
 
@@ -100,6 +102,7 @@ const mapStateToProps = (state) => {
     subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
+    workflowType: state.getIn(['workflow', 'workflowType'])
   }
 }
 

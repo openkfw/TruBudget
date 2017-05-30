@@ -4,20 +4,23 @@ import ProjectCreationName from '../Overview/ProjectCreationName';
 import ProjectCreationPurpose from '../Overview/ProjectCreationPurpose';
 import ProjectCreationAmount from '../Overview/ProjectCreationAmount';
 import ProjectCreationAdditionalData from '../Overview/ProjectCreationAdditionalData';
-import WorkflowStateAndAssignee from './WorkflowStateAndAssignee'
+import WorkflowStateAndAssignee from './WorkflowStateAndAssignee';
+import WorkflowType from './WorkflowType';
 
 
 const getStepContent = (props) => {
   switch (props.creationStep) {
     case 0:
-      return <ProjectCreationName storeProjectName={props.storeWorkflowName} projectName={props.workflowName} type={'workflow'} />
+      return <WorkflowType workflowType={props.workflowType} storeWorkflowType={props.storeWorkflowType} />
     case 1:
-      return <ProjectCreationAmount storeProjectAmount={props.storeWorkflowAmount} storeProjectCurrency={props.storeWorkflowCurrency} projectAmount={props.workflowAmount} projectCurrency={props.workflowCurrency} type={'workflow'} />
+      return <ProjectCreationName storeProjectName={props.storeWorkflowName} projectName={props.workflowName} type={'workflow'} />
     case 2:
-      return <ProjectCreationPurpose storeProjectPurpose={props.storeWorkflowPurpose} projectPurpose={props.workflowPurpose} type={'workflow'} />
+      return <ProjectCreationAmount storeProjectAmount={props.storeWorkflowAmount} storeProjectCurrency={props.storeWorkflowCurrency} projectAmount={props.workflowAmount} projectCurrency={props.workflowCurrency} type={'workflow'} />
     case 3:
-      return <ProjectCreationAdditionalData storeWorkflowAdditionalData={props.storeWorkflowAdditionalData} workflowAdditionalData={props.workflowAdditionalData} />
+      return <ProjectCreationPurpose storeProjectPurpose={props.storeWorkflowPurpose} projectPurpose={props.workflowPurpose} type={'workflow'} />
     case 4:
+      return <ProjectCreationAdditionalData storeWorkflowAdditionalData={props.storeWorkflowAdditionalData} workflowAdditionalData={props.workflowAdditionalData} />
+    case 5:
       return <WorkflowStateAndAssignee users={props.users} storeWorkflowState={props.storeWorkflowState} storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
     default:
       return <span>Done</span>
@@ -32,26 +35,31 @@ const WorkflowCreationStepper = (props) => {
       <Stepper linear={!props.editMode} activeStep={props.creationStep}>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(0)}>
-            Name
+            Type
             </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(1)}>
-            Amount
+            Name
             </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(2)}>
-            Purpose
+            Amount
             </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(3)}>
-            Additional Data
+            Purpose
             </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(4)}>
+            Additional Data
+            </StepButton>
+        </Step>
+        <Step>
+          <StepButton onClick={() => props.setWorkflowCreationStep(5)}>
             Status & Assignee
             </StepButton>
         </Step>

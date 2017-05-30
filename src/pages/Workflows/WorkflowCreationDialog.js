@@ -6,7 +6,7 @@ import WorkflowCreationStepper from './WorkflowCreationStepper';
 
 
 const getWorkflowActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  const isLastStep = props.creationStep === 4;
+  const isLastStep = props.creationStep === 5;
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
 
@@ -34,6 +34,7 @@ const handleCancel = (props) => {
   props.storeWorkflowAssignee('');
   props.disableWorkflowState();
   props.storeWorkflowState('open');
+  props.storeWorkflowType('workflow');
   props.setWorkflowCreationStep(0);
 }
 
@@ -45,7 +46,8 @@ const handleSubmit = (props) => {
     const currentWorkflowItem = props.workflowItems.find((item) => item.txid === props.workflowTxid);
     props.editWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowCurrency, props.workflowPurpose, props.workflowAdditionalData, props.workflowState, props.workflowAssignee, props.workflowTxid, currentWorkflowItem.data)
   } else {
-    props.createWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowCurrency, props.workflowPurpose, props.workflowAdditionalData, props.workflowState, props.workflowAssignee)
+
+    props.createWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowCurrency, props.workflowPurpose, props.workflowAdditionalData, props.workflowState, props.workflowAssignee, props.workflowType)
   }
 
   props.hideWorkflowDialog();

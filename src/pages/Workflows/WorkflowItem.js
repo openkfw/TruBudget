@@ -78,7 +78,6 @@ const createLine = (isFirst, selectable) => {
 };
 
 const getEditButtons = (status = 'open', role, permissions, editCB, progressCB) => {
-  console.log('permissions ' + JSON.stringify(permissions))
   const statusMapping = {
     open: {
       tooltip: 'Start Workflow',
