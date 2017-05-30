@@ -4,6 +4,7 @@ import Snackbar from 'material-ui/Snackbar';
 import FlyInNotifications from './FlyInNotifications';
 
 const LiveNotification = (props) => {
+  const snackbarStyle = props.snackBarMessageIsError ? { backgroundColor: 'red', color: 'white' } : undefined;
   return (
     <div>
       <Snackbar
@@ -11,6 +12,7 @@ const LiveNotification = (props) => {
         message={props.snackBarMessage}
         autoHideDuration={4000}
         onRequestClose={props.closeSnackBar}
+        bodyStyle={snackbarStyle}
       />
       <FlyInNotifications
         notifications={props.notifications}

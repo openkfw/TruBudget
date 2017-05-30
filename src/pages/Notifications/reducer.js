@@ -5,7 +5,8 @@ import { LOGOUT } from '../Login/actions';
 const defaultState = fromJS({
   list: [],
   showSnackBar: false,
-  snackBarMessage:'New Project added'
+  snackBarMessage: 'New Project added',
+  snackBarMessageIsError: false
 });
 
 
@@ -14,7 +15,10 @@ export default function navbarReducer(state = defaultState, action) {
     case FETCH_NOTIFICATIONS_SUCCESS:
       return state.set('list', action.notifications);
     case SHOW_SNACKBAR:
-      return state.set('showSnackBar', action.show);
+      return state.merge({
+        showSnackBar: action.show,
+        snackBarMessageIsError: action.isError
+      });
     case SNACKBAR_MESSAGE:
       return state.set('snackBarMessage', action.message)
     case FETCH_HISTORY_SUCCESS:
