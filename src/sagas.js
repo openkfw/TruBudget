@@ -134,7 +134,6 @@ export function* fetchNotificationSaga({ user }) {
 
 export function* postWorkflowSortSaga({ streamName, order, sortEnabled }) {
   try {
-    console.log('daaaaaa')
     yield postWorkflowSort(streamName, order);
     yield put({ type: POST_WORKFLOW_SORT_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName });

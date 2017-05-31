@@ -54,7 +54,6 @@ const defaultState = fromJS({
 });
 
 export default function detailviewReducer(state = defaultState, action) {
-  console.log(action.type)
   switch (action.type) {
     case FETCH_WORKFLOW_ITEMS_SUCCESS:
       return state.merge({ workflowItems: action.workflowItems.items, subProjectDetails: action.workflowItems.details });

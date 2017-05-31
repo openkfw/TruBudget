@@ -47,13 +47,11 @@ export function enableWorkflowSort(sortEnabled) {
   }
 }
 export function postWorkflowSort(streamName, workflowItems, sortEnabled = false) {
-  console.log(streamName)
   // Just the keys are necessary to update the sort on the backend
   const order = []
   workflowItems.map((item) =>
     order.push(item.key)
   )
-  console.log('Hoi')
   return {
     type: POST_WORKFLOW_SORT,
     streamName,
