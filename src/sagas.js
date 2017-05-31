@@ -16,7 +16,8 @@ import {
   fetchRoles,
   login,
   fetchStreamNames,
-  fetchHistory
+  fetchHistory,
+  postWorkflowSort
 } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAMES_SUCCESS } from './pages/Navbar/actions';
@@ -24,7 +25,7 @@ import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_
 import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT_ITEM, CREATE_SUBPROJECT_ITEM_SUCCESS } from './pages/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
-import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY } from './pages/Workflows/actions';
+import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT } from './pages/Workflows/actions';
 
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
 
@@ -131,6 +132,18 @@ export function* fetchNotificationSaga({ user }) {
   }
 }
 
+export function* postWorkflowSortSaga({ streamName, order, sortEnabled }) {
+  try {
+    console.log('daaaaaa')
+    yield postWorkflowSort(streamName, order);
+    yield put({ type: POST_WORKFLOW_SORT_SUCCESS });
+    yield put({ type: FETCH_WORKFLOW_ITEMS, streamName });
+    yield put({ type: ENABLE_WORKFLOW_SORT, sortEnabled });
+  } catch (error) {
+    yield handleError(error);
+  }
+}
+
 export function* markNotificationAsReadSaga({ user, id, data }) {
   try {
     yield markNotificationAsRead(user, id, data);
@@ -228,7 +241,9 @@ export function* watchFetchNodeInformation() {
 export function* watchFetchNotifications() {
   yield takeLatest(FETCH_NOTIFICATIONS, fetchNotificationSaga)
 }
-
+export function* watchPostWorkflowSort() {
+  yield takeLatest(POST_WORKFLOW_SORT, postWorkflowSortSaga)
+}
 export function* watchMarkNotificationAsRead() {
   yield takeLatest(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga)
 }
@@ -267,7 +282,8 @@ export default function* rootSaga() {
       watchFetchRoles(),
       watchLogin(),
       watchFetchStreamNames(),
-      watchFetchHistory()
+      watchFetchHistory(),
+      watchPostWorkflowSort()
     ]
   } catch (error) {
     console.log(error);

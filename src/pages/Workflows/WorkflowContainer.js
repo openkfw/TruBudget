@@ -20,9 +20,10 @@ import {
   storeWorkflowTxid,
   showWorkflowDetails,
   setWorkflowCreationStep,
-  updateWorkflowSort,
+  updateWorkflowSortOnState,
   enableWorkflowSort,
   storeWorkflowType,
+  postWorkflowSort
 } from './actions';
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -71,9 +72,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     setWorkflowCreationStep: (step) => dispatch(setWorkflowCreationStep(step)),
-    updateWorkflowSort: (items) => dispatch(updateWorkflowSort(items)),
+    updateWorkflowSortOnState: (items) => dispatch(updateWorkflowSortOnState(items)),
     enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
-    disableWorkflowSort: () => dispatch(enableWorkflowSort(false)),
+    postWorkflowSort: (streamName, workflowItems) => dispatch(postWorkflowSort(streamName, workflowItems)),
     storeWorkflowType: (value) => dispatch(storeWorkflowType(value))
   };
 }

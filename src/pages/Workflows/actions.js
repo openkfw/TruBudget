@@ -23,7 +23,8 @@ export const SET_WORKFLOW_CREATION_STEP = 'SET_WORKFLOW_CREATION_STEP';
 
 export const UPDATE_WORKFLOW_SORT = 'UPDATE_WORKFLOW_SORT';
 export const ENABLE_WORKFLOW_SORT = 'ENABLE_WORKFLOW_SORT';
-
+export const POST_WORKFLOW_SORT = 'POST_WORKFLOW_SORT';
+export const POST_WORKFLOW_SORT_SUCCESS = 'POST_WORKFLOW_SORT_SUCCESS';
 
 export const OPEN_HISTORY = 'OPEN_HISTORY';
 export const OPEN_HISTORY_SUCCESS = 'OPEN_HISTORY_SUCCESS';
@@ -45,8 +46,23 @@ export function enableWorkflowSort(sortEnabled) {
     sortEnabled
   }
 }
+export function postWorkflowSort(streamName, workflowItems, sortEnabled = false) {
+  console.log(streamName)
+  // Just the keys are necessary to update the sort on the backend
+  const order = []
+  workflowItems.map((item) =>
+    order.push(item.key)
+  )
+  console.log('Hoi')
+  return {
+    type: POST_WORKFLOW_SORT,
+    streamName,
+    order,
+    sortEnabled
+  }
+}
 
-export function updateWorkflowSort(workflowItems) {
+export function updateWorkflowSortOnState(workflowItems) {
   return {
     type: UPDATE_WORKFLOW_SORT,
     workflowItems

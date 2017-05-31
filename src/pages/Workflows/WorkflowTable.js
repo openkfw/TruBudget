@@ -42,7 +42,7 @@ const createTableHeader = () => (
 const createWorkflowItems = ({ workflowItems, permissions, ...props }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     workflowItems = arrayMove(workflowItems, oldIndex, newIndex)
-    props.updateWorkflowSort(workflowItems)
+    props.updateWorkflowSortOnState(workflowItems)
   };
 
   return (
@@ -50,7 +50,7 @@ const createWorkflowItems = ({ workflowItems, permissions, ...props }) => {
   )
 }
 // Not sure about the Name
-const WorkflowListContainer = (props) => {
+const WorkflowTable = (props) => {
 
   return (
     <div style={{ paddingBottom: '8px' }}>
@@ -61,4 +61,4 @@ const WorkflowListContainer = (props) => {
   )
 }
 
-export default WorkflowListContainer;
+export default WorkflowTable;

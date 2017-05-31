@@ -5,15 +5,15 @@ import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 import EditIcon from 'material-ui/svg-icons/image/edit';
-import WorkflowListContainer from './WorkflowListContainer';
+import WorkflowTable from './WorkflowTable';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../Notifications/ChangeLog'
 import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import { getPermissions } from '../../permissions';
 
-const enableWorkflowSort = (props, allowedToCreateWorkflows) => (
-  <IconButton disabled={!allowedToCreateWorkflows} mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpDarkBlue} style={{
+const enableWorkflowSort = (props, allowedToSort) => (
+  <IconButton disabled={!allowedToSort} mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpDarkBlue} style={{
     position: 'relative',
     marginTop: '8px',
     zIndex: 2
@@ -22,8 +22,9 @@ const enableWorkflowSort = (props, allowedToCreateWorkflows) => (
   </IconButton>
 )
 
-const disableWorkflowSort = (props, allowedToCreateWorkflows) => (
-  <FloatingActionButton disabled={!allowedToCreateWorkflows} mini={true} onTouchTap={() => props.disableWorkflowSort()} style={{
+const submitSort = (props, allowedToSort) => (
+
+  <FloatingActionButton disabled={!allowedToSort} mini={true} onTouchTap={() => props.postWorkflowSort(props.location.pathname.split('/')[3], props.workflowItems)} style={{
     position: 'relative',
     marginTop: '8px',
     zIndex: 2
@@ -76,9 +77,9 @@ const Workflow = (props) => {
         left: '10px',
         zIndex: 10
       }}>
-        {!props.workflowSortEnabled ? enableWorkflowSort(props, allowedToCreateWorkflows) : disableWorkflowSort(props, allowedToCreateWorkflows)}
+        {!props.workflowSortEnabled ? enableWorkflowSort(props, allowedToCreateWorkflows) : submitSort(props, allowedToCreateWorkflows)}
       </div>
-      <WorkflowListContainer {...props} permissions={{ isAssignee, isApprover, isBank }} />
+      <WorkflowTable {...props} permissions={{ isAssignee, isApprover, isBank }} />
       <ChangeLog {...props} />
       <WorkflowCreationDialog {...props} />
     </Card >
