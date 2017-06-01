@@ -2,35 +2,48 @@ import React from 'react';
 import { Card } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import IconButton from 'material-ui/IconButton';
+import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import WorkflowTable from './WorkflowTable';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../Notifications/ChangeLog'
+import SortIcon from 'material-ui/svg-icons/content/low-priority'
 import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import { getPermissions } from '../../permissions';
 
 const enableWorkflowSort = (props, allowedToSort) => (
-  <IconButton disabled={!allowedToSort} mini={true} onTouchTap={() => props.enableWorkflowSort()} backgroundColor={ACMECorpDarkBlue} style={{
-    position: 'relative',
-    marginTop: '8px',
-    zIndex: 2
-  }}>
-    <EditIcon color={ACMECorpDarkBlue} />
-  </IconButton>
+  <FlatButton
+    disabled={!allowedToSort}
+    onTouchTap={() => props.enableWorkflowSort()}
+    label="Sort"
+    style={{
+      position: 'relative',
+      marginTop: '8px',
+      zIndex: 2
+    }}
+    labelStyle={{
+      fontWeight: '200',
+    }}
+    icon={<SortIcon color={ACMECorpDarkBlue} />}>
+  </FlatButton>
 )
 
 const submitSort = (props, allowedToSort) => (
+  <FlatButton
+    disabled={!allowedToSort}
+    onTouchTap={() => props.postWorkflowSort(props.location.pathname.split('/')[3], props.workflowItems)}
+    label="Save"
+    style={{
+      position: 'relative',
+      marginTop: '8px',
+      zIndex: 2
+    }}
 
-  <FloatingActionButton disabled={!allowedToSort} mini={true} onTouchTap={() => props.postWorkflowSort(props.location.pathname.split('/')[3], props.workflowItems)} style={{
-    position: 'relative',
-    marginTop: '8px',
-    zIndex: 2
-  }}>
-    <DoneIcon />
-  </FloatingActionButton>
+    icon={<DoneIcon color={ACMECorpDarkBlue} />}>
+  </FlatButton>
 )
 
 const Workflow = (props) => {
@@ -73,8 +86,9 @@ const Workflow = (props) => {
         position: 'absolute',
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
-        top: '46px',
-        left: '10px',
+        top: '51px',
+        left: '3px',
+        opacity: '0.7',
         zIndex: 10
       }}>
         {!props.workflowSortEnabled ? enableWorkflowSort(props, allowedToCreateWorkflows) : submitSort(props, allowedToCreateWorkflows)}

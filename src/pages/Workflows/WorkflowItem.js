@@ -70,7 +70,7 @@ const styles = {
 
 
 const createLine = (isFirst, selectable) => {
-  const lineStyle = isFirst ? styles.firstLine : { ...styles.line, opacity: selectable ? 1 : 0.2 };
+  const lineStyle = (isFirst && selectable) ? styles.firstLine : { ...styles.line, opacity: selectable ? 1 : 0.2 };
 
   return (
     <div style={lineStyle}></div>
@@ -168,14 +168,19 @@ const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) =
     )
   }
 }
-const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, ...props }) => {
+const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, status) => {
+  const workflowSortable = (status === 'open')
+  return workflowSortEnabled ? workflowSortable : currentWorkflowSelectable;
+}
 
-  let nextWorkflowNotSelectable = false;
+const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
+
+
+
   const status = workflow.data.status;
-  const currentWorkflowSelectable = !nextWorkflowNotSelectable;
-  if (!nextWorkflowNotSelectable) nextWorkflowNotSelectable = status === 'open' || status === 'in_progress'
+  const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const amount = toAmountString(workflow.data.amount, workflow.data.currency);
-  const tableStyle = currentWorkflowSelectable ? styles[status] : { ...styles[status], opacity: 0.3 };
+  const tableStyle = workflowSelectable ? styles[status] : { ...styles[status], opacity: 0.3 };
   const infoButton = getInfoButton(props, workflow)
   return (
     <Card key={mapIndex} style={{
@@ -186,19 +191,19 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
       position: 'relative',
     }}>
 
-      {createLine(mapIndex === 0, currentWorkflowSelectable)}
-      <StepDot status={status} selectable={currentWorkflowSelectable} />
+      {createLine(mapIndex === 0, workflowSelectable)}
+      <StepDot status={status} selectable={workflowSelectable} />
 
       <Table>
         <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
-          <TableRow style={tableStyle} selectable={false} disabled={currentWorkflowSelectable}>
+          <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
             <TableRowColumn colSpan={1}>
               {infoButton}
             </TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={4}>{workflow.key}</TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={2}>{amount}</TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
-            {currentWorkflowSelectable && status !== 'done' ? getEditButtons(status, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
+            {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
           </TableRow>
 
 
