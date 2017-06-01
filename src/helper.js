@@ -34,7 +34,7 @@ export const statusIconMapping = {
 const actionMapping = (assignee, bank, approver) => ({
   review: `Pending for review of ${approver}`,
   pending: `Pending for approval of ${bank}`,
-  'in_progress': `Pending on  ${assignee}`,
+  'in_progress': `Pending on  ${approver}`,
   open: `Pending on  ${assignee}`,
 })
 

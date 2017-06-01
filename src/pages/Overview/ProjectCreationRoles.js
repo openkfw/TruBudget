@@ -44,7 +44,7 @@ const getSteps = ({ roles,
       )
     },
     {
-      title: 'Select approver Roles',
+      title: 'Select financial roles',
       content: (
         <div>
           <p>The financial processor is approving financial transaction for workflows.</p>
