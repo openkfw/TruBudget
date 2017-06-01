@@ -4,6 +4,7 @@ import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import accounting from 'accounting';
+import _ from 'lodash';
 
 import currencies from './currency';
 
@@ -29,6 +30,14 @@ export const statusIconMapping = {
   'in_progress': <InProgressIcon />,
   open: <OpenIcon />,
 }
+
+const actionMapping = (assignee, bank, approver) => ({
+  review: `Pending for review of ${approver}`,
+  pending: `Pending for approval of ${bank}`,
+  'in_progress': `Pending on  ${assignee}`,
+  open: `Pending on  ${assignee}`,
+})
+
 
 
 const createDoughnutData = (labels, data, colors = taskStatusColorPalette, ) => ({
@@ -83,3 +92,16 @@ export const createTaskData = (items) => {
 export const getNextIncompletedItem = (items) => {
   return items.find((item) => item.details.status === 'open' | item.details.status === 'in_progress');
 }
+
+export const getNextAction = (item, assignee, bank, approver) => {
+  return !_.isUndefined(item) && !_.isUndefined(item.details.status)
+    && !_.isEmpty(item.details.status)
+    ? actionMapping(assignee, bank, approver)[item.details.status]
+    : "No actions required "
+}
+
+
+export const getAssignedOrganization = (organizations) => organizations.reduce((acc, organization, index) => {
+  const nextString = index ? `, ${organization}` : `${organization}`
+  return acc + nextString;
+}, "")

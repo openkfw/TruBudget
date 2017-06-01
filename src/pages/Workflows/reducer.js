@@ -16,10 +16,14 @@ import {
   EDIT_WORKFLOW_SUCCESS,
   SHOW_WORKFLOW_DETAILS,
   SET_WORKFLOW_CREATION_STEP,
+  UPDATE_WORKFLOW_SORT,
+  ENABLE_WORKFLOW_SORT,
+  SHOW_TRANSACTION_DIALOG,
+  WORKFLOW_TYPE
 } from './actions';
 
-import { LOGOUT } from '../../Login/actions';
-import { fromAmountString } from '../../../helper';
+import { LOGOUT } from '../Login/actions';
+import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
   workflowItems: [],
@@ -44,6 +48,9 @@ const defaultState = fromJS({
   showHistory: false,
   historyItems: [],
   creationStep: 0,
+  workflowSortEnabled: false,
+  showTransactionDialog: false,
+  workflowType: 'workflow'
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -54,6 +61,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({ showWorkflow: action.show, editMode: action.editMode })
     case WORKFLOW_NAME:
       return state.set('workflowName', action.name)
+    case WORKFLOW_TYPE:
+      return state.set('workflowType', action.workflowType)
     case WORKFLOW_AMOUNT:
       return state.set('workflowAmount', fromAmountString(action.amount))
     case WORKFLOW_PURPOSE:
@@ -80,6 +89,7 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowPurpose: defaultState.get('workflowPurpose'),
         workflowState: defaultState.get('workflowState'),
         workflowAssignee: defaultState.get('workflowAssignee'),
+        workflowType: defaultState.get('workflowType'),
         disabledWorkflowState: defaultState.get('disabledWorkflowStatetrue'),
         workflowTxid: defaultState.get('workflowTxid'),
         editMode: defaultState.get('editMode')
@@ -91,6 +101,10 @@ export default function detailviewReducer(state = defaultState, action) {
       })
     case SET_WORKFLOW_CREATION_STEP:
       return state.set('creationStep', action.step);
+    case ENABLE_WORKFLOW_SORT:
+      return state.set('workflowSortEnabled', action.sortEnabled)
+    case UPDATE_WORKFLOW_SORT:
+      return state.merge({ workflowItems: action.workflowItems })
     case LOGOUT:
       return defaultState;
     default:

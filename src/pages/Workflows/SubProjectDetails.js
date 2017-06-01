@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
-import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation } from '../../../helper.js'
+
+import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -10,12 +11,14 @@ import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
+import ActiveIcon from 'material-ui/svg-icons/image/navigate-next';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
+import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import IconButton from 'material-ui/IconButton';
 
-import { budgetStatusColorPalette, red } from '../../../colors'
+import { budgetStatusColorPalette, red } from '../../colors'
 
 const styles = {
   container: {
@@ -24,16 +27,20 @@ const styles = {
     flex: 1,
     flexDirection: 'row',
     width: '100%',
-    maxHeight: '500px',
-    marginBottom: '32px',
+    marginBottom: '24px',
     justifyContent: 'space-between'
   },
   card: {
     width: '31%'
   },
   text: {
-    fontSize: '14px'
+    fontSize: '14px',
   },
+
+  overspent: {
+    color: red
+  },
+
   tasksChart: {
     width: '100%',
     height: '100%',
@@ -56,7 +63,7 @@ const styles = {
   },
   iconButton: {
     padding: '0px',
-    height: '0px'
+    height: '0px',
   },
   tooltip: {
     top: '12px'
@@ -67,29 +74,45 @@ const styles = {
   icon: {
     width: '16px', height: '20px'
   },
-  overspent: {
-    color: red
-  },
 }
 
-const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectPurpose, projectStatus, projectTS }) => {
-  const amountString = toAmountString(projectAmount, projectCurrency);
-  const spentAmount = calculateUnspentAmount(subProjects)
-  const unspentAmount = projectAmount - spentAmount;
+
+const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
+  const name = subProjectDetails.projectName
+  const purpose = subProjectDetails.purpose
+  const amount = subProjectDetails.amount
+  const currency = subProjectDetails.currency
+
+
+  const assignee = getAssignedOrganization(subProjectDetails.assignee)
+  const bank = subProjectDetails.bank
+  const approver = subProjectDetails.approver
+
+
+  const amountString = toAmountString(amount, currency)
+  const status = statusMapping[subProjectDetails.status]
+  const statusIcon = statusIconMapping[subProjectDetails.status]
+  const date = tsToString(subProjectDetails.createTS)
+
+  const items = workflowItems.map((item) => ({ ...item, details: item.data }));
+  const spentAmount = calculateUnspentAmount(items)
+  const unspentAmount = amount - spentAmount;
   const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
-  const spentAmountString = toAmountString(spentAmount.toString(), projectCurrency);
-  const unspentAmountString = toAmountString(unspentAmount.toString(), projectCurrency);
-  const statusDetails = getProgressInformation(subProjects)
+  const spentAmountString = toAmountString(spentAmount.toString(), currency);
+  const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), currency);
+  const statusDetails = getProgressInformation(items)
+  const nextIncompletedWorkflow = getNextIncompletedItem(items)
+  const nextAction = getNextAction(nextIncompletedWorkflow, assignee, bank, approver)
   return (
     <div style={styles.container}>
-      <Card style={styles.card}>
-        <CardTitle title={projectName} />
+      <Card style={styles.card} >
+        <CardTitle title={name} />
         <List>
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<PurposeIcon />}
-            primaryText={<div style={styles.purpose}>{projectPurpose} </div>}
+            primaryText={<div style={styles.purpose}>{purpose} </div>}
             secondaryText={'Purpose'}
           />
           <Divider />
@@ -102,16 +125,23 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <Divider />
           <ListItem
             disabled={true}
-            leftIcon={statusIconMapping[projectStatus]}
-            primaryText={statusMapping[projectStatus]}
+            leftIcon={statusIcon}
+            primaryText={status}
             secondaryText={'Status'}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<DateIcon />}
-            primaryText={tsToString(projectTS)}
+            primaryText={date}
             secondaryText={'Created'}
+          />
+          <Divider />
+          <ListItem
+            disabled={true}
+            leftIcon={<AssigneeIcon />}
+            primaryText={assignee}
+            secondaryText={'Assignee(s)'}
           />
           <Divider />
         </List>
@@ -123,7 +153,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <CardTitle title="Budget distribution" />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createAmountData(projectAmount, subProjects)} />
+          <Doughnut data={createAmountData(amount, items)} />
         </CardMedia>
         <Divider />
         <ListItem style={styles.text}
@@ -150,18 +180,18 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <CardTitle title="Task status" />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createTaskData(subProjects)} />
+          <Doughnut data={createTaskData(items)} />
         </CardMedia>
         <Divider />
         <ListItem disabled={true}>
           <div style={styles.tasksChart}>
-            <div style={styles.taskChartItem} >
+            <div style={styles.taskChartItem}>
               <div style={styles.text}>
                 {statusDetails.open.toString()}
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
-                  < OpenIcon />
+                  <OpenIcon />
                 </IconButton>
               </div>
             </div>
@@ -171,7 +201,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
-                  < InProgressIcon />
+                  <InProgressIcon />
                 </IconButton>
               </div>
             </div>
@@ -181,17 +211,32 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
               </div>
               <div>
                 <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
-                  < DoneIcon />
+                  <DoneIcon />
                 </IconButton>
               </div>
             </div>
           </div>
         </ListItem>
         <Divider />
+
+        <ListItem
+          disabled={true}
+          leftIcon={<ActiveIcon />}
+          //  primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}
+          primaryText={<div>
+            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}</span> <br />
+            {nextAction}
+          </div>}
+          secondaryText={'Next step'}
+        />
+        <Divider />
+
+
       </Card>
 
     </div >
+
+
   )
 }
-
-export default ProjectDetails;
+export default SubProjectDetails;

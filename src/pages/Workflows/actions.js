@@ -4,6 +4,7 @@ export const FETCH_WORKFLOW_ITEMS_SUCCESS = 'FETCH_WORKFLOW_ITEMS_SUCCESS';
 export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG';
 
 export const WORKFLOW_NAME = 'WORKFLOW_NAME';
+export const WORKFLOW_TYPE = 'WORKFLOW_TYPE';
 export const WORKFLOW_AMOUNT = 'WORKFLOW_AMOUNT';
 export const WORKFLOW_PURPOSE = 'WORKFLOW_PURPOSE';
 export const WORKFLOW_ADDITIONAL_DATA = 'WORKFLOW_ADDITIONAL_DATA';
@@ -20,6 +21,10 @@ export const WORKFLOW_TXID = 'WORKFLOW_TXID';
 export const SHOW_WORKFLOW_DETAILS = 'SHOW_WORKFLOW_DETAILS';
 export const SET_WORKFLOW_CREATION_STEP = 'SET_WORKFLOW_CREATION_STEP';
 
+export const UPDATE_WORKFLOW_SORT = 'UPDATE_WORKFLOW_SORT';
+export const ENABLE_WORKFLOW_SORT = 'ENABLE_WORKFLOW_SORT';
+export const POST_WORKFLOW_SORT = 'POST_WORKFLOW_SORT';
+export const POST_WORKFLOW_SORT_SUCCESS = 'POST_WORKFLOW_SORT_SUCCESS';
 
 export const OPEN_HISTORY = 'OPEN_HISTORY';
 export const OPEN_HISTORY_SUCCESS = 'OPEN_HISTORY_SUCCESS';
@@ -32,6 +37,33 @@ export function showWorkflowDetails(show, txid) {
     type: SHOW_WORKFLOW_DETAILS,
     show,
     txid
+  }
+}
+
+export function enableWorkflowSort(sortEnabled) {
+  return {
+    type: ENABLE_WORKFLOW_SORT,
+    sortEnabled
+  }
+}
+export function postWorkflowSort(streamName, workflowItems, sortEnabled = false) {
+  // Just the keys are necessary to update the sort on the backend
+  const order = []
+  workflowItems.map((item) =>
+    order.push(item.key)
+  )
+  return {
+    type: POST_WORKFLOW_SORT,
+    streamName,
+    order,
+    sortEnabled
+  }
+}
+
+export function updateWorkflowSortOnState(workflowItems) {
+  return {
+    type: UPDATE_WORKFLOW_SORT,
+    workflowItems
   }
 }
 
@@ -64,11 +96,19 @@ export function showWorkflowDialog(show, editMode = false) {
   }
 }
 
+
+
 export function storeWorkflowName(name) {
 
   return {
     type: WORKFLOW_NAME,
     name: name
+  }
+}
+export function storeWorkflowType(workflowType) {
+  return {
+    type: WORKFLOW_TYPE,
+    workflowType
   }
 }
 
@@ -126,7 +166,7 @@ export function storeWorkflowTxid(txid) {
   }
 }
 
-export function createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee) {
+export function createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType) {
   return {
     type: CREATE_WORKFLOW,
     stream: stream,
@@ -136,7 +176,8 @@ export function createWorkflowItem(stream, workflowName, amount, currency, purpo
     purpose: purpose,
     addData: addData,
     assignee: assignee,
-    state: state
+    state: state,
+    workflowType: workflowType
   }
 }
 

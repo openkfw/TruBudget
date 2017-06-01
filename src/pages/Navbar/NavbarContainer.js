@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onToggleSidebar: () => dispatch(toggleSidebar()),
     fetchPeers: () => dispatch(fetchPeers()),
-    fetchNotifications:(user) => dispatch(fetchNotifications(user)),
+    fetchNotifications: (user) => dispatch(fetchNotifications(user)),
     logout: () => dispatch(logout()),
     fetchStreamNames: () => dispatch(fetchStreamNames()),
   };
@@ -36,7 +36,7 @@ const mapStateToProps = (state) => {
     route: state.getIn(['route', 'locationBeforeTransitions']).toObject(),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     streamNames: state.getIn(['navbar', 'streamNames']),
-    users: state.getIn(['login', 'users']),
+    users: state.getIn(['login', 'users'])
   }
 }
 

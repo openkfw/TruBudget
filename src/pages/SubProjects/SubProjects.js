@@ -5,9 +5,9 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 
 import SubProjectsTable from './SubProjectsTable';
-import ChangeLog from '../../Notifications/ChangeLog';
-import ProjectCreationDialog from '../../Overview/ProjectCreationDialog';
-import { ACMECorpGrey, ACMECorpDarkBlue } from '../../../colors.js';
+import ChangeLog from '../Notifications/ChangeLog';
+import ProjectCreationDialog from '../Overview/ProjectCreationDialog';
+import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js';
 import _ from 'lodash';
 
 const SubProjects = (props) => {

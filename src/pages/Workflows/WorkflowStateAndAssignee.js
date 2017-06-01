@@ -4,19 +4,14 @@ import MenuItem from 'material-ui/MenuItem';
 
 class WorkflowStateAndAssignee extends Component {
 
-  state = {
-    stateValue: 'open',
-    assigneeValue: '',
-  };
-
   handleState = (event, index, value) => {
-      this.props.storeWorkflowState(value);
+    this.props.storeWorkflowState(value);
 
-   }
+  }
 
-   handleAssignee = (event, index, value) => {
-      this.props.storeWorkflowAssignee(value);
-    }
+  handleAssignee = (event, index, value) => {
+    this.props.storeWorkflowAssignee(value);
+  }
 
   createUserSelection = () => {
     const { users } = this.props;
@@ -43,10 +38,11 @@ class WorkflowStateAndAssignee extends Component {
         <SelectField autoWidth={true} onChange={this.handleAssignee} value={this.props.workflowAssignee} floatingLabelText="Assign User" style={{}}>
           {this.createUserSelection()}
         </SelectField>
-        <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState}  disabled={!this.props.editMode} style={{}}>
-          <MenuItem value='open' primaryText="Open"/>
-          <MenuItem value='in_progress' primaryText="In Progress"/>
-          <MenuItem value='done' primaryText="Done"/>
+        <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState} disabled={!this.props.editMode} style={{}}>
+          <MenuItem value='open' primaryText="Open" />
+          <MenuItem value='in_progress' primaryText="In Progress" />
+          <MenuItem value='review' primaryText="Submit for Review" />
+          <MenuItem value='done' primaryText="Done" />
         </SelectField>
 
       </div>

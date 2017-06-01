@@ -4,10 +4,9 @@ import Dialog from 'material-ui/Dialog';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
-import { toAmountString } from '../../../helper';
+import { toAmountString, statusMapping } from '../../helper';
 import Avatar from 'material-ui/Avatar';
 import { ListItem } from 'material-ui/List';
-import { statusMapping } from '../../../helper.js';
 
 const styles = {
   textfield: {
@@ -44,7 +43,7 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
   return workflowItem;
 }
 const getUser = (userId, users, showWorkflowDetails) => {
-  let userProps = { }
+  let userProps = {}
 
   if (showWorkflowDetails) {
     userProps = users[userId];
@@ -80,7 +79,7 @@ const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId
         Status:
         <TextField disabled={true} hintText={statusMapping[workflowItem.data.status]} style={styles.textfield} underlineShow={false} />
         <Divider />
-         <div style={styles.paper}>
+        <div style={styles.paper}>
           Assignee:
           <ListItem primaryText={assignedUser.name} disabled={true} secondaryText={assignedUser.organization} leftAvatar={< Avatar src={
             assignedUser.avatar

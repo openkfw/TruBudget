@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import globalStyles from '../../../styles';
+import globalStyles from '../../styles';
 
 
 import {
@@ -19,10 +19,14 @@ import {
   disableWorkflowState,
   storeWorkflowTxid,
   showWorkflowDetails,
-  setWorkflowCreationStep
+  setWorkflowCreationStep,
+  updateWorkflowSortOnState,
+  enableWorkflowSort,
+  storeWorkflowType,
+  postWorkflowSort
 } from './actions';
-import { setSelectedView } from '../../Navbar/actions';
-import { showHistory, fetchHistoryItems } from '../../Notifications/actions';
+import { setSelectedView } from '../Navbar/actions';
+import { showHistory, fetchHistoryItems } from '../Notifications/actions';
 import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 class WorkflowContainer extends Component {
@@ -59,7 +63,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowTxid: (txid) => dispatch(storeWorkflowTxid(txid)),
     enableWorkflowState: () => dispatch(disableWorkflowState(false)),
     disableWorkflowState: () => dispatch(disableWorkflowState(true)),
-    createWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee)),
+    createWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType)),
     editWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState) => dispatch(editWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState)),
     openWorkflowDetails: (txid) => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
@@ -67,7 +71,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(showHistory(false)),
     fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
-    setWorkflowCreationStep: (step) => dispatch(setWorkflowCreationStep(step))
+    setWorkflowCreationStep: (step) => dispatch(setWorkflowCreationStep(step)),
+    updateWorkflowSortOnState: (items) => dispatch(updateWorkflowSortOnState(items)),
+    enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
+    postWorkflowSort: (streamName, workflowItems) => dispatch(postWorkflowSort(streamName, workflowItems)),
+    storeWorkflowType: (value) => dispatch(storeWorkflowType(value))
   };
 }
 
@@ -94,6 +102,8 @@ const mapStateToProps = (state) => {
     historyItems: state.getIn(['notifications', 'historyItems']),
     subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
+    workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
+    workflowType: state.getIn(['workflow', 'workflowType'])
   }
 }
 
