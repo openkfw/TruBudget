@@ -17,21 +17,25 @@ const styles = {
   }
 };
 
-const WorkflowType = ({ workflowType, storeWorkflowType }) => (
-  <div style={styles.div}>
-    <RadioButtonGroup name="shipSpeed" defaultSelected={workflowType} onChange={(event, value) => storeWorkflowType(value)}>
-      <RadioButton
-        value="workflow"
-        label="Workflow"
-        style={styles.radioButton}
-      />
-      <RadioButton
-        value="transaction"
-        label="Transaction"
-        style={styles.radioButton}
-      />
-    </RadioButtonGroup>
-  </div>
-)
-
+const WorkflowType = ({ workflowType, storeWorkflowType, editMode }) => {
+  console.log(editMode)
+  return (
+    <div style={styles.div}>
+      <RadioButtonGroup name="radioGroup" defaultSelected={workflowType} onChange={(event, value) => storeWorkflowType(value)}>
+        <RadioButton
+          value="workflow"
+          label="Workflow"
+          disabled={editMode}
+          style={styles.radioButton}
+        />
+        <RadioButton
+          value="transaction"
+          label="Transaction"
+          disabled={editMode}
+          style={styles.radioButton}
+        />
+      </RadioButtonGroup>
+    </div>
+  )
+}
 export default WorkflowType;

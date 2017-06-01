@@ -11,7 +11,7 @@ import WorkflowType from './WorkflowType';
 const getStepContent = (props) => {
   switch (props.creationStep) {
     case 0:
-      return <WorkflowType workflowType={props.workflowType} storeWorkflowType={props.storeWorkflowType} />
+      return <WorkflowType workflowType={props.workflowType} editMode={props.editMode} storeWorkflowType={props.storeWorkflowType} />
     case 1:
       return <ProjectCreationName storeProjectName={props.storeWorkflowName} projectName={props.workflowName} type={'workflow'} />
     case 2:
