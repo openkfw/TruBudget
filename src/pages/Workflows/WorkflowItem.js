@@ -14,7 +14,7 @@ import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
-
+import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import IconButton from 'material-ui/IconButton';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen } from '../../colors.js';
 
@@ -85,14 +85,18 @@ const getEditButtons = (status = 'open', role, permissions, editCB, progressCB) 
     },
     'in_progress': {
       tooltip: 'Finish Workflow',
+      icon: ReviewIcon
+    },
+    'in_review': {
+      tooltip: 'Review Workflow',
       icon: DoneIcon
+
     }
   }
   const Icon = statusMapping[status].icon;
 
   const userAllowedToEdit = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
-  const userAllowedToProgress = (status === 'open' && permissions.isAssignee) || (status === 'in_progress' && permissions.isApprover);
-
+  const userAllowedToProgress = (status === 'open' && permissions.isAssignee) || (status === 'in_progress' && permissions.isApprover) || (status === 'in_review' && permissions.isBank);
   return (
     <TableRowColumn colSpan={2}>
       <IconButton
@@ -117,6 +121,9 @@ const StepDot = ({ status, selectable }) => {
       break;
     case 'in_progress':
       Icon = InprogressIcon;
+      break;
+    case 'in_review':
+      Icon = ReviewIcon;
       break;
     case 'done':
       Icon = DoneIcon;
@@ -147,24 +154,33 @@ const editWorkflow = ({ key, txid, data }, props) => {
   props.openWorkflowDialog(true)
 }
 
-
+const getNextStatus = (status) => {
+  switch (status) {
+    case 'open':
+      return 'in_progress';
+    case 'in_progress':
+      return 'in_review'
+    case 'in_review':
+      return 'done';
+    default:
+      return 'open';
+  }
+}
 
 const changeProgress = ({ key, txid, data }, props) => {
   const { workflowName, amount, currency, purpose, addData, assignee, status } = data;
-  const nextStatus = status === 'open' ? 'in_progress' : 'done';
+  const nextStatus = getNextStatus(status)
   props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, currency, purpose, addData, nextStatus, assignee, txid, data)
 }
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
   if (!workflowSortEnabled) {
     return (
-
       <IconButton
         style={styles.infoButton}
         onTouchTap={() => openWorkflowDetails(workflow.txid)}>
         <InfoIcon />
       </IconButton>
-
     )
   }
 }
@@ -174,8 +190,6 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
 }
 
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-
-
 
   const status = workflow.data.status;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);

@@ -22,6 +22,7 @@ export const tsToString = (ts) => {
 
 export const statusMapping = {
   done: 'Done',
+  'in_review': 'In review',
   'in_progress': 'In progress',
   open: 'Open'
 }
@@ -90,7 +91,7 @@ export const createTaskData = (items) => {
 }
 
 export const getNextIncompletedItem = (items) => {
-  return items.find((item) => item.details.status === 'open' | item.details.status === 'in_progress');
+  return items.find((item) => item.details.status === 'open' | item.details.status === 'in_progress' | item.details.status === 'in_review');
 }
 
 export const getNextAction = (item, assignee, bank, approver) => {

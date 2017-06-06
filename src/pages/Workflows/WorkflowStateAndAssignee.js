@@ -28,7 +28,6 @@ class WorkflowStateAndAssignee extends Component {
   }
 
   render() {
-    console.log(this.props.permissions)
     return (
       <div style={{
         display: 'flex',
