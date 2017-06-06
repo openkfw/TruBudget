@@ -224,7 +224,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           leftIcon={<ActiveIcon />}
           //  primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}
           primaryText={<div>
-            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}</span> <br />
+            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.data.workflowName : 'None'}</span> <br />
             {nextAction}
           </div>}
           secondaryText={'Next step'}

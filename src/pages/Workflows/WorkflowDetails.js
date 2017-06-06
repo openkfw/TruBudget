@@ -62,7 +62,7 @@ const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId
   const assignedUser = getUser(workflowItem.data.assignee, users, showWorkflowDetails);
   return (
 
-    <Dialog open={showWorkflowDetails} actions={actions} title={workflowItem.key} modal={false} style={styles.dialog}>
+    <Dialog open={showWorkflowDetails} actions={actions} title={workflowItem.data.workflowName} modal={false} style={styles.dialog}>
       <div>
         Amount:
         <TextField disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false} />
