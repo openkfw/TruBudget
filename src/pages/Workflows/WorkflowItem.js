@@ -96,7 +96,7 @@ const getEditButtons = (status = 'open', role, permissions, editCB, progressCB) 
   const Icon = statusMapping[status].icon;
 
   const userAllowedToEdit = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
-  const userAllowedToProgress = (status === 'open' && permissions.isAssignee) || (status === 'in_progress' && permissions.isApprover) || (status === 'in_review' && permissions.isBank);
+  const userAllowedToProgress = ((status === 'open' || status === 'in_progress') && permissions.isAssignee) || (status === 'in_review' && permissions.isBank);
   return (
     <TableRowColumn colSpan={2}>
       <IconButton
