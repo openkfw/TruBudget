@@ -63,7 +63,7 @@ export const calculateUnspentAmount = (items) => {
 export const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
-  const spentText = unspent < 0 ? "Overspent" : "Not assigned"
+  const spentText = unspent < 0 ? "Not assigned" : "Not assigned"
   return createDoughnutData(["Assigned", spentText], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
 }
 

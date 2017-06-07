@@ -80,7 +80,7 @@ const createLine = (isFirst, selectable) => {
   )
 };
 
-const getEditButtons = (status = 'open', role, permissions, editCB, progressCB) => {
+const getEditButtons = (status = 'open', type, role, permissions, editCB, progressCB) => {
   const statusMapping = {
     open: {
       tooltip: 'Start Workflow',
@@ -99,7 +99,13 @@ const getEditButtons = (status = 'open', role, permissions, editCB, progressCB) 
   const Icon = statusMapping[status].icon;
 
   const userAllowedToEdit = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
-  const userAllowedToProgress = ((status === 'open' || status === 'in_progress') && permissions.isAssignee) || (status === 'in_review' && permissions.isBank);
+
+  const assigneeAllowed = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
+  const approverAllowed = status === 'in_review' && type === 'workflow' && permissions.isApprover;
+  const bankAllowed = status === 'in_review' && type === 'transaction' && permissions.isBank;
+
+  const userAllowedToProgress = assigneeAllowed || approverAllowed || bankAllowed;
+
   return (
     <TableRowColumn colSpan={2}>
       <IconButton
@@ -193,8 +199,8 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
 }
 
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-  console.log(permissions)
   const status = workflow.data.status;
+  const type = workflow.data.type;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const amount = toAmountString(workflow.data.amount, workflow.data.currency);
   const workflowName = workflow.data.workflowName;
@@ -221,7 +227,7 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
             <TableRowColumn style={styles.listText} colSpan={4}>{workflowName}</TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={2}>{amount}</TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
-            {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
+            {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
           </TableRow>
 
 
