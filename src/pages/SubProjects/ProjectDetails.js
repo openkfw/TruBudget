@@ -158,7 +158,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <CardTitle title="Task status" />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createTaskData(subProjects)} />
+          <Doughnut data={createTaskData(subProjects, 'subprojects')} />
         </CardMedia>
         <Divider />
         <ListItem disabled={true}>

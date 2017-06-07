@@ -16,6 +16,7 @@ import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
+import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import IconButton from 'material-ui/IconButton';
 
 import { budgetStatusColorPalette, red } from '../../colors'
@@ -180,7 +181,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
         <CardTitle title="Task status" />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createTaskData(items)} />
+          <Doughnut data={createTaskData(items, 'workflows')} />
         </CardMedia>
         <Divider />
         <ListItem disabled={true}>
@@ -202,6 +203,16 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
               <div>
                 <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
                   <InProgressIcon />
+                </IconButton>
+              </div>
+            </div>
+            <div style={styles.taskChartItem}>
+              <div style={styles.text}>
+                {statusDetails.inReview.toString()}
+              </div>
+              <div>
+                <IconButton disableTouchRipple tooltip="In Review" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
+                  <ReviewIcon />
                 </IconButton>
               </div>
             </div>

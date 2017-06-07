@@ -27,7 +27,7 @@ const enableWorkflowSort = (props, allowedToSort) => (
     labelStyle={{
       fontWeight: '200',
     }}
-    icon={<SortIcon color={ACMECorpDarkBlue} />}>
+    icon={<SortIcon color={!allowedToSort ? ACMECorpGrey : ACMECorpDarkBlue} />}>
   </FlatButton>
 )
 

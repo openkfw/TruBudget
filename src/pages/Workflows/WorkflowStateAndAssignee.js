@@ -41,7 +41,7 @@ class WorkflowStateAndAssignee extends Component {
         <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState} disabled={!this.props.editMode} style={{}}>
           <MenuItem value='open' primaryText="Open" />
           <MenuItem value='in_progress' primaryText="In Progress" />
-          <MenuItem value='review' primaryText="Submit for Review" />
+          <MenuItem value='in_review' primaryText="Submit for Review" />
           <MenuItem disabled={!this.props.isApprover} value='done' primaryText="Done" />
         </SelectField>
 

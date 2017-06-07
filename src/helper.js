@@ -74,6 +74,7 @@ export const getProgressInformation = (items) => {
   let startValue = {
     open: 0,
     inProgress: 0,
+    inReview: 0,
     done: 0
   }
   const projectStatus = items.reduce((acc, item) => {
@@ -81,6 +82,7 @@ export const getProgressInformation = (items) => {
     return {
       open: status === 'open' ? acc.open + 1 : acc.open,
       inProgress: status === 'in_progress' ? acc.inProgress + 1 : acc.inProgress,
+      inReview: status === 'in_review' ? acc.inReview + 1 : acc.inReview,
       done: status === 'done' ? acc.done + 1 : acc.done,
     };
   }, startValue);
@@ -88,8 +90,11 @@ export const getProgressInformation = (items) => {
 }
 
 
-export const createTaskData = (items) => {
+export const createTaskData = (items, type) => {
   const projectStatus = getProgressInformation(items)
+  if (type === 'workflows') {
+    return createDoughnutData(["Open", "In progress", "In Review", "Done"], [projectStatus.open, projectStatus.inProgress, projectStatus.inReview, projectStatus.done]);
+  }
   return createDoughnutData(["Open", "In progress", "Done"], [projectStatus.open, projectStatus.inProgress, projectStatus.done]);
 }
 
