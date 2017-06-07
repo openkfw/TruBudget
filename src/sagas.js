@@ -17,7 +17,8 @@ import {
   login,
   fetchStreamNames,
   fetchHistory,
-  postWorkflowSort
+  postWorkflowSort,
+  editSubProject
 } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAMES_SUCCESS } from './pages/Navbar/actions';
@@ -25,7 +26,7 @@ import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_
 import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT_ITEM, CREATE_SUBPROJECT_ITEM_SUCCESS } from './pages/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
-import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT } from './pages/Workflows/actions';
+import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS } from './pages/Workflows/actions';
 
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
 
@@ -109,6 +110,16 @@ export function* editWorkflowItemSaga(action) {
     yield editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
     yield put({ type: EDIT_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
+  } catch (error) {
+    yield handleError(error);
+  }
+}
+
+export function* editSubProjectSaga(action) {
+  try {
+    yield editSubProject(action.parent, action.streamName, action.status, action.amount);
+    yield put({ type: POST_SUBPROJECT_EDIT_SUCCESS });
+    yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.streamName });
   } catch (error) {
     yield handleError(error);
   }
@@ -229,6 +240,10 @@ export function* watchEditWorkflowItem() {
   yield takeEvery(EDIT_WORKFLOW, editWorkflowItemSaga)
 }
 
+export function* watchEditSubProject() {
+  yield takeEvery(POST_SUBPROJECT_EDIT, editSubProjectSaga)
+}
+
 export function* watchCreateProject() {
   yield takeEvery(CREATE_PROJECT, createProject)
 }
@@ -282,7 +297,8 @@ export default function* rootSaga() {
       watchLogin(),
       watchFetchStreamNames(),
       watchFetchHistory(),
-      watchPostWorkflowSort()
+      watchPostWorkflowSort(),
+      watchEditSubProject()
     ]
   } catch (error) {
     console.log(error);

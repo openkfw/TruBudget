@@ -23,7 +23,10 @@ import {
   updateWorkflowSortOnState,
   enableWorkflowSort,
   storeWorkflowType,
-  postWorkflowSort
+  postWorkflowSort,
+  enableBudgetEdit,
+  storeSubProjectAmount,
+  postSubProjectEdit
 } from './actions';
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -75,7 +78,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateWorkflowSortOnState: (items) => dispatch(updateWorkflowSortOnState(items)),
     enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
     postWorkflowSort: (streamName, workflowItems) => dispatch(postWorkflowSort(streamName, workflowItems)),
-    storeWorkflowType: (value) => dispatch(storeWorkflowType(value))
+    storeWorkflowType: (value) => dispatch(storeWorkflowType(value)),
+    enableBudgetEdit: () => dispatch(enableBudgetEdit(true)),
+    disableBudgetEdit: () => dispatch(enableBudgetEdit(false)),
+    storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
+    postSubProjectEdit: (parent, streamName, status, amount) => dispatch(postSubProjectEdit(parent, streamName, status, amount))
   };
 }
 
@@ -103,7 +110,9 @@ const mapStateToProps = (state) => {
     subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
-    workflowType: state.getIn(['workflow', 'workflowType'])
+    workflowType: state.getIn(['workflow', 'workflowType']),
+    budgetEditEnabled: state.getIn(['workflow', 'budgetEditEnabled']),
+    subProjectAmount: state.getIn(['workflow', 'subProjectAmount']),
   }
 }
 

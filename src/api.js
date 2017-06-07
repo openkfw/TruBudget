@@ -18,3 +18,5 @@ export const editWorkflowItem = (stream, key, workflowItemName, amount, currency
 export const fetchHistory = (project) => axios.get('/history/' + project);
 export const markNotificationAsRead = (user, id, data) => axios.put(`/notifications/${user}/${id}`, data);
 export const postWorkflowSort = (streamName, workflowOrder) => axios.post('/sort', { streamName: streamName, order: workflowOrder })
+export const editSubProject = (parentProject, subProjectName, status, amount) => axios.post('/projects/subprojects/edit', { parent: parentProject, subProjectName: subProjectName, status: status, amount: amount })
+

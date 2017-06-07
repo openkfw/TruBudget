@@ -17,7 +17,14 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
+import EditIcon from 'material-ui/svg-icons/image/edit';
 import IconButton from 'material-ui/IconButton';
+
+import TextField from 'material-ui/TextField';
+
+import {
+  ACMECorpLightgreen,
+} from '../../colors'
 
 import { budgetStatusColorPalette, red } from '../../colors'
 
@@ -69,16 +76,83 @@ const styles = {
   tooltip: {
     top: '12px'
   },
+  budget: {
+    display: 'flex',
+    flexDirection: 'row',
+    height: '100%'
+  },
   cardMedia: {
     marginBottom: '10px'
   },
   icon: {
     width: '16px', height: '20px'
   },
+  editIcon: {
+    marginLeft: '5px',
+    marginTop: '11px'
+  },
+
+  doneIcon: {
+    marginLeft: '9px',
+    marginTop: '22px'
+  },
+  textfield: {
+    width: '60%',
+    marginLeft: '-15px',
+    marginTop: '-10px'
+  }
 }
 
+const getNotEditableBudget = (amountString, enableBudgetEdit, storeSubProjectAmount, amount) => {
+  return (
+    <div style={styles.budget}>
+      <ListItem
+        disabled={true}
+        leftIcon={<AmountIcon />}
+        primaryText={amountString}
+        secondaryText={'Budget'}
+      />
+      <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(storeSubProjectAmount, enableBudgetEdit, amount)} />
+    </div>
 
-const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
+  )
+}
+
+const enableEditMode = (storeSubProjectAmount, enableBudgetEdit, amount) => {
+  enableBudgetEdit()
+  storeSubProjectAmount(amount)
+}
+
+const getEditableBudget = (amount, storeSubProjectAmount, subProjectAmount, disableBudgetEdit, location, postSubProjectEdit) => {
+  const floatingLabelText = "Budget"
+
+  return (
+    <div style={styles.budget}>
+      <ListItem
+        style={{ marginTop: '10px' }}
+        disabled={true}
+        leftIcon={<AmountIcon />}
+      />
+      <TextField
+        floatingLabelText={floatingLabelText}
+        style={styles.textfield}
+        type='number'
+        value={subProjectAmount}
+        onChange={(event) => storeSubProjectAmount(event.target.value)}
+      />
+      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(disableBudgetEdit, subProjectAmount, location, postSubProjectEdit)} />
+    </div>
+
+  )
+}
+
+const disableEditMode = (disableBudgetEdit, subProjectAmount, location, postSubProjectEdit) => {
+  postSubProjectEdit(location.pathname.split('/')[2], location.pathname.split('/')[3], 'open', subProjectAmount)
+  disableBudgetEdit()
+
+}
+
+const SubProjectDetails = ({ subProjectDetails, workflowItems, enableBudgetEdit, budgetEditEnabled, storeSubProjectAmount, subProjectAmount, disableBudgetEdit, location, postSubProjectEdit }) => {
   const name = subProjectDetails.projectName
   const purpose = subProjectDetails.purpose
   const amount = subProjectDetails.amount
@@ -117,12 +191,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
             secondaryText={'Purpose'}
           />
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<AmountIcon />}
-            primaryText={amountString}
-            secondaryText={'Budget'}
-          />
+          {budgetEditEnabled ? getEditableBudget(amount, storeSubProjectAmount, subProjectAmount, disableBudgetEdit, location, postSubProjectEdit) : getNotEditableBudget(amountString, enableBudgetEdit, storeSubProjectAmount, amount)}
           <Divider />
           <ListItem
             disabled={true}

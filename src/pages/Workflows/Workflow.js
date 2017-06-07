@@ -5,7 +5,7 @@ import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
-import EditIcon from 'material-ui/svg-icons/image/edit';
+
 import WorkflowTable from './WorkflowTable';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../Notifications/ChangeLog'
