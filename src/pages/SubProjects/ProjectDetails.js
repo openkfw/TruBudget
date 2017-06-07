@@ -138,7 +138,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           disabled={true}
           leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
           primaryText={unspentAmountString}
-          secondaryText={"Unspent"}
+          secondaryText={"Not assigned"}
         />
         <Divider />
         <ListItem style={styles.text}
@@ -146,8 +146,8 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
           secondaryText={correctedUnspentAmount > 0 ?
-            <span> {'Spent'} </span > :
-            <span> {'Spent'}
+            <span> {'Assigned'} </span > :
+            <span> {'Assigned'}
               <span style={styles.overspent}> {'(Overspent)'}
               </span>
             </span>}

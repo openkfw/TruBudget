@@ -16,11 +16,14 @@ import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import IconButton from 'material-ui/IconButton';
-import { ACMECorpLightgrey, ACMECorpSuperLightgreen } from '../../colors.js';
+import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from '../../colors.js';
 
 const styles = {
   in_progress: {
     backgroundColor: ACMECorpLightgrey
+  },
+  in_review: {
+    backgroundColor: ACMECorpLightblue
   },
   done: {
     backgroundColor: ACMECorpSuperLightgreen
@@ -190,7 +193,7 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
 }
 
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-
+  console.log(permissions)
   const status = workflow.data.status;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const amount = toAmountString(workflow.data.amount, workflow.data.currency);
