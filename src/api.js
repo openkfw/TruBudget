@@ -17,4 +17,5 @@ export const postWorkflowItem = (stream, workflowItemName, amount, currency, pur
 export const editWorkflowItem = (stream, workflowItemName, amount, currency, purpose, addData, status, assignee, txid, previousState) => axios.post('/projects/subprojects/workflows/' + txid, { streamName: stream, workflowName: workflowItemName, amount: amount, currency: currency, purpose: purpose, addData: addData, status: status, assignee: assignee, previousState: previousState })
 export const fetchHistory = (project) => axios.get('/history/' + project);
 export const markNotificationAsRead = (user, id, data) => axios.put(`/notifications/${user}/${id}`, data);
-export const postWorkflowSort = (streamName, workflowOrder) => axios.post('/sort', { streamName: streamName, order: workflowOrder })
+export const postWorkflowSort = (streamName, workflowOrder) => axios.post('/sort', { streamName: streamName, order: workflowOrder });
+export const validateDocument = (data) => axios.post('/documents/validate', data);
