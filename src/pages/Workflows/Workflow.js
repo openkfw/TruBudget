@@ -95,7 +95,7 @@ const Workflow = (props) => {
       </div>
       <WorkflowTable {...props} permissions={{ isAssignee, isApprover, isBank }} />
       <ChangeLog {...props} />
-      <WorkflowCreationDialog {...props} />
+      <WorkflowCreationDialog {...props} permissions={{ isAssignee, isApprover, isBank }} />
     </Card >
   )
 };

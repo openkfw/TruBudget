@@ -64,7 +64,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     enableWorkflowState: () => dispatch(disableWorkflowState(false)),
     disableWorkflowState: () => dispatch(disableWorkflowState(true)),
     createWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType)),
-    editWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState) => dispatch(editWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState)),
+    editWorkflowItem: (stream, key, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState, workflowType) => dispatch(editWorkflowItem(stream, key, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState, workflowType)),
     openWorkflowDetails: (txid) => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     openHistory: () => dispatch(showHistory(true)),

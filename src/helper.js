@@ -19,9 +19,13 @@ export const tsToString = (ts) => {
   let dateString = moment(ts, 'x').format("MMM D, YYYY");
   return dateString;
 }
-
+export const typeMapping = {
+  workflow: 'Workflow',
+  transaction: 'Transaction'
+}
 export const statusMapping = {
   done: 'Done',
+  'in_review': 'In review',
   'in_progress': 'In progress',
   open: 'Open'
 }
@@ -62,8 +66,8 @@ export const calculateUnspentAmount = (items) => {
 export const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
-  const spentText = unspent < 0 ? "Overspent" : "Unspent"
-  return createDoughnutData(["Spent", spentText], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
+  const spentText = unspent < 0 ? "Not assigned" : "Not assigned"
+  return createDoughnutData(["Assigned", spentText], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
 }
 
 export const getProgressInformation = (items) => {
@@ -90,7 +94,7 @@ export const createTaskData = (items) => {
 }
 
 export const getNextIncompletedItem = (items) => {
-  return items.find((item) => item.details.status === 'open' | item.details.status === 'in_progress');
+  return items.find((item) => item.details.status === 'open' | item.details.status === 'in_progress' | item.details.status === 'in_review');
 }
 
 export const getNextAction = (item, assignee, bank, approver) => {
