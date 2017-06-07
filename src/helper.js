@@ -19,7 +19,10 @@ export const tsToString = (ts) => {
   let dateString = moment(ts, 'x').format("MMM D, YYYY");
   return dateString;
 }
-
+export const typeMapping = {
+  workflow: 'Workflow',
+  transaction: 'Transaction'
+}
 export const statusMapping = {
   done: 'Done',
   'in_review': 'In review',

@@ -4,7 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
-import { toAmountString, statusMapping } from '../../helper';
+import { toAmountString, statusMapping, typeMapping } from '../../helper';
 import Avatar from 'material-ui/Avatar';
 import { ListItem } from 'material-ui/List';
 
@@ -64,6 +64,9 @@ const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId
 
     <Dialog open={showWorkflowDetails} actions={actions} title={workflowItem.data.workflowName} modal={false} style={styles.dialog}>
       <div>
+        Type:
+        <TextField disabled={true} hintText={typeMapping[workflowItem.data.type]} style={styles.textfield} underlineShow={false} />
+        <Divider />
         Amount:
         <TextField disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false} />
         <Divider />
