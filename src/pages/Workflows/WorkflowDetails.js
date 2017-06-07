@@ -8,6 +8,8 @@ import { toAmountString, statusMapping } from '../../helper';
 import Avatar from 'material-ui/Avatar';
 import { ListItem } from 'material-ui/List';
 
+import DocumentOverviewContainer from '../Documents/DocumentOverviewContainer';
+
 const styles = {
   textfield: {
     right: -30
@@ -71,7 +73,7 @@ const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId
         <TextField disabled={true} hintText={workflowItem.data.purpose} style={styles.textfield} underlineShow={false} />
         <Divider />
         Documents:
-        <TextField disabled={true} hintText="Bring up the docs" style={styles.textfield} underlineShow={false} />
+        <DocumentOverviewContainer />
         <Divider />
         Additional Data:
         <TextField disabled={true} hintText={workflowItem.data.addData} style={styles.textfield} underlineShow={false} />
