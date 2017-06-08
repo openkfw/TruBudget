@@ -3,9 +3,9 @@ import { Step, Stepper, StepButton } from 'material-ui/Stepper';
 import ProjectCreationName from '../Overview/ProjectCreationName';
 import ProjectCreationPurpose from '../Overview/ProjectCreationPurpose';
 import ProjectCreationAmount from '../Overview/ProjectCreationAmount';
-import ProjectCreationAdditionalData from '../Overview/ProjectCreationAdditionalData';
 import WorkflowStateAndAssignee from './WorkflowStateAndAssignee';
 import WorkflowType from './WorkflowType';
+import DocumentUpload from '../Documents/DocumentUpload';
 
 
 const getStepContent = (props) => {
@@ -19,7 +19,7 @@ const getStepContent = (props) => {
     case 3:
       return <ProjectCreationPurpose storeProjectPurpose={props.storeWorkflowPurpose} projectPurpose={props.workflowPurpose} type={'workflow'} />
     case 4:
-      return <ProjectCreationAdditionalData storeWorkflowAdditionalData={props.storeWorkflowAdditionalData} workflowAdditionalData={props.workflowAdditionalData} />
+      return <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />
     case 5:
       return <WorkflowStateAndAssignee permissions={props.permissions} users={props.users} storeWorkflowState={props.storeWorkflowState} storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
     default:
@@ -55,7 +55,7 @@ const WorkflowCreationStepper = (props) => {
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(4)}>
-            Additional Data
+            Documents
             </StepButton>
         </Step>
         <Step>

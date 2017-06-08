@@ -17,7 +17,9 @@ import {
   login,
   fetchStreamNames,
   fetchHistory,
-  postWorkflowSort
+  postWorkflowSort,
+  validateDocument,
+  hashDocument
 } from './api.js';
 
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAMES_SUCCESS } from './pages/Navbar/actions';
@@ -28,6 +30,7 @@ import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT } from './pages/Workflows/actions';
 
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS } from './pages/Login/actions';
+import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 
 function* handleError(error) {
   if (error.response) {
@@ -96,7 +99,7 @@ export function* createSubProjectSaga(action) {
 
 export function* createWorkflowItemSaga(action) {
   try {
-    yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee, action.workflowType);
+    yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.documents, action.state, action.assignee, action.workflowType);
     yield put({ type: CREATE_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {
@@ -106,7 +109,7 @@ export function* createWorkflowItemSaga(action) {
 
 export function* editWorkflowItemSaga(action) {
   try {
-    yield editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.currency, action.purpose, action.addData, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
+    yield editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.currency, action.purpose, action.documents, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
     yield put({ type: EDIT_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {
@@ -188,10 +191,29 @@ export function* fetchStreamNamesSaga() {
     yield handleError(error);
   }
 }
+
 export function* fetchHistorySaga({ project }) {
   try {
     const history = yield fetchHistory(project);
     yield put({ type: FETCH_HISTORY_SUCCESS, historyItems: history.data })
+  } catch (error) {
+    yield handleError(error);
+  }
+}
+
+export function* validateDocumentSaga({ payload, hash }) {
+  try {
+    const response = yield validateDocument(payload, hash);
+    yield put({ type: VALIDATE_DOCUMENT_SUCCESS, validates: response.data.validates, hash })
+  } catch (error) {
+    yield handleError(error);
+  }
+}
+
+export function* addDocumentSaga({ id, payload }) {
+  try {
+    const hash = yield hashDocument(payload);
+    yield put({ type: ADD_DOCUMENT_SUCCESS, hash: hash.data, id })
   } catch (error) {
     yield handleError(error);
   }
@@ -263,6 +285,14 @@ export function* watchFetchStreamNames() {
   yield takeLatest(FETCH_STREAM_NAMES, fetchStreamNamesSaga)
 }
 
+export function* watchValidateDocument() {
+  yield takeLatest(VALIDATE_DOCUMENT, validateDocumentSaga)
+}
+
+export function* watchAddDocument() {
+  yield takeLatest(ADD_DOCUMENT, addDocumentSaga)
+}
+
 export default function* rootSaga() {
   try {
     yield [
@@ -282,7 +312,9 @@ export default function* rootSaga() {
       watchLogin(),
       watchFetchStreamNames(),
       watchFetchHistory(),
-      watchPostWorkflowSort()
+      watchPostWorkflowSort(),
+      watchValidateDocument(),
+      watchAddDocument()
     ]
   } catch (error) {
     console.log(error);

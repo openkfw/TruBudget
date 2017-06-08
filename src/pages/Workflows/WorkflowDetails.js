@@ -8,6 +8,8 @@ import { toAmountString, statusMapping, typeMapping } from '../../helper';
 import Avatar from 'material-ui/Avatar';
 import { ListItem } from 'material-ui/List';
 
+import DocumentOverview from '../Documents/DocumentOverview';
+
 const styles = {
   textfield: {
     right: -30
@@ -52,7 +54,7 @@ const getUser = (userId, users, showWorkflowDetails) => {
   return userProps;
 }
 
-const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, users }) => {
+const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, users, validateDocument, validatedDocuments }) => {
   const actions = [
     <FlatButton label="Close"
       onTouchTap={hideWorkflowDetails}
@@ -74,10 +76,7 @@ const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId
         <TextField disabled={true} hintText={workflowItem.data.purpose} style={styles.textfield} underlineShow={false} />
         <Divider />
         Documents:
-        <TextField disabled={true} hintText="Bring up the docs" style={styles.textfield} underlineShow={false} />
-        <Divider />
-        Additional Data:
-        <TextField disabled={true} hintText={workflowItem.data.addData} style={styles.textfield} underlineShow={false} />
+        <DocumentOverview documents={workflowItem.data.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />
         <Divider />
         Status:
         <TextField disabled={true} hintText={statusMapping[workflowItem.data.status]} style={styles.textfield} underlineShow={false} />

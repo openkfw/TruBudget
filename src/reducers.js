@@ -14,6 +14,7 @@ import dashboardReducer from './pages/Dashboard/reducer';
 import notificationsReducer from './pages/Notifications/reducer';
 import workflowReducer from './pages/Workflows/reducer';
 import loginReducer from './pages/Login/reducer';
+import documentsReducer from './pages/Documents/reducer';
 
 /*
  * routeReducer
@@ -58,6 +59,7 @@ export default function createReducer(asyncReducers) {
     workflow: workflowReducer,
     notifications: notificationsReducer,
     login: loginReducer,
+    documents: documentsReducer,
     ...asyncReducers,
   });
 }
