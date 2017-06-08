@@ -21,7 +21,7 @@ const getStepContent = (props) => {
     case 4:
       return <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />
     case 5:
-      return <WorkflowStateAndAssignee users={props.users} storeWorkflowState={props.storeWorkflowState} storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
+      return <WorkflowStateAndAssignee permissions={props.permissions} users={props.users} storeWorkflowState={props.storeWorkflowState} storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
     default:
       return <span>Done</span>
   }

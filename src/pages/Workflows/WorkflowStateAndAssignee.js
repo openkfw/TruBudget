@@ -42,7 +42,7 @@ class WorkflowStateAndAssignee extends Component {
           <MenuItem value='open' primaryText="Open" />
           <MenuItem value='in_progress' primaryText="In Progress" />
           <MenuItem value='review' primaryText="Submit for Review" />
-          <MenuItem value='done' primaryText="Done" />
+          <MenuItem disabled={!this.props.isApprover} value='done' primaryText="Done" />
         </SelectField>
 
       </div>

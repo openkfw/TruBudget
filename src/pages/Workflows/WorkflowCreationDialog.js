@@ -44,7 +44,7 @@ const handleNext = (props) => props.setWorkflowCreationStep(props.creationStep +
 const handleSubmit = (props) => {
   if (props.editMode) {
     const currentWorkflowItem = props.workflowItems.find((item) => item.txid === props.workflowTxid);
-    props.editWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowCurrency, props.workflowPurpose, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowTxid, currentWorkflowItem.data)
+    props.editWorkflowItem(props.location.pathname.split('/')[3], currentWorkflowItem.key, props.workflowName, props.workflowAmount, props.workflowCurrency, props.workflowPurpose, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowTxid, currentWorkflowItem.data, props.workflowType)
   } else {
     props.createWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowCurrency, props.workflowPurpose, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowType)
   }

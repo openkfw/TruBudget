@@ -160,7 +160,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           disabled={true}
           leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
           primaryText={unspentAmountString}
-          secondaryText={"Unspent"}
+          secondaryText={"Not assigned"}
         />
         <Divider />
         <ListItem style={styles.text}
@@ -168,8 +168,8 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
           secondaryText={correctedUnspentAmount > 0 ?
-            <span> {'Spent'} </span > :
-            <span> {'Spent'}
+            <span> {'Assigned'} </span > :
+            <span> {'Assigned'}
               <span style={styles.overspent}> {'(Overspent)'}
               </span>
             </span>}
@@ -224,7 +224,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
           leftIcon={<ActiveIcon />}
           //  primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}
           primaryText={<div>
-            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}</span> <br />
+            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.data.workflowName : 'None'}</span> <br />
             {nextAction}
           </div>}
           secondaryText={'Next step'}

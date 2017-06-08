@@ -14,7 +14,7 @@ export const login = (username, password) => axios.post('/login', { username, pa
 export const fetchUsers = () => axios.get('/users');
 export const fetchRoles = () => axios.get('/roles');
 export const postWorkflowItem = (stream, workflowItemName, amount, currency, purpose, documents, status, assignee, type) => axios.post('/projects/subprojects/workflows', { streamName: stream, workflowName: workflowItemName, amount, currency, purpose, documents, status, assignee, type })
-export const editWorkflowItem = (stream, workflowItemName, amount, currency, purpose, documents, status, assignee, txid, previousState) => axios.post('/projects/subprojects/workflows/' + txid, { streamName: stream, workflowName: workflowItemName, amount, currency, purpose, documents, status, assignee, previousState })
+export const editWorkflowItem = (stream, key, workflowItemName, amount, currency, purpose, documents, status, assignee, txid, previousState, type) => axios.post('/projects/subprojects/workflows/' + txid, { streamName: stream, key, workflowName: workflowItemName, amount, currency, purpose, documents, status, assignee, previousState, type })
 export const fetchHistory = (project) => axios.get('/history/' + project);
 export const markNotificationAsRead = (user, id, data) => axios.put(`/notifications/${user}/${id}`, data);
 export const postWorkflowSort = (streamName, workflowOrder) => axios.post('/sort', { streamName: streamName, order: workflowOrder });
