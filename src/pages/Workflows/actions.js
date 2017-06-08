@@ -45,17 +45,8 @@ export function showWorkflowDetails(show, txid) {
     txid
   }
 }
-export function postSubProjectEdit(parent, streamName, status, amount) {
-  return {
-    type: POST_SUBPROJECT_EDIT,
-    parent,
-    streamName,
-    status,
-    amount
-  }
-}
 
-export function enableBudgetEdit(budgetEditEnabled) {
+export function enableSubProjectBudgetEdit(budgetEditEnabled) {
   return {
     type: ENABLE_BUDGET_EDIT,
     budgetEditEnabled
@@ -119,7 +110,6 @@ export function showWorkflowDialog(show, editMode = false) {
 }
 
 export function storeSubProjectAmount(amount) {
-  console.log(amount)
   return {
     type: SUBPROJECT_AMOUNT,
     amount: amount
@@ -224,6 +214,16 @@ export function editWorkflowItem(stream, key, workflowName, amount, currency, pu
     txid,
     previousState,
     workflowType
+  }
+}
+
+export function postSubProjectEdit(parent, streamName, status, amount) {
+  return {
+    type: POST_SUBPROJECT_EDIT,
+    parent,
+    streamName,
+    status,
+    amount
   }
 }
 

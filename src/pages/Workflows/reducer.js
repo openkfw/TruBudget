@@ -53,7 +53,7 @@ const defaultState = fromJS({
   workflowSortEnabled: false,
   showTransactionDialog: false,
   workflowType: 'workflow',
-  budgetEditEnabled: false,
+  subProjectBudgetEditEnabled: false,
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -111,7 +111,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case UPDATE_WORKFLOW_SORT:
       return state.merge({ workflowItems: action.workflowItems })
     case ENABLE_BUDGET_EDIT:
-      return state.set('budgetEditEnabled', action.budgetEditEnabled)
+      return state.set('subProjectBudgetEditEnabled', action.budgetEditEnabled)
     case LOGOUT:
       return defaultState;
     default:

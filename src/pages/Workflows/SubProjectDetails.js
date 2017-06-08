@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, fromAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -103,7 +103,7 @@ const styles = {
   }
 }
 
-const getNotEditableBudget = (amountString, enableBudgetEdit, storeSubProjectAmount, amount) => {
+const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   return (
     <div style={styles.budget}>
       <ListItem
@@ -112,20 +112,19 @@ const getNotEditableBudget = (amountString, enableBudgetEdit, storeSubProjectAmo
         primaryText={amountString}
         secondaryText={'Budget'}
       />
-      <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(storeSubProjectAmount, enableBudgetEdit, amount)} />
+      <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(props, amountString)} />
     </div>
-
   )
 }
 
-const enableEditMode = (storeSubProjectAmount, enableBudgetEdit, amount) => {
+const enableEditMode = ({ storeSubProjectAmount, enableBudgetEdit }, amountString) => {
+  const amount = fromAmountString(amountString)
   enableBudgetEdit()
   storeSubProjectAmount(amount)
 }
 
-const getEditableBudget = (amount, storeSubProjectAmount, subProjectAmount, disableBudgetEdit, location, postSubProjectEdit) => {
+const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }) => {
   const floatingLabelText = "Budget"
-
   return (
     <div style={styles.budget}>
       <ListItem
@@ -140,19 +139,17 @@ const getEditableBudget = (amount, storeSubProjectAmount, subProjectAmount, disa
         value={subProjectAmount}
         onChange={(event) => storeSubProjectAmount(event.target.value)}
       />
-      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(disableBudgetEdit, subProjectAmount, location, postSubProjectEdit)} />
+      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(subProjectAmount, props)} />
     </div>
-
   )
 }
 
-const disableEditMode = (disableBudgetEdit, subProjectAmount, location, postSubProjectEdit) => {
+const disableEditMode = (subProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
   postSubProjectEdit(location.pathname.split('/')[2], location.pathname.split('/')[3], 'open', subProjectAmount)
   disableBudgetEdit()
-
 }
 
-const SubProjectDetails = ({ subProjectDetails, workflowItems, enableBudgetEdit, budgetEditEnabled, storeSubProjectAmount, subProjectAmount, disableBudgetEdit, location, postSubProjectEdit }) => {
+const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
   const name = subProjectDetails.projectName
   const purpose = subProjectDetails.purpose
   const amount = subProjectDetails.amount
@@ -178,6 +175,9 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, enableBudgetEdit,
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
   const nextAction = getNextAction(nextIncompletedWorkflow, assignee, bank, approver)
+
+  const allowedToWrite = props.loggedInUser.role.write;
+  const allowedToEdit = allowedToWrite && permissions.isAssignee;
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
@@ -191,7 +191,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, enableBudgetEdit,
             secondaryText={'Purpose'}
           />
           <Divider />
-          {budgetEditEnabled ? getEditableBudget(amount, storeSubProjectAmount, subProjectAmount, disableBudgetEdit, location, postSubProjectEdit) : getNotEditableBudget(amountString, enableBudgetEdit, storeSubProjectAmount, amount)}
+          {budgetEditEnabled && allowedToEdit ? getEditableBudget(props) : getNotEditableBudget(amountString, allowedToEdit, props)}
           <Divider />
           <ListItem
             disabled={true}

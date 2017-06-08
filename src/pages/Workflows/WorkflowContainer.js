@@ -24,14 +24,19 @@ import {
   enableWorkflowSort,
   storeWorkflowType,
   postWorkflowSort,
-  enableBudgetEdit,
+  enableSubProjectBudgetEdit,
   storeSubProjectAmount,
   postSubProjectEdit
 } from './actions';
+
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
 import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
+import { getPermissions } from '../../permissions';
+
+
+
 class WorkflowContainer extends Component {
   componentWillMount() {
     const subProjectId = this.props.location.pathname.split('/')[3];
@@ -42,10 +47,11 @@ class WorkflowContainer extends Component {
 
 
   render() {
+    const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
       <div style={globalStyles.innerContainer}>
-        <SubProjectDetails {...this.props} />
-        <Workflow {...this.props} />
+        <SubProjectDetails {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
+        <Workflow {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
       </div>
     )
   }
@@ -79,8 +85,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
     postWorkflowSort: (streamName, workflowItems) => dispatch(postWorkflowSort(streamName, workflowItems)),
     storeWorkflowType: (value) => dispatch(storeWorkflowType(value)),
-    enableBudgetEdit: () => dispatch(enableBudgetEdit(true)),
-    disableBudgetEdit: () => dispatch(enableBudgetEdit(false)),
+    enableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(true)),
+    disableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(false)),
     storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
     postSubProjectEdit: (parent, streamName, status, amount) => dispatch(postSubProjectEdit(parent, streamName, status, amount))
   };
@@ -111,7 +117,7 @@ const mapStateToProps = (state) => {
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
     workflowType: state.getIn(['workflow', 'workflowType']),
-    budgetEditEnabled: state.getIn(['workflow', 'budgetEditEnabled']),
+    budgetEditEnabled: state.getIn(['workflow', 'subProjectBudgetEditEnabled']),
     subProjectAmount: state.getIn(['workflow', 'subProjectAmount']),
   }
 }

@@ -12,7 +12,7 @@ import ChangeLog from '../Notifications/ChangeLog'
 import SortIcon from 'material-ui/svg-icons/content/low-priority'
 import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
-import { getPermissions } from '../../permissions';
+
 
 const enableWorkflowSort = (props, allowedToSort) => (
   <FlatButton
@@ -47,11 +47,8 @@ const submitSort = (props, allowedToSort) => (
 )
 
 const Workflow = (props) => {
-
-  const { isAssignee, isApprover, isBank } = getPermissions(props.loggedInUser, props.subProjectDetails);
   const allowedToWrite = props.loggedInUser.role.write;
-  const allowedToCreateWorkflows = allowedToWrite && isAssignee;
-
+  const allowedToCreateWorkflows = allowedToWrite && props.permissions.isAssignee;
   return (
     <Card style={{
       width: '100%',
@@ -93,9 +90,9 @@ const Workflow = (props) => {
       }}>
         {!props.workflowSortEnabled ? enableWorkflowSort(props, allowedToCreateWorkflows) : submitSort(props, allowedToCreateWorkflows)}
       </div>
-      <WorkflowTable {...props} permissions={{ isAssignee, isApprover, isBank }} />
+      <WorkflowTable {...props} />
       <ChangeLog {...props} />
-      <WorkflowCreationDialog {...props} permissions={{ isAssignee, isApprover, isBank }} />
+      <WorkflowCreationDialog {...props} />
     </Card >
   )
 };
