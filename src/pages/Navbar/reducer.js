@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { TOGGLE_SIDEBAR, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES_SUCCESS, SET_SELECTED_VIEW  } from './actions';
+import { TOGGLE_SIDEBAR, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES_SUCCESS, SET_SELECTED_VIEW } from './actions';
 import { FETCH_NOTIFICATIONS_SUCCESS } from '../Notifications/actions';
 import { LOGOUT } from '../Login/actions';
 
@@ -13,7 +13,7 @@ const defaultState = fromJS({
   selectedSection: '',
 });
 
-const countUnreadNotifications = (notifications) => notifications.reduce((acc, {data}) => {
+const countUnreadNotifications = (notifications) => notifications.reduce((acc, { data }) => {
   return data.done === false ? acc + 1 : acc;
 }, 0);
 

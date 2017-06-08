@@ -147,21 +147,19 @@ const StepDot = ({ status, selectable }) => {
   )
 };
 
-
-
 const editWorkflow = ({ key, txid, data }, props) => {
-  const { workflowName, amount, currency, purpose, addData, assignee, status, type } = data;
+  const { workflowName, amount, currency, purpose, assignee, status, documents, type } = data;
   props.storeWorkflowName(workflowName)
   props.storeWorkflowAmount(amount)
   props.storeWorkflowCurrency(currency)
   props.storeWorkflowPurpose(purpose)
-  props.storeWorkflowAdditionalData(addData)
   props.storeWorkflowType(type)
   props.storeWorkflowAssignee(assignee)
   props.enableWorkflowState()
   props.storeWorkflowState(status)
   props.storeWorkflowTxid(txid)
   props.openWorkflowDialog(true)
+  props.prefillDocuments(documents);
 }
 
 const getNextStatus = (status) => {
@@ -178,9 +176,9 @@ const getNextStatus = (status) => {
 }
 
 const changeProgress = ({ key, txid, data }, props) => {
-  const { workflowName, amount, currency, purpose, addData, assignee, status, type } = data;
+  const { workflowName, amount, currency, purpose, assignee, documents, status, type } = data;
   const nextStatus = getNextStatus(status)
-  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, currency, purpose, addData, nextStatus, assignee, txid, data, type)
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, currency, purpose, documents, nextStatus, assignee, txid, data, type)
 }
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {

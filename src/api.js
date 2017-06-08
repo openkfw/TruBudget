@@ -13,10 +13,22 @@ export const fetchWorkflowItems = (subProjectName) => axios.get('/projects/' + s
 export const login = (username, password) => axios.post('/login', { username, password });
 export const fetchUsers = () => axios.get('/users');
 export const fetchRoles = () => axios.get('/roles');
-export const postWorkflowItem = (stream, workflowItemName, amount, currency, purpose, addData, status, assignee, type) => axios.post('/projects/subprojects/workflows', { streamName: stream, workflowName: workflowItemName, amount: amount, currency: currency, purpose: purpose, addData: addData, status: status, assignee: assignee, type })
-export const editWorkflowItem = (stream, key, workflowItemName, amount, currency, purpose, addData, status, assignee, txid, previousState, workflowType) => axios.post('/projects/subprojects/workflows/' + txid, { streamName: stream, key: key, workflowName: workflowItemName, amount: amount, currency: currency, purpose: purpose, addData: addData, status: status, assignee: assignee, previousState: previousState, type: workflowType })
+export const postWorkflowItem = (stream, workflowItemName, amount, currency, purpose, documents, status, assignee, type) => axios.post('/projects/subprojects/workflows', { streamName: stream, workflowName: workflowItemName, amount, currency, purpose, documents, status, assignee, type })
+export const editWorkflowItem = (stream, key, workflowItemName, amount, currency, purpose, documents, status, assignee, txid, previousState, type) => axios.post('/projects/subprojects/workflows/' + txid, { streamName: stream, key, workflowName: workflowItemName, amount, currency, purpose, documents, status, assignee, previousState, type })
 export const fetchHistory = (project) => axios.get('/history/' + project);
 export const markNotificationAsRead = (user, id, data) => axios.put(`/notifications/${user}/${id}`, data);
-export const postWorkflowSort = (streamName, workflowOrder) => axios.post('/sort', { streamName: streamName, order: workflowOrder })
-export const editSubProject = (parentProject, subProjectName, status, amount) => axios.post('/projects/subprojects/edit', { parent: parentProject, subProjectName: subProjectName, status: status, amount: amount })
+
+export const postWorkflowSort = (streamName, workflowOrder) => axios.post('/sort', { streamName: streamName, order: workflowOrder });
+export const editSubProject = (parentProject, subProjectName, status, amount) => axios.post('/projects/subprojects/edit', { parent: parentProject, subProjectName: subProjectName, status: status, amount: amount });
+export const hashDocument = (payload) => {
+  const data = new FormData();
+  data.append('doc', payload);
+  return axios.post('/documents', data)
+};
+export const validateDocument = (payload, hash) => {
+  const data = new FormData();
+  data.append('doc', payload);
+  data.append('hash', hash);
+  return axios.post('/documents/validate', data)
+};
 

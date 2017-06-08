@@ -151,13 +151,6 @@ export function storeWorkflowPurpose(purpose) {
   }
 }
 
-export function storeWorkflowAdditionalData(addData) {
-  return {
-    type: WORKFLOW_ADDITIONAL_DATA,
-    addData: addData
-  }
-}
-
 export function storeWorkflowAssignee(assignee) {
   return {
     type: WORKFLOW_ASSIGNEE,
@@ -184,7 +177,7 @@ export function storeWorkflowTxid(txid) {
   }
 }
 
-export function createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType) {
+export function createWorkflowItem(stream, workflowName, amount, currency, purpose, documents, state, assignee, workflowType) {
   return {
     type: CREATE_WORKFLOW,
     stream: stream,
@@ -192,14 +185,14 @@ export function createWorkflowItem(stream, workflowName, amount, currency, purpo
     amount: amount,
     currency: currency,
     purpose: purpose,
-    addData: addData,
+    documents,
     assignee: assignee,
     state: state,
     workflowType: workflowType
   }
 }
 
-export function editWorkflowItem(stream, key, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState, workflowType) {
+export function editWorkflowItem(stream, key, workflowName, amount, currency, purpose, documents, state, assignee, txid, previousState, workflowType) {
   return {
     type: EDIT_WORKFLOW,
     stream: stream,
@@ -208,7 +201,7 @@ export function editWorkflowItem(stream, key, workflowName, amount, currency, pu
     amount: amount,
     currency: currency,
     purpose: purpose,
-    addData: addData,
+    documents,
     assignee: assignee,
     state: state,
     txid,

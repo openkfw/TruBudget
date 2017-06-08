@@ -7,7 +7,6 @@ import globalStyles from '../../styles';
 import {
   fetchWorkflowItems,
   showWorkflowDialog,
-  storeWorkflowAdditionalData,
   storeWorkflowPurpose,
   storeWorkflowCurrency,
   storeWorkflowAmount,
@@ -31,6 +30,7 @@ import {
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
+import { addDocument, clearDocuments, prefillDocuments, validateDocument } from '../Documents/actions';
 import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 import { getPermissions } from '../../permissions';
@@ -62,7 +62,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     openWorkflowDialog: (editMode) => dispatch(showWorkflowDialog(true, editMode)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false, false)),
-    storeWorkflowAdditionalData: (addData) => dispatch(storeWorkflowAdditionalData(addData)),
     storeWorkflowPurpose: (purpose) => dispatch(storeWorkflowPurpose(purpose)),
     storeWorkflowCurrency: (currency) => dispatch(storeWorkflowCurrency(currency)),
     storeWorkflowAmount: (amount) => dispatch(storeWorkflowAmount(amount)),
@@ -72,8 +71,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowTxid: (txid) => dispatch(storeWorkflowTxid(txid)),
     enableWorkflowState: () => dispatch(disableWorkflowState(false)),
     disableWorkflowState: () => dispatch(disableWorkflowState(true)),
-    createWorkflowItem: (stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, addData, state, assignee, workflowType)),
-    editWorkflowItem: (stream, key, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState, workflowType) => dispatch(editWorkflowItem(stream, key, workflowName, amount, currency, purpose, addData, state, assignee, txid, previousState, workflowType)),
+    createWorkflowItem: (stream, workflowName, amount, currency, purpose, documents, state, assignee, workflowType) => dispatch(createWorkflowItem(stream, workflowName, amount, currency, purpose, documents, state, assignee, workflowType)),
+    editWorkflowItem: (stream, key, workflowName, amount, currency, purpose, documents, state, assignee, txid, previousState, workflowType) => dispatch(editWorkflowItem(stream, key, workflowName, amount, currency, purpose, documents, state, assignee, txid, previousState, workflowType)),
     openWorkflowDetails: (txid) => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     openHistory: () => dispatch(showHistory(true)),
@@ -88,7 +87,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     enableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(true)),
     disableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(false)),
     storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
-    postSubProjectEdit: (parent, streamName, status, amount) => dispatch(postSubProjectEdit(parent, streamName, status, amount))
+    postSubProjectEdit: (parent, streamName, status, amount) => dispatch(postSubProjectEdit(parent, streamName, status, amount)),
+    addDocument: (payload, name, id) => dispatch(addDocument(payload, name, id)),
+    clearDocuments: () => dispatch(clearDocuments()),
+    validateDocument: (payload, hash) => dispatch(validateDocument(payload, hash)),
+    prefillDocuments: (documents) => dispatch(prefillDocuments(documents))
+
   };
 }
 
@@ -100,7 +104,6 @@ const mapStateToProps = (state) => {
     workflowName: state.getIn(['workflow', 'workflowName']),
     workflowAmount: state.getIn(['workflow', 'workflowAmount']),
     workflowPurpose: state.getIn(['workflow', 'workflowPurpose']),
-    workflowAdditionalData: state.getIn(['workflow', 'workflowAdditionalData']),
     workflowCurrency: state.getIn(['workflow', 'workflowCurrency']),
     workflowState: state.getIn(['workflow', 'workflowState']),
     workflowAssignee: state.getIn(['workflow', 'workflowAssignee']),
@@ -119,6 +122,8 @@ const mapStateToProps = (state) => {
     workflowType: state.getIn(['workflow', 'workflowType']),
     budgetEditEnabled: state.getIn(['workflow', 'subProjectBudgetEditEnabled']),
     subProjectAmount: state.getIn(['workflow', 'subProjectAmount']),
+    workflowDocuments: state.getIn(['documents', 'tempDocuments']).toJS(),
+    validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS()
   }
 }
 
