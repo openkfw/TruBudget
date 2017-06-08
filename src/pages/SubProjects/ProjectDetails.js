@@ -78,8 +78,9 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   const spentAmount = calculateUnspentAmount(subProjects)
   const unspentAmount = projectAmount - spentAmount;
   const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
+
   const spentAmountString = toAmountString(spentAmount.toString(), projectCurrency);
-  const unspentAmountString = toAmountString(unspentAmount.toString(), projectCurrency);
+  const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), projectCurrency);
   const statusDetails = getProgressInformation(subProjects)
   return (
     <div style={styles.container}>
