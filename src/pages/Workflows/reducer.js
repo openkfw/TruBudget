@@ -6,7 +6,6 @@ import {
   WORKFLOW_NAME,
   WORKFLOW_AMOUNT,
   WORKFLOW_PURPOSE,
-  WORKFLOW_ADDITIONAL_DATA,
   WORKFLOW_CURRENCY,
   WORKFLOW_STATE_ENABLED,
   WORKFLOW_STATE,
@@ -36,7 +35,6 @@ const defaultState = fromJS({
   workflowName: '',
   workflowAmount: 0,
   workflowCurrency: 'EUR',
-  workflowAdditionalData: '',
   workflowPurpose: '',
   workflowState: 'open',
   workflowAssignee: '',
@@ -50,7 +48,7 @@ const defaultState = fromJS({
   creationStep: 0,
   workflowSortEnabled: false,
   showTransactionDialog: false,
-  workflowType: 'workflow'
+  workflowType: 'workflow',
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -67,8 +65,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('workflowAmount', fromAmountString(action.amount))
     case WORKFLOW_PURPOSE:
       return state.set('workflowPurpose', action.purpose)
-    case WORKFLOW_ADDITIONAL_DATA:
-      return state.set('workflowAdditionalData', action.addData)
     case WORKFLOW_CURRENCY:
       return state.set('workflowCurrency', action.currency)
     case WORKFLOW_STATE:
@@ -85,14 +81,13 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowName: defaultState.get('workflowName'),
         workflowAmount: defaultState.get('workflowAmount'),
         workflowCurrency: defaultState.get('workflowCurrency'),
-        workflowAdditionalData: defaultState.get('workflowAdditionalData'),
         workflowPurpose: defaultState.get('workflowPurpose'),
         workflowState: defaultState.get('workflowState'),
         workflowAssignee: defaultState.get('workflowAssignee'),
         workflowType: defaultState.get('workflowType'),
         disabledWorkflowState: defaultState.get('disabledWorkflowStatetrue'),
         workflowTxid: defaultState.get('workflowTxid'),
-        editMode: defaultState.get('editMode')
+        editMode: defaultState.get('editMode'),
       });
     case SHOW_WORKFLOW_DETAILS:
       return state.merge({

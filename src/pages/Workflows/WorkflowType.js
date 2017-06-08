@@ -18,7 +18,6 @@ const styles = {
 };
 
 const WorkflowType = ({ workflowType, storeWorkflowType, editMode }) => {
-  console.log(editMode)
   return (
     <div style={styles.div}>
       <RadioButtonGroup name="radioGroup" defaultSelected={workflowType} onChange={(event, value) => storeWorkflowType(value)}>

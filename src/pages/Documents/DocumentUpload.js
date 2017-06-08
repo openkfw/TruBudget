@@ -1,0 +1,62 @@
+import React, { Component } from 'react';
+import _ from 'lodash';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
+
+import DocumentOverview from './DocumentOverview';
+
+const styles = {
+  uploadButton: {
+    verticalAlign: 'middle',
+  },
+  uploadInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  }
+};
+
+export default class DocumentUpload extends Component {
+  constructor() {
+    super();
+    this.state = {
+      name: '',
+    }
+  }
+
+  render = () => {
+    return (
+      <div>
+        <div>
+          <DocumentOverview documents={this.props.workflowDocuments} validationActive={false} />
+        </div>
+        <div>
+          <TextField
+            hintText="Add name of document"
+            floatingLabelText="Document Name"
+            value={this.state.name}
+            onChange={(event) => this.setState({ name: event.target.value })}
+          />
+          <FlatButton
+            labelPosition="before"
+            containerElement="label"
+            label="Upload"
+            style={styles.uploadButton}
+            disabled={_.isEmpty(this.state.name)}
+          >
+            {_.isEmpty(this.state.name) ? null : <input id="docupload" type="file" ref={(input) => this.input = input} style={styles.uploadInput} onChange={() => {
+              const file = this.input.files[0];
+              this.props.addDocument(file, this.state.name, Date.now());
+              this.setState({ name: '' });
+            }} />}
+          </FlatButton>
+        </div>
+      </div>
+    )
+  }
+}

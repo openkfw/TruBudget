@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import FingerPrint from 'material-ui/svg-icons/action/fingerprint';
+import CircularProgress from 'material-ui/CircularProgress';
+
 import {
   Table,
   TableBody,
@@ -8,6 +10,8 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import _ from 'lodash';
+
+import { ACMECorpSuperLightgreen, lightRed } from '../../colors';
 
 const styles = {
   uploadButton: {
@@ -28,55 +32,93 @@ const styles = {
   }
 };
 
-const generateUploadIcon = () => (
-  <FlatButton
-    label="Validate"
-    labelPosition="before"
-    style={styles.uploadButton}
-    containerElement="label"
-  >
-    <input type="file" style={styles.uploadInput} />
-  </FlatButton>
-)
 
-const generateHashIcon = (hash) => (
-  <FlatButton
-    label={`${hash.slice(0, 5)}...`}
-    labelPosition="after"
-    style={styles.hashButton}
-    disableTouchRipple={true}
-    hoverColor='none'
-    icon={<FingerPrint />}
-  />
-)
 
-const generateDocumentList = (documents) => documents.map((document, index) => {
-  const { name, hash } = document;
-  console.log(document)
-  return (
-    <TableRow key={index + 'document'} selectable={false}>
-      <TableRowColumn>{generateHashIcon(hash)}</TableRowColumn>
-      <TableRowColumn>{name}</TableRowColumn>
-      <TableRowColumn>{generateUploadIcon()}</TableRowColumn>
+class DocumentOverview extends Component {
+  constructor() {
+    super();
+    this.input = {};
+  }
+  getPropsForUploadButton = (validated) => {
+    let style = null;
+    let label = null;
+
+    if (_.isUndefined(validated)) {
+      label = 'Validate';
+      style = styles.uploadButton;
+    } else if (validated === true) {
+      label = 'Validated!';
+      style = {
+        ...styles.uploadButton,
+        backgroundColor: ACMECorpSuperLightgreen
+      };
+    } else {
+      label = 'Changed!';
+      style = {
+        ...styles.uploadButton,
+        backgroundColor: lightRed,
+      };
+    }
+
+    return { style, label }
+  }
+
+  generateUploadIcon = (hash, validated) => (
+    <FlatButton
+      labelPosition="before"
+      containerElement="label"
+      {...this.getPropsForUploadButton(validated) }
+    >
+      <input id="docvalidation" type="file" ref={(input) => this.input[hash] = input} style={styles.uploadInput} onChange={() => {
+        const file = this.input[hash].files[0];
+        this.props.validateDocument(hash, file);
+      }} />
+    </FlatButton>
+  )
+
+  generateHashIcon = (hash) => (
+    <FlatButton
+      label={`${hash.slice(0, 6)}...`}
+      labelPosition="after"
+      style={styles.hashButton}
+      disableTouchRipple={true}
+      hoverColor='none'
+      icon={<FingerPrint />}
+    />
+  )
+
+  generateDocumentList = (documents, validationActive = true, validatedDocuments = {}) => documents.map((document, index) => {
+    let textInput = null;
+    let validated = undefined;
+    const { name, hash } = document;
+
+    if (validationActive) validated = validatedDocuments[hash]
+
+    return (
+      <TableRow key={index + 'document'} selectable={false}>
+        <TableRowColumn style={{ textAlign: 'center' }}>{hash ? this.generateHashIcon(hash) : <CircularProgress size={20} />}</TableRowColumn>
+        <TableRowColumn>{name}</TableRowColumn>
+        {validationActive ? <TableRowColumn>{this.generateUploadIcon(hash, validated)}</TableRowColumn> : null}
+      </TableRow>
+    )
+  })
+
+  generateEmptyList = () => (
+    <TableRow selectable={false}>
+      <TableRowColumn>No documents</TableRowColumn>
     </TableRow>
   )
-})
 
-const generateEmptyList = () => (
-  <TableRow selectable={false}>
-    <TableRowColumn>No documents</TableRowColumn>
-  </TableRow>
-)
-
-const DocumentOverview = (props) => {
-  const { documents } = props;
-  return (
-    <Table selectable={false}>
-      <TableBody displayRowCheckbox={false}>
-        {_.isEmpty(documents) ? generateEmptyList() : generateDocumentList(documents)}
-      </TableBody>
-    </Table>
-  )
+  render = () => {
+    const { documents, validationActive, validatedDocuments } = this.props;
+    return (
+      <Table selectable={false}>
+        <TableBody displayRowCheckbox={false}>
+          {_.isEmpty(documents) ? this.generateEmptyList() : this.generateDocumentList(documents, validationActive, validatedDocuments)}
+        </TableBody>
+      </Table>
+    )
+  }
 }
 
 export default DocumentOverview;

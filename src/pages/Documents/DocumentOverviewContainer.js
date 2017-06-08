@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import DocumentOverview from './DocumentOverview';
+import { validateDocument } from './actions';
 
 class DocumentOverviewContainer extends Component {
   render() {
@@ -10,7 +11,9 @@ class DocumentOverviewContainer extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    validateDocument: (hash, payload) => dispatch(validateDocument(hash, payload))
+  };
 }
 
 const mapStateToProps = (state) => {
