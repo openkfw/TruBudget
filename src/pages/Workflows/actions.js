@@ -23,13 +23,19 @@ export const SET_WORKFLOW_CREATION_STEP = 'SET_WORKFLOW_CREATION_STEP';
 
 export const UPDATE_WORKFLOW_SORT = 'UPDATE_WORKFLOW_SORT';
 export const ENABLE_WORKFLOW_SORT = 'ENABLE_WORKFLOW_SORT';
+
 export const POST_WORKFLOW_SORT = 'POST_WORKFLOW_SORT';
 export const POST_WORKFLOW_SORT_SUCCESS = 'POST_WORKFLOW_SORT_SUCCESS';
 
+export const SUBPROJECT_AMOUNT = 'SUBPROJECT_AMOUNT'
 export const OPEN_HISTORY = 'OPEN_HISTORY';
 export const OPEN_HISTORY_SUCCESS = 'OPEN_HISTORY_SUCCESS';
 export const FETCH_HISTORY = 'FETCH_HISTORY';
 export const FETCH_HISTORY_SUCCESS = 'FETCH_HISTORY_SUCCESS';
+
+export const ENABLE_BUDGET_EDIT = 'ENABLE_BUDGET_EDIT';
+export const POST_SUBPROJECT_EDIT = 'POST_SUBPROJECT_EDIT';
+export const POST_SUBPROJECT_EDIT_SUCCESS = 'POST_SUBPROJECT_EDIT_SUCCESS';
 
 
 export function showWorkflowDetails(show, txid) {
@@ -37,6 +43,13 @@ export function showWorkflowDetails(show, txid) {
     type: SHOW_WORKFLOW_DETAILS,
     show,
     txid
+  }
+}
+
+export function enableSubProjectBudgetEdit(budgetEditEnabled) {
+  return {
+    type: ENABLE_BUDGET_EDIT,
+    budgetEditEnabled
   }
 }
 
@@ -96,7 +109,12 @@ export function showWorkflowDialog(show, editMode = false) {
   }
 }
 
-
+export function storeSubProjectAmount(amount) {
+  return {
+    type: SUBPROJECT_AMOUNT,
+    amount: amount
+  }
+}
 
 export function storeWorkflowName(name) {
 
@@ -189,6 +207,16 @@ export function editWorkflowItem(stream, key, workflowName, amount, currency, pu
     txid,
     previousState,
     workflowType
+  }
+}
+
+export function postSubProjectEdit(parent, streamName, status, amount) {
+  return {
+    type: POST_SUBPROJECT_EDIT,
+    parent,
+    streamName,
+    status,
+    amount
   }
 }
 

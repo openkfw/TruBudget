@@ -18,7 +18,9 @@ import {
   UPDATE_WORKFLOW_SORT,
   ENABLE_WORKFLOW_SORT,
   SHOW_TRANSACTION_DIALOG,
-  WORKFLOW_TYPE
+  WORKFLOW_TYPE,
+  ENABLE_BUDGET_EDIT,
+  SUBPROJECT_AMOUNT
 } from './actions';
 
 import { LOGOUT } from '../Login/actions';
@@ -49,6 +51,7 @@ const defaultState = fromJS({
   workflowSortEnabled: false,
   showTransactionDialog: false,
   workflowType: 'workflow',
+  subProjectBudgetEditEnabled: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -75,6 +78,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('disabledWorkflowState', action.enabled)
     case WORKFLOW_TXID:
       return state.set('workflowTxid', action.txid)
+    case SUBPROJECT_AMOUNT:
+      return state.set('subProjectAmount', action.amount)
     case CREATE_WORKFLOW_SUCCESS:
     case EDIT_WORKFLOW_SUCCESS:
       return state.merge({
@@ -100,6 +105,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('workflowSortEnabled', action.sortEnabled)
     case UPDATE_WORKFLOW_SORT:
       return state.merge({ workflowItems: action.workflowItems })
+    case ENABLE_BUDGET_EDIT:
+      return state.set('subProjectBudgetEditEnabled', action.budgetEditEnabled)
     case LOGOUT:
       return defaultState;
     default:

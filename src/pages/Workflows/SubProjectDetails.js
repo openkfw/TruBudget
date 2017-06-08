@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, fromAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -16,7 +16,15 @@ import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
+import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
+import EditIcon from 'material-ui/svg-icons/image/edit';
 import IconButton from 'material-ui/IconButton';
+
+import TextField from 'material-ui/TextField';
+
+import {
+  ACMECorpLightgreen,
+} from '../../colors'
 
 import { budgetStatusColorPalette, red } from '../../colors'
 
@@ -68,16 +76,80 @@ const styles = {
   tooltip: {
     top: '12px'
   },
+  budget: {
+    display: 'flex',
+    flexDirection: 'row',
+    height: '100%'
+  },
   cardMedia: {
     marginBottom: '10px'
   },
   icon: {
     width: '16px', height: '20px'
   },
+  editIcon: {
+    marginLeft: '5px',
+    marginTop: '11px'
+  },
+
+  doneIcon: {
+    marginLeft: '9px',
+    marginTop: '22px'
+  },
+  textfield: {
+    width: '60%',
+    marginLeft: '-15px',
+    marginTop: '-10px'
+  }
 }
 
+const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
+  return (
+    <div style={styles.budget}>
+      <ListItem
+        disabled={true}
+        leftIcon={<AmountIcon />}
+        primaryText={amountString}
+        secondaryText={'Budget'}
+      />
+      <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(props, amountString)} />
+    </div>
+  )
+}
 
-const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
+const enableEditMode = ({ storeSubProjectAmount, enableBudgetEdit }, amountString) => {
+  const amount = fromAmountString(amountString)
+  enableBudgetEdit()
+  storeSubProjectAmount(amount)
+}
+
+const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }) => {
+  const floatingLabelText = "Budget"
+  return (
+    <div style={styles.budget}>
+      <ListItem
+        style={{ marginTop: '10px' }}
+        disabled={true}
+        leftIcon={<AmountIcon />}
+      />
+      <TextField
+        floatingLabelText={floatingLabelText}
+        style={styles.textfield}
+        type='number'
+        value={subProjectAmount}
+        onChange={(event) => storeSubProjectAmount(event.target.value)}
+      />
+      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(subProjectAmount, props)} />
+    </div>
+  )
+}
+
+const disableEditMode = (subProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
+  postSubProjectEdit(location.pathname.split('/')[2], location.pathname.split('/')[3], 'open', subProjectAmount)
+  disableBudgetEdit()
+}
+
+const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
   const name = subProjectDetails.projectName
   const purpose = subProjectDetails.purpose
   const amount = subProjectDetails.amount
@@ -103,6 +175,9 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
   const nextAction = getNextAction(nextIncompletedWorkflow, assignee, bank, approver)
+
+  const allowedToWrite = props.loggedInUser.role.write;
+  const allowedToEdit = allowedToWrite && permissions.isAssignee;
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
@@ -116,12 +191,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
             secondaryText={'Purpose'}
           />
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<AmountIcon />}
-            primaryText={amountString}
-            secondaryText={'Budget'}
-          />
+          {budgetEditEnabled && allowedToEdit ? getEditableBudget(props) : getNotEditableBudget(amountString, allowedToEdit, props)}
           <Divider />
           <ListItem
             disabled={true}
@@ -180,7 +250,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
         <CardTitle title="Task status" />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createTaskData(items)} />
+          <Doughnut data={createTaskData(items, 'workflows')} />
         </CardMedia>
         <Divider />
         <ListItem disabled={true}>
@@ -202,6 +272,16 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems }) => {
               <div>
                 <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
                   <InProgressIcon />
+                </IconButton>
+              </div>
+            </div>
+            <div style={styles.taskChartItem}>
+              <div style={styles.text}>
+                {statusDetails.inReview.toString()}
+              </div>
+              <div>
+                <IconButton disableTouchRipple tooltip="In Review" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
+                  <ReviewIcon />
                 </IconButton>
               </div>
             </div>
