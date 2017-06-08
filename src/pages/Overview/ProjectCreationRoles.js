@@ -18,10 +18,10 @@ const getSteps = ({ roles,
   projectBank, addBankRole, removeBankRole
 }) => [
     {
-      title: 'Select approver roles',
+      title: 'Select budget authority role',
       content: (
         <div>
-          <p>Approver approves the fullfilement of workflows. The are also able to increase the budget line of the project.</p>
+          <p>The authority enabled to modify the budget line of the project</p>
           <RoleSelectionContent
             dataSource={roles}
             selections={projectApprover}
@@ -31,10 +31,10 @@ const getSteps = ({ roles,
       )
     },
     {
-      title: 'Select assignee roles',
+      title: 'Select implementation authority role',
       content: (
         <div>
-          <p>The assignee is able to create and update sub-projects and workflows.</p>
+          <p>The authorities enabled to create and modify subprojects, define and execute workflow activities</p>
           <RoleSelectionContent
             dataSource={roles}
             selections={projectAssignee}
@@ -44,10 +44,10 @@ const getSteps = ({ roles,
       )
     },
     {
-      title: 'Select financial roles',
+      title: 'Select disbursement authority role',
       content: (
         <div>
-          <p>The financial processor is approving financial transaction for workflows.</p>
+          <p>The authorities enabled to approve financial transactions</p>
           <RoleSelectionContent
             dataSource={roles}
             selections={projectBank}
