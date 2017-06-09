@@ -139,12 +139,13 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
         value={subProjectAmount}
         onChange={(event) => storeSubProjectAmount(event.target.value)}
       />
-      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(subProjectAmount, props)} />
+      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)} />
     </div>
   )
 }
 
-const disableEditMode = (subProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
+const disableEditMode = (subProjectAmount, storeSubProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
+  storeSubProjectAmount(0)
   postSubProjectEdit(location.pathname.split('/')[2], location.pathname.split('/')[3], 'open', subProjectAmount)
   disableBudgetEdit()
 }
