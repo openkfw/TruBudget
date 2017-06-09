@@ -146,7 +146,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           disabled={true}
           leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
-          secondaryText={correctedUnspentAmount > 0 ?
+          secondaryText={unspentAmount >= 0 ?
             <span> {'Assigned'} </span > :
             <span> {'Assigned'}
               <span style={styles.overspent}> {'(Overspent)'}

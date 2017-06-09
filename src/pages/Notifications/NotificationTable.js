@@ -28,10 +28,7 @@ const styles = {
   }
 }
 
-const inspectItem = (data, history) => {
-  console.log('xxxxx')
-  console.log(history)
-  console.log('xxxxx')
+const viewItem = (data, history) => {
   history.push(data.link);
 }
 
@@ -40,7 +37,8 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
   return notifications.reduce((acc, { data, blocktime, key }, index) => {
     const issuer = users[data.issuer];
     const notificationRead = data.done === true;
-    const inspectable = data.link === '/dashboard' ? false : true
+    const viewable = data.link === '/dashboard' ? false : !data.done
+
     const element = (
       <TableRow key={index} selected={notificationRead} selectable={false}>
         <TableRowColumn style={styles.columnNonBreaking} colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
@@ -56,7 +54,7 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
           />
         </TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="2">
-          <FlatButton disabled={!inspectable} label="Inspect" primary={true} onTouchTap={() => inspectItem(data, history)} />
+          <FlatButton disabled={!viewable} label="View" primary={true} onTouchTap={() => viewItem(data, history)} />
         </TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="2">
           <IconButton disabled={notificationRead} onTouchTap={() => markNotificationAsRead(loggedInUser.id, key, data)} tooltip="Mark as read">

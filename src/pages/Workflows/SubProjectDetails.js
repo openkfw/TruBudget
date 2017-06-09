@@ -178,6 +178,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
 
   const allowedToWrite = props.loggedInUser.role.write;
   const allowedToEdit = allowedToWrite && permissions.isAssignee;
+
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
@@ -237,7 +238,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
           disabled={true}
           leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
-          secondaryText={correctedUnspentAmount > 0 ?
+          secondaryText={unspentAmount >= 0 ?
             <span> {'Assigned'} </span > :
             <span> {'Assigned'}
               <span style={styles.overspent}> {'(Overspent)'}
