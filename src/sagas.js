@@ -101,7 +101,7 @@ export function* createSubProjectSaga(action) {
 
 export function* createWorkflowItemSaga(action) {
   try {
-    yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.currency, action.purpose, action.documents, action.state, action.assignee, action.workflowType);
+    yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.amountType, action.currency, action.purpose, action.documents, action.state, action.assignee, action.workflowType);
     yield put({ type: CREATE_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {
@@ -111,7 +111,7 @@ export function* createWorkflowItemSaga(action) {
 
 export function* editWorkflowItemSaga(action) {
   try {
-    yield editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.currency, action.purpose, action.documents, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
+    yield editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.amountType, action.currency, action.purpose, action.documents, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
     yield put({ type: EDIT_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {

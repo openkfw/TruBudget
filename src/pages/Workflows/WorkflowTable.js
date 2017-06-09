@@ -29,8 +29,8 @@ const createTableHeader = () => (
         <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{ borderBottom: '0px' }}>
           <TableRow displayBorder={false}>
             <TableHeaderColumn style={styles.listText} colSpan={1}></TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={4}>Workflow</TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={2}>Amount</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={3}>Workflow</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={3}>Amount</TableHeaderColumn>
             <TableHeaderColumn style={styles.listText} colSpan={2}>Status</TableHeaderColumn>
             <TableHeaderColumn style={styles.listText} colSpan={2}>Actions</TableHeaderColumn>
           </TableRow>

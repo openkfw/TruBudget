@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, fromAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, fromAmountString, createSubprojectAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -10,6 +10,7 @@ import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
+import UnallocatedIcon from 'material-ui/svg-icons/editor/space-bar'
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import ActiveIcon from 'material-ui/svg-icons/image/navigate-next';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
@@ -26,7 +27,7 @@ import {
   ACMECorpLightgreen,
 } from '../../colors'
 
-import { budgetStatusColorPalette, red } from '../../colors'
+import { workflowBudgetColorPalette, red } from '../../colors'
 
 const styles = {
   container: {
@@ -103,6 +104,12 @@ const styles = {
   }
 }
 
+const enableEditMode = ({ storeSubProjectAmount, enableBudgetEdit }, amountString) => {
+  const amount = fromAmountString(amountString)
+  enableBudgetEdit()
+  storeSubProjectAmount(amount)
+}
+
 const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   return (
     <div style={styles.budget}>
@@ -117,10 +124,9 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   )
 }
 
-const enableEditMode = ({ storeSubProjectAmount, enableBudgetEdit }, amountString) => {
-  const amount = fromAmountString(amountString)
-  enableBudgetEdit()
-  storeSubProjectAmount(amount)
+const disableEditMode = (subProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
+  postSubProjectEdit(location.pathname.split('/')[2], location.pathname.split('/')[3], 'open', subProjectAmount)
+  disableBudgetEdit()
 }
 
 const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }) => {
@@ -144,11 +150,6 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
   )
 }
 
-const disableEditMode = (subProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
-  postSubProjectEdit(location.pathname.split('/')[2], location.pathname.split('/')[3], 'open', subProjectAmount)
-  disableBudgetEdit()
-}
-
 const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
   const name = subProjectDetails.projectName
   const purpose = subProjectDetails.purpose
@@ -167,11 +168,15 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const date = tsToString(subProjectDetails.createTS)
 
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
-  const spentAmount = calculateUnspentAmount(items)
-  const unspentAmount = amount - spentAmount;
-  const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
-  const spentAmountString = toAmountString(spentAmount.toString(), currency);
-  const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), currency);
+  const { allocated: allocatedBudget, disbursed: disbursedBudget } = calculateWorkflowBudget(items);
+
+  const unAllocatedBudget = amount - allocatedBudget;
+  const unSpendBudget = allocatedBudget - disbursedBudget;
+
+  const unAllocatedBudgetString = toAmountString(unAllocatedBudget, currency);
+  const unSpendBudgetString = toAmountString(unSpendBudget, currency);
+  const spendBudgetString = toAmountString(disbursedBudget, currency);
+
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
   const nextAction = getNextAction(nextIncompletedWorkflow, assignee, bank, approver)
@@ -223,26 +228,28 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
         <CardTitle title="Budget distribution" />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createAmountData(amount, items)} />
+          <Doughnut data={createSubprojectAmountData(amount, items)} />
         </CardMedia>
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
-          primaryText={unspentAmountString}
-          secondaryText={"Not assigned"}
+          leftIcon={<UnallocatedIcon color={workflowBudgetColorPalette[0]} />}
+          primaryText={unAllocatedBudgetString}
+          secondaryText={"Un-allocated budget"}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
-          primaryText={spentAmountString}
-          secondaryText={correctedUnspentAmount > 0 ?
-            <span> {'Assigned'} </span > :
-            <span> {'Assigned'}
-              <span style={styles.overspent}> {'(Overspent)'}
-              </span>
-            </span>}
+          leftIcon={<UnspentIcon color={workflowBudgetColorPalette[1]} />}
+          primaryText={unSpendBudgetString}
+          secondaryText={"Free budget"}
+        />
+        <Divider />
+        <ListItem style={styles.text}
+          disabled={true}
+          leftIcon={<SpentIcon color={workflowBudgetColorPalette[2]} />}
+          primaryText={spendBudgetString}
+          secondaryText={"Spend budget"}
         />
         <Divider />
       </Card>

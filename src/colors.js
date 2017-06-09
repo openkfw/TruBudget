@@ -19,5 +19,6 @@ export const red = red600
 
 export const taskStatusColorPalette = [ACMECorpGrey, ACMECorpSuperLightgreen, ACMECorpGreen];
 export const budgetStatusColorPalette = [red, ACMECorpBlue];
+export const workflowBudgetColorPalette = [ACMECorpGrey, ACMECorpBlue, red];
 
 export default colors;
