@@ -28,6 +28,7 @@ const handleCancel = (props) => {
   props.hideWorkflowDialog();
   props.storeWorkflowName('');
   props.storeWorkflowAmount('');
+  props.storeWorkflowAmountType('na');
   props.storeWorkflowCurrency('EUR');
   props.storeWorkflowPurpose('');
   props.storeWorkflowAssignee('');

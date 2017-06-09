@@ -33,7 +33,7 @@ export const statusMapping = {
 export const amountTypes = {
   na: 'N/A',
   allocated: 'Allocated',
-  notdisbursed: 'Not Disbursed'
+  disbursed: 'Disbursed'
 }
 
 export const statusIconMapping = {
@@ -73,8 +73,25 @@ export const calculateUnspentAmount = (items) => {
 export const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
+  // TODO: Whats is that???
   const spentText = unspent < 0 ? "Not assigned" : "Not assigned"
   return createDoughnutData(["Assigned", spentText], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
+}
+
+export const createSubprojectAmountData = (subProjectAmount, workflows) => {
+  const { allocated, disbursed } = workflows.reduce((acc, workflow) => {
+    const { amount, amountType } = workflow.data;
+    const next = {
+      allocated: amountType === 'allocated' ? acc.allocated + amount : acc.allocated,
+      disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed
+    }
+
+    return next;
+  }, { allocated: 0, disbursed: 0 })
+
+  const allocationLeft = allocated - disbursed;
+  const budgetLeft = subProjectAmount - allocated;
+  return createDoughnutData(["Unallocated Budget", "Allocated Budget", "Spent"], [budgetLeft, allocationLeft, disbursed], taskStatusColorPalette)
 }
 
 export const getProgressInformation = (items) => {

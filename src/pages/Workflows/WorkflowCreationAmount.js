@@ -53,8 +53,8 @@ const WorkflowCreationAmount = (props) => {
           />
           <RadioButton
             style={styles.buttons}
-            value="notdisbursed"
-            label="not disbursed"
+            value="disbursed"
+            label="disbursed"
           />
         </RadioButtonGroup>
       </div>
@@ -64,6 +64,7 @@ const WorkflowCreationAmount = (props) => {
           hintText={hintText}
           type='number'
           value={workflowAmount}
+          disabled={workflowAmountType === 'na'}
           onChange={(event) => storeWorkflowAmount(event.target.value)}
         />
         <ProjectCreationCurrency storeProjectCurrency={storeWorkflowCurrency} projectCurrency={workflowCurrency} />

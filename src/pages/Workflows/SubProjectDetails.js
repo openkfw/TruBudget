@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, fromAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, fromAmountString, createAmountData, createSubprojectAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -223,7 +223,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
         <CardTitle title="Budget distribution" />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createAmountData(amount, items)} />
+          <Doughnut data={createSubprojectAmountData(amount, items)} />
         </CardMedia>
         <Divider />
         <ListItem style={styles.text}
