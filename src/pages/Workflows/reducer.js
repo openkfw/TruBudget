@@ -5,6 +5,7 @@ import {
   SHOW_WORKFLOW_DIALOG,
   WORKFLOW_NAME,
   WORKFLOW_AMOUNT,
+  WORKFLOW_AMOUNT_TYPE,
   WORKFLOW_PURPOSE,
   WORKFLOW_CURRENCY,
   WORKFLOW_STATE_ENABLED,
@@ -36,6 +37,7 @@ const defaultState = fromJS({
   showWorkflow: false,
   workflowName: '',
   workflowAmount: 0,
+  workflowAmountType: 'na',
   workflowCurrency: 'EUR',
   workflowPurpose: '',
   workflowState: 'open',
@@ -66,6 +68,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('workflowType', action.workflowType)
     case WORKFLOW_AMOUNT:
       return state.set('workflowAmount', fromAmountString(action.amount))
+    case WORKFLOW_AMOUNT_TYPE:
+      return state.set('workflowAmountType', action.amountType)
     case WORKFLOW_PURPOSE:
       return state.set('workflowPurpose', action.purpose)
     case WORKFLOW_CURRENCY:
@@ -85,6 +89,7 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         workflowName: defaultState.get('workflowName'),
         workflowAmount: defaultState.get('workflowAmount'),
+        workflowAmountType: defaultState.get('workflowAmountType'),
         workflowCurrency: defaultState.get('workflowCurrency'),
         workflowPurpose: defaultState.get('workflowPurpose'),
         workflowState: defaultState.get('workflowState'),
