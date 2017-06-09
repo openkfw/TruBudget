@@ -6,6 +6,7 @@ export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG';
 export const WORKFLOW_NAME = 'WORKFLOW_NAME';
 export const WORKFLOW_TYPE = 'WORKFLOW_TYPE';
 export const WORKFLOW_AMOUNT = 'WORKFLOW_AMOUNT';
+export const WORKFLOW_AMOUNT_TYPE = 'WORKFLOW_AMOUNT_TYPE';
 export const WORKFLOW_PURPOSE = 'WORKFLOW_PURPOSE';
 export const WORKFLOW_ADDITIONAL_DATA = 'WORKFLOW_ADDITIONAL_DATA';
 export const WORKFLOW_CURRENCY = 'WORKFLOW_CURRENCY';
@@ -133,7 +134,14 @@ export function storeWorkflowType(workflowType) {
 export function storeWorkflowAmount(amount) {
   return {
     type: WORKFLOW_AMOUNT,
-    amount: amount
+    amount
+  }
+}
+
+export function storeWorkflowAmountType(amountType) {
+  return {
+    type: WORKFLOW_AMOUNT_TYPE,
+    amountType
   }
 }
 
@@ -177,12 +185,13 @@ export function storeWorkflowTxid(txid) {
   }
 }
 
-export function createWorkflowItem(stream, workflowName, amount, currency, purpose, documents, state, assignee, workflowType) {
+export function createWorkflowItem(stream, workflowName, amount, amountType, currency, purpose, documents, state, assignee, workflowType) {
   return {
     type: CREATE_WORKFLOW,
     stream: stream,
     workflowName: workflowName,
     amount: amount,
+    amountType,
     currency: currency,
     purpose: purpose,
     documents,
@@ -192,13 +201,14 @@ export function createWorkflowItem(stream, workflowName, amount, currency, purpo
   }
 }
 
-export function editWorkflowItem(stream, key, workflowName, amount, currency, purpose, documents, state, assignee, txid, previousState, workflowType) {
+export function editWorkflowItem(stream, key, workflowName, amount, amountType, currency, purpose, documents, state, assignee, txid, previousState, workflowType) {
   return {
     type: EDIT_WORKFLOW,
     stream: stream,
     key: key,
     workflowName: workflowName,
     amount: amount,
+    amountType,
     currency: currency,
     purpose: purpose,
     documents,

@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import currencies from './currency';
 
-import { taskStatusColorPalette, budgetStatusColorPalette } from './colors';
+import { taskStatusColorPalette, budgetStatusColorPalette, workflowBudgetColorPalette } from './colors';
 
 const getCurrencyFormat = (currency) => ({ decimal: ".", thousand: "", precision: 2, ...currencies[currency] })
 
@@ -29,6 +29,13 @@ export const statusMapping = {
   'in_progress': 'In progress',
   open: 'Open'
 }
+
+export const amountTypes = {
+  na: 'N/A',
+  allocated: 'Allocated',
+  disbursed: 'Disbursed'
+}
+
 export const statusIconMapping = {
   done: <DoneIcon />,
   'in_progress': <InProgressIcon />,
@@ -56,18 +63,38 @@ const createDoughnutData = (labels, data, colors = taskStatusColorPalette, ) => 
 });
 
 export const calculateUnspentAmount = (items) => {
-
   const amount = items.reduce((acc, item) => {
     return acc + parseInt(item.details.amount, 10)
   }, 0);
   return amount;
 }
 
+export const calculateWorkflowBudget = (workflows) => {
+  return workflows.reduce((acc, workflow) => {
+    const { amount, amountType } = workflow.data;
+    const next = {
+      allocated: amountType === 'allocated' ? acc.allocated + amount : acc.allocated,
+      disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed
+    }
+
+    return next;
+  }, { allocated: 0, disbursed: 0 })
+}
+
 export const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
+  // TODO: Whats is that???
   const spentText = unspent < 0 ? "Not assigned" : "Not assigned"
   return createDoughnutData(["Assigned", spentText], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
+}
+
+export const createSubprojectAmountData = (subProjectAmount, workflows) => {
+  const { allocated, disbursed } = calculateWorkflowBudget(workflows);
+
+  const allocationLeft = allocated - disbursed;
+  const budgetLeft = subProjectAmount - allocated;
+  return createDoughnutData(["Unallocated Budget", "Free Budget", "Spent Budget"], [budgetLeft, allocationLeft, disbursed], workflowBudgetColorPalette)
 }
 
 export const getProgressInformation = (items) => {
