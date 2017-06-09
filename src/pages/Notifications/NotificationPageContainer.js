@@ -10,11 +10,13 @@ class NotificationPageContainer extends Component {
   componentWillMount() {
     this.props.fetchNotifications(this.props.loggedInUser.id);
   }
+
   render() {
+
     return (
-    <div style={globalStyles.innerContainer}>
-      <NotificationPage {...this.props} />
-    </div>)
+      <div style={globalStyles.innerContainer}>
+        <NotificationPage {...this.props} />
+      </div>)
   }
 }
 

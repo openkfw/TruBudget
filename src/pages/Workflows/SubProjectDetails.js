@@ -124,7 +124,8 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   )
 }
 
-const disableEditMode = (subProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
+const disableEditMode = (subProjectAmount, storeSubProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
+  storeSubProjectAmount(0)
   postSubProjectEdit(location.pathname.split('/')[2], location.pathname.split('/')[3], 'open', subProjectAmount)
   disableBudgetEdit()
 }
@@ -145,7 +146,7 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
         value={subProjectAmount}
         onChange={(event) => storeSubProjectAmount(event.target.value)}
       />
-      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(subProjectAmount, props)} />
+      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)} />
     </div>
   )
 }
@@ -183,6 +184,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
 
   const allowedToWrite = props.loggedInUser.role.write;
   const allowedToEdit = allowedToWrite && permissions.isAssignee;
+
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
