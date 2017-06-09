@@ -178,9 +178,9 @@ const getNextStatus = (status) => {
 }
 
 const changeProgress = ({ key, txid, data }, props) => {
-  const { workflowName, amount, currency, purpose, assignee, documents, status, type } = data;
+  const { workflowName, amount, currency, purpose, assignee, documents, status, type, amountType } = data;
   const nextStatus = getNextStatus(status)
-  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, currency, purpose, documents, nextStatus, assignee, txid, data, type)
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, amountType, currency, purpose, documents, nextStatus, assignee, txid, data, type)
 }
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
