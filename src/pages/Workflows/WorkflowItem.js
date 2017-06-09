@@ -7,8 +7,9 @@ import {
   TableRowColumn
 } from 'material-ui/Table';
 import { Card } from 'material-ui/Card';
-import { toAmountString, statusMapping } from '../../helper.js';
+import { toAmountString, statusMapping, amountTypes } from '../../helper.js';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
+import Chip from 'material-ui/Chip';
 import Paper from 'material-ui/Paper';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
@@ -197,12 +198,27 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
   return workflowSortEnabled ? workflowSortable : currentWorkflowSelectable;
 }
 
+const getAmountField = (amount, type) => {
+  const noBudgetAllocated = type === 'na'
+  const amountToShow = noBudgetAllocated ? amountTypes[type] : amount;
+
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center'
+    }}>
+      <div>
+        {amountToShow}
+      </div>
+      {noBudgetAllocated ? null : <Chip style={{ marginLeft: '16px' }}>{amountTypes[type]}</Chip>}
+    </div>
+  )
+}
+
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-  const status = workflow.data.status;
-  const type = workflow.data.type;
+  const { status, type, workflowName, amountType } = workflow.data;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const amount = toAmountString(workflow.data.amount, workflow.data.currency);
-  const workflowName = workflow.data.workflowName;
   const tableStyle = workflowSelectable ? styles[status] : { ...styles[status], opacity: 0.3 };
   const infoButton = getInfoButton(props, workflow)
   return (
@@ -223,8 +239,8 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
             <TableRowColumn colSpan={1}>
               {infoButton}
             </TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={4}>{workflowName}</TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={2}>{amount}</TableRowColumn>
+            <TableRowColumn style={styles.listText} colSpan={3}>{workflowName}</TableRowColumn>
+            <TableRowColumn style={styles.listText} colSpan={3}>{getAmountField(amount, amountType)}</TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
             {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
           </TableRow>

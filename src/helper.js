@@ -29,6 +29,13 @@ export const statusMapping = {
   'in_progress': 'In progress',
   open: 'Open'
 }
+
+export const amountTypes = {
+  na: 'N/A',
+  allocated: 'Allocated',
+  notdisbursed: 'Not Disbursed'
+}
+
 export const statusIconMapping = {
   done: <DoneIcon />,
   'in_progress': <InProgressIcon />,
