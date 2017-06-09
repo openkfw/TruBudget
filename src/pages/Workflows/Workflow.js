@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
