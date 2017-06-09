@@ -94,7 +94,7 @@ export const createSubprojectAmountData = (subProjectAmount, workflows) => {
 
   const allocationLeft = allocated - disbursed;
   const budgetLeft = subProjectAmount - allocated;
-  return createDoughnutData(["Unallocated Budget", "Allocated Budget", "Spent"], [budgetLeft, allocationLeft, disbursed], workflowBudgetColorPalette)
+  return createDoughnutData(["Unallocated Budget", "Free Budget", "Spent Budget"], [budgetLeft, allocationLeft, disbursed], workflowBudgetColorPalette)
 }
 
 export const getProgressInformation = (items) => {
