@@ -53,7 +53,7 @@ const WorkflowCreationAmount = (props) => {
           />
           <RadioButton
             style={styles.buttons}
-            value="ludicrous"
+            value="notdisbursed"
             label="not disbursed"
           />
         </RadioButtonGroup>
