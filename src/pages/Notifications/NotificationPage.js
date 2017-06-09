@@ -16,7 +16,8 @@ const styles = {
   },
 };
 
-const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotificationAsRead }) => {
+const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotificationAsRead, history }) => {
+
   return (
     <div style={styles.card}>
       <Card style={{ width: '100%', marginBottom: '10px' }}>
@@ -25,6 +26,7 @@ const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotifica
           Please find your current notifications below. These display action items or information items to be dealt with.
     </CardText>
         <NotificationTable
+          history={history}
           notifications={list}
           filter="unread"
           streamNames={streamNames}
@@ -34,7 +36,7 @@ const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotifica
       </Card>
       <Card>
         <CardTitle subtitle="Read" />
-        <NotificationTable notifications={list} filter="read" streamNames={streamNames} users={users} loggedInUser={loggedInUser} />
+        <NotificationTable notifications={list} filter="read" streamNames={streamNames} users={users} loggedInUser={loggedInUser} history={history} />
       </Card>
     </div>
   )

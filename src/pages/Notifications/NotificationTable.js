@@ -4,7 +4,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import { ListItem } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
 import ReadIcon from 'material-ui/svg-icons/navigation/check';
-
+import FlatButton from 'material-ui/FlatButton';
 import { ACMECorpGreen, ACMECorpLightgreen } from '../../colors.js';
 
 const styles = {
@@ -28,11 +28,19 @@ const styles = {
   }
 }
 
+const inspectItem = (data, history) => {
+  console.log('xxxxx')
+  console.log(history)
+  console.log('xxxxx')
+  history.push(data.link);
+}
 
-const getNotifications = (notifications, filter = 'all', streamNames, users, loggedInUser, markNotificationAsRead) => {
+const getNotifications = (notifications, filter = 'all', streamNames, users, loggedInUser, markNotificationAsRead, history) => {
+
   return notifications.reduce((acc, { data, blocktime, key }, index) => {
     const issuer = users[data.issuer];
     const notificationRead = data.done === true;
+    const inspectable = data.link === '/dashboard' ? false : true
     const element = (
       <TableRow key={index} selected={notificationRead} selectable={false}>
         <TableRowColumn style={styles.columnNonBreaking} colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
@@ -46,6 +54,9 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
             primaryText={<div style={styles.by}>{issuer.name}</div>}
             secondaryText={<div style={styles.by}>{blocktime ? moment(blocktime, 'X').fromNow() : 'Processing ...'}</div>}
           />
+        </TableRowColumn>
+        <TableRowColumn style={styles.column} colSpan="2">
+          <FlatButton disabled={!inspectable} label="Inspect" primary={true} onTouchTap={() => inspectItem(data, history)} />
         </TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="2">
           <IconButton disabled={notificationRead} onTouchTap={() => markNotificationAsRead(loggedInUser.id, key, data)} tooltip="Mark as read">
@@ -70,8 +81,8 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
   }, []);
 }
 
-const NotificationTable = ({ notifications, filter, streamNames, users, loggedInUser, markNotificationAsRead }) => {
-  const tableEntries = getNotifications(notifications, filter, streamNames, users, loggedInUser, markNotificationAsRead);
+const NotificationTable = ({ notifications, filter, streamNames, users, loggedInUser, markNotificationAsRead, history }) => {
+  const tableEntries = getNotifications(notifications, filter, streamNames, users, loggedInUser, markNotificationAsRead, history);
   return (
     <Table
       multiSelectable={false}
@@ -84,6 +95,7 @@ const NotificationTable = ({ notifications, filter, streamNames, users, loggedIn
           <TableHeaderColumn style={styles.column} colSpan="3">Subproject</TableHeaderColumn>
           <TableHeaderColumn style={styles.column} colSpan="5">Description</TableHeaderColumn>
           <TableHeaderColumn style={styles.column} colSpan="3">By</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="2"></TableHeaderColumn>
           <TableHeaderColumn style={styles.column} colSpan="2"></TableHeaderColumn>
         </TableRow>
       </TableHeader>
