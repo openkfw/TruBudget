@@ -84,16 +84,20 @@ export const calculateWorkflowBudget = (workflows) => {
 export const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
-  // TODO: Whats is that???
-  const spentText = unspent < 0 ? "Not assigned" : "Not assigned"
-  return createDoughnutData(["Assigned", spentText], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
+  return createDoughnutData(["Assigned", "Not assigned"], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
 }
+
+export const verifyBudgetPositiv = (amount, allocated) => {
+  const unAllocated = amount - allocated;
+  return unAllocated >= 0 ? unAllocated : 0;
+}
+
 
 export const createSubprojectAmountData = (subProjectAmount, workflows) => {
   const { allocated, disbursed } = calculateWorkflowBudget(workflows);
 
   const allocationLeft = allocated - disbursed;
-  const budgetLeft = subProjectAmount - allocated;
+  const budgetLeft = verifyBudgetPositiv(subProjectAmount, allocated);
   return createDoughnutData(["Unallocated Budget", "Free Budget", "Spent Budget"], [budgetLeft, allocationLeft, disbursed], workflowBudgetColorPalette)
 }
 

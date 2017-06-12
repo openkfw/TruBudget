@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, fromAmountString, createSubprojectAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, fromAmountString, verifyBudgetPositiv, createSubprojectAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -171,10 +171,13 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
   const { allocated: allocatedBudget, disbursed: disbursedBudget } = calculateWorkflowBudget(items);
 
-  const unAllocatedBudget = amount - allocatedBudget;
+
+  const unAllocatedBudget = verifyBudgetPositiv(amount, allocatedBudget);
   const unSpendBudget = allocatedBudget - disbursedBudget;
 
+
   const unAllocatedBudgetString = toAmountString(unAllocatedBudget, currency);
+
   const unSpendBudgetString = toAmountString(unSpendBudget, currency);
   const spendBudgetString = toAmountString(disbursedBudget, currency);
 
