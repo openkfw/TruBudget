@@ -48,10 +48,10 @@ const LoginPage = ({ users, login }) => {
         zIndex: 1100,
         opacity: 0.9
       }}>
-        <CardTitle title="TruBudget" subtitle="Blockchain solution" />
+        <CardTitle title="TruBudget" subtitle="A blockchain-based solution for budget expenditure" />
         <Divider />
         <List>
-          <Subheader>Choose your user for login</Subheader>
+          <Subheader>Choose your user to login</Subheader>
           {createListItems(users, login)}
         </List>
         <Divider />
