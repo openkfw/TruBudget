@@ -31,6 +31,7 @@ const SubProjects = (props) => {
         storeProjectPurpose={props.storeSubProjectPurpose}
         projectCurrency={props.subProjectCurrency}
         storeProjectCurrency={props.storeSubProjectCurrency}
+        parentCurrency = {props.projectCurrency}
         type={'subproject'}
         numberOfSteps={3}
       />

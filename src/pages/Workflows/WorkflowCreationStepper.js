@@ -16,6 +16,7 @@ const getStepContent = (props) => {
       return <ProjectCreationName storeProjectName={props.storeWorkflowName} projectName={props.workflowName} type={'workflow'} />
     case 2:
       return <WorkflowCreationAmount
+        subProjectCurrency={props.subProjectDetails.currency}
         storeWorkflowAmount={props.storeWorkflowAmount}
         storeWorkflowAmountType={props.storeWorkflowAmountType}
         storeWorkflowCurrency={props.storeWorkflowCurrency}

@@ -10,7 +10,8 @@ const ProjectCreationAmount = (props) => {
     storeProjectCurrency,
     projectCurrency,
     projectAmount,
-    type
+    type,
+    parentCurrency
   } = props;
 
   let hintText = "Budget for the project";
@@ -26,7 +27,7 @@ const ProjectCreationAmount = (props) => {
     <div style={{
       width: '90%',
       left: '20%',
-      position: 'relative'
+      position: 'relative',
     }}>
       <TextField
         floatingLabelText={floatingLabelText}
@@ -35,7 +36,7 @@ const ProjectCreationAmount = (props) => {
         value={projectAmount}
         onChange={(event) => storeProjectAmount(event.target.value)}
       />
-      <ProjectCreationCurrency storeProjectCurrency={storeProjectCurrency} projectCurrency={projectCurrency} />
+      <ProjectCreationCurrency parentCurrency={parentCurrency} storeProjectCurrency={storeProjectCurrency} projectCurrency={projectCurrency} />
     </div>
   );
 }

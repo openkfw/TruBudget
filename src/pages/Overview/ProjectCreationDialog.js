@@ -42,9 +42,10 @@ const handleSubmit = (props) => {
 
 
 const ProjectCreationDialog = (props) => {
-  const { creationDialogShown, title } = props;
 
+  const { creationDialogShown, title } = props;
   return (
+
     <Dialog
       title={title}
       modal={true}

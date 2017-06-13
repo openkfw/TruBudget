@@ -38,7 +38,7 @@ const defaultState = fromJS({
   workflowName: '',
   workflowAmount: 0,
   workflowAmountType: 'na',
-  workflowCurrency: 'EUR',
+  workflowCurrency: '',
   workflowPurpose: '',
   workflowState: 'open',
   workflowAssignee: '',

@@ -31,11 +31,10 @@ const WorkflowCreationAmount = (props) => {
     workflowCurrency,
     workflowAmount,
     workflowAmountType,
+    subProjectCurrency,
   } = props;
-
   const floatingLabelText = "Workflow budget amount";
   const hintText = "Budget amount for the workflow";
-
   return (
     <div style={styles.container}>
       <div>
@@ -57,7 +56,13 @@ const WorkflowCreationAmount = (props) => {
           />
         </RadioButtonGroup>
       </div>
-      <div>
+      <div style={{
+        width: '90%',
+        left: '20%',
+        position: 'relative',
+        borderCOlor: 'red',
+        borderWidth: 2
+      }}>
         <TextField
           floatingLabelText={floatingLabelText}
           hintText={hintText}
@@ -66,7 +71,7 @@ const WorkflowCreationAmount = (props) => {
           disabled={workflowAmountType === 'na'}
           onChange={(event) => storeWorkflowAmount(event.target.value)}
         />
-        <ProjectCreationCurrency storeProjectCurrency={storeWorkflowCurrency} projectCurrency={workflowCurrency} />
+        <ProjectCreationCurrency parentCurrency={subProjectCurrency} storeProjectCurrency={storeWorkflowCurrency} projectCurrency={workflowCurrency} />
       </div>
 
     </div>

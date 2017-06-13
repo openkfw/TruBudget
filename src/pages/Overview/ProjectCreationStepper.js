@@ -11,7 +11,7 @@ const getStepContent = ({ creationStep, ...props }) => {
     case 0:
       return <ProjectCreationName storeProjectName={props.storeProjectName} projectName={props.projectName} />
     case 1:
-      return <ProjectCreationAmount storeProjectAmount={props.storeProjectAmount} storeProjectCurrency={props.storeProjectCurrency} projectAmount={props.projectAmount} projectCurrency={props.projectCurrency} />
+      return <ProjectCreationAmount storeProjectAmount={props.storeProjectAmount} storeProjectCurrency={props.storeProjectCurrency} projectAmount={props.projectAmount} projectCurrency={props.projectCurrency} parentCurrency={props.parentCurrency}  />
     case 2:
       return <ProjectCreationComment storeProjectPurpose={props.storeProjectPurpose} projectPurpose={props.projectPurpose} />
     case 3:
