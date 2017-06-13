@@ -8,7 +8,7 @@ import { fromAmountString } from '../../helper';
 const defaultState = fromJS({
   projectName: '',
   projectAmount: 0,
-  projectCurrency: 'EUR',
+  projectCurrency: '',
   projectPurpose: 'Default Purpose',
   projectStatus: 'open',
   projectTS: 0,
@@ -20,7 +20,7 @@ const defaultState = fromJS({
   workflowDialogVisible: false,
   subProjectAmount: 0,
   subProjectPurpose: '',
-  subProjectCurrency: 'EUR',
+  subProjectCurrency: '',
   showHistory: false,
   historyItems: [],
 

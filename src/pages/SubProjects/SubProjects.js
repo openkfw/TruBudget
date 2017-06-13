@@ -7,7 +7,7 @@ import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 import SubProjectsTable from './SubProjectsTable';
 import ChangeLog from '../Notifications/ChangeLog';
 import ProjectCreationDialog from '../Overview/ProjectCreationDialog';
-import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js';
+import { ACMECorpLightgreen, ACMECorpDarkBlue } from '../../colors.js';
 import _ from 'lodash';
 
 const SubProjects = (props) => {
@@ -31,6 +31,8 @@ const SubProjects = (props) => {
         storeProjectPurpose={props.storeSubProjectPurpose}
         projectCurrency={props.subProjectCurrency}
         storeProjectCurrency={props.storeSubProjectCurrency}
+        parentCurrency = {props.projectCurrency}
+        type={'subproject'}
         numberOfSteps={3}
       />
       <div style={{
@@ -48,7 +50,7 @@ const SubProjects = (props) => {
         }}>
           <ContentAdd />
         </FloatingActionButton>
-        <FloatingActionButton mini={true} onTouchTap={() => props.openHistory()} backgroundColor={ACMECorpGrey} style={{
+        <FloatingActionButton mini={true} onTouchTap={() => props.openHistory()} backgroundColor={ACMECorpLightgreen} style={{
           position: 'relative',
           marginTop: '8px'
         }}>

@@ -19,6 +19,7 @@ class SubProjectsContainer extends Component {
   }
 
   render() {
+
     return (
       <div style={globalStyles.innerContainer}>
         <ProjectDetails {...this.props} />

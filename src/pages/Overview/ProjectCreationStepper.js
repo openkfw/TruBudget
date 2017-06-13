@@ -3,7 +3,7 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
 import ProjectCreationName from './ProjectCreationName';
 import ProjectCreationAmount from './ProjectCreationAmount';
-import ProjectCreationPurpose from './ProjectCreationPurpose';
+import ProjectCreationComment from './ProjectCreationComment';
 import ProjectCreationRoles from './ProjectCreationRoles';
 
 const getStepContent = ({ creationStep, ...props }) => {
@@ -11,9 +11,9 @@ const getStepContent = ({ creationStep, ...props }) => {
     case 0:
       return <ProjectCreationName storeProjectName={props.storeProjectName} projectName={props.projectName} />
     case 1:
-      return <ProjectCreationAmount storeProjectAmount={props.storeProjectAmount} storeProjectCurrency={props.storeProjectCurrency} projectAmount={props.projectAmount} projectCurrency={props.projectCurrency} />
+      return <ProjectCreationAmount storeProjectAmount={props.storeProjectAmount} storeProjectCurrency={props.storeProjectCurrency} projectAmount={props.projectAmount} projectCurrency={props.projectCurrency} parentCurrency={props.parentCurrency}  />
     case 2:
-      return <ProjectCreationPurpose storeProjectPurpose={props.storeProjectPurpose} projectPurpose={props.projectPurpose} />
+      return <ProjectCreationComment storeProjectPurpose={props.storeProjectPurpose} projectPurpose={props.projectPurpose} />
     case 3:
       return <ProjectCreationRoles {...props} />
     default:
@@ -24,7 +24,7 @@ const getStepContent = ({ creationStep, ...props }) => {
 const steps = [
   'Project Name',
   'Project Budget',
-  'Project Purpose',
+  'Project Comment',
   'Project Roles'
 ];
 

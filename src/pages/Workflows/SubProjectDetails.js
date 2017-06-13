@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, fromAmountString, verifyBudgetPositiv, createSubprojectAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, fromAmountString, getNotAssignedBudget, createSubprojectAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -10,7 +10,7 @@ import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
-import UnallocatedIcon from 'material-ui/svg-icons/editor/space-bar'
+import NotAssignedIcon from 'material-ui/svg-icons/editor/space-bar'
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import ActiveIcon from 'material-ui/svg-icons/image/navigate-next';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
@@ -169,16 +169,15 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const date = tsToString(subProjectDetails.createTS)
 
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
-  const { allocated: allocatedBudget, disbursed: disbursedBudget } = calculateWorkflowBudget(items);
+  const { assigned: assignedBudget, disbursed: disbursedBudget } = calculateWorkflowBudget(items);
 
 
-  const unAllocatedBudget = verifyBudgetPositiv(amount, allocatedBudget);
-  const unSpendBudget = allocatedBudget - disbursedBudget;
+  const notAssignedBudget = getNotAssignedBudget(amount, assignedBudget, disbursedBudget);
 
 
-  const unAllocatedBudgetString = toAmountString(unAllocatedBudget, currency);
+  const NotAssignedBudgetString = toAmountString(notAssignedBudget, currency);
 
-  const unSpendBudgetString = toAmountString(unSpendBudget, currency);
+  const unSpendBudgetString = toAmountString(assignedBudget, currency);
   const spendBudgetString = toAmountString(disbursedBudget, currency);
 
   const statusDetails = getProgressInformation(items)
@@ -238,23 +237,23 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
-          leftIcon={<UnallocatedIcon color={workflowBudgetColorPalette[0]} />}
-          primaryText={unAllocatedBudgetString}
-          secondaryText={"Un-allocated budget"}
+          leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
+          primaryText={NotAssignedBudgetString}
+          secondaryText={"Not assigned budget"}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
           leftIcon={<UnspentIcon color={workflowBudgetColorPalette[1]} />}
           primaryText={unSpendBudgetString}
-          secondaryText={"Free budget"}
+          secondaryText={"Assigned budget"}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
           leftIcon={<SpentIcon color={workflowBudgetColorPalette[2]} />}
           primaryText={spendBudgetString}
-          secondaryText={"Spend budget"}
+          secondaryText={"Disbursed budget"}
         />
         <Divider />
       </Card>

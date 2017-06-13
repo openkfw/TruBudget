@@ -29,7 +29,7 @@ const handleCancel = (props) => {
   props.storeWorkflowName('');
   props.storeWorkflowAmount('');
   props.storeWorkflowAmountType('na');
-  props.storeWorkflowCurrency('EUR');
+  props.storeWorkflowCurrency('');
   props.storeWorkflowPurpose('');
   props.storeWorkflowAssignee('');
   props.disableWorkflowState();

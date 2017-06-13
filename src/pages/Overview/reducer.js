@@ -15,10 +15,10 @@ const defaultState = fromJS({
   projectName: '',
   projectAmount: 0,
   projectPurpose: '',
-  projectCurrency: 'EUR',
   creationStep: 0,
   projectApprover: [],
   projectAssignee: [],
+  projectCurrency: 'EUR',
   projectBank: []
 });
 
