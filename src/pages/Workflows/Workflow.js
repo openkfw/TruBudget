@@ -9,7 +9,7 @@ import WorkflowTable from './WorkflowTable';
 import WorkflowCreationDialog from './WorkflowCreationDialog';
 import ChangeLog from '../Notifications/ChangeLog'
 import SortIcon from 'material-ui/svg-icons/content/low-priority'
-import { ACMECorpGrey, ACMECorpDarkBlue } from '../../colors.js'
+import { ACMECorpGrey, ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 
 
@@ -68,7 +68,7 @@ const Workflow = (props) => {
         }}>
           <ContentAdd />
         </FloatingActionButton>
-        <FloatingActionButton mini={true} disabled={props.workflowSortEnabled} onTouchTap={() => props.openHistory()} backgroundColor={ACMECorpGrey} style={{
+        <FloatingActionButton mini={true} disabled={props.workflowSortEnabled} onTouchTap={() => props.openHistory()} backgroundColor={ACMECorpLightgreen} style={{
           position: 'relative',
           marginTop: '8px',
           zIndex: 2
