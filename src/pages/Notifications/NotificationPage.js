@@ -28,15 +28,10 @@ const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotifica
         <NotificationTable
           history={history}
           notifications={list}
-          filter="unread"
           streamNames={streamNames}
           users={users}
           loggedInUser={loggedInUser}
           markNotificationAsRead={markNotificationAsRead} />
-      </Card>
-      <Card>
-        <CardTitle subtitle="Read" />
-        <NotificationTable notifications={list} filter="read" streamNames={streamNames} users={users} loggedInUser={loggedInUser} history={history} />
       </Card>
     </div>
   )

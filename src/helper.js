@@ -91,7 +91,6 @@ export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) =>
   return notAssigned >= 0 ? notAssigned : 0;
 }
 
-
 export const createSubprojectAmountData = (subProjectAmount, workflows) => {
   const { assigned, disbursed } = calculateWorkflowBudget(workflows);
 
