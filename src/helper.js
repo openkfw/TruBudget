@@ -92,7 +92,6 @@ export const verifyBudgetPositiv = (amount, allocated) => {
   return unAllocated >= 0 ? unAllocated : 0;
 }
 
-
 export const createSubprojectAmountData = (subProjectAmount, workflows) => {
   const { allocated, disbursed } = calculateWorkflowBudget(workflows);
 

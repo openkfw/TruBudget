@@ -8,6 +8,9 @@ import FlatButton from 'material-ui/FlatButton';
 import { ACMECorpGreen, ACMECorpLightgreen } from '../../colors.js';
 
 const styles = {
+  notSelected: {
+    fontWeight: 'bold',
+  },
   column: {
     whiteSpace: 'normal',
     wordWrap: 'break-word'
@@ -32,6 +35,13 @@ const viewItem = (data, history) => {
   history.push(data.link);
 }
 
+// TODO: we should not do this, lets make an api endpoint
+const markAllRead = (loggedInUser, markNotificationAsRead, notifications) => {
+  notifications.forEach((notification) => {
+    markNotificationAsRead(loggedInUser.id, notification.key, notification.data);
+  });
+}
+
 const getNotifications = (notifications, filter = 'all', streamNames, users, loggedInUser, markNotificationAsRead, history) => {
 
   return notifications.reduce((acc, { data, blocktime, key }, index) => {
@@ -40,7 +50,7 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
     const viewable = data.link === '/dashboard' ? false : !data.done
 
     const element = (
-      <TableRow key={index} selected={notificationRead} selectable={false}>
+      <TableRow key={index} style={notificationRead ? {} : styles.notSelected} onTouchTap={notificationRead ? undefined : () => markNotificationAsRead(loggedInUser.id, key, data)}>
         <TableRowColumn style={styles.columnNonBreaking} colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
         <TableRowColumn style={styles.columnNonBreaking} colSpan="3">{streamNames[data.subProject] ? streamNames[data.subProject] : data.subProject}</TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="5">{data.description}</TableRowColumn>
@@ -50,16 +60,11 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
             innerDivStyle={styles.listitem}
             style={styles.by}
             primaryText={<div style={styles.by}>{issuer.name}</div>}
-            secondaryText={<div style={styles.by}>{blocktime ? moment(blocktime, 'X').fromNow() : 'Processing ...'}</div>}
+            secondaryText={<div style={styles.by}>{data.created ? moment(data.created, 'x').fromNow() : 'Processing ...'}</div>}
           />
         </TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="2">
-          <FlatButton disabled={!viewable} label="View" primary={true} onTouchTap={() => viewItem(data, history)} />
-        </TableRowColumn>
-        <TableRowColumn style={styles.column} colSpan="2">
-          <IconButton disabled={notificationRead} onTouchTap={() => markNotificationAsRead(loggedInUser.id, key, data)} tooltip="Mark as read">
-            <ReadIcon color={ACMECorpLightgreen} hoverColor={ACMECorpGreen} />
-          </IconButton>
+          <FlatButton label="View" primary={true} onTouchTap={() => viewItem(data, history)} />
         </TableRowColumn>
       </TableRow>
     );
@@ -93,11 +98,11 @@ const NotificationTable = ({ notifications, filter, streamNames, users, loggedIn
           <TableHeaderColumn style={styles.column} colSpan="3">Subproject</TableHeaderColumn>
           <TableHeaderColumn style={styles.column} colSpan="5">Description</TableHeaderColumn>
           <TableHeaderColumn style={styles.column} colSpan="3">By</TableHeaderColumn>
-          <TableHeaderColumn style={styles.column} colSpan="2"></TableHeaderColumn>
-          <TableHeaderColumn style={styles.column} colSpan="2"></TableHeaderColumn>
+          <TableHeaderColumn style={styles.columnNonBreaking} colSpan="2"><FlatButton label="all read" onTouchTap={() => markAllRead(loggedInUser, markNotificationAsRead, notifications)} /></TableHeaderColumn>
         </TableRow>
       </TableHeader>
       <TableBody
+        showRowHover={false}
         displayRowCheckbox={false}
         adjustForCheckbox={false}>
         {tableEntries}
