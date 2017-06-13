@@ -72,8 +72,8 @@ const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId
         Amount:
         <TextField disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false} />
         <Divider />
-        Purpose:
-        <TextField disabled={true} hintText={workflowItem.data.purpose} style={styles.textfield} underlineShow={false} />
+        Comment:
+        <TextField disabled={true} multiLine={true} hintText={workflowItem.data.purpose} style={styles.textfield} underlineShow={false} />
         <Divider />
         Documents:
         <DocumentOverview documents={workflowItem.data.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />

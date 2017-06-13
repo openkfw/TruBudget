@@ -10,7 +10,7 @@ import currencies from './currency';
 
 import { taskStatusColorPalette, budgetStatusColorPalette, workflowBudgetColorPalette } from './colors';
 
-const getCurrencyFormat = (currency) => ({ decimal: ".", thousand: "", precision: 2, ...currencies[currency] })
+const getCurrencyFormat = (currency) => ({ decimal: ".", thousand: ",", precision: 2, ...currencies[currency] })
 
 export const fromAmountString = (amount, currency) => accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 export const toAmountString = (amount, currency) => accounting.formatMoney(amount, getCurrencyFormat(currency));

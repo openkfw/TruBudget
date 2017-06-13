@@ -99,7 +99,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
             disabled={true}
             leftIcon={<AmountIcon />}
             primaryText={amountString}
-            secondaryText={'Budget'}
+            secondaryText={'Project Budget'}
           />
           <Divider />
           <ListItem

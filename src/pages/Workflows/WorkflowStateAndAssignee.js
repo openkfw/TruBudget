@@ -32,12 +32,13 @@ class WorkflowStateAndAssignee extends Component {
       <div style={{
         display: 'flex',
         width: '90%',
-        justifyContent: 'space-between',
-        alignItems: 'space-between'
+        justifyContent: 'center',
+        alignItems: 'center'
       }}>
+      {/*
         <SelectField autoWidth={true} onChange={this.handleAssignee} value={this.props.workflowAssignee} floatingLabelText="Assign User" style={{}}>
           {this.createUserSelection()}
-        </SelectField>
+        </SelectField> */}
         <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState} disabled={!this.props.editMode} style={{}}>
           <MenuItem value='open' primaryText="Open" />
           <MenuItem value='in_progress' primaryText="In Progress" />
