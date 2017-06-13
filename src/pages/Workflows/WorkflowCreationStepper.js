@@ -1,7 +1,7 @@
 import React from 'react';
 import { Step, Stepper, StepButton } from 'material-ui/Stepper';
 import ProjectCreationName from '../Overview/ProjectCreationName';
-import ProjectCreationPurpose from '../Overview/ProjectCreationPurpose';
+import ProjectCreationComment from '../Overview/ProjectCreationComment';
 import WorkflowCreationAmount from './WorkflowCreationAmount';
 import WorkflowStateAndAssignee from './WorkflowStateAndAssignee';
 import WorkflowType from './WorkflowType';
@@ -24,7 +24,7 @@ const getStepContent = (props) => {
         workflowCurrency={props.workflowCurrency}
       />
     case 3:
-      return <ProjectCreationPurpose storeProjectPurpose={props.storeWorkflowPurpose} projectPurpose={props.workflowPurpose} type={'workflow'} />
+      return <ProjectCreationComment storeProjectPurpose={props.storeWorkflowPurpose} projectPurpose={props.workflowPurpose} type={'workflow'} />
     case 4:
       return <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />
     case 5:
@@ -57,7 +57,7 @@ const WorkflowCreationStepper = (props) => {
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(3)}>
-            Purpose
+            Comment
             </StepButton>
         </Step>
         <Step>
