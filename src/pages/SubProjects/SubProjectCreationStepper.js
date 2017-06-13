@@ -36,7 +36,7 @@ class SubProjectCreationStepper extends Component {
     }
   };
 
-  getStepContent(stepIndex, ) {
+  getStepContent(stepIndex) {
 
     switch (stepIndex) {
       case 0:
@@ -44,6 +44,8 @@ class SubProjectCreationStepper extends Component {
       case 1:
         return <ProjectCreationAmount storeProjectAmount={this.props.storeSubProjectAmount} storeProjectCurrency={this.props.storeSubProjectCurrency} projectAmount={this.props.subProjectAmount} projectCurrency={this.props.subProjectCurrency} type={'subProject'} />
       case 2:
+
+        console.log('hi')
         return <ProjectCreationPurpose storeProjectPurpose={this.props.storeSubProjectPurpose} projectPurpose={this.props.subProjectPurpose} type={'subProject'} />
       default:
         return <span>Done</span>;

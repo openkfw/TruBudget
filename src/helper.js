@@ -73,12 +73,11 @@ export const calculateWorkflowBudget = (workflows) => {
   return workflows.reduce((acc, workflow) => {
     const { amount, amountType } = workflow.data;
     const next = {
-      allocated: amountType === 'allocated' ? acc.allocated + amount : acc.allocated,
+      assigned: amountType === 'allocated' ? acc.assigned + amount : acc.assigned,
       disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed
     }
-
     return next;
-  }, { allocated: 0, disbursed: 0 })
+  }, { assigned: 0, disbursed: 0 })
 }
 
 export const createAmountData = (projectAmount, subProjects) => {
@@ -87,18 +86,18 @@ export const createAmountData = (projectAmount, subProjects) => {
   return createDoughnutData(["Assigned", "Not assigned"], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
 }
 
-export const verifyBudgetPositiv = (amount, allocated) => {
-  const unAllocated = amount - allocated;
-  return unAllocated >= 0 ? unAllocated : 0;
+export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) => {
+  const notAssigned = amount - assignedBudget - disbursedBudget;
+  return notAssigned >= 0 ? notAssigned : 0;
 }
 
 
 export const createSubprojectAmountData = (subProjectAmount, workflows) => {
-  const { allocated, disbursed } = calculateWorkflowBudget(workflows);
+  const { assigned, disbursed } = calculateWorkflowBudget(workflows);
 
-  const allocationLeft = allocated - disbursed;
-  const budgetLeft = verifyBudgetPositiv(subProjectAmount, allocated);
-  return createDoughnutData(["Unallocated Budget", "Free Budget", "Spent Budget"], [budgetLeft, allocationLeft, disbursed], workflowBudgetColorPalette)
+
+  const budgetLeft = getNotAssignedBudget(subProjectAmount, assigned, disbursed);
+  return createDoughnutData(["Not Assigned Budget", "Assigned Budget", "Disbursed Budget"], [budgetLeft, assigned, disbursed], workflowBudgetColorPalette)
 }
 
 export const getProgressInformation = (items) => {
