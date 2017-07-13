@@ -5,7 +5,7 @@ import { toAmountString, createAmountData, createTaskData, statusIconMapping, st
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
-import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
+import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
@@ -50,7 +50,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center'
   },
-  purpose: {
+  comment: {
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden'
@@ -73,7 +73,7 @@ const styles = {
   },
 }
 
-const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectPurpose, projectStatus, projectTS, projectAssignee }) => {
+const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectComment, projectStatus, projectTS, projectAssignee }) => {
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
   const unspentAmount = projectAmount - spentAmount;
@@ -90,9 +90,9 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <Divider />
           <ListItem
             disabled={true}
-            leftIcon={<PurposeIcon />}
-            primaryText={<div style={styles.purpose}>{projectPurpose} </div>}
-            secondaryText={'Purpose'}
+            leftIcon={<CommentIcon />}
+            primaryText={<div style={styles.comment}>{projectComment} </div>}
+            secondaryText={'Comment'}
           />
           <Divider />
           <ListItem

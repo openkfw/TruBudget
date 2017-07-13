@@ -152,10 +152,10 @@ export function storeWorkflowCurrency(currency) {
   }
 }
 
-export function storeWorkflowPurpose(purpose) {
+export function storeWorkflowComment(comment) {
   return {
     type: WORKFLOW_PURPOSE,
-    purpose: purpose
+    comment: comment
   }
 }
 
@@ -185,7 +185,7 @@ export function storeWorkflowTxid(txid) {
   }
 }
 
-export function createWorkflowItem(stream, workflowName, amount, amountType, currency, purpose, documents, state, assignee, workflowType) {
+export function createWorkflowItem(stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType) {
   return {
     type: CREATE_WORKFLOW,
     stream: stream,
@@ -193,7 +193,7 @@ export function createWorkflowItem(stream, workflowName, amount, amountType, cur
     amount: amount,
     amountType,
     currency: currency,
-    purpose: purpose,
+    comment: comment,
     documents,
     assignee: assignee,
     state: state,
@@ -201,7 +201,7 @@ export function createWorkflowItem(stream, workflowName, amount, amountType, cur
   }
 }
 
-export function editWorkflowItem(stream, key, workflowName, amount, amountType, currency, purpose, documents, state, assignee, txid, previousState, workflowType) {
+export function editWorkflowItem(stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType) {
   return {
     type: EDIT_WORKFLOW,
     stream: stream,
@@ -210,7 +210,7 @@ export function editWorkflowItem(stream, key, workflowName, amount, amountType, 
     amount: amount,
     amountType,
     currency: currency,
-    purpose: purpose,
+    comment: comment,
     documents,
     assignee: assignee,
     state: state,

@@ -25,7 +25,7 @@ const getStepContent = (props) => {
         workflowCurrency={props.workflowCurrency}
       />
     case 3:
-      return <ProjectCreationComment storeProjectPurpose={props.storeWorkflowPurpose} projectPurpose={props.workflowPurpose} type={'workflow'} />
+      return <ProjectCreationComment storeProjectComment={props.storeWorkflowComment} projectComment={props.workflowComment} type={'workflow'} />
     case 4:
       return <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />
     case 5:

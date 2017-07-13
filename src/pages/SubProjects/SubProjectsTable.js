@@ -15,7 +15,7 @@ const getTableEntries = (subProjects, location, history) => {
     var amount = toAmountString(subProject.details.amount, subProject.details.currency)
     return (
       <TableRow key={index} selectable={false}>
-        <TableRowColumn style={styles.tableText}>{subProject.details.projectName}</TableRowColumn>
+        <TableRowColumn style={styles.tableText}>{subProject.details.name}</TableRowColumn>
         <TableRowColumn style={styles.tableText}>{amount}</TableRowColumn>
         <TableRowColumn style={styles.tableText}>{statusMapping[subProject.details.status]}</TableRowColumn>
         <TableRowColumn>
@@ -26,7 +26,7 @@ const getTableEntries = (subProjects, location, history) => {
   });
 }
 
-const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisible, history, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount, subProjectPurpose, storeSubProjectPurpose, subProjectCurrency, storeSubProjectCurrency, showSnackBar, storeSnackBarMessage }) => {
+const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisible, history, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount, subProjectComment, storeSubProjectComment, subProjectCurrency, storeSubProjectCurrency, showSnackBar, storeSnackBarMessage }) => {
   const tableEntries = getTableEntries(subProjects, location, history);
   return (
     <Card >

@@ -6,7 +6,7 @@ import { toAmountString, fromAmountString, getNotAssignedBudget, createSubprojec
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
-import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
+import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
@@ -65,7 +65,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center'
   },
-  purpose: {
+  comment: {
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden'
@@ -152,8 +152,8 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
 }
 
 const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
-  const name = subProjectDetails.projectName
-  const purpose = subProjectDetails.purpose
+  const name = subProjectDetails.name
+  const comment = subProjectDetails.comment
   const amount = subProjectDetails.amount
   const currency = subProjectDetails.currency
 
@@ -195,9 +195,9 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
           <Divider />
           <ListItem
             disabled={true}
-            leftIcon={<PurposeIcon />}
-            primaryText={<div style={styles.purpose}>{purpose} </div>}
-            secondaryText={'Purpose'}
+            leftIcon={<CommentIcon />}
+            primaryText={<div style={styles.comment}>{comment} </div>}
+            secondaryText={'Comment'}
           />
           <Divider />
           {budgetEditEnabled && allowedToEdit ? getEditableBudget(props) : getNotEditableBudget(amountString, allowedToEdit, props)}

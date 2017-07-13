@@ -5,7 +5,7 @@ import { Card, CardActions, CardMedia, CardTitle } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import { List, ListItem } from 'material-ui/List';
 
-import PurposeIcon from 'material-ui/svg-icons/editor/short-text';
+import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import InfoIcon from 'material-ui/svg-icons/content/create';
@@ -17,14 +17,14 @@ const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {
     const amount = toAmountString(project.details.amount, project.details.currency)
     const status = 'Status: ' + statusMapping[project.details.status]
-    const purpose = project.details.purpose
-    const imagePath = project.details.projectName === 'School1' ? './school.jpg' : './building.jpg'
+    const comment = project.details.comment
+    const imagePath = project.details.name === 'School1' ? './school.jpg' : './building.jpg'
     const dateString = tsToString(project.details.createTS)
     return (
       <Card key={index} style={{ margin: '20px', width: '35%', maxWidth: '300px' }}>
         <Card>
           <CardMedia
-            overlay={<CardTitle title={project.details.projectName} subtitle={status} />}
+            overlay={<CardTitle title={project.details.name} subtitle={status} />}
           >
             <img src={imagePath} alt='projectType' />
           </CardMedia>
@@ -37,9 +37,9 @@ const getTableEntries = ({ projects, history }) => {
         <List>
           <ListItem
             disabled={true}
-            leftIcon={<PurposeIcon />}
-            primaryText={purpose}
-            secondaryText="Purpose"
+            leftIcon={<CommentIcon />}
+            primaryText={comment}
+            secondaryText="Comment"
           />
           <ListItem
             disabled={true}

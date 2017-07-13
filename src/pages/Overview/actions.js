@@ -6,7 +6,7 @@ export const CREATE_PROJECT_SUCCESS = 'CREATE_PROJECT_SUCCESS';
 export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG'
 export const PROJECT_NAME = 'PROJECT_NAME';
 export const PROJECT_AMOUNT = 'PROJECT_AMOUNT';
-export const PROJECT_PURPOSE = 'PROJECT_PURPOSE';
+export const PROJECT_COMMENT = 'PROJECT_COMMENT';
 export const PROJECT_CURRENCY = 'PROJECT_CURRENCY';
 export const SET_PROJECT_CREATION_STEP = 'SET_PROJECT_CREATION_STEP';
 
@@ -23,12 +23,12 @@ export function fetchProjects() {
   }
 }
 
-export function createProject(name, amount, purpose, currency, approver, assignee, bank) {
+export function createProject(name, amount, comment, currency, approver, assignee, bank) {
   return {
     type: CREATE_PROJECT,
     name: name,
     amount: amount,
-    purpose: purpose,
+    comment: comment,
     currency: currency,
     approver,
     assignee,
@@ -64,10 +64,10 @@ export function storeProjectCurrency(currency) {
   }
 }
 
-export function storeProjectPurpose(purpose) {
+export function storeProjectComment(comment) {
   return {
-    type: PROJECT_PURPOSE,
-    purpose: purpose
+    type: PROJECT_COMMENT,
+    comment: comment
   }
 }
 

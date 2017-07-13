@@ -82,7 +82,7 @@ export function* fetchWorkflowItemsSaga(action) {
 
 export function* createProject(action) {
   try {
-    yield postProject(action.name, action.amount, action.purpose, action.currency, action.approver, action.assignee, action.bank);
+    yield postProject(action.name, action.amount, action.comment, action.currency, action.approver, action.assignee, action.bank);
     yield put({ type: CREATE_PROJECT_SUCCESS });
     yield put({ type: FETCH_PROJECTS });
   } catch (error) {
@@ -91,7 +91,7 @@ export function* createProject(action) {
 }
 export function* createSubProjectSaga(action) {
   try {
-    yield postSubProject(action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectPurpose, action.subProjectCurrency);
+    yield postSubProject(action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectComment, action.subProjectCurrency);
     yield put({ type: CREATE_SUBPROJECT_ITEM_SUCCESS });
     yield put({ type: FETCH_PROJECT_DETAILS, project: action.parentName });
   } catch (error) {
@@ -101,7 +101,7 @@ export function* createSubProjectSaga(action) {
 
 export function* createWorkflowItemSaga(action) {
   try {
-    yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.amountType, action.currency, action.purpose, action.documents, action.state, action.assignee, action.workflowType);
+    yield postWorkflowItem(action.stream, action.workflowName, action.amount, action.amountType, action.currency, action.comment, action.documents, action.state, action.assignee, action.workflowType);
     yield put({ type: CREATE_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {
@@ -111,7 +111,7 @@ export function* createWorkflowItemSaga(action) {
 
 export function* editWorkflowItemSaga(action) {
   try {
-    yield editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.amountType, action.currency, action.purpose, action.documents, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
+    yield editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.amountType, action.currency, action.comment, action.documents, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
     yield put({ type: EDIT_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {

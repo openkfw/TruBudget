@@ -44,24 +44,27 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
 
   return workflowItem;
 }
-const getUser = (userId, users, showWorkflowDetails) => {
+const getUser = (subProjectDetails, users, showWorkflowDetails, status) => {
   let userProps = {}
-
   if (showWorkflowDetails) {
-    userProps = users[userId];
+    if (status == 'open') {
+
+    }
+    // userProps = users[userId];
   }
 
   return userProps;
 }
 
-const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, users, validateDocument, validatedDocuments }) => {
+const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, users, validateDocument, validatedDocuments }) => {
   const actions = [
     <FlatButton label="Close"
       onTouchTap={hideWorkflowDetails}
     />];
 
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-  const assignedUser = getUser(workflowItem.data.assignee, users, showWorkflowDetails);
+  const status = workflowItem.data.status;
+  const assignedUser = getUser(subProjectDetails, users, showWorkflowDetails, status);
   return (
 
     <Dialog open={showWorkflowDetails} actions={actions} title={workflowItem.data.workflowName} modal={false} style={styles.dialog}>
@@ -73,18 +76,18 @@ const WorkflowDetails = ({ workflowItems, showWorkflowDetails, showDetailsItemId
         <TextField disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false} />
         <Divider />
         Comment:
-        <TextField disabled={true} multiLine={true} hintText={workflowItem.data.purpose} style={styles.textfield} underlineShow={false} />
+        <TextField disabled={true} multiLine={true} hintText={workflowItem.data.comment} style={styles.textfield} underlineShow={false} />
         <Divider />
         Documents:
         <DocumentOverview documents={workflowItem.data.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />
         <Divider />
         Status:
-        <TextField disabled={true} hintText={statusMapping[workflowItem.data.status]} style={styles.textfield} underlineShow={false} />
+        <TextField disabled={true} hintText={statusMapping[status]} style={styles.textfield} underlineShow={false} />
         <Divider />
         <div style={styles.paper}>
           Assignee:
-          <ListItem primaryText={assignedUser.name} disabled={true} secondaryText={assignedUser.organization} leftAvatar={< Avatar src={
-            assignedUser.avatar
+          <ListItem primaryText={''} disabled={true} secondaryText={'ssignedUser.organization'} leftAvatar={< Avatar src={
+            'tmp'
           } />} />
         </div>
 
