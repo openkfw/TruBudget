@@ -30,7 +30,6 @@ export const hashDocument = (payload) => {
 export const validateDocument = (payload, hash) => {
   const data = new FormData();
   data.append('doc', payload);
-  data.append('hash', hash);
-  return axios.post('/documents/validate', data)
+  return axios.post('/documents/' + hash, data)
 };
 
