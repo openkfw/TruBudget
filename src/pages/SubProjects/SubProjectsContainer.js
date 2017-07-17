@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjectDetails, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectPurpose } from './actions';
+import { fetchProjectDetails, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment } from './actions';
 import { setProjectCreationStep } from '../Overview/actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -36,9 +36,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
-    createSubProjectItem: (subprojectName, amount, purpose, currency, parentName) => dispatch(createSubProjectItem(parentName, subprojectName, amount, purpose, currency)),
+    createSubProjectItem: (subprojectName, amount, comment, currency, parentName) => dispatch(createSubProjectItem(parentName, subprojectName, amount, comment, currency)),
     storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
-    storeSubProjectPurpose: (purpose) => dispatch(storeSubProjectPurpose(purpose)),
+    storeSubProjectComment: (comment) => dispatch(storeSubProjectComment(comment)),
     storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency)),
     showSnackBar: () => dispatch(showSnackBar(true)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
@@ -54,7 +54,7 @@ const mapStateToProps = (state) => {
   return {
     projectName: state.getIn(['detailview', 'projectName']),
     projectAmount: state.getIn(['detailview', 'projectAmount']),
-    projectPurpose: state.getIn(['detailview', 'projectPurpose']),
+    projectComment: state.getIn(['detailview', 'projectComment']),
     projectCurrency: state.getIn(['detailview', 'projectCurrency']),
     projectStatus: state.getIn(['detailview', 'projectStatus']),
     projectTS: state.getIn(['detailview', 'projectTS']),
@@ -65,7 +65,7 @@ const mapStateToProps = (state) => {
     workflowDialogVisible: state.getIn(['detailview', 'workflowDialogVisible']),
     subProjectName: state.getIn(['detailview', 'subProjectName']),
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
-    subProjectPurpose: state.getIn(['detailview', 'subProjectPurpose']),
+    subProjectComment: state.getIn(['detailview', 'subProjectComment']),
     subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
     showHistory: state.getIn(['notifications', 'showHistory']),
     historyItems: state.getIn(['notifications', 'historyItems']),

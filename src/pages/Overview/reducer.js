@@ -2,7 +2,7 @@ import { fromJS } from 'immutable';
 import _ from 'lodash';
 
 import {
-  FETCH_PROJECTS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_PURPOSE, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
+  FETCH_PROJECTS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
   ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE
 } from './actions';
 import { LOGOUT } from '../Login/actions';
@@ -14,7 +14,7 @@ const defaultState = fromJS({
   workflowDialogVisible: false,
   projectName: '',
   projectAmount: 0,
-  projectPurpose: '',
+  projectComment: '',
   creationStep: 0,
   projectApprover: [],
   projectAssignee: [],
@@ -32,15 +32,15 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set('projectName', action.name);
     case PROJECT_AMOUNT:
       return state.set('projectAmount', fromAmountString(action.amount));
-    case PROJECT_PURPOSE:
-      return state.set('projectPurpose', action.purpose);
+    case PROJECT_COMMENT:
+      return state.set('projectComment', action.comment);
     case PROJECT_CURRENCY:
       return state.set('projectCurrency', action.currency);
     case CREATE_PROJECT_SUCCESS:
       return state.merge({
         projectName: defaultState.get('projectName'),
         projectAmount: defaultState.get('projectAmount'),
-        projectPurpose: defaultState.get('projectPurpose'),
+        projectComment: defaultState.get('projectComment'),
         projectCurrency: defaultState.get('projectCurrency')
       });
     case SET_PROJECT_CREATION_STEP:

@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_PURPOSE, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS } from './actions';
+import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS } from './actions';
 import { LOGOUT } from '../Login/actions';
 
 import { fromAmountString } from '../../helper';
@@ -9,7 +9,7 @@ const defaultState = fromJS({
   projectName: '',
   projectAmount: 0,
   projectCurrency: '',
-  projectPurpose: 'Default Purpose',
+  projectComment: 'Default Comment',
   projectStatus: 'open',
   projectTS: 0,
   projectAssignee: [],
@@ -19,7 +19,7 @@ const defaultState = fromJS({
   subProjectName: '',
   workflowDialogVisible: false,
   subProjectAmount: 0,
-  subProjectPurpose: '',
+  subProjectComment: '',
   subProjectCurrency: '',
   showHistory: false,
   historyItems: [],
@@ -30,10 +30,10 @@ export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_PROJECT_DETAILS_SUCCESS:
       return state.merge({
-        projectName: action.projectDetails.details.projectName,
+        projectName: action.projectDetails.details.name,
         projectAmount: fromAmountString(action.projectDetails.details.amount),
         projectCurrency: action.projectDetails.details.currency,
-        projectPurpose: action.projectDetails.details.purpose,
+        projectComment: action.projectDetails.details.comment,
         projectStatus: action.projectDetails.details.status,
         projectTS: action.projectDetails.details.createTS,
         projectApprover: action.projectDetails.details.approver,
@@ -47,15 +47,15 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('subProjectName', action.name);
     case SUBPROJECT_AMOUNT:
       return state.set('subProjectAmount', fromAmountString(action.amount));
-    case SUBPROJECT_PURPOSE:
-      return state.set('subProjectPurpose', action.purpose);
+    case SUBPROJECT_COMMENT:
+      return state.set('subProjectComment', action.comment);
     case SUBPROJECT_CURRENCY:
       return state.set('subProjectCurrency', action.currency);
     case CREATE_SUBPROJECT_ITEM_SUCCESS:
       return state.merge({
         subProjectName: defaultState.get('subProjectName'),
         subProjectAmount: defaultState.get('subProjectAmount'),
-        subProjectPurpose: defaultState.get('subProjectPurpose'),
+        subProjectComment: defaultState.get('subProjectComment'),
         subProjectCurrency: defaultState.get('subProjectCurrency')
       });
     case LOGOUT:

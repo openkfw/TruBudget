@@ -149,12 +149,12 @@ const StepDot = ({ status, selectable }) => {
 };
 
 const editWorkflow = ({ key, txid, data }, props) => {
-  const { workflowName, amount, amountType, currency, purpose, assignee, status, documents, type } = data;
+  const { workflowName, amount, amountType, currency, comment, assignee, status, documents, type } = data;
   props.storeWorkflowName(workflowName)
   props.storeWorkflowAmount(amount)
   props.storeWorkflowAmountType(amountType)
   props.storeWorkflowCurrency(currency)
-  props.storeWorkflowPurpose(purpose)
+  props.storeWorkflowComment(comment)
   props.storeWorkflowType(type)
   props.storeWorkflowAssignee(assignee)
   props.enableWorkflowState()
@@ -178,9 +178,9 @@ const getNextStatus = (status) => {
 }
 
 const changeProgress = ({ key, txid, data }, props) => {
-  const { workflowName, amount, currency, purpose, assignee, documents, status, type, amountType } = data;
+  const { workflowName, amount, currency, comment, assignee, documents, status, type, amountType } = data;
   const nextStatus = getNextStatus(status)
-  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, amountType, currency, purpose, documents, nextStatus, assignee, txid, data, type)
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, amountType, currency, comment, documents, nextStatus, assignee, txid, data, type)
 }
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {

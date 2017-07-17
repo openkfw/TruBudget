@@ -39,7 +39,7 @@ const defaultState = fromJS({
   workflowAmount: 0,
   workflowAmountType: 'na',
   workflowCurrency: '',
-  workflowPurpose: '',
+  workflowComment: '',
   workflowState: 'open',
   workflowAssignee: '',
   disabledWorkflowState: true,
@@ -71,7 +71,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_AMOUNT_TYPE:
       return state.set('workflowAmountType', action.amountType)
     case WORKFLOW_PURPOSE:
-      return state.set('workflowPurpose', action.purpose)
+      return state.set('workflowComment', action.comment)
     case WORKFLOW_CURRENCY:
       return state.set('workflowCurrency', action.currency)
     case WORKFLOW_STATE:
@@ -91,7 +91,7 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowAmount: defaultState.get('workflowAmount'),
         workflowAmountType: defaultState.get('workflowAmountType'),
         workflowCurrency: defaultState.get('workflowCurrency'),
-        workflowPurpose: defaultState.get('workflowPurpose'),
+        workflowComment: defaultState.get('workflowComment'),
         workflowState: defaultState.get('workflowState'),
         workflowAssignee: defaultState.get('workflowAssignee'),
         workflowType: defaultState.get('workflowType'),

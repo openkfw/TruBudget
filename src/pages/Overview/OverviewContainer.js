@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectPurpose, storeProjectCurrency, setProjectCreationStep,
+  fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep,
   addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole
 } from './actions';
 import Overview from './Overview';
@@ -29,12 +29,12 @@ class OverviewContainer extends Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchProjects: () => dispatch(fetchProjects()),
-    createProject: (name, amount, purpose, currency, _, approver, assignee, bank) => dispatch(createProject(name, amount, purpose, currency, approver, assignee, bank)),
+    createProject: (name, amount, comment, currency, _, approver, assignee, bank) => dispatch(createProject(name, amount, comment, currency, approver, assignee, bank)),
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeProjectName: (name) => dispatch(storeProjectName(name)),
     storeProjectAmount: (amount) => dispatch(storeProjectAmount(amount)),
-    storeProjectPurpose: (purpose) => dispatch(storeProjectPurpose(purpose)),
+    storeProjectComment: (comment) => dispatch(storeProjectComment(comment)),
     storeProjectCurrency: (currency) => dispatch(storeProjectCurrency(currency)),
     addApproverRole: (role) => dispatch(addApproverRole(role)),
     addAssignmentRole: (role) => dispatch(addAssignmentRole(role)),
@@ -56,7 +56,7 @@ const mapStateToProps = (state) => {
     creationStep: state.getIn(['overview', 'creationStep']),
     projectName: state.getIn(['overview', 'projectName']),
     projectAmount: state.getIn(['overview', 'projectAmount']),
-    projectPurpose: state.getIn(['overview', 'projectPurpose']),
+    projectComment: state.getIn(['overview', 'projectComment']),
     projectCurrency: state.getIn(['overview', 'projectCurrency']),
     projectApprover: state.getIn(['overview', 'projectApprover']),
     projectAssignee: state.getIn(['overview', 'projectAssignee']),

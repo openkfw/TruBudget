@@ -27,8 +27,8 @@ const SubProjects = (props) => {
         storeProjectName={props.storeSubProjectName}
         projectAmount={props.subProjectAmount}
         storeProjectAmount={props.storeSubProjectAmount}
-        projectPurpose={props.subProjectPurpose}
-        storeProjectPurpose={props.storeSubProjectPurpose}
+        projectComment={props.subProjectComment}
+        storeProjectComment={props.storeSubProjectComment}
         projectCurrency={props.subProjectCurrency}
         storeProjectCurrency={props.storeSubProjectCurrency}
         parentCurrency = {props.projectCurrency}
