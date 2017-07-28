@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUsers, login } from './actions';
+import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails } from './actions';
 import LoginPage from './LoginPage';
 
 class LoginPageContainer extends Component {
@@ -29,7 +29,10 @@ class LoginPageContainer extends Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchUsers: () => dispatch(fetchUsers()),
-    login: (user) => dispatch(login(user))
+    login: (user) => dispatch(login(user)),
+    storeUsername: (username) => dispatch(storeUsername(username)),
+    storePassword: (password) => dispatch(storePassword(password)),
+    loginWithCredentails: (username, password) => dispatch(loginWithCredentails(username, password))
   };
 }
 
@@ -37,6 +40,8 @@ const mapStateToProps = (state) => {
   return {
     users: state.getIn(['login', 'users']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
+    username: state.getIn(['login', 'username']),
+    password: state.getIn(['login', 'password']),
   }
 }
 
