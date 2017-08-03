@@ -26,7 +26,7 @@ function* handleError (error) {
 
 export function* fetchPeersSaga (action) {
   try {
-    const peers = yield Api.fetchPeers();
+    const peers = yield api.fetchPeers();
     yield put({ type: FETCH_PEERS_SUCCESS, peers: peers.data });
   } catch (error) {
     yield handleError(error);
@@ -35,7 +35,7 @@ export function* fetchPeersSaga (action) {
 
 export function* fetchProjectDetailsSaga (action) {
   try {
-    const projectDetails = yield Api.fetchProjectDetails(action.project);
+    const projectDetails = yield api.fetchProjectDetails(action.project);
     yield put({ type: FETCH_PROJECT_DETAILS_SUCCESS, projectDetails: projectDetails.data });
   } catch (error) {
     yield handleError(error);
@@ -44,7 +44,7 @@ export function* fetchProjectDetailsSaga (action) {
 
 export function* fetchProjectsSaga () {
   try {
-    const projects = yield Api.fetchProjects();
+    const projects = yield api.fetchProjects();
     yield put({ type: FETCH_PROJECTS_SUCCESS, projects: projects.data });
   } catch (error) {
     yield handleError(error);
@@ -53,7 +53,7 @@ export function* fetchProjectsSaga () {
 
 export function* fetchWorkflowItemsSaga (action) {
   try {
-    const workflowItems = yield Api.fetchWorkflowItems(action.streamName);
+    const workflowItems = yield api.fetchWorkflowItems(action.streamName);
     yield put({ type: FETCH_WORKFLOW_ITEMS_SUCCESS, workflowItems: workflowItems.data })
   } catch (error) {
     yield handleError(error);
@@ -62,7 +62,7 @@ export function* fetchWorkflowItemsSaga (action) {
 
 export function* createProject (action) {
   try {
-    yield Api.postProject(action.name, action.amount, action.comment, action.currency, action.approver, action.assignee, action.bank);
+    yield api.postProject(action.name, action.amount, action.comment, action.currency, action.approver, action.assignee, action.bank);
     yield put({ type: CREATE_PROJECT_SUCCESS });
     yield put({ type: FETCH_PROJECTS });
   } catch (error) {
@@ -71,7 +71,7 @@ export function* createProject (action) {
 }
 export function* createSubProjectSaga (action) {
   try {
-    yield Api.postSubProject(action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectComment, action.subProjectCurrency);
+    yield api.postSubProject(action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectComment, action.subProjectCurrency);
     yield put({ type: CREATE_SUBPROJECT_ITEM_SUCCESS });
     yield put({ type: FETCH_PROJECT_DETAILS, project: action.parentName });
   } catch (error) {
@@ -81,7 +81,7 @@ export function* createSubProjectSaga (action) {
 
 export function* createWorkflowItemSaga (action) {
   try {
-    yield Api.postWorkflowItem(action.stream, action.workflowName, action.amount, action.amountType, action.currency, action.comment, action.documents, action.state, action.assignee, action.workflowType);
+    yield api.postWorkflowItem(action.stream, action.workflowName, action.amount, action.amountType, action.currency, action.comment, action.documents, action.state, action.assignee, action.workflowType);
     yield put({ type: CREATE_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {
@@ -91,7 +91,7 @@ export function* createWorkflowItemSaga (action) {
 
 export function* editWorkflowItemSaga (action) {
   try {
-    yield Api.editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.amountType, action.currency, action.comment, action.documents, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
+    yield api.editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.amountType, action.currency, action.comment, action.documents, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
     yield put({ type: EDIT_WORKFLOW_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.stream });
   } catch (error) {
@@ -101,7 +101,7 @@ export function* editWorkflowItemSaga (action) {
 
 export function* editSubProjectSaga (action) {
   try {
-    yield Api.editSubProject(action.parent, action.streamName, action.status, action.amount);
+    yield api.editSubProject(action.parent, action.streamName, action.status, action.amount);
     yield put({ type: POST_SUBPROJECT_EDIT_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.streamName });
   } catch (error) {
@@ -111,7 +111,7 @@ export function* editSubProjectSaga (action) {
 
 export function* fetchNodeInformationSaga () {
   try {
-    const nodeInformation = yield Api.fetchNodeInformation()
+    const nodeInformation = yield api.fetchNodeInformation()
     yield put({ type: FETCH_NODE_INFORMATION_SUCCESS, nodeInformation: nodeInformation.data });
   } catch (error) {
     yield handleError(error);
@@ -120,7 +120,7 @@ export function* fetchNodeInformationSaga () {
 
 export function* fetchNotificationSaga ({ user }) {
   try {
-    const notifications = yield Api.fetchNotifications(user)
+    const notifications = yield api.fetchNotifications(user)
     yield put({ type: FETCH_NOTIFICATIONS_SUCCESS, notifications: notifications.data })
   } catch (error) {
     yield handleError(error);
@@ -129,7 +129,7 @@ export function* fetchNotificationSaga ({ user }) {
 
 export function* postWorkflowSortSaga ({ streamName, order, sortEnabled }) {
   try {
-    yield Api.postWorkflowSort(streamName, order);
+    yield api.postWorkflowSort(streamName, order);
     yield put({ type: POST_WORKFLOW_SORT_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName });
     yield put({ type: ENABLE_WORKFLOW_SORT, sortEnabled });
@@ -140,7 +140,7 @@ export function* postWorkflowSortSaga ({ streamName, order, sortEnabled }) {
 
 export function* markNotificationAsReadSaga ({ user, id, data }) {
   try {
-    yield Api.markNotificationAsRead(user, id, data);
+    yield api.markNotificationAsRead(user, id, data);
     yield put({ type: MARK_NOTIFICATION_AS_READ_SUCCESS });
     yield put({ type: FETCH_NOTIFICATIONS, user });
   } catch (error) {
@@ -150,7 +150,7 @@ export function* markNotificationAsReadSaga ({ user, id, data }) {
 
 export function* fetchUsersSaga () {
   try {
-    const users = yield Api.fetchUsers();
+    const users = yield api.fetchUsers();
     yield put({ type: FETCH_USERS_SUCCESS, users: users.data })
   } catch (error) {
     yield handleError(error);
@@ -159,7 +159,7 @@ export function* fetchUsersSaga () {
 
 export function* fetchRolesSaga () {
   try {
-    const roles = yield Api.fetchRoles();
+    const roles = yield api.fetchRoles();
     yield put({ type: FETCH_ROLES_SUCCESS, roles: roles.data })
   } catch (error) {
     yield handleError(error);
@@ -168,8 +168,9 @@ export function* fetchRolesSaga () {
 
 export function* loginSaga ({ user }) {
   try {
-    yield Api.login(user.username, user.password);
-    yield put({ type: LOGIN_SUCCESS, user })
+    console.log("login");
+    const { data } = yield api.login(user.username, user.password);
+    yield put({ type: LOGIN_SUCCESS, user: { username: user.username, ...data } })
   } catch (error) {
     yield handleError(error);
   }
@@ -177,7 +178,7 @@ export function* loginSaga ({ user }) {
 
 export function* fetchStreamNamesSaga () {
   try {
-    const streamNames = yield Api.fetchStreamNames();
+    const streamNames = yield api.fetchStreamNames();
     yield put({ type: FETCH_STREAM_NAMES_SUCCESS, streamNames: streamNames.data })
   } catch (error) {
     yield handleError(error);
@@ -186,7 +187,7 @@ export function* fetchStreamNamesSaga () {
 
 export function* fetchHistorySaga ({ project }) {
   try {
-    const history = yield Api.fetchHistory(project);
+    const history = yield api.fetchHistory(project);
     yield put({ type: FETCH_HISTORY_SUCCESS, historyItems: history.data })
   } catch (error) {
     yield handleError(error);
@@ -195,7 +196,7 @@ export function* fetchHistorySaga ({ project }) {
 
 export function* validateDocumentSaga ({ payload, hash }) {
   try {
-    const response = yield Api.validateDocument(payload, hash);
+    const response = yield api.validateDocument(payload, hash);
     yield put({ type: VALIDATE_DOCUMENT_SUCCESS, validates: response.data.validates, hash })
   } catch (error) {
     yield handleError(error);
@@ -204,7 +205,7 @@ export function* validateDocumentSaga ({ payload, hash }) {
 
 export function* addDocumentSaga ({ id, payload }) {
   try {
-    const hash = yield Api.hashDocument(payload);
+    const hash = yield api.hashDocument(payload);
     yield put({ type: ADD_DOCUMENT_SUCCESS, hash: hash.data, id })
   } catch (error) {
     yield handleError(error);

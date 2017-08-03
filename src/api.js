@@ -17,7 +17,10 @@ class Api {
   fetchNodeInformation = () => axios.get(`${this.prefix}/nodes`);
   fetchNotifications = (user) => axios.get(`${this.prefix}/notifications/` + user);
   fetchWorkflowItems = (subProjectName) => axios.get(`${this.prefix}/subprojects/` + subProjectName);
-  login = (username, password) => axios.post(`${this.prefix}/login`, { username, password });
+  login = (username, password) => {
+    console.log("post:", `${this.prefix}/login`)
+    return axios.post(`${this.prefix}/login`, { username, password })
+  };
   fetchUsers = () => axios.get(`${this.prefix}/users`);
   fetchRoles = () => axios.get(`${this.prefix}/roles`);
   postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type) => axios.post(`${this.prefix}/workflows`, { streamName: stream, workflowName: workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type })

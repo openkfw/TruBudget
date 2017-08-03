@@ -3,17 +3,18 @@ import { connect } from 'react-redux';
 
 import { toggleSidebar, fetchPeers, fetchStreamNames } from './actions';
 import { fetchNotifications } from '../Notifications/actions';
-import { logout } from '../Login/actions';
+import { logout, fetchUsers } from '../Login/actions';
 
 import Navbar from './Navbar';
 
 class NavbarContainer extends Component {
-  componentWillMount() {
+  componentWillMount () {
     this.props.fetchPeers();
+    this.props.fetchUsers();
     this.props.fetchStreamNames();
     this.props.fetchNotifications(this.props.loggedInUser.id);
   }
-  render() {
+  render () {
     return <Navbar {...this.props} />
   }
 }
@@ -25,6 +26,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchNotifications: (user) => dispatch(fetchNotifications(user)),
     logout: () => dispatch(logout()),
     fetchStreamNames: () => dispatch(fetchStreamNames()),
+    fetchUsers: () => dispatch(fetchUsers())
   };
 }
 
@@ -36,7 +38,7 @@ const mapStateToProps = (state) => {
     route: state.getIn(['route', 'locationBeforeTransitions']).toObject(),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     streamNames: state.getIn(['navbar', 'streamNames']),
-    users: state.getIn(['login', 'users'])
+    users: state.getIn(['login', 'users']).toJS(),
   }
 }
 

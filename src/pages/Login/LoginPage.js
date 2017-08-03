@@ -5,6 +5,24 @@ import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 
+const defaultUser = {
+  jdoe: {
+    id: 'jdoe',
+    name: 'John Doe',
+    organization: 'Ministry of Finance',
+    password: 'test',
+    avatar: '/lego_avatar_male1.jpg',
+    avatar_back: '/lego_avatar_male1.jpg',
+  },
+  pkleffmann: {
+    id: 'pkleffmann',
+    name: 'Piet Kleffmann',
+    organization: 'ACMECorp',
+    password: 'test',
+    avatar: '/lego_avatar_male5.jpg',
+    avatar_back: '/lego_avatar_male5.jpg',
+  },
+}
 
 const createListItems = (users, login) => {
   const items = [];
@@ -52,10 +70,10 @@ const LoginPage = ({ users, login }) => {
         <Divider />
         <List>
           <Subheader>Choose your user to login</Subheader>
-          {createListItems(users, login)}
+          {createListItems(defaultUser, login)}
         </List>
         <Divider />
-        <CardText style={{fontSize: '11px'}}>
+        <CardText style={{ fontSize: '11px' }}>
           Developed by Emerging Technologies & Innovation @ Accenture
         </CardText>
       </Card>

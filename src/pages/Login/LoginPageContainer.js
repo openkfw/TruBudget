@@ -5,21 +5,20 @@ import { fetchUsers, login } from './actions';
 import LoginPage from './LoginPage';
 
 class LoginPageContainer extends Component {
-  componentWillMount() {
-    this.props.fetchUsers();
+  componentWillMount () {
   }
-  render() {
+  render () {
     return <LoginPage {...this.props} />
   }
-  componentDidMount() {
+  componentDidMount () {
     this.checkIfRedirect();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     this.checkIfRedirect();
   }
 
-  checkIfRedirect() {
+  checkIfRedirect () {
     const from = this.props.location && this.props.location.state && this.props.location.state.from;
     const path = from ? this.props.location.state.from : '/';
     if (this.props.loggedInUser.username) this.props.history.push(path);
