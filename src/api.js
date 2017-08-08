@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 class Api {
-  prefix = '';
+  prefix = '/api';
 
   activateProduction = (active) => {
     this.prefix = active ? '/api' : '/test';
