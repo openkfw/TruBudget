@@ -24,7 +24,7 @@ class Api {
   editWorkflowItem = (stream, key, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, txid, previousState, type) => axios.put(`${this.prefix}/workflows/` + workflowItemName, { streamName: stream, key, workflowName: workflowItemName, amount, amountType, currency, comment, documents, status, assignee, previousState, type })
   fetchHistory = (project) => axios.get(`${this.prefix}/history/` + project);
   markNotificationAsRead = (user, id, data) => axios.put(`${this.prefix}/notifications/${user}/${id}`, data);
-  postWorkflowSort = (streamName, workflowOrder) => axios.put(`${this.prefix}/subprojects/` + streamName + `${this.prefix}/sort`, { order: workflowOrder });
+  postWorkflowSort = (streamName, workflowOrder) => axios.put(`${this.prefix}/subprojects/` + streamName + `/sort`, { order: workflowOrder });
   editSubProject = (parentProject, subProjectName, status, amount) => axios.put(`${this.prefix}/subprojects/` + subProjectName, { parent: parentProject, status: status, amount: amount });
   hashDocument = (payload) => {
     const data = new FormData();
