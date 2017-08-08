@@ -9,6 +9,30 @@ import { ACMECorpBlue, ACMECorpDarkBlue } from '../../colors'
 import UsernameIcon from 'material-ui/svg-icons/social/person';
 import PasswordIcon from 'material-ui/svg-icons/action/lock';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import Chip from 'material-ui/Chip';
+import FontIcon from 'material-ui/FontIcon';
+import SvgIconFace from 'material-ui/svg-icons/action/face';
+
+const defaultUser = {
+  jdoe: {
+    id: 'jdoe',
+    name: 'John Doe',
+    organization: 'Ministry of Finance',
+    password: 'test',
+    avatar: '/lego_avatar_male1.jpg',
+    avatar_back: '/lego_avatar_male1.jpg',
+  },
+  pkleffmann: {
+    id: 'pkleffmann',
+    name: 'Piet Kleffmann',
+    organization: 'ACMECorp',
+    password: 'test',
+    avatar: '/lego_avatar_male5.jpg',
+    avatar_back: '/lego_avatar_male5.jpg',
+  },
+}
+
 
 const createListItems = (users, login) => {
   const items = [];
@@ -34,7 +58,9 @@ const createListItems = (users, login) => {
   return items
 }
 
-const LoginPage = ({ users, login, storeUsername, storePassword, username, password, loginWithCredentails }) => {
+
+
+const LoginPage = ({ users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful }) => {
   return (
     <div style={{
       backgroundImage: 'url("/welcome.jpg")',
@@ -62,6 +88,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
             underlineFocusStyle={{ borderBottomColor: ACMECorpDarkBlue }}
             floatingLabelText="Username"
             value={username}
+            errorText={loginUnsuccessful ? "Incorrect username" : ""}
             onChange={(event) => storeUsername(event.target.value)}
           />
         </div>
@@ -73,13 +100,18 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
             floatingLabelText="Password"
             value={password}
             onChange={(event) => storePassword(event.target.value)}
+            errorText={loginUnsuccessful ? "Incorrect password" : ""}
             type="password"
           />
         </div>
-        <div style={{ paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ paddingTop: '10px', paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
           <RaisedButton label="Login" style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
+        <Divider />
 
+        <div>
+          {createListItems(defaultUser, login)}
+        </div>
         <Divider />
         <CardText style={{ fontSize: '11px' }}>
           Developed by Emerging Technologies & Innovation @ Accenture
