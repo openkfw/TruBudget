@@ -8,7 +8,8 @@ export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
 
 export const STORE_USERNAME = 'STORE_USTORE_USERNAMESER';
 export const STORE_PASSWORD = 'STORE_PASSWORD';
-
+export const LOGIN_ERROR_MESSAGE = 'LOGIN_ERROR_MESSAGE';
+export const SHOW_LOGIN_ERROR = 'SHOW_LOGIN_ERROR';
 
 export function fetchUsers() {
   return {
@@ -54,5 +55,18 @@ export function login(user) {
 export function logout() {
   return {
     type: LOGOUT
+  }
+}
+export function storeLoginErrorMessage(message) {
+  return {
+    type: LOGIN_ERROR_MESSAGE,
+    message
+  }
+}
+
+export function showLoginError(show) {
+  return {
+    type: SHOW_LOGIN_ERROR,
+    show
   }
 }

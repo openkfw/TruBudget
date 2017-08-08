@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout } from './actions';
+import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, storeLoginErrorMessage, showLoginError } from './actions';
 import LoginPage from './LoginPage';
 
 
@@ -34,7 +34,10 @@ const mapDispatchToProps = (dispatch) => {
     storeUsername: (username) => dispatch(storeUsername(username)),
     storePassword: (password) => dispatch(storePassword(password)),
     logout: () => dispatch(logout()),
-    loginWithCredentails: (username, password) => dispatch(loginWithCredentails(username, password))
+    loginWithCredentails: (username, password) => dispatch(loginWithCredentails(username, password)),
+    showLoginError: () => dispatch(showLoginError(true)),
+    hideLoginError: () => dispatch(showLoginError(false)),
+
   };
 }
 
@@ -44,6 +47,7 @@ const mapStateToProps = (state) => {
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     username: state.getIn(['login', 'username']),
     password: state.getIn(['login', 'password']),
+    loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
   }
 }
 

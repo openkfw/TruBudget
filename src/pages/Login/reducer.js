@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, LOGOUT, STORE_USERNAME, STORE_PASSWORD } from './actions';
+import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, LOGOUT, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR } from './actions';
 
 const defaultState = fromJS({
   users: [],
@@ -13,6 +13,8 @@ const defaultState = fromJS({
       admin: false,
     }
   },
+  loginErrorMessage: '',
+  showLoginError: false,
   roles: []
 });
 
@@ -29,6 +31,8 @@ export default function loginReducer(state = defaultState, action) {
       return state.set('password', action.password);
     case LOGIN_SUCCESS:
       return state.set('loggedInUser', action.user);
+    case SHOW_LOGIN_ERROR:
+      return state.set('loginUnsuccessful', action.show);
     case LOGOUT:
       return defaultState;
     default:
