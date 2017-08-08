@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, storeLoginErrorMessage, showLoginError } from './actions';
+import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, storeLoginErrorMessage, showLoginError, storeEnvironment } from './actions';
 import LoginPage from './LoginPage';
 
 
@@ -37,6 +37,7 @@ const mapDispatchToProps = (dispatch) => {
     loginWithCredentails: (username, password) => dispatch(loginWithCredentails(username, password)),
     showLoginError: () => dispatch(showLoginError(true)),
     hideLoginError: () => dispatch(showLoginError(false)),
+    storeEnvironment: (environment) => dispatch(storeEnvironment(environment)),
 
   };
 }
@@ -48,6 +49,7 @@ const mapStateToProps = (state) => {
     username: state.getIn(['login', 'username']),
     password: state.getIn(['login', 'password']),
     loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
+    environment: state.getIn(['login', 'environment']),
   }
 }
 
