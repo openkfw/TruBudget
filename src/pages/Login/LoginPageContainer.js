@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails } from './actions';
+import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout } from './actions';
 import LoginPage from './LoginPage';
+
+
 
 class LoginPageContainer extends Component {
   componentWillMount() {
-    this.props.fetchUsers();
   }
   render() {
     return <LoginPage {...this.props} />
@@ -32,6 +33,7 @@ const mapDispatchToProps = (dispatch) => {
     login: (user) => dispatch(login(user)),
     storeUsername: (username) => dispatch(storeUsername(username)),
     storePassword: (password) => dispatch(storePassword(password)),
+    logout: () => dispatch(logout()),
     loginWithCredentails: (username, password) => dispatch(loginWithCredentails(username, password))
   };
 }

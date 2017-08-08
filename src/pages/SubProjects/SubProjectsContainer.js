@@ -11,14 +11,14 @@ import globalStyles from '../../styles';
 
 
 class SubProjectsContainer extends Component {
-  componentWillMount() {
+  componentWillMount () {
     const projectId = this.props.location.pathname.split('/')[2];
     this.props.fetchProjectDetails(projectId);
     this.props.fetchHistoryItems(projectId);
     this.props.setSelectedView(projectId, 'project');
   }
 
-  render() {
+  render () {
 
     return (
       <div style={globalStyles.innerContainer}>
@@ -70,7 +70,7 @@ const mapStateToProps = (state) => {
     showHistory: state.getIn(['notifications', 'showHistory']),
     historyItems: state.getIn(['notifications', 'historyItems']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
-    users: state.getIn(['login', 'users']),
+    users: state.getIn(['login', 'users']).toJS(),
     creationStep: state.getIn(['overview', 'creationStep'])
   }
 }

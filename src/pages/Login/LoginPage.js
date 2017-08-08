@@ -54,6 +54,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
       }}>
         <CardTitle title="TruBudget" subtitle="A blockchain-based solution for budget expenditure" />
         <Divider />
+
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
           <UsernameIcon style={{ marginTop: '20px', marginRight: '20px' }} />
           <TextField
@@ -78,6 +79,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
         <div style={{ paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
           <RaisedButton label="Login" style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
+
         <Divider />
         <CardText style={{ fontSize: '11px' }}>
           Developed by Emerging Technologies & Innovation @ Accenture
