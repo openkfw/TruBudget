@@ -11,7 +11,7 @@ const LogoutIcon = ({ history, logout }) => {
       onTouchTap={() => {
         logout();
         history.push('/login');
-        }}>
+      }}>
       <PowerIcon color={colors.lightColor} />
     </IconButton>
   )

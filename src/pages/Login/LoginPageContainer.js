@@ -8,11 +8,14 @@ import LoginPage from './LoginPage';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
+    storeEnvironment('Test');
   }
+
   render() {
     return <LoginPage {...this.props} />
   }
   componentDidMount() {
+
     this.checkIfRedirect();
   }
 
