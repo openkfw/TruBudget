@@ -14,6 +14,7 @@ const defaultState = fromJS({
     }
   },
   environment: 'Test',
+  productionActive: false,
   loginErrorMessage: '',
   showLoginError: false,
   roles: []
@@ -35,7 +36,7 @@ export default function loginReducer(state = defaultState, action) {
     case SHOW_LOGIN_ERROR:
       return state.set('loginUnsuccessful', action.show);
     case STORE_ENVIRONMENT_SUCCESS:
-      return state.set('environment', action.environment);
+      return state.merge({ environment: action.environment, productionActive: action.productionActive })
     case LOGOUT:
       return defaultState;
     default:

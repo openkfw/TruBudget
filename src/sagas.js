@@ -11,7 +11,6 @@ import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, ED
 
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
-
 const api = new Api();
 
 function* handleError(error) {
@@ -113,10 +112,8 @@ export function* editSubProjectSaga(action) {
 
 export function* environmentSaga(action) {
   try {
-    const environment = action.environment
-    const active = environment === "Prod" ? true : false
-    yield api.activateProduction(active);
-    yield put({ type: STORE_ENVIRONMENT_SUCCESS, environment: environment });
+    yield api.activateProduction(action.active);
+    yield put({ type: STORE_ENVIRONMENT_SUCCESS, environment: action.environment, productionActive: action.active });
   } catch (error) {
     yield handleError(error);
   }

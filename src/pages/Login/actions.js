@@ -74,9 +74,11 @@ export function showLoginError(show) {
 }
 
 export function storeEnvironment(environment) {
+  const active = environment === "Prod" ? true : false
   return {
     type: STORE_ENVIRONMENT,
-    environment
+    environment,
+    active
   }
 }
 

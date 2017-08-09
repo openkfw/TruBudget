@@ -72,8 +72,8 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
       <ListItem primaryText="Real-time Updates" rightToggle={<Toggle />} />
     </List>
     <Divider />
-    {loggedInUser.role.admin ? <TrusteesList users={users} loggedInUser={loggedInUser}/> : null}
-  </div>
+    {loggedInUser.role.admin ? <TrusteesList users={users} loggedInUser={loggedInUser} /> : null}
+  </div >
 );
 
 export default SideNavCard;
