@@ -8,14 +8,13 @@ import LoginPage from './LoginPage';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
-    storeEnvironment('Test');
+    this.props.storeDefaultEnvironment();
   }
 
   render() {
     return <LoginPage {...this.props} />
   }
   componentDidMount() {
-
     this.checkIfRedirect();
   }
 
@@ -41,7 +40,7 @@ const mapDispatchToProps = (dispatch) => {
     showLoginError: () => dispatch(showLoginError(true)),
     hideLoginError: () => dispatch(showLoginError(false)),
     storeEnvironment: (environment) => dispatch(storeEnvironment(environment)),
-
+    storeDefaultEnvironment: () => dispatch(storeEnvironment('Test')),
   };
 }
 
