@@ -10,6 +10,8 @@ export const STORE_USERNAME = 'STORE_USTORE_USERNAMESER';
 export const STORE_PASSWORD = 'STORE_PASSWORD';
 export const LOGIN_ERROR_MESSAGE = 'LOGIN_ERROR_MESSAGE';
 export const SHOW_LOGIN_ERROR = 'SHOW_LOGIN_ERROR';
+export const STORE_ENVIRONMENT = 'STORE_ENVIRONMENT';
+export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
 
 export function fetchUsers() {
   return {
@@ -70,3 +72,13 @@ export function showLoginError(show) {
     show
   }
 }
+
+export function storeEnvironment(environment) {
+  const active = environment === "Prod" ? true : false
+  return {
+    type: STORE_ENVIRONMENT,
+    environment,
+    active
+  }
+}
+

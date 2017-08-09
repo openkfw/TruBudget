@@ -5,7 +5,7 @@ import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
-import { ACMECorpBlue, ACMECorpDarkBlue } from '../../colors'
+import { ACMECorpBlue, ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors'
 import UsernameIcon from 'material-ui/svg-icons/social/person';
 import PasswordIcon from 'material-ui/svg-icons/action/lock';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -13,6 +13,8 @@ import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 import FontIcon from 'material-ui/FontIcon';
 import SvgIconFace from 'material-ui/svg-icons/action/face';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 
 const defaultUser = {
   jdoe: {
@@ -60,7 +62,7 @@ const createListItems = (users, login) => {
 
 
 
-const LoginPage = ({ users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful }) => {
+const LoginPage = ({ users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment }) => {
   return (
     <div style={{
       backgroundImage: 'url("/welcome.jpg")',
@@ -78,9 +80,20 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
         zIndex: 1100,
         opacity: 0.9
       }}>
-        <CardTitle title="TruBudget" subtitle="A blockchain-based solution for budget expenditure" />
-        <Divider />
+        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+          <CardTitle title="TruBudget" subtitle="A blockchain-based solution for budget expenditure" />
+          <SelectField
+            onChange={(event, index, value) => storeEnvironment(value)}
+            floatingLabelText="Environment" value={environment}
+            floatingLabelStyle={{ color: ACMECorpLightgreen }}
+            style={{ width: '40%', marginRight: '8px' }}
+          >
+            <MenuItem value="Test" primaryText="Test" />
+            <MenuItem value="Prod" primaryText="Prod" />
+          </SelectField>
 
+        </div>
+        <Divider />
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
           <UsernameIcon style={{ marginTop: '20px', marginRight: '20px' }} />
           <TextField
@@ -108,7 +121,6 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
           <RaisedButton label="Login" style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
         <Divider />
-
         <div>
           {createListItems(defaultUser, login)}
         </div>
@@ -123,7 +135,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
       }}
         alt="Logo"
         src="/do_logo.png" />
-    </div>
+    </div >
   )
 }
 
