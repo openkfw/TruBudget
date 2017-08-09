@@ -61,11 +61,6 @@ const createListItems = (users, login) => {
 }
 
 
-const handleEnvironmentChange = ({ value }) => {
-
-  console.log(value)
-}
-
 
 const LoginPage = ({ users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment }) => {
   return (
@@ -123,11 +118,9 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
           />
         </div>
         <div style={{ paddingTop: '10px', paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-
           <RaisedButton label="Login" style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
         <Divider />
-
         <div>
           {createListItems(defaultUser, login)}
         </div>

@@ -11,7 +11,7 @@ export const STORE_PASSWORD = 'STORE_PASSWORD';
 export const LOGIN_ERROR_MESSAGE = 'LOGIN_ERROR_MESSAGE';
 export const SHOW_LOGIN_ERROR = 'SHOW_LOGIN_ERROR';
 export const STORE_ENVIRONMENT = 'STORE_ENVIRONMENT';
-
+export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
 
 export function fetchUsers() {
   return {

@@ -9,7 +9,7 @@ import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS } from './pages/Workflows/actions';
 
-import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR } from './pages/Login/actions';
+import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 
 const api = new Api();
@@ -100,11 +100,23 @@ export function* editWorkflowItemSaga(action) {
   }
 }
 
+
 export function* editSubProjectSaga(action) {
   try {
     yield api.editSubProject(action.parent, action.streamName, action.status, action.amount);
     yield put({ type: POST_SUBPROJECT_EDIT_SUCCESS });
     yield put({ type: FETCH_WORKFLOW_ITEMS, streamName: action.streamName });
+  } catch (error) {
+    yield handleError(error);
+  }
+}
+
+export function* environmentSaga(action) {
+  try {
+    const environment = action.environment
+    const active = environment === "Prod" ? true : false
+    yield api.activateProduction(active);
+    yield put({ type: STORE_ENVIRONMENT_SUCCESS, environment: environment });
   } catch (error) {
     yield handleError(error);
   }
@@ -290,6 +302,10 @@ export function* watchValidateDocument() {
 export function* watchAddDocument() {
   yield takeLatest(ADD_DOCUMENT, addDocumentSaga)
 }
+export function* watchEnvironment() {
+  yield takeLatest(STORE_ENVIRONMENT, environmentSaga)
+
+}
 
 export default function* rootSaga() {
   try {
@@ -313,7 +329,8 @@ export default function* rootSaga() {
       watchPostWorkflowSort(),
       watchEditSubProject(),
       watchValidateDocument(),
-      watchAddDocument()
+      watchAddDocument(),
+      watchEnvironment(),
     ]
   } catch (error) {
     console.log(error);
