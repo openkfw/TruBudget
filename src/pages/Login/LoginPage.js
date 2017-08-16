@@ -118,7 +118,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
           />
         </div>
         <div style={{ paddingTop: '10px', paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-          <RaisedButton label="Login" style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
+          <RaisedButton label={strings.login.login_button_title} style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
         <Divider />
         <div>

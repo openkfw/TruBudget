@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import _ from 'lodash'
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-
+import strings from '../../localizeStrings'
 class ProjectCreationCurrency extends Component {
 
   componentWillMount() {
-    const preSelectedCurrency =  _.isUndefined(this.props.parentCurrency)? 'EUR' : this.props.parentCurrency
+    const preSelectedCurrency = _.isUndefined(this.props.parentCurrency) ? 'EUR' : this.props.parentCurrency
     this.setCurrency(preSelectedCurrency)
   }
 
@@ -41,7 +41,7 @@ class ProjectCreationCurrency extends Component {
         left: '5px',
         position: 'relative'
       }}
-        floatingLabelText="Currency"
+        floatingLabelText={strings.project.project_currency}
         value={this.props.projectCurrency}
         onChange={this.handleChange}
       >

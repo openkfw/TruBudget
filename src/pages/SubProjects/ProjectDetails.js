@@ -17,6 +17,7 @@ import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import IconButton from 'material-ui/IconButton';
 
 import { budgetStatusColorPalette, red } from '../../colors'
+import strings from '../../localizeStrings'
 
 const styles = {
   container: {
@@ -92,35 +93,35 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
             disabled={true}
             leftIcon={<CommentIcon />}
             primaryText={<div style={styles.comment}>{projectComment} </div>}
-            secondaryText={'Comment'}
+            secondaryText={strings.common.overview_card_comment}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<AmountIcon />}
             primaryText={amountString}
-            secondaryText={'Project Budget'}
+            secondaryText={strings.common.overview_card_budget}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={statusIconMapping[projectStatus]}
             primaryText={statusMapping[projectStatus]}
-            secondaryText={'Status'}
+            secondaryText={strings.common.overview_card_status}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<DateIcon />}
             primaryText={tsToString(projectTS)}
-            secondaryText={'Created'}
+            secondaryText={strings.common.overview_card_created}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
             primaryText={getAssignedOrganization(projectAssignee)}
-            secondaryText={'Assigned Organization'}
+            secondaryText={strings.subproject.subproject_assigned_organization}
           />
           <Divider />
         </List>

@@ -11,12 +11,12 @@ import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import InfoIcon from 'material-ui/svg-icons/content/create';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { ACMECorpDarkBlue } from '../../colors';
-
+import strings from '../../localizeStrings'
 
 const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {
     const amount = toAmountString(project.details.amount, project.details.currency)
-    const status = 'Status: ' + statusMapping[project.details.status]
+    const status = strings.common.overview_card_status + ': ' + statusMapping[project.details.status]
     const comment = project.details.comment
     const imagePath = project.details.name === 'School1' ? './school.jpg' : './building.jpg'
     const dateString = tsToString(project.details.createTS)
@@ -39,20 +39,20 @@ const getTableEntries = ({ projects, history }) => {
             disabled={true}
             leftIcon={<CommentIcon />}
             primaryText={comment}
-            secondaryText="Comment"
+            secondaryText={strings.common.overview_card_comment}
           />
           <ListItem
             disabled={true}
             leftIcon={<AmountIcon />}
             primaryText={amount}
-            secondaryText="Budget"
+            secondaryText={strings.common.overview_card_budget}
           />
 
           <ListItem
             disabled={true}
             leftIcon={<DateIcon />}
             primaryText={dateString}
-            secondaryText="Created"
+            secondaryText={strings.common.overview_card_created}
           />
 
         </List>

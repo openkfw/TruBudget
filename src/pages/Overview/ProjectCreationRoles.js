@@ -2,7 +2,7 @@ import React from 'react';
 
 import RoleSelection from './RoleSelection';
 import RoleSelectionContent from './RoleSelectionContent';
-
+import strings from '../../localizeStrings'
 
 const styles = {
   container: {
@@ -18,10 +18,10 @@ const getSteps = ({ roles,
   projectBank, addBankRole, removeBankRole
 }) => [
     {
-      title: 'Select budget authority role',
+      title: strings.project.project_budget_authority_role,
       content: (
         <div>
-          <p>The authority enabled to modify the budget line of the project</p>
+          <p>{strings.project.project_budget_authority_role_description}</p>
           <RoleSelectionContent
             dataSource={roles}
             selections={projectApprover}
@@ -31,10 +31,10 @@ const getSteps = ({ roles,
       )
     },
     {
-      title: 'Select implementation authority role',
+      title: strings.project.project_implementing_authority_role,
       content: (
         <div>
-          <p>The authorities enabled to create and modify subprojects, define and execute workflow activities</p>
+          <p>{strings.project.project_implementing_authority_role_description}</p>
           <RoleSelectionContent
             dataSource={roles}
             selections={projectAssignee}
@@ -44,10 +44,10 @@ const getSteps = ({ roles,
       )
     },
     {
-      title: 'Select disbursement authority role',
+      title: strings.project.project_disbursement_authority_role,
       content: (
         <div>
-          <p>The authorities enabled to approve financial transactions</p>
+          <p>{strings.project.project_disbursement_authority_role_description}</p>
           <RoleSelectionContent
             dataSource={roles}
             selections={projectBank}

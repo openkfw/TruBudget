@@ -2,6 +2,8 @@ import React from 'react';
 
 import TextField from 'material-ui/TextField';
 import ProjectCreationCurrency from './ProjectCreationCurrency';
+import strings from '../../localizeStrings'
+
 
 const ProjectCreationAmount = (props) => {
 
@@ -14,14 +16,14 @@ const ProjectCreationAmount = (props) => {
     parentCurrency
   } = props;
 
-  let hintText = "Budget for the project";
-  let floatingLabelText = "Project budget amount";
+  let hintText = strings.project.project_budget_amount;
+  let floatingLabelText = strings.project.project_budget_amount_description;
   if (type === 'subProject') {
-    floatingLabelText = "Sub-project budget amount";
-    hintText = "Budget amount for the project";
+    floatingLabelText = strings.project.subproject_budget_amount;
+    hintText = strings.project.subproject_budget_amount_description;
   } else if (type === 'workflow') {
-    floatingLabelText = "Workflow budget amount";
-    hintText = "Budget amount for the workflow";
+    floatingLabelText = strings.workflow.workflow_budget_amount;
+    hintText = strings.workflow.workflow_budget_amount_description;
   }
   return (
     <div style={{
