@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import TextField from 'material-ui/TextField';
-
+import strings from '../../localizeStrings'
 class ProjectCreationName extends Component {
   constructor(props) {
     super(props);
@@ -15,14 +15,14 @@ class ProjectCreationName extends Component {
   };
 
   render() {
-    var floatingLabelText="Project title"
-    var hintText="Name of the project"
-    if (this.props.type==='subproject'){
-      floatingLabelText="Sub-Project title"
-      hintText="Name of the sub-project"
-    }else if (this.props.type==='workflow'){
-      floatingLabelText="Workflow title"
-      hintText="Name of the workflow"
+    var floatingLabelText = strings.project.project_title
+    var hintText = strings.project.project_title_description
+    if (this.props.type === 'subproject') {
+      floatingLabelText = strings.subproject.subproject_title
+      hintText = strings.subproject.subproject_title_description
+    } else if (this.props.type === 'workflow') {
+      floatingLabelText = strings.workflow.workflow_title
+      hintText = strings.workflow.workflow_title_description
     }
     return (
       <div style={{

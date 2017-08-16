@@ -15,6 +15,7 @@
     "react-chartjs-2": "^2.0.5",
     "react-dom": "^15.5.4",
     "react-leaflet": "^1.1.6",
+    "react-localization": "^0.1.1",
     "react-redux": "^5.0.3",
     "react-router": "^4.0.0",
     "react-router-redux": "^5.0.0-alpha.4",

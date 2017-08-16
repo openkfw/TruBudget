@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 class Api {
-  prefix = '/test';
+  prefix = '';
 
   activateProduction = (active) => {
-    this.prefix = active ? '/api' : '/test';
+    this.prefix = active ? '' : '';
   }
 
   fetchPeers = () => axios.get(`${this.prefix}/peers`);

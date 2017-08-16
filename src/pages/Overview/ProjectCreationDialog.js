@@ -1,18 +1,19 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-
+import strings from '../../localizeStrings'
 import ProjectCreationStepper from './ProjectCreationStepper';
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
+  console.log(JSON.stringify(strings))
   const isLastStep = props.creationStep === props.numberOfSteps - 1;
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
 
-  const cancelButton = <FlatButton label="Cancel" secondary={true} onTouchTap={() => handleCancel(props)} />
-  const backButton = <FlatButton label="Back" primary={true} disabled={isFirstStep} onTouchTap={() => handleBack(props)} />
-  const nextButton = <FlatButton label="Next" primary={true} disabled={isLastStep} onTouchTap={() => handleNext(props)} />
-  const submitButton = <FlatButton label="Submit" primary={true} disabled={!isLastStep && !editMode} onTouchTap={() => handleSubmit(props)} />
+  const cancelButton = <FlatButton label={strings.common.cancel} secondary={true} onTouchTap={() => handleCancel(props)} />
+  const backButton = <FlatButton label={strings.common.back} primary={true} disabled={isFirstStep} onTouchTap={() => handleBack(props)} />
+  const nextButton = <FlatButton label={strings.common.next} primary={true} disabled={isLastStep} onTouchTap={() => handleNext(props)} />
+  const submitButton = <FlatButton label={strings.common.submit} primary={true} disabled={!isLastStep && !editMode} onTouchTap={() => handleSubmit(props)} />
 
   const leftActions = <div>{cancelButton}{backButton}</div>
   const rightActions = <div>{nextButton}{submitButton}</div>
