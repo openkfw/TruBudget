@@ -28,7 +28,6 @@ const strings = new LocalizedStrings({
       project_roles: 'Project Roles',
       project_title: 'Project title',
       project_title_description: 'Name of the project',
-
     },
     subproject: {
       subproject_title: 'Sub-Project title',
@@ -38,6 +37,23 @@ const strings = new LocalizedStrings({
       workflow_title: 'Workflow title',
       workflow_title_description: 'Name of the sub-project',
     },
+    navigation: {
+      unread_notifications: "Unread Notifications*",
+      peers: "Peers*",
+      connected_peers: "Connected Peers*",
+      no_peers: "No peers*",
+      logout: "Logout*",
+      read_permission: "Read*",
+      write_permission: "Write*",
+      admin_permission: "Admin*",
+      selections: "Selections*",
+      options: "Options*",
+      rtUpdates: "Real-Time Updates*",
+      other_trustees: "Other Trustees*",
+      menu_item_projects: "Projects*",
+      menu_item_notifications: "Notifications*",
+      menu_item_network: "Network*",
+    }
 
   },
   it: {

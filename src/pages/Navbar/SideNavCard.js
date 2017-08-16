@@ -9,6 +9,7 @@ import Toggle from 'material-ui/Toggle';
 import Subheader from 'material-ui/Subheader';
 
 import colors from '../../colors';
+import strings from '../../localizeStrings';
 
 import TrusteesList, { getChipList } from './TrusteesList';
 
@@ -61,15 +62,15 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
 
     </div>
     <List>
-      <Subheader>Selections</Subheader>
-      <ListItem primaryText="Projects" leftIcon={<ProjectIcon />} onTouchTap={() => history.push('/')} />
-      <ListItem primaryText="Notifications" leftIcon={<SocialNotificationIcon />} onTouchTap={() => history.push('/notifications')} />
-      <ListItem primaryText="Network" leftIcon={<NetworkIcon />} onTouchTap={() => history.push('/dashboard')} />
+      <Subheader>{strings.navigation.selections}</Subheader>
+      <ListItem primaryText={strings.navigation.menu_item_projects} leftIcon={<ProjectIcon />} onTouchTap={() => history.push('/')} />
+      <ListItem primaryText={strings.navigation.menu_item_notifications} leftIcon={<SocialNotificationIcon />} onTouchTap={() => history.push('/notifications')} />
+      <ListItem primaryText={strings.navigation.menu_item_network} leftIcon={<NetworkIcon />} onTouchTap={() => history.push('/dashboard')} />
     </List>
     <Divider />
     <List>
-      <Subheader>Options</Subheader>
-      <ListItem primaryText="Real-time Updates" rightToggle={<Toggle />} />
+      <Subheader>{strings.navigation.options}</Subheader>
+      <ListItem primaryText={strings.navigation.rtUpdates} rightToggle={<Toggle />} />
     </List>
     <Divider />
     {loggedInUser.role.admin ? <TrusteesList users={users} loggedInUser={loggedInUser} /> : null}

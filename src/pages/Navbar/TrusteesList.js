@@ -8,7 +8,7 @@ import OK from 'material-ui/svg-icons/navigation/check';
 import _ from 'lodash';
 
 import { ACMECorpSuperLightgreen, ACMECorpLightgrey, ACMECorpGreen, red, lightRed } from '../../colors';
-
+import strings from '../../localizeStrings';
 
 const styles = {
   chip: {
@@ -38,9 +38,9 @@ const createChip = (name, ok) => (
 
 export const getChipList = (role) => (
   <div style={styles.container}>
-    {createChip('Read', role.read)}
-    {createChip('Write', role.write)}
-    {createChip('Admin', role.admin)}
+    {createChip(strings.navigation.read_permission, role.read)}
+    {createChip(strings.navigation.write_permission, role.write)}
+    {createChip(strings.navigation.admin_permission, role.admin)}
   </div>
 )
 
@@ -68,7 +68,7 @@ const TrusteesList = ({ users, loggedInUser }) => {
   const otherUsers = _.values(users).filter((user) => user.id !== loggedInUser.id);
   return (
     <List>
-      <Subheader>Other Trustees</Subheader>
+      <Subheader>{strings.navigation.other_trustees}</Subheader>
       {createListItems(otherUsers)}
     </List>
   )
