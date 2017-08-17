@@ -143,7 +143,24 @@ const strings = new LocalizedStrings({
       notification_table_by: 'By*',
       notification_table_all_read: 'all read*',
       notification_table_view: 'View*'
+    },
+    history: {
+      edit_status: "Status of workflow item {0} changed to {1}",
+      edit_currency: 'Currency of workflow item {0} changed to {1} ',
+      edit_amount: 'Amount of workflow item {0} changed from {1} to {2} ',
+      edit_comment: 'Comment of workflow item {0} changed to {1} ',
+      edit_addData: 'Additional data of workflow item {0} changed to {1} ',
+      edit_workflowName: 'Name of workflow item {0} changed to {1} ',
+      created_workflow: 'Workflow {0} created ',
+      created_project: 'Project created ',
+      created_subproject: 'Subproject {0} created',
+      edit_amountType: 'Budget status of workflow item {0} changed from {1} to {2}',
+      edit_documents: 'Documents changed for workflow item {0}',
+      edit_subproject: 'Amount of {0} increased to {1}',
+      first_sort: 'Moved {0} to first position',
+      sort: 'Moved {0} after {1}'
     }
+
 
   },
   it: {

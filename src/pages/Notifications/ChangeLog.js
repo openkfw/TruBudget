@@ -6,13 +6,78 @@ import Avatar from 'material-ui/Avatar';
 import { List, ListItem } from 'material-ui/List';
 import moment from 'moment';
 import { ACMECorpLightgreen } from '../../colors.js';
-import strings from '../../localizeStrings'
+import strings from '../../localizeStrings';
+import { statusMapping } from '../../helper';
+
+const getDescription = (item) => {
+  const { data } = item;
+  const { action } = data;
+  const templateString = strings.history[action];
+  console.log(item)
+  switch (action) {
+    case 'edit_status': {
+      const { workflowName, newData } = data;
+      console.log(newData)
+      return strings.formatString(templateString, workflowName, statusMapping[newData])
+    } break;
+    case 'edit_amount': {
+      const { workflowName, newData, oldData } = data;
+      return strings.formatString(templateString, workflowName, oldData, newData)
+    } break;
+    case 'edit_amountType': {
+      const { workflowName, newData, oldData } = data;
+      return strings.formatString(templateString, workflowName, oldData, newData)
+    } break;
+    case 'edit_comment': {
+      const { workflowName, newData } = data;
+      return strings.formatString(templateString, workflowName, newData)
+    } break;
+    case 'edit_workflowName': {
+      const { workflowName, newData, oldData } = data;
+      return strings.formatString(templateString, oldData, newData)
+    } break;
+    case 'created_workflow': {
+      const { workflowName } = data.data;
+      return strings.formatString(templateString, workflowName)
+    } break;
+    case 'created_project': {
+      return templateString;
+    } break;
+    case 'created_subproject': {
+      const { projectName } = data.data;
+      return strings.formatString(templateString, projectName)
+    } break;
+    case 'sort': {
+      const { workflowName, previousName, first } = data.data;
+      if (first) {
+        const templateString = strings.history['first_sort'];
+        return strings.formatString(templateString, workflowName)
+      }
+      return strings.formatString(templateString, workflowName, previousName)
+    } break;
+    case 'edit_subproject': {
+      const { amount, subProjectName } = data.data;
+      return strings.formatString(templateString, subProjectName, amount)
+    } break;
+    case 'edit_documents': {
+      const { workflowName } = data
+      return strings.formatString(templateString, workflowName)
+    } break;
+    default:
+      break;
+  }
+}
+
 const getListEntries = (historyItems, users) => {
   return historyItems.map((item, index) => {
     const userId = typeof item.data.from !== "undefined" ? item.data.from : 'jzakotnik'
+    const description = getDescription(item)
+
+
     return (
       <ListItem key={index}
-        primaryText={item.data.description}
+        primaryText={description}
+
         leftAvatar={<Avatar src={users[userId].avatar} />}
         secondaryText={item.blocktime ? moment(item.blocktime, 'X').fromNow() : 'Processing ...'}
       />
