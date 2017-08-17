@@ -13,11 +13,9 @@ const getDescription = (item) => {
   const { data } = item;
   const { action } = data;
   const templateString = strings.history[action];
-  console.log(item)
   switch (action) {
     case 'edit_status': {
       const { workflowName, newData } = data;
-      console.log(newData)
       return strings.formatString(templateString, workflowName, statusMapping[newData])
     } break;
     case 'edit_amount': {
@@ -72,12 +70,9 @@ const getListEntries = (historyItems, users) => {
   return historyItems.map((item, index) => {
     const userId = typeof item.data.from !== "undefined" ? item.data.from : 'jzakotnik'
     const description = getDescription(item)
-
-
     return (
       <ListItem key={index}
         primaryText={description}
-
         leftAvatar={<Avatar src={users[userId].avatar} />}
         secondaryText={item.blocktime ? moment(item.blocktime, 'X').fromNow() : 'Processing ...'}
       />

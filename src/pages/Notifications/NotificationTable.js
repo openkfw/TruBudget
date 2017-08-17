@@ -42,11 +42,25 @@ const markAllRead = (loggedInUser, markNotificationAsRead, notifications) => {
     markNotificationAsRead(loggedInUser.id, notification.key, notification.data);
   });
 }
+/*
+   create_workflow: 'Assigned workflow item {0} to you',
+      edit_workflow: 'Assigned workflow item {0} to you',
+      create_transaction: 'Assigned transaction {0} to you',
+      edit_transaction: 'Assigned transaction {0} to you',
+      review_workflow: 'You are assigned to review the workflow item {0}',
+      review_transaction: 'You are assigned to review the transaction {0} '
+      */
+const getDescription = (data) => {
+  const { action, workflowItem } = data;
+  const templateString = strings.notification[action]
+  return strings.formatString(templateString, workflowItem)
 
+}
 const getNotifications = (notifications, filter = 'all', streamNames, users, loggedInUser, markNotificationAsRead, history) => {
 
   return notifications.reduce((acc, { data, blocktime, key }, index) => {
     const issuer = users[data.issuer];
+    const description = getDescription(data);
     const notificationRead = data.done === true;
     const viewable = data.link === '/dashboard' ? false : !data.done
 
@@ -54,7 +68,7 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
       <TableRow key={index} style={notificationRead ? {} : styles.notSelected} onTouchTap={notificationRead ? undefined : () => markNotificationAsRead(loggedInUser.id, key, data)}>
         <TableRowColumn style={styles.columnNonBreaking} colSpan="3">{streamNames[data.project] ? streamNames[data.project] : data.project}</TableRowColumn>
         <TableRowColumn style={styles.columnNonBreaking} colSpan="3">{streamNames[data.subProject] ? streamNames[data.subProject] : data.subProject}</TableRowColumn>
-        <TableRowColumn style={styles.column} colSpan="5">{data.description}</TableRowColumn>
+        <TableRowColumn style={styles.column} colSpan="5">{description}</TableRowColumn>
         <TableRowColumn colSpan="3">
           <ListItem
             disabled
