@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import NotificationTable from './NotificationTable';
+import strings from '../../localizeStrings';
 
 const styles = {
   headline: {
@@ -21,10 +22,10 @@ const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotifica
   return (
     <div style={styles.card}>
       <Card style={{ width: '100%', marginBottom: '10px' }}>
-        <CardTitle title="Notifications" subtitle="Unread" />
+        <CardTitle title={strings.notification.notification_title} subtitle={strings.notification.notification_subtitle} />
         <CardText>
-          Please find your current notifications below. These display action items or information items to be dealt with.
-    </CardText>
+          {strings.notification.notification_card_text}
+        </CardText>
         <NotificationTable
           history={history}
           notifications={list}

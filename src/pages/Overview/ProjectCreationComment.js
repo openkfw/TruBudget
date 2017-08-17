@@ -15,8 +15,9 @@ class ProjectCreationComment extends Component {
   };
 
   render() {
-    const hintText = strings.project.project_comment
-    var floatingLabelText = strings.common.comment_description
+    console.log(this.props.type)
+    var floatingLabelText = strings.project.project_comment
+    const hintText = strings.common.comment_description
 
     if (this.props.type === 'subproject') {
       floatingLabelText = strings.subproject.subproject_comment

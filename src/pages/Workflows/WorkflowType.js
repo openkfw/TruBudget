@@ -1,6 +1,6 @@
 import React from 'react';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-
+import strings from '../../localizeStrings'
 
 
 const styles = {
@@ -23,13 +23,13 @@ const WorkflowType = ({ workflowType, storeWorkflowType, editMode }) => {
       <RadioButtonGroup name="radioGroup" defaultSelected={workflowType} onChange={(event, value) => storeWorkflowType(value)}>
         <RadioButton
           value="workflow"
-          label="Workflow"
+          label={strings.workflow.workflow_type_workflow}
           disabled={editMode}
           style={styles.radioButton}
         />
         <RadioButton
           value="transaction"
-          label="Transaction"
+          label={strings.workflow.workflow_type_transaction}
           disabled={editMode}
           style={styles.radioButton}
         />

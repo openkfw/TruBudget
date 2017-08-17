@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 
 import DocumentOverview from './DocumentOverview';
-
+import strings from '../../localizeStrings'
 const styles = {
   uploadButton: {
     verticalAlign: 'middle',
@@ -37,15 +37,15 @@ export default class DocumentUpload extends Component {
         </div>
         <div>
           <TextField
-            hintText="Add name of document"
-            floatingLabelText="Document Name"
+            hintText={strings.workflow.workflow_document_description}
+            floatingLabelText={strings.workflow.workflow_document_name}
             value={this.state.name}
             onChange={(event) => this.setState({ name: event.target.value })}
           />
           <FlatButton
             labelPosition="before"
             containerElement="label"
-            label="Upload"
+            label={strings.workflow.workflow_upload_document}
             style={styles.uploadButton}
             disabled={_.isEmpty(this.state.name)}
           >

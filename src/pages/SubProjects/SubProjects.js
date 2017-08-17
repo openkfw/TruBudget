@@ -9,7 +9,7 @@ import ChangeLog from '../Notifications/ChangeLog';
 import ProjectCreationDialog from '../Overview/ProjectCreationDialog';
 import { ACMECorpLightgreen, ACMECorpDarkBlue } from '../../colors.js';
 import _ from 'lodash';
-
+import strings from '../../localizeStrings'
 const SubProjects = (props) => {
   const roleOfUser = props.loggedInUser.role
   const isAllowedCreateProjects = roleOfUser.write && _.includes([...props.projectAssignee], roleOfUser.roleName);
@@ -20,7 +20,7 @@ const SubProjects = (props) => {
     }}>
       <ProjectCreationDialog
         {...props}
-        title="Add new Sub-project"
+        title={strings.subproject.add_new_subproject}
         createProject={props.createSubProjectItem}
         creationDialogShown={props.workflowDialogVisible}
         projectName={props.subProjectName}
@@ -31,7 +31,7 @@ const SubProjects = (props) => {
         storeProjectComment={props.storeSubProjectComment}
         projectCurrency={props.subProjectCurrency}
         storeProjectCurrency={props.storeSubProjectCurrency}
-        parentCurrency = {props.projectCurrency}
+        parentCurrency={props.projectCurrency}
         type={'subproject'}
         numberOfSteps={3}
       />

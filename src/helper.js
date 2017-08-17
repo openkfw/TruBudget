@@ -5,7 +5,7 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import accounting from 'accounting';
 import _ from 'lodash';
-
+import strings from './localizeStrings'
 import currencies from './currency';
 
 import { taskStatusColorPalette, budgetStatusColorPalette, workflowBudgetColorPalette } from './colors';
@@ -20,20 +20,21 @@ export const tsToString = (ts) => {
   return dateString;
 }
 export const typeMapping = {
-  workflow: 'Workflow',
-  transaction: 'Transaction'
+  workflow: strings.workflow.workflow_type_workflow,
+  transaction: strings.workflow.workflow_type_transaction
 }
+
 export const statusMapping = {
-  done: 'Done',
-  'in_review': 'In review',
-  'in_progress': 'In progress',
-  open: 'Open'
+  done: strings.common.done,
+  'in_review': strings.common.in_review,
+  'in_progress': strings.common.in_progress,
+  open: strings.common.open
 }
 
 export const amountTypes = {
-  na: 'N/A',
-  allocated: 'Allocated',
-  disbursed: 'Disbursed'
+  na: strings.workflow.workflow_budget_status_na,
+  allocated: strings.workflow.workflow_budget_status_allocated,
+  disbursed: strings.workflow.workflow_budget_status_disbursed
 }
 
 export const statusIconMapping = {
@@ -43,10 +44,10 @@ export const statusIconMapping = {
 }
 
 const actionMapping = (assignee, bank, approver) => ({
-  'in_review': `Pending for review of ${approver}`,
-  pending: `Pending for approval of ${bank}`,
-  'in_progress': `Pending on  ${assignee}`,
-  open: `Pending on  ${assignee}`,
+  'in_review': `${strings.workflow.workflow_action_in_review} ${approver}`,
+  pending: `${strings.workflow.workflow_action_pending_approval} ${bank}`,
+  'in_progress': `${strings.workflow.workflow_action_open_in_progress}  ${assignee}`,
+  open: `${strings.workflow.workflow_action_open_in_progress} ${assignee}`,
 })
 
 
@@ -83,7 +84,7 @@ export const calculateWorkflowBudget = (workflows) => {
 export const createAmountData = (projectAmount, subProjects) => {
   const subProjectsAmount = calculateUnspentAmount(subProjects)
   const unspent = projectAmount - subProjectsAmount;
-  return createDoughnutData(["Assigned", "Not assigned"], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
+  return createDoughnutData([strings.common.assigned, strings.common.not_assigned], [subProjectsAmount, unspent < 0 ? 0 : unspent], budgetStatusColorPalette);
 }
 
 export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) => {
@@ -96,7 +97,7 @@ export const createSubprojectAmountData = (subProjectAmount, workflows) => {
 
 
   const budgetLeft = getNotAssignedBudget(subProjectAmount, assigned, disbursed);
-  return createDoughnutData(["Not Assigned Budget", "Assigned Budget", "Disbursed Budget"], [budgetLeft, assigned, disbursed], workflowBudgetColorPalette)
+  return createDoughnutData([strings.common.not_assigned_budget, strings.common.assigned_budget, strings.common.disbursed_budget], [budgetLeft, assigned, disbursed], workflowBudgetColorPalette)
 }
 
 export const getProgressInformation = (items) => {
@@ -122,9 +123,9 @@ export const getProgressInformation = (items) => {
 export const createTaskData = (items, type) => {
   const projectStatus = getProgressInformation(items)
   if (type === 'workflows') {
-    return createDoughnutData(["Open", "In progress", "In Review", "Done"], [projectStatus.open, projectStatus.inProgress, projectStatus.inReview, projectStatus.done]);
+    return createDoughnutData([strings.common.open, strings.common.in_progress, strings.common.in_review, strings.common.done], [projectStatus.open, projectStatus.inProgress, projectStatus.inReview, projectStatus.done]);
   }
-  return createDoughnutData(["Open", "In progress", "Done"], [projectStatus.open, projectStatus.inProgress, projectStatus.done]);
+  return createDoughnutData([strings.common.open, strings.common.in_progress, strings.common.done], [projectStatus.open, projectStatus.inProgress, projectStatus.done]);
 }
 
 export const getNextIncompletedItem = (items) => {

@@ -6,6 +6,7 @@ import IconButton from 'material-ui/IconButton';
 import ReadIcon from 'material-ui/svg-icons/navigation/check';
 import FlatButton from 'material-ui/FlatButton';
 import { ACMECorpGreen, ACMECorpLightgreen } from '../../colors.js';
+import strings from '../../localizeStrings';
 
 const styles = {
   notSelected: {
@@ -64,7 +65,7 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
           />
         </TableRowColumn>
         <TableRowColumn style={styles.column} colSpan="2">
-          <FlatButton label="View" primary={true} onTouchTap={() => viewItem(data, history)} />
+          <FlatButton label={strings.notification.notification_table_view} primary={true} onTouchTap={() => viewItem(data, history)} />
         </TableRowColumn>
       </TableRow>
     );
@@ -94,11 +95,11 @@ const NotificationTable = ({ notifications, filter, streamNames, users, loggedIn
         displaySelectAll={false}
         adjustForCheckbox={false}>
         <TableRow>
-          <TableHeaderColumn style={styles.column} colSpan="3">Project</TableHeaderColumn>
-          <TableHeaderColumn style={styles.column} colSpan="3">Subproject</TableHeaderColumn>
-          <TableHeaderColumn style={styles.column} colSpan="5">Description</TableHeaderColumn>
-          <TableHeaderColumn style={styles.column} colSpan="3">By</TableHeaderColumn>
-          <TableHeaderColumn style={styles.columnNonBreaking} colSpan="2"><FlatButton label="all read" onTouchTap={() => markAllRead(loggedInUser, markNotificationAsRead, notifications)} /></TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="3">{strings.notification.notification_table_project}</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="3">{strings.notification.notification_table_subproject}</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="5">{strings.notification.notification_table_description}</TableHeaderColumn>
+          <TableHeaderColumn style={styles.column} colSpan="3">{strings.notification.notification_table_by}</TableHeaderColumn>
+          <TableHeaderColumn style={styles.columnNonBreaking} colSpan="2"><FlatButton label={strings.notification.notification_table_all_read} onTouchTap={() => markAllRead(loggedInUser, markNotificationAsRead, notifications)} /></TableHeaderColumn>
         </TableRow>
       </TableHeader>
       <TableBody

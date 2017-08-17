@@ -39,20 +39,20 @@ const getTableEntries = ({ projects, history }) => {
             disabled={true}
             leftIcon={<CommentIcon />}
             primaryText={comment}
-            secondaryText={strings.common.overview_card_comment}
+            secondaryText={strings.common.comment}
           />
           <ListItem
             disabled={true}
             leftIcon={<AmountIcon />}
             primaryText={amount}
-            secondaryText={strings.common.overview_card_budget}
+            secondaryText={strings.common.budget}
           />
 
           <ListItem
             disabled={true}
             leftIcon={<DateIcon />}
             primaryText={dateString}
-            secondaryText={strings.common.overview_card_created}
+            secondaryText={strings.common.created}
           />
 
         </List>

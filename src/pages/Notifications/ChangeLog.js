@@ -6,7 +6,7 @@ import Avatar from 'material-ui/Avatar';
 import { List, ListItem } from 'material-ui/List';
 import moment from 'moment';
 import { ACMECorpLightgreen } from '../../colors.js';
-
+import strings from '../../localizeStrings'
 const getListEntries = (historyItems, users) => {
   return historyItems.map((item, index) => {
     const userId = typeof item.data.from !== "undefined" ? item.data.from : 'jzakotnik'
@@ -31,12 +31,12 @@ const getSideBar = (hideHistory, historyItems, users) => {
         width: '300px',
         height: '655px',
       }} >
-        <CardHeader title='History' titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }} />
+        <CardHeader title={strings.common.history} titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }} />
         <List style={{ overflowX: 'auto', height: '550px' }}>
           {listEntries}
         </List>
         <div style={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
-          <FlatButton label="Close" onTouchTap={hideHistory} primary={true} />
+          <FlatButton label={strings.common.close} onTouchTap={hideHistory} primary={true} />
         </div>
       </Card>
     </div>

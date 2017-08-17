@@ -12,7 +12,7 @@ import {
 import _ from 'lodash';
 
 import { ACMECorpSuperLightgreen, lightRed } from '../../colors';
-
+import strings from '../../localizeStrings'
 const styles = {
   uploadButton: {
     verticalAlign: 'middle',
@@ -44,16 +44,16 @@ class DocumentOverview extends Component {
     let label = null;
 
     if (_.isUndefined(validated)) {
-      label = 'Validate';
+      label = strings.workflow.workflow_document_validate;
       style = styles.uploadButton;
     } else if (validated === true) {
-      label = 'Validated!';
+      label = strings.workflow.workflow_document_validated + '!';
       style = {
         ...styles.uploadButton,
         backgroundColor: ACMECorpSuperLightgreen
       };
     } else {
-      label = 'Changed!';
+      label = strings.workflow.workflow_document_changed + '!';
       style = {
         ...styles.uploadButton,
         backgroundColor: lightRed,
@@ -105,7 +105,7 @@ class DocumentOverview extends Component {
 
   generateEmptyList = () => (
     <TableRow selectable={false}>
-      <TableRowColumn>No documents</TableRowColumn>
+      <TableRowColumn>{strings.workflow.workflow_no_documents}</TableRowColumn>
     </TableRow>
   )
 
