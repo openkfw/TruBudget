@@ -5,7 +5,6 @@ import strings from '../../localizeStrings'
 import ProjectCreationStepper from './ProjectCreationStepper';
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  console.log(JSON.stringify(strings))
   const isLastStep = props.creationStep === props.numberOfSteps - 1;
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
@@ -43,7 +42,6 @@ const handleSubmit = (props) => {
 
 
 const ProjectCreationDialog = (props) => {
-
   const { creationDialogShown, title } = props;
   return (
 
