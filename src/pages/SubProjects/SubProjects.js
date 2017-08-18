@@ -20,7 +20,7 @@ const SubProjects = (props) => {
     }}>
       <ProjectCreationDialog
         {...props}
-        title={strings.subproject.add_new_subproject}
+        title={strings.subproject.subproject_add}
         createProject={props.createSubProjectItem}
         creationDialogShown={props.workflowDialogVisible}
         projectName={props.subProjectName}
