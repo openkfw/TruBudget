@@ -6,14 +6,15 @@ import IconMenu from 'material-ui/IconMenu';
 import Subheader from 'material-ui/Subheader';
 import NetworkIcon from 'material-ui/svg-icons/hardware/device-hub';
 
-import colors from '../../colors'
+import colors from '../../colors';
+import strings from '../../localizeStrings';
 
 class Icon extends Component {
-  render() {
+  render () {
     return (
       <IconButton
         {...this.props}
-        tooltip="Peers">
+        tooltip={strings.navigation.peers}>
         <NetworkIcon color={colors.lightColor} />
       </IconButton>
     )
@@ -41,8 +42,8 @@ const PeerInfoIcon = (props) => {
         anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
-        <Subheader>Connected peers</Subheader>
-        {amount > 0 ? list : <MenuItem primaryText="No peers" disabled />}
+        <Subheader>{strings.navigation.connected_peers}</Subheader>
+        {amount > 0 ? list : <MenuItem primaryText={strings.navigation.no_peers} disabled />}
       </IconMenu>
     </Badge>
   )

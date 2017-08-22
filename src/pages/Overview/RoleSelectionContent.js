@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import Chip from 'material-ui/Chip';
 import _ from 'lodash';
-
+import strings from '../../localizeStrings'
 
 const styles = {
   container: {
@@ -60,7 +60,7 @@ class RoleSelectionContent extends Component {
       <div style={styles.container}>
         <AutoComplete
           ref="autoComplete"
-          floatingLabelText="Search organizations"
+          floatingLabelText={strings.project.project_authority_organization_search}
           searchText={this.state.searchText}
           dataSource={unSelectedDataSource}
           onNewRequest={this.onSelect}

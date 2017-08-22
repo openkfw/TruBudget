@@ -3,7 +3,7 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
 
 import ProjectCreationCurrency from '../Overview/ProjectCreationCurrency';
-
+import strings from '../../localizeStrings'
 const styles = {
   container: {
     display: 'flex',
@@ -33,8 +33,8 @@ const WorkflowCreationAmount = (props) => {
     workflowAmountType,
     subProjectCurrency,
   } = props;
-  const floatingLabelText = "Workflow budget amount";
-  const hintText = "Budget amount for the workflow";
+  const floatingLabelText = strings.workflow.workflow_budget;
+  const hintText = strings.workflow.workflow_budget_description;
   return (
     <div style={styles.container}>
       <div>
@@ -42,17 +42,17 @@ const WorkflowCreationAmount = (props) => {
           <RadioButton
             style={styles.buttons}
             value="na"
-            label="Not applicable"
+            label={strings.workflow.workflow_budget_na}
           />
           <RadioButton
             style={styles.buttons}
             value="allocated"
-            label="allocated"
+            label={strings.workflow.workflow_budget_allocated}
           />
           <RadioButton
             style={styles.buttons}
             value="disbursed"
-            label="disbursed"
+            label={strings.workflow.workflow_budget_disbursed}
           />
         </RadioButtonGroup>
       </div>

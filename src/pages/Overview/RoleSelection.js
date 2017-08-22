@@ -7,6 +7,7 @@ import {
 } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import strings from '../../localizeStrings'
 
 
 class RoleSelection extends Component {
@@ -36,7 +37,7 @@ class RoleSelection extends Component {
     return (
       <div style={{ margin: '12px 0' }}>
         <RaisedButton
-          label={stepIndex === lastStep ? 'Finish' : 'Next'}
+          label={stepIndex === lastStep ? strings.common.finish : strings.common.next}
           disableTouchRipple={true}
           disableFocusRipple={true}
           primary={true}
@@ -45,7 +46,7 @@ class RoleSelection extends Component {
         />
         {step > 0 && (
           <FlatButton
-            label="Back"
+            label={strings.common.back}
             disabled={stepIndex === 0}
             disableTouchRipple={true}
             disableFocusRipple={true}

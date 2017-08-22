@@ -9,6 +9,7 @@ import Avatar from 'material-ui/Avatar';
 import { ListItem } from 'material-ui/List';
 
 import DocumentOverview from '../Documents/DocumentOverview';
+import strings from '../../localizeStrings'
 
 const styles = {
   textfield: {
@@ -69,27 +70,21 @@ const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails
 
     <Dialog open={showWorkflowDetails} actions={actions} title={workflowItem.data.workflowName} modal={false} style={styles.dialog}>
       <div>
-        Type:
+        {strings.workflow.workflow_type}:
         <TextField disabled={true} hintText={typeMapping[workflowItem.data.type]} style={styles.textfield} underlineShow={false} />
         <Divider />
-        Amount:
+        {strings.common.budget}:
         <TextField disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false} />
         <Divider />
-        Comment:
+        {strings.common.comment}:
         <TextField disabled={true} multiLine={true} hintText={workflowItem.data.comment} style={styles.textfield} underlineShow={false} />
         <Divider />
-        Documents:
+        {strings.workflow.workflow_documents}:
         <DocumentOverview documents={workflowItem.data.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />
         <Divider />
-        Status:
+        {strings.common.comment}:
         <TextField disabled={true} hintText={statusMapping[status]} style={styles.textfield} underlineShow={false} />
         <Divider />
-        <div style={styles.paper}>
-          Assignee:
-          <ListItem primaryText={''} disabled={true} secondaryText={'ssignedUser.organization'} leftAvatar={< Avatar src={
-            'tmp'
-          } />} />
-        </div>
 
       </div>
     </Dialog>

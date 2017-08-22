@@ -5,15 +5,15 @@ import ProjectCreationName from './ProjectCreationName';
 import ProjectCreationAmount from './ProjectCreationAmount';
 import ProjectCreationComment from './ProjectCreationComment';
 import ProjectCreationRoles from './ProjectCreationRoles';
-
+import strings from '../../localizeStrings'
 const getStepContent = ({ creationStep, ...props }) => {
   switch (creationStep) {
     case 0:
-      return <ProjectCreationName storeProjectName={props.storeProjectName} projectName={props.projectName} />
+      return <ProjectCreationName storeProjectName={props.storeProjectName} projectName={props.projectName} type={props.type} />
     case 1:
-      return <ProjectCreationAmount storeProjectAmount={props.storeProjectAmount} storeProjectCurrency={props.storeProjectCurrency} projectAmount={props.projectAmount} projectCurrency={props.projectCurrency} parentCurrency={props.parentCurrency}  />
+      return <ProjectCreationAmount storeProjectAmount={props.storeProjectAmount} storeProjectCurrency={props.storeProjectCurrency} projectAmount={props.projectAmount} projectCurrency={props.projectCurrency} parentCurrency={props.parentCurrency} type={props.type} />
     case 2:
-      return <ProjectCreationComment storeProjectComment={props.storeProjectComment} projectComment={props.projectComment} />
+      return <ProjectCreationComment storeProjectComment={props.storeProjectComment} projectComment={props.projectComment} type={props.type} />
     case 3:
       return <ProjectCreationRoles {...props} />
     default:
@@ -22,10 +22,10 @@ const getStepContent = ({ creationStep, ...props }) => {
 }
 
 const steps = [
-  'Project Name',
-  'Project Budget',
-  'Project Comment',
-  'Project Roles'
+  strings.project.project_name,
+  strings.project.project_budget,
+  strings.project.project_comment,
+  strings.project.project_roles
 ];
 
 const getSteps = (numberOfSteps) => {
@@ -37,6 +37,7 @@ const getSteps = (numberOfSteps) => {
 }
 
 const ProjectCreationStepper = (props) => {
+
   const { numberOfSteps, creationStep } = props;
   const contentStyle = { margin: '0 16px' };
   return (

@@ -4,9 +4,11 @@ import BubbleIcon from 'material-ui/svg-icons/communication/chat-bubble-outline'
 
 import Badge from 'material-ui/Badge';
 
-import colors from '../../colors'
+import colors from '../../colors';
+import strings from '../../localizeStrings';
 
-const NotificationIcon = ({unreadNotifications, history}) => {
+
+const NotificationIcon = ({ unreadNotifications, history }) => {
   return (
     <Badge
       badgeContent={unreadNotifications}
@@ -14,9 +16,9 @@ const NotificationIcon = ({unreadNotifications, history}) => {
       style={{ padding: 0 }}
       badgeStyle={{ height: '18px', width: '18px' }}>
       <IconButton
-        tooltip="Unread Notifications"
+        tooltip={strings.navigation.unread_notifications}
         onTouchTap={() => history.push('/notifications')}>
-        <BubbleIcon color={colors.lightColor}/>
+        <BubbleIcon color={colors.lightColor} />
       </IconButton>
     </Badge>
   )

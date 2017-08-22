@@ -11,13 +11,13 @@ import ChangeLog from '../Notifications/ChangeLog'
 import SortIcon from 'material-ui/svg-icons/content/low-priority'
 import { ACMECorpGrey, ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
-
+import strings from '../../localizeStrings'
 
 const enableWorkflowSort = (props, allowedToSort) => (
   <FlatButton
     disabled={!allowedToSort}
     onTouchTap={() => props.enableWorkflowSort()}
-    label="Sort"
+    label={strings.workflow.workflow_enable_sort}
     style={{
       position: 'relative',
       marginTop: '8px',
@@ -34,7 +34,7 @@ const submitSort = (props, allowedToSort) => (
   <FlatButton
     disabled={!allowedToSort}
     onTouchTap={() => props.postWorkflowSort(props.location.pathname.split('/')[3], props.workflowItems)}
-    label="Save"
+    label={strings.workflow.worfkfow_disable_sort}
     style={{
       position: 'relative',
       marginTop: '8px',

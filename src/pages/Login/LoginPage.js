@@ -15,7 +15,7 @@ import FontIcon from 'material-ui/FontIcon';
 import SvgIconFace from 'material-ui/svg-icons/action/face';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-
+import strings from '../../localizeStrings'
 const defaultUser = {
   jdoe: {
     id: 'jdoe',
@@ -81,15 +81,15 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
         opacity: 0.9
       }}>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-          <CardTitle title="TruBudget" subtitle="A blockchain-based solution for budget expenditure" />
+          <CardTitle title="TruBudget" subtitle={strings.login.tru_budget_description} />
           <SelectField
             onChange={(event, index, value) => storeEnvironment(value)}
-            floatingLabelText="Environment" value={environment}
+            floatingLabelText={strings.login.environment} value={environment}
             floatingLabelStyle={{ color: ACMECorpLightgreen }}
             style={{ width: '40%', marginRight: '8px' }}
           >
-            <MenuItem value="Test" primaryText="Test" />
-            <MenuItem value="Prod" primaryText="Prod" />
+            <MenuItem value="Test" primaryText={strings.login.test_env} />
+            <MenuItem value="Prod" primaryText={strings.login.production_env} />
           </SelectField>
 
         </div>
@@ -99,9 +99,9 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
           <TextField
             floatingLabelStyle={{ color: ACMECorpDarkBlue }}
             underlineFocusStyle={{ borderBottomColor: ACMECorpDarkBlue }}
-            floatingLabelText="Username"
+            floatingLabelText={strings.login.username}
             value={username}
-            errorText={loginUnsuccessful ? "Incorrect username" : ""}
+            errorText={loginUnsuccessful ? strings.login.incorrect_username : ""}
             onChange={(event) => storeUsername(event.target.value)}
           />
         </div>
@@ -110,15 +110,15 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
           <TextField
             floatingLabelStyle={{ color: ACMECorpDarkBlue }}
             underlineFocusStyle={{ borderBottomColor: ACMECorpDarkBlue }}
-            floatingLabelText="Password"
+            floatingLabelText={strings.login.password}
             value={password}
             onChange={(event) => storePassword(event.target.value)}
-            errorText={loginUnsuccessful ? "Incorrect password" : ""}
+            errorText={loginUnsuccessful ? strings.login.incorrect_password : ""}
             type="password"
           />
         </div>
         <div style={{ paddingTop: '10px', paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-          <RaisedButton label="Login" style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
+          <RaisedButton label={strings.login.login_button_title} style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
         <Divider />
         <div>
@@ -126,7 +126,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
         </div>
         <Divider />
         <CardText style={{ fontSize: '11px' }}>
-          Developed by Emerging Technologies & Innovation @ Accenture
+          {strings.login.accenture_tag}
         </CardText>
       </Card>
       <img style={{

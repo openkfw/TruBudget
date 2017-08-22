@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import strings from '../../localizeStrings'
 import TextField from 'material-ui/TextField';
 
 class ProjectCreationComment extends Component {
@@ -15,13 +15,13 @@ class ProjectCreationComment extends Component {
   };
 
   render() {
-    const hintText = "Add some comments"
-    var floatingLabelText = "Project Comment"
+    var floatingLabelText = strings.project.project_comment
+    const hintText = strings.common.comment_description
 
     if (this.props.type === 'subproject') {
-      floatingLabelText = "Sub-project comment"
+      floatingLabelText = strings.subproject.subproject_comment
     } else if (this.props.type === 'workflow') {
-      floatingLabelText = "Workflow Comment"
+      floatingLabelText = strings.workflow.workflow_comment
     }
     return (
       <div style={{

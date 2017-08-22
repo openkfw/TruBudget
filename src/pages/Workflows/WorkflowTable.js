@@ -12,7 +12,7 @@ import WorkflowDetails from './WorkflowDetails'
 import WorkflowList from './WorkflowList'
 import { ACMECorpLightgreen } from '../../colors.js';
 import { arrayMove } from 'react-sortable-hoc';
-
+import strings from '../../localizeStrings'
 
 const styles = {
   listText: {
@@ -23,16 +23,16 @@ const styles = {
 
 const createTableHeader = () => (
   <Card>
-    <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }} title="Workflow items" />
+    <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }} title={strings.workflow.workflow_table_title} />
     <div style={{ marginLeft: '50px', marginRight: '10px', position: 'relative' }}>
       <Table>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{ borderBottom: '0px' }}>
           <TableRow displayBorder={false}>
             <TableHeaderColumn style={styles.listText} colSpan={1}></TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={3}>Workflow</TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={3}>Amount</TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={2}>Status</TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={2}>Actions</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={3}>{strings.workflow.workflow_type_workflow}</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={3}>{strings.common.budget}</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={2}>{strings.common.status}</TableHeaderColumn>
+            <TableHeaderColumn style={styles.listText} colSpan={2}>{strings.common.actions}</TableHeaderColumn>
           </TableRow>
         </TableHeader>
       </Table>

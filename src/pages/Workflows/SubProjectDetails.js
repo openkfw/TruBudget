@@ -20,9 +20,8 @@ import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import IconButton from 'material-ui/IconButton';
-
 import TextField from 'material-ui/TextField';
-
+import strings from '../../localizeStrings'
 import {
   ACMECorpLightgreen,
 } from '../../colors'
@@ -117,7 +116,7 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
         disabled={true}
         leftIcon={<AmountIcon />}
         primaryText={amountString}
-        secondaryText={'Budget'}
+        secondaryText={strings.common.budget}
       />
       <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(props, amountString)} />
     </div>
@@ -131,7 +130,7 @@ const disableEditMode = (subProjectAmount, storeSubProjectAmount, { disableBudge
 }
 
 const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }) => {
-  const floatingLabelText = "Budget"
+  const floatingLabelText = strings.common.budget
   return (
     <div style={styles.budget}>
       <ListItem
@@ -197,7 +196,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
             disabled={true}
             leftIcon={<CommentIcon />}
             primaryText={<div style={styles.comment}>{comment} </div>}
-            secondaryText={'Comment'}
+            secondaryText={strings.common.comment}
           />
           <Divider />
           {budgetEditEnabled && allowedToEdit ? getEditableBudget(props) : getNotEditableBudget(amountString, allowedToEdit, props)}
@@ -206,21 +205,21 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
             disabled={true}
             leftIcon={statusIcon}
             primaryText={status}
-            secondaryText={'Status'}
+            secondaryText={strings.common.status}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<DateIcon />}
             primaryText={date}
-            secondaryText={'Created'}
+            secondaryText={strings.common.created}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
             primaryText={assignee}
-            secondaryText={'Assignee(s)'}
+            secondaryText={strings.common.assignees}
           />
           <Divider />
         </List>
@@ -229,7 +228,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
         </CardText>
       </Card>
       <Card style={styles.card}>
-        <CardTitle title="Budget distribution" />
+        <CardTitle title={strings.common.budget_distribution} />
         <Divider />
         <CardMedia style={styles.cardMedia}>
           <Doughnut data={createSubprojectAmountData(amount, items)} />
@@ -239,26 +238,26 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
           disabled={true}
           leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
           primaryText={NotAssignedBudgetString}
-          secondaryText={"Not assigned budget"}
+          secondaryText={strings.common.not_assigned_budget}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
           leftIcon={<UnspentIcon color={workflowBudgetColorPalette[1]} />}
           primaryText={unSpendBudgetString}
-          secondaryText={"Assigned budget"}
+          secondaryText={strings.common.assigned_budget}
         />
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
           leftIcon={<SpentIcon color={workflowBudgetColorPalette[2]} />}
           primaryText={spendBudgetString}
-          secondaryText={"Disbursed budget"}
+          secondaryText={strings.common.disbursed_budget}
         />
         <Divider />
       </Card>
       <Card style={styles.card}>
-        <CardTitle title="Task status" />
+        <CardTitle title={strings.common.task_status} />
         <Divider />
         <CardMedia style={styles.cardMedia}>
           <Doughnut data={createTaskData(items, 'workflows')} />
@@ -271,7 +270,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
                 {statusDetails.open.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
+                <IconButton disableTouchRipple tooltip={strings.common.open} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   <OpenIcon />
                 </IconButton>
               </div>
@@ -281,7 +280,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
                 {statusDetails.inProgress.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
+                <IconButton disableTouchRipple tooltip={strings.common.in_progress} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
                   <InProgressIcon />
                 </IconButton>
               </div>
@@ -291,7 +290,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
                 {statusDetails.inReview.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="In Review" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
+                <IconButton disableTouchRipple tooltip={strings.common.in_review} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
                   <ReviewIcon />
                 </IconButton>
               </div>
@@ -301,7 +300,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
                 {statusDetails.done.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
+                <IconButton disableTouchRipple tooltip={strings.common.done} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   <DoneIcon />
                 </IconButton>
               </div>

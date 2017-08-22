@@ -15,8 +15,8 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import IconButton from 'material-ui/IconButton';
-
 import { budgetStatusColorPalette, red } from '../../colors'
+import strings from '../../localizeStrings'
 
 const styles = {
   container: {
@@ -92,35 +92,35 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
             disabled={true}
             leftIcon={<CommentIcon />}
             primaryText={<div style={styles.comment}>{projectComment} </div>}
-            secondaryText={'Comment'}
+            secondaryText={strings.common.comment}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<AmountIcon />}
             primaryText={amountString}
-            secondaryText={'Project Budget'}
+            secondaryText={strings.common.budget}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={statusIconMapping[projectStatus]}
             primaryText={statusMapping[projectStatus]}
-            secondaryText={'Status'}
+            secondaryText={strings.common.status}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<DateIcon />}
             primaryText={tsToString(projectTS)}
-            secondaryText={'Created'}
+            secondaryText={strings.common.created}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
             primaryText={getAssignedOrganization(projectAssignee)}
-            secondaryText={'Assigned Organization'}
+            secondaryText={strings.subproject.subproject_assigned_organization}
           />
           <Divider />
         </List>
@@ -129,7 +129,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         </CardText>
       </Card>
       <Card style={styles.card}>
-        <CardTitle title="Budget distribution" />
+        <CardTitle title={strings.common.budget_distribution} />
         <Divider />
         <CardMedia style={styles.cardMedia}>
           <Doughnut data={createAmountData(projectAmount, subProjects)} />
@@ -139,7 +139,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           disabled={true}
           leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
           primaryText={unspentAmountString}
-          secondaryText={"Not assigned"}
+          secondaryText={strings.common.not_assigned}
         />
         <Divider />
         <ListItem style={styles.text}
@@ -147,8 +147,8 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
           primaryText={spentAmountString}
           secondaryText={unspentAmount >= 0 ?
-            <span> {'Assigned'} </span > :
-            <span> {'Assigned'}
+            <span> {strings.common.assigned} </span > :
+            <span> {strings.common.assigned}
               <span style={styles.overspent}> {'(Overspent)'}
               </span>
             </span>}
@@ -156,7 +156,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <Divider />
       </Card>
       <Card style={styles.card}>
-        <CardTitle title="Task status" />
+        <CardTitle title={strings.common.task_status} />
         <Divider />
         <CardMedia style={styles.cardMedia}>
           <Doughnut data={createTaskData(subProjects, 'subprojects')} />
@@ -169,7 +169,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.open.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Open" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
+                <IconButton disableTouchRipple tooltip={strings.common.open} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   < OpenIcon />
                 </IconButton>
               </div>
@@ -179,7 +179,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.inProgress.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="In progress" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
+                <IconButton disableTouchRipple tooltip={strings.common.in_progress} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
                   < InProgressIcon />
                 </IconButton>
               </div>
@@ -189,7 +189,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.done.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip="Done" style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
+                <IconButton disableTouchRipple tooltip={strings.common.done} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   < DoneIcon />
                 </IconButton>
               </div>

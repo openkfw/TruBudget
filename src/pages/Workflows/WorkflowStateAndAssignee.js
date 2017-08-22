@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-
+import strings from '../../localizeStrings'
 class WorkflowStateAndAssignee extends Component {
 
   handleState = (event, index, value) => {
@@ -35,15 +35,15 @@ class WorkflowStateAndAssignee extends Component {
         justifyContent: 'center',
         alignItems: 'center'
       }}>
-      {/*
+        {/*
         <SelectField autoWidth={true} onChange={this.handleAssignee} value={this.props.workflowAssignee} floatingLabelText="Assign User" style={{}}>
           {this.createUserSelection()}
         </SelectField> */}
-        <SelectField floatingLabelText="Status" onChange={this.handleState} value={this.props.workflowState} disabled={!this.props.editMode} style={{}}>
-          <MenuItem value='open' primaryText="Open" />
-          <MenuItem value='in_progress' primaryText="In Progress" />
-          <MenuItem value='in_review' primaryText="Submit for Review" />
-          <MenuItem disabled={!this.props.isApprover} value='done' primaryText="Done" />
+        <SelectField floatingLabelText={strings.common.status} onChange={this.handleState} value={this.props.workflowState} disabled={!this.props.editMode} style={{}}>
+          <MenuItem value='open' primaryText={strings.common.open} />
+          <MenuItem value='in_progress' primaryText={strings.common.in_progress} />
+          <MenuItem value='in_review' primaryText={strings.workflow.workflow_submit_for_review} />
+          <MenuItem disabled={!this.props.isApprover} value='done' primaryText={strings.common.done} />
         </SelectField>
 
       </div>

@@ -6,7 +6,7 @@ import WorkflowCreationAmount from './WorkflowCreationAmount';
 import WorkflowStateAndAssignee from './WorkflowStateAndAssignee';
 import WorkflowType from './WorkflowType';
 import DocumentUpload from '../Documents/DocumentUpload';
-
+import strings from '../../localizeStrings'
 
 const getStepContent = (props) => {
   switch (props.creationStep) {
@@ -43,33 +43,33 @@ const WorkflowCreationStepper = (props) => {
       <Stepper linear={!props.editMode} activeStep={props.creationStep}>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(0)}>
-            Type
-            </StepButton>
+            {strings.workflow.workflow_type}
+          </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(1)}>
-            Name
-            </StepButton>
+            {strings.workflow.workflow_name}
+          </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(2)}>
-            Amount
-            </StepButton>
+            {strings.common.budget}
+          </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(3)}>
-            Comment
-            </StepButton>
+            {strings.common.comment}
+          </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(4)}>
-            Documents
-            </StepButton>
+            {strings.workflow.workflow_documents}
+          </StepButton>
         </Step>
         <Step>
           <StepButton onClick={() => props.setWorkflowCreationStep(5)}>
-            Status & Assignee
-            </StepButton>
+            {strings.common.status}
+          </StepButton>
         </Step>
       </Stepper>
       <div style={contentStyle}>

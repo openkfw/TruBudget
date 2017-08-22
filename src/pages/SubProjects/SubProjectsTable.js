@@ -4,6 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import { toAmountString, statusMapping } from '../../helper';
 import { Card, CardHeader } from 'material-ui/Card';
 import { ACMECorpLightgreen } from '../../colors.js';
+import strings from '../../localizeStrings'
 const styles = {
   tableText: {
     fontSize: '14px'
@@ -31,15 +32,15 @@ const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisib
   return (
     <Card >
       <CardHeader titleColor='white' style={{ backgroundColor: ACMECorpLightgreen }}
-        title="Sub-projects"
+        title={strings.common.subprojects}
       />
       <Table>
         <TableHeader displaySelectAll={false}
           adjustForCheckbox={false}>
           <TableRow>
-            <TableHeaderColumn style={styles.tableText}>Sub-project</TableHeaderColumn>
-            <TableHeaderColumn style={styles.tableText}>Budget</TableHeaderColumn>
-            <TableHeaderColumn style={styles.tableText}>Status</TableHeaderColumn>
+            <TableHeaderColumn style={styles.tableText}>{strings.common.subproject}</TableHeaderColumn>
+            <TableHeaderColumn style={styles.tableText}>{strings.common.budget}</TableHeaderColumn>
+            <TableHeaderColumn style={styles.tableText}>{strings.common.status}</TableHeaderColumn>
             <TableHeaderColumn style={styles.tableText}> </TableHeaderColumn>
           </TableRow>
         </TableHeader>
