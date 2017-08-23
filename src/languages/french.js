@@ -168,6 +168,11 @@ const fr = {
     edit_subproject: 'Amount of {0} increased to {1}*',
     first_sort: 'Moved {0} to first position*',
     sort: 'Moved {0} after {1}*'
-  }
+  },
+  language: {
+    german: 'German*',
+    french: 'French*',
+    english: 'English*',
+  },
 }
 export default fr;
