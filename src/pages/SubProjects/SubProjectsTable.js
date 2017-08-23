@@ -20,7 +20,7 @@ const getTableEntries = (subProjects, location, history) => {
         <TableRowColumn style={styles.tableText}>{amount}</TableRowColumn>
         <TableRowColumn style={styles.tableText}>{statusMapping[subProject.details.status]}</TableRowColumn>
         <TableRowColumn>
-          <FlatButton style={styles.tableText} label="Select" onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.name)} secondary={true} />
+          <FlatButton style={styles.tableText} label={strings.subproject.subproject_select_button} onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.name)} secondary={true} />
         </TableRowColumn>
       </TableRow>
     );

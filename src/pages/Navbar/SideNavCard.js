@@ -65,7 +65,7 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
       <Subheader>{strings.navigation.selections}</Subheader>
       <ListItem primaryText={strings.navigation.menu_item_projects} leftIcon={<ProjectIcon />} onTouchTap={() => history.push('/')} />
       <ListItem primaryText={strings.navigation.menu_item_notifications} leftIcon={<SocialNotificationIcon />} onTouchTap={() => history.push('/notifications')} />
-      <ListItem primaryText={strings.navigation.menu_item_network} leftIcon={<NetworkIcon />} onTouchTap={() => history.push('/dashboard')} />
+      <ListItem primaryText={strings.navigation.menu_item_network} leftIcon={<NetworkIcon />} onTouchTap={() => history.push('/network')} />
     </List>
     <Divider />
     <List>

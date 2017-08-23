@@ -13,19 +13,21 @@ export const SHOW_LOGIN_ERROR = 'SHOW_LOGIN_ERROR';
 export const STORE_ENVIRONMENT = 'STORE_ENVIRONMENT';
 export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
 
-export function fetchUsers() {
+export const SET_LANGUAGE = 'SET_LANGUAGE';
+
+export function fetchUsers () {
   return {
     type: FETCH_USERS
   }
 }
 
-export function fetchRoles() {
+export function fetchRoles () {
   return {
     type: FETCH_ROLES
   }
 }
 
-export function loginWithCredentails(username, password) {
+export function loginWithCredentails (username, password) {
   const user = { username, password }
   return {
     type: LOGIN,
@@ -33,13 +35,13 @@ export function loginWithCredentails(username, password) {
   }
 }
 
-export function storeUsername(username) {
+export function storeUsername (username) {
   return {
     type: STORE_USERNAME,
     username
   }
 }
-export function storePassword(password) {
+export function storePassword (password) {
   return {
     type: STORE_PASSWORD,
     password
@@ -47,38 +49,45 @@ export function storePassword(password) {
 }
 
 
-export function login(user) {
+export function login (user) {
   return {
     type: LOGIN,
     user
   }
 }
 
-export function logout() {
+export function logout () {
   return {
     type: LOGOUT
   }
 }
-export function storeLoginErrorMessage(message) {
+export function storeLoginErrorMessage (message) {
   return {
     type: LOGIN_ERROR_MESSAGE,
     message
   }
 }
 
-export function showLoginError(show) {
+export function showLoginError (show) {
   return {
     type: SHOW_LOGIN_ERROR,
     show
   }
 }
 
-export function storeEnvironment(environment) {
+export function storeEnvironment (environment) {
   const active = environment === "Prod" ? true : false
   return {
     type: STORE_ENVIRONMENT,
     environment,
     active
+  }
+}
+
+export function setLanguage (language) {
+  return {
+    type: SET_LANGUAGE,
+    language
   }
 }
 

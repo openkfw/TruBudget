@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import { Card, CardText, CardHeader } from 'material-ui/Card';
-
+import strings from '../../localizeStrings';
 
 import _ from 'lodash';
 
@@ -70,14 +70,19 @@ export default class FlyInNotification extends Component {
     });
   }
 
-  removeNotification(id) {
+  removeNotification (id) {
     const notifications = this.state.notificationStack.filter((notification) => id !== notification.id);
     this.setState({
       notificationStack: notifications
     })
   }
 
+  getDescription = (data) => {
+    const { action, workflowItem } = data;
+    const templateString = strings.notification[action]
+    return strings.formatString(templateString, workflowItem)
 
+  }
 
   getMessages = () => {
     return this.state.notificationStack.map(({ data, id }, index) => {
@@ -93,7 +98,7 @@ export default class FlyInNotification extends Component {
             avatar={user.avatar}
           />
           <CardText>
-            {data.description}
+            {this.getDescription(data)}
           </CardText>
         </Card>
       )
@@ -101,7 +106,7 @@ export default class FlyInNotification extends Component {
 
   }
 
-  render() {
+  render () {
     return (
       <div style={{
         position: 'fixed',
