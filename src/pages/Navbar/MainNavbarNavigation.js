@@ -1,9 +1,19 @@
 import React from 'react';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import FlatButton from 'material-ui/FlatButton';
-import colors, { ACMECorpGrey } from '../../colors'
+import colors, { ACMECorpGrey } from '../../colors';
+import strings from '../../localizeStrings';
 
-const getPathName = (name, streamNames) => streamNames[name] ? streamNames[name] : name;
+const staticBreadcrumbs = {
+  projects: strings.navigation.menu_item_projects,
+  notifications: strings.navigation.menu_item_notifications,
+  network: strings.navigation.menu_item_network,
+}
+
+const getPathName = (name, streamNames) => {
+  const breadcrumb = streamNames[name] ? streamNames[name] : staticBreadcrumbs[name];
+  return breadcrumb ? breadcrumb : '...';
+};
 
 const createBreadcrumb = ({ pathname }, history, streamNames) => {
   let paths = pathname.trim().split('/');
@@ -21,7 +31,7 @@ const createBreadcrumb = ({ pathname }, history, streamNames) => {
           {index ? <ChevronRight color={colors.lightColor} style={{ height: '16px' }} /> : null}
         </span>
         <FlatButton
-          label={index ? getPathName(path, streamNames) : 'Main'}
+          label={index ? getPathName(path, streamNames) : strings.navigation.main_site}
           disabled={isLastItem}
           style={{ color: isLastItem ? ACMECorpGrey : colors.lightColor }}
           onTouchTap={() => history.push(accumulatedPath[index])} />

@@ -40,7 +40,7 @@ const en = {
     password: 'Password*',
     incorrect_username: 'Incorrect username*',
     incorrect_password: 'Incorrect password*',
-    accenture_tag: 'Developed by Emerging Technologies & Innovation @ Accenture,*',
+    accenture_tag: 'Developed by Emerging Technologies & Innovation @ Accenture*',
     login_button_title: 'Login*',
 
   },
@@ -71,7 +71,8 @@ const en = {
     subproject_budget_amount_description: 'Budget for the sub-project*',
     subproject_comment: 'Sub-project Comment*',
     subproject_assigned_organization: 'Assigned Organization*',
-    subproject_add: 'Add new Sub-project*'
+    subproject_add: 'Add new Sub-project*',
+    subproject_select_button: 'Select*',
   },
   workflow: {
     workflow_title: 'Workflow title*',
@@ -124,6 +125,8 @@ const en = {
     menu_item_projects: 'Projects*',
     menu_item_notifications: 'Notifications*',
     menu_item_network: 'Network*',
+    main_site: 'Main*',
+    projects_site: 'Projects*'
   },
   dashboard: {
     dashboard_title: 'The Blockchain network dashboard*',
@@ -140,29 +143,29 @@ const en = {
     notification_table_by: 'By*',
     notification_table_all_read: 'all read*',
     notification_table_view: 'View*',
-    create_workflow: 'Assigned workflow item {0} to you',
-    edit_workflow: 'Assigned workflow item {0} to you',
-    create_transaction: 'Assigned transaction {0} to you',
-    edit_transaction: 'Assigned transaction {0} to you',
-    review_workflow: 'You are assigned to review the workflow item {0}',
-    review_transaction: 'You are assigned to review the transaction {0} '
+    create_workflow: 'Assigned workflow item {0} to you*',
+    edit_workflow: 'Assigned workflow item {0} to you*',
+    create_transaction: 'Assigned transaction {0} to you*',
+    edit_transaction: 'Assigned transaction {0} to you*',
+    review_workflow: 'You are assigned to review the workflow item {0}*',
+    review_transaction: 'You are assigned to review the transaction {0}*'
   },
 
   history: {
-    edit_status: "Status of workflow item {0} changed to {1}",
-    edit_currency: 'Currency of workflow item {0} changed to {1} ',
-    edit_amount: 'Amount of workflow item {0} changed from {1} to {2} ',
-    edit_comment: 'Comment of workflow item {0} changed to {1} ',
-    edit_addData: 'Additional data of workflow item {0} changed to {1} ',
-    edit_workflowName: 'Name of workflow item {0} changed to {1} ',
-    created_workflow: 'Workflow {0} created ',
-    created_project: 'Project created ',
-    created_subproject: 'Subproject {0} created',
-    edit_amountType: 'Budget status of workflow item {0} changed from {1} to {2}',
-    edit_documents: 'Documents changed for workflow item {0}',
-    edit_subproject: 'Amount of {0} increased to {1}',
-    first_sort: 'Moved {0} to first position',
-    sort: 'Moved {0} after {1}'
+    edit_status: 'Status of workflow item {0} changed to {1}*',
+    edit_currency: 'Currency of workflow item {0} changed to {1} *',
+    edit_amount: 'Amount of workflow item {0} changed from {1} to {2} *',
+    edit_comment: 'Comment of workflow item {0} changed to {1} *',
+    edit_addData: 'Additional data of workflow item {0} changed to {1} *',
+    edit_workflowName: 'Name of workflow item {0} changed to {1} *',
+    created_workflow: 'Workflow {0} created *',
+    created_project: 'Project created *',
+    created_subproject: 'Subproject {0} created*',
+    edit_amountType: 'Budget status of workflow item {0} changed from {1} to {2}*',
+    edit_documents: 'Documents changed for workflow item {0}*',
+    edit_subproject: 'Amount of {0} increased to {1}*',
+    first_sort: 'Moved {0} to first position*',
+    sort: 'Moved {0} after {1}*'
   }
 }
 export default en;

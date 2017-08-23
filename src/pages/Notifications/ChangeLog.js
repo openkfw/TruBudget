@@ -9,6 +9,7 @@ import { ACMECorpLightgreen } from '../../colors.js';
 import strings from '../../localizeStrings';
 import { statusMapping } from '../../helper';
 
+
 const getDescription = (item) => {
   const { data } = item;
   const { action } = data;
@@ -104,6 +105,7 @@ const getSideBar = (hideHistory, historyItems, users) => {
 }
 
 const ChangeLog = ({ hideHistory, historyItems, users, showHistory }) => {
+
   return (
     <div style={{
       position: 'fixed',

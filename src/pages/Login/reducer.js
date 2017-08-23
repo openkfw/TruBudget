@@ -1,5 +1,11 @@
 import { fromJS } from 'immutable';
-import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, LOGOUT, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS } from './actions';
+import moment from 'moment';
+import * as localeFR from 'moment/locale/fr';
+import * as localeEN from 'moment/locale/en-gb';
+import strings from '../../localizeStrings';
+
+
+import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, LOGOUT, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE } from './actions';
 
 const defaultState = fromJS({
   users: [],
@@ -17,11 +23,19 @@ const defaultState = fromJS({
   productionActive: false,
   loginErrorMessage: '',
   showLoginError: false,
-  roles: []
+  roles: [],
+  language: 'en-gb'
 });
 
+const setLanguage = (state) => {
+  moment.locale(state.get('language'));
+  strings.setLanguage(state.get('language'));
+}
 
-export default function loginReducer(state = defaultState, action) {
+setLanguage(defaultState)
+
+
+export default function loginReducer (state = defaultState, action) {
   switch (action.type) {
     case FETCH_USERS_SUCCESS:
       return state.set('users', fromJS(action.users));
@@ -37,8 +51,13 @@ export default function loginReducer(state = defaultState, action) {
       return state.set('loginUnsuccessful', action.show);
     case STORE_ENVIRONMENT_SUCCESS:
       return state.merge({ environment: action.environment, productionActive: action.productionActive })
+    case SET_LANGUAGE:
+      const newState = state.set('language', action.language);
+      setLanguage(newState);
+      return newState;
     case LOGOUT:
-      return defaultState;
+      const newDefaultState = defaultState.set('language', state.get('language'))
+      return newDefaultState;
     default:
       return state
   }
