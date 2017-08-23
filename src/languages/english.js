@@ -88,6 +88,7 @@ const en = {
     workflow_budget_status_na: 'N/A*',
     workflow_budget_status_allocated: 'Allocated*',
     workflow_budget_status_disbursed: 'Disbursed*',
+    workflow_next_step: 'Next step*',
     workflow_enable_sort: 'Sort*',
     worfkfow_disable_sort: 'Save*',
     workflow_table_title: 'Workflow items*',
@@ -166,6 +167,11 @@ const en = {
     edit_subproject: 'Amount of {0} increased to {1}*',
     first_sort: 'Moved {0} to first position*',
     sort: 'Moved {0} after {1}*'
-  }
+  },
+  language: {
+    german: 'German*',
+    french: 'French*',
+    english: 'English*',
+  },
 }
 export default en;

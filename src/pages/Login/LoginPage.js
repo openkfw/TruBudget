@@ -15,6 +15,7 @@ import FontIcon from 'material-ui/FontIcon';
 import SvgIconFace from 'material-ui/svg-icons/action/face';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import DropDownMenu from 'material-ui/DropDownMenu';
 import strings from '../../localizeStrings'
 const defaultUser = {
   jdoe: {
@@ -62,7 +63,7 @@ const createListItems = (users, login) => {
 
 
 
-const LoginPage = ({ users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment }) => {
+const LoginPage = ({ users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment, language, setLanguage }) => {
   return (
     <div style={{
       backgroundImage: 'url("/welcome.jpg")',
@@ -117,8 +118,13 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
             type="password"
           />
         </div>
-        <div style={{ paddingTop: '10px', paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-          <RaisedButton label={strings.login.login_button_title} style={{ margin: 12 }} onTouchTap={() => loginWithCredentails(username, password)} />
+        <div style={{ paddingTop: '10px', paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
+          <DropDownMenu style={{ marginLeft: 5, }} value={language} onChange={(event, index, value) => setLanguage(value)}>
+            <MenuItem value='en-gb' primaryText={strings.language.english} />
+            <MenuItem value='fr' primaryText={strings.language.french} />
+            <MenuItem value='de' primaryText={strings.language.german} />
+          </DropDownMenu>
+          <RaisedButton label={strings.login.login_button_title} style={{ marginRight: 20, marginTop: 5 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
         <Divider />
         <div>

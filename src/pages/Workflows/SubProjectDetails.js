@@ -317,7 +317,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
             <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.data.workflowName : 'None'}</span> <br />
             {nextAction}
           </div>}
-          secondaryText={'Next step'}
+          secondaryText={strings.workflow.workflow_next_step}
         />
         <Divider />
 
