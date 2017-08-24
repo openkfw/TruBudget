@@ -50,6 +50,12 @@ const actionMapping = (assignee, bank, approver) => ({
   open: `${strings.workflow.workflow_action_open_in_progress} ${assignee}`,
 })
 
+export const roleMapper = {
+  'approver': strings.common.approver,
+  'bank': strings.common.bank,
+  'assignee': strings.common.assignee
+}
+
 
 
 const createDoughnutData = (labels, data, colors = taskStatusColorPalette, ) => ({

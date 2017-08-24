@@ -28,7 +28,10 @@ const en = {
     in_progress: 'In Progress',
     in_review: 'In Review',
     done: 'Done',
-    assignees: 'Assignee(s)'
+    assignees: 'Assignee(s)',
+    approver: 'Approver',
+    bank: 'Bank',
+    assignee: 'Assignee'
   },
 
   login: {
@@ -142,14 +145,17 @@ const en = {
     notification_table_subproject: 'Subproject',
     notification_table_description: 'Description',
     notification_table_by: 'By',
+    notification_table_role: 'Role',
     notification_table_all_read: 'all read',
     notification_table_view: 'View',
-    create_workflow: 'Assigned workflow item {0} to you',
-    edit_workflow: 'Assigned workflow item {0} to you',
-    create_transaction: 'Assigned transaction {0} to you',
-    edit_transaction: 'Assigned transaction {0} to you',
+    create_workflow: 'Workflow {0} created ',
+    edit_workflow: 'Workflow item {0} was adapted',
+    create_transaction: 'Transaction {0} created ',
+    edit_transaction: 'Transaction {0} was adapted',
     review_workflow: 'You are assigned to review the workflow item {0}',
-    review_transaction: 'You are assigned to review the transaction {0}'
+    review_transaction: 'You are assigned to review the transaction {0}',
+    done_workflow: 'Status of workflow {0} set to Done',
+    done_transaction: 'Status of transaction {0} set to Done'
   },
 
   history: {
