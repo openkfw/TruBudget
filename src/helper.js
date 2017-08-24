@@ -142,10 +142,11 @@ export const getNextIncompletedItem = (items) => {
 export const getNextAction = (item, assignee, bank, approver) => {
   if (!_.isUndefined(item) && !_.isUndefined(item.details.status)
     && !_.isEmpty(item.details.status)) {
+    console.log(item.details.status)
     if (item.details.status === 'in_review') {
       // Decide if transaction or workflow to show the right reviewer
       const action = item.details.status + '_' + item.details.type
-      actionMapping(assignee, bank, approver)[action]
+      return actionMapping(assignee, bank, approver)[action]
     }
     return actionMapping(assignee, bank, approver)[item.details.status]
   } else {
