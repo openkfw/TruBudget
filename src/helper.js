@@ -43,12 +43,19 @@ export const statusIconMapping = {
   open: <OpenIcon />,
 }
 
-const actionMapping = (assignee, bank, approver) => ({
-  'in_review': `${strings.workflow.workflow_action_in_review} ${approver}`,
-  pending: `${strings.workflow.workflow_action_pending_approval} ${bank}`,
+const actionMapping = (assignee, bank, approver, type) => ({
+  'in_review_workflow': `${strings.workflow.workflow_action_in_review} ${approver}`,
+  'in_review_transaction': `${strings.workflow.workflow_action_in_review} ${bank}`,
+  // pending: `${strings.workflow.workflow_action_pending_approval} ${bank}`,
   'in_progress': `${strings.workflow.workflow_action_open_in_progress}  ${assignee}`,
   open: `${strings.workflow.workflow_action_open_in_progress} ${assignee}`,
 })
+
+export const roleMapper = {
+  'approver': strings.common.approver,
+  'bank': strings.common.bank,
+  'assignee': strings.common.assignee
+}
 
 
 
@@ -133,10 +140,17 @@ export const getNextIncompletedItem = (items) => {
 }
 
 export const getNextAction = (item, assignee, bank, approver) => {
-  return !_.isUndefined(item) && !_.isUndefined(item.details.status)
-    && !_.isEmpty(item.details.status)
-    ? actionMapping(assignee, bank, approver)[item.details.status]
-    : "No actions required "
+  if (!_.isUndefined(item) && !_.isUndefined(item.details.status)
+    && !_.isEmpty(item.details.status)) {
+    if (item.details.status === 'in_review') {
+      // Decide if transaction or workflow to show the right reviewer
+      const action = item.details.status + '_' + item.details.type
+      return actionMapping(assignee, bank, approver)[action]
+    }
+    return actionMapping(assignee, bank, approver)[item.details.status]
+  } else {
+    return "No actions required "
+  }
 }
 
 
