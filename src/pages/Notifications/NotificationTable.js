@@ -58,7 +58,6 @@ const getDescription = (data) => {
 
 }
 const getNotifications = (notifications, filter = 'all', streamNames, users, loggedInUser, markNotificationAsRead, history) => {
-  console.log(streamNames)
   return notifications.reduce((acc, { data, blocktime, key }, index) => {
     const role = data.role;
     const issuer = users[data.issuer];
