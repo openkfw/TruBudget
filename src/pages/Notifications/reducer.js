@@ -1,6 +1,7 @@
 import { fromJS } from 'immutable';
 import { SHOW_SNACKBAR, SNACKBAR_MESSAGE, FETCH_NOTIFICATIONS_SUCCESS, FETCH_HISTORY_SUCCESS, OPEN_HISTORY } from './actions';
 import { LOGOUT } from '../Login/actions';
+import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
 const defaultState = fromJS({
   list: [],
@@ -10,8 +11,9 @@ const defaultState = fromJS({
 });
 
 
-export default function navbarReducer(state = defaultState, action) {
+export default function navbarReducer (state = defaultState, action) {
   switch (action.type) {
+    case FETCH_UPDATES_SUCCESS:
     case FETCH_NOTIFICATIONS_SUCCESS:
       return state.set('list', action.notifications);
     case SHOW_SNACKBAR:

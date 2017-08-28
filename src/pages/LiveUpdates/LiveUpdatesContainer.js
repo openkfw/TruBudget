@@ -8,6 +8,7 @@ import { fetchProjects } from '../Overview/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
 import { fetchProjectDetails } from '../SubProjects/actions';
 import { fetchWorkflowItems } from '../Workflows/actions';
+import { fetchUpdates } from './actions';
 
 class LiveUpdates extends Component {
   constructor(props) {
@@ -15,35 +16,29 @@ class LiveUpdates extends Component {
 
     this.timer = undefined;
   }
-  componentDidMount() {
+  componentDidMount () {
     this.startLiveUpdates();
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.stopLiveUpdates();
   }
 
-  startLiveUpdates() {
+  startLiveUpdates () {
     if (this.timer === undefined) {
       this.timer = setInterval(() => this.update(), 5000);
     }
   }
 
-  stopLiveUpdates() {
+  stopLiveUpdates () {
     if (this.timer !== undefined) {
       clearInterval(this.timer);
       this.timer = undefined;
     }
   }
 
-  update() {
-    this.props.fetchUsers();
-    this.props.fetchPeers();
-    this.props.fetchNotifications(this.props.loggedInUser.id);
-    this.props.fetchStreamNames();
-    this.props.fetchProjects();
-    this.props.fetchNodeInformation();
-
+  update () {
+    this.props.fetchUpdates(this.props.loggedInUser.id);
     switch (this.props.selectedSection) {
       case 'project':
         this.props.fetchHistoryItems(this.props.selectedId);
@@ -61,7 +56,7 @@ class LiveUpdates extends Component {
     }
   }
 
-  render() {
+  render () {
     return null;
   }
 }
@@ -77,6 +72,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchProjectDetails: (project) => dispatch(fetchProjectDetails(project)),
     fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
+    fetchUpdates: (user) => dispatch(fetchUpdates(user))
   };
 }
 
