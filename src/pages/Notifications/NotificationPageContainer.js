@@ -32,7 +32,7 @@ const mapStateToProps = (state) => {
     list: state.getIn(['notifications', 'list']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     users: state.getIn(['login', 'users']).toJS(),
-    streamNames: state.getIn(['navbar', 'streamNames']),
+    streamNames: state.getIn(['navbar', 'streamNames']).toJS(),
   }
 }
 

@@ -162,6 +162,8 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
   )
 }
 
+const createRatio = (ratio) => _.isNaN(ratio) ? 0 : ratio * 100
+
 const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
   const name = subProjectDetails.name
   const comment = subProjectDetails.comment
@@ -186,8 +188,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const notAssignedBudget = getNotAssignedBudget(amount, assignedBudget, disbursedBudget);
 
 
-  const NotAssignedBudgetString = toAmountString(currentDisbursement, currency);
-
+  const disbursedBudgetString = toAmountString(disbursedBudget - currentDisbursement, currency);
   const unSpendBudgetString = toAmountString(assignedBudget, currency);
   const spendBudgetString = toAmountString(disbursedBudget, currency);
 
@@ -199,8 +200,9 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const allowedToEdit = allowedToWrite && permissions.isAssignee;
 
   const allocatedBudgetRatio = _.isUndefined(amount) ? 0 : assignedBudget / amount;
-  const disbursedBudgetRatio = _.isUndefined(amount) ? 0 : disbursedBudget / amount;
-  const currentDisbursementRatio = _.isUndefined(amount) ? 0 : currentDisbursement / disbursedBudget;
+  const disbursedBudgetRatio = _.isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
+  const currentDisbursementRatio = _.isUndefined(amount) ? 0 : 1 - currentDisbursement / disbursedBudget;
+
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
@@ -249,10 +251,10 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
           <ListItem style={styles.text}
             disabled={true}
             leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
-            primaryText={NotAssignedBudgetString}
+            primaryText={disbursedBudgetString}
             secondaryText={strings.common.disbursement}
           />
-          <GaugeChart size={0.25} responsive={false} value={currentDisbursementRatio * 100} />
+          <GaugeChart size={0.25} responsive={false} value={createRatio(currentDisbursementRatio)} />
         </div>
         <Divider />
         <div style={styles.charts}>

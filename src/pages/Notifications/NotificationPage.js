@@ -18,7 +18,6 @@ const styles = {
 };
 
 const NotificationPage = ({ list, streamNames, users, loggedInUser, markNotificationAsRead, history }) => {
-
   return (
     <div style={styles.card}>
       <Card style={{ width: '100%', marginBottom: '10px' }}>

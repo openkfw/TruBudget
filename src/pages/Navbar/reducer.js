@@ -27,7 +27,7 @@ export default function navbarReducer (state = defaultState, action) {
     case FETCH_NOTIFICATIONS_SUCCESS:
       return state.set('unreadNotifications', countUnreadNotifications(action.notifications));
     case FETCH_STREAM_NAMES_SUCCESS:
-      return state.set('streamNames', action.streamNames);
+      return state.set('streamNames', fromJS(action.streamNames));
     case SET_SELECTED_VIEW:
       return state.merge({
         selectedId: action.id,
