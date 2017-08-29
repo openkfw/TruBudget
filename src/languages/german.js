@@ -15,6 +15,7 @@ const de = {
     actions: 'Actions',
     assigned: 'Assigned',
     not_assigned: 'Not assigned',
+    disbursement: 'Disbursement',
     not_assigned_budget: 'Not Assigned Budget',
     assigned_budget: 'Assigned Budget',
     disbursed_budget: 'Disbursed Budget',

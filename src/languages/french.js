@@ -17,6 +17,7 @@ const fr = {
     not_assigned: 'Not assigned',
     not_assigned_budget: 'Not Assigned Budget',
     assigned_budget: 'Assigned Budget',
+    disbursement: 'Disbursement',
     disbursed_budget: 'Disbursed Budget',
     budget_distribution: 'Budget distribution',
     task_status: 'Task status',

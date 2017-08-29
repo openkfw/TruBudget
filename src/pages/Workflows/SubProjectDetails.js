@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
@@ -21,7 +22,10 @@ import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
-import strings from '../../localizeStrings'
+
+import GaugeChart from '../Common/GaugeChart';
+import strings from '../../localizeStrings';
+
 import {
   ACMECorpLightgreen,
 } from '../../colors'
@@ -100,6 +104,14 @@ const styles = {
     width: '60%',
     marginLeft: '-15px',
     marginTop: '-10px'
+  },
+  charts: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: '10px',
+    marginBottom: '10px',
+    marginRight: '10px'
   }
 }
 
@@ -150,6 +162,8 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
   )
 }
 
+const createRatio = (ratio) => _.isNaN(ratio) ? 0 : ratio * 100
+
 const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
   const name = subProjectDetails.name
   const comment = subProjectDetails.comment
@@ -168,16 +182,15 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const date = tsToString(subProjectDetails.createTS)
 
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
-  const { assigned: assignedBudget, disbursed: disbursedBudget } = calculateWorkflowBudget(items);
+  const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(items);
 
 
   const notAssignedBudget = getNotAssignedBudget(amount, assignedBudget, disbursedBudget);
 
 
-  const NotAssignedBudgetString = toAmountString(notAssignedBudget, currency);
-
+  const disbursedBudgetString = toAmountString(disbursedBudget, currency);
   const unSpendBudgetString = toAmountString(assignedBudget, currency);
-  const spendBudgetString = toAmountString(disbursedBudget, currency);
+  const spendBudgetString = toAmountString(currentDisbursement, currency);
 
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
@@ -185,6 +198,10 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
 
   const allowedToWrite = props.loggedInUser.role.write;
   const allowedToEdit = allowedToWrite && permissions.isAssignee;
+
+  const allocatedBudgetRatio = _.isUndefined(amount) ? 0 : assignedBudget / amount;
+  const consumptionBudgetRatio = _.isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
+  const currentDisbursementRatio = _.isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
 
   return (
     <div style={styles.container}>
@@ -230,31 +247,39 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
       <Card style={styles.card}>
         <CardTitle title={strings.common.budget_distribution} />
         <Divider />
-        <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createSubprojectAmountData(amount, items)} />
-        </CardMedia>
+        <div style={styles.charts}>
+          <ListItem style={styles.text}
+            disabled={true}
+            leftIcon={<UnspentIcon color={workflowBudgetColorPalette[1]} />}
+            primaryText={unSpendBudgetString}
+            secondaryText={strings.common.assigned_budget}
+          />
+          <GaugeChart size={0.20} responsive={false} value={createRatio(allocatedBudgetRatio)} />
+        </div>
         <Divider />
-        <ListItem style={styles.text}
-          disabled={true}
-          leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
-          primaryText={NotAssignedBudgetString}
-          secondaryText={strings.common.not_assigned_budget}
-        />
+        <div style={styles.charts}>
+          <ListItem style={styles.text}
+            disabled={true}
+            leftIcon={<SpentIcon color={workflowBudgetColorPalette[2]} />}
+            primaryText={spendBudgetString}
+            secondaryText={strings.common.disbursed_budget}
+          />
+          <GaugeChart size={0.20} responsive={false} value={createRatio(consumptionBudgetRatio)} />
+        </div>
         <Divider />
-        <ListItem style={styles.text}
-          disabled={true}
-          leftIcon={<UnspentIcon color={workflowBudgetColorPalette[1]} />}
-          primaryText={unSpendBudgetString}
-          secondaryText={strings.common.assigned_budget}
-        />
+        <div style={styles.charts}>
+          <ListItem style={styles.text}
+            disabled={true}
+            leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
+            primaryText={disbursedBudgetString}
+            secondaryText={strings.common.disbursement}
+          />
+          <GaugeChart size={0.20} responsive={false} value={createRatio(currentDisbursementRatio)} />
+        </div>
+
+
         <Divider />
-        <ListItem style={styles.text}
-          disabled={true}
-          leftIcon={<SpentIcon color={workflowBudgetColorPalette[2]} />}
-          primaryText={spendBudgetString}
-          secondaryText={strings.common.disbursed_budget}
-        />
-        <Divider />
+
       </Card>
       <Card style={styles.card}>
         <CardTitle title={strings.common.task_status} />

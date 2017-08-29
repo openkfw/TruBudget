@@ -8,13 +8,13 @@ import { logout, fetchUsers } from '../Login/actions';
 import Navbar from './Navbar';
 
 class NavbarContainer extends Component {
-  componentWillMount() {
+  componentWillMount () {
     this.props.fetchPeers();
     this.props.fetchUsers();
     this.props.fetchStreamNames();
     this.props.fetchNotifications(this.props.loggedInUser.id);
   }
-  render() {
+  render () {
     return <Navbar {...this.props} />
   }
 }
@@ -37,7 +37,7 @@ const mapStateToProps = (state) => {
     unreadNotifications: state.getIn(['navbar', 'unreadNotifications']),
     route: state.getIn(['route', 'locationBeforeTransitions']).toObject(),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
-    streamNames: state.getIn(['navbar', 'streamNames']),
+    streamNames: state.getIn(['navbar', 'streamNames']).toJS(),
     users: state.getIn(['login', 'users']).toJS(),
     productionActive: state.getIn(['login', 'productionActive']),
   }

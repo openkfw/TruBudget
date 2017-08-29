@@ -6,6 +6,7 @@ import strings from '../../localizeStrings';
 
 
 import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, LOGOUT, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE } from './actions';
+import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
 const defaultState = fromJS({
   users: [],
@@ -37,6 +38,7 @@ setLanguage(defaultState)
 
 export default function loginReducer (state = defaultState, action) {
   switch (action.type) {
+    case FETCH_UPDATES_SUCCESS:
     case FETCH_USERS_SUCCESS:
       return state.set('users', fromJS(action.users));
     case FETCH_ROLES_SUCCESS:

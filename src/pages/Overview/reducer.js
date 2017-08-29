@@ -6,6 +6,7 @@ import {
   ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE
 } from './actions';
 import { LOGOUT } from '../Login/actions';
+import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
 import { fromAmountString } from '../../helper';
 
@@ -22,8 +23,9 @@ const defaultState = fromJS({
   projectBank: []
 });
 
-export default function overviewReducer(state = defaultState, action) {
+export default function overviewReducer (state = defaultState, action) {
   switch (action.type) {
+    case FETCH_UPDATES_SUCCESS:
     case FETCH_PROJECTS_SUCCESS:
       return state.set('projects', action.projects);
     case SHOW_WORKFLOW_DIALOG:

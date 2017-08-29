@@ -79,13 +79,14 @@ export const calculateUnspentAmount = (items) => {
 
 export const calculateWorkflowBudget = (workflows) => {
   return workflows.reduce((acc, workflow) => {
-    const { amount, amountType } = workflow.data;
+    const { amount, amountType, status } = workflow.data;
     const next = {
       assigned: amountType === 'allocated' ? acc.assigned + amount : acc.assigned,
-      disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed
+      disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed,
+      currentDisbursement: amountType === 'disbursed' && status === 'done' ? acc.currentDisbursement + amount : acc.currentDisbursement,
     }
     return next;
-  }, { assigned: 0, disbursed: 0 })
+  }, { assigned: 0, disbursed: 0, currentDisbursement: 0 })
 }
 
 export const createAmountData = (projectAmount, subProjects) => {
