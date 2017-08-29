@@ -188,9 +188,9 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const notAssignedBudget = getNotAssignedBudget(amount, assignedBudget, disbursedBudget);
 
 
-  const disbursedBudgetString = toAmountString(disbursedBudget - currentDisbursement, currency);
+  const disbursedBudgetString = toAmountString(disbursedBudget, currency);
   const unSpendBudgetString = toAmountString(assignedBudget, currency);
-  const spendBudgetString = toAmountString(disbursedBudget, currency);
+  const spendBudgetString = toAmountString(currentDisbursement, currency);
 
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
@@ -200,8 +200,8 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const allowedToEdit = allowedToWrite && permissions.isAssignee;
 
   const allocatedBudgetRatio = _.isUndefined(amount) ? 0 : assignedBudget / amount;
-  const disbursedBudgetRatio = _.isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
-  const currentDisbursementRatio = _.isUndefined(amount) ? 0 : 1 - currentDisbursement / disbursedBudget;
+  const consumptionBudgetRatio = _.isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
+  const currentDisbursementRatio = _.isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
 
   return (
     <div style={styles.container}>
@@ -250,23 +250,12 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
         <div style={styles.charts}>
           <ListItem style={styles.text}
             disabled={true}
-            leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
-            primaryText={disbursedBudgetString}
-            secondaryText={strings.common.disbursement}
-          />
-          <GaugeChart size={0.25} responsive={false} value={createRatio(currentDisbursementRatio)} />
-        </div>
-        <Divider />
-        <div style={styles.charts}>
-          <ListItem style={styles.text}
-            disabled={true}
             leftIcon={<UnspentIcon color={workflowBudgetColorPalette[1]} />}
             primaryText={unSpendBudgetString}
             secondaryText={strings.common.assigned_budget}
           />
-          <GaugeChart size={0.25} responsive={false} value={allocatedBudgetRatio * 100} />
+          <GaugeChart size={0.20} responsive={false} value={createRatio(allocatedBudgetRatio)} />
         </div>
-
         <Divider />
         <div style={styles.charts}>
           <ListItem style={styles.text}
@@ -275,9 +264,22 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
             primaryText={spendBudgetString}
             secondaryText={strings.common.disbursed_budget}
           />
-          <GaugeChart size={0.25} responsive={false} value={disbursedBudgetRatio * 100} />
+          <GaugeChart size={0.20} responsive={false} value={createRatio(consumptionBudgetRatio)} />
         </div>
         <Divider />
+        <div style={styles.charts}>
+          <ListItem style={styles.text}
+            disabled={true}
+            leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
+            primaryText={disbursedBudgetString}
+            secondaryText={strings.common.disbursement}
+          />
+          <GaugeChart size={0.20} responsive={false} value={createRatio(currentDisbursementRatio)} />
+        </div>
+
+
+        <Divider />
+
       </Card>
       <Card style={styles.card}>
         <CardTitle title={strings.common.task_status} />

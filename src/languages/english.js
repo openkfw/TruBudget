@@ -16,7 +16,7 @@ const en = {
     assigned: 'Assigned',
     not_assigned: 'Not assigned',
     not_assigned_budget: 'Not Assigned Budget',
-    disbursement: 'Backlog',
+    disbursement: 'Projection',
     assigned_budget: 'Allocation',
     disbursed_budget: 'Consumption',
     budget_distribution: 'Budget distribution',

@@ -3,6 +3,8 @@ import { interpolateRgb } from 'd3-interpolate';
 import React, { Component } from 'react';
 import LiquidFillGauge from 'react-liquid-gauge';
 
+import { ACMECorpBlue, red } from '../../colors'
+
 class GaugeChart extends Component {
   state = {
     value: 0
@@ -15,27 +17,31 @@ class GaugeChart extends Component {
   }
 
   render () {
-    const { size = 0.25, responsive = false, startColor = '#6495ed', endColor = '#dc143c' } = this.props;
+    const { size = 0.25, responsive = false, startColor = ACMECorpBlue, endColor = red } = this.props;
 
     const radius = this.myInput && responsive ? this.myInput.offsetHeight * size : 200 * size;
     const interpolate = interpolateRgb(startColor, endColor);
-    const fillColor = interpolate(this.state.value / 100);
+    const fillColor = interpolate(0);
+    const overSpent = interpolate(this.state.value / 100)
+
+    const selectedColor = this.state.value > 100 ? overSpent : fillColor;
+
     const gradientStops = [
       {
         key: '0%',
-        stopColor: color(fillColor).darker(0.5).toString(),
+        stopColor: color(selectedColor).darker(0.5).toString(),
         stopOpacity: 1,
         offset: '0%'
       },
       {
         key: '50%',
-        stopColor: fillColor,
+        stopColor: selectedColor,
         stopOpacity: 0.75,
         offset: '50%'
       },
       {
         key: '100%',
-        stopColor: color(fillColor).brighter(0.5).toString(),
+        stopColor: color(selectedColor).brighter(0.5).toString(),
         stopOpacity: 0.5,
         offset: '100%'
       }
@@ -77,10 +83,10 @@ class GaugeChart extends Component {
           gradient
           gradientStops={gradientStops}
           circleStyle={{
-            fill: fillColor
+            fill: selectedColor
           }}
           waveStyle={{
-            fill: fillColor
+            fill: selectedColor
           }}
           textStyle={{
             fill: color('#444').toString(),
@@ -89,9 +95,6 @@ class GaugeChart extends Component {
           waveTextStyle={{
             fill: color('#fff').toString(),
             fontFamily: 'Arial'
-          }}
-          onClick={() => {
-            this.setState({ value: Math.random() * 100 });
           }}
         />
       </div>
