@@ -15,6 +15,8 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import IconButton from 'material-ui/IconButton';
+
+import GaugeChart from '../Common/GaugeChart';
 import { budgetStatusColorPalette, red } from '../../colors'
 import strings from '../../localizeStrings'
 
@@ -71,6 +73,14 @@ const styles = {
   overspent: {
     color: red
   },
+  charts: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: '10px',
+    marginBottom: '10px',
+    marginRight: '10px'
+  }
 }
 
 const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectComment, projectStatus, projectTS, projectAssignee }) => {
@@ -82,6 +92,9 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   const spentAmountString = toAmountString(spentAmount.toString(), projectCurrency);
   const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), projectCurrency);
   const statusDetails = getProgressInformation(subProjects)
+
+  const allocatedRatio = spentAmount/projectAmount
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -135,12 +148,16 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <Doughnut data={createAmountData(projectAmount, subProjects)} />
         </CardMedia>
         <Divider />
-        <ListItem style={styles.text}
-          disabled={true}
-          leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
-          primaryText={unspentAmountString}
-          secondaryText={strings.common.not_assigned}
-        />
+        <div style={styles.charts}>
+          <ListItem style={styles.text}
+            disabled={true}
+            leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
+            primaryText={unspentAmountString}
+            secondaryText={strings.common.assigned_budget}
+          />
+          <GaugeChart size={0.20} responsive={false} value={45} />
+        </div>
+
         <Divider />
         <ListItem style={styles.text}
           disabled={true}
