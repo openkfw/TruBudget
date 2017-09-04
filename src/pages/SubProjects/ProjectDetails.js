@@ -8,13 +8,13 @@ import Divider from 'material-ui/Divider';
 import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
-import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import IconButton from 'material-ui/IconButton';
+import CompletionIcon from 'material-ui/svg-icons/action/trending-up'
 
 import GaugeChart from '../Common/GaugeChart';
 import { budgetStatusColorPalette, red } from '../../colors'
@@ -163,7 +163,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <div style={styles.charts}>
           <ListItem style={styles.text}
             disabled={true}
-            leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
+            leftIcon={<CompletionIcon color={budgetStatusColorPalette[1]} />}
             primaryText={completionString}
             secondaryText={strings.common.completion}
           />
