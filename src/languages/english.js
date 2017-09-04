@@ -32,7 +32,9 @@ const en = {
     assignees: 'Assignee(s)',
     approver: 'Approver',
     bank: 'Bank',
-    assignee: 'Assignee'
+    assignee: 'Assignee',
+    completion: 'Completion',
+
   },
 
   login: {
@@ -77,6 +79,8 @@ const en = {
     subproject_assigned_organization: 'Assigned Organization',
     subproject_add: 'Add new Sub-project',
     subproject_select_button: 'Select',
+    subproject_completion_string: '{0} of {1} done'
+
   },
   workflow: {
     workflow_title: 'Workflow title',

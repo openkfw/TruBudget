@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
-import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, getAllocationRatio, getCompletionRatio, getCompletionString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -86,6 +86,11 @@ const styles = {
 const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectComment, projectStatus, projectTS, projectAssignee }) => {
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
+
+  const completionRatio = getCompletionRatio(subProjects);
+  const completionString = getCompletionString(subProjects);
+
+
   const unspentAmount = projectAmount - spentAmount;
   const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
 
@@ -93,7 +98,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), projectCurrency);
   const statusDetails = getProgressInformation(subProjects)
 
-  const allocatedRatio = spentAmount/projectAmount
+  const allocatedRatio = getAllocationRatio(spentAmount, projectAmount);
 
   return (
     <div style={styles.container}>
@@ -144,32 +149,26 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
       <Card style={styles.card}>
         <CardTitle title={strings.common.budget_distribution} />
         <Divider />
-        <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createAmountData(projectAmount, subProjects)} />
-        </CardMedia>
-        <Divider />
         <div style={styles.charts}>
           <ListItem style={styles.text}
             disabled={true}
             leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
-            primaryText={unspentAmountString}
+            primaryText={spentAmountString}
             secondaryText={strings.common.assigned_budget}
           />
-          <GaugeChart size={0.20} responsive={false} value={45} />
+          <GaugeChart size={0.20} responsive={false} value={allocatedRatio} />
         </div>
 
         <Divider />
-        <ListItem style={styles.text}
-          disabled={true}
-          leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
-          primaryText={spentAmountString}
-          secondaryText={unspentAmount >= 0 ?
-            <span> {strings.common.assigned} </span > :
-            <span> {strings.common.assigned}
-              <span style={styles.overspent}> {'(Overspent)'}
-              </span>
-            </span>}
-        />
+        <div style={styles.charts}>
+          <ListItem style={styles.text}
+            disabled={true}
+            leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
+            primaryText={completionString}
+            secondaryText={strings.common.completion}
+          />
+          <GaugeChart size={0.20} responsive={false} value={completionRatio} />
+        </div>
         <Divider />
       </Card>
       <Card style={styles.card}>
