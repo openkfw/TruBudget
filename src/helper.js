@@ -77,6 +77,28 @@ export const calculateUnspentAmount = (items) => {
   return amount;
 }
 
+export const getCompletionRatio = (subprojects) => {
+  const completedSubprojects = getCompletedSubprojects(subprojects);
+  const percentageCompleted = (completedSubprojects.length / subprojects.length) * 100
+  return percentageCompleted > 0 ? percentageCompleted : 0;
+}
+
+const getCompletedSubprojects = (subprojects) => {
+  const completedSubprojects = subprojects.filter((subproject) => {
+    return subproject.details.status === "done";
+  })
+  return completedSubprojects;
+}
+
+export const getCompletionString = (subprojects) => {
+  const completedSubprojects = getCompletedSubprojects(subprojects);
+  return strings.formatString(strings.subproject.subproject_completion_string, completedSubprojects.length, subprojects.length)
+}
+
+export const getAllocationRatio = (spentAmount, projectAmount) => {
+  const allocationRatio = (spentAmount / projectAmount) * 100
+  return allocationRatio > 0 ? allocationRatio : 0;
+}
 export const calculateWorkflowBudget = (workflows) => {
   return workflows.reduce((acc, workflow) => {
     const { amount, amountType, status } = workflow.data;

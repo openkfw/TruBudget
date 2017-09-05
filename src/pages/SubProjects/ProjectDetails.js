@@ -1,20 +1,22 @@
 import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
-import { toAmountString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, getAllocationRatio, getCompletionRatio, getCompletionString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
 import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
-import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import IconButton from 'material-ui/IconButton';
+import CompletionIcon from 'material-ui/svg-icons/action/trending-up'
+
+import GaugeChart from '../Common/GaugeChart';
 import { budgetStatusColorPalette, red } from '../../colors'
 import strings from '../../localizeStrings'
 
@@ -71,17 +73,33 @@ const styles = {
   overspent: {
     color: red
   },
+  charts: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: '10px',
+    marginBottom: '10px',
+    marginRight: '10px'
+  }
 }
 
 const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectComment, projectStatus, projectTS, projectAssignee }) => {
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
+
+  const completionRatio = getCompletionRatio(subProjects);
+  const completionString = getCompletionString(subProjects);
+
+
   const unspentAmount = projectAmount - spentAmount;
   const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
 
   const spentAmountString = toAmountString(spentAmount.toString(), projectCurrency);
   const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), projectCurrency);
   const statusDetails = getProgressInformation(subProjects)
+
+  const allocatedRatio = getAllocationRatio(spentAmount, projectAmount);
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -131,28 +149,26 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
       <Card style={styles.card}>
         <CardTitle title={strings.common.budget_distribution} />
         <Divider />
-        <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createAmountData(projectAmount, subProjects)} />
-        </CardMedia>
+        <div style={styles.charts}>
+          <ListItem style={styles.text}
+            disabled={true}
+            leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
+            primaryText={spentAmountString}
+            secondaryText={strings.common.assigned_budget}
+          />
+          <GaugeChart size={0.20} responsive={false} value={allocatedRatio} />
+        </div>
+
         <Divider />
-        <ListItem style={styles.text}
-          disabled={true}
-          leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
-          primaryText={unspentAmountString}
-          secondaryText={strings.common.not_assigned}
-        />
-        <Divider />
-        <ListItem style={styles.text}
-          disabled={true}
-          leftIcon={<SpentIcon color={budgetStatusColorPalette[0]} />}
-          primaryText={spentAmountString}
-          secondaryText={unspentAmount >= 0 ?
-            <span> {strings.common.assigned} </span > :
-            <span> {strings.common.assigned}
-              <span style={styles.overspent}> {'(Overspent)'}
-              </span>
-            </span>}
-        />
+        <div style={styles.charts}>
+          <ListItem style={styles.text}
+            disabled={true}
+            leftIcon={<CompletionIcon color={budgetStatusColorPalette[1]} />}
+            primaryText={completionString}
+            secondaryText={strings.common.completion}
+          />
+          <GaugeChart size={0.20} responsive={false} value={completionRatio} />
+        </div>
         <Divider />
       </Card>
       <Card style={styles.card}>

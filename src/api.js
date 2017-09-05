@@ -1,10 +1,17 @@
 import axios from 'axios';
 
+const devMode = process.env.NODE_ENV === 'development';
+
+console.log(`API running in ${devMode ? "development" : "production"} mode`)
+
 class Api {
-  prefix = '/test';
+
+  prefix = devMode ? '' : '/test';
 
   activateProduction = (active) => {
-    this.prefix = active ? '/api' : '/test';
+    if (!devMode) {
+      this.prefix = active ? '/api' : '/test';
+    }
   }
 
   fetchPeers = () => axios.get(`${this.prefix}/peers`);
