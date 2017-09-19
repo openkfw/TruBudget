@@ -40,7 +40,7 @@ const fr = {
     environment: 'Environment',
     test_env: 'Test',
     production_env: 'Prod',
-    username: 'xxx',
+    username: 'Username',
     password: 'Password',
     incorrect_username: 'Incorrect username',
     incorrect_password: 'Incorrect password',
