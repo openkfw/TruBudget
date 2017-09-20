@@ -177,7 +177,7 @@ const de = {
   },
   language: {
     german: 'German',
-    french: 'French',
+    french: 'Français',
     english: 'English',
   },
 }

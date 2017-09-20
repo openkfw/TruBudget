@@ -181,7 +181,7 @@ const en = {
   },
   language: {
     german: 'German',
-    french: 'French',
+    french: 'Français',
     english: 'English',
   },
 }
