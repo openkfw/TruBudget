@@ -69,14 +69,14 @@ const fr = {
 
   },
   subproject: {
-    subproject_title: 'Sub-Project title',
-    subproject_title_description: 'Name of the sub-project',
-    subproject_budget_amount: 'Sub-project  budget amount',
+    subproject_title: 'Sous-projet',
+    subproject_title_description: 'Titre du sous-projet',
+    subproject_budget_amount: 'Montant du budget du sous-projet',
     subproject_budget_amount_description: 'Budget for the sub-project',
-    subproject_comment: 'Sub-project Comment',
-    subproject_assigned_organization: 'Assigned Organization',
-    subproject_add: 'Add new Sub-project',
-    subproject_select_button: 'Select',
+    subproject_comment: 'Commentaire du sous-projet',
+    subproject_assigned_organization: 'Organisation assignée',
+    subproject_add: 'Ajouter un nouveau sous-projet',
+    subproject_select_button: 'Sélectionnez',
   },
   workflow: {
     workflow_title: 'Workflow title',
