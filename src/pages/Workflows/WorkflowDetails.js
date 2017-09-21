@@ -59,7 +59,7 @@ const getUser = (subProjectDetails, users, showWorkflowDetails, status) => {
 
 const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, users, validateDocument, validatedDocuments }) => {
   const actions = [
-    <FlatButton label="Close"
+    <FlatButton label={strings.common.close}
       onTouchTap={hideWorkflowDetails}
     />];
 
@@ -83,7 +83,7 @@ const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails
         <DocumentOverview documents={workflowItem.data.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />
         <Divider />
         {strings.common.comment}:
-        <TextField disabled={true} hintText={statusMapping[status]} style={styles.textfield} underlineShow={false} />
+        <TextField disabled={true} hintText={statusMapping(status)} style={styles.textfield} underlineShow={false} />
         <Divider />
 
       </div>

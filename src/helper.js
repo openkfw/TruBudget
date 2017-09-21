@@ -24,17 +24,39 @@ export const typeMapping = {
   transaction: strings.workflow.workflow_type_transaction
 }
 
-export const statusMapping = {
-  done: strings.common.done,
-  'in_review': strings.common.in_review,
-  'in_progress': strings.common.in_progress,
-  open: strings.common.open
+export const statusMapping = (status) => {
+  switch (status) {
+    case 'done':
+      return strings.common.done
+      break;
+    case 'in_review':
+      return strings.common.in_review
+      break;
+    case 'in_progress':
+      return strings.common.in_progress
+      break;
+    case 'open':
+      return strings.common.open
+      break;
+    default:
+      break;
+  }
 }
 
-export const amountTypes = {
-  na: strings.workflow.workflow_budget_status_na,
-  allocated: strings.workflow.workflow_budget_status_allocated,
-  disbursed: strings.workflow.workflow_budget_status_disbursed
+export const amountTypes = (amountType) => {
+  switch (amountType) {
+    case 'na':
+      return strings.workflow.workflow_budget_status_na;
+      break;
+    case 'allocated':
+      return strings.workflow.workflow_budget_status_allocated;
+      break;
+    case 'disbursed':
+      return strings.workflow.workflow_budget_status_disbursed;
+      break;
+    default:
+      break;
+  }
 }
 
 export const statusIconMapping = {

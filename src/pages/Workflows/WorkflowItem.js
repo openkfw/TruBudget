@@ -18,6 +18,8 @@ import EditIcon from 'material-ui/svg-icons/image/edit';
 import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import IconButton from 'material-ui/IconButton';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from '../../colors.js';
+import strings from '../../localizeStrings'
+
 
 const styles = {
   in_progress: {
@@ -201,7 +203,7 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
 
 const getAmountField = (amount, type) => {
   const noBudgetAllocated = type === 'na'
-  const amountToShow = noBudgetAllocated ? amountTypes[type] : amount;
+  const amountToShow = noBudgetAllocated ? amountTypes(type) : amount;
 
   return (
     <div style={{
@@ -211,7 +213,7 @@ const getAmountField = (amount, type) => {
       <div>
         {amountToShow}
       </div>
-      {noBudgetAllocated ? null : <Chip style={{ marginLeft: '16px' }}>{amountTypes[type]}</Chip>}
+      {noBudgetAllocated ? null : <Chip style={{ marginLeft: '16px' }}>{amountTypes(type)}</Chip>}
     </div>
   )
 }
@@ -222,6 +224,7 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
   const amount = toAmountString(workflow.data.amount, workflow.data.currency);
   const tableStyle = workflowSelectable ? styles[status] : { ...styles[status], opacity: 0.3 };
   const infoButton = getInfoButton(props, workflow)
+
   return (
     <Card key={mapIndex} style={{
       marginLeft: '50px',
@@ -242,7 +245,7 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
             </TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={3}>{workflowName}</TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={3}>{getAmountField(amount, amountType)}</TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping[status]}</TableRowColumn>
+            <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping(status)}</TableRowColumn>
             {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
           </TableRow>
 
@@ -252,5 +255,7 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
     </Card>
   )
 });
+
+
 
 export default WorkflowItem;

@@ -123,7 +123,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <ListItem
             disabled={true}
             leftIcon={statusIconMapping[projectStatus]}
-            primaryText={statusMapping[projectStatus]}
+            primaryText={statusMapping(projectStatus)}
             secondaryText={strings.common.status}
           />
           <Divider />

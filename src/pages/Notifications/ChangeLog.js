@@ -17,7 +17,7 @@ const getDescription = (item) => {
   switch (action) {
     case 'edit_status': {
       const { workflowName, newData } = data;
-      return strings.formatString(templateString, workflowName, statusMapping[newData])
+      return strings.formatString(templateString, workflowName, statusMapping(newData))
     } break;
     case 'edit_amount': {
       const { workflowName, newData, oldData } = data;

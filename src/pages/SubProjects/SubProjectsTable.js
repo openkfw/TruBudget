@@ -18,7 +18,7 @@ const getTableEntries = (subProjects, location, history) => {
       <TableRow key={index} selectable={false}>
         <TableRowColumn style={styles.tableText}>{subProject.details.name}</TableRowColumn>
         <TableRowColumn style={styles.tableText}>{amount}</TableRowColumn>
-        <TableRowColumn style={styles.tableText}>{statusMapping[subProject.details.status]}</TableRowColumn>
+        <TableRowColumn style={styles.tableText}>{statusMapping(subProject.details.status)}</TableRowColumn>
         <TableRowColumn>
           <FlatButton style={styles.tableText} label={strings.subproject.subproject_select_button} onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.name)} secondary={true} />
         </TableRowColumn>

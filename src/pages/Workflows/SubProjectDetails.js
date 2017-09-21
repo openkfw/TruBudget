@@ -177,7 +177,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
 
 
   const amountString = toAmountString(amount, currency)
-  const status = statusMapping[subProjectDetails.status]
+  const status = statusMapping(subProjectDetails.status)
   const statusIcon = statusIconMapping[subProjectDetails.status]
   const date = tsToString(subProjectDetails.createTS)
 
