@@ -339,7 +339,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
           leftIcon={<ActiveIcon />}
           //  primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}
           primaryText={<div>
-            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.data.workflowName : 'None'}</span> <br />
+            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.data.workflowName : strings.workflow.workflow_none}</span> <br />
             {nextAction}
           </div>}
           secondaryText={strings.workflow.workflow_next_step}

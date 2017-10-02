@@ -4,14 +4,25 @@ import FlatButton from 'material-ui/FlatButton';
 import colors, { ACMECorpGrey } from '../../colors';
 import strings from '../../localizeStrings';
 
-const staticBreadcrumbs = {
-  projects: strings.navigation.menu_item_projects,
-  notifications: strings.navigation.menu_item_notifications,
-  network: strings.navigation.menu_item_network,
+const getStaticBreadcrumb = (name) => {
+  switch (name) {
+    case 'projects':
+      return strings.navigation.menu_item_projects
+      break;
+    case 'notifications':
+      return strings.navigation.menu_item_notifications
+      break;
+    case 'network':
+      return strings.navigation.menu_item_network
+      break;
+    default:
+      break;
+  }
 }
 
+
 const getPathName = (name, streamNames) => {
-  const breadcrumb = streamNames[name] ? streamNames[name] : staticBreadcrumbs[name];
+  const breadcrumb = streamNames[name] ? streamNames[name] : getStaticBreadcrumb(name);
   return breadcrumb ? breadcrumb : '...';
 };
 

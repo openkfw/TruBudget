@@ -194,7 +194,7 @@ export const getNextAction = (item, assignee, bank, approver) => {
     }
     return actionMapping(assignee, bank, approver)[item.details.status]
   } else {
-    return "No actions required "
+    return strings.workflow.workflow_no_actions
   }
 }
 

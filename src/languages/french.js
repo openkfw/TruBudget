@@ -77,6 +77,7 @@ const fr = {
     subproject_assigned_organization: 'Organisation assignée',
     subproject_add: 'Ajouter un nouveau sous-projet',
     subproject_select_button: 'Sélectionnez',
+    subproject_completion_string: '{0} cal {1} van'
   },
   workflow: {
     workflow_title: 'Titre du workflow',
@@ -93,6 +94,8 @@ const fr = {
     workflow_budget_status_allocated: 'Alloué',
     workflow_budget_status_disbursed: 'Décaissé',
     workflow_next_step: 'Prochaine étape',
+    workflow_no_actions: 'asdfd',
+    workflow_none: 'blub',
     workflow_enable_sort: 'Trier',
     worfkfow_disable_sort: 'Enregistrer',
     workflow_table_title: 'Titre de la table de travail',
@@ -127,7 +130,7 @@ const fr = {
     options: 'Options',
     rtUpdates: 'Mises à jour en temps réel',
     other_trustees: 'Autres fiduciaires',
-    menu_item_projects: 'Projects',
+    menu_item_projects: 'Projets',
     menu_item_notifications: 'Notifications',
     menu_item_network: 'Réseau',
     main_site: 'Principal',

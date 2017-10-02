@@ -77,6 +77,7 @@ const de = {
     subproject_assigned_organization: 'Assigned Organization',
     subproject_add: 'Add new Sub-project',
     subproject_select_button: 'Select',
+    subproject_completion_string: '{0} von {1} erledigt'
   },
   workflow: {
     workflow_title: 'Workflow title',
@@ -93,6 +94,8 @@ const de = {
     workflow_budget_status_allocated: 'Allocated',
     workflow_budget_status_disbursed: 'Disbursed',
     workflow_next_step: 'Next step',
+    workflow_no_actions: 'No actions required',
+    workflow_none: 'None',
     workflow_enable_sort: 'Sort',
     worfkfow_disable_sort: 'Save',
     workflow_table_title: 'Workflow items',

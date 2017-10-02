@@ -97,6 +97,8 @@ const en = {
     workflow_budget_status_allocated: 'Allocated',
     workflow_budget_status_disbursed: 'Disbursed',
     workflow_next_step: 'Next step',
+    workflow_no_actions: 'No actions required',
+    workflow_none: 'None',
     workflow_enable_sort: 'Sort',
     worfkfow_disable_sort: 'Save',
     workflow_table_title: 'Workflow items',
