@@ -60,6 +60,7 @@ class RoleSelectionContent extends Component {
       <div style={styles.container}>
         <AutoComplete
           ref="autoComplete"
+          aria-label="roleselection"
           floatingLabelText={strings.project.project_authority_organization_search}
           searchText={this.state.searchText}
           dataSource={unSelectedDataSource}

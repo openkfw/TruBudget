@@ -71,7 +71,7 @@ const OverviewTable = (props) => {
       <Card style={{ margin: '20px', width: '25%', opacity: '0.7' }}>
         <div style={{ display: 'flex', height: '450px', backgroundColor: 'lightgray', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
           <CardActions >
-            <FloatingActionButton disabled={!props.loggedInUser.role.admin || !props.loggedInUser.role.write} onTouchTap={props.showWorkflowDialog} style={{ height: '100%', opacity: '1.0' }} >
+            <FloatingActionButton aria-label='create' disabled={!props.loggedInUser.role.admin || !props.loggedInUser.role.write} onTouchTap={props.showWorkflowDialog} style={{ height: '100%', opacity: '1.0' }} >
               <ContentAdd />
             </FloatingActionButton>
           </CardActions>
