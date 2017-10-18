@@ -124,7 +124,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
             <MenuItem value='fr' primaryText={strings.language.french} />
             <MenuItem value='de' primaryText={strings.language.german} />
           </DropDownMenu>
-          <RaisedButton label={strings.login.login_button_title} style={{ marginRight: 20, marginTop: 5 }} onTouchTap={() => loginWithCredentails(username, password)} />
+          <RaisedButton label={strings.login.login_button_title} aria-label='loginbutton' style={{ marginRight: 20, marginTop: 5 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
         <Divider />
         <div>

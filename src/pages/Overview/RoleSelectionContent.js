@@ -44,6 +44,17 @@ class RoleSelectionContent extends Component {
     }
   }
 
+  captureEnterClick = (event) => {
+    if (event.charCode == 13) {
+      const unSelectedDataSource = _.difference(this.props.dataSource, this.props.selections);
+      const index = unSelectedDataSource.findIndex((role) => role.toLowerCase() === _.trim(this.state.searchText).toLowerCase())
+      if (index > -1) {
+        const role = unSelectedDataSource[index];
+        this.onSelect(role, index);
+      }
+    }
+  }
+
   onRemoveChip = (role) => {
     this.props.removeSelection(role);
   }
@@ -60,6 +71,8 @@ class RoleSelectionContent extends Component {
       <div style={styles.container}>
         <AutoComplete
           ref="autoComplete"
+          aria-label="roleselection"
+          onKeyPress={this.captureEnterClick}
           floatingLabelText={strings.project.project_authority_organization_search}
           searchText={this.state.searchText}
           dataSource={unSelectedDataSource}

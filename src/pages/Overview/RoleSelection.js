@@ -40,6 +40,7 @@ class RoleSelection extends Component {
           label={stepIndex === lastStep ? strings.common.finish : strings.common.next}
           disableTouchRipple={true}
           disableFocusRipple={true}
+          aria-label="next"
           primary={true}
           onTouchTap={this.handleNext}
           style={{ marginRight: 12 }}

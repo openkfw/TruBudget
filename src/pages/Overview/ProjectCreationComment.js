@@ -30,6 +30,7 @@ class ProjectCreationComment extends Component {
         position: 'relative'
       }}>
         <TextField
+          aria-label="commentinput"
           multiLine={true}
           rows={2}
           floatingLabelText={floatingLabelText}
