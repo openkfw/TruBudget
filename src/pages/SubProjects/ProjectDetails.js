@@ -109,14 +109,14 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <ListItem
             disabled={true}
             leftIcon={<CommentIcon />}
-            primaryText={<div style={styles.comment}>{projectComment} </div>}
+            primaryText={<div aria-label='projectcomment' style={styles.comment}>{projectComment} </div>}
             secondaryText={strings.common.comment}
           />
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<AmountIcon />}
-            primaryText={amountString}
+            primaryText={<div aria-label='projectbudget'> {amountString} </div>}
             secondaryText={strings.common.budget}
           />
           <Divider />
@@ -137,7 +137,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
-            primaryText={getAssignedOrganization(projectAssignee)}
+            primaryText={<div aria-label='projectassignee'> {getAssignedOrganization(projectAssignee)} </div>}
             secondaryText={strings.subproject.subproject_assigned_organization}
           />
           <Divider />
