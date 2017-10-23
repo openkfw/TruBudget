@@ -21,7 +21,7 @@ const getTableEntries = ({ projects, history }) => {
     const imagePath = project.details.name === 'School1' ? './school.jpg' : './building.jpg'
     const dateString = tsToString(project.details.createTS)
     return (
-      <Card key={index} style={{ margin: '20px', width: '35%', maxWidth: '300px' }}>
+      <Card aria-label='project' key={index} style={{ margin: '20px', width: '35%', maxWidth: '300px' }}>
         <Card>
           <CardMedia
             overlay={<CardTitle title={project.details.name} subtitle={status} />}
@@ -66,7 +66,7 @@ const getTableEntries = ({ projects, history }) => {
 const OverviewTable = (props) => {
   const tableEntries = getTableEntries(props);
   return (
-    <div style={{ backgroundColor: 'transparent', height: '100%', width: '100%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <div aria-label='projects' style={{ backgroundColor: 'transparent', height: '100%', width: '100%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       {tableEntries}
       <Card style={{ margin: '20px', width: '25%', opacity: '0.7' }}>
         <div style={{ display: 'flex', height: '450px', backgroundColor: 'lightgray', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
