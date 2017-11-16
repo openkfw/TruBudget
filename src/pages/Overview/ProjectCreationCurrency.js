@@ -18,6 +18,9 @@ class ProjectCreationCurrency extends Component {
       case 'USD':
         this.setCurrency('USD')
         break;
+      case 'BRL':
+        this.setCurrency('BRL')
+        break;
       default:
         this.setCurrency('EUR');
         break;
@@ -33,6 +36,7 @@ class ProjectCreationCurrency extends Component {
     const parentCurrency = this.props.parentCurrency
     const usdDisabled = parentCurrency === 'USD' ? true : false;
     const eurDisabled = parentCurrency === 'EUR' ? true : false;
+    const brlDisabled = parentCurrency === 'BRL' ? true : false;
 
     return (
       <SelectField style={{
@@ -47,6 +51,7 @@ class ProjectCreationCurrency extends Component {
       >
         <MenuItem disabled={usdDisabled} value='EUR' primaryText="EUR" />
         <MenuItem disabled={eurDisabled} value='USD' primaryText="USD" />
+        <MenuItem disabled={brlDisabled} value='BRL' primaryText="BRL" />
       </SelectField>
     );
   }
