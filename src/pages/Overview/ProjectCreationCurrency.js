@@ -34,10 +34,18 @@ class ProjectCreationCurrency extends Component {
 
   render() {
     const parentCurrency = this.props.parentCurrency
-    const usdDisabled = parentCurrency === 'USD' ? true : false;
-    const eurDisabled = parentCurrency === 'EUR' ? true : false;
-    const brlDisabled = parentCurrency === 'BRL' ? true : false;
-
+    let usdDisabled;
+    let eurDisabled;
+    let brlDisabled;
+    if (_.isUndefined(parentCurrency)) {
+      usdDisabled = false;
+      eurDisabled = false;
+      brlDisabled = false;
+    } else {
+      usdDisabled = !(parentCurrency === 'USD');
+      eurDisabled = !(parentCurrency === 'EUR');
+      brlDisabled = !(parentCurrency === 'BRL');
+    }
     return (
       <SelectField style={{
         width: '27%',
@@ -49,8 +57,8 @@ class ProjectCreationCurrency extends Component {
         value={this.props.projectCurrency}
         onChange={this.handleChange}
       >
-        <MenuItem disabled={usdDisabled} value='EUR' primaryText="EUR" />
-        <MenuItem disabled={eurDisabled} value='USD' primaryText="USD" />
+        <MenuItem disabled={eurDisabled} value='EUR' primaryText="EUR" />
+        <MenuItem disabled={usdDisabled} value='USD' primaryText="USD" />
         <MenuItem disabled={brlDisabled} value='BRL' primaryText="BRL" />
       </SelectField>
     );
