@@ -74,7 +74,6 @@ if [ -z "$MASTERNODE" ]; then
 else
     sleep 7
     if [ -z "$MASTERNODE_IP" ]; then
-      echo "Search IP for node: $MASTERNODE"
       export MASTERNODE_IP=`getent hosts $MASTERNODE | awk -F' ' '{print $1}'`
     fi
 
