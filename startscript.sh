@@ -63,28 +63,23 @@ autosubscribe=streams
 EOF
 
 cp /root/.multichain/$CHAINNAME/multichain.conf /root/.multichain/multichain.conf
-#sed -i "s/ChainPlaceholder/$CHAINNAME/g" /home/node/multichain-explorer/explorer.conf
 
 if [ ! -z "$BLOCKNOTIFY_SCRIPT" ]; then
     echo "blocknotify=$BLOCKNOTIFY_SCRIPT %s" >> /root/.multichain/$CHAINNAME/multichain.conf
 fi
 
 if [ -z "$MASTERNODE" ]; then
-
     cp /root/.multichain/$CHAINNAME/multichain.conf /root/.multichain/multichain.conf
     multichaind -txindex -shrinkdebugfilesize $CHAINNAME
-    #if ([ "$ENABLE_EXPLORER" == 1 ] || [ "$ENABLE_EXPLORER" == "true" ]); then
-    #  echo "Explorer started on $CHAINNAME "
-    #  sh /home/node/startexplorer.sh &
-    #fi
-    #python /home/node/datagenerator.py &
 else
     sleep 7
     if [ -z "$MASTERNODE_IP" ]; then
+      echo "Search IP for node: $MASTERNODE"
       export MASTERNODE_IP=`getent hosts $MASTERNODE | awk -F' ' '{print $1}'`
     fi
 
-    echo ">>>>>> Node connecting to $CHAINNAME@$MASTERNODE_IP:$NETWORK_PORT"
+    echo ">>> Connect: Node connecting to $CHAINNAME@$MASTERNODE_IP:$NETWORK_PORT"
+    node /home/node/src/connectToChain.js
     # start the multichain daemon
     #python /home/node/startslave.py startDaemon &
     #export PUBLIC_KEY=$(python /home/node/startslave.py getAddress)
