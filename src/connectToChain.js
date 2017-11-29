@@ -37,7 +37,7 @@ const waitForAddress = async () => {
     if (!address) await waitForAddress();
 }
 
-const askMasterForPermissions = (address, organization) => axios.post(`http://${masterIP}:${masterPort}/nodes/`, {
+const askMasterForPermissions = (address, organization) => axios.post(`http://${masterIP}:${masterPort}/nodes`, {
     address,
     organization,
 });
@@ -49,6 +49,7 @@ const registerNodeAtMaster = async () => {
         await askMasterForPermissions(address, organization);
         console.log('>>> Access: Success!');
     } catch (error) {
+        console.log(error)
         console.log(">>> Access: Error. Retry in 5 seconds ...");
         await relax(5000);
         await registerNodeAtMaster();
