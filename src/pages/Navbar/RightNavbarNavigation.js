@@ -21,7 +21,7 @@ const RightNavbarNavigations = ({ peers, unreadNotifications, history, logout, l
     <div style={styles.container} >
       <span style={styles.text}
       >
-        {loggedInUser.role.roleName}
+
       </span>
       <NavbarIcons unreadNotifications={unreadNotifications} peers={peers} history={history} logout={logout} />
     </div >

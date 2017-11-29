@@ -1,8 +1,15 @@
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
+
+export const FORCE_LOGIN = 'FORCE_LOGIN';
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+
+export const FETCH_USER = 'FETCH_USER';
+export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
+
 export const FETCH_ROLES = 'FETCH_ROLES';
 export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
 
@@ -18,6 +25,12 @@ export const SET_LANGUAGE = 'SET_LANGUAGE';
 export function fetchUsers() {
   return {
     type: FETCH_USERS
+  }
+}
+
+export function forceLogin() {
+  return {
+    type: FORCE_LOGIN
   }
 }
 

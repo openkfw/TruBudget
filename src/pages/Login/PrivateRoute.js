@@ -1,29 +1,49 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import {
   Route,
   Redirect,
 } from 'react-router'
+import { forceLogin } from './actions';
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  return (
-    <Route {...rest} render={props => (
-      rest.loggedInUser.username ? (
-        <Component {...props} />
-      ) : (
-          <Redirect to={{
-            pathname: '/login',
-            state: { from: props.location }
-          }} />
+class PrivateRoute extends Component {
+
+  componentWillMount = () => {
+    this.props.forceLogin()
+  }
+
+
+  render() {
+    const { component: Component, ...rest } = this.props;
+    console.log('render')
+    console.log(rest.loggedIn)
+    return (
+      <Route { ...rest } render={
+        props => (
+          rest.loggedIn ? (
+            <Component {...props} />
+          ) : (
+              <Redirect to={{
+                pathname: '/login',
+                state: { from: props.location }
+              }} />
+            )
         )
-    )} />
-  )
+      } />
+    )
+  }
 }
 
 const mapStateToProps = (state) => {
   return {
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    loggedIn: state.getIn(['login', 'loggedIn']),
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    forceLogin: () => dispatch(forceLogin())
   }
 }
 
-export default connect(mapStateToProps)(PrivateRoute);
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);

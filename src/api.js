@@ -23,11 +23,9 @@ class Api {
     }
   }
   login = async (username, password) => {
-    const response = await axios.post(`${this.prefix}/login`, { username, password })
-    const { jwtToken, user } = response.data;
-    localStorage.setItem('jwt_token', jwtToken);
-    this.setAuthorizationHeader(jwtToken);
-    return user;
+    const { data } = await axios.post(`${this.prefix}/login`, { username, password })
+    localStorage.setItem('jwt_token', data);
+    this.setAuthorizationHeader(data);
   }
 
   fetchPeers = () => axios.get(`${this.prefix}/peers`);
@@ -40,7 +38,8 @@ class Api {
   fetchNodeInformation = () => axios.get(`${this.prefix}/nodes`);
   fetchNotifications = (user) => axios.get(`${this.prefix}/notifications/` + user);
   fetchWorkflowItems = (subProjectName) => axios.get(`${this.prefix}/subprojects/` + subProjectName);
-
+  // fetch the user to the existing JWT token
+  fetchUser = () => axios.get(`${this.prefix}/user`)
   fetchUsers = () => axios.get(`${this.prefix}/users`);
   fetchRoles = () => axios.get(`${this.prefix}/roles`);
   postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type) => axios.post(`${this.prefix}/workflows`, { streamName: stream, workflowName: workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type })

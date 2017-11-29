@@ -7,25 +7,26 @@ import LoginPage from './LoginPage';
 
 
 class LoginPageContainer extends Component {
-  componentWillMount () {
+  componentWillMount() {
     this.props.storeDefaultEnvironment();
   }
 
-  render () {
+  render() {
     return <LoginPage {...this.props} />
   }
-  componentDidMount () {
+  componentDidMount() {
     this.checkIfRedirect();
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.checkIfRedirect();
   }
 
-  checkIfRedirect () {
+  checkIfRedirect() {
     const from = this.props.location && this.props.location.state && this.props.location.state.from;
     const path = from ? this.props.location.state.from : '/';
-    if (this.props.loggedInUser.username) this.props.history.push(path);
+
+    if (this.props.loggedIn) this.props.history.push(path);
   }
 }
 
@@ -54,6 +55,7 @@ const mapStateToProps = (state) => {
     loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
     environment: state.getIn(['login', 'environment']),
     language: state.getIn(['login', 'language']),
+    loggedIn: state.getIn(['login', 'loggedIn'])
   }
 }
 
