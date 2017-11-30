@@ -39,7 +39,7 @@ class Api {
   fetchNotifications = (user) => axios.get(`${this.prefix}/notifications/` + user);
   fetchWorkflowItems = (subProjectName) => axios.get(`${this.prefix}/subprojects/` + subProjectName);
   // fetch the user to the existing JWT token
-  fetchUser = () => axios.get(`${this.prefix}/user`)
+  fetchUser = () => axios.get(`${this.prefix}/users/mapping`)
   fetchUsers = () => axios.get(`${this.prefix}/users`);
   fetchRoles = () => axios.get(`${this.prefix}/roles`);
   postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type) => axios.post(`${this.prefix}/workflows`, { streamName: stream, workflowName: workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type })
