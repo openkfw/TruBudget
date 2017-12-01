@@ -8,10 +8,9 @@ import { forceLogin } from './actions';
 
 class PrivateRoute extends Component {
 
-  componentWillMount = () => {
-    this.props.forceLogin()
+  componentWillMount() {
+    this.props.forceLogin();
   }
-
 
   render() {
     const { component: Component, ...rest } = this.props;

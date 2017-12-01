@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
+import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router';
 import injectTapEventPlugin from "react-tap-event-plugin";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -20,7 +21,7 @@ import {
 import Main from './pages/Main/Main';
 import LoginPageContainer from './pages/Login/LoginPageContainer';
 import PrivateRoute from './pages/Login/PrivateRoute';
-
+import { forceLogin } from './pages/Login/actions'
 import configureStore from './store';
 
 const history = createHistory()
@@ -43,14 +44,17 @@ const muiTheme = getMuiTheme({
 });
 
 class App extends Component {
+
+
+
   render() {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <MuiThemeProvider muiTheme={muiTheme}>
             <Switch>
-               <Route exact path="/login" component={LoginPageContainer} />
-               <PrivateRoute component={Main}/>
+              <Route exact path="/login" component={LoginPageContainer} />
+              <PrivateRoute component={Main} />
             </Switch>
           </MuiThemeProvider>
         </ConnectedRouter>
