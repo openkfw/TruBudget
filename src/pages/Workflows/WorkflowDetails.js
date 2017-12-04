@@ -5,9 +5,6 @@ import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import { toAmountString, statusMapping, typeMapping } from '../../helper';
-import Avatar from 'material-ui/Avatar';
-import { ListItem } from 'material-ui/List';
-
 import DocumentOverview from '../Documents/DocumentOverview';
 import strings from '../../localizeStrings'
 
@@ -45,17 +42,6 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
 
   return workflowItem;
 }
-const getUser = (subProjectDetails, users, showWorkflowDetails, status) => {
-  let userProps = {}
-  if (showWorkflowDetails) {
-    if (status == 'open') {
-
-    }
-    // userProps = users[userId];
-  }
-
-  return userProps;
-}
 
 const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, users, validateDocument, validatedDocuments }) => {
   const actions = [
@@ -65,7 +51,6 @@ const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails
 
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
   const status = workflowItem.data.status;
-  const assignedUser = getUser(subProjectDetails, users, showWorkflowDetails, status);
   return (
 
     <Dialog open={showWorkflowDetails} actions={actions} title={workflowItem.data.workflowName} modal={false} style={styles.dialog}>

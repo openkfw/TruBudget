@@ -2,10 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { ListItem } from 'material-ui/List';
-import IconButton from 'material-ui/IconButton';
-import ReadIcon from 'material-ui/svg-icons/navigation/check';
 import FlatButton from 'material-ui/FlatButton';
-import { ACMECorpGreen, ACMECorpLightgreen } from '../../colors.js';
 import strings from '../../localizeStrings';
 import { roleMapper } from '../../helper'
 const styles = {
@@ -63,7 +60,6 @@ const getNotifications = (notifications, filter = 'all', streamNames, users, log
     const issuer = users[data.issuer];
     const description = getDescription(data);
     const notificationRead = data.done === true;
-    const viewable = data.link === '/dashboard' ? false : !data.done
 
     const element = (
       <TableRow key={index} style={notificationRead ? {} : styles.notSelected} onTouchTap={notificationRead ? undefined : () => markNotificationAsRead(loggedInUser.id, key, data)}>

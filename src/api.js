@@ -16,7 +16,7 @@ class Api {
 
   getToken = () => localStorage.getItem(TOKEN_NAME)
   setToken = (data) => localStorage.setItem(TOKEN_NAME, data)
-  deleteToken = () => localStorage.removeItem(TOKEN_NAME);
+  removeToken = () => localStorage.removeItem(TOKEN_NAME);
 
   setAuthorizationHeader = (token) => {
     axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
@@ -30,8 +30,10 @@ class Api {
   }
   login = async (username, password) => {
     const { data } = await axios.post(`${this.prefix}/login`, { username, password })
-    this.setToken(data);
-    this.setAuthorizationHeader(data);
+    const { jwtToken, user } = data;
+    this.setToken(jwtToken);
+    this.setAuthorizationHeader(jwtToken);
+    return user;
   }
 
   fetchPeers = () => axios.get(`${this.prefix}/peers`);

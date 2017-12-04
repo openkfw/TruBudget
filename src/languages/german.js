@@ -1,5 +1,3 @@
-import LocalizedStrings from 'react-localization';
-
 const de = {
   common: {
     cancel: 'Cancel',

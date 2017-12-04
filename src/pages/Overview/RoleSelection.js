@@ -74,7 +74,7 @@ class RoleSelection extends Component {
 
   render = () => {
     const { steps } = this.props;
-    const { finished, stepIndex } = this.state;
+    const { stepIndex } = this.state;
 
     return (
       <Stepper activeStep={stepIndex} orientation="vertical">

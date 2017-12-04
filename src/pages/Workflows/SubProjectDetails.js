@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
-import { toAmountString, fromAmountString, getNotAssignedBudget, createSubprojectAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, fromAmountString, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -164,12 +164,11 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
 
 const createRatio = (ratio) => _.isNaN(ratio) ? 0 : ratio * 100
 
-const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
+const SubProjectDetails = ({ roles, subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
   const name = subProjectDetails.name
   const comment = subProjectDetails.comment
   const amount = subProjectDetails.amount
   const currency = subProjectDetails.currency
-
 
   const assignee = getAssignedOrganization(subProjectDetails.assignee)
   const bank = subProjectDetails.bank
@@ -185,8 +184,6 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
   const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(items);
 
 
-  const notAssignedBudget = getNotAssignedBudget(amount, assignedBudget, disbursedBudget);
-
 
   const disbursedBudgetString = toAmountString(disbursedBudget, currency);
   const unSpendBudgetString = toAmountString(assignedBudget, currency);
@@ -194,6 +191,7 @@ const SubProjectDetails = ({ subProjectDetails, workflowItems, budgetEditEnabled
 
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
+
   const nextAction = getNextAction(nextIncompletedWorkflow, assignee, bank, approver)
 
   const allowedToWrite = props.loggedInUser.role.write;

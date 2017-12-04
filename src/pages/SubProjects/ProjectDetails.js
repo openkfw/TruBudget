@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
-import { toAmountString, getAllocationRatio, getCompletionRatio, getCompletionString, createAmountData, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getAssignedOrganization } from '../../helper.js'
+import { toAmountString, getAllocationRatio, getCompletionRatio, getCompletionString, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getAssignedOrganization } from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
@@ -90,12 +90,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   const completionRatio = getCompletionRatio(subProjects);
   const completionString = getCompletionString(subProjects);
 
-
-  const unspentAmount = projectAmount - spentAmount;
-  const correctedUnspentAmount = unspentAmount > 0 ? unspentAmount : 0
-
   const spentAmountString = toAmountString(spentAmount.toString(), projectCurrency);
-  const unspentAmountString = toAmountString(correctedUnspentAmount.toString(), projectCurrency);
   const statusDetails = getProgressInformation(subProjects)
 
   const allocatedRatio = getAllocationRatio(spentAmount, projectAmount);

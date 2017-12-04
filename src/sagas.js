@@ -10,7 +10,7 @@ import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS } from './pages/Workflows/actions';
 
-import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, FORCE_LOGIN, FETCH_USER, TOKEN_FOUND } from './pages/Login/actions';
+import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, CHECK_TOKEN, FETCH_USER, TOKEN_FOUND } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 import _ from 'lodash';
 
@@ -184,8 +184,8 @@ export function* fetchRolesSaga() {
 
 export function* loginSaga({ user }) {
   try {
-    yield call(api.login, user.username, user.password);
-    yield call(fetchUserWithJwt);
+    const data = yield call(api.login, user.username, user.password);
+    yield put({ type: FETCH_USER_SUCCESS, user: { username: data.id, ...data } })
     yield put({ type: LOGIN_SUCCESS })
     yield put({ type: SHOW_LOGIN_ERROR, show: false })
   } catch (error) {
@@ -193,23 +193,28 @@ export function* loginSaga({ user }) {
   }
 }
 
-export function* forceLogin() {
+export function* fetchUserWithJwtSaga() {
+  try {
+    const { data } = yield call(api.fetchUser);
+    yield put({ type: FETCH_USER_SUCCESS, user: { username: data.id, ...data } })
+    yield put({ type: LOGIN_SUCCESS })
+  } catch (error) {
+    yield handleError(error);
+  }
+}
+
+export function* checkTokenSaga() {
   try {
     const jwtToken = yield call(api.getToken);
     if (!_.isEmpty(jwtToken)) {
       yield put({ type: TOKEN_FOUND })
-      yield call(fetchUserWithJwt)
-      yield put({ type: LOGIN_SUCCESS })
     }
   } catch (error) {
     yield handleError(error);
   }
 }
 
-export function* fetchUserWithJwt() {
-  const { data } = yield call(api.fetchUser);
-  yield put({ type: FETCH_USER_SUCCESS, user: { username: data.id, ...data } })
-}
+
 
 export function* logoutSaga() {
   try {
@@ -339,12 +344,12 @@ export function* watchLogin() {
   yield takeLatest(LOGIN, loginSaga)
 }
 
-export function* watchForceLogin() {
-  yield takeEvery(FORCE_LOGIN, forceLogin)
+export function* watchCheckToken() {
+  yield takeEvery(CHECK_TOKEN, checkTokenSaga)
 }
 
 export function* watchFetchUser() {
-  yield takeEvery(FETCH_USER, fetchUserWithJwt)
+  yield takeEvery(FETCH_USER, fetchUserWithJwtSaga)
 }
 
 export function* watchLogout() {
@@ -387,7 +392,7 @@ export default function* rootSaga() {
       watchFetchUsers(),
       watchFetchRoles(),
       watchLogin(),
-      watchForceLogin(),
+      watchCheckToken(),
       watchFetchUser(),
       watchLogout(),
       watchFetchStreamNames(),

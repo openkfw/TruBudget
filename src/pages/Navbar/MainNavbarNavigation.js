@@ -8,13 +8,10 @@ const getStaticBreadcrumb = (name) => {
   switch (name) {
     case 'projects':
       return strings.navigation.menu_item_projects
-      break;
     case 'notifications':
       return strings.navigation.menu_item_notifications
-      break;
     case 'network':
       return strings.navigation.menu_item_network
-      break;
     default:
       break;
   }

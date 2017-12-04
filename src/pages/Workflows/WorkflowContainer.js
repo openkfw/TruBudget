@@ -39,7 +39,7 @@ import { getPermissions } from '../../permissions';
 
 
 class WorkflowContainer extends Component {
-  componentWillMount () {
+  componentWillMount() {
     const subProjectId = this.props.location.pathname.split('/')[3];
     this.props.fetchWorkflowItems(subProjectId);
     this.props.fetchHistoryItems(subProjectId);
@@ -47,7 +47,7 @@ class WorkflowContainer extends Component {
   }
 
 
-  render () {
+  render() {
     const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
       <div style={globalStyles.innerContainer}>
@@ -93,7 +93,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     addDocument: (payload, name, id) => dispatch(addDocument(payload, name, id)),
     clearDocuments: () => dispatch(clearDocuments()),
     validateDocument: (payload, hash) => dispatch(validateDocument(payload, hash)),
-    prefillDocuments: (documents) => dispatch(prefillDocuments(documents))
+    prefillDocuments: (documents) => dispatch(prefillDocuments(documents)),
 
   };
 }
@@ -127,6 +127,7 @@ const mapStateToProps = (state) => {
     subProjectAmount: state.getIn(['workflow', 'subProjectAmount']),
     workflowDocuments: state.getIn(['documents', 'tempDocuments']).toJS(),
     validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS()
+
   }
 }
 

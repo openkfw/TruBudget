@@ -1,7 +1,7 @@
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
 
-export const FORCE_LOGIN = 'FORCE_LOGIN';
+export const CHECK_TOKEN = 'CHECK_TOKEN';
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
@@ -29,9 +29,9 @@ export function fetchUsers() {
   }
 }
 
-export function forceLogin() {
+export function checkToken() {
   return {
-    type: FORCE_LOGIN
+    type: CHECK_TOKEN
   }
 }
 

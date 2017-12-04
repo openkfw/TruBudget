@@ -4,18 +4,17 @@ import {
   Route,
   Redirect,
 } from 'react-router'
-import { forceLogin } from './actions';
+import { checkToken } from './actions';
 
 class PrivateRoute extends Component {
 
   componentWillMount() {
-    this.props.forceLogin();
+
   }
+
 
   render() {
     const { component: Component, ...rest } = this.props;
-    console.log('render')
-    console.log(rest.loggedIn)
     return (
       <Route { ...rest } render={
         props => (
@@ -40,7 +39,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    forceLogin: () => dispatch(forceLogin())
+    checkToken: () => dispatch(checkToken())
   }
 }
 

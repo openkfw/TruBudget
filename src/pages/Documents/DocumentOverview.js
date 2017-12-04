@@ -88,7 +88,6 @@ class DocumentOverview extends Component {
   )
 
   generateDocumentList = (documents, validationActive = true, validatedDocuments = {}) => documents.map((document, index) => {
-    let textInput = null;
     let validated = undefined;
     const { name, hash } = document;
 

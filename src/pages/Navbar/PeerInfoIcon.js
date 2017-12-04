@@ -10,7 +10,7 @@ import colors from '../../colors';
 import strings from '../../localizeStrings';
 
 class Icon extends Component {
-  render () {
+  render() {
     return (
       <IconButton
         {...this.props}
@@ -21,12 +21,12 @@ class Icon extends Component {
   }
 };
 
-const transformPeers = (peers = []) => {
-  const amount = peers.length || 0;
+const transformPeers = (peers = {}) => {
+  const amount = peers.size || 0;
   const list = peers.map((peer, index) => {
-    return <MenuItem key={index} primaryText={peer.addr} />
+    const addr = peer.getIn(['addr']);
+    return <MenuItem key={index} primaryText={addr} />
   });
-
   return { amount, list };
 }
 const PeerInfoIcon = (props) => {

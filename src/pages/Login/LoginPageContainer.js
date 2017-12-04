@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, storeLoginErrorMessage, showLoginError, storeEnvironment, setLanguage } from './actions';
+import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, checkToken } from './actions';
 import LoginPage from './LoginPage';
-
+import LoadingContainer from '../Loading/LoadingContainer';
 
 
 class LoginPageContainer extends Component {
   componentWillMount() {
     this.props.storeDefaultEnvironment();
+    this.props.checkToken();
   }
 
   render() {
-    return <LoginPage {...this.props} />
+    const { tokenPresent } = this.props;
+    return (
+      tokenPresent ? (
+        <LoadingContainer {...this.props} />) :
+        (<LoginPage {...this.props} />)
+    )
   }
   componentDidMount() {
     this.checkIfRedirect();
@@ -42,7 +48,8 @@ const mapDispatchToProps = (dispatch) => {
     hideLoginError: () => dispatch(showLoginError(false)),
     storeEnvironment: (environment) => dispatch(storeEnvironment(environment)),
     storeDefaultEnvironment: () => dispatch(storeEnvironment('Test')),
-    setLanguage: (language) => dispatch(setLanguage(language))
+    setLanguage: (language) => dispatch(setLanguage(language)),
+    checkToken: () => dispatch(checkToken()),
   };
 }
 
@@ -55,7 +62,8 @@ const mapStateToProps = (state) => {
     loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
     environment: state.getIn(['login', 'environment']),
     language: state.getIn(['login', 'language']),
-    loggedIn: state.getIn(['login', 'loggedIn'])
+    loggedIn: state.getIn(['login', 'loggedIn']),
+    tokenPresent: state.getIn(['login', 'tokenPresent']),
   }
 }
 
