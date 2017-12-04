@@ -219,7 +219,6 @@ export function* checkTokenSaga() {
 export function* logoutSaga() {
   try {
     yield call(api.removeToken);
-    yield call(api.resetApiPrefix)
     yield put({ type: LOGOUT_SUCCESS })
   } catch (error) {
     console.log(error)

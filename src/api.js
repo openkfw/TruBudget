@@ -5,29 +5,19 @@ const devMode = process.env.NODE_ENV === 'development';
 console.log(`API running in ${devMode ? "development" : "production"} mode`)
 
 const TOKEN_NAME = 'jwt_token';
-const API_PREFIX = 'api_prefix';
 
 class Api {
-
 
   constructor() {
     this.setAuthorizationHeader(this.getToken());
     axios.defaults.baseURL = this.prefix;
-    this.prefix = true === false ? '' : this.getUrlPrefix();
+    this.prefix = devMode ? '' : '/test';
   }
 
-  getUrlPrefix = () => {
-    const apiPrefix = this.getApiPrefix();
-    if (_.isEmpty(apiPrefix) | apiPrefix === '/test') return '/test';
-    return '/api';
-  }
 
   getToken = () => localStorage.getItem(TOKEN_NAME)
   setToken = (data) => localStorage.setItem(TOKEN_NAME, data)
   removeToken = () => localStorage.removeItem(TOKEN_NAME);
-  setApiPrefix = (prefix) => localStorage.setItem(API_PREFIX, prefix);
-  getApiPrefix = () => localStorage.getItem(API_PREFIX);
-  resetApiPrefix = () => localStorage.removeItem(API_PREFIX);
 
   setAuthorizationHeader = (token) => {
     axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
@@ -36,7 +26,6 @@ class Api {
   activateProduction = (active) => {
     if (!devMode) {
       this.prefix = active ? '/api' : '/test';
-      this.setApiPrefix(this.prefix);
     }
   }
 
