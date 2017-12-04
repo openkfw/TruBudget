@@ -18,7 +18,7 @@ const getTableEntries = ({ projects, history }) => {
     const amount = toAmountString(project.details.amount, project.details.currency)
     const status = strings.common.status + ': ' + statusMapping(project.details.status)
     const comment = project.details.comment
-    const imagePath = project.details.name === 'School1' ? './school.jpg' : './building.jpg'
+    const imagePath = project.details.name === 'School1' ? './school.jpg' : './amazon_cover.jpg'
     const dateString = tsToString(project.details.createTS)
     return (
       <Card aria-label='project' key={index} style={{ margin: '20px', width: '35%', maxWidth: '300px' }}>
