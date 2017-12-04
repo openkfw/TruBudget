@@ -19,7 +19,7 @@ const api = new Api();
 
 function* handleError(error) {
   if (error.response.status === 401) {
-    yield put({ type: LOGOUT_SUCCESS })
+    yield call(logoutSaga)
   }
   else if (error.response) {
     yield put({ type: SNACKBAR_MESSAGE, message: error.response.data })
@@ -219,6 +219,7 @@ export function* checkTokenSaga() {
 export function* logoutSaga() {
   try {
     yield call(api.removeToken);
+    yield call(api.resetApiPrefix)
     yield put({ type: LOGOUT_SUCCESS })
   } catch (error) {
     console.log(error)

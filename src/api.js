@@ -1,33 +1,47 @@
 import axios from 'axios';
-
+import _ from 'lodash';
 const devMode = process.env.NODE_ENV === 'development';
 
 console.log(`API running in ${devMode ? "development" : "production"} mode`)
 
 const TOKEN_NAME = 'jwt_token';
+const api_prefix = 'api_prefix';
 
 class Api {
+
 
   constructor() {
     this.setAuthorizationHeader(this.getToken());
     axios.defaults.baseURL = this.prefix;
-    this.prefix = devMode ? '' : '/test';
+    this.prefix = devMode ? '' : this.getUrlPrefix();
+  }
+
+  getUrlPrefix = () => {
+    const apiPrefix = this.getApiPrefix();
+    console.log(apiPrefix)
+    console.log(_.isEmpty(apiPrefix))
+    if (_.isEmpty(apiPrefix) | apiPrefix === '/test') return '/test';
+    return '/api';
   }
 
   getToken = () => localStorage.getItem(TOKEN_NAME)
   setToken = (data) => localStorage.setItem(TOKEN_NAME, data)
   removeToken = () => localStorage.removeItem(TOKEN_NAME);
+  setApiPrefix = (prefix) => localStorage.setItem(API_PREFIX, prefix);
+  getApiPrefix = () => localStorage.getItem(API_PREFIX);
+  resetApiPrefix = () =>localStorage.removeItem(API_PREFIX);
 
   setAuthorizationHeader = (token) => {
     axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
   }
 
-
   activateProduction = (active) => {
     if (!devMode) {
       this.prefix = active ? '/api' : '/test';
+      this.setApiPrefix(this.prefix);
     }
   }
+
   login = async (username, password) => {
     const { data } = await axios.post(`${this.prefix}/login`, { username, password })
     const { jwtToken, user } = data;
@@ -35,6 +49,7 @@ class Api {
     this.setAuthorizationHeader(jwtToken);
     return user;
   }
+
 
   fetchPeers = () => axios.get(`${this.prefix}/peers`);
   fetchProjects = () => axios.get(`${this.prefix}/projects`);

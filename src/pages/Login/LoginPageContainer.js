@@ -8,7 +8,7 @@ import LoadingContainer from '../Loading/LoadingContainer';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
-    this.props.storeDefaultEnvironment();
+   // this.props.storeDefaultEnvironment();
     this.props.checkToken();
   }
 
