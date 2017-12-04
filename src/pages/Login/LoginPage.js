@@ -20,7 +20,7 @@ import strings from '../../localizeStrings'
 const defaultUser = {
   jdoe: {
     id: 'jdoe',
-    name: 'John Doe2',
+    name: 'John Doe',
     organization: 'Ministry of Finance',
     password: 'test',
     avatar: '/lego_avatar_male1.jpg',
