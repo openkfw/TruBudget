@@ -5,7 +5,7 @@ import * as localeEN from 'moment/locale/en-gb';
 import strings from '../../localizeStrings';
 
 
-import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, LOGOUT, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS } from './actions';
+import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, LOGOUT, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, TOKEN_FOUND } from './actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
 const defaultState = fromJS({
@@ -26,7 +26,8 @@ const defaultState = fromJS({
   showLoginError: false,
   roles: [],
   language: 'en-gb',
-  loggedIn: false
+  loggedIn: false,
+  tokenPresent: false,
 });
 
 const setLanguage = (state) => {
@@ -51,7 +52,10 @@ export default function loginReducer(state = defaultState, action) {
     case FETCH_USER_SUCCESS:
       return state.set('loggedInUser', action.user);
     case LOGIN_SUCCESS:
-      return state.set('loggedIn', true);
+      return state.merge({
+        loggedIn: true,
+        tokenPresent: true
+      });
     case SHOW_LOGIN_ERROR:
       return state.set('loginUnsuccessful', action.show);
     case STORE_ENVIRONMENT_SUCCESS:
@@ -60,6 +64,8 @@ export default function loginReducer(state = defaultState, action) {
       const newState = state.set('language', action.language);
       setLanguage(newState);
       return newState;
+    case TOKEN_FOUND:
+      return state.set('tokenPresent', true);
     case LOGOUT_SUCCESS:
       const newDefaultState = defaultState.set('language', state.get('language'))
       return newDefaultState;

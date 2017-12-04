@@ -21,6 +21,7 @@ export const STORE_ENVIRONMENT = 'STORE_ENVIRONMENT';
 export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
 
 export const SET_LANGUAGE = 'SET_LANGUAGE';
+export const TOKEN_FOUND = 'TOKEN_FOUND';
 
 export function fetchUsers() {
   return {
@@ -101,6 +102,12 @@ export function setLanguage(language) {
   return {
     type: SET_LANGUAGE,
     language
+  }
+}
+
+export function tokenFound() {
+  return {
+    type: TOKEN_FOUND
   }
 }
 

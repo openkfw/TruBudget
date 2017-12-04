@@ -4,13 +4,19 @@ const devMode = process.env.NODE_ENV === 'development';
 
 console.log(`API running in ${devMode ? "development" : "production"} mode`)
 
+const TOKEN_NAME = 'jwt_token';
+
 class Api {
 
   constructor() {
-    this.setAuthorizationHeader(localStorage.getItem('jwt_token'));
+    this.setAuthorizationHeader(this.getToken());
     axios.defaults.baseURL = this.prefix;
     this.prefix = devMode ? '' : '/test';
   }
+
+  getToken = () => localStorage.getItem(TOKEN_NAME)
+  setToken = (data) => localStorage.setItem(TOKEN_NAME, data)
+  deleteToken = () => localStorage.removeItem(TOKEN_NAME);
 
   setAuthorizationHeader = (token) => {
     axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
@@ -24,7 +30,7 @@ class Api {
   }
   login = async (username, password) => {
     const { data } = await axios.post(`${this.prefix}/login`, { username, password })
-    localStorage.setItem('jwt_token', data);
+    this.setToken(data);
     this.setAuthorizationHeader(data);
   }
 
