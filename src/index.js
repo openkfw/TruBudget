@@ -20,7 +20,6 @@ import {
 import Main from './pages/Main/Main';
 import LoginPageContainer from './pages/Login/LoginPageContainer';
 import PrivateRoute from './pages/Login/PrivateRoute';
-
 import configureStore from './store';
 
 const history = createHistory()
@@ -43,14 +42,17 @@ const muiTheme = getMuiTheme({
 });
 
 class App extends Component {
+
+
+
   render() {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <MuiThemeProvider muiTheme={muiTheme}>
             <Switch>
-               <Route exact path="/login" component={LoginPageContainer} />
-               <PrivateRoute component={Main}/>
+              <Route exact path="/login" component={LoginPageContainer} />
+              <PrivateRoute component={Main} />
             </Switch>
           </MuiThemeProvider>
         </ConnectedRouter>

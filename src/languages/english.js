@@ -1,5 +1,3 @@
-import LocalizedStrings from 'react-localization';
-
 const en = {
   common: {
     cancel: 'Cancel',
@@ -48,6 +46,7 @@ const en = {
     incorrect_password: 'Incorrect password',
     accenture_tag: 'Developed by Emerging Technologies & Innovation @ Accenture',
     login_button_title: 'Login',
+    loading: 'Loading ...'
 
   },
   project: {

@@ -1,8 +1,15 @@
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
+
+export const CHECK_TOKEN = 'CHECK_TOKEN';
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+
+export const FETCH_USER = 'FETCH_USER';
+export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
+
 export const FETCH_ROLES = 'FETCH_ROLES';
 export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
 
@@ -14,20 +21,27 @@ export const STORE_ENVIRONMENT = 'STORE_ENVIRONMENT';
 export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
 
 export const SET_LANGUAGE = 'SET_LANGUAGE';
+export const TOKEN_FOUND = 'TOKEN_FOUND';
 
-export function fetchUsers () {
+export function fetchUsers() {
   return {
     type: FETCH_USERS
   }
 }
 
-export function fetchRoles () {
+export function checkToken() {
+  return {
+    type: CHECK_TOKEN
+  }
+}
+
+export function fetchRoles() {
   return {
     type: FETCH_ROLES
   }
 }
 
-export function loginWithCredentails (username, password) {
+export function loginWithCredentails(username, password) {
   const user = { username, password }
   return {
     type: LOGIN,
@@ -35,13 +49,13 @@ export function loginWithCredentails (username, password) {
   }
 }
 
-export function storeUsername (username) {
+export function storeUsername(username) {
   return {
     type: STORE_USERNAME,
     username
   }
 }
-export function storePassword (password) {
+export function storePassword(password) {
   return {
     type: STORE_PASSWORD,
     password
@@ -49,33 +63,33 @@ export function storePassword (password) {
 }
 
 
-export function login (user) {
+export function login(user) {
   return {
     type: LOGIN,
     user
   }
 }
 
-export function logout () {
+export function logout() {
   return {
     type: LOGOUT
   }
 }
-export function storeLoginErrorMessage (message) {
+export function storeLoginErrorMessage(message) {
   return {
     type: LOGIN_ERROR_MESSAGE,
     message
   }
 }
 
-export function showLoginError (show) {
+export function showLoginError(show) {
   return {
     type: SHOW_LOGIN_ERROR,
     show
   }
 }
 
-export function storeEnvironment (environment) {
+export function storeEnvironment(environment) {
   const active = environment === "Prod" ? true : false
   return {
     type: STORE_ENVIRONMENT,
@@ -84,10 +98,16 @@ export function storeEnvironment (environment) {
   }
 }
 
-export function setLanguage (language) {
+export function setLanguage(language) {
   return {
     type: SET_LANGUAGE,
     language
+  }
+}
+
+export function tokenFound() {
+  return {
+    type: TOKEN_FOUND
   }
 }
 

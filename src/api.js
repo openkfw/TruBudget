@@ -4,14 +4,36 @@ const devMode = process.env.NODE_ENV === 'development';
 
 console.log(`API running in ${devMode ? "development" : "production"} mode`)
 
+const TOKEN_NAME = 'jwt_token';
+
 class Api {
 
-  prefix = devMode ? '' : '/test';
+  constructor() {
+    this.setAuthorizationHeader(this.getToken());
+    axios.defaults.baseURL = this.prefix;
+    this.prefix = devMode ? '' : '/test';
+  }
+
+  getToken = () => localStorage.getItem(TOKEN_NAME)
+  setToken = (data) => localStorage.setItem(TOKEN_NAME, data)
+  removeToken = () => localStorage.removeItem(TOKEN_NAME);
+
+  setAuthorizationHeader = (token) => {
+    axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
+  }
+
 
   activateProduction = (active) => {
     if (!devMode) {
       this.prefix = active ? '/api' : '/test';
     }
+  }
+  login = async (username, password) => {
+    const { data } = await axios.post(`${this.prefix}/login`, { username, password })
+    const { jwtToken, user } = data;
+    this.setToken(jwtToken);
+    this.setAuthorizationHeader(jwtToken);
+    return user;
   }
 
   fetchPeers = () => axios.get(`${this.prefix}/peers`);
@@ -24,7 +46,8 @@ class Api {
   fetchNodeInformation = () => axios.get(`${this.prefix}/nodes`);
   fetchNotifications = (user) => axios.get(`${this.prefix}/notifications/` + user);
   fetchWorkflowItems = (subProjectName) => axios.get(`${this.prefix}/subprojects/` + subProjectName);
-  login = (username, password) => axios.post(`${this.prefix}/login`, { username, password })
+  // fetch the user to the existing JWT token
+  fetchUser = () => axios.get(`${this.prefix}/users/mapping`)
   fetchUsers = () => axios.get(`${this.prefix}/users`);
   fetchRoles = () => axios.get(`${this.prefix}/roles`);
   postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type) => axios.post(`${this.prefix}/workflows`, { streamName: stream, workflowName: workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type })

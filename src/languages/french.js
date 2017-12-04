@@ -1,5 +1,3 @@
-import LocalizedStrings from 'react-localization';
-
 const fr = {
   common: {
     cancel: 'Annuler',

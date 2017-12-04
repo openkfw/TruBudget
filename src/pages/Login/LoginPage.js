@@ -1,22 +1,18 @@
 import React from 'react';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
-import { List, ListItem } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
-import { ACMECorpBlue, ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors'
+import { ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors'
 import UsernameIcon from 'material-ui/svg-icons/social/person';
 import PasswordIcon from 'material-ui/svg-icons/action/lock';
 import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
-import Chip from 'material-ui/Chip';
-import FontIcon from 'material-ui/FontIcon';
-import SvgIconFace from 'material-ui/svg-icons/action/face';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import strings from '../../localizeStrings'
+
 const defaultUser = {
   jdoe: {
     id: 'jdoe',

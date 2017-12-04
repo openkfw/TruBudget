@@ -45,7 +45,7 @@ class RoleSelectionContent extends Component {
   }
 
   captureEnterClick = (event) => {
-    if (event.charCode == 13) {
+    if (event.charCode === 13) {
       const unSelectedDataSource = _.difference(this.props.dataSource, this.props.selections);
       const index = unSelectedDataSource.findIndex((role) => role.toLowerCase() === _.trim(this.state.searchText).toLowerCase())
       if (index > -1) {

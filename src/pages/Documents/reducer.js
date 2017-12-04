@@ -1,7 +1,7 @@
 import { fromJS } from 'immutable';
 
 import { LOGOUT } from '../Login/actions';
-import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS, CLEAR_DOCUMENTS, PREFILL_DOCUMENTS } from './actions';
+import { VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS, CLEAR_DOCUMENTS, PREFILL_DOCUMENTS } from './actions';
 import { CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS } from '../Workflows/actions';
 
 const defaultState = fromJS({
