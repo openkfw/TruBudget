@@ -83,7 +83,7 @@ const styles = {
   }
 }
 
-const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectComment, projectStatus, projectTS, projectAssignee }) => {
+const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectComment, projectStatus, projectTS, projectAssignee, roles }) => {
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
 
@@ -94,7 +94,6 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   const statusDetails = getProgressInformation(subProjects)
 
   const allocatedRatio = getAllocationRatio(spentAmount, projectAmount);
-
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -132,7 +131,7 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
-            primaryText={<div aria-label='projectassignee'> {getAssignedOrganization(projectAssignee)} </div>}
+            primaryText={<div aria-label='projectassignee'> {getAssignedOrganization(roles, projectAssignee)} </div>}
             secondaryText={strings.subproject.subproject_assigned_organization}
           />
           <Divider />

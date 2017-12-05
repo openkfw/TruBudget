@@ -1,6 +1,7 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import _ from 'lodash';
 import strings from '../../localizeStrings'
 import ProjectCreationStepper from './ProjectCreationStepper';
 
@@ -31,13 +32,20 @@ const handleCancel = (props) => {
 const handleBack = (props) => props.setProjectCreationStep(props.creationStep - 1)
 const handleNext = (props) => props.setProjectCreationStep(props.creationStep + 1)
 
+const extractRole = (roles) => _.map(roles, role => role.role);
+
 const handleSubmit = (props) => {
-  props.createProject(props.projectName, props.projectAmount, props.projectComment, props.projectCurrency, props.location.pathname.split('/')[2],
-    props.projectApprover, props.projectAssignee, props.projectBank);
-  props.hideWorkflowDialog();
-  props.storeSnackBarMessage('Added ' + props.projectName)
-  props.showSnackBar();
-  props.setProjectCreationStep(0);
+  const { createProject, type, hideWorkflowDialog, showSnackBar, setProjectCreationStep, storeSnackBarMessage, projectName, projectAmount, projectComment, projectCurrency, projectApprover, projectAssignee, projectBank, location } = props;
+  const approvers = type === 'subproject' ? projectApprover : extractRole(projectApprover);
+  const assignees = type === 'subproject' ? projectAssignee : extractRole(projectAssignee);
+  const banks = type === 'subproject' ? projectBank : extractRole(projectBank);
+
+  createProject(projectName, projectAmount, projectComment, projectCurrency, location.pathname.split('/')[2],
+    approvers, assignees, banks);
+  hideWorkflowDialog();
+  storeSnackBarMessage('Added ' + projectName)
+  showSnackBar();
+  setProjectCreationStep(0);
 }
 
 

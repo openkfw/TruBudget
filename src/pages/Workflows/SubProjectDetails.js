@@ -170,9 +170,10 @@ const SubProjectDetails = ({ roles, subProjectDetails, workflowItems, budgetEdit
   const amount = subProjectDetails.amount
   const currency = subProjectDetails.currency
 
-  const assignee = getAssignedOrganization(subProjectDetails.assignee)
-  const bank = subProjectDetails.bank
-  const approver = subProjectDetails.approver
+
+  const assignee = getAssignedOrganization(roles, subProjectDetails.assignee)
+  const bank = getAssignedOrganization(roles, subProjectDetails.bank)
+  const approver = getAssignedOrganization(roles, subProjectDetails.approver)
 
 
   const amountString = toAmountString(amount, currency)

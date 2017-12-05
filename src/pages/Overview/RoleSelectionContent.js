@@ -20,6 +20,11 @@ const styles = {
   },
 }
 
+const dataSourceConfig = {
+  text: 'organization',
+  value: 'role',
+};
+
 class RoleSelectionContent extends Component {
   state = {
     searchText: '',
@@ -31,7 +36,7 @@ class RoleSelectionContent extends Component {
         key={index}
         style={styles.chip}
         onRequestDelete={() => this.onRemoveChip(role)}
-      >{role}</Chip>
+      >{role.organization}</Chip>
     )
   })
 
@@ -46,7 +51,7 @@ class RoleSelectionContent extends Component {
 
   captureEnterClick = (event) => {
     if (event.charCode === 13) {
-      const unSelectedDataSource = _.difference(this.props.dataSource, this.props.selections);
+      const unSelectedDataSource = _.differenceBy(this.props.dataSource, this.props.selections);
       const index = unSelectedDataSource.findIndex((role) => role.toLowerCase() === _.trim(this.state.searchText).toLowerCase())
       if (index > -1) {
         const role = unSelectedDataSource[index];
@@ -65,8 +70,9 @@ class RoleSelectionContent extends Component {
     })
   }
 
+
   render = () => {
-    const unSelectedDataSource = _.difference(this.props.dataSource, this.props.selections);
+    const unSelectedDataSource = _.differenceBy(this.props.dataSource, this.props.selections);
     return (
       <div style={styles.container}>
         <AutoComplete
@@ -79,6 +85,7 @@ class RoleSelectionContent extends Component {
           onNewRequest={this.onSelect}
           onUpdateInput={this.handleUpdateInput}
           filter={AutoComplete.fuzzyFilter}
+          dataSourceConfig={dataSourceConfig}
           menuCloseDelay={0}
         />
         <div style={styles.chipWrapper}>

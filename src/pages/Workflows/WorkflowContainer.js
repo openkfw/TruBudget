@@ -35,6 +35,7 @@ import { addDocument, clearDocuments, prefillDocuments, validateDocument } from 
 import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 import { getPermissions } from '../../permissions';
+import { fetchRoles } from '../Login/actions';
 
 
 
@@ -44,6 +45,7 @@ class WorkflowContainer extends Component {
     this.props.fetchWorkflowItems(subProjectId);
     this.props.fetchHistoryItems(subProjectId);
     this.props.setSelectedView(subProjectId, 'subProject');
+    this.props.fetchRoles();
   }
 
 
@@ -94,7 +96,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     clearDocuments: () => dispatch(clearDocuments()),
     validateDocument: (payload, hash) => dispatch(validateDocument(payload, hash)),
     prefillDocuments: (documents) => dispatch(prefillDocuments(documents)),
-
+    fetchRoles: () => dispatch(fetchRoles())
   };
 }
 
@@ -126,7 +128,8 @@ const mapStateToProps = (state) => {
     budgetEditEnabled: state.getIn(['workflow', 'subProjectBudgetEditEnabled']),
     subProjectAmount: state.getIn(['workflow', 'subProjectAmount']),
     workflowDocuments: state.getIn(['documents', 'tempDocuments']).toJS(),
-    validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS()
+    validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS(),
+    roles: state.getIn(['login', 'roles'])
 
   }
 }

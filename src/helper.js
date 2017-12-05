@@ -192,7 +192,11 @@ export const getNextAction = (item, assignee, bank, approver) => {
 }
 
 
-export const getAssignedOrganization = (organizations) => organizations.reduce((acc, organization, index) => {
-  const nextString = index ? `, ${organization}` : `${organization}`
-  return acc + nextString;
+export const getAssignedOrganization = (definedRoles, assignedRoles) => assignedRoles.reduce((acc, assignedRole, index) => {
+  const organization = definedRoles.find((role) => assignedRole === role.role);
+  if (!_.isEmpty(organization)) {
+    const assignedOrganization = organization.organization
+    const nextString = index ? `, ${assignedOrganization}` : `${assignedOrganization}`
+    return acc + nextString;
+  }
 }, "")

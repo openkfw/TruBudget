@@ -8,17 +8,19 @@ import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } fr
 import { setSelectedView } from '../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
+import { fetchRoles } from '../Login/actions';
 
 
 class SubProjectsContainer extends Component {
-  componentWillMount () {
+  componentWillMount() {
     const projectId = this.props.location.pathname.split('/')[2];
     this.props.fetchProjectDetails(projectId);
     this.props.fetchHistoryItems(projectId);
     this.props.setSelectedView(projectId, 'project');
+    this.props.fetchRoles();
   }
 
-  render () {
+  render() {
 
     return (
       <div style={globalStyles.innerContainer}>
@@ -46,7 +48,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(showHistory(false)),
     fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
-    setProjectCreationStep: (step) => dispatch(setProjectCreationStep(step))
+    setProjectCreationStep: (step) => dispatch(setProjectCreationStep(step)),
+    fetchRoles: () => dispatch(fetchRoles())
   };
 }
 
@@ -71,7 +74,8 @@ const mapStateToProps = (state) => {
     historyItems: state.getIn(['notifications', 'historyItems']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     users: state.getIn(['login', 'users']).toJS(),
-    creationStep: state.getIn(['overview', 'creationStep'])
+    creationStep: state.getIn(['overview', 'creationStep']),
+    roles: state.getIn(['login', 'roles'])
   }
 }
 
