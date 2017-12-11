@@ -31,7 +31,7 @@ if [ -z "$RPC_ALLOW_IP" ]; then
 fi
 
 # Create the chain if it is not there yet
-if [ ! -d /root/.multichain/$CHAINNAME ] && [ -z "$MASTERNODE" ]; then
+if [ ! -d /root/.multichain/$CHAINNAME ] && [ -z "$MASTERNODE" ] && [ -z "$MASTERNODE_IP" ]; then
     echo "New Chain $CHAINNAME will be created!"
     multichain-util create $CHAINNAME
 
@@ -68,7 +68,8 @@ if [ ! -z "$BLOCKNOTIFY_SCRIPT" ]; then
     echo "blocknotify=$BLOCKNOTIFY_SCRIPT %s" >> /root/.multichain/$CHAINNAME/multichain.conf
 fi
 
-if [ -z "$MASTERNODE" ]; then
+if [ -z "$MASTERNODE" ] && [ -z "$MASTERNODE_IP" ]; then
+    echo ">>>>  CREATE NEW BLOCKCHAIN"
     cp /root/.multichain/$CHAINNAME/multichain.conf /root/.multichain/multichain.conf
     multichaind -txindex -shrinkdebugfilesize $CHAINNAME
 else
