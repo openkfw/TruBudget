@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sed -i "/proxy_pass/d" ./nginx.conf
+sed -i "/proxy_pass/d" /usr/nginx.conf
 # Check if the required env variables are set otherwise localhost will be used.
 if [ "$PROD_API_HOST" ] && [ "$PROD_API_PORT" ]; then
   prod_host=$PROD_API_HOST
@@ -20,9 +20,9 @@ fi
 
 # add the proxy pass and store the conf into the nginx conf directory
 sed -i -e "/# pathToApi/i\\
-  proxy_pass http://$prod_host:$prod_port/;" ./nginx.conf
+  proxy_pass http://$prod_host:$prod_port/;" /usr/nginx.conf
 sed -e "/# pathToTestApi/i\\
-  proxy_pass http://$test_host:$test_port/;" ./nginx.conf > /etc/nginx/conf.d/default.conf
+  proxy_pass http://$test_host:$test_port/;" /usr/nginx.conf > /etc/nginx/conf.d/default.conf
 
 rm -rf test.conf test2.conf
 nginx
