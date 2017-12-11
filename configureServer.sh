@@ -25,5 +25,5 @@ sed -e "/# pathToTestApi/i\\
   proxy_pass http://$test_host:$test_port/;" /usr/nginx.conf > /etc/nginx/conf.d/default.conf
 
 rm -rf test.conf test2.conf
-nginx
+nginx -g "daemon off;"
 
