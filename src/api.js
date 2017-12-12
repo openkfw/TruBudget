@@ -2,7 +2,7 @@ import axios from 'axios';
 import _ from 'lodash';
 const devMode = process.env.NODE_ENV === 'development';
 
-console.log(`API running in ${devMode ? "development" : "production"} mode`)
+console.log(`API is running in ${devMode ? "development" : "production"} mode`)
 
 const TOKEN_NAME = 'jwt_token';
 
