@@ -71,19 +71,12 @@ fi
 if [ -z "$MASTERNODE" ] && [ -z "$MASTERNODE_IP" ]; then
     echo ">>>>  CREATE NEW BLOCKCHAIN"
     cp /root/.multichain/$CHAINNAME/multichain.conf /root/.multichain/multichain.conf
-    multichaind -txindex -shrinkdebugfilesize $CHAINNAME
+    multichaind -txindex $CHAINNAME
 else
     sleep 7
     if [ -z "$MASTERNODE_IP" ]; then
       export MASTERNODE_IP=`getent hosts $MASTERNODE | awk -F' ' '{print $1}'`
     fi
 
-    echo ">>> Connect: Node connecting to $CHAINNAME@$MASTERNODE_IP:$NETWORK_PORT"
     node /home/node/src/connectToChain.js
-    # start the multichain daemon
-    #python /home/node/startslave.py startDaemon &
-    #export PUBLIC_KEY=$(python /home/node/startslave.py getAddress)
 fi
-
-#cd /home/node/api
-#node node_modules/nodemon/bin/nodemon.js dist/index.js

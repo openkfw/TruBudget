@@ -6,7 +6,8 @@ const masterIP = process.env.MASTER_API || '127.0.0.1';
 const masterPort = process.env.MASTER_API_PORT || '8080';
 const chainName = process.env.CHAINNAME || 'ACMECorpChain';
 const masterChainIP = process.env.MASTERNODE_IP || '127.0.0.2';
-const masterChainPort = process.env.NETWORK_PORT || 7447;
+const masterChainPort = process.env.MASTERNODE_PORT || 7447;
+const nodePort = process.env.NETWORK_PORT || 7447;
 const organization = process.env.ORGANIZATION || 'testorg';
 
 let address = undefined;
@@ -14,7 +15,7 @@ let address = undefined;
 const relax = async (ms) => new Promise(res => setInterval(res, ms))
 
 const startMultichainDaemon = () => {
-    const mc = spawn('multichaind', [`${chainName}@${masterChainIP}:${masterChainPort}`, " -shrinkdebugfilesize"]);
+    const mc = spawn('multichaind', [`${chainName}@${masterChainIP}:${masterChainPort}`, ""]);
     mc.stdout.on('data', (data) => {
         const regex = new RegExp('[0-9a-zA-Z]{30,40}');
         const match = regex.exec(data);
@@ -56,6 +57,7 @@ const registerNodeAtMaster = async () => {
     }
 }
 
+console.log(`>>> Connect: Node connecting to ${chainName}@${masterChainIP}:${masterChainPort}`)
 startMultichainDaemon();
 setTimeout(registerNodeAtMaster, 5000);
 
