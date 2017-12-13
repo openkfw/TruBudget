@@ -1,7 +1,7 @@
 FROM nginx:stable
 
 COPY build /usr/share/nginx/html
-COPY nginx.conf /usr/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY configureServer.sh /usr/
 
 # Run nginx
