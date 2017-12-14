@@ -71,7 +71,11 @@ fi
 if [ -z "$MASTERNODE" ] && [ -z "$MASTERNODE_IP" ]; then
     echo ">>>>  CREATE NEW BLOCKCHAIN"
     cp /root/.multichain/$CHAINNAME/multichain.conf /root/.multichain/multichain.conf
-    multichaind -txindex $CHAINNAME
+    if [ -z "$EXTERNAL_IP"]; then 
+        multichaind -txindex $CHAINNAME
+    else
+        multichaind -txindex $CHAINNAME -externalip=$EXTERNAL_IP
+    fi
 else
     sleep 7
     if [ -z "$MASTERNODE_IP" ]; then
