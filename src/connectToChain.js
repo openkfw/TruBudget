@@ -15,7 +15,8 @@ let address = undefined;
 const relax = async (ms) => new Promise(res => setInterval(res, ms))
 
 const startMultichainDaemon = () => {
-    const mc = spawn('multichaind', [`${chainName}@${masterChainIP}:${masterChainPort}`, ""]);
+    const externalip = process.env.EXTERNAL_IP ? `-externalip=${process.env.EXTERNAL_IP}` : "";
+    const mc = spawn('multichaind', [`${chainName}@${masterChainIP}:${masterChainPort}`, externalip]);
     mc.stdout.on('data', (data) => {
         const regex = new RegExp('[0-9a-zA-Z]{30,40}');
         const match = regex.exec(data);
