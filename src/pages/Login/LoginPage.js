@@ -7,6 +7,8 @@ import TextField from 'material-ui/TextField';
 import { ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors'
 import UsernameIcon from 'material-ui/svg-icons/social/person';
 import PasswordIcon from 'material-ui/svg-icons/action/lock';
+import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -31,7 +33,6 @@ const defaultUser = {
     avatar_back: '/lego_avatar_male5.jpg',
   },
 }
-
 
 const createListItems = (users, login) => {
   const items = [];
@@ -59,7 +60,7 @@ const createListItems = (users, login) => {
 
 
 
-const LoginPage = ({ users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment, language, setLanguage }) => {
+const LoginPage = ({ history, connectedToAdminNode, users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment, language, setLanguage }) => {
   return (
     <div style={{
       backgroundImage: 'url("/welcome.jpg")',
@@ -77,6 +78,8 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
         zIndex: 1100,
         opacity: 0.9
       }}>
+ 
+      
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
           <CardTitle title="TruBudget" subtitle={strings.login.tru_budget_description} />
           <SelectField
@@ -88,6 +91,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
             <MenuItem value="Test" primaryText={strings.login.test_env} />
             <MenuItem value="Prod" primaryText={strings.login.production_env} />
           </SelectField>
+   
 
         </div>
         <Divider />
@@ -120,6 +124,7 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
             <MenuItem value='fr' primaryText={strings.language.french} />
             <MenuItem value='de' primaryText={strings.language.german} />
           </DropDownMenu>
+  
           <RaisedButton label={strings.login.login_button_title} aria-label='loginbutton' style={{ marginRight: 20, marginTop: 5 }} onTouchTap={() => loginWithCredentails(username, password)} />
         </div>
         <Divider />
@@ -127,9 +132,14 @@ const LoginPage = ({ users, login, storeUsername, storePassword, username, passw
           {createListItems(defaultUser, login)}
         </div>
         <Divider />
+        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
         <CardText style={{ fontSize: '11px' }}>
           {strings.login.accenture_tag}
         </CardText>
+        <IconButton disabled={!connectedToAdminNode}  onClick={() => history.push('/admin')}  >
+            <SettingsIcon />
+          </IconButton>
+          </div>
       </Card>
       <img style={{
         marginTop: '40px',

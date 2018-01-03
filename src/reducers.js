@@ -15,6 +15,7 @@ import notificationsReducer from './pages/Notifications/reducer';
 import workflowReducer from './pages/Workflows/reducer';
 import loginReducer from './pages/Login/reducer';
 import documentsReducer from './pages/Documents/reducer';
+import adminReducer from './pages/Admin/reducer';
 
 /*
  * routeReducer
@@ -60,6 +61,7 @@ export default function createReducer(asyncReducers) {
     notifications: notificationsReducer,
     login: loginReducer,
     documents: documentsReducer,
+    admin: adminReducer,
     ...asyncReducers,
   });
 }

@@ -20,6 +20,7 @@ import {
 import Main from './pages/Main/Main';
 import LoginPageContainer from './pages/Login/LoginPageContainer';
 import PrivateRoute from './pages/Login/PrivateRoute';
+import AdminContainer from './pages/Admin/AdminContainer';
 import configureStore from './store';
 
 const history = createHistory()
@@ -52,6 +53,7 @@ class App extends Component {
           <MuiThemeProvider muiTheme={muiTheme}>
             <Switch>
               <Route exact path="/login" component={LoginPageContainer} />
+              <Route exact path="/admin" component={AdminContainer} />
               <PrivateRoute component={Main} />
             </Switch>
           </MuiThemeProvider>

@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, checkToken } from './actions';
 import LoginPage from './LoginPage';
 import LoadingContainer from '../Loading/LoadingContainer';
-
+import {fetchNodePermissions} from '../Admin/actions';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
    this.props.storeDefaultEnvironment();
    this.props.checkToken();
+   this.props.fetchNodePermissions();
   }
 
   render() {
@@ -50,6 +51,7 @@ const mapDispatchToProps = (dispatch) => {
     storeDefaultEnvironment: () => dispatch(storeEnvironment('Test')),
     setLanguage: (language) => dispatch(setLanguage(language)),
     checkToken: () => dispatch(checkToken()),
+    fetchNodePermissions: () => dispatch(fetchNodePermissions()),
   };
 }
 
@@ -64,6 +66,7 @@ const mapStateToProps = (state) => {
     language: state.getIn(['login', 'language']),
     loggedIn: state.getIn(['login', 'loggedIn']),
     tokenPresent: state.getIn(['login', 'tokenPresent']),
+    connectedToAdminNode: state.getIn(['admin', 'connectedToAdminNode']),
   }
 }
 

@@ -12,6 +12,7 @@ import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, ED
 
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, CHECK_TOKEN, FETCH_USER, TOKEN_FOUND } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
+import {FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS} from './pages/Admin/actions';
 import _ from 'lodash';
 
 
@@ -275,7 +276,11 @@ export function* fetchUpdatesSaga({ user }) {
   } catch (error) {
     yield handleError(error);
   }
+}
 
+export function* fetchNodePermissionsSaga (){
+  //const permissions = yield call(api.fetchPermissions);
+  yield put ({type: FETCH_NODE_PERMISSIONS_SUCCESS, admin: true})
 }
 
 export function* watchFetchPeers() {
@@ -375,6 +380,14 @@ export function* watchFetchUpdates() {
   yield takeLatest(FETCH_UPDATES, fetchUpdatesSaga)
 }
 
+export function* watchFetchNodePermissions() {
+  yield takeLatest(FETCH_NODE_PERMISSIONS, fetchNodePermissionsSaga)
+}
+
+
+
+
+
 export default function* rootSaga() {
   try {
     yield [
@@ -403,6 +416,7 @@ export default function* rootSaga() {
       watchAddDocument(),
       watchEnvironment(),
       watchFetchUpdates(),
+      watchFetchNodePermissions(),
     ]
   } catch (error) {
     console.log(error);
