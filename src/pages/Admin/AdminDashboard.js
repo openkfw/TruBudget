@@ -2,7 +2,7 @@ import React from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import RolesTable from './RolesTable';
 import UsersTable from './UsersTable';
-import RolesDialog from './RolesDialog';
+
 
 const styles = {
 
@@ -18,7 +18,8 @@ const styles = {
 };
 
 
-const Admin = (props) => {
+const AdminDashBoard = (props) => {
+
   return (
     <div style={ styles.backgroundImage }>
       <div style={ { width: '60%', marginTop: '50px' } }>
@@ -27,14 +28,13 @@ const Admin = (props) => {
             <RolesTable {...props}/>
           </Tab>
           <Tab label="Users">
-            <UsersTable/>
+            <UsersTable {...props}/>
           </Tab>
           <Tab label="Nodes">
           </Tab>
         </Tabs>
       </div>
-      <RolesDialog {...props}/>
     </div>
   )
 }
-export default Admin;
+export default AdminDashBoard;

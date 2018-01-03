@@ -23,13 +23,14 @@ class SubProjectsContainer extends Component {
   render() {
 
     return (
-      <div style={globalStyles.innerContainer}>
+      <div style={ globalStyles.innerContainer }>
         <ProjectDetails {...this.props} />
         <SubProjects {...this.props} />
       </div>
     )
   }
-};
+}
+;
 
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -75,7 +76,7 @@ const mapStateToProps = (state) => {
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     users: state.getIn(['login', 'users']).toJS(),
     creationStep: state.getIn(['overview', 'creationStep']),
-    roles: state.getIn(['login', 'roles'])
+    roles: state.getIn(['login', 'roles']).toJS()
   }
 }
 

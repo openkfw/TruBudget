@@ -3,14 +3,16 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 } from 'material-ui/Table';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import _ from 'lodash';
 
 import { ACMECorpDarkBlue } from '../../colors';
 import { showRolesDialog } from './actions';
+import RolesDialog from './RolesDialog';
 
 const styles = {
   tableWrapper: {
     width: '100%',
-    height: '400px',
+    height: '500px',
     overflow: 'auto'
   },
   actionButton: {
@@ -24,38 +26,23 @@ const styles = {
 }
 
 const getRoles = (roles) => {
-  return (
-    <TableBody displayRowCheckbox={ false } adjustForCheckbox={ false }>
-      <TableRow>
-        <TableRowColumn>Ministry of Finance</TableRowColumn>
-        <TableRowColumn>mof_admin</TableRowColumn>
-        <TableRowColumn>true</TableRowColumn>
-        <TableRowColumn>true</TableRowColumn>
-        <TableRowColumn>false</TableRowColumn>
+
+  return roles.map(role => {
+    return (
+      <TableRow key={ role.role }>
+        <TableRowColumn>
+          { role.organization }
+        </TableRowColumn>
+        <TableRowColumn>
+          { role.role }
+        </TableRowColumn>
+        <TableRowColumn>missing</TableRowColumn>
+        <TableRowColumn>missing</TableRowColumn>
+        <TableRowColumn>missing</TableRowColumn>
       </TableRow>
-      <TableRow>
-        <TableRowColumn>UmbrellaCorp</TableRowColumn>
-        <TableRowColumn>bndes_admin</TableRowColumn>
-        <TableRowColumn>true</TableRowColumn>
-        <TableRowColumn>true</TableRowColumn>
-        <TableRowColumn>true</TableRowColumn>
-      </TableRow>
-      <TableRow>
-        <TableRowColumn>Centralbank</TableRowColumn>
-        <TableRowColumn>centralbank_write</TableRowColumn>
-        <TableRowColumn>true</TableRowColumn>
-        <TableRowColumn>true</TableRowColumn>
-        <TableRowColumn>false</TableRowColumn>
-      </TableRow>
-      <TableRow>
-        <TableRowColumn>Ministry of Health</TableRowColumn>
-        <TableRowColumn>moh_write</TableRowColumn>
-        <TableRowColumn>true</TableRowColumn>
-        <TableRowColumn>false</TableRowColumn>
-        <TableRowColumn>false</TableRowColumn>
-      </TableRow>
-    </TableBody>
-  )
+    )
+  })
+
 }
 
 
@@ -74,13 +61,16 @@ const RolesTable = (props) => {
             <TableHeaderColumn>Admin</TableHeaderColumn>
           </TableRow>
         </TableHeader>
-        { tableEntries }
+        <TableBody displayRowCheckbox={ false } adjustForCheckbox={ false }>
+          { tableEntries }
+        </TableBody>
       </Table>
       <div style={ styles.actionButton }>
         <FloatingActionButton style={ { position: 'relative' } } backgroundColor={ ACMECorpDarkBlue } onTouchTap={ () => showRolesDialog() }>
           <ContentAdd />
         </FloatingActionButton>
       </div>
+      <RolesDialog {...props}/>
     </div>
   )
 }

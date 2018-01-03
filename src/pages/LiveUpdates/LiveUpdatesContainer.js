@@ -16,28 +16,28 @@ class LiveUpdates extends Component {
 
     this.timer = undefined;
   }
-  componentDidMount () {
+  componentDidMount() {
     this.startLiveUpdates();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.stopLiveUpdates();
   }
 
-  startLiveUpdates () {
+  startLiveUpdates() {
     if (this.timer === undefined) {
       this.timer = setInterval(() => this.update(), 5000);
     }
   }
 
-  stopLiveUpdates () {
+  stopLiveUpdates() {
     if (this.timer !== undefined) {
       clearInterval(this.timer);
       this.timer = undefined;
     }
   }
 
-  update () {
+  update() {
     this.props.fetchUpdates(this.props.loggedInUser.id);
     switch (this.props.selectedSection) {
       case 'project':
@@ -56,7 +56,7 @@ class LiveUpdates extends Component {
     }
   }
 
-  render () {
+  render() {
     return null;
   }
 }

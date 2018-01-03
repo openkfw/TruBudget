@@ -4,30 +4,7 @@ import { connect } from 'react-redux';
 import globalStyles from '../../styles';
 
 
-import {
-  fetchWorkflowItems,
-  showWorkflowDialog,
-  storeWorkflowComment,
-  storeWorkflowCurrency,
-  storeWorkflowAmount,
-  storeWorkflowAmountType,
-  storeWorkflowName,
-  storeWorkflowState,
-  storeWorkflowAssignee,
-  createWorkflowItem,
-  editWorkflowItem,
-  disableWorkflowState,
-  storeWorkflowTxid,
-  showWorkflowDetails,
-  setWorkflowCreationStep,
-  updateWorkflowSortOnState,
-  enableWorkflowSort,
-  storeWorkflowType,
-  postWorkflowSort,
-  enableSubProjectBudgetEdit,
-  storeSubProjectAmount,
-  postSubProjectEdit
-} from './actions';
+import { fetchWorkflowItems, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, setWorkflowCreationStep, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit} from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -50,11 +27,11 @@ class WorkflowContainer extends Component {
 
 
   render() {
-    const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
+    const {isAssignee, isApprover, isBank} = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
-      <div style={globalStyles.innerContainer}>
-        <SubProjectDetails {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
-        <Workflow {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
+      <div style={ globalStyles.innerContainer }>
+        <SubProjectDetails {...this.props} permissions={ { isAssignee, isApprover, isBank } } />
+        <Workflow {...this.props} permissions={ { isAssignee, isApprover, isBank } } />
       </div>
     )
   }
@@ -129,7 +106,7 @@ const mapStateToProps = (state) => {
     subProjectAmount: state.getIn(['workflow', 'subProjectAmount']),
     workflowDocuments: state.getIn(['documents', 'tempDocuments']).toJS(),
     validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS(),
-    roles: state.getIn(['login', 'roles'])
+    roles: state.getIn(['login', 'roles']).toJS()
 
   }
 }

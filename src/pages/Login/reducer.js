@@ -42,7 +42,7 @@ export default function loginReducer(state = defaultState, action) {
     case FETCH_USERS_SUCCESS:
       return state.set('users', fromJS(action.users));
     case FETCH_ROLES_SUCCESS:
-      return state.set('roles', action.roles);
+      return state.set('roles', fromJS(action.roles));
     case STORE_USERNAME:
       return state.set('username', action.username);
     case STORE_PASSWORD:
@@ -57,7 +57,10 @@ export default function loginReducer(state = defaultState, action) {
     case SHOW_LOGIN_ERROR:
       return state.set('loginUnsuccessful', action.show);
     case STORE_ENVIRONMENT_SUCCESS:
-      return state.merge({ environment: action.environment, productionActive: action.productionActive })
+      return state.merge({
+        environment: action.environment,
+        productionActive: action.productionActive
+      })
     case SET_LANGUAGE:
       const newState = state.set('language', action.language);
       setLanguage(newState);
