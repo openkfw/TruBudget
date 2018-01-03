@@ -12,7 +12,7 @@ import RolesDialog from './RolesDialog';
 const styles = {
   tableWrapper: {
     width: '100%',
-    height: '500px',
+    height: '700px',
     overflow: 'auto'
   },
   actionButton: {

@@ -23,6 +23,9 @@ export const USER_ROLE = "USER_ROLE";
 export const ADD_USER = "ADD_USER";
 export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 
+export const ADD_ROLE = "ADD_ROLE";
+export const ADD_ROLE_SUCCESS = "ADD_ROLE_SUCCESS";
+
 
 export const showRolesDialog = () => {
     return {
@@ -101,6 +104,17 @@ export const addUser = (username, fullName, avatar, password, role) => {
         avatar,
         password,
         role
+    }
+}
+
+export const addRole = (name, organization, read, write, admin) => {
+    return {
+        type: ADD_ROLE,
+        name,
+        organization,
+        read,
+        write,
+        admin
     }
 }
 

@@ -34,7 +34,7 @@ const UsersTable = (props) => {
   const {users, roles, showUsersDialog} = props;
   const userEntries = getUsers(users);
   return (
-    <div style={ { width: '100%', height: '500px', overflow: 'auto' } }>
+    <div style={ { width: '100%', height: '700px', overflow: 'auto' } }>
       <Table fixedHeader={ true } selectable={ false }>
         <TableHeader displaySelectAll={ false } adjustForCheckbox={ false }>
           <TableRow>

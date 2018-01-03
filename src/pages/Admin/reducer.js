@@ -8,7 +8,7 @@ const defaultState = fromJS({
   roleToAdd: {
     name: '',
     organization: '',
-    readPermissionSelected: false,
+    readPermissionSelected: true,
     writePermissionSelected: false,
     adminPermissionSelected: false,
   },

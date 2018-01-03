@@ -47,6 +47,13 @@ class Api {
     role,
     avatar
   })
+  addRole = (id, organization, read, write, admin) => axios.post(`${this.prefix}/roles`, {
+    id,
+    organization,
+    read,
+    write,
+    admin
+  })
   fetchPeers = () => axios.get(`${this.prefix}/peers`);
   fetchProjects = () => axios.get(`${this.prefix}/projects`);
   fetchProjectDetails = (project) => axios.get(`${this.prefix}/projects/` + project);

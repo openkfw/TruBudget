@@ -13,7 +13,7 @@ const styles = {
     backgroundImage: 'url("/navbar_back3.jpg")',
     backgroundSize: 'cover',
     alignItems: 'center',
-    minHeight: '600px'
+    minHeight: '900px'
   }
 };
 

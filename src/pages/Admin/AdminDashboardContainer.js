@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchNodePermissions, showRolesDialog, hideRolesDialog, showUsersDialog, hideUsersDialog, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, addUser } from './actions';
+import { fetchNodePermissions, showRolesDialog, hideRolesDialog, addRole, showUsersDialog, hideUsersDialog, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, addUser } from './actions';
 import { fetchUsers, fetchRoles } from '../Login/actions';
 
 import AdminDashboard from './AdminDashboard';
@@ -41,7 +41,8 @@ const mapDispatchToProps = (dispatch) => {
     setUserPassword: (password) => dispatch(setUserPassword(password)),
     setUserAvatar: (avatar) => dispatch(setUserAvatar(avatar)),
     setUserRole: (role) => dispatch(setUserRole(role)),
-    addUser: (username, fullName, avatar, password, role) => dispatch(addUser(username, fullName, avatar, password, role))
+    addUser: (username, fullName, avatar, password, role) => dispatch(addUser(username, fullName, avatar, password, role)),
+    addRole: (name, organization, read, write, admin) => dispatch(addRole(name, organization, read, write, admin))
   };
 }
 

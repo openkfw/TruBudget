@@ -32,10 +32,20 @@ const styles = {
     }
 
 }
-const getDialogActions = (hideRolesDialog) => {
+const handleSubmit = (hideRolesDialog, roleToAdd, addRole) => {
+    const roleName = roleToAdd.getIn(['name']);
+    const roleOrganization = roleToAdd.getIn(['organization']);
+    const readSelected = roleToAdd.getIn(['readPermissionSelected']);
+    const writeSelected = roleToAdd.getIn(['writePermissionSelected']);
+    const adminSelected = roleToAdd.getIn(['adminPermissionSelected']);
 
+    addRole(roleName, roleOrganization, readSelected, writeSelected, adminSelected)
+    hideRolesDialog();
+}
+
+const getDialogActions = (hideRolesDialog, roleToAdd, addRole) => {
     const cancelButton = <FlatButton label={ strings.common.cancel } primary={ true } onTouchTap={ () => hideRolesDialog() } />
-    const submitButton = <FlatButton label={ strings.common.submit } primary={ true } onTouchTap={ () => hideRolesDialog() } />
+    const submitButton = <FlatButton label={ strings.common.submit } primary={ true } onTouchTap={ () => handleSubmit(hideRolesDialog, roleToAdd, addRole) } />
     const actions = <div style={ styles.actions }>
                       { cancelButton }
                       { submitButton }
@@ -44,8 +54,8 @@ const getDialogActions = (hideRolesDialog) => {
 }
 
 const RolesDialog = (props) => {
-    const {rolesDialogShown, hideRolesDialog, roleToAdd, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission} = props;
-    const actions = getDialogActions(hideRolesDialog)
+    const {rolesDialogShown, hideRolesDialog, addRole, roleToAdd, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission} = props;
+    const actions = getDialogActions(hideRolesDialog, roleToAdd, addRole)
     const roleName = roleToAdd.getIn(['name']);
     const roleOrganization = roleToAdd.getIn(['organization']);
     const readSelected = roleToAdd.getIn(['readPermissionSelected']);
@@ -60,7 +70,7 @@ const RolesDialog = (props) => {
               <TextField floatingLabelText="Role ID" value={ roleName } onChange={ (event) => setRoleName(event.target.value) } />
             </div>
             <div style={ styles.checkBoxDiv }>
-              <Checkbox label="Read" style={ styles.checkbox } value={ readSelected } onCheck={ (event, isInputChecked) => setRoleReadPermission(isInputChecked) } />
+              <Checkbox label="Read" style={ styles.checkbox } checked={ readSelected } disabled={ true } onCheck={ (event, isInputChecked) => setRoleReadPermission(isInputChecked) } />
               <Checkbox label="Write" style={ styles.checkbox } value={ writeSelected } onCheck={ (event, isInputChecked) => setRoleWritePermission(isInputChecked) } />
               <Checkbox label="Admin" style={ styles.checkbox } value={ adminSelected } onCheck={ (event, isInputChecked) => setRoleAdminPermission(isInputChecked) } />
             </div>
