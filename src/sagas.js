@@ -12,7 +12,7 @@ import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, ED
 
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, CHECK_TOKEN, FETCH_USER, TOKEN_FOUND } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
-import { FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS, ADD_USER, ADD_USER_SUCCESS, ADD_ROLE_SUCCESS, ADD_ROLE } from './pages/Admin/actions';
+import { FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS, ADD_USER, ADD_USER_SUCCESS, ADD_ROLE_SUCCESS, ADD_ROLE, LOGIN_ADMIN_USER, LOGIN_ADMIN_USER_SUCCESS, LOGIN_ADMIN_USER_ERROR } from './pages/Admin/actions';
 import _ from 'lodash';
 
 
@@ -437,6 +437,20 @@ export function* fetchNodePermissionsSaga() {
     })
 }
 
+export function* loginAdminUserSaga({username, password}) {
+    try {
+        const user = yield call(api.login, username, password)
+        yield put({
+            type: LOGIN_ADMIN_USER_SUCCESS
+        })
+    } catch (err) {
+
+        yield put({
+            type: LOGIN_ADMIN_USER_ERROR
+        })
+    }
+}
+
 export function* watchFetchPeers() {
     yield takeEvery(FETCH_PEERS, fetchPeersSaga)
 }
@@ -546,7 +560,9 @@ export function* watchFetchNodePermissions() {
     yield takeLatest(FETCH_NODE_PERMISSIONS, fetchNodePermissionsSaga)
 }
 
-
+export function* watchLoginAdminUser() {
+    yield takeLatest(LOGIN_ADMIN_USER, loginAdminUserSaga);
+}
 
 
 
@@ -581,6 +597,7 @@ export default function* rootSaga() {
             watchFetchNodePermissions(),
             watchAddUser(),
             watchAddRole(),
+            watchLoginAdminUser(),
         ]
     } catch (error) {
         console.log(error);

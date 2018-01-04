@@ -3,6 +3,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import RolesTable from './RolesTable';
 import UsersTable from './UsersTable';
 import NodeInfosTable from './NodeInfosTable';
+import AdminLoginDialog from './AdminLoginDialog';
 
 const styles = {
   backgroundImage: {
@@ -22,21 +23,26 @@ const styles = {
 
 
 const AdminDashBoard = (props) => {
+  const {adminLoginShown, adminLoggedIn} = props;
+
   return (
     <div style={ styles.backgroundImage }>
-      <div style={ styles.tabsContainer }>
-        <Tabs>
-          <Tab label="Roles">
-            <RolesTable {...props} />
-          </Tab>
-          <Tab label="Users">
-            <UsersTable {...props} />
-          </Tab>
-          <Tab label="Nodes">
-            <NodeInfosTable {...props}/>
-          </Tab>
-        </Tabs>
-      </div>
+      { !adminLoggedIn ? (
+        <AdminLoginDialog {...props}/> ) : (
+        <div style={ styles.tabsContainer }>
+          <Tabs>
+            <Tab label="Roles">
+              <RolesTable {...props} />
+            </Tab>
+            <Tab label="Users">
+              <UsersTable {...props} />
+            </Tab>
+            <Tab label="Nodes">
+              <NodeInfosTable {...props}/>
+            </Tab>
+          </Tabs>
+        </div>
+        ) }
     </div>
   )
 }

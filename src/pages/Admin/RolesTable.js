@@ -58,7 +58,6 @@ const getRoles = (roles) => {
 
 }
 
-
 const RolesTable = (props) => {
   const {roles, showRolesDialog} = props;
   const headerColumns = getHeaderColumns();

@@ -4,21 +4,22 @@ import { connect } from 'react-redux';
 import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, checkToken } from './actions';
 import LoginPage from './LoginPage';
 import LoadingContainer from '../Loading/LoadingContainer';
-import {fetchNodePermissions} from '../Admin/actions';
+import { fetchNodePermissions } from '../Admin/actions';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
-   this.props.storeDefaultEnvironment();
-   this.props.checkToken();
-   this.props.fetchNodePermissions();
+    this.props.storeDefaultEnvironment();
+    this.props.fetchNodePermissions();
+    this.props.checkToken();
+
   }
 
   render() {
-    const { tokenPresent } = this.props;
+    const {tokenPresent} = this.props;
     return (
-      tokenPresent ? (
-        <LoadingContainer {...this.props} />) :
-        (<LoginPage {...this.props} />)
+    tokenPresent ? (
+      <LoadingContainer {...this.props} />) :
+      (<LoginPage {...this.props} />)
     )
   }
   componentDidMount() {
@@ -66,7 +67,7 @@ const mapStateToProps = (state) => {
     language: state.getIn(['login', 'language']),
     loggedIn: state.getIn(['login', 'loggedIn']),
     tokenPresent: state.getIn(['login', 'tokenPresent']),
-    connectedToAdminNode: state.getIn(['admin', 'connectedToAdminNode']),
+    connectedToAdminNode: state.getIn(['adminDashboard', 'connectedToAdminNode']),
   }
 }
 

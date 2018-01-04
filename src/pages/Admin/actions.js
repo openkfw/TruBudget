@@ -27,6 +27,18 @@ export const ADD_ROLE = "ADD_ROLE";
 export const ADD_ROLE_SUCCESS = "ADD_ROLE_SUCCESS";
 
 
+export const SHOW_ADMIN_LOGIN = "SHOW_ADMIN_LOGIN";
+export const HIDE_ADMIN_LOGIN = "HIDE_ADMIN_LOGIN";
+
+export const ADMIN_USERNAME = "ADMIN_USERNAME";
+export const ADMIN_PASSWORD = "ADMIN_PASSWORD";
+
+export const LOGIN_ADMIN_USER = "LOGIN_ADMIN_USER";
+export const LOGIN_ADMIN_USER_SUCCESS = "LOGIN_ADMIN_USER_SUCCESS";
+export const LOGIN_ADMIN_USER_ERROR = "LOGIN_ADMIN_USER_ERROR";
+
+
+
 export const showRolesDialog = () => {
     return {
         type: SHOW_ROLES_DIALOG
@@ -149,5 +161,39 @@ export const setRoleAdminPermission = (adminPermissionSelected) => {
     return {
         type: ROLE_ADMIN_PERMISSION,
         adminPermissionSelected
+    }
+}
+
+export const hideAdminLogin = () => {
+    return {
+        type: HIDE_ADMIN_LOGIN
+    }
+}
+
+export const showAdminLogin = () => {
+    return {
+        type: SHOW_ADMIN_LOGIN
+    }
+}
+
+export const setAdminUsername = (username) => {
+    return {
+        type: ADMIN_USERNAME,
+        username
+    }
+}
+
+export const setAdminPassword = (password) => {
+    return {
+        type: ADMIN_PASSWORD,
+        password
+    }
+}
+
+export const loginAdminUser = (username, password) => {
+    return {
+        type: LOGIN_ADMIN_USER,
+        username,
+        password
     }
 }

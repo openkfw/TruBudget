@@ -1,10 +1,18 @@
 import { fromJS } from 'immutable';
-import { FETCH_NODE_PERMISSIONS_SUCCESS, SHOW_ROLES_DIALOG, HIDE_ROLES_DIALOG, ROLE_NAME, ROLE_ORGANIZATION, ROLE_READ_PERMISSION, ROLE_WRITE_PERMISSION, ROLE_ADMIN_PERMISSION, SHOW_USERS_DIALOG, HIDE_USERS_DIALOG, USER_NAME, USER_FULL_NAME, USER_PASSWORD, USER_AVATAR, USER_ROLE } from './actions';
+import { FETCH_NODE_PERMISSIONS_SUCCESS, SHOW_ROLES_DIALOG, HIDE_ROLES_DIALOG, ROLE_NAME, ROLE_ORGANIZATION, ROLE_READ_PERMISSION, ROLE_WRITE_PERMISSION, ROLE_ADMIN_PERMISSION, SHOW_USERS_DIALOG, HIDE_USERS_DIALOG, USER_NAME, USER_FULL_NAME, USER_PASSWORD, USER_AVATAR, USER_ROLE, SHOW_ADMIN_LOGIN, HIDE_ADMIN_LOGIN, ADMIN_USERNAME, ADMIN_PASSWORD, LOGIN_ADMIN_USER_SUCCESS, LOGIN_ADMIN_USER_ERROR } from './actions';
 
 const defaultState = fromJS({
   connectedToAdminNode: false,
   rolesDialogShown: false,
+
   usersDialogShown: false,
+  adminLoginShown: true,
+  adminLoggedIn: false,
+  adminLoginFailed: false,
+  adminCredentials: {
+    username: '',
+    password: '',
+  },
   roleToAdd: {
     name: '',
     organization: '',
@@ -61,7 +69,21 @@ export default function loginReducer(state = defaultState, action) {
       return state.setIn(['roleToAdd', 'writePermissionSelected'], action.writePermissionSelected);
     case ROLE_ADMIN_PERMISSION:
       return state.setIn(['roleToAdd', 'adminPermissionSelected'], action.adminPermissionSelected);
-
+    case SHOW_ADMIN_LOGIN:
+      return state.set('adminLoginShown', true);
+    case HIDE_ADMIN_LOGIN:
+      return state.merge({
+        adminCredentials: defaultState.getIn(['adminCredentials']),
+        adminLoginShown: false
+      });
+    case LOGIN_ADMIN_USER_SUCCESS:
+      return state.set('adminLoggedIn', true);
+    case LOGIN_ADMIN_USER_ERROR:
+      return state.set('adminLoginFailed', true);
+    case ADMIN_USERNAME:
+      return state.setIn(['adminCredentials', 'username'], action.username);
+    case ADMIN_PASSWORD:
+      return state.setIn(['adminCredentials', 'password'], action.password);
     default:
       return state
   }
