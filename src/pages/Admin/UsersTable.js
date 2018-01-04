@@ -8,6 +8,38 @@ import _ from 'lodash';
 import { ACMECorpDarkBlue } from '../../colors';
 import UsersDialog from './UsersDialog';
 
+
+const styles = {
+  container: {
+    width: '100%',
+    height: '700px',
+    overflow: 'auto'
+  },
+  buttonDiv: {
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    alignItems: 'center',
+    top: '16px',
+    right: '-26px'
+  },
+  actionButton: {
+    position: 'relative'
+  }
+}
+
+
+const getHeaderColumns = () => {
+  return (
+    <TableRow>
+      <TableHeaderColumn>Username</TableHeaderColumn>
+      <TableHeaderColumn>Name</TableHeaderColumn>
+      <TableHeaderColumn>Organization</TableHeaderColumn>
+      <TableHeaderColumn>Role</TableHeaderColumn>
+    </TableRow>
+  )
+}
+
 const getUsers = (users) => {
   const userArray = _.values(users);
   return userArray.map(user => {
@@ -31,25 +63,22 @@ const getUsers = (users) => {
 }
 
 const UsersTable = (props) => {
-  const {users, roles, showUsersDialog} = props;
+  const {users, showUsersDialog} = props;
+  const headerColumns = getHeaderColumns();
   const userEntries = getUsers(users);
+
   return (
-    <div style={ { width: '100%', height: '700px', overflow: 'auto' } }>
+    <div style={ styles.container }>
       <Table fixedHeader={ true } selectable={ false }>
         <TableHeader displaySelectAll={ false } adjustForCheckbox={ false }>
-          <TableRow>
-            <TableHeaderColumn>Username</TableHeaderColumn>
-            <TableHeaderColumn>Name</TableHeaderColumn>
-            <TableHeaderColumn>Organization</TableHeaderColumn>
-            <TableHeaderColumn>Role</TableHeaderColumn>
-          </TableRow>
+          { headerColumns }
         </TableHeader>
         <TableBody displayRowCheckbox={ false } adjustForCheckbox={ false }>
           { userEntries }
         </TableBody>
       </Table>
-      <div style={ { display: 'flex', flexDirection: 'column', position: 'absolute', alignItems: 'center', top: '16px', right: '-26px' } }>
-        <FloatingActionButton backgroundColor={ ACMECorpDarkBlue } onTouchTap={ () => showUsersDialog() } style={ { position: 'relative' } }>
+      <div style={ styles.buttonDiv }>
+        <FloatingActionButton style={ styles.actionButton } backgroundColor={ ACMECorpDarkBlue } onTouchTap={ () => showUsersDialog() }>
           <ContentAdd />
         </FloatingActionButton>
       </div>

@@ -10,7 +10,12 @@ import currencies from './currency';
 
 import { taskStatusColorPalette, budgetStatusColorPalette, workflowBudgetColorPalette } from './colors';
 
-const getCurrencyFormat = (currency) => ({ decimal: ".", thousand: ",", precision: 2, ...currencies[currency] })
+const getCurrencyFormat = (currency) => ({
+  decimal: ".",
+  thousand: ",",
+  precision: 2,
+  ...currencies[currency]
+})
 
 export const fromAmountString = (amount, currency) => accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 export const toAmountString = (amount, currency) => accounting.formatMoney(amount, getCurrencyFormat(currency));
@@ -74,7 +79,7 @@ export const roleMapper = {
 
 
 
-const createDoughnutData = (labels, data, colors = taskStatusColorPalette, ) => ({
+const createDoughnutData = (labels, data, colors = taskStatusColorPalette ,) => ({
   labels,
   datasets: [
     {
@@ -116,14 +121,18 @@ export const getAllocationRatio = (spentAmount, projectAmount) => {
 }
 export const calculateWorkflowBudget = (workflows) => {
   return workflows.reduce((acc, workflow) => {
-    const { amount, amountType, status } = workflow.data;
+    const {amount, amountType, status} = workflow.data;
     const next = {
       assigned: amountType === 'allocated' ? acc.assigned + amount : acc.assigned,
       disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed,
       currentDisbursement: amountType === 'disbursed' && status === 'done' ? acc.currentDisbursement + amount : acc.currentDisbursement,
     }
     return next;
-  }, { assigned: 0, disbursed: 0, currentDisbursement: 0 })
+  }, {
+    assigned: 0,
+    disbursed: 0,
+    currentDisbursement: 0
+  })
 }
 
 export const createAmountData = (projectAmount, subProjects) => {
@@ -138,7 +147,7 @@ export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) =>
 }
 
 export const createSubprojectAmountData = (subProjectAmount, workflows) => {
-  const { assigned, disbursed } = calculateWorkflowBudget(workflows);
+  const {assigned, disbursed} = calculateWorkflowBudget(workflows);
 
 
   const budgetLeft = getNotAssignedBudget(subProjectAmount, assigned, disbursed);
@@ -199,4 +208,5 @@ export const getAssignedOrganization = (definedRoles, assignedRoles) => assigned
     const nextString = index ? `, ${assignedOrganization}` : `${assignedOrganization}`
     return acc + nextString;
   }
+  return "";
 }, "")

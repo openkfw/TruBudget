@@ -1,5 +1,4 @@
 import axios from 'axios';
-import _ from 'lodash';
 const devMode = process.env.NODE_ENV === 'development';
 
 console.log(`API is running in ${devMode ? "development" : "production"} mode`)
