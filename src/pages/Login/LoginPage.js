@@ -3,10 +3,7 @@ import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
-import TextField from 'material-ui/TextField';
-import { ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors'
-import UsernameIcon from 'material-ui/svg-icons/social/person';
-import PasswordIcon from 'material-ui/svg-icons/action/lock';
+import { ACMECorpLightgreen } from '../../colors'
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -17,6 +14,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import UsernameTextField from '../Common/UsernameTextField';
 import PasswordTextField from '../Common/PasswordTextField';
 import strings from '../../localizeStrings'
+import { isAdminNode } from '../../helper';
 
 const defaultUser = {
   jdoe: {
@@ -61,8 +59,9 @@ const createListItems = (users, login) => {
 
 
 
-const LoginPage = ({history, connectedToAdminNode, users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment, language, setLanguage}) => {
-  console.log(connectedToAdminNode)
+const LoginPage = ({history, nodePermissions, users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment, language, setLanguage}) => {
+  const connectedToAdminNode = isAdminNode(nodePermissions);
+
   return (
     <div style={ { backgroundImage: 'url("/welcome.jpg")', backgroundSize: 'cover', width: '100%', height: '100%', position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' } }>
       <Card style={ { width: '350px', zIndex: 1100, opacity: 0.9 } }>
@@ -93,7 +92,7 @@ const LoginPage = ({history, connectedToAdminNode, users, login, storeUsername, 
           <CardText style={ { fontSize: '11px' } }>
             { strings.login.accenture_tag }
           </CardText>
-          <IconButton disabled={ !connectedToAdminNode } onClick={ () => history.push('/admin') }>
+          <IconButton disabled={ !(connectedToAdminNode > -1) } onClick={ () => history.push('/admin') }>
             <SettingsIcon />
           </IconButton>
         </div>

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
+import Snackbar from 'material-ui/Snackbar';
 import RolesTable from './RolesTable';
 import UsersTable from './UsersTable';
 import NodeInfosTable from './NodeInfosTable';
 import AdminLoginDialog from './AdminLoginDialog';
+import { isAdminNode } from '../../helper';
+import NotificationsSnackbar from '../Notifications/NotificationsSnackbar';
 
 const styles = {
   backgroundImage: {
@@ -18,16 +21,21 @@ const styles = {
   tabsContainer: {
     width: '60%',
     marginTop: '50px'
+  },
+  snackbarStyle: {
+    backgroundColor: 'red',
+    color: 'white'
   }
 };
 
 
 const AdminDashBoard = (props) => {
-  const {adminLoginShown, adminLoggedIn} = props;
+  const {loggedIn, nodePermissions, loggedInUser} = props;
+  const connectedToAdminNode = isAdminNode(nodePermissions);
 
   return (
     <div style={ styles.backgroundImage }>
-      { !adminLoggedIn ? (
+      { !(loggedIn && connectedToAdminNode > -1 && loggedInUser.role.admin) ? (
         <AdminLoginDialog {...props}/> ) : (
         <div style={ styles.tabsContainer }>
           <Tabs>
@@ -41,6 +49,8 @@ const AdminDashBoard = (props) => {
               <NodeInfosTable {...props}/>
             </Tab>
           </Tabs>
+          />
+          <NotificationsSnackbar {...props}/>
         </div>
         ) }
     </div>

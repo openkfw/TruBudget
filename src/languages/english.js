@@ -35,6 +35,10 @@ const en = {
 
   },
 
+  adminDashboard: {
+    role_name_error: "Incorrect role name",
+    role_organization_error: "Incorrect organization",
+  },
   login: {
     tru_budget_description: 'A blockchain-based solution for budget expenditure',
     environment: 'Environment',

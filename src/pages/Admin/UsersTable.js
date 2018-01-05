@@ -39,10 +39,18 @@ const getHeaderColumns = () => {
     </TableRow>
   )
 }
+const sortUsers = (users) => {
+  const userArray = _.values(users);
+  const sortedUsers = _.sortBy(userArray, user => {
+    return user.organization.toLowerCase()
+  }
+  );
+  return sortedUsers;
+}
 
 const getUsers = (users) => {
-  const userArray = _.values(users);
-  return userArray.map(user => {
+  const sortedUsers = sortUsers(users);
+  return sortedUsers.map(user => {
     return (
       <TableRow key={ user.id }>
         <TableRowColumn>

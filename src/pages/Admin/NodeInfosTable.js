@@ -11,10 +11,15 @@ const styles = {
     overflow: 'auto'
   },
 }
+const sortNodes = (nodes) => {
+  const nodesArray = _.values(nodes);
+  const sortedNodes = _.sortBy(nodesArray, ['organization'])
+  return sortedNodes;
+}
 
 const getNodes = (nodes) => {
-  const nodesArray = _.values(nodes);
-  return nodesArray.map(node => {
+  const sortedNodes = sortNodes(nodes)
+  return sortedNodes.map(node => {
     return (
       <TableRow key={ node.address }>
         <TableRowColumn>

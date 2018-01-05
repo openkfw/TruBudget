@@ -53,6 +53,7 @@ class Api {
     write,
     admin
   })
+  fetchPermissions = () => axios.get(`${this.prefix}/permissions`);
   fetchPeers = () => axios.get(`${this.prefix}/peers`);
   fetchProjects = () => axios.get(`${this.prefix}/projects`);
   fetchProjectDetails = (project) => axios.get(`${this.prefix}/projects/` + project);

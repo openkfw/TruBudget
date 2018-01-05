@@ -5,6 +5,7 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import AutoComplete from 'material-ui/AutoComplete';
+import _ from 'lodash';
 import strings from '../../localizeStrings';
 
 const styles = {
@@ -32,10 +33,50 @@ const styles = {
     }
 
 }
-const getDialogActions = (hideUsersDialog, addUser, userToAdd) => {
+
+
+const isInputValid = (username, fullName, password, role, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, existingRoles) => {
+    const roleExist = existingRoles.find((existingRole => existingRole.role === role.toLowerCase()));
+    let inputValid = true;
+    if (_.isEmpty(username)) {
+        isUsernameError(true);
+        inputValid = false;
+    }
+    if (_.isEmpty(fullName)) {
+        isFullNameError(true);
+        inputValid = false;
+    }
+    if (_.isEmpty(password)) {
+        isPasswordError(true);
+        inputValid = false;
+    }
+    if (_.isEmpty(role) || !roleExist) {
+        isRoleNotFoundError(true);
+        inputValid = false;
+    }
+    return inputValid;
+
+
+}
+const handleSubmit = (hideUsersDialog, addUser, userToAdd, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, roles, storeSnackBarMessage, openSnackBar) => {
+    const username = userToAdd.getIn(['username']);
+    const fullName = userToAdd.getIn(['fullName']);
+    const password = userToAdd.getIn(['password']);
+    const avatar = userToAdd.getIn(['avatar']);
+    const role = userToAdd.getIn(['role']);
+    const inputValid = isInputValid(username, fullName, password, role, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, roles);
+    if (inputValid) {
+        addUser(username, fullName, avatar, password, role);
+        storeSnackBarMessage('Added ' + fullName)
+        openSnackBar();
+        hideUsersDialog();
+    }
+}
+
+const getDialogActions = (hideUsersDialog, addUser, userToAdd, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, roles, storeSnackBarMessage, openSnackBar) => {
 
     const cancelButton = <FlatButton label={ strings.common.cancel } primary={ true } onTouchTap={ () => hideUsersDialog() } />
-    const submitButton = <FlatButton label={ strings.common.submit } primary={ true } onTouchTap={ () => handleSubmit(hideUsersDialog, addUser, userToAdd) } />
+    const submitButton = <FlatButton label={ strings.common.submit } primary={ true } onTouchTap={ () => handleSubmit(hideUsersDialog, addUser, userToAdd, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, roles, storeSnackBarMessage, openSnackBar) } />
     const actions = <div style={ styles.actions }>
                       { cancelButton }
                       { submitButton }
@@ -43,27 +84,30 @@ const getDialogActions = (hideUsersDialog, addUser, userToAdd) => {
     return actions;
 }
 
-const handleSubmit = (hideUsersDialog, addUser, userToAdd) => {
-    const username = userToAdd.getIn(['username']);
-    const fullName = userToAdd.getIn(['fullName']);
-    const password = userToAdd.getIn(['password']);
-    const avatar = userToAdd.getIn(['avatar']);
-    const role = userToAdd.getIn(['role']);
-    addUser(username, fullName, avatar, password, role);
-    hideUsersDialog();
-}
-
-
 const dataSourceConfig = {
     text: 'role',
     value: 'role',
 };
 
 
+const autoCompleteUpdateInput = (text, setUserRole) => {
+    setUserRole(text);
+}
+
+const autoCompleteOnSelect = (selectedRole, setUserRole) => {
+    if (_.isEmpty(selectedRole.role)) {
+        setUserRole(selectedRole);
+    } else {
+        setUserRole(selectedRole.role)
+    }
+}
+
+
 const UsersDialog = (props) => {
 
-    const {usersDialogShown, addUser, userToAdd, roles, hideUsersDialog, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole} = props;
-    const actions = getDialogActions(hideUsersDialog, addUser, userToAdd)
+    const {showUsernameError, showFullNameError, showPasswordError, showRoleNotFoundError, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, usersDialogShown, addUser, userToAdd, roles, hideUsersDialog, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, storeSnackBarMessage, openSnackBar} = props;
+
+    const actions = getDialogActions(hideUsersDialog, addUser, userToAdd, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, roles, storeSnackBarMessage, openSnackBar)
     const username = userToAdd.getIn(['username']);
     const fullName = userToAdd.getIn(['fullName']);
     const password = userToAdd.getIn(['password']);
@@ -74,9 +118,9 @@ const UsersDialog = (props) => {
         <Dialog title="New User" actions={ actions } modal={ false } open={ usersDialogShown } onRequestClose={ () => hideUsersDialog() }>
           <div style={ styles.container }>
             <div style={ styles.textFieldDiv }>
-              <TextField floatingLabelText="Full Name" value={ fullName } onChange={ (event) => setUserFullName(event.target.value) } />
-              <TextField floatingLabelText="Username" value={ username } onChange={ (event) => setUsername(event.target.value) } />
-              <TextField floatingLabelText="Password" type="password" value={ password } onChange={ (event) => setUserPassword(event.target.value) } />
+              <TextField errorText={ showUsernameError ? 'Invalid full name' : "" } floatingLabelText="Full Name" value={ fullName } onChange={ (event) => setUserFullName(event.target.value) } />
+              <TextField errorText={ showFullNameError ? 'Invalid username' : "" } floatingLabelText="Username" value={ username } onChange={ (event) => setUsername(event.target.value) } />
+              <TextField errorText={ showPasswordError ? 'Invalid password' : "" } floatingLabelText="Password" type="password" value={ password } onChange={ (event) => setUserPassword(event.target.value) } />
             </div>
             <div style={ styles.textFieldDiv }>
               <DropDownMenu labelStyle={ { paddingLeft: '0px' } } underlineStyle={ { marginLeft: '0px' } } value={ avatar } onChange={ (event, index, value) => setUserAvatar(value) }>
@@ -87,8 +131,8 @@ const UsersDialog = (props) => {
                 <MenuItem value={ '/lego_avatar_male5.jpg' } primaryText="lego_avatar_male5" />
                 <MenuItem value={ '/lego_avatar_female6.jpg' } primaryText="lego_avatar_female6" />
               </DropDownMenu>
-              <AutoComplete floatingLabelText={ strings.project.project_authority_organization_search } searchText={ role } dataSource={ roles } dataSourceConfig={ dataSourceConfig } filter={ AutoComplete.fuzzyFilter }
-                menuCloseDelay={ 0 } onNewRequest={ (selectedRole, index) => setUserRole(selectedRole.role) } />
+              <AutoComplete onUpdateInput={ (text) => autoCompleteUpdateInput(text, setUserRole) } errorText={ showRoleNotFoundError ? 'Role does not exist' : "" } floatingLabelText={ strings.project.project_authority_organization_search } searchText={ role } dataSource={ roles }
+                dataSourceConfig={ dataSourceConfig } filter={ AutoComplete.fuzzyFilter } menuCloseDelay={ 0 } onNewRequest={ (selectedRole, index) => autoCompleteOnSelect(selectedRole, setUserRole) } />
             </div>
           </div>
         </Dialog>

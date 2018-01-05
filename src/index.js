@@ -14,6 +14,8 @@ import Main from './pages/Main/Main';
 import LoginPageContainer from './pages/Login/LoginPageContainer';
 import PrivateRoute from './pages/Login/PrivateRoute';
 import AdminDashboardContainer from './pages/Admin/AdminDashboardContainer';
+import LiveNotificationContainer from './pages/Notifications/LiveNotificationContainer';
+
 import configureStore from './store';
 
 const history = createHistory()

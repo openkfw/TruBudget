@@ -33,9 +33,14 @@ export const HIDE_ADMIN_LOGIN = "HIDE_ADMIN_LOGIN";
 export const ADMIN_USERNAME = "ADMIN_USERNAME";
 export const ADMIN_PASSWORD = "ADMIN_PASSWORD";
 
-export const LOGIN_ADMIN_USER = "LOGIN_ADMIN_USER";
-export const LOGIN_ADMIN_USER_SUCCESS = "LOGIN_ADMIN_USER_SUCCESS";
-export const LOGIN_ADMIN_USER_ERROR = "LOGIN_ADMIN_USER_ERROR";
+
+
+export const ROLE_NAME_ERROR = "ROLE_NAME_ERROR";
+export const ORGANIZATION_ERROR = "ORGANIZATION_ERROR";
+export const USERNAME_ERROR = "USERNAME_ERROR";
+export const FULLNAME_ERROR = "FULLNAME_ERROR";
+export const PASSWORD_ERROR = "PASSWORD_ERROR";
+export const ROLE_NOT_FOUND_ERROR = "ROLE_NOT_FOUND_ERROR";
 
 
 
@@ -190,10 +195,45 @@ export const setAdminPassword = (password) => {
     }
 }
 
-export const loginAdminUser = (username, password) => {
+export const isRoleNameError = (roleNameError) => {
     return {
-        type: LOGIN_ADMIN_USER,
-        username,
-        password
+        type: ROLE_NAME_ERROR,
+        roleNameError
     }
 }
+
+export const isOrganizationError = (organizationError) => {
+    return {
+        type: ORGANIZATION_ERROR,
+        organizationError
+    }
+}
+
+export const isUsernameError = (usernameError) => {
+    return {
+        type: USERNAME_ERROR,
+        usernameError
+    }
+}
+
+export const isFullNameError = (fullNameError) => {
+    return {
+        type: FULLNAME_ERROR,
+        fullNameError
+    }
+}
+
+export const isPasswordError = (passwordError) => {
+    return {
+        type: PASSWORD_ERROR,
+        passwordError
+    }
+}
+
+export const isRoleNotFoundError = (roleNotFoundError) => {
+    return {
+        type: ROLE_NOT_FOUND_ERROR,
+        roleNotFoundError
+    }
+}
+

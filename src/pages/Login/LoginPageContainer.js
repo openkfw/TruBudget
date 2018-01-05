@@ -67,7 +67,7 @@ const mapStateToProps = (state) => {
     language: state.getIn(['login', 'language']),
     loggedIn: state.getIn(['login', 'loggedIn']),
     tokenPresent: state.getIn(['login', 'tokenPresent']),
-    connectedToAdminNode: state.getIn(['adminDashboard', 'connectedToAdminNode']),
+    nodePermissions: state.getIn(['adminDashboard', 'nodePermissions']),
   }
 }
 

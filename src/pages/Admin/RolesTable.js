@@ -3,6 +3,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 } from 'material-ui/Table';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import _ from 'lodash';
 
 import { ACMECorpDarkBlue } from '../../colors';
 import RolesDialog from './RolesDialog';
@@ -40,7 +41,10 @@ const getHeaderColumns = () => {
 
 
 const getRoles = (roles) => {
-  return roles.map(role => {
+  const sortedRoles = _.sortBy(roles, (role) => {
+    return role.organization.toLowerCase()
+  })
+  return sortedRoles.map(role => {
     return (
       <TableRow key={ role.role }>
         <TableRowColumn>
@@ -49,9 +53,15 @@ const getRoles = (roles) => {
         <TableRowColumn>
           { role.role }
         </TableRowColumn>
-        <TableRowColumn>missing</TableRowColumn>
-        <TableRowColumn>missing</TableRowColumn>
-        <TableRowColumn>missing</TableRowColumn>
+        <TableRowColumn>
+          { role.read.toString() }
+        </TableRowColumn>
+        <TableRowColumn>
+          { role.write.toString() }
+        </TableRowColumn>
+        <TableRowColumn>
+          { role.admin.toString() }
+        </TableRowColumn>
       </TableRow>
     )
   })

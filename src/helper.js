@@ -200,6 +200,9 @@ export const getNextAction = (item, assignee, bank, approver) => {
   }
 }
 
+export const isAdminNode = (nodePermissions) => {
+  return nodePermissions.indexOf('admin');
+}
 
 export const getAssignedOrganization = (definedRoles, assignedRoles) => assignedRoles.reduce((acc, assignedRole, index) => {
   const organization = definedRoles.find((role) => assignedRole === role.role);
