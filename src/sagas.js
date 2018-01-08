@@ -121,8 +121,9 @@ export function* createSubProjectSaga(action) {
 }
 
 export function* createWorkflowItemSaga(action) {
+    const {stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired} = action;
     try {
-        yield api.postWorkflowItem(action.stream, action.workflowName, action.amount, action.amountType, action.currency, action.comment, action.documents, action.state, action.assignee, action.workflowType);
+        yield api.postWorkflowItem(stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired);
         yield put({
             type: CREATE_WORKFLOW_SUCCESS
         });
@@ -136,8 +137,9 @@ export function* createWorkflowItemSaga(action) {
 }
 
 export function* editWorkflowItemSaga(action) {
+    const {stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired} = action;
     try {
-        yield api.editWorkflowItem(action.stream, action.key, action.workflowName, action.amount, action.amountType, action.currency, action.comment, action.documents, action.state, action.assignee, action.txid, action.previousState, action.workflowType);
+        yield api.editWorkflowItem(stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired);
         yield put({
             type: EDIT_WORKFLOW_SUCCESS
         });
