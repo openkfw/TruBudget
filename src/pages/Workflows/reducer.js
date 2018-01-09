@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_WORKFLOW_ITEMS_SUCCESS, SHOW_WORKFLOW_DIALOG, WORKFLOW_NAME, WORKFLOW_AMOUNT, WORKFLOW_AMOUNT_TYPE, WORKFLOW_PURPOSE, WORKFLOW_CURRENCY, WORKFLOW_STATE_ENABLED, WORKFLOW_STATE, WORKFLOW_ASSIGNEE, WORKFLOW_TXID, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, SHOW_WORKFLOW_DETAILS, SET_WORKFLOW_CREATION_STEP, UPDATE_WORKFLOW_SORT, ENABLE_WORKFLOW_SORT, WORKFLOW_TYPE, ENABLE_BUDGET_EDIT, SUBPROJECT_AMOUNT, WORKFLOW_APPROVAL_REQUIRED } from './actions';
+import { FETCH_WORKFLOW_ITEMS_SUCCESS, SHOW_WORKFLOW_DIALOG, WORKFLOW_NAME, WORKFLOW_AMOUNT, WORKFLOW_AMOUNT_TYPE, WORKFLOW_PURPOSE, WORKFLOW_CURRENCY, WORKFLOW_STATE_ENABLED, WORKFLOW_STATE, WORKFLOW_ASSIGNEE, WORKFLOW_TXID, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, SHOW_WORKFLOW_DETAILS, SET_WORKFLOW_CREATION_STEP, UPDATE_WORKFLOW_SORT, ENABLE_WORKFLOW_SORT, WORKFLOW_TYPE, ENABLE_BUDGET_EDIT, SUBPROJECT_AMOUNT, WORKFLOW_APPROVAL_REQUIRED, HIDE_WORKFLOW_DIALOG } from './actions';
 
 import { LOGOUT } from '../Login/actions';
 import { fromAmountString } from '../../helper';
@@ -46,6 +46,24 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         showWorkflow: action.show,
         editMode: action.editMode
+      })
+    case HIDE_WORKFLOW_DIALOG:
+      return state.merge({
+        showWorkflow: action.show,
+        editMode: action.editMode,
+        workflowName: defaultState.get('workflowName'),
+        workflowAmount: defaultState.get('workflowAmount'),
+        workflowAmountType: defaultState.get('workflowAmountType'),
+        workflowCurrency: defaultState.get('workflowCurrency'),
+        workflowComment: defaultState.get('workflowComment'),
+        workflowState: defaultState.get('workflowState'),
+        workflowAssignee: defaultState.get('workflowAssignee'),
+        workflowType: defaultState.get('workflowType'),
+        disabledWorkflowState: defaultState.get('disabledWorkflowStatetrue'),
+        workflowTxid: defaultState.get('workflowTxid'),
+        editMode: defaultState.get('editMode'),
+        workflowApprovalRequired: defaultState.get('workflowApprovalRequired'),
+        creationStep: defaultState.get('creationStep')
       })
     case WORKFLOW_NAME:
       return state.set('workflowName', action.name)

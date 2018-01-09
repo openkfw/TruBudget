@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import { ACMECorpDarkBlue } from '../../colors';
 import RolesDialog from './RolesDialog';
+import strings from '../../localizeStrings';
 
 const styles = {
   tableWrapper: {
@@ -30,11 +31,21 @@ const styles = {
 const getHeaderColumns = () => {
   return (
     <TableRow>
-      <TableHeaderColumn>Organization</TableHeaderColumn>
-      <TableHeaderColumn>ID</TableHeaderColumn>
-      <TableHeaderColumn>Read</TableHeaderColumn>
-      <TableHeaderColumn>Write</TableHeaderColumn>
-      <TableHeaderColumn>Admin</TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.adminDashboard.organization }
+      </TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.adminDashboard.id }
+      </TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.adminDashboard.read }
+      </TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.adminDashboard.write }
+      </TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.adminDashboard.admin }
+      </TableHeaderColumn>
     </TableRow>
   )
 }

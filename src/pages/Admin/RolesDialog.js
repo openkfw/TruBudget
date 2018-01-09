@@ -82,16 +82,16 @@ const RolesDialog = (props) => {
     const adminSelected = roleToAdd.getIn(['adminPermissionSelected']);
 
     return (
-        <Dialog title="New Role " actions={ actions } modal={ false } open={ rolesDialogShown } onRequestClose={ () => hideRolesDialog() }>
+        <Dialog title={ strings.adminDashboard.new_role } actions={ actions } modal={ false } open={ rolesDialogShown } onRequestClose={ () => hideRolesDialog() }>
           <div style={ styles.container }>
             <div style={ styles.textFieldDiv }>
-              <TextField errorText={ showOrganizationError ? strings.adminDashboard.role_organization_error : "" } floatingLabelText="Organization" value={ roleOrganization } onChange={ (event) => setRoleOrganization(event.target.value) } />
-              <TextField errorText={ showRoleNameError ? strings.adminDashboard.role_name_error : "" } floatingLabelText="Role" value={ roleName } onChange={ (event) => setRoleName(event.target.value) } />
+              <TextField errorText={ showOrganizationError ? strings.adminDashboard.role_organization_error : "" } floatingLabelText={ strings.adminDashboard.organization } value={ roleOrganization } onChange={ (event) => setRoleOrganization(event.target.value) } />
+              <TextField errorText={ showRoleNameError ? strings.adminDashboard.role_name_error : "" } floatingLabelText={ strings.adminDashboard.role } value={ roleName } onChange={ (event) => setRoleName(event.target.value) } />
             </div>
             <div style={ styles.checkBoxDiv }>
-              <Checkbox label="Read" style={ styles.checkbox } checked={ readSelected } disabled={ true } onCheck={ (event, isInputChecked) => setRoleReadPermission(isInputChecked) } />
-              <Checkbox label="Write" style={ styles.checkbox } value={ writeSelected } onCheck={ (event, isInputChecked) => setRoleWritePermission(isInputChecked) } />
-              <Checkbox label="Admin" style={ styles.checkbox } value={ adminSelected } onCheck={ (event, isInputChecked) => setRoleAdminPermission(isInputChecked) } />
+              <Checkbox label={ strings.adminDashboard.read } style={ styles.checkbox } checked={ readSelected } disabled={ true } onCheck={ (event, isInputChecked) => setRoleReadPermission(isInputChecked) } />
+              <Checkbox label={ strings.adminDashboard.write } style={ styles.checkbox } value={ writeSelected } onCheck={ (event, isInputChecked) => setRoleWritePermission(isInputChecked) } />
+              <Checkbox label={ strings.adminDashboard.admin } style={ styles.checkbox } value={ adminSelected } onCheck={ (event, isInputChecked) => setRoleAdminPermission(isInputChecked) } />
             </div>
           </div>
         </Dialog>

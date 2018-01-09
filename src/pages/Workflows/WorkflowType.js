@@ -42,7 +42,7 @@ const WorkflowType = ({workflowType, isWorkflowApprovalRequired, storeWorkflowTy
         </RadioButtonGroup>
       </div>
       <div style={ styles.checkBoxDiv }>
-        <Checkbox label="Approval Required" style={ styles.checkbox } labelStyle={ styles.checkBoxLabel } disabled={ editMode } checked={ workflowApprovalRequired } onCheck={ (event, isInputChecked) => isWorkflowApprovalRequired(isInputChecked) }
+        <Checkbox label={ strings.workflow.approval_required } style={ styles.checkbox } labelStyle={ styles.checkBoxLabel } disabled={ editMode } checked={ workflowApprovalRequired } onCheck={ (event, isInputChecked) => isWorkflowApprovalRequired(isInputChecked) }
         />
       </div>
     </div>

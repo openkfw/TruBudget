@@ -2,18 +2,18 @@ import React from 'react';
 import { SortableElement } from 'react-sortable-hoc';
 import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 import { Card } from 'material-ui/Card';
-import { toAmountString, statusMapping, amountTypes } from '../../helper.js';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
-import Chip from 'material-ui/Chip';
 import Paper from 'material-ui/Paper';
+import Chip from 'material-ui/Chip';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import IconButton from 'material-ui/IconButton';
+import { toAmountString, statusMapping, amountTypes } from '../../helper.js';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from '../../colors.js';
-
+import strings from '../../localizeStrings';
 
 
 const styles = {
@@ -26,7 +26,7 @@ const styles = {
   done: {
     backgroundColor: ACMECorpSuperLightgreen
   },
-  listText: {
+  text: {
     fontSize: '14px'
   },
   open: {},
@@ -66,7 +66,20 @@ const styles = {
     minWidth: '40px',
     marginLeft: '5px',
     marginRight: '5px',
-  }
+  },
+  amountChip: {
+    marginLeft: '16px'
+  },
+  statusChip: {
+    marginLeft: '4px'
+  },
+  chipLabel: {
+    fontSize: 10
+  },
+  chipDiv: {
+    display: 'flex',
+    alignItems: 'center'
+  },
 }
 
 
@@ -203,11 +216,11 @@ const getAmountField = (amount, type) => {
   const amountToShow = noBudgetAllocated ? amountTypes(type) : amount;
 
   return (
-    <div style={ { display: 'flex', alignItems: 'center' } }>
+    <div style={ styles.chipDiv }>
       <div>
         { amountToShow }
       </div>
-      { noBudgetAllocated ? null : <Chip style={ { marginLeft: '16px' } }>
+      { noBudgetAllocated ? null : <Chip style={ styles.amountChip }>
                                      { amountTypes(type) }
                                    </Chip> }
     </div>
@@ -234,14 +247,19 @@ const WorkflowItem = SortableElement(({workflow, mapIndex, index, permissions, c
             <TableRowColumn colSpan={ 1 }>
               { infoButton }
             </TableRowColumn>
-            <TableRowColumn style={ styles.listText } colSpan={ 3 }>
+            <TableRowColumn style={ styles.text } colSpan={ 3 }>
               { workflowName }
             </TableRowColumn>
             <TableRowColumn style={ styles.listText } colSpan={ 3 }>
               { getAmountField(amount, amountType) }
             </TableRowColumn>
-            <TableRowColumn style={ styles.listText } colSpan={ 2 }>
-              { statusMapping(status) }
+            <TableRowColumn style={ styles.listText } colSpan={ 3 }>
+              <div style={ styles.chipDiv }>
+                { statusMapping(status) }
+                { !approvalRequired ? <Chip style={ styles.statusChip } labelStyle={ styles.chipLabel }>
+                                        { strings.workflow.non_approval }
+                                      </Chip> : '' }
+              </div>
             </TableRowColumn>
             { workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, approvalRequired, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={ 2 } /> }
           </TableRow>

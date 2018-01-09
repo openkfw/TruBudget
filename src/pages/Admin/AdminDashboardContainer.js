@@ -15,6 +15,9 @@ class AdminDashboardContainer extends Component {
     this.props.fetchRoles();
     this.props.fetchNodeInformation();
   }
+  componentWillUnmount() {
+    this.props.hideAdminLogin()
+  }
 
   render() {
     return (

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import globalStyles from '../../styles';
 
 
-import { fetchWorkflowItems, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, setWorkflowCreationStep, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired } from './actions';
+import { fetchWorkflowItems, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, setWorkflowCreationStep, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog } from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -40,8 +40,8 @@ class WorkflowContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
-    openWorkflowDialog: (editMode) => dispatch(showWorkflowDialog(true, editMode)),
-    hideWorkflowDialog: () => dispatch(showWorkflowDialog(false, false)),
+    openWorkflowDialog: (editMode) => dispatch(showWorkflowDialog(editMode)),
+    hideWorkflowDialog: () => dispatch(hideWorkflowDialog(false)),
     storeWorkflowComment: (comment) => dispatch(storeWorkflowComment(comment)),
     storeWorkflowCurrency: (currency) => dispatch(storeWorkflowCurrency(currency)),
     storeWorkflowAmount: (amount) => dispatch(storeWorkflowAmount(amount)),

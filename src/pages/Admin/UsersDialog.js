@@ -30,8 +30,13 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between'
-    }
-
+    },
+    dropDownLabel: {
+        paddingLeft: '0px'
+    },
+    dropDownUnderline: {
+        marginLeft: '0px'
+    },
 }
 
 
@@ -115,15 +120,15 @@ const UsersDialog = (props) => {
     const role = userToAdd.getIn(['role']);
 
     return (
-        <Dialog title="New User" actions={ actions } modal={ false } open={ usersDialogShown } onRequestClose={ () => hideUsersDialog() }>
+        <Dialog title={ strings.adminDashboard.new_user } actions={ actions } modal={ false } open={ usersDialogShown } onRequestClose={ () => hideUsersDialog() }>
           <div style={ styles.container }>
             <div style={ styles.textFieldDiv }>
-              <TextField errorText={ showUsernameError ? 'Invalid full name' : "" } floatingLabelText="Full Name" value={ fullName } onChange={ (event) => setUserFullName(event.target.value) } />
-              <TextField errorText={ showFullNameError ? 'Invalid username' : "" } floatingLabelText="Username" value={ username } onChange={ (event) => setUsername(event.target.value) } />
-              <TextField errorText={ showPasswordError ? 'Invalid password' : "" } floatingLabelText="Password" type="password" value={ password } onChange={ (event) => setUserPassword(event.target.value) } />
+              <TextField errorText={ showUsernameError ? strings.adminDashboard.incorrect_full_name : "" } floatingLabelText={ strings.adminDashboard.full_name } value={ fullName } onChange={ (event) => setUserFullName(event.target.value) } />
+              <TextField errorText={ showFullNameError ? strings.common.incorrect_username : "" } floatingLabelText={ strings.common.username } value={ username } onChange={ (event) => setUsername(event.target.value) } />
+              <TextField errorText={ showPasswordError ? strings.common.incorrect_password : "" } floatingLabelText={ strings.common.password } type="password" value={ password } onChange={ (event) => setUserPassword(event.target.value) } />
             </div>
             <div style={ styles.textFieldDiv }>
-              <DropDownMenu labelStyle={ { paddingLeft: '0px' } } underlineStyle={ { marginLeft: '0px' } } value={ avatar } onChange={ (event, index, value) => setUserAvatar(value) }>
+              <DropDownMenu labelStyle={ styles.dropDownLabel } underlineStyle={ styles.dropDownUnderline } value={ avatar } onChange={ (event, index, value) => setUserAvatar(value) }>
                 <MenuItem value={ '/lego_avatar_male1.jpg' } primaryText="lego_avatar_male1" />
                 <MenuItem value={ '/lego_avatar_female2.jpg' } primaryText="lego_avatar_female2" />
                 <MenuItem value={ '/lego_avatar_male3.jpg' } primaryText="lego_avatar_male3" />
@@ -131,7 +136,7 @@ const UsersDialog = (props) => {
                 <MenuItem value={ '/lego_avatar_male5.jpg' } primaryText="lego_avatar_male5" />
                 <MenuItem value={ '/lego_avatar_female6.jpg' } primaryText="lego_avatar_female6" />
               </DropDownMenu>
-              <AutoComplete onUpdateInput={ (text) => autoCompleteUpdateInput(text, setUserRole) } errorText={ showRoleNotFoundError ? 'Role does not exist' : "" } floatingLabelText={ strings.project.project_authority_organization_search } searchText={ role } dataSource={ roles }
+              <AutoComplete onUpdateInput={ (text) => autoCompleteUpdateInput(text, setUserRole) } errorText={ showRoleNotFoundError ? strings.adminDashboard.role_not_exist_error : "" } floatingLabelText={ strings.project.project_authority_organization_search } searchText={ role } dataSource={ roles }
                 dataSourceConfig={ dataSourceConfig } filter={ AutoComplete.fuzzyFilter } menuCloseDelay={ 0 } onNewRequest={ (selectedRole, index) => autoCompleteOnSelect(selectedRole, setUserRole) } />
             </div>
           </div>

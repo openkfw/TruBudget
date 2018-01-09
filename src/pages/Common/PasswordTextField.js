@@ -27,7 +27,7 @@ const PasswordTextField = ({password, storePassword, loginFailed}) => {
     return (
         <div style={ styles.container }>
           <PasswordIcon style={ styles.icon } />
-          <TextField floatingLabelStyle={ styles.floatingLabel } underlineFocusStyle={ styles.underlineFocus } floatingLabelText={ strings.login.password } value={ password } onChange={ (event) => storePassword(event.target.value) }
+          <TextField floatingLabelStyle={ styles.floatingLabel } underlineFocusStyle={ styles.underlineFocus } floatingLabelText={ strings.common.password } value={ password } onChange={ (event) => storePassword(event.target.value) }
             errorText={ loginFailed ? strings.login.incorrect_password : "" } type="password" />
         </div>
     )

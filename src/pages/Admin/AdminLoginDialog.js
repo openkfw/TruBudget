@@ -71,7 +71,7 @@ const AdminLoginDialog = (props) => {
     const password = adminCredentials.getIn(['password']);
 
     return (
-        <Dialog title="Admin Login " modal={ true } contentStyle={ styles.customContentStyle } actions={ actions } open={ true }>
+        <Dialog title={ strings.adminDashboard.admin_login } modal={ true } contentStyle={ styles.customContentStyle } actions={ actions } open={ true }>
           <div style={ styles.container }>
             <div style={ styles.textFieldDiv }>
               <UsernameTextField username={ username } storeUsername={ setAdminUsername } loginFailed={ loginUnsuccessful } />

@@ -32,17 +32,6 @@ const getWorkflowActions = (props, handleCancel, handleBack, handleNext, handleS
 
 const handleCancel = (props) => {
   props.hideWorkflowDialog();
-  props.storeWorkflowName('');
-  props.storeWorkflowAmount('');
-  props.storeWorkflowAmountType('na');
-  props.storeWorkflowCurrency('');
-  props.storeWorkflowComment('');
-  props.storeWorkflowAssignee('');
-  props.disableWorkflowState();
-  props.storeWorkflowState('open');
-  props.storeWorkflowType('workflow');
-  props.setWorkflowCreationStep(0);
-  props.isWorkflowApprovalRequired(true);
   props.clearDocuments();
 }
 
@@ -62,7 +51,7 @@ const handleSubmit = (props) => {
 }
 
 const WorkflowCreationDialog = (props) => (
-  <Dialog title={ props.editMode ? 'Edit workflow item' : 'Create Workflow Item' } modal={ true } bodyStyle={ { minHeight: '200px' } } actionsContainerStyle={ { display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between' } } open={ props.showWorkflow }
+  <Dialog title={ props.editMode ? strings.workflow.edit_item : strings.workflow.workflow } modal={ true } bodyStyle={ { minHeight: '200px' } } actionsContainerStyle={ { display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between' } } open={ props.showWorkflow }
     onRequestClose={ props.hideWorkflowDialog } editMode={ props.editMode } actions={ getWorkflowActions(props, handleCancel, handleBack, handleNext, handleSubmit) }>
     <WorkflowCreationStepper {...props} />
   </Dialog>

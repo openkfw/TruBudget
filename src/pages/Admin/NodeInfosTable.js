@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
 } from 'material-ui/Table';
 import _ from 'lodash';
-
+import strings from '../../localizeStrings';
 
 const styles = {
   container: {
@@ -44,9 +44,15 @@ const NodeInfosTable = (props) => {
       <Table fixedHeader={ true } selectable={ false }>
         <TableHeader displaySelectAll={ false } adjustForCheckbox={ false }>
           <TableRow>
-            <TableHeaderColumn>Organization</TableHeaderColumn>
-            <TableHeaderColumn>Country</TableHeaderColumn>
-            <TableHeaderColumn>Address</TableHeaderColumn>
+            <TableHeaderColumn>
+              { strings.adminDashboard.organization }
+            </TableHeaderColumn>
+            <TableHeaderColumn>
+              { strings.adminDashboard.country }
+            </TableHeaderColumn>
+            <TableHeaderColumn>
+              { strings.adminDashboard.address }
+            </TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={ false } adjustForCheckbox={ false }>

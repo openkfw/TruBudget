@@ -2,6 +2,7 @@ export const FETCH_WORKFLOW_ITEMS = 'FETCH_WORKFLOW_ITEMS';
 export const FETCH_WORKFLOW_ITEMS_SUCCESS = 'FETCH_WORKFLOW_ITEMS_SUCCESS';
 
 export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG';
+export const HIDE_WORKFLOW_DIALOG = 'HIDE_WORKFLOW_DIALOG';
 
 export const WORKFLOW_NAME = 'WORKFLOW_NAME';
 export const WORKFLOW_TYPE = 'WORKFLOW_TYPE';
@@ -102,13 +103,22 @@ export function fetchHistoryItems(project) {
   }
 }
 
-export function showWorkflowDialog(show, editMode = false) {
+export function showWorkflowDialog(editMode = false) {
   return {
     type: SHOW_WORKFLOW_DIALOG,
-    show: show,
+    show: true,
     editMode
   }
 }
+
+export function hideWorkflowDialog(editMode) {
+  return {
+    type: HIDE_WORKFLOW_DIALOG,
+    show: false,
+    editMode
+  }
+}
+
 
 export function storeSubProjectAmount(amount) {
   return {

@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import { ACMECorpDarkBlue } from '../../colors';
 import UsersDialog from './UsersDialog';
-
+import strings from '../../localizeStrings';
 
 const styles = {
   container: {
@@ -32,10 +32,18 @@ const styles = {
 const getHeaderColumns = () => {
   return (
     <TableRow>
-      <TableHeaderColumn>Username</TableHeaderColumn>
-      <TableHeaderColumn>Name</TableHeaderColumn>
-      <TableHeaderColumn>Organization</TableHeaderColumn>
-      <TableHeaderColumn>Role</TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.common.username }
+      </TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.adminDashboard.name }
+      </TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.adminDashboard.organization }
+      </TableHeaderColumn>
+      <TableHeaderColumn>
+        { strings.adminDashboard.role }
+      </TableHeaderColumn>
     </TableRow>
   )
 }

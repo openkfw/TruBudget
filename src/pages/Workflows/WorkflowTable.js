@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardHeader } from 'material-ui/Card';
-import { Table, TableHeader, TableHeaderColumn, TableRow} from 'material-ui/Table';
+import { Table, TableHeader, TableHeaderColumn, TableRow } from 'material-ui/Table';
 
 
 import WorkflowDetails from './WorkflowDetails'
@@ -30,7 +30,7 @@ const createTableHeader = () => (
             <TableHeaderColumn style={ styles.listText } colSpan={ 3 }>
               { strings.common.budget }
             </TableHeaderColumn>
-            <TableHeaderColumn style={ styles.listText } colSpan={ 2 }>
+            <TableHeaderColumn style={ styles.listText } colSpan={ 3 }>
               { strings.common.status }
             </TableHeaderColumn>
             <TableHeaderColumn style={ styles.listText } colSpan={ 2 }>

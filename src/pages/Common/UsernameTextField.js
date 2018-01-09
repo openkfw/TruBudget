@@ -28,7 +28,7 @@ const UsernameTextField = ({username, storeUsername, loginFailed}) => {
     return (
         <div style={ styles.container }>
           <UsernameIcon style={ styles.icon } />
-          <TextField floatingLabelStyle={ styles.floatingLabel } underlineFocusStyle={ styles.underlineFocus } floatingLabelText={ strings.login.username } value={ username } errorText={ loginFailed ? strings.login.incorrect_username : "" }
+          <TextField floatingLabelStyle={ styles.floatingLabel } underlineFocusStyle={ styles.underlineFocus } floatingLabelText={ strings.common.username } value={ username } errorText={ loginFailed ? strings.login.incorrect_username : "" }
             onChange={ (event) => storeUsername(event.target.value) } />
         </div>
     )
