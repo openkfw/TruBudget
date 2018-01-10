@@ -8,13 +8,19 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import createHistory from 'history/createBrowserHistory';
 
-import { ACMECorpLightgrey, ACMECorpGrey, ACMECorpLightgreen, ACMECorpGreen, ACMECorpLightblue, ACMECorpBlue } from './colors'
+import {
+  ACMECorpLightgrey,
+  ACMECorpGrey,
+  ACMECorpLightgreen,
+  ACMECorpGreen,
+  ACMECorpLightblue,
+  ACMECorpBlue
+} from './colors'
 
 import Main from './pages/Main/Main';
 import LoginPageContainer from './pages/Login/LoginPageContainer';
 import PrivateRoute from './pages/Login/PrivateRoute';
 import AdminDashboardContainer from './pages/Admin/AdminDashboardContainer';
-import LiveNotificationContainer from './pages/Notifications/LiveNotificationContainer';
 
 import configureStore from './store';
 
@@ -43,18 +49,18 @@ class App extends Component {
 
   render() {
     return (
-      <Provider store={ store }>
-        <ConnectedRouter history={ history }>
-          <MuiThemeProvider muiTheme={ muiTheme }>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <MuiThemeProvider muiTheme={muiTheme}>
             <Switch>
-              <Route exact path="/login" component={ LoginPageContainer } />
-              <Route exact path="/admin" component={ AdminDashboardContainer } />
-              <PrivateRoute component={ Main } />
+              <Route exact path="/login" component={LoginPageContainer} />
+              <Route exact path="/admin" component={AdminDashboardContainer} />
+              <PrivateRoute component={Main} />
             </Switch>
           </MuiThemeProvider>
         </ConnectedRouter>
       </Provider>
-      );
+    );
   }
 }
 

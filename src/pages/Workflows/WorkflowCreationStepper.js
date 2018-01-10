@@ -11,20 +11,20 @@ import strings from '../../localizeStrings'
 const getStepContent = (props) => {
   switch (props.creationStep) {
     case 0:
-      return <WorkflowType workflowApprovalRequired={ props.workflowApprovalRequired } isWorkflowApprovalRequired={ props.isWorkflowApprovalRequired } workflowType={ props.workflowType } editMode={ props.editMode }
-               storeWorkflowType={ props.storeWorkflowType } />
+      return <WorkflowType workflowApprovalRequired={props.workflowApprovalRequired} isWorkflowApprovalRequired={props.isWorkflowApprovalRequired} workflowType={props.workflowType} editMode={props.editMode}
+        storeWorkflowType={props.storeWorkflowType} />
     case 1:
-      return <ProjectCreationName storeProjectName={ props.storeWorkflowName } projectName={ props.workflowName } type={ 'workflow' } />
+      return <ProjectCreationName storeProjectName={props.storeWorkflowName} projectName={props.workflowName} type={'workflow'} />
     case 2:
-      return <WorkflowCreationAmount subProjectCurrency={ props.subProjectDetails.currency } storeWorkflowAmount={ props.storeWorkflowAmount } storeWorkflowAmountType={ props.storeWorkflowAmountType } storeWorkflowCurrency={ props.storeWorkflowCurrency }
-               workflowAmount={ props.workflowAmount } workflowAmountType={ props.workflowAmountType } workflowCurrency={ props.workflowCurrency } />
+      return <WorkflowCreationAmount subProjectCurrency={props.subProjectDetails.currency} storeWorkflowAmount={props.storeWorkflowAmount} storeWorkflowAmountType={props.storeWorkflowAmountType} storeWorkflowCurrency={props.storeWorkflowCurrency}
+        workflowAmount={props.workflowAmount} workflowAmountType={props.workflowAmountType} workflowCurrency={props.workflowCurrency} />
     case 3:
-      return <ProjectCreationComment storeProjectComment={ props.storeWorkflowComment } projectComment={ props.workflowComment } type={ 'workflow' } />
+      return <ProjectCreationComment storeProjectComment={props.storeWorkflowComment} projectComment={props.workflowComment} type={'workflow'} />
     case 4:
-      return <DocumentUpload addDocument={ props.addDocument } workflowDocuments={ props.workflowDocuments } />
+      return <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />
     case 5:
-      return <WorkflowStateAndAssignee workflowApprovalRequired={ props.workflowApprovalRequired } permissions={ props.permissions } users={ props.users } storeWorkflowState={ props.storeWorkflowState }
-               storeWorkflowAssignee={ props.storeWorkflowAssignee } workflowAssignee={ props.workflowAssignee } workflowState={ props.workflowState } editMode={ props.editMode } />
+      return <WorkflowStateAndAssignee workflowApprovalRequired={props.workflowApprovalRequired} permissions={props.permissions} users={props.users} storeWorkflowState={props.storeWorkflowState}
+        storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
     default:
       return <span>Done</span>
   }
@@ -35,40 +35,40 @@ const WorkflowCreationStepper = (props) => {
   };
   return (
     <div>
-      <Stepper linear={ !props.editMode } activeStep={ props.creationStep }>
+      <Stepper linear={!props.editMode} activeStep={props.creationStep}>
         <Step>
-          <StepButton onClick={ () => props.setWorkflowCreationStep(0) }>
-            { strings.workflow.workflow_type }
+          <StepButton onClick={() => props.setWorkflowCreationStep(0)}>
+            {strings.workflow.workflow_type}
           </StepButton>
         </Step>
         <Step>
-          <StepButton onClick={ () => props.setWorkflowCreationStep(1) }>
-            { strings.workflow.workflow_name }
+          <StepButton onClick={() => props.setWorkflowCreationStep(1)}>
+            {strings.workflow.workflow_name}
           </StepButton>
         </Step>
         <Step>
-          <StepButton onClick={ () => props.setWorkflowCreationStep(2) }>
-            { strings.common.budget }
+          <StepButton onClick={() => props.setWorkflowCreationStep(2)}>
+            {strings.common.budget}
           </StepButton>
         </Step>
         <Step>
-          <StepButton onClick={ () => props.setWorkflowCreationStep(3) }>
-            { strings.common.comment }
+          <StepButton onClick={() => props.setWorkflowCreationStep(3)}>
+            {strings.common.comment}
           </StepButton>
         </Step>
         <Step>
-          <StepButton onClick={ () => props.setWorkflowCreationStep(4) }>
-            { strings.workflow.workflow_documents }
+          <StepButton onClick={() => props.setWorkflowCreationStep(4)}>
+            {strings.workflow.workflow_documents}
           </StepButton>
         </Step>
         <Step>
-          <StepButton onClick={ () => props.setWorkflowCreationStep(5) }>
-            { strings.common.status }
+          <StepButton onClick={() => props.setWorkflowCreationStep(5)}>
+            {strings.common.status}
           </StepButton>
         </Step>
       </Stepper>
-      <div style={ contentStyle }>
-        { getStepContent(props) }
+      <div style={contentStyle}>
+        {getStepContent(props)}
       </div>
     </div>
   )

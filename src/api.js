@@ -29,11 +29,8 @@ class Api {
   }
 
   login = async (username, password) => {
-    const {data} = await axios.post(`${this.prefix}/login`, {
-      username,
-      password
-    })
-    const {jwtToken, user} = data;
+    const { data } = await axios.post(`${this.prefix}/login`, { username, password })
+    const { jwtToken, user } = data;
     this.setToken(jwtToken);
     this.setAuthorizationHeader(jwtToken);
     return user;

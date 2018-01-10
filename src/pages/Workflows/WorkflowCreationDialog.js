@@ -10,19 +10,19 @@ const getWorkflowActions = (props, handleCancel, handleBack, handleNext, handleS
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
 
-  const cancelButton = <FlatButton label={ strings.common.cancel } secondary={ true } onTouchTap={ () => handleCancel(props) } />
-  const backButton = <FlatButton label={ strings.common.back } primary={ true } disabled={ isFirstStep } onTouchTap={ () => handleBack(props) } />
-  const nextButton = <FlatButton label={ strings.common.next } primary={ true } disabled={ isLastStep } onTouchTap={ () => handleNext(props) } />
-  const submitButton = <FlatButton label={ strings.common.submit } primary={ true } disabled={ !isLastStep && !editMode } onTouchTap={ () => handleSubmit(props) } />
+  const cancelButton = <FlatButton label={strings.common.cancel} secondary={true} onTouchTap={() => handleCancel(props)} />
+  const backButton = <FlatButton label={strings.common.back} primary={true} disabled={isFirstStep} onTouchTap={() => handleBack(props)} />
+  const nextButton = <FlatButton label={strings.common.next} primary={true} disabled={isLastStep} onTouchTap={() => handleNext(props)} />
+  const submitButton = <FlatButton label={strings.common.submit} primary={true} disabled={!isLastStep && !editMode} onTouchTap={() => handleSubmit(props)} />
 
   const leftActions = <div>
-                        { cancelButton }
-                        { backButton }
-                      </div>
+    {cancelButton}
+    {backButton}
+  </div>
   const rightActions = <div>
-                         { nextButton }
-                         { submitButton }
-                       </div>
+    {nextButton}
+    {submitButton}
+  </div>
 
   return [
     leftActions,
@@ -51,8 +51,8 @@ const handleSubmit = (props) => {
 }
 
 const WorkflowCreationDialog = (props) => (
-  <Dialog title={ props.editMode ? strings.workflow.edit_item : strings.workflow.workflow } modal={ true } bodyStyle={ { minHeight: '200px' } } actionsContainerStyle={ { display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between' } } open={ props.showWorkflow }
-    onRequestClose={ props.hideWorkflowDialog } editMode={ props.editMode } actions={ getWorkflowActions(props, handleCancel, handleBack, handleNext, handleSubmit) }>
+  <Dialog title={props.editMode ? strings.workflow.edit_item : strings.workflow.workflow} modal={true} bodyStyle={{ minHeight: '200px' }} actionsContainerStyle={{ display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between' }} open={props.showWorkflow}
+    onRequestClose={props.hideWorkflowDialog} editMode={props.editMode} actions={getWorkflowActions(props, handleCancel, handleBack, handleNext, handleSubmit)}>
     <WorkflowCreationStepper {...props} />
   </Dialog>
 );

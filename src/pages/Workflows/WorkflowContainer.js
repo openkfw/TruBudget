@@ -27,11 +27,11 @@ class WorkflowContainer extends Component {
 
 
   render() {
-    const {isAssignee, isApprover, isBank} = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
+    const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
-      <div style={ globalStyles.innerContainer }>
-        <SubProjectDetails {...this.props} permissions={ { isAssignee, isApprover, isBank } } />
-        <Workflow {...this.props} permissions={ { isAssignee, isApprover, isBank } } />
+      <div style={globalStyles.innerContainer}>
+        <SubProjectDetails {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
+        <Workflow {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
       </div>
     )
   }

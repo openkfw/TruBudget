@@ -79,7 +79,7 @@ export const roleMapper = {
 
 
 
-const createDoughnutData = (labels, data, colors = taskStatusColorPalette ,) => ({
+const createDoughnutData = (labels, data, colors = taskStatusColorPalette) => ({
   labels,
   datasets: [
     {
@@ -121,7 +121,7 @@ export const getAllocationRatio = (spentAmount, projectAmount) => {
 }
 export const calculateWorkflowBudget = (workflows) => {
   return workflows.reduce((acc, workflow) => {
-    const {amount, amountType, status} = workflow.data;
+    const { amount, amountType, status } = workflow.data;
     const next = {
       assigned: amountType === 'allocated' ? acc.assigned + amount : acc.assigned,
       disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed,
@@ -129,10 +129,10 @@ export const calculateWorkflowBudget = (workflows) => {
     }
     return next;
   }, {
-    assigned: 0,
-    disbursed: 0,
-    currentDisbursement: 0
-  })
+      assigned: 0,
+      disbursed: 0,
+      currentDisbursement: 0
+    })
 }
 
 export const createAmountData = (projectAmount, subProjects) => {
@@ -147,7 +147,7 @@ export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) =>
 }
 
 export const createSubprojectAmountData = (subProjectAmount, workflows) => {
-  const {assigned, disbursed} = calculateWorkflowBudget(workflows);
+  const { assigned, disbursed } = calculateWorkflowBudget(workflows);
 
 
   const budgetLeft = getNotAssignedBudget(subProjectAmount, assigned, disbursed);

@@ -90,7 +90,7 @@ const createLine = (isFirst, selectable) => {
   };
 
   return (
-    <div style={ lineStyle }></div>
+    <div style={lineStyle}></div>
   )
 };
 
@@ -122,18 +122,18 @@ const getEditButtons = (status = 'open', type, role, approvalRequired, permissio
   const userAllowedToProgress = assigneeAllowed || approverAllowed || bankAllowed;
 
   return (
-    <TableRowColumn colSpan={ 2 }>
-      <IconButton disabled={ !role.write || !userAllowedToEdit } onTouchTap={ () => editCB() }>
+    <TableRowColumn colSpan={2}>
+      <IconButton disabled={!role.write || !userAllowedToEdit} onTouchTap={() => editCB()}>
         <EditIcon />
       </IconButton>
-      <IconButton disabled={ !role.write || !userAllowedToProgress } onTouchTap={ () => progressCB() }>
+      <IconButton disabled={!role.write || !userAllowedToProgress} onTouchTap={() => progressCB()}>
         <Icon />
       </IconButton>
     </TableRowColumn>
   )
 }
 
-const StepDot = ({status, selectable}) => {
+const StepDot = ({ status, selectable }) => {
   let Icon;
   switch (status) {
     case 'open':
@@ -152,14 +152,14 @@ const StepDot = ({status, selectable}) => {
       Icon = OpenIcon;
   }
   return (
-    <Paper style={ styles.dots } zDepth={ 2 } circle={ true }>
-      <Icon style={ { width: '14px', height: '20px', opacity: selectable ? 1 : 0.3 } } />
+    <Paper style={styles.dots} zDepth={2} circle={true}>
+      <Icon style={{ width: '14px', height: '20px', opacity: selectable ? 1 : 0.3 }} />
     </Paper>
   )
 };
 
-const editWorkflow = ({key, txid, data} , props) => {
-  const {workflowName, amount, amountType, currency, comment, assignee, status, documents, type, approvalRequired} = data;
+const editWorkflow = ({ key, txid, data }, props) => {
+  const { workflowName, amount, amountType, currency, comment, assignee, status, documents, type, approvalRequired } = data;
   props.storeWorkflowName(workflowName)
   props.storeWorkflowAmount(amount)
   props.storeWorkflowAmountType(amountType)
@@ -191,16 +191,16 @@ const getNextStatus = (status, approvalRequired) => {
   }
 }
 
-const changeProgress = ({key, txid, data} , props) => {
-  const {workflowName, amount, currency, comment, assignee, documents, status, type, amountType, approvalRequired} = data;
+const changeProgress = ({ key, txid, data }, props) => {
+  const { workflowName, amount, currency, comment, assignee, documents, status, type, amountType, approvalRequired } = data;
   const nextStatus = getNextStatus(status, approvalRequired)
   props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, amountType, currency, comment, documents, nextStatus, assignee, txid, data, type, approvalRequired)
 }
 
-const getInfoButton = ({workflowSortEnabled, openWorkflowDetails} , workflow) => {
+const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
   if (!workflowSortEnabled) {
     return (
-      <IconButton style={ styles.infoButton } onTouchTap={ () => openWorkflowDetails(workflow.txid) }>
+      <IconButton style={styles.infoButton} onTouchTap={() => openWorkflowDetails(workflow.txid)}>
         <InfoIcon />
       </IconButton>
     )
@@ -216,19 +216,19 @@ const getAmountField = (amount, type) => {
   const amountToShow = noBudgetAllocated ? amountTypes(type) : amount;
 
   return (
-    <div style={ styles.chipDiv }>
+    <div style={styles.chipDiv}>
       <div>
-        { amountToShow }
+        {amountToShow}
       </div>
-      { noBudgetAllocated ? null : <Chip style={ styles.amountChip }>
-                                     { amountTypes(type) }
-                                   </Chip> }
+      {noBudgetAllocated ? null : <Chip style={styles.amountChip}>
+        {amountTypes(type)}
+      </Chip>}
     </div>
   )
 }
 
-const WorkflowItem = SortableElement(({workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props}) => {
-  const {status, type, workflowName, amountType, approvalRequired} = workflow.data;
+const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
+  const { status, type, workflowName, amountType, approvalRequired } = workflow.data;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const amount = toAmountString(workflow.data.amount, workflow.data.currency);
   const tableStyle = workflowSelectable ? styles[status] : {
@@ -238,30 +238,30 @@ const WorkflowItem = SortableElement(({workflow, mapIndex, index, permissions, c
   const infoButton = getInfoButton(props, workflow)
 
   return (
-    <Card key={ mapIndex } style={ { marginLeft: '50px', marginRight: '10px', marginTop: '15px', marginBottom: '15px', position: 'relative', } }>
-      { createLine(mapIndex === 0, workflowSelectable) }
-      <StepDot status={ status } selectable={ workflowSelectable } />
+    <Card key={mapIndex} style={{ marginLeft: '50px', marginRight: '10px', marginTop: '15px', marginBottom: '15px', position: 'relative', }}>
+      {createLine(mapIndex === 0, workflowSelectable)}
+      <StepDot status={status} selectable={workflowSelectable} />
       <Table>
-        <TableBody displayRowCheckbox={ false } adjustForCheckbox={ false }>
-          <TableRow style={ tableStyle } selectable={ false } disabled={ workflowSelectable }>
-            <TableRowColumn colSpan={ 1 }>
-              { infoButton }
+        <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
+          <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
+            <TableRowColumn colSpan={1}>
+              {infoButton}
             </TableRowColumn>
-            <TableRowColumn style={ styles.text } colSpan={ 3 }>
-              { workflowName }
+            <TableRowColumn style={styles.text} colSpan={3}>
+              {workflowName}
             </TableRowColumn>
-            <TableRowColumn style={ styles.listText } colSpan={ 3 }>
-              { getAmountField(amount, amountType) }
+            <TableRowColumn style={styles.listText} colSpan={3}>
+              {getAmountField(amount, amountType)}
             </TableRowColumn>
-            <TableRowColumn style={ styles.listText } colSpan={ 3 }>
-              <div style={ styles.chipDiv }>
-                { statusMapping(status) }
-                { !approvalRequired ? <Chip style={ styles.statusChip } labelStyle={ styles.chipLabel }>
-                                        { strings.workflow.non_approval }
-                                      </Chip> : '' }
+            <TableRowColumn style={styles.listText} colSpan={3}>
+              <div style={styles.chipDiv}>
+                {statusMapping(status)}
+                {!approvalRequired ? <Chip style={styles.statusChip} labelStyle={styles.chipLabel}>
+                  {strings.workflow.non_approval}
+                </Chip> : ''}
               </div>
             </TableRowColumn>
-            { workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, approvalRequired, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={ 2 } /> }
+            {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, approvalRequired, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
           </TableRow>
         </TableBody>
       </Table>
