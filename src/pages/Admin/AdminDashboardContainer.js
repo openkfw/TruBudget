@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchNodePermissions, showRolesDialog, hideRolesDialog, addRole, showUsersDialog, hideUsersDialog, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, addUser, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword, showRoleNameError, showOrganizationError, isRoleNameError, isOrganizationError, isUsernameError, isFullNameError, isRoleNotFoundError, isPasswordError } from './actions';
-import { fetchUsers, fetchRoles, login } from '../Login/actions';
+import { fetchUsers, fetchRoles, login, logout } from '../Login/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
 import AdminDashboard from './AdminDashboard';
 import { showSnackBar, SHOW_SNACKBAR, storeSnackBarMessage } from '../Notifications/actions';
+
 
 
 class AdminDashboardContainer extends Component {
@@ -64,6 +65,7 @@ const mapDispatchToProps = (dispatch) => {
     openSnackBar: () => dispatch(showSnackBar(true)),
     closeSnackBar: () => dispatch(showSnackBar(false)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
+    logout: () => dispatch(logout()),
   }
 }
 

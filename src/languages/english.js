@@ -60,6 +60,8 @@ const en = {
     country: 'Country',
     address: 'Address',
     admin_login: 'Admin Login',
+    title: 'Admin Dashboard',
+    user_not_authorized: 'You are not authorized to perform this action'
   },
 
   login: {

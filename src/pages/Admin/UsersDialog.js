@@ -41,7 +41,7 @@ const styles = {
 
 
 const isInputValid = (username, fullName, password, role, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, existingRoles) => {
-    const roleExist = existingRoles.find((existingRole => existingRole.role === role.toLowerCase()));
+    const roleExist = existingRoles.find((existingRole => existingRole.role.toLowerCase() === role.toLowerCase()));
     let inputValid = true;
     if (_.isEmpty(username)) {
         isUsernameError(true);

@@ -10,6 +10,7 @@ import AdminLoginDialog from './AdminLoginDialog';
 import { isAdminNode } from '../../helper';
 import NotificationsSnackbar from '../Notifications/NotificationsSnackbar';
 import strings from '../../localizeStrings';
+import AdminNavbar from './AdminNavbar';
 
 const styles = {
   backgroundImage: {
@@ -28,12 +29,6 @@ const styles = {
   snackbarStyle: {
     backgroundColor: 'red',
     color: 'white'
-  },
-  actionButtonDiv: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'center'
   }
 };
 
@@ -44,7 +39,8 @@ const AdminDashBoard = (props) => {
 
   return (
     <div style={ styles.backgroundImage }>
-      { !(loggedIn && connectedToAdminNode > -1 && loggedInUser.role.admin) ? (
+      <AdminNavbar {...props}/>
+      { !(loggedIn && connectedToAdminNode > -1 && loggedInUser.adminUser) ? (
         <AdminLoginDialog {...props}/> ) : (
         <div style={ styles.tabsContainer }>
           <Tabs>
@@ -58,11 +54,6 @@ const AdminDashBoard = (props) => {
               <NodeInfosTable {...props}/>
             </Tab>
           </Tabs>
-          <div style={ styles.actionButtonDiv }>
-            <FloatingActionButton onClick={ () => history.push('/') }>
-              <Home />
-            </FloatingActionButton>
-          </div>
           <NotificationsSnackbar {...props}/>
         </div>
         ) }

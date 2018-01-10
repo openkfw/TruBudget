@@ -38,6 +38,7 @@ class Api {
     this.setAuthorizationHeader(jwtToken);
     return user;
   }
+
   addUser = (username, fullName, avatar, password, role) => axios.post(`${this.prefix}/users`, {
     id: username,
     name: fullName,

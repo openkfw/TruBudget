@@ -48,14 +48,15 @@ const handleSubmit = (hideAdminLogin, login, adminCredentials) => {
     };
     login(user);
 }
-const handleCancel = (hideAdminLogin, history) => {
-    hideAdminLogin()
-    history.push('/')
+const handleCancel = (hideAdminLogin, history, logout) => {
+    hideAdminLogin();
+    logout();
+    history.push('/');
 }
 
 
-const getDialogActions = (hideAdminLogin, history, login, adminCredentials) => {
-    const cancelButton = <FlatButton label={ strings.common.cancel } primary={ true } onTouchTap={ () => handleCancel(hideAdminLogin, history) } />
+const getDialogActions = (hideAdminLogin, history, login, adminCredentials, logout) => {
+    const cancelButton = <FlatButton label={ strings.common.cancel } primary={ true } onTouchTap={ () => handleCancel(hideAdminLogin, history, logout) } />
     const submitButton = <FlatButton label={ strings.login.login_button_title } primary={ true } onTouchTap={ () => handleSubmit(hideAdminLogin, login, adminCredentials) } />
     const actions = <div style={ styles.actions }>
                       { cancelButton }
@@ -65,8 +66,8 @@ const getDialogActions = (hideAdminLogin, history, login, adminCredentials) => {
 }
 
 const AdminLoginDialog = (props) => {
-    const {adminCredentials, loginUnsuccessful, loggedIn, loggedInUser, setAdminUsername, history, hideAdminLogin, setAdminPassword, login} = props;
-    const actions = getDialogActions(hideAdminLogin, history, login, adminCredentials)
+    const {adminCredentials, logout, loginUnsuccessful, loggedIn, loggedInUser, setAdminUsername, history, hideAdminLogin, setAdminPassword, login} = props;
+    const actions = getDialogActions(hideAdminLogin, history, login, adminCredentials, logout)
     const username = adminCredentials.getIn(['username']);
     const password = adminCredentials.getIn(['password']);
 
@@ -76,7 +77,7 @@ const AdminLoginDialog = (props) => {
             <div style={ styles.textFieldDiv }>
               <UsernameTextField username={ username } storeUsername={ setAdminUsername } loginFailed={ loginUnsuccessful } />
               <PasswordTextField password={ password } storePassword={ setAdminPassword } loginFailed={ loginUnsuccessful } />
-              { loggedIn && !_.isEmpty(loggedInUser.role) && !loggedInUser.role.admin ? <span style={ styles.errorText }> Your are not authorized to perform this action</span> : "" }
+              { loggedIn && !loggedInUser.adminUser ? <span style={ styles.errorText }> { strings.adminDashboard.user_not_authorized } </span> : "" }
             </div>
           </div>
         </Dialog>
