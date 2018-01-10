@@ -17,10 +17,10 @@ import strings from '../../localizeStrings'
 import { isAdminNode } from '../../helper';
 
 const defaultUser = {
-  jxavier: {
-    id: 'jxavier',
-    name: 'Jane Xavier',
-    organization: 'Ministry of Education',
+  jdoe: {
+    id: 'jdoe',
+    name: 'John Doe',
+    organization: 'Ministry of Finance',
     password: 'test',
     avatar: '/lego_avatar_male1.jpg',
     avatar_back: '/lego_avatar_male1.jpg',
