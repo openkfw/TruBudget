@@ -38,25 +38,25 @@ const styles = {
     }
 }
 
-const handleSubmit = (hideAdminLogin, login, adminCredentials) => {
+const handleSubmit = (hideAdminLogin, loginAdmin, adminCredentials) => {
     const username = adminCredentials.getIn(['username']);
     const password = adminCredentials.getIn(['password']);
     const user = {
         username,
         password
     };
-    login(user);
+    adminLogin(user);
 }
-const handleCancel = (hideAdminLogin, history, logout) => {
+const handleCancel = (hideAdminLogin, history, logoutAdmin) => {
     hideAdminLogin();
-    logout();
+    logoutAdmin();
     history.push('/login');
 }
 
 
-const getDialogActions = (hideAdminLogin, history, login, adminCredentials, logout) => {
-    const cancelButton = <FlatButton label={strings.common.cancel} primary={true} onTouchTap={() => handleCancel(hideAdminLogin, history, logout)} />
-    const submitButton = <FlatButton label={strings.login.login_button_title} primary={true} onTouchTap={() => handleSubmit(hideAdminLogin, login, adminCredentials)} />
+const getDialogActions = (hideAdminLogin, history, loginAdmin, adminCredentials, logoutAdmin) => {
+    const cancelButton = <FlatButton label={strings.common.cancel} primary={true} onTouchTap={() => handleCancel(hideAdminLogin, history, logoutAdmin)} />
+    const submitButton = <FlatButton label={strings.login.login_button_title} primary={true} onTouchTap={() => handleSubmit(hideAdminLogin, loginAdmin, adminCredentials)} />
     const actions = <div style={styles.actions}>
         {cancelButton}
         {submitButton}
@@ -65,8 +65,8 @@ const getDialogActions = (hideAdminLogin, history, login, adminCredentials, logo
 }
 
 const AdminLoginDialog = (props) => {
-    const { adminCredentials, logout, adminLoginFailed, adminLoggedIn, loggedInAdminUser, setAdminUsername, history, hideAdminLogin, setAdminPassword, login } = props;
-    const actions = getDialogActions(hideAdminLogin, history, login, adminCredentials, logout)
+    const { adminCredentials, logoutAdmin, adminLoginFailed, adminLoggedIn, loggedInAdminUser, setAdminUsername, history, hideAdminLogin, setAdminPassword, loginAdmin } = props;
+    const actions = getDialogActions(hideAdminLogin, history, loginAdmin, adminCredentials, logoutAdmin)
     const username = adminCredentials.getIn(['username']);
     const password = adminCredentials.getIn(['password']);
     return (

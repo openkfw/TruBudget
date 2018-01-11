@@ -84,14 +84,14 @@ export function logout() {
   }
 }
 
-export function adminLogin(user) {
+export function loginAdmin(user) {
   return {
     type: ADMIN_LOGIN,
     user
   }
 }
 
-export function adminLogout() {
+export function logoutAdmin() {
   return {
     type: ADMIN_LOGOUT,
   }

@@ -41,7 +41,7 @@ class Api {
     return user;
   }
 
-  adminLogin = async (username, password) => {
+  loginAdmin = async (username, password) => {
     const { data } = await axios.post(`${this.prefix}/login`, { username, password })
     const { jwtToken, user } = data;
     this.setAdminToken(jwtToken);

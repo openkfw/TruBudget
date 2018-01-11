@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchNodePermissions, showRolesDialog, hideRolesDialog, addRole, showUsersDialog, hideUsersDialog, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, addUser, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword, isRoleNameError, isOrganizationError, isUsernameError, isFullNameError, isRoleNotFoundError, isPasswordError } from './actions';
-import { fetchUsers, fetchRoles, adminLogin, adminLogout } from '../Login/actions';
+import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin } from '../Login/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
 import AdminDashboard from './AdminDashboard';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
@@ -18,7 +18,7 @@ class AdminDashboardContainer extends Component {
 
   componentWillUnmount() {
     this.props.hideAdminLogin()
-    this.props.logout()
+    this.props.logoutAdmin()
   }
 
   render() {
@@ -62,11 +62,11 @@ const mapDispatchToProps = (dispatch) => {
     isFullNameError: (fullNameError) => dispatch(isFullNameError(fullNameError)),
     isPasswordError: (passwordError) => dispatch(isPasswordError(passwordError)),
     isRoleNotFoundError: (roleNotFoundError) => dispatch(isRoleNotFoundError(roleNotFoundError)),
-    login: (user) => dispatch(adminLogin(user)),
+    loginAdmin: (user) => dispatch(loginAdmin(user)),
     openSnackBar: () => dispatch(showSnackBar(true)),
     closeSnackBar: () => dispatch(showSnackBar(false)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
-    logout: () => dispatch(adminLogout()),
+    logoutAdmin: () => dispatch(logoutAdmin()),
   }
 }
 
