@@ -23,6 +23,14 @@ export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
 export const SET_LANGUAGE = 'SET_LANGUAGE';
 export const TOKEN_FOUND = 'TOKEN_FOUND';
 
+export const ADMIN_LOGIN = 'ADMIN_LOGIN';
+export const ADMIN_LOGIN_SUCCESS = 'ADMIN_LOGIN_SUCCESS';
+export const ADMIN_LOGOUT = 'ADMIN_LOGOUT';
+export const ADMIN_LOGOUT_SUCCESS = 'ADMIN_LOGOUT_SUCCESS';
+export const FETCH_ADMIN_USER = 'FETCH_ADMIN_USER';
+export const FETCH_ADMIN_USER_SUCCESS = 'FETCH_ADMIN_USER_SUCCESS';
+export const SHOW_ADMIN_LOGIN_ERROR = 'SHOW_ADMIN_LOGIN_ERROR';
+
 export function fetchUsers() {
   return {
     type: FETCH_USERS
@@ -75,6 +83,27 @@ export function logout() {
     type: LOGOUT
   }
 }
+
+export function adminLogin(user) {
+  return {
+    type: ADMIN_LOGIN,
+    user
+  }
+}
+
+export function adminLogout() {
+  return {
+    type: ADMIN_LOGOUT,
+  }
+}
+export function showAdminLoginError(show) {
+  return {
+    type: SHOW_ADMIN_LOGIN_ERROR,
+    show
+  }
+}
+
+
 export function storeLoginErrorMessage(message) {
   return {
     type: LOGIN_ERROR_MESSAGE,

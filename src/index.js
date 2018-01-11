@@ -53,8 +53,8 @@ class App extends Component {
         <ConnectedRouter history={history}>
           <MuiThemeProvider muiTheme={muiTheme}>
             <Switch>
-              <Route exact path="/login" component={LoginPageContainer} />
-              <Route exact path="/admin" component={AdminDashboardContainer} />
+              <Route key={1} exact path="/login" component={LoginPageContainer} />
+              <Route key={2} exact path="/admin" component={AdminDashboardContainer} />
               <PrivateRoute component={Main} />
             </Switch>
           </MuiThemeProvider>
