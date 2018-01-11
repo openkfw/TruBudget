@@ -341,7 +341,6 @@ export function* adminLoginSaga({ user }) {
 }
 
 export function* fetchUserWithJwtSaga() {
-    console.log('fetchUserWithJwtSaga')
     try {
         const { data } = yield call(api.fetchUser);
         yield put({
