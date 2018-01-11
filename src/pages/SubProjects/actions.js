@@ -1,8 +1,8 @@
 export const FETCH_PROJECT_DETAILS = 'FETCH_PROJECT_DETAILS';
 export const FETCH_PROJECT_DETAILS_SUCCESS = 'FETCH_PROJECT_DETAILS_SUCCESS';
 
-export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG';
-export const SHOW_WORKFLOW_DIALOG_SUCCESS = 'SHOW_WORKFLOW_DIALOG_SUCCESS';
+export const SHOW_SUBPROJECT_DIALOG = 'SHOW_SUBPROJECT_DIALOG';
+export const SHOW_SUBPROJECT_DIALOG_SUCCESS = 'SHOW_SUBPROJECT_DIALOG_SUCCESS';
 
 export const CREATE_SUBPROJECT_ITEM = 'CREATE_SUBPROJECT_ITEM';
 export const CREATE_SUBPROJECT_ITEM_SUCCESS = 'CREATE_SUBPROJECT_ITEM_SUCCESS';
@@ -25,41 +25,41 @@ export function storeSubProjectName(name) {
   }
 }
 
-export function createSubProjectItem(parentName, subProjectName, subProjectAmount, subProjectComment,subProjectCurrency) {
+export function createSubProjectItem(parentName, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) {
   return {
     type: CREATE_SUBPROJECT_ITEM,
     parentName: parentName,
-    subProjectName:subProjectName,
-    subProjectAmount:subProjectAmount,
-    subProjectComment:subProjectComment,
+    subProjectName: subProjectName,
+    subProjectAmount: subProjectAmount,
+    subProjectComment: subProjectComment,
     subProjectCurrency: subProjectCurrency
   }
 }
 
 export function showWorkflowDialog(show) {
   return {
-    type: SHOW_WORKFLOW_DIALOG,
+    type: SHOW_SUBPROJECT_DIALOG,
     show: show
   }
 }
 
-export function storeSubProjectAmount(amount){
+export function storeSubProjectAmount(amount) {
   return {
     type: SUBPROJECT_AMOUNT,
     amount: amount
   }
 }
 
-export function storeSubProjectCurrency(currency){
+export function storeSubProjectCurrency(currency) {
   return {
     type: SUBPROJECT_CURRENCY,
     currency: currency
   }
 }
 
-export function storeSubProjectComment(comment){
+export function storeSubProjectComment(comment) {
   return {
-    type:SUBPROJECT_COMMENT,
+    type: SUBPROJECT_COMMENT,
     comment: comment
   }
 }

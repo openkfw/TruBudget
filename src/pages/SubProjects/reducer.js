@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_PROJECT_DETAILS_SUCCESS, SHOW_WORKFLOW_DIALOG, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS } from './actions';
+import { FETCH_PROJECT_DETAILS_SUCCESS, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS, SHOW_SUBPROJECT_DIALOG } from './actions';
 import { LOGOUT } from '../Login/actions';
 
 import { fromAmountString } from '../../helper';
@@ -17,7 +17,7 @@ const defaultState = fromJS({
   projectBank: [],
   subProjects: [],
   subProjectName: '',
-  workflowDialogVisible: false,
+  subprojectVisible: false,
   subProjectAmount: 0,
   subProjectComment: '',
   subProjectCurrency: '',
@@ -41,8 +41,8 @@ export default function detailviewReducer(state = defaultState, action) {
         projectBank: action.projectDetails.details.bank,
         subProjects: action.projectDetails.subProjects,
       });
-    case SHOW_WORKFLOW_DIALOG:
-      return state.set('workflowDialogVisible', action.show);
+    case SHOW_SUBPROJECT_DIALOG:
+      return state.set('subprojectDialogVisible', action.show);
     case SUBPROJECT_NAME:
       return state.set('subProjectName', action.name);
     case SUBPROJECT_AMOUNT:

@@ -33,7 +33,7 @@ const getTableEntries = (subProjects, location, history) => {
   });
 }
 
-const SubProjectsTable = ({ subProjects, hideWorkflowDialog, workflowDialogVisible, history, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount, subProjectComment, storeSubProjectComment, subProjectCurrency, storeSubProjectCurrency, showSnackBar, storeSnackBarMessage }) => {
+const SubProjectsTable = ({ subProjects, hideWorkflowDialog, subprojectVisible, history, location, createSubProjectItem, subProjectName, storeSubProjectName, subProjectAmount, storeSubProjectAmount, subProjectComment, storeSubProjectComment, subProjectCurrency, storeSubProjectCurrency, showSnackBar, storeSnackBarMessage }) => {
   const tableEntries = getTableEntries(subProjects, location, history);
   return (
     <Card>

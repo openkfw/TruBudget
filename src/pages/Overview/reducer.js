@@ -2,8 +2,8 @@ import { fromJS } from 'immutable';
 import _ from 'lodash';
 
 import {
-  FETCH_PROJECTS_SUCCESS, SHOW_WORKFLOW_DIALOG, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
-  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE
+  FETCH_PROJECTS_SUCCESS, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
+  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG
 } from './actions';
 import { LOGOUT } from '../Login/actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
@@ -28,7 +28,7 @@ export default function overviewReducer(state = defaultState, action) {
     case FETCH_UPDATES_SUCCESS:
     case FETCH_PROJECTS_SUCCESS:
       return state.set('projects', action.projects);
-    case SHOW_WORKFLOW_DIALOG:
+    case SHOW_PROJECT_DIALOG:
       return state.set('projectDialogVisible', action.show);
     case PROJECT_NAME:
       return state.set('projectName', action.name);

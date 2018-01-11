@@ -66,7 +66,7 @@ const mapStateToProps = (state) => {
     projectAssignee: state.getIn(['detailview', 'projectAssignee']),
     projectBank: state.getIn(['detailview', 'projectBank']),
     subProjects: state.getIn(['detailview', 'subProjects']).toJS(),
-    workflowDialogVisible: state.getIn(['detailview', 'workflowDialogVisible']),
+    subprojectDialogVisible: state.getIn(['detailview', 'subprojectDialogVisible']),
     subProjectName: state.getIn(['detailview', 'subProjectName']),
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
     subProjectComment: state.getIn(['detailview', 'subProjectComment']),

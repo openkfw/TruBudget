@@ -3,7 +3,7 @@ export const FETCH_PROJECTS_SUCCESS = 'FETCH_PROJECTS_SUCCESS';
 
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const CREATE_PROJECT_SUCCESS = 'CREATE_PROJECT_SUCCESS';
-export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG'
+export const SHOW_PROJECT_DIALOG = 'SHOW_PROJECT_DIALOG'
 export const PROJECT_NAME = 'PROJECT_NAME';
 export const PROJECT_AMOUNT = 'PROJECT_AMOUNT';
 export const PROJECT_COMMENT = 'PROJECT_COMMENT';
@@ -38,7 +38,7 @@ export function createProject(name, amount, comment, currency, approver, assigne
 
 export function showWorkflowDialog(show) {
   return {
-    type: SHOW_WORKFLOW_DIALOG,
+    type: SHOW_PROJECT_DIALOG,
     show: show
   }
 }
