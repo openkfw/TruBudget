@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {
-  fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep,
-  addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole
-} from './actions';
+import { fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep, addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole } from './actions';
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
 import { fetchRoles } from '../Login/actions';
@@ -62,7 +59,7 @@ const mapStateToProps = (state) => {
     projectAssignee: state.getIn(['overview', 'projectAssignee']),
     projectBank: state.getIn(['overview', 'projectBank']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
-    roles: state.getIn(['login', 'roles'])
+    roles: state.getIn(['login', 'roles']).toJS()
   }
 }
 

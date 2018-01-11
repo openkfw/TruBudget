@@ -2,9 +2,11 @@ export const FETCH_WORKFLOW_ITEMS = 'FETCH_WORKFLOW_ITEMS';
 export const FETCH_WORKFLOW_ITEMS_SUCCESS = 'FETCH_WORKFLOW_ITEMS_SUCCESS';
 
 export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG';
+export const HIDE_WORKFLOW_DIALOG = 'HIDE_WORKFLOW_DIALOG';
 
 export const WORKFLOW_NAME = 'WORKFLOW_NAME';
 export const WORKFLOW_TYPE = 'WORKFLOW_TYPE';
+export const WORKFLOW_APPROVAL_REQUIRED = 'WORKFLOW_APPROVAL_REQUIRED';
 export const WORKFLOW_AMOUNT = 'WORKFLOW_AMOUNT';
 export const WORKFLOW_AMOUNT_TYPE = 'WORKFLOW_AMOUNT_TYPE';
 export const WORKFLOW_PURPOSE = 'WORKFLOW_PURPOSE';
@@ -63,8 +65,7 @@ export function enableWorkflowSort(sortEnabled) {
 export function postWorkflowSort(streamName, workflowItems, sortEnabled = false) {
   // Just the keys are necessary to update the sort on the backend
   const order = []
-  workflowItems.map((item) =>
-    order.push(item.key)
+  workflowItems.map((item) => order.push(item.key)
   )
   return {
     type: POST_WORKFLOW_SORT,
@@ -102,13 +103,22 @@ export function fetchHistoryItems(project) {
   }
 }
 
-export function showWorkflowDialog(show, editMode = false) {
+export function showWorkflowDialog(editMode = false) {
   return {
     type: SHOW_WORKFLOW_DIALOG,
-    show: show,
+    show: true,
     editMode
   }
 }
+
+export function hideWorkflowDialog(editMode) {
+  return {
+    type: HIDE_WORKFLOW_DIALOG,
+    show: false,
+    editMode
+  }
+}
+
 
 export function storeSubProjectAmount(amount) {
   return {
@@ -128,6 +138,13 @@ export function storeWorkflowType(workflowType) {
   return {
     type: WORKFLOW_TYPE,
     workflowType
+  }
+}
+
+export function isWorkflowApprovalRequired(approvalRequired) {
+  return {
+    type: WORKFLOW_APPROVAL_REQUIRED,
+    approvalRequired,
   }
 }
 
@@ -185,7 +202,7 @@ export function storeWorkflowTxid(txid) {
   }
 }
 
-export function createWorkflowItem(stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType) {
+export function createWorkflowItem(stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired) {
   return {
     type: CREATE_WORKFLOW,
     stream: stream,
@@ -197,11 +214,12 @@ export function createWorkflowItem(stream, workflowName, amount, amountType, cur
     documents,
     assignee: assignee,
     state: state,
-    workflowType: workflowType
+    workflowType: workflowType,
+    approvalRequired
   }
 }
 
-export function editWorkflowItem(stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType) {
+export function editWorkflowItem(stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired) {
   return {
     type: EDIT_WORKFLOW,
     stream: stream,
@@ -216,7 +234,8 @@ export function editWorkflowItem(stream, key, workflowName, amount, amountType, 
     state: state,
     txid,
     previousState,
-    workflowType
+    workflowType,
+    approvalRequired
   }
 }
 

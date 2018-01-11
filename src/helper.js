@@ -10,7 +10,12 @@ import currencies from './currency';
 
 import { taskStatusColorPalette, budgetStatusColorPalette, workflowBudgetColorPalette } from './colors';
 
-const getCurrencyFormat = (currency) => ({ decimal: ".", thousand: ",", precision: 2, ...currencies[currency] })
+const getCurrencyFormat = (currency) => ({
+  decimal: ".",
+  thousand: ",",
+  precision: 2,
+  ...currencies[currency]
+})
 
 export const fromAmountString = (amount, currency) => accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 export const toAmountString = (amount, currency) => accounting.formatMoney(amount, getCurrencyFormat(currency));
@@ -74,7 +79,7 @@ export const roleMapper = {
 
 
 
-const createDoughnutData = (labels, data, colors = taskStatusColorPalette, ) => ({
+const createDoughnutData = (labels, data, colors = taskStatusColorPalette) => ({
   labels,
   datasets: [
     {
@@ -123,7 +128,11 @@ export const calculateWorkflowBudget = (workflows) => {
       currentDisbursement: amountType === 'disbursed' && status === 'done' ? acc.currentDisbursement + amount : acc.currentDisbursement,
     }
     return next;
-  }, { assigned: 0, disbursed: 0, currentDisbursement: 0 })
+  }, {
+      assigned: 0,
+      disbursed: 0,
+      currentDisbursement: 0
+    })
 }
 
 export const createAmountData = (projectAmount, subProjects) => {
@@ -191,6 +200,9 @@ export const getNextAction = (item, assignee, bank, approver) => {
   }
 }
 
+export const isAdminNode = (nodePermissions) => {
+  return nodePermissions.indexOf('admin');
+}
 
 export const getAssignedOrganization = (definedRoles, assignedRoles) => assignedRoles.reduce((acc, assignedRole, index) => {
   const organization = definedRoles.find((role) => assignedRole === role.role);
@@ -199,4 +211,5 @@ export const getAssignedOrganization = (definedRoles, assignedRoles) => assigned
     const nextString = index ? `, ${assignedOrganization}` : `${assignedOrganization}`
     return acc + nextString;
   }
+  return "";
 }, "")

@@ -11,25 +11,20 @@ import strings from '../../localizeStrings'
 const getStepContent = (props) => {
   switch (props.creationStep) {
     case 0:
-      return <WorkflowType workflowType={props.workflowType} editMode={props.editMode} storeWorkflowType={props.storeWorkflowType} />
+      return <WorkflowType workflowApprovalRequired={props.workflowApprovalRequired} isWorkflowApprovalRequired={props.isWorkflowApprovalRequired} workflowType={props.workflowType} editMode={props.editMode}
+        storeWorkflowType={props.storeWorkflowType} />
     case 1:
       return <ProjectCreationName storeProjectName={props.storeWorkflowName} projectName={props.workflowName} type={'workflow'} />
     case 2:
-      return <WorkflowCreationAmount
-        subProjectCurrency={props.subProjectDetails.currency}
-        storeWorkflowAmount={props.storeWorkflowAmount}
-        storeWorkflowAmountType={props.storeWorkflowAmountType}
-        storeWorkflowCurrency={props.storeWorkflowCurrency}
-        workflowAmount={props.workflowAmount}
-        workflowAmountType={props.workflowAmountType}
-        workflowCurrency={props.workflowCurrency}
-      />
+      return <WorkflowCreationAmount subProjectCurrency={props.subProjectDetails.currency} storeWorkflowAmount={props.storeWorkflowAmount} storeWorkflowAmountType={props.storeWorkflowAmountType} storeWorkflowCurrency={props.storeWorkflowCurrency}
+        workflowAmount={props.workflowAmount} workflowAmountType={props.workflowAmountType} workflowCurrency={props.workflowCurrency} />
     case 3:
       return <ProjectCreationComment storeProjectComment={props.storeWorkflowComment} projectComment={props.workflowComment} type={'workflow'} />
     case 4:
       return <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />
     case 5:
-      return <WorkflowStateAndAssignee permissions={props.permissions} users={props.users} storeWorkflowState={props.storeWorkflowState} storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
+      return <WorkflowStateAndAssignee workflowApprovalRequired={props.workflowApprovalRequired} permissions={props.permissions} users={props.users} storeWorkflowState={props.storeWorkflowState}
+        storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
     default:
       return <span>Done</span>
   }

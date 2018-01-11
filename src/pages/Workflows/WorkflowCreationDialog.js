@@ -15,8 +15,14 @@ const getWorkflowActions = (props, handleCancel, handleBack, handleNext, handleS
   const nextButton = <FlatButton label={strings.common.next} primary={true} disabled={isLastStep} onTouchTap={() => handleNext(props)} />
   const submitButton = <FlatButton label={strings.common.submit} primary={true} disabled={!isLastStep && !editMode} onTouchTap={() => handleSubmit(props)} />
 
-  const leftActions = <div>{cancelButton}{backButton}</div>
-  const rightActions = <div>{nextButton}{submitButton}</div>
+  const leftActions = <div>
+    {cancelButton}
+    {backButton}
+  </div>
+  const rightActions = <div>
+    {nextButton}
+    {submitButton}
+  </div>
 
   return [
     leftActions,
@@ -26,16 +32,6 @@ const getWorkflowActions = (props, handleCancel, handleBack, handleNext, handleS
 
 const handleCancel = (props) => {
   props.hideWorkflowDialog();
-  props.storeWorkflowName('');
-  props.storeWorkflowAmount('');
-  props.storeWorkflowAmountType('na');
-  props.storeWorkflowCurrency('');
-  props.storeWorkflowComment('');
-  props.storeWorkflowAssignee('');
-  props.disableWorkflowState();
-  props.storeWorkflowState('open');
-  props.storeWorkflowType('workflow');
-  props.setWorkflowCreationStep(0);
   props.clearDocuments();
 }
 
@@ -45,9 +41,9 @@ const handleNext = (props) => props.setWorkflowCreationStep(props.creationStep +
 const handleSubmit = (props) => {
   if (props.editMode) {
     const currentWorkflowItem = props.workflowItems.find((item) => item.txid === props.workflowTxid);
-    props.editWorkflowItem(props.location.pathname.split('/')[3], currentWorkflowItem.key, props.workflowName, props.workflowAmount, props.workflowAmountType, props.workflowCurrency, props.workflowComment, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowTxid, currentWorkflowItem.data, props.workflowType)
+    props.editWorkflowItem(props.location.pathname.split('/')[3], currentWorkflowItem.key, props.workflowName, props.workflowAmount, props.workflowAmountType, props.workflowCurrency, props.workflowComment, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowTxid, currentWorkflowItem.data, props.workflowType, props.workflowApprovalRequired)
   } else {
-    props.createWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowAmountType, props.workflowCurrency, props.workflowComment, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowType)
+    props.createWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowAmountType, props.workflowCurrency, props.workflowComment, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowType, props.workflowApprovalRequired)
   }
 
   props.hideWorkflowDialog();
@@ -55,23 +51,8 @@ const handleSubmit = (props) => {
 }
 
 const WorkflowCreationDialog = (props) => (
-  <Dialog
-    title={props.editMode ? 'Edit workflow item' : 'Create Workflow Item'}
-    modal={true}
-    bodyStyle={{
-      minHeight: '200px'
-    }}
-    actionsContainerStyle={{
-      display: 'flex',
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between'
-    }}
-    open={props.showWorkflow}
-    onRequestClose={props.hideWorkflowDialog}
-    editMode={props.editMode}
-    actions={getWorkflowActions(props, handleCancel, handleBack, handleNext, handleSubmit)}
-  >
+  <Dialog title={props.editMode ? strings.workflow.edit_item : strings.workflow.workflow} modal={true} bodyStyle={{ minHeight: '200px' }} actionsContainerStyle={{ display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between' }} open={props.showWorkflow}
+    onRequestClose={props.hideWorkflowDialog} editMode={props.editMode} actions={getWorkflowActions(props, handleCancel, handleBack, handleNext, handleSubmit)}>
     <WorkflowCreationStepper {...props} />
   </Dialog>
 );

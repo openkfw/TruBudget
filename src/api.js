@@ -1,5 +1,4 @@
 import axios from 'axios';
-import _ from 'lodash';
 const devMode = process.env.NODE_ENV === 'development';
 
 console.log(`API is running in ${devMode ? "development" : "production"} mode`)
@@ -37,14 +36,44 @@ class Api {
     return user;
   }
 
-
+  addUser = (username, fullName, avatar, password, role) => axios.post(`${this.prefix}/users`, {
+    id: username,
+    name: fullName,
+    avatar_back: avatar,
+    password,
+    role,
+    avatar
+  })
+  addRole = (id, organization, read, write, admin) => axios.post(`${this.prefix}/roles`, {
+    id,
+    organization,
+    read,
+    write,
+    admin
+  })
+  fetchPermissions = () => axios.get(`${this.prefix}/permissions`);
   fetchPeers = () => axios.get(`${this.prefix}/peers`);
   fetchProjects = () => axios.get(`${this.prefix}/projects`);
   fetchProjectDetails = (project) => axios.get(`${this.prefix}/projects/` + project);
   fetchStreamNames = () => axios.get(`${this.prefix}/projects/mapping`);
   fetchStreamItems = (flowName) => axios.get(`${this.prefix}/streams/` + flowName);
-  postSubProject = (parentProject, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) => axios.post(`${this.prefix}/subprojects`, { parentStream: parentProject, name: subProjectName, amount: subProjectAmount, comment: subProjectComment, currency: subProjectCurrency, status: `open` })
-  postProject = (name, amount, comment, currency, approver, assignee, bank) => axios.post(`${this.prefix}/projects`, { name, amount, comment, currency, approver, assignee, bank })
+  postSubProject = (parentProject, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) => axios.post(`${this.prefix}/subprojects`, {
+    parentStream: parentProject,
+    name: subProjectName,
+    amount: subProjectAmount,
+    comment: subProjectComment,
+    currency: subProjectCurrency,
+    status: `open`
+  })
+  postProject = (name, amount, comment, currency, approver, assignee, bank) => axios.post(`${this.prefix}/projects`, {
+    name,
+    amount,
+    comment,
+    currency,
+    approver,
+    assignee,
+    bank
+  })
   fetchNodeInformation = () => axios.get(`${this.prefix}/nodes`);
   fetchNotifications = (user) => axios.get(`${this.prefix}/notifications/` + user);
   fetchWorkflowItems = (subProjectName) => axios.get(`${this.prefix}/subprojects/` + subProjectName);
@@ -52,12 +81,44 @@ class Api {
   fetchUser = () => axios.get(`${this.prefix}/users/mapping`)
   fetchUsers = () => axios.get(`${this.prefix}/users`);
   fetchRoles = () => axios.get(`${this.prefix}/roles`);
-  postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type) => axios.post(`${this.prefix}/workflows`, { streamName: stream, workflowName: workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type })
-  editWorkflowItem = (stream, key, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, txid, previousState, type) => axios.put(`${this.prefix}/workflows/` + workflowItemName, { streamName: stream, key, workflowName: workflowItemName, amount, amountType, currency, comment, documents, status, assignee, previousState, type })
+  postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type, approvalRequired) => axios.post(`${this.prefix}/workflows`, {
+    streamName: stream,
+    workflowName: workflowItemName,
+    amount,
+    amountType,
+    currency,
+    comment,
+    documents,
+    status,
+    assignee,
+    type,
+    approvalRequired
+  })
+  editWorkflowItem = (stream, key, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, txid, previousState, type, approvalRequired) => axios.put(`${this.prefix}/workflows/` + workflowItemName, {
+    streamName: stream,
+    key,
+    workflowName: workflowItemName,
+    amount,
+    amountType,
+    currency,
+    comment,
+    documents,
+    status,
+    assignee,
+    previousState,
+    type,
+    approvalRequired
+  })
   fetchHistory = (project) => axios.get(`${this.prefix}/history/` + project);
   markNotificationAsRead = (user, id, data) => axios.put(`${this.prefix}/notifications/${user}/${id}`, data);
-  postWorkflowSort = (streamName, workflowOrder) => axios.put(`${this.prefix}/subprojects/` + streamName + `/sort`, { order: workflowOrder });
-  editSubProject = (parentProject, subProjectName, status, amount) => axios.put(`${this.prefix}/subprojects/` + subProjectName, { parent: parentProject, status: status, amount: amount });
+  postWorkflowSort = (streamName, workflowOrder) => axios.put(`${this.prefix}/subprojects/` + streamName + `/sort`, {
+    order: workflowOrder
+  });
+  editSubProject = (parentProject, subProjectName, status, amount) => axios.put(`${this.prefix}/subprojects/` + subProjectName, {
+    parent: parentProject,
+    status: status,
+    amount: amount
+  });
   hashDocument = (payload) => {
     const data = new FormData();
     data.append(`doc`, payload);

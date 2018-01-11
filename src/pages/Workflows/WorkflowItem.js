@@ -1,24 +1,19 @@
 import React from 'react';
 import { SortableElement } from 'react-sortable-hoc';
-import {
-  Table,
-  TableBody,
-  TableRow,
-  TableRowColumn
-} from 'material-ui/Table';
+import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 import { Card } from 'material-ui/Card';
-import { toAmountString, statusMapping, amountTypes } from '../../helper.js';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
-import Chip from 'material-ui/Chip';
 import Paper from 'material-ui/Paper';
+import Chip from 'material-ui/Chip';
 import OpenIcon from 'material-ui/svg-icons/navigation/close';
 import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import IconButton from 'material-ui/IconButton';
+import { toAmountString, statusMapping, amountTypes } from '../../helper.js';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from '../../colors.js';
-
+import strings from '../../localizeStrings';
 
 
 const styles = {
@@ -31,7 +26,7 @@ const styles = {
   done: {
     backgroundColor: ACMECorpSuperLightgreen
   },
-  listText: {
+  text: {
     fontSize: '14px'
   },
   open: {},
@@ -71,36 +66,53 @@ const styles = {
     minWidth: '40px',
     marginLeft: '5px',
     marginRight: '5px',
-  }
+  },
+  amountChip: {
+    marginLeft: '16px'
+  },
+  statusChip: {
+    marginLeft: '4px'
+  },
+  chipLabel: {
+    fontSize: 10
+  },
+  chipDiv: {
+    display: 'flex',
+    alignItems: 'center'
+  },
 }
 
 
 const createLine = (isFirst, selectable) => {
-  const lineStyle = (isFirst && selectable) ? styles.firstLine : { ...styles.line, opacity: selectable ? 1 : 0.2 };
+  const lineStyle = (isFirst && selectable) ? styles.firstLine : {
+    ...styles.line,
+    opacity: selectable ? 1 : 0.2
+  };
 
   return (
     <div style={lineStyle}></div>
   )
 };
 
-const getEditButtons = (status = 'open', type, role, permissions, editCB, progressCB) => {
-  const statusMapping = {
-    open: {
-      tooltip: 'Start Workflow',
-      icon: InprogressIcon
-    },
-    'in_progress': {
-      tooltip: 'Finish Workflow',
-      icon: ReviewIcon
-    },
-    'in_review': {
-      tooltip: 'Review Workflow',
-      icon: DoneIcon
-
-    }
+const getNextStatusIcon = (status, approvalRequired) => {
+  switch (status) {
+    case 'open':
+      return InprogressIcon;
+    case 'in_progress':
+      if (approvalRequired) {
+        return ReviewIcon;
+      }
+      return DoneIcon;
+    case 'in_review':
+      return DoneIcon;
+    default:
+      return InprogressIcon;
   }
-  const Icon = statusMapping[status].icon;
+}
 
+const getEditButtons = (status = 'open', type, role, approvalRequired, permissions, editCB, progressCB) => {
+
+  const Icon = getNextStatusIcon(status, approvalRequired);
   const userAllowedToEdit = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
 
   const assigneeAllowed = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
@@ -111,14 +123,10 @@ const getEditButtons = (status = 'open', type, role, permissions, editCB, progre
 
   return (
     <TableRowColumn colSpan={2}>
-      <IconButton
-        disabled={!role.write || !userAllowedToEdit}
-        onTouchTap={() => editCB()}>
+      <IconButton disabled={!role.write || !userAllowedToEdit} onTouchTap={() => editCB()}>
         <EditIcon />
       </IconButton>
-      <IconButton
-        disabled={!role.write || !userAllowedToProgress}
-        onTouchTap={() => progressCB()}>
+      <IconButton disabled={!role.write || !userAllowedToProgress} onTouchTap={() => progressCB()}>
         <Icon />
       </IconButton>
     </TableRowColumn>
@@ -151,7 +159,7 @@ const StepDot = ({ status, selectable }) => {
 };
 
 const editWorkflow = ({ key, txid, data }, props) => {
-  const { workflowName, amount, amountType, currency, comment, assignee, status, documents, type } = data;
+  const { workflowName, amount, amountType, currency, comment, assignee, status, documents, type, approvalRequired } = data;
   props.storeWorkflowName(workflowName)
   props.storeWorkflowAmount(amount)
   props.storeWorkflowAmountType(amountType)
@@ -162,15 +170,19 @@ const editWorkflow = ({ key, txid, data }, props) => {
   props.enableWorkflowState()
   props.storeWorkflowState(status)
   props.storeWorkflowTxid(txid)
+  props.isWorkflowApprovalRequired(approvalRequired)
   props.openWorkflowDialog(true)
   props.prefillDocuments(documents);
 }
 
-const getNextStatus = (status) => {
+const getNextStatus = (status, approvalRequired) => {
   switch (status) {
     case 'open':
       return 'in_progress';
     case 'in_progress':
+      if (!approvalRequired) {
+        return 'done';
+      }
       return 'in_review'
     case 'in_review':
       return 'done';
@@ -180,17 +192,15 @@ const getNextStatus = (status) => {
 }
 
 const changeProgress = ({ key, txid, data }, props) => {
-  const { workflowName, amount, currency, comment, assignee, documents, status, type, amountType } = data;
-  const nextStatus = getNextStatus(status)
-  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, amountType, currency, comment, documents, nextStatus, assignee, txid, data, type)
+  const { workflowName, amount, currency, comment, assignee, documents, status, type, amountType, approvalRequired } = data;
+  const nextStatus = getNextStatus(status, approvalRequired)
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, amountType, currency, comment, documents, nextStatus, assignee, txid, data, type, approvalRequired)
 }
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
   if (!workflowSortEnabled) {
     return (
-      <IconButton
-        style={styles.infoButton}
-        onTouchTap={() => openWorkflowDetails(workflow.txid)}>
+      <IconButton style={styles.infoButton} onTouchTap={() => openWorkflowDetails(workflow.txid)}>
         <InfoIcon />
       </IconButton>
     )
@@ -206,50 +216,53 @@ const getAmountField = (amount, type) => {
   const amountToShow = noBudgetAllocated ? amountTypes(type) : amount;
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center'
-    }}>
+    <div style={styles.chipDiv}>
       <div>
         {amountToShow}
       </div>
-      {noBudgetAllocated ? null : <Chip style={{ marginLeft: '16px' }}>{amountTypes(type)}</Chip>}
+      {noBudgetAllocated ? null : <Chip style={styles.amountChip}>
+        {amountTypes(type)}
+      </Chip>}
     </div>
   )
 }
 
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-  const { status, type, workflowName, amountType } = workflow.data;
+  const { status, type, workflowName, amountType, approvalRequired } = workflow.data;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const amount = toAmountString(workflow.data.amount, workflow.data.currency);
-  const tableStyle = workflowSelectable ? styles[status] : { ...styles[status], opacity: 0.3 };
+  const tableStyle = workflowSelectable ? styles[status] : {
+    ...styles[status],
+    opacity: 0.3
+  };
   const infoButton = getInfoButton(props, workflow)
 
   return (
-    <Card key={mapIndex} style={{
-      marginLeft: '50px',
-      marginRight: '10px',
-      marginTop: '15px',
-      marginBottom: '15px',
-      position: 'relative',
-    }}>
-
+    <Card key={mapIndex} style={{ marginLeft: '50px', marginRight: '10px', marginTop: '15px', marginBottom: '15px', position: 'relative', }}>
       {createLine(mapIndex === 0, workflowSelectable)}
       <StepDot status={status} selectable={workflowSelectable} />
-
       <Table>
         <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
           <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
             <TableRowColumn colSpan={1}>
               {infoButton}
             </TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={3}>{workflowName}</TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={3}>{getAmountField(amount, amountType)}</TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={2}>{statusMapping(status)}</TableRowColumn>
-            {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
+            <TableRowColumn style={styles.text} colSpan={3}>
+              {workflowName}
+            </TableRowColumn>
+            <TableRowColumn style={styles.listText} colSpan={3}>
+              {getAmountField(amount, amountType)}
+            </TableRowColumn>
+            <TableRowColumn style={styles.listText} colSpan={3}>
+              <div style={styles.chipDiv}>
+                {statusMapping(status)}
+                {!approvalRequired ? <Chip style={styles.statusChip} labelStyle={styles.chipLabel}>
+                  {strings.workflow.non_approval}
+                </Chip> : ''}
+              </div>
+            </TableRowColumn>
+            {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, approvalRequired, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
           </TableRow>
-
-
         </TableBody>
       </Table>
     </Card>
