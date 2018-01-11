@@ -18,6 +18,11 @@ class Api {
   setToken = (data) => localStorage.setItem(TOKEN_NAME, data)
   removeToken = () => localStorage.removeItem(TOKEN_NAME);
 
+  setAdminToken = (token) => sessionStorage.setItem('admin_jwt', token);
+  removeAdminToken = (token) => {
+    sessionStorage.removeItem('admin_jwt', token)
+  };
+
   setAuthorizationHeader = (token) => {
     axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
   }
@@ -35,6 +40,15 @@ class Api {
     this.setAuthorizationHeader(jwtToken);
     return user;
   }
+
+  loginAdmin = async (username, password) => {
+    const { data } = await axios.post(`${this.prefix}/login`, { username, password })
+    const { jwtToken, user } = data;
+    this.setAdminToken(jwtToken);
+    this.setAuthorizationHeader(jwtToken);
+    return user;
+  }
+
 
   addUser = (username, fullName, avatar, password, role) => axios.post(`${this.prefix}/users`, {
     id: username,
@@ -77,7 +91,7 @@ class Api {
   fetchNodeInformation = () => axios.get(`${this.prefix}/nodes`);
   fetchNotifications = (user) => axios.get(`${this.prefix}/notifications/` + user);
   fetchWorkflowItems = (subProjectName) => axios.get(`${this.prefix}/subprojects/` + subProjectName);
-  // fetch the user to the existing JWT token
+  // fetch the user to the existing JWToken
   fetchUser = () => axios.get(`${this.prefix}/users/mapping`)
   fetchUsers = () => axios.get(`${this.prefix}/users`);
   fetchRoles = () => axios.get(`${this.prefix}/roles`);

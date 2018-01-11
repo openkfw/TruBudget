@@ -1,28 +1,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchNodePermissions, showRolesDialog, hideRolesDialog, addRole, showUsersDialog, hideUsersDialog, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, addUser, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword, showRoleNameError, showOrganizationError, isRoleNameError, isOrganizationError, isUsernameError, isFullNameError, isRoleNotFoundError, isPasswordError } from './actions';
-import { fetchUsers, fetchRoles, login, logout } from '../Login/actions';
+import { fetchNodePermissions, showRolesDialog, hideRolesDialog, addRole, showUsersDialog, hideUsersDialog, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, addUser, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword, isRoleNameError, isOrganizationError, isUsernameError, isFullNameError, isRoleNotFoundError, isPasswordError } from './actions';
+import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin, logout } from '../Login/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
 import AdminDashboard from './AdminDashboard';
-import { showSnackBar, SHOW_SNACKBAR, storeSnackBarMessage } from '../Notifications/actions';
+import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
 
 
 
 class AdminDashboardContainer extends Component {
   componentWillMount() {
     this.props.fetchNodePermissions();
-    this.props.fetchUsers();
-    this.props.fetchRoles();
-    this.props.fetchNodeInformation();
+    this.props.logoutRegularUser();
   }
+
+
   componentWillUnmount() {
     this.props.hideAdminLogin()
+    this.props.logoutAdmin()
   }
 
   render() {
     return (
-      <AdminDashboard {...this.props}/>
+      <AdminDashboard {...this.props} />
     )
   }
 
@@ -61,11 +62,13 @@ const mapDispatchToProps = (dispatch) => {
     isFullNameError: (fullNameError) => dispatch(isFullNameError(fullNameError)),
     isPasswordError: (passwordError) => dispatch(isPasswordError(passwordError)),
     isRoleNotFoundError: (roleNotFoundError) => dispatch(isRoleNotFoundError(roleNotFoundError)),
-    login: (user) => dispatch(login(user)),
+    loginAdmin: (user) => dispatch(loginAdmin(user)),
     openSnackBar: () => dispatch(showSnackBar(true)),
     closeSnackBar: () => dispatch(showSnackBar(false)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
-    logout: () => dispatch(logout()),
+    logoutAdmin: () => dispatch(logoutAdmin()),
+    logoutRegularUser: () => dispatch(logout()),
+
   }
 }
 
@@ -87,9 +90,9 @@ const mapStateToProps = (state) => {
     showFullNameError: state.getIn(['adminDashboard', 'showFullNameError']),
     showPasswordError: state.getIn(['adminDashboard', 'showPasswordError']),
     showRoleNotFoundError: state.getIn(['adminDashboard', 'showRoleNotFoundError']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
-    loggedIn: state.getIn(['login', 'loggedIn']),
-    loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
+    loggedInAdminUser: state.getIn(['login', 'loggedInAdminUser']),
+    adminLoggedIn: state.getIn(['login', 'adminLoggedIn']),
+    adminLoginFailed: state.getIn(['login', 'adminLoginFailed']),
     showSnackBar: state.getIn(['notifications', 'showSnackBar']),
     snackBarMessage: state.getIn(['notifications', 'snackBarMessage']),
     snackBarMessageIsError: state.getIn(['notifications', 'snackBarMessageIsError']),

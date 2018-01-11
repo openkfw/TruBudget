@@ -10,7 +10,7 @@ import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS } from './pages/Workflows/actions';
 
-import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, CHECK_TOKEN, FETCH_USER, TOKEN_FOUND } from './pages/Login/actions';
+import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, CHECK_TOKEN, FETCH_USER, TOKEN_FOUND, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 import { FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS, ADD_USER, ADD_USER_SUCCESS, ADD_ROLE_SUCCESS, ADD_ROLE } from './pages/Admin/actions';
 import _ from 'lodash';
@@ -121,7 +121,7 @@ export function* createSubProjectSaga(action) {
 }
 
 export function* createWorkflowItemSaga(action) {
-    const {stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired} = action;
+    const { stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired } = action;
     try {
         yield api.postWorkflowItem(stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired);
         yield put({
@@ -137,7 +137,7 @@ export function* createWorkflowItemSaga(action) {
 }
 
 export function* editWorkflowItemSaga(action) {
-    const {stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired} = action;
+    const { stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired } = action;
     try {
         yield api.editWorkflowItem(stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired);
         yield put({
@@ -193,7 +193,7 @@ export function* fetchNodeInformationSaga() {
     }
 }
 
-export function* fetchNotificationSaga({user}) {
+export function* fetchNotificationSaga({ user }) {
     try {
         const notifications = yield api.fetchNotifications(user)
         yield put({
@@ -205,7 +205,7 @@ export function* fetchNotificationSaga({user}) {
     }
 }
 
-export function* postWorkflowSortSaga({streamName, order, sortEnabled}) {
+export function* postWorkflowSortSaga({ streamName, order, sortEnabled }) {
     try {
         yield api.postWorkflowSort(streamName, order);
         yield put({
@@ -224,7 +224,7 @@ export function* postWorkflowSortSaga({streamName, order, sortEnabled}) {
     }
 }
 
-export function* markNotificationAsReadSaga({user, id, data}) {
+export function* markNotificationAsReadSaga({ user, id, data }) {
     try {
         yield api.markNotificationAsRead(user, id, data);
         yield put({
@@ -251,7 +251,7 @@ export function* fetchUsersSaga() {
     }
 }
 
-export function* addUserSaga({username, fullName, avatar, password, role}) {
+export function* addUserSaga({ username, fullName, avatar, password, role }) {
     try {
         yield call(api.addUser, username, fullName, avatar, password, role);
         yield call(fetchUsersSaga);
@@ -263,7 +263,7 @@ export function* addUserSaga({username, fullName, avatar, password, role}) {
     }
 }
 
-export function* addRoleSaga({name, organization, read, write, admin}) {
+export function* addRoleSaga({ name, organization, read, write, admin }) {
     try {
         yield call(api.addRole, name, organization, read, write, admin);
         yield call(fetchRolesSaga);
@@ -289,7 +289,7 @@ export function* fetchRolesSaga() {
 }
 
 
-export function* loginSaga({user}) {
+export function* loginSaga({ user }) {
     try {
         const data = yield call(api.login, user.username, user.password);
         yield put({
@@ -314,9 +314,36 @@ export function* loginSaga({user}) {
     }
 }
 
-export function* fetchUserWithJwtSaga() {
+
+export function* adminLoginSaga({ user }) {
     try {
-        const {data} = yield call(api.fetchUser);
+        const data = yield call(api.loginAdmin, user.username, user.password);
+        yield put({
+            type: FETCH_ADMIN_USER_SUCCESS,
+            user: {
+                username: data.id,
+                ...data
+            }
+        })
+        yield put({
+            type: ADMIN_LOGIN_SUCCESS
+        })
+        yield put({
+            type: SHOW_ADMIN_LOGIN_ERROR,
+            show: false
+        })
+    } catch (error) {
+        yield put({
+            type: SHOW_ADMIN_LOGIN_ERROR,
+            show: true
+        })
+    }
+}
+
+export function* fetchUserWithJwtSaga() {
+    console.log('fetchUserWithJwtSaga')
+    try {
+        const { data } = yield call(api.fetchUser);
         yield put({
             type: FETCH_USER_SUCCESS,
             user: {
@@ -334,8 +361,9 @@ export function* fetchUserWithJwtSaga() {
 
 export function* checkTokenSaga() {
     try {
-        const jwtToken = yield call(api.getToken);
-        if (!_.isEmpty(jwtToken)) {
+        const jwt = yield call(api.getToken);
+        if (!_.isEmpty(jwt)) {
+            yield call(api.setAuthorizationHeader, jwt)
             yield put({
                 type: TOKEN_FOUND
             })
@@ -359,6 +387,20 @@ export function* logoutSaga() {
     }
 }
 
+export function* adminLogoutSaga() {
+    try {
+        yield call(api.removeAdminToken);
+        yield put({
+            type: ADMIN_LOGOUT_SUCCESS
+        })
+    } catch (error) {
+        console.log(error)
+        yield handleError(error);
+    }
+}
+
+
+
 
 export function* fetchStreamNamesSaga() {
     try {
@@ -372,7 +414,7 @@ export function* fetchStreamNamesSaga() {
     }
 }
 
-export function* fetchHistorySaga({project}) {
+export function* fetchHistorySaga({ project }) {
     try {
         const history = yield api.fetchHistory(project);
         yield put({
@@ -384,7 +426,7 @@ export function* fetchHistorySaga({project}) {
     }
 }
 
-export function* validateDocumentSaga({payload, hash}) {
+export function* validateDocumentSaga({ payload, hash }) {
     try {
         const response = yield api.validateDocument(payload, hash);
         yield put({
@@ -397,7 +439,7 @@ export function* validateDocumentSaga({payload, hash}) {
     }
 }
 
-export function* addDocumentSaga({id, payload}) {
+export function* addDocumentSaga({ id, payload }) {
     try {
         const hash = yield api.hashDocument(payload);
         yield put({
@@ -410,7 +452,7 @@ export function* addDocumentSaga({id, payload}) {
     }
 }
 
-export function* fetchUpdatesSaga({user}) {
+export function* fetchUpdatesSaga({ user }) {
     try {
         const users = yield api.fetchUsers();
         const peers = yield api.fetchPeers();
@@ -508,6 +550,10 @@ export function* watchLogin() {
     yield takeLatest(LOGIN, loginSaga)
 }
 
+export function* watchAdminLogin() {
+    yield takeLatest(ADMIN_LOGIN, adminLoginSaga)
+}
+
 export function* watchCheckToken() {
     yield takeEvery(CHECK_TOKEN, checkTokenSaga)
 }
@@ -526,6 +572,10 @@ export function* watchAddRole() {
 
 export function* watchLogout() {
     yield takeLatest(LOGOUT, logoutSaga);
+}
+
+export function* watchAdminLogout() {
+    yield takeLatest(ADMIN_LOGOUT, adminLogoutSaga);
 }
 
 export function* watchFetchStreamNames() {
@@ -556,7 +606,7 @@ export function* watchFetchNodePermissions() {
 
 export default function* rootSaga() {
     try {
-        yield[
+        yield [
             watchFetchPeers(),
             watchFetchProjects(),
             watchFetchProjectDetails(),
@@ -571,9 +621,11 @@ export default function* rootSaga() {
             watchFetchUsers(),
             watchFetchRoles(),
             watchLogin(),
+            watchAdminLogin(),
             watchCheckToken(),
             watchFetchUser(),
             watchLogout(),
+            watchAdminLogout(),
             watchFetchStreamNames(),
             watchFetchHistory(),
             watchPostWorkflowSort(),

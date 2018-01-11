@@ -50,7 +50,6 @@ export default function detailviewReducer(state = defaultState, action) {
     case HIDE_WORKFLOW_DIALOG:
       return state.merge({
         showWorkflow: action.show,
-        editMode: action.editMode,
         workflowName: defaultState.get('workflowName'),
         workflowAmount: defaultState.get('workflowAmount'),
         workflowAmountType: defaultState.get('workflowAmountType'),

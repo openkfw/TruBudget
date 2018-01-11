@@ -4,6 +4,6 @@ import LogoutIcon from '../Navbar/LogoutIcon';
 import strings from '../../localizeStrings';
 
 const AdminNavbar = (props) => (
-    <AppBar showMenuIconButton={ false } style={ { backgroundColor: 'transparent', boxShadow: 'transparent' } } title={ strings.adminDashboard.title } iconElementRight={ <LogoutIcon history={ props.history } logout={ props.logout } /> } />
+    <AppBar showMenuIconButton={false} style={{ backgroundColor: 'transparent', boxShadow: 'transparent' }} title={strings.adminDashboard.title} iconElementRight={<LogoutIcon history={props.history} logout={props.logoutAdmin} />} />
 )
 export default AdminNavbar;

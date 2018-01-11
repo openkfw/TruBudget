@@ -3,7 +3,7 @@ import moment from 'moment';
 import strings from '../../localizeStrings';
 
 
-import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, TOKEN_FOUND } from './actions';
+import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, TOKEN_FOUND, ADMIN_LOGIN_SUCCESS, FETCH_ADMIN_USER_SUCCESS, ADMIN_LOGOUT_SUCCESS, SHOW_ADMIN_LOGIN_ERROR } from './actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
 const defaultState = fromJS({
@@ -22,6 +22,9 @@ const defaultState = fromJS({
   productionActive: false,
   loginErrorMessage: '',
   showLoginError: false,
+  loggedInAdminUser: {},
+  adminLoggedIn: false,
+  adminLoginFailed: false,
   roles: [],
   language: 'en-gb',
   loggedIn: false,
@@ -49,13 +52,21 @@ export default function loginReducer(state = defaultState, action) {
       return state.set('password', action.password);
     case FETCH_USER_SUCCESS:
       return state.set('loggedInUser', action.user);
+    case FETCH_ADMIN_USER_SUCCESS:
+      return state.set('loggedInAdminUser', action.user);
     case LOGIN_SUCCESS:
       return state.merge({
         loggedIn: true,
         tokenPresent: true
       });
+    case ADMIN_LOGIN_SUCCESS:
+      return state.merge({
+        adminLoggedIn: true,
+      });
     case SHOW_LOGIN_ERROR:
       return state.set('loginUnsuccessful', action.show);
+    case SHOW_ADMIN_LOGIN_ERROR:
+      return state.set('adminLoginFailed', action.show);
     case STORE_ENVIRONMENT_SUCCESS:
       return state.merge({
         environment: action.environment,
@@ -67,9 +78,11 @@ export default function loginReducer(state = defaultState, action) {
       return newState;
     case TOKEN_FOUND:
       return state.set('tokenPresent', true);
-    case LOGOUT_SUCCESS:
+    case LOGOUT_SUCCESS: {
       const newDefaultState = defaultState.set('language', state.get('language'))
       return newDefaultState;
+    }
+
     default:
       return state
   }
