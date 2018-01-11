@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchNodePermissions, showRolesDialog, hideRolesDialog, addRole, showUsersDialog, hideUsersDialog, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, addUser, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword, isRoleNameError, isOrganizationError, isUsernameError, isFullNameError, isRoleNotFoundError, isPasswordError } from './actions';
-import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin } from '../Login/actions';
+import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin, logout } from '../Login/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
 import AdminDashboard from './AdminDashboard';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
@@ -12,7 +12,7 @@ import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
 class AdminDashboardContainer extends Component {
   componentWillMount() {
     this.props.fetchNodePermissions();
-
+    this.props.logoutRegularUser();
   }
 
 
@@ -67,6 +67,8 @@ const mapDispatchToProps = (dispatch) => {
     closeSnackBar: () => dispatch(showSnackBar(false)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     logoutAdmin: () => dispatch(logoutAdmin()),
+    logoutRegularUser: () => dispatch(logout()),
+
   }
 }
 
