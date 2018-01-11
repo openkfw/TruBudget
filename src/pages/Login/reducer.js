@@ -82,10 +82,7 @@ export default function loginReducer(state = defaultState, action) {
       const newDefaultState = defaultState.set('language', state.get('language'))
       return newDefaultState;
     }
-    case ADMIN_LOGOUT_SUCCESS: {
-      const newDefaultState = defaultState.set('language', state.get('language'))
-      return newDefaultState;
-    }
+
     default:
       return state
   }
