@@ -13,7 +13,6 @@ import strings from '../../localizeStrings'
 const SubProjects = (props) => {
   const roleOfUser = props.loggedInUser.role
   const isAllowedCreateProjects = roleOfUser.write && _.includes([...props.projectAssignee], roleOfUser.roleName);
-  console.log(props.subprojectDialogVisible)
   return (
     <Card style={{
       position: 'relative',
