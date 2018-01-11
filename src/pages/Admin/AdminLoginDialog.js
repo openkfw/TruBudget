@@ -45,7 +45,7 @@ const handleSubmit = (hideAdminLogin, loginAdmin, adminCredentials) => {
         username,
         password
     };
-    adminLogin(user);
+    loginAdmin(user);
 }
 const handleCancel = (hideAdminLogin, history, logoutAdmin) => {
     hideAdminLogin();

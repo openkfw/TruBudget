@@ -315,7 +315,7 @@ export function* loginSaga({ user }) {
 }
 
 
-export function* loginAdminSaga({ user }) {
+export function* adminLoginSaga({ user }) {
     try {
         const data = yield call(api.loginAdmin, user.username, user.password);
         yield put({
