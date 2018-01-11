@@ -12,7 +12,7 @@ const defaultState = fromJS({
     assignee: [],
     bank: [],
   },
-  showWorkflow: false,
+  workflowDialogVisible: false,
   workflowName: '',
   workflowAmount: 0,
   workflowAmountType: 'na',
@@ -29,7 +29,6 @@ const defaultState = fromJS({
   historyItems: [],
   creationStep: 0,
   workflowSortEnabled: false,
-  showTransactionDialog: false,
   workflowType: 'workflow',
   workflowApprovalRequired: true,
   subProjectBudgetEditEnabled: false
@@ -44,12 +43,12 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case SHOW_WORKFLOW_DIALOG:
       return state.merge({
-        showWorkflow: action.show,
+        workflowDialogVisible: action.show,
         editMode: action.editMode
       })
     case HIDE_WORKFLOW_DIALOG:
       return state.merge({
-        showWorkflow: action.show,
+        workflowDialogVisible: action.show,
         workflowName: defaultState.get('workflowName'),
         workflowAmount: defaultState.get('workflowAmount'),
         workflowAmountType: defaultState.get('workflowAmountType'),

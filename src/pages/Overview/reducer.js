@@ -12,7 +12,7 @@ import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
   projects: [],
-  workflowDialogVisible: false,
+  projectDialogVisible: false,
   projectName: '',
   projectAmount: 0,
   projectComment: '',
@@ -23,13 +23,13 @@ const defaultState = fromJS({
   projectBank: []
 });
 
-export default function overviewReducer (state = defaultState, action) {
+export default function overviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_UPDATES_SUCCESS:
     case FETCH_PROJECTS_SUCCESS:
       return state.set('projects', action.projects);
     case SHOW_WORKFLOW_DIALOG:
-      return state.set('workflowDialogVisible', action.show);
+      return state.set('projectDialogVisible', action.show);
     case PROJECT_NAME:
       return state.set('projectName', action.name);
     case PROJECT_AMOUNT:

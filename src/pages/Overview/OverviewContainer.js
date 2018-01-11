@@ -49,7 +49,7 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     projects: state.getIn(['overview', 'projects']),
-    creationDialogShown: state.getIn(['overview', 'workflowDialogVisible']),
+    creationDialogShown: state.getIn(['overview', 'projectDialogVisible']),
     creationStep: state.getIn(['overview', 'creationStep']),
     projectName: state.getIn(['overview', 'projectName']),
     projectAmount: state.getIn(['overview', 'projectAmount']),

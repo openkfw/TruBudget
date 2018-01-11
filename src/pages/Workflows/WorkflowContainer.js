@@ -24,6 +24,9 @@ class WorkflowContainer extends Component {
     this.props.setSelectedView(subProjectId, 'subProject');
     this.props.fetchRoles();
   }
+  componentWillUnmount() {
+    this.props.hideWorkflowDetails();
+  }
 
 
   render() {
@@ -82,7 +85,7 @@ const mapStateToProps = (state) => {
   return {
     workflowItems: state.getIn(['workflow', 'workflowItems']).toJS(),
     subProjectDetails: state.getIn(['workflow', 'subProjectDetails']).toJS(),
-    showWorkflow: state.getIn(['workflow', 'showWorkflow']),
+    workflowDialogVisible: state.getIn(['workflow', 'workflowDialogVisible']),
     workflowName: state.getIn(['workflow', 'workflowName']),
     workflowAmount: state.getIn(['workflow', 'workflowAmount']),
     workflowAmountType: state.getIn(['workflow', 'workflowAmountType']),
