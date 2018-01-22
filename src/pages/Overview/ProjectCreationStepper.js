@@ -5,6 +5,7 @@ import ProjectCreationName from './ProjectCreationName';
 import ProjectCreationAmount from './ProjectCreationAmount';
 import ProjectCreationComment from './ProjectCreationComment';
 import ProjectCreationRoles from './ProjectCreationRoles';
+import ProjectCreationThumbnail from './ProjectCreationThumbnail';
 import strings from '../../localizeStrings'
 const getStepContent = ({ creationStep, ...props }) => {
   switch (creationStep) {
@@ -17,7 +18,7 @@ const getStepContent = ({ creationStep, ...props }) => {
     case 3:
       return <ProjectCreationRoles {...props} />
     case 4:
-      return <div> <span> Placeholder</span></div>
+      return <ProjectCreationThumbnail {...props} />
     default:
       return null;
   }

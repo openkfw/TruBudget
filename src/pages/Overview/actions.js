@@ -8,6 +8,7 @@ export const PROJECT_NAME = 'PROJECT_NAME';
 export const PROJECT_AMOUNT = 'PROJECT_AMOUNT';
 export const PROJECT_COMMENT = 'PROJECT_COMMENT';
 export const PROJECT_CURRENCY = 'PROJECT_CURRENCY';
+export const PROJECT_THUMBNAIL = 'PROJECT_THUMBNAIL';
 export const SET_PROJECT_CREATION_STEP = 'SET_PROJECT_CREATION_STEP';
 
 export const ADD_ASSIGNEMENT_ROLE = 'ADD_ASSIGNEMENT_ROLE';
@@ -23,16 +24,17 @@ export function fetchProjects() {
   }
 }
 
-export function createProject(name, amount, comment, currency, approver, assignee, bank) {
+export function createProject(name, amount, comment, currency, approver, assignee, bank, thumbnail) {
   return {
     type: CREATE_PROJECT,
-    name: name,
-    amount: amount,
-    comment: comment,
-    currency: currency,
+    name,
+    amount,
+    comment,
+    currency,
     approver,
     assignee,
-    bank
+    bank,
+    thumbnail
   }
 }
 
@@ -70,6 +72,14 @@ export function storeProjectComment(comment) {
     comment: comment
   }
 }
+
+export function storeProjectThumbnail(thumbnail) {
+  return {
+    type: PROJECT_THUMBNAIL,
+    thumbnail: thumbnail
+  }
+}
+
 
 export function setProjectCreationStep(step) {
   return {

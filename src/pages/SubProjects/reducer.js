@@ -17,7 +17,7 @@ const defaultState = fromJS({
   projectBank: [],
   subProjects: [],
   subProjectName: '',
-  subprojectVisible: false,
+  subprojectsDialogVisible: false,
   subProjectAmount: 0,
   subProjectComment: '',
   subProjectCurrency: '',
@@ -42,7 +42,7 @@ export default function detailviewReducer(state = defaultState, action) {
         subProjects: action.projectDetails.subProjects,
       });
     case SHOW_SUBPROJECT_DIALOG:
-      return state.set('subprojectDialogVisible', action.show);
+      return state.set('subprojectsDialogVisible', action.show);
     case SUBPROJECT_NAME:
       return state.set('subProjectName', action.name);
     case SUBPROJECT_AMOUNT:

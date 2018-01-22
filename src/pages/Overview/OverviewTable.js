@@ -4,27 +4,28 @@ import { toAmountString, statusMapping, tsToString } from '../../helper';
 import { Card, CardActions, CardMedia, CardTitle } from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import { List, ListItem } from 'material-ui/List';
-
 import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import InfoIcon from 'material-ui/svg-icons/content/create';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import _ from 'lodash';
 import { ACMECorpDarkBlue } from '../../colors';
 import strings from '../../localizeStrings'
 
 const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {
-    const amount = toAmountString(project.details.amount, project.details.currency)
-    const status = strings.common.status + ': ' + statusMapping(project.details.status)
-    const comment = project.details.comment
-    const imagePath = project.details.name === 'School1' ? './school.jpg' : './amazon_cover.jpg'
-    const dateString = tsToString(project.details.createTS)
+    const { amount, currency, status, comment, thumbnail, createTS } = project.details
+    const amountString = toAmountString(amount, currency)
+    const mappedStatus = strings.common.status + ': ' + statusMapping(status)
+    const imagePath = !_.isEmpty(thumbnail) ? thumbnail : '/amazon_cover.jpg'
+    const dateString = tsToString(createTS)
+
     return (
       <Card aria-label='project' key={index} style={{ margin: '20px', width: '35%', maxWidth: '300px' }}>
         <Card>
           <CardMedia
-            overlay={<CardTitle title={project.details.name} subtitle={status} />}
+            overlay={<CardTitle title={project.details.name} subtitle={mappedStatus} />}
           >
             <img src={imagePath} alt='projectType' />
           </CardMedia>
@@ -44,7 +45,7 @@ const getTableEntries = ({ projects, history }) => {
           <ListItem
             disabled={true}
             leftIcon={<AmountIcon />}
-            primaryText={amount}
+            primaryText={amountString}
             secondaryText={strings.common.budget}
           />
 
