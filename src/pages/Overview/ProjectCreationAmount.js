@@ -27,9 +27,11 @@ const ProjectCreationAmount = (props) => {
   }
   return (
     <div style={{
-      width: '90%',
-      left: '20%',
-      position: 'relative',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: '30px'
     }}>
       <TextField
         floatingLabelText={floatingLabelText}

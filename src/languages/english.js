@@ -80,6 +80,7 @@ const en = {
     project_budget: 'Project Budget',
     project_comment: 'Project Comment',
     project_roles: 'Project Roles',
+    project_thumbnail: 'Project Thumbnail',
     project_title: 'Project title',
     project_title_description: 'Name of the project',
     project_budget_amount: 'Project budget amount',

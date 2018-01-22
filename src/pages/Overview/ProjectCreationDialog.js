@@ -49,6 +49,7 @@ const handleSubmit = (props) => {
 }
 
 
+
 const ProjectCreationDialog = (props) => {
   const { creationDialogShown, title } = props;
   return (
@@ -58,6 +59,10 @@ const ProjectCreationDialog = (props) => {
       modal={true}
       bodyStyle={{
         minHeight: '400px'
+      }}
+      contentStyle={{
+        width: '45%',
+        maxWidth: 'none',
       }}
       actionsContainerStyle={{
         display: 'flex',

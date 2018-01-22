@@ -25,9 +25,11 @@ class ProjectCreationComment extends Component {
     }
     return (
       <div style={{
-        width: '40%',
-        left: '20%',
-        position: 'relative'
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: '6px'
       }}>
         <TextField
           aria-label="commentinput"

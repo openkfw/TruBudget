@@ -49,9 +49,7 @@ class ProjectCreationCurrency extends Component {
     return (
       <SelectField style={{
         width: '27%',
-        top: '15px',
-        left: '5px',
-        position: 'relative'
+        marginLeft: '15px',
       }}
         floatingLabelText={strings.project.project_currency}
         value={this.props.projectCurrency}
