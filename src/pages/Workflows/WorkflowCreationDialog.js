@@ -51,8 +51,13 @@ const handleSubmit = (props) => {
 }
 
 const WorkflowCreationDialog = (props) => (
-  <Dialog title={props.editMode ? strings.workflow.edit_item : strings.workflow.workflow} modal={true} bodyStyle={{ minHeight: '200px' }} actionsContainerStyle={{ display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between' }} open={props.workflowDialogVisible}
-    onRequestClose={props.hideWorkflowDialog} editMode={props.editMode} actions={getWorkflowActions(props, handleCancel, handleBack, handleNext, handleSubmit)}>
+  <Dialog title={props.editMode ? strings.workflow.edit_item : strings.workflow.workflow}
+    modal={true}
+    bodyStyle={{ minHeight: '200px' }}
+    actionsContainerStyle={{ display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}
+    open={props.workflowDialogVisible}
+    onRequestClose={props.hideWorkflowDialog} editMode={props.editMode}
+    actions={getWorkflowActions(props, handleCancel, handleBack, handleNext, handleSubmit)}>
     <WorkflowCreationStepper {...props} />
   </Dialog>
 );

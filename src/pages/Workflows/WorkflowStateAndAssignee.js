@@ -30,7 +30,12 @@ class WorkflowStateAndAssignee extends Component {
   render() {
     const { workflowState, editMode, workflowApprovalRequired } = this.props;
     return (
-      <div style={{ display: 'flex', width: '90%', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+      }}>
         <SelectField floatingLabelText={strings.common.status} onChange={this.handleState} value={workflowState} disabled={!editMode} style={{}}>
           <MenuItem value='open' primaryText={strings.common.open} />
           <MenuItem value='in_progress' primaryText={strings.common.in_progress} />

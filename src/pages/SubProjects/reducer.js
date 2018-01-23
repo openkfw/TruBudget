@@ -7,7 +7,7 @@ import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
   projectName: '',
-  projectAmount: 0,
+  projectAmount: '',
   projectCurrency: '',
   projectComment: 'Default Comment',
   projectStatus: 'open',
@@ -18,7 +18,7 @@ const defaultState = fromJS({
   subProjects: [],
   subProjectName: '',
   subprojectsDialogVisible: false,
-  subProjectAmount: 0,
+  subProjectAmount: '',
   subProjectComment: '',
   subProjectCurrency: '',
   showHistory: false,

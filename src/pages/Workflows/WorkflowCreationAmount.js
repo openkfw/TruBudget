@@ -57,11 +57,11 @@ const WorkflowCreationAmount = (props) => {
         </RadioButtonGroup>
       </div>
       <div style={{
-        width: '90%',
-        left: '20%',
-        position: 'relative',
-        borderCOlor: 'red',
-        borderWidth: 2
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: '10px'
       }}>
         <TextField
           floatingLabelText={floatingLabelText}
