@@ -20,7 +20,7 @@ const defaultState = fromJS({
   projectApprover: [],
   projectAssignee: [],
   projectCurrency: 'EUR',
-  projectThumbnail: '/amazon_cover.jpg',
+  projectThumbnail: '/Thumbnail_0001.jpg',
   projectBank: []
 });
 

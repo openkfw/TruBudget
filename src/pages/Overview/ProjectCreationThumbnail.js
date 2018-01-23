@@ -5,21 +5,7 @@ import Subheader from 'material-ui/Subheader';
 import NotFilledStar from 'material-ui/svg-icons/toggle/star-border';
 import FilledStar from 'material-ui/svg-icons/toggle/star';
 import { storeProjectThumbnail } from './actions';
-import { red } from '../../colors';
-
-const styles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    width: '75%',
-    height: 450,
-    overflowY: 'auto',
-  },
-};
-
+import { ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors';
 
 const images = [
   {
@@ -95,9 +81,20 @@ const images = [
     src: '/Thumbnail_0024.jpg',
   },
 
-
 ];
 
+const styles = {
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  gridList: {
+    width: '90%',
+    height: 450,
+    overflowY: 'auto',
+  },
+};
 
 /**
  * A simple example of a scrollable `GridList` containing a [Subheader](/#/components/subheader).
@@ -108,13 +105,21 @@ const ProjectCreationThumbnail = (props) => {
     <div style={styles.root}>
       <GridList
         cellHeight={180}
-        cols={3}
+        cols={4}
         style={styles.gridList}
       >
         {images.map((image) => (
           <GridTile
             onTouchTap={() => storeProjectThumbnail(image.src)}
             key={image.src}
+            title=' ' // Otherwise the action buttons would not be visible
+            actionIcon={<IconButton> {
+              projectThumbnail === image.src ?
+                <FilledStar color="white" /> : <NotFilledStar color="white" />
+            }</IconButton>}
+            actionPosition="right"
+            titlePosition="top"
+            titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
           >
             <img src={image.src} />
           </GridTile>
