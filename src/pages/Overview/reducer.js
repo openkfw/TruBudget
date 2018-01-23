@@ -14,13 +14,13 @@ const defaultState = fromJS({
   projects: [],
   projectDialogVisible: false,
   projectName: '',
-  projectAmount: 0,
+  projectAmount: '',
   projectComment: '',
   creationStep: 0,
   projectApprover: [],
   projectAssignee: [],
   projectCurrency: 'EUR',
-  projectThumbnail: '',
+  projectThumbnail: '/amazon_cover.jpg',
   projectBank: []
 });
 

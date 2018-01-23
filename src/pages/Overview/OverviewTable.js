@@ -27,7 +27,7 @@ const getTableEntries = ({ projects, history }) => {
           <CardMedia
             overlay={<CardTitle title={project.details.name} subtitle={mappedStatus} />}
           >
-            <img src={imagePath} alt='projectType' />
+            <img style={{ height: '250px', width: '250px' }} src={imagePath} alt='projectType' />
           </CardMedia>
         </Card>
         <CardActions style={{ display: 'flex', flexDirection: 'column', height: '20px', alignItems: 'flex-end', marginTop: '-40px' }}>

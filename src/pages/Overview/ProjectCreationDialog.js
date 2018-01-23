@@ -61,7 +61,7 @@ const ProjectCreationDialog = (props) => {
         minHeight: '400px'
       }}
       contentStyle={{
-        width: '45%',
+        width: '60%',
         maxWidth: 'none',
       }}
       actionsContainerStyle={{
