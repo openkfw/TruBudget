@@ -79,14 +79,15 @@ class Api {
     currency: subProjectCurrency,
     status: `open`
   })
-  postProject = (name, amount, comment, currency, approver, assignee, bank) => axios.post(`${this.prefix}/projects`, {
+  postProject = (name, amount, comment, currency, approver, assignee, bank, thumbnail) => axios.post(`${this.prefix}/projects`, {
     name,
     amount,
     comment,
     currency,
     approver,
     assignee,
-    bank
+    bank,
+    thumbnail
   })
   fetchNodeInformation = () => axios.get(`${this.prefix}/nodes`);
   fetchNotifications = (user) => axios.get(`${this.prefix}/notifications/` + user);

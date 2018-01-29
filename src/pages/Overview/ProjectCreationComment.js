@@ -17,17 +17,20 @@ class ProjectCreationComment extends Component {
   render() {
     var floatingLabelText = strings.project.project_comment
     const hintText = strings.common.comment_description
-
+    let marginTop = '6px'
     if (this.props.type === 'subproject') {
       floatingLabelText = strings.subproject.subproject_comment
     } else if (this.props.type === 'workflow') {
       floatingLabelText = strings.workflow.workflow_comment
+      marginTop = '0px'
     }
     return (
       <div style={{
-        width: '40%',
-        left: '20%',
-        position: 'relative'
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: marginTop
       }}>
         <TextField
           aria-label="commentinput"

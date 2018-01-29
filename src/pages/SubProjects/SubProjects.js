@@ -22,7 +22,7 @@ const SubProjects = (props) => {
         {...props}
         title={strings.subproject.subproject_add}
         createProject={props.createSubProjectItem}
-        creationDialogShown={props.subprojectDialogVisible}
+        creationDialogShown={props.subprojectsDialogVisible}
         projectName={props.subProjectName}
         storeProjectName={props.storeSubProjectName}
         projectAmount={props.subProjectAmount}

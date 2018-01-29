@@ -15,20 +15,25 @@ class ProjectCreationName extends Component {
   };
 
   render() {
-    var floatingLabelText = strings.project.project_title
-    var hintText = strings.project.project_title_description
-    if (this.props.type === 'subproject') {
+    const { type } = this.props;
+    let floatingLabelText = strings.project.project_title
+    let hintText = strings.project.project_title_description
+    let marginTop = '30px'
+    if (type === 'subproject') {
       floatingLabelText = strings.subproject.subproject_title
       hintText = strings.subproject.subproject_title_description
-    } else if (this.props.type === 'workflow') {
+    } else if (type === 'workflow') {
       floatingLabelText = strings.workflow.workflow_title
       hintText = strings.workflow.workflow_title_description
+      marginTop = '0px'
     }
     return (
       <div style={{
-        width: '40%',
-        left: '20%',
-        position: 'relative'
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: marginTop
       }}>
         <TextField
           floatingLabelText={floatingLabelText}

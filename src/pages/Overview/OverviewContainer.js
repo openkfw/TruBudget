@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep, addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole } from './actions';
+import { fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep, addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole, storeProjectThumbnail } from './actions';
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
 import { fetchRoles } from '../Login/actions';
@@ -26,7 +26,7 @@ class OverviewContainer extends Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchProjects: () => dispatch(fetchProjects()),
-    createProject: (name, amount, comment, currency, _, approver, assignee, bank) => dispatch(createProject(name, amount, comment, currency, approver, assignee, bank)),
+    createProject: (name, amount, comment, currency, _, approver, assignee, bank, thumbnail) => dispatch(createProject(name, amount, comment, currency, approver, assignee, bank, thumbnail)),
     showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
     hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
     storeProjectName: (name) => dispatch(storeProjectName(name)),
@@ -42,7 +42,8 @@ const mapDispatchToProps = (dispatch) => {
     showSnackBar: () => dispatch(showSnackBar(true)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     setProjectCreationStep: (step) => dispatch(setProjectCreationStep(step)),
-    fetchRoles: () => dispatch(fetchRoles())
+    fetchRoles: () => dispatch(fetchRoles()),
+    storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail))
   };
 }
 
@@ -54,6 +55,7 @@ const mapStateToProps = (state) => {
     projectName: state.getIn(['overview', 'projectName']),
     projectAmount: state.getIn(['overview', 'projectAmount']),
     projectComment: state.getIn(['overview', 'projectComment']),
+    projectThumbnail: state.getIn(['overview', 'projectThumbnail']),
     projectCurrency: state.getIn(['overview', 'projectCurrency']),
     projectApprover: state.getIn(['overview', 'projectApprover']),
     projectAssignee: state.getIn(['overview', 'projectAssignee']),

@@ -28,6 +28,9 @@ class WorkflowContainer extends Component {
     this.props.hideWorkflowDetails();
   }
 
+  componentWillUnmount() {
+    this.props.hideWorkflowDialog();
+  }
 
   render() {
     const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);

@@ -35,13 +35,12 @@ const handleNext = (props) => props.setProjectCreationStep(props.creationStep + 
 const extractRole = (roles) => _.map(roles, role => role.role);
 
 const handleSubmit = (props) => {
-  const { createProject, type, hideWorkflowDialog, showSnackBar, setProjectCreationStep, storeSnackBarMessage, projectName, projectAmount, projectComment, projectCurrency, projectApprover, projectAssignee, projectBank, location } = props;
+  const { createProject, type, hideWorkflowDialog, showSnackBar, setProjectCreationStep, storeSnackBarMessage, projectName, projectAmount, projectComment, projectCurrency, projectThumbnail, projectApprover, projectAssignee, projectBank, location } = props;
   const approvers = type === 'subproject' ? projectApprover : extractRole(projectApprover);
   const assignees = type === 'subproject' ? projectAssignee : extractRole(projectAssignee);
   const banks = type === 'subproject' ? projectBank : extractRole(projectBank);
-
   createProject(projectName, projectAmount, projectComment, projectCurrency, location.pathname.split('/')[2],
-    approvers, assignees, banks);
+    approvers, assignees, banks, projectThumbnail);
   hideWorkflowDialog();
   storeSnackBarMessage('Added ' + projectName)
   showSnackBar();
@@ -49,15 +48,21 @@ const handleSubmit = (props) => {
 }
 
 
+
 const ProjectCreationDialog = (props) => {
   const { creationDialogShown, title } = props;
   return (
 
     <Dialog
+      open={creationDialogShown}
       title={title}
       modal={true}
       bodyStyle={{
         minHeight: '400px'
+      }}
+      contentStyle={{
+        width: '60%',
+        maxWidth: 'none',
       }}
       actionsContainerStyle={{
         display: 'flex',
@@ -65,7 +70,6 @@ const ProjectCreationDialog = (props) => {
         flexDirection: 'row',
         justifyContent: 'space-between'
       }}
-      open={creationDialogShown}
       actions={getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}
     >
       <ProjectCreationStepper {...props} />

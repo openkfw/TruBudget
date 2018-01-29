@@ -21,7 +21,6 @@ class SubProjectsContainer extends Component {
   }
 
   render() {
-
     return (
       <div style={globalStyles.innerContainer}>
         <ProjectDetails {...this.props} />
@@ -66,7 +65,7 @@ const mapStateToProps = (state) => {
     projectAssignee: state.getIn(['detailview', 'projectAssignee']),
     projectBank: state.getIn(['detailview', 'projectBank']),
     subProjects: state.getIn(['detailview', 'subProjects']).toJS(),
-    subprojectDialogVisible: state.getIn(['detailview', 'subprojectDialogVisible']),
+    subprojectsDialogVisible: state.getIn(['detailview', 'subprojectsDialogVisible']),
     subProjectName: state.getIn(['detailview', 'subProjectName']),
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
     subProjectComment: state.getIn(['detailview', 'subProjectComment']),

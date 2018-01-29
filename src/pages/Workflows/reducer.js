@@ -14,7 +14,7 @@ const defaultState = fromJS({
   },
   workflowDialogVisible: false,
   workflowName: '',
-  workflowAmount: 0,
+  workflowAmount: '',
   workflowAmountType: 'na',
   workflowCurrency: '',
   workflowComment: '',

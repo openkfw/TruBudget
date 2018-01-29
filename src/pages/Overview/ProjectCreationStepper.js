@@ -5,6 +5,7 @@ import ProjectCreationName from './ProjectCreationName';
 import ProjectCreationAmount from './ProjectCreationAmount';
 import ProjectCreationComment from './ProjectCreationComment';
 import ProjectCreationRoles from './ProjectCreationRoles';
+import ProjectCreationThumbnail from './ProjectCreationThumbnail';
 import strings from '../../localizeStrings'
 const getStepContent = ({ creationStep, ...props }) => {
   switch (creationStep) {
@@ -16,6 +17,8 @@ const getStepContent = ({ creationStep, ...props }) => {
       return <ProjectCreationComment storeProjectComment={props.storeProjectComment} projectComment={props.projectComment} type={props.type} />
     case 3:
       return <ProjectCreationRoles {...props} />
+    case 4:
+      return <ProjectCreationThumbnail {...props} />
     default:
       return null;
   }
@@ -25,7 +28,8 @@ const steps = [
   strings.project.project_name,
   strings.project.project_budget,
   strings.project.project_comment,
-  strings.project.project_roles
+  strings.project.project_roles,
+  strings.project.project_thumbnail
 ];
 
 const getSteps = (numberOfSteps) => {

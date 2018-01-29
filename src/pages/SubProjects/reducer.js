@@ -7,7 +7,7 @@ import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
   projectName: '',
-  projectAmount: 0,
+  projectAmount: '',
   projectCurrency: '',
   projectComment: 'Default Comment',
   projectStatus: 'open',
@@ -17,8 +17,8 @@ const defaultState = fromJS({
   projectBank: [],
   subProjects: [],
   subProjectName: '',
-  subprojectVisible: false,
-  subProjectAmount: 0,
+  subprojectsDialogVisible: false,
+  subProjectAmount: '',
   subProjectComment: '',
   subProjectCurrency: '',
   showHistory: false,
@@ -42,7 +42,7 @@ export default function detailviewReducer(state = defaultState, action) {
         subProjects: action.projectDetails.subProjects,
       });
     case SHOW_SUBPROJECT_DIALOG:
-      return state.set('subprojectDialogVisible', action.show);
+      return state.set('subprojectsDialogVisible', action.show);
     case SUBPROJECT_NAME:
       return state.set('subProjectName', action.name);
     case SUBPROJECT_AMOUNT:
