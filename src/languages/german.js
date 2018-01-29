@@ -64,6 +64,7 @@ const de = {
     project_disbursement_authority_role: 'Select disbursement authority role',
     project_disbursement_authority_role_description: 'The authorities enabled to approve financial transactions',
     project_authority_organization_search: 'Search organizations',
+    project_authority_role_search: 'Search role',
 
   },
   subproject: {

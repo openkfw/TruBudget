@@ -60,7 +60,6 @@ class RoleSelection extends Component {
 
   renderSteps = (steps) => {
     const numberOfSteps = steps.length;
-
     return steps.map((step, index) =>
       <Step key={'steps' + index}>
         <StepLabel>{step.title}</StepLabel>

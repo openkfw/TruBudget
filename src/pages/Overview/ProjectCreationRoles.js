@@ -59,6 +59,7 @@ const getSteps = ({ roles,
   ]
 
 const ProjectCreationRoles = (props) => {
+  console.log(props.roles)
   const steps = getSteps(props);
   return (
     <div style={styles.container}>

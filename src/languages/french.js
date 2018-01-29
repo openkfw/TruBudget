@@ -64,6 +64,7 @@ const fr = {
     project_disbursement_authority_role: 'Sélectionnez le rôle d\'autorité de décaissement',
     project_disbursement_authority_role_description: 'Les autorités ont autorisé l\'approbation des transactions financières',
     project_authority_organization_search: 'Rechercher organisations',
+    project_authority_role_search: 'Search role',
 
   },
   subproject: {
