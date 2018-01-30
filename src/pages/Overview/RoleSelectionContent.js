@@ -21,7 +21,7 @@ const styles = {
 }
 
 const dataSourceConfig = {
-  text: 'organization',
+  text: 'displayName',
   value: 'role',
 };
 
@@ -36,7 +36,7 @@ class RoleSelectionContent extends Component {
         key={index}
         style={styles.chip}
         onRequestDelete={() => this.onRemoveChip(role)}
-      >{role.organization}</Chip>
+      >{role.displayName}</Chip>
     )
   })
 
@@ -70,16 +70,23 @@ class RoleSelectionContent extends Component {
     })
   }
 
+  mapDataSource = (dataSource) => (
+    dataSource.map(item => {
+      return { "role": item.role, organization: item.organization, "displayName": `${item.organization} (${item.role})` }
+    })
+  )
+
 
   render = () => {
-    const unSelectedDataSource = _.differenceBy(this.props.dataSource, this.props.selections);
+    const mappedDataSource = this.mapDataSource(this.props.dataSource)
+    const unSelectedDataSource = _.differenceBy(mappedDataSource, this.props.selections);
     return (
       <div style={styles.container}>
         <AutoComplete
           ref="autoComplete"
           aria-label="roleselection"
           onKeyPress={this.captureEnterClick}
-          floatingLabelText={strings.project.project_authority_organization_search}
+          floatingLabelText={strings.project.project_authority_role_search}
           searchText={this.state.searchText}
           dataSource={unSelectedDataSource}
           onNewRequest={this.onSelect}
