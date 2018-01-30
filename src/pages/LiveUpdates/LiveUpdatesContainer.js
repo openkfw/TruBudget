@@ -5,7 +5,6 @@ import { fetchUsers } from '../Login/actions';
 import { fetchPeers, fetchStreamNames } from '../Navbar/actions';
 import { fetchNotifications, fetchHistoryItems } from '../Notifications/actions';
 import { fetchProjects } from '../Overview/actions';
-import { fetchNodeInformation } from '../Dashboard/actions';
 import { fetchProjectDetails } from '../SubProjects/actions';
 import { fetchWorkflowItems } from '../Workflows/actions';
 import { fetchUpdates } from './actions';
@@ -68,7 +67,6 @@ const mapDispatchToProps = (dispatch) => {
     fetchNotifications: (user) => dispatch(fetchNotifications(user)),
     fetchStreamNames: () => dispatch(fetchStreamNames()),
     fetchProjects: () => dispatch(fetchProjects()),
-    fetchNodeInformation: () => dispatch(fetchNodeInformation()),
     fetchProjectDetails: (project) => dispatch(fetchProjectDetails(project)),
     fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),

@@ -458,7 +458,6 @@ export function* fetchUpdatesSaga({ user }) {
     const notifications = yield api.fetchNotifications(user);
     const streamNames = yield api.fetchStreamNames();
     const projects = yield api.fetchProjects();
-    const nodeInformation = yield api.fetchNodeInformation();
     yield put({
       type: FETCH_UPDATES_SUCCESS,
       users: users.data,
@@ -466,7 +465,6 @@ export function* fetchUpdatesSaga({ user }) {
       notifications: notifications.data,
       streamNames: streamNames.data,
       projects: projects.data,
-      nodeInformation: nodeInformation.data
     });
   } catch (error) {
     yield handleError(error);
