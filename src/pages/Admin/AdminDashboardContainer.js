@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import { fetchNodePermissions, showRolesDialog, hideRolesDialog, addRole, showUsersDialog, hideUsersDialog, setRoleName, setRoleOrganization, setRoleReadPermission, setRoleWritePermission, setRoleAdminPermission, setUsername, setUserFullName, setUserPassword, setUserAvatar, setUserRole, addUser, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword, isRoleNameError, isOrganizationError, isUsernameError, isFullNameError, isRoleNotFoundError, isPasswordError } from './actions';
 import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin, logout } from '../Login/actions';
@@ -96,7 +97,7 @@ const mapStateToProps = (state) => {
     showSnackBar: state.getIn(['notifications', 'showSnackBar']),
     snackBarMessage: state.getIn(['notifications', 'snackBarMessage']),
     snackBarMessageIsError: state.getIn(['notifications', 'snackBarMessageIsError']),
-    nodeInformation: nodeInformation.toObject ? nodeInformation.toObject() : nodeInformation
+    nodeInformation: !_.isEmpty(nodeInformation) && nodeInformation.toObject ? nodeInformation.toObject() : nodeInformation
   }
 }
 
