@@ -86,7 +86,7 @@ class RoleSelectionContent extends Component {
           ref="autoComplete"
           aria-label="roleselection"
           onKeyPress={this.captureEnterClick}
-          floatingLabelText={strings.project.project_authority_organization_search}
+          floatingLabelText={strings.project.project_authority_role_search}
           searchText={this.state.searchText}
           dataSource={unSelectedDataSource}
           onNewRequest={this.onSelect}
