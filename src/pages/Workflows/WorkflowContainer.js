@@ -24,11 +24,9 @@ class WorkflowContainer extends Component {
     this.props.setSelectedView(subProjectId, 'subProject');
     this.props.fetchRoles();
   }
-  componentWillUnmount() {
-    this.props.hideWorkflowDetails();
-  }
 
   componentWillUnmount() {
+    this.props.hideWorkflowDetails();
     this.props.hideWorkflowDialog();
   }
 

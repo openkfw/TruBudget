@@ -7,7 +7,6 @@ import {
 } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-import _ from 'lodash';
 import strings from '../../localizeStrings'
 
 

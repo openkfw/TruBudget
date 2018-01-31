@@ -40,8 +40,8 @@ const en = {
   },
 
   adminDashboard: {
-    role_name_error: "Incorrect role name*",
-    role_organization_error: "Incorrect organization*",
+    role_name_error: "Incorrect role name",
+    role_organization_error: "Incorrect organization",
     roles: 'Roles',
     role: 'Role',
     new_role: 'New Role',

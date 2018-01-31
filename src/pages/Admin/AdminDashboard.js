@@ -34,9 +34,11 @@ const AdminDashBoard = (props) => {
         <AdminLoginDialog {...props} />) : (
           <div style={styles.tabsContainer}>
             <AdminDashboardTabs {...props} />
-            <NotificationsSnackbar {...props} />
+
           </div>
+
         )}
+      <NotificationsSnackbar {...props} />
     </div>
   )
 }
