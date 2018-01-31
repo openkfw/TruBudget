@@ -31,11 +31,12 @@ class RoleSelectionContent extends Component {
   }
 
   createChips = (selectedRoles) => selectedRoles.map((role, index) => {
+
     return (
       <Chip
         key={index}
         style={styles.chip}
-        onRequestDelete={() => this.onRemoveChip(role)}
+        onRequestDelete={() => this.onRemoveChip(index)}
       >{role.displayName}</Chip>
     )
   })
@@ -51,8 +52,8 @@ class RoleSelectionContent extends Component {
 
   captureEnterClick = (event) => {
     if (event.charCode === 13) {
-      const unSelectedDataSource = _.differenceBy(this.props.dataSource, this.props.selections);
-      const index = unSelectedDataSource.findIndex((role) => role.organization.toLowerCase() === _.trim(this.state.searchText).toLowerCase())
+      const unSelectedDataSource = _.differenceBy(this.props.dataSource, this.props.selections, 'role');
+      const index = unSelectedDataSource.findIndex((role) => role.role.toLowerCase() === _.trim(this.state.searchText).toLowerCase())
       if (index > -1) {
         const role = unSelectedDataSource[index];
         this.onSelect(role, index);
@@ -60,8 +61,8 @@ class RoleSelectionContent extends Component {
     }
   }
 
-  onRemoveChip = (role) => {
-    this.props.removeSelection(role);
+  onRemoveChip = (index) => {
+    this.props.removeSelection(index);
   }
 
   handleUpdateInput = (text) => {
@@ -70,16 +71,9 @@ class RoleSelectionContent extends Component {
     })
   }
 
-  mapDataSource = (dataSource) => (
-    dataSource.map(item => {
-      return { "role": item.role, organization: item.organization, "displayName": `${item.organization} (${item.role})` }
-    })
-  )
-
-
   render = () => {
-    const mappedDataSource = this.mapDataSource(this.props.dataSource)
-    const unSelectedDataSource = _.differenceBy(mappedDataSource, this.props.selections);
+
+    const unSelectedDataSource = _.differenceBy(this.props.dataSource, this.props.selections, 'role');
     return (
       <div style={styles.container}>
         <AutoComplete

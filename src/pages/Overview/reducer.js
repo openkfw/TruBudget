@@ -55,17 +55,17 @@ export default function overviewReducer(state = defaultState, action) {
     case SET_PROJECT_CREATION_STEP:
       return state.set('creationStep', action.step);
     case ADD_APPROVER_ROLE:
-      return state.set('projectApprover', _.uniq([...state.get('projectApprover'), action.role]));
+      return state.set('projectApprover', fromJS(_.uniq([...state.get('projectApprover'), action.role])));
     case ADD_ASSIGNEMENT_ROLE:
-      return state.set('projectAssignee', _.uniq([...state.get('projectAssignee'), action.role]));
+      return state.set('projectAssignee', fromJS(_.uniq([...state.get('projectAssignee'), action.role])));
     case ADD_BANK_ROLE:
-      return state.set('projectBank', _.uniq([...state.get('projectBank'), action.role]));
+      return state.set('projectBank', fromJS(_.uniq([...state.get('projectBank'), action.role])));
     case REMOVE_APPROVER_ROLE:
-      return state.set('projectApprover', _.pull([...state.get('projectApprover')], action.role));
+      return state.set('projectApprover', state.get('projectApprover').delete(action.index));
     case REMOVE_ASSIGNEMENT_ROLE:
-      return state.set('projectAssignee', _.pull([...state.get('projectAssignee')], action.role));
+      return state.set('projectAssignee', state.get('projectAssignee').delete(action.index));
     case REMOVE_BANK_ROLE:
-      return state.set('projectBank', _.pull([...state.get('projectBank')], action.role));
+      return state.set('projectBank', state.get('projectBank').delete(action.index));
     case LOGOUT:
       return defaultState;
     default:

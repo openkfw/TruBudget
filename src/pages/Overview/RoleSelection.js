@@ -7,6 +7,7 @@ import {
 } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import _ from 'lodash';
 import strings from '../../localizeStrings'
 
 
@@ -31,21 +32,21 @@ class RoleSelection extends Component {
     }
   };
 
-  renderStepActions(step, lastStep) {
+  renderStepActions(step, index, lastStep) {
     const { stepIndex } = this.state;
-
     return (
       <div style={{ margin: '12px 0' }}>
         <RaisedButton
           label={stepIndex === lastStep ? strings.common.finish : strings.common.next}
           disableTouchRipple={true}
           disableFocusRipple={true}
+          disabled={step.selectedRoles.length === 0}
           aria-label="nextrole"
           primary={true}
           onTouchTap={this.handleNext}
           style={{ marginRight: 12 }}
         />
-        {step > 0 && (
+        {index > 0 && (
           <FlatButton
             label={strings.common.back}
             disabled={stepIndex === 0}
@@ -65,7 +66,7 @@ class RoleSelection extends Component {
         <StepLabel>{step.title}</StepLabel>
         <StepContent>
           {step.content}
-          {this.renderStepActions(index, numberOfSteps - 1)}
+          {this.renderStepActions(step, index, numberOfSteps - 1)}
         </StepContent>
       </Step>
     );
@@ -74,7 +75,6 @@ class RoleSelection extends Component {
   render = () => {
     const { steps } = this.props;
     const { stepIndex } = this.state;
-
     return (
       <Stepper activeStep={stepIndex} orientation="vertical">
         {this.renderSteps(steps)}

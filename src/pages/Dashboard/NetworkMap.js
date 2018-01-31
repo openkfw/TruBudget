@@ -19,7 +19,6 @@ export default class NetworkMap extends Component {
 
     for (let i = 0; i < addresses.length - 1; i++) {
       for (let j = i + 1; j < addresses.length; j++) {
-        console.log(addresses)
         allDirections.push(
           {
             "type": "Feature",
