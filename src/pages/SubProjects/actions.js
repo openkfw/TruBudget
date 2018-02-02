@@ -2,6 +2,7 @@ export const FETCH_PROJECT_DETAILS = 'FETCH_PROJECT_DETAILS';
 export const FETCH_PROJECT_DETAILS_SUCCESS = 'FETCH_PROJECT_DETAILS_SUCCESS';
 
 export const SHOW_SUBPROJECT_DIALOG = 'SHOW_SUBPROJECT_DIALOG';
+export const HIDE_SUBPROJECT_DIALOG = 'HIDE_SUBPROJECT_DIALOG';
 export const SHOW_SUBPROJECT_DIALOG_SUCCESS = 'SHOW_SUBPROJECT_DIALOG_SUCCESS';
 
 export const CREATE_SUBPROJECT_ITEM = 'CREATE_SUBPROJECT_ITEM';
@@ -36,10 +37,15 @@ export function createSubProjectItem(parentName, subProjectName, subProjectAmoun
   }
 }
 
-export function showWorkflowDialog(show) {
+export function showSubprojectDialog() {
   return {
     type: SHOW_SUBPROJECT_DIALOG,
-    show: show
+  }
+}
+
+export function hideSubprojectDialog() {
+  return {
+    type: HIDE_SUBPROJECT_DIALOG,
   }
 }
 

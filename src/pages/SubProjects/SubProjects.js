@@ -32,6 +32,7 @@ const SubProjects = (props) => {
         projectCurrency={props.subProjectCurrency}
         storeProjectCurrency={props.storeSubProjectCurrency}
         parentCurrency={props.projectCurrency}
+        hideDialog={props.hideSubprojectDialog}
         type={'subproject'}
         numberOfSteps={3}
       />
@@ -44,7 +45,7 @@ const SubProjects = (props) => {
         right: '-26px'
 
       }}>
-        <FloatingActionButton disabled={!isAllowedCreateProjects} backgroundColor={ACMECorpDarkBlue} onTouchTap={props.showWorkflowDialog} style={{
+        <FloatingActionButton disabled={!isAllowedCreateProjects} backgroundColor={ACMECorpDarkBlue} onTouchTap={props.showSubprojectDialog} style={{
           position: 'relative'
 
         }}>

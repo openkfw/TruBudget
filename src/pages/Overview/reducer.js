@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import {
   FETCH_PROJECTS_SUCCESS, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
-  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL
+  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL, HIDE_PROJECT_DIALOG
 } from './actions';
 import { LOGOUT } from '../Login/actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
@@ -20,6 +20,7 @@ const defaultState = fromJS({
   projectApprover: [],
   projectAssignee: [],
   projectCurrency: 'EUR',
+  nextButtonEnabled: false,
   projectThumbnail: '/Thumbnail_0001.jpg',
   projectBank: []
 });
@@ -30,7 +31,19 @@ export default function overviewReducer(state = defaultState, action) {
     case FETCH_PROJECTS_SUCCESS:
       return state.set('projects', action.projects);
     case SHOW_PROJECT_DIALOG:
-      return state.set('projectDialogVisible', action.show);
+      return state.set('projectDialogVisible', true);
+    case HIDE_PROJECT_DIALOG:
+      return state.merge({
+        projectName: defaultState.get('projectName'),
+        projectAmount: defaultState.get('projectAmount'),
+        projectComment: defaultState.get('projectComment'),
+        projectCurrency: defaultState.get('projectCurrency'),
+        projectApprover: defaultState.get('projectApprover'),
+        projectAssignee: defaultState.get('projectAssignee'),
+        projectBank: defaultState.get('projectBank'),
+        projectThumbnail: defaultState.get('projectThumbnail'),
+        projectDialogVisible: defaultState.get('projectDialogVisible'),
+      });
     case PROJECT_NAME:
       return state.set('projectName', action.name);
     case PROJECT_AMOUNT:

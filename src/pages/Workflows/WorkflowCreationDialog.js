@@ -10,6 +10,7 @@ const getWorkflowActions = (props, handleCancel, handleBack, handleNext, handleS
   const isFirstStep = props.creationStep === 0;
   const editMode = props.editMode;
 
+
   const cancelButton = <FlatButton label={strings.common.cancel} secondary={true} onTouchTap={() => handleCancel(props)} />
   const backButton = <FlatButton label={strings.common.back} primary={true} disabled={isFirstStep} onTouchTap={() => handleBack(props)} />
   const nextButton = <FlatButton label={strings.common.next} primary={true} disabled={isLastStep} onTouchTap={() => handleNext(props)} />
