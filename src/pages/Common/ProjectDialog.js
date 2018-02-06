@@ -3,7 +3,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import _ from 'lodash';
 import strings from '../../localizeStrings'
-import ProjectCreationStepper from './ProjectCreationStepper';
+import ProjectStepper from './ProjectStepper';
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
   const isLastStep = props.creationStep === props.numberOfSteps - 1;
@@ -25,7 +25,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
 }
 
 const handleCancel = (props) => {
-  props.onDialogCancel();
+  props.hideDialog();
   props.setProjectCreationStep(0);
 }
 
@@ -35,13 +35,13 @@ const handleNext = (props) => props.setProjectCreationStep(props.creationStep + 
 const extractRole = (roles) => _.map(roles, role => role.role);
 
 const handleSubmit = (props) => {
-  const { createProject, type, onDialogCancel, showSnackBar, setProjectCreationStep, storeSnackBarMessage, projectName, projectAmount, projectComment, projectCurrency, projectThumbnail, projectApprover, projectAssignee, projectBank, location } = props;
+  const { createProject, type, hideDialog, showSnackBar, setProjectCreationStep, storeSnackBarMessage, projectName, projectAmount, projectComment, projectCurrency, projectThumbnail, projectApprover, projectAssignee, projectBank, location } = props;
   const approvers = type === 'subproject' ? projectApprover : extractRole(projectApprover);
   const assignees = type === 'subproject' ? projectAssignee : extractRole(projectAssignee);
   const banks = type === 'subproject' ? projectBank : extractRole(projectBank);
   createProject(projectName, projectAmount, projectComment, projectCurrency, location.pathname.split('/')[2],
     approvers, assignees, banks, projectThumbnail);
-  onDialogCancel();
+  hideDialog();
   storeSnackBarMessage('Added ' + projectName)
   showSnackBar();
   setProjectCreationStep(0);
@@ -49,7 +49,7 @@ const handleSubmit = (props) => {
 
 
 
-const ProjectCreationDialog = (props) => {
+const ProjectDialog = (props) => {
   const { creationDialogShown, title } = props;
   return (
 
@@ -61,7 +61,7 @@ const ProjectCreationDialog = (props) => {
         minHeight: '400px'
       }}
       contentStyle={{
-        width: '60%',
+        width: '50%',
         maxWidth: 'none',
       }}
       actionsContainerStyle={{
@@ -72,10 +72,10 @@ const ProjectCreationDialog = (props) => {
       }}
       actions={getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}
     >
-      <ProjectCreationStepper {...props} />
+      <ProjectStepper {...props} />
     </Dialog>
   );
 }
 
 
-export default ProjectCreationDialog;
+export default ProjectDialog;
