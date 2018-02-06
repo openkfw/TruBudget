@@ -4,17 +4,16 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
 import ProjectCreationRoles from '../Overview/ProjectCreationRoles';
 import ProjectCreationThumbnail from '../Overview/ProjectCreationThumbnail';
-import ProjectDetails from './ProjectDetails';
+import ProjectDialogContent from './ProjectDialogContent';
 
 import strings from '../../localizeStrings'
 const getStepContent = ({ creationStep, ...props }) => {
   switch (creationStep) {
     case 0:
-      return <ProjectDetails {...props} />
+      return <ProjectDialogContent {...props} />
     case 1:
       return <ProjectCreationRoles {...props} />
-    case 2:
-      return <ProjectCreationThumbnail {...props} />
+
     default:
       return null;
   }
@@ -22,10 +21,7 @@ const getStepContent = ({ creationStep, ...props }) => {
 
 const steps = [
   strings.project.project_name,
-  strings.project.project_budget,
-  strings.project.project_comment,
   strings.project.project_roles,
-  strings.project.project_thumbnail
 ];
 
 const getSteps = (numberOfSteps) => {
