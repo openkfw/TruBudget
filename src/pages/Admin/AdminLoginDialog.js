@@ -2,8 +2,8 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import strings from '../../localizeStrings';
-import UsernameTextField from '../Common/UsernameTextField';
-import PasswordTextField from '../Common/PasswordTextField';
+import Username from '../Common/Username';
+import Password from '../Common/Password';
 
 const styles = {
   checkbox: {
@@ -73,8 +73,8 @@ const AdminLoginDialog = (props) => {
     <Dialog title={strings.adminDashboard.admin_login} modal={true} contentStyle={styles.customContentStyle} actions={actions} open={true}>
       <div style={styles.container}>
         <div style={styles.textFieldDiv}>
-          <UsernameTextField username={username} storeUsername={setAdminUsername} loginFailed={adminLoginFailed} />
-          <PasswordTextField password={password} storePassword={setAdminPassword} loginFailed={adminLoginFailed} />
+          <Username username={username} storeUsername={setAdminUsername} loginFailed={adminLoginFailed} />
+          <Password password={password} storePassword={setAdminPassword} loginFailed={adminLoginFailed} />
           {adminLoggedIn && !loggedInAdminUser.adminUser ? <span style={styles.errorText}> {strings.adminDashboard.user_not_authorized} </span> : ""}
         </div>
       </div>

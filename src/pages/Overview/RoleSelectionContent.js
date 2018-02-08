@@ -73,12 +73,7 @@ class RoleSelectionContent extends Component {
 
   render = () => {
 
-<<<<<<< HEAD
     const unselectedDataSource = _.differenceBy(this.props.dataSource, this.props.selections, 'role');
-=======
-    const unSelectedDataSource = _.differenceBy(this.props.dataSource, this.props.selections, 'role');
-    console.log(unSelectedDataSource)
->>>>>>> compressed project dialog
     return (
       <div style={styles.container}>
         <AutoComplete

@@ -24,6 +24,19 @@ export const fromAmountString = (amount, currency) => {
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 }
 
+export const getCurrencies = (parentCurrency) => {
+  return ['EUR', 'USD', 'BRL'].map((currency) => {
+    const disabled = !_.isEmpty(parentCurrency) && !(parentCurrency === currency);
+    return {
+      disabled,
+      primaryText: currency,
+      value: currency,
+    }
+  })
+}
+
+
+
 export const toAmountString = (amount, currency) => accounting.formatMoney(amount, getCurrencyFormat(currency));
 
 export const tsToString = (ts) => {
@@ -179,7 +192,11 @@ export const getProgressInformation = (items) => {
   return projectStatus;
 }
 
+export const preselectCurrency = (parentCurrency, setCurrency) => {
+  const preSelectedCurrency = _.isUndefined(parentCurrency) ? 'EUR' : parentCurrency
+  setCurrency(preSelectedCurrency)
 
+}
 export const createTaskData = (items, type) => {
   const projectStatus = getProgressInformation(items)
   if (type === 'workflows') {

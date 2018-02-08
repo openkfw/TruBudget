@@ -15,7 +15,7 @@ const defaultState = fromJS({
   projectName: '',
   projectAmount: '',
   projectComment: '',
-  creationStep: 0,
+  currentStep: 0,
   projectApprover: Set(),
   projectAssignee: Set(),
   projectBank: Set(),
@@ -65,7 +65,7 @@ export default function overviewReducer(state = defaultState, action) {
         projectThumbnail: defaultState.get('projectThumbnail'),
       });
     case SET_PROJECT_CREATION_STEP:
-      return state.set('creationStep', action.step);
+      return state.set('currentStep', action.step);
     case ADD_APPROVER_ROLE:
       return state.update('projectApprover', approvers => approvers.add(action.role));
     case ADD_ASSIGNEMENT_ROLE:

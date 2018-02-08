@@ -6,7 +6,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 
 import WorkflowTable from './WorkflowTable';
-import WorkflowCreationDialog from './WorkflowCreationDialog';
+import WorkflowCreation from './WorkflowCreation';
 import ChangeLog from '../Notifications/ChangeLog'
 import SortIcon from 'material-ui/svg-icons/content/low-priority'
 import { ACMECorpGrey, ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors.js'
@@ -91,7 +91,7 @@ const Workflow = (props) => {
       </div>
       <WorkflowTable {...props} />
       <ChangeLog {...props} />
-      <WorkflowCreationDialog {...props} />
+      <WorkflowCreation {...props} />
     </Card >
   )
 };

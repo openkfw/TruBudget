@@ -86,7 +86,7 @@ export function storeProjectThumbnail(thumbnail) {
 }
 
 
-export function setProjectCreationStep(step) {
+export function setCurrentStep(step) {
   return {
     type: SET_PROJECT_CREATION_STEP,
     step

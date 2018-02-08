@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment } from './actions';
-import { setProjectCreationStep } from '../Overview/actions';
+
+import { fetchProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment } from './actions';
+import { setCurrentStep } from '../Overview/actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../Notifications/actions';
 import { setSelectedView } from '../Navbar/actions';
@@ -38,7 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
-    createSubProjectItem: (subprojectName, amount, comment, currency, parentName) => dispatch(createSubProjectItem(parentName, subprojectName, amount, comment, currency)),
+    createSubProject: (subprojectName, amount, comment, currency, parentName) => dispatch(createSubProject(parentName, subprojectName, amount, comment, currency)),
     storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectComment: (comment) => dispatch(storeSubProjectComment(comment)),
     storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency)),
@@ -48,7 +49,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(showHistory(false)),
     fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
-    setProjectCreationStep: (step) => dispatch(setProjectCreationStep(step)),
+    setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     fetchRoles: () => dispatch(fetchRoles())
   };
 }
@@ -74,7 +75,7 @@ const mapStateToProps = (state) => {
     historyItems: state.getIn(['notifications', 'historyItems']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     users: state.getIn(['login', 'users']).toJS(),
-    creationStep: state.getIn(['overview', 'creationStep']),
+    currentStep: state.getIn(['overview', 'currentStep']),
     roles: state.getIn(['login', 'roles']).toJS()
   }
 }
