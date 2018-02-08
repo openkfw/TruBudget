@@ -1,4 +1,6 @@
 import React from 'react';
+import _ from 'lodash';
+
 import CreationDialog from '../Common/CreationDialog';
 import strings from '../../localizeStrings'
 import SubProjectCreationContent from './SubProjectCreationContent';
@@ -20,7 +22,8 @@ const SubProjectCreation = (props) => {
   const steps = [
     {
       title: strings.project.project_details,
-      content: < SubProjectCreationContent { ...props } />
+      content: < SubProjectCreationContent { ...props } />,
+      nextDisabled: (_.isEmpty(props.subProjectName) || _.isEmpty(props.subProjectComment) || !_.isNumber(props.subProjectAmount))
     }
   ]
   return (

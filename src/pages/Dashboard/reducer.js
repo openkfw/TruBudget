@@ -1,7 +1,6 @@
 import { fromJS } from 'immutable';
 
 import { FETCH_NODE_INFORMATION_SUCCESS } from './actions';
-import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
 const defaultState = fromJS({
   nodeInformation: {}

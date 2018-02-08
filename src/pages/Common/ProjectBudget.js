@@ -14,7 +14,7 @@ const styles = {
   },
 }
 
-class ProjectAmount extends Component {
+class ProjectBudget extends Component {
 
   componentWillMount() {
     preselectCurrency(this.props.parentCurrency, this.props.storeCurrency);
@@ -23,7 +23,6 @@ class ProjectAmount extends Component {
   render() {
     const { parentCurrency, currencyTitle, currency, storeCurrency, budgetLabel, budgetHintText, budget, storeBudget } = this.props;
     const currencies = getCurrencies(parentCurrency);
-
     return (
       <div style={styles.inputDiv}>
         <Dropdown
@@ -44,4 +43,4 @@ class ProjectAmount extends Component {
     )
   }
 }
-export default ProjectAmount;
+export default ProjectBudget;

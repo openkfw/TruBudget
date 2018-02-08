@@ -14,7 +14,6 @@ const styles = {
 
 
 const getSteps = (steps, editable, setCurrentStep) => {
-  console.log(editable)
   return steps.slice(0, steps.length).map((step, index) => (
     <Step key={'stepper' + index}>
       {editable ? <StepButton onClick={() => setCurrentStep(index)}>{step.title}</StepButton> : <StepLabel>{step.title}</StepLabel>}
