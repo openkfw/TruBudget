@@ -1,7 +1,6 @@
 import React from 'react';
 import CreationDialog from '../Common/CreationDialog';
 import strings from '../../localizeStrings'
-import SubProjectCreationContent from '../SubProjects/SubProjectCreationContent';
 import WorkflowType from './WorkflowType';
 import TextInput from '../Common/TextInput';
 import WorkflowCreationAmount from './WorkflowCreationAmount';
@@ -45,7 +44,19 @@ const WorkflowCreation = (props) => {
       content: <WorkflowCreationAmount subProjectCurrency={props.subProjectDetails.currency} storeWorkflowAmount={props.storeWorkflowAmount} storeWorkflowAmountType={props.storeWorkflowAmountType} storeWorkflowCurrency={props.storeWorkflowCurrency}
         workflowAmount={props.workflowAmount} workflowAmountType={props.workflowAmountType} workflowCurrency={props.workflowCurrency} />
     },
-
+    {
+      title: strings.common.comment,
+      content: (
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <TextInput onChange={props.storeWorkflowComment}
+            value={props.workflowComment}
+            multiLine={true}
+            floatingLabelText={strings.workflow.workflow_comment}
+            hintText={strings.common.comment_description}
+          />
+        </div>
+      )
+    },
     {
       title: strings.workflow.workflow_documents,
       content: <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />

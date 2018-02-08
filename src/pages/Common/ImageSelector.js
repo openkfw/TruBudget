@@ -1,5 +1,4 @@
 import React from 'react'
-import _ from 'lodash'
 import Subheader from 'material-ui/Subheader';
 import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';

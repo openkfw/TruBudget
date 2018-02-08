@@ -8,7 +8,6 @@ import SubProjectsTable from './SubProjectsTable';
 import ChangeLog from '../Notifications/ChangeLog';
 import _ from 'lodash';
 import { ACMECorpLightgreen, ACMECorpDarkBlue } from '../../colors.js';
-import strings from '../../localizeStrings'
 import SubProjectCreation from './SubProjectCreation';
 
 
