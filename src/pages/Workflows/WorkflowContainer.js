@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import globalStyles from '../../styles';
 
 
-import { fetchWorkflowItems, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, setWorkflowCreationStep, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog } from './actions';
+import { fetchWorkflowItems, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog } from './actions';
+import { setCurrentStep } from '../Overview/actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -64,7 +65,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(showHistory(false)),
     fetchHistoryItems: (subProjectName) => dispatch(fetchHistoryItems(subProjectName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
-    setWorkflowCreationStep: (step) => dispatch(setWorkflowCreationStep(step)),
+    setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     updateWorkflowSortOnState: (items) => dispatch(updateWorkflowSortOnState(items)),
     enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
     postWorkflowSort: (streamName, workflowItems) => dispatch(postWorkflowSort(streamName, workflowItems)),
@@ -97,7 +98,7 @@ const mapStateToProps = (state) => {
     workflowTxid: state.getIn(['workflow', 'workflowTxid']),
     disabledWorkflowState: state.getIn(['workflow', 'disabledWorkflowState']),
     editMode: state.getIn(['workflow', 'editMode']),
-    creationStep: state.getIn(['workflow', 'creationStep']),
+    currentStep: state.getIn(['overview', 'currentStep']),
     users: state.getIn(['login', 'users']).toJS(),
     showWorkflowDetails: state.getIn(['workflow', 'showDetails']),
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),

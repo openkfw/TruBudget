@@ -108,8 +108,6 @@ export default function detailviewReducer(state = defaultState, action) {
         showDetails: action.show,
         showDetailsItemId: action.txid
       })
-    case SET_WORKFLOW_CREATION_STEP:
-      return state.set('creationStep', action.step);
     case ENABLE_WORKFLOW_SORT:
       return state.set('workflowSortEnabled', action.sortEnabled)
     case UPDATE_WORKFLOW_SORT:

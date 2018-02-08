@@ -248,10 +248,3 @@ export function postSubProjectEdit(parent, streamName, status, amount) {
     amount
   }
 }
-
-export function setWorkflowCreationStep(step) {
-  return {
-    type: SET_WORKFLOW_CREATION_STEP,
-    step
-  }
-}

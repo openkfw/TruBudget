@@ -9,13 +9,12 @@ const styles = {
   radioButton: {
     marginBottom: 16,
   },
-  div: {
-    marginTop: '15px',
+  container: {
     display: 'flex',
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   checkbox: {
     marginBottom: 16,
@@ -34,7 +33,7 @@ const styles = {
 
 const WorkflowType = ({ workflowType, isWorkflowApprovalRequired, storeWorkflowType, editMode, workflowApprovalRequired }) => {
   return (
-    <div style={styles.div}>
+    <div style={styles.container}>
       <div style={styles.radioButtonDiv}>
         <RadioButtonGroup name="radioGroup" defaultSelected={workflowType} onChange={(event, value) => storeWorkflowType(value)}>
           <RadioButton value="workflow" label={strings.workflow.workflow_type_workflow} disabled={editMode} style={styles.radioButton} />

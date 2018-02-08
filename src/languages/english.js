@@ -76,6 +76,7 @@ const en = {
   },
   project: {
     add_new_project: 'Add new project',
+    project_details: 'Details',
     project_name: 'Name',
     project_budget: 'Budget',
     project_comment: 'Comment',
@@ -102,6 +103,7 @@ const en = {
     subproject_budget_amount: 'Sub-project  budget amount',
     subproject_budget_amount_description: 'Budget for the sub-project',
     subproject_comment: 'Sub-project Comment',
+    subproject_currency: 'Sub-project Currency',
     subproject_assigned_organization: 'Assigned Organization',
     subproject_add: 'Add new Sub-project',
     subproject_select_button: 'Select',
@@ -116,7 +118,7 @@ const en = {
     workflow_title: 'Workflow title',
     workflow_title_description: 'Name of the workflow',
     workflow_budget_amount: ' Workflow budget amount',
-    workflow_budget_amount_description: 'Budget amount for the workflow',
+    workflow_budget_amount_description: 'Budget for the workflow',
     workflow_comment: 'Workflow Comment',
     workflow_type_workflow: 'Workflow',
     workflow_type_transaction: 'Transaction',
@@ -146,7 +148,7 @@ const en = {
     workflow_budget_allocated: 'allocated',
     workflow_budget_disbursed: 'disbursed',
     workflow_budget: 'Workflow budget amount',
-    workflow_budget_description: 'Budget amount for the workflow',
+    workflow_budget_description: 'Budget for the workflow',
     workflow_submit_for_review: 'Submit for Review'
   },
 

@@ -3,11 +3,11 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import _ from 'lodash';
 import strings from '../../localizeStrings'
-import ProjectStepper from './ProjectStepper';
+import CreationDialogStepper from './CreationDialogStepper';
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  const isLastStep = props.creationStep === props.numberOfSteps - 1;
-  const isFirstStep = props.creationStep === 0;
+  const isLastStep = props.currentStep === props.numberOfSteps - 1;
+  const isFirstStep = props.currentStep === 0;
   const editMode = props.editMode;
 
   const cancelButton = <FlatButton aria-label='cancel' label={strings.common.cancel} secondary={true} onTouchTap={() => handleCancel(props)} />
@@ -26,31 +26,16 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
 
 const handleCancel = (props) => {
   props.hideDialog();
-  props.setProjectCreationStep(0);
+  props.setCurrentStep(0);
 }
 
-const handleBack = (props) => props.setProjectCreationStep(props.creationStep - 1)
-const handleNext = (props) => props.setProjectCreationStep(props.creationStep + 1)
-
-const extractRole = (roles) => _.map(roles, role => role.role);
-
-const handleSubmit = (props) => {
-  const { createProject, type, hideDialog, showSnackBar, setProjectCreationStep, storeSnackBarMessage, projectName, projectAmount, projectComment, projectCurrency, projectThumbnail, projectApprover, projectAssignee, projectBank, location } = props;
-  const approvers = type === 'subproject' ? projectApprover : extractRole(projectApprover);
-  const assignees = type === 'subproject' ? projectAssignee : extractRole(projectAssignee);
-  const banks = type === 'subproject' ? projectBank : extractRole(projectBank);
-  createProject(projectName, projectAmount, projectComment, projectCurrency, location.pathname.split('/')[2],
-    approvers, assignees, banks, projectThumbnail);
-  hideDialog();
-  storeSnackBarMessage('Added ' + projectName)
-  showSnackBar();
-  setProjectCreationStep(0);
-}
+const handleBack = (props) => props.setCurrentStep(props.currentStep - 1)
+const handleNext = (props) => props.setCurrentStep(props.currentStep + 1)
 
 
 
-const ProjectDialog = (props) => {
-  const { creationDialogShown, title } = props;
+const CreationDialog = (props) => {
+  const { creationDialogShown, title, handleSubmit } = props;
   return (
 
     <Dialog
@@ -58,10 +43,10 @@ const ProjectDialog = (props) => {
       title={title}
       modal={true}
       bodyStyle={{
-        minHeight: '400px'
+        minHeight: '200px'
       }}
       contentStyle={{
-        width: '45%',
+        width: '55%',
         maxWidth: 'none',
       }}
       actionsContainerStyle={{
@@ -72,10 +57,9 @@ const ProjectDialog = (props) => {
       }}
       actions={getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}
     >
-      <ProjectStepper {...props} />
+      <CreationDialogStepper {...props} />
     </Dialog>
   );
 }
 
-
-export default ProjectDialog;
+export default CreationDialog;

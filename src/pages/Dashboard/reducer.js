@@ -7,9 +7,8 @@ const defaultState = fromJS({
   nodeInformation: {}
 });
 
-export default function dashboardReducer (state = defaultState, action) {
+export default function dashboardReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_UPDATES_SUCCESS:
     case FETCH_NODE_INFORMATION_SUCCESS:
       return state.set('nodeInformation', action.nodeInformation);
     default:
