@@ -19,7 +19,7 @@ const getCurrencyFormat = (currency) => ({
 
 export const fromAmountString = (amount, currency) => {
   if (_.isEmpty(amount)) {
-    return amount;
+    return '';
   }
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 }

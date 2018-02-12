@@ -1,5 +1,4 @@
-import { fromJS } from 'immutable';
-import _ from 'lodash';
+import { fromJS, Set } from 'immutable';
 
 import {
   FETCH_PROJECTS_SUCCESS, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
@@ -17,12 +16,12 @@ const defaultState = fromJS({
   projectAmount: '',
   projectComment: '',
   creationStep: 0,
-  projectApprover: [],
-  projectAssignee: [],
+  projectApprover: Set(),
+  projectAssignee: Set(),
+  projectBank: Set(),
   projectCurrency: 'EUR',
   nextButtonEnabled: false,
-  projectThumbnail: '/Thumbnail_0001.jpg',
-  projectBank: []
+  projectThumbnail: '/Thumbnail_0001.jpg'
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -68,17 +67,17 @@ export default function overviewReducer(state = defaultState, action) {
     case SET_PROJECT_CREATION_STEP:
       return state.set('creationStep', action.step);
     case ADD_APPROVER_ROLE:
-      return state.set('projectApprover', fromJS(_.uniq([...state.get('projectApprover'), action.role])));
+      return state.set('projectApprover', state.get('projectApprover').add(action.role));
     case ADD_ASSIGNEMENT_ROLE:
-      return state.set('projectAssignee', fromJS(_.uniq([...state.get('projectAssignee'), action.role])));
+      return state.set('projectAssignee', state.get('projectAssignee').add(action.role));
     case ADD_BANK_ROLE:
-      return state.set('projectBank', fromJS(_.uniq([...state.get('projectBank'), action.role])));
+      return state.set('projectBank', state.get('projectBank').add(action.role));
     case REMOVE_APPROVER_ROLE:
-      return state.set('projectApprover', state.get('projectApprover').delete(action.index));
+      return state.set('projectApprover', state.get('projectApprover').delete(action.role));
     case REMOVE_ASSIGNEMENT_ROLE:
-      return state.set('projectAssignee', state.get('projectAssignee').delete(action.index));
+      return state.set('projectAssignee', state.get('projectAssignee').delete(action.role));
     case REMOVE_BANK_ROLE:
-      return state.set('projectBank', state.get('projectBank').delete(action.index));
+      return state.set('projectBank', state.get('projectBank').delete(action.role));
     case LOGOUT:
       return defaultState;
     default:

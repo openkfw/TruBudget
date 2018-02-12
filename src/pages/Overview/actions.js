@@ -113,23 +113,23 @@ export function addBankRole(role) {
   }
 }
 
-export function removeAssignmentRole(index) {
+export function removeAssignmentRole(role) {
   return {
     type: REMOVE_ASSIGNEMENT_ROLE,
-    index
+    role
   }
 }
 
-export function removeApproverRole(index) {
+export function removeApproverRole(role) {
   return {
     type: REMOVE_APPROVER_ROLE,
-    index
+    role
   }
 }
-export function removeBankRole(index) {
+export function removeBankRole(role) {
   return {
     type: REMOVE_BANK_ROLE,
-    index
+    role
   }
 }
 
