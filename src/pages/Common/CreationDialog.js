@@ -26,7 +26,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
 }
 
 const handleCancel = (props) => {
-  props.hideDialog();
+  props.onDialogCancel();
   props.setCurrentStep(0);
 }
 

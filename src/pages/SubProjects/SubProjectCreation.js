@@ -6,10 +6,10 @@ import strings from '../../localizeStrings'
 import SubProjectCreationContent from './SubProjectCreationContent';
 
 const handleSubmit = (props) => {
-  const { createSubProject, hideDialog, showSnackBar, setCurrentStep, storeSnackBarMessage,
+  const { createSubProject, onDialogCancel, showSnackBar, setCurrentStep, storeSnackBarMessage,
     subProjectName, subProjectAmount, subProjectComment, subProjectCurrency, location } = props;
   createSubProject(subProjectName, subProjectAmount, subProjectComment, subProjectCurrency, location.pathname.split('/')[2]);
-  hideDialog();
+  onDialogCancel();
   storeSnackBarMessage('Added ' + subProjectName)
   showSnackBar();
   setCurrentStep(0);
@@ -30,7 +30,7 @@ const SubProjectCreation = (props) => {
     <CreationDialog
       title={strings.project.subproject_add}
       creationDialogShown={props.subprojectsDialogVisible}
-      hideDialog={props.onSubprojectDialogCancel}
+      onDialogCancel={props.onSubprojectDialogCancel}
       handleSubmit={handleSubmit}
       steps={steps}
       numberOfSteps={steps.length}

@@ -75,7 +75,7 @@ const WorkflowCreation = (props) => {
       editable={props.editMode}
       title={props.editMode ? strings.workflow.edit_item : strings.workflow.workflow}
       creationDialogShown={props.workflowDialogVisible}
-      hideDialog={props.hideWorkflowDialog}
+      onDialogCancel={props.hideWorkflowDialog}
       handleSubmit={handleSubmit}
       steps={steps}
       numberOfSteps={steps.length}

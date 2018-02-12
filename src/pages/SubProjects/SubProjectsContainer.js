@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-<<<<<<< HEAD
 
 import { fetchProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment } from './actions';
-=======
-import { fetchProjectDetails, showSubprojectDialog, hideSubprojectDialog, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment } from './actions';
->>>>>>> 6cad100e974f759139af8f433d7d3d2cab71e95c
 import { setCurrentStep } from '../Overview/actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../Notifications/actions';
