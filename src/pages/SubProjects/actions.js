@@ -2,7 +2,7 @@ export const FETCH_PROJECT_DETAILS = 'FETCH_PROJECT_DETAILS';
 export const FETCH_PROJECT_DETAILS_SUCCESS = 'FETCH_PROJECT_DETAILS_SUCCESS';
 
 export const SHOW_SUBPROJECT_DIALOG = 'SHOW_SUBPROJECT_DIALOG';
-export const HIDE_SUBPROJECT_DIALOG = 'HIDE_SUBPROJECT_DIALOG';
+export const CANCEL_SUBPROJECT_DIALOG = 'CANCEL_SUBPROJECT_DIALOG';
 export const SHOW_SUBPROJECT_DIALOG_SUCCESS = 'SHOW_SUBPROJECT_DIALOG_SUCCESS';
 
 export const CREATE_SUBPROJECT_ITEM = 'CREATE_SUBPROJECT_ITEM';
@@ -43,9 +43,9 @@ export function showSubprojectDialog() {
   }
 }
 
-export function hideSubprojectDialog() {
+export function onSubprojectDialogCancel() {
   return {
-    type: HIDE_SUBPROJECT_DIALOG,
+    type: CANCEL_SUBPROJECT_DIALOG,
   }
 }
 

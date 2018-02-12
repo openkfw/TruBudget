@@ -2,7 +2,7 @@ import { fromJS, Set } from 'immutable';
 
 import {
   FETCH_PROJECTS_SUCCESS, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
-  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL, HIDE_PROJECT_DIALOG
+  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL, CANCEL_PROJECT_DIALOG
 } from './actions';
 import { LOGOUT } from '../Login/actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
@@ -31,7 +31,7 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set('projects', action.projects);
     case SHOW_PROJECT_DIALOG:
       return state.set('projectDialogVisible', true);
-    case HIDE_PROJECT_DIALOG:
+    case CANCEL_PROJECT_DIALOG:
       return state.merge({
         projectName: defaultState.get('projectName'),
         projectAmount: defaultState.get('projectAmount'),
@@ -67,17 +67,17 @@ export default function overviewReducer(state = defaultState, action) {
     case SET_PROJECT_CREATION_STEP:
       return state.set('creationStep', action.step);
     case ADD_APPROVER_ROLE:
-      return state.set('projectApprover', state.get('projectApprover').add(action.role));
+      return state.update('projectApprover', approvers => approvers.add(action.role));
     case ADD_ASSIGNEMENT_ROLE:
-      return state.set('projectAssignee', state.get('projectAssignee').add(action.role));
+      return state.update('projectAssignee', assignees => assignees.add(action.role));
     case ADD_BANK_ROLE:
-      return state.set('projectBank', state.get('projectBank').add(action.role));
+      return state.update('projectBank', bank => bank.add(action.role));
     case REMOVE_APPROVER_ROLE:
-      return state.set('projectApprover', state.get('projectApprover').delete(action.role));
+      return state.update('projectApprover', approvers => approvers.delete(action.role));
     case REMOVE_ASSIGNEMENT_ROLE:
-      return state.set('projectAssignee', state.get('projectAssignee').delete(action.role));
+      return state.update('projectAssignee', assignees => assignees.delete(action.role));
     case REMOVE_BANK_ROLE:
-      return state.set('projectBank', state.get('projectBank').delete(action.role));
+      return state.update('projectBank', bank => bank.delete(action.role));
     case LOGOUT:
       return defaultState;
     default:

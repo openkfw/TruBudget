@@ -32,7 +32,7 @@ const SubProjects = (props) => {
         projectCurrency={props.subProjectCurrency}
         storeProjectCurrency={props.storeSubProjectCurrency}
         parentCurrency={props.projectCurrency}
-        hideDialog={props.hideSubprojectDialog}
+        onDialogCancel={props.onSubprojectDialogCancel}
         type={'subproject'}
         numberOfSteps={3}
       />

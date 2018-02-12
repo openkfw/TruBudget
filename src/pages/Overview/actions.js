@@ -4,7 +4,7 @@ export const FETCH_PROJECTS_SUCCESS = 'FETCH_PROJECTS_SUCCESS';
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const CREATE_PROJECT_SUCCESS = 'CREATE_PROJECT_SUCCESS';
 export const SHOW_PROJECT_DIALOG = 'SHOW_PROJECT_DIALOG'
-export const HIDE_PROJECT_DIALOG = 'HIDE_PROJECT_DIALOG'
+export const CANCEL_PROJECT_DIALOG = 'CANCEL_PROJECT_DIALOG'
 export const PROJECT_NAME = 'PROJECT_NAME';
 export const PROJECT_AMOUNT = 'PROJECT_AMOUNT';
 export const PROJECT_COMMENT = 'PROJECT_COMMENT';
@@ -39,14 +39,14 @@ export function createProject(name, amount, comment, currency, approver, assigne
   }
 }
 
-export function showProjectDialog(show) {
+export function showProjectDialog() {
   return {
     type: SHOW_PROJECT_DIALOG,
   }
 }
-export function hideProjectDialog(show) {
+export function onProjectDialogCancel() {
   return {
-    type: HIDE_PROJECT_DIALOG,
+    type: CANCEL_PROJECT_DIALOG,
   }
 }
 

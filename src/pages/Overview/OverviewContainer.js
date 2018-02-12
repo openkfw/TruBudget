@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjects, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep, addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole, storeProjectThumbnail, showProjectDialog, hideProjectDialog } from './actions';
+import { fetchProjects, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep, addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole, storeProjectThumbnail, showProjectDialog, onProjectDialogCancel } from './actions';
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
 import { fetchRoles } from '../Login/actions';
@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchProjects: () => dispatch(fetchProjects()),
     createProject: (name, amount, comment, currency, _, approver, assignee, bank, thumbnail) => dispatch(createProject(name, amount, comment, currency, approver, assignee, bank, thumbnail)),
     showProjectDialog: () => dispatch(showProjectDialog()),
-    hideProjectDialog: () => dispatch(hideProjectDialog()),
+    onProjectDialogCancel: () => dispatch(onProjectDialogCancel()),
     storeProjectName: (name) => dispatch(storeProjectName(name)),
     storeProjectAmount: (amount) => dispatch(storeProjectAmount(amount)),
     storeProjectComment: (comment) => dispatch(storeProjectComment(comment)),
