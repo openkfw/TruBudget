@@ -16,9 +16,14 @@ const defaultState = fromJS({
   projectAmount: '',
   projectComment: '',
   currentStep: 0,
+<<<<<<< HEAD
   projectApprover: Set(),
   projectAssignee: Set(),
   projectBank: Set(),
+=======
+  projectApprover: [],
+  projectAssignee: [],
+>>>>>>> 6cad100e974f759139af8f433d7d3d2cab71e95c
   projectCurrency: 'EUR',
   nextButtonEnabled: false,
   projectThumbnail: '/Thumbnail_0001.jpg'

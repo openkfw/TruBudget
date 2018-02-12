@@ -19,7 +19,6 @@ const SubProjects = (props) => {
       position: 'relative',
       width: '100%'
     }}>
-
       <SubProjectCreation {...props} />
       <div style={{
         display: 'flex',
