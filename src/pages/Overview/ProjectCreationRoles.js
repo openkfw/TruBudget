@@ -19,6 +19,7 @@ const getSteps = ({ roles,
 }) => [
     {
       title: strings.project.project_budget_authority_role,
+      selectedRoles: projectApprover,
       content: (
         <div>
           <p>{strings.project.project_budget_authority_role_description}</p>
@@ -32,6 +33,7 @@ const getSteps = ({ roles,
     },
     {
       title: strings.project.project_implementing_authority_role,
+      selectedRoles: projectAssignee,
       content: (
         <div>
           <p>{strings.project.project_implementing_authority_role_description}</p>
@@ -45,6 +47,7 @@ const getSteps = ({ roles,
     },
     {
       title: strings.project.project_disbursement_authority_role,
+      selectedRoles: projectBank,
       content: (
         <div>
           <p>{strings.project.project_disbursement_authority_role_description}</p>
@@ -59,7 +62,6 @@ const getSteps = ({ roles,
   ]
 
 const ProjectCreationRoles = (props) => {
-  console.log(props.roles)
   const steps = getSteps(props);
   return (
     <div style={styles.container}>

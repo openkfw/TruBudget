@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_PROJECT_DETAILS_SUCCESS, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS, SHOW_SUBPROJECT_DIALOG } from './actions';
+import { FETCH_PROJECT_DETAILS_SUCCESS, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG } from './actions';
 import { LOGOUT } from '../Login/actions';
 
 import { fromAmountString } from '../../helper';
@@ -42,7 +42,15 @@ export default function detailviewReducer(state = defaultState, action) {
         subProjects: action.projectDetails.subProjects,
       });
     case SHOW_SUBPROJECT_DIALOG:
-      return state.set('subprojectsDialogVisible', action.show);
+      return state.set('subprojectsDialogVisible', true);
+    case CANCEL_SUBPROJECT_DIALOG:
+      return state.merge({
+        subProjectName: defaultState.get('subProjectName'),
+        subProjectAmount: defaultState.get('subProjectAmount'),
+        subProjectComment: defaultState.get('subProjectComment'),
+        subProjectCurrency: defaultState.get('subProjectCurrency'),
+        subprojectsDialogVisible: defaultState.get('subprojectsDialogVisible')
+      });
     case SUBPROJECT_NAME:
       return state.set('subProjectName', action.name);
     case SUBPROJECT_AMOUNT:

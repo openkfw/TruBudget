@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjects, showWorkflowDialog, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep, addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole, storeProjectThumbnail } from './actions';
+import { fetchProjects, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep, addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole, storeProjectThumbnail, showProjectDialog, onProjectDialogCancel } from './actions';
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
 import { fetchRoles } from '../Login/actions';
@@ -27,8 +27,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchProjects: () => dispatch(fetchProjects()),
     createProject: (name, amount, comment, currency, _, approver, assignee, bank, thumbnail) => dispatch(createProject(name, amount, comment, currency, approver, assignee, bank, thumbnail)),
-    showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
-    hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
+    showProjectDialog: () => dispatch(showProjectDialog()),
+    onProjectDialogCancel: () => dispatch(onProjectDialogCancel()),
     storeProjectName: (name) => dispatch(storeProjectName(name)),
     storeProjectAmount: (amount) => dispatch(storeProjectAmount(amount)),
     storeProjectComment: (comment) => dispatch(storeProjectComment(comment)),
@@ -57,9 +57,9 @@ const mapStateToProps = (state) => {
     projectComment: state.getIn(['overview', 'projectComment']),
     projectThumbnail: state.getIn(['overview', 'projectThumbnail']),
     projectCurrency: state.getIn(['overview', 'projectCurrency']),
-    projectApprover: state.getIn(['overview', 'projectApprover']),
-    projectAssignee: state.getIn(['overview', 'projectAssignee']),
-    projectBank: state.getIn(['overview', 'projectBank']),
+    projectApprover: state.getIn(['overview', 'projectApprover']).toJS(),
+    projectAssignee: state.getIn(['overview', 'projectAssignee']).toJS(),
+    projectBank: state.getIn(['overview', 'projectBank']).toJS(),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     roles: state.getIn(['login', 'roles']).toJS()
   }

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import { Tabs, Tab } from 'material-ui/Tabs';
 
-import RolesTable from './RolesTable';
-import UsersTable from './UsersTable';
-import NodeInfosTable from './NodeInfosTable';
+import RolesContainer from './RolesContainer';
+import UsersContainer from './UsersContainer';
+import NodeInfosContainer from './NodeInfosContainer';
 
 import strings from '../../localizeStrings';
 
@@ -21,13 +21,13 @@ class AdminDashboardTabs extends Component {
     return (
       <Tabs>
         <Tab label={strings.adminDashboard.roles}>
-          <RolesTable {...this.props} />
+          <RolesContainer {...this.props} />
         </Tab>
         <Tab label={strings.adminDashboard.users}>
-          <UsersTable {...this.props} />
+          <UsersContainer {...this.props} />
         </Tab>
         <Tab label={strings.adminDashboard.nodes}>
-          <NodeInfosTable {...this.props} />
+          <NodeInfosContainer {...this.props} />
         </Tab>
       </Tabs>
     )

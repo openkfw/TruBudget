@@ -1,9 +1,8 @@
-import { fromJS } from 'immutable';
-import _ from 'lodash';
+import { fromJS, Set } from 'immutable';
 
 import {
   FETCH_PROJECTS_SUCCESS, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
-  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL
+  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL, CANCEL_PROJECT_DIALOG
 } from './actions';
 import { LOGOUT } from '../Login/actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
@@ -17,11 +16,12 @@ const defaultState = fromJS({
   projectAmount: '',
   projectComment: '',
   creationStep: 0,
-  projectApprover: [],
-  projectAssignee: [],
+  projectApprover: Set(),
+  projectAssignee: Set(),
+  projectBank: Set(),
   projectCurrency: 'EUR',
-  projectThumbnail: '/Thumbnail_0001.jpg',
-  projectBank: []
+  nextButtonEnabled: false,
+  projectThumbnail: '/Thumbnail_0001.jpg'
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -30,7 +30,19 @@ export default function overviewReducer(state = defaultState, action) {
     case FETCH_PROJECTS_SUCCESS:
       return state.set('projects', action.projects);
     case SHOW_PROJECT_DIALOG:
-      return state.set('projectDialogVisible', action.show);
+      return state.set('projectDialogVisible', true);
+    case CANCEL_PROJECT_DIALOG:
+      return state.merge({
+        projectName: defaultState.get('projectName'),
+        projectAmount: defaultState.get('projectAmount'),
+        projectComment: defaultState.get('projectComment'),
+        projectCurrency: defaultState.get('projectCurrency'),
+        projectApprover: defaultState.get('projectApprover'),
+        projectAssignee: defaultState.get('projectAssignee'),
+        projectBank: defaultState.get('projectBank'),
+        projectThumbnail: defaultState.get('projectThumbnail'),
+        projectDialogVisible: defaultState.get('projectDialogVisible'),
+      });
     case PROJECT_NAME:
       return state.set('projectName', action.name);
     case PROJECT_AMOUNT:
@@ -55,17 +67,17 @@ export default function overviewReducer(state = defaultState, action) {
     case SET_PROJECT_CREATION_STEP:
       return state.set('creationStep', action.step);
     case ADD_APPROVER_ROLE:
-      return state.set('projectApprover', _.uniq([...state.get('projectApprover'), action.role]));
+      return state.update('projectApprover', approvers => approvers.add(action.role));
     case ADD_ASSIGNEMENT_ROLE:
-      return state.set('projectAssignee', _.uniq([...state.get('projectAssignee'), action.role]));
+      return state.update('projectAssignee', assignees => assignees.add(action.role));
     case ADD_BANK_ROLE:
-      return state.set('projectBank', _.uniq([...state.get('projectBank'), action.role]));
+      return state.update('projectBank', bank => bank.add(action.role));
     case REMOVE_APPROVER_ROLE:
-      return state.set('projectApprover', _.pull([...state.get('projectApprover')], action.role));
+      return state.update('projectApprover', approvers => approvers.delete(action.role));
     case REMOVE_ASSIGNEMENT_ROLE:
-      return state.set('projectAssignee', _.pull([...state.get('projectAssignee')], action.role));
+      return state.update('projectAssignee', assignees => assignees.delete(action.role));
     case REMOVE_BANK_ROLE:
-      return state.set('projectBank', _.pull([...state.get('projectBank')], action.role));
+      return state.update('projectBank', bank => bank.delete(action.role));
     case LOGOUT:
       return defaultState;
     default:

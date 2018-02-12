@@ -17,7 +17,13 @@ const getCurrencyFormat = (currency) => ({
   ...currencies[currency]
 })
 
-export const fromAmountString = (amount, currency) => accounting.unformat(amount, getCurrencyFormat(currency).decimal);
+export const fromAmountString = (amount, currency) => {
+  if (_.isEmpty(amount)) {
+    return '';
+  }
+  return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
+}
+
 export const toAmountString = (amount, currency) => accounting.formatMoney(amount, getCurrencyFormat(currency));
 
 export const tsToString = (ts) => {

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
+import {
+  Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
 } from 'material-ui/Table';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -32,19 +33,19 @@ const getHeaderColumns = () => {
   return (
     <TableRow>
       <TableHeaderColumn>
-        { strings.adminDashboard.organization }
+        {strings.adminDashboard.organization}
       </TableHeaderColumn>
       <TableHeaderColumn>
-        { strings.adminDashboard.id }
+        {strings.adminDashboard.id}
       </TableHeaderColumn>
       <TableHeaderColumn>
-        { strings.adminDashboard.read }
+        {strings.adminDashboard.read}
       </TableHeaderColumn>
       <TableHeaderColumn>
-        { strings.adminDashboard.write }
+        {strings.adminDashboard.write}
       </TableHeaderColumn>
       <TableHeaderColumn>
-        { strings.adminDashboard.admin }
+        {strings.adminDashboard.admin}
       </TableHeaderColumn>
     </TableRow>
   )
@@ -57,21 +58,21 @@ const getRoles = (roles) => {
   })
   return sortedRoles.map(role => {
     return (
-      <TableRow key={ role.role }>
+      <TableRow key={role.role}>
         <TableRowColumn>
-          { role.organization }
+          {role.organization}
         </TableRowColumn>
         <TableRowColumn>
-          { role.role }
+          {role.role}
         </TableRowColumn>
         <TableRowColumn>
-          { role.read.toString() }
+          {role.read.toString()}
         </TableRowColumn>
         <TableRowColumn>
-          { role.write.toString() }
+          {role.write.toString()}
         </TableRowColumn>
         <TableRowColumn>
-          { role.admin.toString() }
+          {role.admin.toString()}
         </TableRowColumn>
       </TableRow>
     )
@@ -79,29 +80,28 @@ const getRoles = (roles) => {
 
 }
 
-const RolesTable = (props) => {
-  const {roles, showRolesDialog} = props;
+
+const RoleTable = (props) => {
+  const { roles, showRolesDialog } = props;
   const headerColumns = getHeaderColumns();
   const tableEntries = getRoles(roles);
-
   return (
-    <div style={ styles.tableWrapper }>
-      <Table selectable={ false }>
-        <TableHeader displaySelectAll={ false } adjustForCheckbox={ false }>
-          { headerColumns }
+    <div style={styles.tableWrapper}>
+      <Table selectable={false}>
+        <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+          {headerColumns}
         </TableHeader>
-        <TableBody displayRowCheckbox={ false } adjustForCheckbox={ false }>
-          { tableEntries }
+        <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
+          {tableEntries}
         </TableBody>
       </Table>
-      <div style={ styles.buttonDiv }>
-        <FloatingActionButton style={ styles.actionButton } backgroundColor={ ACMECorpDarkBlue } onTouchTap={ () => showRolesDialog() }>
+      <div style={styles.buttonDiv}>
+        <FloatingActionButton style={styles.actionButton} backgroundColor={ACMECorpDarkBlue} onTouchTap={() => showRolesDialog()}>
           <ContentAdd />
         </FloatingActionButton>
       </div>
-      <RolesDialog {...props}/>
+      <RolesDialog {...props} />
     </div>
   )
 }
-
-export default RolesTable;
+export default RoleTable;

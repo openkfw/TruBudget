@@ -36,6 +36,7 @@ const AdminDashBoard = (props) => {
             <AdminDashboardTabs {...props} />
             <NotificationsSnackbar {...props} />
           </div>
+
         )}
     </div>
   )

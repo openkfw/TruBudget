@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjectDetails, storeSubProjectCurrency, showWorkflowDialog, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment } from './actions';
+import { fetchProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProjectItem, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment } from './actions';
 import { setProjectCreationStep } from '../Overview/actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -35,8 +35,8 @@ class SubProjectsContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchProjectDetails: (project) => dispatch(fetchProjectDetails(project)),
-    showWorkflowDialog: () => dispatch(showWorkflowDialog(true)),
-    hideWorkflowDialog: () => dispatch(showWorkflowDialog(false)),
+    showSubprojectDialog: () => dispatch(showSubprojectDialog()),
+    onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
     createSubProjectItem: (subprojectName, amount, comment, currency, parentName) => dispatch(createSubProjectItem(parentName, subprojectName, amount, comment, currency)),
     storeSubProjectAmount: (amount) => dispatch(storeSubProjectAmount(amount)),
