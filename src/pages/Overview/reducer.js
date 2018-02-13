@@ -1,7 +1,7 @@
 import { fromJS, Set } from 'immutable';
 
 import {
-  FETCH_PROJECTS_SUCCESS, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, SET_PROJECT_CREATION_STEP,
+  FETCH_PROJECTS_SUCCESS, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, PROJECT_CREATION_STEP,
   ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL, CANCEL_PROJECT_DIALOG
 } from './actions';
 import { LOGOUT } from '../Login/actions';
@@ -41,6 +41,7 @@ export default function overviewReducer(state = defaultState, action) {
         projectAssignee: defaultState.get('projectAssignee'),
         projectBank: defaultState.get('projectBank'),
         projectThumbnail: defaultState.get('projectThumbnail'),
+        currentStep: defaultState.get('currentStep'),
         projectDialogVisible: defaultState.get('projectDialogVisible'),
       });
     case PROJECT_NAME:
@@ -64,7 +65,7 @@ export default function overviewReducer(state = defaultState, action) {
         projectBank: defaultState.get('projectBank'),
         projectThumbnail: defaultState.get('projectThumbnail'),
       });
-    case SET_PROJECT_CREATION_STEP:
+    case PROJECT_CREATION_STEP:
       return state.set('currentStep', action.step);
     case ADD_APPROVER_ROLE:
       return state.update('projectApprover', approvers => approvers.add(action.role));

@@ -39,6 +39,14 @@ export const ENABLE_BUDGET_EDIT = 'ENABLE_BUDGET_EDIT';
 export const POST_SUBPROJECT_EDIT = 'POST_SUBPROJECT_EDIT';
 export const POST_SUBPROJECT_EDIT_SUCCESS = 'POST_SUBPROJECT_EDIT_SUCCESS';
 
+export const WORKFLOW_CREATION_STEP = 'WORKFLOW_CREATION_STEP';
+
+export function setCurrentStep(step) {
+  return {
+    type: WORKFLOW_CREATION_STEP,
+    step
+  }
+}
 
 export function showWorkflowDetails(show, txid) {
   return {

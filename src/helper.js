@@ -18,7 +18,8 @@ const getCurrencyFormat = (currency) => ({
 })
 
 export const fromAmountString = (amount, currency) => {
-  if (_.isEmpty(amount)) {
+
+  if (_.isString(amount) && amount.trim().length <= 0) {
     return '';
   }
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);

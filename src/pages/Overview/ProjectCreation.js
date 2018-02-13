@@ -10,7 +10,7 @@ import ProjectCreationContent from './ProjectCreationContent';
 const extractRole = (roles) => _.map(roles, role => role.role);
 
 const handleSubmit = (props) => {
-  const { createProject, onDialogCancel, showSnackBar, setCurrentStep, storeSnackBarMessage,
+  const { createProject, onDialogCancel, showSnackBar, storeSnackBarMessage,
     projectName, projectAmount, projectComment, projectCurrency, projectThumbnail, projectApprover, projectAssignee, projectBank, location } = props;
   const approvers = extractRole(projectApprover);
   const assignees = extractRole(projectAssignee);
@@ -20,7 +20,7 @@ const handleSubmit = (props) => {
   onDialogCancel();
   storeSnackBarMessage('Added ' + projectName)
   showSnackBar();
-  setCurrentStep(0);
+
 }
 
 const ProjectCreation = (props) => {

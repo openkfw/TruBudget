@@ -11,6 +11,7 @@ export const SUBPROJECT_NAME = 'SUBPROJECT_NAME';
 export const SUBPROJECT_AMOUNT = 'SUBPROJECT_AMOUNT';
 export const SUBPROJECT_COMMENT = 'SUBPROJECT_COMMENT';
 export const SUBPROJECT_CURRENCY = 'SUBPROJECT_CURRENCY';
+export const SUBPROJECT_CREATION_STEP = 'SUBPROJECT_CREATION_STEP';
 
 export function fetchProjectDetails(project) {
   return {
@@ -26,6 +27,12 @@ export function storeSubProjectName(name) {
   }
 }
 
+export function setCurrentStep(step) {
+  return {
+    type: SUBPROJECT_CREATION_STEP,
+    step
+  }
+}
 
 export function createSubProject(parentName, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) {
   return {

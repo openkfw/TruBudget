@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import globalStyles from '../../styles';
 
 
-import { fetchWorkflowItems, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog } from './actions';
-import { setCurrentStep } from '../Overview/actions';
+import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog } from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -98,7 +97,7 @@ const mapStateToProps = (state) => {
     workflowTxid: state.getIn(['workflow', 'workflowTxid']),
     disabledWorkflowState: state.getIn(['workflow', 'disabledWorkflowState']),
     editMode: state.getIn(['workflow', 'editMode']),
-    currentStep: state.getIn(['overview', 'currentStep']),
+    currentStep: state.getIn(['workflow', 'currentStep']),
     users: state.getIn(['login', 'users']).toJS(),
     showWorkflowDetails: state.getIn(['workflow', 'showDetails']),
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),

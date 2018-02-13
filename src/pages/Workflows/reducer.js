@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_WORKFLOW_ITEMS_SUCCESS, SHOW_WORKFLOW_DIALOG, WORKFLOW_NAME, WORKFLOW_AMOUNT, WORKFLOW_AMOUNT_TYPE, WORKFLOW_PURPOSE, WORKFLOW_CURRENCY, WORKFLOW_STATE_ENABLED, WORKFLOW_STATE, WORKFLOW_ASSIGNEE, WORKFLOW_TXID, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, SHOW_WORKFLOW_DETAILS, UPDATE_WORKFLOW_SORT, ENABLE_WORKFLOW_SORT, WORKFLOW_TYPE, ENABLE_BUDGET_EDIT, SUBPROJECT_AMOUNT, WORKFLOW_APPROVAL_REQUIRED, HIDE_WORKFLOW_DIALOG } from './actions';
+import { FETCH_WORKFLOW_ITEMS_SUCCESS, SHOW_WORKFLOW_DIALOG, WORKFLOW_NAME, WORKFLOW_AMOUNT, WORKFLOW_AMOUNT_TYPE, WORKFLOW_PURPOSE, WORKFLOW_CURRENCY, WORKFLOW_STATE_ENABLED, WORKFLOW_STATE, WORKFLOW_ASSIGNEE, WORKFLOW_TXID, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, SHOW_WORKFLOW_DETAILS, UPDATE_WORKFLOW_SORT, ENABLE_WORKFLOW_SORT, WORKFLOW_TYPE, ENABLE_BUDGET_EDIT, SUBPROJECT_AMOUNT, WORKFLOW_APPROVAL_REQUIRED, HIDE_WORKFLOW_DIALOG, WORKFLOW_CREATION_STEP } from './actions';
 
 import { LOGOUT } from '../Login/actions';
 import { fromAmountString } from '../../helper';
@@ -27,7 +27,7 @@ const defaultState = fromJS({
   showDetailsItemId: '',
   showHistory: false,
   historyItems: [],
-  creationStep: 0,
+  currentStep: 0,
   workflowSortEnabled: false,
   workflowType: 'workflow',
   workflowApprovalRequired: true,
@@ -61,8 +61,10 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowTxid: defaultState.get('workflowTxid'),
         editMode: defaultState.get('editMode'),
         workflowApprovalRequired: defaultState.get('workflowApprovalRequired'),
-        creationStep: defaultState.get('creationStep')
+        currentStep: defaultState.get('currentStep'),
       })
+    case WORKFLOW_CREATION_STEP:
+      return state.set('currentStep', action.step);
     case WORKFLOW_NAME:
       return state.set('workflowName', action.name)
     case WORKFLOW_TYPE:

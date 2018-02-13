@@ -15,12 +15,10 @@ const handleSubmit = (props) => {
     props.createWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowAmountType, props.workflowCurrency, props.workflowComment, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowType, props.workflowApprovalRequired)
   }
   props.hideWorkflowDialog();
-  props.setCurrentStep(0);
 }
 
 
 const WorkflowCreation = (props) => {
-
   const steps = [
     {
       title: strings.workflow.workflow_type,

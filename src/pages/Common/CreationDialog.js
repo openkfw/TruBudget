@@ -27,7 +27,6 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
 
 const handleCancel = (props) => {
   props.onDialogCancel();
-  props.setCurrentStep(0);
 }
 
 const handleBack = (props) => props.setCurrentStep(props.currentStep - 1)
