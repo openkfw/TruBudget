@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import { fetchNodePermissions, showRolesDialog, hideRolesDialog, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword } from './actions';
 import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin, logout } from '../Login/actions';
@@ -53,7 +52,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
-  const nodeInformation = state.getIn(['dashboard', 'nodeInformation'])
   return {
     nodePermissions: state.getIn(['adminDashboard', 'nodePermissions']),
     usersDialogShown: state.getIn(['adminDashboard', 'usersDialogShown']),
@@ -68,7 +66,7 @@ const mapStateToProps = (state) => {
     showSnackBar: state.getIn(['notifications', 'showSnackBar']),
     snackBarMessage: state.getIn(['notifications', 'snackBarMessage']),
     snackBarMessageIsError: state.getIn(['notifications', 'snackBarMessageIsError']),
-    nodeInformation: !_.isEmpty(nodeInformation) && nodeInformation.toObject ? nodeInformation.toObject() : nodeInformation
+    nodeInformation: state.getIn(['dashboard', 'nodeInformation']).toJS()
   }
 }
 

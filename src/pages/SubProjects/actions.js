@@ -5,12 +5,13 @@ export const SHOW_SUBPROJECT_DIALOG = 'SHOW_SUBPROJECT_DIALOG';
 export const CANCEL_SUBPROJECT_DIALOG = 'CANCEL_SUBPROJECT_DIALOG';
 export const SHOW_SUBPROJECT_DIALOG_SUCCESS = 'SHOW_SUBPROJECT_DIALOG_SUCCESS';
 
-export const CREATE_SUBPROJECT_ITEM = 'CREATE_SUBPROJECT_ITEM';
-export const CREATE_SUBPROJECT_ITEM_SUCCESS = 'CREATE_SUBPROJECT_ITEM_SUCCESS';
+export const CREATE_SUBPROJECT = 'CREATE_SUBPROJECT';
+export const CREATE_SUBPROJECT_SUCCESS = 'CREATE_SUBPROJECT_SUCCESS';
 export const SUBPROJECT_NAME = 'SUBPROJECT_NAME';
 export const SUBPROJECT_AMOUNT = 'SUBPROJECT_AMOUNT';
 export const SUBPROJECT_COMMENT = 'SUBPROJECT_COMMENT';
 export const SUBPROJECT_CURRENCY = 'SUBPROJECT_CURRENCY';
+export const SUBPROJECT_CREATION_STEP = 'SUBPROJECT_CREATION_STEP';
 
 export function fetchProjectDetails(project) {
   return {
@@ -26,9 +27,16 @@ export function storeSubProjectName(name) {
   }
 }
 
-export function createSubProjectItem(parentName, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) {
+export function setCurrentStep(step) {
   return {
-    type: CREATE_SUBPROJECT_ITEM,
+    type: SUBPROJECT_CREATION_STEP,
+    step
+  }
+}
+
+export function createSubProject(parentName, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) {
+  return {
+    type: CREATE_SUBPROJECT,
     parentName: parentName,
     subProjectName: subProjectName,
     subProjectAmount: subProjectAmount,

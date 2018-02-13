@@ -1,7 +1,9 @@
 import { fromJS } from 'immutable';
 
-import { FETCH_PROJECT_DETAILS_SUCCESS, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_ITEM_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG } from './actions';
+
+import { FETCH_PROJECT_DETAILS_SUCCESS, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG, SUBPROJECT_CREATION_STEP } from './actions';
 import { LOGOUT } from '../Login/actions';
+
 
 import { fromAmountString } from '../../helper';
 
@@ -23,6 +25,7 @@ const defaultState = fromJS({
   subProjectCurrency: '',
   showHistory: false,
   historyItems: [],
+  currentStep: 0,
 
 });
 
@@ -41,6 +44,8 @@ export default function detailviewReducer(state = defaultState, action) {
         projectBank: action.projectDetails.details.bank,
         subProjects: action.projectDetails.subProjects,
       });
+    case SUBPROJECT_CREATION_STEP:
+      return state.set('currentStep', action.step);
     case SHOW_SUBPROJECT_DIALOG:
       return state.set('subprojectsDialogVisible', true);
     case CANCEL_SUBPROJECT_DIALOG:
@@ -49,7 +54,8 @@ export default function detailviewReducer(state = defaultState, action) {
         subProjectAmount: defaultState.get('subProjectAmount'),
         subProjectComment: defaultState.get('subProjectComment'),
         subProjectCurrency: defaultState.get('subProjectCurrency'),
-        subprojectsDialogVisible: defaultState.get('subprojectsDialogVisible')
+        subprojectsDialogVisible: defaultState.get('subprojectsDialogVisible'),
+        currentStep: defaultState.get('currentStep'),
       });
     case SUBPROJECT_NAME:
       return state.set('subProjectName', action.name);
@@ -59,7 +65,7 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('subProjectComment', action.comment);
     case SUBPROJECT_CURRENCY:
       return state.set('subProjectCurrency', action.currency);
-    case CREATE_SUBPROJECT_ITEM_SUCCESS:
+    case CREATE_SUBPROJECT_SUCCESS:
       return state.merge({
         subProjectName: defaultState.get('subProjectName'),
         subProjectAmount: defaultState.get('subProjectAmount'),

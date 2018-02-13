@@ -18,11 +18,26 @@ const getCurrencyFormat = (currency) => ({
 })
 
 export const fromAmountString = (amount, currency) => {
-  if (_.isEmpty(amount)) {
+  // Unformatting an empty string will result in an error
+  // we use '' as default value for number fields to prevent users from an unerasable 0
+  if (_.isString(amount) && amount.trim().length <= 0) {
     return '';
   }
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 }
+
+export const getCurrencies = (parentCurrency) => {
+  return ['EUR', 'USD', 'BRL'].map((currency) => {
+    const disabled = !_.isEmpty(parentCurrency) && !(parentCurrency === currency);
+    return {
+      disabled,
+      primaryText: currency,
+      value: currency,
+    }
+  })
+}
+
+
 
 export const toAmountString = (amount, currency) => accounting.formatMoney(amount, getCurrencyFormat(currency));
 
@@ -179,7 +194,11 @@ export const getProgressInformation = (items) => {
   return projectStatus;
 }
 
+export const preselectCurrency = (parentCurrency, setCurrency) => {
+  const preSelectedCurrency = _.isUndefined(parentCurrency) ? 'EUR' : parentCurrency
+  setCurrency(preSelectedCurrency)
 
+}
 export const createTaskData = (items, type) => {
   const projectStatus = getProgressInformation(items)
   if (type === 'workflows') {

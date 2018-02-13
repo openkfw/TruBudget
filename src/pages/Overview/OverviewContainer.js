@@ -1,7 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProjects, createProject, storeProjectName, storeProjectAmount, storeProjectComment, storeProjectCurrency, setProjectCreationStep, addApproverRole, addAssignmentRole, addBankRole, removeApproverRole, removeAssignmentRole, removeBankRole, storeProjectThumbnail, showProjectDialog, onProjectDialogCancel } from './actions';
+
+import {
+  fetchProjects,
+  createProject,
+  storeProjectName,
+  storeProjectAmount,
+  storeProjectComment,
+  storeProjectCurrency,
+  setCurrentStep,
+  addApproverRole,
+  addAssignmentRole,
+  addBankRole,
+  removeApproverRole,
+  removeAssignmentRole,
+  removeBankRole,
+  storeProjectThumbnail,
+  showProjectDialog,
+  onProjectDialogCancel
+} from './actions';
+
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
 import { fetchRoles } from '../Login/actions';
@@ -41,7 +60,7 @@ const mapDispatchToProps = (dispatch) => {
     removeBankRole: (role) => dispatch(removeBankRole(role)),
     showSnackBar: () => dispatch(showSnackBar(true)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
-    setProjectCreationStep: (step) => dispatch(setProjectCreationStep(step)),
+    setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     fetchRoles: () => dispatch(fetchRoles()),
     storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail))
   };
@@ -51,7 +70,7 @@ const mapStateToProps = (state) => {
   return {
     projects: state.getIn(['overview', 'projects']),
     creationDialogShown: state.getIn(['overview', 'projectDialogVisible']),
-    creationStep: state.getIn(['overview', 'creationStep']),
+    currentStep: state.getIn(['overview', 'currentStep']),
     projectName: state.getIn(['overview', 'projectName']),
     projectAmount: state.getIn(['overview', 'projectAmount']),
     projectComment: state.getIn(['overview', 'projectComment']),

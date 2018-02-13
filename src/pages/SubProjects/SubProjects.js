@@ -6,10 +6,11 @@ import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 
 import SubProjectsTable from './SubProjectsTable';
 import ChangeLog from '../Notifications/ChangeLog';
-import ProjectCreationDialog from '../Overview/ProjectCreationDialog';
-import { ACMECorpLightgreen, ACMECorpDarkBlue } from '../../colors.js';
 import _ from 'lodash';
-import strings from '../../localizeStrings'
+import { ACMECorpLightgreen, ACMECorpDarkBlue } from '../../colors.js';
+import SubProjectCreation from './SubProjectCreation';
+
+
 const SubProjects = (props) => {
   const roleOfUser = props.loggedInUser.role
   const isAllowedCreateProjects = roleOfUser.write && _.includes([...props.projectAssignee], roleOfUser.roleName);
@@ -18,24 +19,7 @@ const SubProjects = (props) => {
       position: 'relative',
       width: '100%'
     }}>
-      <ProjectCreationDialog
-        {...props}
-        title={strings.subproject.subproject_add}
-        createProject={props.createSubProjectItem}
-        creationDialogShown={props.subprojectsDialogVisible}
-        projectName={props.subProjectName}
-        storeProjectName={props.storeSubProjectName}
-        projectAmount={props.subProjectAmount}
-        storeProjectAmount={props.storeSubProjectAmount}
-        projectComment={props.subProjectComment}
-        storeProjectComment={props.storeSubProjectComment}
-        projectCurrency={props.subProjectCurrency}
-        storeProjectCurrency={props.storeSubProjectCurrency}
-        parentCurrency={props.projectCurrency}
-        onDialogCancel={props.onSubprojectDialogCancel}
-        type={'subproject'}
-        numberOfSteps={3}
-      />
+      <SubProjectCreation {...props} />
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -43,11 +27,9 @@ const SubProjects = (props) => {
         alignItems: 'center',
         top: '16px',
         right: '-26px'
-
       }}>
         <FloatingActionButton disabled={!isAllowedCreateProjects} backgroundColor={ACMECorpDarkBlue} onTouchTap={props.showSubprojectDialog} style={{
           position: 'relative'
-
         }}>
           <ContentAdd />
         </FloatingActionButton>

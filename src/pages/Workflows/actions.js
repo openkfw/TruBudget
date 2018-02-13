@@ -22,7 +22,6 @@ export const WORKFLOW_EDIT = 'WORKFLOW_EDIT';
 export const WORKFLOW_STATE_ENABLED = 'WORKFLOW_STATE_ENABLED';
 export const WORKFLOW_TXID = 'WORKFLOW_TXID';
 export const SHOW_WORKFLOW_DETAILS = 'SHOW_WORKFLOW_DETAILS';
-export const SET_WORKFLOW_CREATION_STEP = 'SET_WORKFLOW_CREATION_STEP';
 
 export const UPDATE_WORKFLOW_SORT = 'UPDATE_WORKFLOW_SORT';
 export const ENABLE_WORKFLOW_SORT = 'ENABLE_WORKFLOW_SORT';
@@ -40,6 +39,14 @@ export const ENABLE_BUDGET_EDIT = 'ENABLE_BUDGET_EDIT';
 export const POST_SUBPROJECT_EDIT = 'POST_SUBPROJECT_EDIT';
 export const POST_SUBPROJECT_EDIT_SUCCESS = 'POST_SUBPROJECT_EDIT_SUCCESS';
 
+export const WORKFLOW_CREATION_STEP = 'WORKFLOW_CREATION_STEP';
+
+export function setCurrentStep(step) {
+  return {
+    type: WORKFLOW_CREATION_STEP,
+    step
+  }
+}
 
 export function showWorkflowDetails(show, txid) {
   return {
@@ -246,12 +253,5 @@ export function postSubProjectEdit(parent, streamName, status, amount) {
     streamName,
     status,
     amount
-  }
-}
-
-export function setWorkflowCreationStep(step) {
-  return {
-    type: SET_WORKFLOW_CREATION_STEP,
-    step
   }
 }

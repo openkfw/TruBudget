@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { fetchNodeInformation } from './actions';
 import Dashboard from './Dashboard';
-
 import globalStyles from '../../styles.js';
 
 class DashboardContainer extends Component {
@@ -26,9 +25,8 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
-  const nodeInformation = state.getIn(['dashboard', 'nodeInformation'])
   return {
-    nodeInformation: nodeInformation.toObject ? nodeInformation.toObject() : nodeInformation
+    nodeInformation: state.getIn(['dashboard', 'nodeInformation']).toJS()
   }
 }
 

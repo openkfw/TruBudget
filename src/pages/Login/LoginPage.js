@@ -11,8 +11,8 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 
-import UsernameTextField from '../Common/UsernameTextField';
-import PasswordTextField from '../Common/PasswordTextField';
+import Username from '../Common/Username';
+import Password from '../Common/Password';
 import strings from '../../localizeStrings'
 import { isAdminNode } from '../../helper';
 
@@ -73,8 +73,8 @@ const LoginPage = ({ history, nodePermissions, users, login, storeUsername, stor
           </SelectField>
         </div>
         <Divider />
-        <UsernameTextField username={username} storeUsername={storeUsername} loginFailed={loginUnsuccessful} />
-        <PasswordTextField password={password} storePassword={storePassword} loginFailed={loginUnsuccessful} />
+        <Username username={username} storeUsername={storeUsername} loginFailed={loginUnsuccessful} />
+        <Password password={password} storePassword={storePassword} loginFailed={loginUnsuccessful} />
         <div style={{ paddingTop: '10px', paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
           <DropDownMenu style={{ marginLeft: 5, }} value={language} onChange={(event, index, value) => setLanguage(value)}>
             <MenuItem value='en-gb' primaryText={strings.language.english} />

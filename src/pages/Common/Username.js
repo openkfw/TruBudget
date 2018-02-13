@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
-import PasswordIcon from 'material-ui/svg-icons/action/lock';
+import UsernameIcon from 'material-ui/svg-icons/social/person';
 import { ACMECorpDarkBlue } from '../../colors';
 import strings from '../../localizeStrings';
 
@@ -23,14 +23,14 @@ const styles = {
     borderBottomColor: ACMECorpDarkBlue
   }
 }
-const PasswordTextField = ({ password, storePassword, loginFailed }) => {
+
+const Username = ({ username, storeUsername, loginFailed }) => {
   return (
     <div style={styles.container}>
-      <PasswordIcon style={styles.icon} />
-      <TextField floatingLabelStyle={styles.floatingLabel} underlineFocusStyle={styles.underlineFocus} floatingLabelText={strings.common.password} value={password} onChange={(event) => storePassword(event.target.value)}
-        errorText={loginFailed ? strings.common.incorrect_password : ""} type="password" />
+      <UsernameIcon style={styles.icon} />
+      <TextField floatingLabelStyle={styles.floatingLabel} underlineFocusStyle={styles.underlineFocus} floatingLabelText={strings.common.username} value={username} errorText={loginFailed ? strings.common.incorrect_username : ""}
+        onChange={(event) => storeUsername(event.target.value)} />
     </div>
   )
 }
-
-export default PasswordTextField;
+export default Username;
