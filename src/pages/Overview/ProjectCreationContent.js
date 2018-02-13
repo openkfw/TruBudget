@@ -3,8 +3,8 @@ import Divider from 'material-ui/Divider';
 
 import strings from '../../localizeStrings'
 import ImageSelector from '../Common/ImageSelector';
-import ProjectBudget from '../Common/ProjectBudget';
-import ProjectAlias from '../Common/ProjectAlias';
+import Budget from '../Common/Budget';
+import Identifier from '../Common/Identifier';
 
 
 
@@ -12,7 +12,7 @@ const ProjectCreationContent = (props) => {
   return (
     <div>
       <div>
-        <ProjectAlias
+        <Identifier
           nameLabel={strings.project.project_title}
           nameHintText={strings.project.project_title_description}
           name={props.projectName}
@@ -24,7 +24,7 @@ const ProjectCreationContent = (props) => {
       </div>
       <Divider />
       <div >
-        <ProjectBudget
+        <Budget
           currencyTitle={strings.project.project_currency}
           currency={props.projectCurrency}
           storeCurrency={props.storeProjectCurrency}
