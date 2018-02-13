@@ -43,12 +43,12 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
 
   return workflowItem;
 }
-const trimComment = (comment) => {
-  let trimmedComment = ""
-  if (!_.isEmpty(comment)) {
-    trimmedComment = comment.replace(/\n/g, " ")
+const removeNewLines = (text) => {
+  let formattedText = ""
+  if (!_.isEmpty(text)) {
+    formattedText = text.replace(/\n/g, " ")
   }
-  return trimmedComment;
+  return formattedText;
 }
 
 const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails, showDetailsItemId, hideWorkflowDetails, users, validateDocument, validatedDocuments }) => {
@@ -59,7 +59,7 @@ const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails
 
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
   const status = workflowItem.data.status;
-  const trimmedComment = trimComment(workflowItem.data.comment)
+  const trimmedComment = removeNewLines(workflowItem.data.comment)
   return (
 
     <Dialog autoScrollBodyContent={true} open={showWorkflowDetails} actions={actions} title={workflowItem.data.workflowName} modal={false} style={styles.dialog}>

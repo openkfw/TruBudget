@@ -22,8 +22,12 @@ const WorkflowCreation = (props) => {
   const steps = [
     {
       title: strings.workflow.workflow_type,
-      content: <WorkflowType workflowApprovalRequired={props.workflowApprovalRequired} isWorkflowApprovalRequired={props.isWorkflowApprovalRequired} workflowType={props.workflowType} editMode={props.editMode}
-        storeWorkflowType={props.storeWorkflowType} />
+      content: <WorkflowType
+        workflowApprovalRequired={props.workflowApprovalRequired}
+        isWorkflowApprovalRequired={props.isWorkflowApprovalRequired}
+        workflowType={props.workflowType} editMode={props.editMode}
+        storeWorkflowType={props.storeWorkflowType}
+      />
     },
     {
       title: strings.workflow.workflow_name,
@@ -39,8 +43,14 @@ const WorkflowCreation = (props) => {
     },
     {
       title: strings.common.budget,
-      content: <WorkflowCreationAmount subProjectCurrency={props.subProjectDetails.currency} storeWorkflowAmount={props.storeWorkflowAmount} storeWorkflowAmountType={props.storeWorkflowAmountType} storeWorkflowCurrency={props.storeWorkflowCurrency}
-        workflowAmount={props.workflowAmount} workflowAmountType={props.workflowAmountType} workflowCurrency={props.workflowCurrency} />
+      content: <WorkflowCreationAmount
+        subProjectCurrency={props.subProjectDetails.currency}
+        storeWorkflowAmount={props.storeWorkflowAmount}
+        storeWorkflowAmountType={props.storeWorkflowAmountType}
+        storeWorkflowCurrency={props.storeWorkflowCurrency}
+        workflowAmount={props.workflowAmount} workflowAmountType={props.workflowAmountType}
+        workflowCurrency={props.workflowCurrency}
+      />
     },
     {
       title: strings.common.comment,
@@ -62,8 +72,14 @@ const WorkflowCreation = (props) => {
 
     {
       title: strings.common.status,
-      content: <WorkflowStateAndAssignee workflowApprovalRequired={props.workflowApprovalRequired} permissions={props.permissions} users={props.users} storeWorkflowState={props.storeWorkflowState}
-        storeWorkflowAssignee={props.storeWorkflowAssignee} workflowAssignee={props.workflowAssignee} workflowState={props.workflowState} editMode={props.editMode} />
+      content: <WorkflowStateAndAssignee
+        workflowApprovalRequired={props.workflowApprovalRequired}
+        permissions={props.permissions} users={props.users}
+        storeWorkflowState={props.storeWorkflowState}
+        storeWorkflowAssignee={props.storeWorkflowAssignee}
+        workflowAssignee={props.workflowAssignee}
+        workflowState={props.workflowState} editMode={props.editMode}
+      />
     },
   ]
 

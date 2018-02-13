@@ -49,7 +49,7 @@ class WorkflowCreationAmount extends Component {
     return (
       <div style={styles.container}>
         <div>
-          <RadioButtonGroup style={styles.selections} name="shipSpeed" defaultSelected={workflowAmountType} onChange={(event, value) => storeWorkflowAmountType(value)}>
+          <RadioButtonGroup style={styles.selections} name="workflowAmountType" defaultSelected={workflowAmountType} onChange={(event, value) => storeWorkflowAmountType(value)}>
             <RadioButton
               style={styles.buttons}
               value="na"

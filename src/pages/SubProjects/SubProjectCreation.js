@@ -10,7 +10,7 @@ const handleSubmit = (props) => {
     subProjectName, subProjectAmount, subProjectComment, subProjectCurrency, location } = props;
   createSubProject(subProjectName, subProjectAmount, subProjectComment, subProjectCurrency, location.pathname.split('/')[2]);
   onDialogCancel();
-  storeSnackBarMessage('Added ' + subProjectName)
+  storeSnackBarMessage(strings.common.added + ' ' + subProjectName)
   showSnackBar();
 }
 

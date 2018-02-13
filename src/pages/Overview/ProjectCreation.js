@@ -18,7 +18,7 @@ const handleSubmit = (props) => {
   createProject(projectName, projectAmount, projectComment, projectCurrency, location.pathname.split('/')[2],
     approvers, assignees, banks, projectThumbnail);
   onDialogCancel();
-  storeSnackBarMessage('Added ' + projectName)
+  storeSnackBarMessage(strings.common.added + ' ' + projectName)
   showSnackBar();
 
 }

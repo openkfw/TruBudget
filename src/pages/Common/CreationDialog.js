@@ -13,8 +13,8 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
 
   const cancelButton = <FlatButton aria-label='cancel' label={strings.common.cancel} secondary={true} onTouchTap={() => handleCancel(props)} />
   const backButton = <FlatButton aria-label='back' label={strings.common.back} primary={true} disabled={isFirstStep} onTouchTap={() => handleBack(props)} />
-  const nextButton = <FlatButton aria-label='next' label={strings.common.next} primary={true} disabled={isLastStep ? isLastStep : (requiredInfoAdded && !isLastStep)} onTouchTap={() => handleNext(props)} />
-  const submitButton = <FlatButton aria-label='submit' label={strings.common.submit} primary={true} disabled={isLastStep ? requiredInfoAdded : (!isLastStep && !editMode)} onTouchTap={() => handleSubmit(props)} />
+  const nextButton = <FlatButton aria-label='next' label={strings.common.next} primary={true} disabled={isLastStep ? isLastStep : requiredInfoAdded} onTouchTap={() => handleNext(props)} />
+  const submitButton = <FlatButton aria-label='submit' label={strings.common.submit} primary={true} disabled={isLastStep ? requiredInfoAdded : !editMode} onTouchTap={() => handleSubmit(props)} />
 
   const leftActions = <div>{cancelButton}{backButton}</div>
   const rightActions = <div>{nextButton}{submitButton}</div>

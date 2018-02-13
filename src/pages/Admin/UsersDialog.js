@@ -72,7 +72,7 @@ const handleSubmit = (hideUsersDialog, addUser, userToAdd, isUsernameError, isFu
   const inputValid = isInputValid(username, fullName, password, role, isUsernameError, isFullNameError, isPasswordError, isRoleNotFoundError, roles);
   if (inputValid) {
     addUser(username, fullName, avatar, password, role);
-    storeSnackBarMessage('Added ' + fullName)
+    storeSnackBarMessage(strings.common.added + ' ' + fullName)
     openSnackBar();
     hideUsersDialog();
   }

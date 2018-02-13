@@ -18,6 +18,8 @@ const getCurrencyFormat = (currency) => ({
 })
 
 export const fromAmountString = (amount, currency) => {
+  // Unformatting an empty string will result in an error
+  // we use '' as default value for number fields to prevent users from an unerasable 0
   if (_.isString(amount) && amount.trim().length <= 0) {
     return '';
   }
