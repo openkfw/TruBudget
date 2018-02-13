@@ -2,14 +2,14 @@ import React from 'react';
 import Divider from 'material-ui/Divider';
 
 import strings from '../../localizeStrings';
-import ProjectBudget from '../Common/ProjectBudget';
-import ProjectAlias from '../Common/ProjectAlias';
+import Budget from '../Common/Budget';
+import Identifier from '../Common/Identifier';
 
 const SubProjectCreationContent = (props) => {
   return (
     <div>
       <div>
-        <ProjectAlias
+        <Identifier
           nameLabel={strings.subproject.subproject_title}
           nameHintText={strings.subproject.subproject_title_description}
           name={props.subProjectName}
@@ -21,7 +21,7 @@ const SubProjectCreationContent = (props) => {
       </div>
       <Divider />
       <div >
-        <ProjectBudget
+        <Budget
           currencyTitle={strings.subproject.subproject_currency}
           currency={props.subProjectCurrency}
           storeCurrency={props.storeSubProjectCurrency}

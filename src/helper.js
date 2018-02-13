@@ -18,7 +18,6 @@ const getCurrencyFormat = (currency) => ({
 })
 
 export const fromAmountString = (amount, currency) => {
-
   if (_.isString(amount) && amount.trim().length <= 0) {
     return '';
   }

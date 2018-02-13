@@ -14,7 +14,7 @@ const styles = {
   },
 }
 
-class ProjectBudget extends Component {
+class Budget extends Component {
 
   componentWillMount() {
     preselectCurrency(this.props.parentCurrency, this.props.storeCurrency);
@@ -43,4 +43,4 @@ class ProjectBudget extends Component {
     )
   }
 }
-export default ProjectBudget;
+export default Budget;

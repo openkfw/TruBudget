@@ -12,7 +12,7 @@ const styles = {
   },
 }
 
-class ProjectAlias extends Component {
+class Identifier extends Component {
 
   render() {
     return (
@@ -36,4 +36,4 @@ class ProjectAlias extends Component {
   }
 }
 
-export default ProjectAlias;
+export default Identifier;
