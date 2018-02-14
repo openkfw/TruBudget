@@ -4,7 +4,31 @@ import { connect } from 'react-redux';
 import globalStyles from '../../styles';
 
 
-import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog } from './actions';
+import {
+  fetchWorkflowItems,
+  setCurrentStep,
+  showWorkflowDialog,
+  storeWorkflowComment,
+  storeWorkflowCurrency,
+  storeWorkflowAmount,
+  storeWorkflowAmountType,
+  storeWorkflowName,
+  storeWorkflowStatus,
+  createWorkflowItem,
+  editWorkflowItem,
+  disableWorkflowStatus,
+  storeWorkflowTxid,
+  showWorkflowDetails,
+  updateWorkflowSortOnState,
+  enableWorkflowSort,
+  storeWorkflowType,
+  postWorkflowSort,
+  enableSubProjectBudgetEdit,
+  storeSubProjectAmount,
+  postSubProjectEdit,
+  isWorkflowApprovalRequired,
+  onWorkflowDialogCancel
+} from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -27,7 +51,7 @@ class WorkflowContainer extends Component {
 
   componentWillUnmount() {
     this.props.hideWorkflowDetails();
-    this.props.hideWorkflowDialog();
+    this.props.onWorkflowDialogCancel();
   }
 
   render() {
@@ -45,19 +69,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     openWorkflowDialog: (editMode) => dispatch(showWorkflowDialog(editMode)),
-    hideWorkflowDialog: () => dispatch(hideWorkflowDialog(false)),
+    onWorkflowDialogCancel: () => dispatch(onWorkflowDialogCancel(false)),
     storeWorkflowComment: (comment) => dispatch(storeWorkflowComment(comment)),
     storeWorkflowCurrency: (currency) => dispatch(storeWorkflowCurrency(currency)),
     storeWorkflowAmount: (amount) => dispatch(storeWorkflowAmount(amount)),
     storeWorkflowAmountType: (type) => dispatch(storeWorkflowAmountType(type)),
     storeWorkflowName: (name) => dispatch(storeWorkflowName(name)),
-    storeWorkflowAssignee: (assignee) => dispatch(storeWorkflowAssignee(assignee)),
-    storeWorkflowState: (state) => dispatch(storeWorkflowState(state)),
+    storeWorkflowStatus: (state) => dispatch(storeWorkflowStatus(state)),
     storeWorkflowTxid: (txid) => dispatch(storeWorkflowTxid(txid)),
-    enableWorkflowState: () => dispatch(disableWorkflowState(false)),
-    disableWorkflowState: () => dispatch(disableWorkflowState(true)),
-    createWorkflowItem: (stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, type, approvalRequired) => dispatch(createWorkflowItem(stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, type, approvalRequired)),
-    editWorkflowItem: (stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, type, approvalRequired) => dispatch(editWorkflowItem(stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, type, approvalRequired)),
+    createWorkflowItem: (stream, workflowToAdd, documents) => dispatch(createWorkflowItem(stream, workflowToAdd, documents)),
+    editWorkflowItem: (stream, key, workflowToAdd, documents, previousState) => dispatch(editWorkflowItem(stream, key, workflowToAdd, documents, previousState)),
     openWorkflowDetails: (txid) => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     openHistory: () => dispatch(showHistory(true)),
@@ -87,15 +108,8 @@ const mapStateToProps = (state) => {
     workflowItems: state.getIn(['workflow', 'workflowItems']).toJS(),
     subProjectDetails: state.getIn(['workflow', 'subProjectDetails']).toJS(),
     workflowDialogVisible: state.getIn(['workflow', 'workflowDialogVisible']),
-    workflowName: state.getIn(['workflow', 'workflowName']),
-    workflowAmount: state.getIn(['workflow', 'workflowAmount']),
-    workflowAmountType: state.getIn(['workflow', 'workflowAmountType']),
-    workflowComment: state.getIn(['workflow', 'workflowComment']),
-    workflowCurrency: state.getIn(['workflow', 'workflowCurrency']),
+    workflowToAdd: state.getIn(['workflow', 'workflowToAdd']).toJS(),
     workflowState: state.getIn(['workflow', 'workflowState']),
-    workflowAssignee: state.getIn(['workflow', 'workflowAssignee']),
-    workflowTxid: state.getIn(['workflow', 'workflowTxid']),
-    disabledWorkflowState: state.getIn(['workflow', 'disabledWorkflowState']),
     editMode: state.getIn(['workflow', 'editMode']),
     currentStep: state.getIn(['workflow', 'currentStep']),
     users: state.getIn(['login', 'users']).toJS(),
@@ -106,10 +120,8 @@ const mapStateToProps = (state) => {
     subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
-    workflowType: state.getIn(['workflow', 'workflowType']),
     budgetEditEnabled: state.getIn(['workflow', 'subProjectBudgetEditEnabled']),
     subProjectAmount: state.getIn(['workflow', 'subProjectAmount']),
-    workflowApprovalRequired: state.getIn(['workflow', 'workflowApprovalRequired']),
     workflowDocuments: state.getIn(['documents', 'tempDocuments']).toJS(),
     validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS(),
     roles: state.getIn(['login', 'roles']).toJS()

@@ -166,9 +166,7 @@ const editWorkflow = ({ key, txid, data }, props) => {
   props.storeWorkflowCurrency(currency)
   props.storeWorkflowComment(comment)
   props.storeWorkflowType(type)
-  props.storeWorkflowAssignee(assignee)
-  props.enableWorkflowState()
-  props.storeWorkflowState(status)
+  props.storeWorkflowStatus(status)
   props.storeWorkflowTxid(txid)
   props.isWorkflowApprovalRequired(approvalRequired)
   props.openWorkflowDialog(true)
@@ -191,10 +189,26 @@ const getNextStatus = (status, approvalRequired) => {
   }
 }
 
+const createWorkflowItem = ({ workflowName, amount, currency, comment, status, type, amountType, approvalRequired }, nextStatus) => {
+  return {
+    name: workflowName,
+    previousStatus: status,
+    status: nextStatus,
+    amount,
+    currency,
+    comment,
+    type,
+    amountType,
+    approvalRequired
+  }
+}
+
+
 const changeProgress = ({ key, txid, data }, props) => {
-  const { workflowName, amount, currency, comment, assignee, documents, status, type, amountType, approvalRequired } = data;
+  const { status, approvalRequired } = data;
   const nextStatus = getNextStatus(status, approvalRequired)
-  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowName, amount, amountType, currency, comment, documents, nextStatus, assignee, txid, data, type, approvalRequired)
+  const workflowItem = createWorkflowItem(data, nextStatus);
+  props.editWorkflowItem(props.location.pathname.split('/')[3], key, workflowItem, data.documents, workflowItem.previousStatus)
 }
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {

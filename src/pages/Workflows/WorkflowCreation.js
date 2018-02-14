@@ -5,16 +5,17 @@ import WorkflowType from './WorkflowType';
 import TextInput from '../Common/TextInput';
 import WorkflowCreationAmount from './WorkflowCreationAmount';
 import DocumentUpload from '../Documents/DocumentUpload';
-import WorkflowStateAndAssignee from './WorkflowStateAndAssignee';
+import WorkflowStatus from './WorkflowStatus';
 
 const handleSubmit = (props) => {
-  if (props.editMode) {
-    const currentWorkflowItem = props.workflowItems.find((item) => item.txid === props.workflowTxid);
-    props.editWorkflowItem(props.location.pathname.split('/')[3], currentWorkflowItem.key, props.workflowName, props.workflowAmount, props.workflowAmountType, props.workflowCurrency, props.workflowComment, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowTxid, currentWorkflowItem.data, props.workflowType, props.workflowApprovalRequired)
+  const { createWorkflowItem, editWorkflowItem, onWorkflowDialogCancel, editMode, workflowToAdd } = props;
+  if (editMode) {
+    const currentWorkflowItem = props.workflowItems.find((item) => item.txid === props.workflowToAdd.txId);
+    editWorkflowItem(props.location.pathname.split('/')[3], currentWorkflowItem.key, workflowToAdd, props.workflowDocuments, currentWorkflowItem.data)
   } else {
-    props.createWorkflowItem(props.location.pathname.split('/')[3], props.workflowName, props.workflowAmount, props.workflowAmountType, props.workflowCurrency, props.workflowComment, props.workflowDocuments, props.workflowState, props.workflowAssignee, props.workflowType, props.workflowApprovalRequired)
+    createWorkflowItem(props.location.pathname.split('/')[3], workflowToAdd, props.workflowDocuments)
   }
-  props.hideWorkflowDialog();
+  onWorkflowDialogCancel();
 }
 
 
@@ -23,9 +24,9 @@ const WorkflowCreation = (props) => {
     {
       title: strings.workflow.workflow_type,
       content: <WorkflowType
-        workflowApprovalRequired={props.workflowApprovalRequired}
+        workflowApprovalRequired={props.workflowToAdd.approvalRequired}
         isWorkflowApprovalRequired={props.isWorkflowApprovalRequired}
-        workflowType={props.workflowType} editMode={props.editMode}
+        workflowType={props.workflowToAdd.type} editMode={props.editMode}
         storeWorkflowType={props.storeWorkflowType}
       />
     },
@@ -34,7 +35,7 @@ const WorkflowCreation = (props) => {
       content: (
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <TextInput onChange={props.storeWorkflowName}
-            value={props.workflowName}
+            value={props.workflowToAdd.name}
             floatingLabelText={strings.workflow.workflow_title}
             hintText={strings.workflow.workflow_title_description}
           />
@@ -48,8 +49,9 @@ const WorkflowCreation = (props) => {
         storeWorkflowAmount={props.storeWorkflowAmount}
         storeWorkflowAmountType={props.storeWorkflowAmountType}
         storeWorkflowCurrency={props.storeWorkflowCurrency}
-        workflowAmount={props.workflowAmount} workflowAmountType={props.workflowAmountType}
-        workflowCurrency={props.workflowCurrency}
+        workflowAmount={props.workflowToAdd.amount}
+        workflowAmountType={props.workflowToAdd.amountType}
+        workflowCurrency={props.workflowToAdd.currency}
       />
     },
     {
@@ -57,7 +59,7 @@ const WorkflowCreation = (props) => {
       content: (
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <TextInput onChange={props.storeWorkflowComment}
-            value={props.workflowComment}
+            value={props.workflowToAdd.comment}
             multiLine={true}
             floatingLabelText={strings.workflow.workflow_comment}
             hintText={strings.common.comment_description}
@@ -72,13 +74,11 @@ const WorkflowCreation = (props) => {
 
     {
       title: strings.common.status,
-      content: <WorkflowStateAndAssignee
-        workflowApprovalRequired={props.workflowApprovalRequired}
+      content: <WorkflowStatus
+        workflowApprovalRequired={props.workflowToAdd.approvalRequired}
         permissions={props.permissions} users={props.users}
-        storeWorkflowState={props.storeWorkflowState}
-        storeWorkflowAssignee={props.storeWorkflowAssignee}
-        workflowAssignee={props.workflowAssignee}
-        workflowState={props.workflowState} editMode={props.editMode}
+        storeWorkflowStatus={props.storeWorkflowStatus}
+        workflowStatus={props.workflowToAdd.status} editMode={props.editMode}
       />
     },
   ]
@@ -89,7 +89,7 @@ const WorkflowCreation = (props) => {
       editable={props.editMode}
       title={props.editMode ? strings.workflow.edit_item : strings.workflow.workflow}
       creationDialogShown={props.workflowDialogVisible}
-      onDialogCancel={props.hideWorkflowDialog}
+      onDialogCancel={props.onWorkflowDialogCancel}
       handleSubmit={handleSubmit}
       steps={steps}
       numberOfSteps={steps.length}

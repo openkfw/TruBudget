@@ -2,7 +2,7 @@ export const FETCH_WORKFLOW_ITEMS = 'FETCH_WORKFLOW_ITEMS';
 export const FETCH_WORKFLOW_ITEMS_SUCCESS = 'FETCH_WORKFLOW_ITEMS_SUCCESS';
 
 export const SHOW_WORKFLOW_DIALOG = 'SHOW_WORKFLOW_DIALOG';
-export const HIDE_WORKFLOW_DIALOG = 'HIDE_WORKFLOW_DIALOG';
+export const CANCEL_WORKFLOW_DIALOG = 'CANCEL_WORKFLOW_DIALOG';
 
 export const WORKFLOW_NAME = 'WORKFLOW_NAME';
 export const WORKFLOW_TYPE = 'WORKFLOW_TYPE';
@@ -12,14 +12,13 @@ export const WORKFLOW_AMOUNT_TYPE = 'WORKFLOW_AMOUNT_TYPE';
 export const WORKFLOW_PURPOSE = 'WORKFLOW_PURPOSE';
 export const WORKFLOW_ADDITIONAL_DATA = 'WORKFLOW_ADDITIONAL_DATA';
 export const WORKFLOW_CURRENCY = 'WORKFLOW_CURRENCY';
-export const WORKFLOW_STATE = 'WORKFLOW_STATE';
+export const WORKFLOW_STATUS = 'WORKFLOW_STATUS';
 export const WORKFLOW_ASSIGNEE = 'WORKFLOW_ASSIGNEE';
 export const CREATE_WORKFLOW = 'CREATE_WORKFLOW';
 export const CREATE_WORKFLOW_SUCCESS = 'CREATE_WORKFLOW_SUCCESS';
 export const EDIT_WORKFLOW = 'EDIT_WORKFLOW';
 export const EDIT_WORKFLOW_SUCCESS = 'EDIT_WORKFLOW_SUCCESS';
 export const WORKFLOW_EDIT = 'WORKFLOW_EDIT';
-export const WORKFLOW_STATE_ENABLED = 'WORKFLOW_STATE_ENABLED';
 export const WORKFLOW_TXID = 'WORKFLOW_TXID';
 export const SHOW_WORKFLOW_DETAILS = 'SHOW_WORKFLOW_DETAILS';
 
@@ -118,9 +117,9 @@ export function showWorkflowDialog(editMode = false) {
   }
 }
 
-export function hideWorkflowDialog(editMode) {
+export function onWorkflowDialogCancel(editMode) {
   return {
-    type: HIDE_WORKFLOW_DIALOG,
+    type: CANCEL_WORKFLOW_DIALOG,
     show: false,
     editMode
   }
@@ -141,6 +140,7 @@ export function storeWorkflowName(name) {
     name: name
   }
 }
+
 export function storeWorkflowType(workflowType) {
   return {
     type: WORKFLOW_TYPE,
@@ -183,22 +183,10 @@ export function storeWorkflowComment(comment) {
   }
 }
 
-export function storeWorkflowAssignee(assignee) {
+export function storeWorkflowStatus(status) {
   return {
-    type: WORKFLOW_ASSIGNEE,
-    assignee: assignee
-  }
-}
-export function storeWorkflowState(state) {
-  return {
-    type: WORKFLOW_STATE,
-    state: state
-  }
-}
-export function disableWorkflowState(enabled) {
-  return {
-    type: WORKFLOW_STATE_ENABLED,
-    enabled: enabled
+    type: WORKFLOW_STATUS,
+    status: status
   }
 }
 
@@ -209,39 +197,37 @@ export function storeWorkflowTxid(txid) {
   }
 }
 
-export function createWorkflowItem(stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired) {
+export function createWorkflowItem(stream, { name, type, amount, amountType, currency, comment, status, approvalRequired }, documents) {
   return {
     type: CREATE_WORKFLOW,
     stream: stream,
-    workflowName: workflowName,
+    workflowName: name,
     amount: amount,
     amountType,
     currency: currency,
     comment: comment,
     documents,
-    assignee: assignee,
-    state: state,
-    workflowType: workflowType,
+    state: status,
+    workflowType: type,
     approvalRequired
   }
 }
 
-export function editWorkflowItem(stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired) {
+export function editWorkflowItem(stream, key, { name, amount, amountType, currency, comment, status, txid, type, approvalRequired }, documents, previousState) {
   return {
     type: EDIT_WORKFLOW,
     stream: stream,
     key: key,
-    workflowName: workflowName,
+    workflowName: name,
     amount: amount,
-    amountType,
     currency: currency,
     comment: comment,
+    workflowType: type,
+    state: status,
+    amountType,
     documents,
-    assignee: assignee,
-    state: state,
     txid,
     previousState,
-    workflowType,
     approvalRequired
   }
 }
