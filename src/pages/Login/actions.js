@@ -13,6 +13,8 @@ export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 export const FETCH_ROLES = 'FETCH_ROLES';
 export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
 
+export const CLEAR_USER = 'CLEAR_USER';
+
 export const STORE_USERNAME = 'STORE_USTORE_USERNAMESER';
 export const STORE_PASSWORD = 'STORE_PASSWORD';
 export const LOGIN_ERROR_MESSAGE = 'LOGIN_ERROR_MESSAGE';
@@ -90,6 +92,12 @@ export function loginAdmin(user) {
   return {
     type: ADMIN_LOGIN,
     user
+  }
+}
+
+export const clearRegularUser = () => {
+  return {
+    type: CLEAR_USER
   }
 }
 

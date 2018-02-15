@@ -51,11 +51,13 @@ const getJwt = (state) => state.toJS().login.jwt
 const getEnvironment = (state) => {
   const env = state.toJS().login.environment
   if (env) {
-    console.log(env)
     return env;
   }
   return 'Test'
 }
+
+
+
 function* callApi(func, ...args) {
   const token = yield select(getJwt)
   yield call(api.setAuthorizationHeader, token)
