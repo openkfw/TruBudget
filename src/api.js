@@ -6,7 +6,8 @@ console.log(`API is running in ${devMode ? "development" : "production"} mode`)
 
 const TOKEN_NAME = 'jwt_token';
 const ENV_PREFIX = "environment_prefix";
-
+const testPrefix = '/test';
+const prodPrefix = '/api';
 class Api {
 
   constructor() {
@@ -14,7 +15,7 @@ class Api {
     axios.defaults.baseURL = this.prefix;
     //rename
     const storedPrefix = this.getEnvironmentPrefix();
-    const prefix = !_.isEmpty(storedPrefix) ? storedPrefix : '/test';
+    const prefix = !_.isEmpty(storedPrefix) ? storedPrefix : testPrefix;
     this.prefix = devMode ? '' : prefix;
   }
 
@@ -25,11 +26,11 @@ class Api {
 
   getEnvironmentPrefix = () => localStorage.getItem(ENV_PREFIX);
   setEnvironmentPrefix = (prefix) => localStorage.setItem(ENV_PREFIX, prefix);
-  setDefaultEnvironmentPrefix = () => localStorage.setItem(ENV_PREFIX, '/test');
+  setDefaultEnvironmentPrefix = () => localStorage.setItem(ENV_PREFIX, testPrefix);
 
   getEnvironment = () => {
     const prefix = this.getEnvironmentPrefix()
-    return prefix === '/test' ? 'Test' : 'Prod'
+    return prefix === testPrefix ? { env: 'Test', productionActive: false } : { env: 'Prod', productionActive: true }
   }
 
   setAdminToken = (token) => sessionStorage.setItem('admin_jwt', token);
@@ -42,13 +43,11 @@ class Api {
   }
 
   activateProduction = (active) => {
-    if (!devMode) {
-      const prefix = active ? '/api' : '/test';
-      this.setEnvironmentPrefix(prefix)
-
-    }
-    const prefix = active ? '/api' : '/test';
+    const prefix = active ? prodPrefix : testPrefix;
     this.setEnvironmentPrefix(prefix)
+    if (!devMode) {
+      this.prefix = prefix;
+    }
     return active;
   }
 

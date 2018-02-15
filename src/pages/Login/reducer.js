@@ -69,8 +69,6 @@ export default function loginReducer(state = defaultState, action) {
       return state.set('adminLoginFailed', action.show);
     case FETCH_ENVIRONMENT_SUCCESS:
     case STORE_ENVIRONMENT_SUCCESS:
-      console.log(action.environment)
-      console.log(action.productionActive)
       return state.merge({
         environment: action.environment,
         productionActive: action.productionActive
