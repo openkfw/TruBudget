@@ -8,12 +8,14 @@ import DocumentUpload from '../Documents/DocumentUpload';
 import WorkflowStatus from './WorkflowStatus';
 
 const handleSubmit = (props) => {
-  const { createWorkflowItem, editWorkflowItem, onWorkflowDialogCancel, editMode, workflowToAdd } = props;
+  const { createWorkflowItem, editWorkflowItem, onWorkflowDialogCancel, editMode, workflowToAdd, workflowDocuments } = props;
+  const subproject = props.match.params.subproject;
   if (editMode) {
     const currentWorkflowItem = props.workflowItems.find((item) => item.txid === props.workflowToAdd.txId);
-    editWorkflowItem(props.location.pathname.split('/')[3], currentWorkflowItem.key, workflowToAdd, props.workflowDocuments, currentWorkflowItem.data)
+    const { currentWorkflowKey, currentWorkflowData } = currentWorkflowItem;
+    editWorkflowItem(subproject, currentWorkflowKey, workflowToAdd, workflowDocuments, currentWorkflowData)
   } else {
-    createWorkflowItem(props.location.pathname.split('/')[3], workflowToAdd, props.workflowDocuments)
+    createWorkflowItem(subproject, workflowToAdd, workflowDocuments)
   }
   onWorkflowDialogCancel();
 }
