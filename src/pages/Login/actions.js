@@ -19,6 +19,8 @@ export const LOGIN_ERROR_MESSAGE = 'LOGIN_ERROR_MESSAGE';
 export const SHOW_LOGIN_ERROR = 'SHOW_LOGIN_ERROR';
 export const STORE_ENVIRONMENT = 'STORE_ENVIRONMENT';
 export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
+export const FETCH_ENVIRONMENT = 'FETCH_ENVIRONMENT';
+export const FETCH_ENVIRONMENT_SUCCESS = 'FETCH_ENVIRONMENT_SUCCESS';
 
 export const SET_LANGUAGE = 'SET_LANGUAGE';
 export const TOKEN_FOUND = 'TOKEN_FOUND';
@@ -124,6 +126,12 @@ export function storeEnvironment(environment) {
     type: STORE_ENVIRONMENT,
     environment,
     active
+  }
+}
+
+export function getEnvironment() {
+  return {
+    type: FETCH_ENVIRONMENT
   }
 }
 

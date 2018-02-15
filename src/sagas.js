@@ -12,7 +12,7 @@ import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS } from './pages/Workflows/actions';
 
-import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, CHECK_TOKEN, FETCH_USER, TOKEN_FOUND, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS } from './pages/Login/actions';
+import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, CHECK_TOKEN, FETCH_USER, TOKEN_FOUND, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS, FETCH_ENVIRONMENT_SUCCESS, FETCH_ENVIRONMENT } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 import { FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS, ADD_USER, ADD_USER_SUCCESS, ADD_ROLE_SUCCESS, ADD_ROLE } from './pages/Admin/actions';
 import _ from 'lodash';
@@ -171,7 +171,7 @@ export function* editSubProjectSaga(action) {
   }
 }
 
-export function* environmentSaga(action) {
+export function* setEnvironmentSaga(action) {
   try {
     yield api.activateProduction(action.active);
     yield put({
@@ -183,6 +183,22 @@ export function* environmentSaga(action) {
     yield handleError(error);
   }
 }
+
+export function* getEnvironmentSaga() {
+  try {
+    const env = yield api.getEnvironment();
+
+    yield put({
+      type: FETCH_ENVIRONMENT_SUCCESS,
+      environment: env,
+      productionActive: env === "Prod" ? true : false
+    });
+  } catch (error) {
+    yield handleError(error)
+  }
+}
+
+
 
 export function* fetchNodeInformationSaga() {
   try {
@@ -380,6 +396,7 @@ export function* checkTokenSaga() {
 export function* logoutSaga() {
   try {
     yield call(api.removeToken);
+    yield call(api.setDefaultEnvironmentPrefix)
     yield put({
       type: LOGOUT_SUCCESS
     })
@@ -589,8 +606,12 @@ export function* watchValidateDocument() {
 export function* watchAddDocument() {
   yield takeLatest(ADD_DOCUMENT, addDocumentSaga)
 }
-export function* watchEnvironment() {
-  yield takeLatest(STORE_ENVIRONMENT, environmentSaga)
+export function* watchSetEnvironment() {
+  yield takeLatest(STORE_ENVIRONMENT, setEnvironmentSaga)
+}
+
+export function* watchGetEnvironment() {
+  yield takeLatest(FETCH_ENVIRONMENT, getEnvironmentSaga)
 }
 
 export function* watchFetchUpdates() {
@@ -632,7 +653,8 @@ export default function* rootSaga() {
       watchEditSubProject(),
       watchValidateDocument(),
       watchAddDocument(),
-      watchEnvironment(),
+      watchSetEnvironment(),
+      watchGetEnvironment(),
       watchFetchUpdates(),
       watchFetchNodePermissions(),
       watchAddUser(),

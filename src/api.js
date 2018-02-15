@@ -1,22 +1,36 @@
 import axios from 'axios';
+import _ from 'lodash';
 const devMode = process.env.NODE_ENV === 'development';
 
 console.log(`API is running in ${devMode ? "development" : "production"} mode`)
 
 const TOKEN_NAME = 'jwt_token';
+const ENV_PREFIX = "environment_prefix";
 
 class Api {
 
   constructor() {
     this.setAuthorizationHeader(this.getToken());
     axios.defaults.baseURL = this.prefix;
-    this.prefix = devMode ? '' : '/test';
+    //rename
+    const storedPrefix = this.getEnvironmentPrefix();
+    const prefix = !_.isEmpty(storedPrefix) ? storedPrefix : '/test';
+    this.prefix = devMode ? '' : prefix;
   }
 
 
   getToken = () => localStorage.getItem(TOKEN_NAME)
   setToken = (data) => localStorage.setItem(TOKEN_NAME, data)
   removeToken = () => localStorage.removeItem(TOKEN_NAME);
+
+  getEnvironmentPrefix = () => localStorage.getItem(ENV_PREFIX);
+  setEnvironmentPrefix = (prefix) => localStorage.setItem(ENV_PREFIX, prefix);
+  setDefaultEnvironmentPrefix = () => localStorage.setItem(ENV_PREFIX, '/test');
+
+  getEnvironment = () => {
+    const prefix = this.getEnvironmentPrefix()
+    return prefix === '/test' ? 'Test' : 'Prod'
+  }
 
   setAdminToken = (token) => sessionStorage.setItem('admin_jwt', token);
   removeAdminToken = (token) => {
@@ -29,8 +43,13 @@ class Api {
 
   activateProduction = (active) => {
     if (!devMode) {
-      this.prefix = active ? '/api' : '/test';
+      const prefix = active ? '/api' : '/test';
+      this.setEnvironmentPrefix(prefix)
+
     }
+    const prefix = active ? '/api' : '/test';
+    this.setEnvironmentPrefix(prefix)
+    return active;
   }
 
   login = async (username, password) => {
