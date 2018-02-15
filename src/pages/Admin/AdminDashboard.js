@@ -27,6 +27,7 @@ const styles = {
 const AdminDashBoard = (props) => {
   const { adminLoggedIn, nodePermissions, loggedInAdminUser } = props;
   const connectedToAdminNode = isAdminNode(nodePermissions);
+
   return (
     <div style={styles.backgroundImage}>
       <AdminNavbar {...props} />

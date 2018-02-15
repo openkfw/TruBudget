@@ -3,14 +3,21 @@ import moment from 'moment';
 import strings from '../../localizeStrings';
 
 
-import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, TOKEN_FOUND, ADMIN_LOGIN_SUCCESS, FETCH_ADMIN_USER_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ENVIRONMENT_SUCCESS } from './actions';
+import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, TOKEN_FOUND, ADMIN_LOGIN_SUCCESS, FETCH_ADMIN_USER_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ENVIRONMENT_SUCCESS, ADMIN_LOGOUT_SUCCESS } from './actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
 export const defaultState = fromJS({
   users: [],
   username: '',
   password: '',
-  loggedInUser: {},
+  loggedInUser: {
+    role: {
+      roleName: '',
+      read: false,
+      write: false,
+      admin: false,
+    }
+  },
   environment: 'Test',
   productionActive: false,
   loginErrorMessage: '',
@@ -49,7 +56,11 @@ export default function loginReducer(state = defaultState, action) {
         'jwt': action.jwt
       });
     case FETCH_ADMIN_USER_SUCCESS:
-      return state.set('loggedInAdminUser', action.user);
+      return state.merge({
+        'loggedInAdminUser': action.user,
+        'jwt': action.jwt
+      });
+
     case LOGIN_SUCCESS:
       return state.merge({
         loggedIn: true,
@@ -75,6 +86,7 @@ export default function loginReducer(state = defaultState, action) {
       return newState;
     case TOKEN_FOUND:
       return state.set('tokenPresent', true);
+    case ADMIN_LOGOUT_SUCCESS:
     case LOGOUT_SUCCESS: {
       const newDefaultState = defaultState.set('language', state.get('language'))
       return newDefaultState;

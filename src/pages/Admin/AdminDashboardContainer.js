@@ -60,7 +60,7 @@ const mapStateToProps = (state) => {
     roles: state.getIn(['login', 'roles']).toJS(),
     adminLoginShown: state.getIn(['adminDashboard', 'adminLoginShown']),
     adminCredentials: state.getIn(['adminDashboard', 'adminCredentials']),
-    loggedInAdminUser: state.getIn(['login', 'loggedInAdminUser']),
+    loggedInAdminUser: state.getIn(['login', 'loggedInAdminUser']).toJS(),
     adminLoggedIn: state.getIn(['login', 'adminLoggedIn']),
     adminLoginFailed: state.getIn(['login', 'adminLoginFailed']),
     showSnackBar: state.getIn(['notifications', 'showSnackBar']),

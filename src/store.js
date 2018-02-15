@@ -7,7 +7,7 @@ import { fromJS, toJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
 import _ from 'lodash';
-import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS } from './pages/Login/actions';
+import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS } from './pages/Login/actions';
 
 
 import createReducer from './reducers';
@@ -53,6 +53,8 @@ export default function configureStore(initialState = {}, history) {
         })
         break;
       case LOGOUT_SUCCESS:
+        resetState()
+      case ADMIN_LOGOUT_SUCCESS:
         resetState()
       default:
         break;

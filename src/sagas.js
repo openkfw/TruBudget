@@ -366,9 +366,10 @@ export function* adminLoginSaga({ user }) {
     yield put({
       type: FETCH_ADMIN_USER_SUCCESS,
       user: {
-        username: data.id,
-        ...data
-      }
+        username: data.user.id,
+        ...data.user
+      },
+      jwt: data.jwtToken,
     })
     yield put({
       type: ADMIN_LOGIN_SUCCESS
@@ -425,7 +426,6 @@ export function* logoutSaga() {
 
 export function* adminLogoutSaga() {
   try {
-    yield callApi(api.removeAdminToken);
     yield put({
       type: ADMIN_LOGOUT_SUCCESS
     })

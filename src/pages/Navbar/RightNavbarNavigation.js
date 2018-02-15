@@ -17,6 +17,7 @@ const styles = {
 }
 
 const RightNavbarNavigations = ({ peers, unreadNotifications, history, logout, loggedInUser }) => {
+  console.log(loggedInUser)
   return (
     <div style={styles.container} >
       <span style={styles.text}
