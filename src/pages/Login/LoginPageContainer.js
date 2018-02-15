@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     users: state.getIn(['login', 'users']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     username: state.getIn(['login', 'username']),
     password: state.getIn(['login', 'password']),
     loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),

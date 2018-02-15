@@ -76,7 +76,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     selectedId: state.getIn(['navbar', 'selectedId']),
     selectedSection: state.getIn(['navbar', 'selectedSection']),
     workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),

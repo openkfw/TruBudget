@@ -3,11 +3,16 @@
  */
 
 import { createStore, applyMiddleware, compose } from 'redux';
-import { fromJS } from 'immutable';
+import { fromJS, toJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
+import _ from 'lodash';
+import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS } from './pages/Login/actions';
+
+
 import createReducer from './reducers';
 import rootSaga from './sagas';
+import { loadState, saveState, resetState } from './localStorage';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -32,12 +37,28 @@ export default function configureStore(initialState = {}, history) {
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
   /* eslint-enable */
-
+  const persistedState = loadState();
   const store = createStore(
     createReducer(),
-    fromJS(initialState),
+    fromJS(persistedState),
     composeEnhancers(...enhancers)
   );
+
+  store.subscribe(() => {
+    const state = store.getState().toJS();
+    switch (state.actions.lastAction) {
+      case FETCH_USER_SUCCESS:
+        saveState({
+          login: state.login
+        })
+        break;
+      case LOGOUT_SUCCESS:
+        resetState()
+      default:
+        break;
+    }
+
+  })
 
   // Extensions
   sagaMiddleware.run(rootSaga);

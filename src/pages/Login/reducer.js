@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import { fromJS, Map } from 'immutable';
 import moment from 'moment';
 import strings from '../../localizeStrings';
 
@@ -6,18 +6,11 @@ import strings from '../../localizeStrings';
 import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, TOKEN_FOUND, ADMIN_LOGIN_SUCCESS, FETCH_ADMIN_USER_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ENVIRONMENT_SUCCESS } from './actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
-const defaultState = fromJS({
+export const defaultState = fromJS({
   users: [],
   username: '',
   password: '',
-  loggedInUser: {
-    role: {
-      roleName: '',
-      read: false,
-      write: false,
-      admin: false,
-    }
-  },
+  loggedInUser: {},
   environment: 'Test',
   productionActive: false,
   loginErrorMessage: '',
@@ -51,7 +44,10 @@ export default function loginReducer(state = defaultState, action) {
     case STORE_PASSWORD:
       return state.set('password', action.password);
     case FETCH_USER_SUCCESS:
-      return state.set('loggedInUser', action.user);
+      return state.merge({
+        'loggedInUser': action.user,
+        'jwt': action.jwt
+      });
     case FETCH_ADMIN_USER_SUCCESS:
       return state.set('loggedInAdminUser', action.user);
     case LOGIN_SUCCESS:
@@ -67,8 +63,8 @@ export default function loginReducer(state = defaultState, action) {
       return state.set('loginUnsuccessful', action.show);
     case SHOW_ADMIN_LOGIN_ERROR:
       return state.set('adminLoginFailed', action.show);
-    case FETCH_ENVIRONMENT_SUCCESS:
     case STORE_ENVIRONMENT_SUCCESS:
+    case FETCH_ENVIRONMENT_SUCCESS:
       return state.merge({
         environment: action.environment,
         productionActive: action.productionActive
@@ -83,7 +79,6 @@ export default function loginReducer(state = defaultState, action) {
       const newDefaultState = defaultState.set('language', state.get('language'))
       return newDefaultState;
     }
-
     default:
       return state
   }

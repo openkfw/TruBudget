@@ -79,7 +79,7 @@ const mapStateToProps = (state) => {
     projectApprover: state.getIn(['overview', 'projectApprover']).toJS(),
     projectAssignee: state.getIn(['overview', 'projectAssignee']).toJS(),
     projectBank: state.getIn(['overview', 'projectBank']).toJS(),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     roles: state.getIn(['login', 'roles']).toJS()
   }
 }

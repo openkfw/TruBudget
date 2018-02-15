@@ -73,7 +73,7 @@ const mapStateToProps = (state) => {
     subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
     showHistory: state.getIn(['notifications', 'showHistory']),
     historyItems: state.getIn(['notifications', 'historyItems']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     users: state.getIn(['login', 'users']).toJS(),
     roles: state.getIn(['login', 'roles']).toJS()
   }
