@@ -26,7 +26,13 @@ class Api {
 
   getEnvironmentPrefix = () => localStorage.getItem(ENV_PREFIX);
   setEnvironmentPrefix = (prefix) => localStorage.setItem(ENV_PREFIX, prefix);
-  setDefaultEnvironmentPrefix = () => localStorage.setItem(ENV_PREFIX, testPrefix);
+
+  setDefaultEnvironmentPrefix = () => {
+    if (!devMode) {
+      this.prefix = testPrefix;
+    }
+    localStorage.setItem(ENV_PREFIX, testPrefix);
+  }
 
   getEnvironment = () => {
     const prefix = this.getEnvironmentPrefix()
