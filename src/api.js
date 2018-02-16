@@ -1,13 +1,8 @@
 import axios from 'axios';
-import _ from 'lodash';
 const devMode = process.env.NODE_ENV === 'development';
 
 console.log(`API is running in ${devMode ? "development" : "production"} mode`)
 
-const TOKEN_NAME = 'jwt_token';
-const ENV_PREFIX = "environment_prefix";
-const testPrefix = '/test';
-const prodPrefix = '/api';
 class Api {
 
   setAuthorizationHeader = (token) => {

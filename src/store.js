@@ -3,16 +3,15 @@
  */
 
 import { createStore, applyMiddleware, compose } from 'redux';
-import { fromJS, toJS } from 'immutable';
+import { fromJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
-import _ from 'lodash';
 
 
 
 import createReducer from './reducers';
 import rootSaga from './sagas';
-import { loadState, saveState, resetState } from './localStorage';
+import { loadState, saveState } from './localStorage';
 
 const sagaMiddleware = createSagaMiddleware();
 

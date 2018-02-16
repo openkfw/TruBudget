@@ -24,7 +24,6 @@ export const FETCH_ENVIRONMENT = 'FETCH_ENVIRONMENT';
 export const FETCH_ENVIRONMENT_SUCCESS = 'FETCH_ENVIRONMENT_SUCCESS';
 
 export const SET_LANGUAGE = 'SET_LANGUAGE';
-export const TOKEN_FOUND = 'TOKEN_FOUND';
 
 export const ADMIN_LOGIN = 'ADMIN_LOGIN';
 export const ADMIN_LOGIN_SUCCESS = 'ADMIN_LOGIN_SUCCESS';
@@ -142,10 +141,3 @@ export function setLanguage(language) {
     language
   }
 }
-
-export function tokenFound() {
-  return {
-    type: TOKEN_FOUND
-  }
-}
-

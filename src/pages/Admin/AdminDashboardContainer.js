@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchNodePermissions, showRolesDialog, hideRolesDialog, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword } from './actions';
-import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin, logout, clearRegularUser } from '../Login/actions';
+import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin, clearRegularUser } from '../Login/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
 import AdminDashboard from './AdminDashboard';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
