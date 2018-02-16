@@ -8,15 +8,24 @@ import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS } from './page
 const STORAGE_KEY = 'state';
 
 const parseFromState = (state) => ({
-  loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
-  jwt: state.getIn(['login', 'jwt']),
-  lastAction: state.getIn(['actions', 'lastAction'])
+  login: {
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
+    jwt: state.getIn(['login', 'jwt']),
+    environment: state.getIn(['login', 'environment']),
+    productionActive: state.getIn(['login', 'productionActive']),
+    users: state.getIn(['login', 'users']),
+    roles: state.getIn(['login', 'roles']),
+  },
+  actions: {
+    lastAction: state.getIn(['actions', 'lastAction'])
+  }
 })
 
 const defaultPersistedState = parseFromState(Map({
   login: loginState,
   actions: actionState
 }));
+
 
 export const loadState = () => {
   try {
@@ -32,10 +41,9 @@ export const resetState = () => {
 
 
 export const persistState = (state) => {
-  const { lastAction, ...stateToPersist } = parseFromState(state);
-
+  const { actions, ...stateToPersist } = parseFromState(state);
   try {
-    switch (lastAction) {
+    switch (actions.lastAction) {
       case FETCH_USER_SUCCESS:
         const serializedState = JSON.stringify(stateToPersist)
         localStorage.setItem(STORAGE_KEY, serializedState)
