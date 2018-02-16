@@ -1,7 +1,6 @@
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
 
-export const CHECK_TOKEN = 'CHECK_TOKEN';
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
@@ -38,12 +37,6 @@ export const SHOW_ADMIN_LOGIN_ERROR = 'SHOW_ADMIN_LOGIN_ERROR';
 export function fetchUsers() {
   return {
     type: FETCH_USERS
-  }
-}
-
-export function checkToken() {
-  return {
-    type: CHECK_TOKEN
   }
 }
 

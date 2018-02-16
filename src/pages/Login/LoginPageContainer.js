@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, checkToken, getEnvironment } from './actions';
+import _ from 'lodash';
+import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, getEnvironment } from './actions';
 import LoginPage from './LoginPage';
 import LoadingContainer from '../Loading/LoadingContainer';
 import { fetchNodePermissions } from '../Admin/actions';
@@ -10,14 +10,11 @@ class LoginPageContainer extends Component {
   componentWillMount() {
     this.props.getEnvironment();
     this.props.fetchNodePermissions();
-    this.props.checkToken();
-
   }
 
   render() {
-    const { tokenPresent } = this.props;
     return (
-      tokenPresent ? (
+      !_.isEmpty(this.props.jwt) ? (
         <LoadingContainer {...this.props} />) :
         (<LoginPage {...this.props} />)
     )
@@ -51,7 +48,6 @@ const mapDispatchToProps = (dispatch) => {
     storeEnvironment: (environment) => dispatch(storeEnvironment(environment)),
     getEnvironment: () => dispatch(getEnvironment()),
     setLanguage: (language) => dispatch(setLanguage(language)),
-    checkToken: () => dispatch(checkToken()),
     fetchNodePermissions: () => dispatch(fetchNodePermissions()),
   };
 }
@@ -59,14 +55,14 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     users: state.getIn(['login', 'users']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     username: state.getIn(['login', 'username']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
+    jwt: state.getIn(['login', 'jwt']),
     password: state.getIn(['login', 'password']),
     loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
     environment: state.getIn(['login', 'environment']),
     language: state.getIn(['login', 'language']),
     loggedIn: state.getIn(['login', 'loggedIn']),
-    tokenPresent: state.getIn(['login', 'tokenPresent']),
     nodePermissions: state.getIn(['adminDashboard', 'nodePermissions']),
   }
 }

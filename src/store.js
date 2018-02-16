@@ -7,7 +7,7 @@ import { fromJS, toJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
 import _ from 'lodash';
-import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS } from './pages/Login/actions';
+
 
 
 import createReducer from './reducers';
@@ -46,20 +46,10 @@ export default function configureStore(initialState = {}, history) {
 
   store.subscribe(() => {
     const state = store.getState().toJS();
-    switch (state.actions.lastAction) {
-      case FETCH_USER_SUCCESS:
-        saveState({
-          login: state.login
-        })
-        break;
-      case LOGOUT_SUCCESS:
-        resetState()
-      case ADMIN_LOGOUT_SUCCESS:
-        resetState()
-      default:
-        break;
+    const action = state.actions;
+    if (action) {
+      saveState(action.lastAction, state);
     }
-
   })
 
   // Extensions

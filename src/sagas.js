@@ -390,30 +390,16 @@ export function* adminLoginSaga({ user }) {
 }
 
 export function* fetchUserWithJwtSaga() {
+
   try {
+    yield call(api.fetchUser);
     yield put({
       type: LOGIN_SUCCESS
     })
   } catch (error) {
-    console.log(error)
     yield handleError(error);
   }
 }
-
-export function* checkTokenSaga() {
-  try {
-    const jwt = yield select(getJwt);
-    if (!_.isEmpty(jwt)) {
-      yield put({
-        type: TOKEN_FOUND
-      })
-    }
-  } catch (error) {
-    yield handleError(error);
-  }
-}
-
-
 
 export function* logoutSaga() {
   try {
@@ -590,10 +576,6 @@ export function* watchAdminLogin() {
   yield takeLatest(ADMIN_LOGIN, adminLoginSaga)
 }
 
-export function* watchCheckToken() {
-  yield takeEvery(CHECK_TOKEN, checkTokenSaga)
-}
-
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserWithJwtSaga)
 }
@@ -662,7 +644,6 @@ export default function* rootSaga() {
       watchFetchRoles(),
       watchLogin(),
       watchAdminLogin(),
-      watchCheckToken(),
       watchFetchUser(),
       watchLogout(),
       watchAdminLogout(),

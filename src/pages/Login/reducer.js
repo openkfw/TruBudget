@@ -24,6 +24,7 @@ export const defaultState = fromJS({
   showLoginError: false,
   loggedInAdminUser: {},
   adminLoggedIn: false,
+  jwt: '',
   adminLoginFailed: false,
   roles: [],
   language: 'en-gb',
@@ -86,8 +87,6 @@ export default function loginReducer(state = defaultState, action) {
       const newState = state.set('language', action.language);
       setLanguage(newState);
       return newState;
-    case TOKEN_FOUND:
-      return state.set('tokenPresent', true);
     case ADMIN_LOGOUT_SUCCESS:
     case LOGOUT_SUCCESS: {
       const newDefaultState = defaultState.set('language', state.get('language'))
