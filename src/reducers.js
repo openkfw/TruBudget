@@ -31,7 +31,7 @@ const routeInitialState = fromJS({
 });
 
 
-const actionInitialState = fromJS({
+export const actionInitialState = fromJS({
   lastAction: null,
 });
 

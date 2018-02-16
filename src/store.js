@@ -7,11 +7,9 @@ import { fromJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
 
-
-
 import createReducer from './reducers';
 import rootSaga from './sagas';
-import { loadState, saveState } from './localStorage';
+import { loadState, persistState } from './localStorage';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -44,11 +42,7 @@ export default function configureStore(initialState = {}, history) {
   );
 
   store.subscribe(() => {
-    const state = store.getState().toJS();
-    const action = state.actions;
-    if (action) {
-      saveState(action.lastAction, state);
-    }
+    persistState(store.getState());
   })
 
   // Extensions
