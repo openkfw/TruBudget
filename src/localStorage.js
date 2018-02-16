@@ -35,8 +35,13 @@ export const loadState = () => {
     return defaultPersistedState;
   }
 }
-export const resetState = () => {
-  localStorage.setItem(STORAGE_KEY, defaultPersistedState)
+
+const setStorage = (state) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
+const resetStorage = () => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPersistedState))
 }
 
 
@@ -45,12 +50,11 @@ export const persistState = (state) => {
   try {
     switch (actions.lastAction) {
       case FETCH_USER_SUCCESS:
-        const serializedState = JSON.stringify(stateToPersist)
-        localStorage.setItem(STORAGE_KEY, serializedState)
+        setStorage(stateToPersist)
         break;
       case LOGOUT_SUCCESS:
       case ADMIN_LOGOUT_SUCCESS:
-        resetState()
+        resetStorage()
         break;
       default:
         break;
