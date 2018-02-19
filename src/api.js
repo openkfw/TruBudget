@@ -3,54 +3,30 @@ const devMode = process.env.NODE_ENV === 'development';
 
 console.log(`API is running in ${devMode ? "development" : "production"} mode`)
 
-const TOKEN_NAME = 'jwt_token';
-
 class Api {
-
-  constructor() {
-    this.setAuthorizationHeader(this.getToken());
-    axios.defaults.baseURL = this.prefix;
-    this.prefix = devMode ? '' : '/test';
-  }
-
-
-  getToken = () => localStorage.getItem(TOKEN_NAME)
-  setToken = (data) => localStorage.setItem(TOKEN_NAME, data)
-  removeToken = () => localStorage.removeItem(TOKEN_NAME);
-
-  setAdminToken = (token) => sessionStorage.setItem('admin_jwt', token);
-  removeAdminToken = (token) => {
-    sessionStorage.removeItem('admin_jwt', token)
-  };
 
   setAuthorizationHeader = (token) => {
     axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
   }
 
-  activateProduction = (active) => {
+  setBaseUrl = (url) => {
     if (!devMode) {
-      this.prefix = active ? '/api' : '/test';
+      axios.defaults.baseURL = url
     }
   }
 
   login = async (username, password) => {
-    const { data } = await axios.post(`${this.prefix}/login`, { username, password })
-    const { jwtToken, user } = data;
-    this.setToken(jwtToken);
-    this.setAuthorizationHeader(jwtToken);
-    return user;
+    const { data } = await axios.post(`/login`, { username, password })
+    return data;
   }
 
   loginAdmin = async (username, password) => {
-    const { data } = await axios.post(`${this.prefix}/login`, { username, password })
-    const { jwtToken, user } = data;
-    this.setAdminToken(jwtToken);
-    this.setAuthorizationHeader(jwtToken);
-    return user;
+    const { data } = await axios.post(`/login`, { username, password })
+    return data;
   }
 
 
-  addUser = (username, fullName, avatar, password, role) => axios.post(`${this.prefix}/users`, {
+  addUser = (username, fullName, avatar, password, role) => axios.post(`/users`, {
     id: username,
     name: fullName,
     avatar_back: avatar,
@@ -58,20 +34,21 @@ class Api {
     role,
     avatar
   })
-  addRole = (id, organization, read, write, admin) => axios.post(`${this.prefix}/roles`, {
+  addRole = (id, organization, read, write, admin) => axios.post(`/roles`, {
     id,
     organization,
     read,
     write,
     admin
   })
-  fetchPermissions = () => axios.get(`${this.prefix}/permissions`);
-  fetchPeers = () => axios.get(`${this.prefix}/peers`);
-  fetchProjects = () => axios.get(`${this.prefix}/projects`);
-  fetchProjectDetails = (project) => axios.get(`${this.prefix}/projects/` + project);
-  fetchStreamNames = () => axios.get(`${this.prefix}/projects/mapping`);
-  fetchStreamItems = (flowName) => axios.get(`${this.prefix}/streams/` + flowName);
-  postSubProject = (parentProject, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) => axios.post(`${this.prefix}/subprojects`, {
+  fetchPermissions = () => axios.get(`/permissions`);
+  fetchPeers = () => axios.get(`/peers`);
+
+  fetchProjects = () => axios.get(`/projects`);
+  fetchProjectDetails = (project) => axios.get(`/projects/` + project);
+  fetchStreamNames = () => axios.get(`/projects/mapping`);
+  fetchStreamItems = (flowName) => axios.get(`/streams/` + flowName);
+  postSubProject = (parentProject, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) => axios.post(`/subprojects`, {
     parentStream: parentProject,
     name: subProjectName,
     amount: subProjectAmount,
@@ -79,7 +56,7 @@ class Api {
     currency: subProjectCurrency,
     status: `open`
   })
-  postProject = (name, amount, comment, currency, approver, assignee, bank, thumbnail) => axios.post(`${this.prefix}/projects`, {
+  postProject = (name, amount, comment, currency, approver, assignee, bank, thumbnail) => axios.post(`/projects`, {
     name,
     amount,
     comment,
@@ -89,14 +66,14 @@ class Api {
     bank,
     thumbnail
   })
-  fetchNodeInformation = () => axios.get(`${this.prefix}/nodes`);
-  fetchNotifications = (user) => axios.get(`${this.prefix}/notifications/` + user);
-  fetchWorkflowItems = (subProjectName) => axios.get(`${this.prefix}/subprojects/` + subProjectName);
+  fetchNodeInformation = () => axios.get(`/nodes`);
+  fetchNotifications = (user) => axios.get(`/notifications/` + user);
+  fetchWorkflowItems = (subProjectName) => axios.get(`/subprojects/` + subProjectName);
   // fetch the user to the existing JWToken
-  fetchUser = () => axios.get(`${this.prefix}/users/mapping`)
-  fetchUsers = () => axios.get(`${this.prefix}/users`);
-  fetchRoles = () => axios.get(`${this.prefix}/roles`);
-  postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type, approvalRequired) => axios.post(`${this.prefix}/workflows`, {
+  fetchUser = () => axios.get(`/users/mapping`)
+  fetchUsers = () => axios.get(`/users`);
+  fetchRoles = () => axios.get(`/roles`);
+  postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type, approvalRequired) => axios.post(`/workflows`, {
     streamName: stream,
     workflowName: workflowItemName,
     amount,
@@ -109,7 +86,7 @@ class Api {
     type,
     approvalRequired
   })
-  editWorkflowItem = (stream, key, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, txid, previousState, type, approvalRequired) => axios.put(`${this.prefix}/workflows/` + workflowItemName, {
+  editWorkflowItem = (stream, key, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, txid, previousState, type, approvalRequired) => axios.put(`/workflows/` + workflowItemName, {
     streamName: stream,
     key,
     workflowName: workflowItemName,
@@ -124,12 +101,12 @@ class Api {
     type,
     approvalRequired
   })
-  fetchHistory = (project) => axios.get(`${this.prefix}/history/` + project);
-  markNotificationAsRead = (user, id, data) => axios.put(`${this.prefix}/notifications/${user}/${id}`, data);
-  postWorkflowSort = (streamName, workflowOrder) => axios.put(`${this.prefix}/subprojects/` + streamName + `/sort`, {
+  fetchHistory = (project) => axios.get(`/history/` + project);
+  markNotificationAsRead = (user, id, data) => axios.put(`/notifications/${user}/${id}`, data);
+  postWorkflowSort = (streamName, workflowOrder) => axios.put(`/subprojects/` + streamName + `/sort`, {
     order: workflowOrder
   });
-  editSubProject = (parentProject, subProjectName, status, amount) => axios.put(`${this.prefix}/subprojects/` + subProjectName, {
+  editSubProject = (parentProject, subProjectName, status, amount) => axios.put(`/subprojects/` + subProjectName, {
     parent: parentProject,
     status: status,
     amount: amount
@@ -137,12 +114,12 @@ class Api {
   hashDocument = (payload) => {
     const data = new FormData();
     data.append(`doc`, payload);
-    return axios.post(`${this.prefix}/documents`, data)
+    return axios.post(`/documents`, data)
   };
   validateDocument = (payload, hash) => {
     const data = new FormData();
     data.append(`doc`, payload);
-    return axios.post(`${this.prefix}/documents/` + hash, data)
+    return axios.post(`/documents/` + hash, data)
   };
 }
 

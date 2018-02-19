@@ -1,7 +1,6 @@
-import { put, takeEvery, takeLatest, call } from 'redux-saga/effects'
+import { put, takeEvery, takeLatest, call, select } from 'redux-saga/effects'
 
 import Api from './api.js';
-
 import { FETCH_UPDATES, FETCH_UPDATES_SUCCESS } from './pages/LiveUpdates/actions';
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAMES_SUCCESS } from './pages/Navbar/actions';
 import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_SUCCESS } from './pages/Overview/actions';
@@ -12,15 +11,15 @@ import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS } from './pages/Workflows/actions';
 
-import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, CHECK_TOKEN, FETCH_USER, TOKEN_FOUND, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS } from './pages/Login/actions';
+import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, FETCH_USER, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS, FETCH_ENVIRONMENT_SUCCESS, FETCH_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 import { FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS, ADD_USER, ADD_USER_SUCCESS, ADD_ROLE_SUCCESS, ADD_ROLE } from './pages/Admin/actions';
-import _ from 'lodash';
 
 
 const api = new Api();
 
 function* handleError(error) {
+  console.log(error)
   if (error.response.status === 401) {
     yield call(logoutSaga)
   } else if (error.response) {
@@ -46,9 +45,29 @@ function* handleError(error) {
   }
 }
 
+const getJwt = (state) => state.toJS().login.jwt
+const getEnvironment = (state) => {
+  const env = state.toJS().login.environment
+  if (env) {
+    return env;
+  }
+  return 'Test'
+}
+
+
+
+function* callApi(func, ...args) {
+  const token = yield select(getJwt)
+  yield call(api.setAuthorizationHeader, token)
+  const env = yield select(getEnvironment)
+  const prefix = env === 'Test' ? '/test' : '/api';
+  yield call(api.setBaseUrl, prefix)
+  return yield call(func, ...args);
+}
+
 export function* fetchPeersSaga(action) {
   try {
-    const peers = yield api.fetchPeers();
+    const peers = yield callApi(api.fetchPeers);
     yield put({
       type: FETCH_PEERS_SUCCESS,
       peers: peers.data
@@ -60,7 +79,7 @@ export function* fetchPeersSaga(action) {
 
 export function* fetchProjectDetailsSaga(action) {
   try {
-    const projectDetails = yield api.fetchProjectDetails(action.project);
+    const projectDetails = yield callApi(api.fetchProjectDetails, action.project)
     yield put({
       type: FETCH_PROJECT_DETAILS_SUCCESS,
       projectDetails: projectDetails.data
@@ -72,7 +91,7 @@ export function* fetchProjectDetailsSaga(action) {
 
 export function* fetchProjectsSaga() {
   try {
-    const projects = yield api.fetchProjects();
+    const projects = yield callApi(api.fetchProjects)
     yield put({
       type: FETCH_PROJECTS_SUCCESS,
       projects: projects.data
@@ -84,7 +103,7 @@ export function* fetchProjectsSaga() {
 
 export function* fetchWorkflowItemsSaga(action) {
   try {
-    const workflowItems = yield api.fetchWorkflowItems(action.streamName);
+    const workflowItems = yield callApi(api.fetchWorkflowItems, action.streamName);
     yield put({
       type: FETCH_WORKFLOW_ITEMS_SUCCESS,
       workflowItems: workflowItems.data
@@ -96,7 +115,7 @@ export function* fetchWorkflowItemsSaga(action) {
 
 export function* createProject(action) {
   try {
-    yield api.postProject(action.name, action.amount, action.comment, action.currency, action.approver, action.assignee, action.bank, action.thumbnail);
+    yield callApi(api.postProject, action.name, action.amount, action.comment, action.currency, action.approver, action.assignee, action.bank, action.thumbnail);
     yield put({
       type: CREATE_PROJECT_SUCCESS
     });
@@ -109,9 +128,8 @@ export function* createProject(action) {
 }
 export function* createSubProjectSaga(action) {
   try {
-    yield api.postSubProject(action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectComment, action.subProjectCurrency);
+    yield callApi(api.postSubProject, action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectComment, action.subProjectCurrency);
     yield put({
-
       type: CREATE_SUBPROJECT_SUCCESS
     });
     yield put({
@@ -126,7 +144,7 @@ export function* createSubProjectSaga(action) {
 export function* createWorkflowItemSaga(action) {
   const { stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired } = action;
   try {
-    yield api.postWorkflowItem(stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired);
+    yield callApi(api.postWorkflowItem, stream, workflowName, amount, amountType, currency, comment, documents, state, assignee, workflowType, approvalRequired);
     yield put({
       type: CREATE_WORKFLOW_SUCCESS
     });
@@ -142,7 +160,7 @@ export function* createWorkflowItemSaga(action) {
 export function* editWorkflowItemSaga(action) {
   const { stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired } = action;
   try {
-    yield api.editWorkflowItem(stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired);
+    yield callApi(api.editWorkflowItem, stream, key, workflowName, amount, amountType, currency, comment, documents, state, assignee, txid, previousState, workflowType, approvalRequired);
     yield put({
       type: EDIT_WORKFLOW_SUCCESS
     });
@@ -158,7 +176,7 @@ export function* editWorkflowItemSaga(action) {
 
 export function* editSubProjectSaga(action) {
   try {
-    yield api.editSubProject(action.parent, action.streamName, action.status, action.amount);
+    yield callApi(api.editSubProject, action.parent, action.streamName, action.status, action.amount);
     yield put({
       type: POST_SUBPROJECT_EDIT_SUCCESS
     });
@@ -171,22 +189,39 @@ export function* editSubProjectSaga(action) {
   }
 }
 
-export function* environmentSaga(action) {
+export function* setEnvironmentSaga(action) {
   try {
-    yield api.activateProduction(action.active);
     yield put({
       type: STORE_ENVIRONMENT_SUCCESS,
       environment: action.environment,
-      productionActive: action.active
+      productionActive: action.productionActive
+    })
+    yield put({
+      type: FETCH_ENVIRONMENT
     });
   } catch (error) {
     yield handleError(error);
   }
 }
 
+export function* getEnvironmentSaga() {
+  try {
+    const env = yield select(getEnvironment);
+    yield put({
+      type: FETCH_ENVIRONMENT_SUCCESS,
+      environment: env,
+      productionActive: env === 'Test' ? false : true
+    });
+  } catch (error) {
+    yield handleError(error)
+  }
+}
+
+
+
 export function* fetchNodeInformationSaga() {
   try {
-    const nodeInformation = yield api.fetchNodeInformation()
+    const nodeInformation = yield callApi(api.fetchNodeInformation)
     yield put({
       type: FETCH_NODE_INFORMATION_SUCCESS,
       nodeInformation: nodeInformation.data
@@ -198,7 +233,7 @@ export function* fetchNodeInformationSaga() {
 
 export function* fetchNotificationSaga({ user }) {
   try {
-    const notifications = yield api.fetchNotifications(user)
+    const notifications = yield callApi(api.fetchNotifications, user)
     yield put({
       type: FETCH_NOTIFICATIONS_SUCCESS,
       notifications: notifications.data
@@ -210,7 +245,7 @@ export function* fetchNotificationSaga({ user }) {
 
 export function* postWorkflowSortSaga({ streamName, order, sortEnabled }) {
   try {
-    yield api.postWorkflowSort(streamName, order);
+    yield callApi(api.postWorkflowSort, streamName, order);
     yield put({
       type: POST_WORKFLOW_SORT_SUCCESS
     });
@@ -229,7 +264,7 @@ export function* postWorkflowSortSaga({ streamName, order, sortEnabled }) {
 
 export function* markNotificationAsReadSaga({ user, id, data }) {
   try {
-    yield api.markNotificationAsRead(user, id, data);
+    yield callApi(api.markNotificationAsRead, user, id, data);
     yield put({
       type: MARK_NOTIFICATION_AS_READ_SUCCESS
     });
@@ -244,7 +279,7 @@ export function* markNotificationAsReadSaga({ user, id, data }) {
 
 export function* fetchUsersSaga() {
   try {
-    const users = yield api.fetchUsers();
+    const users = yield callApi(api.fetchUsers)
     yield put({
       type: FETCH_USERS_SUCCESS,
       users: users.data
@@ -256,8 +291,10 @@ export function* fetchUsersSaga() {
 
 export function* addUserSaga({ username, fullName, avatar, password, role }) {
   try {
-    yield call(api.addUser, username, fullName, avatar, password, role);
-    yield call(fetchUsersSaga);
+    yield callApi(api.addUser, username, fullName, avatar, password, role);
+    yield put({
+      type: FETCH_USERS
+    })
     yield put({
       type: ADD_USER_SUCCESS
     })
@@ -268,8 +305,10 @@ export function* addUserSaga({ username, fullName, avatar, password, role }) {
 
 export function* addRoleSaga({ name, organization, read, write, admin }) {
   try {
-    yield call(api.addRole, name, organization, read, write, admin);
-    yield call(fetchRolesSaga);
+    yield callApi(api.addRole, name, organization, read, write, admin);
+    yield put({
+      type: FETCH_ROLES
+    });
     yield put({
       type: ADD_ROLE_SUCCESS
     })
@@ -281,7 +320,7 @@ export function* addRoleSaga({ name, organization, read, write, admin }) {
 
 export function* fetchRolesSaga() {
   try {
-    const roles = yield api.fetchRoles();
+    const roles = yield callApi(api.fetchRoles);
     yield put({
       type: FETCH_ROLES_SUCCESS,
       roles: roles.data
@@ -294,13 +333,15 @@ export function* fetchRolesSaga() {
 
 export function* loginSaga({ user }) {
   try {
-    const data = yield call(api.login, user.username, user.password);
+    const data = yield callApi(api.login, user.username, user.password);
+
     yield put({
       type: FETCH_USER_SUCCESS,
       user: {
-        username: data.id,
-        ...data
-      }
+        username: data.user.id,
+        ...data.user
+      },
+      jwt: data.jwtToken,
     })
     yield put({
       type: LOGIN_SUCCESS
@@ -310,6 +351,7 @@ export function* loginSaga({ user }) {
       show: false
     })
   } catch (error) {
+    console.log(error)
     yield put({
       type: SHOW_LOGIN_ERROR,
       show: true
@@ -320,13 +362,14 @@ export function* loginSaga({ user }) {
 
 export function* adminLoginSaga({ user }) {
   try {
-    const data = yield call(api.loginAdmin, user.username, user.password);
+    const data = yield callApi(api.loginAdmin, user.username, user.password);
     yield put({
       type: FETCH_ADMIN_USER_SUCCESS,
       user: {
-        username: data.id,
-        ...data
-      }
+        username: data.user.id,
+        ...data.user
+      },
+      jwt: data.jwtToken,
     })
     yield put({
       type: ADMIN_LOGIN_SUCCESS
@@ -336,6 +379,7 @@ export function* adminLoginSaga({ user }) {
       show: false
     })
   } catch (error) {
+    console.log(error)
     yield put({
       type: SHOW_ADMIN_LOGIN_ERROR,
       show: true
@@ -344,15 +388,9 @@ export function* adminLoginSaga({ user }) {
 }
 
 export function* fetchUserWithJwtSaga() {
+
   try {
-    const { data } = yield call(api.fetchUser);
-    yield put({
-      type: FETCH_USER_SUCCESS,
-      user: {
-        username: data.id,
-        ...data
-      }
-    })
+    yield call(api.fetchUser);
     yield put({
       type: LOGIN_SUCCESS
     })
@@ -361,25 +399,8 @@ export function* fetchUserWithJwtSaga() {
   }
 }
 
-export function* checkTokenSaga() {
-  try {
-    const jwt = yield call(api.getToken);
-    if (!_.isEmpty(jwt)) {
-      yield call(api.setAuthorizationHeader, jwt)
-      yield put({
-        type: TOKEN_FOUND
-      })
-    }
-  } catch (error) {
-    yield handleError(error);
-  }
-}
-
-
-
 export function* logoutSaga() {
   try {
-    yield call(api.removeToken);
     yield put({
       type: LOGOUT_SUCCESS
     })
@@ -391,7 +412,6 @@ export function* logoutSaga() {
 
 export function* adminLogoutSaga() {
   try {
-    yield call(api.removeAdminToken);
     yield put({
       type: ADMIN_LOGOUT_SUCCESS
     })
@@ -406,7 +426,7 @@ export function* adminLogoutSaga() {
 
 export function* fetchStreamNamesSaga() {
   try {
-    const streamNames = yield api.fetchStreamNames();
+    const streamNames = yield callApi(api.fetchStreamNames)
     yield put({
       type: FETCH_STREAM_NAMES_SUCCESS,
       streamNames: streamNames.data
@@ -418,7 +438,7 @@ export function* fetchStreamNamesSaga() {
 
 export function* fetchHistorySaga({ project }) {
   try {
-    const history = yield api.fetchHistory(project);
+    const history = yield callApi(api.fetchHistory, project);
     yield put({
       type: FETCH_HISTORY_SUCCESS,
       historyItems: history.data
@@ -430,7 +450,7 @@ export function* fetchHistorySaga({ project }) {
 
 export function* validateDocumentSaga({ payload, hash }) {
   try {
-    const response = yield api.validateDocument(payload, hash);
+    const response = yield callApi(api.validateDocument, payload, hash);
     yield put({
       type: VALIDATE_DOCUMENT_SUCCESS,
       validates: response.data.validates,
@@ -443,7 +463,7 @@ export function* validateDocumentSaga({ payload, hash }) {
 
 export function* addDocumentSaga({ id, payload }) {
   try {
-    const hash = yield api.hashDocument(payload);
+    const hash = yield callApi(api.hashDocument, payload);
     yield put({
       type: ADD_DOCUMENT_SUCCESS,
       hash: hash.data,
@@ -456,11 +476,11 @@ export function* addDocumentSaga({ id, payload }) {
 
 export function* fetchUpdatesSaga({ user }) {
   try {
-    const users = yield api.fetchUsers();
-    const peers = yield api.fetchPeers();
-    const notifications = yield api.fetchNotifications(user);
-    const streamNames = yield api.fetchStreamNames();
-    const projects = yield api.fetchProjects();
+    const notifications = yield callApi(api.fetchNotifications, user);
+    const users = yield callApi(api.fetchUsers);
+    const peers = yield callApi(api.fetchPeers);
+    const streamNames = yield callApi(api.fetchStreamNames)
+    const projects = yield callApi(api.fetchProjects);
     yield put({
       type: FETCH_UPDATES_SUCCESS,
       users: users.data,
@@ -475,7 +495,7 @@ export function* fetchUpdatesSaga({ user }) {
 }
 
 export function* fetchNodePermissionsSaga() {
-  const permissions = yield call(api.fetchPermissions);
+  const permissions = yield callApi(api.fetchPermissions);
   yield put({
     type: FETCH_NODE_PERMISSIONS_SUCCESS,
     permissions: permissions.data
@@ -554,10 +574,6 @@ export function* watchAdminLogin() {
   yield takeLatest(ADMIN_LOGIN, adminLoginSaga)
 }
 
-export function* watchCheckToken() {
-  yield takeEvery(CHECK_TOKEN, checkTokenSaga)
-}
-
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserWithJwtSaga)
 }
@@ -589,8 +605,12 @@ export function* watchValidateDocument() {
 export function* watchAddDocument() {
   yield takeLatest(ADD_DOCUMENT, addDocumentSaga)
 }
-export function* watchEnvironment() {
-  yield takeLatest(STORE_ENVIRONMENT, environmentSaga)
+export function* watchSetEnvironment() {
+  yield takeLatest(STORE_ENVIRONMENT, setEnvironmentSaga)
+}
+
+export function* watchGetEnvironment() {
+  yield takeLatest(FETCH_ENVIRONMENT, getEnvironmentSaga)
 }
 
 export function* watchFetchUpdates() {
@@ -622,7 +642,6 @@ export default function* rootSaga() {
       watchFetchRoles(),
       watchLogin(),
       watchAdminLogin(),
-      watchCheckToken(),
       watchFetchUser(),
       watchLogout(),
       watchAdminLogout(),
@@ -632,7 +651,8 @@ export default function* rootSaga() {
       watchEditSubProject(),
       watchValidateDocument(),
       watchAddDocument(),
-      watchEnvironment(),
+      watchSetEnvironment(),
+      watchGetEnvironment(),
       watchFetchUpdates(),
       watchFetchNodePermissions(),
       watchAddUser(),

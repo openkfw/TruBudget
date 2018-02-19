@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchNodePermissions, showRolesDialog, hideRolesDialog, showAdminLogin, hideAdminLogin, setAdminUsername, setAdminPassword } from './actions';
-import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin, logout } from '../Login/actions';
+import { fetchUsers, fetchRoles, loginAdmin, logoutAdmin, clearRegularUser } from '../Login/actions';
 import { fetchNodeInformation } from '../Dashboard/actions';
 import AdminDashboard from './AdminDashboard';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch) => {
     closeSnackBar: () => dispatch(showSnackBar(false)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     logoutAdmin: () => dispatch(logoutAdmin()),
-    logoutRegularUser: () => dispatch(logout()),
+    logoutRegularUser: () => dispatch(clearRegularUser()),
 
   }
 }
@@ -60,7 +60,8 @@ const mapStateToProps = (state) => {
     roles: state.getIn(['login', 'roles']).toJS(),
     adminLoginShown: state.getIn(['adminDashboard', 'adminLoginShown']),
     adminCredentials: state.getIn(['adminDashboard', 'adminCredentials']),
-    loggedInAdminUser: state.getIn(['login', 'loggedInAdminUser']),
+    loggedInAdminUser: state.getIn(['login', 'loggedInAdminUser']).toJS(),
+    productionActive: state.getIn(['login', 'productionActive']),
     adminLoggedIn: state.getIn(['login', 'adminLoggedIn']),
     adminLoginFailed: state.getIn(['login', 'adminLoginFailed']),
     showSnackBar: state.getIn(['notifications', 'showSnackBar']),

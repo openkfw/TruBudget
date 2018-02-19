@@ -36,7 +36,7 @@ const mapStateToProps = (state) => {
     peers: state.getIn(['navbar', 'peers']),
     unreadNotifications: state.getIn(['navbar', 'unreadNotifications']),
     route: state.getIn(['route', 'locationBeforeTransitions']).toObject(),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     streamNames: state.getIn(['navbar', 'streamNames']).toJS(),
     users: state.getIn(['login', 'users']).toJS(),
     productionActive: state.getIn(['login', 'productionActive']),

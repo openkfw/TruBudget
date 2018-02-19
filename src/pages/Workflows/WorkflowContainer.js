@@ -104,7 +104,7 @@ const mapStateToProps = (state) => {
     showHistory: state.getIn(['notifications', 'showHistory']),
     historyItems: state.getIn(['notifications', 'historyItems']),
     subProjects: state.getIn(['detailview', 'subProjects']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
     workflowType: state.getIn(['workflow', 'workflowType']),
     budgetEditEnabled: state.getIn(['workflow', 'subProjectBudgetEditEnabled']),
