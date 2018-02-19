@@ -3,6 +3,10 @@ export const FETCH_PROJECTS_SUCCESS = 'FETCH_PROJECTS_SUCCESS';
 
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const CREATE_PROJECT_SUCCESS = 'CREATE_PROJECT_SUCCESS';
+
+export const FETCH_ALL_PROJECT_INFOS = 'FETCH_ALL_PROJECT_INFOS';
+export const FETCH_ALL_PROJECT_INFOS_SUCCESS = 'FETCH_ALL_PROJECT_INFOS_SUCCESS';
+
 export const SHOW_PROJECT_DIALOG = 'SHOW_PROJECT_DIALOG'
 export const CANCEL_PROJECT_DIALOG = 'CANCEL_PROJECT_DIALOG'
 export const PROJECT_NAME = 'PROJECT_NAME';
@@ -19,9 +23,12 @@ export const REMOVE_ASSIGNEMENT_ROLE = 'REMOVE_ASSIGNEMENT_ROLE';
 export const REMOVE_APPROVER_ROLE = 'REMOVE_APPROVER_ROLE';
 export const REMOVE_BANK_ROLE = 'REMOVE_BANK_ROLE';
 
-export function fetchProjects() {
+
+export function fetchAllProjectInfos(initial = false) {
   return {
-    type: FETCH_PROJECTS,
+    type: FETCH_ALL_PROJECT_INFOS,
+    initial,
+    fetchStartTs: Date.now()
   }
 }
 

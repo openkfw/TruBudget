@@ -24,7 +24,7 @@ const styles = {
 };
 
 
-const AdminDashBoard = (props) => {
+const AdminDashboard = (props) => {
   const { adminLoggedIn, nodePermissions, loggedInAdminUser } = props;
   const connectedToAdminNode = isAdminNode(nodePermissions);
   return (
@@ -40,4 +40,4 @@ const AdminDashBoard = (props) => {
     </div>
   )
 }
-export default AdminDashBoard;
+export default AdminDashboard;

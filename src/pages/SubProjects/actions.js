@@ -13,6 +13,17 @@ export const SUBPROJECT_COMMENT = 'SUBPROJECT_COMMENT';
 export const SUBPROJECT_CURRENCY = 'SUBPROJECT_CURRENCY';
 export const SUBPROJECT_CREATION_STEP = 'SUBPROJECT_CREATION_STEP';
 
+export const FETCH_ALL_PROJECT_DETAILS = 'FETCH_ALL_PROJECT_DETAILS';
+export const FETCH_ALL_PROJECT_DETAILS_SUCCESS = 'FETCH_ALL_PROJECT_DETAILS_SUCCESS';
+
+export function fetchAllProjectDetails(projectId, initial = false) {
+  return {
+    type: FETCH_ALL_PROJECT_DETAILS,
+    projectId,
+    initial,
+    fetchStartTs: Date.now()
+  }
+}
 export function fetchProjectDetails(project) {
   return {
     type: FETCH_PROJECT_DETAILS,

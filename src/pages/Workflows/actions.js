@@ -41,6 +41,20 @@ export const POST_SUBPROJECT_EDIT_SUCCESS = 'POST_SUBPROJECT_EDIT_SUCCESS';
 
 export const WORKFLOW_CREATION_STEP = 'WORKFLOW_CREATION_STEP';
 
+
+export const FETCH_ALL_SUBPROJECT_DETAILS = 'FETCH_ALL_SUBPROJECT_DETAILS';
+export const FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS = 'FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS';
+
+
+export function fetchAllSubprojectDetails(subprojectId, initial = false) {
+  return {
+    type: FETCH_ALL_SUBPROJECT_DETAILS,
+    subprojectId,
+    initial,
+    fetchStartTs: Date.now()
+  }
+}
+
 export function setCurrentStep(step) {
   return {
     type: WORKFLOW_CREATION_STEP,

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import globalStyles from '../../styles';
 
 
-import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog } from './actions';
+import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog, fetchAllSubprojectDetails } from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -13,16 +13,16 @@ import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 import { getPermissions } from '../../permissions';
 import { fetchRoles } from '../Login/actions';
-
+import RefreshIndicator from '../Loading/RefreshIndicator';
 
 
 class WorkflowContainer extends Component {
   componentWillMount() {
     const subProjectId = this.props.location.pathname.split('/')[3];
-    this.props.fetchWorkflowItems(subProjectId);
-    this.props.fetchHistoryItems(subProjectId);
     this.props.setSelectedView(subProjectId, 'subProject');
-    this.props.fetchRoles();
+    this.props.fetchAllSubprojectDetails(subProjectId, true)
+
+
   }
 
   componentWillUnmount() {
@@ -33,16 +33,19 @@ class WorkflowContainer extends Component {
   render() {
     const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
-      <div style={globalStyles.innerContainer}>
-        <SubProjectDetails {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
-        <Workflow {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
-      </div>
+      (this.props.initialFetch && Date.now() - this.props.fetchStartTs > 300) ? (
+        <RefreshIndicator {...this.props} />) :
+        <div style={globalStyles.innerContainer}>
+          <SubProjectDetails {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
+          <Workflow {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
+        </div>
     )
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    fetchAllSubprojectDetails: (subprojectId, initial) => dispatch(fetchAllSubprojectDetails(subprojectId, initial)),
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     openWorkflowDialog: (editMode) => dispatch(showWorkflowDialog(editMode)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog(false)),
@@ -102,7 +105,7 @@ const mapStateToProps = (state) => {
     showWorkflowDetails: state.getIn(['workflow', 'showDetails']),
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),
     showHistory: state.getIn(['notifications', 'showHistory']),
-    historyItems: state.getIn(['notifications', 'historyItems']),
+    historyItems: state.getIn(['workflow', 'historyItems']),
     subProjects: state.getIn(['detailview', 'subProjects']),
     loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
@@ -112,7 +115,9 @@ const mapStateToProps = (state) => {
     workflowApprovalRequired: state.getIn(['workflow', 'workflowApprovalRequired']),
     workflowDocuments: state.getIn(['documents', 'tempDocuments']).toJS(),
     validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS(),
-    roles: state.getIn(['login', 'roles']).toJS()
+    roles: state.getIn(['workflow', 'roles']).toJS(),
+    initialFetch: state.getIn(['workflow', 'initialFetch']),
+    fetchStartTs: state.getIn(['workflow', 'fetchStartTs']),
 
   }
 }
