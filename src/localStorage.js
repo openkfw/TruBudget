@@ -10,6 +10,7 @@ const STORAGE_KEY = 'state';
 const parseFromState = (state) => ({
   login: {
     loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
+    loggedInAdminUser: state.getIn(['login', 'loggedInAdminUser']).toJS(),
     jwt: state.getIn(['login', 'jwt']),
     environment: state.getIn(['login', 'environment']),
     productionActive: state.getIn(['login', 'productionActive']),
