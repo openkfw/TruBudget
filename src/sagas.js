@@ -14,7 +14,7 @@ import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, ED
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, FETCH_USER, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS, FETCH_ENVIRONMENT_SUCCESS, FETCH_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 import { FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS, ADD_USER, ADD_USER_SUCCESS, ADD_ROLE_SUCCESS, ADD_ROLE } from './pages/Admin/actions';
-import { HIDE_LOADING_INDICATOR, SHOW_LOADING_INDICATOR, showLoadingIndicator, hideLoadingIndicator, resetLoadingIndicator, cancelDebounce, debounceLoadingIndicator } from './pages/Loading/actions.js';
+import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from './pages/Loading/actions.js';
 
 
 const api = new Api();
@@ -501,7 +501,7 @@ export function* fetchNodePermissionsSaga() {
 }
 
 
-export function* fetchAllProjectInfosSaga({ ts }) {
+export function* fetchAllProjectsSaga({ ts }) {
   yield put(showLoadingIndicator(ts))
   const projects = yield callApi(api.fetchProjects)
   const roles = yield callApi(api.fetchRoles);
@@ -557,8 +557,8 @@ export function* watchFetchAllSubprojectDetails() {
 export function* watchFetchAllProjectDetails() {
   yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga);
 }
-export function* watchFetchAllProjectInfos() {
-  yield takeEvery(FETCH_ALL_PROJECTS, fetchAllProjectInfosSaga);
+export function* watchFetchAllProjects() {
+  yield takeEvery(FETCH_ALL_PROJECTS, fetchAllProjectsSaga);
 }
 
 export function* watchFetchPeers() {
@@ -714,7 +714,7 @@ export default function* rootSaga() {
       watchFetchNodePermissions(),
       watchAddUser(),
       watchAddRole(),
-      watchFetchAllProjectInfos(),
+      watchFetchAllProjects(),
       watchFetchAllProjectDetails(),
       watchFetchAllSubprojectDetails(),
     ]

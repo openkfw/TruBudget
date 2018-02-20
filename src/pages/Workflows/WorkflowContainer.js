@@ -29,7 +29,7 @@ class WorkflowContainer extends Component {
   }
 
   render() {
-    const { isAssignee, isApprover, isBank, workflowItems } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
+    const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
       <div>
         <RefreshIndicatorContainer {...this.props} />
@@ -44,7 +44,7 @@ class WorkflowContainer extends Component {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchAllSubprojectDetails: (subprojectId, initial) => dispatch(fetchAllSubprojectDetails(subprojectId, initial)),
+    fetchAllSubprojectDetails: (subprojectId, ts) => dispatch(fetchAllSubprojectDetails(subprojectId, ts)),
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     openWorkflowDialog: (editMode) => dispatch(showWorkflowDialog(editMode)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog(false)),

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 
 import {
-  fetchAllProjectInfos,
+  fetchAllProjects,
   createProject,
   storeProjectName,
   storeProjectAmount,
@@ -28,7 +28,7 @@ import globalStyles from '../../styles';
 
 class OverviewContainer extends Component {
   componentWillMount() {
-    this.props.fetchAllProjectInfos(Date.now());
+    this.props.fetchAllProjects(Date.now());
   }
 
 
@@ -63,7 +63,7 @@ const mapDispatchToProps = (dispatch) => {
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail)),
-    fetchAllProjectInfos: (ts) => dispatch(fetchAllProjectInfos(ts)),
+    fetchAllProjects: (ts) => dispatch(fetchAllProjects(ts)),
   };
 }
 

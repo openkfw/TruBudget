@@ -25,7 +25,7 @@ export const REMOVE_APPROVER_ROLE = 'REMOVE_APPROVER_ROLE';
 export const REMOVE_BANK_ROLE = 'REMOVE_BANK_ROLE';
 
 
-export function fetchAllProjectInfos(ts) {
+export function fetchAllProjects(ts) {
   return {
     type: FETCH_ALL_PROJECTS,
     ts

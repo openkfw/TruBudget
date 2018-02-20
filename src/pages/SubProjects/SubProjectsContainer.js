@@ -35,7 +35,7 @@ class SubProjectsContainer extends Component {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchAllProjectDetails: (projectId) => dispatch(fetchAllProjectDetails(projectId)),
+    fetchAllProjectDetails: (projectId, ts) => dispatch(fetchAllProjectDetails(projectId, ts)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
