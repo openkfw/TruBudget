@@ -16,6 +16,7 @@ import workflowReducer from './pages/Workflows/reducer';
 import loginReducer from './pages/Login/reducer';
 import documentsReducer from './pages/Documents/reducer';
 import adminDashboardReducer from './pages/Admin/reducer';
+import loadingReducer from './pages/Loading/reducer';
 
 /*
  * routeReducer
@@ -79,6 +80,7 @@ export default function createReducer(asyncReducers) {
     login: loginReducer,
     documents: documentsReducer,
     adminDashboard: adminDashboardReducer,
+    loading: loadingReducer,
     ...asyncReducers,
   });
 }

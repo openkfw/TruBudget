@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, getEnvironment } from './actions';
 import LoginPage from './LoginPage';
-import LoadingContainer from '../Loading/LoadingContainer';
+import ProgressIndicatorContainer from '../Loading/ProgressIndicatorContainer';
 import { fetchNodePermissions } from '../Admin/actions';
 
 class LoginPageContainer extends Component {
@@ -15,7 +15,7 @@ class LoginPageContainer extends Component {
   render() {
     return (
       !_.isEmpty(this.props.jwt) ? (
-        <LoadingContainer {...this.props} />) :
+        <ProgressIndicatorContainer {...this.props} />) :
         (<LoginPage {...this.props} />)
     )
   }

@@ -34,7 +34,6 @@ const defaultState = fromJS({
   roles: [],
   historyItems: [],
   initialFetch: false,
-  fetchStartTs: 0
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -46,12 +45,10 @@ export default function detailviewReducer(state = defaultState, action) {
         roles: action.roles,
         historyItems: action.historyItems,
         initialFetch: defaultState.get('initialFetch'),
-        fetchStartTs: defaultState.get('fetchStartTs')
       });
     case FETCH_ALL_SUBPROJECT_DETAILS:
       return state.merge({
         initialFetch: action.initial,
-        fetchStartTs: Date.now()
       });
     case SHOW_WORKFLOW_DIALOG:
       return state.merge({
