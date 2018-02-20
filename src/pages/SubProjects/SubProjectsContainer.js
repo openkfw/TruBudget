@@ -8,24 +8,25 @@ import { showSnackBar, storeSnackBarMessage, showHistory } from '../Notification
 import { setSelectedView } from '../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
-import RefreshIndicator from '../Loading/RefreshIndicator';
+import RefreshIndicatorContainer from '../Loading/RefreshIndicatorContainer';
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
     const projectId = this.props.location.pathname.split('/')[2];
     this.props.setSelectedView(projectId, 'project');
-    this.props.fetchAllProjectDetails(projectId, true);
+    this.props.fetchAllProjectDetails(projectId, Date.now());
+
   }
 
   render() {
-
     return (
-      (this.props.initialFetch && Date.now() - this.props.fetchStartTs > 300) ? (
-        <RefreshIndicator {...this.props} />) :
+      <div>
+        <RefreshIndicatorContainer {...this.props} />
         <div style={globalStyles.innerContainer}>
           <ProjectDetails {...this.props} />
           <SubProjects {...this.props} />
         </div>
+      </div>
     )
   }
 }
@@ -34,7 +35,7 @@ class SubProjectsContainer extends Component {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchAllProjectDetails: (projectId, initial) => dispatch(fetchAllProjectDetails(projectId, initial)),
+    fetchAllProjectDetails: (projectId) => dispatch(fetchAllProjectDetails(projectId)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
@@ -67,15 +68,13 @@ const mapStateToProps = (state) => {
     subProjectName: state.getIn(['detailview', 'subProjectName']),
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
     subProjectComment: state.getIn(['detailview', 'subProjectComment']),
-    fetchStartTs: state.getIn(['detailview', 'fetchStartTs']),
     currentStep: state.getIn(['detailview', 'currentStep']),
     subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
-    initialFetch: state.getIn(['detailview', 'initialFetch']),
     showHistory: state.getIn(['notifications', 'showHistory']),
-    historyItems: state.getIn(['detailview', 'historyItems']),
+    historyItems: state.getIn(['notifications', 'historyItems']),
     loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     users: state.getIn(['login', 'users']).toJS(),
-    roles: state.getIn(['detailview', 'roles']).toJS()
+    roles: state.getIn(['login', 'roles']).toJS(),
   }
 }
 

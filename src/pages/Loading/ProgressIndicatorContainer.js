@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchUserWithToken } from './actions';
 
-import Loading from '../Loading/Loading';
+import ProgressIndicator from '../Loading/ProgressIndicator';
 
 
-class LoadingContainer extends Component {
+class ProgressIndicatorContainer extends Component {
 
   constructor(props) {
     super(props);
@@ -26,7 +26,7 @@ class LoadingContainer extends Component {
   progress(completed) {
     if (completed > 100) {
       this.setState({ completed: 100 });
-      this.props.fetchUserWithToken();
+      this.props.fetchUserWithToken()
     } else {
       this.setState({ completed });
       const diff = Math.random() * 10;
@@ -34,7 +34,7 @@ class LoadingContainer extends Component {
     }
   }
   render() {
-    return <Loading completed={this.state.completed} {...this.props} />
+    return <ProgressIndicator completed={this.state.completed} {...this.props} />
   }
 }
 
@@ -50,5 +50,5 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoadingContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ProgressIndicatorContainer);
 

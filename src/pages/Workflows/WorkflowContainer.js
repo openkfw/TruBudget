@@ -13,16 +13,14 @@ import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 import { getPermissions } from '../../permissions';
 import { fetchRoles } from '../Login/actions';
-import RefreshIndicator from '../Loading/RefreshIndicator';
+import RefreshIndicatorContainer from '../Loading/RefreshIndicatorContainer';
 
 
 class WorkflowContainer extends Component {
   componentWillMount() {
     const subProjectId = this.props.location.pathname.split('/')[3];
     this.props.setSelectedView(subProjectId, 'subProject');
-    this.props.fetchAllSubprojectDetails(subProjectId, true)
-
-
+    this.props.fetchAllSubprojectDetails(subProjectId, Date.now())
   }
 
   componentWillUnmount() {
@@ -31,14 +29,15 @@ class WorkflowContainer extends Component {
   }
 
   render() {
-    const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
+    const { isAssignee, isApprover, isBank, workflowItems } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
-      (this.props.initialFetch && Date.now() - this.props.fetchStartTs > 300) ? (
-        <RefreshIndicator {...this.props} />) :
+      <div>
+        <RefreshIndicatorContainer {...this.props} />
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
           <Workflow {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
         </div>
+      </div>
     )
   }
 }
@@ -115,9 +114,7 @@ const mapStateToProps = (state) => {
     workflowApprovalRequired: state.getIn(['workflow', 'workflowApprovalRequired']),
     workflowDocuments: state.getIn(['documents', 'tempDocuments']).toJS(),
     validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS(),
-    roles: state.getIn(['workflow', 'roles']).toJS(),
-    initialFetch: state.getIn(['workflow', 'initialFetch']),
-    fetchStartTs: state.getIn(['workflow', 'fetchStartTs']),
+    roles: state.getIn(['login', 'roles']).toJS(),
 
   }
 }

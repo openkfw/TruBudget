@@ -6,6 +6,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { fromJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
+import createDebounce from 'redux-debounced';
 
 import createReducer from './reducers';
 import rootSaga from './sagas';
@@ -19,6 +20,7 @@ export default function configureStore(initialState = {}, history) {
   // 2. routerMiddleware: Syncs the location/URL path to the state
   const middlewares = [
     sagaMiddleware,
+    createDebounce(),
     routerMiddleware(history),
   ];
 

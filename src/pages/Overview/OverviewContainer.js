@@ -23,22 +23,23 @@ import {
 
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
-import RefreshIndicator from '../Loading/RefreshIndicator';
+import RefreshIndicatorContainer from '../Loading/RefreshIndicatorContainer';
 import globalStyles from '../../styles';
 
 class OverviewContainer extends Component {
   componentWillMount() {
-    this.props.fetchAllProjectInfos(true);
+    this.props.fetchAllProjectInfos(Date.now());
   }
 
-  render() {
 
+  render() {
     return (
-      this.props.initialFetch && (this.props.fetchStartTs != 0 && Date.now() - this.props.fetchStartTs > 300) ? (
-        <RefreshIndicator {...this.props} />) :
+      <div>
+        <RefreshIndicatorContainer {...this.props} />
         <div style={globalStyles.innerContainer}>
           <Overview {...this.props} />
         </div>
+      </div>
     )
   }
 }
@@ -62,7 +63,7 @@ const mapDispatchToProps = (dispatch) => {
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail)),
-    fetchAllProjectInfos: (initial) => dispatch(fetchAllProjectInfos(initial))
+    fetchAllProjectInfos: (ts) => dispatch(fetchAllProjectInfos(ts)),
   };
 }
 
@@ -80,9 +81,8 @@ const mapStateToProps = (state) => {
     projectAssignee: state.getIn(['overview', 'projectAssignee']).toJS(),
     projectBank: state.getIn(['overview', 'projectBank']).toJS(),
     loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
-    initialFetch: state.getIn(['overview', 'initialFetch']),
-    fetchStartTs: state.getIn(['overview', 'fetchStartTs']),
-    roles: state.getIn(['overview', 'roles']).toJS()
+    roles: state.getIn(['login', 'roles']).toJS(),
+
   }
 }
 

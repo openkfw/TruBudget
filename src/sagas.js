@@ -3,7 +3,7 @@ import { put, takeEvery, takeLatest, call, select } from 'redux-saga/effects'
 import Api from './api.js';
 import { FETCH_UPDATES, FETCH_UPDATES_SUCCESS } from './pages/LiveUpdates/actions';
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAMES_SUCCESS } from './pages/Navbar/actions';
-import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_SUCCESS, FETCH_ALL_PROJECT_INFOS_SUCCESS, FETCH_ALL_PROJECT_INFOS } from './pages/Overview/actions';
+import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_SUCCESS, FETCH_ALL_PROJECTS_SUCCESS, FETCH_ALL_PROJECTS } from './pages/Overview/actions';
 
 
 import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT, CREATE_SUBPROJECT_SUCCESS, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_ALL_PROJECT_DETAILS } from './pages/SubProjects/actions';
@@ -14,12 +14,12 @@ import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, ED
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, FETCH_USER, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS, FETCH_ENVIRONMENT_SUCCESS, FETCH_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 import { FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS, ADD_USER, ADD_USER_SUCCESS, ADD_ROLE_SUCCESS, ADD_ROLE } from './pages/Admin/actions';
+import { HIDE_LOADING_INDICATOR, SHOW_LOADING_INDICATOR, showLoadingIndicator, hideLoadingIndicator, resetLoadingIndicator, cancelDebounce, debounceLoadingIndicator } from './pages/Loading/actions.js';
 
 
 const api = new Api();
 
 function* handleError(error) {
-  console.log(error)
   if (error.response.status === 401) {
     yield call(logoutSaga)
   } else if (error.response) {
@@ -53,8 +53,6 @@ const getEnvironment = (state) => {
   }
   return 'Test'
 }
-
-
 
 function* callApi(func, ...args) {
   const token = yield select(getJwt)
@@ -502,29 +500,43 @@ export function* fetchNodePermissionsSaga() {
   })
 }
 
-export function* fetchAllProjectInfosSaga() {
+
+export function* fetchAllProjectInfosSaga({ ts }) {
+  yield put(showLoadingIndicator(ts))
   const projects = yield callApi(api.fetchProjects)
   const roles = yield callApi(api.fetchRoles);
   yield put({
-    type: FETCH_ALL_PROJECT_INFOS_SUCCESS,
+    type: FETCH_ALL_PROJECTS_SUCCESS,
     projects: projects.data,
     roles: roles.data
   });
+  yield put(cancelDebounce())
+  yield put(hideLoadingIndicator(ts))
+
 }
 
-export function* fetchAllProjectDetailsSaga({ projectId }) {
+
+
+export function* fetchAllProjectDetailsSaga({ projectId, ts }) {
+  yield put(showLoadingIndicator(ts))
   const projectDetails = yield callApi(api.fetchProjectDetails, projectId)
   const history = yield callApi(api.fetchHistory, projectId);
   const roles = yield callApi(api.fetchRoles);
+
   yield put({
     type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
     projectDetails: projectDetails.data,
     historyItems: history.data,
     roles: roles.data
   });
+  yield put(cancelDebounce())
+  yield put(hideLoadingIndicator(ts))
+
+
 }
 
-export function* fetchAllSubprojectDetailsSaga({ subprojectId }) {
+export function* fetchAllSubprojectDetailsSaga({ subprojectId, ts }) {
+  yield put(showLoadingIndicator(ts))
   const workflowItems = yield callApi(api.fetchWorkflowItems, subprojectId)
   const history = yield callApi(api.fetchHistory, subprojectId);
   const roles = yield callApi(api.fetchRoles);
@@ -534,6 +546,8 @@ export function* fetchAllSubprojectDetailsSaga({ subprojectId }) {
     historyItems: history.data,
     roles: roles.data
   });
+  yield put(cancelDebounce())
+  yield put(hideLoadingIndicator(ts))
 }
 
 export function* watchFetchAllSubprojectDetails() {
@@ -544,7 +558,7 @@ export function* watchFetchAllProjectDetails() {
   yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga);
 }
 export function* watchFetchAllProjectInfos() {
-  yield takeEvery(FETCH_ALL_PROJECT_INFOS, fetchAllProjectInfosSaga);
+  yield takeEvery(FETCH_ALL_PROJECTS, fetchAllProjectInfosSaga);
 }
 
 export function* watchFetchPeers() {

@@ -6,7 +6,7 @@ import {
   ACMECorpLightgreen
 } from '../../colors'
 
-const Loading = (props) => (
+const ProgressIndicator = (props) => (
   <div style={{
     display: 'flex',
     flex: 1,
@@ -42,4 +42,4 @@ const Loading = (props) => (
 );
 
 
-export default Loading;
+export default ProgressIndicator;

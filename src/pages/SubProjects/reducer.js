@@ -26,19 +26,12 @@ const defaultState = fromJS({
   showHistory: false,
   historyItems: [],
   currentStep: 0,
-  initialFetch: false,
   roles: [],
-  fetchStartTs: 0
 
 });
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_ALL_PROJECT_DETAILS:
-      return state.merge({
-        fetchStartTs: action.fetchStartTs,
-        initialFetch: action.initial
-      });
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
       return state.merge({
         projectName: action.projectDetails.details.name,
@@ -53,8 +46,6 @@ export default function detailviewReducer(state = defaultState, action) {
         subProjects: action.projectDetails.subProjects,
         roles: action.roles,
         historyItems: action.historyItems,
-        initialFetch: defaultState.get('initialFetch'),
-        fetchStartTs: defaultState.get('fetchStartTs')
       })
     case SUBPROJECT_CREATION_STEP:
       return state.set('currentStep', action.step);
