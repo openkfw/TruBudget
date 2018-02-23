@@ -35,7 +35,6 @@ class OverviewContainer extends Component {
   render() {
     return (
       <div>
-        <RefreshIndicatorContainer {...this.props} />
         <div style={globalStyles.innerContainer}>
           <Overview {...this.props} />
         </div>

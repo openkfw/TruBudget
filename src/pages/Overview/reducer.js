@@ -31,7 +31,7 @@ export default function overviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_UPDATES_SUCCESS:
     case FETCH_PROJECTS_SUCCESS:
-      return state.set('projects', action.projects);
+      return state.set('projects', fromJS(action.projects));
     case SHOW_PROJECT_DIALOG:
       return state.set('projectDialogVisible', true);
     case CANCEL_PROJECT_DIALOG:

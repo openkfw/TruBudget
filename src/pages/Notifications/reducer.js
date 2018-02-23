@@ -8,9 +8,11 @@ import { FETCH_ALL_PROJECTS_SUCCESS } from '../Overview/actions';
 
 const defaultState = fromJS({
   list: [],
+  showHistory: false,
   showSnackBar: false,
   snackBarMessage: 'New Project added',
-  snackBarMessageIsError: false
+  snackBarMessageIsError: false,
+  historyItems: []
 });
 
 
@@ -18,7 +20,7 @@ export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_UPDATES_SUCCESS:
     case FETCH_NOTIFICATIONS_SUCCESS:
-      return state.set('list', action.notifications);
+      return state.set('list', fromJS(action.notifications));
     case SHOW_SNACKBAR:
       return state.merge({
         showSnackBar: action.show,
@@ -28,9 +30,8 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set('snackBarMessage', action.message)
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
-    case FETCH_ALL_PROJECTS_SUCCESS:
     case FETCH_HISTORY_SUCCESS:
-      return state.set('historyItems', action.historyItems);
+      return state.set('historyItems', fromJS(action.historyItems));
     case OPEN_HISTORY:
       return state.set('showHistory', action.show);
     case LOGOUT:

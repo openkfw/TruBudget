@@ -1,5 +1,6 @@
 import React from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import _ from 'lodash';
+import Transition from 'react-transition-group/Transition';
 import { Card, CardHeader } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Avatar from 'material-ui/Avatar';
@@ -83,7 +84,7 @@ const getListEntries = (historyItems, users) => {
 
 
 const getSideBar = (hideHistory, historyItems, users) => {
-  const listEntries = getListEntries(historyItems, users)
+  const listEntries = _.isEmpty(historyItems) ? null : getListEntries(historyItems, users);
   return (
     <div style={{
       flex: '1'
@@ -105,6 +106,12 @@ const getSideBar = (hideHistory, historyItems, users) => {
 }
 
 const ChangeLog = ({ hideHistory, historyItems, users, showHistory }) => {
+  const transitionStyle = {
+    entering: { right: '-300px' },
+    entered: { right: '0px' },
+    exiting: { right: '0px' },
+    exited: { right: '-300px' },
+  };
 
   return (
     <div style={{
@@ -118,12 +125,24 @@ const ChangeLog = ({ hideHistory, historyItems, users, showHistory }) => {
       alignItems: 'center',
       flex: 1
     }}>
-      <CSSTransitionGroup
-        transitionName="history"
-        transitionEnterTimeout={500}
-        transitionLeaveTimeout={500}>
-        {showHistory ? getSideBar(hideHistory, historyItems, users) : null}
-      </CSSTransitionGroup>
+      <Transition
+        in={showHistory}
+        timeout={0}>
+        {state => <div style={{
+          height: '100%',
+          position: 'absolute',
+          right: '-300px',
+          top: '0px',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          flex: '1',
+          transition: 'all 350ms ease-in',
+          ...transitionStyle[state]
+        }}>
+          {getSideBar(hideHistory, historyItems, users)}
+        </div>}
+      </Transition>
     </div>
   )
 

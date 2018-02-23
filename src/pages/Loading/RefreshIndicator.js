@@ -18,8 +18,6 @@ const style = {
   refresh: {
     display: 'inline-block',
     position: 'relative',
-    backgroundColor: 'transparent',
-    boxShadow: 'none'
   },
 };
 
@@ -28,34 +26,27 @@ const Refresh = (props) => (
     display: 'flex',
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'white',
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     height: '100%',
-    zIndex: 2000
+    zIndex: 2000,
+    filter: 'blur(0)'
   }}>
     <div style={{
       display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center',
       justifyContent: 'center'
     }}>
       <RefreshIndicator
-        size={100}
+        size={50}
         left={0}
         top={0}
         percentage={50}
         status="loading"
+        loadingColor={ACMECorpLightgreen}
         style={style.refresh}
       />
-    </div>
-    <div style={{
-      display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center',
-      justifyContent: 'center', marginTop: '30px'
-    }}>
-      <span style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '30px', color: ACMECorpLightgreen }}>
-        {strings.login.loading}
-      </span>
     </div>
   </div>
 );

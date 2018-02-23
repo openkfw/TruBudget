@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import Transition from 'react-transition-group/Transition';
 import { Card, CardText, CardHeader } from 'material-ui/Card';
 import strings from '../../localizeStrings';
 
 import _ from 'lodash';
 
+const styles = {
+  notification: {
+    position: 'absolute',
+    transition: 'all 500ms ease-in',
+  },
+  notificationTransition: {
+    entering: { right: '-400px' },
+    entered: { right: '0px' },
+    exiting: { right: '0px' },
+    exited: { right: '-400px' },
+  }
+}
 
 export default class FlyInNotification extends Component {
   constructor() {
@@ -27,6 +39,7 @@ export default class FlyInNotification extends Component {
 
     const oldNotifications = prevProps.notifications;
     const newNotifications = this.props.notifications;
+
     if (newNotifications.length > 0 && !isFirstRequest) {
       this.compareAndFireNotifications(oldNotifications, newNotifications);
     }
@@ -70,7 +83,7 @@ export default class FlyInNotification extends Component {
     });
   }
 
-  removeNotification (id) {
+  removeNotification(id) {
     const notifications = this.state.notificationStack.filter((notification) => id !== notification.id);
     this.setState({
       notificationStack: notifications
@@ -106,7 +119,9 @@ export default class FlyInNotification extends Component {
 
   }
 
-  render () {
+  render() {
+    const show = !_.isEmpty(this.state.notificationStack);
+
     return (
       <div style={{
         position: 'fixed',
@@ -114,12 +129,16 @@ export default class FlyInNotification extends Component {
         right: '16px',
         zIndex: 2000,
       }}>
-        <CSSTransitionGroup
-          transitionName="example"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}>
-          {this.getMessages()}
-        </CSSTransitionGroup>
+        <Transition
+          in={show}
+          timeout={500}>
+          {state => <div style={{
+            ...styles.notification,
+            ...styles.notificationTransition[state]
+          }}>
+            {this.getMessages()}
+          </div>}
+        </Transition>
       </div>
     )
   }

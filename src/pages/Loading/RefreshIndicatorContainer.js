@@ -12,7 +12,7 @@ class RefreshIndicatorContainer extends Component {
 
   render() {
     return (
-      this.props.loadingVisible ?
+      false ?
         <RefreshIndicator  {...this.props} /> : null
     )
   }
