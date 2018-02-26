@@ -5,30 +5,22 @@ import RefreshIndicator from './RefreshIndicator';
 import Transition from 'react-transition-group/Transition';
 
 const styles = {
-  container: {
-    position: 'relative'
-  },
   content: {
-    filter: 'blur(0px)',
-    transition: `all 500ms ease-in-out`,
+    transition: `opacity 500ms ease-in-out`,
     opacity: 1
   },
   contentTransition: {
     entering: {
       opacity: 1,
-      filter: 'blur(0px)',
     },
     entered: {
       opacity: 0.2,
-      filter: 'blur(2px)',
     },
     exiting: {
       opactiy: 0.2,
-      filter: 'blur(2px)',
     },
     exited: {
       opactiy: 1,
-      filter: 'blur(0px)',
     }
   }
 }
