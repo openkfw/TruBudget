@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import strings from '../../localizeStrings'
-class WorkflowStateAndAssignee extends Component {
+class WorkflowStatus extends Component {
 
   handleState = (event, index, value) => {
-    this.props.storeWorkflowState(value);
+    this.props.storeWorkflowStatus(value);
 
   }
 
-  handleAssignee = (event, index, value) => {
-    this.props.storeWorkflowAssignee(value);
-  }
 
   createUserSelection = () => {
     const { users } = this.props;
@@ -28,7 +25,7 @@ class WorkflowStateAndAssignee extends Component {
   }
 
   render() {
-    const { workflowState, editMode, workflowApprovalRequired } = this.props;
+    const { workflowStatus, editMode, workflowApprovalRequired } = this.props;
     return (
       <div style={{
         width: '100%',
@@ -36,7 +33,7 @@ class WorkflowStateAndAssignee extends Component {
         flexDirection: 'row',
         justifyContent: 'center',
       }}>
-        <SelectField floatingLabelText={strings.common.status} onChange={this.handleState} value={workflowState} disabled={!editMode} style={{}}>
+        <SelectField floatingLabelText={strings.common.status} onChange={this.handleState} value={workflowStatus} disabled={!editMode} style={{}}>
           <MenuItem value='open' primaryText={strings.common.open} />
           <MenuItem value='in_progress' primaryText={strings.common.in_progress} />
           {workflowApprovalRequired ? <MenuItem value='in_review' primaryText={strings.workflow.workflow_submit_for_review} /> : ''}
@@ -46,4 +43,4 @@ class WorkflowStateAndAssignee extends Component {
     );
   }
 }
-export default WorkflowStateAndAssignee;
+export default WorkflowStatus;

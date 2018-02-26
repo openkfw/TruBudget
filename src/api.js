@@ -73,7 +73,7 @@ class Api {
   fetchUser = () => axios.get(`/users/mapping`)
   fetchUsers = () => axios.get(`/users`);
   fetchRoles = () => axios.get(`/roles`);
-  postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, type, approvalRequired) => axios.post(`/workflows`, {
+  postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, type, approvalRequired) => axios.post(`/workflows`, {
     streamName: stream,
     workflowName: workflowItemName,
     amount,
@@ -82,11 +82,10 @@ class Api {
     comment,
     documents,
     status,
-    assignee,
     type,
     approvalRequired
   })
-  editWorkflowItem = (stream, key, workflowItemName, amount, amountType, currency, comment, documents, status, assignee, txid, previousState, type, approvalRequired) => axios.put(`/workflows/` + workflowItemName, {
+  editWorkflowItem = (stream, key, workflowItemName, amount, amountType, currency, comment, documents, status, txid, previousState, type, approvalRequired) => axios.put(`/workflows/` + workflowItemName, {
     streamName: stream,
     key,
     workflowName: workflowItemName,
@@ -96,7 +95,6 @@ class Api {
     comment,
     documents,
     status,
-    assignee,
     previousState,
     type,
     approvalRequired
