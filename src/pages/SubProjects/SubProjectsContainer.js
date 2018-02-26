@@ -14,14 +14,13 @@ class SubProjectsContainer extends Component {
   componentWillMount() {
     const projectId = this.props.location.pathname.split('/')[2];
     this.props.setSelectedView(projectId, 'project');
-    this.props.fetchAllProjectDetails(projectId, Date.now());
+    this.props.fetchAllProjectDetails(projectId, true);
 
   }
 
   render() {
     return (
       <div>
-        <RefreshIndicatorContainer {...this.props} />
         <div style={globalStyles.innerContainer}>
           <ProjectDetails {...this.props} />
           <SubProjects {...this.props} />
@@ -35,7 +34,7 @@ class SubProjectsContainer extends Component {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchAllProjectDetails: (projectId, ts) => dispatch(fetchAllProjectDetails(projectId, ts)),
+    fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),

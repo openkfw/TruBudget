@@ -63,12 +63,12 @@ const mapDispatchToProps = (dispatch) => {
     fetchPeers: () => dispatch(fetchPeers()),
     fetchNotifications: (user) => dispatch(fetchNotifications(user)),
     fetchStreamNames: () => dispatch(fetchStreamNames()),
-    fetchProjectDetails: (project) => dispatch(fetchProjectDetails(project)),
+    fetchProjectDetails: () => dispatch(fetchProjectDetails()),
     fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     fetchUpdates: (user) => dispatch(fetchUpdates(user)),
-    fetchAllProjectDetails: (project) => dispatch(fetchAllProjectDetails(project, Date.now())),
-    fetchAllSubprojectDetails: (project) => dispatch(fetchAllSubprojectDetails(project, Date.now()))
+    fetchAllProjectDetails: (project) => dispatch(fetchAllProjectDetails(project)),
+    fetchAllSubprojectDetails: (project) => dispatch(fetchAllSubprojectDetails(project))
   };
 }
 

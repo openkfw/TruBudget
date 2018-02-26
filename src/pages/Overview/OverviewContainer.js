@@ -28,7 +28,7 @@ import globalStyles from '../../styles';
 
 class OverviewContainer extends Component {
   componentWillMount() {
-    this.props.fetchAllProjects(Date.now());
+    this.props.fetchAllProjects(true);
   }
 
 
@@ -62,7 +62,7 @@ const mapDispatchToProps = (dispatch) => {
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail)),
-    fetchAllProjects: (ts) => dispatch(fetchAllProjects(ts)),
+    fetchAllProjects: (showLoading) => dispatch(fetchAllProjects(showLoading)),
   };
 }
 

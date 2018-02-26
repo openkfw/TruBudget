@@ -86,7 +86,6 @@ export default function overviewReducer(state = defaultState, action) {
       return state.merge({
         projects: action.projects,
         roles: action.roles,
-        loading: defaultState.get('loading'),
       });
     case LOGOUT:
       return defaultState;

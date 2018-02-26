@@ -63,6 +63,19 @@ function* callApi(func, ...args) {
   return yield call(func, ...args);
 }
 
+function* handleLoading(showLoading) {
+  if (showLoading) {
+    const ts = Date.now();
+    yield put(showLoadingIndicator(ts))
+    return function* done() {
+      yield put(cancelDebounce())
+      yield put(hideLoadingIndicator(ts))
+    }
+  } else {
+    return function* () { }
+  }
+}
+
 export function* fetchPeersSaga(action) {
   try {
     const peers = yield callApi(api.fetchPeers);
@@ -501,8 +514,8 @@ export function* fetchNodePermissionsSaga() {
 }
 
 
-export function* fetchAllProjectsSaga({ ts }) {
-  yield put(showLoadingIndicator(ts))
+export function* fetchAllProjectsSaga({ showLoading }) {
+  const done = yield handleLoading(showLoading);
   const projects = yield callApi(api.fetchProjects)
   const roles = yield callApi(api.fetchRoles);
   yield put({
@@ -510,15 +523,13 @@ export function* fetchAllProjectsSaga({ ts }) {
     projects: projects.data,
     roles: roles.data
   });
-  yield put(cancelDebounce())
-  yield put(hideLoadingIndicator(ts))
-
+  yield done();
 }
 
 
 
-export function* fetchAllProjectDetailsSaga({ projectId, ts }) {
-  yield put(showLoadingIndicator(ts))
+export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
+  const done = yield handleLoading(showLoading);
   const projectDetails = yield callApi(api.fetchProjectDetails, projectId)
   const history = yield callApi(api.fetchHistory, projectId);
   const roles = yield callApi(api.fetchRoles);
@@ -529,14 +540,13 @@ export function* fetchAllProjectDetailsSaga({ projectId, ts }) {
     historyItems: history.data,
     roles: roles.data
   });
-  yield put(cancelDebounce())
-  yield put(hideLoadingIndicator(ts))
+  yield done();
 
 
 }
 
-export function* fetchAllSubprojectDetailsSaga({ subprojectId, ts }) {
-  yield put(showLoadingIndicator(ts))
+export function* fetchAllSubprojectDetailsSaga({ subprojectId, showLoading }) {
+  const done = yield handleLoading(showLoading);
   const workflowItems = yield callApi(api.fetchWorkflowItems, subprojectId)
   const history = yield callApi(api.fetchHistory, subprojectId);
   const roles = yield callApi(api.fetchRoles);
@@ -546,8 +556,7 @@ export function* fetchAllSubprojectDetailsSaga({ subprojectId, ts }) {
     historyItems: history.data,
     roles: roles.data
   });
-  yield put(cancelDebounce())
-  yield put(hideLoadingIndicator(ts))
+  yield done();
 }
 
 export function* watchFetchAllSubprojectDetails() {

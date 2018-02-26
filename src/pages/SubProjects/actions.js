@@ -16,11 +16,11 @@ export const SUBPROJECT_CREATION_STEP = 'SUBPROJECT_CREATION_STEP';
 export const FETCH_ALL_PROJECT_DETAILS = 'FETCH_ALL_PROJECT_DETAILS';
 export const FETCH_ALL_PROJECT_DETAILS_SUCCESS = 'FETCH_ALL_PROJECT_DETAILS_SUCCESS';
 
-export function fetchAllProjectDetails(projectId, ts) {
+export function fetchAllProjectDetails(projectId, showLoading = false) {
   return {
     type: FETCH_ALL_PROJECT_DETAILS,
     projectId,
-    ts
+    showLoading
   }
 }
 export function fetchProjectDetails(project) {

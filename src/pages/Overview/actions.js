@@ -25,10 +25,10 @@ export const REMOVE_APPROVER_ROLE = 'REMOVE_APPROVER_ROLE';
 export const REMOVE_BANK_ROLE = 'REMOVE_BANK_ROLE';
 
 
-export function fetchAllProjects(ts) {
+export function fetchAllProjects(showLoading = false) {
   return {
     type: FETCH_ALL_PROJECTS,
-    ts
+    showLoading
   }
 }
 

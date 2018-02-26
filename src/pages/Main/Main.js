@@ -12,6 +12,7 @@ import LiveNotificationContainer from '../Notifications/LiveNotificationContaine
 import Placeholder from './Placeholder';
 import LiveUpdates from '../LiveUpdates/LiveUpdatesContainer';
 import Footer from './Footer';
+import withInitialLoading from '../Loading/withInitialLoading';
 
 
 const Main = (props) => {
@@ -32,8 +33,8 @@ const Main = (props) => {
         <Route component={LiveUpdates} />
         <Switch>
           <Route exact path="/" component={Placeholder} />
-          <Route exact path="/projects" component={OverviewContainer} />
-          <Route exact path="/projects/:project" component={SubProjectsContainer} />
+          <Route exact path="/projects" component={withInitialLoading(OverviewContainer)} />
+          <Route exact path="/projects/:project" component={withInitialLoading(SubProjectsContainer)} />
           <Route exact path="/projects/:project/:subproject" component={WorkflowContainer} />
           <Route exact path="/network" component={DashboardContainer} />
           <Route exact path="/notifications" component={NotificationPageContainer} />

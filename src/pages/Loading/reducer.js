@@ -13,7 +13,6 @@ export default function overviewReducer(state = defaultState, action) {
     case SHOW_LOADING_INDICATOR:
       return state.merge({ 'loadingVisible': true, loadingID: action.ts });
     case HIDE_LOADING_INDICATOR:
-      // not sure if the reducer is the right place for the manipulation
       if (state.get('loadingID') === action.ts) {
         return state.merge({ 'loadingVisible': defaultState.get('loadingVisible'), loadingID: defaultState.get('loadingID') });
       }
