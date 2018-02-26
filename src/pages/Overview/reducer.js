@@ -2,7 +2,7 @@ import { fromJS, Set } from 'immutable';
 
 import {
   FETCH_PROJECTS_SUCCESS, PROJECT_NAME, PROJECT_AMOUNT, PROJECT_COMMENT, PROJECT_CURRENCY, CREATE_PROJECT_SUCCESS, PROJECT_CREATION_STEP,
-  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL, CANCEL_PROJECT_DIALOG
+  ADD_APPROVER_ROLE, ADD_ASSIGNEMENT_ROLE, ADD_BANK_ROLE, REMOVE_APPROVER_ROLE, REMOVE_ASSIGNEMENT_ROLE, REMOVE_BANK_ROLE, SHOW_PROJECT_DIALOG, PROJECT_THUMBNAIL, CANCEL_PROJECT_DIALOG, FETCH_ALL_PROJECTS_SUCCESS
 } from './actions';
 import { LOGOUT } from '../Login/actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
@@ -10,25 +10,28 @@ import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
-  projects: [],
+  projects: Set(),
   projectDialogVisible: false,
   projectName: '',
   projectAmount: '',
   projectComment: '',
   currentStep: 0,
+  initialFetch: false,
   projectApprover: Set(),
   projectAssignee: Set(),
   projectBank: Set(),
   projectCurrency: 'EUR',
   nextButtonEnabled: false,
-  projectThumbnail: '/Thumbnail_0001.jpg'
+  roles: [],
+  loading: false,
+  projectThumbnail: '/Thumbnail_0001.jpg',
 });
 
 export default function overviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_UPDATES_SUCCESS:
     case FETCH_PROJECTS_SUCCESS:
-      return state.set('projects', action.projects);
+      return state.set('projects', fromJS(action.projects));
     case SHOW_PROJECT_DIALOG:
       return state.set('projectDialogVisible', true);
     case CANCEL_PROJECT_DIALOG:
@@ -79,6 +82,11 @@ export default function overviewReducer(state = defaultState, action) {
       return state.update('projectAssignee', assignees => assignees.delete(action.role));
     case REMOVE_BANK_ROLE:
       return state.update('projectBank', bank => bank.delete(action.role));
+    case FETCH_ALL_PROJECTS_SUCCESS:
+      return state.merge({
+        projects: action.projects,
+        roles: action.roles,
+      });
     case LOGOUT:
       return defaultState;
     default:

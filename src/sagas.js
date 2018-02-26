@@ -3,23 +3,23 @@ import { put, takeEvery, takeLatest, call, select } from 'redux-saga/effects'
 import Api from './api.js';
 import { FETCH_UPDATES, FETCH_UPDATES_SUCCESS } from './pages/LiveUpdates/actions';
 import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAMES_SUCCESS } from './pages/Navbar/actions';
-import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_SUCCESS } from './pages/Overview/actions';
+import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_SUCCESS, FETCH_ALL_PROJECTS_SUCCESS, FETCH_ALL_PROJECTS } from './pages/Overview/actions';
 
 
-import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT, CREATE_SUBPROJECT_SUCCESS } from './pages/SubProjects/actions';
+import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT, CREATE_SUBPROJECT_SUCCESS, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_ALL_PROJECT_DETAILS } from './pages/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
-import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS } from './pages/Workflows/actions';
+import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from './pages/Workflows/actions';
 
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, FETCH_USER, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS, FETCH_ENVIRONMENT_SUCCESS, FETCH_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
 import { FETCH_NODE_PERMISSIONS, FETCH_NODE_PERMISSIONS_SUCCESS, ADD_USER, ADD_USER_SUCCESS, ADD_ROLE_SUCCESS, ADD_ROLE } from './pages/Admin/actions';
+import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from './pages/Loading/actions.js';
 
 
 const api = new Api();
 
 function* handleError(error) {
-  console.log(error)
   if (error.response.status === 401) {
     yield call(logoutSaga)
   } else if (error.response) {
@@ -54,8 +54,6 @@ const getEnvironment = (state) => {
   return 'Test'
 }
 
-
-
 function* callApi(func, ...args) {
   const token = yield select(getJwt)
   yield call(api.setAuthorizationHeader, token)
@@ -64,6 +62,22 @@ function* callApi(func, ...args) {
   yield call(api.setBaseUrl, prefix)
   return yield call(func, ...args);
 }
+
+function* handleLoading(showLoading) {
+  if (showLoading) {
+    yield put(showLoadingIndicator())
+    return function* done() {
+      yield put(cancelDebounce())
+      yield put(hideLoadingIndicator())
+    }
+  } else {
+    return function* () { }
+  }
+}
+
+const chill = async (ms) => new Promise(res => setTimeout(res, ms))
+
+////////////////////// Specific Sagas start here /////////////////
 
 export function* fetchPeersSaga(action) {
   try {
@@ -332,8 +346,10 @@ export function* fetchRolesSaga() {
 
 
 export function* loginSaga({ user }) {
+  const done = yield handleLoading(true);
   try {
     const data = yield callApi(api.login, user.username, user.password);
+    yield call(chill, 1250);
 
     yield put({
       type: FETCH_USER_SUCCESS,
@@ -356,7 +372,10 @@ export function* loginSaga({ user }) {
       type: SHOW_LOGIN_ERROR,
       show: true
     })
+  } finally {
+    done();
   }
+
 }
 
 
@@ -387,15 +406,18 @@ export function* adminLoginSaga({ user }) {
   }
 }
 
-export function* fetchUserWithJwtSaga() {
-
+export function* fetchUserWithJwtSaga({ showLoading }) {
+  const done = yield handleLoading(showLoading);
   try {
     yield call(api.fetchUser);
+    yield call(chill, 1250);
     yield put({
       type: LOGIN_SUCCESS
     })
   } catch (error) {
     yield handleError(error);
+  } finally {
+    yield done();
   }
 }
 
@@ -503,6 +525,62 @@ export function* fetchNodePermissionsSaga() {
 }
 
 
+export function* fetchAllProjectsSaga({ showLoading }) {
+  console.log("fetch projects");
+  const done = yield handleLoading(showLoading);
+  const projects = yield callApi(api.fetchProjects)
+  const roles = yield callApi(api.fetchRoles);
+  yield put({
+    type: FETCH_ALL_PROJECTS_SUCCESS,
+    projects: projects.data,
+    roles: roles.data
+  });
+  yield done();
+}
+
+
+
+export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
+  const done = yield handleLoading(showLoading);
+  const projectDetails = yield callApi(api.fetchProjectDetails, projectId)
+  const history = yield callApi(api.fetchHistory, projectId);
+  const roles = yield callApi(api.fetchRoles);
+
+  yield put({
+    type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
+    projectDetails: projectDetails.data,
+    historyItems: history.data,
+    roles: roles.data
+  });
+  yield done();
+
+
+}
+
+export function* fetchAllSubprojectDetailsSaga({ subprojectId, showLoading }) {
+  const done = yield handleLoading(showLoading);
+  const workflowItems = yield callApi(api.fetchWorkflowItems, subprojectId)
+  const history = yield callApi(api.fetchHistory, subprojectId);
+  const roles = yield callApi(api.fetchRoles);
+  yield put({
+    type: FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
+    workflowItems: workflowItems.data,
+    historyItems: history.data,
+    roles: roles.data
+  });
+  yield done();
+}
+
+export function* watchFetchAllSubprojectDetails() {
+  yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga);
+}
+
+export function* watchFetchAllProjectDetails() {
+  yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga);
+}
+export function* watchFetchAllProjects() {
+  yield takeEvery(FETCH_ALL_PROJECTS, fetchAllProjectsSaga);
+}
 
 export function* watchFetchPeers() {
   yield takeEvery(FETCH_PEERS, fetchPeersSaga)
@@ -657,6 +735,9 @@ export default function* rootSaga() {
       watchFetchNodePermissions(),
       watchAddUser(),
       watchAddRole(),
+      watchFetchAllProjects(),
+      watchFetchAllProjectDetails(),
+      watchFetchAllSubprojectDetails(),
     ]
   } catch (error) {
     console.log(error);

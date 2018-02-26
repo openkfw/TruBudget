@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 import { fetchUsers } from '../Login/actions';
 import { fetchPeers, fetchStreamNames } from '../Navbar/actions';
 import { fetchNotifications, fetchHistoryItems } from '../Notifications/actions';
-import { fetchProjects } from '../Overview/actions';
-import { fetchProjectDetails } from '../SubProjects/actions';
-import { fetchWorkflowItems } from '../Workflows/actions';
+import { fetchProjectDetails, fetchAllProjectDetails } from '../SubProjects/actions';
+import { fetchWorkflowItems, fetchAllSubprojectDetails } from '../Workflows/actions';
 import { fetchUpdates } from './actions';
 
 class LiveUpdates extends Component {
@@ -40,14 +39,12 @@ class LiveUpdates extends Component {
     this.props.fetchUpdates(this.props.loggedInUser.id);
     switch (this.props.selectedSection) {
       case 'project':
-        this.props.fetchHistoryItems(this.props.selectedId);
-        this.props.fetchProjectDetails(this.props.selectedId);
+        this.props.fetchAllProjectDetails(this.props.selectedId);
         break;
       case 'subProject':
-        this.props.fetchHistoryItems(this.props.selectedId);
         // Stop reloading of items, otherwise the users sort would be gone
         if (!this.props.workflowSortEnabled) {
-          this.props.fetchWorkflowItems(this.props.selectedId);
+          this.props.fetchAllSubprojectDetails(this.props.selectedId)
         }
         break;
       default:
@@ -66,11 +63,12 @@ const mapDispatchToProps = (dispatch) => {
     fetchPeers: () => dispatch(fetchPeers()),
     fetchNotifications: (user) => dispatch(fetchNotifications(user)),
     fetchStreamNames: () => dispatch(fetchStreamNames()),
-    fetchProjects: () => dispatch(fetchProjects()),
-    fetchProjectDetails: (project) => dispatch(fetchProjectDetails(project)),
+    fetchProjectDetails: () => dispatch(fetchProjectDetails()),
     fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
-    fetchUpdates: (user) => dispatch(fetchUpdates(user))
+    fetchUpdates: (user) => dispatch(fetchUpdates(user)),
+    fetchAllProjectDetails: (project) => dispatch(fetchAllProjectDetails(project)),
+    fetchAllSubprojectDetails: (project) => dispatch(fetchAllSubprojectDetails(project))
   };
 }
 

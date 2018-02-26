@@ -3,20 +3,22 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, getEnvironment } from './actions';
 import LoginPage from './LoginPage';
-import LoadingContainer from '../Loading/LoadingContainer';
 import { fetchNodePermissions } from '../Admin/actions';
+import { fetchUserWithToken } from '../Loading/actions';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
     this.props.getEnvironment();
     this.props.fetchNodePermissions();
+
+    if (!_.isEmpty(this.props.jwt)) {
+      this.props.fetchUserWithToken(true)
+    }
   }
 
   render() {
     return (
-      !_.isEmpty(this.props.jwt) ? (
-        <LoadingContainer {...this.props} />) :
-        (<LoginPage {...this.props} />)
+      <LoginPage {...this.props} />
     )
   }
   componentDidMount() {
@@ -49,6 +51,7 @@ const mapDispatchToProps = (dispatch) => {
     getEnvironment: () => dispatch(getEnvironment()),
     setLanguage: (language) => dispatch(setLanguage(language)),
     fetchNodePermissions: () => dispatch(fetchNodePermissions()),
+    fetchUserWithToken: (showLoading) => dispatch(fetchUserWithToken(showLoading))
   };
 }
 

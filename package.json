@@ -11,11 +11,11 @@
     "history": "^4.6.1",
     "immutable": "^3.8.1",
     "leaflet": "^1.0.3",
-    "material-ui": "^0.17.1",
+    "material-ui": "^0.17.4",
     "moment": "^2.18.1",
-    "react": "^15.5.4",
+    "react": "^15.2.0",
     "react-chartjs-2": "^2.0.5",
-    "react-dom": "^15.5.4",
+    "react-dom": "^15.2.0",
     "react-leaflet": "^1.1.6",
     "react-liquid-gauge": "^1.2.2",
     "react-localization": "^0.1.1",
@@ -23,15 +23,16 @@
     "react-router": "^4.0.0",
     "react-router-redux": "^5.0.0-alpha.4",
     "react-sortable-hoc": "^0.6.3",
-    "react-tap-event-plugin": "^2.0.1",
-    "react-transition-group": "^1.1.2",
+    "react-tap-event-plugin": "^2.0.0",
+    "react-transition-group": "^2.2.0",
     "redux": "^3.6.0",
+    "redux-debounced": "^0.4.0",
     "redux-immutable": "^4.0.0",
     "redux-saga": "^0.14.4",
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
-    "react-scripts": "^1.0.11"
+    "react-scripts": "^1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -39,5 +40,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost"
+  "proxy": "http://localhost:8080"
 }

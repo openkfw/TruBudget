@@ -6,6 +6,10 @@ import strings from '../../localizeStrings';
 import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, ADMIN_LOGIN_SUCCESS, FETCH_ADMIN_USER_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ENVIRONMENT_SUCCESS, ADMIN_LOGOUT_SUCCESS, CLEAR_USER } from './actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
+import { FETCH_ALL_PROJECTS_SUCCESS } from '../Overview/actions';
+import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from '../Workflows/actions';
+import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from '../SubProjects/actions';
+
 export const defaultState = fromJS({
   users: [],
   username: '',
@@ -45,6 +49,9 @@ export default function loginReducer(state = defaultState, action) {
     case FETCH_UPDATES_SUCCESS:
     case FETCH_USERS_SUCCESS:
       return state.set('users', fromJS(action.users));
+    case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
+    case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
+    case FETCH_ALL_PROJECTS_SUCCESS:
     case FETCH_ROLES_SUCCESS:
       return state.set('roles', fromJS(action.roles));
     case STORE_USERNAME:

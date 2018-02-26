@@ -1,7 +1,7 @@
 import { fromJS } from 'immutable';
 
 
-import { FETCH_PROJECT_DETAILS_SUCCESS, SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG, SUBPROJECT_CREATION_STEP } from './actions';
+import { SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG, SUBPROJECT_CREATION_STEP, FETCH_ALL_PROJECT_DETAILS_SUCCESS } from './actions';
 import { LOGOUT } from '../Login/actions';
 
 
@@ -26,12 +26,13 @@ const defaultState = fromJS({
   showHistory: false,
   historyItems: [],
   currentStep: 0,
+  roles: [],
 
 });
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_PROJECT_DETAILS_SUCCESS:
+    case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
       return state.merge({
         projectName: action.projectDetails.details.name,
         projectAmount: fromAmountString(action.projectDetails.details.amount),
@@ -43,7 +44,9 @@ export default function detailviewReducer(state = defaultState, action) {
         projectAssignee: action.projectDetails.details.assignee,
         projectBank: action.projectDetails.details.bank,
         subProjects: action.projectDetails.subProjects,
-      });
+        roles: action.roles,
+        historyItems: action.historyItems,
+      })
     case SUBPROJECT_CREATION_STEP:
       return state.set('currentStep', action.step);
     case SHOW_SUBPROJECT_DIALOG:
