@@ -35,7 +35,7 @@ const Main = (props) => {
           <Route exact path="/" component={Placeholder} />
           <Route exact path="/projects" component={withInitialLoading(OverviewContainer)} />
           <Route exact path="/projects/:project" component={withInitialLoading(SubProjectsContainer)} />
-          <Route exact path="/projects/:project/:subproject" component={WorkflowContainer} />
+          <Route exact path="/projects/:project/:subproject" component={withInitialLoading(WorkflowContainer)} />
           <Route exact path="/network" component={DashboardContainer} />
           <Route exact path="/notifications" component={NotificationPageContainer} />
           <Route component={NotFound} />

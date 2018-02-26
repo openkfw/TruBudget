@@ -5,6 +5,9 @@ import RefreshIndicator from './RefreshIndicator';
 import Transition from 'react-transition-group/Transition';
 
 const styles = {
+  container: {
+    position: 'relative'
+  },
   content: {
     transition: `opacity 500ms ease-in-out`,
     opacity: 1
