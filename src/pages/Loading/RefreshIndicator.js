@@ -1,6 +1,5 @@
 import React from 'react';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
-import strings from '../../localizeStrings';
 
 import {
   ACMECorpLightgreen

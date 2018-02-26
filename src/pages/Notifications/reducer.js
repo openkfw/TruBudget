@@ -4,7 +4,6 @@ import { LOGOUT } from '../Login/actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from '../SubProjects/actions';
 import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from '../Workflows/actions';
-import { FETCH_ALL_PROJECTS_SUCCESS } from '../Overview/actions';
 
 const defaultState = fromJS({
   list: [],

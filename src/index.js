@@ -23,6 +23,7 @@ import PrivateRoute from './pages/Login/PrivateRoute';
 import AdminDashboardContainer from './pages/Admin/AdminDashboardContainer';
 
 import configureStore from './store';
+import withInitialLoading from './pages/Loading/withInitialLoading';
 
 const history = createHistory()
 
@@ -44,16 +45,13 @@ const muiTheme = getMuiTheme({
 });
 
 class App extends Component {
-
-
-
   render() {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <MuiThemeProvider muiTheme={muiTheme}>
             <Switch>
-              <Route key={1} exact path="/login" component={LoginPageContainer} />
+              <Route key={1} exact path="/login" component={withInitialLoading(LoginPageContainer)} />
               <Route key={2} exact path="/admin" component={AdminDashboardContainer} />
               <PrivateRoute component={Main} />
             </Switch>

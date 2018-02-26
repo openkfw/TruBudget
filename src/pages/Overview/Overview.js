@@ -2,7 +2,6 @@ import React from 'react';
 
 import OverviewTable from './OverviewTable';
 import ProjectCreation from './ProjectCreation';
-import withInitialLoading from '../Loading/withInitialLoading';
 
 const Overview = (props) => {
   return (

@@ -1,21 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import RefreshIndicator from './RefreshIndicator';
 import Transition from 'react-transition-group/Transition';
-
-
-const duration = 1000;
-
-const defaultStyle = {
-  transition: `opacity ${duration}ms ease-in-out`,
-  opacity: 0,
-}
-
-const transitionStyles = {
-  entering: { opacity: 0 },
-  entered: { opacity: 1 },
-};
 
 const styles = {
   container: {
@@ -23,14 +10,26 @@ const styles = {
   },
   content: {
     filter: 'blur(0px)',
-    transition: `opacity ${duration}ms ease-in-out`,
+    transition: `all 500ms ease-in-out`,
     opacity: 1
   },
   contentTransition: {
-    entering: { opacity: 1 },
-    entered: { opacity: 0.2 },
-    exiting: { opactiy: 0.2 },
-    exited: { opactiy: 1 }
+    entering: {
+      opacity: 1,
+      filter: 'blur(0px)',
+    },
+    entered: {
+      opacity: 0.2,
+      filter: 'blur(2px)',
+    },
+    exiting: {
+      opactiy: 0.2,
+      filter: 'blur(2px)',
+    },
+    exited: {
+      opactiy: 1,
+      filter: 'blur(0px)',
+    }
   }
 }
 
@@ -42,7 +41,7 @@ const mapStateToProps = (state) => {
 
 const withInitialLoading = ComponentToEnhance => {
   return connect(mapStateToProps)(props => {
-
+    console.log(props.loading)
     return (
       <div style={styles.container}>
         {props.loading ? <RefreshIndicator /> : null}

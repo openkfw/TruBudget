@@ -65,16 +65,19 @@ function* callApi(func, ...args) {
 
 function* handleLoading(showLoading) {
   if (showLoading) {
-    const ts = Date.now();
-    yield put(showLoadingIndicator(ts))
+    yield put(showLoadingIndicator())
     return function* done() {
       yield put(cancelDebounce())
-      yield put(hideLoadingIndicator(ts))
+      yield put(hideLoadingIndicator())
     }
   } else {
     return function* () { }
   }
 }
+
+const chill = async (ms) => new Promise(res => setTimeout(res, ms))
+
+////////////////////// Specific Sagas start here /////////////////
 
 export function* fetchPeersSaga(action) {
   try {
@@ -343,8 +346,10 @@ export function* fetchRolesSaga() {
 
 
 export function* loginSaga({ user }) {
+  const done = yield handleLoading(true);
   try {
     const data = yield callApi(api.login, user.username, user.password);
+    yield call(chill, 1250);
 
     yield put({
       type: FETCH_USER_SUCCESS,
@@ -367,7 +372,10 @@ export function* loginSaga({ user }) {
       type: SHOW_LOGIN_ERROR,
       show: true
     })
+  } finally {
+    done();
   }
+
 }
 
 
@@ -398,15 +406,18 @@ export function* adminLoginSaga({ user }) {
   }
 }
 
-export function* fetchUserWithJwtSaga() {
-
+export function* fetchUserWithJwtSaga({ showLoading }) {
+  const done = yield handleLoading(showLoading);
   try {
     yield call(api.fetchUser);
+    yield call(chill, 1250);
     yield put({
       type: LOGIN_SUCCESS
     })
   } catch (error) {
     yield handleError(error);
+  } finally {
+    yield done();
   }
 }
 
@@ -515,6 +526,7 @@ export function* fetchNodePermissionsSaga() {
 
 
 export function* fetchAllProjectsSaga({ showLoading }) {
+  console.log("fetch projects");
   const done = yield handleLoading(showLoading);
   const projects = yield callApi(api.fetchProjects)
   const roles = yield callApi(api.fetchRoles);
