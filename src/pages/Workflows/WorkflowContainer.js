@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import globalStyles from '../../styles';
 
-
 import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, storeWorkflowState, storeWorkflowAssignee, createWorkflowItem, editWorkflowItem, disableWorkflowState, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, hideWorkflowDialog, fetchAllSubprojectDetails } from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
@@ -13,8 +12,6 @@ import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 import { getPermissions } from '../../permissions';
 import { fetchRoles } from '../Login/actions';
-import RefreshIndicatorContainer from '../Loading/RefreshIndicatorContainer';
-
 
 class WorkflowContainer extends Component {
   componentWillMount() {
@@ -32,7 +29,6 @@ class WorkflowContainer extends Component {
     const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
       <div>
-        <RefreshIndicatorContainer {...this.props} />
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
           <Workflow {...this.props} permissions={{ isAssignee, isApprover, isBank }} />

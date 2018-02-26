@@ -6,14 +6,22 @@ import {
   ACMECorpLightgreen
 } from '../../colors'
 
-const style = {
+const styles = {
   container: {
     display: 'flex',
-    flex: '1',
-    width: '100%',
-    height: '500px',
-    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    position: 'absolute',
     alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: '40vh',
+    width: '100%',
+    height: '100%',
+    zIndex: 2000,
+  },
+  refreshContainer: {
+    display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'top',
+    justifyContent: 'center'
   },
   refresh: {
     display: 'inline-block',
@@ -22,22 +30,8 @@ const style = {
 };
 
 const Refresh = (props) => (
-  <div style={{
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'column',
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: '100%',
-    zIndex: 2000,
-    filter: 'blur(0)'
-  }}>
-    <div style={{
-      display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center',
-      justifyContent: 'center'
-    }}>
+  <div style={styles.container}>
+    <div style={styles.refreshContainer}>
       <RefreshIndicator
         size={50}
         left={0}
@@ -45,7 +39,7 @@ const Refresh = (props) => (
         percentage={50}
         status="loading"
         loadingColor={ACMECorpLightgreen}
-        style={style.refresh}
+        style={styles.refresh}
       />
     </div>
   </div>

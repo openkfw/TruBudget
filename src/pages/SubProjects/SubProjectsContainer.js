@@ -8,7 +8,6 @@ import { showSnackBar, storeSnackBarMessage, showHistory } from '../Notification
 import { setSelectedView } from '../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
-import RefreshIndicatorContainer from '../Loading/RefreshIndicatorContainer';
 
 class SubProjectsContainer extends Component {
   componentWillMount() {

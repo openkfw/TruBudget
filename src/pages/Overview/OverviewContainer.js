@@ -23,7 +23,6 @@ import {
 
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
-import RefreshIndicatorContainer from '../Loading/RefreshIndicatorContainer';
 import globalStyles from '../../styles';
 
 class OverviewContainer extends Component {
