@@ -373,7 +373,7 @@ export function* loginSaga({ user }) {
       show: true
     })
   } finally {
-    done();
+    yield done();
   }
 
 }
