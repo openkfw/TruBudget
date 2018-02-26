@@ -7,11 +7,11 @@ import NotificationPage from './NotificationPage';
 import globalStyles from '../../styles';
 
 class NotificationPageContainer extends Component {
-  componentWillMount () {
+  componentWillMount() {
     this.props.fetchNotifications(this.props.loggedInUser.id);
   }
 
-  render () {
+  render() {
 
     return (
       <div style={globalStyles.innerContainer}>
@@ -29,8 +29,8 @@ const mapDispatchToProps = (dispatch, props) => {
 
 const mapStateToProps = (state) => {
   return {
-    list: state.getIn(['notifications', 'list']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    list: state.getIn(['notifications', 'list']).toJS(),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     users: state.getIn(['login', 'users']).toJS(),
     streamNames: state.getIn(['navbar', 'streamNames']).toJS(),
   }

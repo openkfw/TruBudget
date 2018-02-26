@@ -159,7 +159,7 @@ const StepDot = ({ status, selectable }) => {
 };
 
 const editWorkflow = ({ key, txid, data }, props) => {
-  const { workflowName, amount, amountType, currency, comment, assignee, status, documents, type, approvalRequired } = data;
+  const { workflowName, amount, amountType, currency, comment, status, documents, type, approvalRequired } = data;
   props.storeWorkflowName(workflowName)
   props.storeWorkflowAmount(amount)
   props.storeWorkflowAmountType(amountType)

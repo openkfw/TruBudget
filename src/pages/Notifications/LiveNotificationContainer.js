@@ -7,7 +7,7 @@ import { showSnackBar, storeSnackBarMessage } from './actions.js'
 
 class LiveNotificationContainer extends Component {
 
-  render () {
+  render() {
     return (
       <LiveNotification {...this.props} />
     )
@@ -26,7 +26,7 @@ const mapStateToProps = (state) => {
     showSnackBar: state.getIn(['notifications', 'showSnackBar']),
     snackBarMessage: state.getIn(['notifications', 'snackBarMessage']),
     snackBarMessageIsError: state.getIn(['notifications', 'snackBarMessageIsError']),
-    notifications: state.getIn(['notifications', 'list']),
+    notifications: state.getIn(['notifications', 'list']).toJS(),
     users: state.getIn(['login', 'users']).toJS(),
   }
 }

@@ -63,7 +63,7 @@ const LoginPage = ({ history, nodePermissions, users, login, storeUsername, stor
   const connectedToAdminNode = isAdminNode(nodePermissions);
 
   return (
-    <div style={{ backgroundImage: 'url("/welcome.jpg")', backgroundSize: 'cover', width: '100%', height: '100%', position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+    <div style={{ backgroundImage: 'url("/welcome.jpg")', backgroundSize: 'cover', width: '100%', height: '100vh', position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
       <Card style={{ width: '350px', zIndex: 1100, opacity: 0.9 }}>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
           <CardTitle title="TruBudget" subtitle={strings.login.tru_budget_description} />

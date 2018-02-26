@@ -2,29 +2,28 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 
-import { fetchProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment, setCurrentStep } from './actions';
+import { fetchAllProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment, setCurrentStep } from './actions';
 import SubProjects from './SubProjects'
-import { showSnackBar, storeSnackBarMessage, showHistory, fetchHistoryItems } from '../Notifications/actions';
+import { showSnackBar, storeSnackBarMessage, showHistory } from '../Notifications/actions';
 import { setSelectedView } from '../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
-import { fetchRoles } from '../Login/actions';
-
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
     const projectId = this.props.location.pathname.split('/')[2];
-    this.props.fetchProjectDetails(projectId);
-    this.props.fetchHistoryItems(projectId);
     this.props.setSelectedView(projectId, 'project');
-    this.props.fetchRoles();
+    this.props.fetchAllProjectDetails(projectId, true);
+
   }
 
   render() {
     return (
-      <div style={globalStyles.innerContainer}>
-        <ProjectDetails {...this.props} />
-        <SubProjects {...this.props} />
+      <div>
+        <div style={globalStyles.innerContainer}>
+          <ProjectDetails {...this.props} />
+          <SubProjects {...this.props} />
+        </div>
       </div>
     )
   }
@@ -34,7 +33,7 @@ class SubProjectsContainer extends Component {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchProjectDetails: (project) => dispatch(fetchProjectDetails(project)),
+    fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
@@ -46,10 +45,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     openHistory: () => dispatch(showHistory(true)),
     hideHistory: () => dispatch(showHistory(false)),
-    fetchHistoryItems: (project) => dispatch(fetchHistoryItems(project)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
-    fetchRoles: () => dispatch(fetchRoles())
   };
 }
 
@@ -72,10 +69,10 @@ const mapStateToProps = (state) => {
     currentStep: state.getIn(['detailview', 'currentStep']),
     subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
     showHistory: state.getIn(['notifications', 'showHistory']),
-    historyItems: state.getIn(['notifications', 'historyItems']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    historyItems: state.getIn(['notifications', 'historyItems']).toJS(),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     users: state.getIn(['login', 'users']).toJS(),
-    roles: state.getIn(['login', 'roles']).toJS()
+    roles: state.getIn(['login', 'roles']).toJS(),
   }
 }
 

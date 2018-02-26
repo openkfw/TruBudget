@@ -16,6 +16,7 @@ import workflowReducer from './pages/Workflows/reducer';
 import loginReducer from './pages/Login/reducer';
 import documentsReducer from './pages/Documents/reducer';
 import adminDashboardReducer from './pages/Admin/reducer';
+import loadingReducer from './pages/Loading/reducer';
 
 /*
  * routeReducer
@@ -30,18 +31,34 @@ const routeInitialState = fromJS({
   locationBeforeTransitions: null,
 });
 
+
+export const actionInitialState = fromJS({
+  lastAction: null,
+});
+
+
+/**
+ * Merge route into the global application state
+ */
+function lastActionReducer(state = actionInitialState, action) {
+  return state.merge({
+    lastAction: action.type
+  })
+}
+
+
 /**
  * Merge route into the global application state
  */
 function routeReducer(state = routeInitialState, action) {
   switch (action.type) {
 
-
     /* istanbul ignore next */
     case LOCATION_CHANGE:
       return state.merge({
         locationBeforeTransitions: action.payload,
       });
+
     default:
       return state;
   }
@@ -53,6 +70,7 @@ function routeReducer(state = routeInitialState, action) {
 export default function createReducer(asyncReducers) {
   return combineReducers({
     route: routeReducer,
+    actions: lastActionReducer,
     navbar: navbarReducer,
     overview: overviewReducer,
     detailview: subProjectReducer,
@@ -62,6 +80,7 @@ export default function createReducer(asyncReducers) {
     login: loginReducer,
     documents: documentsReducer,
     adminDashboard: adminDashboardReducer,
+    loading: loadingReducer,
     ...asyncReducers,
   });
 }

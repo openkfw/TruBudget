@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 
 import {
-  fetchProjects,
+  fetchAllProjects,
   createProject,
   storeProjectName,
   storeProjectAmount,
@@ -23,20 +23,20 @@ import {
 
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
-import { fetchRoles } from '../Login/actions';
-
 import globalStyles from '../../styles';
 
 class OverviewContainer extends Component {
   componentWillMount() {
-    this.props.fetchProjects();
-    this.props.fetchRoles();
+    this.props.fetchAllProjects(true);
   }
+
 
   render() {
     return (
-      <div style={globalStyles.innerContainer}>
-        <Overview {...this.props} />
+      <div>
+        <div style={globalStyles.innerContainer}>
+          <Overview {...this.props} />
+        </div>
       </div>
     )
   }
@@ -44,7 +44,6 @@ class OverviewContainer extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchProjects: () => dispatch(fetchProjects()),
     createProject: (name, amount, comment, currency, _, approver, assignee, bank, thumbnail) => dispatch(createProject(name, amount, comment, currency, approver, assignee, bank, thumbnail)),
     showProjectDialog: () => dispatch(showProjectDialog()),
     onProjectDialogCancel: () => dispatch(onProjectDialogCancel()),
@@ -61,14 +60,14 @@ const mapDispatchToProps = (dispatch) => {
     showSnackBar: () => dispatch(showSnackBar(true)),
     storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
-    fetchRoles: () => dispatch(fetchRoles()),
-    storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail))
+    storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail)),
+    fetchAllProjects: (showLoading) => dispatch(fetchAllProjects(showLoading)),
   };
 }
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.getIn(['overview', 'projects']),
+    projects: state.getIn(['overview', 'projects']).toJS(),
     creationDialogShown: state.getIn(['overview', 'projectDialogVisible']),
     currentStep: state.getIn(['overview', 'currentStep']),
     projectName: state.getIn(['overview', 'projectName']),
@@ -79,8 +78,9 @@ const mapStateToProps = (state) => {
     projectApprover: state.getIn(['overview', 'projectApprover']).toJS(),
     projectAssignee: state.getIn(['overview', 'projectAssignee']).toJS(),
     projectBank: state.getIn(['overview', 'projectBank']).toJS(),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
-    roles: state.getIn(['login', 'roles']).toJS()
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
+    roles: state.getIn(['login', 'roles']).toJS(),
+
   }
 }
 

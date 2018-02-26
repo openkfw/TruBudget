@@ -1,25 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, checkToken } from './actions';
+import _ from 'lodash';
+import { fetchUsers, login, storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, getEnvironment } from './actions';
 import LoginPage from './LoginPage';
-import LoadingContainer from '../Loading/LoadingContainer';
 import { fetchNodePermissions } from '../Admin/actions';
+import { fetchUserWithToken } from '../Loading/actions';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
-    this.props.storeDefaultEnvironment();
+    this.props.getEnvironment();
     this.props.fetchNodePermissions();
-    this.props.checkToken();
 
+    if (!_.isEmpty(this.props.jwt)) {
+      this.props.fetchUserWithToken(true)
+    }
   }
 
   render() {
-    const {tokenPresent} = this.props;
     return (
-    tokenPresent ? (
-      <LoadingContainer {...this.props} />) :
-      (<LoginPage {...this.props} />)
+      <LoginPage {...this.props} />
     )
   }
   componentDidMount() {
@@ -49,24 +48,24 @@ const mapDispatchToProps = (dispatch) => {
     showLoginError: () => dispatch(showLoginError(true)),
     hideLoginError: () => dispatch(showLoginError(false)),
     storeEnvironment: (environment) => dispatch(storeEnvironment(environment)),
-    storeDefaultEnvironment: () => dispatch(storeEnvironment('Test')),
+    getEnvironment: () => dispatch(getEnvironment()),
     setLanguage: (language) => dispatch(setLanguage(language)),
-    checkToken: () => dispatch(checkToken()),
     fetchNodePermissions: () => dispatch(fetchNodePermissions()),
+    fetchUserWithToken: (showLoading) => dispatch(fetchUserWithToken(showLoading))
   };
 }
 
 const mapStateToProps = (state) => {
   return {
     users: state.getIn(['login', 'users']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']),
     username: state.getIn(['login', 'username']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
+    jwt: state.getIn(['login', 'jwt']),
     password: state.getIn(['login', 'password']),
     loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
     environment: state.getIn(['login', 'environment']),
     language: state.getIn(['login', 'language']),
     loggedIn: state.getIn(['login', 'loggedIn']),
-    tokenPresent: state.getIn(['login', 'tokenPresent']),
     nodePermissions: state.getIn(['adminDashboard', 'nodePermissions']),
   }
 }

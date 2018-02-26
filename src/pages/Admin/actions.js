@@ -45,195 +45,196 @@ export const ROLE_NOT_FOUND_ERROR = "ROLE_NOT_FOUND_ERROR";
 
 
 export const showRolesDialog = () => {
-    return {
-        type: SHOW_ROLES_DIALOG
-    }
+  return {
+    type: SHOW_ROLES_DIALOG
+  }
 }
 
 export const hideRolesDialog = () => {
-    return {
-        type: HIDE_ROLES_DIALOG
-    }
+  return {
+    type: HIDE_ROLES_DIALOG
+  }
 }
 
 export const showUsersDialog = () => {
-    return {
-        type: SHOW_USERS_DIALOG
-    }
+  return {
+    type: SHOW_USERS_DIALOG
+  }
 }
 
 export const hideUsersDialog = () => {
-    return {
-        type: HIDE_USERS_DIALOG
-    }
+  return {
+    type: HIDE_USERS_DIALOG
+  }
 }
 
 
 export const fetchNodePermissions = () => {
-    return {
-        type: FETCH_NODE_PERMISSIONS
-    }
+  return {
+    type: FETCH_NODE_PERMISSIONS
+  }
 }
 
 
 export const setUsername = (username) => {
 
-    return {
-        type: USER_NAME,
-        username
-    }
+  return {
+    type: USER_NAME,
+    username
+  }
 }
 
 export const setUserFullName = (fullName) => {
-    return {
-        type: USER_FULL_NAME,
-        fullName
-    }
+  return {
+    type: USER_FULL_NAME,
+    fullName
+  }
 }
 
 export const setUserPassword = (password) => {
-    return {
-        type: USER_PASSWORD,
-        password
-    }
+  return {
+    type: USER_PASSWORD,
+    password
+  }
 }
 
 export const setUserAvatar = (avatar) => {
-    return {
-        type: USER_AVATAR,
-        avatar
-    }
+  return {
+    type: USER_AVATAR,
+    avatar
+  }
 }
 
 
 export const setUserRole = (role) => {
-    return {
-        type: USER_ROLE,
-        role
-    }
+  return {
+    type: USER_ROLE,
+    role
+  }
 }
 
 export const addUser = (username, fullName, avatar, password, role) => {
-    return {
-        type: ADD_USER,
-        username,
-        fullName,
-        avatar,
-        password,
-        role
-    }
+  return {
+    type: ADD_USER,
+    username,
+    fullName,
+    avatar,
+    password,
+    role
+  }
 }
 
 export const addRole = (name, organization, read, write, admin) => {
-    return {
-        type: ADD_ROLE,
-        name,
-        organization,
-        read,
-        write,
-        admin
-    }
+  return {
+    type: ADD_ROLE,
+    name,
+    organization,
+    read,
+    write,
+    admin
+  }
 }
 
 
 export const setRoleName = (name) => {
-    return {
-        type: ROLE_NAME,
-        name
-    }
+  return {
+    type: ROLE_NAME,
+    name
+  }
 }
 
 export const setRoleOrganization = (organization) => {
-    return {
-        type: ROLE_ORGANIZATION,
-        organization
-    }
+  return {
+    type: ROLE_ORGANIZATION,
+    organization
+  }
 }
 
 export const setRoleReadPermission = (readPermissionSelected) => {
-    return {
-        type: ROLE_READ_PERMISSION,
-        readPermissionSelected
-    }
+  return {
+    type: ROLE_READ_PERMISSION,
+    readPermissionSelected
+  }
 }
 export const setRoleWritePermission = (writePermissionSelected) => {
-    return {
-        type: ROLE_WRITE_PERMISSION,
-        writePermissionSelected
-    }
+  return {
+    type: ROLE_WRITE_PERMISSION,
+    writePermissionSelected
+  }
 }
 export const setRoleAdminPermission = (adminPermissionSelected) => {
-    return {
-        type: ROLE_ADMIN_PERMISSION,
-        adminPermissionSelected
-    }
+  return {
+    type: ROLE_ADMIN_PERMISSION,
+    adminPermissionSelected
+  }
 }
 
 export const hideAdminLogin = () => {
-    return {
-        type: HIDE_ADMIN_LOGIN
-    }
+  return {
+    type: HIDE_ADMIN_LOGIN
+  }
 }
 
+
 export const showAdminLogin = () => {
-    return {
-        type: SHOW_ADMIN_LOGIN
-    }
+  return {
+    type: SHOW_ADMIN_LOGIN
+  }
 }
 
 export const setAdminUsername = (username) => {
-    return {
-        type: ADMIN_USERNAME,
-        username
-    }
+  return {
+    type: ADMIN_USERNAME,
+    username
+  }
 }
 
 export const setAdminPassword = (password) => {
-    return {
-        type: ADMIN_PASSWORD,
-        password
-    }
+  return {
+    type: ADMIN_PASSWORD,
+    password
+  }
 }
 
 export const isRoleNameError = (roleNameError) => {
-    return {
-        type: ROLE_NAME_ERROR,
-        roleNameError
-    }
+  return {
+    type: ROLE_NAME_ERROR,
+    roleNameError
+  }
 }
 
 export const isOrganizationError = (organizationError) => {
-    return {
-        type: ORGANIZATION_ERROR,
-        organizationError
-    }
+  return {
+    type: ORGANIZATION_ERROR,
+    organizationError
+  }
 }
 
 export const isUsernameError = (usernameError) => {
-    return {
-        type: USERNAME_ERROR,
-        usernameError
-    }
+  return {
+    type: USERNAME_ERROR,
+    usernameError
+  }
 }
 
 export const isFullNameError = (fullNameError) => {
-    return {
-        type: FULLNAME_ERROR,
-        fullNameError
-    }
+  return {
+    type: FULLNAME_ERROR,
+    fullNameError
+  }
 }
 
 export const isPasswordError = (passwordError) => {
-    return {
-        type: PASSWORD_ERROR,
-        passwordError
-    }
+  return {
+    type: PASSWORD_ERROR,
+    passwordError
+  }
 }
 
 export const isRoleNotFoundError = (roleNotFoundError) => {
-    return {
-        type: ROLE_NOT_FOUND_ERROR,
-        roleNotFoundError
-    }
+  return {
+    type: ROLE_NOT_FOUND_ERROR,
+    roleNotFoundError
+  }
 }
 

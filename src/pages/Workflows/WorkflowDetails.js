@@ -65,19 +65,19 @@ const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails
     <Dialog autoScrollBodyContent={true} open={showWorkflowDetails} actions={actions} title={workflowItem.data.workflowName} modal={false} style={styles.dialog}>
       <div>
         {strings.workflow.workflow_type}:
-        <TextField disabled={true} hintText={typeMapping[workflowItem.data.type]} style={styles.textfield} underlineShow={false} />
+        <TextField id={strings.workflow.workflow_type} disabled={true} hintText={typeMapping[workflowItem.data.type]} style={styles.textfield} underlineShow={false} />
         <Divider />
         {strings.common.budget}:
-        <TextField disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false} />
+        <TextField id={strings.common.budget} disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false} />
         <Divider />
         {strings.common.comment}:
-        <TextField disabled={true} multiLine={true} hintText={trimmedComment} style={styles.textfield} underlineShow={false} />
+        <TextField id={strings.common.comment} disabled={true} multiLine={true} hintText={trimmedComment} style={styles.textfield} underlineShow={false} />
         <Divider />
         {strings.workflow.workflow_documents}:
-        <DocumentOverview documents={workflowItem.data.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />
+        <DocumentOverview id={strings.workflow.workflow_documents} documents={workflowItem.data.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />
         <Divider />
-        {strings.common.comment}:
-        <TextField disabled={true} hintText={statusMapping(status)} style={styles.textfield} underlineShow={false} />
+        {strings.common.status}:
+        <TextField id={strings.common.status} disabled={true} hintText={statusMapping(status)} style={styles.textfield} underlineShow={false} />
         <Divider />
 
       </div>

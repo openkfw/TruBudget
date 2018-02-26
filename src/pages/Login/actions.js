@@ -1,7 +1,6 @@
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
 
-export const CHECK_TOKEN = 'CHECK_TOKEN';
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
@@ -13,15 +12,18 @@ export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 export const FETCH_ROLES = 'FETCH_ROLES';
 export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
 
+export const CLEAR_USER = 'CLEAR_USER';
+
 export const STORE_USERNAME = 'STORE_USTORE_USERNAMESER';
 export const STORE_PASSWORD = 'STORE_PASSWORD';
 export const LOGIN_ERROR_MESSAGE = 'LOGIN_ERROR_MESSAGE';
 export const SHOW_LOGIN_ERROR = 'SHOW_LOGIN_ERROR';
 export const STORE_ENVIRONMENT = 'STORE_ENVIRONMENT';
 export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
+export const FETCH_ENVIRONMENT = 'FETCH_ENVIRONMENT';
+export const FETCH_ENVIRONMENT_SUCCESS = 'FETCH_ENVIRONMENT_SUCCESS';
 
 export const SET_LANGUAGE = 'SET_LANGUAGE';
-export const TOKEN_FOUND = 'TOKEN_FOUND';
 
 export const ADMIN_LOGIN = 'ADMIN_LOGIN';
 export const ADMIN_LOGIN_SUCCESS = 'ADMIN_LOGIN_SUCCESS';
@@ -34,12 +36,6 @@ export const SHOW_ADMIN_LOGIN_ERROR = 'SHOW_ADMIN_LOGIN_ERROR';
 export function fetchUsers() {
   return {
     type: FETCH_USERS
-  }
-}
-
-export function checkToken() {
-  return {
-    type: CHECK_TOKEN
   }
 }
 
@@ -91,6 +87,12 @@ export function loginAdmin(user) {
   }
 }
 
+export const clearRegularUser = () => {
+  return {
+    type: CLEAR_USER
+  }
+}
+
 export function logoutAdmin() {
   return {
     type: ADMIN_LOGOUT,
@@ -127,16 +129,15 @@ export function storeEnvironment(environment) {
   }
 }
 
+export function getEnvironment() {
+  return {
+    type: FETCH_ENVIRONMENT
+  }
+}
+
 export function setLanguage(language) {
   return {
     type: SET_LANGUAGE,
     language
   }
 }
-
-export function tokenFound() {
-  return {
-    type: TOKEN_FOUND
-  }
-}
-
