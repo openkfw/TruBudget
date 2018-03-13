@@ -12,8 +12,8 @@ const handleSubmit = (props) => {
   const subproject = props.match.params.subproject;
   if (editMode) {
     const currentWorkflowItem = props.workflowItems.find((item) => item.txid === props.workflowToAdd.txId);
-    const { currentWorkflowKey, currentWorkflowData } = currentWorkflowItem;
-    editWorkflowItem(subproject, currentWorkflowKey, workflowToAdd, workflowDocuments, currentWorkflowData)
+    const { key, data } = currentWorkflowItem;
+    editWorkflowItem(subproject, key, workflowToAdd, workflowDocuments, data)
   } else {
     createWorkflowItem(subproject, workflowToAdd, workflowDocuments)
   }
