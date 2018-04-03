@@ -1,4 +1,4 @@
-import { ProjectWithPermissions } from "./types";
+import { Project, ProjectWithPermissions } from "./types";
 
 const projectsWithPermissions: Array<ProjectWithPermissions> = [
   {
@@ -39,4 +39,21 @@ const projectsWithPermissions: Array<ProjectWithPermissions> = [
   }
 ];
 
-export default projectsWithPermissions;
+export const someProjects: Array<Project> = [
+  { title: "Proj One" },
+  { title: "Proj Two" },
+  { title: "Proj Three" }
+];
+
+export const Multichain = {
+  getStreams: () => [
+    {
+      details: "project",
+      getStreamItems: () => someProjects
+    }
+  ]
+};
+
+export default {
+  getAllProjects: () => someProjects
+};

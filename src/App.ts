@@ -1,26 +1,35 @@
 import * as express from "express";
 import * as Project from "./project";
-import { Project as ProjectType } from "./project/types";
-import { filter as authorized } from "./authz";
+import * as Subproject from "./subproject";
+import { authorize } from "./authz";
 
 const app = express();
 
 const router = express.Router();
 
+// TODO of course :user doesn't belong here..
 router.get("/:user/projects", (req, res) => {
   // Returns all projects the user is allowed to see
   const user = req.params.user;
-  const projects = Project.list()
-    .filter(authorized(user, "view"))
-    .map(Project.unwrap);
+  const projects = authorize(user, Project.list());
   res.json(projects);
 });
 
-// router.post("/projects", (req, res) => {
-//   // Create a project only if the user is allowed to:
-//   const projects = Project.createAs(user);
+// router.put("/:user/projects/:id", (req, res) => {
+//   const user = req.params.user;
+//   const title = req.body.title;
+//   const projects = runIfAuthorized(user, Project.changeTitle(id, title));
 //   res.json(projects);
 // });
+
+router.post("/:user/projects/:id/subprojects/:title", (req, res) => {
+  // Create a subproject only if the user is allowed to:
+  const user = req.params.user;
+  const projectId = req.params.id;
+  const title = req.params.title; // TODO ;-)
+  const projects = authorize(user, Subproject.create(projectId, title));
+  res.json(projects);
+});
 
 // router.get("/projects/:id/subprojects", (req, res) => {
 //   const projectId = req.params.id;
