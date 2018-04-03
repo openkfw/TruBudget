@@ -1,0 +1,18 @@
+{
+  "name": "ACMECorp-chain-bc",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@104.40.176.22:trubudget/ACMECorp-chain-bc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1"
+  }
+}
