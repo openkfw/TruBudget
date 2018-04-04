@@ -526,7 +526,6 @@ export function* fetchNodePermissionsSaga() {
 
 
 export function* fetchAllProjectsSaga({ showLoading }) {
-  console.log("fetch projects");
   const done = yield handleLoading(showLoading);
   const projects = yield callApi(api.fetchProjects)
   const roles = yield callApi(api.fetchRoles);

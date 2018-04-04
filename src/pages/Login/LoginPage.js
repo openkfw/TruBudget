@@ -1,8 +1,6 @@
 import React from 'react';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
-import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-import Avatar from 'material-ui/Avatar';
 import { ACMECorpLightgreen } from '../../colors'
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import IconButton from 'material-ui/IconButton';
@@ -16,52 +14,12 @@ import Password from '../Common/Password';
 import strings from '../../localizeStrings'
 import { isAdminNode } from '../../helper';
 
-const defaultUser = {
-  jdoe: {
-    id: 'jdoe',
-    name: 'John Doe',
-    organization: 'Ministry of Finance',
-    password: 'test',
-    avatar: '/lego_avatar_male1.jpg',
-    avatar_back: '/lego_avatar_male1.jpg',
-  },
-  pkleffmann: {
-    id: 'pkleffmann',
-    name: 'Piet Kleffmann',
-    organization: 'ACMECorp',
-    password: 'test',
-    avatar: '/lego_avatar_male5.jpg',
-    avatar_back: '/lego_avatar_male5.jpg',
-  },
-}
 
-const createListItems = (users, login) => {
-  const items = [];
-  if (users.size === 0) return items;
-  let index = 0;
-  for (const user in users) {
-    const data = users[user];
-
-    items.push(
-      <div key={index}>
-        <ListItem leftAvatar={<Avatar src={data.avatar} />} primaryText={data.name} secondaryText={<span>{data.organization}</span>} secondaryTextLines={1} onTouchTap={() => login({
-          ...data,
-          username: user
-        })}
-        />
-      </div>
-    )
-
-    index++;
-  }
-  return items
-}
 
 
 
 const LoginPage = ({ history, nodePermissions, users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment, language, setLanguage }) => {
   const connectedToAdminNode = isAdminNode(nodePermissions);
-
   return (
     <div style={{ backgroundImage: 'url("/welcome.jpg")', backgroundSize: 'cover', width: '100%', height: '100vh', position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
       <Card style={{ width: '350px', zIndex: 1100, opacity: 0.9 }}>
@@ -82,10 +40,6 @@ const LoginPage = ({ history, nodePermissions, users, login, storeUsername, stor
             <MenuItem value='de' primaryText={strings.language.german} />
           </DropDownMenu>
           <RaisedButton label={strings.login.login_button_title} aria-label='loginbutton' style={{ marginRight: 20, marginTop: 5 }} onTouchTap={() => loginWithCredentails(username, password)} />
-        </div>
-        <Divider />
-        <div>
-          {createListItems(defaultUser, login)}
         </div>
         <Divider />
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>

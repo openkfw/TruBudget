@@ -36,7 +36,6 @@ const mapStateToProps = (state) => {
 
 const withInitialLoading = ComponentToEnhance => {
   return connect(mapStateToProps)(props => {
-    console.log(props.loading)
     return (
       <div style={styles.container}>
         {props.loading ? <RefreshIndicator /> : null}

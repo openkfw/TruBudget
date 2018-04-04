@@ -16,6 +16,7 @@ const parseFromState = (state) => ({
     productionActive: state.getIn(['login', 'productionActive']),
     users: state.getIn(['login', 'users']),
     roles: state.getIn(['login', 'roles']),
+    language: 'en-gb',
   },
   actions: {
     lastAction: state.getIn(['actions', 'lastAction'])
