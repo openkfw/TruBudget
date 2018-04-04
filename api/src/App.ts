@@ -30,6 +30,17 @@ router.get("/:user/projects", async (req, res) => {
   }
 });
 
+router.post("/:user/projects", async (req, res) => {
+  const user = req.params.user;
+  try {
+    authorize(user, await projectModel.create(user));
+    res.status(200).send();
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("INTERNAL SERVER ERROR");
+  }
+});
+
 // router.put("/:user/projects/:id", (req, res) => {
 //   const user = req.params.user;
 //   const title = req.body.title;

@@ -2,6 +2,10 @@
  * Resource: Project
  */
 
+export interface CreateProject {
+  intent: "create project";
+}
+
 export interface ListProjects {
   intent: "list projects";
 }
@@ -42,6 +46,7 @@ export interface AppendWorkflow {
  */
 
 export type Intent =
+  | CreateProject
   | ListProjects
   | ViewProject
   | ListSubprojects

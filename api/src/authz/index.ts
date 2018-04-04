@@ -34,6 +34,8 @@ const can = (user, intent: Intent, resource?) => {
       return user !== "alice" || resource.title === "Proj Two";
     case "append subproject to project":
       return intent.projectId === "my-project";
+    case "create project":
+      return user === "alice";
     default:
       return false;
   }
@@ -42,22 +44,18 @@ const can = (user, intent: Intent, resource?) => {
 const loggedCan = (user, intent, resource?) => {
   const canDo = can(user, intent, resource);
   console.log(
-    `${canDo ? "ALLOWED" : "DENIED"} user ${user} access with intent "${
-      intent.intent
-    }"${resource ? ` to ${JSON.stringify(resource)}` : ""}`
+    `${canDo ? "ALLOWED" : "DENIED"} user ${user} access with intent "${intent.intent}"${
+      resource ? ` to ${JSON.stringify(resource)}` : ""
+    }`
   );
   return canDo;
 };
 
 export const authorize = (user: UserId, result: ModelResult) => {
-  console.log(
-    `Checking authorization for user ${user}: ${JSON.stringify(result)}`
-  );
+  console.log(`Checking authorization for user ${user}: ${JSON.stringify(result)}`);
   switch (result.kind) {
     case "resource list":
-      return result.resources.filter(resource =>
-        loggedCan(user, result.intent, resource)
-      );
+      return result.resources.filter(resource => loggedCan(user, result.intent, resource));
     case "side effect":
       if (loggedCan(user, result.intent)) {
         console.log(`Invoking side effect..`);

@@ -1,6 +1,6 @@
 import { ListProjects } from "../authz/intents";
 import { ModelResult } from "../authz/types";
-import { MultichainClient, ProjectMetadata, Stream } from "../multichain";
+import { MultichainClient, ProjectMetadata, Stream, StreamTxId } from "../multichain";
 
 export interface Project {
   creationUnixTs: string;
@@ -28,6 +28,20 @@ export class ProjectModel {
   multichain: MultichainClient;
   constructor(multichain: MultichainClient) {
     this.multichain = multichain;
+  }
+  async create(issuer): Promise<ModelResult> {
+    return {
+      kind: "side effect",
+      intent: { intent: "create project" },
+      action: async () => {
+        const txid: StreamTxId = await this.multichain.createStream({
+          kind: "project",
+          // TODO metadata from body
+          initialLogEntry: { issuer, action: "created_project" }
+        });
+        console.log(`${issuer} has created a new project (txid=${txid})`);
+      }
+    };
   }
   async list(): Promise<ModelResult> {
     const streams: Stream[] = await this.multichain.streams();

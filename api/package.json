@@ -15,8 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.3",
-    "nodemon": "^1.17.2",
-    "multichain-api": "^1.0.0-alpha.8"
+    "multichain-api": "^1.0.0-alpha.8",
+    "nodemon": "^1.17.2"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
