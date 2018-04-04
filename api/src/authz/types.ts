@@ -1,5 +1,4 @@
-import { Project } from "../project/types";
-import { SubProject } from "../subproject/types";
+import { Project } from "../project/model";
 import { Intent } from "./intents";
 
 export type UserId = string;
@@ -10,7 +9,7 @@ export interface UserGroupMapping {
   users: Array<UserId>;
 }
 
-export type Resource = Project | SubProject;
+export type Resource = Project;
 
 /*
  * Read-only intents will fetch a list of resources, which will be filtered by the authz

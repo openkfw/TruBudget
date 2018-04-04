@@ -1,7 +1,6 @@
 import * as express from "express";
 import MultichainClient from "./multichain";
 import ProjectModel from "./project";
-import * as Subproject from "./subproject";
 import { authorize } from "./authz";
 
 const multichainClient = new MultichainClient({
@@ -38,14 +37,14 @@ router.get("/:user/projects", async (req, res) => {
 //   res.json(projects);
 // });
 
-router.post("/:user/projects/:id/subprojects/:title", (req, res) => {
-  // Create a subproject only if the user is allowed to:
-  const user = req.params.user;
-  const projectId = req.params.id;
-  const title = req.params.title; // TODO ;-)
-  const projects = authorize(user, Subproject.create(projectId, title));
-  res.json(projects);
-});
+// router.post("/:user/projects/:id/subprojects/:title", (req, res) => {
+//   // Create a subproject only if the user is allowed to:
+//   const user = req.params.user;
+//   const projectId = req.params.id;
+//   const title = req.params.title; // TODO ;-)
+//   const projects = authorize(user, Subproject.create(projectId, title));
+//   res.json(projects);
+// });
 
 // router.get("/projects/:id/subprojects", (req, res) => {
 //   const projectId = req.params.id;
