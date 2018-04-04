@@ -1,9 +1,9 @@
 import * as express from "express";
-import MultichainClient from "./multichain";
+import { RpcMultichainClient } from "./multichain";
 import ProjectModel from "./project";
 import { authorize } from "./authz";
 
-const multichainClient = new MultichainClient({
+const multichainClient = new RpcMultichainClient({
   protocol: "http",
   host: "localhost",
   port: 8000,

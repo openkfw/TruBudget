@@ -1,15 +1,7 @@
-const { RpcClient } = require("multichain-api/RpcClient");
 const { ListStreams } = require("multichain-api/Commands/ListStreams");
 const { ListStreamItems } = require("multichain-api/Commands/ListStreamItems");
 const { ListStreamKeyItems } = require("multichain-api/Commands/ListStreamKeyItems");
-
-interface RpcClientOptions {
-  protocol: "http" | "https";
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-}
+import * as RPC from "./rpc";
 
 export interface ProjectMetadata {
   creationUnixTs: string;
@@ -22,7 +14,7 @@ export interface ProjectMetadata {
 }
 
 // (Writable) metadata:
-type StreamMetadata = ProjectMetadata;
+export type StreamMetadata = ProjectMetadata;
 const metadataKey = "_metadata";
 
 // The "stream details" are read-only, so they're only used to define the stream's nature:
@@ -44,34 +36,27 @@ export interface Stream {
   publishers: number;
 }
 
-interface RpcResult {
-  result?: Stream[];
-  error?: any;
-  id?: any;
+export interface MultichainClient {
+  streams(): Promise<Stream[]>;
+  metadata(stream: Stream): Promise<StreamMetadata>;
 }
 
-const rpc = (cmd: any): any =>
-  new Promise(async (resolve, reject) => {
-    const res = (await this.rpcClient(cmd)) as RpcResult;
-    if (res.error) {
-      reject(res.error);
-    } else {
-      resolve(res.result as Stream[]);
-    }
-  });
-
-class MultichainClient {
-  rpcClient: (/* command */ any) => Promise<any>;
-  constructor(options: RpcClientOptions) {
-    this.rpcClient = RpcClient(options);
+export class RpcMultichainClient implements MultichainClient {
+  private invoke: RPC.ClientType;
+  constructor(options: RPC.ClientOptions) {
+    this.invoke = RPC.Client(options);
   }
-  async streams(): Promise<Stream[] | any> {
-    return rpc(ListStreams()) as Promise<Stream[] | any>;
+  private async invokeUnwrap(cmd) {
+    const result: RPC.Result = await this.invoke(cmd);
+    if (result.error) throw result.error;
+    return result.result;
   }
-  async metadata(stream: Stream): Promise<StreamMetadata | any> {
+  async streams(): Promise<Stream[]> {
+    const cmd = ListStreams();
+    return (await this.invokeUnwrap(cmd)) as Stream[];
+  }
+  async metadata(stream: Stream): Promise<StreamMetadata> {
     const cmd = ListStreamKeyItems(stream.name || stream.createtxid, metadataKey, "count=1");
-    return rpc(cmd) as Promise<StreamMetadata | any>;
+    return (await this.invokeUnwrap(cmd)) as StreamMetadata;
   }
 }
-
-export default MultichainClient;

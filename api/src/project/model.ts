@@ -1,6 +1,6 @@
 import { ListProjects } from "../authz/intents";
 import { ModelResult } from "../authz/types";
-import MultichainClient, { Stream, ProjectMetadata } from "../multichain";
+import { MultichainClient, ProjectMetadata, Stream } from "../multichain";
 
 export interface Project {
   creationUnixTs: string;
@@ -36,7 +36,6 @@ export class ProjectModel {
         .filter(stream => stream.details.kind === "project")
         .map(stream => this.multichain.metadata(stream))
     )).map(asProject);
-    console.log(JSON.stringify(projects));
     return {
       kind: "resource list",
       intent: { intent: "list projects" },
