@@ -1,18 +1,34 @@
 import * as express from "express";
-import * as Project from "./project";
+import MultichainClient from "./multichain";
+import ProjectModel from "./project";
 import * as Subproject from "./subproject";
 import { authorize } from "./authz";
+
+const multichainClient = new MultichainClient({
+  protocol: "http",
+  host: "localhost",
+  port: 8000,
+  username: "multichainrpc",
+  password: "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j"
+});
+
+const projectModel = new ProjectModel(multichainClient);
 
 const app = express();
 
 const router = express.Router();
 
 // TODO of course :user doesn't belong here..
-router.get("/:user/projects", (req, res) => {
+router.get("/:user/projects", async (req, res) => {
   // Returns all projects the user is allowed to see
   const user = req.params.user;
-  const projects = authorize(user, Project.list());
-  res.json(projects);
+  try {
+    const projects = authorize(user, await projectModel.list());
+    res.json(projects);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("INTERNAL SERVER ERROR");
+  }
 });
 
 // router.put("/:user/projects/:id", (req, res) => {
