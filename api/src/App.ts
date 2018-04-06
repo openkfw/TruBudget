@@ -5,10 +5,10 @@ import { authorize } from "./authz";
 
 const multichainClient = new RpcMultichainClient({
   protocol: "http",
-  host: "localhost",
-  port: 8000,
-  username: "multichainrpc",
-  password: "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j"
+  host: process.env.RPC_HOST || "localhost",
+  port: parseInt(process.env.RPC_PORT, 10) || 8000,
+  username: process.env.RPC_USER || "multichainrpc",
+  password: process.env.RPC_PASS || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j"
 });
 
 const projectModel = new ProjectModel(multichainClient);
