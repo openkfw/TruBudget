@@ -5,4 +5,4 @@ export {
   StreamTxId,
   StreamBody,
   ProjectStreamMetadata
-} from "./client.h";
+} from "./Client.h";

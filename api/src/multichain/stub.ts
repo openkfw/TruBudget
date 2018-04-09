@@ -1,4 +1,4 @@
-import { Stream, StreamBody, MultichainClient, CreateStreamOptions } from "./client.h";
+import { Stream, StreamBody, MultichainClient, CreateStreamOptions } from "./Client.h";
 
 const metadata = {
   "Project One": {
