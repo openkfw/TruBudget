@@ -10,6 +10,7 @@ import {
 } from "../multichain";
 import { TrubudgetError } from "../App.h";
 import { User } from "./model.h";
+import { createPasswordHash } from "./hash";
 
 const isNonemptyString = (x: any): boolean => typeof x === "string" && x.length > 0;
 const findMissingKeys = (maybeUser: any): string[] =>
@@ -63,6 +64,7 @@ export class UserModel {
           if (userExists) {
             reject({ kind: "UserAlreadyExists", targetUserId: newUser.id });
           } else {
+            newUser.password = await createPasswordHash(newUser.password);
             await this.multichain.updateStreamItem(streamTxId, newUser.id, newUser);
             console.log(`${issuer} has created a new user on stream "${streamTxId}"`);
             resolve(newUser.id);
@@ -70,5 +72,9 @@ export class UserModel {
         })
         .catch(err => reject(err));
     });
+  }
+
+  authenticate(input, authorized): Promise<string | TrubudgetError> {
+    return Promise.reject("not implemented");
   }
 }
