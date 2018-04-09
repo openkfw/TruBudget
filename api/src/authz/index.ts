@@ -1,6 +1,7 @@
 import * as Sample from "./sample";
 import { UserId, ModelResult, AllowedUserGroupsByIntent } from "./types";
 import { Intent, SimpleIntent } from "./intents";
+import { NotAuthorizedError } from "../App.h";
 
 // const logAccess = (
 //   user: UserId,
@@ -65,11 +66,18 @@ export const authorize = (user: UserId, result: ModelResult) => {
   }
 };
 
-const can = async (user, intent: SimpleIntent, resourcePermissions: AllowedUserGroupsByIntent) =>
-  true;
+const can = async (
+  user,
+  intent: SimpleIntent,
+  resourcePermissions: AllowedUserGroupsByIntent
+): Promise<boolean> => true;
 
-const loggedCan = (user, intent: SimpleIntent, resourcePermissions: AllowedUserGroupsByIntent) => {
-  const canDo = can(user, intent, resourcePermissions);
+const loggedCan = async (
+  user,
+  intent: SimpleIntent,
+  resourcePermissions: AllowedUserGroupsByIntent
+): Promise<boolean> => {
+  const canDo = await can(user, intent, resourcePermissions);
   console.log(
     `${canDo ? "ALLOWED" : "DENIED"} user ${user} access with intent "${intent}"${
       resourcePermissions ? ` to ${JSON.stringify(resourcePermissions)}` : ""
@@ -80,4 +88,10 @@ const loggedCan = (user, intent: SimpleIntent, resourcePermissions: AllowedUserG
 
 export const authorized = (user, intent: SimpleIntent) => (
   resourcePermissions: AllowedUserGroupsByIntent
-) => loggedCan(user, intent, resourcePermissions);
+): Promise<void | NotAuthorizedError> =>
+  new Promise((resolve, reject) =>
+    loggedCan(user, intent, resourcePermissions).then((canDo: boolean) => {
+      const err = { kind: "NotAuthorized", user, intent };
+      canDo ? resolve() : reject(err);
+    })
+  );

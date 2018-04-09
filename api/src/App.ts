@@ -29,9 +29,10 @@ router.get("/health", (req, res) => res.status(200).send("OK"));
 
 router.get("/project.list", async (req, res) => {
   // Returns all projects the user is allowed to see
+  const intent = req.path.substring(1);
   const user = req.params.user || "alice";
   try {
-    const projects = await projectModel.list(authorized(user, "project.list"));
+    const projects = await projectModel.list(authorized(user, intent));
     res.json(projects);
   } catch (err) {
     console.log(err);
@@ -40,13 +41,19 @@ router.get("/project.list", async (req, res) => {
 });
 
 router.post("/project.create", async (req, res) => {
+  const intent = req.path.substring(1);
   const user = req.params.user || "alice";
   try {
-    await projectModel.createProject(req.body, authorized(user, "project.create"));
-    res.status(201).send();
+    const id = await projectModel.createProject(req.body, authorized(user, intent));
+    res.status(201).send(id);
   } catch (err) {
-    console.log(err);
-    res.status(500).send("INTERNAL SERVER ERROR");
+    if (err.kind === "NotAuthorized") {
+      console.log(err);
+      res.status(401).send(`User ${user} is not authorized to execute ${intent}`);
+    } else {
+      console.log(err);
+      res.status(500).send("INTERNAL SERVER ERROR");
+    }
   }
 });
 

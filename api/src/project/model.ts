@@ -7,6 +7,7 @@ import {
   StreamTxId,
   StreamBody
 } from "../multichain";
+import { TrubudgetError } from "../App.h";
 
 export interface Project {
   creationUnixTs: string;
@@ -104,27 +105,23 @@ export class ProjectModel {
     return clearedProjects.filter(x => x !== null);
   }
 
-  async createProject(body, authorized): Promise<void> {
-    /* TODO room permissions */
-    const rootPermissions = new Map<string, string[]>();
-    if (await authorized(rootPermissions)) {
-      const issuer = "alice";
-      const txid: StreamTxId = await this.multichain.createStream({
-        kind: "project",
-        // TODO metadata from body
-        initialLogEntry: { issuer, action: "created_project" },
-        permissions: new Map([["subproject.create", ["alice"]]])
-      });
-      console.log(`${issuer} has created a new project (txid=${txid})`);
-    }
+  createProject(body, authorized): Promise<string | TrubudgetError> {
+    return new Promise((resolve, reject) => {
+      /* TODO root permissions */
+      const rootPermissions = new Map<string, string[]>();
+      authorized(rootPermissions)
+        .then(async () => {
+          const issuer = "alice";
+          const txid: StreamTxId = await this.multichain.createStream({
+            kind: "project",
+            // TODO metadata from body
+            initialLogEntry: { issuer, action: "created_project" },
+            permissions: new Map([["subproject.create", ["alice"]]])
+          });
+          console.log(`${issuer} has created a new project (txid=${txid})`);
+          resolve(txid);
+        })
+        .catch(err => reject(err));
+    });
   }
 }
-
-// export const view = id => {
-//   const proj = { title: "my proj" };
-//   return { intent: Intent.ViewProject(id), resources: [proj] };
-// };
-
-// export const changeTitle = id => {
-//   return {intent: Intent.ChangeProjectTile, fun: () => { /* actually change something */ };
-// }
