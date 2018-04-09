@@ -1,17 +1,18 @@
 import { AllowedUserGroupsByIntent } from "../authz/types";
 export { RpcMultichainClient } from "./Client";
 
-type StreamKind = "project" | "subproject";
+type StreamKind = "users" | "project" | "subproject";
 
 // The "stream details" are read-only, so they're only used to define the stream's nature:
 interface StreamDetails {
   kind?: StreamKind;
 }
 
+export type StreamName = string;
 export type StreamTxId = string;
 
 export interface Stream {
-  name: string;
+  name: StreamName;
   createtxid: StreamTxId;
   streamref: string;
   open: boolean;
@@ -58,8 +59,29 @@ export interface CreateStreamOptions {
   permissions?: AllowedUserGroupsByIntent;
 }
 
+export interface StreamItem {
+  key: string;
+  items: number;
+  confirmed: number;
+}
+
 export interface MultichainClient {
+  // Create a new stream. If name is set and the stream exists, nothing happens.
   createStream(options: CreateStreamOptions);
+
+  // Get a list of all streams:
   streams(): Promise<Stream[]>;
+
+  // Get the stream body (some of its key/value pairs) of a given stream:
   streamBody(stream: Stream): Promise<StreamBody>;
+
+  // Retrieve a specific item from a given stream:
+  streamItem(streamId: StreamName | StreamTxId, key: string): Promise<any>;
+
+  // Update a stream item, serializing the Js object as hex-string:
+  updateStreamItem(
+    streamId: StreamName | StreamTxId,
+    key: string,
+    object: any
+  ): Promise<StreamItem>;
 }

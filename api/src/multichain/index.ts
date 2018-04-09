@@ -1,8 +1,9 @@
 export {
   MultichainClient,
+  ProjectStreamMetadata,
   RpcMultichainClient,
   Stream,
-  StreamTxId,
   StreamBody,
-  ProjectStreamMetadata
+  StreamItem,
+  StreamTxId
 } from "./Client.h";

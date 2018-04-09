@@ -1,8 +1,11 @@
 import * as express from "express";
-import { RpcMultichainClient } from "./multichain";
-import ProjectModel from "./project";
+import * as bodyParser from "body-parser";
+
 import { authorize, authorized } from "./authz";
 import { SimpleIntent } from "./authz/intents";
+import { RpcMultichainClient } from "./multichain";
+import ProjectModel from "./project";
+import UserModel from "./user";
 
 const multichainClient = new RpcMultichainClient({
   protocol: "http",
@@ -13,8 +16,10 @@ const multichainClient = new RpcMultichainClient({
 });
 
 const projectModel = new ProjectModel(multichainClient);
+const userModel = new UserModel(multichainClient);
 
 const app = express();
+app.use(bodyParser.json());
 
 const router = express.Router();
 
@@ -26,6 +31,34 @@ const fun = (intent: SimpleIntent) => {
 };
 
 router.get("/health", (req, res) => res.status(200).send("OK"));
+
+router.post("/user.create", async (req, res) => {
+  const intent = req.path.substring(1);
+  const user = req.params.user || "alice";
+  console.log(`body: ${JSON.stringify(req.body)}`);
+  try {
+    const createdUser = await userModel.createUser(req.body, authorized(user, intent));
+    res.status(201).json(createdUser);
+  } catch (err) {
+    switch (err.kind) {
+      case "NotAuthorized":
+        console.log(err);
+        res.status(401).send(`User ${user} is not authorized to execute ${intent}`);
+        break;
+      case "UserAlreadyExists":
+        console.log(err);
+        res.status(409).send(`The user already exists.`);
+        break;
+      case "MissingKeys":
+        console.log(err);
+        res.status(400).send(`Missing keys: ${err.missingKeys.join(", ")}`);
+        break;
+      default:
+        console.log(err);
+        res.status(500).send("INTERNAL SERVER ERROR");
+    }
+  }
+});
 
 router.get("/project.list", async (req, res) => {
   // Returns all projects the user is allowed to see

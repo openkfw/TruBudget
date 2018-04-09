@@ -59,6 +59,8 @@ export type SimpleIntent =
   | "root.permission.list"
   | "root.permission.grant"
   | "root.permission.revoke"
+  | "user.list"
+  | "user.create"
   | "project.list"
   | "project.view"
   | "project.create"

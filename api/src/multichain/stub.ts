@@ -1,4 +1,12 @@
-import { Stream, StreamBody, MultichainClient, CreateStreamOptions } from "./Client.h";
+import {
+  Stream,
+  StreamBody,
+  MultichainClient,
+  CreateStreamOptions,
+  StreamName,
+  StreamTxId,
+  StreamItem
+} from "./Client.h";
 
 const metadata = {
   "Project One": {
@@ -47,6 +55,16 @@ class MultichainClientStub implements MultichainClient {
     ];
   }
   async streamBody(stream: Stream): Promise<StreamBody> {
+    throw "aaaaah";
+  }
+  streamItem(streamId: StreamName | StreamTxId, key: string): Promise<any> {
+    throw "aaaaah";
+  }
+  updateStreamItem(
+    streamId: StreamName | StreamTxId,
+    key: string,
+    object: any
+  ): Promise<StreamItem> {
     throw "aaaaah";
   }
 }
