@@ -7,7 +7,7 @@ import { SimpleIntent } from "./authz/intents";
 const multichainClient = new RpcMultichainClient({
   protocol: "http",
   host: process.env.RPC_HOST || "localhost",
-  port: parseInt(process.env.RPC_PORT, 10) || 8000,
+  port: parseInt(process.env.RPC_PORT || "8000", 10),
   username: process.env.RPC_USER || "multichainrpc",
   password: process.env.RPC_PASS || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j"
 });
