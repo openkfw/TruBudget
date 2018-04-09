@@ -5,11 +5,19 @@ info:
 host: none
 schemes:
   - https
+securityDefinitions:
+  Bearer:
+    description: Send a JWT is required for all routes, except `session.authenticate`, of course.
+    type: apiKey
+    in: header
+    name: Authorization
 paths:
   "/user.create":
     post:
       operationId: "user.create"
       consumes:
+        - application/json
+      produces:
         - application/json
       parameters:
         - in: body
@@ -27,36 +35,26 @@ paths:
               data:
                 type: object
                 required:
-                  - initiatorUserId
-                  - newUser
+                  - id
+                  - displayName
+                  - organization
+                  - password
                 properties:
-                  initiatorUserId:
+                  id:
                     type: string
-                  newUser:
-                    type: object
-                    required:
-                      - id
-                      - displayName
-                      - organization
-                      - password
-                    properties:
-                      id:
-                        type: string
-                      displayName:
-                        type: string
-                      organization:
-                        type: string
-                      password:
-                        type: string
+                  displayName:
+                    type: string
+                  organization:
+                    type: string
+                  password:
+                    type: string
             example:
               apiVersion: '1.0'
               data:
-                initiatorUserId: alice
-                newUser:
-                  id: bob
-                  displayName: Bob the Builder
-                  organization: BuilderLand
-                  password: topsecret
+                id: bob
+                displayName: Bob the Builder
+                organization: BuilderLand
+                password: topsecret
       responses:
         '200':
           description: ''
@@ -64,3 +62,49 @@ paths:
             type: string
             example:
               "alice"
+
+  "/user.list":
+    get:
+      operationId: "user.list"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                type: string
+                enum:
+                  - '1.0'
+              data:
+                type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - id
+                        - displayName
+                        - organization
+                      properties:
+                        id:
+                          type: string
+                        displayName:
+                          type: string
+                        organization:
+                          type: string
+            example:
+              apiVersion: '1.0'
+              data:
+                items:
+                  - id: bob
+                    displayName: Bob the Builder
+                    organization: BuilderLand
