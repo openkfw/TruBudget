@@ -23,27 +23,30 @@ app.use(bodyParser.json());
 
 const router = express.Router();
 
-const fun = (intent: SimpleIntent) => {
-  switch (intent) {
-    case "session.authenticate":
-      return 1;
-  }
-};
-
 router.get("/health", (req, res) => res.status(200).send("OK"));
 
 router.post("/user.create", async (req, res) => {
   const intent = req.path.substring(1);
-  const user = req.params.user || "alice";
-  console.log(`body: ${JSON.stringify(req.body)}`);
+  const body = req.body;
+  console.log(`body: ${JSON.stringify(body)}`);
+  if (body.apiVersion !== "1.0") {
+    res.status(412).send(`API version ${body.apiVersion} not implemented.`);
+    return;
+  }
+  const { initiatorUserId = undefined, newUser = undefined } = body.data || {};
+  if (!initiatorUserId || !newUser) {
+    res.status(400).send(`Expected data.{initiatorUserId,newUser} in body.`);
+    return;
+  }
+
   try {
-    const createdUser = await userModel.create(req.body, authorized(user, intent));
+    const createdUser = await userModel.create(newUser, authorized(initiatorUserId, intent));
     res.status(201).json(createdUser);
   } catch (err) {
     switch (err.kind) {
       case "NotAuthorized":
         console.log(err);
-        res.status(401).send(`User ${user} is not authorized to execute ${intent}`);
+        res.status(401).send(`User ${initiatorUserId} is not authorized to execute ${intent}`);
         break;
       case "UserAlreadyExists":
         console.log(err);

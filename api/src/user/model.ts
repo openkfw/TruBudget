@@ -31,11 +31,11 @@ export class UserModel {
    * 3. add user to stream
    * 4. return user id
    */
-  create(body, authorized): Promise<string | TrubudgetError> {
+  create(input, authorized): Promise<string | TrubudgetError> {
     return new Promise((resolve, reject) => {
-      const missingKeys = findMissingKeys(body);
+      const missingKeys = findMissingKeys(input);
       if (missingKeys.length > 0) return reject({ kind: "MissingKeys", missingKeys });
-      const newUser = body as User;
+      const newUser = input as User;
 
       /* TODO root permissions */
       const rootPermissions = new Map<string, string[]>();

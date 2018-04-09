@@ -1,0 +1,49 @@
+swagger: '2.0'
+info:
+  title: TruBudget
+  version: v1
+host: none
+schemes:
+  - https
+paths:
+  "/user.create":
+    post:
+      operationId: "user.create"
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                enum:
+                  - '1.0'
+              data:
+                type: object
+                required:
+                  - initiatorUserId
+                  - newUser
+                properties:
+                  initiatorUserId:
+                    type: string
+                  newUser:
+                    type: object
+                    required:
+                      - id
+                      - displayName
+                      - organization
+                      - password
+                    properties:
+                      id:
+                        type: string
+                      displayName:
+                        type: string
+                      organization:
+                        type: string
+                      password:
+                        type: string
