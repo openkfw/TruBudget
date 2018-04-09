@@ -37,7 +37,7 @@ router.post("/user.create", async (req, res) => {
   const user = req.params.user || "alice";
   console.log(`body: ${JSON.stringify(req.body)}`);
   try {
-    const createdUser = await userModel.createUser(req.body, authorized(user, intent));
+    const createdUser = await userModel.create(req.body, authorized(user, intent));
     res.status(201).json(createdUser);
   } catch (err) {
     switch (err.kind) {

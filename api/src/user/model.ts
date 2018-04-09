@@ -31,7 +31,7 @@ export class UserModel {
    * 3. add user to stream
    * 4. return user id
    */
-  createUser(body, authorized): Promise<string | TrubudgetError> {
+  create(body, authorized): Promise<string | TrubudgetError> {
     return new Promise((resolve, reject) => {
       const missingKeys = findMissingKeys(body);
       if (missingKeys.length > 0) return reject({ kind: "MissingKeys", missingKeys });
