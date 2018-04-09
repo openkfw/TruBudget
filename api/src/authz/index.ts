@@ -1,6 +1,6 @@
 import * as Sample from "./sample";
-import { UserId, ModelResult } from "./types";
-import { Intent } from "./intents";
+import { UserId, ModelResult, AllowedUserGroupsByIntent } from "./types";
+import { Intent, SimpleIntent } from "./intents";
 
 // const logAccess = (
 //   user: UserId,
@@ -21,7 +21,7 @@ import { Intent } from "./intents";
 // const isGroupIntersection = (actualGroups, allowedGroups) =>
 //   groupIntersection(actualGroups, allowedGroups).length > 0;
 
-const can = (user, intent: Intent, resource?) => {
+const oldCan = (user, intent: Intent, resource?) => {
   // Here we'd look up the resource's metadata in the chain to find out the following:
   // 1. which groups are allowed to execute the given intent,
   // 2. which groups does the user belong to.
@@ -41,8 +41,8 @@ const can = (user, intent: Intent, resource?) => {
   }
 };
 
-const loggedCan = (user, intent, resource?) => {
-  const canDo = can(user, intent, resource);
+const oldLoggedCan = (user, intent, resource?) => {
+  const canDo = oldCan(user, intent, resource);
   console.log(
     `${canDo ? "ALLOWED" : "DENIED"} user ${user} access with intent "${intent.intent}"${
       resource ? ` to ${JSON.stringify(resource)}` : ""
@@ -55,12 +55,29 @@ export const authorize = (user: UserId, result: ModelResult) => {
   console.log(`Checking authorization for user ${user}: ${JSON.stringify(result)}`);
   switch (result.kind) {
     case "resource list":
-      return result.resources.filter(resource => loggedCan(user, result.intent, resource));
+      return result.resources.filter(resource => oldLoggedCan(user, result.intent, resource));
     case "side effect":
-      if (loggedCan(user, result.intent)) {
+      if (oldLoggedCan(user, result.intent)) {
         console.log(`Invoking side effect..`);
         result.action();
       }
       break;
   }
 };
+
+const can = async (user, intent: SimpleIntent, resourcePermissions: AllowedUserGroupsByIntent) =>
+  true;
+
+const loggedCan = (user, intent: SimpleIntent, resourcePermissions: AllowedUserGroupsByIntent) => {
+  const canDo = can(user, intent, resourcePermissions);
+  console.log(
+    `${canDo ? "ALLOWED" : "DENIED"} user ${user} access with intent "${intent}"${
+      resourcePermissions ? ` to ${JSON.stringify(resourcePermissions)}` : ""
+    }`
+  );
+  return canDo;
+};
+
+export const authorized = (user, intent: SimpleIntent) => (
+  resourcePermissions: AllowedUserGroupsByIntent
+) => loggedCan(user, intent, resourcePermissions);

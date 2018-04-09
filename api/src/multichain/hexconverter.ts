@@ -6,8 +6,8 @@ function h2d(h) {
   return parseInt(h, 16);
 }
 
-export const stringToHex = (string = '') => {
-  let str = '';
+export const stringToHex = (string = "") => {
+  let str = "";
   let i = 0;
   const tmpLen = string.length;
   let c;
@@ -19,9 +19,9 @@ export const stringToHex = (string = '') => {
   return str;
 };
 
-export const hexToString = (hex) => {
+export const hexToString = hex => {
   const hexArray = hex.match(/.{2}/g);
-  let str = '';
+  let str = "";
   let i = 0;
   const tmpLen = hexArray.length;
   let c;

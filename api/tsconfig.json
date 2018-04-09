@@ -3,7 +3,8 @@
     "target": "ESNext",
     "module": "commonjs",
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "strictNullChecks": true
   },
   "files": [
     "./node_modules/@types/mocha/index.d.ts",

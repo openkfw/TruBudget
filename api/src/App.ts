@@ -1,7 +1,8 @@
 import * as express from "express";
 import { RpcMultichainClient } from "./multichain";
 import ProjectModel from "./project";
-import { authorize } from "./authz";
+import { authorize, authorized } from "./authz";
+import { SimpleIntent } from "./authz/intents";
 
 const multichainClient = new RpcMultichainClient({
   protocol: "http",
@@ -17,12 +18,18 @@ const app = express();
 
 const router = express.Router();
 
-// TODO of course :user doesn't belong here..
-router.get("/:user/projects", async (req, res) => {
+const fun = (intent: SimpleIntent) => {
+  switch (intent) {
+    case "session.authenticate":
+      return 1;
+  }
+};
+
+router.get("/project.list", async (req, res) => {
   // Returns all projects the user is allowed to see
-  const user = req.params.user;
+  const user = req.params.user || "alice";
   try {
-    const projects = authorize(user, await projectModel.list());
+    const projects = await projectModel.list(authorized(user, "project.list"));
     res.json(projects);
   } catch (err) {
     console.log(err);
@@ -30,11 +37,11 @@ router.get("/:user/projects", async (req, res) => {
   }
 });
 
-router.post("/:user/projects", async (req, res) => {
-  const user = req.params.user;
+router.post("/project.create", async (req, res) => {
+  const user = req.params.user || "alice";
   try {
-    authorize(user, await projectModel.create(user));
-    res.status(200).send();
+    await projectModel.createProject(req.body, authorized(user, "project.create"));
+    res.status(201).send();
   } catch (err) {
     console.log(err);
     res.status(500).send("INTERNAL SERVER ERROR");

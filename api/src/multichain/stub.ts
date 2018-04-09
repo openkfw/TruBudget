@@ -1,4 +1,4 @@
-import { Stream, StreamMetadata, MultichainClient, CreateStreamOptions } from "./client";
+import { Stream, StreamBody, MultichainClient, CreateStreamOptions } from "./client.h";
 
 const metadata = {
   "Project One": {
@@ -46,8 +46,8 @@ class MultichainClientStub implements MultichainClient {
       }
     ];
   }
-  async metadata(stream: Stream): Promise<StreamMetadata> {
-    return metadata[stream.name];
+  async streamBody(stream: Stream): Promise<StreamBody> {
+    throw "aaaaah";
   }
 }
 
