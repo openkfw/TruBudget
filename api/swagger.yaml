@@ -7,7 +7,7 @@ schemes:
   - https
 securityDefinitions:
   Bearer:
-    description: Send a JWT is required for all routes, except `session.authenticate`, of course.
+    description: JWT that is required for all routes except `/user.authenticate`.
     type: apiKey
     in: header
     name: Authorization
@@ -56,12 +56,16 @@ paths:
                 organization: BuilderLand
                 password: topsecret
       responses:
-        '200':
+        '201':
           description: ''
           schema:
             type: string
             example:
               "alice"
+        '401':
+          description: Returned if bearer token is not provided or invalid.
+        '403':
+          description: Returned if the user is not authorized.
 
   "/user.list":
     get:
@@ -108,3 +112,48 @@ paths:
                   - id: bob
                     displayName: Bob the Builder
                     organization: BuilderLand
+        '401':
+          description: Returned if bearer token is not provided or invalid.
+
+  "/user.authenticate":
+    post:
+      operationId: "user.authenticate"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                type: string
+                enum:
+                  - '1.0'
+              data:
+                type: object
+                required:
+                  - id
+                  - password
+                properties:
+                  id:
+                    type: string
+                  password:
+                    type: string
+            example:
+              apiVersion: '1.0'
+              data:
+                id: bob
+                password: topsecret
+      responses:
+        '200':
+          description: 'JSON Web Token for use as bearer token in subsequent requests.'
+          schema:
+            type: string
+        '403':
+          description: Returned when providing invalid credentials.
