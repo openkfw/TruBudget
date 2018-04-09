@@ -1,9 +1,11 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import * as expressJwt from "express-jwt";
 
 import { authorize, authorized } from "./authz";
 import { SimpleIntent } from "./authz/intents";
 import { RpcMultichainClient } from "./multichain";
+import { randomString } from "./multichain/hash";
 import ProjectModel from "./project";
 import UserModel from "./user";
 
@@ -20,6 +22,14 @@ const userModel = new UserModel(multichainClient);
 
 const app = express();
 app.use(bodyParser.json());
+app.use(
+  expressJwt({ secret: randomString(32) }).unless({ path: ["/health", "/user.authenticate"] })
+);
+app.use(function customAuthTokenErrorHandler(err, req, res, next) {
+  if (err.name === "UnauthorizedError") {
+    res.status(401).send("A valid JWT auth bearer token is required for this route.");
+  }
+});
 
 const router = express.Router();
 
@@ -33,20 +43,19 @@ router.post("/user.create", async (req, res) => {
     res.status(412).send(`API version ${body.apiVersion} not implemented.`);
     return;
   }
-  const { initiatorUserId = undefined, newUser = undefined } = body.data || {};
-  if (!initiatorUserId || !newUser) {
-    res.status(400).send(`Expected data.{initiatorUserId,newUser} in body.`);
+  if (!body.data) {
+    res.status(400).send(`Expected "data" in body.`);
     return;
   }
 
   try {
-    const createdUser = await userModel.create(newUser, authorized(initiatorUserId, intent));
+    const createdUser = await userModel.create(body.data, authorized(req.user, intent));
     res.status(201).json(createdUser);
   } catch (err) {
     switch (err.kind) {
       case "NotAuthorized":
         console.log(err);
-        res.status(401).send(`User ${initiatorUserId} is not authorized to execute ${intent}`);
+        res.status(403).send(`User ${req.user} is not authorized to execute ${intent}`);
         break;
       case "UserAlreadyExists":
         console.log(err);
@@ -85,7 +94,7 @@ router.post("/project.create", async (req, res) => {
   } catch (err) {
     if (err.kind === "NotAuthorized") {
       console.log(err);
-      res.status(401).send(`User ${user} is not authorized to execute ${intent}`);
+      res.status(403).send(`User ${user} is not authorized to execute ${intent}`);
     } else {
       console.log(err);
       res.status(500).send("INTERNAL SERVER ERROR");

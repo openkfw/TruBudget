@@ -55,12 +55,12 @@ export type Intent =
   | AppendWorkflow;
 
 export type SimpleIntent =
-  | "session.authenticate"
   | "root.permission.list"
   | "root.permission.grant"
   | "root.permission.revoke"
   | "user.list"
   | "user.create"
+  | "user.authenticate"
   | "project.list"
   | "project.view"
   | "project.create"
