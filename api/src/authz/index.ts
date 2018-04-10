@@ -70,7 +70,15 @@ const can = async (
   user,
   intent: SimpleIntent,
   resourcePermissions: AllowedUserGroupsByIntent
-): Promise<boolean> => true;
+): Promise<boolean> => {
+  if (user === "root") {
+    // root may do everything
+    return true;
+  } else {
+    // TODO read from the chain and decide
+    return true;
+  }
+};
 
 const loggedCan = async (
   user,
