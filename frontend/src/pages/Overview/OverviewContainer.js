@@ -27,7 +27,7 @@ import globalStyles from '../../styles';
 
 class OverviewContainer extends Component {
   componentWillMount() {
-    this.props.fetchAllProjects(true);
+    //this.props.fetchAllProjects(true);
   }
 
 

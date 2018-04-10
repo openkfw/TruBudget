@@ -11,8 +11,8 @@ class PrivateRoute extends Component {
   render() {
     const { component: Component, ...rest } = this.props;
     return (
-      <Route { ...rest } render={props => (
-        rest.loggedIn ? (
+      <Route {...rest} render={props => (
+        rest.jwt ? (
           <Component {...props} />
         ) : (
             <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
@@ -24,7 +24,7 @@ class PrivateRoute extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    loggedIn: state.getIn(['login', 'loggedIn']),
+    jwt: state.getIn(['login', 'jwt']),
   }
 }
 const mapDispatchToProps = (dispatch) => {
