@@ -24,10 +24,11 @@ import {
 import Overview from './Overview';
 import { showSnackBar, storeSnackBarMessage } from '../Notifications/actions';
 import globalStyles from '../../styles';
+import { toJS } from '../../helper';
 
 class OverviewContainer extends Component {
   componentWillMount() {
-    //this.props.fetchAllProjects(true);
+    this.props.fetchAllProjects(true);
   }
 
 
@@ -67,7 +68,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.getIn(['overview', 'projects']).toJS(),
+    projects: state.getIn(['overview', 'projects']),
     creationDialogShown: state.getIn(['overview', 'projectDialogVisible']),
     currentStep: state.getIn(['overview', 'currentStep']),
     projectName: state.getIn(['overview', 'projectName']),
@@ -75,13 +76,13 @@ const mapStateToProps = (state) => {
     projectComment: state.getIn(['overview', 'projectComment']),
     projectThumbnail: state.getIn(['overview', 'projectThumbnail']),
     projectCurrency: state.getIn(['overview', 'projectCurrency']),
-    projectApprover: state.getIn(['overview', 'projectApprover']).toJS(),
-    projectAssignee: state.getIn(['overview', 'projectAssignee']).toJS(),
-    projectBank: state.getIn(['overview', 'projectBank']).toJS(),
-    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
-    roles: state.getIn(['login', 'roles']).toJS(),
+    projectApprover: state.getIn(['overview', 'projectApprover']),
+    projectAssignee: state.getIn(['overview', 'projectAssignee']),
+    projectBank: state.getIn(['overview', 'projectBank']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    roles: state.getIn(['login', 'roles']),
 
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OverviewContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(OverviewContainer));

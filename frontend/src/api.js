@@ -40,6 +40,8 @@ class Api {
     return data;
   }
 
+  fetchProjects = () => axios.get(`/project.list`);
+
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
   //   return data;
@@ -63,7 +65,7 @@ class Api {
   // fetchPermissions = () => axios.get(`/permissions`);
   // fetchPeers = () => axios.get(`/peers`);
 
-  // fetchProjects = () => axios.get(`/projects`);
+
   // fetchProjectDetails = (project) => axios.get(`/projects/` + project);
   // fetchStreamNames = () => axios.get(`/projects/mapping`);
   // fetchStreamItems = (flowName) => axios.get(`/streams/` + flowName);

@@ -521,11 +521,12 @@ export function* fetchNodePermissionsSaga() {
 export function* fetchAllProjectsSaga({ showLoading }) {
   const done = yield handleLoading(showLoading);
   const projects = yield callApi(api.fetchProjects)
-  const roles = yield callApi(api.fetchRoles);
+  //TODO
+  //const roles = yield callApi(api.fetchRoles);
   yield put({
     type: FETCH_ALL_PROJECTS_SUCCESS,
     projects: projects.data,
-    roles: roles.data
+    //roles: roles.data
   });
   yield done();
 }
