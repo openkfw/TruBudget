@@ -12,14 +12,15 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import Username from '../Common/Username';
 import Password from '../Common/Password';
 import strings from '../../localizeStrings'
-import { isAdminNode } from '../../helper';
+//import { isAdminNode } from '../../helper';
 
 
 
 
 
-const LoginPage = ({ history, nodePermissions, users, login, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment, language, setLanguage }) => {
-  const connectedToAdminNode = isAdminNode(nodePermissions);
+const LoginPage = ({ history, nodePermissions, storeUsername, storePassword, username, password, loginWithCredentails, loginUnsuccessful, environment, storeEnvironment, language, setLanguage }) => {
+  //const connectedToAdminNode = isAdminNode(nodePermissions);
+  const connectedToAdminNode = -1;
   return (
     <div style={{ backgroundImage: 'url("/welcome.jpg")', backgroundSize: 'cover', width: '100%', height: '100vh', position: 'absolute', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
       <Card style={{ width: '350px', zIndex: 1100, opacity: 0.9 }}>

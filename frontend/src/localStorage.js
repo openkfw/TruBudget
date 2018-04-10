@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 
 import { defaultState as loginState } from './pages/Login/reducer';
 import { actionInitialState as actionState } from './reducers';
@@ -9,13 +9,9 @@ const STORAGE_KEY = 'state';
 
 const parseFromState = (state) => ({
   login: {
-    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
-    loggedInAdminUser: state.getIn(['login', 'loggedInAdminUser']).toJS(),
     jwt: state.getIn(['login', 'jwt']),
     environment: state.getIn(['login', 'environment']),
     productionActive: state.getIn(['login', 'productionActive']),
-    users: state.getIn(['login', 'users']),
-    roles: state.getIn(['login', 'roles']),
     language: 'en-gb',
   },
   actions: {
@@ -23,16 +19,16 @@ const parseFromState = (state) => ({
   }
 })
 
-const defaultPersistedState = parseFromState(Map({
+const defaultPersistedState = Map({
   login: loginState,
   actions: actionState
-}));
+});
 
 
 export const loadState = () => {
   try {
     const serializedState = localStorage.getItem(STORAGE_KEY);
-    return serializedState !== null ? JSON.parse(serializedState) : defaultPersistedState
+    return serializedState !== null ? defaultPersistedState.mergeDeep(fromJS(JSON.parse(serializedState))) : defaultPersistedState
   } catch (error) {
     return defaultPersistedState;
   }
