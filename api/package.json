@@ -16,7 +16,8 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
-    "express-jwt": "^5.3.1"
+    "express-jwt": "^5.3.1",
+    "jsonwebtoken": "^8.2.1"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",

@@ -9,7 +9,7 @@ import {
 } from "./Client.h";
 import { RpcClient, ConnectionSettings } from "./RpcClient.h";
 import { randomString } from "./hash";
-import { objectToHex } from "./hexconverter";
+import { objectToHex, hexToObject } from "./hexconverter";
 
 const streamItemKeys: any = {
   metadata: "_metadata",
@@ -21,10 +21,20 @@ const randomStreamName = (): string => randomString(16);
 
 const foo = async client => {
   const res = await client
-    .invoke("liststreamkeys", "users", "alice")
+    .invoke("liststreamkeyitems", "users", "alice", false, 1)
     .catch(err => console.log(`CATCHED: ${err}`));
   console.log(`YES: ${JSON.stringify(res)}`);
 };
+
+// Stream Item as returned by the API
+interface MultichainStreamItem {
+  publishers: string[];
+  keys: string[];
+  data: string;
+  confirmations: number;
+  blocktime: number;
+  txid: string;
+}
 
 export class RpcMultichainClient implements MultichainClient {
   private rpcClient: RpcClient;
@@ -78,10 +88,19 @@ export class RpcMultichainClient implements MultichainClient {
     };
   }
 
-  streamItem(streamId: StreamName | StreamTxId, key: string): Promise<StreamItem> {
-    // in case there is no item with the given key, there will still be a result with
-    // "items" and "confirmed" set to "0".
-    return this.rpcClient.invoke("liststreamkeys", streamId, key).then(items => items[0]);
+  async streamItem(streamId: StreamName | StreamTxId, key: string): Promise<StreamItem> {
+    const items = await this.rpcClient.invoke("liststreamkeyitems", streamId, key, false, 1);
+    if (items.length === 0) {
+      throw Error(`Item "${key}" not found in stream "${streamId}"`);
+    }
+
+    const item = items[0] as MultichainStreamItem;
+    if (key !== item.keys[0]) throw Error(`Assertion failed: ${key} !== ${item.keys[0]}`);
+    return {
+      key: key,
+      value: hexToObject(item.data),
+      txid: item.txid
+    };
   }
 
   updateStreamItem(streamId: StreamName | StreamTxId, key: string, object: any): Promise<any> {

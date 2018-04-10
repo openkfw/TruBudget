@@ -61,8 +61,8 @@ export interface CreateStreamOptions {
 
 export interface StreamItem {
   key: string;
-  items: number;
-  confirmed: number;
+  value: any;
+  txid: string;
 }
 
 export interface MultichainClient {
@@ -75,8 +75,8 @@ export interface MultichainClient {
   // Get the stream body (some of its key/value pairs) of a given stream:
   streamBody(stream: Stream): Promise<StreamBody>;
 
-  // Retrieve a specific item from a given stream:
-  streamItem(streamId: StreamName | StreamTxId, key: string): Promise<any>;
+  // Returns a specific item from a stream, or throws if no such item is found:
+  streamItem(streamId: StreamName | StreamTxId, key: string): Promise<StreamItem>;
 
   // Update a stream item, serializing the Js object as hex-string:
   updateStreamItem(

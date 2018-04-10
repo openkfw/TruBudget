@@ -17,19 +17,26 @@ const multichainClient = new RpcMultichainClient({
   password: process.env.RPC_PASS || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j"
 });
 
-const projectModel = new ProjectModel(multichainClient);
-const userModel = new UserModel(multichainClient);
-
 const app = express();
 app.use(bodyParser.json());
+
+const jwtSecret = process.env.JWT_SECRET || randomString(32);
+if (jwtSecret.length < 32) {
+  console.log("Warning: the JWT secret key should be at least 32 characters long.");
+}
 app.use(
-  expressJwt({ secret: randomString(32) }).unless({ path: ["/health", "/user.authenticate"] })
+  expressJwt({ secret: jwtSecret }).unless({
+    path: ["/health", "/user.authenticate"]
+  })
 );
 app.use(function customAuthTokenErrorHandler(err, req, res, next) {
   if (err.name === "UnauthorizedError") {
     res.status(401).send("A valid JWT auth bearer token is required for this route.");
   }
 });
+
+const projectModel = new ProjectModel(multichainClient);
+const userModel = new UserModel(multichainClient, jwtSecret);
 
 const router = express.Router();
 
@@ -64,6 +71,39 @@ router.post("/user.create", async (req, res) => {
       case "MissingKeys":
         console.log(err);
         res.status(400).send(`Missing keys: ${err.missingKeys.join(", ")}`);
+        break;
+      default:
+        console.log(err);
+        res.status(500).send("INTERNAL SERVER ERROR");
+    }
+  }
+});
+
+router.post("/user.authenticate", async (req, res) => {
+  const intent = req.path.substring(1);
+  const body = req.body;
+  console.log(`body: ${JSON.stringify(body)}`);
+  if (body.apiVersion !== "1.0") {
+    res.status(412).send(`API version ${body.apiVersion} not implemented.`);
+    return;
+  }
+  if (!body.data) {
+    res.status(400).send(`Expected "data" in body.`);
+    return;
+  }
+
+  try {
+    const jwt = await userModel.authenticate(body.data);
+    res.status(200).send(jwt);
+  } catch (err) {
+    switch (err.kind) {
+      case "MissingKeys":
+        console.log(err);
+        res.status(400).send(`Missing keys: ${err.missingKeys.join(", ")}`);
+        break;
+      case "AuthenticationError":
+        console.log(err);
+        res.status(401).send(`Authentication failed.`);
         break;
       default:
         console.log(err);

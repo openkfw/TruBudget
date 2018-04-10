@@ -16,4 +16,13 @@ export interface MissingKeysError {
   missingKeys: string;
 }
 
-export type TrubudgetError = NotAuthorizedError | UserAlreadyExistsError | MissingKeysError;
+export interface AuthenticationError {
+  kind: "AuthenticationError";
+  userId: string;
+}
+
+export type TrubudgetError =
+  | NotAuthorizedError
+  | UserAlreadyExistsError
+  | MissingKeysError
+  | AuthenticationError;
