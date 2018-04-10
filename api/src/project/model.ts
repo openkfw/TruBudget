@@ -85,6 +85,7 @@ const makeProjectFromResult = (result: Result<[Stream, StreamBody], Stream>): Pr
 
 export class ProjectModel {
   multichain: MultichainClient;
+
   constructor(multichain: MultichainClient) {
     this.multichain = multichain;
   }
@@ -105,23 +106,19 @@ export class ProjectModel {
     return clearedProjects.filter(x => x !== null);
   }
 
-  createProject(body, authorized): Promise<string | TrubudgetError> {
-    return new Promise((resolve, reject) => {
-      /* TODO root permissions */
-      const rootPermissions = new Map<string, string[]>();
-      authorized(rootPermissions)
-        .then(async () => {
-          const issuer = "alice";
-          const txid: StreamTxId = await this.multichain.createStream({
-            kind: "project",
-            // TODO metadata from body
-            initialLogEntry: { issuer, action: "created_project" },
-            permissions: new Map([["subproject.create", ["alice"]]])
-          });
-          console.log(`${issuer} has created a new project (txid=${txid})`);
-          resolve(txid);
-        })
-        .catch(err => reject(err));
+  async createProject(body, authorized): Promise<string> {
+    /* TODO root permissions */
+    const rootPermissions = new Map<string, string[]>();
+    await authorized(rootPermissions); // throws if unauthorized
+
+    const issuer = "alice";
+    const txid: StreamTxId = await this.multichain.createStream({
+      kind: "project",
+      // TODO metadata from body
+      initialLogEntry: { issuer, action: "created_project" },
+      permissions: new Map([["subproject.create", ["alice"]]])
     });
+    console.log(`${issuer} has created a new project (txid=${txid})`);
+    return txid;
   }
 }
