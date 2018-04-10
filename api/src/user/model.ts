@@ -20,12 +20,18 @@ const isNonemptyString = (x: any): boolean => typeof x === "string" && x.length 
 const findMissingKeys = (expectedKeys: string[], maybeUser: any): string[] =>
   expectedKeys.filter(key => typeof maybeUser !== "object" || !isNonemptyString(maybeUser[key]));
 
+const createToken = (secret: string) => (userId: string): string =>
+  jsonwebtoken.sign({ user: userId }, secret, { expiresIn: "1h" });
+
 export class UserModel {
   multichain: MultichainClient;
-  jwtSecret: string;
-  constructor(multichain: MultichainClient, jwtSecret: string) {
+  rootSecret: string;
+  createToken: (userId: string) => string;
+
+  constructor(multichain: MultichainClient, jwtSecret: string, rootSecret: string) {
     this.multichain = multichain;
-    this.jwtSecret = jwtSecret;
+    this.rootSecret = rootSecret;
+    this.createToken = createToken(jwtSecret);
   }
 
   /*
@@ -41,6 +47,9 @@ export class UserModel {
     const missingKeys = findMissingKeys(expectedKeys, input);
     if (missingKeys.length > 0) throw { kind: "MissingKeys", missingKeys };
     const newUser = input as User;
+
+    // Make sure nobody creates the special "root" user:
+    if (newUser.id === "root") throw { kind: "UserAlreadyExists", targetUserId: "root" };
 
     /* TODO root permissions */
     const rootPermissions = new Map<string, string[]>();
@@ -78,21 +87,28 @@ export class UserModel {
 
     // The client shouldn't be able to distinguish between a wrong id and a wrong password,
     // so we handle all errors alike:
-    const handleError = err => {
+    const throwError = err => {
       console.log(`Authentication failed: ${err}`);
       throw { kind: "AuthenticationError", userId: id };
     };
 
-    const item: StreamItem = await this.multichain.streamItem(usersStream, id).catch(handleError);
+    // The special "root" user is not on the chain:
+    if (id === "root") {
+      if (password === this.rootSecret) {
+        return this.createToken("root");
+      } else {
+        throwError("wrong password");
+      }
+    }
+
+    const item: StreamItem = await this.multichain.streamItem(usersStream, id).catch(throwError);
     console.log(JSON.stringify(item));
     const trueUser = item.value as User;
 
     const passwordHash = await createPasswordHash(password);
     const isPasswordMatch = passwordHash === trueUser.password;
-    if (!isPasswordMatch) handleError("wrong password");
+    if (!isPasswordMatch) throwError("wrong password");
 
-    const jwt = jsonwebtoken.sign({ user: id }, this.jwtSecret, { expiresIn: "1h" });
-
-    return jwt;
+    return this.createToken(id);
   }
 }
