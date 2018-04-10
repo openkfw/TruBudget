@@ -1,0 +1,8 @@
+{
+  "name": "trubudget-provisioning",
+  "version": "1.0.0",
+  "description": "Provisioning scripts for the TruBudget project.",
+  "dependencies": {
+    "jsonwebtoken": "^8.2.1"
+  }
+}
