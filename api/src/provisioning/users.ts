@@ -3,8 +3,8 @@
 const { sleep } = require('./index');
 
 const users = [
-  { id: 'thouse', displayName: 'Tom House', password: 'test', organization: 'Ministry of Health', },
-  { id: 'pkleffmann', displayName: 'Piet Kleffmann', password: 'test', organization: 'ACMECorp', },
+  { id: 'thouse', displayName: 'Tom House', password: 'test', organization: 'Ministry of Health' },
+  { id: 'pkleffmann', displayName: 'Piet Kleffmann', password: 'test', organization: 'ACMECorp' },
   { id: 'mstein', displayName: 'Mauro Stein', password: 'test', organization: 'UmbrellaCorp' },
   { id: 'jdoe', displayName: 'John Doe', password: 'test', organization: 'Ministry of Finance' },
   { id: 'jxavier', displayName: 'Jane Xavier', password: 'test', organization: 'Ministry of Education' },

@@ -4,7 +4,6 @@ import { authorized } from "../authz";
 import ProjectModel from "../project";
 import UserModel from "../user";
 import { MultichainClient } from "../multichain";
-import { TruBudgetError } from "../error";
 
 export const createRouter = (
   multichainClient: MultichainClient,
@@ -23,11 +22,15 @@ export const createRouter = (
     const body = req.body;
     console.log(`body: ${JSON.stringify(body)}`);
     if (body.apiVersion !== "1.0") {
-      res.status(412).send(`API version ${body.apiVersion} not implemented.`);
+      res.status(412).send({
+        apiVersion: req.body.apiVersion, error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
+      });
       return;
     }
     if (!body.data) {
-      res.status(400).send(`Expected "data" in body.`);
+      res.status(400).send({
+        apiVersion: req.body.apiVersion, error: { code: 400, message: `Expected "data" in body.` }
+      });
       return;
     }
 
@@ -38,19 +41,27 @@ export const createRouter = (
       switch (err.kind) {
         case "NotAuthorized":
           console.log(err);
-          res.status(403).send(`User ${req.token.userId} is not authorized to execute ${intent}`);
+          res.status(403).send({
+            apiVersion: req.body.apiVersion, error: { code: 403, message: `User ${req.token.userId} is not authorized to execute ${intent}` }
+          });
           break;
         case "UserAlreadyExists":
           console.log(err);
-          res.status(409).send(`The user already exists.`);
+          res.status(409).send({
+            apiVersion: req.body.apiVersion, error: { code: 409, message: `The user already exists.` }
+          });
           break;
         case "ParseError":
           console.log(err);
-          res.status(400).send(`Missing keys: ${err.badKeys.join(", ")}`);
+          res.status(400).send({
+            apiVersion: req.body.apiVersion, error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
+          });
           break;
         default:
           console.log(err);
-          res.status(500).send("INTERNAL SERVER ERROR");
+          res.status(500).send({
+            apiVersion: req.body.apiVersion, error: { code: 500, message: "INTERNAL SERVER ERROR" }
+          });
       }
     }
   });
@@ -75,15 +86,21 @@ export const createRouter = (
       switch (err.kind) {
         case "ParseError":
           console.log(err);
-          res.status(400).send(`Missing keys: ${err.badKeys.join(", ")}`);
+          res.status(400).send({
+            apiVersion: body.apiVersion, error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
+          })
           break;
         case "AuthenticationError":
           console.log(err);
-          res.status(401).send(`Authentication failed.`);
+          res.status(401).send({
+            apiVersion: body.apiVersion, error: { code: 401, message: "Authentication failed" }
+          });
           break;
         default:
           console.log(err);
-          res.status(500).send("INTERNAL SERVER ERROR");
+          res.status(500).send({
+            apiVersion: body.apiVersion, error: { code: 500, message: "INTERNAL SERVER ERROR" }
+          });
       }
     }
   });
@@ -101,7 +118,9 @@ export const createRouter = (
       });
     } catch (err) {
       console.log(err);
-      res.status(500).send("INTERNAL SERVER ERROR");
+      res.status(500).send({
+        apiVersion: req.body.apiVersion, error: { code: 500, message: "INTERNAL SERVER ERROR" }
+      });
     }
   });
 
@@ -110,11 +129,15 @@ export const createRouter = (
     const body = req.body;
     console.log(`body: ${JSON.stringify(body)}`);
     if (body.apiVersion !== "1.0") {
-      res.status(412).send(`API version ${body.apiVersion} not implemented.`);
+      res.status(412).send({
+        apiVersion: body.apiVersion, error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
+      });
       return;
     }
     if (!body.data) {
-      res.status(400).send(`Expected "data" in body.`);
+      res.status(400).send({
+        apiVersion: body.apiVersion, error: { code: 400, message: `Expected "data" in body.` }
+      });
       return;
     }
 
@@ -124,10 +147,14 @@ export const createRouter = (
     } catch (err) {
       if (err.kind === "NotAuthorized") {
         console.log(err);
-        res.status(403).send(`User ${req.token.userId} is not authorized to execute ${intent}`);
+        res.status(403).send({
+          apiVersion: body.apiVersion, error: { code: 403, message: `User ${req.token.userId} is not authorized to execute ${intent}` }
+        });
       } else {
         console.log(err);
-        res.status(500).send("INTERNAL SERVER ERROR");
+        res.status(500).send({
+          apiVersion: body.apiVersion, error: { code: 500, message: "INTERNAL SERVER ERROR" }
+        });
       }
     }
   });
