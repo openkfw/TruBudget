@@ -36,4 +36,17 @@ type Intent =
   | "workflowitem.permission.grant"
   | "workflowitem.permission.revoke";
 
+export const globalIntents: Intent[] = [
+  "root.permission.list",
+  "root.permission.grant",
+  "root.permission.revoke",
+  "user.list",
+  "user.create",
+  "user.authenticate",
+  "project.list",
+  "project.create"
+];
+
+export const defaultGlobalUserIntents: Intent[] = ["user.authenticate", "project.list"];
+
 export default Intent;

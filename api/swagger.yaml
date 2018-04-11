@@ -61,9 +61,41 @@ paths:
         '201':
           description: ''
           schema:
-            type: string
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                type: string
+                enum:
+                  - '1.0'
+              data:
+                type: object
+                required:
+                  - id
+                  - displayName
+                  - organization
+                properties:
+                  id:
+                    type: string
+                  displayName:
+                    type: string
+                  organization:
+                    type: string
+                  allowedIntents:
+                    type: array
+                    items:
+                      type: string
             example:
-              "alice"
+              apiVersion: '1.0'
+              data:
+                id: bob
+                displayName: Bob the Builder
+                organization: BuilderLand
+                allowedIntents:
+                  - user.authenticate
+                  - project.list
         '401':
           description: Returned if bearer token is not provided or invalid.
         '403':
@@ -160,7 +192,45 @@ paths:
         '200':
           description: 'JSON Web Token for use as bearer token in subsequent requests.'
           schema:
-            type: string
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                type: string
+                enum:
+                  - '1.0'
+              data:
+                type: object
+                required:
+                  - id
+                  - displayName
+                  - organization
+                  - token
+                properties:
+                  id:
+                    type: string
+                  displayName:
+                    type: string
+                  organization:
+                    type: string
+                  allowedIntents:
+                    type: array
+                    items:
+                      type: string
+                  token:
+                    type: string
+            example:
+              apiVersion: '1.0'
+              data:
+                id: bob
+                displayName: Bob the Builder
+                organization: BuilderLand
+                allowedIntents:
+                  - user.authenticate
+                  - project.list
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYm9iIn0.7WaMww1dKLRMZVszVaBSM-FxBqHFOhVirnfQNIwoFa4
         '403':
           description: Returned when providing invalid credentials.
 

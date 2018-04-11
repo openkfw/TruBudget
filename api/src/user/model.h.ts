@@ -10,12 +10,21 @@ export interface UserRecord {
   displayName: string;
   organization: string;
   passwordCiphertext: string;
+  allowedIntents: string[];
+}
+
+export interface UserCreationResponse {
+  id: string;
+  displayName: string;
+  organization: string;
+  allowedIntents: string[];
 }
 
 export interface UserLoginResponse {
   id: string;
   displayName: string;
   organization: string;
+  allowedIntents: string[];
   token: string;
 }
 

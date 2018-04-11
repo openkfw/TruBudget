@@ -35,8 +35,11 @@ export const createRouter = (
     }
 
     try {
-      const createdUser = await userModel.create(body.data, authorized(req.token, intent));
-      res.status(201).json(createdUser);
+      const response = {
+        apiVersion: "1.0",
+        data: await userModel.create(body.data, authorized(req.token, intent))
+      };
+      res.status(201).json(response);
     } catch (err) {
       switch (err.kind) {
         case "NotAuthorized":

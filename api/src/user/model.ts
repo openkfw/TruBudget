@@ -2,9 +2,10 @@ import * as jsonwebtoken from "jsonwebtoken";
 
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import { MultichainClient, Stream, StreamBody, StreamItem, StreamTxId } from "../multichain";
-import { UserRecord, UserLoginResponse, NewUser } from "./model.h";
+import { UserRecord, UserLoginResponse, NewUser, UserCreationResponse } from "./model.h";
 import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
+import { globalIntents, defaultGlobalUserIntents } from "../authz/intents";
 
 const usersStream = "users";
 
@@ -30,11 +31,16 @@ export class UserModel {
    * 3. add user to stream
    * 4. return user id
    */
-  async create(input, authorized): Promise<string> {
+  async create(input, authorized): Promise<UserCreationResponse> {
     const expectedKeys = ["id", "displayName", "organization", "password"];
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
-    const newUser = input as NewUser;
+    const newUser: NewUser = {
+      id: input.id,
+      displayName: input.displayName,
+      organization: input.organization,
+      passwordPlaintext: input.password
+    };
 
     // Make sure nobody creates the special "root" user:
     if (newUser.id === "root") throw { kind: "UserAlreadyExists", targetUserId: "root" };
@@ -61,15 +67,21 @@ export class UserModel {
 
     if (userExists) throw { kind: "UserAlreadyExists", targetUserId: newUser.id };
 
-    const userRecord = {
+    const userRecord: UserRecord = {
       id: newUser.id,
       displayName: newUser.displayName,
       organization: newUser.organization,
+      allowedIntents: defaultGlobalUserIntents,
       passwordCiphertext: await encryptPassword(newUser.passwordPlaintext)
     };
     await this.multichain.updateStreamItem(streamTxId, userRecord.id, userRecord);
     console.log(`${issuer} has created a new user on stream "${streamTxId}"`);
-    return userRecord.id;
+    return {
+      id: userRecord.id,
+      displayName: userRecord.displayName,
+      organization: userRecord.organization,
+      allowedIntents: userRecord.allowedIntents
+    };
   }
 
   async authenticate(input): Promise<UserLoginResponse> {
@@ -88,12 +100,7 @@ export class UserModel {
     // The special "root" user is not on the chain:
     if (id === "root") {
       if (passwordCleartext === this.rootSecret) {
-        return {
-          id: "root",
-          displayName: "root",
-          organization: "root",
-          token: this.createToken("root")
-        };
+        return rootUserLoginResponse(this.createToken("root"));
       } else {
         throwError("wrong password");
       }
@@ -111,7 +118,16 @@ export class UserModel {
       id,
       displayName: trueUser.displayName,
       organization: trueUser.organization,
+      allowedIntents: trueUser.allowedIntents,
       token: this.createToken(id)
     };
   }
 }
+
+const rootUserLoginResponse = (token: string): UserLoginResponse => ({
+  id: "root",
+  displayName: "root",
+  organization: "root",
+  allowedIntents: globalIntents,
+  token
+});
