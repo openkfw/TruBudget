@@ -1,12 +1,13 @@
 import app from './App'
 
-import { injectUsers } from "./provisioning/users";
+import { provisionBlockchain } from "./provisioning";
 const port = process.env.PORT || 3000
 
 app.listen(port, (err) => {
   if (err) {
     return console.log(err)
   }
-  injectUsers()
+
+  provisionBlockchain()
   return console.log(`server is listening on ${port}`)
 })

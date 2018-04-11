@@ -1,13 +1,6 @@
 
-const axios = require('axios');
 
-const port = process.env.PORT
-const rootSecret = process.env.ROOT_SECRET
-
-const API_VERSION = "1.0"
-
-
-axios.defaults.baseURL = `http://localhost:${port}`
+const { sleep } = require('./index');
 
 const users = [
   { id: 'thouse', displayName: 'Tom House', password: 'test', organization: 'Ministry of Health', },
@@ -19,58 +12,31 @@ const users = [
   { id: 'auditUser', displayName: 'Romina Checker', password: 'test', organization: 'Audit' },
 ];
 
-axios.defaults.transformRequest = [
-  (data, headers) => {
-    if (typeof data === 'object') {
-      return {
-        apiVersion: API_VERSION,
-        data: { ...data }
-      }
-    } else {
-      return data;
-    }
-  },
-  ...axios.defaults.transformRequest
-]
 
-
-const authenticate = async () => {
-  const response = await axios.post('/user.authenticate',
-    { "id": "root", "password": rootSecret }
-  )
-  return response.data
-}
-
-const createUser = async (user) => {
+const createUser = async (axios, user) => {
   await axios.post('/user.create', {
     ...user
   })
 }
 
-const sleep = timeout => (
-  new Promise(resolve => setTimeout(resolve, timeout))
-);
+export const provisionUsers = async (axios) => {
+  try {
+    for (const user of users) {
+      await createUser(axios, user);
+      console.log(`-> added User ${user.displayName}`);
+    }
+  } catch (err) {
+    await handleError(axios, err)
+  }
+}
 
-const handleError = async (err) => {
+const handleError = async (axios, err) => {
   if (err.response && err.response.status === 409) {
     console.log('Seems like the users already exist');
   } else {
     console.log(err.message)
     console.log('Blockchain or API are not up yet, sleeping for 5 seconds')
     await sleep(5000);
-    await injectUsers();
-  }
-}
-
-export const injectUsers = async () => {
-  try {
-    const token = await authenticate()
-    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    for (const user of users) {
-      await createUser(user);
-      console.log(`-> added User ${user.displayName}`);
-    }
-  } catch (err) {
-    await handleError(err)
+    await provisionUsers(axios);
   }
 }
