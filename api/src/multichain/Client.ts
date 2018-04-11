@@ -68,12 +68,11 @@ export class RpcMultichainClient implements MultichainClient {
     if (options.initialLogEntry) {
       await this.updateStreamItem(txId, "_log", options.initialLogEntry);
     }
-    // Check with Kevin if we want this behaviour
     if (options.metadata) {
       await this.updateStreamItem(txId, "_metadata", options.metadata);
     }
     if (options.permissions) {
-      await this.updateStreamItem(txId, "_permissions", [...options.permissions]);
+      await this.updateStreamItem(txId, "_permissions", options.permissions);
     }
 
     await Promise.all(

@@ -115,10 +115,15 @@ export class ProjectModel {
     const issuer = "alice";
     const txid: StreamTxId = await this.multichain.createStream({
       kind: "project",
-      // TODO metadata from body
-      metadata: { amount: '10', creationUnixTs: new Date().getTime().toString(), name: "test", currency: "EUR", status: "open" },
+      metadata: {
+        amount: "10",
+        creationUnixTs: new Date().getTime().toString(),
+        name: "test",
+        currency: "EUR",
+        status: "open"
+      },
       initialLogEntry: { issuer, action: "created_project" },
-      permissions: new Map([["subproject.create", ["alice"]]])
+      permissions: [["subproject.create", ["alice"]]]
     });
 
     console.log(`${issuer} has created a new project (txid=${txid})`);

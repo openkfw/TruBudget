@@ -34,4 +34,8 @@ export interface SideEffect {
 export type ModelResult = ResourceList | SideEffect;
 
 type RawIntent = string;
-export type AllowedUserGroupsByIntent = Map<RawIntent, People>;
+
+// what is actually is:
+export type AllowedUserGroupsByIntentMap = Map<RawIntent, People>;
+// how it's stored on the chain:
+export type AllowedUserGroupsByIntent = Array<Array<RawIntent | People>>;
