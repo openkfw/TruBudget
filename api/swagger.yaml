@@ -14,6 +14,8 @@ securityDefinitions:
 paths:
   "/user.create":
     post:
+      tags:
+        - user
       operationId: "user.create"
       consumes:
         - application/json
@@ -69,6 +71,8 @@ paths:
 
   "/user.list":
     get:
+      tags:
+        - user
       operationId: "user.list"
       produces:
         - application/json
@@ -117,6 +121,8 @@ paths:
 
   "/user.authenticate":
     post:
+      tags:
+        - user
       operationId: "user.authenticate"
       consumes:
         - application/json
@@ -157,3 +163,100 @@ paths:
             type: string
         '403':
           description: Returned when providing invalid credentials.
+
+  "/project.list":
+    get:
+      tags:
+        - project
+      operationId: "project.list"
+      produces:
+        - application/json
+      responses:
+          '200':
+            description: 'An Array of projects'
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Project'
+          '403':
+            description: Returned when providing invalid credentials.
+  "/project.create":
+    post:
+      tags:
+        - project
+      operationId: "project.create"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                type: string
+                enum:
+                  - '1.0'
+              data:
+                type: object
+                required:
+                  - name
+                  - amount
+                  - currency
+                  - description
+                properties:
+                  name:
+                    type: string
+                  amount:
+                    type: string
+                  currency:
+                    type: string
+                  description:
+                    type: string
+                  thumbnail:
+                    type: string
+            example:
+              apiVersion: '1.0'
+              data:
+                name: "MyProject"
+                amount: "10000"
+                currency: "EUR"
+                description: "My project is awesome"
+                thumbnail: "/picture1"
+      responses:
+          '200':
+            description: 'OK'
+            schema:
+              type: string
+          '403':
+            description: Returned when providing invalid credentials.
+definitions:
+  Project:
+    type: "object"
+    properties:
+      id:
+        type: string
+      displayName:
+        type: string
+      creationUnixTs:
+        type: string
+      status:
+        type: string
+        description: "Project Status"
+        enum:
+        - "open"
+        - "done"
+      amount:
+        type: string
+      currency:
+        type: string
+      description:
+        type: string
+      thumbnail:
+        type: "string"
+

@@ -11,6 +11,8 @@ import { RpcClient, ConnectionSettings } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { objectToHex, hexToObject } from "./hexconverter";
 
+
+const COUNT = 10e6;
 const streamItemKeys: any = {
   metadata: "_metadata",
   log: "_log",
@@ -110,7 +112,9 @@ export class RpcMultichainClient implements MultichainClient {
   }
 
   updateStreamItem(streamId: StreamName | StreamTxId, key: string, object: any): Promise<any> {
+    console.log('------------------------')
     const data = objectToHex(object);
+    console.log(data)
     return this.rpcClient.invoke("publish", streamId, key, data);
   }
 }
