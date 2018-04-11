@@ -1,7 +1,6 @@
 import * as jsonwebtoken from "jsonwebtoken";
 
-import { ListProjects } from "../authz/intents";
-import { ModelResult, AllowedUserGroupsByIntent } from "../authz/types";
+import { AllowedUserGroupsByIntent } from "../authz/types";
 import {
   MultichainClient,
   ProjectStreamMetadata,

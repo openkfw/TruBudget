@@ -23,6 +23,7 @@ export const STORE_ENVIRONMENT_SUCCESS = 'STORE_ENVIRONMENT_SUCCESS';
 export const FETCH_ENVIRONMENT = 'FETCH_ENVIRONMENT';
 export const FETCH_ENVIRONMENT_SUCCESS = 'FETCH_ENVIRONMENT_SUCCESS';
 
+export const INIT_LANGUAGE = 'INIT_LANGUAGE';
 export const SET_LANGUAGE = 'SET_LANGUAGE';
 
 export const ADMIN_LOGIN = 'ADMIN_LOGIN';
@@ -132,6 +133,12 @@ export function storeEnvironment(environment) {
 export function getEnvironment() {
   return {
     type: FETCH_ENVIRONMENT
+  }
+}
+
+export function initLanguage() {
+  return {
+    type: INIT_LANGUAGE
   }
 }
 

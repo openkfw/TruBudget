@@ -1,18 +1,8 @@
 import * as Sample from "./sample";
-import { UserId, ModelResult, AllowedUserGroupsByIntent } from "./types";
-import { Intent, SimpleIntent } from "./intents";
+import { AllowedUserGroupsByIntent } from "./types";
+import Intent from "./intents";
 import { NotAuthorizedError } from "../App.h";
 import { AuthToken } from "./token";
-
-// const logAccess = (
-//   user: UserId,
-//   resource: ProtectedResource,
-//   allowedDenied: "ALLOWED" | "DENIED"
-// ) => {
-//   console.log(
-//     `${allowedDenied} user ${user} access to ${JSON.stringify(resource)}`
-//   );
-// };
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
@@ -23,53 +13,9 @@ import { AuthToken } from "./token";
 // const isGroupIntersection = (actualGroups, allowedGroups) =>
 //   groupIntersection(actualGroups, allowedGroups).length > 0;
 
-const oldCan = (user, intent: Intent, resource?) => {
-  // Here we'd look up the resource's metadata in the chain to find out the following:
-  // 1. which groups are allowed to execute the given intent,
-  // 2. which groups does the user belong to.
-  // Given that information, we can then simply check whether the groups intersect.
-
-  // In this example everybody is allowed to see all projects, except Alice, who's only
-  // allowed to see "Proj Two":
-  switch (intent.intent) {
-    case "list projects":
-      return user !== "alice" || resource.title === "Proj Two";
-    case "append subproject to project":
-      return intent.projectId === "my-project";
-    case "create project":
-      return user === "alice";
-    default:
-      return false;
-  }
-};
-
-const oldLoggedCan = (user, intent, resource?) => {
-  const canDo = oldCan(user, intent, resource);
-  console.log(
-    `${canDo ? "ALLOWED" : "DENIED"} user ${user} access with intent "${intent.intent}"${
-      resource ? ` to ${JSON.stringify(resource)}` : ""
-    }`
-  );
-  return canDo;
-};
-
-export const authorize = (user: UserId, result: ModelResult) => {
-  console.log(`Checking authorization for user ${user}: ${JSON.stringify(result)}`);
-  switch (result.kind) {
-    case "resource list":
-      return result.resources.filter(resource => oldLoggedCan(user, result.intent, resource));
-    case "side effect":
-      if (oldLoggedCan(user, result.intent)) {
-        console.log(`Invoking side effect..`);
-        result.action();
-      }
-      break;
-  }
-};
-
 const can = async (
   token: AuthToken,
-  intent: SimpleIntent,
+  intent: Intent,
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<boolean> => {
   if (token.userId === "root") {
@@ -83,7 +29,7 @@ const can = async (
 
 const loggedCan = async (
   token: AuthToken,
-  intent: SimpleIntent,
+  intent: Intent,
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<boolean> => {
   const canDo = await can(token, intent, resourcePermissions);
@@ -99,7 +45,7 @@ const loggedCan = async (
  * Throws a NotAuthorizedError if the token holder is not authorized for the given
  * intent with respect to the given resource.
  */
-export const authorized = (token: AuthToken, intent: SimpleIntent) => async (
+export const authorized = (token: AuthToken, intent: Intent) => async (
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<undefined> => {
   const canDo = await loggedCan(token, intent, resourcePermissions);

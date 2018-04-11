@@ -8,6 +8,6 @@ app.listen(port, err => {
     return console.log(err);
   }
 
-  provisionBlockchain();
+  provisionBlockchain().catch(err => console.log(`Provisioning the chain failed: ${err}`));
   return console.log(`server is listening on ${port}`);
 });

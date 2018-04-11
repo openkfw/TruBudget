@@ -44,7 +44,7 @@ const muiTheme = getMuiTheme({
   },
 });
 
-class App extends Component {
+class Root extends Component {
   render() {
     return (
       <Provider store={store}>
@@ -52,7 +52,7 @@ class App extends Component {
           <MuiThemeProvider muiTheme={muiTheme}>
             <Switch>
               <Route key={1} exact path="/login" component={withInitialLoading(LoginPageContainer)} />
-              <Route key={2} exact path="/admin" component={AdminDashboardContainer} />
+              {/* <Route key={2} exact path="/admin" component={AdminDashboardContainer} /> */}
               <PrivateRoute component={Main} />
             </Switch>
           </MuiThemeProvider>
@@ -63,6 +63,6 @@ class App extends Component {
 }
 
 ReactDOM.render(
-  <App />,
+  <Root />,
   document.getElementById('root')
 );

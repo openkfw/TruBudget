@@ -1,27 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, getEnvironment } from './actions';
+import { storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, getEnvironment, initLanguage } from './actions';
 import LoginPage from './LoginPage';
 //import { fetchNodePermissions } from '../Admin/actions';
 //import { fetchUserWithToken } from '../Loading/actions';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
-    this.props.getEnvironment();
-
-    // this.props.fetchNodePermissions();
-
-    // if (!_.isEmpty(this.props.jwt)) {
-    //   this.props.fetchUserWithToken(true)
-    // }
+    this.props.initLanguage();
   }
 
-  render() {
-    return (
-      <LoginPage {...this.props} />
-    )
-  }
   componentDidMount() {
+    this.props.getEnvironment();
     this.checkIfRedirect();
   }
 
@@ -35,10 +25,16 @@ class LoginPageContainer extends Component {
 
     if (this.props.jwt) this.props.history.push(path);
   }
+  render() {
+    return (
+      <LoginPage {...this.props} />
+    )
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    initLanguage: () => dispatch(initLanguage()),
     storeUsername: (username) => dispatch(storeUsername(username)),
     storePassword: (password) => dispatch(storePassword(password)),
     logout: () => dispatch(logout()),
