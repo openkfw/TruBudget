@@ -35,20 +35,18 @@ export const hexToString = hex => {
 };
 
 export const objectToHex = object => {
-  const cleanedString = removeControlCharacter(JSON.stringify(object))
-  return stringToHex(cleanedString);
-}
+  const cleansedString = removeInvisibleChars(JSON.stringify(object));
+  return stringToHex(cleansedString);
+};
 
-const removeControlCharacter = (json) => json.replace(/[\x00-\x1F\x7F-\x9F]/g, "")
+// const removeControlCharacter = json => json.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
 
+const removeInvisibleChars = (x: string): string => x.replace(/[^\P{C}]/gu, "");
+
+/*
+ * Parse hex string, throws if not parseable.
+ */
 export const hexToObject = hex => {
-  const cleanedString = removeControlCharacter(hexToString(hex))
-  try {
-    return JSON.parse(cleanedString);
-  } catch (error) {
-    console.error('Failed to parse message ', error.message)
-    return {}
-  }
-}
-
-
+  const cleansedString = removeInvisibleChars(hexToString(hex));
+  return JSON.parse(cleansedString);
+};
