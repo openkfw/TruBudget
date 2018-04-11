@@ -93,7 +93,12 @@ export const createRouter = (
     const intent = req.path.substring(1);
     try {
       const projects = await projectModel.list(authorized(req.token, intent));
-      res.json(projects);
+      res.json({
+        apiVersion: "1.0",
+        data: {
+          items: projects
+        }
+      });
     } catch (err) {
       console.log(err);
       res.status(500).send("INTERNAL SERVER ERROR");

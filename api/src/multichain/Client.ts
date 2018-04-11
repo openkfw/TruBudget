@@ -19,13 +19,6 @@ const streamItemKeys: any = {
 
 const randomStreamName = (): string => randomString(16);
 
-const foo = async client => {
-  const res = await client
-    .invoke("liststreamkeyitems", "users", "alice", false, 1)
-    .catch(err => console.log(`CATCHED: ${err}`));
-  console.log(`YES: ${JSON.stringify(res)}`);
-};
-
 // Stream Item as returned by the API
 interface MultichainStreamItem {
   publishers: string[];
@@ -40,7 +33,6 @@ export class RpcMultichainClient implements MultichainClient {
   private rpcClient: RpcClient;
   constructor(settings: ConnectionSettings) {
     this.rpcClient = new RpcClient(settings);
-    foo(this.rpcClient);
   }
 
   async createStream(options: CreateStreamOptions): Promise<StreamTxId> {

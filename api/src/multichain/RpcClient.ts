@@ -61,7 +61,6 @@ export class RpcClient {
         }
 
         const body = JSON.stringify(request);
-        console.log(`HTTP POST body=${body}`);
         sendRequest(requestOptions, handleMessage)
           .on("error", reject)
           .end(body);

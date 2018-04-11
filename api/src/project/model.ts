@@ -104,11 +104,15 @@ export class ProjectModel {
       .map(makeProjectFromResult)
       .filter((x: Project | null) => x !== null) as Project[];
     console.log(`:all projects=${JSON.stringify(projects)}`);
-    const clearedProjects = await Promise.all(
-      projects.map(p => authorized(p.permissions).catch(err => null))
-    );
+    const clearedProjects = (await Promise.all(
+      projects.map(p =>
+        authorized(p.permissions)
+          .then(() => p)
+          .catch(err => null)
+      )
+    )).filter(x => x !== null);
     console.log(`:cleared projects=${JSON.stringify(clearedProjects)}`);
-    return clearedProjects.filter(x => x !== null);
+    return clearedProjects;
   }
 
   async createProject(body, authorized): Promise<string> {
