@@ -34,6 +34,10 @@ app.use(function customAuthTokenErrorHandler(err, req, res, next) {
     res.status(401).send("A valid JWT auth bearer token is required for this route.");
   }
 });
+app.use(function aliasToken(req, res, next) {
+  req.token = req.user;
+  next();
+});
 
 const rootSecret = process.env.ROOT_SECRET || randomString(32);
 if (!process.env.ROOT_SECRET) {
@@ -60,13 +64,13 @@ router.post("/user.create", async (req, res) => {
   }
 
   try {
-    const createdUser = await userModel.create(body.data, authorized(req.user, intent));
+    const createdUser = await userModel.create(body.data, authorized(req.token, intent));
     res.status(201).json(createdUser);
   } catch (err) {
     switch (err.kind) {
       case "NotAuthorized":
         console.log(err);
-        res.status(403).send(`User ${req.user} is not authorized to execute ${intent}`);
+        res.status(403).send(`User ${req.token.userId} is not authorized to execute ${intent}`);
         break;
       case "UserAlreadyExists":
         console.log(err);
@@ -119,9 +123,8 @@ router.post("/user.authenticate", async (req, res) => {
 router.get("/project.list", async (req, res) => {
   // Returns all projects the user is allowed to see
   const intent = req.path.substring(1);
-  const user = req.params.user || "alice";
   try {
-    const projects = await projectModel.list(authorized(user, intent));
+    const projects = await projectModel.list(authorized(req.token, intent));
     res.json(projects);
   } catch (err) {
     console.log(err);
@@ -132,15 +135,13 @@ router.get("/project.list", async (req, res) => {
 router.post("/project.create", async (req, res) => {
   const intent = req.path.substring(1);
 
-  // Not sure if req.user.user makes sense
-  const user = req.user.user || "alice";
   try {
-    const id = await projectModel.createProject(req.body, authorized(user, intent));
+    const id = await projectModel.createProject(req.body, authorized(req.token, intent));
     res.status(201).send(id);
   } catch (err) {
     if (err.kind === "NotAuthorized") {
       console.log(err);
-      res.status(403).send(`User ${user} is not authorized to execute ${intent}`);
+      res.status(403).send(`User ${req.token.userId} is not authorized to execute ${intent}`);
     } else {
       console.log(err);
       res.status(500).send("INTERNAL SERVER ERROR");

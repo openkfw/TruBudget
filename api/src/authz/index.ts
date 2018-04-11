@@ -2,6 +2,7 @@ import * as Sample from "./sample";
 import { UserId, ModelResult, AllowedUserGroupsByIntent } from "./types";
 import { Intent, SimpleIntent } from "./intents";
 import { NotAuthorizedError } from "../App.h";
+import { AuthToken } from "./token";
 
 // const logAccess = (
 //   user: UserId,
@@ -67,11 +68,11 @@ export const authorize = (user: UserId, result: ModelResult) => {
 };
 
 const can = async (
-  user,
+  token: AuthToken,
   intent: SimpleIntent,
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<boolean> => {
-  if (user === "root") {
+  if (token.userId === "root") {
     // root may do everything
     return true;
   } else {
@@ -81,25 +82,27 @@ const can = async (
 };
 
 const loggedCan = async (
-  user,
+  token: AuthToken,
   intent: SimpleIntent,
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<boolean> => {
-  const canDo = await can(user, intent, resourcePermissions);
+  const canDo = await can(token, intent, resourcePermissions);
   console.log(
-    `${canDo ? "ALLOWED" : "DENIED"} user ${user} access with intent "${intent}"${
+    `${canDo ? "ALLOWED" : "DENIED"} user ${token.userId} access with intent "${intent}"${
       resourcePermissions ? ` to ${JSON.stringify(resourcePermissions)}` : ""
     }`
   );
   return canDo;
 };
 
-export const authorized = (user, intent: SimpleIntent) => (
+/*
+ * Throws a NotAuthorizedError if the token holder is not authorized for the given
+ * intent with respect to the given resource.
+ */
+export const authorized = (token: AuthToken, intent: SimpleIntent) => async (
   resourcePermissions: AllowedUserGroupsByIntent
-): Promise<void | NotAuthorizedError> =>
-  new Promise((resolve, reject) =>
-    loggedCan(user, intent, resourcePermissions).then((canDo: boolean) => {
-      const err = { kind: "NotAuthorized", user, intent };
-      canDo ? resolve() : reject(err);
-    })
-  );
+): Promise<undefined> => {
+  const canDo = await loggedCan(token, intent, resourcePermissions);
+  if (!canDo) throw { kind: "NotAuthorized", token, intent };
+  return;
+};
