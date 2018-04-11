@@ -5,6 +5,25 @@ import ProjectModel from "../project";
 import UserModel from "../user";
 import { MultichainClient } from "../multichain";
 
+interface SuccessResponse {
+  apiVersion: string;
+  data: any;
+}
+
+interface ErrorResponse {
+  apiVersion: string;
+  error: {
+    code: number;
+    message: string;
+  };
+}
+
+type Response = SuccessResponse | ErrorResponse;
+
+const send = (res, code: number, response: Response) => {
+  res.status(400).json(response);
+};
+
 export const createRouter = (
   multichainClient: MultichainClient,
   jwtSecret: string,
@@ -22,14 +41,16 @@ export const createRouter = (
     const body = req.body;
     console.log(`body: ${JSON.stringify(body)}`);
     if (body.apiVersion !== "1.0") {
-      res.status(412).send({
-        apiVersion: req.body.apiVersion, error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
+      send(res, 412, {
+        apiVersion: req.body.apiVersion,
+        error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
       });
       return;
     }
     if (!body.data) {
-      res.status(400).send({
-        apiVersion: req.body.apiVersion, error: { code: 400, message: `Expected "data" in body.` }
+      send(res, 400, {
+        apiVersion: req.body.apiVersion,
+        error: { code: 400, message: `Expected "data" in body.` }
       });
       return;
     }
@@ -39,31 +60,38 @@ export const createRouter = (
         apiVersion: "1.0",
         data: await userModel.create(body.data, authorized(req.token, intent))
       };
-      res.status(201).json(response);
+      send(res, 201, response);
     } catch (err) {
       switch (err.kind) {
         case "NotAuthorized":
           console.log(err);
-          res.status(403).send({
-            apiVersion: req.body.apiVersion, error: { code: 403, message: `User ${req.token.userId} is not authorized to execute ${intent}` }
+          send(res, 403, {
+            apiVersion: req.body.apiVersion,
+            error: {
+              code: 403,
+              message: `User ${req.token.userId} is not authorized to execute ${intent}`
+            }
           });
           break;
         case "UserAlreadyExists":
           console.log(err);
-          res.status(409).send({
-            apiVersion: req.body.apiVersion, error: { code: 409, message: `The user already exists.` }
+          send(res, 409, {
+            apiVersion: req.body.apiVersion,
+            error: { code: 409, message: `The user already exists.` }
           });
           break;
         case "ParseError":
           console.log(err);
-          res.status(400).send({
-            apiVersion: req.body.apiVersion, error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
+          send(res, 400, {
+            apiVersion: req.body.apiVersion,
+            error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
           });
           break;
         default:
           console.log(err);
-          res.status(500).send({
-            apiVersion: req.body.apiVersion, error: { code: 500, message: "INTERNAL SERVER ERROR" }
+          send(res, 500, {
+            apiVersion: req.body.apiVersion,
+            error: { code: 500, message: "INTERNAL SERVER ERROR" }
           });
       }
     }
@@ -74,11 +102,17 @@ export const createRouter = (
     const body = req.body;
     console.log(`body: ${JSON.stringify(body)}`);
     if (body.apiVersion !== "1.0") {
-      res.status(412).send(`API version ${body.apiVersion} not implemented.`);
+      send(res, 412, {
+        apiVersion: req.body.apiVersion,
+        error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
+      });
       return;
     }
     if (!body.data) {
-      res.status(400).send(`Expected "data" in body.`);
+      send(res, 400, {
+        apiVersion: req.body.apiVersion,
+        error: { code: 400, message: `Expected "data" in body.` }
+      });
       return;
     }
 
@@ -87,25 +121,28 @@ export const createRouter = (
         apiVersion: "1.0",
         data: await userModel.authenticate(body.data)
       };
-      res.status(200).json(response);
+      send(res, 200, response);
     } catch (err) {
       switch (err.kind) {
         case "ParseError":
           console.log(err);
-          res.status(400).send({
-            apiVersion: body.apiVersion, error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
-          })
+          send(res, 200, {
+            apiVersion: body.apiVersion,
+            error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
+          });
           break;
         case "AuthenticationError":
           console.log(err);
-          res.status(401).send({
-            apiVersion: body.apiVersion, error: { code: 401, message: "Authentication failed" }
+          send(res, 401, {
+            apiVersion: body.apiVersion,
+            error: { code: 401, message: "Authentication failed" }
           });
           break;
         default:
           console.log(err);
-          res.status(500).send({
-            apiVersion: body.apiVersion, error: { code: 500, message: "INTERNAL SERVER ERROR" }
+          send(res, 500, {
+            apiVersion: body.apiVersion,
+            error: { code: 500, message: "INTERNAL SERVER ERROR" }
           });
       }
     }
@@ -124,8 +161,9 @@ export const createRouter = (
       });
     } catch (err) {
       console.log(err);
-      res.status(500).send({
-        apiVersion: req.body.apiVersion, error: { code: 500, message: "INTERNAL SERVER ERROR" }
+      send(res, 500, {
+        apiVersion: req.body.apiVersion,
+        error: { code: 500, message: "INTERNAL SERVER ERROR" }
       });
     }
   });
@@ -135,31 +173,43 @@ export const createRouter = (
     const body = req.body;
     console.log(`body: ${JSON.stringify(body)}`);
     if (body.apiVersion !== "1.0") {
-      res.status(412).send({
-        apiVersion: body.apiVersion, error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
+      send(res, 412, {
+        apiVersion: body.apiVersion,
+        error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
       });
+
       return;
     }
     if (!body.data) {
-      res.status(400).send({
-        apiVersion: body.apiVersion, error: { code: 400, message: `Expected "data" in body.` }
+      send(res, 400, {
+        apiVersion: body.apiVersion,
+        error: { code: 400, message: `Expected "data" in body.` }
       });
       return;
     }
 
     try {
       const id = await projectModel.createProject(body.data, authorized(req.token, intent));
-      res.status(201).send(id);
+      const response = {
+        apiVersion: "1.0",
+        data: id
+      };
+      send(res, 201, response);
     } catch (err) {
       if (err.kind === "NotAuthorized") {
         console.log(err);
         res.status(403).send({
-          apiVersion: body.apiVersion, error: { code: 403, message: `User ${req.token.userId} is not authorized to execute ${intent}` }
+          apiVersion: body.apiVersion,
+          error: {
+            code: 403,
+            message: `User ${req.token.userId} is not authorized to execute ${intent}`
+          }
         });
       } else {
         console.log(err);
-        res.status(500).send({
-          apiVersion: body.apiVersion, error: { code: 500, message: "INTERNAL SERVER ERROR" }
+        send(res, 500, {
+          apiVersion: body.apiVersion,
+          error: { code: 500, message: "INTERNAL SERVER ERROR" }
         });
       }
     }
