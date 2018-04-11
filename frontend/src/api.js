@@ -35,10 +35,7 @@ class Api {
     }
   }
 
-  login = async (username, password) => {
-    const { data } = await axios.post(`/user.authenticate`, { id: username, password })
-    return data;
-  }
+  login = (username, password) => axios.post(`/user.authenticate`, { id: username, password })
 
   fetchProjects = () => axios.get(`/project.list`);
 

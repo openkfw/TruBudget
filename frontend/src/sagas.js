@@ -63,7 +63,7 @@ function* handleError(error) {
 
 const getJwt = (state) => state.toJS().login.jwt
 const getEnvironment = (state) => {
-  const env = state.toJS().login.environment
+  const env = state.getIn(['login', 'environment'])
   if (env) {
     return env;
   }
@@ -74,9 +74,11 @@ function* callApi(func, ...args) {
   const token = yield select(getJwt)
   yield call(api.setAuthorizationHeader, token)
   const env = yield select(getEnvironment)
+  // TODO dont set the environment on each call
   const prefix = env === 'Test' ? '/test' : '/api';
   yield call(api.setBaseUrl, prefix)
-  return yield call(func, ...args);
+  const { data } = yield call(func, ...args);
+  return data
 }
 
 function* handleLoading(showLoading) {
@@ -527,12 +529,12 @@ export function* logoutSaga() {
 
 export function* fetchAllProjectsSaga({ showLoading }) {
   yield execute(function* () {
-    const projects = yield callApi(api.fetchProjects)
+    const { data } = yield callApi(api.fetchProjects)
     //TODO
     //const roles = yield callApi(api.fetchRoles);
     yield put({
       type: FETCH_ALL_PROJECTS_SUCCESS,
-      projects: projects.data,
+      projects: data.items,
       //roles: roles.data
     });
   }, showLoading)

@@ -15,17 +15,17 @@ import strings from '../../localizeStrings'
 
 const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {
-    const { amount, currency, status, comment, thumbnail, createTS } = project.details
+    const { displayName, amount, currency, status, description, thumbnail = "/Thumbnail_0008.jpg", creationUnixTs } = project
     const amountString = toAmountString(amount, currency)
     const mappedStatus = strings.common.status + ': ' + statusMapping(status)
     const imagePath = !_.isEmpty(thumbnail) ? thumbnail : '/amazon_cover.jpg'
-    const dateString = tsToString(createTS)
+    const dateString = tsToString(creationUnixTs)
 
     return (
       <Card aria-label='project' key={index} style={{ margin: '20px', width: '35%', maxWidth: '300px' }}>
         <Card>
           <CardMedia
-            overlay={<CardTitle title={project.details.name} subtitle={mappedStatus} />}
+            overlay={<CardTitle title={displayName} subtitle={mappedStatus} />}
           >
             <img style={{ height: '250px', width: '250px' }} src={imagePath} alt='projectType' />
           </CardMedia>
@@ -39,7 +39,7 @@ const getTableEntries = ({ projects, history }) => {
           <ListItem
             disabled={true}
             leftIcon={<CommentIcon />}
-            primaryText={comment}
+            primaryText={description}
             secondaryText={strings.common.comment}
           />
           <ListItem
