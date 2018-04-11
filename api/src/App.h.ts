@@ -11,9 +11,10 @@ export interface UserAlreadyExistsError {
   targetUserId: string;
 }
 
-export interface MissingKeysError {
-  kind: "MissingKeys";
-  missingKeys: string;
+// Thrown on missing keys and invalid values:
+export interface ParseError {
+  kind: "ParseError";
+  badKeys: string;
 }
 
 export interface AuthenticationError {
@@ -24,5 +25,5 @@ export interface AuthenticationError {
 export type TrubudgetError =
   | NotAuthorizedError
   | UserAlreadyExistsError
-  | MissingKeysError
+  | ParseError
   | AuthenticationError;

@@ -13,12 +13,9 @@ import {
 import { TrubudgetError } from "../App.h";
 import { User } from "./model.h";
 import { createPasswordHash } from "./hash";
+import { findBadKeysInObject, isNonemptyString } from "../lib";
 
 const usersStream = "users";
-
-const isNonemptyString = (x: any): boolean => typeof x === "string" && x.length > 0;
-const findMissingKeys = (expectedKeys: string[], maybeUser: any): string[] =>
-  expectedKeys.filter(key => typeof maybeUser !== "object" || !isNonemptyString(maybeUser[key]));
 
 const createToken = (secret: string) => (userId: string): string =>
   jsonwebtoken.sign({ user: userId }, secret, { expiresIn: "1h" });
@@ -44,8 +41,8 @@ export class UserModel {
    */
   async create(input, authorized): Promise<string | TrubudgetError> {
     const expectedKeys = ["id", "displayName", "organization", "password"];
-    const missingKeys = findMissingKeys(expectedKeys, input);
-    if (missingKeys.length > 0) throw { kind: "MissingKeys", missingKeys };
+    const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
+    if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
     const newUser = input as User;
 
     // Make sure nobody creates the special "root" user:
@@ -81,8 +78,8 @@ export class UserModel {
 
   async authenticate(input): Promise<string | TrubudgetError> {
     const expectedKeys = ["id", "password"];
-    const missingKeys = findMissingKeys(expectedKeys, input);
-    if (missingKeys.length > 0) throw { kind: "MissingKeys", missingKeys };
+    const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
+    if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
     const { id, password } = input;
 
     // The client shouldn't be able to distinguish between a wrong id and a wrong password,

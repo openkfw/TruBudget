@@ -72,9 +72,9 @@ router.post("/user.create", async (req, res) => {
         console.log(err);
         res.status(409).send(`The user already exists.`);
         break;
-      case "MissingKeys":
+      case "ParseError":
         console.log(err);
-        res.status(400).send(`Missing keys: ${err.missingKeys.join(", ")}`);
+        res.status(400).send(`Missing keys: ${err.badKeys.join(", ")}`);
         break;
       default:
         console.log(err);
@@ -101,9 +101,9 @@ router.post("/user.authenticate", async (req, res) => {
     res.status(200).send(jwt);
   } catch (err) {
     switch (err.kind) {
-      case "MissingKeys":
+      case "ParseError":
         console.log(err);
-        res.status(400).send(`Missing keys: ${err.missingKeys.join(", ")}`);
+        res.status(400).send(`Missing keys: ${err.badKeys.join(", ")}`);
         break;
       case "AuthenticationError":
         console.log(err);
