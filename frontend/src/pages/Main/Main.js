@@ -29,8 +29,8 @@ const Main = (props) => {
         <Route component={NavbarContainer} />
       </div>
       <div className="container">
-        <Route component={LiveNotificationContainer} />
-        <Route component={LiveUpdates} />
+        {/* <Route component={LiveNotificationContainer} />
+        <Route component={LiveUpdates} /> */}
         <Switch>
           <Route exact path="/" component={Placeholder} />
           <Route exact path="/projects" component={withInitialLoading(OverviewContainer)} />

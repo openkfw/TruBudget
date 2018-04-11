@@ -33,7 +33,7 @@ class LoginPageContainer extends Component {
     const from = this.props.location && this.props.location.state && this.props.location.state.from;
     const path = from ? this.props.location.state.from : '/';
 
-    if (this.props.loggedIn) this.props.history.push(path);
+    if (this.props.jwt) this.props.history.push(path);
   }
 }
 
@@ -56,13 +56,11 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     username: state.getIn(['login', 'username']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     jwt: state.getIn(['login', 'jwt']),
     password: state.getIn(['login', 'password']),
     loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
     environment: state.getIn(['login', 'environment']),
     language: state.getIn(['login', 'language']),
-    loggedIn: state.getIn(['login', 'loggedIn']),
     //nodePermissions: state.getIn(['adminDashboard', 'nodePermissions']),
   }
 }

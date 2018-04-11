@@ -3,7 +3,7 @@ import { Map, fromJS } from 'immutable';
 import { defaultState as loginState } from './pages/Login/reducer';
 import { actionInitialState as actionState } from './reducers';
 
-import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS, FETCH_ADMIN_USER_SUCCESS } from './pages/Login/actions';
+import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS, FETCH_ADMIN_USER_SUCCESS, LOGIN_SUCCESS } from './pages/Login/actions';
 
 const STORAGE_KEY = 'state';
 
@@ -47,8 +47,7 @@ export const persistState = (state) => {
   const { actions, ...stateToPersist } = parseFromState(state);
   try {
     switch (actions.lastAction) {
-      case FETCH_USER_SUCCESS:
-      case FETCH_ADMIN_USER_SUCCESS:
+      case LOGIN_SUCCESS:
         setStorage(stateToPersist)
         break;
       case LOGOUT_SUCCESS:

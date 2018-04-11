@@ -348,19 +348,12 @@ export function* fetchRolesSaga() {
 export function* loginSaga({ user }) {
   const done = yield handleLoading(true);
   try {
-    const data = yield callApi(api.login, user.username, user.password);
+    const jwt = yield callApi(api.login, user.username, user.password);
     yield call(chill, 1250);
 
     yield put({
-      type: FETCH_USER_SUCCESS,
-      user: {
-        username: data.user.id,
-        ...data.user
-      },
-      jwt: data.jwtToken,
-    })
-    yield put({
-      type: LOGIN_SUCCESS
+      type: LOGIN_SUCCESS,
+      jwt,
     })
     yield put({
       type: SHOW_LOGIN_ERROR,
@@ -528,11 +521,12 @@ export function* fetchNodePermissionsSaga() {
 export function* fetchAllProjectsSaga({ showLoading }) {
   const done = yield handleLoading(showLoading);
   const projects = yield callApi(api.fetchProjects)
-  const roles = yield callApi(api.fetchRoles);
+  //TODO
+  //const roles = yield callApi(api.fetchRoles);
   yield put({
     type: FETCH_ALL_PROJECTS_SUCCESS,
     projects: projects.data,
-    roles: roles.data
+    //roles: roles.data
   });
   yield done();
 }
@@ -664,7 +658,7 @@ export function* watchAddRole() {
 }
 
 export function* watchLogout() {
-  yield takeLatest(LOGOUT, logoutSaga);
+  yield takeEvery(LOGOUT, logoutSaga);
 }
 
 export function* watchAdminLogout() {

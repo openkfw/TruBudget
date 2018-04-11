@@ -21,6 +21,7 @@ export const defaultState = fromJS({
       admin: false,
     }
   },
+  users: [],
   environment: 'Test',
   productionActive: false,
   loginErrorMessage: '',
@@ -70,8 +71,7 @@ export default function loginReducer(state = defaultState, action) {
 
     case LOGIN_SUCCESS:
       return state.merge({
-        loggedIn: true,
-        tokenPresent: true
+        jwt: action.jwt,
       });
     case ADMIN_LOGIN_SUCCESS:
       return state.merge({
