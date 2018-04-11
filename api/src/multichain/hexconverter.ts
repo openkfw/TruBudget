@@ -33,5 +33,22 @@ export const hexToString = hex => {
 
   return str;
 };
-export const objectToHex = object => stringToHex(JSON.stringify(object));
-export const hexToObject = hex => JSON.parse(hexToString(hex));
+
+export const objectToHex = object => {
+  const cleanedString = removeControlCharacter(JSON.stringify(object))
+  return stringToHex(cleanedString);
+}
+
+const removeControlCharacter = (json) => json.replace(/[\x00-\x1F\x7F-\x9F]/g, "")
+
+export const hexToObject = hex => {
+  const cleanedString = removeControlCharacter(hexToString(hex))
+  try {
+    return JSON.parse(cleanedString);
+  } catch (error) {
+    console.error('Failed to parse message ', error.message)
+    return {}
+  }
+}
+
+

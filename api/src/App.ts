@@ -131,7 +131,9 @@ router.get("/project.list", async (req, res) => {
 
 router.post("/project.create", async (req, res) => {
   const intent = req.path.substring(1);
-  const user = req.params.user || "alice";
+
+  // Not sure if req.user.user makes sense
+  const user = req.user.user || "alice";
   try {
     const id = await projectModel.createProject(req.body, authorized(user, intent));
     res.status(201).send(id);

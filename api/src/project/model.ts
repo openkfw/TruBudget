@@ -68,6 +68,7 @@ const getStreamBody = (multichain: MultichainClient) => (
 const makeProjectFromResult = (result: Result<[Stream, StreamBody], Stream>): Project | null => {
   if (result.kind === "value") {
     const [stream, body] = result.body;
+    console.log(result.body)
     try {
       return asProject(body.metadata as ProjectStreamMetadata);
     } catch (err) {
@@ -115,9 +116,11 @@ export class ProjectModel {
     const txid: StreamTxId = await this.multichain.createStream({
       kind: "project",
       // TODO metadata from body
+      metadata: { amount: '10', creationUnixTs: new Date().getTime().toString(), name: "test", currency: "EUR", status: "open" },
       initialLogEntry: { issuer, action: "created_project" },
       permissions: new Map([["subproject.create", ["alice"]]])
     });
+
     console.log(`${issuer} has created a new project (txid=${txid})`);
     return txid;
   }

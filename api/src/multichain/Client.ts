@@ -11,6 +11,8 @@ import { RpcClient, ConnectionSettings } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { objectToHex, hexToObject } from "./hexconverter";
 
+
+const COUNT = 10e6;
 const streamItemKeys: any = {
   metadata: "_metadata",
   log: "_log",
@@ -66,6 +68,14 @@ export class RpcMultichainClient implements MultichainClient {
     if (options.initialLogEntry) {
       await this.updateStreamItem(txId, "_log", options.initialLogEntry);
     }
+    // Check with Kevin if we want this behaviour
+    if (options.metadata) {
+      await this.updateStreamItem(txId, "_metadata", options.metadata);
+    }
+    if (options.permissions) {
+      await this.updateStreamItem(txId, "_permissions", [...options.permissions]);
+    }
+
     await Promise.all(
       (options.extraLogEntries || []).map(entry =>
         this.updateStreamItem(entry.streamName, "_log", entry.entry)
@@ -79,12 +89,18 @@ export class RpcMultichainClient implements MultichainClient {
   }
 
   async streamBody(stream: Stream): Promise<StreamBody> {
-    const body = await this.rpcClient.invoke("liststreamitems", stream.name || stream.createtxid);
-    console.log(body);
+    const count = 1;
+    const body = await Promise.all([
+      this.rpcClient.invoke("liststreamkeyitems", stream.name || stream.createtxid, '_metadata', false, count, -count),
+      this.rpcClient.invoke("liststreamkeyitems", stream.name || stream.createtxid, '_log', false, count, -count),
+      this.rpcClient.invoke("liststreamkeyitems", stream.name || stream.createtxid, '_permissions', false, count, -count)
+    ])
+
+    console.log(body)
     return {
-      metadata: body["_metadata"],
-      log: body["_log"],
-      permissions: body["_permissions"]
+      metadata: hexToObject(body[0][0].data),
+      log: hexToObject(body[1][0].data),
+      permissions: hexToObject(body[2][0].data)
     };
   }
 
@@ -104,7 +120,9 @@ export class RpcMultichainClient implements MultichainClient {
   }
 
   updateStreamItem(streamId: StreamName | StreamTxId, key: string, object: any): Promise<any> {
+    console.log('------------------------')
     const data = objectToHex(object);
+    console.log(data)
     return this.rpcClient.invoke("publish", streamId, key, data);
   }
 }
