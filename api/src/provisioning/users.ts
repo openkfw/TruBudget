@@ -23,7 +23,7 @@ export const provisionUsers = async (axios) => {
   try {
     for (const user of users) {
       await createUser(axios, user);
-      console.log(`-> added User ${user.displayName}`);
+      console.log(`~> added User ${user.displayName}`);
     }
   } catch (err) {
     await handleError(axios, err)
@@ -35,7 +35,7 @@ const handleError = async (axios, err) => {
     console.log('Seems like the users already exist');
   } else {
     console.log(err.message)
-    console.log('Blockchain or API are not up yet, sleeping for 5 seconds')
+    console.log('Blockchain or API not up yet, sleeping for 5 seconds')
     await sleep(5000);
     await provisionUsers(axios);
   }
