@@ -1,10 +1,10 @@
-import { SimpleIntent } from "./authz/intents";
+import Intent from "./authz/intents";
 import { AuthToken } from "./authz/token";
 
 export interface NotAuthorizedError {
   kind: "NotAuthorized";
   token: AuthToken;
-  intent: SimpleIntent;
+  intent: Intent;
 }
 
 export interface UserAlreadyExistsError {

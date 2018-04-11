@@ -1,4 +1,4 @@
-export type SimpleIntent =
+type Intent =
   | "root.permission.list"
   | "root.permission.grant"
   | "root.permission.revoke"
@@ -35,3 +35,5 @@ export type SimpleIntent =
   | "workflowitem.permission.list"
   | "workflowitem.permission.grant"
   | "workflowitem.permission.revoke";
+
+export default Intent;

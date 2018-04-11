@@ -3,7 +3,6 @@ import * as bodyParser from "body-parser";
 import * as expressJwt from "express-jwt";
 
 import { authorized } from "./authz";
-import { SimpleIntent } from "./authz/intents";
 import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import ProjectModel from "./project";

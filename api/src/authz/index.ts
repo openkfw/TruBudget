@@ -1,6 +1,6 @@
 import * as Sample from "./sample";
 import { AllowedUserGroupsByIntent } from "./types";
-import { SimpleIntent } from "./intents";
+import Intent from "./intents";
 import { NotAuthorizedError } from "../App.h";
 import { AuthToken } from "./token";
 
@@ -15,7 +15,7 @@ import { AuthToken } from "./token";
 
 const can = async (
   token: AuthToken,
-  intent: SimpleIntent,
+  intent: Intent,
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<boolean> => {
   if (token.userId === "root") {
@@ -29,7 +29,7 @@ const can = async (
 
 const loggedCan = async (
   token: AuthToken,
-  intent: SimpleIntent,
+  intent: Intent,
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<boolean> => {
   const canDo = await can(token, intent, resourcePermissions);
@@ -45,7 +45,7 @@ const loggedCan = async (
  * Throws a NotAuthorizedError if the token holder is not authorized for the given
  * intent with respect to the given resource.
  */
-export const authorized = (token: AuthToken, intent: SimpleIntent) => async (
+export const authorized = (token: AuthToken, intent: Intent) => async (
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<undefined> => {
   const canDo = await loggedCan(token, intent, resourcePermissions);
