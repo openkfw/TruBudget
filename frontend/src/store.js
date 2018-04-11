@@ -11,6 +11,7 @@ import createDebounce from 'redux-debounced';
 import createReducer from './reducers';
 import rootSaga from './sagas';
 import { loadState, persistState } from './localStorage';
+import { setLanguage } from './pages/Login/reducer';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -36,7 +37,9 @@ export default function configureStore(initialState = {}, history) {
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
   /* eslint-enable */
+
   const persistedState = loadState();
+
   const store = createStore(
     createReducer(),
     fromJS(persistedState),

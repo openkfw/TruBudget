@@ -3,7 +3,7 @@ import moment from 'moment';
 import strings from '../../localizeStrings';
 
 
-import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, ADMIN_LOGIN_SUCCESS, FETCH_ADMIN_USER_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ENVIRONMENT_SUCCESS, ADMIN_LOGOUT_SUCCESS, CLEAR_USER } from './actions';
+import { FETCH_USERS_SUCCESS, FETCH_ROLES_SUCCESS, LOGIN_SUCCESS, STORE_USERNAME, STORE_PASSWORD, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE, LOGOUT_SUCCESS, FETCH_USER_SUCCESS, ADMIN_LOGIN_SUCCESS, FETCH_ADMIN_USER_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ENVIRONMENT_SUCCESS, ADMIN_LOGOUT_SUCCESS, CLEAR_USER, INIT_LANGUAGE } from './actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 
 import { FETCH_ALL_PROJECTS_SUCCESS } from '../Overview/actions';
@@ -36,13 +36,13 @@ export const defaultState = fromJS({
   tokenPresent: false,
 });
 
-const setLanguage = (state) => {
-  moment.locale(state.get('language'));
-  strings.setLanguage(state.get('language'));
+export const setLanguage = (state) => {
+  const language = state.get('language');
+
+  console.log(`Set language to ${language}`)
+  moment.locale(language);
+  strings.setLanguage(language);
 }
-
-setLanguage(defaultState)
-
 
 export default function loginReducer(state = defaultState, action) {
   switch (action.type) {
@@ -89,6 +89,9 @@ export default function loginReducer(state = defaultState, action) {
         environment: action.environment,
         productionActive: action.productionActive
       })
+    case INIT_LANGUAGE:
+      setLanguage(state);
+      return state;
     case SET_LANGUAGE:
       const newState = state.set('language', action.language);
       setLanguage(newState);

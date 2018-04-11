@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Route, Switch } from 'react-router';
+import { connect } from 'react-redux';
 
 import NavbarContainer from '../Navbar/NavbarContainer';
 import OverviewContainer from '../Overview/OverviewContainer';
@@ -13,7 +14,7 @@ import Placeholder from './Placeholder';
 import LiveUpdates from '../LiveUpdates/LiveUpdatesContainer';
 import Footer from './Footer';
 import withInitialLoading from '../Loading/withInitialLoading';
-
+import { initLanguage } from '../Login/actions';
 
 const Main = (props) => {
   return (
@@ -46,4 +47,17 @@ const Main = (props) => {
   )
 }
 
-export default Main;
+class MainContainer extends Component {
+  componentWillMount() {
+    this.props.initLanguage();
+  }
+  render() {
+    return <Main />
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    initLanguage: () => dispatch(initLanguage()),
+  };
+}
+export default connect(null, mapDispatchToProps)(MainContainer);
