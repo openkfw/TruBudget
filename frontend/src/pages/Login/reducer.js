@@ -13,6 +13,10 @@ import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from '../SubProjects/actions';
 export const defaultState = fromJS({
   username: '',
   password: '',
+  id: '',
+  displayName: '',
+  organization: '',
+  allowedIntents: [],
   loggedInUser: {
     role: {
       roleName: '',
@@ -31,9 +35,7 @@ export const defaultState = fromJS({
   jwt: '',
   adminLoginFailed: false,
   roles: [],
-  language: 'en-gb',
-  loggedIn: false,
-  tokenPresent: false,
+  language: 'en-gb'
 });
 
 export const setLanguage = (state) => {
@@ -71,7 +73,11 @@ export default function loginReducer(state = defaultState, action) {
 
     case LOGIN_SUCCESS:
       return state.merge({
-        jwt: action.jwt,
+        jwt: action.token,
+        id: action.id,
+        displayName: action.displayName,
+        organization: action.organization,
+        allowedIntents: fromJS(action.allowedIntents),
       });
     case ADMIN_LOGIN_SUCCESS:
       return state.merge({

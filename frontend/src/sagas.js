@@ -36,6 +36,10 @@ function* execute(fn, showLoading = false, errorCallback = undefined) {
 }
 
 function* handleError(error) {
+  console.error("API-Error: ", error.response.data.error.message || "unknown");
+  console.error(error);
+
+  // which status should we use?
   if (error.response.status === 401) {
     yield call(logoutSaga)
   } else if (error.response) {
@@ -360,12 +364,12 @@ export function* getEnvironmentSaga() {
 
 export function* loginSaga({ user }) {
   function* login() {
-    const jwt = yield callApi(api.login, user.username, user.password);
+    const { data } = yield callApi(api.login, user.username, user.password);
     yield call(chill, 1250);
 
     yield put({
       type: LOGIN_SUCCESS,
-      jwt,
+      ...data,
     })
     yield put({
       type: SHOW_LOGIN_ERROR,
@@ -373,12 +377,11 @@ export function* loginSaga({ user }) {
     })
   }
   function* onLoginError(error) {
-    console.error("Login Error:", error.response.data || "unkown");
-    console.error(error);
     yield put({
       type: SHOW_LOGIN_ERROR,
       show: true
     })
+    yield handleError(error);
   }
   yield execute(login, true, onLoginError);
 }
