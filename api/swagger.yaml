@@ -14,6 +14,8 @@ securityDefinitions:
 paths:
   "/user.create":
     post:
+      tags:
+        - user
       operationId: "user.create"
       consumes:
         - application/json
@@ -69,6 +71,8 @@ paths:
 
   "/user.list":
     get:
+      tags:
+        - user
       operationId: "user.list"
       produces:
         - application/json
@@ -117,6 +121,8 @@ paths:
 
   "/user.authenticate":
     post:
+      tags:
+        - user
       operationId: "user.authenticate"
       consumes:
         - application/json
@@ -157,3 +163,66 @@ paths:
             type: string
         '403':
           description: Returned when providing invalid credentials.
+
+  "/project.list":
+    get:
+      tags:
+        - project
+      operationId: "project.list"
+      produces:
+        - application/json
+      responses:
+          '200':
+            description: 'An Array containing projects'
+            schema:
+              items:
+                type: string
+              type: array
+          '403':
+            description: Returned when providing invalid credentials.
+  "/project.create":
+    post:
+      tags:
+        - project
+      operationId: "project.create"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                type: string
+                enum:
+                  - '1.0'
+              data:
+                type: object
+                required:
+                  - id
+                  - password
+                properties:
+                  id:
+                    type: string
+                  password:
+                    type: string
+            example:
+              apiVersion: '1.0'
+              data:
+                id: bob
+                password: topsecret
+      responses:
+          '200':
+            description: 'An Array containing projects'
+            schema:
+              items:
+                type: string
+              type: array
+          '403':
+            description: Returned when providing invalid credentials.
