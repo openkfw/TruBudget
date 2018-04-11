@@ -86,14 +86,15 @@ export class RpcMultichainClient implements MultichainClient {
   }
 
   async streamBody(stream: Stream): Promise<StreamBody> {
-    const count = 1;
+    const nAllItems = 1000;
+    const streamId = stream.name || stream.createtxid;
     const body = await Promise.all([
-      this.rpcClient.invoke("liststreamkeyitems", stream.name || stream.createtxid, '_metadata', false, count, -count),
-      this.rpcClient.invoke("liststreamkeyitems", stream.name || stream.createtxid, '_log', false, count, -count),
-      this.rpcClient.invoke("liststreamkeyitems", stream.name || stream.createtxid, '_permissions', false, count, -count)
-    ])
+      this.rpcClient.invoke("liststreamkeyitems", streamId, "_metadata", false, 1),
+      this.rpcClient.invoke("liststreamkeyitems", streamId, "_log", false, nAllItems),
+      this.rpcClient.invoke("liststreamkeyitems", streamId, "_permissions", false, 1)
+    ]);
 
-    console.log(body)
+    // TODO more than one log entry
     return {
       metadata: hexToObject(body[0][0].data),
       log: hexToObject(body[1][0].data),
