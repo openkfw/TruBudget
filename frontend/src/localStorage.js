@@ -3,7 +3,7 @@ import { Map, fromJS } from 'immutable';
 import { defaultState as loginState } from './pages/Login/reducer';
 import { actionInitialState as actionState } from './reducers';
 
-import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS, FETCH_ADMIN_USER_SUCCESS, LOGIN_SUCCESS } from './pages/Login/actions';
+import { FETCH_USER_SUCCESS, LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS, FETCH_ADMIN_USER_SUCCESS, LOGIN_SUCCESS, STORE_ENVIRONMENT_SUCCESS, SET_LANGUAGE } from './pages/Login/actions';
 
 const STORAGE_KEY = 'state';
 
@@ -12,7 +12,7 @@ const parseFromState = (state) => ({
     jwt: state.getIn(['login', 'jwt']),
     environment: state.getIn(['login', 'environment']),
     productionActive: state.getIn(['login', 'productionActive']),
-    language: 'en-gb',
+    language: state.getIn(['login', 'language']),
   },
   actions: {
     lastAction: state.getIn(['actions', 'lastAction'])
@@ -38,21 +38,16 @@ const setStorage = (state) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 }
 
-const resetStorage = () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPersistedState))
-}
-
-
 export const persistState = (state) => {
   const { actions, ...stateToPersist } = parseFromState(state);
   try {
     switch (actions.lastAction) {
       case LOGIN_SUCCESS:
-        setStorage(stateToPersist)
-        break;
+      case STORE_ENVIRONMENT_SUCCESS:
+      case SET_LANGUAGE:
       case LOGOUT_SUCCESS:
       case ADMIN_LOGOUT_SUCCESS:
-        resetStorage()
+        setStorage(stateToPersist)
         break;
       default:
         break;

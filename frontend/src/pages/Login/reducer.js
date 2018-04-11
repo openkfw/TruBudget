@@ -94,10 +94,12 @@ export default function loginReducer(state = defaultState, action) {
       setLanguage(newState);
       return newState;
     case ADMIN_LOGOUT_SUCCESS:
-    case LOGOUT_SUCCESS: {
-      const newDefaultState = defaultState.set('language', state.get('language'))
-      return newDefaultState;
-    }
+    case LOGOUT_SUCCESS:
+      return state.merge({
+        'username': defaultState.get('username'),
+        'password': defaultState.get('password'),
+        'jwt': defaultState.get('jwt')
+      });
     default:
       return state
   }
