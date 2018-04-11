@@ -5,10 +5,30 @@ import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import accounting from 'accounting';
 import _ from 'lodash';
+import { Iterable } from 'immutable'
 import strings from './localizeStrings'
 import currencies from './currency';
 
 import { taskStatusColorPalette, budgetStatusColorPalette, workflowBudgetColorPalette } from './colors';
+
+
+export const toJS = WrappedComponent => wrappedComponentProps => {
+  const KEY = 0
+  const VALUE = 1
+
+  const propsJS = Object.entries(
+    wrappedComponentProps
+  ).reduce((newProps, wrappedComponentProp) => {
+    newProps[wrappedComponentProp[KEY]] = Iterable.isIterable(
+      wrappedComponentProp[VALUE]
+    )
+      ? wrappedComponentProp[VALUE].toJS()
+      : wrappedComponentProp[VALUE]
+    return newProps
+  }, {})
+
+  return <WrappedComponent {...propsJS} />
+}
 
 const getCurrencyFormat = (currency) => ({
   decimal: ".",

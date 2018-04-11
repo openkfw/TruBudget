@@ -11,7 +11,6 @@ import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from '../Workflows/actions';
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from '../SubProjects/actions';
 
 export const defaultState = fromJS({
-  users: [],
   username: '',
   password: '',
   loggedInUser: {
@@ -22,6 +21,7 @@ export const defaultState = fromJS({
       admin: false,
     }
   },
+  users: [],
   environment: 'Test',
   productionActive: false,
   loginErrorMessage: '',
@@ -46,9 +46,9 @@ setLanguage(defaultState)
 
 export default function loginReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_UPDATES_SUCCESS:
-    case FETCH_USERS_SUCCESS:
-      return state.set('users', fromJS(action.users));
+    // case FETCH_UPDATES_SUCCESS:
+    // case FETCH_USERS_SUCCESS:
+    //   return state.set('users', fromJS(action.users));
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
     case FETCH_ALL_PROJECTS_SUCCESS:
@@ -71,8 +71,7 @@ export default function loginReducer(state = defaultState, action) {
 
     case LOGIN_SUCCESS:
       return state.merge({
-        loggedIn: true,
-        tokenPresent: true
+        jwt: action.jwt,
       });
     case ADMIN_LOGIN_SUCCESS:
       return state.merge({
