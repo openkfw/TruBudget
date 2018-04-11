@@ -1,22 +1,26 @@
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import {
-  MultichainClient,
-  ProjectStreamMetadata,
-  Stream,
-  StreamTxId,
-  StreamBody
-} from "../multichain";
-import { TrubudgetError } from "../App.h";
+import { MultichainClient, Stream, StreamTxId, StreamBody } from "../multichain";
 
 export interface Project {
+  id: string;
   creationUnixTs: string;
   status: "open" | "done";
-  name: string;
+  displayName: string;
   description?: string;
   amount: string;
   currency: string;
   thumbnail?: string;
   permissions?: AllowedUserGroupsByIntent;
+}
+
+export interface ProjectStreamMetadata {
+  displayName: string;
+  creationUnixTs: string;
+  status: "open" | "done";
+  description?: string;
+  amount: string;
+  currency: string;
+  thumbnail?: string;
 }
 
 const val = val => {
@@ -27,11 +31,12 @@ const val = val => {
   }
 };
 
-const asProject = (meta: ProjectStreamMetadata): Project => {
+const asProject = (streamId: string, meta: ProjectStreamMetadata): Project => {
   return {
+    id: streamId,
     creationUnixTs: val(meta.creationUnixTs),
     status: val(meta.status),
-    name: val(meta.name),
+    displayName: val(meta.displayName),
     description: meta.description,
     amount: val(meta.amount),
     currency: val(meta.currency),
@@ -69,7 +74,7 @@ const makeProjectFromResult = (result: Result<[Stream, StreamBody], Stream>): Pr
     const [stream, body] = result.body;
     console.log(result.body);
     try {
-      return asProject(body.metadata as ProjectStreamMetadata);
+      return asProject(stream.name, body.metadata as ProjectStreamMetadata);
     } catch (err) {
       result = {
         kind: "error",
@@ -115,9 +120,9 @@ export class ProjectModel {
     const txid: StreamTxId = await this.multichain.createStream({
       kind: "project",
       metadata: {
-        amount: "10",
+        displayName: "test",
         creationUnixTs: new Date().getTime().toString(),
-        name: "test",
+        amount: "10",
         currency: "EUR",
         status: "open"
       },

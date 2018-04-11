@@ -1,15 +1,7 @@
 import * as jsonwebtoken from "jsonwebtoken";
 
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import {
-  MultichainClient,
-  ProjectStreamMetadata,
-  Stream,
-  StreamBody,
-  StreamItem,
-  StreamTxId
-} from "../multichain";
-import { TrubudgetError } from "../App.h";
+import { MultichainClient, Stream, StreamBody, StreamItem, StreamTxId } from "../multichain";
 import { User } from "./model.h";
 import { createPasswordHash } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
@@ -38,7 +30,7 @@ export class UserModel {
    * 3. add user to stream
    * 4. return user id
    */
-  async create(input, authorized): Promise<string | TrubudgetError> {
+  async create(input, authorized): Promise<string> {
     const expectedKeys = ["id", "displayName", "organization", "password"];
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
@@ -75,7 +67,7 @@ export class UserModel {
     return newUser.id;
   }
 
-  async authenticate(input): Promise<string | TrubudgetError> {
+  async authenticate(input): Promise<string> {
     const expectedKeys = ["id", "password"];
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };

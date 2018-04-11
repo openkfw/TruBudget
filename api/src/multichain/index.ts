@@ -1,6 +1,5 @@
 export {
   MultichainClient,
-  ProjectStreamMetadata,
   RpcMultichainClient,
   Stream,
   StreamBody,

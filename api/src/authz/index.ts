@@ -1,7 +1,6 @@
 import * as Sample from "./sample";
 import { AllowedUserGroupsByIntent } from "./types";
 import Intent from "./intents";
-import { NotAuthorizedError } from "../App.h";
 import { AuthToken } from "./token";
 
 // const groupsForUser = user =>

@@ -1,4 +1,5 @@
 import { AllowedUserGroupsByIntent } from "../authz/types";
+import { ProjectStreamMetadata } from "../project/model";
 export { RpcMultichainClient } from "./Client";
 
 type StreamKind = "users" | "project" | "subproject";
@@ -29,16 +30,6 @@ export interface LogEntry {
   issuer: string;
   description?: string;
   action: string;
-}
-
-export interface ProjectStreamMetadata {
-  creationUnixTs: string;
-  status: "open" | "done";
-  name: string;
-  description?: string;
-  amount: string;
-  currency: string;
-  thumbnail?: string;
 }
 
 // (Writable) metadata:

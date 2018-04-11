@@ -5,8 +5,8 @@ type Intent =
   | "user.list"
   | "user.create"
   | "user.authenticate"
-  | "project.list"
-  | "project.view"
+  | "project.list" // IDs + meta data
+  | "project.view" // ID + meta data + allowed intents + history
   | "project.create"
   | "project.assign"
   | "project.update"
