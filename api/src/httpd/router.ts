@@ -21,7 +21,7 @@ interface ErrorResponse {
 type Response = SuccessResponse | ErrorResponse;
 
 const send = (res, code: number, response: Response) => {
-  res.status(400).json(response);
+  res.status(code).json(response);
 };
 
 export const createRouter = (
@@ -117,16 +117,18 @@ export const createRouter = (
     }
 
     try {
+      console.log(body.data);
       const response = {
         apiVersion: "1.0",
         data: await userModel.authenticate(body.data)
       };
+      console.log(response);
       send(res, 200, response);
     } catch (err) {
       switch (err.kind) {
         case "ParseError":
           console.log(err);
-          send(res, 200, {
+          send(res, 400, {
             apiVersion: body.apiVersion,
             error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
           });

@@ -23,13 +23,14 @@ const authenticate = async (axios, rootSecret: string) => {
   const response = await axios.post("/user.authenticate", { id: "root", password: rootSecret });
   const body = response.data;
   if (body.apiVersion !== "1.0") throw Error("unexpected API version");
-  return body.data;
+  const { token } = body.data;
+  console.log(token);
+  return token;
 };
 
 export const provisionBlockchain = async (port: number, rootSecret: string) => {
   axios.defaults.baseURL = `http://localhost:${port}`;
-
-  const { token } = await authenticate(axios, rootSecret);
+  const token = await authenticate(axios, rootSecret);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
   await provisionProjects(axios);
