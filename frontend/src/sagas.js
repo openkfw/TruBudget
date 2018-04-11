@@ -19,13 +19,17 @@ import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from './pa
 
 const api = new Api();
 
-function* execute(fn, showLoading = false) {
+function* execute(fn, showLoading = false, errorCallback = undefined) {
   const done = yield handleLoading(showLoading);
   try {
     yield fn();
   } catch (error) {
-    console.error(error);
-    yield handleError(error);
+    if (typeof errorCallback === 'function') {
+      yield errorCallback(error);
+    } else {
+      console.error(error);
+      yield handleError(error);
+    }
   } finally {
     yield done();
   }
@@ -353,7 +357,7 @@ export function* getEnvironmentSaga() {
 
 
 export function* loginSaga({ user }) {
-  yield execute(function* () {
+  function* login() {
     const jwt = yield callApi(api.login, user.username, user.password);
     yield call(chill, 1250);
 
@@ -365,7 +369,16 @@ export function* loginSaga({ user }) {
       type: SHOW_LOGIN_ERROR,
       show: false
     })
-  }, true);
+  }
+  function* onLoginError(error) {
+    console.error("Login Error:", error.response.data || "unkown");
+    console.error(error);
+    yield put({
+      type: SHOW_LOGIN_ERROR,
+      show: true
+    })
+  }
+  yield execute(login, true, onLoginError);
 }
 
 
