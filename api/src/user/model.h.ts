@@ -1,8 +1,22 @@
-export interface User {
+export interface NewUser {
   id: string;
   displayName: string;
   organization: string;
-  password: string;
+  passwordPlaintext: string;
+}
+
+export interface UserRecord {
+  id: string;
+  displayName: string;
+  organization: string;
+  passwordCiphertext: string;
+}
+
+export interface UserLoginResponse {
+  id: string;
+  displayName: string;
+  organization: string;
+  token: string;
 }
 
 export interface UserAlreadyExistsError {

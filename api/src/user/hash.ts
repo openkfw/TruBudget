@@ -6,7 +6,7 @@ const KEY_LENGTH = 10;
 const DIGEST = "sha512";
 const HEX = "hex";
 
-export const createPasswordHash = (password: string): Promise<string> =>
+export const encryptPassword = (password: string): Promise<string> =>
   new Promise((res, rej) => {
     crypto.pbkdf2(password, SALT_PASSWORD, ITERATIONS, KEY_LENGTH, DIGEST, (err, derivedKey) => {
       if (err) rej(err);

@@ -2,8 +2,8 @@ import * as jsonwebtoken from "jsonwebtoken";
 
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import { MultichainClient, Stream, StreamBody, StreamItem, StreamTxId } from "../multichain";
-import { User } from "./model.h";
-import { createPasswordHash } from "./hash";
+import { UserRecord, UserLoginResponse, NewUser } from "./model.h";
+import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 
 const usersStream = "users";
@@ -34,7 +34,7 @@ export class UserModel {
     const expectedKeys = ["id", "displayName", "organization", "password"];
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
-    const newUser = input as User;
+    const newUser = input as NewUser;
 
     // Make sure nobody creates the special "root" user:
     if (newUser.id === "root") throw { kind: "UserAlreadyExists", targetUserId: "root" };
@@ -61,17 +61,22 @@ export class UserModel {
 
     if (userExists) throw { kind: "UserAlreadyExists", targetUserId: newUser.id };
 
-    newUser.password = await createPasswordHash(newUser.password);
-    await this.multichain.updateStreamItem(streamTxId, newUser.id, newUser);
+    const userRecord = {
+      id: newUser.id,
+      displayName: newUser.displayName,
+      organization: newUser.organization,
+      passwordCiphertext: await encryptPassword(newUser.passwordPlaintext)
+    };
+    await this.multichain.updateStreamItem(streamTxId, userRecord.id, userRecord);
     console.log(`${issuer} has created a new user on stream "${streamTxId}"`);
-    return newUser.id;
+    return userRecord.id;
   }
 
-  async authenticate(input): Promise<string> {
+  async authenticate(input): Promise<UserLoginResponse> {
     const expectedKeys = ["id", "password"];
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
-    const { id, password } = input;
+    const { id, password: passwordCleartext } = input;
 
     // The client shouldn't be able to distinguish between a wrong id and a wrong password,
     // so we handle all errors alike:
@@ -82,8 +87,13 @@ export class UserModel {
 
     // The special "root" user is not on the chain:
     if (id === "root") {
-      if (password === this.rootSecret) {
-        return this.createToken("root");
+      if (passwordCleartext === this.rootSecret) {
+        return {
+          id: "root",
+          displayName: "root",
+          organization: "root",
+          token: this.createToken("root")
+        };
       } else {
         throwError("wrong password");
       }
@@ -91,12 +101,17 @@ export class UserModel {
 
     const item: StreamItem = await this.multichain.streamItem(usersStream, id).catch(throwError);
     console.log(JSON.stringify(item));
-    const trueUser = item.value as User;
+    const trueUser = item.value as UserRecord;
 
-    const passwordHash = await createPasswordHash(password);
-    const isPasswordMatch = passwordHash === trueUser.password;
+    const passwordCiphertext = await encryptPassword(passwordCleartext);
+    const isPasswordMatch = passwordCiphertext === trueUser.passwordCiphertext;
     if (!isPasswordMatch) throwError("wrong password");
 
-    return this.createToken(id);
+    return {
+      id,
+      displayName: trueUser.displayName,
+      organization: trueUser.organization,
+      token: this.createToken(id)
+    };
   }
 }

@@ -80,8 +80,11 @@ export const createRouter = (
     }
 
     try {
-      const jwt = await userModel.authenticate(body.data);
-      res.status(200).send(jwt);
+      const response = {
+        apiVersion: "1.0",
+        data: await userModel.authenticate(body.data)
+      };
+      res.status(200).json(response);
     } catch (err) {
       switch (err.kind) {
         case "ParseError":
