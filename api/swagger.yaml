@@ -173,11 +173,11 @@ paths:
         - application/json
       responses:
           '200':
-            description: 'An Array containing projects'
+            description: 'An Array of projects'
             schema:
-              items:
-                type: string
               type: array
+              items:
+                $ref: '#/definitions/Project'
           '403':
             description: Returned when providing invalid credentials.
   "/project.create":
@@ -205,24 +205,58 @@ paths:
               data:
                 type: object
                 required:
-                  - id
-                  - password
+                  - name
+                  - amount
+                  - currency
+                  - description
                 properties:
-                  id:
+                  name:
                     type: string
-                  password:
+                  amount:
+                    type: string
+                  currency:
+                    type: string
+                  description:
+                    type: string
+                  thumbnail:
                     type: string
             example:
               apiVersion: '1.0'
               data:
-                id: bob
-                password: topsecret
+                name: "MyProject"
+                amount: "10000"
+                currency: "EUR"
+                description: "My project is awesome"
+                thumbnail: "/picture1"
       responses:
           '200':
-            description: 'An Array containing projects'
+            description: 'OK'
             schema:
-              items:
-                type: string
-              type: array
+              type: string
           '403':
             description: Returned when providing invalid credentials.
+definitions:
+  Project:
+    type: "object"
+    properties:
+      id:
+        type: string
+      displayName:
+        type: string
+      creationUnixTs:
+        type: string
+      status:
+        type: string
+        description: "Project Status"
+        enum:
+        - "open"
+        - "done"
+      amount:
+        type: string
+      currency:
+        type: string
+      description:
+        type: string
+      thumbnail:
+        type: "string"
+
