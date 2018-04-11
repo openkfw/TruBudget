@@ -68,7 +68,7 @@ const getStreamBody = (multichain: MultichainClient) => (
 const makeProjectFromResult = (result: Result<[Stream, StreamBody], Stream>): Project | null => {
   if (result.kind === "value") {
     const [stream, body] = result.body;
-    console.log(result.body)
+    console.log(result.body);
     try {
       return asProject(body.metadata as ProjectStreamMetadata);
     } catch (err) {
