@@ -68,11 +68,7 @@ const getStreamBody = (multichain: MultichainClient) => (
 const makeProjectFromResult = (result: Result<[Stream, StreamBody], Stream>): Project | null => {
   if (result.kind === "value") {
     const [stream, body] = result.body;
-<<<<<<< HEAD
     console.log(result.body);
-=======
-    console.log(result.body)
->>>>>>> API: Add projects options permissions and metadata as streamitems to project
     try {
       return asProject(body.metadata as ProjectStreamMetadata);
     } catch (err) {
