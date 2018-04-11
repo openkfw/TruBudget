@@ -107,9 +107,19 @@ export const createRouter = (
 
   router.post("/project.create", async (req, res) => {
     const intent = req.path.substring(1);
+    const body = req.body;
+    console.log(`body: ${JSON.stringify(body)}`);
+    if (body.apiVersion !== "1.0") {
+      res.status(412).send(`API version ${body.apiVersion} not implemented.`);
+      return;
+    }
+    if (!body.data) {
+      res.status(400).send(`Expected "data" in body.`);
+      return;
+    }
 
     try {
-      const id = await projectModel.createProject(req.body, authorized(req.token, intent));
+      const id = await projectModel.createProject(body.data, authorized(req.token, intent));
       res.status(201).send(id);
     } catch (err) {
       if (err.kind === "NotAuthorized") {

@@ -1,5 +1,6 @@
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import { MultichainClient, Stream, StreamTxId, StreamBody } from "../multichain";
+import { findBadKeysInObject, isNonemptyString } from "../lib";
 
 export interface Project {
   id: string;
@@ -116,6 +117,11 @@ export class ProjectModel {
   }
 
   async createProject(body, authorized): Promise<string> {
+    const expectedKeys = ["displayName", "amount", "currency"];
+    // TODO sanitize input
+    const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, body);
+    if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
+
     /* TODO root permissions */
     const rootPermissions = new Map<string, string[]>();
     await authorized(rootPermissions); // throws if unauthorized
@@ -124,11 +130,13 @@ export class ProjectModel {
     const txid: StreamTxId = await this.multichain.createStream({
       kind: "project",
       metadata: {
-        displayName: "test",
+        displayName: body.displayName,
         creationUnixTs: new Date().getTime().toString(),
-        amount: "10",
-        currency: "EUR",
-        status: "open"
+        amount: body.amount,
+        currency: body.currency,
+        status: "open",
+        ...(body.description ? { description: body.description } : {}),
+        ...(body.thumbnail ? { thumbnail: body.thumbnail } : {})
       },
       initialLogEntry: { issuer, action: "created_project" },
       permissions: [["subproject.create", ["alice"]]]

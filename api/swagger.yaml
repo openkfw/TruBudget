@@ -175,9 +175,19 @@ paths:
           '200':
             description: 'An Array of projects'
             schema:
-              type: array
-              items:
-                $ref: '#/definitions/Project'
+              type: object
+              properties:
+                apiVersion:
+                  type: string
+                  enum:
+                    - '1.0'
+                data:
+                  type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        $ref: '#/definitions/Project'
           '403':
             description: Returned when providing invalid credentials.
   "/project.create":
@@ -205,28 +215,27 @@ paths:
               data:
                 type: object
                 required:
-                  - name
+                  - displayName
                   - amount
                   - currency
-                  - description
                 properties:
-                  name:
+                  displayName:
+                    type: string
+                  description:
                     type: string
                   amount:
                     type: string
                   currency:
-                    type: string
-                  description:
                     type: string
                   thumbnail:
                     type: string
             example:
               apiVersion: '1.0'
               data:
-                name: "MyProject"
+                displayName: "MyProject"
+                description: "My project is awesome"
                 amount: "10000"
                 currency: "EUR"
-                description: "My project is awesome"
                 thumbnail: "/picture1"
       responses:
           '200':
@@ -237,7 +246,7 @@ paths:
             description: Returned when providing invalid credentials.
 definitions:
   Project:
-    type: "object"
+    type: object
     properties:
       id:
         type: string
@@ -247,10 +256,10 @@ definitions:
         type: string
       status:
         type: string
-        description: "Project Status"
+        description: Project Status
         enum:
-        - "open"
-        - "done"
+        - open
+        - done
       amount:
         type: string
       currency:
@@ -258,5 +267,5 @@ definitions:
       description:
         type: string
       thumbnail:
-        type: "string"
+        type: string
 
