@@ -49,7 +49,6 @@ export class ProjectModel {
 
   async list(authorized): Promise<Project[]> {
     const streams: Stream[] = await this.multichain.streams();
-    console.log(`:streams=${JSON.stringify(streams)}`);
 
     const projects = (await Promise.all(
       streams
@@ -70,8 +69,9 @@ export class ProjectModel {
     return clearedProjects;
   }
 
-  async details(projectId, authorized): Promise<StreamBody> {
-    const project = await this.multichain.streamBody(projectId);
+  async details(projectId, authorized): Promise<Project> {
+    const fakeStream = { name: projectId } as Stream;
+    const project = await toProject(toProjectStream(this.multichain)(fakeStream));
     await authorized(project.permissions);
     return project;
   }
@@ -87,7 +87,7 @@ export class ProjectModel {
     await authorized(rootPermissions); // throws if unauthorized
 
     const issuer = "alice";
-    const txid: StreamTxId = await this.multichain.createStream({
+    const txid: StreamTxId = await this.multichain.getOrCreateStream({
       kind: "project",
       metadata: {
         displayName: body.displayName,

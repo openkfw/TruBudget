@@ -1,3 +1,5 @@
+import { AllowedUserGroupsByIntent } from "../authz/types";
+
 export interface NewUser {
   id: string;
   displayName: string;
@@ -11,6 +13,7 @@ export interface UserRecord {
   organization: string;
   passwordCiphertext: string;
   allowedIntents: string[];
+  permissions: AllowedUserGroupsByIntent;
 }
 
 export interface UserCreationResponse {

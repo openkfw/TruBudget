@@ -57,32 +57,28 @@ export class UserModel {
     const rootPermissions = new Map<string, string[]>();
     await authorized(rootPermissions); // throws if unauthorized
 
-    const issuer = "alice";
-    const streamTxId: StreamTxId = await this.multichain.createStream({
+    const streamTxId: StreamTxId = await this.multichain.getOrCreateStream({
       kind: "users",
       name: usersStream
     });
 
     const userExists = await this.multichain
-      .streamItem(streamTxId, newUser.id)
-      .then(_item => true)
-      .catch(err => {
-        console.log(`User not found (so we'll create it): ${err}`);
-        return false;
-      });
-    console.log(`User exists: ${userExists}`);
+      .latestValuesForKey(streamTxId, newUser.id)
+      .then(values => values.length !== 0);
 
     if (userExists) throw { kind: "UserAlreadyExists", targetUserId: newUser.id };
+    console.log(`Creating new user ${newUser.id}..`);
 
     const userRecord: UserRecord = {
       id: newUser.id,
       displayName: newUser.displayName,
       organization: newUser.organization,
       allowedIntents: userDefaultIntents,
-      passwordCiphertext: await encryptPassword(newUser.passwordPlaintext)
+      passwordCiphertext: await encryptPassword(newUser.passwordPlaintext),
+      permissions: [["user.view", [newUser.id]]]
     };
     await this.multichain.updateStreamItem(streamTxId, userRecord.id, userRecord);
-    console.log(`${issuer} has created a new user on stream "${streamTxId}"`);
+    console.log(`Created new user ${userRecord.id} on stream "${streamTxId}"`);
     return {
       id: userRecord.id,
       displayName: userRecord.displayName,
@@ -92,18 +88,21 @@ export class UserModel {
   }
 
   async list(authorized): Promise<UserListResponse> {
-    // TODO filter non-authorized
-    const streamId = "users";
-    const streamItems = await this.multichain.listStreamItems(streamId);
-    if (streamItems) {
-      const items = streamItems.items.map(item => {
-        const { id, displayName, organization, allowedIntents } = item.value;
-        return { id, displayName, organization, allowedIntents };
-      });
-      return { items };
-    } else {
-      throw new Error(`Stream does not exist or is empty ${streamId}`);
-    }
+    const users: UserRecord[] = (await this.multichain.streamItems(usersStream)).map(
+      item => item.value
+    );
+
+    const clearedUsers = (await Promise.all(
+      users.map(user => {
+        return authorized(user.permissions)
+          .then(() => user)
+          .catch(err => null);
+      })
+    )).filter(x => x !== null) as UserRecord[];
+
+    return {
+      items: clearedUsers
+    };
   }
 
   /*
@@ -135,9 +134,11 @@ export class UserModel {
       }
     }
 
-    const item: StreamItem = await this.multichain.streamItem(usersStream, id).catch(throwError);
-    console.log(JSON.stringify(item));
-    const trueUser = item.value as UserRecord;
+    const values: UserRecord[] = await this.multichain
+      .latestValuesForKey(usersStream, id)
+      .catch(throwError);
+    if (values.length === 0) throwError("user not found");
+    const trueUser = values[0];
 
     const passwordCiphertext = await encryptPassword(passwordCleartext);
     const isPasswordMatch = passwordCiphertext === trueUser.passwordCiphertext;

@@ -9,8 +9,10 @@ interface StreamDetails {
   kind?: StreamKind;
 }
 
+export type TxId = string;
+
 export type StreamName = string;
-export type StreamTxId = string;
+export type StreamTxId = TxId;
 
 export interface Stream {
   name: StreamName;
@@ -53,29 +55,19 @@ export interface CreateStreamOptions {
 export interface StreamItem {
   key: string;
   value: any;
-  txid: string;
-}
-
-export interface StreamItems {
-  items: Array<StreamItem>;
 }
 
 export interface MultichainClient {
   // Create a new stream. If name is set and the stream exists, nothing happens.
-  createStream(options: CreateStreamOptions);
+  getOrCreateStream(options: CreateStreamOptions);
 
   // Get a list of all streams:
   streams(): Promise<Stream[]>;
 
-  // Get the stream body (some of its key/value pairs) of a given stream:
-  streamBody(stream: String): Promise<StreamBody>;
+  // Return the most recent values for all keys
+  streamItems(streamId: StreamName | StreamTxId, nValues?: number): Promise<StreamItem[]>;
 
-  // Returns a specific item from a stream, or throws if no such item is found:
-  streamItem(streamId: StreamName | StreamTxId, key: string): Promise<StreamItem>;
-
-  // Return all items from a stream
-  listStreamItems(streamId: StreamName | StreamTxId): Promise<StreamItems>;
-
+  // Return the most recent values for a specific key
   latestValuesForKey(
     streamId: StreamName | StreamTxId,
     key: string,
@@ -83,9 +75,5 @@ export interface MultichainClient {
   ): Promise<any[]>;
 
   // Update a stream item, serializing the Js object as hex-string:
-  updateStreamItem(
-    streamId: StreamName | StreamTxId,
-    key: string,
-    object: any
-  ): Promise<StreamItem>;
+  updateStreamItem(streamId: StreamName | StreamTxId, key: string, object: any): Promise<TxId>;
 }

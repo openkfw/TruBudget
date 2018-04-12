@@ -5,8 +5,7 @@ import {
   CreateStreamOptions,
   StreamName,
   StreamTxId,
-  StreamItem,
-  StreamItems
+  StreamItem
 } from "./Client.h";
 
 const metadata = {
@@ -22,7 +21,16 @@ const metadata = {
 };
 
 class MultichainClientStub implements MultichainClient {
-  createStream(options: CreateStreamOptions) {
+  streamItems(streamId: string, nValues?: number | undefined): Promise<StreamItem[]> {
+    throw new Error("Method not implemented.");
+  }
+  latestValuesForKey(streamId: string, key: string, nValues?: number | undefined): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
+  updateStreamItem(streamId: string, key: string, object: any): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+  getOrCreateStream(options: CreateStreamOptions) {
     throw new Error("Method not implemented.");
   }
   async streams(): Promise<Stream[]> {
@@ -54,25 +62,6 @@ class MultichainClientStub implements MultichainClient {
         publishers: 0
       }
     ];
-  }
-  async streamBody(stream: String): Promise<StreamBody> {
-    throw "aaaaah";
-  }
-  streamItem(streamId: StreamName | StreamTxId, key: string): Promise<any> {
-    throw "aaaaah";
-  }
-  updateStreamItem(
-    streamId: StreamName | StreamTxId,
-    key: string,
-    object: any
-  ): Promise<StreamItem> {
-    throw "aaaaah";
-  }
-  async listStreamItems(streamId: StreamName | StreamTxId): Promise<StreamItems> {
-    throw "aaaaaah";
-  }
-  latestValuesForKey(streamId: string, key: string, nValues?: number | undefined): Promise<any[]> {
-    throw new Error("Method not implemented.");
   }
 }
 

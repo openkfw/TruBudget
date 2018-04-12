@@ -5,12 +5,12 @@ import {
   Stream,
   StreamBody,
   StreamName,
-  StreamItem
+  StreamItem,
+  TxId
 } from "./Client.h";
 import { RpcClient, ConnectionSettings } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { objectToHex, hexToObject } from "./hexconverter";
-import { StreamItems } from "./Client.h";
 
 const streamItemKeys: any = {
   metadata: "_metadata",
@@ -36,7 +36,7 @@ export class RpcMultichainClient implements MultichainClient {
     this.rpcClient = new RpcClient(settings);
   }
 
-  async createStream(options: CreateStreamOptions): Promise<StreamTxId> {
+  async getOrCreateStream(options: CreateStreamOptions): Promise<StreamTxId> {
     // If the stream name is set, we need to check first whether the stream exists already:
     if (options.name) {
       const [verbose, count] = [false, 1];
@@ -78,49 +78,17 @@ export class RpcMultichainClient implements MultichainClient {
     return (await this.rpcClient.invoke("liststreams")) as Stream[];
   }
 
-  async streamBody(
-    streamId: String,
-    includeOnly: string[] | undefined = undefined
-  ): Promise<StreamBody> {
-    const nAllItems = 1000;
-    const body = await Promise.all([
-      this.rpcClient.invoke("liststreamkeyitems", streamId, "_metadata", false, 1),
-      this.rpcClient.invoke("liststreamkeyitems", streamId, "_log", false, nAllItems),
-      this.rpcClient.invoke("liststreamkeyitems", streamId, "_permissions", false, 1)
-    ]);
-
-    // TODO more than one log entry
-    return {
-      metadata: hexToObject(body[0][0].data),
-      log: [hexToObject(body[1][0].data)],
-      permissions: hexToObject(body[2][0].data)
-    };
-  }
-
-  async streamItem(streamId: StreamName | StreamTxId, key: string): Promise<StreamItem> {
-    const items = await this.rpcClient.invoke("liststreamkeyitems", streamId, key, false, 1);
-    if (items.length === 0) {
-      throw Error(`Item "${key}" not found in stream "${streamId}"`);
-    }
-
-    const item = items[0] as MultichainStreamItem;
-    if (key !== item.keys[0]) throw Error(`Assertion failed: ${key} !== ${item.keys[0]}`);
-    return {
-      key: key,
-      value: hexToObject(item.data),
-      txid: item.txid
-    };
-  }
-
-  async listStreamItems(streamId: StreamName | StreamTxId): Promise<StreamItems> {
-    const items = await this.rpcClient.invoke("liststreamitems", streamId);
-    return {
-      items: items.map(item => ({
-        key: item.keys[0],
-        value: hexToObject(item.data),
-        txid: item.txid
-      }))
-    };
+  async streamItems(streamId: StreamName | StreamTxId, nValues: number = 1): Promise<StreamItem[]> {
+    const items: MultichainStreamItem[] = await this.rpcClient.invoke(
+      "liststreamitems",
+      streamId,
+      false,
+      nValues
+    );
+    return items.map(item => ({
+      key: item.keys[0],
+      value: hexToObject(item.data)
+    }));
   }
 
   async latestValuesForKey(
@@ -128,19 +96,22 @@ export class RpcMultichainClient implements MultichainClient {
     key: string,
     nValues: number = 1
   ): Promise<any[]> {
-    const items: MultichainStreamItem[] = (await this.rpcClient.invoke(
+    const items: MultichainStreamItem[] = await this.rpcClient.invoke(
       "liststreamkeyitems",
       streamId,
       key,
       false,
       nValues
-    )).result;
-    console.log(`latestValuesForKey ${key}: ${JSON.stringify(items)}`);
+    );
     return items.map(x => hexToObject(x.data));
   }
 
-  updateStreamItem(streamId: StreamName | StreamTxId, key: string, object: any): Promise<any> {
+  async updateStreamItem(
+    streamId: StreamName | StreamTxId,
+    key: string,
+    object: any
+  ): Promise<TxId> {
     const data = objectToHex(object);
-    return this.rpcClient.invoke("publish", streamId, key, data);
+    return await this.rpcClient.invoke("publish", streamId, key, data);
   }
 }
