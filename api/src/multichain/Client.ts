@@ -93,7 +93,7 @@ export class RpcMultichainClient implements MultichainClient {
     // TODO more than one log entry
     return {
       metadata: hexToObject(body[0][0].data),
-      log: hexToObject(body[1][0].data),
+      log: [hexToObject(body[1][0].data)],
       permissions: hexToObject(body[2][0].data)
     };
   }

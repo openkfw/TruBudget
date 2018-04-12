@@ -37,7 +37,7 @@ export type StreamMetadata = ProjectStreamMetadata;
 // Current view on a stream:
 export interface StreamBody {
   metadata?: StreamMetadata;
-  log?: LogEntry;
+  log?: LogEntry[];
   permissions?: AllowedUserGroupsByIntent;
 }
 

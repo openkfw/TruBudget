@@ -70,6 +70,12 @@ export class ProjectModel {
     return clearedProjects;
   }
 
+  async details(projectId, authorized): Promise<Project> {
+    const project = await this.multichain.streamBody({ name: projectId });
+    await authorized(project.permissions);
+    return project;
+  }
+
   async createProject(userId, body, authorized): Promise<string> {
     const expectedKeys = ["displayName", "amount", "currency"];
     // TODO sanitize input

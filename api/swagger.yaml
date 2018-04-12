@@ -314,7 +314,56 @@ paths:
               type: string
           '403':
             description: Returned when providing invalid credentials.
+
+
+  "/project.viewDetails/{projectId}":
+    get:
+      tags:
+        - project
+      operationId: "project.viewDetails"
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          type: string
+      responses:
+        '200':
+            description: 'Project Details'
+            schema:
+              type: object
+              properties:
+                apiVersion:
+                  type: string
+                  enum:
+                    - '1.0'
+                data:
+                  type: object
+                  properties:
+                    metadata:
+                      type: array
+                      items:
+                        $ref: '#/definitions/Project'
+                    log:
+                      type: array
+                      items:
+                        $ref: '#/definitions/LogEntry'
+                    permissions:
+                      type: array
+                      items:
+                        type: array
+                        items:
+                          type: string
+
 definitions:
+  LogEntry:
+    type: object
+    properties:
+      issuer:
+        type: string
+      action:
+        type: string
   Project:
     type: object
     properties:
