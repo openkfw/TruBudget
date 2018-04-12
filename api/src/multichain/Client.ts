@@ -78,7 +78,10 @@ export class RpcMultichainClient implements MultichainClient {
     return (await this.rpcClient.invoke("liststreams")) as Stream[];
   }
 
-  async streamBody(stream: Stream): Promise<StreamBody> {
+  async streamBody(
+    stream: Stream,
+    includeOnly: string[] | undefined = undefined
+  ): Promise<StreamBody> {
     const nAllItems = 1000;
     const streamId = stream.name || stream.createtxid;
     const body = await Promise.all([
@@ -119,6 +122,22 @@ export class RpcMultichainClient implements MultichainClient {
         txid: item.txid
       }))
     };
+  }
+
+  async latestValuesForKey(
+    streamId: StreamName | StreamTxId,
+    key: string,
+    nValues: number = 1
+  ): Promise<any[]> {
+    const items: MultichainStreamItem[] = (await this.rpcClient.invoke(
+      "liststreamkeyitems",
+      streamId,
+      key,
+      false,
+      nValues
+    )).result;
+    console.log(`latestValuesForKey ${key}: ${JSON.stringify(items)}`);
+    return items.map(x => hexToObject(x.data));
   }
 
   updateStreamItem(streamId: StreamName | StreamTxId, key: string, object: any): Promise<any> {

@@ -29,10 +29,10 @@ export interface UserLoginResponse {
 }
 
 export interface UserListResponse {
-  items: Array<UserListRecord>;
+  items: UserListResponseItem[];
 }
 
-export interface UserListRecord {
+export interface UserListResponseItem {
   id: string;
   displayName: string;
   organization: string;

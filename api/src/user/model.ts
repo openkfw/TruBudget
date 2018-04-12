@@ -7,11 +7,13 @@ import {
   UserLoginResponse,
   NewUser,
   UserCreationResponse,
-  UserListResponse
+  UserListResponse,
+  UserListResponseItem
 } from "./model.h";
 import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { globalIntents, userDefaultIntents } from "../authz/intents";
+import { authorized } from "../authz/index";
 
 const usersStream = "users";
 
@@ -89,7 +91,8 @@ export class UserModel {
     };
   }
 
-  async list(): Promise<UserListResponse> {
+  async list(authorized): Promise<UserListResponse> {
+    // TODO filter non-authorized
     const streamId = "users";
     const streamItems = await this.multichain.listStreamItems(streamId);
     if (streamItems) {

@@ -99,7 +99,7 @@ export const createRouter = (
   router.get("/user.list", async (req, res) => {
     const response = {
       apiVersion: "1.0",
-      data: await userModel.list()
+      data: await userModel.list(authorized(req.token, "user.view"))
     };
     send(res, 200, response);
   });
@@ -159,9 +159,8 @@ export const createRouter = (
 
   router.get("/project.list", async (req, res) => {
     // Returns all projects the user is allowed to see
-    const intent = req.path.substring(1);
     try {
-      const projects = await projectModel.list(authorized(req.token, intent));
+      const projects = await projectModel.list(authorized(req.token, "project.viewSummary"));
       res.json({
         apiVersion: "1.0",
         data: {
@@ -178,7 +177,6 @@ export const createRouter = (
   });
 
   router.post("/project.create", async (req, res) => {
-    const intent = req.path.substring(1);
     const body = req.body;
     console.log(`body: ${JSON.stringify(body)}`);
     if (body.apiVersion !== "1.0") {
@@ -197,8 +195,13 @@ export const createRouter = (
       return;
     }
 
+    const intent = "global.createProject";
     try {
-      const id = await projectModel.createProject(body.data, authorized(req.token, intent));
+      const id = await projectModel.createProject(
+        req.token.userId,
+        body.data,
+        authorized(req.token, intent)
+      );
       const response = {
         apiVersion: "1.0",
         data: id

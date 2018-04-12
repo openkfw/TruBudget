@@ -5,6 +5,7 @@ type Intent =
   | "global.createProject"
   | "global.createUser"
   | "user.authenticate"
+  | "user.view"
   | "project.intent.list"
   | "project.intent.grantPermission"
   | "project.intent.revokePermission"

@@ -71,6 +71,9 @@ class MultichainClientStub implements MultichainClient {
   async listStreamItems(streamId: StreamName | StreamTxId): Promise<StreamItems> {
     throw "aaaaaah";
   }
+  latestValuesForKey(streamId: string, key: string, nValues?: number | undefined): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
 }
 
 export default MultichainClientStub;

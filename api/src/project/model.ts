@@ -1,93 +1,44 @@
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { AllowedUserGroupsByIntent, UserId } from "../authz/types";
 import { MultichainClient, Stream, StreamTxId, StreamBody } from "../multichain";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
+import { LogEntry } from "../multichain/Client.h";
+import { Project, ProjectStreamMetadata } from "./model.h";
+import Intent from "../authz/intents";
 
-export interface Project {
-  id: string;
-  creationUnixTs: string;
-  status: "open" | "done";
-  displayName: string;
-  description?: string;
-  amount: string;
-  currency: string;
-  thumbnail?: string;
-  permissions?: AllowedUserGroupsByIntent;
+interface ProjectStream {
+  stream: Stream;
+  metadata: ProjectStreamMetadata;
+  logs: LogEntry[];
+  permissions: AllowedUserGroupsByIntent;
 }
-
-export interface ProjectStreamMetadata {
-  displayName: string;
-  creationUnixTs: string;
-  status: "open" | "done";
-  description?: string;
-  amount: string;
-  currency: string;
-  thumbnail?: string;
-}
-
-const val = val => {
-  if (typeof val === "undefined") {
-    throw "undefined";
-  } else {
-    return val;
-  }
-};
-
-const asProject = (streamId: string, meta: ProjectStreamMetadata): Project => {
-  return {
-    id: streamId,
-    creationUnixTs: val(meta.creationUnixTs),
-    status: val(meta.status),
-    displayName: val(meta.displayName),
-    description: meta.description,
-    amount: val(meta.amount),
-    currency: val(meta.currency),
-    thumbnail: meta.thumbnail
-  };
-};
-
-interface Ok<T> {
-  kind: "value";
-  body: T;
-}
-interface Err<T> {
-  kind: "error";
-  body: T;
-  error: any;
-}
-type Result<U, V> = Ok<U> | Err<V>;
 
 const isProject = (stream: Stream): boolean => stream.details.kind === "project";
 
-const getStreamBody = (multichain: MultichainClient) => (
+const toProjectStream = (multichain: MultichainClient) => async (
   stream: Stream
-): Promise<Result<[Stream, StreamBody], Stream>> => {
-  // Promise.all aborts on the first reject, so we convert rejects to resolves:
-  return new Promise((resolve, _reject) =>
-    multichain
-      .streamBody(stream)
-      .then((body: StreamBody) => resolve({ kind: "value", body: [stream, body] }))
-      .catch(err => resolve({ kind: "error", body: stream, error: err }))
-  );
+): Promise<ProjectStream> => {
+  const metadata = await multichain.latestValuesForKey(stream.name, "_metadata");
+  const logs = await multichain.latestValuesForKey(stream.name, "_log", 1000);
+  const permissions = await multichain.latestValuesForKey(stream.name, "_permissions");
+  return {
+    stream,
+    metadata: metadata[0],
+    logs,
+    permissions: permissions
+  };
 };
 
-const makeProjectFromResult = (result: Result<[Stream, StreamBody], Stream>): Project | null => {
-  if (result.kind === "value") {
-    const [stream, body] = result.body;
-    console.log(result.body);
-    try {
-      return asProject(stream.name, body.metadata as ProjectStreamMetadata);
-    } catch (err) {
-      result = {
-        kind: "error",
-        body: stream,
-        error: "Invalid metadata."
-      };
-    }
-  }
-  const { body: stream, error } = result;
-  console.log(`Cannot parse project from stream ${stream.name || stream.createtxid}: ${error}`);
-  return null;
+const toProject = async (futureProjectStream: Promise<ProjectStream>): Promise<Project> => {
+  const projectStream = await futureProjectStream;
+  return {
+    id: projectStream.stream.name,
+    ...projectStream.metadata,
+    permissions: projectStream.permissions,
+    logs: projectStream.logs
+  };
 };
+
+const isNotNull = x => x !== null;
 
 export class ProjectModel {
   multichain: MultichainClient;
@@ -99,24 +50,27 @@ export class ProjectModel {
   async list(authorized): Promise<Project[]> {
     const streams: Stream[] = await this.multichain.streams();
     console.log(`:streams=${JSON.stringify(streams)}`);
-    const projects: Project[] = (await Promise.all<Result<[Stream, StreamBody], Stream>>(
-      streams.filter(isProject).map(getStreamBody(this.multichain))
-    ))
-      .map(makeProjectFromResult)
-      .filter((x: Project | null) => x !== null) as Project[];
-    console.log(`:all projects=${JSON.stringify(projects)}`);
+
+    const projects = (await Promise.all(
+      streams
+        .filter(isProject)
+        .map(toProjectStream(this.multichain))
+        .map(toProject)
+        .map(promise => promise.catch(err => null))
+    )).filter(isNotNull) as Project[];
+
     const clearedProjects = (await Promise.all(
       projects.map(p =>
         authorized(p.permissions)
           .then(() => p)
           .catch(err => null)
       )
-    )).filter(x => x !== null);
-    console.log(`:cleared projects=${JSON.stringify(clearedProjects)}`);
+    )).filter(isNotNull) as Project[];
+
     return clearedProjects;
   }
 
-  async createProject(body, authorized): Promise<string> {
+  async createProject(userId, body, authorized): Promise<string> {
     const expectedKeys = ["displayName", "amount", "currency"];
     // TODO sanitize input
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, body);
@@ -139,10 +93,22 @@ export class ProjectModel {
         ...(body.thumbnail ? { thumbnail: body.thumbnail } : {})
       },
       initialLogEntry: { issuer, action: "created_project" },
-      permissions: [["subproject.create", ["alice"]]]
+      permissions: getDefaultPermissions(userId)
     });
 
     console.log(`${issuer} has created a new project (txid=${txid})`);
     return txid;
   }
 }
+
+const getDefaultPermissions = (userId: UserId): AllowedUserGroupsByIntent => {
+  const defaultIntents: Intent[] = [
+    "project.viewSummary",
+    "project.viewDetails",
+    "project.assign",
+    "project.intent.list",
+    "project.intent.grantPermission",
+    "project.intent.revokePermission"
+  ];
+  return defaultIntents.map(intent => [intent, [userId]]);
+};

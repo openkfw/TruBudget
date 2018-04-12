@@ -1,5 +1,5 @@
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import { ProjectStreamMetadata } from "../project/model";
+import { ProjectStreamMetadata } from "../project/model.h";
 export { RpcMultichainClient } from "./Client";
 
 type StreamKind = "users" | "project" | "subproject";
@@ -75,6 +75,12 @@ export interface MultichainClient {
 
   // Return all items from a stream
   listStreamItems(streamId: StreamName | StreamTxId): Promise<StreamItems>;
+
+  latestValuesForKey(
+    streamId: StreamName | StreamTxId,
+    key: string,
+    nValues?: number
+  ): Promise<any[]>;
 
   // Update a stream item, serializing the Js object as hex-string:
   updateStreamItem(
