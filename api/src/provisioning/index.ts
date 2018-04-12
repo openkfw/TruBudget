@@ -30,6 +30,7 @@ const authenticate = async (axios, rootSecret: string) => {
 
 export const provisionBlockchain = async (port: number, rootSecret: string) => {
   axios.defaults.baseURL = `http://localhost:${port}`;
+  axios.defaults.timeout = 20000;
   const token = await authenticate(axios, rootSecret);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
