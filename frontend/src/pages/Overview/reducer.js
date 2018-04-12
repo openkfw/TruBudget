@@ -11,20 +11,20 @@ import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
   projects: Set(),
-  projectDialogVisible: false,
-  projectName: '',
-  projectAmount: '',
-  projectComment: '',
+  dialogShown: false,
+  displayName: '',
+  amount: '',
+  description: '',
   currentStep: 0,
   initialFetch: false,
   projectApprover: Set(),
   projectAssignee: Set(),
   projectBank: Set(),
-  projectCurrency: 'EUR',
+  currency: 'EUR',
   nextButtonEnabled: false,
   roles: [],
   loading: false,
-  projectThumbnail: '/Thumbnail_0001.jpg',
+  thumbnail: '/Thumbnail_0001.jpg',
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -33,40 +33,40 @@ export default function overviewReducer(state = defaultState, action) {
     case FETCH_PROJECTS_SUCCESS:
       return state.set('projects', fromJS(action.projects));
     case SHOW_PROJECT_DIALOG:
-      return state.set('projectDialogVisible', true);
+      return state.set('dialogShown', true);
     case CANCEL_PROJECT_DIALOG:
       return state.merge({
-        projectName: defaultState.get('projectName'),
-        projectAmount: defaultState.get('projectAmount'),
-        projectComment: defaultState.get('projectComment'),
-        projectCurrency: defaultState.get('projectCurrency'),
+        displayName: defaultState.get('displayName'),
+        amount: defaultState.get('amount'),
+        description: defaultState.get('description'),
+        currency: defaultState.get('currency'),
         projectApprover: defaultState.get('projectApprover'),
         projectAssignee: defaultState.get('projectAssignee'),
         projectBank: defaultState.get('projectBank'),
-        projectThumbnail: defaultState.get('projectThumbnail'),
+        thumbnail: defaultState.get('thumbnail'),
         currentStep: defaultState.get('currentStep'),
-        projectDialogVisible: defaultState.get('projectDialogVisible'),
+        dialogShown: defaultState.get('dialogShown'),
       });
     case PROJECT_NAME:
-      return state.set('projectName', action.name);
+      return state.set('displayName', action.name);
     case PROJECT_AMOUNT:
-      return state.set('projectAmount', fromAmountString(action.amount));
+      return state.set('amount', fromAmountString(action.amount));
     case PROJECT_COMMENT:
-      return state.set('projectComment', action.comment);
+      return state.set('description', action.comment);
     case PROJECT_CURRENCY:
-      return state.set('projectCurrency', action.currency);
+      return state.set('currency', action.currency);
     case PROJECT_THUMBNAIL:
-      return state.set('projectThumbnail', action.thumbnail);
+      return state.set('thumbnail', action.thumbnail);
     case CREATE_PROJECT_SUCCESS:
       return state.merge({
-        projectName: defaultState.get('projectName'),
-        projectAmount: defaultState.get('projectAmount'),
-        projectComment: defaultState.get('projectComment'),
-        projectCurrency: defaultState.get('projectCurrency'),
+        displayName: defaultState.get('displayName'),
+        amount: defaultState.get('amount'),
+        description: defaultState.get('description'),
+        currency: defaultState.get('currency'),
         projectApprover: defaultState.get('projectApprover'),
         projectAssignee: defaultState.get('projectAssignee'),
         projectBank: defaultState.get('projectBank'),
-        projectThumbnail: defaultState.get('projectThumbnail'),
+        thumbnail: defaultState.get('thumbnail'),
       });
     case PROJECT_CREATION_STEP:
       return state.set('currentStep', action.step);

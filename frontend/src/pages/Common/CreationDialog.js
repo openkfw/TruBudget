@@ -5,15 +5,20 @@ import strings from '../../localizeStrings'
 import CreationDialogStepper from './CreationDialogStepper';
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  const isLastStep = props.currentStep === props.numberOfSteps - 1;
-  const isFirstStep = props.currentStep === 0;
-  const requiredInfoAdded = props.steps[props.currentStep].nextDisabled;
-  const editMode = props.editMode;
+  const {
+    numberOfSteps,
+    currentStep,
+    steps,
+    editMode
+  } = props;
 
+  const isLastStep = currentStep === numberOfSteps - 1;
+  const isFirstStep = currentStep === 0;
+  const requiredInfoAdded = steps[currentStep].nextDisabled;
 
   const cancelButton = <FlatButton aria-label='cancel' label={strings.common.cancel} secondary={true} onTouchTap={() => handleCancel(props)} />
-  const backButton = <FlatButton aria-label='back' label={strings.common.back} primary={true} disabled={isFirstStep} onTouchTap={() => handleBack(props)} />
-  const nextButton = <FlatButton aria-label='next' label={strings.common.next} primary={true} disabled={isLastStep ? isLastStep : requiredInfoAdded} onTouchTap={() => handleNext(props)} />
+  const backButton = numberOfSteps > 1 ? <FlatButton aria-label='back' label={strings.common.back} primary={true} disabled={isFirstStep} onTouchTap={() => handleBack(props)} /> : null
+  const nextButton = numberOfSteps > 1 ? <FlatButton aria-label='next' label={strings.common.next} primary={true} disabled={isLastStep ? isLastStep : requiredInfoAdded} onTouchTap={() => handleNext(props)} /> : null
   const submitButton = <FlatButton aria-label='submit' label={strings.common.submit} primary={true} disabled={isLastStep ? requiredInfoAdded : !editMode} onTouchTap={() => handleSubmit(props)} />
 
   const leftActions = <div>{cancelButton}{backButton}</div>

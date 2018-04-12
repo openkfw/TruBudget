@@ -149,19 +149,19 @@ const chill = async (ms) => new Promise(res => setTimeout(res, ms))
 //   }
 // }
 
-// export function* createProject(action) {
-//   try {
-//     yield callApi(api.postProject, action.name, action.amount, action.comment, action.currency, action.approver, action.assignee, action.bank, action.thumbnail);
-//     yield put({
-//       type: CREATE_PROJECT_SUCCESS
-//     });
-//     yield put({
-//       type: FETCH_PROJECTS
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
+export function* createProject(action) {
+  yield execute(function* () {
+    yield callApi(api.createProject, action.name, action.amount, action.comment, action.currency, action.thumbnail);
+    yield put({
+      type: CREATE_PROJECT_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_PROJECTS
+    });
+  }, true);
+}
+
+
 // export function* createSubProjectSaga(action) {
 //   try {
 //     yield callApi(api.postSubProject, action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectComment, action.subProjectCurrency);
@@ -624,9 +624,9 @@ export function* watchFetchAllProjects() {
 //   yield takeEvery(POST_SUBPROJECT_EDIT, editSubProjectSaga)
 // }
 
-// export function* watchCreateProject() {
-//   yield takeEvery(CREATE_PROJECT, createProject)
-// }
+export function* watchCreateProject() {
+  yield takeEvery(CREATE_PROJECT, createProject)
+}
 
 // export function* watchFetchNodeInformation() {
 //   yield takeEvery(FETCH_NODE_INFORMATION, fetchNodeInformationSaga)
@@ -718,7 +718,7 @@ export default function* rootSaga() {
       // watchCreateSubProject(),
       // watchCreateWorkflowItem(),
       // watchEditWorkflowItem(),
-      // watchCreateProject(),
+      watchCreateProject(),
       // watchFetchNodeInformation(),
       // watchFetchNotifications(),
       // watchMarkNotificationAsRead(),

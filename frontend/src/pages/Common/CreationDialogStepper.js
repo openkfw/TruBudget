@@ -23,12 +23,12 @@ const getSteps = (steps, editable, setCurrentStep) => {
 
 const CreationDialogStepper = (props) => {
 
-  const { steps, currentStep, editable = false, setCurrentStep } = props
+  const { steps, currentStep, editable = false, setCurrentStep, numberOfSteps } = props
   return (
     <div>
-      <Stepper linear={!editable} activeStep={currentStep}>
+      {numberOfSteps > 1 ? <Stepper linear={!editable} activeStep={currentStep}>
         {getSteps(steps, editable, setCurrentStep)}
-      </Stepper>
+      </Stepper> : null}
       <div style={styles.contentStyle}>
         <div>{getStepContent(props)}</div>
       </div>

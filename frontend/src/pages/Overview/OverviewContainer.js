@@ -70,19 +70,18 @@ const mapStateToProps = (state) => {
   return {
     projects: state.getIn(['overview', 'projects']),
     allowedIntents: state.getIn(['login', 'allowedIntents']),
-    creationDialogShown: state.getIn(['overview', 'projectDialogVisible']),
+    dialogShown: state.getIn(['overview', 'dialogShown']),
     currentStep: state.getIn(['overview', 'currentStep']),
-    projectName: state.getIn(['overview', 'projectName']),
-    projectAmount: state.getIn(['overview', 'projectAmount']),
-    projectComment: state.getIn(['overview', 'projectComment']),
-    projectThumbnail: state.getIn(['overview', 'projectThumbnail']),
-    projectCurrency: state.getIn(['overview', 'projectCurrency']),
+    displayName: state.getIn(['overview', 'displayName']),
+    amount: state.getIn(['overview', 'amount']),
+    description: state.getIn(['overview', 'description']),
+    thumbnail: state.getIn(['overview', 'thumbnail']),
+    currency: state.getIn(['overview', 'currency']),
     projectApprover: state.getIn(['overview', 'projectApprover']),
     projectAssignee: state.getIn(['overview', 'projectAssignee']),
     projectBank: state.getIn(['overview', 'projectBank']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     roles: state.getIn(['login', 'roles']),
-
   }
 }
 

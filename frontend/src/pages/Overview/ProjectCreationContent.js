@@ -15,27 +15,27 @@ const ProjectCreationContent = (props) => {
         <Identifier
           nameLabel={strings.project.project_title}
           nameHintText={strings.project.project_title_description}
-          name={props.projectName}
+          name={props.displayName}
           nameOnChange={props.storeProjectName}
           commentLabel={strings.project.project_comment}
           commentHintText={strings.common.comment_description}
-          comment={props.projectComment}
+          comment={props.description}
           commentOnChange={props.storeProjectComment} />
       </div>
       <Divider />
       <div >
         <Budget
           currencyTitle={strings.project.project_currency}
-          currency={props.projectCurrency}
+          currency={props.currency}
           storeCurrency={props.storeProjectCurrency}
           budgetLabel={strings.project.project_budget_amount}
           budgetHintText={strings.common.project_budget_amount_description}
-          budget={props.projectAmount}
+          budget={props.amount}
           storeBudget={props.storeProjectAmount}
         />
       </div>
       <Divider />
-      <ImageSelector onTouchTap={props.storeProjectThumbnail} selectedImage={props.projectThumbnail} />
+      <ImageSelector onTouchTap={props.storeProjectThumbnail} selectedImage={props.thumbnail} />
     </div >
   )
 

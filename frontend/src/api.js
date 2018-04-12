@@ -39,6 +39,11 @@ class Api {
 
   fetchProjects = () => axios.get(`/project.list`);
 
+  createProject = (displayName, amount,
+    description, currency, thumbnail) => axios.post(`/project.create`, {
+      displayName, amount: `${amount}`, description, currency, thumbnail
+    });
+
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
   //   return data;
@@ -73,16 +78,6 @@ class Api {
   //   comment: subProjectComment,
   //   currency: subProjectCurrency,
   //   status: `open`
-  // })
-  // postProject = (name, amount, comment, currency, approver, assignee, bank, thumbnail) => axios.post(`/projects`, {
-  //   name,
-  //   amount,
-  //   comment,
-  //   currency,
-  //   approver,
-  //   assignee,
-  //   bank,
-  //   thumbnail
   // })
   // fetchNodeInformation = () => axios.get(`/nodes`);
   // fetchNotifications = (user) => axios.get(`/notifications/` + user);
