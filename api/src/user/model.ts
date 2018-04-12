@@ -88,6 +88,7 @@ export class UserModel {
       allowedIntents: userRecord.allowedIntents
     };
   }
+
   async list(): Promise<UserListResponse> {
     const streamId = "users";
     const streamItems = await this.multichain.listStreamItems(streamId);
@@ -102,6 +103,13 @@ export class UserModel {
     }
   }
 
+  /*
+   * Get an authentication token for a user.
+   *
+   * Throws:
+   *  - ParseError on invalid input
+   *  - AuthenticationError if the username is not found or the password is wrong
+   */
   async authenticate(input): Promise<UserLoginResponse> {
     const expectedKeys = ["id", "password"];
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
