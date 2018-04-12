@@ -56,6 +56,10 @@ export interface StreamItem {
   txid: string;
 }
 
+export interface StreamItems {
+  items: Array<StreamItem>;
+}
+
 export interface MultichainClient {
   // Create a new stream. If name is set and the stream exists, nothing happens.
   createStream(options: CreateStreamOptions);
@@ -68,6 +72,9 @@ export interface MultichainClient {
 
   // Returns a specific item from a stream, or throws if no such item is found:
   streamItem(streamId: StreamName | StreamTxId, key: string): Promise<StreamItem>;
+
+  // Return all items from a stream
+  listStreamItems(streamId: StreamName | StreamTxId): Promise<StreamItems>;
 
   // Update a stream item, serializing the Js object as hex-string:
   updateStreamItem(

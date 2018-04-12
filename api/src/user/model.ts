@@ -2,10 +2,17 @@ import * as jsonwebtoken from "jsonwebtoken";
 
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import { MultichainClient, Stream, StreamBody, StreamItem, StreamTxId } from "../multichain";
-import { UserRecord, UserLoginResponse, NewUser, UserCreationResponse } from "./model.h";
+import {
+  UserRecord,
+  UserLoginResponse,
+  NewUser,
+  UserCreationResponse,
+  UserListResponse
+} from "./model.h";
 import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { globalIntents, defaultGlobalUserIntents } from "../authz/intents";
+import { UserRecord } from "./model.h";
 
 const usersStream = "users";
 
@@ -52,8 +59,7 @@ export class UserModel {
     const issuer = "alice";
     const streamTxId: StreamTxId = await this.multichain.createStream({
       kind: "users",
-      name: usersStream,
-      initialLogEntry: { issuer, action: "stream created" }
+      name: usersStream
     });
 
     const userExists = await this.multichain
@@ -82,6 +88,19 @@ export class UserModel {
       organization: userRecord.organization,
       allowedIntents: userRecord.allowedIntents
     };
+  }
+  async list(): Promise<UserListResponse> {
+    const streamId = "users";
+    const streamItems = await this.multichain.listStreamItems(streamId);
+    if (streamItems) {
+      const items = streamItems.items.map(item => {
+        const { id, displayName, organization, allowedIntents } = item.value;
+        return { id, displayName, organization, allowedIntents };
+      });
+      return { items };
+    } else {
+      throw new Error(`Stream does not exist or is empty ${streamId}`);
+    }
   }
 
   async authenticate(input): Promise<UserLoginResponse> {

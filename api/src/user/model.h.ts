@@ -28,6 +28,17 @@ export interface UserLoginResponse {
   token: string;
 }
 
+export interface UserListResponse {
+  items: Array<UserListResponse>;
+}
+
+export interface UserListResponse {
+  id: string;
+  displayName: string;
+  organization: string;
+  allowedIntents: string[];
+}
+
 export interface UserAlreadyExistsError {
   kind: "UserAlreadyExists";
   targetUserId: string;

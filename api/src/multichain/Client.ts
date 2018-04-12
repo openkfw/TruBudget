@@ -10,7 +10,7 @@ import {
 import { RpcClient, ConnectionSettings } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { objectToHex, hexToObject } from "./hexconverter";
-
+import { StreamItems } from "./Client.h";
 
 const streamItemKeys: any = {
   metadata: "_metadata",
@@ -107,6 +107,17 @@ export class RpcMultichainClient implements MultichainClient {
       key: key,
       value: hexToObject(item.data),
       txid: item.txid
+    };
+  }
+
+  async listStreamItems(streamId: StreamName | StreamTxId): Promise<StreamItems> {
+    const items = await this.rpcClient.invoke("liststreamitems", streamId);
+    return {
+      items: items.map(item => ({
+        key: item.keys[0],
+        value: hexToObject(item.data),
+        txid: item.txid
+      }))
     };
   }
 

@@ -96,6 +96,13 @@ export const createRouter = (
       }
     }
   });
+  router.get("/user.list", async (req, res) => {
+    const response = {
+      apiVersion: "1.0",
+      data: await userModel.list()
+    };
+    send(res, 200, response);
+  });
 
   router.post("/user.authenticate", async (req, res) => {
     const intent = req.path.substring(1);
