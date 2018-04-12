@@ -7,7 +7,7 @@ import { LOGOUT } from '../Login/actions';
 
 const defaultState = fromJS({
   showSidebar: false,
-  peers: {},
+  peers: [],
   unreadNotifications: 0,
   streamNames: {},
   selectedId: '',

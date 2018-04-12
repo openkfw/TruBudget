@@ -16,12 +16,12 @@ const styles = {
 
 }
 
-const RightNavbarNavigations = ({ peers, unreadNotifications, history, logout, loggedInUser }) => {
+const RightNavbarNavigations = ({ peers, unreadNotifications, history, logout, organization }) => {
   return (
     <div style={styles.container} >
       <span style={styles.text}
       >
-        {loggedInUser.role.organizationName}
+        {organization}
       </span>
       <NavbarIcons unreadNotifications={unreadNotifications} peers={peers} history={history} logout={logout} />
     </div >

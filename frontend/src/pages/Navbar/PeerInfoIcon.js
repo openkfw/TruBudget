@@ -21,7 +21,7 @@ class Icon extends Component {
   }
 };
 
-const transformPeers = (peers = {}) => {
+const transformPeers = (peers = []) => {
   const amount = peers.size || 0;
   const list = peers.map((peer, index) => {
     const addr = peer.getIn(['addr']);

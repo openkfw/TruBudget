@@ -17,6 +17,8 @@ export const defaultState = fromJS({
   displayName: '',
   organization: '',
   allowedIntents: [],
+  avatarBackground: '/avatar_back.jpeg',
+  avatar: '/lego_avatar_female2.jpg',
   loggedInUser: {
     role: {
       roleName: '',

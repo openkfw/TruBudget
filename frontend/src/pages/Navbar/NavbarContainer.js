@@ -6,6 +6,7 @@ import { fetchNotifications } from '../Notifications/actions';
 import { logout, fetchUsers } from '../Login/actions';
 
 import Navbar from './Navbar';
+import { toJS } from '../../helper';
 
 class NavbarContainer extends Component {
   componentWillMount() {
@@ -35,12 +36,16 @@ const mapStateToProps = (state) => {
     showSidebar: state.getIn(['navbar', 'showSidebar']),
     peers: state.getIn(['navbar', 'peers']),
     unreadNotifications: state.getIn(['navbar', 'unreadNotifications']),
-    route: state.getIn(['route', 'locationBeforeTransitions']).toObject(),
-    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
-    streamNames: state.getIn(['navbar', 'streamNames']).toJS(),
-    users: state.getIn(['login', 'users']).toJS(),
+    route: state.getIn(['route', 'locationBeforeTransitions']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    streamNames: state.getIn(['navbar', 'streamNames']),
+    users: state.getIn(['login', 'users']),
     productionActive: state.getIn(['login', 'productionActive']),
+    displayName: state.getIn(['login', 'displayName']),
+    organization: state.getIn(['login', 'organization']),
+    avatar: state.getIn(['login', 'avatar']),
+    avatarBackground: state.getIn(['login', 'avatarBackground']),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavbarContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(NavbarContainer));

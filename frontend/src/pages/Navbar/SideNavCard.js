@@ -13,11 +13,11 @@ import strings from '../../localizeStrings';
 
 import TrusteesList, { getChipList } from './TrusteesList';
 
-const SideNavCard = ({ loggedInUser, users, history }) => (
+const SideNavCard = ({ loggedInUser, avatarBackground, avatar, displayName, organization, users, history }) => (
   <div>
     <div
       style={{
-        background: `url('${loggedInUser.avatar_back}') no-repeat`,
+        background: `url('${avatarBackground}') no-repeat`,
         backgroundSize: 'cover',
         height: "200px",
         position: "relative"
@@ -37,14 +37,14 @@ const SideNavCard = ({ loggedInUser, users, history }) => (
         }}>
           <Avatar
             size={60}
-            src={loggedInUser.avatar}
+            src={avatar}
             style={{
               marginLeft: "16px"
             }}
           />
           <ListItem
-            primaryText={<div style={{ color: colors.lightColor }}>{loggedInUser.name}</div>}
-            secondaryText={<div style={{ color: colors.lightColor }}>{loggedInUser.organization}</div>}
+            primaryText={<div style={{ color: colors.lightColor }}>{displayName}</div>}
+            secondaryText={<div style={{ color: colors.lightColor }}>{organization}</div>}
             disabled
             style={{ paddingTop: '16px' }}
           />
