@@ -8,7 +8,7 @@ export class GlobalModel {
   }
 
   async initGlobalPermissions() {
-    const globalItems = await this.multichain.listStreamItems("global");
-    const globalPermissions = globalItems.items.map(item => item.key === "permissions");
+    const globalItems = await this.multichain.streamItems("global");
+    const globalPermissions = globalItems.map(item => item.key === "_permissions");
   }
 }
