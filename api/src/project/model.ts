@@ -70,8 +70,8 @@ export class ProjectModel {
     return clearedProjects;
   }
 
-  async details(projectId, authorized): Promise<Project> {
-    const project = await this.multichain.streamBody({ name: projectId });
+  async details(projectId, authorized): Promise<StreamBody> {
+    const project = await this.multichain.streamBody(projectId);
     await authorized(project.permissions);
     return project;
   }

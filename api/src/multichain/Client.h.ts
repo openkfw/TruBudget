@@ -68,7 +68,7 @@ export interface MultichainClient {
   streams(): Promise<Stream[]>;
 
   // Get the stream body (some of its key/value pairs) of a given stream:
-  streamBody(stream: Stream): Promise<StreamBody>;
+  streamBody(stream: String): Promise<StreamBody>;
 
   // Returns a specific item from a stream, or throws if no such item is found:
   streamItem(streamId: StreamName | StreamTxId, key: string): Promise<StreamItem>;

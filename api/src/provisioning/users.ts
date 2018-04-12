@@ -40,6 +40,7 @@ const handleError = async (axios, err) => {
     const timeout_s = 20;
     console.log(`Blockchain or API are not up yet, sleeping for ${timeout_s} seconds`);
     await sleep(timeout_s * 1000);
+    console.log("Stop sleeping");
     await provisionUsers(axios);
   }
 };

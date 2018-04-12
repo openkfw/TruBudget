@@ -79,11 +79,10 @@ export class RpcMultichainClient implements MultichainClient {
   }
 
   async streamBody(
-    stream: Stream,
+    streamId: String,
     includeOnly: string[] | undefined = undefined
   ): Promise<StreamBody> {
     const nAllItems = 1000;
-    const streamId = stream.name || stream.createtxid;
     const body = await Promise.all([
       this.rpcClient.invoke("liststreamkeyitems", streamId, "_metadata", false, 1),
       this.rpcClient.invoke("liststreamkeyitems", streamId, "_log", false, nAllItems),

@@ -55,7 +55,7 @@ class MultichainClientStub implements MultichainClient {
       }
     ];
   }
-  async streamBody(stream: Stream): Promise<StreamBody> {
+  async streamBody(stream: String): Promise<StreamBody> {
     throw "aaaaah";
   }
   streamItem(streamId: StreamName | StreamTxId, key: string): Promise<any> {
