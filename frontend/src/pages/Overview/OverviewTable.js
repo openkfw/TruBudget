@@ -13,6 +13,9 @@ import _ from 'lodash';
 import { ACMECorpDarkBlue } from '../../colors';
 import strings from '../../localizeStrings'
 
+const canCreateProject = (allowedIntents) => allowedIntents.indexOf("project.create") > -1;
+const canViewProjectDetails = (allowedIntents) => allowedIntents.indexOf("project.view.details") > -1;
+
 const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {
     const { displayName, amount, currency, status, description, thumbnail = "/Thumbnail_0008.jpg", creationUnixTs } = project
@@ -31,7 +34,10 @@ const getTableEntries = ({ projects, history }) => {
           </CardMedia>
         </Card>
         <CardActions style={{ display: 'flex', flexDirection: 'column', height: '20px', alignItems: 'flex-end', marginTop: '-40px' }}>
-          <FloatingActionButton backgroundColor={ACMECorpDarkBlue} onTouchTap={() => history.push('/projects/' + project.name)} >
+          <FloatingActionButton
+            disabled={!canViewProjectDetails([])}
+            backgroundColor={ACMECorpDarkBlue}
+            onTouchTap={() => history.push('/projects/' + project.id)} >
             <InfoIcon />
           </FloatingActionButton>
         </CardActions>
@@ -64,7 +70,6 @@ const getTableEntries = ({ projects, history }) => {
   });
 }
 
-const canCreateProject = (props) => props.allowedIntents.indexOf("project.create") > -1;
 
 const OverviewTable = (props) => {
   const tableEntries = getTableEntries(props);
@@ -74,7 +79,7 @@ const OverviewTable = (props) => {
       <Card style={{ margin: '20px', width: '25%', opacity: '0.7' }}>
         <div style={{ display: 'flex', height: '450px', backgroundColor: 'lightgray', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
           <CardActions >
-            <FloatingActionButton aria-label='create' disabled={!canCreateProject(props)} onTouchTap={() => props.showProjectDialog()} style={{ height: '100%', opacity: '1.0' }} >
+            <FloatingActionButton aria-label='create' disabled={!canCreateProject(props.allowedIntents)} onTouchTap={() => props.showProjectDialog()} style={{ height: '100%', opacity: '1.0' }} >
               <ContentAdd />
             </FloatingActionButton>
           </CardActions>

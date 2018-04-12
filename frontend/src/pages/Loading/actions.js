@@ -10,6 +10,7 @@ export function fetchUserWithToken(showLoading = false) {
   }
 }
 export function showLoadingIndicator() {
+  console.log("show");
   return {
     type: SHOW_LOADING_INDICATOR,
     meta: {
@@ -21,6 +22,7 @@ export function showLoadingIndicator() {
 }
 
 export function cancelDebounce() {
+  console.log("cancel");
   return {
     type: CANCEL_DEBOUNCE,
     meta: {
@@ -33,6 +35,7 @@ export function cancelDebounce() {
 }
 
 export function hideLoadingIndicator() {
+  console.log("hide");
   return {
     type: HIDE_LOADING_INDICATOR,
   }

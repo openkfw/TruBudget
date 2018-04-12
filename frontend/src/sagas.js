@@ -85,12 +85,18 @@ function* callApi(func, ...args) {
   return data
 }
 
+var loadingCounter = 0;
+
 function* handleLoading(showLoading) {
   if (showLoading) {
+    loadingCounter++
     yield put(showLoadingIndicator())
     return function* done() {
-      yield put(cancelDebounce())
-      yield put(hideLoadingIndicator())
+      loadingCounter--
+      if (!loadingCounter) {
+        yield put(cancelDebounce())
+        yield put(hideLoadingIndicator())
+      }
     }
   } else {
     return function* () { }
@@ -531,8 +537,10 @@ export function* logoutSaga() {
 
 
 export function* fetchAllProjectsSaga({ showLoading }) {
+  console.log("loading", showLoading);
   yield execute(function* () {
     const { data } = yield callApi(api.fetchProjects)
+    yield chill(2500);
     //TODO
     //const roles = yield callApi(api.fetchRoles);
     yield put({

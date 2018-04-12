@@ -8,6 +8,7 @@ import { showSnackBar, storeSnackBarMessage, showHistory } from '../Notification
 import { setSelectedView } from '../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
+import { toJS } from '../../helper';
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
@@ -27,8 +28,7 @@ class SubProjectsContainer extends Component {
       </div>
     )
   }
-}
-;
+};
 
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -61,7 +61,7 @@ const mapStateToProps = (state) => {
     projectApprover: state.getIn(['detailview', 'projectApprover']),
     projectAssignee: state.getIn(['detailview', 'projectAssignee']),
     projectBank: state.getIn(['detailview', 'projectBank']),
-    subProjects: state.getIn(['detailview', 'subProjects']).toJS(),
+    subProjects: state.getIn(['detailview', 'subProjects']),
     subprojectsDialogVisible: state.getIn(['detailview', 'subprojectsDialogVisible']),
     subProjectName: state.getIn(['detailview', 'subProjectName']),
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
@@ -69,11 +69,11 @@ const mapStateToProps = (state) => {
     currentStep: state.getIn(['detailview', 'currentStep']),
     subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
     showHistory: state.getIn(['notifications', 'showHistory']),
-    historyItems: state.getIn(['notifications', 'historyItems']).toJS(),
-    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
-    users: state.getIn(['login', 'users']).toJS(),
-    roles: state.getIn(['login', 'roles']).toJS(),
+    historyItems: state.getIn(['notifications', 'historyItems']),
+    loggedInUser: state.getIn(['login', 'loggedInUser']),
+    users: state.getIn(['login', 'users']),
+    roles: state.getIn(['login', 'roles']),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubProjectsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectsContainer));

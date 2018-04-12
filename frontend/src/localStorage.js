@@ -38,7 +38,6 @@ export const loadState = () => {
 }
 
 const setStorage = (state) => {
-  console.log(state);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 }
 
