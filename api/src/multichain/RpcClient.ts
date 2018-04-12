@@ -3,7 +3,6 @@ import * as https from "https";
 import { ConnectionSettings } from "./RpcClient.h";
 import RpcResponse from "./RpcResponse.h";
 import RpcError from "./RpcError";
-import MultichainError from "./MultichainError";
 import RpcRequest from "./RpcRequest.h";
 
 export class RpcClient {
@@ -53,7 +52,7 @@ export class RpcClient {
           }
 
           if (response.error !== null) {
-            reject(new MultichainError(response));
+            reject(response.error);
             return;
           }
 

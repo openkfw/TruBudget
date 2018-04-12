@@ -37,25 +37,24 @@ export class RpcMultichainClient implements MultichainClient {
   }
 
   async getOrCreateStream(options: CreateStreamOptions): Promise<StreamTxId> {
-    // If the stream name is set, we need to check first whether the stream exists already:
-    if (options.name) {
-      const [verbose, count] = [false, 1];
-      const existingStream: Stream | null = await this.rpcClient
-        .invoke("liststreams", options.name, verbose, count)
-        .catch(_err => null);
-      if (existingStream !== null) {
-        console.log(`Found stream: ${JSON.stringify(existingStream)}`);
-        console.log(`Skipping stream creation: stream "${options.name}" already exists.`);
-        return options.name;
-      }
-    }
-
     const streamName = options.name || randomStreamName();
-    const isPublic = true;
+
     console.log(`:createStream options=${JSON.stringify(options)} => name=${streamName}`);
-    const txId: StreamTxId = await this.rpcClient.invoke("create", "stream", streamName, isPublic, {
-      kind: options.kind
-    });
+
+    const isPublic = true; // in multichain terms: isOpen
+    const customFields = { kind: options.kind };
+    const txId: StreamTxId = await this.rpcClient
+      .invoke("create", "stream", streamName, isPublic, customFields)
+      .catch(err => {
+        console.log(`RPC ERROR: ${JSON.stringify(err)}`);
+        if (options.name && err.code === -705) {
+          // Stream or asset with this name already exists
+          console.log(`Skipping stream creation: stream "${options.name}" already exists.`);
+          return options.name;
+        }
+        throw err;
+      });
+
     if (options.initialLogEntry) {
       await this.updateStreamItem(txId, "_log", options.initialLogEntry);
     }
