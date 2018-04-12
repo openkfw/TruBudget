@@ -1,52 +1,49 @@
 type Intent =
-  | "root.permission.list"
-  | "root.permission.grant"
-  | "root.permission.revoke"
-  | "user.list"
-  | "user.create"
+  | "global.intent.list"
+  | "global.intent.grantPermission"
+  | "global.intent.revokePermission"
+  | "global.createProject"
+  | "global.createUser"
   | "user.authenticate"
-  | "project.list" // IDs + meta data
-  | "project.view" // ID + meta data + allowed intents + history
-  | "project.create"
+  | "project.intent.list"
+  | "project.intent.grantPermission"
+  | "project.intent.revokePermission"
+  | "project.viewSummary" // IDs + meta data + allowed intents
+  | "project.viewDetails" // ID + meta data + allowed intents + history
   | "project.assign"
   | "project.update"
   | "project.close"
   | "project.archive"
-  | "project.permission.list"
-  | "project.permission.grant"
-  | "project.permission.revoke"
-  | "subproject.list"
-  | "subproject.view"
-  | "subproject.create"
+  | "project.createSubproject"
+  | "subproject.permission.list"
+  | "subproject.permission.grant"
+  | "subproject.permission.revoke"
+  | "subproject.viewSummary"
+  | "subproject.viewDetails"
   | "subproject.assign"
   | "subproject.update"
   | "subproject.close"
   | "subproject.archive"
-  | "subproject.permission.list"
-  | "subproject.permission.grant"
-  | "subproject.permission.revoke"
-  | "workflowitem.list"
-  | "workflowitem.view"
-  | "workflowitem.create"
+  | "subproject.createWorkflowitem"
+  | "workflowitem.permission.list"
+  | "workflowitem.permission.grant"
+  | "workflowitem.permission.revoke"
+  | "workflowitem.viewSummary"
+  | "workflowitem.viewDetails"
   | "workflowitem.assign"
   | "workflowitem.update"
   | "workflowitem.close"
-  | "workflowitem.archive"
-  | "workflowitem.permission.list"
-  | "workflowitem.permission.grant"
-  | "workflowitem.permission.revoke";
+  | "workflowitem.archive";
 
 export const globalIntents: Intent[] = [
-  "root.permission.list",
-  "root.permission.grant",
-  "root.permission.revoke",
-  "user.list",
-  "user.create",
-  "user.authenticate",
-  "project.list",
-  "project.create"
+  "global.intent.list",
+  "global.intent.grantPermission",
+  "global.intent.revokePermission",
+  "global.createProject",
+  "global.createUser",
+  "user.authenticate"
 ];
 
-export const defaultGlobalUserIntents: Intent[] = ["user.authenticate", "project.list"];
+export const userDefaultIntents: Intent[] = ["user.authenticate"];
 
 export default Intent;

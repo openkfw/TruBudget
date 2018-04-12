@@ -11,7 +11,7 @@ import {
 } from "./model.h";
 import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
-import { globalIntents, defaultGlobalUserIntents } from "../authz/intents";
+import { globalIntents, userDefaultIntents } from "../authz/intents";
 
 const usersStream = "users";
 
@@ -76,7 +76,7 @@ export class UserModel {
       id: newUser.id,
       displayName: newUser.displayName,
       organization: newUser.organization,
-      allowedIntents: defaultGlobalUserIntents,
+      allowedIntents: userDefaultIntents,
       passwordCiphertext: await encryptPassword(newUser.passwordPlaintext)
     };
     await this.multichain.updateStreamItem(streamTxId, userRecord.id, userRecord);
