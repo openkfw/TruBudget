@@ -5,7 +5,8 @@ import {
   CreateStreamOptions,
   StreamName,
   StreamTxId,
-  StreamItem
+  StreamItem,
+  StreamItems
 } from "./Client.h";
 
 const metadata = {
@@ -66,6 +67,9 @@ class MultichainClientStub implements MultichainClient {
     object: any
   ): Promise<StreamItem> {
     throw "aaaaah";
+  }
+  async listStreamItems(streamId: StreamName | StreamTxId): Promise<StreamItems> {
+    throw "aaaaaah";
   }
 }
 

@@ -12,7 +12,6 @@ import {
 import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { globalIntents, defaultGlobalUserIntents } from "../authz/intents";
-import { UserRecord } from "./model.h";
 
 const usersStream = "users";
 
