@@ -1,5 +1,6 @@
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import { LogEntry, Stream } from "../multichain/Client.h";
+import Intent from "../authz/intents";
 
 export interface Project {
   id: string;
@@ -22,4 +23,17 @@ export interface ProjectStreamMetadata {
   amount: string;
   currency: string;
   thumbnail?: string;
+}
+
+export interface ProjectResponse {
+  id: string;
+  creationUnixTs: string;
+  status: "open" | "done";
+  displayName: string;
+  description?: string;
+  amount: string;
+  currency: string;
+  thumbnail?: string;
+  allowedIntents: Intent[];
+  logs?: LogEntry[];
 }

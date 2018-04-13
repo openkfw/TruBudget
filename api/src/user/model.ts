@@ -17,13 +17,13 @@ import { authorized } from "../authz/index";
 
 const usersStream = "users";
 
-const createToken = (secret: string) => (userId: string): string =>
-  jsonwebtoken.sign({ user: userId }, secret, { expiresIn: "1h" });
+const createToken = (secret: string) => (userId: string, organization: string): string =>
+  jsonwebtoken.sign({ userId, organization }, secret, { expiresIn: "1h" });
 
 export class UserModel {
   multichain: MultichainClient;
   rootSecret: string;
-  createToken: (userId: string) => string;
+  createToken: (userId: string, organization: string) => string;
 
   constructor(multichain: MultichainClient, jwtSecret: string, rootSecret: string) {
     this.multichain = multichain;
@@ -75,7 +75,7 @@ export class UserModel {
       organization: newUser.organization,
       allowedIntents: userDefaultIntents,
       passwordCiphertext: await encryptPassword(newUser.passwordPlaintext),
-      permissions: [["user.view", [newUser.id]]]
+      permissions: [["user.view", [newUser.id]] as any]
     };
     await this.multichain.updateStreamItem(streamTxId, userRecord.id, userRecord);
     console.log(`Created new user ${userRecord.id} on stream "${streamTxId}"`);
@@ -128,7 +128,7 @@ export class UserModel {
     // The special "root" user is not on the chain:
     if (id === "root") {
       if (passwordCleartext === this.rootSecret) {
-        return rootUserLoginResponse(this.createToken("root"));
+        return rootUserLoginResponse(this.createToken("root", "root"));
       } else {
         throwError("wrong password");
       }
@@ -149,7 +149,7 @@ export class UserModel {
       displayName: trueUser.displayName,
       organization: trueUser.organization,
       allowedIntents: trueUser.allowedIntents,
-      token: this.createToken(id)
+      token: this.createToken(id, trueUser.organization)
     };
   }
 }

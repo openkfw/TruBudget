@@ -38,7 +38,8 @@ export const createRouter = (
   router.get("/health", (req, res) => res.status(200).send("OK"));
 
   router.post("/user.create", async (req, res) => {
-    const intent = req.path.substring(1);
+    console.log(`req.user: ${JSON.stringify(req.user)}`);
+    console.log(`req.token: ${JSON.stringify(req.token)}`);
     const body = req.body;
     console.log(`body: ${JSON.stringify(body)}`);
     if (body.apiVersion !== apiVersion) {
@@ -56,6 +57,7 @@ export const createRouter = (
       return;
     }
 
+    const intent = "global.createUser";
     try {
       const response = {
         apiVersion: apiVersion,
@@ -163,7 +165,10 @@ export const createRouter = (
   router.get("/project.list", async (req, res) => {
     // Returns all projects the user is allowed to see
     try {
-      const projects = await projectModel.list(authorized(req.token, "project.viewSummary"));
+      const projects = await projectModel.list(
+        req.token,
+        authorized(req.token, "project.viewSummary")
+      );
       res.json({
         apiVersion: apiVersion,
         data: {
@@ -217,7 +222,7 @@ export const createRouter = (
     const intent = "global.createProject";
     try {
       const id = await projectModel.createProject(
-        req.token.userId,
+        req.token,
         body.data,
         authorized(req.token, intent)
       );

@@ -11,7 +11,8 @@ const addTokenHandling = (app, jwtSecret: string) => {
   app.use(function customAuthTokenErrorHandler(err, req, res, next) {
     if (err.name === "UnauthorizedError") {
       res.status(401).send({
-        apiVersion: req.body.apiVersion, error: { code: 401, message: "A valid JWT auth bearer token is required for this route." }
+        apiVersion: req.body.apiVersion,
+        error: { code: 401, message: "A valid JWT auth bearer token is required for this route." }
       });
     }
   });

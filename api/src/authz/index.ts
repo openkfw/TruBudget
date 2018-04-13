@@ -1,16 +1,33 @@
 import * as Sample from "./sample";
-import { AllowedUserGroupsByIntent } from "./types";
+import { AllowedUserGroupsByIntent, AllowedUserGroupsByIntentMap } from "./types";
 import Intent from "./intents";
 import { AuthToken } from "./token";
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
 
-// const groupIntersection = (groups1, groups2) =>
-//   groups1.filter(g1 => groups2.indexOf(g1) !== -1);
+const groupIntersection = (groups1, groups2) => groups1.filter(g1 => groups2.indexOf(g1) !== -1);
 
-// const isGroupIntersection = (actualGroups, allowedGroups) =>
-//   groupIntersection(actualGroups, allowedGroups).length > 0;
+const isGroupIntersection = (actualGroups, allowedGroups) =>
+  groupIntersection(actualGroups, allowedGroups).length > 0;
+
+export const getAllowedIntents = async (
+  token: AuthToken,
+  resourcePermissions: AllowedUserGroupsByIntent
+): Promise<Intent[]> => {
+  // TODO (await) get user's groups
+  const isRoot = token.userId === "root";
+  const currentUserAndGroups = [token.userId, token.organization];
+  const allowedIntents = (resourcePermissions as any)
+    .filter(
+      ([_intent, allowedUsersAndGroups]) =>
+        isRoot || isGroupIntersection(currentUserAndGroups, allowedUsersAndGroups)
+    )
+    .map(([intent, _allowedUsersAndGroups]) => intent as Intent);
+  // console.log(`>>> RESOURCE PERMISSIONS: ${JSON.stringify(resourcePermissions)}`);
+  // console.log(`>>> ALLOWED INTENTS: ${JSON.stringify(allowedIntents)}`);
+  return allowedIntents;
+};
 
 const can = async (
   token: AuthToken,
@@ -18,11 +35,15 @@ const can = async (
   resourcePermissions: AllowedUserGroupsByIntent
 ): Promise<boolean> => {
   if (token.userId === "root") {
-    // root may do everything
+    // root can do everything
     return true;
   } else {
-    // TODO read from the chain and decide
-    return true;
+    const permissions = new Map<string, string[]>(resourcePermissions as any);
+    if (!permissions.has(intent)) return false;
+    const allowedUsersAndGroups = permissions.get(intent);
+    // TODO (await) get user's groups
+    const currentUserAndGroups = [token.userId, token.organization];
+    return isGroupIntersection(currentUserAndGroups, allowedUsersAndGroups);
   }
 };
 

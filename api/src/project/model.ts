@@ -2,8 +2,10 @@ import { AllowedUserGroupsByIntent, UserId } from "../authz/types";
 import { MultichainClient, Stream, StreamTxId, StreamBody } from "../multichain";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { LogEntry } from "../multichain/Client.h";
-import { Project, ProjectStreamMetadata } from "./model.h";
+import { Project, ProjectStreamMetadata, ProjectResponse } from "./model.h";
 import Intent from "../authz/intents";
+import { getAllowedIntents } from "../authz/index";
+import { AuthToken } from "../authz/token";
 
 interface ProjectStream {
   stream: Stream;
@@ -47,7 +49,7 @@ export class ProjectModel {
     this.multichain = multichain;
   }
 
-  async list(authorized): Promise<Project[]> {
+  async list(token: AuthToken, authorized): Promise<ProjectResponse[]> {
     const streams: Stream[] = await this.multichain.streams();
 
     const projects = (await Promise.all(
@@ -66,7 +68,18 @@ export class ProjectModel {
       )
     )).filter(isNotNull) as Project[];
 
-    return clearedProjects;
+    // Instead of passing the permissions as is, we return the intents the current user
+    // is allowed to execute:
+    return Promise.all(
+      clearedProjects.map(async project => {
+        const permissions = project.permissions;
+        delete project.permissions;
+        return {
+          ...project,
+          allowedIntents: await getAllowedIntents(token, permissions || [])
+        };
+      })
+    );
   }
 
   async details(projectId, authorized): Promise<Project> {
@@ -76,7 +89,7 @@ export class ProjectModel {
     return project;
   }
 
-  async createProject(userId, body, authorized): Promise<string> {
+  async createProject(token: AuthToken, body, authorized): Promise<string> {
     const expectedKeys = ["displayName", "amount", "currency"];
     // TODO sanitize input
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, body);
@@ -99,7 +112,7 @@ export class ProjectModel {
         ...(body.thumbnail ? { thumbnail: body.thumbnail } : {})
       },
       initialLogEntry: { issuer, action: "created_project" },
-      permissions: getDefaultPermissions(userId)
+      permissions: getDefaultPermissions(token)
     });
 
     console.log(`${issuer} has created a new project (txid=${txid})`);
@@ -107,7 +120,7 @@ export class ProjectModel {
   }
 }
 
-const getDefaultPermissions = (userId: UserId): AllowedUserGroupsByIntent => {
+const getDefaultPermissions = (token: AuthToken): AllowedUserGroupsByIntent => {
   const defaultIntents: Intent[] = [
     "project.viewSummary",
     "project.viewDetails",
@@ -116,5 +129,5 @@ const getDefaultPermissions = (userId: UserId): AllowedUserGroupsByIntent => {
     "project.intent.grantPermission",
     "project.intent.revokePermission"
   ];
-  return defaultIntents.map(intent => [intent, [userId]]);
+  return defaultIntents.map(intent => [intent, [token.userId]] as any);
 };
