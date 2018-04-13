@@ -101,47 +101,47 @@ export const createRouter = (
       });
       return;
     }
-    try{
-    const response = {
-      apiVersion: apiVersion,
-      data: await globalModel.grantPermissions(body.data, authorized(req.token, intent))
-    };
-    send(res, 201, response);
-  } catch (err) {
-    console.log(err);
-    switch (err.kind) {
-      case "NotAuthorized":
-        console.log(err);
-        send(res, 403, {
-          apiVersion: apiVersion,
-          error: {
-            code: 403,
-            message: `User ${req.token.userId} is not authorized to execute ${intent}`
-          }
-        });
-        break;
-      case "UserAlreadyExists":
-        console.log(err);
-        send(res, 409, {
-          apiVersion: apiVersion,
-          error: { code: 409, message: `The user already exists.` }
-        });
-        break;
-      case "ParseError":
-        console.log(err);
-        send(res, 400, {
-          apiVersion: apiVersion,
-          error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
-        });
-        break;
-      default:
-        console.log(err);
-        send(res, 500, {
-          apiVersion: apiVersion,
-          error: { code: 500, message: "INTERNAL SERVER ERROR" }
-        });
+    try {
+      const response = {
+        apiVersion: apiVersion,
+        data: await globalModel.grantPermissions(body.data, authorized(req.token, intent))
+      };
+      send(res, 201, response);
+    } catch (err) {
+      console.log(err);
+      switch (err.kind) {
+        case "NotAuthorized":
+          console.log(err);
+          send(res, 403, {
+            apiVersion: apiVersion,
+            error: {
+              code: 403,
+              message: `User ${req.token.userId} is not authorized to execute ${intent}`
+            }
+          });
+          break;
+        case "UserAlreadyExists":
+          console.log(err);
+          send(res, 409, {
+            apiVersion: apiVersion,
+            error: { code: 409, message: `The user already exists.` }
+          });
+          break;
+        case "ParseError":
+          console.log(err);
+          send(res, 400, {
+            apiVersion: apiVersion,
+            error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
+          });
+          break;
+        default:
+          console.log(err);
+          send(res, 500, {
+            apiVersion: apiVersion,
+            error: { code: 500, message: "INTERNAL SERVER ERROR" }
+          });
+      }
     }
-
   });
 
   router.post("/user.create", async (req, res) => {
@@ -295,7 +295,7 @@ export const createRouter = (
 
   router.get("/project.intent.list", async (req, res) => {
     // Returns all projects the user is allowed to see
-    const intent = req.path.split('/')[1];
+    const intent = req.path.split("/")[1];
     const projectId = req.query.id;
     try {
       const response = {
@@ -340,7 +340,6 @@ export const createRouter = (
     }
   });
 
-
   router.post("/project.intent.grantPermission", async (req, res) => {
     const { body, path } = req;
     const intent = path.substring(1);
@@ -359,48 +358,48 @@ export const createRouter = (
       });
       return;
     }
-    try{
-    const response = {
-      apiVersion: apiVersion,
-      data: await projectModel.grantPermissions(body.data, authorized(req.token, intent))
-    };
-    send(res, 201, response);
-  } catch (err) {
-    console.log(err);
-    switch (err.kind) {
-      case "NotAuthorized":
-        console.log(err);
-        send(res, 403, {
-          apiVersion: apiVersion,
-          error: {
-            code: 403,
-            message: `User ${req.token.userId} is not authorized to execute ${intent}`
-          }
-        });
-        break;
-      case "UserAlreadyExists":
-        console.log(err);
-        send(res, 409, {
-          apiVersion: apiVersion,
-          error: { code: 409, message: `The user already exists.` }
-        });
-        break;
-      case "ParseError":
-        console.log(err);
-        send(res, 400, {
-          apiVersion: apiVersion,
-          error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
-        });
-        break;
-      default:
-        console.log(err);
-        send(res, 500, {
-          apiVersion: apiVersion,
-          error: { code: 500, message: "INTERNAL SERVER ERROR" }
-        });
+    try {
+      const response = {
+        apiVersion: apiVersion,
+        data: await projectModel.grantPermissions(body.data, authorized(req.token, intent))
+      };
+      send(res, 201, response);
+    } catch (err) {
+      console.log(err);
+      switch (err.kind) {
+        case "NotAuthorized":
+          console.log(err);
+          send(res, 403, {
+            apiVersion: apiVersion,
+            error: {
+              code: 403,
+              message: `User ${req.token.userId} is not authorized to execute ${intent}`
+            }
+          });
+          break;
+        case "UserAlreadyExists":
+          console.log(err);
+          send(res, 409, {
+            apiVersion: apiVersion,
+            error: { code: 409, message: `The user already exists.` }
+          });
+          break;
+        case "ParseError":
+          console.log(err);
+          send(res, 400, {
+            apiVersion: apiVersion,
+            error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
+          });
+          break;
+        default:
+          console.log(err);
+          send(res, 500, {
+            apiVersion: apiVersion,
+            error: { code: 500, message: "INTERNAL SERVER ERROR" }
+          });
+      }
     }
-
-  })
+  });
 
   router.get("/project.viewDetails/:projectId", async (req, res) => {
     const intent = req.path.split("/")[1];
