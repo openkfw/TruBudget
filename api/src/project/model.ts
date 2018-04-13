@@ -41,6 +41,18 @@ const toProject = async (futureProjectStream: Promise<ProjectStream>): Promise<P
   };
 };
 
+const replacePermissionsWithAllowedIntents = async (
+  token: AuthToken,
+  project: Project
+): Promise<ProjectResponse> => {
+  const permissions = project.permissions;
+  delete project.permissions;
+  return {
+    ...(project as any),
+    allowedIntents: await getAllowedIntents(token, permissions || [])
+  };
+};
+
 const isNotNull = x => x !== null;
 
 export class ProjectModel {
@@ -72,22 +84,19 @@ export class ProjectModel {
     // Instead of passing the permissions as is, we return the intents the current user
     // is allowed to execute:
     return Promise.all(
-      clearedProjects.map(async project => {
-        const permissions = project.permissions;
-        delete project.permissions;
-        return {
-          ...project,
-          allowedIntents: await getAllowedIntents(token, permissions || [])
-        };
-      })
+      clearedProjects.map(
+        async project => await replacePermissionsWithAllowedIntents(token, project)
+      )
     );
   }
 
-  async details(projectId, authorized): Promise<Project> {
+  async details(token: AuthToken, projectId, authorized): Promise<ProjectResponse> {
     const fakeStream = { name: projectId } as Stream;
     const project = await toProject(toProjectStream(this.multichain)(fakeStream));
     await authorized(project.permissions);
-    return project;
+    // Instead of passing the permissions as is, we return the intents the current user
+    // is allowed to execute:
+    return replacePermissionsWithAllowedIntents(token, project);
   }
 
   async grantPermissions(data, authorized) {
