@@ -1,4 +1,4 @@
-import { MultichainClient } from "../multichain/Client.h";
+import { MultichainClient, StreamKind } from "../multichain/Client.h";
 import { authorized } from "../authz/index";
 
 const globalPermissionsTemplate = {
@@ -10,6 +10,7 @@ const globalPermissionsTemplate = {
 };
 
 export class GlobalModel {
+  streamId: StreamKind = "global";
   multichain: MultichainClient;
   key = "_permissions";
 
@@ -20,36 +21,34 @@ export class GlobalModel {
   rootPermissions = new Map<string, string[]>();
 
   async listPermissions(authorized) {
-    const streamId = "global";
     await authorized(this.rootPermissions);
-    return await this.multichain.latestValuesForKey("global", this.key);
+    return await this.multichain.latestValuesForKey(this.streamId, this.key);
   }
 
   async grantPermissions(requestedPermissions, authorized) {
     let mergedPermissions = {};
-    // TS won't allow to use streamId as global variable :()
-    const streamId = "global";
+
     await authorized(this.rootPermissions);
     await this.multichain.getOrCreateStream({
-      kind: streamId,
-      name: streamId
+      kind: this.streamId,
+      name: this.streamId
     });
-    const existingPermissions = await this.multichain.latestValuesForKey(streamId, this.key);
+    const existingPermissions = await this.multichain.latestValuesForKey(this.streamId, this.key);
     if (existingPermissions.length === 0) {
-      mergedPermissions = this.mergePermissions(requestedPermissions, globalPermissionsTemplate);
+      mergedPermissions = mergePermissions(requestedPermissions, globalPermissionsTemplate);
     } else {
-      mergedPermissions = this.mergePermissions(requestedPermissions, existingPermissions[0]);
+      mergedPermissions = mergePermissions(requestedPermissions, existingPermissions[0]);
     }
-    await this.multichain.updateStreamItem(streamId, this.key, mergedPermissions);
+    await this.multichain.updateStreamItem(this.streamId, this.key, mergedPermissions);
   }
-
-  mergePermissions = (requestedPermissions, existingPermissions) => {
-    const keys = Object.keys(existingPermissions);
-    keys.map(key => {
-      return (existingPermissions[key] = existingPermissions[key].concat(
-        requestedPermissions[key] === undefined ? [] : requestedPermissions[key]
-      ));
-    });
-    return existingPermissions;
-  };
 }
+
+export const mergePermissions = (requestedPermissions, existingPermissions) => {
+  const keys = Object.keys(existingPermissions);
+  keys.map(key => {
+    return (existingPermissions[key] = existingPermissions[key].concat(
+      requestedPermissions[key] === undefined ? [] : requestedPermissions[key]
+    ));
+  });
+  return existingPermissions;
+};

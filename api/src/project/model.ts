@@ -4,8 +4,9 @@ import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { LogEntry } from "../multichain/Client.h";
 import { Project, ProjectStreamMetadata, ProjectResponse } from "./model.h";
 import Intent from "../authz/intents";
-import { getAllowedIntents } from "../authz/index";
+import { getAllowedIntents, authorized } from "../authz/index";
 import { AuthToken } from "../authz/token";
+import { mergePermissions } from "../global/model";
 
 interface ProjectStream {
   stream: Stream;
@@ -89,6 +90,24 @@ export class ProjectModel {
     return project;
   }
 
+  async grantPermissions(data, authorized) {
+    const { id, permissions } = data;
+    const permissionsKey = "_permissions";
+    const permissionItem = await this.multichain.latestValuesForKey(id, "_permissions");
+    const existingPermissions = permissionItem[0];
+    await authorized(existingPermissions);
+    const mergedPermissions = mergePermissions(permissions, existingPermissions);
+    await this.multichain.updateStreamItem(id, permissionsKey, mergedPermissions);
+  }
+
+  async listPermissions(id, authorized) {
+    const permissionsKey = "_permissions";
+    const permissionItem = await this.multichain.latestValuesForKey(id, "_permissions");
+    const existingPermissions = permissionItem[0];
+    await authorized(existingPermissions);
+    return { items: permissionItem };
+  }
+
   async createProject(token: AuthToken, body, authorized): Promise<string> {
     const expectedKeys = ["displayName", "amount", "currency"];
     // TODO sanitize input
@@ -121,13 +140,13 @@ export class ProjectModel {
 }
 
 const getDefaultPermissions = (token: AuthToken): AllowedUserGroupsByIntent => {
-  const defaultIntents: Intent[] = [
-    "project.viewSummary",
-    "project.viewDetails",
-    "project.assign",
-    "project.intent.list",
-    "project.intent.grantPermission",
-    "project.intent.revokePermission"
-  ];
-  return defaultIntents.map(intent => [intent, [token.userId]] as any);
+  const defaultIntents: Object = {
+    "project.viewSummary": [token.userId],
+    "project.viewDetails": [token.userId],
+    "project.assign": [token.userId],
+    "project.intent.list": [token.userId],
+    "project.intent.grantPermission": [token.userId],
+    "project.intent.revokePermission": [token.userId]
+  };
+  return defaultIntents;
 };
