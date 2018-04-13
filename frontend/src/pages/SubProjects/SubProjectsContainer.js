@@ -9,13 +9,14 @@ import { setSelectedView } from '../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
 import { toJS } from '../../helper';
+import { fetchUser } from '../Login/actions';
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
     const projectId = this.props.location.pathname.split('/')[2];
     this.props.setSelectedView(projectId, 'project');
     this.props.fetchAllProjectDetails(projectId, true);
-
+    this.props.fetchUser(true);
   }
 
   render() {
@@ -34,6 +35,7 @@ class SubProjectsContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
+    fetchUser: (showLoading) => dispatch(fetchUser(showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
@@ -73,6 +75,8 @@ const mapStateToProps = (state) => {
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     users: state.getIn(['login', 'users']),
     roles: state.getIn(['login', 'roles']),
+    permissions: state.getIn(['detailview', 'permissions']),
+    user: state.getIn(['login', 'user']),
   }
 }
 

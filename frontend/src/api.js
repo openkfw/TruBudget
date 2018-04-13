@@ -25,6 +25,7 @@ class Api {
     ]
   }
 
+
   setAuthorizationHeader = (token) => {
     axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
   }
@@ -37,12 +38,17 @@ class Api {
 
   login = (username, password) => axios.post(`/user.authenticate`, { id: username, password })
 
-  fetchProjects = () => axios.get(`/project.list`);
+  listUser = () => axios.get(`/user.list`);
+
+  listProjects = () => axios.get(`/project.list`);
 
   createProject = (displayName, amount,
     description, currency, thumbnail) => axios.post(`/project.create`, {
       displayName, amount: `${amount}`, description, currency, thumbnail
     });
+
+  viewProjectDetails = (projectId) => axios.get(`/project.viewDetails/` + projectId);
+
 
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
@@ -68,7 +74,6 @@ class Api {
   // fetchPeers = () => axios.get(`/peers`);
 
 
-  // fetchProjectDetails = (project) => axios.get(`/projects/` + project);
   // fetchStreamNames = () => axios.get(`/projects/mapping`);
   // fetchStreamItems = (flowName) => axios.get(`/streams/` + flowName);
   // postSubProject = (parentProject, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) => axios.post(`/subprojects`, {

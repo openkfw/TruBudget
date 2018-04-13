@@ -9,6 +9,7 @@ import ChangeLog from '../Notifications/ChangeLog';
 import _ from 'lodash';
 import { ACMECorpLightgreen, ACMECorpDarkBlue } from '../../colors.js';
 import SubProjectCreation from './SubProjectCreation';
+import PermissionsScreen from '../Common/Permissions/PermissionsScreen';
 
 
 const SubProjects = (props) => {
@@ -41,7 +42,7 @@ const SubProjects = (props) => {
         </FloatingActionButton>
 
       </div>
-
+      {/* <PermissionsScreen permissions={props.permissions} user={props.user} /> */}
       <SubProjectsTable {...props} />
       <ChangeLog {...props} />
     </Card>

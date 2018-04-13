@@ -25,6 +25,8 @@ const defaultState = fromJS({
   roles: [],
   loading: false,
   thumbnail: '/Thumbnail_0001.jpg',
+  logs: [],
+  allowedIntents: []
 });
 
 export default function overviewReducer(state = defaultState, action) {

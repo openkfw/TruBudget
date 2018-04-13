@@ -28,6 +28,7 @@ export const defaultState = fromJS({
     }
   },
   users: [],
+  user: [],
   environment: 'Test',
   productionActive: false,
   loginErrorMessage: '',
@@ -63,10 +64,7 @@ export default function loginReducer(state = defaultState, action) {
     case STORE_PASSWORD:
       return state.set('password', action.password);
     case FETCH_USER_SUCCESS:
-      return state.merge({
-        'loggedInUser': action.user,
-        'jwt': action.jwt
-      });
+      return state.set('user', action.user);
     case FETCH_ADMIN_USER_SUCCESS:
       return state.merge({
         'loggedInAdminUser': action.user,

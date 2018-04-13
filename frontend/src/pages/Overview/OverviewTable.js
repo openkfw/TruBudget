@@ -13,7 +13,7 @@ import _ from 'lodash';
 import { ACMECorpDarkBlue } from '../../colors';
 import strings from '../../localizeStrings'
 
-const canCreateProject = (allowedIntents) => allowedIntents.indexOf("project.create") > -1;
+const canCreateProject = (allowedIntents) => allowedIntents.indexOf("global.createProject") > -1;
 const canViewProjectDetails = (allowedIntents) => allowedIntents.indexOf("project.view.details") > -1;
 
 const getTableEntries = ({ projects, history }) => {
@@ -35,7 +35,7 @@ const getTableEntries = ({ projects, history }) => {
         </Card>
         <CardActions style={{ display: 'flex', flexDirection: 'column', height: '20px', alignItems: 'flex-end', marginTop: '-40px' }}>
           <FloatingActionButton
-            disabled={!canViewProjectDetails([])}
+            disabled={canViewProjectDetails([])}
             backgroundColor={ACMECorpDarkBlue}
             onTouchTap={() => history.push('/projects/' + project.id)} >
             <InfoIcon />

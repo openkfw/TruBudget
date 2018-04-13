@@ -34,11 +34,20 @@ export const FETCH_ADMIN_USER = 'FETCH_ADMIN_USER';
 export const FETCH_ADMIN_USER_SUCCESS = 'FETCH_ADMIN_USER_SUCCESS';
 export const SHOW_ADMIN_LOGIN_ERROR = 'SHOW_ADMIN_LOGIN_ERROR';
 
-export function fetchUsers() {
+export function fetchUser(showLoading = false) {
   return {
-    type: FETCH_USERS
+    type: FETCH_USER,
+    showLoading
   }
 }
+
+export function fetchUsers(showLoading = false) {
+  return {
+    type: FETCH_USER,
+    showLoading
+  }
+}
+
 
 export function fetchRoles() {
   return {

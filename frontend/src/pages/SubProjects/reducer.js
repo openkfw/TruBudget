@@ -8,6 +8,7 @@ import { LOGOUT } from '../Login/actions';
 import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
+  id: '',
   projectName: '',
   projectAmount: '',
   projectCurrency: '',
@@ -27,25 +28,28 @@ const defaultState = fromJS({
   historyItems: [],
   currentStep: 0,
   roles: [],
-
+  permissions: {},
+  logs: []
 });
+
+const parsePermissions = p => p.length > 0 ? p[0].reduce((acc, val) => {
+  acc[val[0]] = val[1];
+  return acc;
+}, {}) : {}
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
       return state.merge({
-        projectName: action.projectDetails.details.name,
-        projectAmount: fromAmountString(action.projectDetails.details.amount),
-        projectCurrency: action.projectDetails.details.currency,
-        projectComment: action.projectDetails.details.comment,
-        projectStatus: action.projectDetails.details.status,
-        projectTS: action.projectDetails.details.createTS,
-        projectApprover: action.projectDetails.details.approver,
-        projectAssignee: action.projectDetails.details.assignee,
-        projectBank: action.projectDetails.details.bank,
-        subProjects: action.projectDetails.subProjects,
-        roles: action.roles,
-        historyItems: action.historyItems,
+        id: action.id,
+        projectName: action.displayName,
+        projectAmount: fromAmountString(action.amount),
+        projectCurrency: action.currency,
+        projectComment: action.description,
+        projectStatus: action.status,
+        projectTS: action.creationUnixTs,
+        permissions: fromJS(parsePermissions(action.permissions)),
+        logs: fromJS(action.logs),
       })
     case SUBPROJECT_CREATION_STEP:
       return state.set('currentStep', action.step);
