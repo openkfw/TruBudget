@@ -12,6 +12,44 @@ securityDefinitions:
     in: header
     name: Authorization
 paths:
+  "/global.intent.grantPermission":
+    post:
+      tags:
+        - global
+      operationId: "global.intent.grantPermission"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                type: string
+                enum:
+                  - '1.0'
+              data:
+                type: array
+                items:
+                  type: object
+            example:
+              apiVersion: "1.0"
+              data: [
+                "global.createProject": ["user1", "user2"]
+                ]
+      responses:
+          '200':
+            description: 'OK'
+            schema:
+              type: string
+          '403':
+            description: Returned when providing invalid credentials.
   "/user.create":
     post:
       tags:

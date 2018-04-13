@@ -2,7 +2,7 @@ import { AllowedUserGroupsByIntent } from "../authz/types";
 import { ProjectStreamMetadata } from "../project/model.h";
 export { RpcMultichainClient } from "./Client";
 
-type StreamKind = "users" | "project" | "subproject";
+type StreamKind = "global" | "users" | "project" | "subproject";
 
 // The "stream details" are read-only, so they're only used to define the stream's nature:
 interface StreamDetails {
