@@ -18,13 +18,9 @@ export const getAllowedIntents = async (
   // TODO (await) get user's groups
   const isRoot = token.userId === "root";
   const currentUserAndGroups = [token.userId, token.organization];
-  const allowedIntents = Object.keys(resourcePermissions as any)
-    .filter(
-      intent => isRoot || isGroupIntersection(currentUserAndGroups, resourcePermissions[intent])
-    )
-    .map(intent => intent as Intent);
-  // console.log(`>>> RESOURCE PERMISSIONS: ${JSON.stringify(resourcePermissions)}`);
-  // console.log(`>>> ALLOWED INTENTS: ${JSON.stringify(allowedIntents)}`);
+  const allowedIntents = Object.keys(resourcePermissions as any).filter(
+    intent => isRoot || isGroupIntersection(currentUserAndGroups, resourcePermissions[intent])
+  ) as Intent[];
   return allowedIntents;
 };
 
