@@ -12,6 +12,9 @@ import { RpcClient, ConnectionSettings } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { objectToHex, hexToObject } from "./hexconverter";
 
+// Oddly enough, there is no way to tell Multichain to return _everything_..
+const maxItemCount: number = 0x7fffffff;
+
 const streamItemKeys: any = {
   metadata: "_metadata",
   log: "_log",
@@ -77,15 +80,12 @@ export class RpcMultichainClient implements MultichainClient {
     return (await this.rpcClient.invoke("liststreams")) as Stream[];
   }
 
-  async streamItems(
-    streamId: StreamName | StreamTxId,
-    nValues: number = 10000
-  ): Promise<StreamItem[]> {
+  async streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]> {
     const items: MultichainStreamItem[] = await this.rpcClient.invoke(
       "liststreamitems",
       streamId,
       false,
-      nValues
+      maxItemCount
     );
     return items.map(item => ({
       key: item.keys[0],

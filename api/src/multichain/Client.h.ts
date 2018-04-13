@@ -65,7 +65,7 @@ export interface MultichainClient {
   streams(): Promise<Stream[]>;
 
   // Return the most recent values for all keys
-  streamItems(streamId: StreamName | StreamTxId, nValues?: number): Promise<StreamItem[]>;
+  streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]>;
 
   // Return the most recent values for a specific key
   latestValuesForKey(
