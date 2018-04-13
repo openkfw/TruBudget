@@ -77,12 +77,11 @@ export class RpcMultichainClient implements MultichainClient {
     return (await this.rpcClient.invoke("liststreams")) as Stream[];
   }
 
-  async streamItems(streamId: StreamName | StreamTxId, nValues: number = 1): Promise<StreamItem[]> {
+  async streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]> {
     const items: MultichainStreamItem[] = await this.rpcClient.invoke(
       "liststreamitems",
       streamId,
-      false,
-      nValues
+      false
     );
     return items.map(item => ({
       key: item.keys[0],
