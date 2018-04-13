@@ -26,7 +26,7 @@ const toProjectStream = (multichain: MultichainClient) => async (
     stream,
     metadata: metadata[0],
     logs,
-    permissions: permissions
+    permissions: permissions[0]
   };
 };
 
