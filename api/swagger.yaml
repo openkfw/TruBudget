@@ -308,7 +308,7 @@ paths:
         - application/json
       parameters:
         - in: query
-          name: id
+          name: projectId
           required: true
           type: string
       responses:

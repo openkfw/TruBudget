@@ -218,7 +218,7 @@ export const createRouter = (
 
   router.get("/project.intent.list", async (req, res) => {
     const intent = "project.intent.list";
-    const projectId = req.query.id;
+    const projectId = req.query.projectId;
     try {
       if (!projectId) throw { kind: "ParseError", badKeys: ["projectId"] };
 
