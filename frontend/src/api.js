@@ -49,7 +49,7 @@ class Api {
 
   viewProjectDetails = (projectId) => axios.get(`/project.viewDetails?projectId=${projectId}`);
 
-  listProjectIntents = (projectId) => axios.get(`/project.intent.list?id=${projectId}`);
+  listProjectIntents = (projectId) => axios.get(`/project.intent.list?projectId=${projectId}`);
 
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
