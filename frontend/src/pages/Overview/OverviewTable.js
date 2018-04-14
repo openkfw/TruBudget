@@ -14,7 +14,7 @@ import { ACMECorpDarkBlue } from '../../colors';
 import strings from '../../localizeStrings'
 
 const canCreateProject = (allowedIntents) => allowedIntents.indexOf("global.createProject") > -1;
-const canViewProjectDetails = (allowedIntents) => allowedIntents.indexOf("project.view.details") > -1;
+const canViewProjectDetails = (allowedIntents) => allowedIntents.indexOf("project.viewDetails") > -1;
 
 const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {
@@ -35,7 +35,7 @@ const getTableEntries = ({ projects, history }) => {
         </Card>
         <CardActions style={{ display: 'flex', flexDirection: 'column', height: '20px', alignItems: 'flex-end', marginTop: '-40px' }}>
           <FloatingActionButton
-            disabled={canViewProjectDetails([])}
+            disabled={!canViewProjectDetails(project.allowedIntents)}
             backgroundColor={ACMECorpDarkBlue}
             onTouchTap={() => history.push('/projects/' + project.id)} >
             <InfoIcon />
