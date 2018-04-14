@@ -317,8 +317,6 @@ paths:
           examples:
             apiVersion: "1.0"
             data: {
-              items: [
-              {
                 "project.viewSummary": [
                     "mstein",
                 ],
@@ -337,9 +335,6 @@ paths:
                 "project.intent.revokePermission": [
                     "mstein"
                 ]
-              }
-            ]
-
             }
 
   "/project.intent.grantPermission":

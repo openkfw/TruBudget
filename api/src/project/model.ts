@@ -114,7 +114,7 @@ export class ProjectModel {
     const permissionItem = await this.multichain.latestValuesForKey(id, "_permissions");
     const existingPermissions = permissionItem[0];
     await authorized(existingPermissions);
-    return { items: permissionItem };
+    return existingPermissions;
   }
 
   async createProject(token: AuthToken, body, authorized): Promise<string> {
