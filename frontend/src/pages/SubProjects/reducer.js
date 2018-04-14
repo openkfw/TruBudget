@@ -1,7 +1,7 @@
 import { fromJS } from 'immutable';
+import _ from 'lodash';
 
-
-import { SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG, SUBPROJECT_CREATION_STEP, FETCH_ALL_PROJECT_DETAILS_SUCCESS } from './actions';
+import { SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG, SUBPROJECT_CREATION_STEP, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from './actions';
 import { LOGOUT } from '../Login/actions';
 
 
@@ -29,13 +29,10 @@ const defaultState = fromJS({
   currentStep: 0,
   roles: [],
   permissions: {},
-  logs: []
+  logs: [],
+  thumbnail: '/Thumbnail_0001.jpg',
+  allowedIntents: []
 });
-
-const parsePermissions = p => p.length > 0 ? p[0].reduce((acc, val) => {
-  acc[val[0]] = val[1];
-  return acc;
-}, {}) : {}
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
@@ -48,9 +45,11 @@ export default function detailviewReducer(state = defaultState, action) {
         projectComment: action.description,
         projectStatus: action.status,
         projectTS: action.creationUnixTs,
-        permissions: fromJS(parsePermissions(action.permissions)),
+        allowedIntents: fromJS(action.allowedIntents),
         logs: fromJS(action.logs),
       })
+    case FETCH_PROJECT_PERMISSIONS_SUCCESS:
+      return state.set('permissions', fromJS(action.permissions))
     case SUBPROJECT_CREATION_STEP:
       return state.set('currentStep', action.step);
     case SHOW_SUBPROJECT_DIALOG:

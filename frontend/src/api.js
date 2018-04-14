@@ -47,8 +47,9 @@ class Api {
       displayName, amount: `${amount}`, description, currency, thumbnail
     });
 
-  viewProjectDetails = (projectId) => axios.get(`/project.viewDetails/` + projectId);
+  viewProjectDetails = (projectId) => axios.get(`/project.viewDetails?projectId=${projectId}`);
 
+  listProjectIntents = (projectId) => axios.get(`/project.intent.list?id=${projectId}`);
 
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })

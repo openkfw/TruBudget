@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 
-import { fetchAllProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment, setCurrentStep } from './actions';
+import { fetchAllProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment, setCurrentStep, fetchProjectPermissions } from './actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory } from '../Notifications/actions';
 import { setSelectedView } from '../Navbar/actions';
@@ -16,14 +16,17 @@ class SubProjectsContainer extends Component {
     const projectId = this.props.location.pathname.split('/')[2];
     this.props.setSelectedView(projectId, 'project');
     this.props.fetchAllProjectDetails(projectId, true);
+    this.props.fetchProjectPermissions(projectId, true);
     this.props.fetchUser(true);
   }
 
   render() {
+    const canViewPermissions = this.props.allowedIntents.indexOf("project.intent.list") > -1;
+
     return (
       <div>
         <div style={globalStyles.innerContainer}>
-          <ProjectDetails {...this.props} />
+          <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <SubProjects {...this.props} />
         </div>
       </div>
@@ -36,6 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     fetchUser: (showLoading) => dispatch(fetchUser(showLoading)),
+    fetchProjectPermissions: (projectId, showLoading) => dispatch(fetchProjectPermissions(projectId, showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
@@ -77,6 +81,8 @@ const mapStateToProps = (state) => {
     roles: state.getIn(['login', 'roles']),
     permissions: state.getIn(['detailview', 'permissions']),
     user: state.getIn(['login', 'user']),
+    allowedIntents: state.getIn(['detailview', 'allowedIntents']),
+    thumbnail: state.getIn(['detailview', 'thumbnail'])
   }
 }
 

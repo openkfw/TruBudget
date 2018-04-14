@@ -1,10 +1,17 @@
 import React from 'react';
-import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
+import { Card, CardTitle, CardText, CardMedia, CardHeader } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
-import { toAmountString, getAllocationRatio, getCompletionRatio, getCompletionString, createTaskData, statusIconMapping, statusMapping, tsToString, calculateUnspentAmount, getProgressInformation, getAssignedOrganization } from '../../helper.js'
+import {
+  toAmountString, getAllocationRatio, getCompletionRatio,
+  getCompletionString, createTaskData, statusIconMapping,
+  statusMapping, tsToString, calculateUnspentAmount,
+  getProgressInformation, getAssignedOrganization
+} from '../../helper.js'
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
+import RaisedButton from 'material-ui/RaisedButton';
+import ActionAndroid from 'material-ui/svg-icons/action/android';
 import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
@@ -83,7 +90,12 @@ const styles = {
   }
 }
 
-const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjects, projectComment, projectStatus, projectTS, projectAssignee, roles }) => {
+const ProjectDetails = ({
+  projectName, projectCurrency, projectAmount,
+  subProjects, projectComment, projectStatus,
+  projectTS, projectAssignee, roles, thumbnail,
+  canViewPermissions
+}) => {
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
 
@@ -97,15 +109,12 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <CardTitle title={projectName} />
+        <CardHeader
+          title={projectName}
+          subtitle={projectComment}
+          avatar={thumbnail}
+        />
         <List>
-          <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<CommentIcon />}
-            primaryText={<div aria-label='projectcomment' style={styles.comment}>{projectComment} </div>}
-            secondaryText={strings.common.comment}
-          />
           <Divider />
           <ListItem
             disabled={true}
@@ -131,6 +140,16 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
+            primaryText={<RaisedButton
+              label="Permissions"
+              secondary={true}
+              disabled={!canViewPermissions}
+            />}
+          />
+          <Divider />
+          <ListItem
+            disabled={true}
+            leftIcon={<AssigneeIcon />}
             primaryText={<div aria-label='projectassignee'> {getAssignedOrganization(roles, projectAssignee)} </div>}
             secondaryText={strings.subproject.subproject_assigned_organization}
           />
@@ -141,7 +160,9 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         </CardText>
       </Card>
       <Card style={styles.card}>
-        <CardTitle title={strings.common.budget_distribution} />
+        <CardHeader
+          title={strings.common.budget_distribution}
+        />
         <Divider />
         <div style={styles.charts}>
           <ListItem style={styles.text}
@@ -166,7 +187,9 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
         <Divider />
       </Card>
       <Card style={styles.card}>
-        <CardTitle title={strings.common.task_status} />
+        <CardHeader
+          title={strings.common.task_status}
+        />
         <Divider />
         <CardMedia style={styles.cardMedia}>
           <Doughnut data={createTaskData(subProjects, 'subprojects')} />
@@ -179,7 +202,10 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.open.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip={strings.common.open} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
+                <IconButton
+                  disableTouchRipple tooltip={strings.common.open}
+                  style={styles.iconButton} tooltipStyles={styles.tooltip}
+                  iconStyle={styles.icon} >
                   < OpenIcon />
                 </IconButton>
               </div>
@@ -189,7 +215,10 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.inProgress.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip={strings.common.in_progress} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
+                <IconButton
+                  disableTouchRipple tooltip={strings.common.in_progress}
+                  style={styles.iconButton} tooltipStyles={styles.tooltip}
+                  iconStyle={styles.icon}>
                   < InProgressIcon />
                 </IconButton>
               </div>
@@ -199,7 +228,10 @@ const ProjectDetails = ({ projectName, projectCurrency, projectAmount, subProjec
                 {statusDetails.done.toString()}
               </div>
               <div>
-                <IconButton disableTouchRipple tooltip={strings.common.done} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
+                <IconButton
+                  disableTouchRipple tooltip={strings.common.done}
+                  style={styles.iconButton} tooltipStyles={styles.tooltip}
+                  iconStyle={styles.icon} >
                   < DoneIcon />
                 </IconButton>
               </div>

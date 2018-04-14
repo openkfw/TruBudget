@@ -6,7 +6,7 @@ import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAME
 import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_SUCCESS, FETCH_ALL_PROJECTS_SUCCESS, FETCH_ALL_PROJECTS } from './pages/Overview/actions';
 
 
-import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT, CREATE_SUBPROJECT_SUCCESS, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_ALL_PROJECT_DETAILS } from './pages/SubProjects/actions';
+import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT, CREATE_SUBPROJECT_SUCCESS, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_ALL_PROJECT_DETAILS, FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from './pages/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from './pages/Workflows/actions';
@@ -162,7 +162,8 @@ export function* createProject(action) {
       type: CREATE_PROJECT_SUCCESS
     });
     yield put({
-      type: FETCH_ALL_PROJECTS
+      type: FETCH_ALL_PROJECTS,
+      showLoading: true
     });
   }, true);
 }
@@ -371,7 +372,6 @@ export function* getEnvironmentSaga() {
 export function* loginSaga({ user }) {
   function* login() {
     const { data } = yield callApi(api.login, user.username, user.password);
-    yield call(chill, 1250);
 
     yield put({
       type: LOGIN_SUCCESS,
@@ -423,7 +423,6 @@ export function* loginSaga({ user }) {
 export function* fetchUserSaga({ showLoading }) {
   yield execute(function* () {
     const { data } = yield callApi(api.listUser);
-    console.log(data);
     yield put({
       type: FETCH_USER_SUCCESS,
       user: data.items
@@ -535,7 +534,6 @@ export function* logoutSaga() {
 export function* fetchAllProjectsSaga({ showLoading }) {
   yield execute(function* () {
     const { data } = yield callApi(api.listProjects)
-    yield chill(2500);
     //TODO
     //const roles = yield callApi(api.fetchRoles);
     yield put({
@@ -551,7 +549,6 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
     const projectDetails = yield callApi(api.viewProjectDetails, projectId)
     //const history = yield callApi(api.fetchHistory, projectId);
     //const roles = yield callApi(api.fetchRoles);
-    console.log(projectDetails);
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
       ...projectDetails.data
@@ -574,6 +571,21 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
 //   });
 //   yield done();
 // }
+
+export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
+  yield execute(function* () {
+    const { data } = yield callApi(api.listProjectIntents, projectId)
+    //const history = yield callApi(api.fetchHistory, projectId);
+    //const roles = yield callApi(api.fetchRoles);
+    yield put({
+      type: FETCH_PROJECT_PERMISSIONS_SUCCESS,
+      permissions: data.items[0] || {}
+      //historyItems: history.data,
+      //roles: roles.data
+    });
+  }, showLoading);
+}
+
 
 // WATCHERS
 
@@ -708,7 +720,9 @@ export function* watchGetEnvironment() {
 // }
 
 
-
+export function* watchFetchProjectPermissions() {
+  yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga)
+}
 
 export default function* rootSaga() {
   try {
@@ -746,6 +760,7 @@ export default function* rootSaga() {
       watchFetchAllProjects(),
       watchFetchAllProjectDetails(),
       // watchFetchAllSubprojectDetails(),
+      watchFetchProjectPermissions()
     ]
   } catch (error) {
     console.log(error);

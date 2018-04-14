@@ -1,6 +1,9 @@
 export const FETCH_PROJECT_DETAILS = 'FETCH_PROJECT_DETAILS';
 export const FETCH_PROJECT_DETAILS_SUCCESS = 'FETCH_PROJECT_DETAILS_SUCCESS';
 
+export const FETCH_PROJECT_PERMISSIONS = 'FETCH_PROJECT_PERMISSIONS';
+export const FETCH_PROJECT_PERMISSIONS_SUCCESS = 'FETCH_PROJECT_PERMISSIONS_SUCCESS';
+
 export const SHOW_SUBPROJECT_DIALOG = 'SHOW_SUBPROJECT_DIALOG';
 export const CANCEL_SUBPROJECT_DIALOG = 'CANCEL_SUBPROJECT_DIALOG';
 export const SHOW_SUBPROJECT_DIALOG_SUCCESS = 'SHOW_SUBPROJECT_DIALOG_SUCCESS';
@@ -23,6 +26,15 @@ export function fetchAllProjectDetails(projectId, showLoading = false) {
     showLoading
   }
 }
+
+export function fetchProjectPermissions(projectId, showLoading = false) {
+  return {
+    type: FETCH_PROJECT_PERMISSIONS,
+    projectId,
+    showLoading
+  }
+}
+
 export function fetchProjectDetails(project) {
   return {
     type: FETCH_PROJECT_DETAILS,
