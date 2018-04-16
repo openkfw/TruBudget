@@ -38,14 +38,14 @@ export const provisionUsers = async axios => {
 
 const grantDefaultPermission = async (axios, userId) => {
   const data = {
-    "user.view": [userId]
+    "user.view": [userId],
+    "global.intent.list": [userId]
   };
   await grantPermissionsToUser(axios, data);
 };
 
 const grantCreateProjectPermission = async (axios, userId) => {
   const data = {
-    "global.intent.list": [userId],
     "global.createProject": [userId]
   };
   await grantPermissionsToUser(axios, data);

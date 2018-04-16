@@ -21,8 +21,6 @@ export class GlobalModel {
     this.multichain = multichain;
     this.createGlobalStream();
   }
-  /* TODO root permissions */
-  rootPermissions = new Map<string, string[]>();
 
   async createGlobalStream() {
     await this.multichain.getOrCreateStream({
@@ -37,9 +35,21 @@ export class GlobalModel {
 
   async listPermissions(authorized) {
     const globalPermissions = await this.multichain.latestValuesForKey(this.streamId, this.key);
-    await authorized(globalPermissions);
-    return globalPermissions;
+    await authorized(globalPermissions[0]);
+    return globalPermissions[0];
   }
+
+  listPermissionsForUser = async (authorized, userId) => {
+    const globalPermissions = await this.listPermissions(authorized);
+    const allowedIntents = Object.keys(globalPermissions).map(key => {
+      const intent = globalPermissions[key].find(user => user === userId);
+      if (intent) {
+        return key;
+      }
+    });
+
+    return allowedIntents.filter(intent => intent !== undefined);
+  };
 
   async grantPermissions(requestedPermissions, authorized) {
     let mergedPermissions = {};

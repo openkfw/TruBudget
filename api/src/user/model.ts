@@ -13,9 +13,7 @@ import {
 import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { globalIntents, userDefaultIntents } from "../authz/intents";
-import { authorized } from "../authz/index";
-import { getGlobalPermissionsForUser } from "../global";
-import { getGlobalPermissions } from "../global/index";
+import { authorized as globalAuthorized } from "../authz";
 const usersStream = "users";
 
 const createToken = (secret: string) => (userId: string, organization: string): string =>
@@ -88,11 +86,15 @@ export class UserModel {
     };
   }
 
-  async list(authorized): Promise<UserListResponse> {
+  async list(token, authorized, globalModel): Promise<UserListResponse> {
     const users: UserRecord[] = (await this.multichain.streamItems(usersStream)).map(
       item => item.value
     );
-    const globalPermissions = await getGlobalPermissions(this.multichain);
+
+    const globalPermissions = await globalModel.listPermissions(
+      globalAuthorized(token, "global.intent.list")
+    );
+
     const clearedUsers = (await Promise.all(
       users.map(user => {
         return authorized(globalPermissions)
@@ -113,7 +115,7 @@ export class UserModel {
    *  - ParseError on invalid input
    *  - AuthenticationError if the username is not found or the password is wrong
    */
-  async authenticate(input): Promise<UserLoginResponse> {
+  async authenticate(input, globalModel): Promise<UserLoginResponse> {
     const expectedKeys = ["id", "password"];
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, input);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
@@ -134,17 +136,17 @@ export class UserModel {
         throwError("wrong password");
       }
     }
-    const allowedIntents = (await getGlobalPermissionsForUser(this.multichain, id)) as string[];
     const values: UserRecord[] = await this.multichain
       .latestValuesForKey(usersStream, id)
       .catch(throwError);
     if (values.length === 0) throwError("user not found");
     const trueUser = values[0];
-
     const passwordCiphertext = await encryptPassword(passwordCleartext);
     const isPasswordMatch = passwordCiphertext === trueUser.passwordCiphertext;
     if (!isPasswordMatch) throwError("wrong password");
-
+    const allowedIntents = (await globalModel.listPermissionsForUser(
+      globalAuthorized({ userId: id, organization: trueUser.organization }, "global.intent.list")
+    )) as string[];
     return {
       id,
       displayName: trueUser.displayName,

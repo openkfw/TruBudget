@@ -6,8 +6,8 @@ import { Project, ProjectStreamMetadata, ProjectResponse } from "./model.h";
 import Intent from "../authz/intents";
 import { getAllowedIntents, authorized } from "../authz/index";
 import { AuthToken } from "../authz/token";
-import { mergePermissions, getGlobalPermissionsForUser } from "../global";
-import { getGlobalPermissions } from "../global/index";
+import { mergePermissions } from "../global";
+import { authorized as globalAuthorized } from "../authz";
 
 interface ProjectStream {
   stream: Stream;
@@ -62,7 +62,6 @@ export class ProjectModel {
   constructor(multichain: MultichainClient) {
     this.multichain = multichain;
   }
-
   async list(token: AuthToken, authorized): Promise<ProjectResponse[]> {
     const streams: Stream[] = await this.multichain.streams();
 
@@ -119,13 +118,16 @@ export class ProjectModel {
     return existingPermissions;
   }
 
-  async createProject(token: AuthToken, body, authorized): Promise<string> {
+  async createProject(token: AuthToken, body, authorized, globalModel): Promise<string> {
     const expectedKeys = ["displayName", "amount", "currency"];
     // TODO sanitize input
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, body);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
 
-    const globalPermissions = await getGlobalPermissions(this.multichain);
+    // Check if user is authorized to call global.list.intents
+    const globalPermissions = await globalModel.listPermissions(
+      globalAuthorized(token, "global.intent.list")
+    );
 
     await authorized(globalPermissions); // throws if unauthorized
 

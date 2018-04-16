@@ -161,7 +161,7 @@ export const createRouter = (
     try {
       const response = {
         apiVersion: "1.0",
-        data: await userModel.list(authorized(req.token, "user.view"))
+        data: await userModel.list(req.token, authorized(req.token, "user.view"), globalModel)
       };
       send(res, 200, response);
     } catch (err) {
@@ -191,7 +191,7 @@ export const createRouter = (
       console.log(body.data);
       const response = {
         apiVersion: apiVersion,
-        data: await userModel.authenticate(body.data)
+        data: await userModel.authenticate(body.data, globalModel)
       };
       console.log(response);
       send(res, 200, response);
@@ -311,7 +311,8 @@ export const createRouter = (
       const id = await projectModel.createProject(
         req.token,
         body.data,
-        authorized(req.token, intent)
+        authorized(req.token, intent),
+        globalModel
       );
       const response = {
         apiVersion: apiVersion,
