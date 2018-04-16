@@ -27,9 +27,19 @@ export const provisionUsers = async axios => {
       await createUser(axios, user);
       console.log(`~> added User ${user.displayName}`);
     }
+    await grantPermissionsToUser(axios, "mstein");
+    console.log("~> global Permissions granted for mstein");
   } catch (err) {
     await handleError(axios, err);
   }
+};
+
+const grantPermissionsToUser = async (axios, userId) => {
+  const data = {
+    "global.intent.list": [userId],
+    "global.createProject": [userId]
+  };
+  await axios.post("/global.intent.grantPermission", data);
 };
 
 const handleError = async (axios, err) => {

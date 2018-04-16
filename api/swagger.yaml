@@ -12,6 +12,34 @@ securityDefinitions:
     in: header
     name: Authorization
 paths:
+  "/global.intent.list":
+    get:
+      tags:
+        - global
+      produces:
+        -  application/json
+      responses:
+        "200":
+          description: "OK"
+          examples:
+            apiVersion: "1.0"
+            data: {
+                "global.intent.list": [
+                    "mstein",
+                ],
+                "global.intent.grantPermission": [
+                    "mstein",
+                ],
+                "global.intent.revokePermission": [
+                    "mstein",
+                ],
+                "global.createProject": [
+                    "mstein",
+                ],
+                "global.createUser": [
+                    "mstein"
+                ]
+            }
   "/global.intent.grantPermission":
     post:
       tags:

@@ -14,6 +14,7 @@ import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { globalIntents, userDefaultIntents } from "../authz/intents";
 import { authorized } from "../authz/index";
+import { getGlobalPermissionsForUser } from "../global";
 
 const usersStream = "users";
 
@@ -133,7 +134,7 @@ export class UserModel {
         throwError("wrong password");
       }
     }
-
+    const allowedIntents = (await getGlobalPermissionsForUser(this.multichain, id)) as string[];
     const values: UserRecord[] = await this.multichain
       .latestValuesForKey(usersStream, id)
       .catch(throwError);
@@ -148,7 +149,7 @@ export class UserModel {
       id,
       displayName: trueUser.displayName,
       organization: trueUser.organization,
-      allowedIntents: trueUser.allowedIntents,
+      allowedIntents: allowedIntents,
       token: this.createToken(id, trueUser.organization)
     };
   }

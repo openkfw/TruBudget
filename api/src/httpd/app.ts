@@ -9,6 +9,7 @@ const addTokenHandling = (app, jwtSecret: string) => {
     })
   );
   app.use(function customAuthTokenErrorHandler(err, req, res, next) {
+    console.log(err);
     if (err.name === "UnauthorizedError") {
       res.status(401).send({
         apiVersion: req.body.apiVersion,

@@ -287,6 +287,7 @@ export const createRouter = (
   });
 
   router.post("/project.create", async (req, res) => {
+    console.log;
     const body = req.body;
     console.log(`body: ${JSON.stringify(body)}`);
     if (body.apiVersion !== apiVersion) {
