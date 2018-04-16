@@ -14,18 +14,47 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
 import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
+
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const styles = {
   container: {
+    padding: 0
+  },
+  dialog: {
+    paddingLeft: 0,
+    paddingRight: 0,
 
   }
 }
 
 const PermissionsScreen = (props) => (
-  <div style={styles.container}>
-    <h1>test</h1>
-    <PermissionsTable {...props} />
-  </div>
+  <Dialog
+    title="Set permissions for Project"
+    actions={[
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={props.onCancel}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        disabled={true}
+        onClick={props.onSubmit}
+      />,
+    ]}
+    modal={true}
+    open={props.show}
+    autoScrollBodyContent={true}
+    bodyStyle={styles.dialog}
+  >
+    <div style={styles.container}>
+      <PermissionsTable {...props} />
+    </div>
+  </Dialog>
 )
 
 const tableStyle = {
@@ -104,19 +133,11 @@ const renderPermission = (name, userList, permissions) => (
 
 const PermissionsTable = ({ permissions, user }) => (
   <div style={tableStyle.container}>
-    <Table
-      fixedHeader
-      fixedFooter
-    >
+    <Table>
       <TableHeader
         displaySelectAll={false}
         adjustForCheckbox={false}
       >
-        <TableRow>
-          <TableHeaderColumn colSpan="2" tooltip="Super Header" style={{ textAlign: 'center' }}>
-            Super Header
-          </TableHeaderColumn>
-        </TableRow>
         <TableRow>
           <TableHeaderColumn>Name</TableHeaderColumn>
           <TableHeaderColumn>Permission</TableHeaderColumn>
@@ -127,12 +148,6 @@ const PermissionsTable = ({ permissions, user }) => (
           Object.keys(permissions).map(p => renderPermission(p, user, permissions))
         }
       </TableBody>
-      <TableFooter adjustForCheckbox={false}>
-        <TableRow>
-          <TableHeaderColumn>Name</TableHeaderColumn>
-          <TableHeaderColumn>Permission</TableHeaderColumn>
-        </TableRow>
-      </TableFooter>
     </Table>
   </div>
 )

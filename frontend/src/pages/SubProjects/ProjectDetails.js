@@ -94,7 +94,7 @@ const ProjectDetails = ({
   projectName, projectCurrency, projectAmount,
   subProjects, projectComment, projectStatus,
   projectTS, projectAssignee, roles, thumbnail,
-  canViewPermissions
+  canViewPermissions, showProjectPermissions
 }) => {
   const amountString = toAmountString(projectAmount, projectCurrency);
   const spentAmount = calculateUnspentAmount(subProjects)
@@ -144,6 +144,7 @@ const ProjectDetails = ({
               label="Permissions"
               secondary={true}
               disabled={!canViewPermissions}
+              onClick={showProjectPermissions}
             />}
           />
           <Divider />

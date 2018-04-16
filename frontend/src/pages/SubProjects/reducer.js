@@ -1,7 +1,7 @@
 import { fromJS } from 'immutable';
 import _ from 'lodash';
 
-import { SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG, SUBPROJECT_CREATION_STEP, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from './actions';
+import { SUBPROJECT_NAME, SUBPROJECT_AMOUNT, SUBPROJECT_COMMENT, SUBPROJECT_CURRENCY, CREATE_SUBPROJECT_SUCCESS, SHOW_SUBPROJECT_DIALOG, CANCEL_SUBPROJECT_DIALOG, SUBPROJECT_CREATION_STEP, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_PROJECT_PERMISSIONS_SUCCESS, SHOW_PROJECT_PERMISSIONS, HIDE_PROJECT_PERMISSIONS } from './actions';
 import { LOGOUT } from '../Login/actions';
 
 
@@ -31,7 +31,8 @@ const defaultState = fromJS({
   permissions: {},
   logs: [],
   thumbnail: '/Thumbnail_0001.jpg',
-  allowedIntents: []
+  allowedIntents: [],
+  permissionDialogShown: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -48,6 +49,10 @@ export default function detailviewReducer(state = defaultState, action) {
         allowedIntents: fromJS(action.allowedIntents),
         logs: fromJS(action.logs),
       })
+    case SHOW_PROJECT_PERMISSIONS:
+      return state.set('permissionDialogShown', true);
+    case HIDE_PROJECT_PERMISSIONS:
+      return state.set('permissionDialogShown', false);
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:
       return state.set('permissions', fromJS(action.permissions))
     case SUBPROJECT_CREATION_STEP:

@@ -8,6 +8,9 @@ export const SHOW_SUBPROJECT_DIALOG = 'SHOW_SUBPROJECT_DIALOG';
 export const CANCEL_SUBPROJECT_DIALOG = 'CANCEL_SUBPROJECT_DIALOG';
 export const SHOW_SUBPROJECT_DIALOG_SUCCESS = 'SHOW_SUBPROJECT_DIALOG_SUCCESS';
 
+export const SHOW_PROJECT_PERMISSIONS = 'SHOW_PROJECT_PERMISSIONS';
+export const HIDE_PROJECT_PERMISSIONS = 'HIDE_PROJECT_PERMISSIONS';
+
 export const CREATE_SUBPROJECT = 'CREATE_SUBPROJECT';
 export const CREATE_SUBPROJECT_SUCCESS = 'CREATE_SUBPROJECT_SUCCESS';
 export const SUBPROJECT_NAME = 'SUBPROJECT_NAME';
@@ -41,6 +44,20 @@ export function fetchProjectDetails(project) {
     project
   }
 }
+
+export function showProjectPermissions() {
+  return {
+    type: SHOW_PROJECT_PERMISSIONS,
+  }
+}
+
+export function hideProjectPermissions() {
+  return {
+    type: HIDE_PROJECT_PERMISSIONS,
+  }
+}
+
+// old
 
 export function storeSubProjectName(name) {
   return {
@@ -99,3 +116,5 @@ export function storeSubProjectComment(comment) {
     comment: comment
   }
 }
+
+

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-
-import { fetchAllProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment, setCurrentStep, fetchProjectPermissions } from './actions';
+import { fetchAllProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment, setCurrentStep, fetchProjectPermissions, showProjectPermissions } from './actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory } from '../Notifications/actions';
 import { setSelectedView } from '../Navbar/actions';
@@ -10,6 +9,9 @@ import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
 import { toJS } from '../../helper';
 import { fetchUser } from '../Login/actions';
+import PermissionsContainer from '../Common/Permissions/PermissionsContainer';
+
+
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
@@ -26,6 +28,7 @@ class SubProjectsContainer extends Component {
     return (
       <div>
         <div style={globalStyles.innerContainer}>
+          <PermissionsContainer />
           <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <SubProjects {...this.props} />
         </div>
@@ -53,6 +56,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(showHistory(false)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
+    showProjectPermissions: () => dispatch(showProjectPermissions())
   };
 }
 
