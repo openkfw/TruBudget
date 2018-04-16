@@ -45,6 +45,6 @@ export const globalIntents: Intent[] = [
   "user.authenticate"
 ];
 
-export const userDefaultIntents: Intent[] = ["user.authenticate"];
+export const userDefaultIntents: Intent[] = ["user.authenticate", "user.view"];
 
 export default Intent;

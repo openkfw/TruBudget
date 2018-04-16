@@ -31,6 +31,7 @@ export const provisionProjects = async axios => {
     if (!alreadyExists) {
       const resp = await axios.post("/project.create", futureProject);
       const existingProjects = await axios.get("/project.list");
+      console.log(`~> Project ${futureProject.displayName} created`);
       const createdProject = existingProjects.data.data.items.find(
         project =>
           project.displayName === futureProject.displayName &&
@@ -38,8 +39,10 @@ export const provisionProjects = async axios => {
       );
       if (createdProject) {
         await grantPermissionsToUser(axios, createdProject.id, "mstein");
+        console.log("~> Project permissions granted for mstein");
+        await grantPermissionsToUser(axios, createdProject.id, "jxavier");
+        console.log("~> Project permissions granted for jxavier");
       }
-      console.log(`~> Project ${futureProject.displayName} created`);
     } else {
       console.log(`~> Project ${futureProject.displayName} already exists`);
     }

@@ -37,8 +37,7 @@ export const provisionUsers = async axios => {
 const grantPermissionsToUser = async (axios, userId) => {
   const data = {
     "global.intent.list": [userId],
-    "global.createProject": [userId],
-    "user.view": [userId]
+    "global.createProject": [userId]
   };
   await axios.post("/global.intent.grantPermission", data);
 };
