@@ -51,5 +51,6 @@ export class GlobalModel {
     await authorized(existingPermissions);
     mergedPermissions = mergePermissions(requestedPermissions, existingPermissions[0]);
     await this.multichain.updateStreamItem(this.streamId, this.key, mergedPermissions);
+    return "OK";
   }
 }

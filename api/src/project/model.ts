@@ -108,6 +108,7 @@ export class ProjectModel {
     await authorized(existingPermissions);
     const mergedPermissions = mergePermissions(permissions, existingPermissions);
     await this.multichain.updateStreamItem(id, permissionsKey, mergedPermissions);
+    return "OK";
   }
 
   async listPermissions(id, authorized) {
