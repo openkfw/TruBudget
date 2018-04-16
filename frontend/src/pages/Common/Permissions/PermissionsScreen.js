@@ -38,16 +38,10 @@ const PermissionsScreen = (props) => (
     title="Set permissions for Project"
     actions={[
       <FlatButton
-        label="Cancel"
+        label="Close"
         primary={true}
-        onClick={props.onCancel}
-      />,
-      <FlatButton
-        label="Submit"
-        primary={true}
-        disabled={true}
-        onClick={props.onSubmit}
-      />,
+        onClick={props.onClose}
+      />
     ]}
     modal={true}
     open={props.show}
@@ -84,7 +78,7 @@ class PermissionSelection extends Component {
     return (
       <SelectField
         multiple={true}
-        hintText={`${this.props.permissions[this.props.name].length - 1} selection(s)`}
+        hintText={`${this.props.permissions[this.props.name].length} selection(s)`}
         maxHeight={250}
         autoWidth={true}
         dropDownMenuProps={{

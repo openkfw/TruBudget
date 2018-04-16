@@ -22,8 +22,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSubmit: () => dispatch(hideProjectPermissions()),
-    onCancel: () => dispatch(hideProjectPermissions()),
+    onClose: () => dispatch(hideProjectPermissions()),
     grantPermission: (projectId, permission, user) => dispatch(grantPermission(projectId, permission, user, true))
   }
 }
@@ -31,8 +30,7 @@ const mapDispatchToProps = (dispatch) => {
 
 PermissionsContainer.defaultProps = {
   show: false,
-  onSubmit: () => alert("On submit callback not set"),
-  onCancel: () => alert("On cancel callback not set")
+  onClose: () => alert("On close callback not set")
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(PermissionsContainer)))
