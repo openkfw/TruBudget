@@ -28,6 +28,7 @@ const authenticate = async (axios, userId: string, rootSecret: string) => {
     return token;
   } catch (err) {
     console.log(err);
+    authenticate(axios, userId, rootSecret);
   }
 };
 
@@ -38,6 +39,7 @@ export const provisionBlockchain = async (port: number, rootSecret: string) => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
   token = await authenticate(axios, "mstein", "test");
+  console.log(token);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionProjects(axios);
 };
