@@ -8,7 +8,8 @@ const globalPermissionsTemplate = {
   "global.intent.grantPermission": ["root"],
   "global.intent.revokePermission": ["root"],
   "global.createProject": ["root"],
-  "global.createUser": ["root"]
+  "global.createUser": ["root"],
+  "user.view": ["root"]
 };
 
 export class GlobalModel {

@@ -15,7 +15,7 @@ import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { globalIntents, userDefaultIntents } from "../authz/intents";
 import { authorized } from "../authz/index";
 import { getGlobalPermissionsForUser } from "../global";
-
+import { getGlobalPermissions } from "../global/index";
 const usersStream = "users";
 
 const createToken = (secret: string) => (userId: string, organization: string): string =>
@@ -92,10 +92,10 @@ export class UserModel {
     const users: UserRecord[] = (await this.multichain.streamItems(usersStream)).map(
       item => item.value
     );
-
+    const globalPermissions = await getGlobalPermissions(this.multichain);
     const clearedUsers = (await Promise.all(
       users.map(user => {
-        return authorized(user.permissions)
+        return authorized(globalPermissions)
           .then(() => user)
           .catch(err => null);
       })
