@@ -579,7 +579,7 @@ export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
     //const roles = yield callApi(api.fetchRoles);
     yield put({
       type: FETCH_PROJECT_PERMISSIONS_SUCCESS,
-      permissions: data.items[0] || {}
+      permissions: data || {}
       //historyItems: history.data,
       //roles: roles.data
     });
