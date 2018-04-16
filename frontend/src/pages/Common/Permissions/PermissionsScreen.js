@@ -84,10 +84,9 @@ class PermissionSelection extends Component {
     return (
       <SelectField
         multiple={true}
-        hintText={`${this.props.permissions[this.props.name].length} selection(s)`}
+        hintText={`${this.props.permissions[this.props.name].length - 1} selection(s)`}
         maxHeight={250}
         autoWidth={true}
-        value={this.state.searchTerm}
         dropDownMenuProps={{
           onClose: () => this.setState({ searchTerm: '' })
         }}
@@ -103,7 +102,10 @@ class PermissionSelection extends Component {
           {
             renderUserSelection(
               this.props.userList.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
-              this.props.permissions[this.props.name])
+              this.props.permissions[this.props.name],
+              this.props.name,
+              this.props.grantPermission
+            )
           }
         </div>
       </SelectField>
@@ -111,30 +113,33 @@ class PermissionSelection extends Component {
   }
 }
 
-const renderUserSelection = (user, permission) => user.map(u => {
+const renderUserSelection = (user, permissionedUser, permissionName, grantPermission) => user.map(u => {
   return (
     <MenuItem
       key={u.id}
       insetChildren={true}
-      checked={permission.indexOf(u.id) > -1}
+      checked={permissionedUser.indexOf(u.id) > -1}
       value={u.displayName}
       primaryText={u.displayName}
+      onClick={() => grantPermission(permissionName, u.id)}
     />
   )
 });
 
-const renderPermission = (name, userList, permissions) => (
+const renderPermission = (name, userList, permissions, grantPermission) => (
   <TableRow key={name}>
     <TableRowColumn>{strings.permissions[name] || name}</TableRowColumn>
     <TableRowColumn>
-      <PermissionSelection name={name} userList={userList} permissions={permissions} />
+      <PermissionSelection
+        name={name} userList={userList}
+        permissions={permissions} grantPermission={grantPermission} />
     </TableRowColumn>
   </TableRow>
 );
 
 
 
-const PermissionsTable = ({ permissions, user }) => (
+const PermissionsTable = ({ permissions, user, grantPermission, id }) => (
   <div style={tableStyle.container}>
     <Table>
       <TableHeader
@@ -148,7 +153,7 @@ const PermissionsTable = ({ permissions, user }) => (
       </TableHeader>
       <TableBody displayRowCheckbox={false}>
         {
-          Object.keys(permissions).map(p => renderPermission(p, user, permissions))
+          Object.keys(permissions).map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))
         }
       </TableBody>
     </Table>

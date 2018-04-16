@@ -11,6 +11,9 @@ export const SHOW_SUBPROJECT_DIALOG_SUCCESS = 'SHOW_SUBPROJECT_DIALOG_SUCCESS';
 export const SHOW_PROJECT_PERMISSIONS = 'SHOW_PROJECT_PERMISSIONS';
 export const HIDE_PROJECT_PERMISSIONS = 'HIDE_PROJECT_PERMISSIONS';
 
+export const GRANT_PERMISSION = 'GRANT_PERMISSION';
+export const GRANT_PERMISSION_SUCCESS = 'GRANT_PERMISSION_SUCCESS';
+
 export const CREATE_SUBPROJECT = 'CREATE_SUBPROJECT';
 export const CREATE_SUBPROJECT_SUCCESS = 'CREATE_SUBPROJECT_SUCCESS';
 export const SUBPROJECT_NAME = 'SUBPROJECT_NAME';
@@ -54,6 +57,15 @@ export function showProjectPermissions() {
 export function hideProjectPermissions() {
   return {
     type: HIDE_PROJECT_PERMISSIONS,
+  }
+}
+
+export function grantPermission(projectId, intent, user, showLoading = false) {
+  return {
+    type: GRANT_PERMISSION,
+    projectId,
+    intent,
+    user
   }
 }
 

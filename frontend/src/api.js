@@ -51,6 +51,8 @@ class Api {
 
   listProjectIntents = (projectId) => axios.get(`/project.intent.list?projectId=${projectId}`);
 
+  grantProjectPermissions = (id, permissions) => axios.post(`/project.intent.grantPermission`, { id, permissions })
+
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
   //   return data;

@@ -6,7 +6,7 @@ import { FETCH_PEERS, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES, FETCH_STREAM_NAME
 import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_SUCCESS, FETCH_ALL_PROJECTS_SUCCESS, FETCH_ALL_PROJECTS } from './pages/Overview/actions';
 
 
-import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT, CREATE_SUBPROJECT_SUCCESS, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_ALL_PROJECT_DETAILS, FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from './pages/SubProjects/actions';
+import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT, CREATE_SUBPROJECT_SUCCESS, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_ALL_PROJECT_DETAILS, FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS, GRANT_PERMISSION, GRANT_PERMISSION_SUCCESS } from './pages/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
 import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from './pages/Workflows/actions';
@@ -586,6 +586,27 @@ export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
   }, showLoading);
 }
 
+export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) {
+  yield execute(function* () {
+    const permissions = {}
+    permissions[intent] = [user];
+
+    yield callApi(api.grantProjectPermissions, projectId, permissions);
+    //const { data } = yield callApi(api.listProjectIntents, projectId)
+    //const history = yield callApi(api.fetchHistory, projectId);
+    //const roles = yield callApi(api.fetchRoles);
+    yield put({
+      type: GRANT_PERMISSION_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_PROJECT_PERMISSIONS,
+      projectId
+    });
+
+  }, showLoading);
+}
+
 
 // WATCHERS
 
@@ -723,6 +744,9 @@ export function* watchGetEnvironment() {
 export function* watchFetchProjectPermissions() {
   yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga)
 }
+export function* watchGrantPermissions() {
+  yield takeEvery(GRANT_PERMISSION, grantPermissionsSaga)
+}
 
 export default function* rootSaga() {
   try {
@@ -760,7 +784,8 @@ export default function* rootSaga() {
       watchFetchAllProjects(),
       watchFetchAllProjectDetails(),
       // watchFetchAllSubprojectDetails(),
-      watchFetchProjectPermissions()
+      watchFetchProjectPermissions(),
+      watchGrantPermissions()
     ]
   } catch (error) {
     console.log(error);

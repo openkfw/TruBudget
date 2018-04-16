@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PermissionsScreen from './PermissionsScreen';
 import { toJS } from '../../../helper';
 import withInitialLoading from '../../Loading/withInitialLoading';
-import { hideProjectPermissions } from '../../SubProjects/actions';
+import { hideProjectPermissions, grantPermission } from '../../SubProjects/actions';
 
 class PermissionsContainer extends Component {
   render() {
@@ -16,13 +16,15 @@ const mapStateToProps = (state) => {
     permissions: state.getIn(['detailview', 'permissions']),
     user: state.getIn(['login', 'user']),
     show: state.getIn(['detailview', 'permissionDialogShown']),
+    id: state.getIn(['detailview', 'id']),
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onSubmit: () => dispatch(hideProjectPermissions()),
-    onCancel: () => dispatch(hideProjectPermissions())
+    onCancel: () => dispatch(hideProjectPermissions()),
+    grantPermission: (projectId, permission, user) => dispatch(grantPermission(projectId, permission, user, true))
   }
 }
 
