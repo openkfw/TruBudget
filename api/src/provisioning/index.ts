@@ -20,12 +20,16 @@ axios.defaults.transformRequest = [
 ];
 
 const authenticate = async (axios, userId: string, rootSecret: string) => {
-  const response = await axios.post("/user.authenticate", { id: "root", password: rootSecret });
-  const body = response.data;
-  if (body.apiVersion !== "1.0") throw Error("unexpected API version");
-  const { token } = body.data;
-  console.log(token);
-  return token;
+  try {
+    const response = await axios.post("/user.authenticate", { id: userId, password: rootSecret });
+    const body = response.data;
+    if (body.apiVersion !== "1.0") throw Error("unexpected API version");
+    const { token } = body.data;
+    console.log(token);
+    return token;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const provisionBlockchain = async (port: number, rootSecret: string) => {

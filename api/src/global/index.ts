@@ -19,13 +19,18 @@ export const getGlobalPermissions = async multichain => {
 };
 
 export const mergePermissions = (requestedPermissions, existingPermissions) => {
-  const keys = Object.keys(existingPermissions);
-  keys.map(key => {
-    return (existingPermissions[key] = existingPermissions[key].concat(
-      requestedPermissions[key] === undefined ? [] : requestedPermissions[key]
-    ));
+  const permissions = Object.assign({}, existingPermissions);
+
+  Object.keys(requestedPermissions).map(key => {
+    requestedPermissions[key].map(user => {
+      const duplicatedUser = permissions[key].find(existingUser => user === existingUser);
+      if (!duplicatedUser) {
+        permissions[key] = [...permissions[key], user];
+      }
+    });
   });
-  return existingPermissions;
+
+  return permissions;
 };
 
 export default GlobalModel;

@@ -25,24 +25,30 @@ export const provisionUsers = async axios => {
   try {
     for (const user of users) {
       await createUser(axios, user);
-      const data = {
-        "user.view": [user.id]
-      };
-      await grantPermissionsToUser(axios, data);
+      await grantDefaultPermission(axios, user.id);
       console.log(`~> added User ${user.displayName}`);
     }
     //Special permissions for mstein
-    const data = {
-      "global.intent.list": ["mstein"],
-      "global.createProject": ["mstein"],
-      "user.view": ["mstein"]
-    };
-    await grantPermissionsToUser(axios, data);
-
+    await grantCreateProjectPermission(axios, "mstein");
     console.log("~> global Permissions granted for mstein");
   } catch (err) {
     await handleError(axios, err);
   }
+};
+
+const grantDefaultPermission = async (axios, userId) => {
+  const data = {
+    "user.view": [userId]
+  };
+  await grantPermissionsToUser(axios, data);
+};
+
+const grantCreateProjectPermission = async (axios, userId) => {
+  const data = {
+    "global.intent.list": [userId],
+    "global.createProject": [userId]
+  };
+  await grantPermissionsToUser(axios, data);
 };
 
 const grantPermissionsToUser = async (axios, data) => {
