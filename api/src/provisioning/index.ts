@@ -19,7 +19,7 @@ axios.defaults.transformRequest = [
   ...axios.defaults.transformRequest
 ];
 
-const authenticate = async (axios, rootSecret: string) => {
+const authenticate = async (axios, userId: string, rootSecret: string) => {
   const response = await axios.post("/user.authenticate", { id: "root", password: rootSecret });
   const body = response.data;
   if (body.apiVersion !== "1.0") throw Error("unexpected API version");
@@ -31,8 +31,10 @@ const authenticate = async (axios, rootSecret: string) => {
 export const provisionBlockchain = async (port: number, rootSecret: string) => {
   axios.defaults.baseURL = `http://localhost:${port}`;
   axios.defaults.timeout = 20000;
-  const token = await authenticate(axios, rootSecret);
+  let token = await authenticate(axios, "root", rootSecret);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
+  token = await authenticate(axios, "mstein", "test");
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionProjects(axios);
 };
