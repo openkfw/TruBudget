@@ -213,6 +213,14 @@ const en = {
     first_sort: 'Moved {0} to first position',
     sort: 'Moved {0} after {1}'
   },
+  permissions: {
+    "project.assign": 'Assign project to others',
+    "project.intent.grantPermission": 'Grant permissions',
+    "project.intent.list": 'View permissions',
+    "project.intent.revokePermission": 'Revoke permissions',
+    "project.viewDetails": 'View project details',
+    "project.viewSummary": 'View project in overview',
+  },
   language: {
     german: 'German',
     french: 'Français',

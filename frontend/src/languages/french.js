@@ -177,6 +177,14 @@ const fr = {
     first_sort: 'Déplacé {0} au premier poste',
     sort: 'Déplacé {0} après {1}'
   },
+  permissions: {
+    "project.assign": 'French: Assign project to others',
+    "project.intent.grantPermission": 'French: Grant permissions',
+    "project.intent.list": 'French: View permissions',
+    "project.intent.revokePermission": 'French: Revoke permissions',
+    "project.viewDetails": 'French: View project details',
+    "project.viewSummary": 'French: View project in overview',
+  },
   language: {
     german: 'Deutsch',
     french: 'Français',
