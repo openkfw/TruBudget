@@ -1,8 +1,6 @@
 import { GlobalModel } from "./model";
 
 export const mergePermissions = (requestedPermissions, existingPermissions) => {
-  console.log(requestedPermissions);
-  console.log(existingPermissions);
   const permissions = Object.assign({}, existingPermissions);
   Object.keys(requestedPermissions).map(key => {
     requestedPermissions[key].map(user => {

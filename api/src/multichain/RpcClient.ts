@@ -13,6 +13,7 @@ export class RpcClient {
       host: settings.host || "localhost",
       port: settings.port || 8570,
       method: "POST",
+      timeout: 1000,
       headers: { "Content-Type": "application/json" },
       auth: `${settings.username || "multichainrpc"}:${settings.password}`
     };
