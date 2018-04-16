@@ -19,6 +19,9 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
+import strings from '../../../localizeStrings'
+
+
 const styles = {
   container: {
     padding: 0
@@ -122,7 +125,7 @@ const renderUserSelection = (user, permission) => user.map(u => {
 
 const renderPermission = (name, userList, permissions) => (
   <TableRow key={name}>
-    <TableRowColumn>{name}</TableRowColumn>
+    <TableRowColumn>{strings.permissions[name] || name}</TableRowColumn>
     <TableRowColumn>
       <PermissionSelection name={name} userList={userList} permissions={permissions} />
     </TableRowColumn>
