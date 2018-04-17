@@ -19,10 +19,9 @@ export class GlobalModel {
 
   constructor(multichain: MultichainClient) {
     this.multichain = multichain;
-    this.createGlobalStream();
   }
 
-  async createGlobalStream() {
+  async getOrCreateGlobalStream() {
     await this.multichain.getOrCreateStream({
       kind: this.streamId,
       name: this.streamId
@@ -31,10 +30,11 @@ export class GlobalModel {
     if (existingPermissions.length === 0) {
       await this.multichain.updateStreamItem(this.streamId, this.key, globalPermissionsTemplate);
     }
+    return await this.multichain.latestValuesForKey(this.streamId, this.key);
   }
 
   async listPermissions(authorized) {
-    const globalPermissions = await this.multichain.latestValuesForKey(this.streamId, this.key);
+    const globalPermissions = await this.getOrCreateGlobalStream();
     await authorized(globalPermissions[0]);
     return globalPermissions[0];
   }
@@ -53,11 +53,7 @@ export class GlobalModel {
 
   async grantPermissions(requestedPermissions, authorized) {
     let mergedPermissions = {};
-    await this.multichain.getOrCreateStream({
-      kind: this.streamId,
-      name: this.streamId
-    });
-    const existingPermissions = await this.multichain.latestValuesForKey(this.streamId, this.key);
+    const existingPermissions = await this.getOrCreateGlobalStream();
     await authorized(existingPermissions);
     mergedPermissions = mergePermissions(requestedPermissions, existingPermissions[0]);
     await this.multichain.updateStreamItem(this.streamId, this.key, mergedPermissions);

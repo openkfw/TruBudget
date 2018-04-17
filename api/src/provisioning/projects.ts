@@ -47,8 +47,9 @@ export const provisionProjects = async axios => {
       console.log(`~> Project ${futureProject.displayName} already exists`);
     }
   } catch (err) {
-    console.log("Blockchain or API not up yet, sleeping for 5 seconds");
-    await sleep(5000);
+    console.log("Blockchain or API not up yet, sleeping for 10 seconds");
+    console.log(err);
+    await sleep(10000);
     await provisionProjects(axios);
   }
 };
