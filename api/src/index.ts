@@ -42,7 +42,7 @@ app.listen(port, err => {
   if (err) {
     return console.log(err);
   }
-
+  console.log("trigger deployment pipeline...");
   provisionBlockchain(port, rootSecret).catch(err =>
     console.log(`Provisioning the chain failed: ${err}`)
   );
