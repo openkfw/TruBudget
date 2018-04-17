@@ -4,17 +4,14 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import HistoryIcon from 'material-ui/svg-icons/action/reorder';
 
-import SubProjectsTable from './SubProjectsTable';
-import ChangeLog from '../Notifications/ChangeLog';
-import _ from 'lodash';
 import { ACMECorpLightgreen, ACMECorpDarkBlue } from '../../colors.js';
+import ChangeLog from '../Notifications/ChangeLog';
+
+import SubProjectsTable from './SubProjectsTable';
 import SubProjectCreation from './SubProjectCreation';
-import PermissionsScreen from '../Common/Permissions/PermissionsScreen';
 
 
 const SubProjects = (props) => {
-  const roleOfUser = props.loggedInUser.role
-  const isAllowedCreateProjects = roleOfUser.write && _.includes([...props.projectAssignee], roleOfUser.roleName);
   return (
     <Card style={{
       position: 'relative',
@@ -29,7 +26,7 @@ const SubProjects = (props) => {
         top: '16px',
         right: '-26px'
       }}>
-        <FloatingActionButton disabled={!isAllowedCreateProjects} backgroundColor={ACMECorpDarkBlue} onTouchTap={props.showSubprojectDialog} style={{
+        <FloatingActionButton disabled={!props.canCreateSubProject} backgroundColor={ACMECorpDarkBlue} onTouchTap={props.showSubprojectDialog} style={{
           position: 'relative'
         }}>
           <ContentAdd />
@@ -42,7 +39,6 @@ const SubProjects = (props) => {
         </FloatingActionButton>
 
       </div>
-      {/* <PermissionsScreen permissions={props.permissions} user={props.user} /> */}
       <SubProjectsTable {...props} />
       <ChangeLog {...props} />
     </Card>

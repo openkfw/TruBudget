@@ -16,11 +16,11 @@ export const GRANT_PERMISSION_SUCCESS = 'GRANT_PERMISSION_SUCCESS';
 
 export const CREATE_SUBPROJECT = 'CREATE_SUBPROJECT';
 export const CREATE_SUBPROJECT_SUCCESS = 'CREATE_SUBPROJECT_SUCCESS';
+
 export const SUBPROJECT_NAME = 'SUBPROJECT_NAME';
 export const SUBPROJECT_AMOUNT = 'SUBPROJECT_AMOUNT';
 export const SUBPROJECT_COMMENT = 'SUBPROJECT_COMMENT';
 export const SUBPROJECT_CURRENCY = 'SUBPROJECT_CURRENCY';
-export const SUBPROJECT_CREATION_STEP = 'SUBPROJECT_CREATION_STEP';
 
 export const FETCH_ALL_PROJECT_DETAILS = 'FETCH_ALL_PROJECT_DETAILS';
 export const FETCH_ALL_PROJECT_DETAILS_SUCCESS = 'FETCH_ALL_PROJECT_DETAILS_SUCCESS';
@@ -69,7 +69,18 @@ export function grantPermission(projectId, intent, user, showLoading = false) {
   }
 }
 
-// old
+export function createSubProject(projectId, name, amount, comment, currency, showLoading = false) {
+  return {
+    type: CREATE_SUBPROJECT,
+    projectId,
+    name,
+    amount,
+    comment,
+    currency,
+    showLoading
+  }
+}
+
 
 export function storeSubProjectName(name) {
   return {
@@ -78,23 +89,6 @@ export function storeSubProjectName(name) {
   }
 }
 
-export function setCurrentStep(step) {
-  return {
-    type: SUBPROJECT_CREATION_STEP,
-    step
-  }
-}
-
-export function createSubProject(parentName, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) {
-  return {
-    type: CREATE_SUBPROJECT,
-    parentName: parentName,
-    subProjectName: subProjectName,
-    subProjectAmount: subProjectAmount,
-    subProjectComment: subProjectComment,
-    subProjectCurrency: subProjectCurrency
-  }
-}
 
 export function showSubprojectDialog() {
   return {
@@ -128,5 +122,4 @@ export function storeSubProjectComment(comment) {
     comment: comment
   }
 }
-
 

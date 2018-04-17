@@ -3,7 +3,7 @@ import { Step, Stepper, StepLabel, StepButton } from 'material-ui/Stepper';
 
 
 
-const getStepContent = ({ currentStep, steps, ...props }) => {
+const getStepContent = ({ currentStep = 0, steps, ...props }) => {
 
   return steps[currentStep].content
 }
@@ -23,7 +23,7 @@ const getSteps = (steps, editable, setCurrentStep) => {
 
 const CreationDialogStepper = (props) => {
 
-  const { steps, currentStep, editable = false, setCurrentStep, numberOfSteps } = props
+  const { steps, currentStep = 0, editable = false, setCurrentStep, numberOfSteps } = props
   return (
     <div>
       {numberOfSteps > 1 ? <Stepper linear={!editable} activeStep={currentStep}>

@@ -330,7 +330,7 @@ export const createRouter = (
 
   router.post("/project.createSubproject", async (req, res) => {
     const { path, token, body } = req;
-    const intent = path.substring(1);
+    const intent = "project.createSubproject";
     try {
       const txId = await subprojectModel.createSubProject(
         token,

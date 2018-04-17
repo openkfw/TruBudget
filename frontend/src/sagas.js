@@ -169,20 +169,19 @@ export function* createProject(action) {
 }
 
 
-// export function* createSubProjectSaga(action) {
-//   try {
-//     yield callApi(api.postSubProject, action.parentName, action.subProjectName, action.subProjectAmount, action.subProjectComment, action.subProjectCurrency);
-//     yield put({
-//       type: CREATE_SUBPROJECT_SUCCESS
-//     });
-//     yield put({
-//       type: FETCH_PROJECT_DETAILS,
-//       project: action.parentName
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
+export function* createSubProjectSaga({ projectId, name, amount, comment, currency, showLoading }) {
+  yield execute(function* () {
+    yield callApi(api.createSubProject, projectId, name, `${amount}`, comment, currency);
+    yield put({
+      type: CREATE_SUBPROJECT_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_PROJECT_DETAILS,
+      projectId,
+      showLoading
+    });
+  }, showLoading);
+}
 
 // export function* createWorkflowItemSaga(action) {
 //   const { stream, workflowName, amount, amountType, currency, comment, documents, state, workflowType, approvalRequired } = action;
@@ -642,9 +641,9 @@ export function* watchFetchAllProjects() {
 //   yield takeEvery(FETCH_HISTORY, fetchHistorySaga)
 // }
 
-// export function* watchCreateSubProject() {
-//   yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga)
-// }
+export function* watchCreateSubProject() {
+  yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga)
+}
 
 // export function* watchCreateWorkflowItem() {
 //   yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga)
@@ -754,7 +753,7 @@ export default function* rootSaga() {
       // watchFetchPeers(),
       // watchFetchProjects(),
       // watchFetchProjectDetails(),
-      // watchCreateSubProject(),
+      watchCreateSubProject(),
       // watchCreateWorkflowItem(),
       // watchEditWorkflowItem(),
       watchCreateProject(),

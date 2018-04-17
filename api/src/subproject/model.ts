@@ -13,15 +13,15 @@ export class SubProjectModel {
   }
 
   async createSubProject(token: AuthToken, body, authorized): Promise<string> {
-    const expectedKeys = ["projectId", "displayName", "amount", "currency"];
+    const expectedKeys = ["projectId", "displayName", "amount", "currency", "description"];
     // TODO sanitize input
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, body);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
-    const { projectId, currency, displayName, amount } = body;
+    const { projectId, currency, displayName, amount, description } = body;
 
     // Check Permissions
     const projectPermissions = await this.multichain.latestValuesForKey(projectId, "_permissions");
-    await authorized(projectPermissions); // throws if unauthorized
+    await authorized(projectPermissions[0]); // throws if unauthorized
 
     // Create subproject object
     const subprojectId = randomString(20);
@@ -34,7 +34,8 @@ export class SubProjectModel {
         name: displayName,
         status: "open",
         amount,
-        currency
+        currency,
+        description
       },
       _log: [initialLogEntry],
       _permissions: permissions

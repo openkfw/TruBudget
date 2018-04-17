@@ -7,7 +7,7 @@ import CreationDialogStepper from './CreationDialogStepper';
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
   const {
     numberOfSteps,
-    currentStep,
+    currentStep = 0,
     steps,
     editMode
   } = props;

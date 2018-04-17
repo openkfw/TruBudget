@@ -26,7 +26,6 @@ const defaultState = fromJS({
   subProjectCurrency: '',
   showHistory: false,
   historyItems: [],
-  currentStep: 0,
   roles: [],
   permissions: {},
   logs: [],
@@ -55,8 +54,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('permissionDialogShown', false);
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:
       return state.set('permissions', fromJS(action.permissions))
-    case SUBPROJECT_CREATION_STEP:
-      return state.set('currentStep', action.step);
     case SHOW_SUBPROJECT_DIALOG:
       return state.set('subprojectsDialogVisible', true);
     case CANCEL_SUBPROJECT_DIALOG:
@@ -66,7 +63,6 @@ export default function detailviewReducer(state = defaultState, action) {
         subProjectComment: defaultState.get('subProjectComment'),
         subProjectCurrency: defaultState.get('subProjectCurrency'),
         subprojectsDialogVisible: defaultState.get('subprojectsDialogVisible'),
-        currentStep: defaultState.get('currentStep'),
       });
     case SUBPROJECT_NAME:
       return state.set('subProjectName', action.name);

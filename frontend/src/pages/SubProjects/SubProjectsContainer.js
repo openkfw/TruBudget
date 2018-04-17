@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchAllProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment, setCurrentStep, fetchProjectPermissions, showProjectPermissions, grantPermission } from './actions';
+import { fetchAllProjectDetails, showSubprojectDialog, onSubprojectDialogCancel, storeSubProjectCurrency, createSubProject, storeSubProjectName, storeSubProjectAmount, storeSubProjectComment, fetchProjectPermissions, showProjectPermissions, grantPermission } from './actions';
 import SubProjects from './SubProjects'
 import { showSnackBar, storeSnackBarMessage, showHistory } from '../Notifications/actions';
 import { setSelectedView } from '../Navbar/actions';
@@ -24,13 +24,14 @@ class SubProjectsContainer extends Component {
 
   render() {
     const canViewPermissions = this.props.allowedIntents.indexOf("project.intent.list") > -1;
+    const canCreateSubProject = this.props.allowedIntents.indexOf("project.createSubproject") > -1;
 
     return (
       <div>
         <div style={globalStyles.innerContainer}>
           <PermissionsContainer />
           <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
-          <SubProjects {...this.props} />
+          <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
         </div>
       </div>
     )
@@ -55,7 +56,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     openHistory: () => dispatch(showHistory(true)),
     hideHistory: () => dispatch(showHistory(false)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
-    setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     showProjectPermissions: () => dispatch(showProjectPermissions())
   };
 }
@@ -76,7 +76,6 @@ const mapStateToProps = (state) => {
     subProjectName: state.getIn(['detailview', 'subProjectName']),
     subProjectAmount: state.getIn(['detailview', 'subProjectAmount']),
     subProjectComment: state.getIn(['detailview', 'subProjectComment']),
-    currentStep: state.getIn(['detailview', 'currentStep']),
     subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
     showHistory: state.getIn(['notifications', 'showHistory']),
     historyItems: state.getIn(['notifications', 'historyItems']),

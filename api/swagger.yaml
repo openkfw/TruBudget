@@ -510,6 +510,7 @@ paths:
                   - displayName
                   - amount
                   - currency
+                  - description
                 properties:
                   projectId:
                     type: string
@@ -528,7 +529,7 @@ paths:
                 description: "My SubProject is awesome"
                 amount: "10000"
                 currency: "EUR"
-                parentId: "MyProject"
+                projectId: "MyProject"
       responses:
           '200':
             description: 'OK'

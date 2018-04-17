@@ -27,7 +27,7 @@ const SubProjectCreation = (props) => {
   ]
   return (
     <CreationDialog
-      title={strings.project.subproject_add}
+      title={strings.subproject.subproject_add}
       creationDialogShown={props.subprojectsDialogVisible}
       onDialogCancel={props.onSubprojectDialogCancel}
       handleSubmit={handleSubmit}
