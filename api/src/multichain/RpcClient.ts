@@ -13,7 +13,6 @@ export class RpcClient {
       host: settings.host || "localhost",
       port: settings.port || 8570,
       method: "POST",
-      timeout: 1000,
       headers: { "Content-Type": "application/json" },
       auth: `${settings.username || "multichainrpc"}:${settings.password}`
     };
@@ -61,7 +60,9 @@ export class RpcClient {
         }
 
         const body = JSON.stringify(request);
+        console.log(body);
         sendRequest(requestOptions, handleMessage)
+          .setTimeout(1000)
           .on("error", reject)
           .end(body);
       });

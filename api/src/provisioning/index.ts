@@ -2,6 +2,7 @@ const axios = require("axios");
 
 import { provisionUsers } from "./users";
 import { provisionProjects } from "./projects";
+import { sleep } from "./lib";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -28,6 +29,8 @@ const authenticate = async (axios, userId: string, rootSecret: string) => {
     return token;
   } catch (err) {
     console.log(err);
+    console.log("Seems that BC is not up yet, will wait 10 secs");
+    sleep(10000);
     authenticate(axios, userId, rootSecret);
   }
 };
@@ -39,7 +42,6 @@ export const provisionBlockchain = async (port: number, rootSecret: string) => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
   token = await authenticate(axios, "mstein", "test");
-  console.log(token);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionProjects(axios);
 };
