@@ -60,8 +60,8 @@ export class RpcClient {
         }
 
         const body = JSON.stringify(request);
+        console.log(body);
         sendRequest(requestOptions, handleMessage)
-          .setTimeout(1000)
           .on("error", reject)
           .end(body);
       });
