@@ -49,7 +49,6 @@ export const provisionProjects = async axios => {
   } catch (err) {
     console.log("Blockchain or API not up yet, sleeping for 10 seconds");
     console.log(err);
-    console.log(axios.defaults.headers.common.Authorization);
     await sleep(10000);
     await provisionProjects(axios);
   }
