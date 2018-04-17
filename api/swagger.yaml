@@ -385,8 +385,6 @@ paths:
         "200":
           description: "OK"
 
-
-
   "/project.create":
     post:
       tags:
@@ -483,6 +481,61 @@ paths:
                         items:
                           type: string
 
+  "/project.createSubproject":
+    post:
+      tags:
+        - project
+      operationId: "project.createSubproject"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - apiVersion
+              - data
+            properties:
+              apiVersion:
+                type: string
+                enum:
+                  - '1.0'
+              data:
+                type: object
+                required:
+                  - projectId
+                  - displayName
+                  - amount
+                  - currency
+                properties:
+                  projectId:
+                    type: string
+                  displayName:
+                    type: string
+                  amount:
+                    type: string
+                  currency:
+                    type: string
+                  description:
+                    type: string
+            example:
+              apiVersion: '1.0'
+              data:
+                displayName: "My SubProject"
+                description: "My SubProject is awesome"
+                amount: "10000"
+                currency: "EUR"
+                parentId: "MyProject"
+      responses:
+          '200':
+            description: 'OK'
+            schema:
+              type: string
+          '403':
+            description: Returned when providing invalid credentials.
 definitions:
   LogEntry:
     type: object

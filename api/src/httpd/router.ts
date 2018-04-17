@@ -2,6 +2,7 @@ import * as express from "express";
 
 import { authorized } from "../authz";
 import ProjectModel from "../project";
+import SubProjectModel from "../subproject";
 import UserModel from "../user";
 import { MultichainClient } from "../multichain";
 import { GlobalModel } from "../global/model";
@@ -23,6 +24,7 @@ interface ErrorResponse {
 type Response = SuccessResponse | ErrorResponse;
 
 const send = (res: express.Response, code: number, response: Response) => {
+  console.log("xxxxxxxxx");
   res.status(code).json(response);
 };
 
@@ -31,6 +33,7 @@ const handleError = (req: express.Request, res: express.Response, intent: Intent
 
   switch (err.kind) {
     case "NotAuthorized":
+      console.log(req.token);
       send(res, 403, {
         apiVersion: "1.0",
         error: {
@@ -77,6 +80,7 @@ export const createRouter = (
 ) => {
   const userModel = new UserModel(multichainClient, jwtSecret, rootSecret);
   const projectModel = new ProjectModel(multichainClient);
+  const subprojectModel = new SubProjectModel(multichainClient);
   const globalModel = new GlobalModel(multichainClient);
 
   const router = express.Router();
@@ -320,7 +324,27 @@ export const createRouter = (
       };
       send(res, 201, response);
     } catch (err) {
-      handleError(res, req, intent, err);
+      handleError(req, res, intent, err);
+    }
+  });
+
+  router.post("/project.createSubproject", async (req, res) => {
+    const { path, token, body } = req;
+    const intent = path.substring(1);
+    try {
+      const txId = await subprojectModel.createSubProject(
+        token,
+        body.data,
+        authorized(token, intent)
+      );
+      const response = {
+        apiVersion: apiVersion,
+        data: txId
+      };
+      send(res, 201, response);
+    } catch (err) {
+      console.log(err);
+      handleError(req, res, intent, err);
     }
   });
 

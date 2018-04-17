@@ -75,5 +75,9 @@ export interface MultichainClient {
   ): Promise<any[]>;
 
   // Update a stream item, serializing the Js object as hex-string:
-  updateStreamItem(streamId: StreamName | StreamTxId, key: string, object: any): Promise<TxId>;
+  updateStreamItem(
+    streamId: StreamName | StreamTxId,
+    key: string | string[],
+    object: any
+  ): Promise<TxId>;
 }
