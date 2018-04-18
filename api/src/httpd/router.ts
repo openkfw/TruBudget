@@ -65,10 +65,18 @@ const handleError = (req: express.Request, res: express.Response, intent: Intent
       break;
 
     default:
-      send(res, 500, {
-        apiVersion: "1.0",
-        error: { code: 500, message: "INTERNAL SERVER ERROR" }
-      });
+      // handle RPC errors, too:
+      if (err.code === -708) {
+        send(res, 404, {
+          apiVersion: "1.0",
+          error: { code: 404, message: "Not found." }
+        });
+      } else {
+        send(res, 500, {
+          apiVersion: "1.0",
+          error: { code: 500, message: "INTERNAL SERVER ERROR" }
+        });
+      }
   }
 };
 
