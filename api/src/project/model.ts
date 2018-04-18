@@ -1,5 +1,5 @@
 import { AllowedUserGroupsByIntent, UserId } from "../authz/types";
-import { MultichainClient, Stream, StreamTxId, StreamBody } from "../multichain";
+import { MultichainClient, Stream, StreamTxId, StreamBody, SubprojectOnChain } from "../multichain";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { LogEntry } from "../multichain/Client.h";
 import { Project, ProjectStreamMetadata, ProjectResponse } from "./model.h";
@@ -50,7 +50,8 @@ const replacePermissionsWithAllowedIntents = async (
   delete project.permissions;
   return {
     ...(project as any),
-    allowedIntents: await getAllowedIntents(token, permissions || [])
+    allowedIntents: await getAllowedIntents(token, permissions || []),
+    subprojects: []
   };
 };
 
@@ -96,7 +97,8 @@ export class ProjectModel {
     await authorized(project.permissions);
     // Instead of passing the permissions as is, we return the intents the current user
     // is allowed to execute:
-    return replacePermissionsWithAllowedIntents(token, project);
+    const response = await replacePermissionsWithAllowedIntents(token, project);
+    return { ...response, subprojects: await SubprojectOnChain.getAll(this.multichain, projectId) };
   }
 
   async grantPermissions(data, authorized) {

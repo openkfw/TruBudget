@@ -35,5 +35,6 @@ export interface ProjectResponse {
   currency: string;
   thumbnail?: string;
   allowedIntents: Intent[];
-  logs?: LogEntry[];
+  logs: LogEntry[];
+  subprojects: any; // TODO
 }

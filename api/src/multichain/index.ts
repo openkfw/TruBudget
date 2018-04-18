@@ -1,3 +1,6 @@
+import * as Subproject from "./resources/subproject";
+export { Subproject as SubprojectOnChain };
+
 export {
   MultichainClient,
   RpcMultichainClient,

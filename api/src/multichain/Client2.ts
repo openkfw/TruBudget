@@ -105,8 +105,12 @@ export class RpcMultichainClient implements MultichainClient {
     return items.map(x => hexToObject(x.data));
   }
 
-  async updateStreamItem(streamName: StreamName, key: string, object: any): Promise<void> {
+  async updateStreamItem(
+    streamName: StreamName,
+    keys: string | string[],
+    object: any
+  ): Promise<void> {
     const data = objectToHex(object);
-    return this.rpcClient.invoke("publish", streamName, key, data);
+    return this.rpcClient.invoke("publish", streamName, keys, data);
   }
 }

@@ -1,3 +1,3 @@
-import { SubProjectModel } from "./model";
+import { SubprojectModel } from "./model";
 
-export default SubProjectModel;
+export default SubprojectModel;

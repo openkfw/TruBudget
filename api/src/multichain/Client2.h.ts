@@ -74,5 +74,5 @@ export interface MultichainClient {
   latestValuesForKey(streamName: StreamName, key: string, nValues?: number): Promise<any[]>;
 
   // Update a stream item, serializing the Js object as hex-string:
-  // updateStreamItem(streamName: StreamName, keys: string[], object: any): Promise<void>;
+  updateStreamItem(streamName: StreamName, keys: string | string[], object: any): Promise<void>;
 }

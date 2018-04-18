@@ -1,18 +1,19 @@
-import { MultichainClient, Stream, StreamTxId, StreamBody } from "../multichain";
+import { MultichainClient, Stream, StreamTxId, StreamBody, SubprojectOnChain } from "../multichain";
 import { AuthToken } from "../authz/token";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
-import { TxId } from "../multichain/Client.h";
+import { TxId, LogEntry } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import { AllowedUserGroupsByIntent } from "../authz/types";
+import { SubprojectData } from "../multichain/resources/subproject";
 
-export class SubProjectModel {
+export class SubprojectModel {
   multichain: MultichainClient;
 
   constructor(multichain: MultichainClient) {
     this.multichain = multichain;
   }
 
-  async createSubProject(token: AuthToken, body, authorized): Promise<string> {
+  async create(token: AuthToken, body, authorized): Promise<void> {
     const expectedKeys = ["projectId", "displayName", "amount", "currency", "description"];
     // TODO sanitize input
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, body);
@@ -23,31 +24,24 @@ export class SubProjectModel {
     const projectPermissions = await this.multichain.latestValuesForKey(projectId, "_permissions");
     await authorized(projectPermissions[0]); // throws if unauthorized
 
-    // Create subproject object
-    const subprojectId = randomString(20);
     const userId = token.userId;
-    const permissions = getDefaultPermissions(userId);
-    const initialLogEntry = { issuer: userId, action: "created_subproject" };
-    const subproject = {
-      _metadata: {
-        id: subprojectId,
-        name: displayName,
-        status: "open",
-        amount,
-        currency,
-        description
-      },
-      _log: [initialLogEntry],
-      _permissions: permissions
+    const subprojectId = randomString(20);
+    const logEntry: LogEntry = { issuer: userId, action: "created_subproject" };
+    const data = {
+      displayName,
+      amount,
+      currency,
+      description
     };
 
-    // Store subproject
-    const txId: TxId = await this.multichain.updateStreamItem(
+    return SubprojectOnChain.create(
+      this.multichain,
       projectId,
-      ["subproject", subprojectId],
-      subproject
+      subprojectId,
+      getDefaultPermissions(userId),
+      logEntry,
+      data
     );
-    return txId;
   }
 }
 

@@ -2,7 +2,7 @@ import * as express from "express";
 
 import { authorized } from "../authz";
 import ProjectModel from "../project";
-import SubProjectModel from "../subproject";
+import SubprojectModel from "../subproject";
 import UserModel from "../user";
 import { MultichainClient } from "../multichain";
 import { GlobalModel } from "../global/model";
@@ -88,7 +88,7 @@ export const createRouter = (
 ) => {
   const userModel = new UserModel(multichainClient, jwtSecret, rootSecret);
   const projectModel = new ProjectModel(multichainClient);
-  const subprojectModel = new SubProjectModel(multichainClient);
+  const subprojectModel = new SubprojectModel(multichainClient);
   const globalModel = new GlobalModel(multichainClient);
 
   const router = express.Router();
@@ -340,14 +340,12 @@ export const createRouter = (
     const { path, token, body } = req;
     const intent = "project.createSubproject";
     try {
-      const txId = await subprojectModel.createSubProject(
-        token,
-        body.data,
-        authorized(token, intent)
-      );
+      await subprojectModel.create(token, body.data, authorized(token, intent));
       const response = {
         apiVersion: apiVersion,
-        data: txId
+        data: {
+          created: true
+        }
       };
       send(res, 201, response);
     } catch (err) {
