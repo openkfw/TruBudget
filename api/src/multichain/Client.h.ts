@@ -57,6 +57,12 @@ export interface StreamItem {
   value: any;
 }
 
+export interface Resource {
+  log: LogEntry[];
+  permissions: AllowedUserGroupsByIntent;
+  data: any;
+}
+
 export interface MultichainClient {
   // Create a new stream. If name is set and the stream exists, nothing happens.
   getOrCreateStream(options: CreateStreamOptions);
