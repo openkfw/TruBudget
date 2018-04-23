@@ -24,7 +24,7 @@ const addTokenHandling = (app, jwtSecret: string) => {
 };
 
 const logging = (req: express.Request, res, next) => {
-  console.log(`\n${req.method} ${req.path} [${req.ctx}]`);
+  console.log(`\n${req.method} ${req.path} [${JSON.stringify(req.body.data)}]`);
   next();
 };
 
