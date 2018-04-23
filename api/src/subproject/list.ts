@@ -13,7 +13,7 @@ export const getSubprojectList = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest
 ): Promise<HttpResponse> => {
-  const { projectId } = req.query;
+  const projectId = req.query.project;
   if (!projectId) throwParseError(["projectId"]);
   return [
     200,
