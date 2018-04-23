@@ -14,7 +14,7 @@ export const getSubprojectList = async (
   req: AuthenticatedRequest
 ): Promise<HttpResponse> => {
   const projectId = req.query.project;
-  if (!projectId) throwParseError(["projectId"]);
+  if (!projectId) throwParseError(["project"]);
   return [
     200,
     {
