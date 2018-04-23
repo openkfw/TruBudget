@@ -9,8 +9,9 @@ import {
 import { isNonemptyString } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import * as Workflowitem from "../workflowitem";
+import { randomString } from "../multichain/hash";
 
-const value = (name, val, isValid?) => {
+const value = (name, val, isValid) => {
   if (isValid !== undefined && !isValid(val)) {
     throwParseError([name]);
   }
@@ -30,24 +31,29 @@ export const createWorkflowItem = async (
   await Workflowitem.create(
     multichain,
     req.token,
-    getWorkflowitemDefaultPermissions(req.token),
     value("projectId", data.projectId, isNonemptyString),
     value("subprojectId", data.subprojectId, isNonemptyString),
-    value("workflowitemId", data.workflowitemId, isNonemptyString),
-    value("displayName", data.displayName, isNonemptyString),
-    value("currency", data.currency, isNonemptyString),
-    value("amountType", data.amountType, x => ["N/A", "disbursed", "allocated"].includes(x)),
-    value("description", data.description, x => typeof x === "string"),
-    value("status", data.status, x => ["open", "closed"].includes(x)),
-    value("documents", data.documents), // not checked right now
-    value("previousWorkflowitemId", data.previousWorkflowitemId) // optional
+    {
+      id: isNonemptyString(data.workflowitemId) ? data.workflowitemId : randomString(),
+      displayName: value("displayName", data.displayName, isNonemptyString),
+      amount: value("amount", data.amount, x => x !== undefined && typeof x === "number"),
+      currency: value("currency", data.currency, isNonemptyString),
+      amountType: value("amountType", data.amountType, x =>
+        ["N/A", "disbursed", "allocated"].includes(x)
+      ),
+      description: value("description", data.description, x => typeof x === "string"),
+      status: value("status", data.status, x => ["open", "closed"].includes(x)),
+      documents: data.documents, // not checked right now
+      previousWorkflowitemId: data.previousWorkflowitemId // optional
+    },
+    getWorkflowitemDefaultPermissions(req.token)
   );
 
   return [
     201,
     {
       apiVersion: "1.0",
-      data: "Created."
+      data: { created: true }
     }
   ];
 };

@@ -15,7 +15,7 @@ describe("subproject.list", () => {
               id: "one",
               displayName: "subproject one",
               status: "open",
-              amount: "1",
+              amount: 1,
               currency: "EUR",
               description: ""
             },
@@ -31,7 +31,7 @@ describe("subproject.list", () => {
               id: "two",
               displayName: "subproject two",
               status: "open",
-              amount: "2",
+              amount: 2,
               currency: "USD",
               description: ""
             },
@@ -48,7 +48,7 @@ describe("subproject.list", () => {
     };
     const req = {
       query: {
-        project: "the-sample-project"
+        projectId: "the-sample-project"
       },
       token: {
         userId: "alice"
@@ -66,7 +66,7 @@ describe("subproject.list", () => {
           id: "one",
           displayName: "subproject one",
           status: "open",
-          amount: "1",
+          amount: 1,
           currency: "EUR",
           description: "",
           allowedIntents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.close"]
@@ -75,7 +75,7 @@ describe("subproject.list", () => {
           id: "two",
           displayName: "subproject two",
           status: "open",
-          amount: "2",
+          amount: 2,
           currency: "USD",
           description: "",
           allowedIntents: ["subproject.viewSummary"]

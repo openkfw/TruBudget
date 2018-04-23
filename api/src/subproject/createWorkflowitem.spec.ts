@@ -46,7 +46,7 @@ describe("subproject.createWorkflowitem", () => {
     expect(status).to.eql(201);
     expect(response).to.eql({
       apiVersion: "1.0",
-      data: "Created."
+      data: { created: true }
     });
   });
 });
