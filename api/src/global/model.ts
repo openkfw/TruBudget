@@ -1,9 +1,9 @@
 import { ServerRequest } from "http";
 import { MultichainClient, StreamKind } from "../multichain/Client.h";
 import { authorized } from "../authz/index";
-import { mergePermissions } from "./index";
 import { GlobalOnChain } from "../multichain";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
+import Intent from "../authz/intents";
 
 const globalPermissionsTemplate = {
   "global.intent.list": ["root"],
@@ -53,16 +53,16 @@ export class GlobalModel {
     return allowedIntents.filter(intent => intent !== undefined);
   };
 
-  async grantPermissions(authorized, intentToGrant, targetUser) {
+  async grantPermissions(authorized, intentToGrant: Intent, targetUser: string) {
     const permissionsByIntent = await GlobalOnChain.getPermissions(this.multichain);
     await authorized(permissionsByIntent);
     const permissions = permissionsByIntent[intentToGrant];
     if (permissions.indexOf(targetUser) === -1) {
+      // Update permissions:
       permissions.push(targetUser);
-      await this.multichain.updateStreamItem(this.streamId, this.key, permissionsByIntent);
-      return "Permission granted.";
+      return GlobalOnChain.replacePermissions(this.multichain, permissionsByIntent);
     } else {
-      return "Permission already set.";
+      // Permission already set.
     }
   }
 }

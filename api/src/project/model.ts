@@ -5,14 +5,14 @@ import {
   StreamTxId,
   StreamBody,
   SubprojectOnChain,
-  GlobalOnChain
+  GlobalOnChain,
+  ProjectOnChain
 } from "../multichain";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { Project, ProjectStreamMetadata, ProjectResponse } from "./model.h";
 import Intent from "../authz/intents";
 import { getAllowedIntents, authorized } from "../authz/index";
 import { AuthToken } from "../authz/token";
-import { mergePermissions } from "../global";
 import { LogEntry } from "../multichain/Client.h";
 
 interface ProjectStream {
@@ -107,15 +107,19 @@ export class ProjectModel {
     return { ...response, subprojects: await SubprojectOnChain.getAll(this.multichain, projectId) };
   }
 
-  async grantPermissions(data, authorized) {
-    const { id, permissions } = data;
-    const permissionsKey = "_permissions";
-    const permissionItem = await this.multichain.latestValuesForKey(id, "_permissions");
-    const existingPermissions = permissionItem[0];
-    await authorized(existingPermissions);
-    const mergedPermissions = mergePermissions(permissions, existingPermissions);
-    await this.multichain.updateStreamItem(id, permissionsKey, mergedPermissions);
-    return "OK";
+  async grantPermissions(authorized, projectId: string, intentToGrant: Intent, targetUser: string) {
+    const permissionsByIntent = await ProjectOnChain.getPermissions(this.multichain, projectId);
+    await authorized(permissionsByIntent);
+    const permissions = permissionsByIntent[intentToGrant];
+    if (permissions.indexOf(targetUser) === -1) {
+      // Update permissions:
+      permissions.push(targetUser);
+      await ProjectOnChain.replacePermissions(this.multichain, projectId, permissionsByIntent);
+      return true;
+    } else {
+      // Permission already set.
+      return false;
+    }
   }
 
   async listPermissions(id, authorized) {

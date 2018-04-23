@@ -257,28 +257,33 @@ export const createRouter = (
 
   router.post("/project.intent.grantPermission", async (req, res) => {
     const { body, path } = req;
-    const intent = "project.intent.grantPermission";
+    const intent: Intent = "project.intent.grantPermission";
 
-    if (body.apiVersion !== apiVersion) {
-      send(res, 412, {
-        apiVersion: req.body.apiVersion,
-        error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
-      });
-      return;
-    }
-    if (!body.data) {
-      send(res, 400, {
-        apiVersion: req.body.apiVersion,
-        error: { code: 400, message: `Expected "data" in body.` }
-      });
-      return;
-    }
     try {
+      // Validate input:
+      if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
+      throwParseErrorIfUndefined(body, ["data"]);
+      throwParseErrorIfUndefined(body, ["data", "projectId"]);
+      const projectId = body.data.projectId;
+      throwParseErrorIfUndefined(body, ["data", "intent"]);
+      const intentToGrant = body.data.intent;
+      throwParseErrorIfUndefined(body, ["data", "user"]);
+      const targetUser = body.data.user;
+
+      // Compute the data:
+      const isUpdate = await projectModel.grantPermissions(
+        authorized(req.token, intent),
+        projectId,
+        intentToGrant,
+        targetUser
+      );
+
+      // Create and send the response:
       const response = {
-        apiVersion: apiVersion,
-        data: await projectModel.grantPermissions(body.data, authorized(req.token, intent))
+        apiVersion: "1.0",
+        data: isUpdate ? "Permission granted." : "Permission already set."
       };
-      send(res, 201, response);
+      send(res, isUpdate ? 201 : 200, response);
     } catch (err) {
       handleError(req, res, intent, err);
     }
