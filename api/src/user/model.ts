@@ -1,7 +1,14 @@
 import * as jsonwebtoken from "jsonwebtoken";
 
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import { MultichainClient, Stream, StreamBody, StreamItem, StreamTxId } from "../multichain";
+import {
+  MultichainClient,
+  Stream,
+  StreamBody,
+  StreamItem,
+  StreamTxId,
+  GlobalOnChain
+} from "../multichain";
 import {
   UserRecord,
   UserLoginResponse,
@@ -13,7 +20,8 @@ import {
 import { encryptPassword } from "./hash";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { globalIntents, userDefaultIntents } from "../authz/intents";
-import { authorized as globalAuthorized } from "../authz";
+import Intent from "../authz/intents";
+import { getAllowedIntents } from "../authz/index";
 const usersStream = "users";
 
 const createToken = (secret: string) => (userId: string, organization: string): string =>
@@ -91,13 +99,9 @@ export class UserModel {
       item => item.value
     );
 
-    const globalPermissions = await globalModel.listPermissions(
-      globalAuthorized(token, "global.intent.list")
-    );
-
     const clearedUsers = (await Promise.all(
       users.map(user => {
-        return authorized(globalPermissions)
+        return authorized(user.permissions)
           .then(() => user)
           .catch(err => null);
       })
@@ -144,14 +148,12 @@ export class UserModel {
     const passwordCiphertext = await encryptPassword(passwordCleartext);
     const isPasswordMatch = passwordCiphertext === trueUser.passwordCiphertext;
     if (!isPasswordMatch) throwError("wrong password");
-    const allowedIntents = (await globalModel.listPermissionsForUser(
-      globalAuthorized({ userId: id, organization: trueUser.organization }, "global.intent.list")
-    )) as string[];
+    const token = { userId: trueUser.id, organization: trueUser.organization };
     return {
       id,
       displayName: trueUser.displayName,
       organization: trueUser.organization,
-      allowedIntents: allowedIntents,
+      allowedIntents: await getAllowedIntents(token, GlobalOnChain.getPermissions(this.multichain)),
       token: this.createToken(id, trueUser.organization)
     };
   }
