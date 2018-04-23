@@ -24,7 +24,6 @@ interface ErrorResponse {
 type Response = SuccessResponse | ErrorResponse;
 
 const send = (res: express.Response, code: number, response: Response) => {
-  console.log("xxxxxxxxx");
   res.status(code).json(response);
 };
 
