@@ -7,6 +7,7 @@ import UserModel from "../user";
 import { MultichainClient } from "../multichain";
 import { GlobalModel } from "../global/model";
 import Intent from "../authz/intents";
+import { findBadKeysInObject, isNonemptyString } from "../lib";
 
 interface SuccessResponse {
   apiVersion: string;
@@ -79,6 +80,18 @@ const handleError = (req: express.Request, res: express.Response, intent: Intent
   }
 };
 
+const throwParseError = badKeys => {
+  throw { kind: "ParseError", badKeys };
+};
+const throwParseErrorIfUndefined = (obj, path) => {
+  try {
+    const val = path.reduce((acc, x) => acc[x], obj);
+    if (val === undefined) throw Error("catchme");
+  } catch (_err) {
+    throwParseError([path.join(".")]);
+  }
+};
+
 const apiVersion = "1.0";
 export const createRouter = (
   multichainClient: MultichainClient,
@@ -109,26 +122,24 @@ export const createRouter = (
 
   router.post("/global.intent.grantPermission", async (req, res) => {
     const { body, path } = req;
-    const intent = "global.intent.grantPermission";
+    const intent: Intent = "global.intent.grantPermission";
 
-    if (body.apiVersion !== apiVersion) {
-      send(res, 412, {
-        apiVersion: req.body.apiVersion,
-        error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
-      });
-      return;
-    }
-    if (!body.data) {
-      send(res, 400, {
-        apiVersion: req.body.apiVersion,
-        error: { code: 400, message: `Expected "data" in body.` }
-      });
-      return;
-    }
     try {
+      // Validate input:
+      if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
+      throwParseErrorIfUndefined(body, ["data"]);
+      throwParseErrorIfUndefined(body, ["data", "intent"]);
+      const intentToGrant = body.data.intent;
+      throwParseErrorIfUndefined(body, ["data", "user"]);
+      const targetUser = body.data.user;
+
+      // Compute the data:
+      await globalModel.grantPermissions(authorized(req.token, intent), intentToGrant, targetUser);
+
+      // Create and send the response:
       const response = {
-        apiVersion: apiVersion,
-        data: await globalModel.grantPermissions(body.data, authorized(req.token, intent))
+        apiVersion: "1.0",
+        data: "Permission granted."
       };
       send(res, 201, response);
     } catch (err) {
