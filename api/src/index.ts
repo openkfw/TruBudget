@@ -46,5 +46,5 @@ app.listen(port, err => {
   provisionBlockchain(port, rootSecret).catch(err =>
     console.log(`Could not provision the chain: ${err}`)
   );
-  return console.log(`server is listening on ${port}`);
+  console.log(`server is listening on ${port}`);
 });

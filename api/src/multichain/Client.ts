@@ -8,6 +8,8 @@ import {
   StreamItem,
   TxId
 } from "./Client.h";
+import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import * as Liststreamitems from "./responses/liststreamitems";
 import { RpcClient, ConnectionSettings } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { objectToHex, hexToObject } from "./hexconverter";
@@ -115,5 +117,25 @@ export class RpcMultichainClient implements MultichainClient {
   ): Promise<TxId> {
     const data = objectToHex(object);
     return await this.rpcClient.invoke("publish", streamId, key, data);
+  }
+
+  async getValues(
+    streamName: StreamName,
+    key: string,
+    nValues: number = maxItemCount
+  ): Promise<any[]> {
+    const items: Liststreamkeyitems.Item[] = await this.rpcClient.invoke(
+      "liststreamkeyitems",
+      streamName,
+      key,
+      false,
+      nValues
+    );
+    return items.map(x => hexToObject(x.data));
+  }
+
+  async setValue(streamName: StreamName, keys: string | string[], object: any): Promise<void> {
+    const data = objectToHex(object);
+    return this.rpcClient.invoke("publish", streamName, keys, data);
   }
 }

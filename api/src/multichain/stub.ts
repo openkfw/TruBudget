@@ -21,6 +21,12 @@ const metadata = {
 };
 
 class MultichainClientStub implements MultichainClient {
+  getValues(streamName: string, key: string, nValues?: number | undefined): Promise<any[]> {
+    throw new Error("Method not implemented.");
+  }
+  setValue(streamName: string, keys: string | string[], object: any): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   streamItems(streamId: string): Promise<StreamItem[]> {
     throw new Error("Method not implemented.");
   }

@@ -49,7 +49,7 @@ export const getAll = async (
   multichain: MultichainClient,
   projectId: string
 ): Promise<SubprojectResource[]> => {
-  const subprojects = (await multichain.latestValuesForKey(
+  const subprojects = (await multichain.getValues(
     projectId,
     SUBPROJECTS_KEY
   )) as SubprojectResource[];
