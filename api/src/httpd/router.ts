@@ -169,14 +169,15 @@ export const createRouter = (
   });
 
   router.get("/user.list", async (req, res) => {
+    const intent = "user.view";
     try {
       const response = {
         apiVersion: "1.0",
-        data: await userModel.list(req.token, authorized(req.token, "user.view"), globalModel)
+        data: await userModel.list(req.token, authorized(req.token, intent), globalModel)
       };
       send(res, 200, response);
     } catch (err) {
-      handleError(req, res, "user.view", err);
+      handleError(req, res, intent, err);
     }
   });
 
