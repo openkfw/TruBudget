@@ -2,6 +2,8 @@ import { ServerRequest } from "http";
 import { MultichainClient, StreamKind } from "../multichain/Client.h";
 import { authorized } from "../authz/index";
 import { mergePermissions } from "./index";
+import { GlobalOnChain } from "../multichain";
+import { findBadKeysInObject, isNonemptyString } from "../lib";
 
 const globalPermissionsTemplate = {
   "global.intent.list": ["root"],
@@ -15,7 +17,7 @@ const globalPermissionsTemplate = {
 export class GlobalModel {
   streamId: StreamKind = "global";
   multichain: MultichainClient;
-  key = "_permissions";
+  key = "permissions";
 
   constructor(multichain: MultichainClient) {
     this.multichain = multichain;
@@ -30,7 +32,7 @@ export class GlobalModel {
     if (existingPermissions.length === 0) {
       await this.multichain.updateStreamItem(this.streamId, this.key, globalPermissionsTemplate);
     }
-    return await this.multichain.latestValuesForKey(this.streamId, this.key);
+    return this.multichain.latestValuesForKey(this.streamId, this.key);
   }
 
   async listPermissions(authorized) {
@@ -51,12 +53,16 @@ export class GlobalModel {
     return allowedIntents.filter(intent => intent !== undefined);
   };
 
-  async grantPermissions(requestedPermissions, authorized) {
-    let mergedPermissions = {};
-    const existingPermissions = await this.getOrCreateGlobalStream();
-    await authorized(existingPermissions);
-    mergedPermissions = mergePermissions(requestedPermissions, existingPermissions[0]);
-    await this.multichain.updateStreamItem(this.streamId, this.key, mergedPermissions);
-    return "OK";
+  async grantPermissions(authorized, intentToGrant, targetUser) {
+    const permissionsByIntent = await GlobalOnChain.getPermissions(this.multichain);
+    await authorized(permissionsByIntent);
+    const permissions = permissionsByIntent[intentToGrant];
+    if (permissions.indexOf(targetUser) === -1) {
+      permissions.push(targetUser);
+      await this.multichain.updateStreamItem(this.streamId, this.key, permissionsByIntent);
+      return "Permission granted.";
+    } else {
+      return "Permission already set.";
+    }
   }
 }
