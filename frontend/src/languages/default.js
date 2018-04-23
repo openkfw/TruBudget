@@ -1,7 +1,4 @@
-import def from './default';
-
-const en = {
-  ...def,
+const def = {
   common: {
     cancel: 'Cancel',
     next: 'Next',
@@ -223,7 +220,6 @@ const en = {
     "project.intent.revokePermission": 'Revoke permissions',
     "project.viewDetails": 'View project details',
     "project.viewSummary": 'View project in overview',
-    "project.createSubproject": 'Create subprojects',
   },
   language: {
     german: 'German',
@@ -231,4 +227,4 @@ const en = {
     english: 'English',
   },
 }
-export default en;
+export default def;

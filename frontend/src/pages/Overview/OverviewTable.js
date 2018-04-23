@@ -13,8 +13,7 @@ import _ from 'lodash';
 import { ACMECorpDarkBlue } from '../../colors';
 import strings from '../../localizeStrings'
 
-const canCreateProject = (allowedIntents) => allowedIntents.indexOf("global.createProject") > -1;
-const canViewProjectDetails = (allowedIntents) => allowedIntents.indexOf("project.viewDetails") > -1;
+import { canCreateProject, canViewProjectDetails } from '../../permissions';
 
 const getTableEntries = ({ projects, history }) => {
   return projects.map((project, index) => {

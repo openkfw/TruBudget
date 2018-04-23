@@ -5,6 +5,7 @@ import { toAmountString, statusMapping } from '../../helper';
 import { Card, CardHeader } from 'material-ui/Card';
 import { ACMECorpLightgreen } from '../../colors.js';
 import strings from '../../localizeStrings'
+import { canViewSubProjectDetails } from '../../permissions';
 const styles = {
   tableText: {
     fontSize: '14px'
@@ -26,7 +27,12 @@ const getTableEntries = (subProjects, location, history) => {
           {statusMapping(subProject.data.status)}
         </TableRowColumn>
         <TableRowColumn>
-          <FlatButton style={styles.tableText} label={strings.subproject.subproject_select_button} onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.data.id)} secondary={true} />
+          <FlatButton
+            style={styles.tableText}
+            label={strings.subproject.subproject_select_button}
+            disabled={!canViewSubProjectDetails(subProject.data.allowedIntents)}
+            onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.data.id)}
+            secondary={true} />
         </TableRowColumn>
       </TableRow>
     );
