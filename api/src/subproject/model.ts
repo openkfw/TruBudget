@@ -16,7 +16,6 @@ import {
   SubprojectResource,
   SubprojectUserView
 } from "../multichain/resources/subproject";
-import { SubprojectResponse } from "./model.h";
 import { getAllowedIntents } from "../authz/index";
 
 export class SubprojectModel {
