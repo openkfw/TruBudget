@@ -10,6 +10,7 @@ import globalStyles from '../../styles';
 import { toJS } from '../../helper';
 import { fetchUser } from '../Login/actions';
 import PermissionsContainer from '../Common/Permissions/PermissionsContainer';
+import ProjectPermissionsContainer from './ProjectPermissionsContainer';
 
 
 
@@ -18,7 +19,6 @@ class SubProjectsContainer extends Component {
     const projectId = this.props.location.pathname.split('/')[2];
     this.props.setSelectedView(projectId, 'project');
     this.props.fetchAllProjectDetails(projectId, true);
-    this.props.fetchProjectPermissions(projectId, true);
     this.props.fetchUser(true);
   }
 
@@ -29,7 +29,7 @@ class SubProjectsContainer extends Component {
     return (
       <div>
         <div style={globalStyles.innerContainer}>
-          <PermissionsContainer />
+          <ProjectPermissionsContainer />
           <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
         </div>
@@ -43,7 +43,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     fetchUser: (showLoading) => dispatch(fetchUser(showLoading)),
-    fetchProjectPermissions: (projectId, showLoading) => dispatch(fetchProjectPermissions(projectId, showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
@@ -81,7 +80,6 @@ const mapStateToProps = (state) => {
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     users: state.getIn(['login', 'users']),
     roles: state.getIn(['login', 'roles']),
-    permissions: state.getIn(['detailview', 'permissions']),
     user: state.getIn(['login', 'user']),
     allowedIntents: state.getIn(['detailview', 'allowedIntents']),
     thumbnail: state.getIn(['detailview', 'thumbnail']),
