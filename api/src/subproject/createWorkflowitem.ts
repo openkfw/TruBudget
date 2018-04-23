@@ -1,17 +1,14 @@
-import { expect } from "chai";
-import { getSubprojectList } from "./list";
-import { MultichainClient } from "../multichain/Client.h";
 import { AuthToken } from "../authz/token";
-import { WorkflowitemData } from "../multichain/resources/workflowitem";
+import { AllowedUserGroupsByIntent } from "../authz/types";
 import {
   AuthenticatedRequest,
   HttpResponse,
   throwParseError,
   throwParseErrorIfUndefined
 } from "../httpd/lib";
-import { WorkflowitemOnChain } from "../multichain";
 import { isNonemptyString } from "../lib";
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { MultichainClient } from "../multichain/Client.h";
+import * as Workflowitem from "../workflowitem";
 
 const value = (name, val, isValid?) => {
   if (isValid !== undefined && !isValid(val)) {
@@ -30,7 +27,7 @@ export const createWorkflowItem = async (
   throwParseErrorIfUndefined(body, ["data"]);
   const data = body.data;
 
-  await WorkflowitemOnChain.create(
+  await Workflowitem.create(
     multichain,
     req.token,
     getWorkflowitemDefaultPermissions(req.token),

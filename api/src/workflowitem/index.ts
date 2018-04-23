@@ -1,7 +1,7 @@
-import { MultichainClient, Resource, LogEntry } from "../Client.h";
-import { AllowedUserGroupsByIntent } from "../../authz/types";
-import Intent from "../../authz/intents";
-import { AuthToken } from "../../authz/token";
+import Intent from "../authz/intents";
+import { MultichainClient, Resource } from "../multichain/Client.h";
+import { AuthToken } from "../authz/token";
+import { AllowedUserGroupsByIntent } from "../authz/types";
 
 const workflowitemsKey = subprojectId => `${subprojectId}_workflows`;
 
