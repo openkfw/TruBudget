@@ -47,6 +47,7 @@ export default function detailviewReducer(state = defaultState, action) {
         projectTS: action.creationUnixTs,
         allowedIntents: fromJS(action.allowedIntents),
         logs: fromJS(action.logs),
+        subProjects: fromJS(action.subprojects)
       })
     case SHOW_PROJECT_PERMISSIONS:
       return state.set('permissionDialogShown', true);

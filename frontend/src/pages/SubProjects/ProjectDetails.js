@@ -90,22 +90,36 @@ const styles = {
   }
 }
 
+const calculateMetrics = (subProjects, projectAmount, projectCurrency) => {
+  const spentAmount = calculateUnspentAmount(subProjects);
+  return {
+    spentAmount,
+    amountString: toAmountString(projectAmount, projectCurrency),
+    completionRatio: getCompletionRatio(subProjects),
+    completionString: getCompletionString(subProjects),
+    spentAmountString: toAmountString(spentAmount.toString(), projectCurrency),
+    statusDetails: getProgressInformation(subProjects),
+    allocatedRatio: getAllocationRatio(spentAmount, projectAmount),
+  }
+}
+
 const ProjectDetails = ({
   projectName, projectCurrency, projectAmount,
   subProjects, projectComment, projectStatus,
   projectTS, projectAssignee, roles, thumbnail,
   canViewPermissions, showProjectPermissions
 }) => {
-  const amountString = toAmountString(projectAmount, projectCurrency);
-  const spentAmount = calculateUnspentAmount(subProjects)
 
-  const completionRatio = getCompletionRatio(subProjects);
-  const completionString = getCompletionString(subProjects);
+  const {
+    amountString,
+    spentAmount,
+    completionRatio,
+    completionString,
+    spentAmountString,
+    statusDetails,
+    allocatedRatio,
+  } = calculateMetrics(subProjects, projectAmount, projectCurrency);
 
-  const spentAmountString = toAmountString(spentAmount.toString(), projectCurrency);
-  const statusDetails = getProgressInformation(subProjects)
-
-  const allocatedRatio = getAllocationRatio(spentAmount, projectAmount);
   return (
     <div style={styles.container}>
       <Card style={styles.card}>

@@ -13,20 +13,20 @@ const styles = {
 
 const getTableEntries = (subProjects, location, history) => {
   return subProjects.map((subProject, index) => {
-    var amount = toAmountString(subProject.details.amount, subProject.details.currency)
+    var amount = toAmountString(subProject.data.amount, subProject.data.currency)
     return (
       <TableRow key={index} selectable={false}>
         <TableRowColumn style={styles.tableText}>
-          {subProject.details.name}
+          {subProject.data.displayName}
         </TableRowColumn>
         <TableRowColumn style={styles.tableText}>
           {amount}
         </TableRowColumn>
         <TableRowColumn style={styles.tableText}>
-          {statusMapping(subProject.details.status)}
+          {statusMapping(subProject.data.status)}
         </TableRowColumn>
         <TableRowColumn>
-          <FlatButton style={styles.tableText} label={strings.subproject.subproject_select_button} onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.name)} secondary={true} />
+          <FlatButton style={styles.tableText} label={strings.subproject.subproject_select_button} onTouchTap={() => history.push('/projects/' + location.pathname.split('/')[2] + '/' + subProject.data.id)} secondary={true} />
         </TableRowColumn>
       </TableRow>
     );
