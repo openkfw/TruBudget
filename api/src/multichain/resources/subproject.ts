@@ -1,4 +1,4 @@
-import { MultichainClient, Resource, LogEntry } from "../Client2.h";
+import { MultichainClient, Resource, LogEntry } from "../Client.h";
 import { AllowedUserGroupsByIntent } from "../../authz/types";
 
 /** The multichain-item key used to identify subprojects. */
@@ -42,7 +42,7 @@ export const create = async (
     log: [logEntry],
     permissions
   };
-  return multichain.updateStreamItem(projectId, [SUBPROJECTS_KEY, subprojectId], resource);
+  return multichain.setValue(projectId, [SUBPROJECTS_KEY, subprojectId], resource);
 };
 
 export const getAll = async (
