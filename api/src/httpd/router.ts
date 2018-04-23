@@ -10,6 +10,7 @@ import Intent from "../authz/intents";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { getSubprojectList } from "../subproject/list";
 import { HttpResponse, AuthenticatedRequest } from "./lib";
+import { getSubprojectDetails } from "../subproject/viewDetails";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -395,6 +396,11 @@ export const createRouter = (
 
   router.get("/subproject.list", (req: AuthenticatedRequest, res) => {
     getSubprojectList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+  router.get("/subproject.viewDetails", (req: AuthenticatedRequest, res) => {
+    getSubprojectDetails(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
