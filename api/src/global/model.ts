@@ -56,7 +56,7 @@ export class GlobalModel {
   async grantPermissions(authorized, intentToGrant: Intent, targetUser: string) {
     const permissionsByIntent = await GlobalOnChain.getPermissions(this.multichain);
     await authorized(permissionsByIntent);
-    const permissions = permissionsByIntent[intentToGrant];
+    const permissions = permissionsByIntent[intentToGrant] || [];
     if (permissions.indexOf(targetUser) === -1) {
       // Update permissions:
       permissions.push(targetUser);
