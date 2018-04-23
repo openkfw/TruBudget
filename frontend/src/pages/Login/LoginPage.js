@@ -33,7 +33,7 @@ const LoginPage = ({ history, nodePermissions, storeUsername, storePassword, use
         </div>
         <Divider />
         <Username username={username} storeUsername={storeUsername} loginFailed={loginUnsuccessful} />
-        <Password password={password} storePassword={storePassword} loginFailed={loginUnsuccessful} />
+        <Password password={password} storePassword={storePassword} loginFailed={loginUnsuccessful} nextBestAction={() => loginWithCredentails(username, password)} />
         <div style={{ paddingTop: '10px', paddingBottom: '20px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
           <DropDownMenu style={{ marginLeft: 5, }} value={language} onChange={(event, index, value) => setLanguage(value)}>
             <MenuItem value='en-gb' primaryText={strings.language.english} />

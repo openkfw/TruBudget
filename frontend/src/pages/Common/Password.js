@@ -23,11 +23,24 @@ const styles = {
     borderBottomColor: ACMECorpDarkBlue
   }
 }
-const Password = ({ password, storePassword, loginFailed }) => {
+
+const handleEnter = (e, action = () => { }) => {
+  if (e.charCode === 13) {
+    action()
+  }
+}
+
+const Password = ({ password, storePassword, loginFailed, nextBestAction }) => {
   return (
     <div style={styles.container}>
       <PasswordIcon style={styles.icon} />
-      <TextField floatingLabelStyle={styles.floatingLabel} underlineFocusStyle={styles.underlineFocus} floatingLabelText={strings.common.password} value={password} onChange={(event) => storePassword(event.target.value)}
+      <TextField
+        floatingLabelStyle={styles.floatingLabel}
+        underlineFocusStyle={styles.underlineFocus}
+        floatingLabelText={strings.common.password}
+        value={password}
+        onChange={(event) => storePassword(event.target.value)}
+        onKeyPress={e => handleEnter(e, nextBestAction)}
         errorText={loginFailed ? strings.common.incorrect_password : ""} type="password" />
     </div>
   )
