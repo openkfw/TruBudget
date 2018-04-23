@@ -23,9 +23,15 @@ const addTokenHandling = (app, jwtSecret: string) => {
   });
 };
 
+const logging = (req: express.Request, res, next) => {
+  console.log(`\n${req.method} ${req.path} [${req.ctx}]`);
+  next();
+};
+
 export const createBasicApp = (jwtSecret: string, rootSecret: string) => {
   const app = express();
   app.use(bodyParser.json());
   addTokenHandling(app, jwtSecret);
+  app.use(logging);
   return app;
 };
