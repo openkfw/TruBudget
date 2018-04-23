@@ -1,13 +1,19 @@
 import { AllowedUserGroupsByIntent, UserId } from "../authz/types";
-import { MultichainClient, Stream, StreamTxId, StreamBody, SubprojectOnChain } from "../multichain";
+import {
+  MultichainClient,
+  Stream,
+  StreamTxId,
+  StreamBody,
+  SubprojectOnChain,
+  GlobalOnChain
+} from "../multichain";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
-import { LogEntry } from "../multichain/Client.h";
 import { Project, ProjectStreamMetadata, ProjectResponse } from "./model.h";
 import Intent from "../authz/intents";
 import { getAllowedIntents, authorized } from "../authz/index";
 import { AuthToken } from "../authz/token";
 import { mergePermissions } from "../global";
-import { authorized as globalAuthorized } from "../authz";
+import { LogEntry } from "../multichain/Client.h";
 
 interface ProjectStream {
   stream: Stream;
@@ -126,12 +132,7 @@ export class ProjectModel {
     const badKeys = findBadKeysInObject(expectedKeys, isNonemptyString, body);
     if (badKeys.length > 0) throw { kind: "ParseError", badKeys };
 
-    // Check if user is authorized to call global.list.intents
-    const globalPermissions = await globalModel.listPermissions(
-      globalAuthorized(token, "global.intent.list")
-    );
-
-    await authorized(globalPermissions); // throws if unauthorized
+    await authorized(await GlobalOnChain.getPermissions(this.multichain)); // throws if unauthorized
 
     const { userId } = token;
     const txid: StreamTxId = await this.multichain.getOrCreateStream({
