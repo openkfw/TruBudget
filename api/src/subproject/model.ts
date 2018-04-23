@@ -1,4 +1,11 @@
-import { MultichainClient, Stream, StreamTxId, StreamBody, SubprojectOnChain } from "../multichain";
+import {
+  MultichainClient,
+  Stream,
+  StreamTxId,
+  StreamBody,
+  SubprojectOnChain,
+  ProjectOnChain
+} from "../multichain";
 import { AuthToken } from "../authz/token";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { TxId, LogEntry } from "../multichain/Client.h";
@@ -21,8 +28,8 @@ export class SubprojectModel {
     const { projectId, currency, displayName, amount, description } = body;
 
     // Check Permissions
-    const projectPermissions = await this.multichain.latestValuesForKey(projectId, "_permissions");
-    await authorized(projectPermissions[0]); // throws if unauthorized
+    const projectPermissions = await ProjectOnChain.getPermissions(this.multichain, projectId);
+    await authorized(projectPermissions); // throws if unauthorized
 
     const userId = token.userId;
     const subprojectId = randomString(20);
