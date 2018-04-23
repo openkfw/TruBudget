@@ -8,10 +8,16 @@ import {
 } from "../multichain";
 import { AuthToken } from "../authz/token";
 import { findBadKeysInObject, isNonemptyString } from "../lib";
-import { TxId, LogEntry } from "../multichain/Client.h";
+import { TxId, LogEntry, Resource } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import { SubprojectData } from "../multichain/resources/subproject";
+import {
+  SubprojectData,
+  SubprojectResource,
+  SubprojectUserView
+} from "../multichain/resources/subproject";
+import { SubprojectResponse } from "./model.h";
+import { getAllowedIntents } from "../authz/index";
 
 export class SubprojectModel {
   multichain: MultichainClient;

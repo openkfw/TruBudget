@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as expressJwt from "express-jwt";
+import { AuthToken } from "../authz/token";
 
 const addTokenHandling = (app, jwtSecret: string) => {
   app.use(
@@ -24,11 +25,12 @@ const addTokenHandling = (app, jwtSecret: string) => {
 };
 
 const logging = (req: express.Request, res, next) => {
-  console.log(
-    `\n${req.method} ${req.path} [user=${(req.token || {}).userId} body.data=${JSON.stringify(
-      req.body.data
-    )}]`
-  );
+  const details = [
+    (req as any).token !== undefined ? `user=${((req as any).token as AuthToken).userId}` : null,
+    Object.keys(req.query).length !== 0 ? `query=${JSON.stringify(req.query)}` : null,
+    Object.keys(req.body).length !== 0 ? `body=${JSON.stringify(req.body)}` : null
+  ].filter(x => x !== null);
+  console.log(`\n${req.method} ${req.path} [${details.join(" ")}]`);
   next();
 };
 

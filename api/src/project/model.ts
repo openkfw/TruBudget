@@ -48,16 +48,18 @@ const toProject = async (futureProjectStream: Promise<ProjectStream>): Promise<P
   };
 };
 
+// TODO this needs to be refactored..
 const replacePermissionsWithAllowedIntents = async (
   token: AuthToken,
-  project: Project
+  project: Project,
+  multichain: MultichainClient
 ): Promise<ProjectResponse> => {
   const permissions = project.permissions;
   delete project.permissions;
   return {
     ...(project as any),
-    allowedIntents: await getAllowedIntents(token, permissions || []),
-    subprojects: []
+    allowedIntents: await getAllowedIntents(token, permissions || {}),
+    subprojects: await SubprojectOnChain.getAllForUser(multichain, project.id, token)
   };
 };
 
@@ -92,7 +94,7 @@ export class ProjectModel {
     // is allowed to execute:
     return Promise.all(
       clearedProjects.map(
-        async project => await replacePermissionsWithAllowedIntents(token, project)
+        async project => await replacePermissionsWithAllowedIntents(token, project, this.multichain)
       )
     );
   }
@@ -103,7 +105,7 @@ export class ProjectModel {
     await authorized(project.permissions);
     // Instead of passing the permissions as is, we return the intents the current user
     // is allowed to execute:
-    const response = await replacePermissionsWithAllowedIntents(token, project);
+    const response = await replacePermissionsWithAllowedIntents(token, project, this.multichain);
     return { ...response, subprojects: await SubprojectOnChain.getAll(this.multichain, projectId) };
   }
 
