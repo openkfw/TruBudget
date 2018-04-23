@@ -11,9 +11,7 @@ import strings from '../../localizeStrings';
 import { statusMapping } from '../../helper';
 
 
-const getDescription = (item) => {
-  const { data } = item;
-  const { action } = data;
+const getDescription = ({ action, data }) => {
   const templateString = strings.history[action];
   switch (action) {
     case 'edit_status': {
@@ -68,14 +66,14 @@ const getDescription = (item) => {
   }
 }
 
-const getListEntries = (historyItems, users) => {
-  return historyItems.map((item, index) => {
-    const userId = typeof item.data.from !== "undefined" ? item.data.from : 'jzakotnik'
+const getListEntries = (logs, users) => {
+  return logs.map((item, index) => {
+    const userId = item.issues || 'unknown'
     const description = getDescription(item)
     return (
       <ListItem key={index}
         primaryText={description}
-        leftAvatar={<Avatar src={users[userId].avatar} />}
+        // leftAvatar={<Avatar src={users[userId].avatar} />}
         secondaryText={item.blocktime ? moment(item.blocktime, 'X').fromNow() : 'Processing ...'}
       />
     );
@@ -83,8 +81,8 @@ const getListEntries = (historyItems, users) => {
 }
 
 
-const getSideBar = (hideHistory, historyItems, users) => {
-  const listEntries = _.isEmpty(historyItems) ? null : getListEntries(historyItems, users);
+const getSideBar = (hideHistory, logs, users) => {
+  const listEntries = _.isEmpty(logs) ? null : getListEntries(logs, users);
   return (
     <div style={{
       flex: '1'
@@ -105,7 +103,7 @@ const getSideBar = (hideHistory, historyItems, users) => {
   )
 }
 
-const ChangeLog = ({ hideHistory, historyItems, users, showHistory }) => {
+const ChangeLog = ({ hideHistory, logs, users, showHistory }) => {
   const transitionStyle = {
     entering: { right: '-300px' },
     entered: { right: '0px' },
@@ -140,7 +138,7 @@ const ChangeLog = ({ hideHistory, historyItems, users, showHistory }) => {
           transition: 'all 350ms ease-in',
           ...transitionStyle[state]
         }}>
-          {getSideBar(hideHistory, historyItems, users)}
+          {getSideBar(hideHistory, logs, users)}
         </div>}
       </Transition>
     </div>

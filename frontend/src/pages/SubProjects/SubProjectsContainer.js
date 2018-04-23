@@ -78,14 +78,14 @@ const mapStateToProps = (state) => {
     subProjectComment: state.getIn(['detailview', 'subProjectComment']),
     subProjectCurrency: state.getIn(['detailview', 'subProjectCurrency']),
     showHistory: state.getIn(['notifications', 'showHistory']),
-    historyItems: state.getIn(['notifications', 'historyItems']),
     loggedInUser: state.getIn(['login', 'loggedInUser']),
     users: state.getIn(['login', 'users']),
     roles: state.getIn(['login', 'roles']),
     permissions: state.getIn(['detailview', 'permissions']),
     user: state.getIn(['login', 'user']),
     allowedIntents: state.getIn(['detailview', 'allowedIntents']),
-    thumbnail: state.getIn(['detailview', 'thumbnail'])
+    thumbnail: state.getIn(['detailview', 'thumbnail']),
+    logs: state.getIn(['detailview', 'logs']),
   }
 }
 

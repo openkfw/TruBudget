@@ -220,6 +220,7 @@ const def = {
     "project.intent.revokePermission": 'Revoke permissions',
     "project.viewDetails": 'View project details',
     "project.viewSummary": 'View project in overview',
+    "project.createSubproject": 'Create subprojects',
   },
   language: {
     german: 'German',

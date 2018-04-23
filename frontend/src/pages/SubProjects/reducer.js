@@ -25,7 +25,6 @@ const defaultState = fromJS({
   subProjectComment: '',
   subProjectCurrency: '',
   showHistory: false,
-  historyItems: [],
   roles: [],
   permissions: {},
   logs: [],
