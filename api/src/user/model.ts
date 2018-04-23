@@ -60,9 +60,7 @@ export class UserModel {
     // Make sure nobody creates the special "root" user:
     if (newUser.id === "root") throw { kind: "UserAlreadyExists", targetUserId: "root" };
 
-    /* TODO root permissions */
-    const rootPermissions = new Map<string, string[]>();
-    await authorized(rootPermissions); // throws if unauthorized
+    await authorized(GlobalOnChain.getPermissions(this.multichain)); // throws if unauthorized
 
     const streamTxId: StreamTxId = await this.multichain.getOrCreateStream({
       kind: "users",
@@ -76,36 +74,40 @@ export class UserModel {
     if (userExists) throw { kind: "UserAlreadyExists", targetUserId: newUser.id };
     console.log(`Creating new user ${newUser.id}..`);
 
+    // TODO perhaps re-activate this after user-view permissions have been moved to the users stream..
+    // grant userDefaultIntents..
     const userRecord: UserRecord = {
       id: newUser.id,
       displayName: newUser.displayName,
       organization: newUser.organization,
-      allowedIntents: userDefaultIntents,
-      passwordCiphertext: await encryptPassword(newUser.passwordPlaintext),
-      permissions: [["user.view", [newUser.id]] as any]
+      passwordCiphertext: await encryptPassword(newUser.passwordPlaintext)
     };
     await this.multichain.updateStreamItem(streamTxId, userRecord.id, userRecord);
     console.log(`Created new user ${userRecord.id} on stream "${streamTxId}"`);
     return {
       id: userRecord.id,
       displayName: userRecord.displayName,
-      organization: userRecord.organization,
-      allowedIntents: userRecord.allowedIntents
+      organization: userRecord.organization
     };
   }
 
   async list(token, authorized, globalModel): Promise<UserListResponse> {
-    const users: UserRecord[] = (await this.multichain.streamItems(usersStream)).map(
-      item => item.value
-    );
+    const users: UserRecord[] = (await this.multichain.streamItems(usersStream))
+      .map(item => item.value)
+      .map(user => {
+        delete user.passwordCiphertext;
+        return user;
+      });
 
-    const clearedUsers = (await Promise.all(
-      users.map(user => {
-        return authorized(user.permissions)
-          .then(() => user)
-          .catch(err => null);
-      })
-    )).filter(x => x !== null) as UserRecord[];
+    // TODO perhaps re-activate this after user-view permissions have been moved to the users stream..
+    // const clearedUsers = (await Promise.all(
+    //   users.map(user => {
+    //     return authorized(user.permissions)
+    //       .then(() => user)
+    //       .catch(err => null);
+    //   })
+    // )).filter(x => x !== null) as UserRecord[];
+    const clearedUsers = users;
 
     return {
       items: clearedUsers
