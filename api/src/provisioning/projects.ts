@@ -21,35 +21,27 @@ const grantPermissionsToUser = async (axios, projectId, userId) => {
   });
 };
 export const provisionProjects = async axios => {
-  try {
-    const response = await axios.get("/project.list");
-    const projects = response.data.data.items;
-    const alreadyExists = projects.find(
+  const response = await axios.get("/project.list");
+  const projects = response.data.data.items;
+  const alreadyExists = projects.find(
+    project =>
+      project.displayName === futureProject.displayName && project.amount === futureProject.amount
+  );
+  if (!alreadyExists) {
+    const resp = await axios.post("/project.create", futureProject);
+    const existingProjects = await axios.get("/project.list");
+    console.log(`~> Project ${futureProject.displayName} created`);
+    const createdProject = existingProjects.data.data.items.find(
       project =>
         project.displayName === futureProject.displayName && project.amount === futureProject.amount
     );
-    if (!alreadyExists) {
-      const resp = await axios.post("/project.create", futureProject);
-      const existingProjects = await axios.get("/project.list");
-      console.log(`~> Project ${futureProject.displayName} created`);
-      const createdProject = existingProjects.data.data.items.find(
-        project =>
-          project.displayName === futureProject.displayName &&
-          project.amount === futureProject.amount
-      );
-      if (createdProject) {
-        await grantPermissionsToUser(axios, createdProject.id, "mstein");
-        console.log("~> Project permissions granted for mstein");
-        await grantPermissionsToUser(axios, createdProject.id, "jxavier");
-        console.log("~> Project permissions granted for jxavier");
-      }
-    } else {
-      console.log(`~> Project ${futureProject.displayName} already exists`);
+    if (createdProject) {
+      await grantPermissionsToUser(axios, createdProject.id, "mstein");
+      console.log("~> Project permissions granted for mstein");
+      await grantPermissionsToUser(axios, createdProject.id, "jxavier");
+      console.log("~> Project permissions granted for jxavier");
     }
-  } catch (err) {
-    console.log("Blockchain or API not up yet, sleeping for 10 seconds");
-    console.log(err);
-    await sleep(10000);
-    await provisionProjects(axios);
+  } else {
+    console.log(`~> Project ${futureProject.displayName} already exists`);
   }
 };

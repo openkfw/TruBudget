@@ -20,24 +20,32 @@ axios.defaults.transformRequest = [
   ...axios.defaults.transformRequest
 ];
 
-const authenticate = async (axios, userId: string, rootSecret: string) => {
-  try {
-    const response = await axios.post("/user.authenticate", { id: userId, password: rootSecret });
-    const body = response.data;
-    if (body.apiVersion !== "1.0") throw Error("unexpected API version");
-    const { token } = body.data;
-    return token;
-  } catch (err) {
-    console.log(err);
-    console.log("Seems that BC is not up yet, will wait 10 secs");
-    sleep(10000);
-    authenticate(axios, userId, rootSecret);
+const isReady = async axios => {
+  const delaySec = 10;
+  let isReady = false;
+  while (!isReady) {
+    try {
+      await axios.get("/health");
+      isReady = true;
+    } catch (_err) {
+      console.log(`The TruBudget API is not ready yet, trying again in ${delaySec}`);
+      sleep(delaySec * 1000);
+    }
   }
+  console.log(`The TruBudget API is now ready.`);
+};
+
+const authenticate = async (axios, userId: string, rootSecret: string) => {
+  const response = await axios.post("/user.authenticate", { id: userId, password: rootSecret });
+  const body = response.data;
+  if (body.apiVersion !== "1.0") throw Error("unexpected API version");
+  return body.data.token;
 };
 
 export const provisionBlockchain = async (port: number, rootSecret: string) => {
   axios.defaults.baseURL = `http://localhost:${port}`;
   axios.defaults.timeout = 20000;
+  await isReady(axios);
   let token = await authenticate(axios, "root", rootSecret);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
