@@ -7,18 +7,23 @@ const futureProject = {
   currency: "BRL"
 };
 
-const grantPermissionsToUser = async (axios, projectId, userId) => {
-  await axios.post("/project.intent.grantPermission", {
-    id: projectId,
-    permissions: {
-      "project.viewDetails": [userId],
-      "project.viewSummary": [userId],
-      "project.assign": [userId],
-      "project.intent.list": [userId],
-      "project.intent.grantPermission": [userId],
-      "project.intent.revokePermission": [userId]
-    }
-  });
+const grantPermissionsToUser = async (axios, projectId, user) => {
+  return Promise.all(
+    [
+      "project.viewDetails",
+      "project.viewSummary",
+      "project.assign",
+      "project.intent.list",
+      "project.intent.grantPermission",
+      "project.intent.revokePermission"
+    ].map(intent =>
+      axios.post("/project.intent.grantPermission", {
+        projectId,
+        intent,
+        user
+      })
+    )
+  );
 };
 export const provisionProjects = async axios => {
   const response = await axios.get("/project.list");

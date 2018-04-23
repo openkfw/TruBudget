@@ -60,6 +60,7 @@ export class GlobalModel {
     if (permissions.indexOf(targetUser) === -1) {
       // Update permissions:
       permissions.push(targetUser);
+      permissionsByIntent[intentToGrant] = permissions;
       return GlobalOnChain.replacePermissions(this.multichain, permissionsByIntent);
     } else {
       // Permission already set.

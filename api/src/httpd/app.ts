@@ -24,7 +24,11 @@ const addTokenHandling = (app, jwtSecret: string) => {
 };
 
 const logging = (req: express.Request, res, next) => {
-  console.log(`\n${req.method} ${req.path} [${JSON.stringify(req.body.data)}]`);
+  console.log(
+    `\n${req.method} ${req.path} [user=${(req.token || {}).userId} body.data=${JSON.stringify(
+      req.body.data
+    )}]`
+  );
   next();
 };
 

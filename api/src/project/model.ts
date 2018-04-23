@@ -29,7 +29,7 @@ const toProjectStream = (multichain: MultichainClient) => async (
 ): Promise<ProjectStream> => {
   const metadata = await multichain.latestValuesForKey(stream.name, "_metadata");
   const logs = await multichain.latestValuesForKey(stream.name, "_log", 1000);
-  const permissions = await multichain.latestValuesForKey(stream.name, "_permissions");
+  const permissions = await multichain.latestValuesForKey(stream.name, "permissions");
   return {
     stream,
     metadata: metadata[0],
@@ -110,10 +110,11 @@ export class ProjectModel {
   async grantPermissions(authorized, projectId: string, intentToGrant: Intent, targetUser: string) {
     const permissionsByIntent = await ProjectOnChain.getPermissions(this.multichain, projectId);
     await authorized(permissionsByIntent);
-    const permissions = permissionsByIntent[intentToGrant];
+    const permissions = permissionsByIntent[intentToGrant] || [];
     if (permissions.indexOf(targetUser) === -1) {
       // Update permissions:
       permissions.push(targetUser);
+      permissionsByIntent[intentToGrant] = permissions;
       await ProjectOnChain.replacePermissions(this.multichain, projectId, permissionsByIntent);
       return true;
     } else {
@@ -123,8 +124,8 @@ export class ProjectModel {
   }
 
   async listPermissions(id, authorized) {
-    const permissionsKey = "_permissions";
-    const permissionItem = await this.multichain.latestValuesForKey(id, "_permissions");
+    const permissionsKey = "permissions";
+    const permissionItem = await this.multichain.latestValuesForKey(id, "permissions");
     const existingPermissions = permissionItem[0];
     await authorized(existingPermissions);
     return existingPermissions;

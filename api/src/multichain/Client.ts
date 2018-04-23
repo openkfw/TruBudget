@@ -20,7 +20,7 @@ const maxItemCount: number = 0x7fffffff;
 const streamItemKeys: any = {
   metadata: "_metadata",
   log: "_log",
-  permissions: "_permissions"
+  permissions: "permissions"
 };
 
 const randomStreamName = (): string => randomString(16);
@@ -67,7 +67,7 @@ export class RpcMultichainClient implements MultichainClient {
       await this.updateStreamItem(txId, "_metadata", options.metadata);
     }
     if (options.permissions) {
-      await this.updateStreamItem(txId, "_permissions", options.permissions);
+      await this.updateStreamItem(txId, "permissions", options.permissions);
     }
 
     await Promise.all(
