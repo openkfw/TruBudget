@@ -52,15 +52,15 @@ export const provisionBlockchain = async (port: number, rootSecret: string, mult
   axios.defaults.baseURL = `http://localhost:${port}`;
   axios.defaults.timeout = 5000;
 
-  winston.info('Starting isReady()')
   let connected = false
   while (!connected) {
     try {
+      winston.info('Checking multichain availability...')
       let info = await multichainClient.getInfo()
       winston.info(`Connected to ${info.nodeaddress}`)
       connected = true
     } catch (err) {
-      winston.error('Error while checking multichain, retrying...', err)
+      winston.error('Error while checking multichain, retrying after pause...', err)
       await timeout(5000)
     }
   }
