@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Card, CardTitle, CardText, CardMedia } from 'material-ui/Card';
+import { Card, CardHeader, CardTitle, CardText, CardMedia } from 'material-ui/Card';
 import { Doughnut } from 'react-chartjs-2';
 
 import { toAmountString, fromAmountString, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
@@ -14,13 +14,12 @@ import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
 import NotAssignedIcon from 'material-ui/svg-icons/editor/space-bar'
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import ActiveIcon from 'material-ui/svg-icons/image/navigate-next';
-import OpenIcon from 'material-ui/svg-icons/navigation/close';
-import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
+import OpenIcon from 'material-ui/svg-icons/content/remove';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
-import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import IconButton from 'material-ui/IconButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
 import GaugeChart from '../Common/GaugeChart';
@@ -44,6 +43,10 @@ const styles = {
   },
   card: {
     width: '31%'
+  },
+  permissionContainer: {
+    display: 'flex',
+    justifyContent: 'center'
   },
   text: {
     fontSize: '14px',
@@ -167,7 +170,9 @@ const createRatio = (ratio) => _.isNaN(ratio) ? 0 : ratio * 100
 const SubProjectDetails = ({
   displayName, description, amount, currency,
   status, roles, subProjectDetails, workflowItems,
-  created, budgetEditEnabled, permissions, ...props }) => {
+  created, budgetEditEnabled, canViewPermissions,
+  showProjectPermissions, ...props
+}) => {
 
   const amountString = toAmountString(amount, currency)
   const mappedStatus = statusMapping(status)
@@ -193,15 +198,11 @@ const SubProjectDetails = ({
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
-        <CardTitle title={displayName} />
+        <CardHeader
+          title={displayName}
+          subtitle={description}
+        />
         <List>
-          <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<CommentIcon />}
-            primaryText={<div style={styles.comment}>{description} </div>}
-            secondaryText={strings.common.comment}
-          />
           <Divider />
           {budgetEditEnabled && allowedToEdit ? getEditableBudget(props) : getNotEditableBudget(amountString, allowedToEdit, props)}
           <Divider />
@@ -226,13 +227,23 @@ const SubProjectDetails = ({
             secondaryText={strings.common.assignees}
           />
           <Divider />
+          <ListItem
+            style={styles.permissionContainer}
+            disabled={true}
+            leftIcon={null}
+            primaryText={<RaisedButton
+              label="Permissions"
+              secondary={true}
+              disabled={!canViewPermissions}
+              onClick={showProjectPermissions}
+            />}
+          />
         </List>
-        <CardText style={{
-        }}>
-        </CardText>
       </Card>
       <Card style={styles.card}>
-        <CardTitle title={strings.common.budget_distribution} />
+        <CardHeader
+          title={strings.common.budget_distribution}
+        />
         <Divider />
         <div style={styles.charts}>
           <ListItem style={styles.text}
@@ -269,7 +280,9 @@ const SubProjectDetails = ({
 
       </Card>
       <Card style={styles.card}>
-        <CardTitle title={strings.common.task_status} />
+        <CardHeader
+          title={strings.common.task_status}
+        />
         <Divider />
         <CardMedia style={styles.cardMedia}>
           <Doughnut data={createTaskData(workflowItems, 'workflows')} />
@@ -284,26 +297,6 @@ const SubProjectDetails = ({
               <div>
                 <IconButton disableTouchRipple tooltip={strings.common.open} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
                   <OpenIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div style={styles.taskChartItem}>
-              <div style={styles.text}>
-                {statusDetails.inProgress.toString()}
-              </div>
-              <div>
-                <IconButton disableTouchRipple tooltip={strings.common.in_progress} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
-                  <InProgressIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div style={styles.taskChartItem}>
-              <div style={styles.text}>
-                {statusDetails.inReview.toString()}
-              </div>
-              <div>
-                <IconButton disableTouchRipple tooltip={strings.common.in_review} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon}>
-                  <ReviewIcon />
                 </IconButton>
               </div>
             </div>

@@ -16,8 +16,7 @@ import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
-import OpenIcon from 'material-ui/svg-icons/navigation/close';
-import InProgressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
+import OpenIcon from 'material-ui/svg-icons/content/remove';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import IconButton from 'material-ui/IconButton';
@@ -40,6 +39,10 @@ const styles = {
   },
   card: {
     width: '31%'
+  },
+  permissionContainer: {
+    display: 'flex',
+    justifyContent: 'center'
   },
   text: {
     fontSize: '14px'
@@ -154,6 +157,14 @@ const ProjectDetails = ({
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
+            primaryText={<div aria-label='projectassignee'> {"placeholder"/*getAssignedOrganization(roles, projectAssignee)*/} </div>}
+            secondaryText={strings.subproject.subproject_assigned_organization}
+          />
+          <Divider />
+          <ListItem
+            style={styles.permissionContainer}
+            disabled={true}
+            leftIcon={null}
             primaryText={<RaisedButton
               label="Permissions"
               secondary={true}
@@ -161,18 +172,7 @@ const ProjectDetails = ({
               onClick={showProjectPermissions}
             />}
           />
-          <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<AssigneeIcon />}
-            primaryText={<div aria-label='projectassignee'> {getAssignedOrganization(roles, projectAssignee)} </div>}
-            secondaryText={strings.subproject.subproject_assigned_organization}
-          />
-          <Divider />
         </List>
-        <CardText style={{
-        }}>
-        </CardText>
       </Card>
       <Card style={styles.card}>
         <CardHeader
@@ -222,19 +222,6 @@ const ProjectDetails = ({
                   style={styles.iconButton} tooltipStyles={styles.tooltip}
                   iconStyle={styles.icon} >
                   < OpenIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div style={styles.taskChartItem}>
-              <div style={styles.text}>
-                {statusDetails.inProgress.toString()}
-              </div>
-              <div>
-                <IconButton
-                  disableTouchRipple tooltip={strings.common.in_progress}
-                  style={styles.iconButton} tooltipStyles={styles.tooltip}
-                  iconStyle={styles.icon}>
-                  < InProgressIcon />
                 </IconButton>
               </div>
             </div>

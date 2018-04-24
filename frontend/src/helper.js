@@ -222,9 +222,9 @@ export const preselectCurrency = (parentCurrency, setCurrency) => {
 export const createTaskData = (items, type) => {
   const projectStatus = getProgressInformation(items)
   if (type === 'workflows') {
-    return createDoughnutData([strings.common.open, strings.common.in_progress, strings.common.in_review, strings.common.done], [projectStatus.open, projectStatus.inProgress, projectStatus.inReview, projectStatus.done]);
+    return createDoughnutData([strings.common.open, strings.common.done], [projectStatus.open, projectStatus.done]);
   }
-  return createDoughnutData([strings.common.open, strings.common.in_progress, strings.common.done], [projectStatus.open, projectStatus.inProgress, projectStatus.done]);
+  return createDoughnutData([strings.common.open, strings.common.done], [projectStatus.open, projectStatus.done]);
 }
 
 export const getNextIncompletedItem = (items) => {
