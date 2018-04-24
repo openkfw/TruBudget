@@ -3,6 +3,7 @@ import { AllowedUserGroupsByIntent } from "../../authz/types";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { getAllowedIntents } from "../../authz/index";
+import { ignoringStreamNotFound } from "../lib";
 
 /** The multichain-item key used to identify subprojects. */
 const SUBPROJECTS_KEY = "subprojects";
@@ -23,6 +24,22 @@ export interface SubprojectData {
 export interface SubprojectDataWithIntents extends SubprojectData {
   allowedIntents: Intent[];
 }
+
+export const getPermissions = async (
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string
+): Promise<AllowedUserGroupsByIntent> => {
+  const subprojects = (await ignoringStreamNotFound(
+    multichain.getValues(projectId, subprojectId, 1)
+  )) as SubprojectResource[] | null;
+  if (subprojects !== null && subprojects.length > 0) {
+    const subproject = subprojects[0];
+    return subproject.permissions;
+  } else {
+    return {};
+  }
+};
 
 export const create = async (
   multichain: MultichainClient,

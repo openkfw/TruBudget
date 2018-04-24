@@ -10,6 +10,8 @@ import { isNonemptyString } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import * as Workflowitem from "../workflowitem";
 import { randomString } from "../multichain/hash";
+import { throwIfUnauthorized } from "../authz/index";
+import { SubprojectOnChain } from "../multichain";
 
 const value = (name, val, isValid) => {
   if (isValid !== undefined && !isValid(val)) {
@@ -18,7 +20,7 @@ const value = (name, val, isValid) => {
   return val;
 };
 
-export const createWorkflowItem = async (
+export const createWorkflowitem = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest
 ): Promise<HttpResponse> => {
@@ -28,11 +30,21 @@ export const createWorkflowItem = async (
   throwParseErrorIfUndefined(body, ["data"]);
   const data = body.data;
 
+  const projectId = value("projectId", data.projectId, isNonemptyString);
+  const subprojectId = value("subprojectId", data.subprojectId, isNonemptyString);
+
+  // Is the user allowed to create workflow items?
+  await throwIfUnauthorized(
+    req.token,
+    "subproject.createWorkflowitem",
+    await SubprojectOnChain.getPermissions(multichain, projectId, subprojectId)
+  );
+
   await Workflowitem.create(
     multichain,
     req.token,
-    value("projectId", data.projectId, isNonemptyString),
-    value("subprojectId", data.subprojectId, isNonemptyString),
+    projectId,
+    subprojectId,
     {
       id: isNonemptyString(data.workflowitemId) ? data.workflowitemId : randomString(),
       displayName: value("displayName", data.displayName, isNonemptyString),

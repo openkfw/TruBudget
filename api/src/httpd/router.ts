@@ -3,7 +3,6 @@ import * as express from "express";
 import { authorized } from "../authz";
 import ProjectModel from "../project";
 import SubprojectModel from "../subproject";
-import UserModel from "../user";
 import { MultichainClient } from "../multichain";
 import { GlobalModel } from "../global/model";
 import Intent from "../authz/intents";
@@ -11,8 +10,11 @@ import { findBadKeysInObject, isNonemptyString } from "../lib";
 import { getSubprojectList } from "../subproject/list";
 import { HttpResponse, AuthenticatedRequest } from "./lib";
 import { getSubprojectDetails } from "../subproject/viewDetails";
-import { createWorkflowItem } from "../subproject/createWorkflowitem";
+import { createWorkflowitem } from "../subproject/createWorkflowitem";
 import { getWorkflowitemList } from "../workflowitem/list";
+import { createUser } from "../global/createUser";
+import { getUserList } from "../user/list";
+import { authenticateUser } from "../user/authenticate";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -117,7 +119,6 @@ export const createRouter = (
   jwtSecret: string,
   rootSecret: string
 ) => {
-  const userModel = new UserModel(multichainClient, jwtSecret, rootSecret);
   const projectModel = new ProjectModel(multichainClient);
   const subprojectModel = new SubprojectModel(multichainClient);
   const globalModel = new GlobalModel(multichainClient);
@@ -166,89 +167,22 @@ export const createRouter = (
     }
   });
 
-  router.post("/user.create", async (req: AuthenticatedRequest, res) => {
-    const body = req.body;
-    if (body.apiVersion !== apiVersion) {
-      send(res, [
-        412,
-        {
-          apiVersion: req.body.apiVersion,
-          error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
-        }
-      ]);
-      return;
-    }
-    if (!body.data) {
-      send(res, [
-        400,
-        {
-          apiVersion: req.body.apiVersion,
-          error: { code: 400, message: `Expected "data" in body.` }
-        }
-      ]);
-      return;
-    }
-
-    const intent = "global.createUser";
-    try {
-      const response = {
-        apiVersion: apiVersion,
-        data: await userModel.create(body.data, authorized(req.token, intent))
-      };
-      send(res, [201, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
+  router.get("/user.create", (req: AuthenticatedRequest, res) => {
+    createUser(multichainClient, req, jwtSecret, rootSecret)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
-  router.get("/user.list", async (req: AuthenticatedRequest, res) => {
-    const intent = "user.view";
-    try {
-      const response = {
-        apiVersion: "1.0",
-        data: await userModel.list(req.token, authorized(req.token, intent), globalModel)
-      };
-      send(res, [200, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
+  router.get("/user.list", (req: AuthenticatedRequest, res) => {
+    getUserList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
-  router.post("/user.authenticate", async (req: express.Request, res) => {
-    const body = req.body;
-    console.log(`body: ${JSON.stringify(body)}`);
-    if (body.apiVersion !== apiVersion) {
-      send(res, [
-        412,
-        {
-          apiVersion: req.body.apiVersion,
-          error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
-        }
-      ]);
-      return;
-    }
-    if (!body.data) {
-      send(res, [
-        400,
-        {
-          apiVersion: req.body.apiVersion,
-          error: { code: 400, message: `Expected "data" in body.` }
-        }
-      ]);
-      return;
-    }
-
-    try {
-      console.log(body.data);
-      const response = {
-        apiVersion: apiVersion,
-        data: await userModel.authenticate(body.data, globalModel)
-      };
-      console.log(response);
-      send(res, [200, response]);
-    } catch (err) {
-      handleError(req as AuthenticatedRequest, res, err);
-    }
+  router.get("/user.authenticate", (req: AuthenticatedRequest, res) => {
+    authenticateUser(multichainClient, req, jwtSecret, rootSecret)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
   router.get("/project.list", async (req: AuthenticatedRequest, res) => {
@@ -419,7 +353,7 @@ export const createRouter = (
   });
 
   router.post("/subproject.createWorkflowitem", (req: AuthenticatedRequest, res) => {
-    createWorkflowItem(multichainClient, req)
+    createWorkflowitem(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

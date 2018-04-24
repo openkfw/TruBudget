@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { AuthenticatedRequest } from "../httpd/lib";
 import { MultichainClient } from "../multichain/Client.h";
-import { createWorkflowItem } from "./createWorkflowitem";
+import { createWorkflowitem } from "./createWorkflowitem";
 
 describe("subproject.createWorkflowitem", () => {
   it("works", async () => {
@@ -14,6 +14,20 @@ describe("subproject.createWorkflowitem", () => {
         expect(streamName).to.eql(projectId);
         expect(keys).to.eql([`${subprojectId}_workflows`, workflowitemId]);
         expect(object.data.id).to.eql(workflowitemId);
+      },
+      getValues: async (streamName, keys, nValues) => {
+        expect(streamName).to.eql(projectId);
+        expect(keys).to.eql(subprojectId);
+        expect(nValues).to.eql(1);
+        return [
+          {
+            data: null,
+            log: null,
+            permissions: {
+              "subproject.createWorkflowitem": ["alice"]
+            }
+          }
+        ];
       }
     };
 
@@ -39,7 +53,7 @@ describe("subproject.createWorkflowitem", () => {
       }
     };
 
-    const [status, response] = await createWorkflowItem(
+    const [status, response] = await createWorkflowitem(
       multichain as MultichainClient,
       req as AuthenticatedRequest
     );

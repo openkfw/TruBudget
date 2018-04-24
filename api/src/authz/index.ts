@@ -58,6 +58,8 @@ const loggedCan = async (
 /*
  * Throws a NotAuthorizedError if the token holder is not authorized for the given
  * intent with respect to the given resource.
+ *
+ * @deprecated
  */
 export const authorized = (token: AuthToken, intent: Intent) => async (
   resourcePermissions: AllowedUserGroupsByIntent
@@ -65,4 +67,12 @@ export const authorized = (token: AuthToken, intent: Intent) => async (
   const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
   if (!canDo) throw { kind: "NotAuthorized", token, intent };
   return;
+};
+
+export const throwIfUnauthorized = (
+  token: AuthToken,
+  intent: Intent,
+  permissions: AllowedUserGroupsByIntent
+): Promise<undefined> => {
+  return authorized(token, intent)(permissions);
 };
