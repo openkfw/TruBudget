@@ -31,8 +31,6 @@ export const getSubprojectDetails = async (
     projectId,
     subprojectId
   );
-  console.log("resource", JSON.stringify(resource));
-  console.log("items", JSON.stringify(workflowitems));
 
   return [200, { apiVersion: "1.0", data: { ...resource, workflowitems } }];
 };

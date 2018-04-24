@@ -10,6 +10,7 @@ import { MultichainClient, SubprojectOnChain } from "../multichain";
 import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
 import { isNonemptyString } from "../lib";
 import * as Workflowitem from "./index";
+import Intent from "../authz/intents";
 
 const value = (name, val, isValid) => {
   if (isValid !== undefined && !isValid(val)) {
@@ -49,8 +50,9 @@ const list = async (
     subprojectId
   );
 
+  const allowedIntent: Intent = "workflowitem.view";
   const clearedWorkflowitems = workflowitems.filter(workflowitem =>
-    workflowitem.allowedIntents.includes("workflowitem.view")
+    workflowitem.allowedIntents.includes(allowedIntent)
   );
 
   return clearedWorkflowitems;
