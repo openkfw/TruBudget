@@ -27,8 +27,6 @@ export default function navbarReducer(state = defaultState, action) {
       });
     case SNACKBAR_MESSAGE:
       return state.set('snackBarMessage', action.message)
-    case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
-    case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
     case FETCH_HISTORY_SUCCESS:
       return state.set('historyItems', fromJS(action.historyItems));
     case OPEN_HISTORY:

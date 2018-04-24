@@ -106,7 +106,10 @@ export class ProjectModel {
     // Instead of passing the permissions as is, we return the intents the current user
     // is allowed to execute:
     const response = await replacePermissionsWithAllowedIntents(token, project, this.multichain);
-    return { ...response, subprojects: await SubprojectOnChain.getAll(this.multichain, projectId) };
+    return {
+      ...response,
+      subprojects: await SubprojectOnChain.getAllForUser(this.multichain, projectId, token)
+    };
   }
 
   async grantPermissions(authorized, projectId: string, intentToGrant: Intent, targetUser: string) {

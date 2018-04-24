@@ -8,3 +8,9 @@ export const getPermissions = (user, details) => {
     isBank: bank.indexOf(roleName) > -1,
   }
 }
+
+const can = (intentName, intents) => intents.indexOf(intentName) > -1;
+
+export const canCreateProject = (i) => can("global.createProject", i);
+export const canViewProjectDetails = (i) => can("project.viewDetails", i);
+export const canViewSubProjectDetails = (i) => can("subproject.viewDetails", i);

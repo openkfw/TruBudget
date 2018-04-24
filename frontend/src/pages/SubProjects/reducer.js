@@ -25,7 +25,6 @@ const defaultState = fromJS({
   subProjectComment: '',
   subProjectCurrency: '',
   showHistory: false,
-  historyItems: [],
   roles: [],
   permissions: {},
   logs: [],
@@ -52,7 +51,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case SHOW_PROJECT_PERMISSIONS:
       return state.set('permissionDialogShown', true);
     case HIDE_PROJECT_PERMISSIONS:
-      return state.set('permissionDialogShown', false);
+      return state.merge({
+        permissionDialogShown: false,
+        permissions: fromJS({})
+      });
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:
       return state.set('permissions', fromJS(action.permissions))
     case SHOW_SUBPROJECT_DIALOG:

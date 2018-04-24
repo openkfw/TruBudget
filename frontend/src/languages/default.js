@@ -1,7 +1,4 @@
-import def from './default';
-
-const en = {
-  ...def,
+const def = {
   common: {
     cancel: 'Cancel',
     next: 'Next',
@@ -231,4 +228,4 @@ const en = {
     english: 'English',
   },
 }
-export default en;
+export default def;

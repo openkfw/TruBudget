@@ -1,4 +1,7 @@
+import def from './default';
+
 const fr = {
+  ...def,
   common: {
     cancel: 'Annuler',
     next: 'Suivant',
@@ -184,6 +187,7 @@ const fr = {
     "project.intent.revokePermission": 'French: Revoke permissions',
     "project.viewDetails": 'French: View project details',
     "project.viewSummary": 'French: View project in overview',
+    "project.createSubproject": 'French: Create subprojects',
   },
   language: {
     german: 'Deutsch',

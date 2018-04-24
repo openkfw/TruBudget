@@ -65,7 +65,8 @@ export function grantPermission(projectId, intent, user, showLoading = false) {
     type: GRANT_PERMISSION,
     projectId,
     intent,
-    user
+    user,
+    showLoading
   }
 }
 
