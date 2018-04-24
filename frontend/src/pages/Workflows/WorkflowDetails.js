@@ -59,22 +59,19 @@ const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails
 
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
   const status = workflowItem.status;
-  const trimmedComment = removeNewLines(workflowItem.data.comment)
+  const trimmedComment = removeNewLines(workflowItem.description)
   return (
 
-    <Dialog autoScrollBodyContent={true} open={showWorkflowDetails} actions={actions} title={workflowItem.data.workflowName} modal={false} style={styles.dialog}>
+    <Dialog autoScrollBodyContent={true} open={showWorkflowDetails} actions={actions} title={workflowItem.displayName} modal={false} style={styles.dialog}>
       <div>
-        {strings.workflow.workflow_type}:
-        <TextField id={strings.workflow.workflow_type} disabled={true} hintText={typeMapping[workflowItem.data.type]} style={styles.textfield} underlineShow={false} />
-        <Divider />
         {strings.common.budget}:
-        <TextField id={strings.common.budget} disabled={true} hintText={toAmountString(workflowItem.data.amount, workflowItem.data.currency)} style={styles.textfield} underlineShow={false} />
+        <TextField id={strings.common.budget} disabled={true} hintText={toAmountString(workflowItem.amount, workflowItem.currency)} style={styles.textfield} underlineShow={false} />
         <Divider />
         {strings.common.comment}:
         <TextField id={strings.common.comment} disabled={true} multiLine={true} hintText={trimmedComment} style={styles.textfield} underlineShow={false} />
         <Divider />
         {strings.workflow.workflow_documents}:
-        <DocumentOverview id={strings.workflow.workflow_documents} documents={workflowItem.data.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />
+        <DocumentOverview id={strings.workflow.workflow_documents} documents={workflowItem.documents} validateDocument={validateDocument} validatedDocuments={validatedDocuments} />
         <Divider />
         {strings.common.status}:
         <TextField id={strings.common.status} disabled={true} hintText={statusMapping(status)} style={styles.textfield} underlineShow={false} />

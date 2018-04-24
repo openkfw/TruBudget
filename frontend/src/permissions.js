@@ -14,4 +14,5 @@ const can = (intentName, intents) => intents.indexOf(intentName) > -1;
 export const canCreateProject = (i) => can("global.createProject", i);
 export const canViewProjectDetails = (i) => can("project.viewDetails", i);
 export const canViewSubProjectDetails = (i) => can("subproject.viewDetails", i);
+export const canViewSubProjectPermissions = (i) => can("subproject.permission.list", i);
 export const canCreateWorkflowItems = (i) => can("subproject.createWorkflowitem", i);

@@ -171,7 +171,7 @@ const SubProjectDetails = ({
   displayName, description, amount, currency,
   status, roles, subProjectDetails, workflowItems,
   created, budgetEditEnabled, canViewPermissions,
-  showProjectPermissions, ...props
+  showSubProjectPermissions, ...props
 }) => {
 
   const amountString = toAmountString(amount, currency)
@@ -235,7 +235,7 @@ const SubProjectDetails = ({
               label="Permissions"
               secondary={true}
               disabled={!canViewPermissions}
-              onClick={showProjectPermissions}
+              onClick={showSubProjectPermissions}
             />}
           />
         </List>

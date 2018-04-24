@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { SHOW_WORKFLOW_DIALOG, WORKFLOW_NAME, WORKFLOW_AMOUNT, WORKFLOW_AMOUNT_TYPE, WORKFLOW_PURPOSE, WORKFLOW_CURRENCY, WORKFLOW_TXID, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, SHOW_WORKFLOW_DETAILS, UPDATE_WORKFLOW_SORT, ENABLE_WORKFLOW_SORT, ENABLE_BUDGET_EDIT, SUBPROJECT_AMOUNT, WORKFLOW_CREATION_STEP, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS, CANCEL_WORKFLOW_DIALOG, WORKFLOW_STATUS } from './actions';
+import { SHOW_WORKFLOW_DIALOG, WORKFLOW_NAME, WORKFLOW_AMOUNT, WORKFLOW_AMOUNT_TYPE, WORKFLOW_PURPOSE, WORKFLOW_CURRENCY, WORKFLOW_TXID, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, SHOW_WORKFLOW_DETAILS, UPDATE_WORKFLOW_SORT, ENABLE_WORKFLOW_SORT, ENABLE_BUDGET_EDIT, SUBPROJECT_AMOUNT, WORKFLOW_CREATION_STEP, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS, CANCEL_WORKFLOW_DIALOG, WORKFLOW_STATUS, SHOW_SUBPROJECT_PERMISSIONS, HIDE_SUBPROJECT_PERMISSIONS, FETCH_SUBPROJECT_PERMISSIONS_SUCCESS } from './actions';
 
 import { LOGOUT } from '../Login/actions';
 import { fromAmountString } from '../../helper';
@@ -24,6 +24,9 @@ const defaultState = fromJS({
     status: 'open',
     txId: ''
   },
+  showSubProjectPermissions: false,
+  showWorkflowItemPermissions: false,
+  permissions: {},
 
   workflowDialogVisible: false,
   editMode: false,
@@ -64,6 +67,15 @@ export default function detailviewReducer(state = defaultState, action) {
         editMode: defaultState.get('editMode'),
         currentStep: defaultState.get('currentStep'),
       })
+    case SHOW_SUBPROJECT_PERMISSIONS:
+      return state.merge({
+        showSubProjectPermissions: true,
+        showWorkflowPermissions: false,
+      })
+    case HIDE_SUBPROJECT_PERMISSIONS:
+      return state.set('showSubProjectPermissions', false);
+    case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
+      return state.set('permissions', fromJS(action.permissions));
     case WORKFLOW_CREATION_STEP:
       return state.set('currentStep', action.step);
     case WORKFLOW_NAME:

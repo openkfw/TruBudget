@@ -3,15 +3,16 @@ import { connect } from 'react-redux';
 
 import globalStyles from '../../styles';
 
-import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, createWorkflowItem, editWorkflowItem, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, fetchAllSubprojectDetails, onWorkflowDialogCancel, storeWorkflowStatus } from './actions';
+import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, createWorkflowItem, editWorkflowItem, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, fetchAllSubprojectDetails, onWorkflowDialogCancel, storeWorkflowStatus, showSubProjectPermissions } from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
 import { addDocument, clearDocuments, prefillDocuments, validateDocument } from '../Documents/actions';
 import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
-import { getPermissions } from '../../permissions';
+import { getPermissions, canViewSubProjectPermissions } from '../../permissions';
 import { toJS } from '../../helper';
+import SubprojectPermissionsContainer from './SubprojectPermissionsContainer';
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -36,11 +37,14 @@ class WorkflowContainer extends Component {
   }
 
   render() {
+    const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
+
     return (
       <div>
         <div style={globalStyles.innerContainer}>
-          <SubProjectDetails {...this.props} />
+          <SubProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <Workflow {...this.props} createWorkflowItem={this.createWorkflowItem} />
+          <SubprojectPermissionsContainer projectId={this.projectId} subProjectId={this.subProjectId} />
         </div>
       </div>
     )
@@ -60,6 +64,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowStatus: (state) => dispatch(storeWorkflowStatus(state)),
     storeWorkflowTxid: (txid) => dispatch(storeWorkflowTxid(txid)),
     createWorkflowItem: (pId, sId, workflowToAdd, documents) => dispatch(createWorkflowItem(pId, sId, workflowToAdd, documents)),
+    showSubProjectPermissions: () => dispatch(showSubProjectPermissions()),
 
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     editWorkflowItem: (stream, key, workflowToAdd, documents, previousState) => dispatch(editWorkflowItem(stream, key, workflowToAdd, documents, previousState)),
