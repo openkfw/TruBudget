@@ -20,7 +20,7 @@ export interface SubprojectData {
   description: string;
 }
 
-export interface SubprojectUserView extends SubprojectData {
+export interface SubprojectDataWithIntents extends SubprojectData {
   allowedIntents: Intent[];
 }
 
@@ -52,6 +52,23 @@ export const create = async (
   return multichain.setValue(projectId, [SUBPROJECTS_KEY, subprojectId], resource);
 };
 
+export const getForUser = async (
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string
+): Promise<SubprojectDataWithIntents> => {
+  const result = await multichain.getValues(projectId, subprojectId, 1);
+  if (!result || result.length !== 1) {
+    throw { kind: "NotFound", what: { projectId, subprojectId } };
+  }
+  const resource = result[0] as SubprojectResource;
+  return {
+    ...resource.data,
+    allowedIntents: await getAllowedIntents(token, resource.permissions)
+  };
+};
+
 export const getAll = async (
   multichain: MultichainClient,
   projectId: string
@@ -67,7 +84,7 @@ export const getAllForUser = async (
   multichain: MultichainClient,
   projectId: string,
   token: AuthToken
-): Promise<SubprojectUserView[]> => {
+): Promise<SubprojectDataWithIntents[]> => {
   const resources = await getAll(multichain, projectId);
   return Promise.all(
     resources.map(async resource => {

@@ -7,7 +7,7 @@ import {
   AuthenticatedRequest
 } from "../httpd/lib";
 import { MultichainClient, SubprojectOnChain } from "../multichain";
-import { SubprojectUserView } from "../multichain/resources/subproject";
+import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
 
 export const getSubprojectList = async (
   multichain: MultichainClient,
@@ -28,8 +28,8 @@ const list = async (
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string
-): Promise<SubprojectUserView[]> => {
-  const subprojects: SubprojectUserView[] = await SubprojectOnChain.getAllForUser(
+): Promise<SubprojectDataWithIntents[]> => {
+  const subprojects: SubprojectDataWithIntents[] = await SubprojectOnChain.getAllForUser(
     multichain,
     projectId,
     token

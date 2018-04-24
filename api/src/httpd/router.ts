@@ -67,6 +67,16 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
       ]);
       break;
 
+    case "NotFound":
+      send(res, [
+        404,
+        {
+          apiVersion: "1.0",
+          error: { code: 404, message: "Not found." }
+        }
+      ]);
+      break;
+
     default:
       // handle RPC errors, too:
       if (err.code === -708) {

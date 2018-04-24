@@ -12,8 +12,8 @@ describe("subproject.viewDetails", () => {
           return [
             {
               data: {
-                id: "one",
-                displayName: "subproject one",
+                id: "the-sample-subproject",
+                displayName: "The Sample Subproject",
                 status: "open",
                 amount: "1",
                 currency: "EUR",
@@ -52,8 +52,8 @@ describe("subproject.viewDetails", () => {
 
     const req = {
       query: {
-        project: "the-sample-project",
-        subproject: "the-sample-subproject"
+        projectId: "the-sample-project",
+        subprojectId: "the-sample-subproject"
       },
       token: {
         userId: "alice"

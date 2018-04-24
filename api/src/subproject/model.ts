@@ -14,7 +14,7 @@ import { AllowedUserGroupsByIntent } from "../authz/types";
 import {
   SubprojectData,
   SubprojectResource,
-  SubprojectUserView
+  SubprojectDataWithIntents
 } from "../multichain/resources/subproject";
 import { getAllowedIntents } from "../authz/index";
 

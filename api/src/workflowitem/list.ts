@@ -7,12 +7,11 @@ import {
   AuthenticatedRequest
 } from "../httpd/lib";
 import { MultichainClient, SubprojectOnChain } from "../multichain";
-import { SubprojectUserView } from "../multichain/resources/subproject";
+import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
 import { isNonemptyString } from "../lib";
 import * as Workflowitem from "./index";
-import { WorkflowitemUserView, getAllForUser } from "./index";
 
-const value = (name, val, isValid?) => {
+const value = (name, val, isValid) => {
   if (isValid !== undefined && !isValid(val)) {
     throwParseError([name]);
   }
@@ -42,8 +41,8 @@ const list = async (
   token: AuthToken,
   projectId: string,
   subprojectId: string
-): Promise<WorkflowitemUserView[]> => {
-  const workflowitems: WorkflowitemUserView[] = await getAllForUser(
+): Promise<Workflowitem.DataWithIntents[]> => {
+  const workflowitems: Workflowitem.DataWithIntents[] = await Workflowitem.getAllForUser(
     multichain,
     token,
     projectId,
@@ -51,7 +50,7 @@ const list = async (
   );
 
   const clearedWorkflowitems = workflowitems.filter(workflowitem =>
-    workflowitem.allowedIntents.includes("workflowitem.viewSummary")
+    workflowitem.allowedIntents.includes("workflowitem.view")
   );
 
   return clearedWorkflowitems;

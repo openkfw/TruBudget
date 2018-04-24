@@ -7,9 +7,15 @@ export interface ParseError {
   badKeys: string[];
 }
 
+export interface NotFoundError {
+  kind: "NotFound";
+  what: object;
+}
+
 // For documentation, all custom error types should go in here:
 export type TruBudgetError =
   | AuthenticationError
   | UserAlreadyExistsError
   | NotAuthorizedError
-  | ParseError;
+  | ParseError
+  | NotFoundError;

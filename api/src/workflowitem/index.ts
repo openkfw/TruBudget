@@ -6,11 +6,11 @@ import { getAllowedIntents } from "../authz";
 
 const workflowitemsKey = subprojectId => `${subprojectId}_workflows`;
 
-export interface WorkflowitemResource extends Resource {
-  data: WorkflowitemData;
+interface WorkflowitemResource extends Resource {
+  data: Data;
 }
 
-export interface WorkflowitemData {
+export interface Data {
   id: string;
   displayName: string;
   amount: number;
@@ -27,7 +27,7 @@ export interface Document {
   hash: string;
 }
 
-export interface WorkflowitemUserView extends WorkflowitemData {
+export interface DataWithIntents extends Data {
   allowedIntents: Intent[];
 }
 
@@ -36,7 +36,7 @@ export const create = async (
   token: AuthToken,
   projectId: string,
   subprojectId: string,
-  data: WorkflowitemData,
+  data: Data,
   permissions: AllowedUserGroupsByIntent
 ): Promise<void> => {
   const resource: WorkflowitemResource = {
@@ -64,7 +64,7 @@ export const getAllForUser = async (
   token: AuthToken,
   projectId: string,
   subprojectId: string
-): Promise<WorkflowitemUserView[]> => {
+): Promise<DataWithIntents[]> => {
   const resources = await getAll(multichain, projectId, subprojectId);
   return Promise.all(
     resources.map(async resource => {

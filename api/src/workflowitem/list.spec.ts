@@ -25,8 +25,7 @@ describe("workflowitem.list", () => {
               documents: []
             },
             permissions: {
-              "workflowitem.viewSummary": ["alice"],
-              "workflowitem.viewDetails": ["alice"],
+              "workflowitem.view": ["alice"],
               "workflowitem.assign": ["alice"],
               "workflowitem.archive": []
             },
@@ -45,8 +44,7 @@ describe("workflowitem.list", () => {
               previousWorkflowitemId: "one"
             },
             permissions: {
-              "workflowitem.viewSummary": ["alice"],
-              "workflowitem.viewDetails": ["alice"],
+              "workflowitem.view": ["alice"],
               "workflowitem.assign": [],
               "workflowitem.archive": []
             },
@@ -85,11 +83,7 @@ describe("workflowitem.list", () => {
           description: "",
           status: "open",
           documents: [],
-          allowedIntents: [
-            "workflowitem.viewSummary",
-            "workflowitem.viewDetails",
-            "workflowitem.assign"
-          ]
+          allowedIntents: ["workflowitem.view", "workflowitem.assign"]
         },
         {
           id: "two",
@@ -101,7 +95,7 @@ describe("workflowitem.list", () => {
           status: "open",
           documents: [],
           previousWorkflowitemId: "one",
-          allowedIntents: ["workflowitem.viewSummary", "workflowitem.viewDetails"]
+          allowedIntents: ["workflowitem.view"]
         }
       ]
     });
