@@ -11,15 +11,13 @@ import Subheader from 'material-ui/Subheader';
 import colors from '../../colors';
 import strings from '../../localizeStrings';
 
-import TrusteesList, { getChipList } from './TrusteesList';
-
-const SideNavCard = ({ loggedInUser, avatarBackground, avatar, displayName, organization, users, history }) => (
+const SideNavCard = ({ avatarBackground, avatar, displayName, organization, history }) => (
   <div>
     <div
       style={{
         background: `url('${avatarBackground}') no-repeat`,
         backgroundSize: 'cover',
-        height: "200px",
+        height: "100px",
         position: "relative"
       }}>
       <div style={{
@@ -49,15 +47,6 @@ const SideNavCard = ({ loggedInUser, avatarBackground, avatar, displayName, orga
             style={{ paddingTop: '16px' }}
           />
         </div>
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          marginLeft: '2px',
-          marginBottom: '16px'
-        }}>
-          {getChipList(loggedInUser.role)}
-        </div>
       </div>
 
     </div>
@@ -73,7 +62,6 @@ const SideNavCard = ({ loggedInUser, avatarBackground, avatar, displayName, orga
       <ListItem primaryText={strings.navigation.rtUpdates} rightToggle={<Toggle />} />
     </List>
     <Divider />
-    {loggedInUser.role.admin ? <TrusteesList users={users} loggedInUser={loggedInUser} /> : null}
   </div >
 );
 

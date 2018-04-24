@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUsers } from '../Login/actions';
 import { fetchPeers, fetchStreamNames } from '../Navbar/actions';
 import { fetchNotifications, fetchHistoryItems } from '../Notifications/actions';
 import { fetchProjectDetails, fetchAllProjectDetails } from '../SubProjects/actions';
@@ -59,7 +58,6 @@ class LiveUpdates extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUsers: () => dispatch(fetchUsers()),
     fetchPeers: () => dispatch(fetchPeers()),
     fetchNotifications: (user) => dispatch(fetchNotifications(user)),
     fetchStreamNames: () => dispatch(fetchStreamNames()),

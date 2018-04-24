@@ -31,22 +31,22 @@ class AdminDashboardContainer extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchNodePermissions: () => dispatch(fetchNodePermissions()),
-    showRolesDialog: () => dispatch(showRolesDialog()),
-    hideRolesDialog: () => dispatch(hideRolesDialog()),
-    fetchUsers: () => dispatch(fetchUsers()),
-    fetchRoles: () => dispatch(fetchRoles()),
-    fetchNodeInformation: () => dispatch(fetchNodeInformation()),
-    hideAdminLogin: () => dispatch(hideAdminLogin()),
-    showAdminLogin: () => dispatch(showAdminLogin()),
-    setAdminUsername: (username) => dispatch(setAdminUsername(username)),
-    setAdminPassword: (password) => dispatch(setAdminPassword(password)),
-    loginAdmin: (user) => dispatch(loginAdmin(user)),
-    openSnackBar: () => dispatch(showSnackBar(true)),
-    closeSnackBar: () => dispatch(showSnackBar(false)),
-    storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
-    logoutAdmin: () => dispatch(logoutAdmin()),
-    logoutRegularUser: () => dispatch(clearRegularUser()),
+    // fetchNodePermissions: () => dispatch(fetchNodePermissions()),
+    // showRolesDialog: () => dispatch(showRolesDialog()),
+    // hideRolesDialog: () => dispatch(hideRolesDialog()),
+    // fetchUsers: () => dispatch(fetchUsers()),
+    // fetchRoles: () => dispatch(fetchRoles()),
+    // fetchNodeInformation: () => dispatch(fetchNodeInformation()),
+    // hideAdminLogin: () => dispatch(hideAdminLogin()),
+    // showAdminLogin: () => dispatch(showAdminLogin()),
+    // setAdminUsername: (username) => dispatch(setAdminUsername(username)),
+    // setAdminPassword: (password) => dispatch(setAdminPassword(password)),
+    // loginAdmin: (user) => dispatch(loginAdmin(user)),
+    // openSnackBar: () => dispatch(showSnackBar(true)),
+    // closeSnackBar: () => dispatch(showSnackBar(false)),
+    // storeSnackBarMessage: (message) => dispatch(storeSnackBarMessage(message)),
+    // logoutAdmin: () => dispatch(logoutAdmin()),
+    // logoutRegularUser: () => dispatch(clearRegularUser()),
 
   }
 }

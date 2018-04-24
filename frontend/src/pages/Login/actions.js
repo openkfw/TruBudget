@@ -1,6 +1,3 @@
-export const FETCH_USERS = 'FETCH_USERS';
-export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
-
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGOUT = 'LOGOUT';
@@ -8,11 +5,6 @@ export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 
 export const FETCH_USER = 'FETCH_USER';
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
-
-export const FETCH_ROLES = 'FETCH_ROLES';
-export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
-
-export const CLEAR_USER = 'CLEAR_USER';
 
 export const STORE_USERNAME = 'STORE_USERNAME';
 export const STORE_PASSWORD = 'STORE_PASSWORD';
@@ -38,20 +30,6 @@ export function fetchUser(showLoading = false) {
   return {
     type: FETCH_USER,
     showLoading
-  }
-}
-
-export function fetchUsers(showLoading = false) {
-  return {
-    type: FETCH_USER,
-    showLoading
-  }
-}
-
-
-export function fetchRoles() {
-  return {
-    type: FETCH_ROLES
   }
 }
 
@@ -94,12 +72,6 @@ export function loginAdmin(user) {
   return {
     type: ADMIN_LOGIN,
     user
-  }
-}
-
-export const clearRegularUser = () => {
-  return {
-    type: CLEAR_USER
   }
 }
 

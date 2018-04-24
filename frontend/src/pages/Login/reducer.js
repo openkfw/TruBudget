@@ -19,52 +19,29 @@ export const defaultState = fromJS({
   allowedIntents: [],
   avatarBackground: '/avatar_back.jpeg',
   avatar: '/lego_avatar_female2.jpg',
-  loggedInUser: {
-    role: {
-      roleName: '',
-      read: false,
-      write: false,
-      admin: false,
-    }
-  },
-  users: [],
-  user: [],
   environment: 'Test',
-  productionActive: false,
   loginErrorMessage: '',
   showLoginError: false,
-  loggedInAdminUser: {},
-  adminLoggedIn: false,
   jwt: '',
   adminLoginFailed: false,
-  roles: [],
-  language: 'en-gb'
+  language: 'en-gb',
+  user: []
 });
 
 export const setLanguage = (state) => {
   const language = state.get('language');
-
-  console.log(`Set language to ${language}`)
   moment.locale(language);
   strings.setLanguage(language);
 }
 
 export default function loginReducer(state = defaultState, action) {
   switch (action.type) {
-    // case FETCH_UPDATES_SUCCESS:
-    // case FETCH_USERS_SUCCESS:
-    //   return state.set('users', fromJS(action.users));
-    case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
-    case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
-    case FETCH_ALL_PROJECTS_SUCCESS:
-    case FETCH_ROLES_SUCCESS:
-      return state.set('roles', fromJS(action.roles));
     case STORE_USERNAME:
       return state.set('username', action.username);
     case STORE_PASSWORD:
       return state.set('password', action.password);
     case FETCH_USER_SUCCESS:
-      return state.set('user', action.user);
+      return state.set('user', fromJS(action.user));
     case FETCH_ADMIN_USER_SUCCESS:
       return state.merge({
         'loggedInAdminUser': action.user,
@@ -87,8 +64,6 @@ export default function loginReducer(state = defaultState, action) {
       return state.set('loginUnsuccessful', action.show);
     case SHOW_ADMIN_LOGIN_ERROR:
       return state.set('adminLoginFailed', action.show);
-    case CLEAR_USER:
-      return state.set('loggedInUser', defaultState.get('loggedInUser'));
     case STORE_ENVIRONMENT_SUCCESS:
     case FETCH_ENVIRONMENT_SUCCESS:
       return state.merge({

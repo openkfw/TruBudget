@@ -6,7 +6,16 @@ import { LOGOUT } from '../Login/actions';
 import { fromAmountString } from '../../helper';
 
 const defaultState = fromJS({
+  id: '',
+  displayName: '',
+  description: '',
+  status: 'open',
+  amount: 0,
+  currency: 'EUR',
+  allowedIntents: [],
   workflowItems: [],
+
+
   subProjectDetails: {
     approver: [],
     assignee: [],
@@ -42,11 +51,14 @@ export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
       return state.merge({
-        workflowItems: action.workflowItems.items,
-        subProjectDetails: action.workflowItems.details,
-        roles: action.roles,
-        historyItems: action.historyItems,
-        initialFetch: defaultState.get('initialFetch'),
+        id: action.id,
+        displayName: action.displayName,
+        description: action.description,
+        status: action.status,
+        amount: parseInt(action.amount, 10),
+        currency: action.currency,
+        allowedIntents: fromJS(action.allowedIntents),
+        workflowItems: fromJS(action.workflowitems)
       });
     case FETCH_ALL_SUBPROJECT_DETAILS:
       return state.merge({

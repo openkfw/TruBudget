@@ -11,7 +11,6 @@ import createDebounce from 'redux-debounced';
 import createReducer from './reducers';
 import rootSaga from './sagas';
 import { loadState, persistState } from './localStorage';
-import { setLanguage } from './pages/Login/reducer';
 
 const sagaMiddleware = createSagaMiddleware();
 

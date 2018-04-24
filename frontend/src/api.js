@@ -61,6 +61,8 @@ class Api {
     currency
   })
 
+  viewSubProjectDetails = (projectId, subprojectId) => axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`)
+
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
   //   return data;

@@ -11,13 +11,15 @@ import { addDocument, clearDocuments, prefillDocuments, validateDocument } from 
 import Workflow from './Workflow';
 import SubProjectDetails from './SubProjectDetails'
 import { getPermissions } from '../../permissions';
-import { fetchRoles } from '../Login/actions';
+import { toJS } from '../../helper';
 
 class WorkflowContainer extends Component {
   componentWillMount() {
-    const subProjectId = this.props.location.pathname.split('/')[3];
+    const path = this.props.location.pathname.split('/');
+    const projectId = path[2]
+    const subProjectId = path[3];
     this.props.setSelectedView(subProjectId, 'subProject');
-    this.props.fetchAllSubprojectDetails(subProjectId, Date.now())
+    this.props.fetchAllSubprojectDetails(projectId, subProjectId, true)
   }
 
   componentWillUnmount() {
@@ -26,12 +28,11 @@ class WorkflowContainer extends Component {
   }
 
   render() {
-    const { isAssignee, isApprover, isBank } = getPermissions(this.props.loggedInUser, this.props.subProjectDetails);
     return (
       <div>
         <div style={globalStyles.innerContainer}>
-          <SubProjectDetails {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
-          <Workflow {...this.props} permissions={{ isAssignee, isApprover, isBank }} />
+          <SubProjectDetails {...this.props} />
+          {/* <Workflow {...this.props} /> */}
         </div>
       </div>
     )
@@ -40,7 +41,8 @@ class WorkflowContainer extends Component {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchAllSubprojectDetails: (subprojectId, ts) => dispatch(fetchAllSubprojectDetails(subprojectId, ts)),
+    fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
+
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     openWorkflowDialog: (editMode) => dispatch(showWorkflowDialog(editMode)),
     onWorkflowDialogCancel: () => dispatch(onWorkflowDialogCancel(false)),
@@ -72,35 +74,38 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     clearDocuments: () => dispatch(clearDocuments()),
     validateDocument: (payload, hash) => dispatch(validateDocument(payload, hash)),
     prefillDocuments: (documents) => dispatch(prefillDocuments(documents)),
-    fetchRoles: () => dispatch(fetchRoles()),
     isWorkflowApprovalRequired: (approvalRequired) => dispatch(isWorkflowApprovalRequired(approvalRequired)),
   };
 }
 
 const mapStateToProps = (state) => {
   return {
-    workflowItems: state.getIn(['workflow', 'workflowItems']).toJS(),
-    subProjectDetails: state.getIn(['workflow', 'subProjectDetails']).toJS(),
+    id: state.getIn(['workflow', 'id']),
+    displayName: state.getIn(['workflow', 'displayName']),
+    description: state.getIn(['workflow', 'description']),
+    status: state.getIn(['workflow', 'status']),
+    amount: state.getIn(['workflow', 'amount']),
+    currency: state.getIn(['workflow', 'currency']),
+    allowedIntents: state.getIn(['workflow', 'allowedIntents']),
+    workflowItems: state.getIn(['workflow', 'workflowItems']),
+
+    subProjectDetails: state.getIn(['workflow', 'subProjectDetails']),
     workflowDialogVisible: state.getIn(['workflow', 'workflowDialogVisible']),
-    workflowToAdd: state.getIn(['workflow', 'workflowToAdd']).toJS(),
+    workflowToAdd: state.getIn(['workflow', 'workflowToAdd']),
     workflowState: state.getIn(['workflow', 'workflowState']),
     editMode: state.getIn(['workflow', 'editMode']),
     currentStep: state.getIn(['workflow', 'currentStep']),
-    users: state.getIn(['login', 'users']).toJS(),
     showWorkflowDetails: state.getIn(['workflow', 'showDetails']),
     showDetailsItemId: state.getIn(['workflow', 'showDetailsItemId']),
     showHistory: state.getIn(['notifications', 'showHistory']),
-    historyItems: state.getIn(['workflow', 'historyItems']).toJS(),
+    historyItems: state.getIn(['workflow', 'historyItems']),
     subProjects: state.getIn(['detailview', 'subProjects']),
-    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
     workflowSortEnabled: state.getIn(['workflow', 'workflowSortEnabled']),
     budgetEditEnabled: state.getIn(['workflow', 'subProjectBudgetEditEnabled']),
     subProjectAmount: state.getIn(['workflow', 'subProjectAmount']),
-    workflowDocuments: state.getIn(['documents', 'tempDocuments']).toJS(),
-    validatedDocuments: state.getIn(['documents', 'validatedDocuments']).toJS(),
-    roles: state.getIn(['login', 'roles']).toJS(),
-
+    workflowDocuments: state.getIn(['documents', 'tempDocuments']),
+    validatedDocuments: state.getIn(['documents', 'validatedDocuments']),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkflowContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(WorkflowContainer));

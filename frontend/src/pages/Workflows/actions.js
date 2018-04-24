@@ -45,9 +45,10 @@ export const FETCH_ALL_SUBPROJECT_DETAILS = 'FETCH_ALL_SUBPROJECT_DETAILS';
 export const FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS = 'FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS';
 
 
-export function fetchAllSubprojectDetails(subprojectId, showLoading = false) {
+export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
+    projectId,
     subprojectId,
     showLoading,
   }

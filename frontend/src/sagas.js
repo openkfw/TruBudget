@@ -557,19 +557,15 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
   }, showLoading);
 }
 
-// export function* fetchAllSubprojectDetailsSaga({ subprojectId, showLoading }) {
-//   const done = yield handleLoading(showLoading);
-//   const workflowItems = yield callApi(api.fetchWorkflowItems, subprojectId)
-//   const history = yield callApi(api.fetchHistory, subprojectId);
-//   const roles = yield callApi(api.fetchRoles);
-//   yield put({
-//     type: FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
-//     workflowItems: workflowItems.data,
-//     historyItems: history.data,
-//     roles: roles.data
-//   });
-//   yield done();
-// }
+export function* fetchAllSubprojectDetailsSaga({ projectId, subprojectId, showLoading }) {
+  yield execute(function* () {
+    const { data } = yield callApi(api.viewSubProjectDetails, projectId, subprojectId)
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
+      ...data
+    });
+  }, showLoading)
+}
 
 export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
   yield execute(function* () {
@@ -607,9 +603,9 @@ export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) 
 
 // WATCHERS
 
-// export function* watchFetchAllSubprojectDetails() {
-//   yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga);
-// }
+export function* watchFetchAllSubprojectDetails() {
+  yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga);
+}
 
 export function* watchFetchAllProjectDetails() {
   yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga);
@@ -780,7 +776,7 @@ export default function* rootSaga() {
       // watchAddRole(),
       watchFetchAllProjects(),
       watchFetchAllProjectDetails(),
-      // watchFetchAllSubprojectDetails(),
+      watchFetchAllSubprojectDetails(),
       watchFetchProjectPermissions(),
       watchGrantPermissions()
     ]

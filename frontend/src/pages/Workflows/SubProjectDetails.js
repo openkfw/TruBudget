@@ -164,21 +164,14 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
 
 const createRatio = (ratio) => _.isNaN(ratio) ? 0 : ratio * 100
 
-const SubProjectDetails = ({ roles, subProjectDetails, workflowItems, budgetEditEnabled, permissions, ...props }) => {
-  const name = subProjectDetails.name
-  const comment = subProjectDetails.comment
-  const amount = subProjectDetails.amount
-  const currency = subProjectDetails.currency
-
-
-  const assignee = getAssignedOrganization(roles, subProjectDetails.assignee)
-  const bank = getAssignedOrganization(roles, subProjectDetails.bank)
-  const approver = getAssignedOrganization(roles, subProjectDetails.approver)
-
+const SubProjectDetails = ({
+  displayName, description, amount, currency,
+  status, roles, subProjectDetails, workflowItems,
+  budgetEditEnabled, permissions, ...props }) => {
 
   const amountString = toAmountString(amount, currency)
-  const status = statusMapping(subProjectDetails.status)
-  const statusIcon = statusIconMapping[subProjectDetails.status]
+  const mappedStatus = statusMapping(status)
+  const statusIcon = statusIconMapping[status]
   const date = tsToString(subProjectDetails.createTS)
 
   const items = workflowItems.map((item) => ({ ...item, details: item.data }));
@@ -193,10 +186,8 @@ const SubProjectDetails = ({ roles, subProjectDetails, workflowItems, budgetEdit
   const statusDetails = getProgressInformation(items)
   const nextIncompletedWorkflow = getNextIncompletedItem(items)
 
-  const nextAction = getNextAction(nextIncompletedWorkflow, assignee, bank, approver)
-
-  const allowedToWrite = props.loggedInUser.role.write;
-  const allowedToEdit = allowedToWrite && permissions.isAssignee;
+  const allowedToWrite = false;
+  const allowedToEdit = false;
 
   const allocatedBudgetRatio = _.isUndefined(amount) ? 0 : assignedBudget / amount;
   const consumptionBudgetRatio = _.isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
@@ -205,13 +196,13 @@ const SubProjectDetails = ({ roles, subProjectDetails, workflowItems, budgetEdit
   return (
     <div style={styles.container}>
       <Card style={styles.card} >
-        <CardTitle title={name} />
+        <CardTitle title={displayName} />
         <List>
           <Divider />
           <ListItem
             disabled={true}
             leftIcon={<CommentIcon />}
-            primaryText={<div style={styles.comment}>{comment} </div>}
+            primaryText={<div style={styles.comment}>{description} </div>}
             secondaryText={strings.common.comment}
           />
           <Divider />
@@ -220,7 +211,7 @@ const SubProjectDetails = ({ roles, subProjectDetails, workflowItems, budgetEdit
           <ListItem
             disabled={true}
             leftIcon={statusIcon}
-            primaryText={status}
+            primaryText={mappedStatus}
             secondaryText={strings.common.status}
           />
           <Divider />
@@ -234,7 +225,7 @@ const SubProjectDetails = ({ roles, subProjectDetails, workflowItems, budgetEdit
           <ListItem
             disabled={true}
             leftIcon={<AssigneeIcon />}
-            primaryText={assignee}
+            primaryText={""}
             secondaryText={strings.common.assignees}
           />
           <Divider />
@@ -332,20 +323,6 @@ const SubProjectDetails = ({ roles, subProjectDetails, workflowItems, budgetEdit
           </div>
         </ListItem>
         <Divider />
-
-        <ListItem
-          disabled={true}
-          leftIcon={<ActiveIcon />}
-          //  primaryText={typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.key : 'None'}
-          primaryText={<div>
-            <span >{typeof nextIncompletedWorkflow !== "undefined" ? nextIncompletedWorkflow.data.workflowName : strings.workflow.workflow_none}</span> <br />
-            {nextAction}
-          </div>}
-          secondaryText={strings.workflow.workflow_next_step}
-        />
-        <Divider />
-
-
       </Card>
 
     </div >

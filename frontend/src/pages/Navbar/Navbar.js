@@ -9,8 +9,8 @@ import RightNavbarNavigation from './RightNavbarNavigation';
 
 const Navbar = ({
   onToggleSidebar, peers, unreadNotifications,
-  showSidebar, history, route, loggedInUser,
-  logout, streamNames, users, productionActive,
+  showSidebar, history, route,
+  logout, streamNames, productionActive,
   displayName, organization, avatar, avatarBackground }) => (
     <div >
       <AppBar
@@ -22,10 +22,8 @@ const Navbar = ({
       <SideNav
         onToggleSidebar={onToggleSidebar}
         showSidebar={showSidebar}
-        loggedInUser={loggedInUser}
         history={history}
         logout={logout}
-        users={users}
         displayName={displayName}
         organization={organization}
         avatar={avatar}
