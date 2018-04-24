@@ -86,7 +86,7 @@ describe("subproject.list", () => {
     });
   });
 
-  it("returns 404 Not found if the project does not exist", async () => {
+  it("throws stream-not-found error if the project does not exist", done => {
     const multichain: any = {
       getValues: (streamName, key, nValues) => {
         expect(streamName).to.eql("the-sample-project");
@@ -97,24 +97,23 @@ describe("subproject.list", () => {
 
     const req = {
       query: {
-        project: "the-sample-project"
+        projectId: "the-sample-project"
       },
       token: {
         userId: "alice"
       }
     };
 
-    const [status, response] = await getSubprojectList(
-      multichain as MultichainClient,
-      req as AuthenticatedRequest
-    );
-    expect(status).to.eql(404);
-    expect(response).to.eql({
-      apiVersion: "1.0",
-      error: {
-        code: 404,
-        message: "Not found."
-      }
-    });
+    getSubprojectList(multichain as MultichainClient, req as AuthenticatedRequest)
+      .then(response => {
+        throw Error(`Expected no response, got: ${JSON.stringify(response)}`);
+      })
+      .catch(err => {
+        if (err.code === -708) {
+          done();
+        } else {
+          throw err;
+        }
+      });
   });
 });

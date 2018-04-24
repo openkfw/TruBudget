@@ -401,6 +401,7 @@ export const createRouter = (
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
+
   router.get("/subproject.viewDetails", (req: AuthenticatedRequest, res) => {
     getSubprojectDetails(multichainClient, req)
       .then(response => send(res, response))
