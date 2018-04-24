@@ -155,7 +155,10 @@ export class UserModel {
       id,
       displayName: trueUser.displayName,
       organization: trueUser.organization,
-      allowedIntents: await getAllowedIntents(token, GlobalOnChain.getPermissions(this.multichain)),
+      allowedIntents: await getAllowedIntents(
+        token,
+        await GlobalOnChain.getPermissions(this.multichain)
+      ),
       token: this.createToken(id, trueUser.organization)
     };
   }
