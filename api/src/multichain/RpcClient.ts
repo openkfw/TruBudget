@@ -40,6 +40,7 @@ export class RpcClient {
         resolve(resp.data.result);
       }).catch((error: AxiosError) => {
         let response: RpcError
+        console.error(`Going into an error for ${JSON.stringify(request)}`)
 
         if (error.response && (error.response.data.error !== null)) {
           // The request was made and the server responded with a status code
