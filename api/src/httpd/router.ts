@@ -167,7 +167,7 @@ export const createRouter = (
     }
   });
 
-  router.get("/user.create", (req: AuthenticatedRequest, res) => {
+  router.post("/user.create", (req: AuthenticatedRequest, res) => {
     createUser(multichainClient, req, jwtSecret, rootSecret)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
@@ -179,7 +179,7 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
-  router.get("/user.authenticate", (req: AuthenticatedRequest, res) => {
+  router.post("/user.authenticate", (req: AuthenticatedRequest, res) => {
     authenticateUser(multichainClient, req, jwtSecret, rootSecret)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
