@@ -17,7 +17,7 @@ describe("workflowitem.list", () => {
             data: {
               id: "one",
               displayName: "item one",
-              amount: 1,
+              amount: "1",
               currency: "EUR",
               amountType: "N/A",
               description: "",
@@ -35,7 +35,7 @@ describe("workflowitem.list", () => {
             data: {
               id: "two",
               displayName: "item two",
-              amount: 2,
+              amount: "2",
               currency: "USD",
               amountType: "disbursed",
               description: "some comment",
@@ -77,7 +77,7 @@ describe("workflowitem.list", () => {
         {
           id: "one",
           displayName: "item one",
-          amount: 1,
+          amount: "1",
           currency: "EUR",
           amountType: "N/A",
           description: "",
@@ -88,7 +88,7 @@ describe("workflowitem.list", () => {
         {
           id: "two",
           displayName: "item two",
-          amount: 2,
+          amount: "2",
           currency: "USD",
           amountType: "disbursed",
           description: "some comment",

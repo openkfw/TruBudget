@@ -36,7 +36,7 @@ export const createWorkflowItem = async (
     {
       id: isNonemptyString(data.workflowitemId) ? data.workflowitemId : randomString(),
       displayName: value("displayName", data.displayName, isNonemptyString),
-      amount: value("amount", data.amount, x => x !== undefined && typeof x === "number"),
+      amount: value("amount", data.amount, isNonemptyString),
       currency: value("currency", data.currency, isNonemptyString),
       amountType: value("amountType", data.amountType, x =>
         ["N/A", "disbursed", "allocated"].includes(x)

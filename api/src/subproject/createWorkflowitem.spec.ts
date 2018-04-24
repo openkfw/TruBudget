@@ -26,7 +26,7 @@ describe("subproject.createWorkflowitem", () => {
           subprojectId,
           workflowitemId,
           displayName: "My Workflow-Item",
-          amount: 123,
+          amount: "123",
           currency: "EUR",
           amountType: "allocated",
           description: "A nice item.",

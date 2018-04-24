@@ -15,7 +15,7 @@ export interface SubprojectData {
   id: string;
   displayName: string;
   status: string;
-  amount: number;
+  amount: string;
   currency: string;
   description: string;
 }
@@ -32,7 +32,7 @@ export const create = async (
   logEntry: LogEntry,
   data: {
     displayName: string;
-    amount: number;
+    amount: string;
     currency: string;
     description: string;
   }

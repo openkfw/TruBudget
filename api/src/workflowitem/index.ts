@@ -13,7 +13,7 @@ interface WorkflowitemResource extends Resource {
 export interface Data {
   id: string;
   displayName: string;
-  amount: number;
+  amount: string;
   currency: string;
   amountType: "N/A" | "disbursed" | "allocated";
   description: string;
