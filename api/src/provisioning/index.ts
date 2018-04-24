@@ -3,6 +3,8 @@ const axios = require("axios");
 import { provisionUsers } from "./users";
 import { provisionProjects } from "./projects";
 import { sleep } from "./lib";
+import * as winston from "winston";
+import { MultichainClient } from "../multichain";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -42,10 +44,27 @@ const authenticate = async (axios, userId: string, rootSecret: string) => {
   return body.data.token;
 };
 
-export const provisionBlockchain = async (port: number, rootSecret: string) => {
+function timeout(ms) {
+  return () => new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const provisionBlockchain = async (port: number, rootSecret: string, multichainClient: MultichainClient) => {
   axios.defaults.baseURL = `http://localhost:${port}`;
-  axios.defaults.timeout = 20000;
-  await isReady(axios);
+  axios.defaults.timeout = 5000;
+
+  winston.info('Starting isReady()')
+  let connected = false
+  while (!connected) {
+    try {
+      let info = await multichainClient.getInfo()
+      winston.info(`Connected to ${info.nodeaddress}`)
+      connected = true
+    } catch (err) {
+      winston.error('Error while checking multichain, retrying...', err)
+      await timeout(5000)
+    }
+  }
+
   let token = await authenticate(axios, "root", rootSecret);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);

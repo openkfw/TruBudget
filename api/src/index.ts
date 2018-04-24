@@ -3,6 +3,13 @@ import { createRouter } from "./httpd/router";
 import { RpcMultichainClient } from "./multichain";
 import { provisionBlockchain } from "./provisioning";
 import { randomString } from "./multichain/hash";
+import * as winston from 'winston'
+
+/*
+ * Init the logs
+ */
+const winstonConsole = new winston.transports.Console()
+winston.add(winstonConsole)
 
 /*
  * Deal with the environment:
@@ -43,7 +50,8 @@ app.listen(port, err => {
     return console.log(err);
   }
   console.log("trigger deployment pipeline...");
-  provisionBlockchain(port, rootSecret)
+  winston.info('Starting deployment pipeline...')
+  provisionBlockchain(port, rootSecret, multichainClient)
     .then(() => console.log("Chain provisioned."))
     .catch(err => console.log(`Could not provision the chain: ${err}`));
   console.log(`server is listening on ${port}`);

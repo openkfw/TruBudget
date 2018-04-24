@@ -119,6 +119,10 @@ export class RpcMultichainClient implements MultichainClient {
     return await this.rpcClient.invoke("publish", streamId, key, data);
   }
 
+  async getInfo(): Promise<any> {
+    return await this.rpcClient.invoke("getinfo");
+  }
+
   async getValues(
     streamName: StreamName,
     key: string,

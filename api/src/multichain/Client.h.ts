@@ -73,6 +73,10 @@ export interface MultichainClient {
   // Return the most recent values for all keys
   streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]>;
 
+  // getinfo Returns general information about this node and blockchain
+  // TODO add return types...although they seem rather flexible
+  getInfo(): any;
+
   // Return the most recent values for a specific key
   latestValuesForKey(
     streamId: StreamName | StreamTxId,
