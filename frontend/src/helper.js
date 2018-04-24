@@ -87,7 +87,7 @@ export const statusMapping = (status) => {
 
 export const amountTypes = (amountType) => {
   switch (amountType) {
-    case 'na':
+    case 'N/A':
       return strings.workflow.workflow_budget_status_na;
     case 'allocated':
       return strings.workflow.workflow_budget_status_allocated;
@@ -162,7 +162,7 @@ export const getAllocationRatio = (spentAmount, projectAmount) => {
 }
 export const calculateWorkflowBudget = (workflows) => {
   return workflows.reduce((acc, workflow) => {
-    const { amount, amountType, status } = workflow.data;
+    const { amount, amountType, status } = workflow;
     const next = {
       assigned: amountType === 'allocated' ? acc.assigned + amount : acc.assigned,
       disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed,
@@ -228,7 +228,7 @@ export const createTaskData = (items, type) => {
 }
 
 export const getNextIncompletedItem = (items) => {
-  return items.find((item) => item.details.status === 'open' | item.details.status === 'in_progress' | item.details.status === 'in_review');
+  return items.find((item) => item.status === 'open' | item.status === 'in_progress' | item.status === 'in_review');
 }
 
 export const getNextAction = (item, assignee, bank, approver) => {

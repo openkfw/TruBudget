@@ -14,12 +14,16 @@ import { getPermissions } from '../../permissions';
 import { toJS } from '../../helper';
 
 class WorkflowContainer extends Component {
+  constructor(props) {
+    super(props);
+    const path = props.location.pathname.split('/');
+    this.projectId = path[2]
+    this.subProjectId = path[3];
+  }
+
   componentWillMount() {
-    const path = this.props.location.pathname.split('/');
-    const projectId = path[2]
-    const subProjectId = path[3];
-    this.props.setSelectedView(subProjectId, 'subProject');
-    this.props.fetchAllSubprojectDetails(projectId, subProjectId, true)
+    this.props.setSelectedView(this.subProjectId, 'subProject');
+    this.props.fetchAllSubprojectDetails(this.projectId, this.subProjectId, true)
   }
 
   componentWillUnmount() {
@@ -27,12 +31,16 @@ class WorkflowContainer extends Component {
     this.props.onWorkflowDialogCancel();
   }
 
+  createWorkflowItem = (workflow, documents) => {
+    this.props.createWorkflowItem(this.projectId, this.subProjectId, workflow, documents)
+  }
+
   render() {
     return (
       <div>
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails {...this.props} />
-          {/* <Workflow {...this.props} /> */}
+          <Workflow {...this.props} createWorkflowItem={this.createWorkflowItem} />
         </div>
       </div>
     )
@@ -42,8 +50,6 @@ class WorkflowContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
-
-    fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     openWorkflowDialog: (editMode) => dispatch(showWorkflowDialog(editMode)),
     onWorkflowDialogCancel: () => dispatch(onWorkflowDialogCancel(false)),
     storeWorkflowComment: (comment) => dispatch(storeWorkflowComment(comment)),
@@ -53,7 +59,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowName: (name) => dispatch(storeWorkflowName(name)),
     storeWorkflowStatus: (state) => dispatch(storeWorkflowStatus(state)),
     storeWorkflowTxid: (txid) => dispatch(storeWorkflowTxid(txid)),
-    createWorkflowItem: (stream, workflowToAdd, documents) => dispatch(createWorkflowItem(stream, workflowToAdd, documents)),
+    createWorkflowItem: (pId, sId, workflowToAdd, documents) => dispatch(createWorkflowItem(pId, sId, workflowToAdd, documents)),
+
+    fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     editWorkflowItem: (stream, key, workflowToAdd, documents, previousState) => dispatch(editWorkflowItem(stream, key, workflowToAdd, documents, previousState)),
     openWorkflowDetails: (txid) => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
@@ -86,6 +94,7 @@ const mapStateToProps = (state) => {
     status: state.getIn(['workflow', 'status']),
     amount: state.getIn(['workflow', 'amount']),
     currency: state.getIn(['workflow', 'currency']),
+    created: state.getIn(['workflow', 'created']),
     allowedIntents: state.getIn(['workflow', 'allowedIntents']),
     workflowItems: state.getIn(['workflow', 'workflowItems']),
 

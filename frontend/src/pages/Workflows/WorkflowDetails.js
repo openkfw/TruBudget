@@ -58,7 +58,7 @@ const WorkflowDetails = ({ workflowItems, subProjectDetails, showWorkflowDetails
     />];
 
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-  const status = workflowItem.data.status;
+  const status = workflowItem.status;
   const trimmedComment = removeNewLines(workflowItem.data.comment)
   return (
 

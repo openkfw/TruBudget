@@ -12,6 +12,7 @@ import SortIcon from 'material-ui/svg-icons/content/low-priority'
 import { ACMECorpGrey, ACMECorpDarkBlue, ACMECorpLightgreen } from '../../colors.js'
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import strings from '../../localizeStrings'
+import { canCreateWorkflowItems } from '../../permissions';
 
 const enableWorkflowSort = (props, allowedToSort) => (
   <FlatButton
@@ -46,8 +47,7 @@ const submitSort = (props, allowedToSort) => (
 )
 
 const Workflow = (props) => {
-  const allowedToWrite = props.loggedInUser.role.write;
-  const allowedToCreateWorkflows = allowedToWrite && props.permissions.isAssignee;
+  const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents);
   return (
     <Card style={{
       width: '100%',

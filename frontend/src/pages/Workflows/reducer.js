@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { SHOW_WORKFLOW_DIALOG, WORKFLOW_NAME, WORKFLOW_AMOUNT, WORKFLOW_AMOUNT_TYPE, WORKFLOW_PURPOSE, WORKFLOW_CURRENCY, WORKFLOW_TXID, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, SHOW_WORKFLOW_DETAILS, UPDATE_WORKFLOW_SORT, ENABLE_WORKFLOW_SORT, WORKFLOW_TYPE, ENABLE_BUDGET_EDIT, SUBPROJECT_AMOUNT, WORKFLOW_APPROVAL_REQUIRED, WORKFLOW_CREATION_STEP, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS, CANCEL_WORKFLOW_DIALOG, WORKFLOW_STATUS } from './actions';
+import { SHOW_WORKFLOW_DIALOG, WORKFLOW_NAME, WORKFLOW_AMOUNT, WORKFLOW_AMOUNT_TYPE, WORKFLOW_PURPOSE, WORKFLOW_CURRENCY, WORKFLOW_TXID, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, SHOW_WORKFLOW_DETAILS, UPDATE_WORKFLOW_SORT, ENABLE_WORKFLOW_SORT, ENABLE_BUDGET_EDIT, SUBPROJECT_AMOUNT, WORKFLOW_CREATION_STEP, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS, CANCEL_WORKFLOW_DIALOG, WORKFLOW_STATUS } from './actions';
 
 import { LOGOUT } from '../Login/actions';
 import { fromAmountString } from '../../helper';
@@ -12,26 +12,19 @@ const defaultState = fromJS({
   status: 'open',
   amount: 0,
   currency: 'EUR',
+  created: 0,
   allowedIntents: [],
   workflowItems: [],
-
-
-  subProjectDetails: {
-    approver: [],
-    assignee: [],
-    bank: [],
-  },
   workflowToAdd: {
     name: '',
-    type: 'workflow',
     amount: '',
-    amountType: 'na',
+    amountType: 'N/A',
     currency: '',
     comment: '',
-    approvalRequired: true,
     status: 'open',
     txId: ''
   },
+
   workflowDialogVisible: false,
   editMode: false,
   showDetails: false,
@@ -44,7 +37,6 @@ const defaultState = fromJS({
   subProjectBudgetEditEnabled: false,
   roles: [],
   historyItems: [],
-  initialFetch: false,
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -59,10 +51,6 @@ export default function detailviewReducer(state = defaultState, action) {
         currency: action.currency,
         allowedIntents: fromJS(action.allowedIntents),
         workflowItems: fromJS(action.workflowitems)
-      });
-    case FETCH_ALL_SUBPROJECT_DETAILS:
-      return state.merge({
-        initialFetch: action.initial,
       });
     case SHOW_WORKFLOW_DIALOG:
       return state.merge({
@@ -80,10 +68,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('currentStep', action.step);
     case WORKFLOW_NAME:
       return state.setIn(['workflowToAdd', 'name'], action.name);
-    case WORKFLOW_TYPE:
-      return state.setIn(['workflowToAdd', 'type'], action.workflowType);
-    case WORKFLOW_APPROVAL_REQUIRED:
-      return state.setIn(['workflowToAdd', 'approvalRequired'], action.approvalRequired);
     case WORKFLOW_AMOUNT:
       return state.setIn(['workflowToAdd', 'amount'], fromAmountString(action.amount));
     case WORKFLOW_AMOUNT_TYPE:

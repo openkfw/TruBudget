@@ -167,24 +167,21 @@ const createRatio = (ratio) => _.isNaN(ratio) ? 0 : ratio * 100
 const SubProjectDetails = ({
   displayName, description, amount, currency,
   status, roles, subProjectDetails, workflowItems,
-  budgetEditEnabled, permissions, ...props }) => {
+  created, budgetEditEnabled, permissions, ...props }) => {
 
   const amountString = toAmountString(amount, currency)
   const mappedStatus = statusMapping(status)
   const statusIcon = statusIconMapping[status]
-  const date = tsToString(subProjectDetails.createTS)
+  const date = tsToString(created)
 
-  const items = workflowItems.map((item) => ({ ...item, details: item.data }));
-  const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(items);
-
-
+  const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(workflowItems);
 
   const disbursedBudgetString = toAmountString(disbursedBudget, currency);
   const unSpendBudgetString = toAmountString(assignedBudget, currency);
   const spendBudgetString = toAmountString(currentDisbursement, currency);
 
-  const statusDetails = getProgressInformation(items)
-  const nextIncompletedWorkflow = getNextIncompletedItem(items)
+  const statusDetails = getProgressInformation(workflowItems)
+  const nextIncompletedWorkflow = getNextIncompletedItem(workflowItems)
 
   const allowedToWrite = false;
   const allowedToEdit = false;
@@ -275,7 +272,7 @@ const SubProjectDetails = ({
         <CardTitle title={strings.common.task_status} />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createTaskData(items, 'workflows')} />
+          <Doughnut data={createTaskData(workflowItems, 'workflows')} />
         </CardMedia>
         <Divider />
         <ListItem disabled={true}>

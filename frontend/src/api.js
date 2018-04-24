@@ -63,6 +63,7 @@ class Api {
 
   viewSubProjectDetails = (projectId, subprojectId) => axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`)
 
+  createWorkflowItem = (payload) => axios.post(`/subproject.createWorkflowitem`, { ...payload, amount: payload.amountType === 'N/A' ? "0" : payload.amount })
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
   //   return data;

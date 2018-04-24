@@ -183,21 +183,21 @@ export function* createSubProjectSaga({ projectId, name, amount, comment, curren
   }, showLoading);
 }
 
-// export function* createWorkflowItemSaga(action) {
-//   const { stream, workflowName, amount, amountType, currency, comment, documents, state, workflowType, approvalRequired } = action;
-//   try {
-//     yield callApi(api.postWorkflowItem, stream, workflowName, amount, amountType, currency, comment, documents, state, workflowType, approvalRequired);
-//     yield put({
-//       type: CREATE_WORKFLOW_SUCCESS
-//     });
-//     yield put({
-//       type: FETCH_WORKFLOW_ITEMS,
-//       streamName: action.stream
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
+export function* createWorkflowItemSaga({ type, ...rest }) {
+  yield execute(function* () {
+    yield callApi(api.createWorkflowItem, rest);
+    yield put({
+      type: CREATE_WORKFLOW_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId: rest.projectId,
+      subprojectId: rest.subprojectId,
+      showLoading: true
+    });
+  })
+}
 
 // export function* editWorkflowItemSaga(action) {
 //   const { stream, key, workflowName, amount, amountType, currency, comment, documents, state, txid, previousState, workflowType, approvalRequired } = action;
@@ -639,9 +639,9 @@ export function* watchCreateSubProject() {
   yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga)
 }
 
-// export function* watchCreateWorkflowItem() {
-//   yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga)
-// }
+export function* watchCreateWorkflowItem() {
+  yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga)
+}
 
 // export function* watchEditWorkflowItem() {
 //   yield takeEvery(EDIT_WORKFLOW, editWorkflowItemSaga)
@@ -748,7 +748,7 @@ export default function* rootSaga() {
       // watchFetchProjects(),
       // watchFetchProjectDetails(),
       watchCreateSubProject(),
-      // watchCreateWorkflowItem(),
+      watchCreateWorkflowItem(),
       // watchEditWorkflowItem(),
       watchCreateProject(),
       // watchFetchNodeInformation(),

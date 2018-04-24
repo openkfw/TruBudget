@@ -1,11 +1,9 @@
 import React from 'react';
 import CreationDialog from '../Common/CreationDialog';
 import strings from '../../localizeStrings'
-import WorkflowType from './WorkflowType';
 import TextInput from '../Common/TextInput';
 import WorkflowCreationAmount from './WorkflowCreationAmount';
 import DocumentUpload from '../Documents/DocumentUpload';
-import WorkflowStatus from './WorkflowStatus';
 
 const handleSubmit = (props) => {
   const { createWorkflowItem, editWorkflowItem, onWorkflowDialogCancel, editMode, workflowToAdd, workflowDocuments } = props;
@@ -15,23 +13,13 @@ const handleSubmit = (props) => {
     const { key, data } = currentWorkflowItem;
     editWorkflowItem(subproject, key, workflowToAdd, workflowDocuments, data)
   } else {
-    createWorkflowItem(subproject, workflowToAdd, workflowDocuments)
+    createWorkflowItem(workflowToAdd, workflowDocuments)
   }
   onWorkflowDialogCancel();
 }
 
-
 const WorkflowCreation = (props) => {
   const steps = [
-    {
-      title: strings.workflow.workflow_type,
-      content: <WorkflowType
-        workflowApprovalRequired={props.workflowToAdd.approvalRequired}
-        isWorkflowApprovalRequired={props.isWorkflowApprovalRequired}
-        workflowType={props.workflowToAdd.type} editMode={props.editMode}
-        storeWorkflowType={props.storeWorkflowType}
-      />
-    },
     {
       title: strings.workflow.workflow_name,
       content: (
@@ -47,7 +35,7 @@ const WorkflowCreation = (props) => {
     {
       title: strings.common.budget,
       content: <WorkflowCreationAmount
-        subProjectCurrency={props.subProjectDetails.currency}
+        subProjectCurrency={props.currency}
         storeWorkflowAmount={props.storeWorkflowAmount}
         storeWorkflowAmountType={props.storeWorkflowAmountType}
         storeWorkflowCurrency={props.storeWorkflowCurrency}
@@ -72,16 +60,6 @@ const WorkflowCreation = (props) => {
     {
       title: strings.workflow.workflow_documents,
       content: <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />
-    },
-
-    {
-      title: strings.common.status,
-      content: <WorkflowStatus
-        workflowApprovalRequired={props.workflowToAdd.approvalRequired}
-        permissions={props.permissions} users={props.users}
-        storeWorkflowStatus={props.storeWorkflowStatus}
-        workflowStatus={props.workflowToAdd.status} editMode={props.editMode}
-      />
     },
   ]
 

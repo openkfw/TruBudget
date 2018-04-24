@@ -52,7 +52,7 @@ class WorkflowCreationAmount extends Component {
           <RadioButtonGroup style={styles.selections} name="workflowAmountType" defaultSelected={workflowAmountType} onChange={(event, value) => storeWorkflowAmountType(value)}>
             <RadioButton
               style={styles.buttons}
-              value="na"
+              value="N/A"
               label={strings.workflow.workflow_budget_na}
             />
             <RadioButton
@@ -80,7 +80,7 @@ class WorkflowCreationAmount extends Component {
               hintText={hintText}
               type='number'
               value={workflowAmount}
-              disabled={workflowAmountType === 'na'}
+              disabled={workflowAmountType === 'N/A'}
               onChange={storeWorkflowAmount}
             />
           </div>

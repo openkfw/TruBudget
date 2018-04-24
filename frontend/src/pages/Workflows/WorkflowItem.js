@@ -226,7 +226,7 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
 }
 
 const getAmountField = (amount, type) => {
-  const noBudgetAllocated = type === 'na'
+  const noBudgetAllocated = type === 'N/A'
   const amountToShow = noBudgetAllocated ? amountTypes(type) : amount;
 
   return (
@@ -242,9 +242,9 @@ const getAmountField = (amount, type) => {
 }
 
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-  const { status, type, workflowName, amountType, approvalRequired } = workflow.data;
+  const { status, type, displayName, amountType } = workflow;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
-  const amount = toAmountString(workflow.data.amount, workflow.data.currency);
+  const amount = toAmountString(workflow.amount, workflow.currency);
   const tableStyle = workflowSelectable ? styles[status] : {
     ...styles[status],
     opacity: 0.3
@@ -262,7 +262,7 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
               {infoButton}
             </TableRowColumn>
             <TableRowColumn style={styles.text} colSpan={3}>
-              {workflowName}
+              {displayName}
             </TableRowColumn>
             <TableRowColumn style={styles.listText} colSpan={3}>
               {getAmountField(amount, amountType)}
@@ -270,12 +270,10 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
             <TableRowColumn style={styles.listText} colSpan={3}>
               <div style={styles.chipDiv}>
                 {statusMapping(status)}
-                {!approvalRequired ? <Chip style={styles.statusChip} labelStyle={styles.chipLabel}>
-                  {strings.workflow.non_approval}
-                </Chip> : ''}
               </div>
             </TableRowColumn>
-            {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, approvalRequired, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />}
+            <TableRowColumn colSpan={2} />
+            {/* {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, false, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />} */}
           </TableRow>
         </TableBody>
       </Table>

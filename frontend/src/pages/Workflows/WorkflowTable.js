@@ -42,6 +42,7 @@ const createTableHeader = () => (
     </div>
   </Card>
 )
+
 const createWorkflowItems = ({ workflowItems, permissions, ...props }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     workflowItems = arrayMove(workflowItems, oldIndex, newIndex)

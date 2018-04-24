@@ -211,19 +211,18 @@ export function storeWorkflowTxid(txid) {
   }
 }
 
-export function createWorkflowItem(stream, { name, type, amount, amountType, currency, comment, status, approvalRequired }, documents) {
+export function createWorkflowItem(projectId, subprojectId, { name, amount, amountType, currency, comment, status }, documents) {
   return {
     type: CREATE_WORKFLOW,
-    stream: stream,
-    workflowName: name,
-    amount: amount,
+    projectId,
+    subprojectId,
+    displayName: name,
+    amount: `${amount}`,
     amountType,
-    currency: currency,
-    comment: comment,
+    currency,
+    description: comment,
     documents,
-    state: status,
-    workflowType: type,
-    approvalRequired
+    status
   }
 }
 
