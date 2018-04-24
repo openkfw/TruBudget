@@ -60,7 +60,7 @@ export const provisionBlockchain = async (port: number, rootSecret: string, mult
       winston.info(`Connected to ${info.nodeaddress}`)
       connected = true
     } catch (err) {
-      winston.error('Error while checking multichain, retrying after pause...', err)
+      winston.error('Error while checking multichain, retrying after pause...')
       await timeout(5000)
     }
   }
