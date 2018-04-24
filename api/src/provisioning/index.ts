@@ -66,6 +66,7 @@ export const provisionBlockchain = async (port: number, rootSecret: string, mult
   }
 
   let token = await authenticate(axios, "root", rootSecret);
+  console.log('Authentication as root done')
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
   token = await authenticate(axios, "mstein", "test");
