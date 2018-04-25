@@ -30,10 +30,10 @@ const createTableHeader = () => (
             <TableHeaderColumn style={styles.listText} colSpan={3}>
               {strings.common.budget}
             </TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={3}>
+            <TableHeaderColumn style={styles.listText} colSpan={2}>
               {strings.common.status}
             </TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={2}>
+            <TableHeaderColumn style={styles.listText} colSpan={3}>
               {strings.common.actions}
             </TableHeaderColumn>
           </TableRow>

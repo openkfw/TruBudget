@@ -10,6 +10,7 @@ import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import ReviewIcon from 'material-ui/svg-icons/action/find-in-page';
+import PermissionIcon from 'material-ui/svg-icons/action/lock-open';
 import IconButton from 'material-ui/IconButton';
 import { toAmountString, statusMapping, amountTypes } from '../../helper.js';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from '../../colors.js';
@@ -38,6 +39,10 @@ const styles = {
     position: 'absolute',
     top: '14px',
     left: '-35px',
+  },
+  actions: {
+    display: 'flex',
+    justifyContent: 'center'
   },
   line: {
     position: 'absolute',
@@ -158,17 +163,14 @@ const StepDot = ({ status, selectable }) => {
   )
 };
 
-const editWorkflow = ({ key, txid, data }, props) => {
-  const { workflowName, amount, amountType, currency, comment, status, documents, type, approvalRequired } = data;
-  props.storeWorkflowName(workflowName)
+const editWorkflow = ({ id, displayName, amount, amountType, currency, description, status, documents }, props) => {
+  props.storeWorkflowName(displayName)
   props.storeWorkflowAmount(amount)
   props.storeWorkflowAmountType(amountType)
   props.storeWorkflowCurrency(currency)
-  props.storeWorkflowComment(comment)
-  props.storeWorkflowType(type)
+  props.storeWorkflowComment(description)
   props.storeWorkflowStatus(status)
-  props.storeWorkflowTxid(txid)
-  props.isWorkflowApprovalRequired(approvalRequired)
+  props.storeWorkflowTxid(id)
   props.openWorkflowDialog(true)
   props.prefillDocuments(documents);
 }
@@ -241,6 +243,21 @@ const getAmountField = (amount, type) => {
   )
 }
 
+const renderActionButtons = (canEditWorkflow = false, editCB, canListWorkflowPermissions = false, canCloseWorkflow = false) =>
+  <TableRowColumn colSpan={3}>
+    <div style={styles.actions}>
+      <IconButton disabled={!canEditWorkflow} onTouchTap={editCB}>
+        <EditIcon />
+      </IconButton>
+      <IconButton disabled={!canListWorkflowPermissions}>
+        <PermissionIcon />
+      </IconButton>
+      <IconButton disabled={!canCloseWorkflow}>
+        <DoneIcon />
+      </IconButton>
+    </div>
+  </TableRowColumn>
+
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
   const { status, type, displayName, amountType } = workflow;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
@@ -267,13 +284,12 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
             <TableRowColumn style={styles.listText} colSpan={3}>
               {getAmountField(amount, amountType)}
             </TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={3}>
+            <TableRowColumn style={styles.listText} colSpan={2}>
               <div style={styles.chipDiv}>
                 {statusMapping(status)}
               </div>
             </TableRowColumn>
-            <TableRowColumn colSpan={2} />
-            {/* {workflowSelectable && status !== 'done' && !workflowSortEnabled ? getEditButtons(status, type, props.loggedInUser.role, false, permissions, () => editWorkflow(workflow, props), () => changeProgress(workflow, props)) : <TableRowColumn colSpan={2} />} */}
+            {renderActionButtons(true, editWorkflow.bind(this, workflow, props))}
           </TableRow>
         </TableBody>
       </Table>

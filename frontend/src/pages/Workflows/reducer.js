@@ -69,6 +69,7 @@ export default function detailviewReducer(state = defaultState, action) {
       })
     case SHOW_SUBPROJECT_PERMISSIONS:
       return state.merge({
+        permissions: fromJS({}),
         showSubProjectPermissions: true,
         showWorkflowPermissions: false,
       })

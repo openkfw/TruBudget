@@ -583,7 +583,7 @@ export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
 
 export function* fetchSubProjectPermissionsSaga({ projectId, subprojectId, showLoading }) {
   yield execute(function* () {
-    const { data } = yield callApi(api.listProjectIntents, projectId)
+    const { data } = yield callApi(api.listSubProjectPermissions, projectId, subprojectId)
     //const history = yield callApi(api.fetchHistory, projectId);
     //const roles = yield callApi(api.fetchRoles);
     yield put({
