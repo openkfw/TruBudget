@@ -36,7 +36,7 @@ class Api {
     }
   }
 
-  login = (username, password) => axios.post(`/user.authenticate`, { id: username, password })
+  login = (username, password) => axios.post(`/user.authenticate`, { user: { id: username, password } })
 
   listUser = () => axios.get(`/user.list`);
 

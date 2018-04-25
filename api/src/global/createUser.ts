@@ -18,7 +18,7 @@ export const createUser = async (
   jwtSecret: string,
   rootSecret: string
 ): Promise<HttpResponse> => {
-  const input = value("body.user", req.body.user, x => x !== undefined);
+  const input = value("data.user", req.body.data.user, x => x !== undefined);
 
   const newUser: User.UserRecord = {
     id: value("id", input.id, isNonemptyString),
@@ -34,20 +34,22 @@ export const createUser = async (
   await throwIfUnauthorized(
     req.token,
     "global.createUser",
-    GlobalOnChain.getPermissions(multichain)
+    await GlobalOnChain.getPermissions(multichain)
   );
 
-  User.create(multichain, req.token, newUser);
+  await User.create(multichain, req.token, newUser);
   console.log(`Created new user ${newUser.id}.`);
 
   return [
-    500,
+    200,
     {
       apiVersion: "1.0",
       data: {
-        id: newUser.id,
-        displayName: newUser.displayName,
-        organization: newUser.organization
+        user: {
+          id: newUser.id,
+          displayName: newUser.displayName,
+          organization: newUser.organization
+        }
       }
     }
   ];

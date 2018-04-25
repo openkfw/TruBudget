@@ -49,12 +49,13 @@ export default function loginReducer(state = defaultState, action) {
       });
 
     case LOGIN_SUCCESS:
+      const user = action.user
       return state.merge({
-        jwt: action.token,
-        id: action.id,
-        displayName: action.displayName,
-        organization: action.organization,
-        allowedIntents: fromJS(action.allowedIntents),
+        jwt: user.token,
+        id: user.id,
+        displayName: user.displayName,
+        organization: user.organization,
+        allowedIntents: fromJS(user.allowedIntents),
       });
     case ADMIN_LOGIN_SUCCESS:
       return state.merge({

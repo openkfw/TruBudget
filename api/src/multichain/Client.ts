@@ -51,7 +51,7 @@ export class RpcMultichainClient implements MultichainClient {
     const txId: StreamTxId = await this.rpcClient
       .invoke("create", "stream", streamName, isPublic, customFields)
       .catch(err => {
-        console.log(`RPC ERROR: ${JSON.stringify(err)}`);
+        console.log(`RPC: ${JSON.stringify(err)}`);
         if (options.name && err.code === -705) {
           // Stream or asset with this name already exists
           console.log(`Skipping stream creation: stream "${options.name}" already exists.`);

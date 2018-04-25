@@ -17,7 +17,7 @@ const users = [
 
 const createUser = async (axios, user) => {
   await axios.post("/user.create", {
-    ...user
+    user
   });
 };
 

@@ -38,35 +38,41 @@ const isReady = async axios => {
 };
 
 const authenticate = async (axios, userId: string, rootSecret: string) => {
-  const response = await axios.post("/user.authenticate", { id: userId, password: rootSecret });
+  const response = await axios.post("/user.authenticate", {
+    user: { id: userId, password: rootSecret }
+  });
   const body = response.data;
   if (body.apiVersion !== "1.0") throw Error("unexpected API version");
-  return body.data.token;
+  return body.data.user.token;
 };
 
 function timeout(ms) {
   return () => new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const provisionBlockchain = async (port: number, rootSecret: string, multichainClient: MultichainClient) => {
+export const provisionBlockchain = async (
+  port: number,
+  rootSecret: string,
+  multichainClient: MultichainClient
+) => {
   axios.defaults.baseURL = `http://localhost:${port}`;
   axios.defaults.timeout = 5000;
 
-  let connected = false
+  let connected = false;
   while (!connected) {
     try {
-      winston.info('Checking multichain availability...')
-      let info = await multichainClient.getInfo()
-      winston.info(`Connected to ${info.nodeaddress}`)
-      connected = true
+      winston.info("Checking multichain availability...");
+      let info = await multichainClient.getInfo();
+      winston.info(`Connected to ${info.nodeaddress}`);
+      connected = true;
     } catch (err) {
-      winston.error('Error while checking multichain, retrying after pause...')
-      await timeout(5000)
+      winston.error("Error while checking multichain, retrying after pause...");
+      await timeout(5000);
     }
   }
 
   let token = await authenticate(axios, "root", rootSecret);
-  console.log('Authentication as root done')
+  console.log("Authentication as root done");
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
   token = await authenticate(axios, "mstein", "test");

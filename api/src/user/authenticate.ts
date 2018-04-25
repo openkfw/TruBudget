@@ -36,7 +36,7 @@ export const authenticateUser = async (
   jwtSecret: string,
   rootSecret: string
 ): Promise<HttpResponse> => {
-  const input = value("body.user", req.body.user, x => x !== undefined);
+  const input = value("data.user", req.body.data.user, x => x !== undefined);
 
   const id: string = value("id", input.id, isNonemptyString);
   const passwordCleartext: string = value("password", input.password, isNonemptyString);
@@ -45,7 +45,9 @@ export const authenticateUser = async (
     200,
     {
       apiVersion: "1.0",
-      data: await authenticate(multichain, jwtSecret, rootSecret, id, passwordCleartext)
+      data: {
+        user: await authenticate(multichain, jwtSecret, rootSecret, id, passwordCleartext)
+      }
     }
   ];
 };
@@ -91,10 +93,7 @@ const authenticate = async (
     id,
     displayName: storedUser.displayName,
     organization: storedUser.organization,
-    allowedIntents: await getAllowedIntents(
-      token,
-      await GlobalOnChain.getPermissions(this.multichain)
-    ),
+    allowedIntents: await getAllowedIntents(token, await GlobalOnChain.getPermissions(multichain)),
     token: createToken(jwtSecret, id, storedUser.organization)
   };
 };
