@@ -36,10 +36,7 @@ export const create = async (
   const userExists = (await multichain.getValues(usersStreamName, user.id, 1)).length !== 0;
   if (userExists) throw { kind: "UserAlreadyExists", targetUserId: user.id };
 
-  await Promise.all([
-    multichain.setValue(usersStreamName, user.id, user),
-    multichain.setValue(usersStreamName, "log", { issuer: token.userId, action: "user_created" })
-  ]);
+  await multichain.setValue(usersStreamName, ["users", user.id], user);
 };
 
 export const get = async (multichain: MultichainClient, userId: string): Promise<UserRecord> => {
@@ -53,7 +50,7 @@ export const get = async (multichain: MultichainClient, userId: string): Promise
 
 export const getAll = async (multichain: MultichainClient): Promise<UserRecord[]> => {
   const users = (await ignoringStreamNotFound(
-    multichain.getValues(usersStreamName, "*")
+    multichain.getValues(usersStreamName, "users")
   )) as UserRecord[];
   return users;
 };

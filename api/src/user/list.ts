@@ -28,7 +28,7 @@ export const getUserList = async (
     200,
     {
       apiVersion: "1.0",
-      data: await list(multichain, req.token)
+      data: { items: await list(multichain, req.token) }
     }
   ];
 };
