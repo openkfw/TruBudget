@@ -59,9 +59,9 @@ export class SubprojectModel {
 
 const getDefaultPermissions = (userId: String): AllowedUserGroupsByIntent => {
   const defaultIntents: Object = {
-    "subproject.permission.list": [userId],
-    "subproject.permission.grant": [userId],
-    "subproject.permission.revoke": [userId],
+    "subproject.intent.listPermissions": [userId],
+    "subproject.intent.grantPermission": [userId],
+    "subproject.intent.revokePermission": [userId],
     "subproject.viewSummary": [userId],
     "subproject.viewDetails": [userId],
     "subproject.assign": [userId],

@@ -71,9 +71,9 @@ export const createWorkflowitem = async (
 };
 
 const getWorkflowitemDefaultPermissions = (token: AuthToken): AllowedUserGroupsByIntent => ({
-  "workflowitem.permission.list": [token.userId],
-  "workflowitem.permission.grant": [token.userId],
-  "workflowitem.permission.revoke": [token.userId],
+  "workflowitem.intent.listPermissions": [token.userId],
+  "workflowitem.intent.grantPermission": [token.userId],
+  "workflowitem.intent.revokePermission": [token.userId],
   "workflowitem.view": [token.userId],
   "workflowitem.assign": [token.userId],
   "workflowitem.update": [token.userId],
