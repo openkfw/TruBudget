@@ -8,11 +8,9 @@ import { fetchUser } from '../Login/actions';
 
 class SubProjectPermissionsContainer extends Component {
   componentWillReceiveProps(nextProps) {
-    if (!this.props.showSubProjectPermissions && nextProps.showSubProjectPermissions) {
+    if (!this.props.show && nextProps.show) {
       this.props.fetchSubProjectPermissions(this.props.projectId, this.props.subProjectId, true);
       this.props.fetchUser();
-    } else if (!this.props.showWorkflowItemPermissions && nextProps.showWorkflowItemPermissions) {
-      console.log("fetch wf perm")
     }
   }
 
@@ -23,8 +21,7 @@ class SubProjectPermissionsContainer extends Component {
   render() {
     return <PermissionsScreen
       {...this.props}
-      grantPermission={this.grantPermission}
-      show={this.props.showSubProjectPermissions || this.props.showWorkflowItemPermissions} />
+      grantPermission={this.grantPermission} />
   }
 }
 
@@ -32,8 +29,7 @@ const mapStateToProps = (state) => {
   return {
     permissions: state.getIn(['workflow', 'permissions']),
     user: state.getIn(['login', 'user']),
-    showSubProjectPermissions: state.getIn(['workflow', 'showSubProjectPermissions']),
-    showWorkflowItemPermissions: state.getIn(['workflow', 'showWorkflowItemPermissions']),
+    show: state.getIn(['workflow', 'showSubProjectPermissions']),
     id: state.getIn(['workflow', 'id']),
   }
 }

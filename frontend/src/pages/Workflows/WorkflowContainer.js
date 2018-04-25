@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import globalStyles from '../../styles';
 
-import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, createWorkflowItem, editWorkflowItem, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, fetchAllSubprojectDetails, onWorkflowDialogCancel, storeWorkflowStatus, showSubProjectPermissions } from './actions';
+import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, createWorkflowItem, editWorkflowItem, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, fetchAllSubprojectDetails, onWorkflowDialogCancel, storeWorkflowStatus, showSubProjectPermissions, showWorkflowItemPermissions } from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -13,6 +13,7 @@ import SubProjectDetails from './SubProjectDetails'
 import { getPermissions, canViewSubProjectPermissions } from '../../permissions';
 import { toJS } from '../../helper';
 import SubprojectPermissionsContainer from './SubprojectPermissionsContainer';
+import WorkflowItemPermissionsContainer from './WorkflowItemPermissionsContainer';
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -45,6 +46,7 @@ class WorkflowContainer extends Component {
           <SubProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <Workflow {...this.props} createWorkflowItem={this.createWorkflowItem} />
           <SubprojectPermissionsContainer projectId={this.projectId} subProjectId={this.subProjectId} />
+          <WorkflowItemPermissionsContainer projectId={this.projectId} />
         </div>
       </div>
     )
@@ -65,6 +67,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowTxid: (txid) => dispatch(storeWorkflowTxid(txid)),
     createWorkflowItem: (pId, sId, workflowToAdd, documents) => dispatch(createWorkflowItem(pId, sId, workflowToAdd, documents)),
     showSubProjectPermissions: () => dispatch(showSubProjectPermissions()),
+    showWorkflowItemPermissions: (wId) => dispatch(showWorkflowItemPermissions(wId)),
     openHistory: () => dispatch(showHistory(true)),
     hideHistory: () => dispatch(showHistory(false)),
     openWorkflowDetails: (txid) => dispatch(showWorkflowDetails(true, txid)),

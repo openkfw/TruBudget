@@ -52,6 +52,14 @@ export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = 'FETCH_SUBPROJECT_PERMISSION
 export const GRANT_SUBPROJECT_PERMISSION = 'GRANT_SUBPROJECT_PERMISSION';
 export const GRANT_SUBPROJECT_PERMISSION_SUCCESS = 'GRANT_SUBPROJECT_PERMISSION_SUCCESS';
 
+export const SHOW_WORKFLOWITEM_PERMISSIONS = 'SHOW_WORKFLOWITEM_PERMISSIONS';
+export const HIDE_WORKFLOWITEM_PERMISSIONS = 'HIDE_WORKFLOWITEM_PERMISSIONS';
+
+export const FETCH_WORKFLOWITEM_PERMISSIONS = 'FETCH_WORKFLOWITEM_PERMISSIONS';
+export const FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS = 'FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS';
+
+export const GRANT_WORKFLOWITEM_PERMISSION = 'GRANT_WORKFLOWITEM_PERMISSION';
+export const GRANT_WORKFLOWITEM_PERMISSION_SUCCESS = 'GRANT_WORKFLOWITEM_PERMISSION_SUCCESS';
 
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
@@ -109,6 +117,38 @@ export function grantSubProjectPermission(projectId, subprojectId, intent, user,
   }
 }
 
+export function showWorkflowItemPermissions(wId) {
+  return {
+    type: SHOW_WORKFLOWITEM_PERMISSIONS,
+    wId
+  }
+}
+
+export function hideWorkflowItemPermissions() {
+  return {
+    type: HIDE_WORKFLOWITEM_PERMISSIONS,
+  }
+}
+
+export function fetchWorkflowItemPermissions(projectId, workflowitemId, showLoading = false) {
+  return {
+    type: FETCH_WORKFLOWITEM_PERMISSIONS,
+    projectId,
+    workflowitemId,
+    showLoading
+  }
+}
+
+export function grantWorkflowItemPermission(projectId, workflowItemId, intent, user, showLoading = false) {
+  return {
+    type: GRANT_WORKFLOWITEM_PERMISSION,
+    projectId,
+    workflowItemId,
+    intent,
+    user,
+    showLoading
+  }
+}
 
 export function enableSubProjectBudgetEdit(budgetEditEnabled) {
   return {

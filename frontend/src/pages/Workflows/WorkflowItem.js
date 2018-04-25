@@ -15,6 +15,7 @@ import IconButton from 'material-ui/IconButton';
 import { toAmountString, statusMapping, amountTypes } from '../../helper.js';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from '../../colors.js';
 import strings from '../../localizeStrings';
+import { canViewWorkflowItemPermissions } from '../../permissions.js';
 
 
 const styles = {
@@ -243,13 +244,13 @@ const getAmountField = (amount, type) => {
   )
 }
 
-const renderActionButtons = (canEditWorkflow = false, editCB, canListWorkflowPermissions = false, canCloseWorkflow = false) =>
+const renderActionButtons = (canEditWorkflow = false, editCB, canListWorkflowPermissions = false, showPerm, canCloseWorkflow = false) =>
   <TableRowColumn colSpan={3}>
     <div style={styles.actions}>
       <IconButton disabled={!canEditWorkflow} onTouchTap={editCB}>
         <EditIcon />
       </IconButton>
-      <IconButton disabled={!canListWorkflowPermissions}>
+      <IconButton disabled={!canListWorkflowPermissions} onTouchTap={showPerm}>
         <PermissionIcon />
       </IconButton>
       <IconButton disabled={!canCloseWorkflow}>
@@ -259,7 +260,7 @@ const renderActionButtons = (canEditWorkflow = false, editCB, canListWorkflowPer
   </TableRowColumn>
 
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-  const { status, type, displayName, amountType } = workflow;
+  const { id, status, type, displayName, amountType, allowedIntents } = workflow;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const amount = toAmountString(workflow.amount, workflow.currency);
   const tableStyle = workflowSelectable ? styles[status] : {
@@ -289,7 +290,7 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
                 {statusMapping(status)}
               </div>
             </TableRowColumn>
-            {renderActionButtons(true, editWorkflow.bind(this, workflow, props))}
+            {renderActionButtons(true, editWorkflow.bind(this, workflow, props), canViewWorkflowItemPermissions(allowedIntents), () => props.showWorkflowItemPermissions(id))}
           </TableRow>
         </TableBody>
       </Table>
