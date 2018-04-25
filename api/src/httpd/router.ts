@@ -238,8 +238,8 @@ export const createRouter = (
       const projectId = body.data.projectId;
       throwParseErrorIfUndefined(body, ["data", "intent"]);
       const intentToGrant = body.data.intent;
-      throwParseErrorIfUndefined(body, ["data", "user"]);
-      const targetUser = body.data.user;
+      throwParseErrorIfUndefined(body, ["data", "userId"]);
+      const targetUser = body.data.userId;
 
       // Compute the data:
       const isUpdate = await projectModel.grantPermissions(

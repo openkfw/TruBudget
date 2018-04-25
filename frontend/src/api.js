@@ -51,7 +51,7 @@ class Api {
 
   listProjectIntents = (projectId) => axios.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
-  grantProjectPermissions = (projectId, intent, user) => axios.post(`/project.intent.grantPermission`, { projectId, intent, user })
+  grantProjectPermissions = (projectId, intent, userId) => axios.post(`/project.intent.grantPermission`, { projectId, intent, userId })
 
   createSubProject = (projectId, name, amount, description, currency) => axios.post(`/project.createSubproject`, {
     projectId,

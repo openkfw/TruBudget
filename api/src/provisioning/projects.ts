@@ -7,7 +7,7 @@ const futureProject = {
   currency: "BRL"
 };
 
-const grantPermissionsToUser = async (axios, projectId, user) => {
+const grantPermissionsToUser = async (axios, projectId, userId) => {
   return Promise.all(
     [
       "project.viewDetails",
@@ -20,7 +20,7 @@ const grantPermissionsToUser = async (axios, projectId, user) => {
       axios.post("/project.intent.grantPermission", {
         projectId,
         intent,
-        user
+        userId
       })
     )
   );
