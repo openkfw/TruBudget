@@ -1,12 +1,12 @@
 type Intent =
-  | "global.intent.list"
+  | "global.intent.listPermissions"
   | "global.intent.grantPermission"
   | "global.intent.revokePermission"
   | "global.createProject"
   | "global.createUser"
   | "user.authenticate"
   | "user.view"
-  | "project.intent.list"
+  | "project.intent.listPermissions"
   | "project.intent.grantPermission"
   | "project.intent.revokePermission"
   | "project.viewSummary" // IDs + meta data + allowed intents
@@ -16,9 +16,9 @@ type Intent =
   | "project.close"
   | "project.archive"
   | "project.createSubproject"
-  | "subproject.permission.list"
-  | "subproject.permission.grant"
-  | "subproject.permission.revoke"
+  | "subproject.intent.listPermissions"
+  | "subproject.intent.grantPermission"
+  | "subproject.intent.revokePermission"
   | "subproject.viewSummary"
   | "subproject.viewDetails"
   | "subproject.assign"
@@ -26,9 +26,9 @@ type Intent =
   | "subproject.close"
   | "subproject.archive"
   | "subproject.createWorkflowitem"
-  | "workflowitem.permission.list"
-  | "workflowitem.permission.grant"
-  | "workflowitem.permission.revoke"
+  | "workflowitem.intent.listPermissions"
+  | "workflowitem.intent.grantPermission"
+  | "workflowitem.intent.revokePermission"
   | "workflowitem.view"
   | "workflowitem.assign"
   | "workflowitem.update"
@@ -36,7 +36,7 @@ type Intent =
   | "workflowitem.archive";
 
 export const globalIntents: Intent[] = [
-  "global.intent.list",
+  "global.intent.listPermissions",
   "global.intent.grantPermission",
   "global.intent.revokePermission",
   "global.createProject",
@@ -45,5 +45,43 @@ export const globalIntents: Intent[] = [
 ];
 
 export const userDefaultIntents: Intent[] = ["user.authenticate", "user.view"];
+
+export const allIntents: Intent[] = [
+  "global.intent.listPermissions",
+  "global.intent.grantPermission",
+  "global.intent.revokePermission",
+  "global.createProject",
+  "global.createUser",
+  "user.authenticate",
+  "user.view",
+  "project.intent.listPermissions",
+  "project.intent.grantPermission",
+  "project.intent.revokePermission",
+  "project.viewSummary",
+  "project.viewDetails",
+  "project.assign",
+  "project.update",
+  "project.close",
+  "project.archive",
+  "project.createSubproject",
+  "subproject.intent.listPermissions",
+  "subproject.intent.grantPermission",
+  "subproject.intent.revokePermission",
+  "subproject.viewSummary",
+  "subproject.viewDetails",
+  "subproject.assign",
+  "subproject.update",
+  "subproject.close",
+  "subproject.archive",
+  "subproject.createWorkflowitem",
+  "workflowitem.intent.listPermissions",
+  "workflowitem.intent.grantPermission",
+  "workflowitem.intent.revokePermission",
+  "workflowitem.view",
+  "workflowitem.assign",
+  "workflowitem.update",
+  "workflowitem.close",
+  "workflowitem.archive"
+];
 
 export default Intent;

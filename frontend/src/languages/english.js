@@ -219,7 +219,7 @@ const en = {
   permissions: {
     "project.assign": 'Assign project to others',
     "project.intent.grantPermission": 'Grant permissions',
-    "project.intent.list": 'View permissions',
+    "project.intent.listPermissions": 'View permissions',
     "project.intent.revokePermission": 'Revoke permissions',
     "project.viewDetails": 'View project details',
     "project.viewSummary": 'View project in overview',

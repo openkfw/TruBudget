@@ -1,5 +1,5 @@
 import { MultichainClient, Resource, LogEntry } from "../Client.h";
-import { AllowedUserGroupsByIntent } from "../../authz/types";
+import { AllowedUserGroupsByIntent, People } from "../../authz/types";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { getAllowedIntents } from "../../authz/index";
@@ -30,15 +30,72 @@ export const getPermissions = async (
   projectId: string,
   subprojectId: string
 ): Promise<AllowedUserGroupsByIntent> => {
-  const subprojects = (await ignoringStreamNotFound(
-    multichain.getValues(projectId, subprojectId, 1)
-  )) as SubprojectResource[] | null;
-  if (subprojects !== null && subprojects.length > 0) {
+  const subprojects = (await multichain.getValues(
+    projectId,
+    subprojectId,
+    1
+  )) as SubprojectResource[];
+  if (subprojects.length > 0) {
     const subproject = subprojects[0];
     return subproject.permissions;
   } else {
     return {};
   }
+};
+
+export const grantPermission = async (
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+  userId: string,
+  intent: Intent
+): Promise<void> => {
+  const result = (await multichain.getValues(projectId, subprojectId, 1)) as SubprojectResource[];
+  if (result.length !== 1) {
+    throw Error("Cannot grant permissions to an empty resource.");
+  }
+  const resource = result[0];
+
+  const allPermissions = resource.permissions;
+  const permissionsForIntent: People = allPermissions[intent] || [];
+  if (permissionsForIntent.includes(userId)) {
+    // The given user is already permitted to execute the given intent.
+    return;
+  }
+  permissionsForIntent.push(userId);
+  allPermissions[intent] = permissionsForIntent;
+
+  resource.permissions = allPermissions;
+  await multichain.setValue(projectId, subprojectId, resource);
+};
+
+export const revokePermission = async (
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+  userId: string,
+  intent: Intent
+): Promise<void> => {
+  const result = (await multichain.getValues(projectId, subprojectId, 1)) as SubprojectResource[];
+  if (result.length !== 1) {
+    throw Error("Cannot revoke permissions to an empty resource.");
+  }
+  const resource = result[0];
+
+  const allPermissions = resource.permissions;
+  const permissionsForIntent: People = allPermissions[intent] || [];
+  const userIndex = permissionsForIntent.indexOf(userId);
+  if (userIndex === -1) {
+    // The given user has no permissions to execute the given intent.
+    // Note: a user could still belong to a group that has access rights!
+    return;
+  }
+  // Remove the user from the array:
+  permissionsForIntent.splice(userIndex, 1);
+  allPermissions[intent] = permissionsForIntent;
+
+  resource.permissions = allPermissions;
+  await multichain.setValue(projectId, subprojectId, resource);
 };
 
 export const create = async (

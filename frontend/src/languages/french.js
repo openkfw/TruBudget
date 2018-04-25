@@ -183,7 +183,7 @@ const fr = {
   permissions: {
     "project.assign": 'French: Assign project to others',
     "project.intent.grantPermission": 'French: Grant permissions',
-    "project.intent.list": 'French: View permissions',
+    "project.intent.listPermissions": 'French: View permissions',
     "project.intent.revokePermission": 'French: Revoke permissions',
     "project.viewDetails": 'French: View project details',
     "project.viewSummary": 'French: View project in overview',

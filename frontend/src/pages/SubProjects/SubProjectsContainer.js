@@ -23,7 +23,7 @@ class SubProjectsContainer extends Component {
   }
 
   render() {
-    const canViewPermissions = this.props.allowedIntents.indexOf("project.intent.list") > -1;
+    const canViewPermissions = this.props.allowedIntents.indexOf("project.intent.listPermissions") > -1;
     const canCreateSubProject = this.props.allowedIntents.indexOf("project.createSubproject") > -1;
 
     return (

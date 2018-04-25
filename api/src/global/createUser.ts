@@ -1,16 +1,11 @@
 import * as jsonwebtoken from "jsonwebtoken";
 
 import * as User from "../user";
-import { isNonemptyString } from "../lib";
+import { isNonemptyString, value } from "../lib";
 import { HttpResponse, AuthenticatedRequest, throwParseError } from "../httpd/lib";
 import { MultichainClient, GlobalOnChain } from "../multichain";
 import { throwIfUnauthorized } from "../authz/index";
 import { encryptPassword } from "../user/hash";
-
-const value = (name, val, isValid) => {
-  if (!isValid(val)) throwParseError([name]);
-  return val;
-};
 
 export const createUser = async (
   multichain: MultichainClient,
