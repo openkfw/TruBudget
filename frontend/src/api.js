@@ -67,6 +67,9 @@ class Api {
 
   listSubProjectPermissions = (projectId, subprojectId) => axios.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`)
 
+  grantSubProjectPermissions = (projectId, subprojectId, intent, userId) => axios.post(`/subproject.intent.grantPermission`, { projectId, subprojectId, intent, userId })
+
+
 
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })

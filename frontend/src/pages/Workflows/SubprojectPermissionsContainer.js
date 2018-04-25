@@ -4,19 +4,26 @@ import PermissionsScreen from '../Common/Permissions/PermissionsScreen';
 import { fetchSubProjectPermissions, hideSubProjectPermissions, grantSubProjectPermission } from './actions';
 import withInitialLoading from '../Loading/withInitialLoading';
 import { toJS } from '../../helper';
+import { fetchUser } from '../Login/actions';
 
 class SubProjectPermissionsContainer extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.showSubProjectPermissions && nextProps.showSubProjectPermissions) {
       this.props.fetchSubProjectPermissions(this.props.projectId, this.props.subProjectId, true);
+      this.props.fetchUser();
     } else if (!this.props.showWorkflowItemPermissions && nextProps.showWorkflowItemPermissions) {
       console.log("fetch wf perm")
     }
   }
 
+  grantPermission = (_, permission, user) => {
+    this.props.grantPermission(this.props.projectId, this.props.subProjectId, permission, user)
+  }
+
   render() {
     return <PermissionsScreen
       {...this.props}
+      grantPermission={this.grantPermission}
       show={this.props.showSubProjectPermissions || this.props.showWorkflowItemPermissions} />
   }
 }
@@ -36,6 +43,7 @@ const mapDispatchToProps = (dispatch) => {
     onClose: () => dispatch(hideSubProjectPermissions()),
     grantPermission: (pId, sId, permission, user) => dispatch(grantSubProjectPermission(pId, sId, permission, user, true)),
     fetchSubProjectPermissions: (pId, sId, showLoading) => dispatch(fetchSubProjectPermissions(pId, sId, showLoading)),
+    fetchUser: () => dispatch(fetchUser(true))
   }
 }
 
