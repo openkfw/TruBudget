@@ -13,7 +13,7 @@ const grantPermissionsToUser = async (axios, projectId, user) => {
       "project.viewDetails",
       "project.viewSummary",
       "project.assign",
-      "project.intent.list",
+      "project.intent.listPermissions",
       "project.intent.grantPermission",
       "project.intent.revokePermission"
     ].map(intent =>

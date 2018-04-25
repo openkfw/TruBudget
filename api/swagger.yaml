@@ -12,7 +12,7 @@ securityDefinitions:
     in: header
     name: Authorization
 paths:
-  "/global.intent.list":
+  "/global.intent.listPermissions":
     get:
       tags:
         - global
@@ -24,7 +24,7 @@ paths:
           examples:
             apiVersion: "1.0"
             data: {
-                "global.intent.list": [
+                "global.intent.listPermissions": [
                     "mstein",
                 ],
                 "global.intent.grantPermission": [
@@ -327,11 +327,11 @@ paths:
           '403':
             description: Returned when providing invalid credentials.
 
-  "/project.intent.list":
+  "/project.intent.listPermissions":
     get:
       tags:
         - project
-      operationId: "project.intent.list"
+      operationId: "project.intent.listPermissions"
       produces:
         - application/json
       parameters:
@@ -354,7 +354,7 @@ paths:
                 "project.assign": [
                     "mstein",
                 ],
-                "project.intent.list": [
+                "project.intent.listPermissions": [
                     "mstein",
                 ],
                 "project.intent.grantPermission": [

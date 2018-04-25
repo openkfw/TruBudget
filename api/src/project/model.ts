@@ -170,7 +170,7 @@ const getDefaultPermissions = (userId: String): AllowedUserGroupsByIntent => {
     "project.viewSummary": [userId],
     "project.viewDetails": [userId],
     "project.assign": [userId],
-    "project.intent.list": [userId],
+    "project.intent.listPermissions": [userId],
     "project.intent.grantPermission": [userId],
     "project.intent.revokePermission": [userId],
     "project.createSubproject": [userId]

@@ -6,7 +6,7 @@ import { findBadKeysInObject, isNonemptyString } from "../lib";
 import Intent from "../authz/intents";
 
 const globalPermissionsTemplate = {
-  "global.intent.list": ["root"],
+  "global.intent.listPermissions": ["root"],
   "global.intent.grantPermission": ["root"],
   "global.intent.revokePermission": ["root"],
   "global.createProject": ["root"],

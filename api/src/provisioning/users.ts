@@ -38,7 +38,7 @@ export const provisionUsers = async axios => {
 
 const grantDefaultPermission = async (axios, userId) => {
   await grantGlobalPermissionToUser(axios, "user.view", userId);
-  return grantGlobalPermissionToUser(axios, "global.intent.list", userId);
+  return grantGlobalPermissionToUser(axios, "global.intent.listPermissions", userId);
 };
 
 const grantCreateProjectPermission = async (axios, userId) => {
