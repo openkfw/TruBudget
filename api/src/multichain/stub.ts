@@ -21,6 +21,9 @@ const metadata = {
 };
 
 class MultichainClientStub implements MultichainClient {
+  getValue(streamName: string, key: string): Promise<any> {
+    throw new Error("Method not implemented.");
+  }
   getValues(streamName: string, key: string, nValues?: number | undefined): Promise<any[]> {
     throw new Error("Method not implemented.");
   }
@@ -43,16 +46,16 @@ class MultichainClientStub implements MultichainClient {
     // copy pasted from real info...
     // currently used fields: nodeaddress
     return {
-      version: '2.0 alpha 2',
+      version: "2.0 alpha 2",
       nodeversion: 20000102,
       protocolversion: 20002,
-      chainname: 'ACMECorpChain',
-      description: 'MultiChain ACMECorpChain',
-      protocol: 'multichain',
+      chainname: "ACMECorpChain",
+      description: "MultiChain ACMECorpChain",
+      protocol: "multichain",
       port: 7425,
       setupblocks: 60,
-      nodeaddress: 'ACMECorpChain@172.18.0.2:7425',
-      burnaddress: '1XXXXXXX4XXXXXXXrcXXXXXXdLXXXXXXVCW9Q5',
+      nodeaddress: "ACMECorpChain@172.18.0.2:7425",
+      burnaddress: "1XXXXXXX4XXXXXXXrcXXXXXXdLXXXXXXVCW9Q5",
       incomingpaused: false,
       miningpaused: false,
       walletversion: 60000,
@@ -62,15 +65,15 @@ class MultichainClientStub implements MultichainClient {
       blocks: 59,
       timeoffset: 0,
       connections: 0,
-      proxy: '',
+      proxy: "",
       difficulty: 5.960464478e-8,
       testnet: false,
       keypoololdest: 1524488901,
       keypoolsize: 2,
       paytxfee: 0,
       relayfee: 0,
-      errors: ''
-    }
+      errors: ""
+    };
   }
   async streams(): Promise<Stream[]> {
     return [

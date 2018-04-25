@@ -18,6 +18,9 @@ import { authenticateUser } from "../user/authenticate";
 import { getSubprojectPermissions } from "../subproject/intent/listPermissions";
 import { grantSubprojectPermission } from "../subproject/intent/grantPermission";
 import { revokeSubprojectPermission } from "../subproject/intent/revokePermission";
+import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissions";
+import { grantWorkflowitemPermission } from "../workflowitem/intent/grantPermission";
+import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -389,6 +392,24 @@ export const createRouter = (
 
   router.get("/workflowitem.list", (req: AuthenticatedRequest, res) => {
     getWorkflowitemList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.get("/workflowitem.intent.listPermissions", (req: AuthenticatedRequest, res) => {
+    getWorkflowitemPermissions(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/workflowitem.intent.grantPermission", (req: AuthenticatedRequest, res) => {
+    grantWorkflowitemPermission(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/workflowitem.intent.revokePermission", (req: AuthenticatedRequest, res) => {
+    revokeWorkflowitemPermission(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

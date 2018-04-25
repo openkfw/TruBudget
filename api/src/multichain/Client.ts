@@ -138,6 +138,17 @@ export class RpcMultichainClient implements MultichainClient {
     return items.map(x => hexToObject(x.data));
   }
 
+  async getValue(streamName: StreamName, key: string): Promise<any> {
+    const result = await this.getValues(streamName, key, 1);
+    if (result.length !== 1) {
+      throw {
+        kind: "NotFound",
+        what: { message: `Expected a single value, got: ${result}`, streamName, key }
+      };
+    }
+    return result[0];
+  }
+
   async setValue(streamName: StreamName, keys: string | string[], object: any): Promise<void> {
     const data = objectToHex(object);
     return this.rpcClient.invoke("publish", streamName, keys, data);

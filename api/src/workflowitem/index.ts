@@ -1,7 +1,7 @@
 import Intent from "../authz/intents";
 import { MultichainClient, Resource } from "../multichain/Client.h";
 import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import { getAllowedIntents } from "../authz";
 
 const workflowitemsKey = subprojectId => `${subprojectId}_workflows`;
@@ -74,4 +74,65 @@ export const getAllForUser = async (
       };
     })
   );
+};
+
+export const getPermissions = async (
+  multichain: MultichainClient,
+  projectId: string,
+  workflowitemId: string
+): Promise<AllowedUserGroupsByIntent> => {
+  const workflowitem = (await multichain.getValue(
+    projectId,
+    workflowitemId
+  )) as WorkflowitemResource;
+  return workflowitem.permissions;
+};
+
+export const grantPermission = async (
+  multichain: MultichainClient,
+  projectId: string,
+  workflowitemId: string,
+  userId: string,
+  intent: Intent
+): Promise<void> => {
+  const workflowitem = (await multichain.getValue(
+    projectId,
+    workflowitemId
+  )) as WorkflowitemResource;
+  const permissionsForIntent: People = workflowitem.permissions[intent] || [];
+
+  if (permissionsForIntent.includes(userId)) {
+    // The given user is already permitted to execute the given intent.
+    return;
+  }
+  permissionsForIntent.push(userId);
+
+  workflowitem.permissions[intent] = permissionsForIntent;
+  await multichain.setValue(projectId, workflowitemId, workflowitem);
+};
+
+export const revokePermission = async (
+  multichain: MultichainClient,
+  projectId: string,
+  workflowitemId: string,
+  userId: string,
+  intent: Intent
+): Promise<void> => {
+  const workflowitem = (await multichain.getValue(
+    projectId,
+    workflowitemId
+  )) as WorkflowitemResource;
+  const permissionsForIntent: People = workflowitem.permissions[intent] || [];
+
+  const userIndex = permissionsForIntent.indexOf(userId);
+  if (userIndex === -1) {
+    // The given user has no permissions to execute the given intent.
+    // Note: a user could still belong to a group that has access rights!
+    return;
+  }
+  // Remove the user from the array:
+  permissionsForIntent.splice(userIndex, 1);
+
+  workflowitem.permissions[intent] = permissionsForIntent;
+  await multichain.setValue(projectId, workflowitemId, workflowitem);
 };

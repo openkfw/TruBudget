@@ -94,6 +94,9 @@ export interface MultichainClient {
   // Return (all) values for a specific key:
   getValues(streamName: StreamName, key: string, nValues?: number): Promise<any[]>;
 
+  // Return a single value for a specific key or throw if not found:
+  getValue(streamName: StreamName, key: string): Promise<any>;
+
   // Update a stream item, serializing the Js object as hex-string:
   setValue(streamName: StreamName, keys: string | string[], object: any): Promise<void>;
 }
