@@ -47,7 +47,9 @@ export const create = async (
 ): Promise<void> => {
   const resource: WorkflowitemResource = {
     data: data,
-    log: [{ issuer: token.userId, action: "workflowitem_created" }],
+    log: [
+      { creationUnixTs: data.creationUnixTs, issuer: token.userId, action: "workflowitem_created" }
+    ],
     permissions
   };
   return multichain.setValue(projectId, workflowitemKey(subprojectId, data.id), resource);

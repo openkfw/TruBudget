@@ -94,17 +94,18 @@ export const create = async (
   }
 ): Promise<void> => {
   const subprojectId = data.id;
+  const creationUnixTs = Date.now().toString();
   const resource: SubprojectResource = {
     data: {
       id: subprojectId,
-      creationUnixTs: Date.now().toString(),
+      creationUnixTs,
       status: "open",
       displayName: data.displayName,
       description: data.description,
       amount: data.amount,
       currency: data.currency
     },
-    log: [{ issuer: token.userId, action: "subproject_created" }],
+    log: [{ creationUnixTs, issuer: token.userId, action: "subproject_created" }],
     permissions
   };
   return multichain.setValue(projectId, [SUBPROJECTS_KEY, subprojectId], resource);

@@ -3,7 +3,6 @@ import {
   CreateStreamOptions,
   StreamTxId,
   Stream,
-  StreamBody,
   StreamName,
   StreamItem,
   TxId,
@@ -63,21 +62,6 @@ export class RpcMultichainClient implements MultichainClient {
         throw err;
       });
 
-    if (options.initialLogEntry) {
-      await this.updateStreamItem(txId, "_log", options.initialLogEntry);
-    }
-    if (options.metadata) {
-      await this.updateStreamItem(txId, "_metadata", options.metadata);
-    }
-    if (options.permissions) {
-      await this.updateStreamItem(txId, "permissions", options.permissions);
-    }
-
-    await Promise.all(
-      (options.extraLogEntries || []).map(entry =>
-        this.updateStreamItem(entry.streamName, "_log", entry.entry)
-      )
-    );
     return txId;
   }
 

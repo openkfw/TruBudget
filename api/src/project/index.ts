@@ -101,10 +101,11 @@ export const create = async (
   }
 ): Promise<void> => {
   const projectId = data.id;
+  const creationUnixTs = Date.now().toString();
   const resource: ProjectResource = {
     data: {
       id: projectId,
-      creationUnixTs: Date.now().toString(),
+      creationUnixTs,
       status: "open",
       displayName: data.displayName,
       description: data.description,
@@ -112,7 +113,7 @@ export const create = async (
       currency: data.currency,
       thumbnail: data.thumbnail
     },
-    log: [{ issuer: token.userId, action: "project_created" }],
+    log: [{ creationUnixTs, issuer: token.userId, action: "project_created" }],
     permissions
   };
   await ensureStreamExists(multichain, projectId);

@@ -7,11 +7,4 @@ export { Project as ProjectOnChain };
 import * as Subproject from "./resources/subproject";
 export { Subproject as SubprojectOnChain };
 
-export {
-  MultichainClient,
-  RpcMultichainClient,
-  Stream,
-  StreamBody,
-  StreamItem,
-  StreamTxId
-} from "./Client.h";
+export { MultichainClient, RpcMultichainClient, Stream, StreamItem, StreamTxId } from "./Client.h";

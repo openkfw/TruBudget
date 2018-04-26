@@ -1,6 +1,5 @@
 import {
   Stream,
-  StreamBody,
   MultichainClient,
   CreateStreamOptions,
   StreamName,
