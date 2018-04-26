@@ -7,7 +7,7 @@ import { List, ListItem } from 'material-ui/List';
 import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
-import InfoIcon from 'material-ui/svg-icons/content/create';
+import InfoIcon from 'material-ui/svg-icons/action/search';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import _ from 'lodash';
 import { ACMECorpDarkBlue } from '../../colors';

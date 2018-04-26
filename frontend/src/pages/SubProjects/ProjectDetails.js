@@ -18,6 +18,7 @@ import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import OpenIcon from 'material-ui/svg-icons/content/remove';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
+import PermissionIcon from 'material-ui/svg-icons/action/lock-open';
 import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import IconButton from 'material-ui/IconButton';
 import CompletionIcon from 'material-ui/svg-icons/action/trending-up'
@@ -170,6 +171,7 @@ const ProjectDetails = ({
               secondary={true}
               disabled={!canViewPermissions}
               onClick={showProjectPermissions}
+              icon={<PermissionIcon style={styles.icon} />}
             />}
           />
         </List>

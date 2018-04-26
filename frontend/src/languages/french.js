@@ -201,6 +201,14 @@ const fr = {
     "subproject.update": 'French: Update subproject',
     "subproject.viewDetails": 'French: View subproject details',
     "subproject.viewSummary": 'French: View subproject overview',
+    "workflowitem.intent.listPermissions": 'French: Show workflowitem permissions',
+    "workflowitem.intent.grantPermission": 'French: Grant workflowitem permission',
+    "workflowitem.intent.revokePermission": 'French: Revoke workflowitem permission',
+    "workflowitem.view": 'French: View workflowitem',
+    "workflowitem.assign": 'French: Assign workflowitem',
+    "workflowitem.update": 'French: Update workflowitem',
+    "workflowitem.close": 'French: Close workflowitem',
+    "workflowitem.archive": 'French: Archive workflowitem'
   },
   language: {
     german: 'Deutsch',

@@ -78,10 +78,10 @@ class WorkflowCreationAmount extends Component {
             <TextInput
               floatingLabelText={floatingLabelText}
               hintText={hintText}
-              type='number'
+              type='text'
               value={workflowAmount}
               disabled={workflowAmountType === 'N/A'}
-              onChange={storeWorkflowAmount}
+              onBlur={storeWorkflowAmount}
             />
           </div>
           <div style={{ marginLeft: '30px' }}>

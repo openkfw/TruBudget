@@ -5,7 +5,7 @@ import { Card } from 'material-ui/Card';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
 import Paper from 'material-ui/Paper';
 import Chip from 'material-ui/Chip';
-import OpenIcon from 'material-ui/svg-icons/navigation/close';
+import OpenIcon from 'material-ui/svg-icons/content/remove';
 import InprogressIcon from 'material-ui/svg-icons/navigation/subdirectory-arrow-right';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
