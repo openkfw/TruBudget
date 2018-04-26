@@ -1,28 +1,31 @@
 import { AuthenticatedRequest, HttpResponse, throwParseError } from "../httpd/lib";
-import { isNonemptyString } from "../lib";
+import { isNonemptyString, value } from "../lib";
 import { MultichainClient, SubprojectOnChain } from "../multichain";
 import * as Workflowitem from "../workflowitem";
 import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
-
-const value = (name, val, isValid) => {
-  if (isValid !== undefined && !isValid(val)) {
-    throwParseError([name]);
-  }
-  return val;
-};
+import { throwIfUnauthorized } from "../authz";
 
 export const getSubprojectDetails = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest
 ): Promise<HttpResponse> => {
-  const projectId = value("projectId", req.query.projectId, isNonemptyString);
-  const subprojectId = value("subprojectId", req.query.subprojectId, isNonemptyString);
+  const input = req.query;
+
+  const projectId: string = value("projectId", input.projectId, isNonemptyString);
+  const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
   const resource: SubprojectDataWithIntents = await SubprojectOnChain.getForUser(
     multichain,
     req.token,
     projectId,
     subprojectId
+  );
+
+  // Is the user allowed to view subproject details?
+  await throwIfUnauthorized(
+    req.token,
+    "subproject.viewDetails",
+    await SubprojectOnChain.getPermissions(multichain, projectId, subprojectId)
   );
 
   const workflowitems: Workflowitem.DataWithIntents[] = await Workflowitem.getAllForUser(

@@ -63,6 +63,13 @@ export interface Resource {
   data: any;
 }
 
+export type StreamKey = string[];
+
+export interface StreamItemPair {
+  key: StreamKey;
+  resource: Resource;
+}
+
 export interface MultichainClient {
   // Create a new stream. If name is set and the stream exists, nothing happens.
   getOrCreateStream(options: CreateStreamOptions);
@@ -91,12 +98,15 @@ export interface MultichainClient {
     object: any
   ): Promise<TxId>;
 
-  // Return (all) values for a specific key:
-  getValues(streamName: StreamName, key: string, nValues?: number): Promise<any[]>;
+  // Return all (historic) values of the nValues latest stream items, filtered by a given key:
+  getValues(streamName: StreamName, key: string, nValues?: number): Promise<StreamItemPair[]>;
+
+  // Return only the latest values of the nValues latest stream items, filtered by a given key:
+  getLatestValues(streamName: StreamName, key: string, nValues?: number): Promise<StreamItemPair[]>;
 
   // Return a single value for a specific key or throw if not found:
-  getValue(streamName: StreamName, key: string): Promise<any>;
+  getValue(streamName: StreamName, key: string): Promise<StreamItemPair>;
 
   // Update a stream item, serializing the Js object as hex-string:
-  setValue(streamName: StreamName, keys: string | string[], object: any): Promise<void>;
+  setValue(streamName: StreamName, streamKey: StreamKey, object: any): Promise<void>;
 }

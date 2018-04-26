@@ -5,6 +5,8 @@ import { provisionProjects } from "./projects";
 import { sleep } from "./lib";
 import * as winston from "winston";
 import { MultichainClient } from "../multichain";
+import { provisionSubprojects } from "./subprojects";
+import { provisionWorkflowitems } from "./workflowitems";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -77,5 +79,7 @@ export const provisionBlockchain = async (
   await provisionUsers(axios);
   token = await authenticate(axios, "mstein", "test");
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-  await provisionProjects(axios);
+  const projectId = await provisionProjects(axios);
+  const subprojectId = await provisionSubprojects(axios, projectId);
+  await provisionWorkflowitems(axios, projectId, subprojectId);
 };

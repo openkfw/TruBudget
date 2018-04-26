@@ -4,7 +4,12 @@ import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import { getAllowedIntents } from "../authz";
 
-const workflowitemsKey = subprojectId => `${subprojectId}_workflows`;
+const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
+
+const workflowitemKey = (subprojectId, workflowitemId) => [
+  workflowitemsGroupKey(subprojectId),
+  workflowitemId
+];
 
 interface WorkflowitemResource extends Resource {
   data: Data;
@@ -44,7 +49,7 @@ export const create = async (
     log: [{ issuer: token.userId, action: "workflowitem_created" }],
     permissions
   };
-  return multichain.setValue(projectId, [workflowitemsKey(subprojectId), data.id], resource);
+  return multichain.setValue(projectId, workflowitemKey(subprojectId, data.id), resource);
 };
 
 const getAll = async (
@@ -52,11 +57,11 @@ const getAll = async (
   projectId: string,
   subprojectId: string
 ): Promise<WorkflowitemResource[]> => {
-  const workflowitems = (await multichain.getValues(
+  const streamItems = await multichain.getLatestValues(
     projectId,
-    workflowitemsKey(subprojectId)
-  )) as WorkflowitemResource[];
-  return workflowitems;
+    workflowitemsGroupKey(subprojectId)
+  );
+  return streamItems.map(x => x.resource);
 };
 
 export const getAllForUser = async (
@@ -76,16 +81,31 @@ export const getAllForUser = async (
   );
 };
 
+export const close = async (
+  multichain: MultichainClient,
+  projectId: string,
+  workflowitemId: string
+): Promise<void> => {
+  const streamItem = await multichain.getValue(projectId, workflowitemId);
+
+  if (streamItem.resource.data.status === "closed") {
+    // Already closed, no need to update.
+    return;
+  }
+
+  // Update the item's status:
+  streamItem.resource.data.status = "closed";
+
+  await multichain.setValue(projectId, streamItem.key, streamItem.resource);
+};
+
 export const getPermissions = async (
   multichain: MultichainClient,
   projectId: string,
   workflowitemId: string
 ): Promise<AllowedUserGroupsByIntent> => {
-  const workflowitem = (await multichain.getValue(
-    projectId,
-    workflowitemId
-  )) as WorkflowitemResource;
-  return workflowitem.permissions;
+  const streamItem = await multichain.getValue(projectId, workflowitemId);
+  return streamItem.resource.permissions;
 };
 
 export const grantPermission = async (
@@ -95,10 +115,8 @@ export const grantPermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const workflowitem = (await multichain.getValue(
-    projectId,
-    workflowitemId
-  )) as WorkflowitemResource;
+  const streamItem = await multichain.getValue(projectId, workflowitemId);
+  const workflowitem = streamItem.resource;
   const permissionsForIntent: People = workflowitem.permissions[intent] || [];
 
   if (permissionsForIntent.includes(userId)) {
@@ -108,7 +126,7 @@ export const grantPermission = async (
   permissionsForIntent.push(userId);
 
   workflowitem.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, workflowitemId, workflowitem);
+  await multichain.setValue(projectId, streamItem.key, workflowitem);
 };
 
 export const revokePermission = async (
@@ -118,10 +136,8 @@ export const revokePermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const workflowitem = (await multichain.getValue(
-    projectId,
-    workflowitemId
-  )) as WorkflowitemResource;
+  const streamItem = await multichain.getValue(projectId, workflowitemId);
+  const workflowitem = streamItem.resource;
   const permissionsForIntent: People = workflowitem.permissions[intent] || [];
 
   const userIndex = permissionsForIntent.indexOf(userId);
@@ -134,5 +150,5 @@ export const revokePermission = async (
   permissionsForIntent.splice(userIndex, 1);
 
   workflowitem.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, workflowitemId, workflowitem);
+  await multichain.setValue(projectId, streamItem.key, workflowitem);
 };

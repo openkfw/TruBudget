@@ -2,8 +2,13 @@ import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import { ignoringStreamNotFound } from "../multichain/lib";
 import { MultichainClient } from "../multichain";
+import { Resource } from "../multichain/Client.h";
 
 const usersStreamName = "users";
+
+export interface UserResource extends Resource {
+  data: UserRecord;
+}
 
 export interface UserRecord {
   id: string;
@@ -36,21 +41,21 @@ export const create = async (
   const userExists = (await multichain.getValues(usersStreamName, user.id, 1)).length !== 0;
   if (userExists) throw { kind: "UserAlreadyExists", targetUserId: user.id };
 
-  await multichain.setValue(usersStreamName, ["users", user.id], user);
+  const resource = {
+    data: user,
+    log: [{ issuer: token.userId, action: "user_created" }],
+    permissions: {}
+  };
+
+  await multichain.setValue(usersStreamName, ["users", user.id], resource);
 };
 
 export const get = async (multichain: MultichainClient, userId: string): Promise<UserRecord> => {
-  const result = await ignoringStreamNotFound(multichain.getValues(usersStreamName, userId, 1));
-  if (result.length === 0) {
-    throw { kind: "NotFound", what: `User with ID ${userId}` };
-  } else {
-    return result[0];
-  }
+  const streamItem = await multichain.getValue(usersStreamName, userId);
+  return streamItem.resource.data;
 };
 
 export const getAll = async (multichain: MultichainClient): Promise<UserRecord[]> => {
-  const users = (await ignoringStreamNotFound(
-    multichain.getValues(usersStreamName, "users")
-  )) as UserRecord[];
-  return users;
+  const streamItems = await multichain.getLatestValues(usersStreamName, "users");
+  return streamItems.map(item => item.resource.data);
 };

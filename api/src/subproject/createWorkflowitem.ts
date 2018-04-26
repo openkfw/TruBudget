@@ -6,19 +6,13 @@ import {
   throwParseError,
   throwParseErrorIfUndefined
 } from "../httpd/lib";
-import { isNonemptyString } from "../lib";
+import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import * as Workflowitem from "../workflowitem";
 import { randomString } from "../multichain/hash";
 import { throwIfUnauthorized } from "../authz/index";
 import { SubprojectOnChain } from "../multichain";
-
-const value = (name, val, isValid) => {
-  if (isValid !== undefined && !isValid(val)) {
-    throwParseError([name]);
-  }
-  return val;
-};
+import Intent from "../authz/intents";
 
 export const createWorkflowitem = async (
   multichain: MultichainClient,
@@ -33,7 +27,7 @@ export const createWorkflowitem = async (
   const projectId = value("projectId", data.projectId, isNonemptyString);
   const subprojectId = value("subprojectId", data.subprojectId, isNonemptyString);
 
-  // Is the user allowed to create workflow items?
+  // Is the user allowed to create workflowitems?
   await throwIfUnauthorized(
     req.token,
     "subproject.createWorkflowitem",
@@ -54,7 +48,7 @@ export const createWorkflowitem = async (
         ["N/A", "disbursed", "allocated"].includes(x)
       ),
       description: value("description", data.description, x => typeof x === "string"),
-      status: value("status", data.status, x => ["open", "closed"].includes(x)),
+      status: "open",
       documents: data.documents, // not checked right now
       previousWorkflowitemId: data.previousWorkflowitemId // optional
     },
@@ -70,13 +64,16 @@ export const createWorkflowitem = async (
   ];
 };
 
-const getWorkflowitemDefaultPermissions = (token: AuthToken): AllowedUserGroupsByIntent => ({
-  "workflowitem.intent.listPermissions": [token.userId],
-  "workflowitem.intent.grantPermission": [token.userId],
-  "workflowitem.intent.revokePermission": [token.userId],
-  "workflowitem.view": [token.userId],
-  "workflowitem.assign": [token.userId],
-  "workflowitem.update": [token.userId],
-  "workflowitem.close": [token.userId],
-  "workflowitem.archive": [token.userId]
-});
+const getWorkflowitemDefaultPermissions = (token: AuthToken): AllowedUserGroupsByIntent => {
+  const intents: Intent[] = [
+    "workflowitem.intent.listPermissions",
+    "workflowitem.intent.grantPermission",
+    "workflowitem.intent.revokePermission",
+    "workflowitem.view",
+    "workflowitem.assign",
+    "workflowitem.update",
+    "workflowitem.close",
+    "workflowitem.archive"
+  ];
+  return intents.reduce((obj, intent) => ({ ...obj, [intent]: [token.userId] }), {});
+};

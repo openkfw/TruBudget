@@ -42,9 +42,15 @@ class Api {
 
   listProjects = () => axios.get(`/project.list`);
 
-  createProject = (displayName, amount,
-    description, currency, thumbnail) => axios.post(`/project.create`, {
-      displayName, amount: `${amount}`, description, currency, thumbnail
+  createProject = (displayName, amount, description, currency, thumbnail) =>
+    axios.post(`/global.createProject`, {
+      project: {
+        displayName,
+        amount: `${amount}`,
+        description,
+        currency,
+        thumbnail
+      }
     });
 
   viewProjectDetails = (projectId) => axios.get(`/project.viewDetails?projectId=${projectId}`);
@@ -55,10 +61,12 @@ class Api {
 
   createSubProject = (projectId, name, amount, description, currency) => axios.post(`/project.createSubproject`, {
     projectId,
-    displayName: name,
-    amount,
-    description,
-    currency
+    subproject: {
+      displayName: name,
+      amount,
+      description,
+      currency
+    }
   })
 
   viewSubProjectDetails = (projectId, subprojectId) => axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`)

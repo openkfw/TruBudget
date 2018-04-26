@@ -59,7 +59,7 @@ const replacePermissionsWithAllowedIntents = async (
   return {
     ...(project as any),
     allowedIntents: await getAllowedIntents(token, permissions || {}),
-    subprojects: await SubprojectOnChain.getAllForUser(multichain, project.id, token)
+    subprojects: await SubprojectOnChain.getAllForUser(multichain, token, project.id)
   };
 };
 
@@ -108,7 +108,7 @@ export class ProjectModel {
     const response = await replacePermissionsWithAllowedIntents(token, project, this.multichain);
     return {
       ...response,
-      subprojects: await SubprojectOnChain.getAllForUser(this.multichain, projectId, token)
+      subprojects: await SubprojectOnChain.getAllForUser(this.multichain, token, projectId)
     };
   }
 

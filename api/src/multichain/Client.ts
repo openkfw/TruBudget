@@ -6,13 +6,16 @@ import {
   StreamBody,
   StreamName,
   StreamItem,
-  TxId
+  TxId,
+  StreamItemPair,
+  Resource
 } from "./Client.h";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 import * as Liststreamitems from "./responses/liststreamitems";
 import { RpcClient, ConnectionSettings } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { objectToHex, hexToObject } from "./hexconverter";
+import { StreamKey } from "./Client.h";
 
 // Oddly enough, there is no way to tell Multichain to return _everything_..
 const maxItemCount: number = 0x7fffffff;
@@ -127,18 +130,49 @@ export class RpcMultichainClient implements MultichainClient {
     streamName: StreamName,
     key: string,
     nValues: number = maxItemCount
-  ): Promise<any[]> {
-    const items: Liststreamkeyitems.Item[] = await this.rpcClient.invoke(
-      "liststreamkeyitems",
-      streamName,
-      key,
-      false,
-      nValues
-    );
-    return items.map(x => hexToObject(x.data));
+  ): Promise<StreamItemPair[]> {
+    const items: Liststreamkeyitems.Item[] = await this.rpcClient
+      .invoke("liststreamkeyitems", streamName, key, false, nValues)
+      .catch(err => {
+        if (err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
+        else throw err;
+      });
+    return items.map(x => ({
+      key: x.keys,
+      resource: hexToObject(x.data) as Resource
+    }));
   }
 
-  async getValue(streamName: StreamName, key: string): Promise<any> {
+  async getLatestValues(
+    streamName: StreamName,
+    key: string,
+    nValues: number = maxItemCount
+  ): Promise<StreamItemPair[]> {
+    const allItemsAllValues: Liststreamkeyitems.Item[] = await this.rpcClient
+      .invoke("liststreamkeyitems", streamName, key, false, nValues)
+      .catch(err => {
+        if (err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
+        else throw err;
+      });
+    const allItemsLatestValues = Array.from(
+      allItemsAllValues
+        .reverse()
+        .reduce((result: Map<String, Liststreamkeyitems.Item>, item: Liststreamkeyitems.Item) => {
+          const mapKey = item.keys.join("_");
+          if (!result.has(mapKey)) {
+            result.set(mapKey, item);
+          }
+          return result;
+        }, new Map())
+        .values()
+    ).map(x => ({
+      key: x.keys,
+      resource: hexToObject(x.data) as Resource
+    }));
+    return allItemsLatestValues;
+  }
+
+  async getValue(streamName: StreamName, key: string): Promise<StreamItemPair> {
     const result = await this.getValues(streamName, key, 1);
     if (result.length !== 1) {
       throw {
@@ -149,8 +183,8 @@ export class RpcMultichainClient implements MultichainClient {
     return result[0];
   }
 
-  async setValue(streamName: StreamName, keys: string | string[], object: any): Promise<void> {
+  async setValue(streamName: StreamName, streamkey: StreamKey, object: any): Promise<void> {
     const data = objectToHex(object);
-    return this.rpcClient.invoke("publish", streamName, keys, data);
+    return this.rpcClient.invoke("publish", streamName, streamkey, data);
   }
 }

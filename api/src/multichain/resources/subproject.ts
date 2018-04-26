@@ -14,11 +14,12 @@ export interface SubprojectResource extends Resource {
 
 export interface SubprojectData {
   id: string;
-  displayName: string;
+  creationUnixTs: string;
   status: string;
+  displayName: string;
+  description: string;
   amount: string;
   currency: string;
-  description: string;
 }
 
 export interface SubprojectDataWithIntents extends SubprojectData {
@@ -30,8 +31,8 @@ export const getPermissions = async (
   projectId: string,
   subprojectId: string
 ): Promise<AllowedUserGroupsByIntent> => {
-  const subproject = (await multichain.getValue(projectId, subprojectId)) as SubprojectResource;
-  return subproject.permissions;
+  const streamItem = await multichain.getValue(projectId, subprojectId);
+  return streamItem.resource.permissions;
 };
 
 export const grantPermission = async (
@@ -41,7 +42,8 @@ export const grantPermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const subproject = (await multichain.getValue(projectId, subprojectId)) as SubprojectResource;
+  const streamItem = await multichain.getValue(projectId, subprojectId);
+  const subproject = streamItem.resource;
   const permissionsForIntent: People = subproject.permissions[intent] || [];
 
   if (permissionsForIntent.includes(userId)) {
@@ -51,7 +53,7 @@ export const grantPermission = async (
   permissionsForIntent.push(userId);
 
   subproject.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, subprojectId, subproject);
+  await multichain.setValue(projectId, streamItem.key, subproject);
 };
 
 export const revokePermission = async (
@@ -61,7 +63,8 @@ export const revokePermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const subproject = (await multichain.getValue(projectId, subprojectId)) as SubprojectResource;
+  const streamItem = await multichain.getValue(projectId, subprojectId);
+  const subproject = streamItem.resource;
   const permissionsForIntent: People = subproject.permissions[intent] || [];
 
   const userIndex = permissionsForIntent.indexOf(userId);
@@ -74,32 +77,34 @@ export const revokePermission = async (
   permissionsForIntent.splice(userIndex, 1);
 
   subproject.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, subprojectId, subproject);
+  await multichain.setValue(projectId, streamItem.key, subproject);
 };
 
 export const create = async (
   multichain: MultichainClient,
+  token: AuthToken,
   projectId: string,
-  subprojectId: string,
   permissions: AllowedUserGroupsByIntent,
-  logEntry: LogEntry,
   data: {
+    id: string;
     displayName: string;
     amount: string;
     currency: string;
     description: string;
   }
 ): Promise<void> => {
+  const subprojectId = data.id;
   const resource: SubprojectResource = {
     data: {
       id: subprojectId,
-      displayName: data.displayName,
+      creationUnixTs: Date.now().toString(),
       status: "open",
+      displayName: data.displayName,
+      description: data.description,
       amount: data.amount,
-      currency: data.currency,
-      description: data.description
+      currency: data.currency
     },
-    log: [logEntry],
+    log: [{ issuer: token.userId, action: "subproject_created" }],
     permissions
   };
   return multichain.setValue(projectId, [SUBPROJECTS_KEY, subprojectId], resource);
@@ -111,11 +116,8 @@ export const getForUser = async (
   projectId: string,
   subprojectId: string
 ): Promise<SubprojectDataWithIntents> => {
-  const result = await multichain.getValues(projectId, subprojectId, 1);
-  if (!result || result.length !== 1) {
-    throw { kind: "NotFound", what: { projectId, subprojectId } };
-  }
-  const resource = result[0] as SubprojectResource;
+  const streamItem = await multichain.getValue(projectId, subprojectId);
+  const resource = streamItem.resource;
   return {
     ...resource.data,
     allowedIntents: await getAllowedIntents(token, resource.permissions)
@@ -126,17 +128,14 @@ export const getAll = async (
   multichain: MultichainClient,
   projectId: string
 ): Promise<SubprojectResource[]> => {
-  const subprojects = (await multichain.getValues(
-    projectId,
-    SUBPROJECTS_KEY
-  )) as SubprojectResource[];
-  return subprojects;
+  const streamItems = await multichain.getLatestValues(projectId, SUBPROJECTS_KEY);
+  return streamItems.map(item => item.resource);
 };
 
 export const getAllForUser = async (
   multichain: MultichainClient,
-  projectId: string,
-  token: AuthToken
+  token: AuthToken,
+  projectId: string
 ): Promise<SubprojectDataWithIntents[]> => {
   const resources = await getAll(multichain, projectId);
   return Promise.all(

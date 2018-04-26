@@ -2,14 +2,12 @@ import { MultichainClient, Resource, LogEntry } from "../Client.h";
 import { AllowedUserGroupsByIntent } from "../../authz/types";
 import { ignoringStreamNotFound } from "../lib";
 
-const permissionsKey = "permissions";
-
 const ensureStreamExists = async (
   multichain: MultichainClient,
   projectId: string
 ): Promise<void> => {
   await multichain.getOrCreateStream({
-    kind: "global",
+    kind: "project",
     name: projectId
   });
 };
@@ -18,14 +16,8 @@ export const getPermissions = async (
   multichain: MultichainClient,
   projectId: string
 ): Promise<AllowedUserGroupsByIntent> => {
-  const permissions = (await ignoringStreamNotFound(
-    multichain.getValues(projectId, permissionsKey, 1)
-  )) as AllowedUserGroupsByIntent[] | null;
-  if (permissions !== null && permissions.length > 0) {
-    return permissions[0];
-  } else {
-    return {};
-  }
+  const streamItem = await multichain.getValue(projectId, "self");
+  return streamItem.resource.permissions;
 };
 
 export const replacePermissions = async (
@@ -34,5 +26,19 @@ export const replacePermissions = async (
   permissionsByIntent: AllowedUserGroupsByIntent
 ): Promise<void> => {
   await ensureStreamExists(multichain, projectId);
-  return multichain.setValue(projectId, permissionsKey, permissionsByIntent);
+
+  let self: Resource = await multichain
+    .getValue(projectId, "self")
+    .then(x => x.resource)
+    .catch(err => {
+      if (err.kind === "NotFound") {
+        return { data: {}, log: [], permissions: {} };
+      } else {
+        throw err;
+      }
+    });
+
+  self.permissions = permissionsByIntent;
+
+  return multichain.setValue(projectId, ["self"], self);
 };

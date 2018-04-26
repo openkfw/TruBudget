@@ -19,7 +19,7 @@ export const getSubprojectList = async (
     200,
     {
       apiVersion: "1.0",
-      data: await list(multichain, req.token, projectId)
+      data: { items: await list(multichain, req.token, projectId) }
     }
   ];
 };
@@ -31,8 +31,8 @@ const list = async (
 ): Promise<SubprojectDataWithIntents[]> => {
   const subprojects: SubprojectDataWithIntents[] = await SubprojectOnChain.getAllForUser(
     multichain,
-    projectId,
-    token
+    token,
+    projectId
   );
 
   const clearedSubprojects = subprojects.filter(subproject =>

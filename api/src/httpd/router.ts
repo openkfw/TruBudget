@@ -1,8 +1,6 @@
 import * as express from "express";
 
 import { authorized } from "../authz";
-import ProjectModel from "../project";
-import SubprojectModel from "../subproject";
 import { MultichainClient } from "../multichain";
 import { GlobalModel } from "../global/model";
 import Intent from "../authz/intents";
@@ -21,6 +19,14 @@ import { revokeSubprojectPermission } from "../subproject/intent/revokePermissio
 import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissions";
 import { grantWorkflowitemPermission } from "../workflowitem/intent/grantPermission";
 import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
+import { closeWorkflowitem } from "../workflowitem/close";
+import { createProject } from "../global/createProject";
+import { getProjectList } from "../project/list";
+import { getProjectDetails } from "../project/viewDetails";
+import { createSubproject } from "../project/createSubproject";
+import { getProjectPermissions } from "../project/intent/listPermissions";
+import { grantProjectPermission } from "../project/intent/grantPermission";
+import { revokeProjectPermission } from "../project/intent/revokePermission";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -125,13 +131,15 @@ export const createRouter = (
   jwtSecret: string,
   rootSecret: string
 ) => {
-  const projectModel = new ProjectModel(multichainClient);
-  const subprojectModel = new SubprojectModel(multichainClient);
   const globalModel = new GlobalModel(multichainClient);
 
   const router = express.Router();
 
   router.get("/health", (req, res) => res.status(200).send("OK"));
+
+  // ------------------------------------------------------------
+  //       global
+  // ------------------------------------------------------------
 
   router.get("/global.intent.listPermissions", async (req: AuthenticatedRequest, res) => {
     const intent = "global.intent.listPermissions";
@@ -173,11 +181,21 @@ export const createRouter = (
     }
   });
 
-  router.post("/user.create", (req: AuthenticatedRequest, res) => {
+  router.post("/global.createUser", (req: AuthenticatedRequest, res) => {
     createUser(multichainClient, req, jwtSecret, rootSecret)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
+
+  router.post("/global.createProject", (req: AuthenticatedRequest, res) => {
+    createProject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  // ------------------------------------------------------------
+  //       user
+  // ------------------------------------------------------------
 
   router.get("/user.list", (req: AuthenticatedRequest, res) => {
     getUserList(multichainClient, req)
@@ -191,159 +209,44 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
-  router.get("/project.list", async (req: AuthenticatedRequest, res) => {
-    // Returns all projects the user is allowed to see
-    const intent = "project.viewSummary";
-    try {
-      const projects = await projectModel.list(req.token, authorized(req.token, intent));
-      send(res, [
-        200,
-        {
-          apiVersion: apiVersion,
-          data: {
-            items: projects
-          }
-        }
-      ]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
+  // ------------------------------------------------------------
+  //       project
+  // ------------------------------------------------------------
+
+  router.get("/project.list", (req: AuthenticatedRequest, res) => {
+    getProjectList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
-  router.get("/project.intent.listPermissions", async (req: AuthenticatedRequest, res) => {
-    const intent = "project.intent.listPermissions";
-    const projectId = req.query.projectId;
-    try {
-      if (!projectId) throw { kind: "ParseError", badKeys: ["projectId"] };
-
-      const response = {
-        apiVersion: apiVersion,
-        data: await projectModel.listPermissions(projectId, authorized(req.token, intent))
-      };
-      send(res, [200, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
+  router.get("/project.viewDetails", (req: AuthenticatedRequest, res) => {
+    getProjectDetails(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
-  router.post("/project.intent.grantPermission", async (req: AuthenticatedRequest, res) => {
-    const { body, path } = req;
-    const intent: Intent = "project.intent.grantPermission";
-
-    try {
-      // Validate input:
-      if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
-      throwParseErrorIfUndefined(body, ["data"]);
-      throwParseErrorIfUndefined(body, ["data", "projectId"]);
-      const projectId = body.data.projectId;
-      throwParseErrorIfUndefined(body, ["data", "intent"]);
-      const intentToGrant = body.data.intent;
-      throwParseErrorIfUndefined(body, ["data", "userId"]);
-      const targetUser = body.data.userId;
-
-      // Compute the data:
-      const isUpdate = await projectModel.grantPermissions(
-        authorized(req.token, intent),
-        projectId,
-        intentToGrant,
-        targetUser
-      );
-
-      // Create and send the response:
-      const response = {
-        apiVersion: "1.0",
-        data: isUpdate ? "Permission granted." : "Permission already set."
-      };
-      send(res, [isUpdate ? 201 : 200, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
+  router.post("/project.createSubproject", (req: AuthenticatedRequest, res) => {
+    createSubproject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
-  router.get("/project.viewDetails", async (req: AuthenticatedRequest, res) => {
-    const intent = "project.viewDetails";
-    const { projectId } = req.query;
-    try {
-      if (!projectId) throw { kind: "ParseError", badKeys: ["projectId"] };
-
-      const project = await projectModel.details(
-        req.token,
-        projectId,
-        authorized(req.token, intent)
-      );
-
-      const response = {
-        apiVersion: apiVersion,
-        data: {
-          ...project
-        }
-      };
-
-      send(res, [200, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
+  router.get("/project.intent.listPermissions", (req: AuthenticatedRequest, res) => {
+    getProjectPermissions(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
-  router.post("/project.create", async (req: AuthenticatedRequest, res) => {
-    console.log;
-    const body = req.body;
-    console.log(`body: ${JSON.stringify(body)}`);
-    if (body.apiVersion !== apiVersion) {
-      send(res, [
-        412,
-        {
-          apiVersion: body.apiVersion,
-          error: { code: 412, message: `API version ${body.apiVersion} not implemented.` }
-        }
-      ]);
-
-      return;
-    }
-    if (!body.data) {
-      send(res, [
-        400,
-        {
-          apiVersion: body.apiVersion,
-          error: { code: 400, message: `Expected "data" in body.` }
-        }
-      ]);
-      return;
-    }
-
-    const intent = "global.createProject";
-    try {
-      const id = await projectModel.createProject(
-        req.token,
-        body.data,
-        authorized(req.token, intent),
-        globalModel
-      );
-      const response = {
-        apiVersion: apiVersion,
-        data: id
-      };
-      send(res, [201, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
+  router.post("/project.intent.grantPermission", (req: AuthenticatedRequest, res) => {
+    grantProjectPermission(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
-  router.post("/project.createSubproject", async (req: AuthenticatedRequest, res) => {
-    const { path, token, body } = req;
-    const intent = "project.createSubproject";
-    try {
-      await subprojectModel.create(token, body.data, authorized(token, intent));
-      const response = {
-        apiVersion: apiVersion,
-        data: {
-          created: true
-        }
-      };
-      send(res, [201, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
+  router.post("/project.intent.revokePermission", (req: AuthenticatedRequest, res) => {
+    revokeProjectPermission(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
   });
 
   // ------------------------------------------------------------
@@ -392,6 +295,12 @@ export const createRouter = (
 
   router.get("/workflowitem.list", (req: AuthenticatedRequest, res) => {
     getWorkflowitemList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/workflowitem.close", (req: AuthenticatedRequest, res) => {
+    closeWorkflowitem(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

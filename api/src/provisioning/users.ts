@@ -16,7 +16,7 @@ const users = [
 ];
 
 const createUser = async (axios, user) => {
-  await axios.post("/user.create", {
+  await axios.post("/global.createUser", {
     user
   });
 };

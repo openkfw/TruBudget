@@ -23,22 +23,10 @@ export class GlobalModel {
     this.multichain = multichain;
   }
 
-  async getOrCreateGlobalStream() {
-    await this.multichain.getOrCreateStream({
-      kind: this.streamId,
-      name: this.streamId
-    });
-    const existingPermissions = await this.multichain.latestValuesForKey(this.streamId, this.key);
-    if (existingPermissions.length === 0) {
-      await this.multichain.updateStreamItem(this.streamId, this.key, globalPermissionsTemplate);
-    }
-    return this.multichain.latestValuesForKey(this.streamId, this.key);
-  }
-
   async listPermissions(authorized) {
-    const globalPermissions = await this.getOrCreateGlobalStream();
-    await authorized(globalPermissions[0]);
-    return globalPermissions[0];
+    const globalPermissions = await GlobalOnChain.getPermissions(this.multichain);
+    await authorized(globalPermissions);
+    return globalPermissions;
   }
 
   listPermissionsForUser = async (authorized, userId) => {

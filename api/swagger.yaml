@@ -78,11 +78,11 @@ paths:
               type: string
           '403':
             description: Returned when providing invalid credentials.
-  "/user.create":
+  "/global.createUser":
     post:
       tags:
         - user
-      operationId: "user.create"
+      operationId: "global.createUser"
       consumes:
         - application/json
       produces:
@@ -385,11 +385,11 @@ paths:
         "200":
           description: "OK"
 
-  "/project.create":
+  "/global.createProject":
     post:
       tags:
         - project
-      operationId: "project.create"
+      operationId: "global.createProject"
       consumes:
         - application/json
       produces:

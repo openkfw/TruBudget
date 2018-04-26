@@ -28,25 +28,29 @@ const grantPermissionsToUser = async (axios, projectId, userId) => {
 export const provisionProjects = async axios => {
   const response = await axios.get("/project.list");
   const projects = response.data.data.items;
-  const alreadyExists = projects.find(
+  const existingProject = projects.find(
     project =>
       project.displayName === futureProject.displayName && project.amount === futureProject.amount
   );
-  if (!alreadyExists) {
-    const resp = await axios.post("/project.create", futureProject);
-    const existingProjects = await axios.get("/project.list");
-    console.log(`~> Project ${futureProject.displayName} created`);
-    const createdProject = existingProjects.data.data.items.find(
-      project =>
-        project.displayName === futureProject.displayName && project.amount === futureProject.amount
-    );
-    if (createdProject) {
-      await grantPermissionsToUser(axios, createdProject.id, "mstein");
-      console.log("~> Project permissions granted for mstein");
-      await grantPermissionsToUser(axios, createdProject.id, "jxavier");
-      console.log("~> Project permissions granted for jxavier");
-    }
-  } else {
+  if (existingProject !== undefined) {
     console.log(`~> Project ${futureProject.displayName} already exists`);
+    return existingProject.id;
   }
+
+  const resp = await axios.post("/global.createProject", { project: futureProject });
+  console.log(`~> Project ${futureProject.displayName} created`);
+  const projectListResult = await axios.get("/project.list");
+  const createdProject = projectListResult.data.data.items.find(
+    project =>
+      project.displayName === futureProject.displayName && project.amount === futureProject.amount
+  );
+  if (createdProject === undefined)
+    throw Error(
+      `Project creation failed. project.list result: ${JSON.stringify(projectListResult.data)}`
+    );
+  await grantPermissionsToUser(axios, createdProject.id, "mstein");
+  console.log("~> Project permissions granted for mstein");
+  await grantPermissionsToUser(axios, createdProject.id, "jxavier");
+  console.log("~> Project permissions granted for jxavier");
+  return createdProject.id;
 };

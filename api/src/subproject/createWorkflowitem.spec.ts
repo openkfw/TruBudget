@@ -19,10 +19,13 @@ describe("subproject.createWorkflowitem", () => {
         expect(streamName).to.eql(projectId);
         expect(keys).to.eql(subprojectId);
         return {
-          data: null,
-          log: null,
-          permissions: {
-            "subproject.createWorkflowitem": ["alice"]
+          key: ["subprojects", subprojectId],
+          resource: {
+            data: null,
+            log: null,
+            permissions: {
+              "subproject.createWorkflowitem": ["alice"]
+            }
           }
         };
       }

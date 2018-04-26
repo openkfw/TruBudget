@@ -1,16 +1,17 @@
 import { expect } from "chai";
 import { getSubprojectDetails } from "./viewDetails";
-import { MultichainClient } from "../multichain/Client.h";
+import { MultichainClient, StreamItemPair } from "../multichain/Client.h";
 import { AuthenticatedRequest } from "../httpd/lib";
 
 describe("subproject.viewDetails", () => {
   it("works", async () => {
     const multichain: any = {
-      getValues: (streamName, key, nValues) => {
+      getValue: (streamName, key, nValues) => {
         expect(streamName).to.eql("the-sample-project");
         if (key === "the-sample-subproject") {
-          return [
-            {
+          return {
+            key: ["subprojects", "the-sample-subproject"],
+            resource: {
               data: {
                 id: "the-sample-subproject",
                 displayName: "The Sample Subproject",
@@ -26,22 +27,31 @@ describe("subproject.viewDetails", () => {
               },
               log: []
             }
-          ];
-        } else if (key === "the-sample-subproject_workflows") {
+          };
+        } else {
+          throw Error(`unexpected key: ${key}`);
+        }
+      },
+      getLatestValues: (streamName, key, nValues) => {
+        expect(streamName).to.eql("the-sample-project");
+        if (key === "the-sample-subproject_workflows") {
           return [
             {
-              data: {
-                id: "wf-one",
-                amount: "11",
-                currency: "EUR",
-                comment: "",
-                status: "open"
-              },
-              permissions: {
-                "workflowitem.viewSummary": ["alice"],
-                "workflowitem.viewDetails": ["alice"]
-              },
-              log: []
+              key: ["the-sample-subproject_workflows", "wf-one"],
+              resource: {
+                data: {
+                  id: "wf-one",
+                  amount: "11",
+                  currency: "EUR",
+                  comment: "",
+                  status: "open"
+                },
+                permissions: {
+                  "workflowitem.viewSummary": ["alice"],
+                  "workflowitem.viewDetails": ["alice"]
+                },
+                log: []
+              }
             }
           ];
         } else {

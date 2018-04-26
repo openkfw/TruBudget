@@ -5,7 +5,8 @@ import {
   CreateStreamOptions,
   StreamName,
   StreamTxId,
-  StreamItem
+  StreamItem,
+  StreamItemPair
 } from "./Client.h";
 
 const metadata = {
@@ -21,6 +22,13 @@ const metadata = {
 };
 
 class MultichainClientStub implements MultichainClient {
+  getLatestValues(
+    streamName: string,
+    key: string,
+    nValues?: number | undefined
+  ): Promise<StreamItemPair[]> {
+    throw new Error("Method not implemented.");
+  }
   getValue(streamName: string, key: string): Promise<any> {
     throw new Error("Method not implemented.");
   }
