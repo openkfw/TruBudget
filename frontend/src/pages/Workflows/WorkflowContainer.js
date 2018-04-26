@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import globalStyles from '../../styles';
 
-import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, createWorkflowItem, editWorkflowItem, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, fetchAllSubprojectDetails, onWorkflowDialogCancel, storeWorkflowStatus, showSubProjectPermissions, showWorkflowItemPermissions } from './actions';
+import { fetchWorkflowItems, setCurrentStep, showWorkflowDialog, storeWorkflowComment, storeWorkflowCurrency, storeWorkflowAmount, storeWorkflowAmountType, storeWorkflowName, createWorkflowItem, editWorkflowItem, storeWorkflowTxid, showWorkflowDetails, updateWorkflowSortOnState, enableWorkflowSort, storeWorkflowType, postWorkflowSort, enableSubProjectBudgetEdit, storeSubProjectAmount, postSubProjectEdit, isWorkflowApprovalRequired, fetchAllSubprojectDetails, onWorkflowDialogCancel, storeWorkflowStatus, showSubProjectPermissions, showWorkflowItemPermissions, closeWorkflowItem } from './actions';
 
 import { setSelectedView } from '../Navbar/actions';
 import { showHistory, fetchHistoryItems } from '../Notifications/actions';
@@ -38,6 +38,8 @@ class WorkflowContainer extends Component {
     this.props.createWorkflowItem(this.projectId, this.subProjectId, workflow, documents)
   }
 
+  closeWorkflowItem = (wId) => this.props.closeWorkflowItem(this.projectId, this.subProjectId, wId)
+
   render() {
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
 
@@ -45,7 +47,10 @@ class WorkflowContainer extends Component {
       <div>
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
-          <Workflow {...this.props} createWorkflowItem={this.createWorkflowItem} />
+          <Workflow
+            {...this.props}
+            createWorkflowItem={this.createWorkflowItem}
+            closeWorkflowItem={this.closeWorkflowItem} />
           <SubprojectPermissionsContainer
             projectId={this.projectId} subProjectId={this.subProjectId}
             title={strings.subproject.subproject_permissions_title} />
@@ -77,6 +82,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(showHistory(false)),
     openWorkflowDetails: (txid) => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
+    closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
 
     fetchWorkflowItems: (streamName) => dispatch(fetchWorkflowItems(streamName)),
     editWorkflowItem: (stream, key, workflowToAdd, documents, previousState) => dispatch(editWorkflowItem(stream, key, workflowToAdd, documents, previousState)),

@@ -61,6 +61,9 @@ export const FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS = 'FETCH_WORKFLOWITEM_PERMIS
 export const GRANT_WORKFLOWITEM_PERMISSION = 'GRANT_WORKFLOWITEM_PERMISSION';
 export const GRANT_WORKFLOWITEM_PERMISSION_SUCCESS = 'GRANT_WORKFLOWITEM_PERMISSION_SUCCESS';
 
+export const CLOSE_WORKFLOWITEM = 'CLOSE_WORKFLOWITEM';
+export const CLOSE_WORKFLOWITEM_SUCCESS = 'CLOSE_WORKFLOWITEM_SUCCESS';
+
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
@@ -333,5 +336,15 @@ export function postSubProjectEdit(parent, streamName, status, amount) {
     streamName,
     status,
     amount
+  }
+}
+
+export function closeWorkflowItem(projectId, subprojectId, workflowitemId, showLoading = false) {
+  return {
+    type: CLOSE_WORKFLOWITEM,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    showLoading
   }
 }

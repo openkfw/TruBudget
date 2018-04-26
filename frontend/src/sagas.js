@@ -9,7 +9,7 @@ import { FETCH_PROJECTS, FETCH_PROJECTS_SUCCESS, CREATE_PROJECT, CREATE_PROJECT_
 import { FETCH_PROJECT_DETAILS, FETCH_PROJECT_DETAILS_SUCCESS, CREATE_SUBPROJECT, CREATE_SUBPROJECT_SUCCESS, FETCH_ALL_PROJECT_DETAILS_SUCCESS, FETCH_ALL_PROJECT_DETAILS, FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS, GRANT_PERMISSION, GRANT_PERMISSION_SUCCESS } from './pages/SubProjects/actions';
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from './pages/Dashboard/actions';
 import { FETCH_NOTIFICATIONS, FETCH_NOTIFICATIONS_SUCCESS, MARK_NOTIFICATION_AS_READ, MARK_NOTIFICATION_AS_READ_SUCCESS, SHOW_SNACKBAR, SNACKBAR_MESSAGE } from './pages/Notifications/actions';
-import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS, FETCH_SUBPROJECT_PERMISSIONS, FETCH_SUBPROJECT_PERMISSIONS_SUCCESS, GRANT_SUBPROJECT_PERMISSION, GRANT_SUBPROJECT_PERMISSION_SUCCESS, FETCH_WORKFLOWITEM_PERMISSIONS, FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS, GRANT_WORKFLOWITEM_PERMISSION_SUCCESS, GRANT_WORKFLOWITEM_PERMISSION } from './pages/Workflows/actions';
+import { FETCH_WORKFLOW_ITEMS, FETCH_WORKFLOW_ITEMS_SUCCESS, CREATE_WORKFLOW, EDIT_WORKFLOW, CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_SUCCESS, FETCH_HISTORY_SUCCESS, FETCH_HISTORY, POST_WORKFLOW_SORT, POST_WORKFLOW_SORT_SUCCESS, ENABLE_WORKFLOW_SORT, POST_SUBPROJECT_EDIT, POST_SUBPROJECT_EDIT_SUCCESS, FETCH_ALL_SUBPROJECT_DETAILS, FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS, FETCH_SUBPROJECT_PERMISSIONS, FETCH_SUBPROJECT_PERMISSIONS_SUCCESS, GRANT_SUBPROJECT_PERMISSION, GRANT_SUBPROJECT_PERMISSION_SUCCESS, FETCH_WORKFLOWITEM_PERMISSIONS, FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS, GRANT_WORKFLOWITEM_PERMISSION_SUCCESS, GRANT_WORKFLOWITEM_PERMISSION, CLOSE_WORKFLOWITEM, CLOSE_WORKFLOWITEM_SUCCESS } from './pages/Workflows/actions';
 
 import { FETCH_USERS, FETCH_USERS_SUCCESS, FETCH_ROLES, FETCH_ROLES_SUCCESS, LOGIN, LOGIN_SUCCESS, SHOW_LOGIN_ERROR, STORE_ENVIRONMENT, LOGOUT_SUCCESS, LOGOUT, FETCH_USER_SUCCESS, FETCH_USER, ADMIN_LOGIN, ADMIN_LOGOUT, ADMIN_LOGOUT_SUCCESS, ADMIN_LOGIN_SUCCESS, SHOW_ADMIN_LOGIN_ERROR, FETCH_ADMIN_USER_SUCCESS, FETCH_ENVIRONMENT_SUCCESS, FETCH_ENVIRONMENT, STORE_ENVIRONMENT_SUCCESS } from './pages/Login/actions';
 import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, ADD_DOCUMENT, ADD_DOCUMENT_SUCCESS } from './pages/Documents/actions';
@@ -662,6 +662,25 @@ export function* grantWorkflowItemPermissionsSaga({ projectId, workflowitemId, i
   }, showLoading);
 }
 
+export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
+  yield execute(function* () {
+
+    yield callApi(api.closeWorkflowItem, projectId, workflowitemId);
+
+    yield put({
+      type: CLOSE_WORKFLOWITEM_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId,
+      subprojectId,
+      showLoading
+    });
+
+  }, showLoading);
+}
+
 
 // WATCHERS
 
@@ -815,27 +834,53 @@ export function* watchGrantSubProjectPermissions() {
 export function* watchGrantWorkflowitemPermissions() {
   yield takeEvery(GRANT_WORKFLOWITEM_PERMISSION, grantWorkflowItemPermissionsSaga)
 }
+export function* watchCloseWorkflowItem() {
+  yield takeEvery(CLOSE_WORKFLOWITEM, closeWorkflowItemSaga)
+}
+
+
 
 export default function* rootSaga() {
   try {
     yield [
+      // Global
+      watchFetchUser(),
+      watchLogin(),
+      watchLogout(),
+      watchSetEnvironment(),
+      watchGetEnvironment(),
+
+      // Project
+      watchCreateProject(),
+      watchFetchAllProjects(),
+      watchFetchAllProjectDetails(),
+      watchFetchProjectPermissions(),
+      watchGrantPermissions(),
+
+      // Subproject
+      watchCreateSubProject(),
+      watchFetchAllSubprojectDetails(),
+      watchFetchSubProjectPermissions(),
+      watchGrantSubProjectPermissions(),
+
+      // Workflow
+      watchCreateWorkflowItem(),
+      watchFetchWorkflowItemPermissions(),
+      watchGrantWorkflowitemPermissions(),
+      watchCloseWorkflowItem()
+
+
       // watchFetchPeers(),
       // watchFetchProjects(),
       // watchFetchProjectDetails(),
-      watchCreateSubProject(),
-      watchCreateWorkflowItem(),
       // watchEditWorkflowItem(),
-      watchCreateProject(),
       // watchFetchNodeInformation(),
       // watchFetchNotifications(),
       // watchMarkNotificationAsRead(),
       // watchFetchWorkflowItems(),
-      watchFetchUser(),
       // watchFetchRoles(),
-      watchLogin(),
       // watchAdminLogin(),
       // watchFetchUser(),
-      watchLogout(),
       // watchAdminLogout(),
       // watchFetchStreamNames(),
       // watchFetchHistory(),
@@ -843,21 +888,10 @@ export default function* rootSaga() {
       // watchEditSubProject(),
       // watchValidateDocument(),
       // watchAddDocument(),
-      watchSetEnvironment(),
-      watchGetEnvironment(),
       // watchFetchUpdates(),
       // watchFetchNodePermissions(),
       // watchAddUser(),
       // watchAddRole(),
-      watchFetchAllProjects(),
-      watchFetchAllProjectDetails(),
-      watchFetchAllSubprojectDetails(),
-      watchFetchProjectPermissions(),
-      watchFetchSubProjectPermissions(),
-      watchFetchWorkflowItemPermissions(),
-      watchGrantPermissions(),
-      watchGrantSubProjectPermissions(),
-      watchGrantWorkflowitemPermissions()
     ]
   } catch (error) {
     console.log(error);

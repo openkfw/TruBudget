@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { closeWorkflowItem } from './pages/Workflows/actions';
 const devMode = process.env.NODE_ENV === 'development';
 const API_VERSION = '1.0';
 
@@ -80,6 +81,8 @@ class Api {
   listWorkflowItemPermissions = (projectId, workflowitemId) => axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`)
 
   grantWorkflowItemPermissions = (projectId, workflowitemId, intent, userId) => axios.post(`/workflowitem.intent.grantPermission`, { projectId, workflowitemId, intent, userId })
+
+  closeWorkflowItem = (projectId, workflowitemId) => axios.post(`/workflowitem.close`, { projectId, workflowitemId })
 
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })

@@ -25,7 +25,7 @@ const styles = {
   in_review: {
     backgroundColor: ACMECorpLightblue
   },
-  done: {
+  closed: {
     backgroundColor: ACMECorpSuperLightgreen
   },
   text: {
@@ -100,58 +100,13 @@ const createLine = (isFirst, selectable) => {
   )
 };
 
-const getNextStatusIcon = (status, approvalRequired) => {
-  switch (status) {
-    case 'open':
-      return InprogressIcon;
-    case 'in_progress':
-      if (approvalRequired) {
-        return ReviewIcon;
-      }
-      return DoneIcon;
-    case 'in_review':
-      return DoneIcon;
-    default:
-      return InprogressIcon;
-  }
-}
-
-const getEditButtons = (status = 'open', type, role, approvalRequired, permissions, editCB, progressCB) => {
-
-  const Icon = getNextStatusIcon(status, approvalRequired);
-  const userAllowedToEdit = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
-
-  const assigneeAllowed = (status === 'open' || status === 'in_progress') && permissions.isAssignee;
-  const approverAllowed = status === 'in_review' && type === 'workflow' && permissions.isApprover;
-  const bankAllowed = status === 'in_review' && type === 'transaction' && permissions.isBank;
-
-  const userAllowedToProgress = assigneeAllowed || approverAllowed || bankAllowed;
-
-  return (
-    <TableRowColumn colSpan={2}>
-      <IconButton disabled={!role.write || !userAllowedToEdit} onTouchTap={() => editCB()}>
-        <EditIcon />
-      </IconButton>
-      <IconButton disabled={!role.write || !userAllowedToProgress} onTouchTap={() => progressCB()}>
-        <Icon />
-      </IconButton>
-    </TableRowColumn>
-  )
-}
-
 const StepDot = ({ status, selectable }) => {
   let Icon;
   switch (status) {
     case 'open':
       Icon = OpenIcon;
       break;
-    case 'in_progress':
-      Icon = InprogressIcon;
-      break;
-    case 'in_review':
-      Icon = ReviewIcon;
-      break;
-    case 'done':
+    case 'closed':
       Icon = DoneIcon;
       break;
     default:
@@ -244,20 +199,25 @@ const getAmountField = (amount, type) => {
   )
 }
 
-const renderActionButtons = (canEditWorkflow = false, editCB, canListWorkflowPermissions = false, showPerm, canCloseWorkflow = false) =>
-  <TableRowColumn colSpan={3}>
-    <div style={styles.actions}>
-      <IconButton disabled={!canEditWorkflow} onTouchTap={editCB}>
-        <EditIcon />
-      </IconButton>
-      <IconButton disabled={!canListWorkflowPermissions} onTouchTap={showPerm}>
-        <PermissionIcon />
-      </IconButton>
-      <IconButton disabled={!canCloseWorkflow}>
-        <DoneIcon />
-      </IconButton>
-    </div>
-  </TableRowColumn>
+const renderActionButtons = (canEditWorkflow, edit, canListWorkflowPermissions, showPerm, canCloseWorkflow, close, status) => {
+
+
+  return (
+    <TableRowColumn colSpan={3}>
+      <div style={styles.actions}>
+        <IconButton disabled={!canEditWorkflow || status === 'closed'} onTouchTap={edit}>
+          <EditIcon />
+        </IconButton>
+        <IconButton disabled={!canListWorkflowPermissions} onTouchTap={showPerm}>
+          <PermissionIcon />
+        </IconButton>
+        <IconButton disabled={!canCloseWorkflow || status === 'closed'} onTouchTap={close}>
+          <DoneIcon />
+        </IconButton>
+      </div>
+    </TableRowColumn>
+  )
+}
 
 const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
   const { id, status, type, displayName, amountType, allowedIntents } = workflow;
@@ -293,7 +253,7 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
             {renderActionButtons(
               canUpdateWorkflowItem(allowedIntents), editWorkflow.bind(this, workflow, props),
               canViewWorkflowItemPermissions(allowedIntents), () => props.showWorkflowItemPermissions(id),
-              canCloseWorkflowItem(allowedIntents))}
+              canCloseWorkflowItem(allowedIntents), () => props.closeWorkflowItem(id), status)}
           </TableRow>
         </TableBody>
       </Table>
