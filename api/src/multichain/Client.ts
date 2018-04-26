@@ -165,10 +165,12 @@ export class RpcMultichainClient implements MultichainClient {
           return result;
         }, new Map())
         .values()
-    ).map(x => ({
-      key: x.keys,
-      resource: hexToObject(x.data) as Resource
-    }));
+    )
+      .reverse()
+      .map(x => ({
+        key: x.keys,
+        resource: hexToObject(x.data) as Resource
+      }));
     return allItemsLatestValues;
   }
 
