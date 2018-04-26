@@ -15,7 +15,7 @@ import IconButton from 'material-ui/IconButton';
 import { toAmountString, statusMapping, amountTypes } from '../../helper.js';
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from '../../colors.js';
 import strings from '../../localizeStrings';
-import { canViewWorkflowItemPermissions } from '../../permissions.js';
+import { canViewWorkflowItemPermissions, canUpdateWorkflowItem, canCloseWorkflowItem } from '../../permissions.js';
 
 
 const styles = {
@@ -290,7 +290,10 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
                 {statusMapping(status)}
               </div>
             </TableRowColumn>
-            {renderActionButtons(true, editWorkflow.bind(this, workflow, props), canViewWorkflowItemPermissions(allowedIntents), () => props.showWorkflowItemPermissions(id))}
+            {renderActionButtons(
+              canUpdateWorkflowItem(allowedIntents), editWorkflow.bind(this, workflow, props),
+              canViewWorkflowItemPermissions(allowedIntents), () => props.showWorkflowItemPermissions(id),
+              canCloseWorkflowItem(allowedIntents))}
           </TableRow>
         </TableBody>
       </Table>

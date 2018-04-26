@@ -81,7 +81,7 @@ class WorkflowCreationAmount extends Component {
               type='text'
               value={workflowAmount}
               disabled={workflowAmountType === 'N/A'}
-              onBlur={storeWorkflowAmount}
+              onChange={storeWorkflowAmount}
             />
           </div>
           <div style={{ marginLeft: '30px' }}>

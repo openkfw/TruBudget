@@ -44,7 +44,6 @@ export const fromAmountString = (amount, currency) => {
     return '';
   }
 
-  console.log("amount", amount);
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 }
 

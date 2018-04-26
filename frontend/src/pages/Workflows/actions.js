@@ -139,11 +139,11 @@ export function fetchWorkflowItemPermissions(projectId, workflowitemId, showLoad
   }
 }
 
-export function grantWorkflowItemPermission(projectId, workflowItemId, intent, user, showLoading = false) {
+export function grantWorkflowItemPermission(projectId, workflowitemId, intent, user, showLoading = false) {
   return {
     type: GRANT_WORKFLOWITEM_PERMISSION,
     projectId,
-    workflowItemId,
+    workflowitemId,
     intent,
     user,
     showLoading
