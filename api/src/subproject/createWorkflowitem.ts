@@ -41,6 +41,7 @@ export const createWorkflowitem = async (
     subprojectId,
     {
       id: isNonemptyString(data.workflowitemId) ? data.workflowitemId : randomString(),
+      creationUnixTs: Date.now().toString(),
       displayName: value("displayName", data.displayName, isNonemptyString),
       amount: value("amount", data.amount, isNonemptyString),
       currency: value("currency", data.currency, isNonemptyString),

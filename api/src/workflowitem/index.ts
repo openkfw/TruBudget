@@ -17,6 +17,7 @@ interface WorkflowitemResource extends Resource {
 
 export interface Data {
   id: string;
+  creationUnixTs: string;
   displayName: string;
   amount: string;
   currency: string;

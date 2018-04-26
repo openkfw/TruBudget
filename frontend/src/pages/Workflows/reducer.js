@@ -48,6 +48,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
       return state.merge({
         id: action.id,
+        created: action.creationUnixTs,
         displayName: action.displayName,
         description: action.description,
         status: action.status,
