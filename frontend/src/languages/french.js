@@ -68,6 +68,7 @@ const fr = {
     project_disbursement_authority_role_description: 'Les autorités ont autorisé l\'approbation des transactions financières',
     project_authority_organization_search: 'Rechercher organisations',
     project_authority_role_search: 'Search role',
+    project_permissions_title: 'French: Set permissions for project'
 
   },
   subproject: {
@@ -79,7 +80,8 @@ const fr = {
     subproject_assigned_organization: 'Organisation assignée',
     subproject_add: 'Ajouter un nouveau sous-projet',
     subproject_select_button: 'Sélectionnez',
-    subproject_completion_string: '{0} cal {1} van'
+    subproject_completion_string: '{0} cal {1} van',
+    subproject_permissions_title: 'French: Set permissions for subproject'
   },
   workflow: {
     workflow_title: 'Titre du workflow',
@@ -116,7 +118,8 @@ const fr = {
     workflow_budget_disbursed: 'Décaissé',
     workflow_budget: 'Montant du budget',
     workflow_budget_description: 'Description du budget',
-    workflow_submit_for_review: 'Soumettre pour examen'
+    workflow_submit_for_review: 'Soumettre pour examen',
+    workflow_permissions_title: 'French: Set permissions for workflowitem'
   },
 
   navigation: {

@@ -9,8 +9,8 @@ import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
 import { toJS } from '../../helper';
 import { fetchUser } from '../Login/actions';
-import PermissionsContainer from '../Common/Permissions/PermissionsContainer';
 import ProjectPermissionsContainer from './ProjectPermissionsContainer';
+import strings from '../../localizeStrings';
 
 
 
@@ -29,7 +29,7 @@ class SubProjectsContainer extends Component {
     return (
       <div>
         <div style={globalStyles.innerContainer}>
-          <ProjectPermissionsContainer />
+          <ProjectPermissionsContainer title={strings.project.project_permissions_title} />
           <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
         </div>

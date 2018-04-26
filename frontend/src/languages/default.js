@@ -95,6 +95,7 @@ const def = {
     project_disbursement_authority_role_description: 'The authorities enabled to approve financial transactions',
     project_authority_organization_search: 'Search organizations',
     project_authority_role_search: 'Search role',
+    project_permissions_title: 'Set permissions for project'
 
   },
   subproject: {
@@ -107,7 +108,8 @@ const def = {
     subproject_assigned_organization: 'Assigned Organization',
     subproject_add: 'Add new Sub-project',
     subproject_select_button: 'Select',
-    subproject_completion_string: '{0} of {1} done'
+    subproject_completion_string: '{0} of {1} done',
+    subproject_permissions_title: 'Set permissions for subproject'
 
   },
   workflow: {
@@ -149,7 +151,8 @@ const def = {
     workflow_budget_disbursed: 'disbursed',
     workflow_budget: 'Workflow budget amount',
     workflow_budget_description: 'Budget for the workflow',
-    workflow_submit_for_review: 'Submit for Review'
+    workflow_submit_for_review: 'Submit for Review',
+    workflow_permissions_title: 'Set permissions for workflowitem'
   },
 
   navigation: {

@@ -35,7 +35,7 @@ const styles = {
 
 const PermissionsScreen = (props) => (
   <Dialog
-    title="Set permissions for Project"
+    title={props.title}
     actions={[
       <FlatButton
         label="Close"
@@ -135,7 +135,7 @@ const renderPermission = (name, userList, permissions, grantPermission) => (
 
 const PermissionsTable = ({ permissions, user, grantPermission, id }) => (
   <div style={tableStyle.container}>
-    <Table>
+    <Table selectable={false}>
       <TableHeader
         displaySelectAll={false}
         adjustForCheckbox={false}

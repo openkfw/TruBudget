@@ -9,6 +9,7 @@ import Divider from 'material-ui/Divider';
 
 import CommentIcon from 'material-ui/svg-icons/editor/short-text';
 import AmountIcon from 'material-ui/svg-icons/action/account-balance';
+import PermissionIcon from 'material-ui/svg-icons/action/lock-open';
 import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
 import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
 import NotAssignedIcon from 'material-ui/svg-icons/editor/space-bar'
@@ -19,6 +20,7 @@ import AssigneeIcon from 'material-ui/svg-icons/social/group';
 import DoneIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import IconButton from 'material-ui/IconButton';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
@@ -236,6 +238,7 @@ const SubProjectDetails = ({
               secondary={true}
               disabled={!canViewPermissions}
               onClick={showSubProjectPermissions}
+              icon={<PermissionIcon style={styles.icon} />}
             />}
           />
         </List>

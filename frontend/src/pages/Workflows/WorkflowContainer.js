@@ -14,6 +14,7 @@ import { getPermissions, canViewSubProjectPermissions } from '../../permissions'
 import { toJS } from '../../helper';
 import SubprojectPermissionsContainer from './SubprojectPermissionsContainer';
 import WorkflowItemPermissionsContainer from './WorkflowItemPermissionsContainer';
+import strings from '../../localizeStrings';
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -45,8 +46,12 @@ class WorkflowContainer extends Component {
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <Workflow {...this.props} createWorkflowItem={this.createWorkflowItem} />
-          <SubprojectPermissionsContainer projectId={this.projectId} subProjectId={this.subProjectId} />
-          <WorkflowItemPermissionsContainer projectId={this.projectId} />
+          <SubprojectPermissionsContainer
+            projectId={this.projectId} subProjectId={this.subProjectId}
+            title={strings.subproject.subproject_permissions_title} />
+          <WorkflowItemPermissionsContainer
+            projectId={this.projectId}
+            title={strings.workflow.workflow_permissions_title} />
         </div>
       </div>
     )
