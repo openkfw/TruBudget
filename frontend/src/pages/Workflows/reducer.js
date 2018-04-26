@@ -25,7 +25,7 @@ const defaultState = fromJS({
     txId: ''
   },
   showSubProjectPermissions: false,
-  showWorkflowItemPermissions: false,
+  showWorkflowPermissions: false,
   workflowItemReference: '',
   permissions: {},
 
@@ -90,7 +90,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set('showSubProjectPermissions', false);
     case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
     case FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS:
-      return state.set('permissions', fromJS(action.permissions));
       return state.set('permissions', fromJS(action.permissions));
     case WORKFLOW_CREATION_STEP:
       return state.set('currentStep', action.step);

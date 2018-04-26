@@ -163,10 +163,11 @@ export const getAllocationRatio = (spentAmount, projectAmount) => {
 export const calculateWorkflowBudget = (workflows) => {
   return workflows.reduce((acc, workflow) => {
     const { amount, amountType, status } = workflow;
+    const parsedAmount = parseInt(amount, 10);
     const next = {
-      assigned: amountType === 'allocated' ? acc.assigned + amount : acc.assigned,
-      disbursed: amountType === 'disbursed' ? acc.disbursed + amount : acc.disbursed,
-      currentDisbursement: amountType === 'disbursed' && status === 'done' ? acc.currentDisbursement + amount : acc.currentDisbursement,
+      assigned: amountType === 'allocated' ? acc.assigned + parsedAmount : acc.assigned,
+      disbursed: amountType === 'disbursed' ? acc.disbursed + parsedAmount : acc.disbursed,
+      currentDisbursement: amountType === 'disbursed' && status === 'done' ? acc.currentDisbursement + parsedAmount : acc.currentDisbursement,
     }
     return next;
   }, {
