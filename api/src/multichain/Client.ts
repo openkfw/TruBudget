@@ -150,11 +150,25 @@ export class RpcMultichainClient implements MultichainClient {
         }, new Map())
         .values()
     )
-      .reverse()
-      .map(x => ({
+      .map((x: Liststreamkeyitems.Item) => ({
         key: x.keys,
         resource: hexToObject(x.data) as Resource
-      }));
+      }))
+      // TODO: Until we need to be able to re-order things, it's good enough to sort by ctime:
+      .sort((a: StreamItemPair, b: StreamItemPair) => {
+        const ctimeA = a.resource.data.creationUnixTs;
+        const ctimeB = b.resource.data.creationUnixTs;
+        // If the resources don't have a ctime set, fall back to reversing back into the original ordering:
+        if (ctimeA === undefined || ctimeB === undefined) {
+          return 1; // = b before a
+        } else if (ctimeA < ctimeB) {
+          return -1; // = a is older, so a before b
+        } else if (ctimeA > ctimeB) {
+          return 1; // = a is more recent, so b before a
+        } else {
+          return 0; // any order, since we do unstable storting
+        }
+      });
     return allItemsLatestValues;
   }
 
