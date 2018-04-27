@@ -45,7 +45,7 @@ export const createSubproject = async (
       id: value("id", subproject.id || randomString(), isNonemptyString),
       displayName: value("displayName", subproject.displayName, isNonemptyString),
       description: value("description", subproject.description, isNonemptyString),
-      amount: value("amount", subproject.amount, x => /^\d+$/.test(x)),
+      amount: value("amount", subproject.amount, isNonemptyString),
       currency: value("currency", subproject.currency, isNonemptyString).toUpperCase()
     }
   );
