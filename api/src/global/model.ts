@@ -1,9 +1,6 @@
-import { ServerRequest } from "http";
-import { MultichainClient, StreamKind } from "../multichain/Client.h";
-import { authorized } from "../authz/index";
-import { GlobalOnChain } from "../multichain";
-import { findBadKeysInObject, isNonemptyString } from "../lib";
 import Intent from "../authz/intents";
+import { GlobalOnChain } from "../multichain";
+import { MultichainClient, StreamKind } from "../multichain/Client.h";
 
 const globalPermissionsTemplate = {
   "global.intent.listPermissions": ["root"],

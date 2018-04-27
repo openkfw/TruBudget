@@ -1,10 +1,8 @@
-import * as jsonwebtoken from "jsonwebtoken";
-
-import * as User from "../user";
-import { isNonemptyString, value } from "../lib";
-import { HttpResponse, AuthenticatedRequest, throwParseError } from "../httpd/lib";
-import { MultichainClient, GlobalOnChain } from "../multichain";
 import { throwIfUnauthorized } from "../authz/index";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, value } from "../lib";
+import { GlobalOnChain, MultichainClient } from "../multichain";
+import * as User from "../user";
 import { encryptPassword } from "../user/hash";
 
 export const createUser = async (

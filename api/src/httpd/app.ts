@@ -1,5 +1,5 @@
-import * as express from "express";
 import * as bodyParser from "body-parser";
+import * as express from "express";
 import * as expressJwt from "express-jwt";
 import { AuthToken } from "../authz/token";
 

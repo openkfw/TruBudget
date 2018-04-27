@@ -1,17 +1,8 @@
-import * as express from "express";
-import { AuthToken } from "../authz/token";
-import {
-  HttpResponse,
-  throwParseError,
-  throwParseErrorIfUndefined,
-  AuthenticatedRequest
-} from "../httpd/lib";
-import { MultichainClient, SubprojectOnChain } from "../multichain";
-import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
-import { isNonemptyString, value } from "../lib";
-import * as Workflowitem from "./index";
-import Intent from "../authz/intents";
 import { throwIfUnauthorized } from "../authz";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, value } from "../lib";
+import { MultichainClient } from "../multichain";
+import * as Workflowitem from "./index";
 
 export const closeWorkflowitem = async (
   multichain: MultichainClient,

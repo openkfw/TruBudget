@@ -1,14 +1,7 @@
-import * as express from "express";
-import { AuthToken } from "../authz/token";
-import {
-  HttpResponse,
-  throwParseError,
-  throwParseErrorIfUndefined,
-  AuthenticatedRequest
-} from "../httpd/lib";
-import { MultichainClient, SubprojectOnChain } from "../multichain";
-import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
-import { value, isNonemptyString } from "../lib";
+import * as Subproject from ".";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, value } from "../lib";
+import { MultichainClient } from "../multichain";
 
 export const getSubprojectList = async (
   multichain: MultichainClient,
@@ -18,7 +11,7 @@ export const getSubprojectList = async (
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
 
-  const subprojects: SubprojectDataWithIntents[] = await SubprojectOnChain.getAllForUser(
+  const subprojects: Subproject.SubprojectDataWithIntents[] = await Subproject.getAllForUser(
     multichain,
     req.token,
     projectId

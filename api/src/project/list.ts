@@ -1,13 +1,6 @@
-import * as express from "express";
-import { AuthToken } from "../authz/token";
-import {
-  HttpResponse,
-  throwParseError,
-  throwParseErrorIfUndefined,
-  AuthenticatedRequest
-} from "../httpd/lib";
-import { MultichainClient } from "../multichain";
 import * as Project from ".";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { MultichainClient } from "../multichain";
 
 export const getProjectList = async (
   multichain: MultichainClient,

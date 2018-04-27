@@ -1,9 +1,8 @@
-import * as express from "express";
-import { MultichainClient, SubprojectOnChain } from "../../multichain";
-import { AuthenticatedRequest, HttpResponse, throwParseError } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
-import { allIntents } from "../../authz/intents";
+import * as Subproject from "..";
 import { throwIfUnauthorized } from "../../authz";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib";
+import { MultichainClient } from "../../multichain";
 
 export const getSubprojectPermissions = async (
   multichain: MultichainClient,
@@ -18,10 +17,10 @@ export const getSubprojectPermissions = async (
   await throwIfUnauthorized(
     req.token,
     "subproject.intent.listPermissions",
-    await SubprojectOnChain.getPermissions(multichain, projectId, subprojectId)
+    await Subproject.getPermissions(multichain, projectId, subprojectId)
   );
 
-  const permissions = await SubprojectOnChain.getPermissions(multichain, projectId, subprojectId);
+  const permissions = await Subproject.getPermissions(multichain, projectId, subprojectId);
 
   return [
     200,

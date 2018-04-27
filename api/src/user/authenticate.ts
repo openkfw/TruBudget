@@ -1,19 +1,11 @@
-import * as express from "express";
-import { AuthToken } from "../authz/token";
-import {
-  HttpResponse,
-  throwParseError,
-  throwParseErrorIfUndefined,
-  AuthenticatedRequest
-} from "../httpd/lib";
-import { MultichainClient, SubprojectOnChain, GlobalOnChain } from "../multichain";
-import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
-import { isNonemptyString } from "../lib";
-import * as User from "./index";
-import Intent, { globalIntents } from "../authz/intents";
-import { getAllowedIntents } from "../authz/index";
-import { encryptPassword } from "./hash";
 import * as jsonwebtoken from "jsonwebtoken";
+import { getAllowedIntents } from "../authz/index";
+import { globalIntents } from "../authz/intents";
+import { AuthenticatedRequest, HttpResponse, throwParseError } from "../httpd/lib";
+import { isNonemptyString } from "../lib";
+import { GlobalOnChain, MultichainClient } from "../multichain";
+import { encryptPassword } from "./hash";
+import * as User from "./index";
 
 export interface UserLoginResponse {
   id: string;

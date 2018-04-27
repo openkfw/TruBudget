@@ -1,4 +1,6 @@
-import { AuthToken } from "../authz/token";
+import * as Project from ".";
+import { throwIfUnauthorized } from "../authz/index";
+import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import {
   AuthenticatedRequest,
@@ -9,10 +11,7 @@ import {
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
-import { throwIfUnauthorized } from "../authz/index";
-import { SubprojectOnChain } from "../multichain";
-import * as Project from ".";
-import Intent from "../authz/intents";
+import * as Subproject from "../subproject";
 
 export const createSubproject = async (
   multichain: MultichainClient,
@@ -36,19 +35,13 @@ export const createSubproject = async (
     await Project.getPermissions(multichain, projectId)
   );
 
-  await SubprojectOnChain.create(
-    multichain,
-    req.token,
-    projectId,
-    defaultPermissions(req.token.userId),
-    {
-      id: value("id", subproject.id || randomString(), isNonemptyString),
-      displayName: value("displayName", subproject.displayName, isNonemptyString),
-      description: value("description", subproject.description, isNonemptyString),
-      amount: value("amount", subproject.amount, isNonemptyString),
-      currency: value("currency", subproject.currency, isNonemptyString).toUpperCase()
-    }
-  );
+  await Subproject.create(multichain, req.token, projectId, defaultPermissions(req.token.userId), {
+    id: value("id", subproject.id || randomString(), isNonemptyString),
+    displayName: value("displayName", subproject.displayName, isNonemptyString),
+    description: value("description", subproject.description, isNonemptyString),
+    amount: value("amount", subproject.amount, isNonemptyString),
+    currency: value("currency", subproject.currency, isNonemptyString).toUpperCase()
+  });
 
   return [
     201,

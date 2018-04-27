@@ -1,10 +1,10 @@
-import { AuthenticatedRequest, HttpResponse, throwParseError } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
-import { MultichainClient, SubprojectOnChain } from "../multichain";
-import * as Workflowitem from "../workflowitem";
-import * as Project from "../project";
-import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
+import * as Subproject from ".";
 import { throwIfUnauthorized } from "../authz";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, value } from "../lib";
+import { MultichainClient } from "../multichain";
+import * as Project from "../project";
+import * as Workflowitem from "../workflowitem";
 
 export const getSubprojectDetails = async (
   multichain: MultichainClient,
@@ -15,7 +15,7 @@ export const getSubprojectDetails = async (
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
-  const subproject: SubprojectDataWithIntents = await SubprojectOnChain.getForUser(
+  const subproject: Subproject.SubprojectDataWithIntents = await Subproject.getForUser(
     multichain,
     req.token,
     projectId,
@@ -26,7 +26,7 @@ export const getSubprojectDetails = async (
   await throwIfUnauthorized(
     req.token,
     "subproject.viewDetails",
-    await SubprojectOnChain.getPermissions(multichain, projectId, subprojectId)
+    await Subproject.getPermissions(multichain, projectId, subprojectId)
   );
 
   const workflowitems: Array<

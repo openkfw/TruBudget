@@ -1,10 +1,9 @@
-import * as express from "express";
-import { MultichainClient } from "../../multichain";
-import { AuthenticatedRequest, HttpResponse, throwParseError } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
-import Intent, { allIntents } from "../../authz/intents";
-import { throwIfUnauthorized } from "../../authz";
 import * as Project from "..";
+import { throwIfUnauthorized } from "../../authz";
+import { allIntents } from "../../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib";
+import { MultichainClient } from "../../multichain";
 
 export const revokeProjectPermission = async (
   multichain: MultichainClient,

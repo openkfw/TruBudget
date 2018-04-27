@@ -1,14 +1,11 @@
-import * as jsonwebtoken from "jsonwebtoken";
-
-import * as Project from "../project";
-import { isNonemptyString, value } from "../lib";
-import { HttpResponse, AuthenticatedRequest, throwParseError } from "../httpd/lib";
-import { MultichainClient, GlobalOnChain } from "../multichain";
 import { throwIfUnauthorized } from "../authz/index";
-import { encryptPassword } from "../user/hash";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent } from "../authz/types";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, value } from "../lib";
+import { GlobalOnChain, MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
+import * as Project from "../project";
 
 export const createProject = async (
   multichain: MultichainClient,

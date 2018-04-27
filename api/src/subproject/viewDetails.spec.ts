@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { getSubprojectDetails } from "./viewDetails";
-import { MultichainClient, StreamItemPair } from "../multichain/Client.h";
 import { AuthenticatedRequest } from "../httpd/lib";
+import { MultichainClient } from "../multichain/Client.h";
+import { getSubprojectDetails } from "./viewDetails";
 
 describe("subproject.viewDetails", () => {
   it("works", async () => {

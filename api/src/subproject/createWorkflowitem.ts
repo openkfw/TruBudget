@@ -1,3 +1,6 @@
+import * as Subproject from ".";
+import { throwIfUnauthorized } from "../authz/index";
+import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import {
@@ -8,11 +11,8 @@ import {
 } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
-import * as Workflowitem from "../workflowitem";
 import { randomString } from "../multichain/hash";
-import { throwIfUnauthorized } from "../authz/index";
-import { SubprojectOnChain } from "../multichain";
-import Intent from "../authz/intents";
+import * as Workflowitem from "../workflowitem";
 
 export const createWorkflowitem = async (
   multichain: MultichainClient,
@@ -31,7 +31,7 @@ export const createWorkflowitem = async (
   await throwIfUnauthorized(
     req.token,
     "subproject.createWorkflowitem",
-    await SubprojectOnChain.getPermissions(multichain, projectId, subprojectId)
+    await Subproject.getPermissions(multichain, projectId, subprojectId)
   );
 
   await Workflowitem.create(

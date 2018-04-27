@@ -1,9 +1,8 @@
-import { MultichainClient, Resource, LogEntry } from "../Client.h";
-import { AllowedUserGroupsByIntent, People } from "../../authz/types";
-import Intent from "../../authz/intents";
-import { AuthToken } from "../../authz/token";
-import { getAllowedIntents } from "../../authz/index";
-import { ignoringStreamNotFound } from "../lib";
+import { getAllowedIntents } from "../authz/index";
+import Intent from "../authz/intents";
+import { AuthToken } from "../authz/token";
+import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import { MultichainClient, Resource } from "../multichain/Client.h";
 
 /** The multichain-item key used to identify subprojects. */
 const SUBPROJECTS_KEY = "subprojects";

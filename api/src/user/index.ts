@@ -1,6 +1,4 @@
 import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntent } from "../authz/types";
-import { ignoringStreamNotFound } from "../multichain/lib";
 import { MultichainClient } from "../multichain";
 import { Resource } from "../multichain/Client.h";
 
