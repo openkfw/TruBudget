@@ -139,12 +139,25 @@ export const getAllForUser = async (
   projectId: string
 ): Promise<SubprojectDataWithIntents[]> => {
   const resources = await getAll(multichain, projectId);
-  return Promise.all(
+  const allSubprojects = await Promise.all(
     resources.map(async resource => {
       return {
         ...resource.data,
-        allowedIntents: await getAllowedIntents(token, resource.permissions)
+        allowedIntents: await getAllowedIntents(token, resource.permissions).catch(err => {
+          console.log(
+            `WARN: Could not fetch allowed intents: token=${token} resource=${JSON.stringify(
+              resource
+            )}`
+          );
+          const nothing: Intent[] = [];
+          return nothing;
+        })
       };
     })
   );
+  const allowedToSeeIntents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
+  const clearedSubprojects = allSubprojects.filter(subproject =>
+    subproject.allowedIntents.some(intent => allowedToSeeIntents.includes(intent))
+  );
+  return clearedSubprojects;
 };

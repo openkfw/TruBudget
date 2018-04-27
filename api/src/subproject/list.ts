@@ -8,36 +8,29 @@ import {
 } from "../httpd/lib";
 import { MultichainClient, SubprojectOnChain } from "../multichain";
 import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
+import { value, isNonemptyString } from "../lib";
 
 export const getSubprojectList = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest
 ): Promise<HttpResponse> => {
-  const projectId = req.query.projectId;
-  if (!projectId) throwParseError(["projectId"]);
+  const input = req.query;
+
+  const projectId: string = value("projectId", input.projectId, isNonemptyString);
+
+  const subprojects: SubprojectDataWithIntents[] = await SubprojectOnChain.getAllForUser(
+    multichain,
+    req.token,
+    projectId
+  );
+
   return [
     200,
     {
       apiVersion: "1.0",
-      data: { items: await list(multichain, req.token, projectId) }
+      data: {
+        items: subprojects
+      }
     }
   ];
-};
-
-const list = async (
-  multichain: MultichainClient,
-  token: AuthToken,
-  projectId: string
-): Promise<SubprojectDataWithIntents[]> => {
-  const subprojects: SubprojectDataWithIntents[] = await SubprojectOnChain.getAllForUser(
-    multichain,
-    token,
-    projectId
-  );
-
-  const clearedSubprojects = subprojects.filter(subproject =>
-    subproject.allowedIntents.includes("subproject.viewSummary")
-  );
-
-  return clearedSubprojects;
 };
