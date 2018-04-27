@@ -199,19 +199,19 @@ const getAmountField = (amount, type) => {
   )
 }
 
-const renderActionButtons = (canEditWorkflow, edit, canListWorkflowPermissions, showPerm, canCloseWorkflow, close, status) => {
+const renderActionButtons = (canEditWorkflow, edit, canListWorkflowPermissions, showPerm, canCloseWorkflow, close, selectable) => {
 
 
   return (
     <TableRowColumn colSpan={3}>
       <div style={styles.actions}>
-        <IconButton disabled={!canEditWorkflow || status === 'closed'} onTouchTap={edit}>
+        <IconButton disabled={!canEditWorkflow} onTouchTap={edit}>
           <EditIcon />
         </IconButton>
         <IconButton disabled={!canListWorkflowPermissions} onTouchTap={showPerm}>
           <PermissionIcon />
         </IconButton>
-        <IconButton disabled={!canCloseWorkflow || status === 'closed'} onTouchTap={close}>
+        <IconButton disabled={!canCloseWorkflow} onTouchTap={close}>
           <DoneIcon />
         </IconButton>
       </div>
@@ -227,8 +227,10 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
     ...styles[status],
     opacity: 0.3
   };
-  const infoButton = getInfoButton(props, workflow)
 
+  const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== 'closed'
+  const showClose = canCloseWorkflowItem(allowedIntents) && status !== 'closed'
+  const infoButton = getInfoButton(props, workflow)
   return (
     <Card key={mapIndex} style={{ marginLeft: '50px', marginRight: '10px', marginTop: '15px', marginBottom: '15px', position: 'relative', }}>
       {createLine(mapIndex === 0, workflowSelectable)}
@@ -251,9 +253,9 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
               </div>
             </TableRowColumn>
             {renderActionButtons(
-              canUpdateWorkflowItem(allowedIntents), editWorkflow.bind(this, workflow, props),
+              showEdit, editWorkflow.bind(this, workflow, props),
               canViewWorkflowItemPermissions(allowedIntents), () => props.showWorkflowItemPermissions(id),
-              canCloseWorkflowItem(allowedIntents), () => props.closeWorkflowItem(id), status)}
+              showClose, () => props.closeWorkflowItem(id), currentWorkflowSelectable)}
           </TableRow>
         </TableBody>
       </Table>

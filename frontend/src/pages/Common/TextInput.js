@@ -7,7 +7,7 @@ const styles = {
   }
 }
 
-const TextInput = ({ ariaLabel, floatingLabelText, hintText, value, onChange, multiLine = false, type = 'text', disabled = false }) => (
+const TextInput = ({ ariaLabel, floatingLabelText, hintText, value, onChange, onBlur, pattern, multiLine = false, type = 'text', disabled = false }) => (
   <TextField
     id={hintText}
     floatingLabelText={floatingLabelText}
@@ -18,6 +18,8 @@ const TextInput = ({ ariaLabel, floatingLabelText, hintText, value, onChange, mu
     disabled={disabled}
     value={value}
     onChange={(event) => onChange(event.target.value)}
+    onBlur={onBlur}
+    pattern={pattern}
   />
 )
 

@@ -73,7 +73,7 @@ export const typeMapping = {
 
 export const statusMapping = (status) => {
   switch (status) {
-    case 'done':
+    case 'closed':
       return strings.common.done
     case 'in_review':
       return strings.common.in_review
@@ -134,7 +134,7 @@ const createDoughnutData = (labels, data, colors = taskStatusColorPalette) => ({
 
 export const calculateUnspentAmount = (items) => {
   const amount = items.reduce((acc, item) => {
-    return acc + parseInt(item.amount, 10)
+    return acc + parseFloat(item.amount, 10)
   }, 0);
   return amount;
 }
@@ -147,7 +147,7 @@ export const getCompletionRatio = (subprojects) => {
 
 const getCompletedSubprojects = (subprojects) => {
   const completedSubprojects = subprojects.filter((subproject) => {
-    return subproject.status === "done";
+    return subproject.status === "closed";
   })
   return completedSubprojects;
 }
@@ -164,11 +164,11 @@ export const getAllocationRatio = (spentAmount, projectAmount) => {
 export const calculateWorkflowBudget = (workflows) => {
   return workflows.reduce((acc, workflow) => {
     const { amount, amountType, status } = workflow;
-    const parsedAmount = parseInt(amount, 10);
+    const parsedAmount = parseFloat(amount, 10);
     const next = {
       assigned: amountType === 'allocated' ? acc.assigned + parsedAmount : acc.assigned,
       disbursed: amountType === 'disbursed' ? acc.disbursed + parsedAmount : acc.disbursed,
-      currentDisbursement: amountType === 'disbursed' && status === 'done' ? acc.currentDisbursement + parsedAmount : acc.currentDisbursement,
+      currentDisbursement: amountType === 'disbursed' && status === 'closed' ? acc.currentDisbursement + parsedAmount : acc.currentDisbursement,
     }
     return next;
   }, {
@@ -210,7 +210,7 @@ export const getProgressInformation = (items) => {
       open: status === 'open' ? acc.open + 1 : acc.open,
       inProgress: status === 'in_progress' ? acc.inProgress + 1 : acc.inProgress,
       inReview: status === 'in_review' ? acc.inReview + 1 : acc.inReview,
-      done: status === 'done' ? acc.done + 1 : acc.done,
+      done: status === 'closed' ? acc.done + 1 : acc.done,
     };
   }, startValue);
   return projectStatus;

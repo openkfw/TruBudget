@@ -97,7 +97,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_NAME:
       return state.setIn(['workflowToAdd', 'name'], action.name);
     case WORKFLOW_AMOUNT:
-      return state.setIn(['workflowToAdd', 'amount'], fromAmountString(action.amount));
+      return state.setIn(['workflowToAdd', 'amount'], action.amount);
     case WORKFLOW_AMOUNT_TYPE:
       return state.setIn(['workflowToAdd', 'amountType'], action.amountType);
     case WORKFLOW_PURPOSE:

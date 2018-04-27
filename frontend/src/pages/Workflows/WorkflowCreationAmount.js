@@ -4,7 +4,7 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Dropdown from '../Common/Dropdown';
 import TextInput from '../Common/TextInput';
 import strings from '../../localizeStrings'
-import { getCurrencies, preselectCurrency } from '../../helper';
+import { getCurrencies, preselectCurrency, fromAmountString } from '../../helper';
 
 const styles = {
   container: {
@@ -81,7 +81,8 @@ class WorkflowCreationAmount extends Component {
               type='text'
               value={workflowAmount}
               disabled={workflowAmountType === 'N/A'}
-              onChange={storeWorkflowAmount}
+              onChange={(v) => { if (/^[0-9,.-]*$/.test(v)) storeWorkflowAmount(v) }}
+              onBlur={(e) => storeWorkflowAmount(fromAmountString(e.target.value))}
             />
           </div>
           <div style={{ marginLeft: '30px' }}>

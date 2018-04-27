@@ -2,9 +2,6 @@ import React from 'react';
 import { SortableContainer } from 'react-sortable-hoc';
 import WorkflowItem from './WorkflowItem'
 
-
-
-
 const getSortableItems = ({ workflowItems, permissions, ...props }) => {
   let nextWorkflowNotSelectable = false;
 
