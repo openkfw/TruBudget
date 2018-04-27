@@ -1,11 +1,12 @@
 import * as jsonwebtoken from "jsonwebtoken";
+import * as User from ".";
 import { getAllowedIntents } from "../authz/index";
 import { globalIntents } from "../authz/intents";
+import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse, throwParseError } from "../httpd/lib";
-import { isNonemptyString } from "../lib";
-import { GlobalOnChain, MultichainClient } from "../multichain";
+import { isNonemptyString, value } from "../lib";
+import { MultichainClient } from "../multichain";
 import { encryptPassword } from "./hash";
-import * as User from "./index";
 
 export interface UserLoginResponse {
   id: string;
@@ -14,13 +15,6 @@ export interface UserLoginResponse {
   allowedIntents: string[];
   token: string;
 }
-
-const value = (name, val, isValid) => {
-  if (isValid !== undefined && !isValid(val)) {
-    throwParseError([name]);
-  }
-  return val;
-};
 
 export const authenticateUser = async (
   multichain: MultichainClient,
@@ -85,7 +79,7 @@ const authenticate = async (
     id,
     displayName: storedUser.displayName,
     organization: storedUser.organization,
-    allowedIntents: await getAllowedIntents(token, await GlobalOnChain.getPermissions(multichain)),
+    allowedIntents: await getAllowedIntents(token, await Global.getPermissions(multichain)),
     token: createToken(jwtSecret, id, storedUser.organization)
   };
 };

@@ -1,7 +1,8 @@
+import * as Global from ".";
 import { throwIfUnauthorized } from "../authz/index";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
-import { GlobalOnChain, MultichainClient } from "../multichain";
+import { MultichainClient } from "../multichain";
 import * as User from "../user";
 import { encryptPassword } from "../user/hash";
 
@@ -27,7 +28,7 @@ export const createUser = async (
   await throwIfUnauthorized(
     req.token,
     "global.createUser",
-    await GlobalOnChain.getPermissions(multichain)
+    await Global.getPermissions(multichain)
   );
 
   await User.create(multichain, req.token, newUser);

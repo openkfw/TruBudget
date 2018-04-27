@@ -45,8 +45,8 @@ const grantCreateProjectPermission = async (axios, userId) => {
   return grantGlobalPermissionToUser(axios, "global.createProject", userId);
 };
 
-const grantGlobalPermissionToUser = async (axios, intent, user) => {
-  return axios.post("/global.intent.grantPermission", { intent, user });
+const grantGlobalPermissionToUser = async (axios, intent, userId) => {
+  return axios.post("/global.intent.grantPermission", { intent, userId });
 };
 
 const handleError = (axios, err) => {

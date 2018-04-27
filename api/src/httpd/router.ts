@@ -1,9 +1,9 @@
 import * as express from "express";
-import { authorized } from "../authz";
-import Intent from "../authz/intents";
 import { createProject } from "../global/createProject";
 import { createUser } from "../global/createUser";
-import { GlobalModel } from "../global/model";
+import { grantGlobalPermission } from "../global/intent/grantPermission";
+import { getGlobalPermissions } from "../global/intent/listPermissions";
+import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
 import { createSubproject } from "../project/createSubproject";
 import { grantProjectPermission } from "../project/intent/grantPermission";
@@ -129,8 +129,6 @@ export const createRouter = (
   jwtSecret: string,
   rootSecret: string
 ) => {
-  const globalModel = new GlobalModel(multichainClient);
-
   const router = express.Router();
 
   router.get("/health", (req, res) => res.status(200).send("OK"));
@@ -138,46 +136,6 @@ export const createRouter = (
   // ------------------------------------------------------------
   //       global
   // ------------------------------------------------------------
-
-  router.get("/global.intent.listPermissions", async (req: AuthenticatedRequest, res) => {
-    const intent = "global.intent.listPermissions";
-    try {
-      const response = {
-        apiVersion: apiVersion,
-        data: await globalModel.listPermissions(authorized(req.token, intent))
-      };
-      send(res, [201, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
-  });
-
-  router.post("/global.intent.grantPermission", async (req: AuthenticatedRequest, res) => {
-    const { body, path } = req;
-    const intent: Intent = "global.intent.grantPermission";
-
-    try {
-      // Validate input:
-      if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
-      throwParseErrorIfUndefined(body, ["data"]);
-      throwParseErrorIfUndefined(body, ["data", "intent"]);
-      const intentToGrant = body.data.intent;
-      throwParseErrorIfUndefined(body, ["data", "user"]);
-      const targetUser = body.data.user;
-
-      // Compute the data:
-      await globalModel.grantPermissions(authorized(req.token, intent), intentToGrant, targetUser);
-
-      // Create and send the response:
-      const response = {
-        apiVersion: "1.0",
-        data: "Permission granted."
-      };
-      send(res, [201, response]);
-    } catch (err) {
-      handleError(req, res, err);
-    }
-  });
 
   router.post("/global.createUser", (req: AuthenticatedRequest, res) => {
     createUser(multichainClient, req, jwtSecret, rootSecret)
@@ -187,6 +145,24 @@ export const createRouter = (
 
   router.post("/global.createProject", (req: AuthenticatedRequest, res) => {
     createProject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.get("/global.intent.listPermissions", (req: AuthenticatedRequest, res) => {
+    getGlobalPermissions(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/global.intent.grantPermission", (req: AuthenticatedRequest, res) => {
+    grantGlobalPermission(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/global.intent.revokePermission", (req: AuthenticatedRequest, res) => {
+    revokeGlobalPermission(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

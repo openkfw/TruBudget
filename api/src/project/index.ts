@@ -70,7 +70,7 @@ export const revokePermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, projectId);
+  const streamItem = await multichain.getValue(projectId, "self");
   const project = streamItem.resource;
   const permissionsForIntent: People = project.permissions[intent] || [];
 

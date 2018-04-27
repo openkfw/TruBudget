@@ -1,9 +1,10 @@
 import { throwIfUnauthorized } from "../authz/index";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent } from "../authz/types";
+import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
-import { GlobalOnChain, MultichainClient } from "../multichain";
+import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project";
 
@@ -17,7 +18,7 @@ export const createProject = async (
   await throwIfUnauthorized(
     req.token,
     "global.createProject",
-    await GlobalOnChain.getPermissions(multichain)
+    await Global.getPermissions(multichain)
   );
 
   await Project.create(multichain, req.token, defaultPermissions(req.token.userId), {
