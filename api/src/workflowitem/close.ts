@@ -20,6 +20,9 @@ export const closeWorkflowitem = async (
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId)
   );
 
+  // TODO(#57) Condition for closing a workflowitem: the workflowitem must be the _first_
+  // non-closed workflowitem (with respect to the current ordering)
+
   await Workflowitem.close(multichain, projectId, workflowitemId);
 
   return [
