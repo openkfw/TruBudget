@@ -15,6 +15,7 @@ const defaultState = fromJS({
   created: 0,
   allowedIntents: [],
   workflowItems: [],
+  parentProject: {},
   workflowToAdd: {
     name: '',
     amount: '',
@@ -46,16 +47,18 @@ const defaultState = fromJS({
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
+      const { subproject, workflowitems, parentProject } = action;
       return state.merge({
-        id: action.id,
-        created: action.creationUnixTs,
-        displayName: action.displayName,
-        description: action.description,
-        status: action.status,
-        amount: parseInt(action.amount, 10),
-        currency: action.currency,
-        allowedIntents: fromJS(action.allowedIntents),
-        workflowItems: fromJS(action.workflowitems)
+        id: subproject.id,
+        created: subproject.creationUnixTs,
+        displayName: subproject.displayName,
+        description: subproject.description,
+        status: subproject.status,
+        amount: parseInt(subproject.amount, 10),
+        currency: subproject.currency,
+        allowedIntents: fromJS(subproject.allowedIntents),
+        workflowItems: fromJS(workflowitems),
+        parentProject: fromJS(parentProject)
       });
     case SHOW_WORKFLOW_DIALOG:
       return state.merge({

@@ -120,6 +120,15 @@ export const create = async (
   return multichain.setValue(projectId, ["self"], resource);
 };
 
+export const get = async (
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string
+): Promise<ProjectData> => {
+  const streamItem = await multichain.getValue(projectId, "self");
+  return streamItem.resource.data;
+};
+
 export const getForUser = async (
   multichain: MultichainClient,
   token: AuthToken,
