@@ -52,7 +52,7 @@ export default function overviewReducer(state = defaultState, action) {
     case PROJECT_NAME:
       return state.set('displayName', action.name);
     case PROJECT_AMOUNT:
-      return state.set('amount', fromAmountString(action.amount));
+      return state.set('amount', action.amount);
     case PROJECT_COMMENT:
       return state.set('description', action.comment);
     case PROJECT_CURRENCY:

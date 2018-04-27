@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Dropdown from './Dropdown';
 import TextInput from './TextInput';
-import { getCurrencies, preselectCurrency } from '../../helper';
+import { getCurrencies, preselectCurrency, fromAmountString } from '../../helper';
 
 const styles = {
   inputDiv: {
@@ -21,8 +21,9 @@ class Budget extends Component {
   }
 
   render() {
-    const { parentCurrency, currencyTitle, currency, storeCurrency, budgetLabel, budgetHintText, budget, storeBudget } = this.props;
+    const { parentCurrency, currencyTitle, currency, storeCurrency, budgetLabel, budgetHintText, budget, storeBudget, budgetDisabled } = this.props;
     const currencies = getCurrencies(parentCurrency);
+    console.log()
     return (
       <div style={styles.inputDiv}>
         <Dropdown
@@ -30,14 +31,17 @@ class Budget extends Component {
           value={currency}
           onChange={storeCurrency}
           items={currencies}
+          disabled={budgetDisabled}
         />
         <TextInput
           floatingLabelText={budgetLabel}
           hintText={budgetHintText}
           value={budget}
-          onChange={storeBudget}
+          onChange={(v) => { if (/^[0-9,.-]*$/.test(v)) storeBudget(v) }}
+          onBlur={(e) => storeBudget(fromAmountString(e.target.value))}
           type='number'
           aria-label='amount'
+          disabled={budgetDisabled}
         />
       </div>
     )

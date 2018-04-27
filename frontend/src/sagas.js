@@ -551,8 +551,6 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
       ...projectDetails.data
-      //historyItems: history.data,
-      //roles: roles.data
     });
   }, showLoading);
 }

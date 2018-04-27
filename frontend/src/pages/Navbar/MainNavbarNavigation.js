@@ -18,12 +18,30 @@ const getStaticBreadcrumb = (name) => {
 }
 
 
-const getPathName = (name, streamNames) => {
-  const breadcrumb = streamNames[name] ? streamNames[name] : getStaticBreadcrumb(name);
-  return breadcrumb ? breadcrumb : '...';
+// const getPathName = (name, streamNames) => {
+//   const breadcrumb = streamNames[name] ? streamNames[name] : getStaticBreadcrumb(name);
+//   return breadcrumb ? breadcrumb : '...';
+// };
+
+const getPathName = (name, index, currentProject, currentSubProject) => {
+  const staticName = getStaticBreadcrumb(name);
+  if (!staticName) {
+    switch (index) {
+      case 2:
+        return currentProject
+        break;
+      case 3:
+        return currentSubProject
+      default:
+        return "..."
+        break;
+    }
+  } else {
+    return staticName
+  }
 };
 
-const createBreadcrumb = ({ pathname }, history, streamNames) => {
+const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProject) => {
   let paths = pathname.trim().split('/');
   if (paths.length < 2 || !paths[1]) return null;
 
@@ -39,7 +57,7 @@ const createBreadcrumb = ({ pathname }, history, streamNames) => {
           {index ? <ChevronRight color={colors.lightColor} style={{ height: '16px' }} /> : null}
         </span>
         <FlatButton
-          label={index ? getPathName(path, streamNames) : strings.navigation.main_site}
+          label={index ? getPathName(path, index, currentProject, currentSubProject) : strings.navigation.main_site}
           disabled={isLastItem}
           style={{ color: isLastItem ? ACMECorpGrey : colors.lightColor }}
           onTouchTap={() => history.push(accumulatedPath[index])} />
@@ -48,14 +66,14 @@ const createBreadcrumb = ({ pathname }, history, streamNames) => {
   })
 }
 
-const MainNavbarNavigation = ({ onToggleSidebar, history, route, streamNames, productionActive }) => {
+const MainNavbarNavigation = ({ onToggleSidebar, history, route, productionActive, currentProject, currentSubProject }) => {
   const textColor = productionActive ? '#f0ebe6' : '#f44336'
   const navbarTitle = productionActive ? 'TruBudget' : 'TruBudget (Test)'
   return (
     <div>
       <div>
         <span style={{ paddingRight: '50px', color: textColor }}>{navbarTitle}</span>
-        {createBreadcrumb(route, history, streamNames)}
+        {createBreadcrumb(route, history, currentProject, currentSubProject)}
       </div>
 
     </div>

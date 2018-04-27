@@ -14,13 +14,14 @@ const getMenuItems = (items) => {
     )
   })
 }
-const Dropdown = ({ value, title, onChange, items }) => {
+const Dropdown = ({ value, title, onChange, items, disabled }) => {
   const menuItems = getMenuItems(items)
   return (
     <SelectField style={styles.selectField}
       floatingLabelText={title}
       value={value}
       onChange={(event, index, value) => onChange(value)}
+      disabled={disabled}
     >
       {menuItems}
     </SelectField>

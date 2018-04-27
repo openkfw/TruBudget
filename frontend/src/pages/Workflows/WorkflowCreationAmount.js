@@ -5,6 +5,7 @@ import Dropdown from '../Common/Dropdown';
 import TextInput from '../Common/TextInput';
 import strings from '../../localizeStrings'
 import { getCurrencies, preselectCurrency, fromAmountString } from '../../helper';
+import Budget from '../Common/Budget';
 
 const styles = {
   container: {
@@ -44,7 +45,6 @@ class WorkflowCreationAmount extends Component {
 
     const floatingLabelText = strings.workflow.workflow_budget;
     const hintText = strings.workflow.workflow_budget_description;
-    const currencies = getCurrencies(subProjectCurrency);
 
     return (
       <div style={styles.container}>
@@ -74,25 +74,17 @@ class WorkflowCreationAmount extends Component {
           justifyContent: 'center',
           marginTop: '10px'
         }}>
-          <div>
-            <TextInput
-              floatingLabelText={floatingLabelText}
-              hintText={hintText}
-              type='text'
-              value={workflowAmount}
-              disabled={workflowAmountType === 'N/A'}
-              onChange={(v) => { if (/^[0-9,.-]*$/.test(v)) storeWorkflowAmount(v) }}
-              onBlur={(e) => storeWorkflowAmount(fromAmountString(e.target.value))}
-            />
-          </div>
-          <div style={{ marginLeft: '30px' }}>
-            <Dropdown
-              title={strings.project.project_currency}
-              value={workflowCurrency}
-              onChange={storeWorkflowCurrency}
-              items={currencies}
-            />
-          </div>
+          <Budget
+            currencyTitle={strings.project.project_currency}
+            currency={workflowCurrency}
+            storeCurrency={storeWorkflowCurrency}
+            parentCurrency={subProjectCurrency}
+            budgetLabel={floatingLabelText}
+            budgetHintText={hintText}
+            budget={workflowAmount}
+            storeBudget={storeWorkflowAmount}
+            budgetDisabled={workflowAmountType === 'N/A'}
+          />
         </div>
 
       </div>

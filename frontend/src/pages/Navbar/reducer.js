@@ -4,6 +4,8 @@ import { TOGGLE_SIDEBAR, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES_SUCCESS, SET_SE
 import { FETCH_NOTIFICATIONS_SUCCESS } from '../Notifications/actions';
 import { FETCH_UPDATES_SUCCESS } from '../LiveUpdates/actions';
 import { LOGOUT } from '../Login/actions';
+import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from '../SubProjects/actions';
+import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from '../Workflows/actions';
 
 const defaultState = fromJS({
   showSidebar: false,
@@ -12,6 +14,8 @@ const defaultState = fromJS({
   streamNames: {},
   selectedId: '',
   selectedSection: '',
+  currentProject: '',
+  currentSubProject: ''
 });
 
 const countUnreadNotifications = (notifications) => notifications.reduce((acc, { data }) => {
@@ -40,6 +44,13 @@ export default function navbarReducer(state = defaultState, action) {
         peers: action.peers,
         unreadNotifications: countUnreadNotifications(action.notifications),
         streamNames: action.streamNames
+      })
+    case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
+      return state.set('currentProject', action.displayName)
+    case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
+      return state.merge({
+        currentSubProject: action.subproject.displayName,
+        currentProject: action.parentProject.displayName
       })
     case LOGOUT:
       return defaultState;

@@ -11,10 +11,12 @@ const Navbar = ({
   onToggleSidebar, peers, unreadNotifications,
   showSidebar, history, route,
   logout, streamNames, productionActive,
-  displayName, organization, avatar, avatarBackground }) => (
+  displayName, organization, avatar, avatarBackground,
+  currentProject, currentSubProject
+}) => (
     <div >
       <AppBar
-        title={<MainNavbarNavigation productionActive={productionActive} history={history} route={route} streamNames={streamNames} />}
+        title={<MainNavbarNavigation productionActive={productionActive} history={history} route={route} currentProject={currentProject} currentSubProject={currentSubProject} />}
         iconElementLeft={<LeftNavbarNavigation onToggleSidebar={onToggleSidebar} />}
         iconElementRight={<RightNavbarNavigation organization={organization} unreadNotifications={unreadNotifications} peers={peers} history={history} logout={logout} />}
         style={{ backgroundColor: 'transparent', boxShadow: 'transparent' }}
