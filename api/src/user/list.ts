@@ -1,17 +1,6 @@
-import * as express from "express";
-import { AuthToken } from "../authz/token";
-import {
-  HttpResponse,
-  throwParseError,
-  throwParseErrorIfUndefined,
-  AuthenticatedRequest
-} from "../httpd/lib";
-import { MultichainClient, SubprojectOnChain, GlobalOnChain } from "../multichain";
-import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
-import { isNonemptyString } from "../lib";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { MultichainClient } from "../multichain";
 import * as User from "./index";
-import Intent from "../authz/intents";
-import { getAllowedIntents } from "../authz/index";
 
 export const getUserList = async (
   multichain: MultichainClient,

@@ -29,12 +29,9 @@ export const getSubprojectDetails = async (
     await SubprojectOnChain.getPermissions(multichain, projectId, subprojectId)
   );
 
-  const workflowitems: Workflowitem.DataWithIntents[] = await Workflowitem.getAllForUser(
-    multichain,
-    req.token,
-    projectId,
-    subprojectId
-  );
+  const workflowitems: Array<
+    Workflowitem.DataWithIntents | Workflowitem.ObscuredDataWithIntents
+  > = await Workflowitem.getAllForUser(multichain, req.token, projectId, subprojectId);
 
   const parentProject = await Project.get(multichain, req.token, projectId);
 

@@ -8,7 +8,19 @@ describe("subproject.viewDetails", () => {
     const multichain: any = {
       getValue: (streamName, key, nValues) => {
         expect(streamName).to.eql("the-sample-project");
-        if (key === "the-sample-subproject") {
+        if (key === "self") {
+          return {
+            key: ["self"],
+            resource: {
+              data: {
+                id: "the-sample-project",
+                displayName: "The Sample Project"
+              },
+              permissions: {},
+              log: {}
+            }
+          };
+        } else if (key === "the-sample-subproject") {
           return {
             key: ["subprojects", "the-sample-subproject"],
             resource: {
@@ -47,8 +59,7 @@ describe("subproject.viewDetails", () => {
                   status: "open"
                 },
                 permissions: {
-                  "workflowitem.viewSummary": ["alice"],
-                  "workflowitem.viewDetails": ["alice"]
+                  "workflowitem.view": ["alice"]
                 },
                 log: []
               }
@@ -78,13 +89,15 @@ describe("subproject.viewDetails", () => {
     expect(response).to.eql({
       apiVersion: "1.0",
       data: {
-        id: "the-sample-subproject",
-        displayName: "The Sample Subproject",
-        status: "open",
-        amount: "1",
-        currency: "EUR",
-        description: "",
-        allowedIntents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.close"],
+        subproject: {
+          id: "the-sample-subproject",
+          displayName: "The Sample Subproject",
+          status: "open",
+          amount: "1",
+          currency: "EUR",
+          description: "",
+          allowedIntents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.close"]
+        },
         workflowitems: [
           {
             id: "wf-one",
@@ -92,9 +105,13 @@ describe("subproject.viewDetails", () => {
             currency: "EUR",
             comment: "",
             status: "open",
-            allowedIntents: ["workflowitem.viewSummary", "workflowitem.viewDetails"]
+            allowedIntents: ["workflowitem.view"]
           }
-        ]
+        ],
+        parentProject: {
+          id: "the-sample-project",
+          displayName: "The Sample Project"
+        }
       }
     });
   });
