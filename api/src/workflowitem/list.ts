@@ -8,52 +8,30 @@ import {
 } from "../httpd/lib";
 import { MultichainClient, SubprojectOnChain } from "../multichain";
 import { SubprojectDataWithIntents } from "../multichain/resources/subproject";
-import { isNonemptyString } from "../lib";
-import * as Workflowitem from "./index";
+import { isNonemptyString, value } from "../lib";
+import * as Workflowitem from ".";
 import Intent from "../authz/intents";
-
-const value = (name, val, isValid) => {
-  if (isValid !== undefined && !isValid(val)) {
-    throwParseError([name]);
-  }
-  return val;
-};
 
 export const getWorkflowitemList = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest
 ): Promise<HttpResponse> => {
+  const input = req.query;
+
+  const projectId: string = value("projectId", input.projectId, isNonemptyString);
+  const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
+
+  const workflowitems: Array<
+    Workflowitem.DataWithIntents | Workflowitem.ObscuredDataWithIntents
+  > = await Workflowitem.getAllForUser(multichain, req.token, projectId, subprojectId);
+
   return [
     200,
     {
       apiVersion: "1.0",
-      data: await list(
-        multichain,
-        req.token,
-        value("projectId", req.query.projectId, isNonemptyString),
-        value("subprojectId", req.query.subprojectId, isNonemptyString)
-      )
+      data: {
+        workflowitems
+      }
     }
   ];
-};
-
-const list = async (
-  multichain: MultichainClient,
-  token: AuthToken,
-  projectId: string,
-  subprojectId: string
-): Promise<Workflowitem.DataWithIntents[]> => {
-  const workflowitems: Workflowitem.DataWithIntents[] = await Workflowitem.getAllForUser(
-    multichain,
-    token,
-    projectId,
-    subprojectId
-  );
-
-  const allowedIntent: Intent = "workflowitem.view";
-  const clearedWorkflowitems = workflowitems.filter(workflowitem =>
-    workflowitem.allowedIntents.includes(allowedIntent)
-  );
-
-  return clearedWorkflowitems;
 };

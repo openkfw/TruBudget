@@ -13,13 +13,6 @@ import * as User from "./index";
 import Intent from "../authz/intents";
 import { getAllowedIntents } from "../authz/index";
 
-const value = (name, val, isValid) => {
-  if (isValid !== undefined && !isValid(val)) {
-    throwParseError([name]);
-  }
-  return val;
-};
-
 export const getUserList = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest

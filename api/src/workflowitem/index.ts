@@ -37,6 +37,20 @@ export interface DataWithIntents extends Data {
   allowedIntents: Intent[];
 }
 
+export interface ObscuredDataWithIntents {
+  id: string;
+  creationUnixTs: string;
+  displayName: null;
+  amount: null;
+  currency: null;
+  amountType: null;
+  description: null;
+  status: "open" | "closed";
+  documents: null;
+  previousWorkflowitemId?: string;
+  allowedIntents: Intent[];
+}
+
 export const create = async (
   multichain: MultichainClient,
   token: AuthToken,
@@ -72,9 +86,9 @@ export const getAllForUser = async (
   token: AuthToken,
   projectId: string,
   subprojectId: string
-): Promise<DataWithIntents[]> => {
+): Promise<Array<DataWithIntents | ObscuredDataWithIntents>> => {
   const resources = await getAll(multichain, projectId, subprojectId);
-  return Promise.all(
+  const allWorkflowitems = await Promise.all(
     resources.map(async resource => {
       return {
         ...resource.data,
@@ -82,6 +96,30 @@ export const getAllForUser = async (
       };
     })
   );
+  // Instead of filtering out workflowitems the user is not allowed to see,
+  // we simply blank out all fields except the status, which is considered "public":
+  const allowedToSeeIntent: Intent = "workflowitem.view";
+  const clearedWorkflowitems = allWorkflowitems.map(workflowitem => {
+    const isAllowedToSee = workflowitem.allowedIntents.includes(allowedToSeeIntent);
+    if (isAllowedToSee) {
+      return workflowitem;
+    } else {
+      return {
+        id: workflowitem.id,
+        creationUnixTs: workflowitem.creationUnixTs,
+        displayName: null,
+        amount: null,
+        currency: null,
+        amountType: null,
+        description: null,
+        status: workflowitem.status,
+        documents: null,
+        previousWorkflowitemId: workflowitem.previousWorkflowitemId,
+        allowedIntents: workflowitem.allowedIntents
+      };
+    }
+  });
+  return clearedWorkflowitems;
 };
 
 export const close = async (
