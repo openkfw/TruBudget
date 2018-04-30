@@ -12,7 +12,10 @@ import strings from '../../localizeStrings'
 const styles = {
   listText: {
     fontSize: '14px'
-  }
+  },
+  actions: {
+    textAlign: 'center'
+  },
 }
 
 
@@ -33,7 +36,7 @@ const createTableHeader = () => (
             <TableHeaderColumn style={styles.listText} colSpan={2}>
               {strings.common.status}
             </TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={3}>
+            <TableHeaderColumn style={{ ...styles.actions, ...styles.listText }} colSpan={3}>
               {strings.common.actions}
             </TableHeaderColumn>
           </TableRow>

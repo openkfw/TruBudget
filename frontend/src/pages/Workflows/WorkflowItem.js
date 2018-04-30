@@ -3,6 +3,7 @@ import { SortableElement } from 'react-sortable-hoc';
 import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 import { Card } from 'material-ui/Card';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
+import HiddenIcon from 'material-ui/svg-icons/action/visibility-off';
 import Paper from 'material-ui/Paper';
 import Chip from 'material-ui/Chip';
 import OpenIcon from 'material-ui/svg-icons/content/remove';
@@ -86,6 +87,9 @@ const styles = {
     display: 'flex',
     alignItems: 'center'
   },
+  reducted: {
+    fontStyle: 'italic'
+  }
 }
 
 
@@ -200,18 +204,20 @@ const getAmountField = (amount, type) => {
 }
 
 const renderActionButtons = (canEditWorkflow, edit, canListWorkflowPermissions, showPerm, canCloseWorkflow, close, selectable) => {
-
+  const hideStyle = {
+    opacity: 0
+  }
 
   return (
     <TableRowColumn colSpan={3}>
       <div style={styles.actions}>
-        <IconButton disabled={!canEditWorkflow} onTouchTap={edit}>
+        <IconButton disabled={!canEditWorkflow} onTouchTap={edit} style={canEditWorkflow ? {} : hideStyle}>
           <EditIcon />
         </IconButton>
-        <IconButton disabled={!canListWorkflowPermissions} onTouchTap={showPerm}>
+        <IconButton disabled={!canListWorkflowPermissions} onTouchTap={showPerm} >
           <PermissionIcon />
         </IconButton>
-        <IconButton disabled={!canCloseWorkflow} onTouchTap={close}>
+        <IconButton disabled={!canCloseWorkflow} onTouchTap={close} style={canCloseWorkflow ? {} : hideStyle}>
           <DoneIcon />
         </IconButton>
       </div>
@@ -219,20 +225,19 @@ const renderActionButtons = (canEditWorkflow, edit, canListWorkflowPermissions, 
   )
 }
 
-const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
+export const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
   const { id, status, type, displayName, amountType, allowedIntents } = workflow;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const amount = toAmountString(workflow.amount, workflow.currency);
-  const tableStyle = workflowSelectable ? styles[status] : {
-    ...styles[status],
-    opacity: 0.3
-  };
+  const tableStyle = styles[status];
+
+  const itemStyle = workflowSelectable ? {} : { opacity: 0.3 }
 
   const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== 'closed'
-  const showClose = canCloseWorkflowItem(allowedIntents) && status !== 'closed'
+  const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== 'closed'
   const infoButton = getInfoButton(props, workflow)
   return (
-    <Card key={mapIndex} style={{ marginLeft: '50px', marginRight: '10px', marginTop: '15px', marginBottom: '15px', position: 'relative', }}>
+    <Card zDepth={workflowSelectable ? 1 : 0} key={mapIndex} style={{ marginLeft: '50px', marginRight: '10px', marginTop: '15px', marginBottom: '15px', position: 'relative', }}>
       {createLine(mapIndex === 0, workflowSelectable)}
       <StepDot status={status} selectable={workflowSelectable} />
       <Table>
@@ -241,13 +246,13 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
             <TableRowColumn colSpan={1}>
               {infoButton}
             </TableRowColumn>
-            <TableRowColumn style={styles.text} colSpan={3}>
+            <TableRowColumn style={{ ...itemStyle, ...styles.text }} colSpan={3}>
               {displayName}
             </TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={3}>
+            <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
               {getAmountField(amount, amountType)}
             </TableRowColumn>
-            <TableRowColumn style={styles.listText} colSpan={2}>
+            <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={2}>
               <div style={styles.chipDiv}>
                 {statusMapping(status)}
               </div>
@@ -263,6 +268,42 @@ const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, 
   )
 });
 
+export const ReductedWorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
+  const { status } = workflow;
+  const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
+  const tableStyle = styles[status];
 
+  const itemStyle = workflowSelectable ? {} : { opacity: 0.3 }
 
-export default WorkflowItem;
+  const showEdit = false
+  const showClose = false
+  return (
+    <Card zDepth={workflowSelectable ? 1 : 0} key={mapIndex} style={{ marginLeft: '50px', marginRight: '10px', marginTop: '15px', marginBottom: '15px', position: 'relative', }}>
+      {createLine(mapIndex === 0, workflowSelectable)}
+      <StepDot status={status} selectable={workflowSelectable} />
+      <Table>
+        <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
+          <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
+            <TableRowColumn colSpan={1}>
+              <IconButton style={styles.infoButton}>
+                <HiddenIcon />
+              </IconButton>
+            </TableRowColumn>
+            <TableRowColumn style={{ ...itemStyle, ...styles.listText, ...styles.reducted }} colSpan={3}>
+              {strings.workflow.workflow_reducted}
+            </TableRowColumn>
+            <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
+              {null}
+            </TableRowColumn>
+            <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={2}>
+              {null}
+            </TableRowColumn>
+            <TableRowColumn colSpan={3}>
+              {null}
+            </TableRowColumn>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </Card>
+  )
+});
