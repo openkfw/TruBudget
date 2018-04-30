@@ -24,6 +24,7 @@ export interface Data {
   amountType: "N/A" | "disbursed" | "allocated";
   description: string;
   status: "open" | "closed";
+  assignee?: string;
   documents: Document[];
   previousWorkflowitemId?: string;
 }
@@ -46,6 +47,7 @@ export interface ObscuredDataWithIntents {
   amountType: null;
   description: null;
   status: "open" | "closed";
+  assignee: null;
   documents: null;
   previousWorkflowitemId?: string;
   allowedIntents: Intent[];
@@ -113,6 +115,7 @@ export const getAllForUser = async (
         amountType: null,
         description: null,
         status: workflowitem.status,
+        assignee: null,
         documents: null,
         previousWorkflowitemId: workflowitem.previousWorkflowitemId,
         allowedIntents: workflowitem.allowedIntents
@@ -137,6 +140,17 @@ export const close = async (
   // Update the item's status:
   streamItem.resource.data.status = "closed";
 
+  await multichain.setValue(projectId, streamItem.key, streamItem.resource);
+};
+
+export const assign = async (
+  multichain: MultichainClient,
+  projectId: string,
+  workflowitemId: string,
+  userId: string
+): Promise<void> => {
+  const streamItem = await multichain.getValue(projectId, workflowitemId);
+  streamItem.resource.data.assignee = userId;
   await multichain.setValue(projectId, streamItem.key, streamItem.resource);
 };
 

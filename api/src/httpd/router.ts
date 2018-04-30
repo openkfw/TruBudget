@@ -25,6 +25,7 @@ import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissio
 import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
 import { getWorkflowitemList } from "../workflowitem/list";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
+import { assignWorkflowitem } from "../workflowitem/assign";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -269,6 +270,12 @@ export const createRouter = (
 
   router.get("/workflowitem.list", (req: AuthenticatedRequest, res) => {
     getWorkflowitemList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/workflowitem.assign", (req: AuthenticatedRequest, res) => {
+    assignWorkflowitem(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
