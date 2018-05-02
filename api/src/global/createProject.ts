@@ -25,7 +25,7 @@ export const createProject = async (
     id: value("id", input.id || randomString(), isNonemptyString),
     displayName: value("displayName", input.displayName, isNonemptyString),
     description: value("description", input.description, isNonemptyString),
-    amount: value("amount", input.amount, x => /^\d+$/.test(x)),
+    amount: value("amount", input.amount, isNonemptyString),
     currency: value("currency", input.currency, isNonemptyString).toUpperCase(),
     thumbnail: value("thumbnail", input.thumbnail || "", x => typeof x === "string")
   });
