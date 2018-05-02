@@ -31,7 +31,7 @@ const isReady = async axios => {
       isReady = true;
     } catch (_err) {
       console.log(`The TruBudget API is not ready yet, trying again in ${delaySec}`);
-      sleep(delaySec * 1000);
+      await sleep(delaySec * 1000);
     }
   }
   console.log(`The TruBudget API is now ready.`);
