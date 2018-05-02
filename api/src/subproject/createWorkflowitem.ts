@@ -9,10 +9,11 @@ import {
   throwParseError,
   throwParseErrorIfUndefined
 } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value, asyncValue } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Workflowitem from "../workflowitem";
+import * as User from "../user";
 
 export const createWorkflowitem = async (
   multichain: MultichainClient,
@@ -34,22 +35,37 @@ export const createWorkflowitem = async (
     await Subproject.getPermissions(multichain, projectId, subprojectId)
   );
 
+  // If amountType is "N/A" (= not applicable), the amount and currency
+  // fields are not expected. For other amountType values they're required.
+  const amountType = value("amountType", data.amountType, x =>
+    ["N/A", "disbursed", "allocated"].includes(x)
+  );
+  let amount, currency;
+  if (amountType === "N/A") {
+    if (data.amount !== undefined || data.currency !== undefined) {
+      throwParseError(["amountType", "amount", "currency"]);
+    }
+    amount = currency = undefined;
+  } else {
+    amount = value("amount", data.amount, isNonemptyString);
+    currency = value("currency", data.currency, isNonemptyString);
+  }
+
   await Workflowitem.create(
     multichain,
     req.token,
     projectId,
     subprojectId,
     {
-      id: isNonemptyString(data.workflowitemId) ? data.workflowitemId : randomString(),
+      id: value("workflowitemId", data.workflowitemId, isNonemptyString, randomString()),
       creationUnixTs: Date.now().toString(),
       displayName: value("displayName", data.displayName, isNonemptyString),
-      amount: value("amount", data.amount, isNonemptyString),
-      currency: value("currency", data.currency, isNonemptyString),
-      amountType: value("amountType", data.amountType, x =>
-        ["N/A", "disbursed", "allocated"].includes(x)
-      ),
-      description: value("description", data.description, x => typeof x === "string"),
-      status: "open",
+      amount,
+      currency,
+      amountType,
+      description: value("description", data.description, x => typeof x === "string", ""),
+      status: value("status", data.status, x => ["open", "closed"].includes(x), "open"),
+      assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, undefined),
       documents: data.documents, // not checked right now
       previousWorkflowitemId: data.previousWorkflowitemId // optional
     },
@@ -65,7 +81,28 @@ export const createWorkflowitem = async (
   ];
 };
 
+const isUserOrUndefined = async (multichain, input) => {
+  if (input === undefined) {
+    return true;
+  } else {
+    if (isNonemptyString) {
+      const user = await User.get(multichain, input).catch(err => {
+        if (err.kind === "NotFound") {
+          return undefined;
+        } else {
+          throw err;
+        }
+      });
+      return user !== undefined;
+    } else {
+      return false;
+    }
+  }
+};
+
 const getWorkflowitemDefaultPermissions = (token: AuthToken): AllowedUserGroupsByIntent => {
+  if (token.userId === "root") return {};
+
   const intents: Intent[] = [
     "workflowitem.intent.listPermissions",
     "workflowitem.intent.grantPermission",

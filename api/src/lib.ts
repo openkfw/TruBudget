@@ -9,7 +9,18 @@ export const findBadKeysInObject = (
   candidate: any
 ): string[] => expectedKeys.filter(key => typeof candidate !== "object" || !isGood(candidate[key]));
 
-export const value = (name, val, isValid) => {
+export const value = (name, val, isValid, defaultValue?) => {
+  if (val === undefined) {
+    val = defaultValue; // might be undefined
+  }
   if (!isValid(val)) throwParseError([name]);
+  return val;
+};
+
+export const asyncValue = async (name, val, isValid, defaultValue?) => {
+  if (val === undefined) {
+    val = defaultValue; // might be undefined
+  }
+  if (!(await isValid(val).catch(_err => false))) throwParseError([name]);
   return val;
 };

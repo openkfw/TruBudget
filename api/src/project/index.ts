@@ -14,7 +14,7 @@ export interface ProjectResource extends Resource {
 export interface ProjectData {
   id: string;
   creationUnixTs: string;
-  status: "open" | "done";
+  status: "open" | "closed";
   displayName: string;
   description: string;
   amount: string;
@@ -50,18 +50,14 @@ export const grantPermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, "self");
-  const project = streamItem.resource;
-  const permissionsForIntent: People = project.permissions[intent] || [];
-
-  if (permissionsForIntent.includes(userId)) {
-    // The given user is already permitted to execute the given intent.
-    return;
-  }
-  permissionsForIntent.push(userId);
-
-  project.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, streamItem.key, project);
+  await multichain.updateValue(projectId, "self", (project: Resource) => {
+    const permissionsForIntent: People = project.permissions[intent] || [];
+    if (!permissionsForIntent.includes(userId)) {
+      permissionsForIntent.push(userId);
+      project.permissions[intent] = permissionsForIntent;
+    }
+    return project;
+  });
 };
 
 export const revokePermission = async (
@@ -70,50 +66,36 @@ export const revokePermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, "self");
-  const project = streamItem.resource;
-  const permissionsForIntent: People = project.permissions[intent] || [];
-
-  const userIndex = permissionsForIntent.indexOf(userId);
-  if (userIndex === -1) {
-    // The given user has no permissions to execute the given intent.
-    // Note: a user could still belong to a group that has access rights!
-    return;
-  }
-  // Remove the user from the array:
-  permissionsForIntent.splice(userIndex, 1);
-
-  project.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, streamItem.key, project);
+  await multichain.updateValue(projectId, "self", (project: Resource) => {
+    const permissionsForIntent: People = project.permissions[intent] || [];
+    const userIndex = permissionsForIntent.indexOf(userId);
+    if (userIndex === -1) {
+      // Remove the user from the array:
+      permissionsForIntent.splice(userIndex, 1);
+      project.permissions[intent] = permissionsForIntent;
+    }
+    return project;
+  });
 };
 
 export const create = async (
   multichain: MultichainClient,
   token: AuthToken,
-  permissions: AllowedUserGroupsByIntent,
-  data: {
-    id: string;
-    displayName: string;
-    description: string;
-    amount: string;
-    currency: string;
-    thumbnail: string;
-  }
+  data: ProjectData,
+  permissions: AllowedUserGroupsByIntent
 ): Promise<void> => {
   const projectId = data.id;
-  const creationUnixTs = Date.now().toString();
   const resource: ProjectResource = {
-    data: {
-      id: projectId,
-      creationUnixTs,
-      status: "open",
-      displayName: data.displayName,
-      description: data.description,
-      amount: data.amount,
-      currency: data.currency,
-      thumbnail: data.thumbnail
-    },
-    log: [{ creationUnixTs, issuer: token.userId, action: "project_created" }],
+    data,
+    log: [
+      {
+        // not taken from data in case projects are created after the fact, as
+        // the log entry's ctime should always be the actual time of creation:
+        creationUnixTs: Date.now().toString(),
+        issuer: token.userId,
+        action: "project_created"
+      }
+    ],
     permissions
   };
   await ensureStreamExists(multichain, projectId);
@@ -175,26 +157,3 @@ export const getAllForUser = async (
     })
   );
 };
-
-// export const replacePermissions = async (
-//   multichain: MultichainClient,
-//   projectId: string,
-//   permissionsByIntent: AllowedUserGroupsByIntent
-// ): Promise<void> => {
-//   await ensureStreamExists(multichain, projectId);
-
-//   let self: Resource = await multichain
-//     .getValue(projectId, "self")
-//     .then(x => x.resource)
-//     .catch(err => {
-//       if (err.kind === "NotFound") {
-//         return { data: {}, log: [], permissions: {} };
-//       } else {
-//         throw err;
-//       }
-//     });
-
-//   self.permissions = permissionsByIntent;
-
-//   return multichain.setValue(projectId, ["self"], self);
-// };

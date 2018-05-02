@@ -21,14 +21,21 @@ export const createProject = async (
     await Global.getPermissions(multichain)
   );
 
-  await Project.create(multichain, req.token, defaultPermissions(req.token.userId), {
-    id: value("id", input.id || randomString(), isNonemptyString),
-    displayName: value("displayName", input.displayName, isNonemptyString),
-    description: value("description", input.description, isNonemptyString),
-    amount: value("amount", input.amount, isNonemptyString),
-    currency: value("currency", input.currency, isNonemptyString).toUpperCase(),
-    thumbnail: value("thumbnail", input.thumbnail || "", x => typeof x === "string")
-  });
+  await Project.create(
+    multichain,
+    req.token,
+    {
+      id: value("id", input.id || randomString(), isNonemptyString),
+      creationUnixTs: Date.now().toString(),
+      status: value("status", input.status, x => ["open", "closed"].includes(x), "open"),
+      displayName: value("displayName", input.displayName, isNonemptyString),
+      description: value("description", input.description, isNonemptyString),
+      amount: value("amount", input.amount, isNonemptyString),
+      currency: value("currency", input.currency, isNonemptyString).toUpperCase(),
+      thumbnail: value("thumbnail", input.thumbnail, x => typeof x === "string", "")
+    },
+    defaultPermissions(req.token.userId)
+  );
 
   console.log(
     `Project ${input.displayName} created with default permissions: ${JSON.stringify(
@@ -48,6 +55,8 @@ export const createProject = async (
 };
 
 const defaultPermissions = (userId: String): AllowedUserGroupsByIntent => {
+  if (userId === "root") return {};
+
   const intents: Intent[] = [
     "project.viewSummary",
     "project.viewDetails",

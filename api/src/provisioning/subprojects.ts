@@ -9,7 +9,7 @@ const futureSubproject = {
   currency: "BRL"
 };
 
-const grantPermissionsToUser = async (axios, projectId, subprojectId, userId) => {
+export const grantSubprojectPermissionsToUser = async (axios, projectId, subprojectId, userId) => {
   return Promise.all(
     [
       "subproject.viewDetails",
@@ -58,9 +58,9 @@ export const provisionSubprojects = async (axios, projectId) => {
         subprojectListResult.data
       )}`
     );
-  await grantPermissionsToUser(axios, projectId, createdSubproject.id, "mstein");
+  await grantSubprojectPermissionsToUser(axios, projectId, createdSubproject.id, "mstein");
   console.log("~> Subproject permissions granted for mstein");
-  await grantPermissionsToUser(axios, projectId, createdSubproject.id, "jxavier");
+  await grantSubprojectPermissionsToUser(axios, projectId, createdSubproject.id, "jxavier");
   console.log("~> Subproject permissions granted for jxavier");
   return createdSubproject.id;
 };

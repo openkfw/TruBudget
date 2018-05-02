@@ -5,7 +5,8 @@ import {
   StreamName,
   StreamTxId,
   StreamItem,
-  StreamItemPair
+  StreamItemPair,
+  Resource
 } from "./Client.h";
 
 const metadata = {
@@ -21,6 +22,13 @@ const metadata = {
 };
 
 class MultichainClientStub implements MultichainClient {
+  updateValue(
+    streamName: string,
+    key: string,
+    updateCallback: (current: Resource) => Resource
+  ): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   getLatestValues(
     streamName: string,
     key: string,

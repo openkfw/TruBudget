@@ -62,7 +62,7 @@ export const create = async (
   permissions: AllowedUserGroupsByIntent
 ): Promise<void> => {
   const resource: WorkflowitemResource = {
-    data: data,
+    data,
     log: [
       { creationUnixTs: data.creationUnixTs, issuer: token.userId, action: "workflowitem_created" }
     ],
@@ -130,17 +130,10 @@ export const close = async (
   projectId: string,
   workflowitemId: string
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, workflowitemId);
-
-  if (streamItem.resource.data.status === "closed") {
-    // Already closed, no need to update.
-    return;
-  }
-
-  // Update the item's status:
-  streamItem.resource.data.status = "closed";
-
-  await multichain.setValue(projectId, streamItem.key, streamItem.resource);
+  await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
+    workflowitem.data.status = "closed";
+    return workflowitem;
+  });
 };
 
 export const assign = async (
@@ -149,9 +142,10 @@ export const assign = async (
   workflowitemId: string,
   userId: string
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, workflowitemId);
-  streamItem.resource.data.assignee = userId;
-  await multichain.setValue(projectId, streamItem.key, streamItem.resource);
+  await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
+    workflowitem.data.assignee = userId;
+    return workflowitem;
+  });
 };
 
 export const getPermissions = async (
@@ -170,18 +164,14 @@ export const grantPermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, workflowitemId);
-  const workflowitem = streamItem.resource;
-  const permissionsForIntent: People = workflowitem.permissions[intent] || [];
-
-  if (permissionsForIntent.includes(userId)) {
-    // The given user is already permitted to execute the given intent.
-    return;
-  }
-  permissionsForIntent.push(userId);
-
-  workflowitem.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, streamItem.key, workflowitem);
+  await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
+    const permissionsForIntent: People = workflowitem.permissions[intent] || [];
+    if (!permissionsForIntent.includes(userId)) {
+      permissionsForIntent.push(userId);
+      workflowitem.permissions[intent] = permissionsForIntent;
+    }
+    return workflowitem;
+  });
 };
 
 export const revokePermission = async (
@@ -191,19 +181,14 @@ export const revokePermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, workflowitemId);
-  const workflowitem = streamItem.resource;
-  const permissionsForIntent: People = workflowitem.permissions[intent] || [];
-
-  const userIndex = permissionsForIntent.indexOf(userId);
-  if (userIndex === -1) {
-    // The given user has no permissions to execute the given intent.
-    // Note: a user could still belong to a group that has access rights!
-    return;
-  }
-  // Remove the user from the array:
-  permissionsForIntent.splice(userIndex, 1);
-
-  workflowitem.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, streamItem.key, workflowitem);
+  await multichain.updateValue(projectId, workflowitemId, (workflowitem: Resource) => {
+    const permissionsForIntent: People = workflowitem.permissions[intent] || [];
+    const userIndex = permissionsForIntent.indexOf(userId);
+    if (userIndex === -1) {
+      // Remove the user from the array:
+      permissionsForIntent.splice(userIndex, 1);
+      workflowitem.permissions[intent] = permissionsForIntent;
+    }
+    return workflowitem;
+  });
 };

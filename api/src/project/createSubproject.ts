@@ -35,13 +35,21 @@ export const createSubproject = async (
     await Project.getPermissions(multichain, projectId)
   );
 
-  await Subproject.create(multichain, req.token, projectId, defaultPermissions(req.token.userId), {
-    id: value("id", subproject.id || randomString(), isNonemptyString),
-    displayName: value("displayName", subproject.displayName, isNonemptyString),
-    description: value("description", subproject.description, isNonemptyString),
-    amount: value("amount", subproject.amount, isNonemptyString),
-    currency: value("currency", subproject.currency, isNonemptyString).toUpperCase()
-  });
+  await Subproject.create(
+    multichain,
+    req.token,
+    projectId,
+    {
+      id: value("id", subproject.id, isNonemptyString, randomString()),
+      creationUnixTs: Date.now().toString(),
+      status: value("status", subproject.status, x => ["open", "closed"].includes(x), "open"),
+      displayName: value("displayName", subproject.displayName, isNonemptyString),
+      description: value("description", subproject.description, isNonemptyString),
+      amount: value("amount", subproject.amount, isNonemptyString),
+      currency: value("currency", subproject.currency, isNonemptyString).toUpperCase()
+    },
+    defaultPermissions(req.token.userId)
+  );
 
   return [
     201,
@@ -53,6 +61,8 @@ export const createSubproject = async (
 };
 
 const defaultPermissions = (userId: String): AllowedUserGroupsByIntent => {
+  if (userId === "root") return {};
+
   const intents: Intent[] = [
     "subproject.intent.listPermissions",
     "subproject.intent.grantPermission",

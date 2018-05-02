@@ -96,4 +96,10 @@ export interface MultichainClient {
 
   // Update a stream item, serializing the Js object as hex-string:
   setValue(streamName: StreamName, streamKey: StreamKey, object: any): Promise<void>;
+
+  updateValue(
+    streamName: StreamName,
+    key: string,
+    updateCallback: (current: Resource) => Resource
+  ): Promise<void>;
 }

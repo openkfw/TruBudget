@@ -7,7 +7,7 @@ const futureProject = {
   currency: "BRL"
 };
 
-const grantPermissionsToUser = async (axios, projectId, userId) => {
+export const grantProjectPermissionsToUser = async (axios, projectId, userId) => {
   return Promise.all(
     [
       "project.viewDetails",
@@ -48,9 +48,9 @@ export const provisionProjects = async axios => {
     throw Error(
       `Project creation failed. project.list result: ${JSON.stringify(projectListResult.data)}`
     );
-  await grantPermissionsToUser(axios, createdProject.id, "mstein");
+  await grantProjectPermissionsToUser(axios, createdProject.id, "mstein");
   console.log("~> Project permissions granted for mstein");
-  await grantPermissionsToUser(axios, createdProject.id, "jxavier");
+  await grantProjectPermissionsToUser(axios, createdProject.id, "jxavier");
   console.log("~> Project permissions granted for jxavier");
   return createdProject.id;
 };

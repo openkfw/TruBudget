@@ -14,7 +14,7 @@ export interface SubprojectResource extends Resource {
 export interface SubprojectData {
   id: string;
   creationUnixTs: string;
-  status: string;
+  status: "open" | "closed";
   displayName: string;
   description: string;
   amount: string;
@@ -41,18 +41,14 @@ export const grantPermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, subprojectId);
-  const subproject = streamItem.resource;
-  const permissionsForIntent: People = subproject.permissions[intent] || [];
-
-  if (permissionsForIntent.includes(userId)) {
-    // The given user is already permitted to execute the given intent.
-    return;
-  }
-  permissionsForIntent.push(userId);
-
-  subproject.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, streamItem.key, subproject);
+  await multichain.updateValue(projectId, subprojectId, (subproject: Resource) => {
+    const permissionsForIntent: People = subproject.permissions[intent] || [];
+    if (!permissionsForIntent.includes(userId)) {
+      permissionsForIntent.push(userId);
+      subproject.permissions[intent] = permissionsForIntent;
+    }
+    return subproject;
+  });
 };
 
 export const revokePermission = async (
@@ -62,49 +58,37 @@ export const revokePermission = async (
   userId: string,
   intent: Intent
 ): Promise<void> => {
-  const streamItem = await multichain.getValue(projectId, subprojectId);
-  const subproject = streamItem.resource;
-  const permissionsForIntent: People = subproject.permissions[intent] || [];
-
-  const userIndex = permissionsForIntent.indexOf(userId);
-  if (userIndex === -1) {
-    // The given user has no permissions to execute the given intent.
-    // Note: a user could still belong to a group that has access rights!
-    return;
-  }
-  // Remove the user from the array:
-  permissionsForIntent.splice(userIndex, 1);
-
-  subproject.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(projectId, streamItem.key, subproject);
+  await multichain.updateValue(projectId, subprojectId, (subproject: Resource) => {
+    const permissionsForIntent: People = subproject.permissions[intent] || [];
+    const userIndex = permissionsForIntent.indexOf(userId);
+    if (userIndex === -1) {
+      // Remove the user from the array:
+      permissionsForIntent.splice(userIndex, 1);
+      subproject.permissions[intent] = permissionsForIntent;
+    }
+    return subproject;
+  });
 };
 
 export const create = async (
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string,
-  permissions: AllowedUserGroupsByIntent,
-  data: {
-    id: string;
-    displayName: string;
-    amount: string;
-    currency: string;
-    description: string;
-  }
+  data: SubprojectData,
+  permissions: AllowedUserGroupsByIntent
 ): Promise<void> => {
   const subprojectId = data.id;
-  const creationUnixTs = Date.now().toString();
   const resource: SubprojectResource = {
-    data: {
-      id: subprojectId,
-      creationUnixTs,
-      status: "open",
-      displayName: data.displayName,
-      description: data.description,
-      amount: data.amount,
-      currency: data.currency
-    },
-    log: [{ creationUnixTs, issuer: token.userId, action: "subproject_created" }],
+    data,
+    log: [
+      {
+        // not taken from data in case subprojects are created after the fact, as
+        // the log entry's ctime should always be the actual time of creation:
+        creationUnixTs: Date.now().toString(),
+        issuer: token.userId,
+        action: "subproject_created"
+      }
+    ],
     permissions
   };
   return multichain.setValue(projectId, [SUBPROJECTS_KEY, subprojectId], resource);

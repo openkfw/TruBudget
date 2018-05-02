@@ -39,8 +39,10 @@ interface MultichainStreamItem {
 
 export class RpcMultichainClient implements MultichainClient {
   private rpcClient: RpcClient;
+  private hasWriteLock: boolean;
   constructor(settings: ConnectionSettings) {
     this.rpcClient = new RpcClient(settings);
+    this.hasWriteLock = false;
   }
 
   async getOrCreateStream(options: CreateStreamOptions): Promise<StreamTxId> {
@@ -187,4 +189,24 @@ export class RpcMultichainClient implements MultichainClient {
     const data = objectToHex(object);
     return this.rpcClient.invoke("publish", streamName, streamkey, data);
   }
+
+  async updateValue(
+    streamName: StreamName,
+    key: string,
+    updateCallback: (Resource) => Resource
+  ): Promise<void> {
+    while (this.hasWriteLock) {
+      await sleep(1);
+    }
+    this.hasWriteLock = true;
+    try {
+      const streamItem = await this.getValue(streamName, key);
+      streamItem.resource = updateCallback(streamItem.resource);
+      await this.setValue(streamName, streamItem.key, streamItem.resource);
+    } finally {
+      this.hasWriteLock = false;
+    }
+  }
 }
+
+const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));

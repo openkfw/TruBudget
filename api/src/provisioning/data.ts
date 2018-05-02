@@ -1,415 +1,315 @@
-export const amazonasFund = {
-  displayName: "Amazonas Fund",
+export const amazonasFundProject = {
+  displayName: "Amazonas Fund 47",
   description: "Projects in 2017",
   amount: "32000000",
   currency: "BRL",
+  permissions: {
+    "project.viewDetails": ["mstein", "jxavier"],
+    "project.viewSummary": ["mstein", "jxavier"],
+    "project.assign": ["mstein", "jxavier"],
+    "project.intent.listPermissions": ["mstein", "jxavier"],
+    "project.intent.grantPermission": ["mstein", "jxavier"],
+    "project.intent.revokePermission": ["mstein", "jxavier"]
+  },
   subprojects: [
     {
       displayName: "Consultancy studies",
-      status: "done",
+      description: "No description.",
+      status: "closed",
       amount: "500000",
       currency: "BRL",
+      permissions: {
+        "subproject.viewDetails": ["jxavier"]
+      },
       workflows: [
         {
           displayName: "Budget allocation",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender publication",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender evaluation",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Contract signature",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
           amount: 500000,
-          amountType: "allocated",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "allocated"
         },
         {
           displayName: "Execution monitoring",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Payment advance installment",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
           amount: 136000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Payment interim installment",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
           amount: 136000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Payment final installment",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
           amount: 118000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Completion subproject",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         }
       ]
     },
     {
       displayName: "Consultancy supervision",
-      status: "done",
+      description: "No description.",
+      status: "closed",
       amount: "750000",
       currency: "BRL",
       workflows: [
         {
           displayName: "Budget allocation",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender publication",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender evaluation",
-          status: "in_progress",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Contract signature",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 720000,
-          amountType: "allocated",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "allocated"
         },
         {
           displayName: "Execution monitoring",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Payment advance installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 400000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Payment interim installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 172000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Payment final installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 148000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Completion subproject",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         }
       ]
     },
     {
       displayName: "Construction lot 1",
-      status: "open",
+      description: "No description.",
       amount: "1750000",
       currency: "BRL",
       workflows: [
         {
           displayName: "Budget allocation",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender publication",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender evaluation",
-          status: "in_progress",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Contract signature",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 1680000,
-          amountType: "allocated",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "allocated"
         },
         {
           displayName: "Execution monitoring",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Payment advance installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 336000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Payment interim installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 1176000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Payment final installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 168000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Completion subproject",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         }
       ]
     },
     {
       displayName: "Construction lot 2",
-      status: "open",
+      description: "No description.",
       amount: "2500000",
       currency: "BRL",
       workflows: [
         {
           displayName: "Budget allocation",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender publication",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender evaluation",
-          status: "in_progress",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Contract signature",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 1680000,
-          amountType: "allocated",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "allocated"
         },
         {
           displayName: "Execution monitoring",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         }
       ]
     },
     {
       displayName: "Furniture",
-      status: "open",
+      description: "No description.",
       amount: "500000",
       currency: "BRL",
       workflows: [
         {
           displayName: "Budget allocation",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender publication",
-          status: "done",
+          status: "closed",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Tender evaluation",
-          status: "in_progress",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Contract signature",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 300000,
-          amountType: "allocated",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "allocated"
         },
         {
           displayName: "Execution monitoring",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         },
         {
           displayName: "Payment advance installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 100000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Payment interim installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 100000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Payment final installment",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
           amount: 100000,
-          amountType: "disbursed",
-          approvalRequired: true
+          currency: "BRL",
+          amountType: "disbursed"
         },
         {
           displayName: "Completion subproject",
-          status: "open",
           assignee: "jdoe",
-          type: "workflow",
-          amount: 0,
-          amountType: "na",
-          approvalRequired: true
+          amountType: "N/A"
         }
       ]
     }

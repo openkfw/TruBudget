@@ -1,12 +1,10 @@
 const axios = require("axios");
 
-import { provisionUsers } from "./users";
-import { provisionProjects } from "./projects";
-import { sleep } from "./lib";
 import * as winston from "winston";
 import { MultichainClient } from "../multichain";
-import { provisionSubprojects } from "./subprojects";
-import { provisionWorkflowitems } from "./workflowitems";
+import { amazonasFundProject } from "./data";
+import { sleep } from "./lib";
+import { provisionUsers } from "./users";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -79,7 +77,138 @@ export const provisionBlockchain = async (
   await provisionUsers(axios);
   token = await authenticate(axios, "mstein", "test");
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-  const projectId = await provisionProjects(axios);
-  const subprojectId = await provisionSubprojects(axios, projectId);
-  await provisionWorkflowitems(axios, projectId, subprojectId);
+  // const projectId = await provisionProjects(axios);
+  // const subprojectId = await provisionSubprojects(axios, projectId);
+  // await provisionWorkflowitems(axios, projectId, subprojectId);
+  await provisionFromData(axios);
 };
+
+const provisionFromData = async axios => {
+  // Don't continue if the project already exists:
+  const projectTemplate = amazonasFundProject;
+  const projectExists = await findProject(projectTemplate).then(
+    existingProject => existingProject !== undefined
+  );
+  if (projectExists) {
+    console.log(`${projectTemplate.displayName} project already exists.`);
+    return;
+  }
+
+  await axios.post("/global.createProject", {
+    project: {
+      displayName: projectTemplate.displayName,
+      description: projectTemplate.description,
+      amount: projectTemplate.amount,
+      currency: projectTemplate.currency
+    }
+  });
+  const project = await findProject(projectTemplate);
+
+  await grantPermissions(projectTemplate.permissions, project.id);
+
+  for (const subprojectTemplate of projectTemplate.subprojects) {
+    await provisionSubproject(axios, project, subprojectTemplate);
+  }
+  console.log(`Project ${fmtList([project])} created.`);
+};
+
+const findProject = async project => {
+  return axios
+    .get("/project.list")
+    .then(res => res.data.data.items)
+    .then(projects => projects.find(p => p.displayName === project.displayName));
+};
+
+const provisionSubproject = async (axios, project, subprojectTemplate) => {
+  await axios.post("/project.createSubproject", {
+    projectId: project.id,
+    subproject: {
+      displayName: subprojectTemplate.displayName,
+      description: subprojectTemplate.description,
+      status: subprojectTemplate.status,
+      amount: subprojectTemplate.amount,
+      currency: subprojectTemplate.currency
+    }
+  });
+  const subproject = await findSubproject(project, subprojectTemplate);
+
+  await grantPermissions(subprojectTemplate.permissions, project.id, subproject.id);
+
+  for (const workflowitemTemplate of subprojectTemplate.workflows) {
+    provisionWorkflowitem(axios, project, subproject, workflowitemTemplate);
+  }
+  console.log(`Subproject ${fmtList([project, subproject])} created.`);
+};
+
+const findSubproject = async (project, subproject) => {
+  return axios
+    .get(`/subproject.list?projectId=${project.id}`)
+    .then(res => res.data.data.items)
+    .then(subprojects => subprojects.find(x => x.displayName === subproject.displayName));
+};
+
+const provisionWorkflowitem = async (axios, project, subproject, workflowitemTemplate) => {
+  const data = {
+    projectId: project.id,
+    subprojectId: subproject.id,
+    displayName: workflowitemTemplate.displayName,
+    description: workflowitemTemplate.description,
+    amountType: workflowitemTemplate.amountType,
+    status: workflowitemTemplate.status,
+    assignee: workflowitemTemplate.assignee
+  };
+  const amount = workflowitemTemplate.amount ? workflowitemTemplate.amount.toString() : undefined;
+  const currency = workflowitemTemplate.currency;
+  const body = data.amountType === "N/A" ? data : { ...data, amount, currency };
+  await axios.post("/subproject.createWorkflowitem", body);
+
+  const workflowitem = await findWorkflowitem(project, subproject, workflowitemTemplate);
+
+  await grantPermissions(
+    workflowitemTemplate.permissions,
+    project.id,
+    subproject.id,
+    workflowitem.id
+  );
+
+  console.log(`Workflowitem ${fmtList([project, subproject, workflowitem])} created.`);
+};
+
+const findWorkflowitem = async (project, subproject, workflowitem) => {
+  return axios
+    .get(`/workflowitem.list?projectId=${project.id}&subprojectId=${subproject.id}`)
+    .then(res => res.data.data.workflowitems)
+    .then(items => items.find(item => item.displayName === workflowitem.displayName));
+};
+
+const grantPermissions = async (permissions: Object, projectId, subprojectId?, workflowitemId?) => {
+  if (permissions === undefined) return;
+
+  let url, body;
+  if (workflowitemId !== undefined) {
+    url = "/workflowitem.intent.grantPermission";
+    body = { projectId, subprojectId, workflowitemId };
+  } else if (subprojectId !== undefined) {
+    url = "/subproject.intent.grantPermission";
+    body = { projectId, subprojectId };
+  } else {
+    url = "/project.intent.grantPermission";
+    body = { projectId };
+  }
+
+  for (const [intent, users] of Object.entries(permissions)) {
+    for (const userId of users) {
+      await axios.post(url, {
+        ...body,
+        intent,
+        userId
+      });
+    }
+  }
+};
+
+const fmtList = l =>
+  l
+    .map(x => (x.displayName === undefined ? x : x.displayName))
+    .map(x => `"${x}"`)
+    .join(" > ");
