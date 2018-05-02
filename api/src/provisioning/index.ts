@@ -135,7 +135,7 @@ const provisionSubproject = async (axios, project, subprojectTemplate) => {
   await grantPermissions(subprojectTemplate.permissions, project.id, subproject.id);
 
   for (const workflowitemTemplate of subprojectTemplate.workflows) {
-    provisionWorkflowitem(axios, project, subproject, workflowitemTemplate);
+    await provisionWorkflowitem(axios, project, subproject, workflowitemTemplate);
   }
   console.log(`Subproject ${fmtList([project, subproject])} created.`);
 };
