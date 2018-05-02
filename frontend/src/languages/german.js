@@ -182,6 +182,9 @@ const de = {
     sort: "Moved {0} after {1}"
   },
   permissions: {
+    "view": "German: View permissions",
+    "write": "German: Write permissions",
+    "admin": "German: Admin permissions",
     "project.assign": "German: Assign project to others",
     "project.intent.grantPermission": "German: Grant permissions",
     "project.intent.listPermissions": "German: View permissions",

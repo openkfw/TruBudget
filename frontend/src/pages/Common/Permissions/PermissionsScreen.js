@@ -21,7 +21,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import strings from '../../../localizeStrings'
 
-
 const styles = {
   container: {
     padding: 0
@@ -30,6 +29,15 @@ const styles = {
     paddingLeft: 0,
     paddingRight: 0,
 
+  },
+  tableRow: {
+    borderWidth: 0
+  },
+  heading: {
+    textAlign: 'center',
+    fontSize: '14px',
+    verticalAlign: 'bottom',
+    paddingBottom: '8px'
   }
 }
 
@@ -74,11 +82,20 @@ class PermissionSelection extends Component {
     }
   }
 
+  resolveSelectionTitle = () => {
+    const userListAvailable = this.props.userList.length > 0;
+
+    if (!userListAvailable) {
+      return `...`
+    }
+    return `${this.props.permissions[this.props.name].length} selection(s)`
+  }
+
   render() {
     return (
       <SelectField
         multiple={true}
-        hintText={`${this.props.permissions[this.props.name].length} selection(s)`}
+        hintText={this.resolveSelectionTitle()}
         maxHeight={250}
         autoWidth={true}
         dropDownMenuProps={{
@@ -121,7 +138,7 @@ const renderUserSelection = (user, permissionedUser, permissionName, grantPermis
 });
 
 const renderPermission = (name, userList, permissions, grantPermission) => (
-  <TableRow key={name}>
+  <TableRow key={name} style={styles.tableRow}>
     <TableRowColumn>{strings.permissions[name] || name}</TableRowColumn>
     <TableRowColumn>
       <PermissionSelection
@@ -133,24 +150,31 @@ const renderPermission = (name, userList, permissions, grantPermission) => (
 
 
 
-const PermissionsTable = ({ permissions, user, grantPermission, id }) => (
+const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder }) => (
   <div style={tableStyle.container}>
-    <Table selectable={false}>
-      <TableHeader
-        displaySelectAll={false}
-        adjustForCheckbox={false}
-      >
-        <TableRow>
-          <TableHeaderColumn>Name</TableHeaderColumn>
-          <TableHeaderColumn>Permission</TableHeaderColumn>
-        </TableRow>
-      </TableHeader>
-      <TableBody displayRowCheckbox={false}>
-        {
-          Object.keys(permissions).map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))
-        }
-      </TableBody>
-    </Table>
+    {intentOrder.map(section => {
+      return (
+        <Table selectable={false}>
+          <TableHeader
+            displaySelectAll={false}
+            adjustForCheckbox={false}
+          >
+            <TableRow>
+              <TableHeaderColumn colSpan="3" style={styles.heading}>
+                {strings.permissions[section.name]}
+              </TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false}>
+            {
+              section.intents
+                .filter(i => permissions[i] !== undefined)
+                .map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))
+            }
+          </TableBody>
+        </Table>
+      )
+    })}
   </div>
 )
 

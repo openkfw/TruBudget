@@ -5,6 +5,7 @@ import { fetchProjectPermissions, hideProjectPermissions, grantPermission } from
 import withInitialLoading from '../Loading/withInitialLoading';
 import { toJS } from '../../helper';
 import { fetchUser } from '../Login/actions';
+import { projectIntentOrder } from '../../permissions';
 
 class ProjectPermissionsContainer extends Component {
 
@@ -16,7 +17,7 @@ class ProjectPermissionsContainer extends Component {
   }
 
   render() {
-    return <PermissionsScreen {...this.props} />
+    return <PermissionsScreen {...this.props} intentOrder={projectIntentOrder} />
   }
 }
 

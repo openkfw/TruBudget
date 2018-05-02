@@ -217,6 +217,9 @@ const def = {
     sort: "Moved {0} after {1}"
   },
   permissions: {
+    "view": "View permissions",
+    "write": "Write permissions",
+    "admin": "Admin permissions",
     "project.assign": "Assign project to others",
     "project.intent.grantPermission": "Grant permissions",
     "project.intent.listPermissions": "View permissions",

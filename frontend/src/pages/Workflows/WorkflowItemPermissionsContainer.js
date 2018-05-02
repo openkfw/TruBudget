@@ -5,6 +5,7 @@ import { fetchSubProjectPermissions, hideSubProjectPermissions, grantSubProjectP
 import withInitialLoading from '../Loading/withInitialLoading';
 import { toJS } from '../../helper';
 import { fetchUser } from '../Login/actions';
+import { workflowItemIntentOrder } from '../../permissions';
 
 class WorkflowItemPermissionsContainer extends Component {
   componentWillReceiveProps(nextProps) {
@@ -21,7 +22,7 @@ class WorkflowItemPermissionsContainer extends Component {
   render() {
     return <PermissionsScreen
       {...this.props}
-      grantPermission={this.grantPermission} />
+      grantPermission={this.grantPermission} intentOrder={workflowItemIntentOrder} />
   }
 }
 

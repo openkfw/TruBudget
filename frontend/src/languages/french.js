@@ -184,6 +184,9 @@ const fr = {
     sort: 'Déplacé {0} après {1}'
   },
   permissions: {
+    "view": "French: View permissions",
+    "write": "French: Write permissions",
+    "admin": "French: Admin permissions",
     "project.assign": 'French: Assign project to others',
     "project.intent.grantPermission": 'French: Grant permissions',
     "project.intent.listPermissions": 'French: View permissions',
