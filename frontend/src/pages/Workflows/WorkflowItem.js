@@ -87,7 +87,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center'
   },
-  reducted: {
+  redacted: {
     fontStyle: 'italic'
   }
 }
@@ -268,7 +268,7 @@ export const WorkflowItem = SortableElement(({ workflow, mapIndex, index, permis
   )
 });
 
-export const ReductedWorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
+export const RedactedWorkflowItem = SortableElement(({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
   const { status } = workflow;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const tableStyle = styles[status];
@@ -289,8 +289,8 @@ export const ReductedWorkflowItem = SortableElement(({ workflow, mapIndex, index
                 <HiddenIcon />
               </IconButton>
             </TableRowColumn>
-            <TableRowColumn style={{ ...itemStyle, ...styles.listText, ...styles.reducted }} colSpan={3}>
-              {strings.workflow.workflow_reducted}
+            <TableRowColumn style={{ ...itemStyle, ...styles.listText, ...styles.redacted }} colSpan={3}>
+              {strings.workflow.workflow_redacted}
             </TableRowColumn>
             <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
               {null}

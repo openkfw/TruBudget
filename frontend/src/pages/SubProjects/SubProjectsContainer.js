@@ -8,7 +8,6 @@ import { setSelectedView } from '../Navbar/actions';
 import ProjectDetails from './ProjectDetails';
 import globalStyles from '../../styles';
 import { toJS } from '../../helper';
-import { fetchUser } from '../Login/actions';
 import ProjectPermissionsContainer from './ProjectPermissionsContainer';
 import strings from '../../localizeStrings';
 
@@ -19,7 +18,6 @@ class SubProjectsContainer extends Component {
     const projectId = this.props.location.pathname.split('/')[2];
     this.props.setSelectedView(projectId, 'project');
     this.props.fetchAllProjectDetails(projectId, true);
-    this.props.fetchUser(true);
   }
 
   render() {
@@ -42,7 +40,6 @@ class SubProjectsContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
-    fetchUser: (showLoading) => dispatch(fetchUser(showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),

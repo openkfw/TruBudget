@@ -1,20 +1,20 @@
 import React from 'react';
 import { SortableContainer } from 'react-sortable-hoc';
-import { WorkflowItem, ReductedWorkflowItem } from './WorkflowItem'
+import { WorkflowItem, RedactedWorkflowItem } from './WorkflowItem'
 
 const getSortableItems = ({ workflowItems, permissions, ...props }) => {
   let nextWorkflowNotSelectable = false;
 
   return workflowItems.map((workflow, index) => {
-    const reducted = workflow.displayName === null && workflow.amount === null;
+    const redacted = workflow.displayName === null && workflow.amount === null;
     const status = workflow.status;
     const currentWorkflowSelectable = !nextWorkflowNotSelectable;
 
     if (!nextWorkflowNotSelectable) {
       nextWorkflowNotSelectable = status === 'open';
     }
-    return reducted ?
-      <ReductedWorkflowItem disabled={!props.workflowSortEnabled || workflow.status !== 'open'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} permissions={permissions}
+    return redacted ?
+      <RedactedWorkflowItem disabled={!props.workflowSortEnabled || workflow.status !== 'open'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} permissions={permissions}
         currentWorkflowSelectable={currentWorkflowSelectable} {...props} /> :
       <WorkflowItem disabled={!props.workflowSortEnabled || workflow.status !== 'open'} key={`item-${index}`} index={index} mapIndex={index} workflow={workflow} permissions={permissions}
         currentWorkflowSelectable={currentWorkflowSelectable} {...props} />

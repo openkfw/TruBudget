@@ -155,7 +155,7 @@ const en = {
     workflow_budget_description: 'Budget for the workflow',
     workflow_submit_for_review: 'Submit for Review',
     workflow_permissions_title: 'Set permissions for workflowitem',
-    workflow_reducted: 'Reducted'
+    workflow_redacted: 'redacted'
   },
 
   navigation: {

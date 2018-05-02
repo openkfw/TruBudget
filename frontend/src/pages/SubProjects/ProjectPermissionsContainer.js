@@ -4,11 +4,13 @@ import PermissionsScreen from '../Common/Permissions/PermissionsScreen';
 import { fetchProjectPermissions, hideProjectPermissions, grantPermission } from './actions';
 import withInitialLoading from '../Loading/withInitialLoading';
 import { toJS } from '../../helper';
+import { fetchUser } from '../Login/actions';
 
 class ProjectPermissionsContainer extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.show && nextProps.show) {
+      this.props.fetchUser(true)
       this.props.fetchProjectPermissions(this.props.id, true);
     }
   }
@@ -32,6 +34,7 @@ const mapDispatchToProps = (dispatch) => {
     onClose: () => dispatch(hideProjectPermissions()),
     grantPermission: (projectId, permission, user) => dispatch(grantPermission(projectId, permission, user, true)),
     fetchProjectPermissions: (projectId, showLoading) => dispatch(fetchProjectPermissions(projectId, showLoading)),
+    fetchUser: (showLoading) => dispatch(fetchUser(showLoading)),
   }
 }
 
