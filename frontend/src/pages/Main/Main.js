@@ -22,10 +22,20 @@ const Main = (props) => {
       display: 'flex',
       flex: '1',
       flexDirection: 'column',
-      backgroundImage: 'url("/navbar_back3.jpg")',
-      backgroundSize: 'cover',
-      alignItems: 'center'
+      alignItems: 'center',
+      backgroundImage: "linear-gradient(135deg, #5a9bbe 0%,#1b618c 100%)",
+      minHeight: '100vh'
     }}>
+      <div
+        style={{
+          backgroundImage: 'url("/navbar_back5edit.jpeg")',
+          backgroundSize: 'cover',
+          position: 'absolute',
+          height: '70vh',
+          width: '100%',
+          clipPath: 'polygon(0 0,100% 0,100% 100%,0 70%)'
+        }}
+      />
       <div style={{ width: '100%' }}>
         <Route component={NavbarContainer} />
       </div>
