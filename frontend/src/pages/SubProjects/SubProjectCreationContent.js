@@ -1,11 +1,12 @@
-import React from 'react';
-import Divider from 'material-ui/Divider';
+import React from "react";
+import Divider from "material-ui/Divider";
 
-import strings from '../../localizeStrings';
-import Budget from '../Common/Budget';
-import Identifier from '../Common/Identifier';
+import strings from "../../localizeStrings";
+import Budget from "../Common/Budget";
+import Identifier from "../Common/Identifier";
+import { toAmountString } from "../../helper";
 
-const SubProjectCreationContent = (props) => {
+const SubProjectCreationContent = props => {
   return (
     <div>
       <div>
@@ -17,23 +18,24 @@ const SubProjectCreationContent = (props) => {
           commentLabel={strings.subproject.subproject_comment}
           commentHintText={strings.common.comment_description}
           comment={props.subProjectComment}
-          commentOnChange={props.storeSubProjectComment} />
+          commentOnChange={props.storeSubProjectComment}
+        />
       </div>
       <Divider />
-      <div >
+      <div>
         <Budget
           currencyTitle={strings.subproject.subproject_currency}
           currency={props.subProjectCurrency}
           storeCurrency={props.storeSubProjectCurrency}
           parentCurrency={props.projectCurrency}
           budgetLabel={strings.subproject.subproject_budget_amount}
-          budgetHintText={strings.subproject.subproject_budget_amount_description}
+          budgetHintText={strings.subproject.subproject_budget_amount_description + " " + toAmountString(99999.99)}
           budget={props.subProjectAmount}
           storeBudget={props.storeSubProjectAmount}
         />
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
 export default SubProjectCreationContent;

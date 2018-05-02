@@ -1,57 +1,67 @@
-import React from 'react';
-import _ from 'lodash';
-import { Card, CardHeader, CardTitle, CardText, CardMedia } from 'material-ui/Card';
-import { Doughnut } from 'react-chartjs-2';
-
-import { toAmountString, fromAmountString, createTaskData, statusIconMapping, statusMapping, tsToString, calculateWorkflowBudget, getProgressInformation, getNextIncompletedItem, getNextAction, getAssignedOrganization } from '../../helper.js'
-import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-
-import CommentIcon from 'material-ui/svg-icons/editor/short-text';
-import AmountIcon from 'material-ui/svg-icons/action/account-balance';
-import PermissionIcon from 'material-ui/svg-icons/action/lock-open';
-import UnspentIcon from 'material-ui/svg-icons/content/add-circle';
-import SpentIcon from 'material-ui/svg-icons/content/remove-circle';
-import NotAssignedIcon from 'material-ui/svg-icons/editor/space-bar'
-import DateIcon from 'material-ui/svg-icons/action/date-range';
-import ActiveIcon from 'material-ui/svg-icons/image/navigate-next';
-import OpenIcon from 'material-ui/svg-icons/content/remove';
-import AssigneeIcon from 'material-ui/svg-icons/social/group';
-import DoneIcon from 'material-ui/svg-icons/navigation/check';
-import EditIcon from 'material-ui/svg-icons/image/edit';
-import IconButton from 'material-ui/IconButton';
-
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-
-import GaugeChart from '../Common/GaugeChart';
-import strings from '../../localizeStrings';
+import React from "react";
+import _ from "lodash";
+import { Card, CardHeader, CardTitle, CardText, CardMedia } from "material-ui/Card";
+import { Doughnut } from "react-chartjs-2";
 
 import {
-  ACMECorpLightgreen,
-} from '../../colors'
+  toAmountString,
+  fromAmountString,
+  createTaskData,
+  statusIconMapping,
+  statusMapping,
+  tsToString,
+  calculateWorkflowBudget,
+  getProgressInformation,
+  getNextIncompletedItem,
+  getNextAction,
+  getAssignedOrganization
+} from "../../helper.js";
+import { List, ListItem } from "material-ui/List";
+import Divider from "material-ui/Divider";
 
-import { workflowBudgetColorPalette, red } from '../../colors'
+import CommentIcon from "material-ui/svg-icons/editor/short-text";
+import AmountIcon from "material-ui/svg-icons/action/account-balance";
+import PermissionIcon from "material-ui/svg-icons/action/lock-open";
+import UnspentIcon from "material-ui/svg-icons/content/add-circle";
+import SpentIcon from "material-ui/svg-icons/content/remove-circle";
+import NotAssignedIcon from "material-ui/svg-icons/editor/space-bar";
+import DateIcon from "material-ui/svg-icons/action/date-range";
+import ActiveIcon from "material-ui/svg-icons/image/navigate-next";
+import OpenIcon from "material-ui/svg-icons/content/remove";
+import AssigneeIcon from "material-ui/svg-icons/social/group";
+import DoneIcon from "material-ui/svg-icons/navigation/check";
+import EditIcon from "material-ui/svg-icons/image/edit";
+import IconButton from "material-ui/IconButton";
+
+import RaisedButton from "material-ui/RaisedButton";
+import TextField from "material-ui/TextField";
+
+import GaugeChart from "../Common/GaugeChart";
+import strings from "../../localizeStrings";
+
+import { ACMECorpLightgreen } from "../../colors";
+
+import { workflowBudgetColorPalette, red } from "../../colors";
 
 const styles = {
   container: {
-    display: 'flex',
-    height: '30%',
+    display: "flex",
+    height: "30%",
     flex: 1,
-    flexDirection: 'row',
-    width: '100%',
-    marginBottom: '24px',
-    justifyContent: 'space-between'
+    flexDirection: "row",
+    width: "100%",
+    marginBottom: "24px",
+    justifyContent: "space-between"
   },
   card: {
-    width: '31%'
+    width: "31%"
   },
   permissionContainer: {
-    display: 'flex',
-    justifyContent: 'center'
+    display: "flex",
+    justifyContent: "center"
   },
   text: {
-    fontSize: '14px',
+    fontSize: "14px"
   },
 
   overspent: {
@@ -59,72 +69,73 @@ const styles = {
   },
 
   tasksChart: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
   },
   taskChartItem: {
-    width: '33%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: "33%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
   },
   comment: {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden'
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    overflow: "hidden"
   },
   iconButton: {
-    padding: '0px',
-    height: '0px',
+    padding: "0px",
+    height: "0px"
   },
   tooltip: {
-    top: '12px'
+    top: "12px"
   },
   budget: {
-    display: 'flex',
-    flexDirection: 'row',
-    height: '100%'
+    display: "flex",
+    flexDirection: "row",
+    height: "100%"
   },
   cardMedia: {
-    marginBottom: '10px'
+    marginBottom: "10px"
   },
   icon: {
-    width: '16px', height: '20px'
+    width: "16px",
+    height: "20px"
   },
   editIcon: {
-    marginLeft: '5px',
-    marginTop: '11px'
+    marginLeft: "5px",
+    marginTop: "11px"
   },
 
   doneIcon: {
-    marginLeft: '9px',
-    marginTop: '22px'
+    marginLeft: "9px",
+    marginTop: "22px"
   },
   textfield: {
-    width: '60%',
-    marginLeft: '-15px',
-    marginTop: '-10px'
+    width: "60%",
+    marginLeft: "-15px",
+    marginTop: "-10px"
   },
   charts: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: '10px',
-    marginBottom: '10px',
-    marginRight: '10px'
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: "10px",
+    marginBottom: "10px",
+    marginRight: "10px"
   }
-}
+};
 
 const enableEditMode = ({ storeSubProjectAmount, enableBudgetEdit }, amountString) => {
-  const amount = fromAmountString(amountString)
-  enableBudgetEdit()
-  storeSubProjectAmount(amount)
-}
+  const amount = fromAmountString(amountString);
+  enableBudgetEdit();
+  storeSubProjectAmount(amount);
+};
 
 const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   return (
@@ -137,58 +148,72 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
       />
       <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(props, amountString)} />
     </div>
-  )
-}
+  );
+};
 
-const disableEditMode = (subProjectAmount, storeSubProjectAmount, { disableBudgetEdit, location, postSubProjectEdit }) => {
-  storeSubProjectAmount(0)
-  postSubProjectEdit(location.pathname.split('/')[2], location.pathname.split('/')[3], 'open', subProjectAmount)
-  disableBudgetEdit()
-}
+const disableEditMode = (
+  subProjectAmount,
+  storeSubProjectAmount,
+  { disableBudgetEdit, location, postSubProjectEdit }
+) => {
+  storeSubProjectAmount(0);
+  postSubProjectEdit(location.pathname.split("/")[2], location.pathname.split("/")[3], "open", subProjectAmount);
+  disableBudgetEdit();
+};
 
 const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }) => {
-  const floatingLabelText = strings.common.budget
+  const floatingLabelText = strings.common.budget;
   return (
     <div style={styles.budget}>
-      <ListItem
-        style={{ marginTop: '10px' }}
-        disabled={true}
-        leftIcon={<AmountIcon />}
-      />
+      <ListItem style={{ marginTop: "10px" }} disabled={true} leftIcon={<AmountIcon />} />
       <TextField
         floatingLabelText={floatingLabelText}
         style={styles.textfield}
-        type='number'
+        type="number"
         value={subProjectAmount}
-        onChange={(event) => storeSubProjectAmount(event.target.value)}
+        onChange={event => storeSubProjectAmount(event.target.value)}
       />
-      <DoneIcon color={ACMECorpLightgreen} style={styles.doneIcon} onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)} />
+      <DoneIcon
+        color={ACMECorpLightgreen}
+        style={styles.doneIcon}
+        onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)}
+      />
     </div>
-  )
-}
+  );
+};
 
-const createRatio = (ratio) => _.isNaN(ratio) ? 0 : ratio * 100
+const createRatio = ratio => (_.isNaN(ratio) ? 0 : ratio * 100);
 
 const SubProjectDetails = ({
-  displayName, description, amount, currency,
-  status, roles, subProjectDetails, workflowItems,
-  created, budgetEditEnabled, canViewPermissions,
-  showSubProjectPermissions, ...props
+  displayName,
+  description,
+  amount,
+  currency,
+  status,
+  roles,
+  subProjectDetails,
+  workflowItems,
+  created,
+  budgetEditEnabled,
+  canViewPermissions,
+  showSubProjectPermissions,
+  ...props
 }) => {
+  const amountString = toAmountString(amount, currency);
+  const mappedStatus = statusMapping(status);
+  const statusIcon = statusIconMapping[status];
+  const date = tsToString(created);
 
-  const amountString = toAmountString(amount, currency)
-  const mappedStatus = statusMapping(status)
-  const statusIcon = statusIconMapping[status]
-  const date = tsToString(created)
-
-  const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(workflowItems);
+  const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(
+    workflowItems
+  );
 
   const disbursedBudgetString = toAmountString(disbursedBudget, currency);
   const unSpendBudgetString = toAmountString(assignedBudget, currency);
   const spendBudgetString = toAmountString(currentDisbursement, currency);
 
-  const statusDetails = getProgressInformation(workflowItems)
-  const nextIncompletedWorkflow = getNextIncompletedItem(workflowItems)
+  const statusDetails = getProgressInformation(workflowItems);
+  const nextIncompletedWorkflow = getNextIncompletedItem(workflowItems);
 
   const allowedToWrite = false;
   const allowedToEdit = false;
@@ -199,14 +224,13 @@ const SubProjectDetails = ({
 
   return (
     <div style={styles.container}>
-      <Card style={styles.card} >
-        <CardHeader
-          title={displayName}
-          subtitle={description}
-        />
+      <Card style={styles.card}>
+        <CardHeader title={displayName} subtitle={description} />
         <List>
           <Divider />
-          {budgetEditEnabled && allowedToEdit ? getEditableBudget(props) : getNotEditableBudget(amountString, allowedToEdit, props)}
+          {budgetEditEnabled && allowedToEdit
+            ? getEditableBudget(props)
+            : getNotEditableBudget(amountString, allowedToEdit, props)}
           <Divider />
           <ListItem
             disabled={true}
@@ -215,12 +239,7 @@ const SubProjectDetails = ({
             secondaryText={strings.common.status}
           />
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<DateIcon />}
-            primaryText={date}
-            secondaryText={strings.common.created}
-          />
+          <ListItem disabled={true} leftIcon={<DateIcon />} primaryText={date} secondaryText={strings.common.created} />
           <Divider />
           <ListItem
             disabled={true}
@@ -233,82 +252,89 @@ const SubProjectDetails = ({
             style={styles.permissionContainer}
             disabled={true}
             leftIcon={null}
-            primaryText={<RaisedButton
-              label="Permissions"
-              secondary={true}
-              disabled={!canViewPermissions}
-              onClick={showSubProjectPermissions}
-              icon={<PermissionIcon style={styles.icon} />}
-            />}
+            primaryText={
+              <RaisedButton
+                label="Permissions"
+                secondary={true}
+                disabled={!canViewPermissions}
+                onClick={showSubProjectPermissions}
+                icon={<PermissionIcon style={styles.icon} />}
+              />
+            }
           />
         </List>
       </Card>
       <Card style={styles.card}>
-        <CardHeader
-          title={strings.common.budget_distribution}
-        />
+        <CardHeader title={strings.common.budget_distribution} />
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text}
+          <ListItem
+            style={styles.text}
             disabled={true}
             leftIcon={<UnspentIcon color={workflowBudgetColorPalette[1]} />}
             primaryText={unSpendBudgetString}
             secondaryText={strings.common.assigned_budget}
           />
-          <GaugeChart size={0.20} responsive={false} value={createRatio(allocatedBudgetRatio)} />
+          <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
         </div>
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text}
+          <ListItem
+            style={styles.text}
             disabled={true}
             leftIcon={<SpentIcon color={workflowBudgetColorPalette[2]} />}
             primaryText={spendBudgetString}
             secondaryText={strings.common.disbursed_budget}
           />
-          <GaugeChart size={0.20} responsive={false} value={createRatio(consumptionBudgetRatio)} />
+          <GaugeChart size={0.2} responsive={false} value={createRatio(consumptionBudgetRatio)} />
         </div>
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text}
+          <ListItem
+            style={styles.text}
             disabled={true}
             leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
             primaryText={disbursedBudgetString}
             secondaryText={strings.common.disbursement}
           />
-          <GaugeChart size={0.20} responsive={false} value={createRatio(currentDisbursementRatio)} />
+          <GaugeChart size={0.2} responsive={false} value={createRatio(currentDisbursementRatio)} />
         </div>
 
-
         <Divider />
-
       </Card>
       <Card style={styles.card}>
-        <CardHeader
-          title={strings.common.task_status}
-        />
+        <CardHeader title={strings.common.task_status} />
         <Divider />
         <CardMedia style={styles.cardMedia}>
-          <Doughnut data={createTaskData(workflowItems, 'workflows')} />
+          <Doughnut data={createTaskData(workflowItems, "workflows")} />
         </CardMedia>
         <Divider />
         <ListItem disabled={true}>
           <div style={styles.tasksChart}>
             <div style={styles.taskChartItem}>
-              <div style={styles.text}>
-                {statusDetails.open.toString()}
-              </div>
+              <div style={styles.text}>{statusDetails.open.toString()}</div>
               <div>
-                <IconButton disableTouchRipple tooltip={strings.common.open} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
+                <IconButton
+                  disableTouchRipple
+                  tooltip={strings.common.open}
+                  style={styles.iconButton}
+                  tooltipStyles={styles.tooltip}
+                  iconStyle={styles.icon}
+                >
                   <OpenIcon />
                 </IconButton>
               </div>
             </div>
             <div style={styles.taskChartItem}>
-              <div style={styles.text}>
-                {statusDetails.done.toString()}
-              </div>
+              <div style={styles.text}>{statusDetails.done.toString()}</div>
               <div>
-                <IconButton disableTouchRipple tooltip={strings.common.done} style={styles.iconButton} tooltipStyles={styles.tooltip} iconStyle={styles.icon} >
+                <IconButton
+                  disableTouchRipple
+                  tooltip={strings.common.done}
+                  style={styles.iconButton}
+                  tooltipStyles={styles.tooltip}
+                  iconStyle={styles.icon}
+                >
                   <DoneIcon />
                 </IconButton>
               </div>
@@ -317,10 +343,7 @@ const SubProjectDetails = ({
         </ListItem>
         <Divider />
       </Card>
-
-    </div >
-
-
-  )
-}
+    </div>
+  );
+};
 export default SubProjectDetails;
