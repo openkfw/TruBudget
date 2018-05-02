@@ -25,7 +25,11 @@ import {
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   SHOW_WORKFLOWITEM_PERMISSIONS,
   HIDE_WORKFLOWITEM_PERMISSIONS,
-  FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS
+  FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
+  SHOW_WORKFLOW_ASSIGNEES,
+  HIDE_WORKFLOW_ASSIGNEES,
+  SHOW_SUBPROJECT_ASSIGNEES,
+  HIDE_SUBPROJECT_ASSIGNEES
 } from "./actions";
 
 import { LOGOUT } from "../Login/actions";
@@ -67,7 +71,9 @@ const defaultState = fromJS({
   workflowApprovalRequired: true,
   subProjectBudgetEditEnabled: false,
   roles: [],
-  historyItems: []
+  historyItems: [],
+  showWorkflowAssignees: false,
+  showSubProjectAssignees: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -159,6 +165,14 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case ENABLE_BUDGET_EDIT:
       return state.set("subProjectBudgetEditEnabled", action.budgetEditEnabled);
+    case SHOW_WORKFLOW_ASSIGNEES:
+      return state.set("showWorkflowAssignees", true);
+    case HIDE_WORKFLOW_ASSIGNEES:
+      return state.set("showWorkflowAssignees", false);
+    case SHOW_SUBPROJECT_ASSIGNEES:
+      return state.set("showSubProjectAssignees", true);
+    case HIDE_SUBPROJECT_ASSIGNEES:
+      return state.set("showSubProjectAssignees", false);
     case LOGOUT:
       return defaultState;
     default:

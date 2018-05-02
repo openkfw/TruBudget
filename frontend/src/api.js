@@ -1,43 +1,40 @@
-import axios from 'axios';
-import { closeWorkflowItem } from './pages/Workflows/actions';
-const devMode = process.env.NODE_ENV === 'development';
-const API_VERSION = '1.0';
+import axios from "axios";
+import { closeWorkflowItem } from "./pages/Workflows/actions";
+const devMode = process.env.NODE_ENV === "development";
+const API_VERSION = "1.0";
 
-console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`)
-
+console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`);
 
 class Api {
-
   constructor() {
     // Set API Version header for POST / PUT / DELETE
     // Move all parameters into data object
     axios.defaults.transformRequest = [
       (data, headers) => {
-        if (typeof data === 'object') {
+        if (typeof data === "object") {
           return {
             apiVersion: API_VERSION,
             data: { ...data }
-          }
+          };
         } else {
           return data;
         }
       },
       ...axios.defaults.transformRequest
-    ]
+    ];
   }
 
+  setAuthorizationHeader = token => {
+    axios.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
+  };
 
-  setAuthorizationHeader = (token) => {
-    axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
-  }
-
-  setBaseUrl = (url) => {
+  setBaseUrl = url => {
     if (!devMode) {
-      axios.defaults.baseURL = url
+      axios.defaults.baseURL = url;
     }
-  }
+  };
 
-  login = (username, password) => axios.post(`/user.authenticate`, { user: { id: username, password } })
+  login = (username, password) => axios.post(`/user.authenticate`, { user: { id: username, password } });
 
   listUser = () => axios.get(`/user.list`);
 
@@ -54,35 +51,46 @@ class Api {
       }
     });
 
-  viewProjectDetails = (projectId) => axios.get(`/project.viewDetails?projectId=${projectId}`);
+  viewProjectDetails = projectId => axios.get(`/project.viewDetails?projectId=${projectId}`);
 
-  listProjectIntents = (projectId) => axios.get(`/project.intent.listPermissions?projectId=${projectId}`);
+  listProjectIntents = projectId => axios.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
-  grantProjectPermissions = (projectId, intent, userId) => axios.post(`/project.intent.grantPermission`, { projectId, intent, userId })
+  grantProjectPermissions = (projectId, intent, userId) =>
+    axios.post(`/project.intent.grantPermission`, { projectId, intent, userId });
 
-  createSubProject = (projectId, name, amount, description, currency) => axios.post(`/project.createSubproject`, {
-    projectId,
-    subproject: {
-      displayName: name,
-      amount,
-      description,
-      currency
-    }
-  })
+  createSubProject = (projectId, name, amount, description, currency) =>
+    axios.post(`/project.createSubproject`, {
+      projectId,
+      subproject: {
+        displayName: name,
+        amount,
+        description,
+        currency
+      }
+    });
 
-  viewSubProjectDetails = (projectId, subprojectId) => axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`)
+  viewSubProjectDetails = (projectId, subprojectId) =>
+    axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
 
-  createWorkflowItem = (payload) => axios.post(`/subproject.createWorkflowitem`, { ...payload, amount: payload.amountType === 'N/A' ? "0" : payload.amount })
+  createWorkflowItem = payload =>
+    axios.post(`/subproject.createWorkflowitem`, {
+      ...payload,
+      amount: payload.amountType === "N/A" ? "0" : payload.amount
+    });
 
-  listSubProjectPermissions = (projectId, subprojectId) => axios.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`)
+  listSubProjectPermissions = (projectId, subprojectId) =>
+    axios.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`);
 
-  grantSubProjectPermissions = (projectId, subprojectId, intent, userId) => axios.post(`/subproject.intent.grantPermission`, { projectId, subprojectId, intent, userId })
+  grantSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
+    axios.post(`/subproject.intent.grantPermission`, { projectId, subprojectId, intent, userId });
 
-  listWorkflowItemPermissions = (projectId, workflowitemId) => axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`)
+  listWorkflowItemPermissions = (projectId, workflowitemId) =>
+    axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
 
-  grantWorkflowItemPermissions = (projectId, workflowitemId, intent, userId) => axios.post(`/workflowitem.intent.grantPermission`, { projectId, workflowitemId, intent, userId })
+  grantWorkflowItemPermissions = (projectId, workflowitemId, intent, userId) =>
+    axios.post(`/workflowitem.intent.grantPermission`, { projectId, workflowitemId, intent, userId });
 
-  closeWorkflowItem = (projectId, workflowitemId) => axios.post(`/workflowitem.close`, { projectId, workflowitemId })
+  closeWorkflowItem = (projectId, workflowitemId) => axios.post(`/workflowitem.close`, { projectId, workflowitemId });
 
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
@@ -106,7 +114,6 @@ class Api {
   // })
   // fetchPermissions = () => axios.get(`/permissions`);
   // fetchPeers = () => axios.get(`/peers`);
-
 
   // fetchStreamNames = () => axios.get(`/projects/mapping`);
   // fetchStreamItems = (flowName) => axios.get(`/streams/` + flowName);

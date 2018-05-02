@@ -17,6 +17,8 @@ import {
   getAssignedOrganization
 } from "../../helper.js";
 import { List, ListItem } from "material-ui/List";
+import Chip from "material-ui/Chip";
+import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
 import CommentIcon from "material-ui/svg-icons/editor/short-text";
@@ -128,6 +130,9 @@ const styles = {
     marginTop: "10px",
     marginBottom: "10px",
     marginRight: "10px"
+  },
+  assigneeIcon: {
+    marginTop: 20
   }
 };
 
@@ -197,6 +202,7 @@ const SubProjectDetails = ({
   budgetEditEnabled,
   canViewPermissions,
   showSubProjectPermissions,
+  showSubProjectAssignees,
   ...props
 }) => {
   const amountString = toAmountString(amount, currency);
@@ -243,9 +249,13 @@ const SubProjectDetails = ({
           <Divider />
           <ListItem
             disabled={true}
-            leftIcon={<AssigneeIcon />}
-            primaryText={""}
-            secondaryText={strings.common.assignees}
+            leftIcon={<AssigneeIcon style={styles.assigneeIcon} />}
+            primaryText={
+              <Chip onClick={showSubProjectAssignees}>
+                <Avatar src="/lego_avatar_male1.jpg" />
+                {"assignee"}
+              </Chip>
+            }
           />
           <Divider />
           <ListItem

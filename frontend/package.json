@@ -11,7 +11,7 @@
     "history": "^4.6.1",
     "immutable": "^3.8.1",
     "leaflet": "^1.0.3",
-    "material-ui": "^0.17.4",
+    "material-ui": "^0.20.0",
     "moment": "^2.18.1",
     "react": "^15.2.0",
     "react-chartjs-2": "^2.0.5",
