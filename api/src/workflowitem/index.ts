@@ -8,7 +8,7 @@ const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 
 const workflowitemKey = (subprojectId, workflowitemId) => [
   workflowitemsGroupKey(subprojectId),
-  workflowitemId
+  workflowitemId,
 ];
 
 interface WorkflowitemResource extends Resource {
@@ -59,14 +59,14 @@ export const create = async (
   projectId: string,
   subprojectId: string,
   data: Data,
-  permissions: AllowedUserGroupsByIntent
+  permissions: AllowedUserGroupsByIntent,
 ): Promise<void> => {
   const resource: WorkflowitemResource = {
-    data,
     log: [
-      { creationUnixTs: data.creationUnixTs, issuer: token.userId, action: "workflowitem_created" }
+      { creationUnixTs: data.creationUnixTs, issuer: token.userId, action: "workflowitem_created" },
     ],
-    permissions
+    permissions,
+    data,
   };
   return multichain.setValue(projectId, workflowitemKey(subprojectId, data.id), resource);
 };
@@ -74,11 +74,11 @@ export const create = async (
 const getAll = async (
   multichain: MultichainClient,
   projectId: string,
-  subprojectId: string
+  subprojectId: string,
 ): Promise<WorkflowitemResource[]> => {
   const streamItems = await multichain.getLatestValues(
     projectId,
-    workflowitemsGroupKey(subprojectId)
+    workflowitemsGroupKey(subprojectId),
   );
   return streamItems.map(x => x.resource);
 };
@@ -87,16 +87,16 @@ export const getAllForUser = async (
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string,
-  subprojectId: string
+  subprojectId: string,
 ): Promise<Array<DataWithIntents | ObscuredDataWithIntents>> => {
   const resources = await getAll(multichain, projectId, subprojectId);
   const allWorkflowitems = await Promise.all(
     resources.map(async resource => {
       return {
         ...resource.data,
-        allowedIntents: await getAllowedIntents(token, resource.permissions)
+        allowedIntents: await getAllowedIntents(token, resource.permissions),
       };
-    })
+    }),
   );
   // Instead of filtering out workflowitems the user is not allowed to see,
   // we simply blank out all fields except the status, which is considered "public":
@@ -118,7 +118,7 @@ export const getAllForUser = async (
         assignee: null,
         documents: null,
         previousWorkflowitemId: workflowitem.previousWorkflowitemId,
-        allowedIntents: workflowitem.allowedIntents
+        allowedIntents: workflowitem.allowedIntents,
       };
     }
   });
@@ -128,7 +128,7 @@ export const getAllForUser = async (
 export const close = async (
   multichain: MultichainClient,
   projectId: string,
-  workflowitemId: string
+  workflowitemId: string,
 ): Promise<void> => {
   await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
     workflowitem.data.status = "closed";
@@ -140,7 +140,7 @@ export const assign = async (
   multichain: MultichainClient,
   projectId: string,
   workflowitemId: string,
-  userId: string
+  userId: string,
 ): Promise<void> => {
   await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
     workflowitem.data.assignee = userId;
@@ -151,7 +151,7 @@ export const assign = async (
 export const getPermissions = async (
   multichain: MultichainClient,
   projectId: string,
-  workflowitemId: string
+  workflowitemId: string,
 ): Promise<AllowedUserGroupsByIntent> => {
   const streamItem = await multichain.getValue(projectId, workflowitemId);
   return streamItem.resource.permissions;
@@ -162,7 +162,7 @@ export const grantPermission = async (
   projectId: string,
   workflowitemId: string,
   userId: string,
-  intent: Intent
+  intent: Intent,
 ): Promise<void> => {
   await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
     const permissionsForIntent: People = workflowitem.permissions[intent] || [];
@@ -179,7 +179,7 @@ export const revokePermission = async (
   projectId: string,
   workflowitemId: string,
   userId: string,
-  intent: Intent
+  intent: Intent,
 ): Promise<void> => {
   await multichain.updateValue(projectId, workflowitemId, (workflowitem: Resource) => {
     const permissionsForIntent: People = workflowitem.permissions[intent] || [];

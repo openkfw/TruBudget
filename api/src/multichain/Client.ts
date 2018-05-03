@@ -7,7 +7,7 @@ import {
   StreamItem,
   TxId,
   StreamItemPair,
-  Resource
+  Resource,
 } from "./Client.h";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 import * as Liststreamitems from "./responses/liststreamitems";
@@ -22,7 +22,7 @@ const maxItemCount: number = 0x7fffffff;
 const streamItemKeys: any = {
   metadata: "_metadata",
   log: "_log",
-  permissions: "permissions"
+  permissions: "permissions",
 };
 
 const randomStreamName = (): string => randomString(16);
@@ -76,25 +76,25 @@ export class RpcMultichainClient implements MultichainClient {
       "liststreamitems",
       streamId,
       false,
-      maxItemCount
+      maxItemCount,
     );
     return items.map(item => ({
       key: item.keys[0],
-      value: hexToObject(item.data)
+      value: hexToObject(item.data),
     }));
   }
 
   async latestValuesForKey(
     streamId: StreamName | StreamTxId,
     key: string,
-    nValues: number = 1
+    nValues: number = 1,
   ): Promise<any[]> {
     const items: MultichainStreamItem[] = await this.rpcClient.invoke(
       "liststreamkeyitems",
       streamId,
       key,
       false,
-      nValues
+      nValues,
     );
     return items.map(x => hexToObject(x.data));
   }
@@ -102,7 +102,7 @@ export class RpcMultichainClient implements MultichainClient {
   async updateStreamItem(
     streamId: StreamName | StreamTxId,
     key: string,
-    object: any
+    object: any,
   ): Promise<TxId> {
     const data = objectToHex(object);
     return await this.rpcClient.invoke("publish", streamId, key, data);
@@ -115,7 +115,7 @@ export class RpcMultichainClient implements MultichainClient {
   async getValues(
     streamName: StreamName,
     key: string,
-    nValues: number = maxItemCount
+    nValues: number = maxItemCount,
   ): Promise<StreamItemPair[]> {
     const items: Liststreamkeyitems.Item[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
@@ -125,14 +125,14 @@ export class RpcMultichainClient implements MultichainClient {
       });
     return items.map(x => ({
       key: x.keys,
-      resource: hexToObject(x.data) as Resource
+      resource: hexToObject(x.data) as Resource,
     }));
   }
 
   async getLatestValues(
     streamName: StreamName,
     key: string,
-    nValues: number = maxItemCount
+    nValues: number = maxItemCount,
   ): Promise<StreamItemPair[]> {
     const allItemsAllValues: Liststreamkeyitems.Item[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
@@ -143,18 +143,18 @@ export class RpcMultichainClient implements MultichainClient {
     const allItemsLatestValues = Array.from(
       allItemsAllValues
         .reverse()
-        .reduce((result: Map<String, Liststreamkeyitems.Item>, item: Liststreamkeyitems.Item) => {
+        .reduce((result: Map<string, Liststreamkeyitems.Item>, item: Liststreamkeyitems.Item) => {
           const mapKey = item.keys.join("_");
           if (!result.has(mapKey)) {
             result.set(mapKey, item);
           }
           return result;
         }, new Map())
-        .values()
+        .values(),
     )
       .map((x: Liststreamkeyitems.Item) => ({
         key: x.keys,
-        resource: hexToObject(x.data) as Resource
+        resource: hexToObject(x.data) as Resource,
       }))
       // TODO: Until we need to be able to re-order things, it's good enough to sort by ctime:
       .sort((a: StreamItemPair, b: StreamItemPair) => {
@@ -179,7 +179,7 @@ export class RpcMultichainClient implements MultichainClient {
     if (result.length !== 1) {
       throw {
         kind: "NotFound",
-        what: { message: `Expected a single value, got: ${result}`, streamName, key }
+        what: { message: `Expected a single value, got: ${result}`, streamName, key },
       };
     }
     return result[0];
@@ -193,7 +193,7 @@ export class RpcMultichainClient implements MultichainClient {
   async updateValue(
     streamName: StreamName,
     key: string,
-    updateCallback: (Resource) => Resource
+    updateCallback: (Resource) => Resource,
   ): Promise<void> {
     while (this.hasWriteLock) {
       await sleep(1);

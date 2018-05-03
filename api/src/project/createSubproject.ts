@@ -6,7 +6,7 @@ import {
   AuthenticatedRequest,
   HttpResponse,
   throwParseError,
-  throwParseErrorIfUndefined
+  throwParseErrorIfUndefined,
 } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
@@ -15,7 +15,7 @@ import * as Subproject from "../subproject";
 
 export const createSubproject = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const body = req.body;
 
@@ -32,7 +32,7 @@ export const createSubproject = async (
   await throwIfUnauthorized(
     req.token,
     "project.createSubproject",
-    await Project.getPermissions(multichain, projectId)
+    await Project.getPermissions(multichain, projectId),
   );
 
   await Subproject.create(
@@ -46,21 +46,21 @@ export const createSubproject = async (
       displayName: value("displayName", subproject.displayName, isNonemptyString),
       description: value("description", subproject.description, isNonemptyString),
       amount: value("amount", subproject.amount, isNonemptyString),
-      currency: value("currency", subproject.currency, isNonemptyString).toUpperCase()
+      currency: value("currency", subproject.currency, isNonemptyString).toUpperCase(),
     },
-    defaultPermissions(req.token.userId)
+    defaultPermissions(req.token.userId),
   );
 
   return [
     201,
     {
       apiVersion: "1.0",
-      data: { created: true }
-    }
+      data: { created: true },
+    },
   ];
 };
 
-const defaultPermissions = (userId: String): AllowedUserGroupsByIntent => {
+const defaultPermissions = (userId: string): AllowedUserGroupsByIntent => {
   if (userId === "root") return {};
 
   const intents: Intent[] = [
@@ -73,7 +73,7 @@ const defaultPermissions = (userId: String): AllowedUserGroupsByIntent => {
     "subproject.update",
     "subproject.close",
     "subproject.archive",
-    "subproject.createWorkflowitem"
+    "subproject.createWorkflowitem",
   ];
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
 };

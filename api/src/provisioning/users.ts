@@ -9,15 +9,15 @@ const users = [
     id: "jxavier",
     displayName: "Jane Xavier",
     password: "test",
-    organization: "Ministry of Education"
+    organization: "Ministry of Education",
   },
   { id: "dviolin", displayName: "Dana Violin", password: "test", organization: "Centralbank" },
-  { id: "auditUser", displayName: "Romina Checker", password: "test", organization: "Audit" }
+  { id: "auditUser", displayName: "Romina Checker", password: "test", organization: "Audit" },
 ];
 
 const createUser = async (axios, user) => {
   await axios.post("/global.createUser", {
-    user
+    user,
   });
 };
 
@@ -28,7 +28,7 @@ export const provisionUsers = async axios => {
       await grantDefaultPermission(axios, user.id);
       console.log(`~> added User ${user.displayName}`);
     }
-    //Special permissions for mstein
+    // Special permissions for mstein
     await grantCreateProjectPermission(axios, "mstein");
     console.log("~> global Permissions granted for mstein");
   } catch (err) {

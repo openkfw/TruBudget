@@ -35,7 +35,7 @@ const multichainClient = new RpcMultichainClient({
   host: process.env.RPC_HOST || "localhost",
   port: parseInt(process.env.RPC_PORT || "8000", 10),
   username: process.env.RPC_USER || "multichainrpc",
-  password: process.env.RPC_PASS || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j"
+  password: process.env.RPC_PASS || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
 });
 
 const app = createBasicApp(jwtSecret, rootSecret);
@@ -53,6 +53,6 @@ app.listen(port, err => {
   winston.info("Starting deployment pipeline...");
   provisionBlockchain(port, rootSecret, multichainClient)
     .then(() => console.log("Chain provisioned."))
-    .catch(err => console.log(`Could not provision the chain: ${err}`));
+    .catch(provisionError => console.log(`Could not provision the chain: ${provisionError}`));
   console.log(`server is listening on ${port}`);
 });

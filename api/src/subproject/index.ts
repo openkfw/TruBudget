@@ -28,7 +28,7 @@ export interface SubprojectDataWithIntents extends SubprojectData {
 export const getPermissions = async (
   multichain: MultichainClient,
   projectId: string,
-  subprojectId: string
+  subprojectId: string,
 ): Promise<AllowedUserGroupsByIntent> => {
   const streamItem = await multichain.getValue(projectId, subprojectId);
   return streamItem.resource.permissions;
@@ -39,7 +39,7 @@ export const grantPermission = async (
   projectId: string,
   subprojectId: string,
   userId: string,
-  intent: Intent
+  intent: Intent,
 ): Promise<void> => {
   await multichain.updateValue(projectId, subprojectId, (subproject: Resource) => {
     const permissionsForIntent: People = subproject.permissions[intent] || [];
@@ -56,7 +56,7 @@ export const revokePermission = async (
   projectId: string,
   subprojectId: string,
   userId: string,
-  intent: Intent
+  intent: Intent,
 ): Promise<void> => {
   await multichain.updateValue(projectId, subprojectId, (subproject: Resource) => {
     const permissionsForIntent: People = subproject.permissions[intent] || [];
@@ -75,21 +75,21 @@ export const create = async (
   token: AuthToken,
   projectId: string,
   data: SubprojectData,
-  permissions: AllowedUserGroupsByIntent
+  permissions: AllowedUserGroupsByIntent,
 ): Promise<void> => {
   const subprojectId = data.id;
   const resource: SubprojectResource = {
-    data,
     log: [
       {
         // not taken from data in case subprojects are created after the fact, as
         // the log entry's ctime should always be the actual time of creation:
         creationUnixTs: Date.now().toString(),
         issuer: token.userId,
-        action: "subproject_created"
-      }
+        action: "subproject_created",
+      },
     ],
-    permissions
+    permissions,
+    data,
   };
   return multichain.setValue(projectId, [SUBPROJECTS_KEY, subprojectId], resource);
 };
@@ -98,19 +98,19 @@ export const getForUser = async (
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string,
-  subprojectId: string
+  subprojectId: string,
 ): Promise<SubprojectDataWithIntents> => {
   const streamItem = await multichain.getValue(projectId, subprojectId);
   const resource = streamItem.resource;
   return {
     ...resource.data,
-    allowedIntents: await getAllowedIntents(token, resource.permissions)
+    allowedIntents: await getAllowedIntents(token, resource.permissions),
   };
 };
 
 export const getAll = async (
   multichain: MultichainClient,
-  projectId: string
+  projectId: string,
 ): Promise<SubprojectResource[]> => {
   const streamItems = await multichain.getLatestValues(projectId, SUBPROJECTS_KEY);
   return streamItems.map(item => item.resource);
@@ -119,7 +119,7 @@ export const getAll = async (
 export const getAllForUser = async (
   multichain: MultichainClient,
   token: AuthToken,
-  projectId: string
+  projectId: string,
 ): Promise<SubprojectDataWithIntents[]> => {
   const resources = await getAll(multichain, projectId);
   const allSubprojects = await Promise.all(
@@ -129,18 +129,18 @@ export const getAllForUser = async (
         allowedIntents: await getAllowedIntents(token, resource.permissions).catch(err => {
           console.log(
             `WARN: Could not fetch allowed intents: token=${token} resource=${JSON.stringify(
-              resource
-            )}`
+              resource,
+            )}`,
           );
           const nothing: Intent[] = [];
           return nothing;
-        })
+        }),
       };
-    })
+    }),
   );
   const allowedToSeeIntents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
   const clearedSubprojects = allSubprojects.filter(subproject =>
-    subproject.allowedIntents.some(intent => allowedToSeeIntents.includes(intent))
+    subproject.allowedIntents.some(intent => allowedToSeeIntents.includes(intent)),
   );
   return clearedSubprojects;
 };

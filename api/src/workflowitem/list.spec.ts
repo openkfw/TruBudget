@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { getWorkflowitemList } from "./list";
-import { MultichainClient } from "../multichain/Client.h";
 import { AuthenticatedRequest } from "../httpd/lib";
+import { MultichainClient } from "../multichain/Client.h";
+import { getWorkflowitemList } from "./list";
 
 describe("workflowitem.list", () => {
   it("works", async () => {
@@ -24,15 +24,15 @@ describe("workflowitem.list", () => {
                 amountType: "N/A",
                 description: "",
                 status: "open",
-                documents: []
+                documents: [],
               },
               permissions: {
                 "workflowitem.view": ["alice"],
                 "workflowitem.assign": ["alice"],
-                "workflowitem.archive": []
+                "workflowitem.archive": [],
               },
-              log: []
-            }
+              log: [],
+            },
           },
           {
             key: [`${subprojectId}_workflows`, "two"],
@@ -46,34 +46,34 @@ describe("workflowitem.list", () => {
                 description: "some comment",
                 status: "open",
                 documents: [],
-                previousWorkflowitemId: "one"
+                previousWorkflowitemId: "one",
               },
               permissions: {
                 "workflowitem.view": ["alice"],
                 "workflowitem.assign": [],
-                "workflowitem.archive": []
+                "workflowitem.archive": [],
               },
-              log: []
-            }
-          }
+              log: [],
+            },
+          },
         ];
         return workflowitems;
-      }
+      },
     };
 
     const req = {
       query: {
         projectId,
-        subprojectId
+        subprojectId,
       },
       token: {
-        userId: "alice"
-      }
+        userId: "alice",
+      },
     };
 
     const [status, response] = await getWorkflowitemList(
       multichain as MultichainClient,
-      req as AuthenticatedRequest
+      req as AuthenticatedRequest,
     );
 
     expect(status).to.eql(200);
@@ -90,7 +90,7 @@ describe("workflowitem.list", () => {
             description: "",
             status: "open",
             documents: [],
-            allowedIntents: ["workflowitem.view", "workflowitem.assign"]
+            allowedIntents: ["workflowitem.view", "workflowitem.assign"],
           },
           {
             id: "two",
@@ -102,10 +102,10 @@ describe("workflowitem.list", () => {
             status: "open",
             documents: [],
             previousWorkflowitemId: "one",
-            allowedIntents: ["workflowitem.view"]
-          }
-        ]
-      }
+            allowedIntents: ["workflowitem.view"],
+          },
+        ],
+      },
     });
   });
 });

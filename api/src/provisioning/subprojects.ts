@@ -6,7 +6,7 @@ const futureSubproject = {
   displayName: "Set up the platform",
   description: "The first step is to set up a tracking platform.",
   amount: "1000",
-  currency: "BRL"
+  currency: "BRL",
 };
 
 export const grantSubprojectPermissionsToUser = async (axios, projectId, subprojectId, userId) => {
@@ -17,15 +17,15 @@ export const grantSubprojectPermissionsToUser = async (axios, projectId, subproj
       "subproject.assign",
       "subproject.intent.listPermissions",
       "subproject.intent.grantPermission",
-      "subproject.intent.revokePermission"
+      "subproject.intent.revokePermission",
     ].map((intent: Intent) =>
       axios.post("/subproject.intent.grantPermission", {
         projectId,
         subprojectId,
         intent,
-        userId
-      })
-    )
+        userId,
+      }),
+    ),
   );
 };
 export const provisionSubprojects = async (axios, projectId) => {
@@ -34,7 +34,7 @@ export const provisionSubprojects = async (axios, projectId) => {
   const existingSubproject = subprojects.find(
     subproject =>
       subproject.displayName === futureSubproject.displayName &&
-      subproject.amount === futureSubproject.amount
+      subproject.amount === futureSubproject.amount,
   );
   if (existingSubproject !== undefined) {
     console.log(`~> Subproject ${futureSubproject.displayName} already exists`);
@@ -43,21 +43,22 @@ export const provisionSubprojects = async (axios, projectId) => {
 
   const resp = await axios.post("/project.createSubproject", {
     projectId,
-    subproject: futureSubproject
+    subproject: futureSubproject,
   });
   const subprojectListResult = await axios.get(`/subproject.list?projectId=${projectId}`);
   console.log(`~> Subproject ${futureSubproject.displayName} created`);
   const createdSubproject = subprojectListResult.data.data.items.find(
     subproject =>
       subproject.displayName === futureSubproject.displayName &&
-      subproject.amount === futureSubproject.amount
+      subproject.amount === futureSubproject.amount,
   );
-  if (createdSubproject === undefined)
+  if (createdSubproject === undefined) {
     throw Error(
       `Subproject creation failed. subproject.list result: ${JSON.stringify(
-        subprojectListResult.data
-      )}`
+        subprojectListResult.data,
+      )}`,
     );
+  }
   await grantSubprojectPermissionsToUser(axios, projectId, createdSubproject.id, "mstein");
   console.log("~> Subproject permissions granted for mstein");
   await grantSubprojectPermissionsToUser(axios, projectId, createdSubproject.id, "jxavier");
