@@ -45,7 +45,8 @@ const defaultState = fromJS({
   thumbnail: "/Thumbnail_0001.jpg",
   allowedIntents: [],
   permissionDialogShown: false,
-  showProjectAssignees: false
+  showProjectAssignees: false,
+  projectAssignee: ""
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -59,6 +60,7 @@ export default function detailviewReducer(state = defaultState, action) {
         projectComment: action.description,
         projectStatus: action.status,
         projectTS: action.creationUnixTs,
+        projectAssignee: action.assignee,
         allowedIntents: fromJS(action.allowedIntents),
         logs: fromJS(action.logs),
         subProjects: fromJS(action.subprojects)

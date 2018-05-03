@@ -177,7 +177,7 @@ const ProjectDetails = ({
             primaryText={
               <Chip onClick={() => showProjectAssignees()}>
                 <Avatar src="/lego_avatar_male1.jpg" />
-                {"assignee"}
+                {projectAssignee}
               </Chip>
             }
           />

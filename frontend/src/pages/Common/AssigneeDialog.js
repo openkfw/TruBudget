@@ -1,16 +1,6 @@
 import React, { Component } from "react";
-import Avatar from "material-ui/Avatar";
 
-import Chip from "material-ui/Chip";
-import {
-  Table,
-  TableBody,
-  TableFooter,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn
-} from "material-ui/Table";
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from "material-ui/Table";
 
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
@@ -19,10 +9,6 @@ import TextField from "material-ui/TextField";
 import Dialog from "material-ui/Dialog";
 
 import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import AutoComplete from "material-ui/AutoComplete";
-
-import strings from "../../localizeStrings";
 
 const styles = {
   container: {
@@ -43,10 +29,9 @@ const styles = {
   }
 };
 
-const AssigneeDialog = ({ assigneeId, users, title, show, onClose, changeAssignee }) => {
+const AssigneeDialog = ({ assigneeId, users, show, onClose, assign }) => {
   return (
     <Dialog
-      title={title}
       actions={[<FlatButton label="Close" primary={true} onClick={() => onClose()} />]}
       modal={true}
       open={show}
@@ -55,7 +40,7 @@ const AssigneeDialog = ({ assigneeId, users, title, show, onClose, changeAssigne
       contentStyle={styles.contentStyle}
     >
       <div style={styles.container}>
-        <AssigneeTable changeAssignee={changeAssignee} assigneeId={assigneeId} users={users} />
+        <AssigneeTable assign={assign} assigneeId={assigneeId} users={users} />
       </div>
     </Dialog>
   );
@@ -89,7 +74,7 @@ class AssigneeTable extends Component {
           insetChildren={true}
           value={displayName}
           primaryText={displayName}
-          onClick={() => this.props.changeAssignee(id)}
+          onClick={() => this.props.assign(id)}
         />
       );
     });

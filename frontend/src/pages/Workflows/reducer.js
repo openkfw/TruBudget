@@ -90,6 +90,7 @@ export default function detailviewReducer(state = defaultState, action) {
         amount: fromAmountString(subproject.amount),
         currency: subproject.currency,
         allowedIntents: fromJS(subproject.allowedIntents),
+        assignee: fromJS(subproject.assignee),
         workflowItems: fromJS(workflowitems),
         parentProject: fromJS(parentProject)
       });

@@ -61,8 +61,11 @@ export const FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS = "FETCH_WORKFLOWITEM_PERMIS
 export const GRANT_WORKFLOWITEM_PERMISSION = "GRANT_WORKFLOWITEM_PERMISSION";
 export const GRANT_WORKFLOWITEM_PERMISSION_SUCCESS = "GRANT_WORKFLOWITEM_PERMISSION_SUCCESS";
 
-export const CHANGE_WORKFLOWITEM_ASSIGNEE = "CHANGE_WORKFLOWITEM_ASSIGNEE";
-export const CHANGE_WORKFLOWITEM_ASSIGNEE_SUCCESS = "CHANGE_WORKFLOWITEM_ASSIGNEE_SUCCESS";
+export const ASSIGN_WORKFLOWITEM = "ASSIGN_WORKFLOWITEM";
+export const ASSIGN_WORKFLOWITEM_SUCCESS = "ASSIGN_WORKFLOWITEM_SUCCESS";
+
+export const ASSIGN_SUBPROJECT = "ASSIGN_SUBPROJECT";
+export const ASSIGN_SUBPROJECT_SUCCESS = "ASSIGN_SUBPROJECT_SUCCESS";
 
 export const CLOSE_WORKFLOWITEM = "CLOSE_WORKFLOWITEM";
 export const CLOSE_WORKFLOWITEM_SUCCESS = "CLOSE_WORKFLOWITEM_SUCCESS";
@@ -189,12 +192,21 @@ export function grantWorkflowItemPermission(projectId, workflowitemId, intent, u
   };
 }
 
-export function changeWorkflowItemAssignee(projectId, subprojectId, workflowitemId, assigneeId, showLoading = false) {
+export function assignWorkflowItem(projectId, subprojectId, workflowitemId, assigneeId, showLoading = false) {
   return {
-    type: CHANGE_WORKFLOWITEM_ASSIGNEE,
+    type: ASSIGN_WORKFLOWITEM,
     projectId,
     subprojectId,
     workflowitemId,
+    assigneeId
+  };
+}
+
+export function assignSubproject(projectId, subprojectId, assigneeId, showLoading = false) {
+  return {
+    type: ASSIGN_SUBPROJECT,
+    projectId,
+    subprojectId,
     assigneeId
   };
 }

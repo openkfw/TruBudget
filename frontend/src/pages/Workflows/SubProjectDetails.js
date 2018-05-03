@@ -196,7 +196,7 @@ const SubProjectDetails = ({
   currency,
   status,
   roles,
-  subProjectDetails,
+  assignee,
   workflowItems,
   created,
   budgetEditEnabled,
@@ -253,7 +253,7 @@ const SubProjectDetails = ({
             primaryText={
               <Chip onClick={showSubProjectAssignee}>
                 <Avatar src="/lego_avatar_male1.jpg" />
-                {"assignee"}
+                {assignee}
               </Chip>
             }
           />

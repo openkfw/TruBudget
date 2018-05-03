@@ -90,8 +90,13 @@ class Api {
   grantWorkflowItemPermissions = (projectId, workflowitemId, intent, userId) =>
     axios.post(`/workflowitem.intent.grantPermission`, { projectId, workflowitemId, intent, userId });
 
-  changeWorkflowItemAssignee = (projectId, workflowitemId, userId) =>
+  assignWorkflowItem = (projectId, workflowitemId, userId) =>
     axios.post(`/workflowitem.assign`, { projectId, workflowitemId, userId });
+
+  assignSubproject = (projectId, subprojectId, userId) =>
+    axios.post(`/subproject.assign`, { projectId, subprojectId, userId });
+
+  assignProject = (projectId, userId) => axios.post(`/project.assign`, { projectId, userId });
 
   closeWorkflowItem = (projectId, workflowitemId) => axios.post(`/workflowitem.close`, { projectId, workflowitemId });
 

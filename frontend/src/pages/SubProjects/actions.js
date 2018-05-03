@@ -28,6 +28,9 @@ export const FETCH_ALL_PROJECT_DETAILS_SUCCESS = "FETCH_ALL_PROJECT_DETAILS_SUCC
 export const SHOW_PROJECT_ASSIGNEES = "SHOW_PROJECT_ASSIGNEES";
 export const HIDE_PROJECT_ASSIGNEES = "HIDE_PROJECT_ASSIGNEES";
 
+export const ASSIGN_PROJECT = "ASSIGN_PROJECT";
+export const ASSIGN_PROJECT_SUCCESS = "ASSIGN_PROJECT_SUCCESS";
+
 export function fetchAllProjectDetails(projectId, showLoading = false) {
   return {
     type: FETCH_ALL_PROJECT_DETAILS,
@@ -82,6 +85,14 @@ export function grantPermission(projectId, intent, user, showLoading = false) {
     intent,
     user,
     showLoading
+  };
+}
+
+export function assignProject(projectId, assigneeId) {
+  return {
+    type: ASSIGN_PROJECT,
+    projectId,
+    assigneeId
   };
 }
 

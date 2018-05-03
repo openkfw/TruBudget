@@ -39,7 +39,7 @@ import { showHistory, fetchHistoryItems } from "../Notifications/actions";
 import { addDocument, clearDocuments, prefillDocuments, validateDocument } from "../Documents/actions";
 import Workflow from "./Workflow";
 import SubProjectDetails from "./SubProjectDetails";
-import { getPermissions, canViewSubProjectPermissions } from "../../permissions";
+import { canViewSubProjectPermissions, canAssignWorkflowItem } from "../../permissions";
 import { toJS } from "../../helper";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
@@ -73,7 +73,7 @@ class WorkflowContainer extends Component {
 
   render() {
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
-
+    const canAssign = canAssignWorkflowItem(this.props.allowedIntents);
     return (
       <div>
         <div style={globalStyles.innerContainer}>
@@ -92,12 +92,17 @@ class WorkflowContainer extends Component {
             projectId={this.projectId}
             title={strings.workflow.workflow_permissions_title}
           />
-          <SubProjectAssigneeController projectId={this.projectId} />
+          <SubProjectAssigneeController
+            assignee={this.props.assignee}
+            projectId={this.projectId}
+            subprojectId={this.subProjectId}
+          />
 
           <WorkflowAssigneeContainer
             projectId={this.projectId}
-            subProjectId={this.subProjectId}
+            subprojectId={this.subProjectId}
             workflowItems={this.props.workflowItems}
+            canAssign={canAssign}
           />
         </div>
       </div>
@@ -160,6 +165,7 @@ const mapStateToProps = state => {
     status: state.getIn(["workflow", "status"]),
     amount: state.getIn(["workflow", "amount"]),
     currency: state.getIn(["workflow", "currency"]),
+    assignee: state.getIn(["workflow", "assignee"]),
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),

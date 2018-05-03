@@ -39,7 +39,7 @@ class SubProjectsContainer extends Component {
       <div>
         <div style={globalStyles.innerContainer}>
           <ProjectPermissionsContainer title={strings.project.project_permissions_title} />
-          <ProjectAssigneeContainer {...this.props} />
+          <ProjectAssigneeContainer projectId={this.props.projectId} assignee={this.props.projectAssignee} />
           <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
         </div>
@@ -71,6 +71,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const mapStateToProps = state => {
   return {
+    projectId: state.getIn(["detailview", "id"]),
     projectName: state.getIn(["detailview", "projectName"]),
     projectAmount: state.getIn(["detailview", "projectAmount"]),
     projectComment: state.getIn(["detailview", "projectComment"]),

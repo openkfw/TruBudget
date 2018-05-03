@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import AssigneeDialog from "../Common/AssigneeDialog";
-import { hideWorkflowAssignee, changeWorkflowItemAssignee, showWorkflowItemAssignee } from "./actions";
+import { hideWorkflowAssignee, assignWorkflowItem } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
-import { select } from "d3-selection";
 
 class WorkflowAssigneeContainer extends Component {
   componentWillReceiveProps(nextProps) {
@@ -18,9 +17,9 @@ class WorkflowAssigneeContainer extends Component {
     this.props.onClose();
   }
 
-  changeAssignee = userId => {
-    const { projectId, subProjectId, workflowRefId } = this.props;
-    this.props.changeAssignee(projectId, subProjectId, workflowRefId, userId);
+  assignWorkflow = userId => {
+    const { projectId, subprojectId, workflowRefId } = this.props;
+    this.props.assignWorkflow(projectId, subprojectId, workflowRefId, userId);
   };
 
   getWorkflowAssignee = (workflowItems, selectedId) => {
@@ -39,9 +38,8 @@ class WorkflowAssigneeContainer extends Component {
         users={this.props.users}
         title={this.props.title}
         show={this.props.show}
-        changeAssignee={this.changeAssignee}
+        assign={this.assignWorkflow}
         onClose={this.props.onClose}
-        onClosechangeAssignee={this.changeAssignee}
       />
     );
   }
@@ -57,10 +55,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeAssignee: (projectId, subProjectId, workflowId, userId) =>
-      dispatch(changeWorkflowItemAssignee(projectId, subProjectId, workflowId, userId)),
+    assignWorkflow: (projectId, subProjectId, workflowId, userId) =>
+      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, userId)),
     onClose: () => dispatch(hideWorkflowAssignee()),
-    showDialog: (workflowitemId, user) => dispatch(showWorkflowItemAssignee(workflowitemId, user)),
     fetchUser: () => dispatch(fetchUser(true))
   };
 };

@@ -27,7 +27,9 @@ import {
   FETCH_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
   GRANT_PERMISSION,
-  GRANT_PERMISSION_SUCCESS
+  GRANT_PERMISSION_SUCCESS,
+  ASSIGN_PROJECT_SUCCESS,
+  ASSIGN_PROJECT
 } from "./pages/SubProjects/actions";
 import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from "./pages/Dashboard/actions";
 import {
@@ -64,8 +66,10 @@ import {
   GRANT_WORKFLOWITEM_PERMISSION,
   CLOSE_WORKFLOWITEM,
   CLOSE_WORKFLOWITEM_SUCCESS,
-  CHANGE_WORKFLOWITEM_ASSIGNEE_SUCCESS,
-  CHANGE_WORKFLOWITEM_ASSIGNEE
+  ASSIGN_WORKFLOWITEM_SUCCESS,
+  ASSIGN_WORKFLOWITEM,
+  ASSIGN_SUBPROJECT_SUCCESS,
+  ASSIGN_SUBPROJECT
 } from "./pages/Workflows/actions";
 
 import {
@@ -751,16 +755,45 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
   }, showLoading);
 }
 
-export function* changeWorkflowItemAssigneeSaga({ projectId, subprojectId, workflowitemId, assigneeId, showLoading }) {
+export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemId, assigneeId, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.changeWorkflowItemAssignee, projectId, workflowitemId, assigneeId);
+    yield callApi(api.assignWorkflowItem, projectId, workflowitemId, assigneeId);
     yield put({
-      type: CHANGE_WORKFLOWITEM_ASSIGNEE_SUCCESS
+      type: ASSIGN_WORKFLOWITEM_SUCCESS
     });
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,
       projectId,
       subprojectId,
+      showLoading: true
+    });
+  }, showLoading);
+}
+
+export function* assignSubprojectSaga({ projectId, subprojectId, assigneeId, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.assignSubproject, projectId, subprojectId, assigneeId);
+    yield put({
+      type: ASSIGN_SUBPROJECT_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId,
+      subprojectId,
+      showLoading: true
+    });
+  }, showLoading);
+}
+
+export function* assignProjectSaga({ projectId, assigneeId, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.assignProject, projectId, assigneeId);
+    yield put({
+      type: ASSIGN_PROJECT_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_PROJECT_DETAILS,
+      projectId,
       showLoading: true
     });
   }, showLoading);
@@ -920,8 +953,14 @@ export function* watchGrantWorkflowitemPermissions() {
 export function* watchCloseWorkflowItem() {
   yield takeEvery(CLOSE_WORKFLOWITEM, closeWorkflowItemSaga);
 }
-export function* watchChangeWorkflowItemAssignee() {
-  yield takeEvery(CHANGE_WORKFLOWITEM_ASSIGNEE, changeWorkflowItemAssigneeSaga);
+export function* watchAssignWorkflowItem() {
+  yield takeEvery(ASSIGN_WORKFLOWITEM, assignWorkflowItemSaga);
+}
+export function* watchAssignSubproject() {
+  yield takeEvery(ASSIGN_SUBPROJECT, assignSubprojectSaga);
+}
+export function* watchAssignProject() {
+  yield takeEvery(ASSIGN_PROJECT, assignProjectSaga);
 }
 
 export default function* rootSaga() {
@@ -940,20 +979,21 @@ export default function* rootSaga() {
       watchFetchAllProjectDetails(),
       watchFetchProjectPermissions(),
       watchGrantPermissions(),
+      watchAssignProject(),
 
       // Subproject
       watchCreateSubProject(),
       watchFetchAllSubprojectDetails(),
       watchFetchSubProjectPermissions(),
       watchGrantSubProjectPermissions(),
+      watchAssignSubproject(),
 
       // Workflow
       watchCreateWorkflowItem(),
       watchFetchWorkflowItemPermissions(),
       watchGrantWorkflowitemPermissions(),
       watchCloseWorkflowItem(),
-      watchChangeWorkflowItemAssignee()
-
+      watchAssignWorkflowItem()
       // watchFetchPeers(),
       // watchFetchProjects(),
       // watchFetchProjectDetails(),
