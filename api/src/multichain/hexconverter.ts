@@ -6,14 +6,14 @@ function h2d(h) {
   return parseInt(h, 16);
 }
 
-export const stringToHex = (string = "") => {
+export const stringToHex = (text = "") => {
   let str = "";
   let i = 0;
-  const tmpLen = string.length;
+  const tmpLen = text.length;
   let c;
 
   for (; i < tmpLen; i += 1) {
-    c = string.charCodeAt(i);
+    c = text.charCodeAt(i);
     str += d2h(c);
   }
   return str;

@@ -1,14 +1,13 @@
-import * as express from "express";
-import { MultichainClient } from "../../multichain";
-import { AuthenticatedRequest, HttpResponse, throwParseError } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
-import Intent, { allIntents } from "../../authz/intents";
-import { throwIfUnauthorized } from "../../authz";
 import * as Workflowitem from "..";
+import { throwIfUnauthorized } from "../../authz";
+import { allIntents } from "../../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib";
+import { MultichainClient } from "../../multichain";
 
 export const revokeWorkflowitemPermission = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -21,7 +20,7 @@ export const revokeWorkflowitemPermission = async (
   await throwIfUnauthorized(
     req.token,
     "workflowitem.intent.revokePermission",
-    await Workflowitem.getPermissions(multichain, projectId, workflowitemId)
+    await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
   await Workflowitem.revokePermission(multichain, projectId, workflowitemId, userId, intent);
@@ -30,7 +29,7 @@ export const revokeWorkflowitemPermission = async (
     200,
     {
       apiVersion: "1.0",
-      data: "OK"
-    }
+      data: "OK",
+    },
   ];
 };

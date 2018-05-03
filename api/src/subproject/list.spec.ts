@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { getSubprojectList } from "./list";
-import { MultichainClient } from "../multichain/Client.h";
-import { AuthenticatedRequest } from "../httpd/lib";
 import { TruBudgetError } from "../error";
+import { AuthenticatedRequest } from "../httpd/lib";
+import { MultichainClient } from "../multichain/Client.h";
+import { getSubprojectList } from "./list";
 
 describe("subproject.list", () => {
   it("works", async () => {
@@ -20,15 +20,15 @@ describe("subproject.list", () => {
                 status: "open",
                 amount: "1",
                 currency: "EUR",
-                description: ""
+                description: "",
               },
               permissions: {
                 "subproject.viewSummary": ["alice"],
                 "subproject.viewDetails": ["alice"],
-                "subproject.close": ["alice"]
+                "subproject.close": ["alice"],
               },
-              log: []
-            }
+              log: [],
+            },
           },
           {
             key: ["subprojects", "two"],
@@ -39,33 +39,33 @@ describe("subproject.list", () => {
                 status: "open",
                 amount: "2",
                 currency: "USD",
-                description: ""
+                description: "",
               },
               permissions: {
                 "subproject.viewSummary": ["alice"],
                 "subproject.viewDetails": [],
-                "subproject.close": []
+                "subproject.close": [],
               },
-              log: []
-            }
-          }
+              log: [],
+            },
+          },
         ];
         return subprojects;
-      }
+      },
     };
 
     const req = {
       query: {
-        projectId: "the-sample-project"
+        projectId: "the-sample-project",
       },
       token: {
-        userId: "alice"
-      }
+        userId: "alice",
+      },
     };
 
     const [status, response] = await getSubprojectList(
       multichain as MultichainClient,
-      req as AuthenticatedRequest
+      req as AuthenticatedRequest,
     );
     expect(status).to.eql(200);
     expect(response).to.eql({
@@ -79,7 +79,11 @@ describe("subproject.list", () => {
             amount: "1",
             currency: "EUR",
             description: "",
-            allowedIntents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.close"]
+            allowedIntents: [
+              "subproject.viewSummary",
+              "subproject.viewDetails",
+              "subproject.close",
+            ],
           },
           {
             id: "two",
@@ -88,10 +92,10 @@ describe("subproject.list", () => {
             amount: "2",
             currency: "USD",
             description: "",
-            allowedIntents: ["subproject.viewSummary"]
-          }
-        ]
-      }
+            allowedIntents: ["subproject.viewSummary"],
+          },
+        ],
+      },
     });
   });
 
@@ -102,16 +106,16 @@ describe("subproject.list", () => {
         expect(key).to.eql("subprojects");
         const err: TruBudgetError = { kind: "NotFound", what: { reason: "Because it's a test." } };
         throw err;
-      }
+      },
     };
 
     const req = {
       query: {
-        projectId: "the-sample-project"
+        projectId: "the-sample-project",
       },
       token: {
-        userId: "alice"
-      }
+        userId: "alice",
+      },
     };
 
     getSubprojectList(multichain as MultichainClient, req as AuthenticatedRequest)

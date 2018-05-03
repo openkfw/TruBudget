@@ -10,7 +10,7 @@ import * as Project from "../project";
 
 export const createProject = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = value("data.project", req.body.data.project, x => x !== undefined);
 
@@ -18,7 +18,7 @@ export const createProject = async (
   await throwIfUnauthorized(
     req.token,
     "global.createProject",
-    await Global.getPermissions(multichain)
+    await Global.getPermissions(multichain),
   );
 
   await Project.create(
@@ -32,15 +32,15 @@ export const createProject = async (
       description: value("description", input.description, isNonemptyString),
       amount: value("amount", input.amount, isNonemptyString),
       currency: value("currency", input.currency, isNonemptyString).toUpperCase(),
-      thumbnail: value("thumbnail", input.thumbnail, x => typeof x === "string", "")
+      thumbnail: value("thumbnail", input.thumbnail, x => typeof x === "string", ""),
     },
-    defaultPermissions(req.token.userId)
+    defaultPermissions(req.token.userId),
   );
 
   console.log(
     `Project ${input.displayName} created with default permissions: ${JSON.stringify(
-      defaultPermissions(req.token.userId)
-    )}`
+      defaultPermissions(req.token.userId),
+    )}`,
   );
 
   return [
@@ -48,13 +48,13 @@ export const createProject = async (
     {
       apiVersion: "1.0",
       data: {
-        created: true
-      }
-    }
+        created: true,
+      },
+    },
   ];
 };
 
-const defaultPermissions = (userId: String): AllowedUserGroupsByIntent => {
+const defaultPermissions = (userId: string): AllowedUserGroupsByIntent => {
   if (userId === "root") return {};
 
   const intents: Intent[] = [
@@ -64,7 +64,7 @@ const defaultPermissions = (userId: String): AllowedUserGroupsByIntent => {
     "project.intent.listPermissions",
     "project.intent.grantPermission",
     "project.intent.revokePermission",
-    "project.createSubproject"
+    "project.createSubproject",
   ];
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
 };

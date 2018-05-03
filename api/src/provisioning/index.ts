@@ -13,22 +13,22 @@ axios.defaults.transformRequest = [
     if (typeof data === "object") {
       return {
         apiVersion: DEFAULT_API_VERSION,
-        data: { ...data }
+        data: { ...data },
       };
     } else {
       return data;
     }
   },
-  ...axios.defaults.transformRequest
+  ...axios.defaults.transformRequest,
 ];
 
-const isReady = async axios => {
+const isReady = async () => {
   const delaySec = 10;
-  let isReady = false;
-  while (!isReady) {
+  let hasHealthEndpointUp = false;
+  while (!hasHealthEndpointUp) {
     try {
       await axios.get("/health");
-      isReady = true;
+      hasHealthEndpointUp = true;
     } catch (_err) {
       console.log(`The TruBudget API is not ready yet, trying again in ${delaySec}`);
       await sleep(delaySec * 1000);
@@ -37,9 +37,9 @@ const isReady = async axios => {
   console.log(`The TruBudget API is now ready.`);
 };
 
-const authenticate = async (axios, userId: string, rootSecret: string) => {
+const authenticate = async (userId: string, rootSecret: string) => {
   const response = await axios.post("/user.authenticate", {
-    user: { id: userId, password: rootSecret }
+    user: { id: userId, password: rootSecret },
   });
   const body = response.data;
   if (body.apiVersion !== "1.0") throw Error("unexpected API version");
@@ -53,7 +53,7 @@ function timeout(ms) {
 export const provisionBlockchain = async (
   port: number,
   rootSecret: string,
-  multichainClient: MultichainClient
+  multichainClient: MultichainClient,
 ) => {
   axios.defaults.baseURL = `http://localhost:${port}`;
   axios.defaults.timeout = 5000;
@@ -71,23 +71,23 @@ export const provisionBlockchain = async (
     }
   }
 
-  let token = await authenticate(axios, "root", rootSecret);
+  let token = await authenticate("root", rootSecret);
   console.log("Authentication as root done");
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   await provisionUsers(axios);
-  token = await authenticate(axios, "mstein", "test");
+  token = await authenticate("mstein", "test");
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   // const projectId = await provisionProjects(axios);
   // const subprojectId = await provisionSubprojects(axios, projectId);
   // await provisionWorkflowitems(axios, projectId, subprojectId);
-  await provisionFromData(axios);
+  await provisionFromData();
 };
 
-const provisionFromData = async axios => {
+const provisionFromData = async () => {
   // Don't continue if the project already exists:
   const projectTemplate = amazonasFundProject;
   const projectExists = await findProject(projectTemplate).then(
-    existingProject => existingProject !== undefined
+    existingProject => existingProject !== undefined,
   );
   if (projectExists) {
     console.log(`${projectTemplate.displayName} project already exists.`);
@@ -99,15 +99,15 @@ const provisionFromData = async axios => {
       displayName: projectTemplate.displayName,
       description: projectTemplate.description,
       amount: projectTemplate.amount,
-      currency: projectTemplate.currency
-    }
+      currency: projectTemplate.currency,
+    },
   });
   const project = await findProject(projectTemplate);
 
   await grantPermissions(projectTemplate.permissions, project.id);
 
   for (const subprojectTemplate of projectTemplate.subprojects) {
-    await provisionSubproject(axios, project, subprojectTemplate);
+    await provisionSubproject(project, subprojectTemplate);
   }
   console.log(`Project ${fmtList([project])} created.`);
 };
@@ -119,7 +119,7 @@ const findProject = async project => {
     .then(projects => projects.find(p => p.displayName === project.displayName));
 };
 
-const provisionSubproject = async (axios, project, subprojectTemplate) => {
+const provisionSubproject = async (project, subprojectTemplate) => {
   await axios.post("/project.createSubproject", {
     projectId: project.id,
     subproject: {
@@ -127,15 +127,15 @@ const provisionSubproject = async (axios, project, subprojectTemplate) => {
       description: subprojectTemplate.description,
       status: subprojectTemplate.status,
       amount: subprojectTemplate.amount,
-      currency: subprojectTemplate.currency
-    }
+      currency: subprojectTemplate.currency,
+    },
   });
   const subproject = await findSubproject(project, subprojectTemplate);
 
   await grantPermissions(subprojectTemplate.permissions, project.id, subproject.id);
 
   for (const workflowitemTemplate of subprojectTemplate.workflows) {
-    await provisionWorkflowitem(axios, project, subproject, workflowitemTemplate);
+    await provisionWorkflowitem(project, subproject, workflowitemTemplate);
   }
   console.log(`Subproject ${fmtList([project, subproject])} created.`);
 };
@@ -147,7 +147,7 @@ const findSubproject = async (project, subproject) => {
     .then(subprojects => subprojects.find(x => x.displayName === subproject.displayName));
 };
 
-const provisionWorkflowitem = async (axios, project, subproject, workflowitemTemplate) => {
+const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) => {
   const data = {
     projectId: project.id,
     subprojectId: subproject.id,
@@ -155,7 +155,7 @@ const provisionWorkflowitem = async (axios, project, subproject, workflowitemTem
     description: workflowitemTemplate.description,
     amountType: workflowitemTemplate.amountType,
     status: workflowitemTemplate.status,
-    assignee: workflowitemTemplate.assignee
+    assignee: workflowitemTemplate.assignee,
   };
   const amount = workflowitemTemplate.amount ? workflowitemTemplate.amount.toString() : undefined;
   const currency = workflowitemTemplate.currency;
@@ -168,7 +168,7 @@ const provisionWorkflowitem = async (axios, project, subproject, workflowitemTem
     workflowitemTemplate.permissions,
     project.id,
     subproject.id,
-    workflowitem.id
+    workflowitem.id,
   );
 
   console.log(`Workflowitem ${fmtList([project, subproject, workflowitem])} created.`);
@@ -181,10 +181,11 @@ const findWorkflowitem = async (project, subproject, workflowitem) => {
     .then(items => items.find(item => item.displayName === workflowitem.displayName));
 };
 
-const grantPermissions = async (permissions: Object, projectId, subprojectId?, workflowitemId?) => {
+const grantPermissions = async (permissions: object, projectId, subprojectId?, workflowitemId?) => {
   if (permissions === undefined) return;
 
-  let url, body;
+  let url;
+  let body;
   if (workflowitemId !== undefined) {
     url = "/workflowitem.intent.grantPermission";
     body = { projectId, subprojectId, workflowitemId };
@@ -201,7 +202,7 @@ const grantPermissions = async (permissions: Object, projectId, subprojectId?, w
       await axios.post(url, {
         ...body,
         intent,
-        userId
+        userId,
       });
     }
   }
