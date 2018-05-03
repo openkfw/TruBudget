@@ -17,6 +17,7 @@ import { getSubprojectPermissions } from "../subproject/intent/listPermissions";
 import { revokeSubprojectPermission } from "../subproject/intent/revokePermission";
 import { getSubprojectList } from "../subproject/list";
 import { getSubprojectDetails } from "../subproject/viewDetails";
+import { assignSubproject } from "../subproject/assign";
 import { authenticateUser } from "../user/authenticate";
 import { getUserList } from "../user/list";
 import { closeWorkflowitem } from "../workflowitem/close";
@@ -44,9 +45,9 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
           apiVersion: "1.0",
           error: {
             code: 403,
-            message: `User ${req.token.userId} is not authorized.`
-          }
-        }
+            message: `User ${req.token.userId} is not authorized.`,
+          },
+        },
       ]);
       break;
 
@@ -55,8 +56,8 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
         409,
         {
           apiVersion: "1.0",
-          error: { code: 409, message: `The user already exists.` }
-        }
+          error: { code: 409, message: `The user already exists.` },
+        },
       ]);
       break;
 
@@ -65,8 +66,8 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
         400,
         {
           apiVersion: "1.0",
-          error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` }
-        }
+          error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` },
+        },
       ]);
       break;
 
@@ -75,8 +76,8 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
         401,
         {
           apiVersion: "1.0",
-          error: { code: 401, message: "Authentication failed" }
-        }
+          error: { code: 401, message: "Authentication failed" },
+        },
       ]);
       break;
 
@@ -85,8 +86,8 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
         404,
         {
           apiVersion: "1.0",
-          error: { code: 404, message: "Not found." }
-        }
+          error: { code: 404, message: "Not found." },
+        },
       ]);
       break;
 
@@ -97,16 +98,16 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
           404,
           {
             apiVersion: "1.0",
-            error: { code: 404, message: "Not found." }
-          }
+            error: { code: 404, message: "Not found." },
+          },
         ]);
       } else {
         send(res, [
           500,
           {
             apiVersion: "1.0",
-            error: { code: 500, message: "INTERNAL SERVER ERROR" }
-          }
+            error: { code: 500, message: "INTERNAL SERVER ERROR" },
+          },
         ]);
       }
   }
@@ -128,7 +129,7 @@ const apiVersion = "1.0";
 export const createRouter = (
   multichainClient: MultichainClient,
   jwtSecret: string,
-  rootSecret: string
+  rootSecret: string,
 ) => {
   const router = express.Router();
 
@@ -236,6 +237,12 @@ export const createRouter = (
 
   router.get("/subproject.viewDetails", (req: AuthenticatedRequest, res) => {
     getSubprojectDetails(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.get("/subproject.assign", (req: AuthenticatedRequest, res) => {
+    assignSubproject(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

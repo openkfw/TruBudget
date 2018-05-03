@@ -18,6 +18,7 @@ export interface SubprojectData {
   displayName: string;
   description: string;
   amount: string;
+  assignee?: string;
   currency: string;
 }
 
@@ -114,6 +115,18 @@ export const getAll = async (
 ): Promise<SubprojectResource[]> => {
   const streamItems = await multichain.getLatestValues(projectId, SUBPROJECTS_KEY);
   return streamItems.map(item => item.resource);
+};
+
+export const assign = async (
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+  userId: string,
+): Promise<void> => {
+  await multichain.updateValue(projectId, subprojectId, (subproject: SubprojectResource) => {
+    subproject.data.assignee = userId;
+    return subproject;
+  });
 };
 
 export const getAllForUser = async (

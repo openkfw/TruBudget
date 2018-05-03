@@ -128,6 +128,7 @@ const provisionSubproject = async (project, subprojectTemplate) => {
       status: subprojectTemplate.status,
       amount: subprojectTemplate.amount,
       currency: subprojectTemplate.currency,
+      assignee: subprojectTemplate.assignee,
     },
   });
   const subproject = await findSubproject(project, subprojectTemplate);

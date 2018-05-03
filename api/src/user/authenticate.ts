@@ -20,7 +20,7 @@ export const authenticateUser = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
   jwtSecret: string,
-  rootSecret: string
+  rootSecret: string,
 ): Promise<HttpResponse> => {
   const input = value("data.user", req.body.data.user, x => x !== undefined);
 
@@ -32,9 +32,9 @@ export const authenticateUser = async (
     {
       apiVersion: "1.0",
       data: {
-        user: await authenticate(multichain, jwtSecret, rootSecret, id, passwordCleartext)
-      }
-    }
+        user: await authenticate(multichain, jwtSecret, rootSecret, id, passwordCleartext),
+      },
+    },
   ];
 };
 
@@ -43,7 +43,7 @@ const authenticate = async (
   jwtSecret: string,
   rootSecret: string,
   id: string,
-  passwordCleartext: string
+  passwordCleartext: string,
 ): Promise<UserLoginResponse> => {
   // The client shouldn't be able to distinguish between a wrong id and a wrong password,
   // so we handle all errors alike:
@@ -80,7 +80,7 @@ const authenticate = async (
     displayName: storedUser.displayName,
     organization: storedUser.organization,
     allowedIntents: await getAllowedIntents(token, await Global.getPermissions(multichain)),
-    token: createToken(jwtSecret, id, storedUser.organization)
+    token: createToken(jwtSecret, id, storedUser.organization),
   };
 };
 
@@ -92,5 +92,5 @@ const rootUserLoginResponse = (token: string): UserLoginResponse => ({
   displayName: "root",
   organization: "root",
   allowedIntents: globalIntents,
-  token
+  token,
 });

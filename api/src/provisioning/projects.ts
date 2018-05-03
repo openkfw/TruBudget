@@ -4,7 +4,7 @@ const futureProject = {
   displayName: "Amazonas Fund",
   description: "My awesome project",
   amount: "32000000",
-  currency: "BRL"
+  currency: "BRL",
 };
 
 export const grantProjectPermissionsToUser = async (axios, projectId, userId) => {
@@ -15,14 +15,14 @@ export const grantProjectPermissionsToUser = async (axios, projectId, userId) =>
       "project.assign",
       "project.intent.listPermissions",
       "project.intent.grantPermission",
-      "project.intent.revokePermission"
+      "project.intent.revokePermission",
     ].map(intent =>
       axios.post("/project.intent.grantPermission", {
         projectId,
         intent,
-        userId
-      })
-    )
+        userId,
+      }),
+    ),
   );
 };
 export const provisionProjects = async axios => {
@@ -30,7 +30,7 @@ export const provisionProjects = async axios => {
   const projects = response.data.data.items;
   const existingProject = projects.find(
     project =>
-      project.displayName === futureProject.displayName && project.amount === futureProject.amount
+      project.displayName === futureProject.displayName && project.amount === futureProject.amount,
   );
   if (existingProject !== undefined) {
     console.log(`~> Project ${futureProject.displayName} already exists`);
@@ -42,11 +42,11 @@ export const provisionProjects = async axios => {
   const projectListResult = await axios.get("/project.list");
   const createdProject = projectListResult.data.data.items.find(
     project =>
-      project.displayName === futureProject.displayName && project.amount === futureProject.amount
+      project.displayName === futureProject.displayName && project.amount === futureProject.amount,
   );
   if (createdProject === undefined)
     throw Error(
-      `Project creation failed. project.list result: ${JSON.stringify(projectListResult.data)}`
+      `Project creation failed. project.list result: ${JSON.stringify(projectListResult.data)}`,
     );
   await grantProjectPermissionsToUser(axios, createdProject.id, "mstein");
   console.log("~> Project permissions granted for mstein");

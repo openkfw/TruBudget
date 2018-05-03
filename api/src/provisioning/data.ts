@@ -9,7 +9,7 @@ export const amazonasFundProject = {
     "project.assign": ["mstein", "jxavier"],
     "project.intent.listPermissions": ["mstein", "jxavier"],
     "project.intent.grantPermission": ["mstein", "jxavier"],
-    "project.intent.revokePermission": ["mstein", "jxavier"]
+    "project.intent.revokePermission": ["mstein", "jxavier"],
   },
   subprojects: [
     {
@@ -18,27 +18,28 @@ export const amazonasFundProject = {
       status: "closed",
       amount: "500000",
       currency: "BRL",
+      assignee: "jdoe",
       permissions: {
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.viewDetails": ["jxavier"],
       },
       workflows: [
         {
           displayName: "Budget allocation",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender publication",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender evaluation",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Contract signature",
@@ -46,13 +47,13 @@ export const amazonasFundProject = {
           assignee: "jdoe",
           amount: 500000,
           currency: "BRL",
-          amountType: "allocated"
+          amountType: "allocated",
         },
         {
           displayName: "Execution monitoring",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Payment advance installment",
@@ -60,7 +61,7 @@ export const amazonasFundProject = {
           assignee: "jdoe",
           amount: 136000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Payment interim installment",
@@ -68,7 +69,7 @@ export const amazonasFundProject = {
           assignee: "jdoe",
           amount: 136000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Payment final installment",
@@ -76,15 +77,15 @@ export const amazonasFundProject = {
           assignee: "jdoe",
           amount: 118000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Completion subproject",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
-        }
-      ]
+          amountType: "N/A",
+        },
+      ],
     },
     {
       displayName: "Consultancy supervision",
@@ -92,226 +93,230 @@ export const amazonasFundProject = {
       status: "closed",
       amount: "750000",
       currency: "BRL",
+      assignee: "jdoe",
       workflows: [
         {
           displayName: "Budget allocation",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender publication",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender evaluation",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Contract signature",
           assignee: "jdoe",
           amount: 720000,
           currency: "BRL",
-          amountType: "allocated"
+          amountType: "allocated",
         },
         {
           displayName: "Execution monitoring",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Payment advance installment",
           assignee: "jdoe",
           amount: 400000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Payment interim installment",
           assignee: "jdoe",
           amount: 172000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Payment final installment",
           assignee: "jdoe",
           amount: 148000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Completion subproject",
           assignee: "jdoe",
-          amountType: "N/A"
-        }
-      ]
+          amountType: "N/A",
+        },
+      ],
     },
     {
       displayName: "Construction lot 1",
       description: "No description.",
       amount: "1750000",
       currency: "BRL",
+      assignee: "jdoe",
       workflows: [
         {
           displayName: "Budget allocation",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender publication",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender evaluation",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Contract signature",
           assignee: "jdoe",
           amount: 1680000,
           currency: "BRL",
-          amountType: "allocated"
+          amountType: "allocated",
         },
         {
           displayName: "Execution monitoring",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Payment advance installment",
           assignee: "jdoe",
           amount: 336000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Payment interim installment",
           assignee: "jdoe",
           amount: 1176000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Payment final installment",
           assignee: "jdoe",
           amount: 168000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Completion subproject",
           assignee: "jdoe",
-          amountType: "N/A"
-        }
-      ]
+          amountType: "N/A",
+        },
+      ],
     },
     {
       displayName: "Construction lot 2",
       description: "No description.",
       amount: "2500000",
       currency: "BRL",
+      assignee: "jdoe",
       workflows: [
         {
           displayName: "Budget allocation",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender publication",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender evaluation",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Contract signature",
           assignee: "jdoe",
           amount: 1680000,
           currency: "BRL",
-          amountType: "allocated"
+          amountType: "allocated",
         },
         {
           displayName: "Execution monitoring",
           assignee: "jdoe",
-          amountType: "N/A"
-        }
-      ]
+          amountType: "N/A",
+        },
+      ],
     },
     {
       displayName: "Furniture",
       description: "No description.",
       amount: "500000",
       currency: "BRL",
+      assignee: "jdoe",
       workflows: [
         {
           displayName: "Budget allocation",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender publication",
           status: "closed",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Tender evaluation",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Contract signature",
           assignee: "jdoe",
           amount: 300000,
           currency: "BRL",
-          amountType: "allocated"
+          amountType: "allocated",
         },
         {
           displayName: "Execution monitoring",
           assignee: "jdoe",
-          amountType: "N/A"
+          amountType: "N/A",
         },
         {
           displayName: "Payment advance installment",
           assignee: "jdoe",
           amount: 100000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Payment interim installment",
           assignee: "jdoe",
           amount: 100000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Payment final installment",
           assignee: "jdoe",
           amount: 100000,
           currency: "BRL",
-          amountType: "disbursed"
+          amountType: "disbursed",
         },
         {
           displayName: "Completion subproject",
           assignee: "jdoe",
-          amountType: "N/A"
-        }
-      ]
-    }
-  ]
+          amountType: "N/A",
+        },
+      ],
+    },
+  ],
 };

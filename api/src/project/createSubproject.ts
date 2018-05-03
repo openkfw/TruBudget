@@ -12,6 +12,7 @@ import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Subproject from "../subproject";
+import { assign } from "../subproject/index";
 
 export const createSubproject = async (
   multichain: MultichainClient,
@@ -46,6 +47,7 @@ export const createSubproject = async (
       displayName: value("displayName", subproject.displayName, isNonemptyString),
       description: value("description", subproject.description, isNonemptyString),
       amount: value("amount", subproject.amount, isNonemptyString),
+      assignee: value("assignee", subproject.assignee, isNonemptyString),
       currency: value("currency", subproject.currency, isNonemptyString).toUpperCase(),
     },
     defaultPermissions(req.token.userId),
