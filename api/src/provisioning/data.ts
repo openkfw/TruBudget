@@ -2,6 +2,7 @@ export const amazonasFundProject = {
   displayName: "Amazonas Fund 47",
   description: "Projects in 2017",
   amount: "32000000",
+  assignee: "jdoe",
   currency: "BRL",
   permissions: {
     "project.viewDetails": ["mstein", "jxavier"],

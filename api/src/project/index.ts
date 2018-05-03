@@ -16,6 +16,7 @@ export interface ProjectData {
   creationUnixTs: string;
   status: "open" | "closed";
   displayName: string;
+  assignee?: string;
   description: string;
   amount: string;
   currency: string;
@@ -28,17 +29,17 @@ export interface ProjectDataWithIntents extends ProjectData {
 
 const ensureStreamExists = async (
   multichain: MultichainClient,
-  projectId: string
+  projectId: string,
 ): Promise<void> => {
   await multichain.getOrCreateStream({
     kind: "project",
-    name: projectId
+    name: projectId,
   });
 };
 
 export const getPermissions = async (
   multichain: MultichainClient,
-  projectId: string
+  projectId: string,
 ): Promise<AllowedUserGroupsByIntent> => {
   const streamItem = await multichain.getValue(projectId, "self");
   return streamItem.resource.permissions;
@@ -48,7 +49,7 @@ export const grantPermission = async (
   multichain: MultichainClient,
   projectId: string,
   userId: string,
-  intent: Intent
+  intent: Intent,
 ): Promise<void> => {
   await multichain.updateValue(projectId, "self", (project: Resource) => {
     const permissionsForIntent: People = project.permissions[intent] || [];
@@ -64,7 +65,7 @@ export const revokePermission = async (
   multichain: MultichainClient,
   projectId: string,
   userId: string,
-  intent: Intent
+  intent: Intent,
 ): Promise<void> => {
   await multichain.updateValue(projectId, "self", (project: Resource) => {
     const permissionsForIntent: People = project.permissions[intent] || [];
@@ -82,7 +83,7 @@ export const create = async (
   multichain: MultichainClient,
   token: AuthToken,
   data: ProjectData,
-  permissions: AllowedUserGroupsByIntent
+  permissions: AllowedUserGroupsByIntent,
 ): Promise<void> => {
   const projectId = data.id;
   const resource: ProjectResource = {
@@ -93,10 +94,10 @@ export const create = async (
         // the log entry's ctime should always be the actual time of creation:
         creationUnixTs: Date.now().toString(),
         issuer: token.userId,
-        action: "project_created"
-      }
+        action: "project_created",
+      },
     ],
-    permissions
+    permissions,
   };
   await ensureStreamExists(multichain, projectId);
   return multichain.setValue(projectId, ["self"], resource);
@@ -105,7 +106,7 @@ export const create = async (
 export const get = async (
   multichain: MultichainClient,
   token: AuthToken,
-  projectId: string
+  projectId: string,
 ): Promise<ProjectData> => {
   const streamItem = await multichain.getValue(projectId, "self");
   return streamItem.resource.data;
@@ -114,13 +115,13 @@ export const get = async (
 export const getForUser = async (
   multichain: MultichainClient,
   token: AuthToken,
-  projectId: string
+  projectId: string,
 ): Promise<ProjectDataWithIntents> => {
   const streamItem = await multichain.getValue(projectId, "self");
   const resource = streamItem.resource;
   return {
     ...resource.data,
-    allowedIntents: await getAllowedIntents(token, resource.permissions)
+    allowedIntents: await getAllowedIntents(token, resource.permissions),
   };
 };
 
@@ -137,23 +138,34 @@ export const getAll = async (multichain: MultichainClient): Promise<ProjectResou
           .catch(err => {
             console.log(`Failed to fetch 'self' resource from project stream ${streamName}`);
             return null;
-          })
-      )
+          }),
+      ),
   );
   return resources.filter(x => x !== null) as ProjectResource[];
 };
 
+export const assign = async (
+  multichain: MultichainClient,
+  projectId: string,
+  userId: string,
+): Promise<void> => {
+  await multichain.updateValue(projectId, "self", (project: ProjectResource) => {
+    project.data.assignee = userId;
+    return project;
+  });
+};
+
 export const getAllForUser = async (
   multichain: MultichainClient,
-  token: AuthToken
+  token: AuthToken,
 ): Promise<ProjectDataWithIntents[]> => {
   const resources = await getAll(multichain);
   return Promise.all(
     resources.map(async resource => {
       return {
         ...resource.data,
-        allowedIntents: await getAllowedIntents(token, resource.permissions)
+        allowedIntents: await getAllowedIntents(token, resource.permissions),
       };
-    })
+    }),
   );
 };

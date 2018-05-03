@@ -2,11 +2,11 @@ import { throwIfUnauthorized } from "../authz";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain";
-import * as Workflowitem from "./index";
+import * as Workflowitem from ".";
 
 export const assignWorkflowitem = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -18,7 +18,7 @@ export const assignWorkflowitem = async (
   await throwIfUnauthorized(
     req.token,
     "workflowitem.assign",
-    await Workflowitem.getPermissions(multichain, projectId, workflowitemId)
+    await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
   await Workflowitem.assign(multichain, projectId, workflowitemId, userId);
@@ -27,7 +27,7 @@ export const assignWorkflowitem = async (
     200,
     {
       apiVersion: "1.0",
-      data: "OK"
-    }
+      data: "OK",
+    },
   ];
 };

@@ -6,6 +6,7 @@ import { getGlobalPermissions } from "../global/intent/listPermissions";
 import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
 import { createSubproject } from "../project/createSubproject";
+import { assignProject } from "../project/assign";
 import { grantProjectPermission } from "../project/intent/grantPermission";
 import { getProjectPermissions } from "../project/intent/listPermissions";
 import { revokeProjectPermission } from "../project/intent/revokePermission";
@@ -224,7 +225,11 @@ export const createRouter = (
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
-
+  router.post("/project.assign", (req: AuthenticatedRequest, res) => {
+    assignProject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
   // ------------------------------------------------------------
   //       subproject
   // ------------------------------------------------------------

@@ -31,6 +31,7 @@ export const createProject = async (
       displayName: value("displayName", input.displayName, isNonemptyString),
       description: value("description", input.description, isNonemptyString),
       amount: value("amount", input.amount, isNonemptyString),
+      assignee: value("assignee", input.assignee, isNonemptyString),
       currency: value("currency", input.currency, isNonemptyString).toUpperCase(),
       thumbnail: value("thumbnail", input.thumbnail, x => typeof x === "string", ""),
     },

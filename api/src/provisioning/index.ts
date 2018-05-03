@@ -93,12 +93,14 @@ const provisionFromData = async () => {
     console.log(`${projectTemplate.displayName} project already exists.`);
     return;
   }
+  console.log(projectTemplate);
 
   await axios.post("/global.createProject", {
     project: {
       displayName: projectTemplate.displayName,
       description: projectTemplate.description,
       amount: projectTemplate.amount,
+      assignee: projectTemplate.assignee,
       currency: projectTemplate.currency,
     },
   });
