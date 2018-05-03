@@ -72,8 +72,9 @@ const defaultState = fromJS({
   subProjectBudgetEditEnabled: false,
   roles: [],
   historyItems: [],
-  showWorkflowAssignees: false,
-  showSubProjectAssignees: false
+  showWorkflowAssignee: false,
+  workflowAssignee: "",
+  showSubProjectAssignee: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -166,13 +167,21 @@ export default function detailviewReducer(state = defaultState, action) {
     case ENABLE_BUDGET_EDIT:
       return state.set("subProjectBudgetEditEnabled", action.budgetEditEnabled);
     case SHOW_WORKFLOW_ASSIGNEES:
-      return state.set("showWorkflowAssignees", true);
+      return state.merge({
+        showWorkflowAssignee: true,
+        workflowItemReference: action.workflowId,
+        workflowAssignee: action.assignee
+      });
     case HIDE_WORKFLOW_ASSIGNEES:
-      return state.set("showWorkflowAssignees", false);
+      return state.merge({
+        showWorkflowAssignee: false,
+        workflowItemReference: defaultState.getIn(["workflowItemReference"]),
+        workflowAssignee: defaultState.getIn("workflowAssignee")
+      });
     case SHOW_SUBPROJECT_ASSIGNEES:
-      return state.set("showSubProjectAssignees", true);
+      return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:
-      return state.set("showSubProjectAssignees", false);
+      return state.set("showSubProjectAssignee", false);
     case LOGOUT:
       return defaultState;
     default:

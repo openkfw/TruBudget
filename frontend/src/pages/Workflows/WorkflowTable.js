@@ -7,7 +7,6 @@ import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
 import { ACMECorpLightgreen } from "../../colors.js";
 import strings from "../../localizeStrings";
-import WorkflowAssigneesContainer from "./WorkflowAssigneesContainer";
 
 const styles = {
   listText: {
@@ -72,7 +71,6 @@ const WorkflowTable = props => {
       {createTableHeader()}
       {createWorkflowItems(props)}
       <WorkflowDetails {...props} />
-      <WorkflowAssigneesContainer {...props} />
     </div>
   );
 };

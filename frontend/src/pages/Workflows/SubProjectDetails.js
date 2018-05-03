@@ -30,8 +30,8 @@ import NotAssignedIcon from "material-ui/svg-icons/editor/space-bar";
 import DateIcon from "material-ui/svg-icons/action/date-range";
 import ActiveIcon from "material-ui/svg-icons/image/navigate-next";
 import OpenIcon from "material-ui/svg-icons/content/remove";
-import AssigneeIcon from "material-ui/svg-icons/social/group";
 import DoneIcon from "material-ui/svg-icons/navigation/check";
+import AssigneeIcon from "material-ui/svg-icons/social/group";
 import EditIcon from "material-ui/svg-icons/image/edit";
 import IconButton from "material-ui/IconButton";
 
@@ -202,7 +202,7 @@ const SubProjectDetails = ({
   budgetEditEnabled,
   canViewPermissions,
   showSubProjectPermissions,
-  showSubProjectAssignees,
+  showSubProjectAssignee,
   ...props
 }) => {
   const amountString = toAmountString(amount, currency);
@@ -251,7 +251,7 @@ const SubProjectDetails = ({
             disabled={true}
             leftIcon={<AssigneeIcon style={styles.assigneeIcon} />}
             primaryText={
-              <Chip onClick={showSubProjectAssignees}>
+              <Chip onClick={showSubProjectAssignee}>
                 <Avatar src="/lego_avatar_male1.jpg" />
                 {"assignee"}
               </Chip>

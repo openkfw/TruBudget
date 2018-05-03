@@ -90,6 +90,9 @@ class Api {
   grantWorkflowItemPermissions = (projectId, workflowitemId, intent, userId) =>
     axios.post(`/workflowitem.intent.grantPermission`, { projectId, workflowitemId, intent, userId });
 
+  changeWorkflowItemAssignee = (projectId, workflowitemId, userId) =>
+    axios.post(`/workflowitem.assign`, { projectId, workflowitemId, userId });
+
   closeWorkflowItem = (projectId, workflowitemId) => axios.post(`/workflowitem.close`, { projectId, workflowitemId });
 
   // loginAdmin = async (username, password) => {

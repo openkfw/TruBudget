@@ -43,21 +43,23 @@ const styles = {
   }
 };
 
-const AssigneesDialog = props => (
-  <Dialog
-    title={props.title}
-    actions={[<FlatButton label="Close" primary={true} onClick={() => props.onClose()} />]}
-    modal={true}
-    open={props.show}
-    autoScrollBodyContent={true}
-    bodyStyle={styles.dialog}
-    contentStyle={styles.contentStyle}
-  >
-    <div style={styles.container}>
-      <AssigneesTable {...props} />
-    </div>
-  </Dialog>
-);
+const AssigneeDialog = ({ assigneeId, users, title, show, onClose, changeAssignee }) => {
+  return (
+    <Dialog
+      title={title}
+      actions={[<FlatButton label="Close" primary={true} onClick={() => onClose()} />]}
+      modal={true}
+      open={show}
+      autoScrollBodyContent={true}
+      bodyStyle={styles.dialog}
+      contentStyle={styles.contentStyle}
+    >
+      <div style={styles.container}>
+        <AssigneeTable changeAssignee={changeAssignee} assigneeId={assigneeId} users={users} />
+      </div>
+    </Dialog>
+  );
+};
 
 const colors = ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Black", "White"];
 
@@ -69,74 +71,45 @@ const selectionStyle = {
   selectionContainer: {}
 };
 
-const users = [
-  {
-    id: "thouse",
-    displayName: "Tom House",
-    organization: "Ministry of Health"
-  },
-  {
-    id: "pkleffmann",
-    displayName: "Piet Kleffmann",
-    organization: "ACMECorp"
-  },
-  {
-    id: "mstein",
-    displayName: "Mauro Stein",
-    organization: "UmbrellaCorp"
-  },
-  {
-    id: "jdoe",
-    displayName: "John Doe",
-    organization: "Ministry of Finance"
-  },
-  {
-    id: "jxavier",
-    displayName: "Jane Xavier",
-    organization: "Ministry of Education"
-  },
-  {
-    id: "dviolin",
-    displayName: "Dana Violin",
-    organization: "Centralbank"
-  },
-  {
-    id: "auditUser",
-    displayName: "Romina Checker",
-    organization: "Audit"
-  }
-];
-
-class AssigneesTable extends Component {
+class AssigneeTable extends Component {
   constructor() {
     super();
     this.state = {
-      searchTerm: "",
-      assignee: "Tom House"
+      searchTerm: ""
     };
   }
 
-  renderUsers(user) {
-    return user.map(u => {
+  renderUsers(users, assigneeId) {
+    return users.map(u => {
+      const { id, displayName } = u;
       return (
         <MenuItem
-          key={u.id}
-          checked={u.displayName === this.state.assignee}
+          key={id}
+          checked={id === assigneeId}
           insetChildren={true}
-          value={u.displayName}
-          primaryText={u.displayName}
-          onClick={() => this.setState({ assignee: u.displayName })}
+          value={displayName}
+          primaryText={displayName}
+          onClick={() => this.props.changeAssignee(id)}
         />
       );
     });
   }
 
+  renderTitle(assignee) {
+    if (!assignee) {
+      return "...";
+    }
+    return assignee.displayName;
+  }
+
   render() {
+    const { assigneeId, users } = this.props;
     const selection = this.renderUsers(
-      users.filter(u => {
-        return u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase());
-      })
+      users.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
+      assigneeId
     );
+    const assignee = users.find(user => user.id === assigneeId);
+
     return (
       <Table style={{ maxHeight: "250px" }} selectable={false}>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -149,7 +122,7 @@ class AssigneesTable extends Component {
             <TableRowColumn>
               <SelectField
                 multiple={true}
-                hintText={this.state.assignee}
+                hintText={this.renderTitle(assignee)}
                 maxHeight={250}
                 autoWidth={true}
                 dropDownMenuProps={{
@@ -173,4 +146,4 @@ class AssigneesTable extends Component {
   }
 }
 
-export default AssigneesDialog;
+export default AssigneeDialog;

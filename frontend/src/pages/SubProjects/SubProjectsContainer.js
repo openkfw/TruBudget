@@ -22,7 +22,7 @@ import ProjectDetails from "./ProjectDetails";
 import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
-import ProjectAssigneesContainer from "./ProjectAssigneesContainer";
+import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
 import strings from "../../localizeStrings";
 
 class SubProjectsContainer extends Component {
@@ -39,7 +39,7 @@ class SubProjectsContainer extends Component {
       <div>
         <div style={globalStyles.innerContainer}>
           <ProjectPermissionsContainer title={strings.project.project_permissions_title} />
-          <ProjectAssigneesContainer {...this.props} />
+          <ProjectAssigneeContainer {...this.props} />
           <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
         </div>

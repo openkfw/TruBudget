@@ -86,10 +86,16 @@ const styles = {
   },
   chipDiv: {
     display: "flex",
-    alignItems: "left"
+    alignItems: "center"
   },
   redacted: {
     fontStyle: "italic"
+  },
+  chip: {
+    margin: 4
+  },
+  chipRow: {
+    paddingLeft: 10
   }
 };
 
@@ -254,20 +260,19 @@ export const WorkflowItem = SortableElement(
     permissions,
     currentWorkflowSelectable,
     workflowSortEnabled,
-    showWorkflowAssignees,
+    showWorkflowItemAssignee,
     ...props
   }) => {
-    const assignee = "assignee";
-    const { id, status, type, displayName, amountType, allowedIntents } = workflow;
+    const { id, status, type, displayName, amountType, allowedIntents, assignee } = workflow;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const amount = toAmountString(workflow.amount, workflow.currency);
     const tableStyle = styles[status];
-
     const itemStyle = workflowSelectable ? {} : { opacity: 0.3 };
 
     const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
     const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
     const infoButton = getInfoButton(props, workflow);
+
     return (
       <Card
         zDepth={workflowSelectable ? 1 : 0}
@@ -292,8 +297,8 @@ export const WorkflowItem = SortableElement(
               <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
                 {getAmountField(amount, amountType)}
               </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText, paddingLeft: 10 }} colSpan={2}>
-                <Chip onClick={showWorkflowAssignees} style={{ margin: 4 }}>
+              <TableRowColumn style={{ ...itemStyle, ...styles.listText, ...styles.chipRow }} colSpan={2}>
+                <Chip onClick={() => showWorkflowItemAssignee(id, assignee)} style={styles.chip}>
                   <Avatar src="/lego_avatar_male1.jpg" />
                   {assignee}
                 </Chip>

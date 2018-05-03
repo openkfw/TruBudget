@@ -61,6 +61,9 @@ export const FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS = "FETCH_WORKFLOWITEM_PERMIS
 export const GRANT_WORKFLOWITEM_PERMISSION = "GRANT_WORKFLOWITEM_PERMISSION";
 export const GRANT_WORKFLOWITEM_PERMISSION_SUCCESS = "GRANT_WORKFLOWITEM_PERMISSION_SUCCESS";
 
+export const CHANGE_WORKFLOWITEM_ASSIGNEE = "CHANGE_WORKFLOWITEM_ASSIGNEE";
+export const CHANGE_WORKFLOWITEM_ASSIGNEE_SUCCESS = "CHANGE_WORKFLOWITEM_ASSIGNEE_SUCCESS";
+
 export const CLOSE_WORKFLOWITEM = "CLOSE_WORKFLOWITEM";
 export const CLOSE_WORKFLOWITEM_SUCCESS = "CLOSE_WORKFLOWITEM_SUCCESS";
 
@@ -79,13 +82,15 @@ export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading =
   };
 }
 
-export function showWorkflowAssignees() {
+export function showWorkflowItemAssignee(workflowId, assignee) {
   return {
-    type: SHOW_WORKFLOW_ASSIGNEES
+    type: SHOW_WORKFLOW_ASSIGNEES,
+    workflowId,
+    assignee
   };
 }
 
-export function hideWorkflowAssignees() {
+export function hideWorkflowAssignee() {
   return {
     type: HIDE_WORKFLOW_ASSIGNEES
   };
@@ -118,13 +123,14 @@ export function hideSubProjectPermissions() {
   };
 }
 
-export function showSubProjectAssignees() {
+export function showSubProjectAssignee(assignee) {
   return {
-    type: SHOW_SUBPROJECT_ASSIGNEES
+    type: SHOW_SUBPROJECT_ASSIGNEES,
+    assignee
   };
 }
 
-export function hideSubProjectAssignees() {
+export function hideSubProjectAssignee() {
   return {
     type: HIDE_SUBPROJECT_ASSIGNEES
   };
@@ -180,6 +186,16 @@ export function grantWorkflowItemPermission(projectId, workflowitemId, intent, u
     intent,
     user,
     showLoading
+  };
+}
+
+export function changeWorkflowItemAssignee(projectId, subprojectId, workflowitemId, assigneeId, showLoading = false) {
+  return {
+    type: CHANGE_WORKFLOWITEM_ASSIGNEE,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    assigneeId
   };
 }
 

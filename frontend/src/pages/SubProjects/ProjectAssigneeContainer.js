@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import AssigneesDialog from "../Common/AssigneesDialog";
+import AssigneeDialog from "../Common/AssigneeDialog";
 import { hideProjectAssignees } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
 
-class ProjectAssigneesContainer extends Component {
+class ProjectAssigneeContainer extends Component {
   render() {
-    return <AssigneesDialog {...this.props} />;
+    return <AssigneeDialog {...this.props} />;
   }
 }
 
@@ -24,4 +24,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(ProjectAssigneesContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(ProjectAssigneeContainer)));

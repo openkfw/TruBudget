@@ -30,8 +30,8 @@ import {
   showSubProjectPermissions,
   showWorkflowItemPermissions,
   closeWorkflowItem,
-  showWorkflowAssignees,
-  showSubProjectAssignees
+  showWorkflowItemAssignee,
+  showSubProjectAssignee
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -44,7 +44,8 @@ import { toJS } from "../../helper";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
 import strings from "../../localizeStrings";
-import SubProjectAssigneesController from "./SubProjectAssigneesController";
+import SubProjectAssigneeController from "./SubProjectAssigneeController";
+import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -91,7 +92,13 @@ class WorkflowContainer extends Component {
             projectId={this.projectId}
             title={strings.workflow.workflow_permissions_title}
           />
-          <SubProjectAssigneesController {...this.props} />
+          <SubProjectAssigneeController projectId={this.projectId} />
+
+          <WorkflowAssigneeContainer
+            projectId={this.projectId}
+            subProjectId={this.subProjectId}
+            workflowItems={this.props.workflowItems}
+          />
         </div>
       </div>
     );
@@ -113,14 +120,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     createWorkflowItem: (pId, sId, workflowToAdd, documents) =>
       dispatch(createWorkflowItem(pId, sId, workflowToAdd, documents)),
     showSubProjectPermissions: () => dispatch(showSubProjectPermissions()),
-    showSubProjectAssignees: () => dispatch(showSubProjectAssignees()),
+    showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
     openHistory: () => dispatch(showHistory(true)),
     hideHistory: () => dispatch(showHistory(false)),
     openWorkflowDetails: txid => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
-    showWorkflowAssignees: () => dispatch(showWorkflowAssignees()),
+    showWorkflowItemAssignee: (workflowId, assignee) => dispatch(showWorkflowItemAssignee(workflowId, assignee)),
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
     editWorkflowItem: (stream, key, workflowToAdd, documents, previousState) =>
       dispatch(editWorkflowItem(stream, key, workflowToAdd, documents, previousState)),
