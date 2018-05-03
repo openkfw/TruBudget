@@ -241,7 +241,7 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
-  router.get("/subproject.assign", (req: AuthenticatedRequest, res) => {
+  router.post("/subproject.assign", (req: AuthenticatedRequest, res) => {
     assignSubproject(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
