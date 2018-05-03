@@ -1,5 +1,5 @@
 export const amazonasFundProject = {
-  displayName: "Amazonas Fund 47",
+  displayName: "Amazonas Fund 53",
   description: "Projects in 2017",
   amount: "32000000",
   assignee: "jdoe",

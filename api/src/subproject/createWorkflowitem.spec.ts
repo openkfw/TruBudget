@@ -10,25 +10,27 @@ describe("subproject.createWorkflowitem", () => {
     const workflowitemId = "my-workflowitem";
 
     const multichain: any = {
-      setValue: (streamName, keys, object) => {
-        expect(streamName).to.eql(projectId);
-        expect(keys).to.eql([`${subprojectId}_workflows`, workflowitemId]);
-        expect(object.data.id).to.eql(workflowitemId);
-      },
       getValue: async (streamName, keys) => {
         expect(streamName).to.eql(projectId);
         expect(keys).to.eql(subprojectId);
         return {
           key: ["subprojects", subprojectId],
           resource: {
-            data: null,
+            data: {
+              status: "open",
+            },
             log: null,
             permissions: {
-              "subproject.createWorkflowitem": ["alice"]
-            }
-          }
+              "subproject.createWorkflowitem": ["alice"],
+            },
+          },
         };
-      }
+      },
+      setValue: (streamName, keys, object) => {
+        expect(streamName).to.eql(projectId);
+        expect(keys).to.eql([`${subprojectId}_workflows`, workflowitemId]);
+        expect(object.data.id).to.eql(workflowitemId);
+      },
     };
 
     const req = {
@@ -39,28 +41,29 @@ describe("subproject.createWorkflowitem", () => {
           projectId,
           subprojectId,
           workflowitemId,
-          displayName: "My Workflow-Item",
+
           amount: "123",
-          currency: "EUR",
           amountType: "allocated",
+          currency: "EUR",
           description: "A nice item.",
+          displayName: "My Workflow-Item",
+          documents: [],
           status: "open",
-          documents: []
-        }
+        },
       },
       token: {
-        userId: "alice"
-      }
+        userId: "alice",
+      },
     };
 
     const [status, response] = await createWorkflowitem(
       multichain as MultichainClient,
-      req as AuthenticatedRequest
+      req as AuthenticatedRequest,
     );
     expect(status).to.eql(201);
     expect(response).to.eql({
       apiVersion: "1.0",
-      data: { created: true }
+      data: { created: true },
     });
   });
 });

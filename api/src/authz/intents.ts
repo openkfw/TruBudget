@@ -26,6 +26,7 @@ type Intent =
   | "subproject.close"
   | "subproject.archive"
   | "subproject.createWorkflowitem"
+  | "subproject.reorderWorkflowitems"
   | "workflowitem.intent.listPermissions"
   | "workflowitem.intent.grantPermission"
   | "workflowitem.intent.revokePermission"
@@ -41,7 +42,7 @@ export const globalIntents: Intent[] = [
   "global.intent.revokePermission",
   "global.createProject",
   "global.createUser",
-  "user.authenticate"
+  "user.authenticate",
 ];
 
 export const userDefaultIntents: Intent[] = ["user.authenticate", "user.view"];
@@ -81,7 +82,7 @@ export const allIntents: Intent[] = [
   "workflowitem.assign",
   "workflowitem.update",
   "workflowitem.close",
-  "workflowitem.archive"
+  "workflowitem.archive",
 ];
 
 export default Intent;

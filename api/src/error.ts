@@ -4,6 +4,7 @@ import { NotAuthorizedError } from "./authz/types";
 export interface ParseError {
   kind: "ParseError";
   badKeys: string[];
+  message?: string;
 }
 
 export interface NotFoundError {
@@ -19,6 +20,11 @@ export interface AuthenticationError {
 export interface UserAlreadyExistsError {
   kind: "UserAlreadyExists";
   targetUserId: string;
+}
+
+export interface PreconditionError {
+  kind: "PreconditionError";
+  message: string;
 }
 
 // For documentation, all custom error types should go in here:

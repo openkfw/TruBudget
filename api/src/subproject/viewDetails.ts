@@ -5,10 +5,11 @@ import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain";
 import * as Project from "../project";
 import * as Workflowitem from "../workflowitem";
+import { sortWorkflowitems } from "./lib/sortSubprojects";
 
 export const getSubprojectDetails = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = req.query;
 
@@ -19,19 +20,21 @@ export const getSubprojectDetails = async (
     multichain,
     req.token,
     projectId,
-    subprojectId
+    subprojectId,
   );
 
   // Is the user allowed to view subproject details?
   await throwIfUnauthorized(
     req.token,
     "subproject.viewDetails",
-    await Subproject.getPermissions(multichain, projectId, subprojectId)
+    await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
   const workflowitems: Array<
     Workflowitem.DataWithIntents | Workflowitem.ObscuredDataWithIntents
-  > = await Workflowitem.getAllForUser(multichain, req.token, projectId, subprojectId);
+  > = await Workflowitem.getAll(multichain, projectId, subprojectId)
+    .then(allItems => sortWorkflowitems(multichain, projectId, allItems))
+    .then(sortedItems => Workflowitem.forUser(req.token, sortedItems));
 
   const parentProject = await Project.get(multichain, req.token, projectId);
 
@@ -42,8 +45,8 @@ export const getSubprojectDetails = async (
       data: {
         subproject,
         workflowitems,
-        parentProject: { id: parentProject.id, displayName: parentProject.displayName }
-      }
-    }
+        parentProject: { id: parentProject.id, displayName: parentProject.displayName },
+      },
+    },
   ];
 };

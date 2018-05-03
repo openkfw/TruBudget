@@ -21,8 +21,8 @@ export interface ErrorResponse {
 export type HttpStatusCode = number;
 export type HttpResponse = [HttpStatusCode, SuccessResponse | ErrorResponse];
 
-export const throwParseError = badKeys => {
-  throw { kind: "ParseError", badKeys };
+export const throwParseError = (badKeys, message?) => {
+  throw { kind: "ParseError", badKeys, message };
 };
 
 export const throwParseErrorIfUndefined = (obj, path) => {

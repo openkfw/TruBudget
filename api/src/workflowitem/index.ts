@@ -11,7 +11,7 @@ const workflowitemKey = (subprojectId, workflowitemId) => [
   workflowitemId,
 ];
 
-interface WorkflowitemResource extends Resource {
+export interface WorkflowitemResource extends Resource {
   data: Data;
 }
 
@@ -26,7 +26,6 @@ export interface Data {
   status: "open" | "closed";
   assignee?: string;
   documents: Document[];
-  previousWorkflowitemId?: string;
 }
 
 export interface Document {
@@ -49,7 +48,6 @@ export interface ObscuredDataWithIntents {
   status: "open" | "closed";
   assignee: null;
   documents: null;
-  previousWorkflowitemId?: string;
   allowedIntents: Intent[];
 }
 
@@ -71,7 +69,7 @@ export const create = async (
   return multichain.setValue(projectId, workflowitemKey(subprojectId, data.id), resource);
 };
 
-const getAll = async (
+export const getAll = async (
   multichain: MultichainClient,
   projectId: string,
   subprojectId: string,
@@ -83,13 +81,10 @@ const getAll = async (
   return streamItems.map(x => x.resource);
 };
 
-export const getAllForUser = async (
-  multichain: MultichainClient,
+export const forUser = async (
   token: AuthToken,
-  projectId: string,
-  subprojectId: string,
+  resources: WorkflowitemResource[],
 ): Promise<Array<DataWithIntents | ObscuredDataWithIntents>> => {
-  const resources = await getAll(multichain, projectId, subprojectId);
   const allWorkflowitems = await Promise.all(
     resources.map(async resource => {
       return {
@@ -117,7 +112,6 @@ export const getAllForUser = async (
         status: workflowitem.status,
         assignee: null,
         documents: null,
-        previousWorkflowitemId: workflowitem.previousWorkflowitemId,
         allowedIntents: workflowitem.allowedIntents,
       };
     }
@@ -191,4 +185,20 @@ export const revokePermission = async (
     }
     return workflowitem;
   });
+};
+
+/*
+ * higher-level
+ */
+
+export const areAllClosed = async (
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+): Promise<boolean> => {
+  return multichain
+    .getLatestValues(projectId, workflowitemsGroupKey(subprojectId))
+    .then(streamItems =>
+      streamItems.map(x => x.resource.data.status).every(status => status === "closed"),
+    );
 };

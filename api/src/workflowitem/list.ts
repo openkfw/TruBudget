@@ -2,10 +2,11 @@ import * as Workflowitem from ".";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain";
+import { sortWorkflowitems } from "../subproject/lib/sortSubprojects";
 
 export const getWorkflowitemList = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = req.query;
 
@@ -14,15 +15,17 @@ export const getWorkflowitemList = async (
 
   const workflowitems: Array<
     Workflowitem.DataWithIntents | Workflowitem.ObscuredDataWithIntents
-  > = await Workflowitem.getAllForUser(multichain, req.token, projectId, subprojectId);
+  > = await Workflowitem.getAll(multichain, projectId, subprojectId)
+    .then(allItems => sortWorkflowitems(multichain, projectId, allItems))
+    .then(sortedItems => Workflowitem.forUser(req.token, sortedItems));
 
   return [
     200,
     {
       apiVersion: "1.0",
       data: {
-        workflowitems
-      }
-    }
+        workflowitems,
+      },
+    },
   ];
 };

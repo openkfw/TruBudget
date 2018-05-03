@@ -9,7 +9,7 @@ describe("workflowitem.list", () => {
     const subprojectId = "the-subproject";
 
     const multichain: any = {
-      getLatestValues: (streamName, key, nValues) => {
+      getLatestValues: async (streamName, key, nValues) => {
         expect(streamName).to.eql(projectId);
         expect(key).to.eql(`${subprojectId}_workflows`);
         const workflowitems = [
@@ -58,6 +58,11 @@ describe("workflowitem.list", () => {
           },
         ];
         return workflowitems;
+      },
+      getValue: async (streamName, key, nValues) => {
+        expect(streamName).to.eql(projectId);
+        expect(key).to.eql("workflowitem_ordering");
+        throw { kind: "NotFound" };
       },
     };
 

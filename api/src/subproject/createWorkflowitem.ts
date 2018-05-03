@@ -9,11 +9,10 @@ import {
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
-import { isNonemptyString, value, asyncValue, isUserOrUndefined } from "../lib";
+import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Workflowitem from "../workflowitem";
-import * as User from "../user";
 
 export const createWorkflowitem = async (
   multichain: MultichainClient,
@@ -35,6 +34,14 @@ export const createWorkflowitem = async (
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
+  // Make sure the parent subproject is not already closed:
+  if (await Subproject.isClosed(multichain, projectId, subprojectId)) {
+    throw {
+      kind: "PreconditionError",
+      message: "Cannot add a workflowitem to a closed subproject.",
+    };
+  }
+
   // If amountType is "N/A" (= not applicable), the amount and currency
   // fields are not expected. For other amountType values they're required.
   const amountType = value("amountType", data.amountType, x =>
@@ -44,12 +51,26 @@ export const createWorkflowitem = async (
   let currency;
   if (amountType === "N/A") {
     if (data.amount !== undefined || data.currency !== undefined) {
-      throwParseError(["amountType", "amount", "currency"]);
+      throwParseError(
+        ["amountType", "amount", "currency"],
+        'If the amountType is "N/A" (= not applicable), the fields "amount" and "currency" must not be present.',
+      );
     }
     amount = currency = undefined;
   } else {
     amount = value("amount", data.amount, isNonemptyString);
     currency = value("currency", data.currency, isNonemptyString);
+  }
+
+  // A user may add open workflowitems any time, but closed ones must not be preceded by open ones:
+  const status = value("status", data.status, x => ["open", "closed"].includes(x), "open");
+  if (status === "closed") {
+    if (!(await Workflowitem.areAllClosed(multichain, projectId, subprojectId))) {
+      throw {
+        kind: "PreconditionError",
+        message: "Cannot add a closed workflowitem after a non-closed workflowitem.",
+      };
+    }
   }
 
   await Workflowitem.create(
@@ -65,10 +86,9 @@ export const createWorkflowitem = async (
       currency,
       amountType,
       description: value("description", data.description, x => typeof x === "string", ""),
-      status: value("status", data.status, x => ["open", "closed"].includes(x), "open"),
+      status,
       assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined),
       documents: data.documents, // not checked right now
-      previousWorkflowitemId: data.previousWorkflowitemId, // optional
     },
     getWorkflowitemDefaultPermissions(req.token),
   );
