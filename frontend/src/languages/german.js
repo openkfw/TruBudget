@@ -1,7 +1,4 @@
-import def from "./default";
-
 const de = {
-  ...def,
   common: {
     cancel: "Cancel",
     next: "Next",
@@ -57,7 +54,7 @@ const de = {
     project_title: "Project title",
     project_title_description: "Name of the project",
     project_budget_amount: "Project budget amount",
-    project_budget_amount_description: "z.B.",
+    project_budget_amount_description: "z_B_",
     project_currency: "Currency",
     project_budget_authority_role: "Select budget authority role",
     project_budget_authority_role_description: "The authority enabled to modify the budget line of the project",
@@ -73,7 +70,7 @@ const de = {
     subproject_title: "Sub-Project title",
     subproject_title_description: "Name of the sub-project",
     subproject_budget_amount: "Sub-project  budget amount",
-    subproject_budget_amount_description: "z.B.",
+    subproject_budget_amount_description: "z_B_",
     subproject_comment: "Sub-project Comment",
     subproject_assigned_organization: "Assigned Organization",
     subproject_add: "Add new Sub-project",
@@ -114,7 +111,7 @@ const de = {
     workflow_budget_allocated: "allocated",
     workflow_budget_disbursed: "disbursed",
     workflow_budget: "Workflow budget amount",
-    workflow_budget_description: "z.B.",
+    workflow_budget_description: "z_B_",
     workflow_submit_for_review: "Submit for Review"
   },
 
@@ -141,13 +138,13 @@ const de = {
     dashboard_title: "The Blockchain network dashboard",
     dashboard_subtitle: "Connected peers in the blockchain network",
     dashboard_card_text:
-      " The connected blockchain nodes are shown in the map below. You can click on the respective markers to obtain the exact location."
+      " The connected blockchain nodes are shown in the map below_ You can click on the respective markers to obtain the exact location_"
   },
   notification: {
     notification_title: "Notifications",
     notification_subtitle: "Unread",
     notification_card_text:
-      "Please find your current notifications below. These display action items or information items to be dealt with.",
+      "Please find your current notifications below_ These display action items or information items to be dealt with_",
     notification_table_project: "Project",
     notification_table_subproject: "Subproject",
     notification_table_description: "Description",
@@ -182,34 +179,34 @@ const de = {
     sort: "Moved {0} after {1}"
   },
   permissions: {
-    "view": "German: View permissions",
-    "write": "German: Write permissions",
-    "admin": "German: Admin permissions",
-    "project.assign": "German: Assign project to others",
-    "project.intent.grantPermission": "German: Grant permissions",
-    "project.intent.listPermissions": "German: View permissions",
-    "project.intent.revokePermission": "German: Revoke permissions",
-    "project.viewDetails": "German: View project details",
-    "project.viewSummary": "German: View project in overview",
-    "project.createSubproject": "German: Create subprojects",
-    "subproject.archive": "German: Archive subproject",
-    "subproject.assign": "German: Assign subproject",
-    "subproject.close": "German: Close subproject",
-    "subproject.createWorkflowitem": "German: Create workflow items",
-    "subproject.intent.grantPermission": "German: Grant subproject permissions",
-    "subproject.intent.listPermissions": "German: View subproject permissions",
-    "subproject.intent.revokePermission": "German: Revoke subproject permissions",
-    "subproject.update": "German: Update subproject",
-    "subproject.viewDetails": "German: View subproject details",
-    "subproject.viewSummary": "German: View subproject overview",
-    "workflowitem.intent.listPermissions": "German: Show workflowitem permissions",
-    "workflowitem.intent.grantPermission": "German: Grant workflowitem permission",
-    "workflowitem.intent.revokePermission": "German: Revoke workflowitem permission",
-    "workflowitem.view": "German: View workflowitem",
-    "workflowitem.assign": "German: Assign workflowitem",
-    "workflowitem.update": "German: Update workflowitem",
-    "workflowitem.close": "German: Close workflowitem",
-    "workflowitem.archive": "German: Archive workflowitem"
+    view: "German: View permissions",
+    write: "German: Write permissions",
+    admin: "German: Admin permissions",
+    project_assign: "German: Assign project to others",
+    project_intent_grantPermission: "German: Grant permissions",
+    project_intent_listPermissions: "German: View permissions",
+    project_intent_revokePermission: "German: Revoke permissions",
+    project_viewDetails: "German: View project details",
+    project_viewSummary: "German: View project in overview",
+    project_createSubproject: "German: Create subprojects",
+    subproject_archive: "German: Archive subproject",
+    subproject_assign: "German: Assign subproject",
+    subproject_close: "German: Close subproject",
+    subproject_createWorkflowitem: "German: Create workflow items",
+    subproject_intent_grantPermission: "German: Grant subproject permissions",
+    subproject_intent_listPermissions: "German: View subproject permissions",
+    subproject_intent_revokePermission: "German: Revoke subproject permissions",
+    subproject_update: "German: Update subproject",
+    subproject_viewDetails: "German: View subproject details",
+    subproject_viewSummary: "German: View subproject overview",
+    workflowitem_intent_listPermissions: "German: Show workflowitem permissions",
+    workflowitem_intent_grantPermission: "German: Grant workflowitem permission",
+    workflowitem_intent_revokePermission: "German: Revoke workflowitem permission",
+    workflowitem_view: "German: View workflowitem",
+    workflowitem_assign: "German: Assign workflowitem",
+    workflowitem_update: "German: Update workflowitem",
+    workflowitem_close: "German: Close workflowitem",
+    workflowitem_archive: "German: Archive workflowitem"
   },
   language: {
     german: "German",

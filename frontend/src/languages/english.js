@@ -1,7 +1,4 @@
-import def from "./default";
-
 const en = {
-  ...def,
   common: {
     cancel: "Cancel",
     next: "Next",
@@ -221,39 +218,40 @@ const en = {
     sort: "Moved {0} after {1}"
   },
   permissions: {
-    "view": "View permissions",
-    "write": "Write permissions",
-    "admin": "Admin permissions",
-    "project.assign": "Assign project to others",
-    "project.intent.grantPermission": "Grant permissions",
-    "project.intent.listPermissions": "View permissions",
-    "project.intent.revokePermission": "Revoke permissions",
-    "project.viewDetails": "View project details",
-    "project.viewSummary": "View project in overview",
-    "project.createSubproject": "Create subprojects",
-    "subproject.archive": "Archive subproject",
-    "subproject.assign": "Assign subproject",
-    "subproject.close": "Close subproject",
-    "subproject.createWorkflowitem": "Create workflow items",
-    "subproject.intent.grantPermission": "Grant subproject permissions",
-    "subproject.intent.listPermissions": "View subproject permissions",
-    "subproject.intent.revokePermission": "Revoke subproject permissions",
-    "subproject.update": "Update subproject",
-    "subproject.viewDetails": "View subproject details",
-    "subproject.viewSummary": "View subproject overview",
-    "workflowitem.intent.listPermissions": "Show workflowitem permissions",
-    "workflowitem.intent.grantPermission": "Grant workflowitem permission",
-    "workflowitem.intent.revokePermission": "Revoke workflowitem permission",
-    "workflowitem.view": "View workflowitem",
-    "workflowitem.assign": "Assign workflowitem",
-    "workflowitem.update": "Update workflowitem",
-    "workflowitem.close": "Close workflowitem",
-    "workflowitem.archive": "Archive workflowitem"
+    view: "View permissions",
+    write: "Write permissions",
+    admin: "Admin permissions",
+    project_assign: "Assign project to others",
+    project_intent_grantPermission: "Grant permissions",
+    project_intent_listPermissions: "View permissions",
+    project_intent_revokePermission: "Revoke permissions",
+    project_viewDetails: "View project details",
+    project_viewSummary: "View project in overview",
+    project_createSubproject: "Create subprojects",
+    subproject_archive: "Archive subproject",
+    subproject_assign: "Assign subproject",
+    subproject_close: "Close subproject",
+    subproject_createWorkflowitem: "Create workflow items",
+    subproject_intent_grantPermission: "Grant subproject permissions",
+    subproject_intent_listPermissions: "View subproject permissions",
+    subproject_intent_revokePermission: "Revoke subproject permissions",
+    subproject_update: "Update subproject",
+    subproject_viewDetails: "View subproject details",
+    subproject_viewSummary: "View subproject overview",
+    workflowitem_intent_listPermissions: "Show workflowitem permissions",
+    workflowitem_intent_grantPermission: "Grant workflowitem permission",
+    workflowitem_intent_revokePermission: "Revoke workflowitem permission",
+    workflowitem_view: "View workflowitem",
+    workflowitem_assign: "Assign workflowitem",
+    workflowitem_update: "Update workflowitem",
+    workflowitem_close: "Close workflowitem",
+    workflowitem_archive: "Archive workflowitem"
   },
   language: {
     german: "German",
     french: "Français",
-    english: "English"
+    english: "English",
+    portuguese: "Portuguese"
   }
 };
 export default en;

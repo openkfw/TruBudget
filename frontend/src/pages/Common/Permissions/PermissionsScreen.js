@@ -117,7 +117,7 @@ const renderUserSelection = (user, permissionedUser, permissionName, grantPermis
 
 const renderPermission = (name, userList, permissions, grantPermission) => (
   <TableRow key={name} style={styles.tableRow}>
-    <TableRowColumn>{strings.permissions[name] || name}</TableRowColumn>
+    <TableRowColumn>{strings.permissions[name.replace(/[.]/g, "_")] || name}</TableRowColumn>
     <TableRowColumn>
       <PermissionSelection
         name={name}
