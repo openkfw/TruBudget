@@ -1,6 +1,6 @@
 import * as bcrypt from "bcryptjs";
 
-const saltRounds = 10;
+const saltRounds = 8;
 
 export type Input = string;
 export type Digest = string;
