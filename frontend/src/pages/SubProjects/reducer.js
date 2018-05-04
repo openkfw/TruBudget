@@ -1,5 +1,4 @@
 import { fromJS } from "immutable";
-import _ from "lodash";
 
 import {
   SUBPROJECT_NAME,
@@ -9,7 +8,6 @@ import {
   CREATE_SUBPROJECT_SUCCESS,
   SHOW_SUBPROJECT_DIALOG,
   CANCEL_SUBPROJECT_DIALOG,
-  SUBPROJECT_CREATION_STEP,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
   SHOW_PROJECT_PERMISSIONS,
@@ -45,8 +43,7 @@ const defaultState = fromJS({
   thumbnail: "/Thumbnail_0001.jpg",
   allowedIntents: [],
   permissionDialogShown: false,
-  showProjectAssignees: false,
-  projectAssignee: ""
+  showProjectAssignees: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {

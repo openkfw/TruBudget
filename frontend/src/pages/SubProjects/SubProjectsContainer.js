@@ -10,9 +10,7 @@ import {
   storeSubProjectName,
   storeSubProjectAmount,
   storeSubProjectComment,
-  fetchProjectPermissions,
   showProjectPermissions,
-  grantPermission,
   showProjectAssignees
 } from "./actions";
 import SubProjects from "./SubProjects";

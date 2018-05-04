@@ -46,8 +46,6 @@ const AssigneeDialog = ({ assigneeId, users, show, onClose, assign }) => {
   );
 };
 
-const colors = ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Black", "White"];
-
 const selectionStyle = {
   searchContainer: {
     marginLeft: "12px",

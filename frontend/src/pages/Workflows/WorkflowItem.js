@@ -9,13 +9,11 @@ import HiddenIcon from "material-ui/svg-icons/action/visibility-off";
 import Paper from "material-ui/Paper";
 import Chip from "material-ui/Chip";
 import OpenIcon from "material-ui/svg-icons/content/remove";
-import InprogressIcon from "material-ui/svg-icons/navigation/subdirectory-arrow-right";
 import DoneIcon from "material-ui/svg-icons/navigation/check";
 import EditIcon from "material-ui/svg-icons/image/edit";
-import ReviewIcon from "material-ui/svg-icons/action/find-in-page";
 import PermissionIcon from "material-ui/svg-icons/action/lock-open";
 import IconButton from "material-ui/IconButton";
-import { toAmountString, statusMapping, amountTypes } from "../../helper.js";
+import { toAmountString, amountTypes } from "../../helper.js";
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from "../../colors.js";
 import strings from "../../localizeStrings";
 import { canViewWorkflowItemPermissions, canUpdateWorkflowItem, canCloseWorkflowItem } from "../../permissions.js";
@@ -142,52 +140,6 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
   props.prefillDocuments(documents);
 };
 
-const getNextStatus = (status, approvalRequired) => {
-  switch (status) {
-    case "open":
-      return "in_progress";
-    case "in_progress":
-      if (!approvalRequired) {
-        return "done";
-      }
-      return "in_review";
-    case "in_review":
-      return "done";
-    default:
-      return "open";
-  }
-};
-
-const createWorkflowItem = (
-  { workflowName, amount, currency, comment, status, type, amountType, approvalRequired },
-  nextStatus
-) => {
-  return {
-    name: workflowName,
-    previousStatus: status,
-    status: nextStatus,
-    amount,
-    currency,
-    comment,
-    type,
-    amountType,
-    approvalRequired
-  };
-};
-
-const changeProgress = ({ key, txid, data }, props) => {
-  const { status, approvalRequired } = data;
-  const nextStatus = getNextStatus(status, approvalRequired);
-  const workflowItem = createWorkflowItem(data, nextStatus);
-  props.editWorkflowItem(
-    props.location.pathname.split("/")[3],
-    key,
-    workflowItem,
-    data.documents,
-    workflowItem.previousStatus
-  );
-};
-
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
   if (!workflowSortEnabled) {
     return (
@@ -244,14 +196,6 @@ const renderActionButtons = (
   );
 };
 
-function handleRequestDelete() {
-  alert("You clicked the delete button.");
-}
-
-function handleClick() {
-  alert("You clicked the Chip.");
-}
-
 export const WorkflowItem = SortableElement(
   ({
     workflow,
@@ -263,7 +207,7 @@ export const WorkflowItem = SortableElement(
     showWorkflowItemAssignee,
     ...props
   }) => {
-    const { id, status, type, displayName, amountType, allowedIntents, assignee } = workflow;
+    const { id, status, displayName, amountType, allowedIntents, assignee } = workflow;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const amount = toAmountString(workflow.amount, workflow.currency);
     const tableStyle = styles[status];
@@ -328,8 +272,6 @@ export const RedactedWorkflowItem = SortableElement(
 
     const itemStyle = workflowSelectable ? {} : { opacity: 0.3 };
 
-    const showEdit = false;
-    const showClose = false;
     return (
       <Card
         zDepth={workflowSelectable ? 1 : 0}

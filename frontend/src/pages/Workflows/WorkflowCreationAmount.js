@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 
-import Dropdown from "../Common/Dropdown";
-import TextInput from "../Common/TextInput";
 import strings from "../../localizeStrings";
-import { getCurrencies, preselectCurrency, fromAmountString, toAmountString } from "../../helper";
+import { preselectCurrency, toAmountString } from "../../helper";
 import Budget from "../Common/Budget";
 
 const styles = {

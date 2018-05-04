@@ -3,20 +3,19 @@
  * If we were to do this in store.js, reducers wouldn't be hot reloadable.
  */
 
-import { fromJS } from 'immutable';
-import { combineReducers } from 'redux-immutable';
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { fromJS } from "immutable";
+import { combineReducers } from "redux-immutable";
+import { LOCATION_CHANGE } from "react-router-redux";
 
-import navbarReducer from './pages/Navbar/reducer';
-import overviewReducer from './pages/Overview/reducer';
-import subProjectReducer from './pages/SubProjects/reducer';
-import dashboardReducer from './pages/Dashboard/reducer';
-import notificationsReducer from './pages/Notifications/reducer';
-import workflowReducer from './pages/Workflows/reducer';
-import loginReducer from './pages/Login/reducer';
-import documentsReducer from './pages/Documents/reducer';
-import adminDashboardReducer from './pages/Admin/reducer';
-import loadingReducer from './pages/Loading/reducer';
+import navbarReducer from "./pages/Navbar/reducer";
+import overviewReducer from "./pages/Overview/reducer";
+import subProjectReducer from "./pages/SubProjects/reducer";
+import dashboardReducer from "./pages/Dashboard/reducer";
+import notificationsReducer from "./pages/Notifications/reducer";
+import workflowReducer from "./pages/Workflows/reducer";
+import loginReducer from "./pages/Login/reducer";
+import documentsReducer from "./pages/Documents/reducer";
+import loadingReducer from "./pages/Loading/reducer";
 
 /*
  * routeReducer
@@ -28,14 +27,12 @@ import loadingReducer from './pages/Loading/reducer';
 
 // Initial routing state
 const routeInitialState = fromJS({
-  locationBeforeTransitions: null,
+  locationBeforeTransitions: null
 });
-
 
 export const actionInitialState = fromJS({
-  lastAction: null,
+  lastAction: null
 });
-
 
 /**
  * Merge route into the global application state
@@ -43,20 +40,18 @@ export const actionInitialState = fromJS({
 function lastActionReducer(state = actionInitialState, action) {
   return state.merge({
     lastAction: action.type
-  })
+  });
 }
-
 
 /**
  * Merge route into the global application state
  */
 function routeReducer(state = routeInitialState, action) {
   switch (action.type) {
-
     /* istanbul ignore next */
     case LOCATION_CHANGE:
       return state.merge({
-        locationBeforeTransitions: action.payload,
+        locationBeforeTransitions: action.payload
       });
 
     default:
@@ -79,8 +74,7 @@ export default function createReducer(asyncReducers) {
     notifications: notificationsReducer,
     login: loginReducer,
     documents: documentsReducer,
-    adminDashboard: adminDashboardReducer,
     loading: loadingReducer,
-    ...asyncReducers,
+    ...asyncReducers
   });
 }

@@ -1,16 +1,15 @@
-import React from 'react';
+import React from "react";
 
-import OverviewTable from './OverviewTable';
-import ProjectCreation from './ProjectCreation';
-//import PermissionsScreen from '../Common/Permissions/PermissionsScreen';
+import OverviewTable from "./OverviewTable";
+import ProjectCreation from "./ProjectCreation";
 
-const Overview = (props) => {
+const Overview = props => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <ProjectCreation {...props} />
       <OverviewTable {...props} />
     </div>
-  )
+  );
 };
 
 export default Overview;

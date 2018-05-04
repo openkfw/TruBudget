@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import { Card, CardHeader, CardTitle, CardText, CardMedia } from "material-ui/Card";
+import { Card, CardHeader, CardMedia } from "material-ui/Card";
 import { Doughnut } from "react-chartjs-2";
 
 import {
@@ -11,24 +11,19 @@ import {
   statusMapping,
   tsToString,
   calculateWorkflowBudget,
-  getProgressInformation,
-  getNextIncompletedItem,
-  getNextAction,
-  getAssignedOrganization
+  getProgressInformation
 } from "../../helper.js";
 import { List, ListItem } from "material-ui/List";
 import Chip from "material-ui/Chip";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
-import CommentIcon from "material-ui/svg-icons/editor/short-text";
 import AmountIcon from "material-ui/svg-icons/action/account-balance";
 import PermissionIcon from "material-ui/svg-icons/action/lock-open";
 import UnspentIcon from "material-ui/svg-icons/content/add-circle";
 import SpentIcon from "material-ui/svg-icons/content/remove-circle";
 import NotAssignedIcon from "material-ui/svg-icons/editor/space-bar";
 import DateIcon from "material-ui/svg-icons/action/date-range";
-import ActiveIcon from "material-ui/svg-icons/image/navigate-next";
 import OpenIcon from "material-ui/svg-icons/content/remove";
 import DoneIcon from "material-ui/svg-icons/navigation/check";
 import AssigneeIcon from "material-ui/svg-icons/social/group";
@@ -219,9 +214,7 @@ const SubProjectDetails = ({
   const spendBudgetString = toAmountString(currentDisbursement, currency);
 
   const statusDetails = getProgressInformation(workflowItems);
-  const nextIncompletedWorkflow = getNextIncompletedItem(workflowItems);
 
-  const allowedToWrite = false;
   const allowedToEdit = false;
 
   const allocatedBudgetRatio = _.isUndefined(amount) ? 0 : assignedBudget / amount;

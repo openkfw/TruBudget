@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardTitle, CardText, CardMedia, CardHeader } from "material-ui/Card";
+import { Card, CardMedia, CardHeader } from "material-ui/Card";
 import { Doughnut } from "react-chartjs-2";
 import {
   toAmountString,
@@ -11,8 +11,7 @@ import {
   statusMapping,
   tsToString,
   calculateUnspentAmount,
-  getProgressInformation,
-  getAssignedOrganization
+  getProgressInformation
 } from "../../helper.js";
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
@@ -20,8 +19,6 @@ import Chip from "material-ui/Chip";
 import Avatar from "material-ui/Avatar";
 
 import RaisedButton from "material-ui/RaisedButton";
-import ActionAndroid from "material-ui/svg-icons/action/android";
-import CommentIcon from "material-ui/svg-icons/editor/short-text";
 import AmountIcon from "material-ui/svg-icons/action/account-balance";
 import UnspentIcon from "material-ui/svg-icons/content/add-circle";
 import DateIcon from "material-ui/svg-icons/action/date-range";
@@ -137,7 +134,6 @@ const ProjectDetails = ({
 }) => {
   const {
     amountString,
-    spentAmount,
     completionRatio,
     completionString,
     spentAmountString,

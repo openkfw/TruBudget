@@ -1,16 +1,8 @@
 import { put, takeEvery, takeLatest, call, select } from "redux-saga/effects";
 
 import Api from "./api.js";
-import { FETCH_UPDATES, FETCH_UPDATES_SUCCESS } from "./pages/LiveUpdates/actions";
+
 import {
-  FETCH_PEERS,
-  FETCH_PEERS_SUCCESS,
-  FETCH_STREAM_NAMES,
-  FETCH_STREAM_NAMES_SUCCESS
-} from "./pages/Navbar/actions";
-import {
-  FETCH_PROJECTS,
-  FETCH_PROJECTS_SUCCESS,
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
   FETCH_ALL_PROJECTS_SUCCESS,
@@ -18,8 +10,6 @@ import {
 } from "./pages/Overview/actions";
 
 import {
-  FETCH_PROJECT_DETAILS,
-  FETCH_PROJECT_DETAILS_SUCCESS,
   CREATE_SUBPROJECT,
   CREATE_SUBPROJECT_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
@@ -31,29 +21,10 @@ import {
   ASSIGN_PROJECT_SUCCESS,
   ASSIGN_PROJECT
 } from "./pages/SubProjects/actions";
-import { FETCH_NODE_INFORMATION, FETCH_NODE_INFORMATION_SUCCESS } from "./pages/Dashboard/actions";
+import { SHOW_SNACKBAR, SNACKBAR_MESSAGE } from "./pages/Notifications/actions";
 import {
-  FETCH_NOTIFICATIONS,
-  FETCH_NOTIFICATIONS_SUCCESS,
-  MARK_NOTIFICATION_AS_READ,
-  MARK_NOTIFICATION_AS_READ_SUCCESS,
-  SHOW_SNACKBAR,
-  SNACKBAR_MESSAGE
-} from "./pages/Notifications/actions";
-import {
-  FETCH_WORKFLOW_ITEMS,
-  FETCH_WORKFLOW_ITEMS_SUCCESS,
   CREATE_WORKFLOW,
-  EDIT_WORKFLOW,
   CREATE_WORKFLOW_SUCCESS,
-  EDIT_WORKFLOW_SUCCESS,
-  FETCH_HISTORY_SUCCESS,
-  FETCH_HISTORY,
-  POST_WORKFLOW_SORT,
-  POST_WORKFLOW_SORT_SUCCESS,
-  ENABLE_WORKFLOW_SORT,
-  POST_SUBPROJECT_EDIT,
-  POST_SUBPROJECT_EDIT_SUCCESS,
   FETCH_ALL_SUBPROJECT_DETAILS,
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
   FETCH_SUBPROJECT_PERMISSIONS,
@@ -73,10 +44,6 @@ import {
 } from "./pages/Workflows/actions";
 
 import {
-  FETCH_USERS,
-  FETCH_USERS_SUCCESS,
-  FETCH_ROLES,
-  FETCH_ROLES_SUCCESS,
   LOGIN,
   LOGIN_SUCCESS,
   SHOW_LOGIN_ERROR,
@@ -85,30 +52,11 @@ import {
   LOGOUT,
   FETCH_USER_SUCCESS,
   FETCH_USER,
-  ADMIN_LOGIN,
-  ADMIN_LOGOUT,
-  ADMIN_LOGOUT_SUCCESS,
-  ADMIN_LOGIN_SUCCESS,
-  SHOW_ADMIN_LOGIN_ERROR,
-  FETCH_ADMIN_USER_SUCCESS,
   FETCH_ENVIRONMENT_SUCCESS,
   FETCH_ENVIRONMENT,
   STORE_ENVIRONMENT_SUCCESS
 } from "./pages/Login/actions";
-import {
-  VALIDATE_DOCUMENT,
-  VALIDATE_DOCUMENT_SUCCESS,
-  ADD_DOCUMENT,
-  ADD_DOCUMENT_SUCCESS
-} from "./pages/Documents/actions";
-import {
-  FETCH_NODE_PERMISSIONS,
-  FETCH_NODE_PERMISSIONS_SUCCESS,
-  ADD_USER,
-  ADD_USER_SUCCESS,
-  ADD_ROLE_SUCCESS,
-  ADD_ROLE
-} from "./pages/Admin/actions";
+
 import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from "./pages/Loading/actions.js";
 
 const api = new Api();
@@ -196,8 +144,6 @@ function* handleLoading(showLoading) {
     return function*() {};
   }
 }
-
-const chill = async ms => new Promise(res => setTimeout(res, ms));
 
 ////////////////////// Specific Sagas start here /////////////////
 
@@ -776,7 +722,7 @@ export function* assignSubprojectSaga({ projectId, subprojectId, assigneeId, sho
     yield put({
       type: ASSIGN_SUBPROJECT_SUCCESS
     });
-    
+
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,
       projectId,

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { closeWorkflowItem } from "./pages/Workflows/actions";
 const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
 

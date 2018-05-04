@@ -1,7 +1,6 @@
 import React from "react";
 import moment from "moment";
 import OpenIcon from "material-ui/svg-icons/content/remove";
-import InProgressIcon from "material-ui/svg-icons/navigation/subdirectory-arrow-right";
 import DoneIcon from "material-ui/svg-icons/navigation/check";
 
 import accounting from "accounting";

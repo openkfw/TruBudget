@@ -1,31 +1,23 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux'
-import { Route, Switch } from 'react-router';
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { ConnectedRouter } from "react-router-redux";
+import { Route, Switch } from "react-router";
 import injectTapEventPlugin from "react-tap-event-plugin";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import createHistory from 'history/createBrowserHistory';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import getMuiTheme from "material-ui/styles/getMuiTheme";
+import createHistory from "history/createBrowserHistory";
 
-import {
-  ACMECorpLightgrey,
-  ACMECorpGrey,
-  ACMECorpLightgreen,
-  ACMECorpGreen,
-  ACMECorpLightblue,
-  ACMECorpBlue
-} from './colors'
+import { ACMECorpLightgrey, ACMECorpGrey, ACMECorpLightgreen, ACMECorpGreen, ACMECorpLightblue, ACMECorpBlue } from "./colors";
 
-import Main from './pages/Main/Main';
-import LoginPageContainer from './pages/Login/LoginPageContainer';
-import PrivateRoute from './pages/Login/PrivateRoute';
-import AdminDashboardContainer from './pages/Admin/AdminDashboardContainer';
+import Main from "./pages/Main/Main";
+import LoginPageContainer from "./pages/Login/LoginPageContainer";
+import PrivateRoute from "./pages/Login/PrivateRoute";
 
-import configureStore from './store';
-import withInitialLoading from './pages/Loading/withInitialLoading';
+import configureStore from "./store";
+import withInitialLoading from "./pages/Loading/withInitialLoading";
 
-const history = createHistory()
+const history = createHistory();
 
 const initialState = {};
 const store = configureStore(initialState, history);
@@ -40,8 +32,8 @@ const muiTheme = getMuiTheme({
     accent1Color: ACMECorpGreen,
     accent2Color: ACMECorpLightblue,
     accent3Color: ACMECorpGrey,
-    alternateTextColor: ACMECorpLightgrey,
-  },
+    alternateTextColor: ACMECorpLightgrey
+  }
 });
 
 class Root extends Component {
@@ -52,7 +44,6 @@ class Root extends Component {
           <MuiThemeProvider muiTheme={muiTheme}>
             <Switch>
               <Route key={1} exact path="/login" component={withInitialLoading(LoginPageContainer)} />
-              {/* <Route key={2} exact path="/admin" component={AdminDashboardContainer} /> */}
               <PrivateRoute component={Main} />
             </Switch>
           </MuiThemeProvider>
@@ -62,7 +53,4 @@ class Root extends Component {
   }
 }
 
-ReactDOM.render(
-  <Root />,
-  document.getElementById('root')
-);
+ReactDOM.render(<Root />, document.getElementById("root"));

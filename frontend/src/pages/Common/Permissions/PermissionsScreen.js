@@ -1,14 +1,6 @@
 import React, { Component } from "react";
 
-import {
-  Table,
-  TableBody,
-  TableFooter,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn
-} from "material-ui/Table";
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from "material-ui/Table";
 
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
@@ -17,7 +9,6 @@ import TextField from "material-ui/TextField";
 import Dialog from "material-ui/Dialog";
 
 import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
 
 import strings from "../../../localizeStrings";
 
