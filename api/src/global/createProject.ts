@@ -3,7 +3,7 @@ import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value, isUserOrUndefined } from "../lib";
 import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project";
@@ -31,7 +31,7 @@ export const createProject = async (
       displayName: value("displayName", input.displayName, isNonemptyString),
       description: value("description", input.description, isNonemptyString),
       amount: value("amount", input.amount, isNonemptyString),
-      assignee: value("assignee", input.assignee, isNonemptyString),
+      assignee: value("assignee", input.assignee, isUserOrUndefined),
       currency: value("currency", input.currency, isNonemptyString).toUpperCase(),
       thumbnail: value("thumbnail", input.thumbnail, x => typeof x === "string", ""),
     },

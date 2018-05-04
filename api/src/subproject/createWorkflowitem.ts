@@ -9,7 +9,7 @@ import {
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
-import { isNonemptyString, value, asyncValue } from "../lib";
+import { isNonemptyString, value, asyncValue, isUserOrUndefined } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Workflowitem from "../workflowitem";
@@ -66,7 +66,7 @@ export const createWorkflowitem = async (
       amountType,
       description: value("description", data.description, x => typeof x === "string", ""),
       status: value("status", data.status, x => ["open", "closed"].includes(x), "open"),
-      assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, undefined),
+      assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined),
       documents: data.documents, // not checked right now
       previousWorkflowitemId: data.previousWorkflowitemId, // optional
     },
@@ -80,25 +80,6 @@ export const createWorkflowitem = async (
       data: { created: true },
     },
   ];
-};
-
-const isUserOrUndefined = async (multichain, input) => {
-  if (input === undefined) {
-    return true;
-  } else {
-    if (isNonemptyString) {
-      const user = await User.get(multichain, input).catch(err => {
-        if (err.kind === "NotFound") {
-          return undefined;
-        } else {
-          throw err;
-        }
-      });
-      return user !== undefined;
-    } else {
-      return false;
-    }
-  }
 };
 
 const getWorkflowitemDefaultPermissions = (token: AuthToken): AllowedUserGroupsByIntent => {

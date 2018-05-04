@@ -15,7 +15,7 @@ winston.add(winstonConsole);
  * Deal with the environment:
  */
 
-const port: number = (process.env.PORT && parseInt(process.env.PORT)) || 3000;
+const port: number = (process.env.PORT && parseInt(process.env.PORT)) || 8080;
 
 const jwtSecret: string = process.env.JWT_SECRET || randomString(32);
 if (jwtSecret.length < 32) {
@@ -53,6 +53,6 @@ app.listen(port, err => {
   winston.info("Starting deployment pipeline...");
   provisionBlockchain(port, rootSecret, multichainClient)
     .then(() => console.log("Chain provisioned."))
-    .catch(provisionError => console.log(`Could not provision the chain: ${provisionError}`));
+    .catch(provisionError => console.log({ provisionError }));
   console.log(`server is listening on ${port}`);
 });

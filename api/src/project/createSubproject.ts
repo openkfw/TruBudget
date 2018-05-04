@@ -8,7 +8,7 @@ import {
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value, isUserOrUndefined } from "../lib";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Subproject from "../subproject";
@@ -47,7 +47,7 @@ export const createSubproject = async (
       displayName: value("displayName", subproject.displayName, isNonemptyString),
       description: value("description", subproject.description, isNonemptyString),
       amount: value("amount", subproject.amount, isNonemptyString),
-      assignee: value("assignee", subproject.assignee, isNonemptyString),
+      assignee: value("assignee", subproject.assignee, isUserOrUndefined),
       currency: value("currency", subproject.currency, isNonemptyString).toUpperCase(),
     },
     defaultPermissions(req.token.userId),
