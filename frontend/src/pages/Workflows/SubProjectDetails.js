@@ -196,6 +196,7 @@ const SubProjectDetails = ({
   created,
   budgetEditEnabled,
   canViewPermissions,
+  canAssinSubproject,
   showSubProjectPermissions,
   showSubProjectAssignee,
   ...props
@@ -220,7 +221,6 @@ const SubProjectDetails = ({
   const allocatedBudgetRatio = _.isUndefined(amount) ? 0 : assignedBudget / amount;
   const consumptionBudgetRatio = _.isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
   const currentDisbursementRatio = _.isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
-
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -244,10 +244,17 @@ const SubProjectDetails = ({
             disabled={true}
             leftIcon={<AssigneeIcon style={styles.assigneeIcon} />}
             primaryText={
-              <Chip onClick={showSubProjectAssignee}>
-                <Avatar src="/lego_avatar_male1.jpg" />
-                {assignee}
-              </Chip>
+              canAssinSubproject ? (
+                <Chip onClick={showSubProjectAssignee}>
+                  <Avatar src="/lego_avatar_male1.jpg" />
+                  {assignee}
+                </Chip>
+              ) : (
+                <Chip>
+                  <Avatar src="/lego_avatar_male1.jpg" />
+                  {assignee}
+                </Chip>
+              )
             }
           />
           <Divider />

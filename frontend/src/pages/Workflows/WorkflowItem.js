@@ -16,7 +16,12 @@ import IconButton from "material-ui/IconButton";
 import { toAmountString, amountTypes } from "../../helper.js";
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from "../../colors.js";
 import strings from "../../localizeStrings";
-import { canViewWorkflowItemPermissions, canUpdateWorkflowItem, canCloseWorkflowItem } from "../../permissions.js";
+import {
+  canViewWorkflowItemPermissions,
+  canUpdateWorkflowItem,
+  canCloseWorkflowItem,
+  canAssignWorkflowItem
+} from "../../permissions.js";
 
 const styles = {
   in_progress: {
@@ -217,6 +222,8 @@ export const WorkflowItem = SortableElement(
     const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
     const infoButton = getInfoButton(props, workflow);
 
+    const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
+
     return (
       <Card
         zDepth={workflowSelectable ? 1 : 0}
@@ -241,11 +248,18 @@ export const WorkflowItem = SortableElement(
               <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
                 {getAmountField(amount, amountType)}
               </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText, ...styles.chipRow }} colSpan={2}>
-                <Chip onClick={() => showWorkflowItemAssignee(id, assignee)} style={styles.chip}>
-                  <Avatar src="/lego_avatar_male1.jpg" />
-                  {assignee}
-                </Chip>
+              <TableRowColumn style={{ ...styles.listText, ...styles.chipRow }} colSpan={2}>
+                {canAssign ? (
+                  <Chip onClick={() => showWorkflowItemAssignee(id, assignee)}>
+                    <Avatar src="/lego_avatar_male1.jpg" />
+                    {assignee}
+                  </Chip>
+                ) : (
+                  <Chip>
+                    <Avatar src="/lego_avatar_male1.jpg" />
+                    {assignee}
+                  </Chip>
+                )}
               </TableRowColumn>
               {renderActionButtons(
                 showEdit,
@@ -287,7 +301,7 @@ export const RedactedWorkflowItem = SortableElement(
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
         <Table>
-          <TableBody displayRowCheckbox={false} adjustForCheckbox={false}>
+          <TableBody displayRowCheckbox={false}>
             <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
               <TableRowColumn colSpan={1}>
                 <IconButton style={styles.infoButton}>

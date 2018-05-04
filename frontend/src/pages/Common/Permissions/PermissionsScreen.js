@@ -133,7 +133,7 @@ const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder 
   <div style={tableStyle.container}>
     {intentOrder.map(section => {
       return (
-        <Table selectable={false}>
+        <Table key={strings.permissions[section.name]} selectable={false}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
               <TableHeaderColumn colSpan="3" style={styles.heading}>

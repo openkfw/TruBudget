@@ -39,7 +39,7 @@ import { showHistory, fetchHistoryItems } from "../Notifications/actions";
 import { addDocument, clearDocuments, prefillDocuments, validateDocument } from "../Documents/actions";
 import Workflow from "./Workflow";
 import SubProjectDetails from "./SubProjectDetails";
-import { canViewSubProjectPermissions, canAssignWorkflowItem } from "../../permissions";
+import { canViewSubProjectPermissions, canAssignSubProject } from "../../permissions";
 import { toJS } from "../../helper";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
@@ -73,11 +73,15 @@ class WorkflowContainer extends Component {
 
   render() {
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
-    const canAssign = canAssignWorkflowItem(this.props.allowedIntents);
+    const canAssinSubproject = canAssignSubProject(this.props.allowedIntents);
     return (
       <div>
         <div style={globalStyles.innerContainer}>
-          <SubProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
+          <SubProjectDetails
+            {...this.props}
+            canViewPermissions={canViewPermissions}
+            canAssinSubproject={canAssinSubproject}
+          />
           <Workflow
             {...this.props}
             createWorkflowItem={this.createWorkflowItem}
@@ -102,7 +106,6 @@ class WorkflowContainer extends Component {
             projectId={this.projectId}
             subprojectId={this.subProjectId}
             workflowItems={this.props.workflowItems}
-            canAssign={canAssign}
           />
         </div>
       </div>

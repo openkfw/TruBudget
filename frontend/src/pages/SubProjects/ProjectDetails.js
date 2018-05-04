@@ -128,6 +128,7 @@ const ProjectDetails = ({
   projectAssignee,
   roles,
   thumbnail,
+  canAssignProject,
   canViewPermissions,
   showProjectPermissions,
   showProjectAssignees
@@ -171,10 +172,17 @@ const ProjectDetails = ({
             disabled={true}
             leftIcon={<AssigneeIcon style={styles.assigneeIcon} />}
             primaryText={
-              <Chip onClick={() => showProjectAssignees()}>
-                <Avatar src="/lego_avatar_male1.jpg" />
-                {projectAssignee}
-              </Chip>
+              canAssignProject ? (
+                <Chip onClick={() => showProjectAssignees()}>
+                  <Avatar src="/lego_avatar_male1.jpg" />
+                  {projectAssignee}
+                </Chip>
+              ) : (
+                <Chip>
+                  <Avatar src="/lego_avatar_male1.jpg" />
+                  {projectAssignee}
+                </Chip>
+              )
             }
           />
           <Divider />

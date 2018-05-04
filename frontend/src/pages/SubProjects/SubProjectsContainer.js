@@ -33,12 +33,13 @@ class SubProjectsContainer extends Component {
   render() {
     const canViewPermissions = this.props.allowedIntents.indexOf("project.intent.listPermissions") > -1;
     const canCreateSubProject = this.props.allowedIntents.indexOf("project.createSubproject") > -1;
+    const canAssignProject = this.props.allowedIntents.indexOf("project.assign") > -1;
     return (
       <div>
         <div style={globalStyles.innerContainer}>
           <ProjectPermissionsContainer title={strings.project.project_permissions_title} />
           <ProjectAssigneeContainer projectId={this.props.projectId} assignee={this.props.projectAssignee} />
-          <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} />
+          <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} canAssignProject={canAssignProject} />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
         </div>
       </div>

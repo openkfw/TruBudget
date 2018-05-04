@@ -45,7 +45,6 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
   const accumulatedPath = paths.map((path, index, source) => {
     return index ? "/" + source.slice(1, index + 1).join("/") : "/";
   });
-
   return paths.map((path, index) => {
     const isLastItem = index === paths.length - 1;
     return (
