@@ -686,7 +686,7 @@ export function* grantWorkflowItemPermissionsSaga({ projectId, workflowitemId, i
 
 export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.closeWorkflowItem, projectId, workflowitemId);
+    yield callApi(api.closeWorkflowItem, projectId, subprojectId, workflowitemId);
 
     yield put({
       type: CLOSE_WORKFLOWITEM_SUCCESS

@@ -74,7 +74,8 @@ class Api {
   createWorkflowItem = payload =>
     axios.post(`/subproject.createWorkflowitem`, {
       ...payload,
-      amount: payload.amountType === "N/A" ? "0" : payload.amount
+      currency: payload.amountType === "N/A" ? null : payload.currency,
+      amount: payload.amountType === "N/A" ? null : payload.amount
     });
 
   listSubProjectPermissions = (projectId, subprojectId) =>
@@ -97,7 +98,8 @@ class Api {
 
   assignProject = (projectId, userId) => axios.post(`/project.assign`, { projectId, userId });
 
-  closeWorkflowItem = (projectId, workflowitemId) => axios.post(`/workflowitem.close`, { projectId, workflowitemId });
+  closeWorkflowItem = (projectId, subprojectId, workflowitemId) =>
+    axios.post(`/workflowitem.close`, { projectId, subprojectId, workflowitemId });
 
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
