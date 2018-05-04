@@ -776,6 +776,7 @@ export function* assignSubprojectSaga({ projectId, subprojectId, assigneeId, sho
     yield put({
       type: ASSIGN_SUBPROJECT_SUCCESS
     });
+    
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,
       projectId,
