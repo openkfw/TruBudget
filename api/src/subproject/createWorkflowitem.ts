@@ -14,6 +14,8 @@ import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Workflowitem from "../workflowitem";
 
+const isUndefinedOrNull = x => x === undefined || x === null;
+
 export const createWorkflowitem = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
@@ -50,7 +52,7 @@ export const createWorkflowitem = async (
   let amount;
   let currency;
   if (amountType === "N/A") {
-    if (data.amount !== undefined || data.currency !== undefined) {
+    if (!isUndefinedOrNull(data.amount) || !isUndefinedOrNull(data.currency)) {
       throwParseError(
         ["amountType", "amount", "currency"],
         'If the amountType is "N/A" (= not applicable), the fields "amount" and "currency" must not be present.',
