@@ -1,9 +1,7 @@
 const axios = require("axios");
-
 import * as winston from "winston";
 import { MultichainClient } from "../multichain";
 import { amazonasFundProject } from "./data";
-import { sleep } from "./lib";
 import { provisionUsers } from "./users";
 
 const DEFAULT_API_VERSION = "1.0";
@@ -22,20 +20,20 @@ axios.defaults.transformRequest = [
   ...axios.defaults.transformRequest,
 ];
 
-const isReady = async () => {
-  const delaySec = 10;
-  let hasHealthEndpointUp = false;
-  while (!hasHealthEndpointUp) {
-    try {
-      await axios.get("/health");
-      hasHealthEndpointUp = true;
-    } catch (_err) {
-      console.log(`The TruBudget API is not ready yet, trying again in ${delaySec}`);
-      await sleep(delaySec * 1000);
-    }
-  }
-  console.log(`The TruBudget API is now ready.`);
-};
+// const isReady = async () => {
+//   const delaySec = 10;
+//   let isHealthEndpointReady = false;
+//   while (!isHealthEndpointReady) {
+//     try {
+//       await axios.get("/health");
+//       isHealthEndpointReady = true;
+//     } catch (_err) {
+//       console.log(`The TruBudget API is not ready yet, trying again in ${delaySec}`);
+//       await sleep(delaySec * 1000);
+//     }
+//   }
+//   console.log(`The TruBudget API is now ready.`);
+// };
 
 const authenticate = async (userId: string, rootSecret: string) => {
   const response = await axios.post("/user.authenticate", {
@@ -62,7 +60,7 @@ export const provisionBlockchain = async (
   while (!connected) {
     try {
       winston.info("Checking multichain availability...");
-      let info = await multichainClient.getInfo();
+      const info = await multichainClient.getInfo();
       winston.info(`Connected to ${info.nodeaddress}`);
       connected = true;
     } catch (err) {
@@ -95,6 +93,9 @@ const provisionFromData = async () => {
   }
   console.log(projectTemplate);
 
+  // TODO: the status field comes with #62
+  // const isToBeClosed = projectTemplate.status === "closed";
+
   await axios.post("/global.createProject", {
     project: {
       displayName: projectTemplate.displayName,
@@ -111,6 +112,14 @@ const provisionFromData = async () => {
   for (const subprojectTemplate of projectTemplate.subprojects) {
     await provisionSubproject(project, subprojectTemplate);
   }
+
+  // TODO: this is supported by the API starting with #62
+  // if (isToBeClosed) {
+  //   await axios.post("/project.close", {
+  //     projectId: project.id,
+  //   });
+  // }
+
   console.log(`Project ${fmtList([project])} created.`);
 };
 
@@ -122,12 +131,14 @@ const findProject = async project => {
 };
 
 const provisionSubproject = async (project, subprojectTemplate) => {
+  const _isToBeClosed = subprojectTemplate.status === "closed";
+
   await axios.post("/project.createSubproject", {
     projectId: project.id,
     subproject: {
       displayName: subprojectTemplate.displayName,
       description: subprojectTemplate.description,
-      status: subprojectTemplate.status,
+      status: "open", // otherwise we won't be able to add workflowitems
       amount: subprojectTemplate.amount,
       currency: subprojectTemplate.currency,
       assignee: subprojectTemplate.assignee,
@@ -140,6 +151,15 @@ const provisionSubproject = async (project, subprojectTemplate) => {
   for (const workflowitemTemplate of subprojectTemplate.workflows) {
     await provisionWorkflowitem(project, subproject, workflowitemTemplate);
   }
+
+  // TODO: this is supported by the API starting with #62
+  // if (isToBeClosed) {
+  //   await axios.post("/subproject.close", {
+  //     projectId: project.id,
+  //     subprojectId: subproject.id,
+  //   });
+  // }
+
   console.log(`Subproject ${fmtList([project, subproject])} created.`);
 };
 

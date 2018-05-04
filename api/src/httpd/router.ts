@@ -5,29 +5,29 @@ import { grantGlobalPermission } from "../global/intent/grantPermission";
 import { getGlobalPermissions } from "../global/intent/listPermissions";
 import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
-import { createSubproject } from "../project/createSubproject";
 import { assignProject } from "../project/assign";
+import { createSubproject } from "../project/createSubproject";
 import { grantProjectPermission } from "../project/intent/grantPermission";
 import { getProjectPermissions } from "../project/intent/listPermissions";
 import { revokeProjectPermission } from "../project/intent/revokePermission";
 import { getProjectList } from "../project/list";
 import { getProjectDetails } from "../project/viewDetails";
+import { assignSubproject } from "../subproject/assign";
 import { createWorkflowitem } from "../subproject/createWorkflowitem";
 import { grantSubprojectPermission } from "../subproject/intent/grantPermission";
 import { getSubprojectPermissions } from "../subproject/intent/listPermissions";
 import { revokeSubprojectPermission } from "../subproject/intent/revokePermission";
 import { getSubprojectList } from "../subproject/list";
 import { getSubprojectDetails } from "../subproject/viewDetails";
-import { assignSubproject } from "../subproject/assign";
 import { authenticateUser } from "../user/authenticate";
 import { getUserList } from "../user/list";
+import { assignWorkflowitem } from "../workflowitem/assign";
 import { closeWorkflowitem } from "../workflowitem/close";
 import { grantWorkflowitemPermission } from "../workflowitem/intent/grantPermission";
 import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissions";
 import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
 import { getWorkflowitemList } from "../workflowitem/list";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
-import { assignWorkflowitem } from "../workflowitem/assign";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -62,15 +62,22 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
       ]);
       break;
 
-    case "ParseError":
-      send(res, [
-        400,
-        {
-          apiVersion: "1.0",
-          error: { code: 400, message: `Missing keys: ${err.badKeys.join(", ")}` },
-        },
-      ]);
+    case "ParseError": {
+      let message;
+      if (err.message !== undefined) {
+        message = `Error parsing fields ${err.badKeys.join(", ")}: ${err.message}`;
+      } else {
+        message = `Missing keys: ${err.badKeys.join(", ")}`;
+      }
+      send(res, [400, { apiVersion: "1.0", error: { code: 400, message } }]);
       break;
+    }
+
+    case "PreconditionError": {
+      const { message } = err;
+      send(res, [412, { apiVersion: "1.0", error: { code: 412, message } }]);
+      break;
+    }
 
     case "AuthenticationError":
       send(res, [
@@ -114,19 +121,6 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
   }
 };
 
-const throwParseError = badKeys => {
-  throw { kind: "ParseError", badKeys };
-};
-const throwParseErrorIfUndefined = (obj, path) => {
-  try {
-    const val = path.reduce((acc, x) => acc[x], obj);
-    if (val === undefined) throw Error("catchme");
-  } catch (_err) {
-    throwParseError([path.join(".")]);
-  }
-};
-
-const apiVersion = "1.0";
 export const createRouter = (
   multichainClient: MultichainClient,
   jwtSecret: string,

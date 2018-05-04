@@ -26,6 +26,15 @@ export interface SubprojectDataWithIntents extends SubprojectData {
   allowedIntents: Intent[];
 }
 
+// Allows a custom ordering among workflowitems. Note that not all workflowitems need
+// to be included; those that aren't are simply ordered by their ctime and concatenated
+// to what's specified here.
+export type WorkflowitemOrdering = string[];
+export interface WorkflowitemOrderingResource extends Resource {
+  data: WorkflowitemOrdering;
+}
+const workflowitemOrderingKey = "workflowitem_ordering";
+
 export const getPermissions = async (
   multichain: MultichainClient,
   projectId: string,
@@ -80,6 +89,7 @@ export const create = async (
 ): Promise<void> => {
   const subprojectId = data.id;
   const resource: SubprojectResource = {
+    data,
     log: [
       {
         // not taken from data in case subprojects are created after the fact, as
@@ -90,9 +100,17 @@ export const create = async (
       },
     ],
     permissions,
-    data,
   };
   return multichain.setValue(projectId, [SUBPROJECTS_KEY, subprojectId], resource);
+};
+
+export const get = async (
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+): Promise<SubprojectData> => {
+  const streamItem = await multichain.getValue(projectId, subprojectId);
+  return streamItem.resource.data;
 };
 
 export const getForUser = async (
@@ -156,4 +174,46 @@ export const getAllForUser = async (
     subproject.allowedIntents.some(intent => allowedToSeeIntents.includes(intent)),
   );
   return clearedSubprojects;
+};
+
+export const getWorkflowitemOrdering = (
+  multichain: MultichainClient,
+  projectId: string,
+): Promise<WorkflowitemOrdering> =>
+  multichain
+    .getValue(projectId, workflowitemOrderingKey)
+    .then(streamItem => streamItem.resource.data)
+    .catch(err => {
+      if (err.kind === "NotFound") {
+        return [];
+      } else {
+        throw err;
+      }
+    });
+
+export const setWorkflowitemOrdering = async (
+  multichain: MultichainClient,
+  projectId: string,
+  ordering: WorkflowitemOrdering,
+): Promise<void> => {
+  const resource: WorkflowitemOrderingResource = {
+    data: ordering,
+    log: [],
+    permissions: {},
+  };
+  return multichain.setValue(projectId, [workflowitemOrderingKey], resource);
+};
+
+/*
+ * higher-level
+ */
+
+export const isClosed = async (
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+): Promise<boolean> => {
+  return get(multichain, projectId, subprojectId).then(
+    subproject => subproject.status === "closed",
+  );
 };

@@ -6,7 +6,7 @@ import { getSubprojectDetails } from "./viewDetails";
 describe("subproject.viewDetails", () => {
   it("works", async () => {
     const multichain: any = {
-      getValue: (streamName, key, nValues) => {
+      getValue: async (streamName, key, nValues) => {
         expect(streamName).to.eql("the-sample-project");
         if (key === "self") {
           return {
@@ -14,11 +14,11 @@ describe("subproject.viewDetails", () => {
             resource: {
               data: {
                 id: "the-sample-project",
-                displayName: "The Sample Project"
+                displayName: "The Sample Project",
               },
               permissions: {},
-              log: {}
-            }
+              log: {},
+            },
           };
         } else if (key === "the-sample-subproject") {
           return {
@@ -30,21 +30,23 @@ describe("subproject.viewDetails", () => {
                 status: "open",
                 amount: "1",
                 currency: "EUR",
-                description: ""
+                description: "",
               },
               permissions: {
                 "subproject.viewSummary": ["alice"],
                 "subproject.viewDetails": ["alice"],
-                "subproject.close": ["alice"]
+                "subproject.close": ["alice"],
               },
-              log: []
-            }
+              log: [],
+            },
           };
+        } else if (key === "workflowitem_ordering") {
+          throw { kind: "NotFound" };
         } else {
           throw Error(`unexpected key: ${key}`);
         }
       },
-      getLatestValues: (streamName, key, nValues) => {
+      getLatestValues: async (streamName, key, nValues) => {
         expect(streamName).to.eql("the-sample-project");
         if (key === "the-sample-subproject_workflows") {
           return [
@@ -56,34 +58,34 @@ describe("subproject.viewDetails", () => {
                   amount: "11",
                   currency: "EUR",
                   comment: "",
-                  status: "open"
+                  status: "open",
                 },
                 permissions: {
-                  "workflowitem.view": ["alice"]
+                  "workflowitem.view": ["alice"],
                 },
-                log: []
-              }
-            }
+                log: [],
+              },
+            },
           ];
         } else {
           throw Error(`unexpected key: ${key}`);
         }
-      }
+      },
     };
 
     const req = {
       query: {
         projectId: "the-sample-project",
-        subprojectId: "the-sample-subproject"
+        subprojectId: "the-sample-subproject",
       },
       token: {
-        userId: "alice"
-      }
+        userId: "alice",
+      },
     };
 
     const [status, response] = await getSubprojectDetails(
       multichain as MultichainClient,
-      req as AuthenticatedRequest
+      req as AuthenticatedRequest,
     );
     expect(status).to.eql(200);
     expect(response).to.eql({
@@ -96,7 +98,7 @@ describe("subproject.viewDetails", () => {
           amount: "1",
           currency: "EUR",
           description: "",
-          allowedIntents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.close"]
+          allowedIntents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.close"],
         },
         workflowitems: [
           {
@@ -105,14 +107,14 @@ describe("subproject.viewDetails", () => {
             currency: "EUR",
             comment: "",
             status: "open",
-            allowedIntents: ["workflowitem.view"]
-          }
+            allowedIntents: ["workflowitem.view"],
+          },
         ],
         parentProject: {
           id: "the-sample-project",
-          displayName: "The Sample Project"
-        }
-      }
+          displayName: "The Sample Project",
+        },
+      },
     });
   });
 });
