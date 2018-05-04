@@ -4,21 +4,23 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain";
 import * as User from "../user";
-import { encryptPassword } from "../user/hash";
+import { hashPassword } from "../user/password";
 
 export const createUser = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
   jwtSecret: string,
-  rootSecret: string
+  rootSecret: string,
 ): Promise<HttpResponse> => {
   const input = value("data.user", req.body.data.user, x => x !== undefined);
+
+  const passwordDigest = await hashPassword(value("password", input.password, isNonemptyString));
 
   const newUser: User.UserRecord = {
     id: value("id", input.id, isNonemptyString),
     displayName: value("displayName", input.displayName, isNonemptyString),
     organization: value("organization", input.organization, isNonemptyString),
-    passwordCiphertext: await encryptPassword(value("password", input.password, isNonemptyString))
+    passwordDigest,
   };
 
   // Make sure nobody creates the special "root" user:
@@ -28,7 +30,7 @@ export const createUser = async (
   await throwIfUnauthorized(
     req.token,
     "global.createUser",
-    await Global.getPermissions(multichain)
+    await Global.getPermissions(multichain),
   );
 
   await User.create(multichain, req.token, newUser);
@@ -42,9 +44,9 @@ export const createUser = async (
         user: {
           id: newUser.id,
           displayName: newUser.displayName,
-          organization: newUser.organization
-        }
-      }
-    }
+          organization: newUser.organization,
+        },
+      },
+    },
   ];
 };

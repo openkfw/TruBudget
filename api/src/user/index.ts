@@ -12,7 +12,7 @@ export interface UserRecord {
   id: string;
   displayName: string;
   organization: string;
-  passwordCiphertext: string;
+  passwordDigest: string;
 }
 
 export interface UserWithoutPassword {
@@ -24,14 +24,14 @@ export interface UserWithoutPassword {
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
   await multichain.getOrCreateStream({
     kind: "users",
-    name: usersStreamName
+    name: usersStreamName,
   });
 };
 
 export const create = async (
   multichain: MultichainClient,
   token: AuthToken,
-  user: UserRecord
+  user: UserRecord,
 ): Promise<void> => {
   await ensureStreamExists(multichain);
 
@@ -42,7 +42,7 @@ export const create = async (
   const resource = {
     data: user,
     log: [{ issuer: token.userId, action: "user_created" }],
-    permissions: {}
+    permissions: {},
   };
 
   await multichain.setValue(usersStreamName, ["users", user.id], resource);

@@ -91,7 +91,6 @@ const provisionFromData = async () => {
     console.log(`${projectTemplate.displayName} project already exists.`);
     return;
   }
-  console.log(projectTemplate);
 
   // TODO: the status field comes with #62
   // const isToBeClosed = projectTemplate.status === "closed";

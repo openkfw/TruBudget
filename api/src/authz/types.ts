@@ -8,7 +8,7 @@ export type People = Array<UserId | GroupId>;
 // what it actually is:
 export type AllowedUserGroupsByIntentMap = Map<Intent, People>;
 // how it's stored on the chain:
-export type AllowedUserGroupsByIntent = Object;
+export type AllowedUserGroupsByIntent = object;
 
 export interface NotAuthorizedError {
   kind: "NotAuthorized";
