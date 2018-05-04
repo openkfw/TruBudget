@@ -3,10 +3,10 @@ import * as User from ".";
 import { getAllowedIntents } from "../authz/index";
 import { globalIntents } from "../authz/intents";
 import * as Global from "../global";
-import { AuthenticatedRequest, HttpResponse, throwParseError } from "../httpd/lib";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain";
-import { encryptPassword } from "./hash";
+import { hashPassword, isPasswordMatch } from "./password";
 
 export interface UserLoginResponse {
   id: string;
@@ -25,14 +25,14 @@ export const authenticateUser = async (
   const input = value("data.user", req.body.data.user, x => x !== undefined);
 
   const id: string = value("id", input.id, isNonemptyString);
-  const passwordCleartext: string = value("password", input.password, isNonemptyString);
+  const password: string = value("password", input.password, isNonemptyString);
 
   return [
     200,
     {
       apiVersion: "1.0",
       data: {
-        user: await authenticate(multichain, jwtSecret, rootSecret, id, passwordCleartext),
+        user: await authenticate(multichain, jwtSecret, rootSecret, id, password),
       },
     },
   ];
@@ -43,7 +43,7 @@ const authenticate = async (
   jwtSecret: string,
   rootSecret: string,
   id: string,
-  passwordCleartext: string,
+  password: string,
 ): Promise<UserLoginResponse> => {
   // The client shouldn't be able to distinguish between a wrong id and a wrong password,
   // so we handle all errors alike:
@@ -54,7 +54,10 @@ const authenticate = async (
 
   // The special "root" user is not on the chain:
   if (id === "root") {
-    if (passwordCleartext === rootSecret) {
+    // Prevent timing attacks by using the constant-time compare function
+    // instead of simple string comparison:
+    const rootSecretHash = await hashPassword(rootSecret);
+    if (await isPasswordMatch(password, rootSecretHash)) {
       return rootUserLoginResponse(createToken(jwtSecret, "root", "root"));
     } else {
       throwError("wrong password");
@@ -70,9 +73,9 @@ const authenticate = async (
     }
   });
 
-  const passwordCiphertext = await encryptPassword(passwordCleartext);
-  const isPasswordMatch = passwordCiphertext === storedUser.passwordCiphertext;
-  if (!isPasswordMatch) throwError("wrong password");
+  if (!(await isPasswordMatch(password, storedUser.passwordDigest))) {
+    throwError("wrong password");
+  }
 
   const token = { userId: storedUser.id, organization: storedUser.organization };
   return {
