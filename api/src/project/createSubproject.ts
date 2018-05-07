@@ -47,7 +47,7 @@ export const createSubproject = async (
       displayName: value("displayName", subproject.displayName, isNonemptyString),
       description: value("description", subproject.description, isNonemptyString),
       amount: value("amount", subproject.amount, isNonemptyString),
-      assignee: value("assignee", subproject.assignee, isUserOrUndefined),
+      assignee: value("assignee", subproject.assignee, isUserOrUndefined, req.token.userId),
       currency: value("currency", subproject.currency, isNonemptyString).toUpperCase(),
     },
     defaultPermissions(req.token.userId),
