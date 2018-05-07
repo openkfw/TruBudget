@@ -1,5 +1,5 @@
-docker-compose -f docker/local/master-node.yml down 
-git pull 
+#!/bin/bash
+docker-compose -f docker-compose/local/master-node.yml down 
+docker rm $(docker ps -f status=exited|grep local_|awk '{print $1}')
 
-docker rm $(docker ps -q -f status=exited)
-docker-compose -p local -f docker/local/master-node.yml up --build
+docker-compose -p local -f docker-compose/local/master-node.yml up --build

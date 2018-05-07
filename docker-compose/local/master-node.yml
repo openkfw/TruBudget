@@ -3,12 +3,10 @@ services:
   api:
     build: 
       context: ../../api
-    ports:
-      - "8080:8080" # Mapping of the Rest API - PORT
     environment:
       RPC_HOST: master
-      RPC_PORT: 8000
-      PORT: 8080
+      RPC_PORT: ${RPC_PORT}
+      PORT: ${API_PORT}
       # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
     links: 
       - master
@@ -17,21 +15,19 @@ services:
     build:
       context: ../../blockchain
     environment:
-      CHAINNAME: TestChain
-      RPC_PORT: 8000
-      ORGANIZATION: MyOrga
+      CHAINNAME: ${CHAINNAME}
+      RPC_PORT: ${RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
 
   testapi:
     build: 
       context: ../../api
-    ports:
-      - "8081:8080" # Mapping of the Rest API - PORT
     environment:
       RPC_HOST: testmaster
-      RPC_PORT: 8000
-      PORT: 8080
+      RPC_PORT: ${RPC_PORT}
+      PORT: ${API_PORT}
     links: 
       - testmaster
 
@@ -39,9 +35,9 @@ services:
     build:
       context: ../../blockchain
     environment:
-      CHAINNAME: TestChain
-      RPC_PORT: 8000
-      ORGANIZATION: MyOrga
+      CHAINNAME: ${CHAINNAME}
+      RPC_PORT: ${RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION}
     volumes:
       - /tmp/bcTestMasterVolume:/root/.multichain
 
@@ -52,9 +48,9 @@ services:
       - "80:80" # Mapping the nginx port 
     environment:
       PROD_API_HOST: api
-      PROD_API_PORT: 8080
+      PROD_API_PORT: ${API_PORT}
       TEST_API_HOST: testapi
-      TEST_API_PORT: 8080
+      TEST_API_PORT: ${API_PORT}
     links:
       - api
       - testapi
