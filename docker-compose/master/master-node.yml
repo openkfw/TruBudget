@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   api:
-    image: index.docker.io/trubudget/v1/api:master
+    image: index.docker.io/trubudget/v1/api:${TAG}
     environment:
       RPC_HOST: master
       RPC_PORT: ${RPC_PORT}
@@ -11,7 +11,7 @@ services:
       - master
 
   master:
-    image: index.docker.io/trubudget/v1/blockchain:master
+    image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
       CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
@@ -20,7 +20,7 @@ services:
       - /tmp/bcMasterVolume:/root/.multichain
 
   testapi:
-    image: index.docker.io/trubudget/v1/api:master
+    image: index.docker.io/trubudget/v1/api:${TAG}
     environment:
       RPC_HOST: testmaster
       RPC_PORT: ${RPC_PORT}
@@ -29,7 +29,7 @@ services:
       - testmaster
 
   testmaster:
-    image: index.docker.io/trubudget/v1/blockchain:master
+    image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
       CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
@@ -38,7 +38,7 @@ services:
       - /tmp/bcTestMasterVolume:/root/.multichain
 
   frontend:
-    image: index.docker.io/trubudget/v1/frontend:master
+    image: index.docker.io/trubudget/v1/frontend:${TAG}
     ports:
       - "80:80" # Mapping the nginx port 
     environment:
