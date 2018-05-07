@@ -1,0 +1,55 @@
+version: '3.2'
+services:
+  api:
+    image: index.docker.io/trubudget/v1/api:master
+    ports:
+      - "8080:8080" # Mapping of the Rest API - PORT
+    environment:
+      RPC_HOST: master
+      RPC_PORT: 8000
+      PORT: 8080
+      # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
+    links: 
+      - master
+
+  master:
+    image: index.docker.io/trubudget/v1/blockchain:master
+    environment:
+      CHAINNAME: TestChain
+      RPC_PORT: 8000
+      ORGANIZATION: MyOrga
+    volumes:
+      - /tmp/bcMasterVolume:/root/.multichain
+
+  testapi:
+    image: index.docker.io/trubudget/v1/api:master
+    ports:
+      - "8081:8080" # Mapping of the Rest API - PORT
+    environment:
+      RPC_HOST: testmaster
+      RPC_PORT: 8000
+      PORT: 8080
+    links: 
+      - testmaster
+
+  testmaster:
+    image: index.docker.io/trubudget/v1/blockchain:master
+    environment:
+      CHAINNAME: TestChain
+      RPC_PORT: 8000
+      ORGANIZATION: MyOrga
+    volumes:
+      - /tmp/bcTestMasterVolume:/root/.multichain
+
+  frontend:
+    image: index.docker.io/trubudget/v1/frontend:master
+    ports:
+      - "80:80" # Mapping the nginx port 
+    environment:
+      PROD_API_HOST: api
+      PROD_API_PORT: 8080
+      TEST_API_HOST: testapi
+      TEST_API_PORT: 8080
+    links:
+      - api
+      - testapi
