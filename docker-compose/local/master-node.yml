@@ -1,0 +1,56 @@
+version: '3.2'
+services:
+  api:
+    build: 
+      context: ../../api
+    environment:
+      RPC_HOST: master
+      RPC_PORT: ${RPC_PORT}
+      PORT: ${API_PORT}
+      # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
+    links: 
+      - master
+
+  master:
+    build:
+      context: ../../blockchain
+    environment:
+      CHAINNAME: ${CHAINNAME}
+      RPC_PORT: ${RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+    volumes:
+      - /tmp/bcMasterVolume:/root/.multichain
+
+  testapi:
+    build: 
+      context: ../../api
+    environment:
+      RPC_HOST: testmaster
+      RPC_PORT: ${RPC_PORT}
+      PORT: ${API_PORT}
+    links: 
+      - testmaster
+
+  testmaster:
+    build:
+      context: ../../blockchain
+    environment:
+      CHAINNAME: ${CHAINNAME}
+      RPC_PORT: ${RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+    volumes:
+      - /tmp/bcTestMasterVolume:/root/.multichain
+
+  frontend:
+    build:
+      context: ../../frontend
+    ports:
+      - "80:80" # Mapping the nginx port 
+    environment:
+      PROD_API_HOST: api
+      PROD_API_PORT: ${API_PORT}
+      TEST_API_HOST: testapi
+      TEST_API_PORT: ${API_PORT}
+    links:
+      - api
+      - testapi
