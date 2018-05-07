@@ -89,7 +89,7 @@ export const createWorkflowitem = async (
       amountType,
       description: value("description", data.description, x => typeof x === "string", ""),
       status,
-      assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined),
+      assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
       documents: data.documents, // not checked right now
     },
     getWorkflowitemDefaultPermissions(req.token),
