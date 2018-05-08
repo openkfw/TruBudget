@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router";
 import { connect } from "react-redux";
 
 import NavbarContainer from "../Navbar/NavbarContainer";
-import UsersContainer from "../Users/UsersContainer";
+import UserManagementContainer from "../Users/UserManagementContainer";
 
 import OverviewContainer from "../Overview/OverviewContainer";
 import NotFound from "../NotFound/NotFound";
@@ -51,7 +51,7 @@ const Main = props => {
           <Route exact path="/projects/:project/:subproject" component={withInitialLoading(WorkflowContainer)} />
           <Route exact path="/network" component={DashboardContainer} />
           <Route exact path="/notifications" component={NotificationPageContainer} />
-          <Route exact path="/users" component={UsersContainer} />
+          <Route exact path="/users" component={UserManagementContainer} />
           <Route component={NotFound} />
         </Switch>
         <Route component={Footer} />

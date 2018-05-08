@@ -10,7 +10,7 @@ const styles = {
   }
 };
 
-const UsersTabs = () => (
+const UserManagementTabs = () => (
   <Tabs style={styles.tabs}>
     <Tab label="Organisation">
       <OrganisationsTable />
@@ -24,4 +24,4 @@ const UsersTabs = () => (
   </Tabs>
 );
 
-export default UsersTabs;
+export default UserManagementTabs;

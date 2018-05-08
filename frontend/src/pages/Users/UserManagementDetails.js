@@ -53,7 +53,7 @@ const Title = ({ count, text }) => {
   );
 };
 
-const UserStats = () => (
+const UserManagementDetails = () => (
   <div style={styles.container}>
     <Card style={styles.card}>
       <div style={styles.cardDiv}>
@@ -93,4 +93,4 @@ const UserStats = () => (
     </Card>
   </div>
 );
-export default UserStats;
+export default UserManagementDetails;

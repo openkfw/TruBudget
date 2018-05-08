@@ -1,6 +1,6 @@
 import React from "react";
-import UserStats from "./UserStats";
-import UsersTabs from "./UsersTabs";
+import UserManagementDetails from "./UserManagementDetails";
+import UserManagementTabs from "./UserManagementTabs";
 
 const styles = {
   container: {
@@ -12,13 +12,13 @@ const styles = {
     width: "85%"
   }
 };
-const Users = props => (
+const UserManagement = props => (
   <div style={styles.container}>
     <div style={styles.customWidth}>
-      <UserStats {...props} />
-      <UsersTabs {...props} />
+      <UserManagementDetails {...props} />
+      <UserManagementTabs {...props} />
     </div>
   </div>
 );
 
-export default Users;
+export default UserManagement;
