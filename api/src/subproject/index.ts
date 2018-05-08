@@ -1,4 +1,4 @@
-import { getAllowedIntents } from "../authz/index";
+import { getAllowedIntents, getUserAndGroups } from "../authz/index";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
@@ -123,7 +123,9 @@ export const getForUser = async (
   const resource = streamItem.resource;
   return {
     ...resource.data,
-    allowedIntents: await getAllowedIntents(token, resource.permissions),
+    allowedIntents: await getUserAndGroups(token).then(userAndGroups =>
+      getAllowedIntents(userAndGroups, resource.permissions),
+    ),
   };
 };
 
@@ -157,15 +159,9 @@ export const getAllForUser = async (
     resources.map(async resource => {
       return {
         ...resource.data,
-        allowedIntents: await getAllowedIntents(token, resource.permissions).catch(err => {
-          console.log(
-            `WARN: Could not fetch allowed intents: token=${token} resource=${JSON.stringify(
-              resource,
-            )}`,
-          );
-          const nothing: Intent[] = [];
-          return nothing;
-        }),
+        allowedIntents: await getUserAndGroups(token).then(userAndGroups =>
+          getAllowedIntents(userAndGroups, resource.permissions),
+        ),
       };
     }),
   );

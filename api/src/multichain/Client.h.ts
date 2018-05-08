@@ -1,5 +1,7 @@
 import { AllowedUserGroupsByIntent } from "../authz/types";
+import { RpcClient } from "./RpcClient";
 export { RpcMultichainClient } from "./Client";
+import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 
 export type StreamKind = "global" | "users" | "project" | "subproject";
 
@@ -75,14 +77,14 @@ export interface MultichainClient {
   latestValuesForKey(
     streamId: StreamName | StreamTxId,
     key: string,
-    nValues?: number
+    nValues?: number,
   ): Promise<any[]>;
 
   // Update a stream item, serializing the Js object as hex-string:
   updateStreamItem(
     streamId: StreamName | StreamTxId,
     key: string | string[],
-    object: any
+    object: any,
   ): Promise<TxId>;
 
   // Return all (historic) values of the nValues latest stream items, filtered by a given key:
@@ -100,6 +102,14 @@ export interface MultichainClient {
   updateValue(
     streamName: StreamName,
     key: string,
-    updateCallback: (current: Resource) => Resource
+    updateCallback: (current: Resource) => Resource,
   ): Promise<void>;
+
+  getRpcClient(): RpcClient;
+
+  v2_readStreamItems(
+    streamName: StreamName,
+    key: string,
+    nValues?: number,
+  ): Promise<Liststreamkeyitems.Item[]>;
 }

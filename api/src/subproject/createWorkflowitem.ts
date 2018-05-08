@@ -29,10 +29,12 @@ export const createWorkflowitem = async (
   const projectId = value("projectId", data.projectId, isNonemptyString);
   const subprojectId = value("subprojectId", data.subprojectId, isNonemptyString);
 
+  const userIntent: Intent = "subproject.createWorkflowitem";
+
   // Is the user allowed to create workflowitems?
   await throwIfUnauthorized(
     req.token,
-    "subproject.createWorkflowitem",
+    userIntent,
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
@@ -75,24 +77,41 @@ export const createWorkflowitem = async (
     }
   }
 
-  await Workflowitem.create(
+  const workflowitemId = value(
+    "workflowitemId",
+    data.workflowitemId,
+    isNonemptyString,
+    randomString(),
+  );
+
+  const ctime = new Date();
+
+  const workflowitem: Workflowitem.Data = {
+    id: workflowitemId,
+    creationUnixTs: ctime.getTime().toString(),
+    displayName: value("displayName", data.displayName, isNonemptyString),
+    amount,
+    currency,
+    amountType,
+    description: value("description", data.description, x => typeof x === "string", ""),
+    status,
+    assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
+    documents: data.documents, // not checked right now
+  };
+
+  await Workflowitem.publish(
     multichain,
-    req.token,
     projectId,
     subprojectId,
+    workflowitemId,
+    userIntent,
+    req.token.userId,
+    ctime,
+    1,
     {
-      id: value("workflowitemId", data.workflowitemId, isNonemptyString, randomString()),
-      creationUnixTs: Date.now().toString(),
-      displayName: value("displayName", data.displayName, isNonemptyString),
-      amount,
-      currency,
-      amountType,
-      description: value("description", data.description, x => typeof x === "string", ""),
-      status,
-      assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
-      documents: data.documents, // not checked right now
+      workflowitem,
+      permissions: getWorkflowitemDefaultPermissions(req.token),
     },
-    getWorkflowitemDefaultPermissions(req.token),
   );
 
   return [

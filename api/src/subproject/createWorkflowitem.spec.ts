@@ -26,11 +26,16 @@ describe("subproject.createWorkflowitem", () => {
           },
         };
       },
-      setValue: (streamName, keys, object) => {
-        expect(streamName).to.eql(projectId);
-        expect(keys).to.eql([`${subprojectId}_workflows`, workflowitemId]);
-        expect(object.data.id).to.eql(workflowitemId);
-      },
+      getRpcClient: () => ({
+        invoke: (method, streamName, keys, payload) => {
+          expect(method).to.eql("publish");
+          expect(streamName).to.eql(projectId);
+          expect(keys).to.eql([`${subprojectId}_workflows`, workflowitemId]);
+
+          const event = payload.json;
+          expect(event.intent).to.eql("subproject.createWorkflowitem");
+        },
+      }),
     };
 
     const req = {

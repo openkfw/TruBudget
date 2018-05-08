@@ -1,13 +1,14 @@
-import * as Workflowitem from ".";
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
-import { MultichainClient } from "../multichain";
+import * as Workflowitem from "..";
+import { throwIfUnauthorized } from "../../authz";
+import { allIntents } from "../../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib";
+import { MultichainClient } from "../../multichain";
 
-export const assignWorkflowitem = async (
+export const changeWorkflowitemPermission = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
+  userIntent: "workflowitem.intent.grantPermission" | "workflowitem.intent.revokePermission",
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -15,10 +16,9 @@ export const assignWorkflowitem = async (
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
   const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);
+  const intent = value("intent", input.intent, x => allIntents.includes(x));
 
-  const userIntent: Intent = "workflowitem.assign";
-
-  // Is the user allowed to (re-)assign a workflowitem?
+  // Is the user allowed to grant/revoke workflowitem permissions?
   await throwIfUnauthorized(
     req.token,
     userIntent,
@@ -34,7 +34,7 @@ export const assignWorkflowitem = async (
     req.token.userId,
     new Date(),
     1,
-    { userId },
+    { userId, intent },
   );
 
   return [

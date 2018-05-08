@@ -1,25 +1,27 @@
-import * as Sample from "./sample";
-import { AllowedUserGroupsByIntent, AllowedUserGroupsByIntentMap } from "./types";
 import Intent from "./intents";
 import { AuthToken } from "./token";
+import { AllowedUserGroupsByIntent, GroupId, People } from "./types";
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
 
-const groupIntersection = (groups1, groups2) => groups1.filter(g1 => groups2.indexOf(g1) !== -1);
+const intersection = (groups1, groups2) => groups1.filter(g1 => groups2.indexOf(g1) !== -1);
 
-const isGroupIntersection = (actualGroups, allowedGroups) =>
-  groupIntersection(actualGroups, allowedGroups).length > 0;
+export const hasIntersection = (actualGroups, allowedGroups) =>
+  intersection(actualGroups, allowedGroups).length > 0;
+
+export const getUserAndGroups = async (token: AuthToken): Promise<GroupId[]> => {
+  // TODO (await) get user's groups
+  return [token.userId, token.organization];
+};
 
 export const getAllowedIntents = async (
-  token: AuthToken,
-  resourcePermissions: AllowedUserGroupsByIntent
+  userAndGroups: People,
+  resourcePermissions: AllowedUserGroupsByIntent,
 ): Promise<Intent[]> => {
-  // TODO (await) get user's groups
-  const isRoot = token.userId === "root";
-  const currentUserAndGroups = [token.userId, token.organization];
+  const isRoot = userAndGroups.includes("root");
   const allowedIntents = Object.keys(resourcePermissions as any).filter(
-    intent => isRoot || isGroupIntersection(currentUserAndGroups, resourcePermissions[intent])
+    intent => isRoot || hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
   return allowedIntents;
 };
@@ -27,7 +29,7 @@ export const getAllowedIntents = async (
 const can = async (
   token: AuthToken,
   intent: Intent,
-  resourcePermissions: AllowedUserGroupsByIntent
+  resourcePermissions: AllowedUserGroupsByIntent,
 ): Promise<boolean> => {
   if (token.userId === "root") {
     // root can do everything
@@ -35,22 +37,21 @@ const can = async (
   } else {
     if (!resourcePermissions[intent]) return false;
     const allowedUsersAndGroups = resourcePermissions[intent];
-    // TODO (await) get user's groups
-    const currentUserAndGroups = [token.userId, token.organization];
-    return isGroupIntersection(currentUserAndGroups, allowedUsersAndGroups);
+    const currentUserAndGroups = await getUserAndGroups(token);
+    return hasIntersection(currentUserAndGroups, allowedUsersAndGroups);
   }
 };
 
 const loggedCan = async (
   token: AuthToken,
   intent: Intent,
-  resourcePermissions: AllowedUserGroupsByIntent
+  resourcePermissions: AllowedUserGroupsByIntent,
 ): Promise<boolean> => {
   const canDo = await can(token, intent, resourcePermissions);
   console.log(
     `${canDo ? "ALLOWED" : "DENIED"} user ${token.userId} access with intent "${intent}"${
       resourcePermissions ? ` to ${JSON.stringify(resourcePermissions)}` : ""
-    }`
+    }`,
   );
   return canDo;
 };
@@ -62,7 +63,7 @@ const loggedCan = async (
  * @deprecated
  */
 export const authorized = (token: AuthToken, intent: Intent) => async (
-  resourcePermissions: AllowedUserGroupsByIntent
+  resourcePermissions: AllowedUserGroupsByIntent,
 ): Promise<undefined> => {
   const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
   if (!canDo) throw { kind: "NotAuthorized", token, intent };
@@ -72,7 +73,7 @@ export const authorized = (token: AuthToken, intent: Intent) => async (
 export const throwIfUnauthorized = (
   token: AuthToken,
   intent: Intent,
-  permissions: AllowedUserGroupsByIntent
+  permissions: AllowedUserGroupsByIntent,
 ): Promise<undefined> => {
   return authorized(token, intent)(permissions);
 };

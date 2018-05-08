@@ -1,20 +1,19 @@
 import {
-  MultichainClient,
   CreateStreamOptions,
-  StreamTxId,
-  Stream,
-  StreamName,
-  StreamItem,
-  TxId,
-  StreamItemPair,
+  MultichainClient,
   Resource,
+  Stream,
+  StreamItem,
+  StreamItemPair,
+  StreamKey,
+  StreamName,
+  StreamTxId,
+  TxId,
 } from "./Client.h";
-import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
-import * as Liststreamitems from "./responses/liststreamitems";
-import { RpcClient, ConnectionSettings } from "./RpcClient.h";
+import { ConnectionSettings, RpcClient } from "./RpcClient.h";
 import { randomString } from "./hash";
-import { objectToHex, hexToObject } from "./hexconverter";
-import { StreamKey } from "./Client.h";
+import { hexToObject, objectToHex } from "./hexconverter";
+import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 
 // Oddly enough, there is no way to tell Multichain to return _everything_..
 const maxItemCount: number = 0x7fffffff;
@@ -37,12 +36,18 @@ interface MultichainStreamItem {
   txid: string;
 }
 
+export const asMapKey = (item: Liststreamkeyitems.Item): string => item.keys.join();
+
 export class RpcMultichainClient implements MultichainClient {
   private rpcClient: RpcClient;
   private hasWriteLock: boolean;
   constructor(settings: ConnectionSettings) {
     this.rpcClient = new RpcClient(settings);
     this.hasWriteLock = false;
+  }
+
+  getRpcClient() {
+    return this.rpcClient;
   }
 
   async getOrCreateStream(options: CreateStreamOptions): Promise<StreamTxId> {
@@ -206,6 +211,19 @@ export class RpcMultichainClient implements MultichainClient {
     } finally {
       this.hasWriteLock = false;
     }
+  }
+
+  public async v2_readStreamItems(
+    streamName: StreamName,
+    key: string,
+    nValues: number = maxItemCount,
+  ): Promise<Liststreamkeyitems.Item[]> {
+    return this.rpcClient
+      .invoke("liststreamkeyitems", streamName, key, false, nValues)
+      .catch(err => {
+        if (err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
+        else throw err;
+      });
   }
 }
 
