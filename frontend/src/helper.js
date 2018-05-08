@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
-import OpenIcon from "material-ui/svg-icons/content/remove";
-import DoneIcon from "material-ui/svg-icons/navigation/check";
+import OpenIcon from "@material-ui/icons/Remove";
+import DoneIcon from "@material-ui/icons/Check";
 
 import accounting from "accounting";
 import _ from "lodash";

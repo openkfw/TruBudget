@@ -1,9 +1,9 @@
 import React from "react";
 import { Card } from "material-ui/Card";
 
-import GroupIcon from "material-ui/svg-icons/social/group";
-import UsersIcon from "material-ui/svg-icons/social/person";
-import OrgaIcon from "material-ui/svg-icons/maps/store-mall-directory";
+import GroupIcon from "@material-ui/icons/Group";
+import UsersIcon from "@material-ui/icons/Person";
+import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import CardHeader from "material-ui/Card/CardHeader";
 import CountUp from "react-countup";
 

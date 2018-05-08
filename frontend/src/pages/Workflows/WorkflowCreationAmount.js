@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
+import { FormControlLabel } from "material-ui/Form";
+import Radio, { RadioGroup } from "material-ui/Radio";
 
 import strings from "../../localizeStrings";
 import { preselectCurrency, toAmountString } from "../../helper";
@@ -46,16 +47,28 @@ class WorkflowCreationAmount extends Component {
     return (
       <div style={styles.container}>
         <div>
-          <RadioButtonGroup
+          <RadioGroup
             style={styles.selections}
             name="workflowAmountType"
-            defaultSelected={workflowAmountType}
+            value={workflowAmountType}
             onChange={(event, value) => storeWorkflowAmountType(value)}
           >
-            <RadioButton style={styles.buttons} value="N/A" label={strings.workflow.workflow_budget_na} />
-            <RadioButton style={styles.buttons} value="allocated" label={strings.workflow.workflow_budget_allocated} />
-            <RadioButton style={styles.buttons} value="disbursed" label={strings.workflow.workflow_budget_disbursed} />
-          </RadioButtonGroup>
+            <FormControlLabel
+              value="N/A"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_na}
+            />
+            <FormControlLabel
+              value="allocated"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_allocated}
+            />
+            <FormControlLabel
+              value="disbursed"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_disbursed}
+            />
+          </RadioGroup>
         </div>
         <div
           style={{

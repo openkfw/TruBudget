@@ -2,13 +2,12 @@ import React, { Component } from "react";
 
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from "material-ui/Table";
 
-import SelectField from "material-ui/SelectField";
-import MenuItem from "material-ui/MenuItem";
+import { MenuItem } from "material-ui/Menu";
 
 import TextField from "material-ui/TextField";
 import Dialog from "material-ui/Dialog";
 
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 
 import strings from "../../../localizeStrings";
 
@@ -34,7 +33,11 @@ const styles = {
 const PermissionsScreen = props => (
   <Dialog
     title={props.title}
-    actions={[<FlatButton label="Close" primary={true} onClick={props.onClose} />]}
+    actions={[
+      <Button primary={true} onClick={props.onClose}>
+        Close
+      </Button>
+    ]}
     modal={true}
     open={props.show}
     autoScrollBodyContent={true}
@@ -75,29 +78,30 @@ class PermissionSelection extends Component {
   };
 
   render() {
-    return (
-      <SelectField
-        multiple={true}
-        hintText={this.resolveSelectionTitle()}
-        maxHeight={250}
-        autoWidth={true}
-        dropDownMenuProps={{
-          onClose: () => this.setState({ searchTerm: "" })
-        }}
-      >
-        <div style={selectionStyle.searchContainer}>
-          <TextField fullWidth hintText="Search" onChange={e => this.setState({ searchTerm: e.target.value })} />
-        </div>
-        <div style={selectionStyle.selectionContainer}>
-          {renderUserSelection(
-            this.props.userList.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
-            this.props.permissions[this.props.name],
-            this.props.name,
-            this.props.grantPermission
-          )}
-        </div>
-      </SelectField>
-    );
+    return null;
+    // TODO: update select field material v1
+
+    // <SelectField
+    //   multiple={true}
+    //   hintText={this.resolveSelectionTitle()}
+    //   maxHeight={250}
+    //   autoWidth={true}
+    //   dropDownMenuProps={{
+    //     onClose: () => this.setState({ searchTerm: "" })
+    //   }}
+    // >
+    //   <div style={selectionStyle.searchContainer}>
+    //     <TextField fullWidth hintText="Search" onChange={e => this.setState({ searchTerm: e.target.value })} />
+    //   </div>
+    //   <div style={selectionStyle.selectionContainer}>
+    //     {renderUserSelection(
+    //       this.props.userList.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
+    //       this.props.permissions[this.props.name],
+    //       this.props.name,
+    //       this.props.grantPermission
+    //     )}
+    //   </div>
+    // </SelectField>
   }
 }
 

@@ -1,31 +1,39 @@
-import React from 'react'
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import React from "react";
+import Select from "material-ui/Select";
+import { MenuItem } from "material-ui/Menu";
+import { FormControl } from "material-ui/Form";
+import { InputLabel } from "material-ui/Input";
 
 const styles = {
   selectField: {
     width: 220
   }
-}
-const getMenuItems = (items) => {
-  return items.map((item) => {
-    return (
-      <MenuItem key={item.value} disabled={item.disabled} value={item.value} primaryText={item.primaryText} />
-    )
-  })
-}
+};
+const getMenuItems = items => {
+  return items.map(item => {
+    return <MenuItem key={item.value} disabled={item.disabled} value={item.value} primaryText={item.primaryText} />;
+  });
+};
 const Dropdown = ({ value, title, onChange, items, disabled }) => {
-  const menuItems = getMenuItems(items)
+  const menuItems = getMenuItems(items);
   return (
-    <SelectField style={styles.selectField}
-      floatingLabelText={title}
-      value={value}
-      onChange={(event, index, value) => onChange(value)}
-      disabled={disabled}
-    >
-      {menuItems}
-    </SelectField>
+    <FormControl>
+      <InputLabel htmlFor="age-simple">{title}</InputLabel>
+      <Select
+        style={styles.selectField}
+        value={value}
+        inputProps={{
+          name: "age",
+          id: "age-simple"
+        }}
+        onChange={(event, index, value) => onChange(value)}
+        disabled={disabled}
+      >
+        {menuItems}
+      </Select>
+    </FormControl>
+  );
+};
 
-  )
-}
-export default Dropdown
+// TODO: set htmlFor material v1
+export default Dropdown;

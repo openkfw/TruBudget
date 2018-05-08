@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from "material-ui/Table";
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 import { toAmountString, statusMapping } from "../../helper";
 import { Card, CardHeader } from "material-ui/Card";
 import { ACMECorpLightgreen } from "../../colors.js";
@@ -21,13 +21,14 @@ const getTableEntries = (subProjects, location, history) => {
         <TableRowColumn style={styles.tableText}>{amount}</TableRowColumn>
         <TableRowColumn style={styles.tableText}>{statusMapping(subProject.status)}</TableRowColumn>
         <TableRowColumn>
-          <FlatButton
+          <Button
             style={styles.tableText}
-            label={strings.subproject.subproject_select_button}
             disabled={!canViewSubProjectDetails(subProject.allowedIntents)}
             onTouchTap={() => history.push("/projects/" + location.pathname.split("/")[2] + "/" + subProject.id)}
             secondary={true}
-          />
+          >
+            {strings.subproject.subproject_select_button}
+          </Button>
         </TableRowColumn>
       </TableRow>
     );

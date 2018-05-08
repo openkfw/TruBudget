@@ -1,12 +1,11 @@
 import React from "react";
 import { List, ListItem } from "material-ui/List";
-import SocialNotificationIcon from "material-ui/svg-icons/social/notifications-active";
-import NetworkIcon from "material-ui/svg-icons/hardware/device-hub";
-import ProjectIcon from "material-ui/svg-icons/communication/business";
+import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
+import NetworkIcon from "@material-ui/icons/DeviceHub";
+import ProjectIcon from "@material-ui/icons/Business";
 import Divider from "material-ui/Divider";
 import Avatar from "material-ui/Avatar";
-import Toggle from "material-ui/Toggle";
-import Subheader from "material-ui/Subheader";
+import Subheader from "material-ui/List/ListSubheader";
 
 import colors from "../../colors";
 import strings from "../../localizeStrings";
@@ -71,11 +70,6 @@ const SideNavCard = ({ avatarBackground, avatar, displayName, organization, hist
         leftIcon={<NetworkIcon />}
         onTouchTap={() => history.push("/network")}
       />
-    </List>
-    <Divider />
-    <List>
-      <Subheader>{strings.navigation.options}</Subheader>
-      <ListItem primaryText={strings.navigation.rtUpdates} rightToggle={<Toggle />} />
     </List>
     <Divider />
   </div>

@@ -18,16 +18,16 @@ import Divider from "material-ui/Divider";
 import Chip from "material-ui/Chip";
 import Avatar from "material-ui/Avatar";
 
-import RaisedButton from "material-ui/RaisedButton";
-import AmountIcon from "material-ui/svg-icons/action/account-balance";
-import UnspentIcon from "material-ui/svg-icons/content/add-circle";
-import DateIcon from "material-ui/svg-icons/action/date-range";
-import OpenIcon from "material-ui/svg-icons/content/remove";
-import DoneIcon from "material-ui/svg-icons/navigation/check";
-import PermissionIcon from "material-ui/svg-icons/action/lock-open";
-import AssigneeIcon from "material-ui/svg-icons/social/group";
+import Button from "material-ui/Button";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import UnspentIcon from "@material-ui/icons/AddCircle";
+import DateIcon from "@material-ui/icons/DateRange";
+import OpenIcon from "@material-ui/icons/Remove";
+import DoneIcon from "@material-ui/icons/Check";
+import PermissionIcon from "@material-ui/icons/LockOpen";
+import AssigneeIcon from "@material-ui/icons/Group";
 import IconButton from "material-ui/IconButton";
-import CompletionIcon from "material-ui/svg-icons/action/trending-up";
+import CompletionIcon from "@material-ui/icons/TrendingUp";
 
 import GaugeChart from "../Common/GaugeChart";
 import { budgetStatusColorPalette, red } from "../../colors";
@@ -191,13 +191,15 @@ const ProjectDetails = ({
             disabled={true}
             leftIcon={null}
             primaryText={
-              <RaisedButton
-                label="Permissions"
+              <Button
                 secondary={true}
                 disabled={!canViewPermissions}
                 onClick={showProjectPermissions}
                 icon={<PermissionIcon style={styles.icon} />}
-              />
+                variant="raised"
+              >
+                Permissions
+              </Button>
             }
           />
         </List>

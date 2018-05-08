@@ -1,6 +1,6 @@
 import React from "react";
-import ChevronRight from "material-ui/svg-icons/navigation/chevron-right";
-import FlatButton from "material-ui/FlatButton";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import Button from "material-ui/Button";
 import colors, { ACMECorpGrey } from "../../colors";
 import strings from "../../localizeStrings";
 
@@ -50,12 +50,13 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
     return (
       <span key={index}>
         <span>{index ? <ChevronRight color={colors.lightColor} style={{ height: "16px" }} /> : null}</span>
-        <FlatButton
-          label={index ? getPathName(path, index, currentProject, currentSubProject) : strings.navigation.main_site}
+        <Button
           disabled={isLastItem}
           style={{ color: isLastItem ? ACMECorpGrey : colors.lightColor }}
           onTouchTap={() => history.push(accumulatedPath[index])}
-        />
+        >
+          {index ? getPathName(path, index, currentProject, currentSubProject) : strings.navigation.main_site}
+        </Button>
       </span>
     );
   });

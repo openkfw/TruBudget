@@ -2,7 +2,7 @@ import React from "react";
 import _ from "lodash";
 import Transition from "react-transition-group/Transition";
 import { Card, CardHeader } from "material-ui/Card";
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 import { List, ListItem } from "material-ui/List";
 import moment from "moment";
 import { ACMECorpLightgreen } from "../../colors.js";
@@ -96,7 +96,9 @@ const getSideBar = (hideHistory, logs, users) => {
         <CardHeader title={strings.common.history} titleColor="white" style={{ backgroundColor: ACMECorpLightgreen }} />
         <List style={{ overflowX: "auto", height: "550px" }}>{listEntries}</List>
         <div style={{ display: "flex", flex: 1, justifyContent: "flex-end" }}>
-          <FlatButton label={strings.common.close} onTouchTap={hideHistory} primary={true} />
+          <Button onTouchTap={hideHistory} primary={true}>
+            {strings.common.close}
+          </Button>
         </div>
       </Card>
     </div>

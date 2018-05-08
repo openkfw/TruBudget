@@ -3,7 +3,7 @@ import Dialog from "material-ui/Dialog";
 
 import Divider from "material-ui/Divider";
 import TextField from "material-ui/TextField";
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 import _ from "lodash";
 import { toAmountString, statusMapping } from "../../helper";
 import DocumentOverview from "../Documents/DocumentOverview";
@@ -61,7 +61,7 @@ const WorkflowDetails = ({
   validateDocument,
   validatedDocuments
 }) => {
-  const actions = [<FlatButton label={strings.common.close} onTouchTap={hideWorkflowDetails} />];
+  const actions = [<Button onTouchTap={hideWorkflowDetails}>{strings.common.close}</Button>];
 
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
   const status = workflowItem.status;

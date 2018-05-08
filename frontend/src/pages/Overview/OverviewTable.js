@@ -2,13 +2,13 @@ import React from "react";
 
 import { toAmountString, statusMapping, tsToString } from "../../helper";
 import { Card, CardActions, CardMedia, CardTitle } from "material-ui/Card";
-import FloatingActionButton from "material-ui/FloatingActionButton";
+import Button from "material-ui/Button";
 import { List, ListItem } from "material-ui/List";
-import CommentIcon from "material-ui/svg-icons/editor/short-text";
-import DateIcon from "material-ui/svg-icons/action/date-range";
-import AmountIcon from "material-ui/svg-icons/action/account-balance";
-import InfoIcon from "material-ui/svg-icons/action/search";
-import ContentAdd from "material-ui/svg-icons/content/add";
+import CommentIcon from "@material-ui/icons/ShortText";
+import DateIcon from "@material-ui/icons/DateRange";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import InfoIcon from "@material-ui/icons/Search";
+import ContentAdd from "@material-ui/icons/Add";
 import _ from "lodash";
 import { ACMECorpDarkBlue } from "../../colors";
 import strings from "../../localizeStrings";
@@ -47,14 +47,15 @@ const getTableEntries = ({ projects, history }) => {
             marginTop: "-40px"
           }}
         >
-          <FloatingActionButton
+          <Button
             disabled={!canViewProjectDetails(project.allowedIntents)}
             backgroundColor={ACMECorpDarkBlue}
             style={{ zIndex: 2 }}
             onTouchTap={() => history.push("/projects/" + project.id)}
+            variant="fab"
           >
             <InfoIcon />
-          </FloatingActionButton>
+          </Button>
         </CardActions>
         <List>
           <ListItem
@@ -112,14 +113,15 @@ const OverviewTable = props => {
           }}
         >
           <CardActions>
-            <FloatingActionButton
+            <Button
               aria-label="create"
               disabled={!canCreateProject(props.allowedIntents)}
               onTouchTap={() => props.showProjectDialog()}
               style={{ height: "100%", opacity: "1.0" }}
+              variant="fab"
             >
               <ContentAdd />
-            </FloatingActionButton>
+            </Button>
           </CardActions>
         </div>
       </Card>

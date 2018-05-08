@@ -18,19 +18,19 @@ import Chip from "material-ui/Chip";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
 
-import AmountIcon from "material-ui/svg-icons/action/account-balance";
-import PermissionIcon from "material-ui/svg-icons/action/lock-open";
-import UnspentIcon from "material-ui/svg-icons/content/add-circle";
-import SpentIcon from "material-ui/svg-icons/content/remove-circle";
-import NotAssignedIcon from "material-ui/svg-icons/editor/space-bar";
-import DateIcon from "material-ui/svg-icons/action/date-range";
-import OpenIcon from "material-ui/svg-icons/content/remove";
-import DoneIcon from "material-ui/svg-icons/navigation/check";
-import AssigneeIcon from "material-ui/svg-icons/social/group";
-import EditIcon from "material-ui/svg-icons/image/edit";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import PermissionIcon from "@material-ui/icons/LockOpen";
+import UnspentIcon from "@material-ui/icons/AddCircle";
+import SpentIcon from "@material-ui/icons/RemoveCircle";
+import NotAssignedIcon from "@material-ui/icons/SpaceBar";
+import DateIcon from "@material-ui/icons/DateRange";
+import OpenIcon from "@material-ui/icons/Remove";
+import DoneIcon from "@material-ui/icons/Check";
+import AssigneeIcon from "@material-ui/icons/Group";
+import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "material-ui/IconButton";
 
-import RaisedButton from "material-ui/RaisedButton";
+import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
 
 import GaugeChart from "../Common/GaugeChart";
@@ -263,13 +263,14 @@ const SubProjectDetails = ({
             disabled={true}
             leftIcon={null}
             primaryText={
-              <RaisedButton
-                label="Permissions"
+              <Button
                 secondary={true}
                 disabled={!canViewPermissions}
                 onClick={showSubProjectPermissions}
                 icon={<PermissionIcon style={styles.icon} />}
-              />
+              >
+                Permissions
+              </Button>
             }
           />
         </List>

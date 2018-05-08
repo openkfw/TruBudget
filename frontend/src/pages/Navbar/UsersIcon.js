@@ -1,6 +1,6 @@
 import React from "react";
 
-import Icon from "material-ui/svg-icons/social/group";
+import Icon from "@material-ui/icons/Group";
 import colors from "../../colors";
 import IconButton from "material-ui/IconButton/IconButton";
 
