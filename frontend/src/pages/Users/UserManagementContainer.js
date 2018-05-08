@@ -4,12 +4,13 @@ import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import UserManagement from "./UserManagement";
 import NotFound from "../NotFound/NotFound";
+import { canViewUserManagement } from "../../permissions";
 
 class UserManagementContainer extends Component {
   render() {
     //TODO: Change the intents to a more fine grain list
-    const canViewUsers = this.props.allowedIntents.indexOf("global.createUser") > -1;
-    if (canViewUsers) {
+    const canView = canViewUserManagement(this.props.allowedIntents);
+    if (canView) {
       return <UserManagement {...this.props} />;
     } else {
       return <NotFound />;
