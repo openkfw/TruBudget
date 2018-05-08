@@ -44,7 +44,7 @@ const Main = props => {
       <div className="container">
         {/* <Route component={LiveNotificationContainer} />
         <Route component={LiveUpdates} /> */}
-        <Switch>
+        {/* <Switch>
           <Route exact path="/" component={Placeholder} />
           <Route exact path="/projects" component={withInitialLoading(OverviewContainer)} />
           <Route exact path="/projects/:project" component={withInitialLoading(SubProjectsContainer)} />
@@ -53,7 +53,7 @@ const Main = props => {
           <Route exact path="/notifications" component={NotificationPageContainer} />
           <Route exact path="/users" component={UserManagementContainer} />
           <Route component={NotFound} />
-        </Switch>
+        </Switch> */}
         <Route component={Footer} />
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { List, ListItem } from "material-ui/List";
+import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import NetworkIcon from "@material-ui/icons/DeviceHub";
 import ProjectIcon from "@material-ui/icons/Business";
@@ -17,7 +17,8 @@ const SideNavCard = ({ avatarBackground, avatar, displayName, organization, hist
         background: `url('${avatarBackground}') no-repeat`,
         backgroundSize: "cover",
         height: "100px",
-        position: "relative"
+        position: "relative",
+        width: "300px"
       }}
     >
       <div
@@ -37,39 +38,44 @@ const SideNavCard = ({ avatarBackground, avatar, displayName, organization, hist
             justifyContent: "center"
           }}
         >
-          <Avatar
-            size={60}
-            src={avatar}
-            style={{
-              marginLeft: "16px"
-            }}
-          />
-          <ListItem
-            primaryText={<div style={{ color: colors.lightColor }}>{displayName}</div>}
-            secondaryText={<div style={{ color: colors.lightColor }}>{organization}</div>}
-            disabled
-            style={{ paddingTop: "16px" }}
-          />
+          <ListItem style={{ paddingTop: "16px" }}>
+            <ListItemIcon>
+              <Avatar
+                size={60}
+                src={avatar}
+                style={{
+                  marginLeft: "16px"
+                }}
+              />
+            </ListItemIcon>
+            <ListItemText
+              primary={<span style={{ color: colors.lightColor }}>{displayName}</span>}
+              secondary={<span style={{ color: colors.lightColor }}>{organization}</span>}
+            />
+          </ListItem>
         </div>
       </div>
     </div>
     <List>
       <Subheader>{strings.navigation.selections}</Subheader>
-      <ListItem
-        primaryText={strings.navigation.menu_item_projects}
-        leftIcon={<ProjectIcon />}
-        onTouchTap={() => history.push("/")}
-      />
-      <ListItem
-        primaryText={strings.navigation.menu_item_notifications}
-        leftIcon={<SocialNotificationIcon />}
-        onTouchTap={() => history.push("/notifications")}
-      />
-      <ListItem
-        primaryText={strings.navigation.menu_item_network}
-        leftIcon={<NetworkIcon />}
-        onTouchTap={() => history.push("/network")}
-      />
+      <ListItem button onClick={() => history.push("/")}>
+        <ListItemIcon>
+          <ProjectIcon />
+        </ListItemIcon>
+        <ListItemText primary={strings.navigation.menu_item_projects} />
+      </ListItem>
+      <ListItem button onClick={() => history.push("/notifications")}>
+        <ListItemIcon>
+          <SocialNotificationIcon />
+        </ListItemIcon>
+        <ListItemText primary={strings.navigation.menu_item_notifications} />
+      </ListItem>
+      <ListItem button onClick={() => history.push("/network")}>
+        <ListItemIcon>
+          <NetworkIcon />
+        </ListItemIcon>
+        <ListItemText primary={strings.navigation.menu_item_network} />
+      </ListItem>
     </List>
     <Divider />
   </div>

@@ -6,20 +6,23 @@ import Badge from "material-ui/Badge";
 
 import colors from "../../colors";
 import strings from "../../localizeStrings";
+import { withStyles } from "material-ui/styles";
 
-const NotificationIcon = ({ unreadNotifications, history }) => {
+const styles = {
+  badge: {
+    top: "-2px",
+    right: "-2px"
+  }
+};
+
+const NotificationIcon = ({ unreadNotifications, history, classes }) => {
   return (
-    <Badge
-      badgeContent={unreadNotifications}
-      secondary={true}
-      style={{ padding: 0 }}
-      badgeStyle={{ height: "18px", width: "18px" }}
-    >
-      <IconButton tooltip={strings.navigation.unread_notifications} onTouchTap={() => history.push("/notifications")}>
-        <BubbleIcon color={colors.lightColor} />
+    <Badge classes={classes} badgeContent={unreadNotifications} color="secondary">
+      <IconButton tooltip={strings.navigation.unread_notifications} onClick={() => history.push("/notifications")}>
+        <BubbleIcon color="primary" />
       </IconButton>
     </Badge>
   );
 };
 
-export default NotificationIcon;
+export default withStyles(styles)(NotificationIcon);

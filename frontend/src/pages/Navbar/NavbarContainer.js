@@ -1,20 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { toggleSidebar, fetchPeers, fetchStreamNames } from "./actions";
-import { fetchNotifications } from "../Notifications/actions";
+import { toggleSidebar } from "./actions";
 import { logout } from "../Login/actions";
 
 import Navbar from "./Navbar";
 import { toJS } from "../../helper";
 
 class NavbarContainer extends Component {
-  componentWillMount() {
-    // this.props.fetchPeers();
-    // this.props.fetchUsers();
-    // this.props.fetchStreamNames();
-    // this.props.fetchNotifications(this.props.loggedInUser.id);
-  }
+  componentWillMount() {}
   render() {
     return <Navbar {...this.props} />;
   }
@@ -23,10 +17,7 @@ class NavbarContainer extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     onToggleSidebar: () => dispatch(toggleSidebar()),
-    fetchPeers: () => dispatch(fetchPeers()),
-    fetchNotifications: user => dispatch(fetchNotifications(user)),
-    logout: () => dispatch(logout()),
-    fetchStreamNames: () => dispatch(fetchStreamNames())
+    logout: () => dispatch(logout())
   };
 };
 

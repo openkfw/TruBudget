@@ -1,21 +1,15 @@
-import React from 'react';
-import Drawer from 'material-ui/Drawer'
+import React from "react";
+import Drawer from "material-ui/Drawer";
 
-import SideNavCard from './SideNavCard'
+import SideNavCard from "./SideNavCard";
 
-const SideNav = (props) => {
-  const {
-    showSidebar,
-    onToggleSidebar,
-    ...rest
-  } = props;
-  return <Drawer
-    docked={false}
-    width={300}
-    open={showSidebar}
-    onRequestChange={onToggleSidebar}>
-    <SideNavCard {...rest} />
-  </Drawer>
+const SideNav = props => {
+  const { showSidebar, onToggleSidebar, ...rest } = props;
+  return (
+    <Drawer anchor="left" open={showSidebar} onClose={onToggleSidebar}>
+      <SideNavCard {...rest} />
+    </Drawer>
+  );
 };
 
-export default SideNav
+export default SideNav;

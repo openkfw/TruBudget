@@ -3,6 +3,25 @@ import ChevronRight from "@material-ui/icons/ChevronRight";
 import Button from "material-ui/Button";
 import colors, { ACMECorpGrey } from "../../colors";
 import strings from "../../localizeStrings";
+import Typography from "material-ui/Typography";
+
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  breadcrumbs: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start"
+  },
+  breadcrumb: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  }
+};
 
 const getStaticBreadcrumb = name => {
   switch (name) {
@@ -48,16 +67,16 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
   return paths.map((path, index) => {
     const isLastItem = index === paths.length - 1;
     return (
-      <span key={index}>
-        <span>{index ? <ChevronRight color={colors.lightColor} style={{ height: "16px" }} /> : null}</span>
+      <div key={index} style={styles.breadcrumb}>
+        <div>{index ? <ChevronRight style={{ height: "16px" }} /> : null}</div>
         <Button
           disabled={isLastItem}
           style={{ color: isLastItem ? ACMECorpGrey : colors.lightColor }}
-          onTouchTap={() => history.push(accumulatedPath[index])}
+          onClick={() => history.push(accumulatedPath[index])}
         >
           {index ? getPathName(path, index, currentProject, currentSubProject) : strings.navigation.main_site}
         </Button>
-      </span>
+      </div>
     );
   });
 };
@@ -73,11 +92,11 @@ const MainNavbarNavigation = ({
   const textColor = productionActive ? "#f0ebe6" : "#f44336";
   const navbarTitle = productionActive ? "TruBudget" : "TruBudget (Test)";
   return (
-    <div>
-      <div>
-        <span style={{ paddingRight: "50px", color: textColor }}>{navbarTitle}</span>
-        {createBreadcrumb(route, history, currentProject, currentSubProject)}
-      </div>
+    <div style={styles.container}>
+      <Typography variant="title" color="inherit" style={{ paddingRight: "50px", color: textColor }}>
+        {navbarTitle}
+      </Typography>
+      <div style={styles.breadcrumbs}>{createBreadcrumb(route, history, currentProject, currentSubProject)}</div>
     </div>
   );
 };

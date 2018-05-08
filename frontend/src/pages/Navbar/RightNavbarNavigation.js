@@ -1,32 +1,30 @@
-import React from 'react';
-import NavbarIcons from './NavbarIcons'
-import colors from '../../colors'
+import React from "react";
+import NavbarIcons from "./NavbarIcons";
+import colors from "../../colors";
+import Typography from "material-ui/Typography";
 
 const styles = {
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    flexGrow: 1
   },
-  text: {
-    color: colors.lightColor,
-    paddingRight: '10px'
+  organization: {
+    paddingRight: "10px"
   }
-
-}
+};
 
 const RightNavbarNavigations = ({ peers, unreadNotifications, history, logout, organization }) => {
   return (
-    <div style={styles.container} >
-      <span style={styles.text}
-      >
+    <div style={styles.container}>
+      <Typography variant="button" color="inherit" style={styles.organization}>
         {organization}
-      </span>
+      </Typography>
       <NavbarIcons unreadNotifications={unreadNotifications} peers={peers} history={history} logout={logout} />
-    </div >
-  )
-}
-
+    </div>
+  );
+};
 
 export default RightNavbarNavigations;
