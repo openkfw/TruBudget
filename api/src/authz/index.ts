@@ -15,10 +15,10 @@ export const getUserAndGroups = async (token: AuthToken): Promise<GroupId[]> => 
   return [token.userId, token.organization];
 };
 
-export const getAllowedIntents = async (
+export const getAllowedIntents = (
   userAndGroups: People,
   resourcePermissions: AllowedUserGroupsByIntent,
-): Promise<Intent[]> => {
+): Intent[] => {
   const isRoot = userAndGroups.includes("root");
   const allowedIntents = Object.keys(resourcePermissions as any).filter(
     intent => isRoot || hasIntersection(userAndGroups, resourcePermissions[intent]),
