@@ -84,12 +84,15 @@ export const publish = async (
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
-  intent: Intent,
-  createdBy: string,
-  creationTimestamp: Date,
-  dataVersion: number, // integer
-  data: object,
+  args: {
+    intent: Intent;
+    createdBy: string;
+    creationTimestamp: Date;
+    dataVersion: number; // integer
+    data: object;
+  },
 ): Promise<void> => {
+  const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
   const event: Event = {
     key: workflowitemId,
     intent,

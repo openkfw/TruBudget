@@ -99,20 +99,18 @@ export const createWorkflowitem = async (
     documents: data.documents, // not checked right now
   };
 
-  await Workflowitem.publish(
-    multichain,
-    projectId,
-    subprojectId,
-    workflowitemId,
-    userIntent,
-    req.token.userId,
-    ctime,
-    1,
-    {
+  const event = {
+    intent: userIntent,
+    createdBy: req.token.userId,
+    creationTimestamp: ctime,
+    dataVersion: 1,
+    data: {
       workflowitem,
       permissions: getWorkflowitemDefaultPermissions(req.token),
     },
-  );
+  };
+
+  await Workflowitem.publish(multichain, projectId, subprojectId, workflowitemId, event);
 
   return [
     201,

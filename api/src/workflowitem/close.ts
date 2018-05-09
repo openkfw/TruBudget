@@ -41,17 +41,15 @@ export const closeWorkflowitem = async (
     }
   }
 
-  await Workflowitem.publish(
-    multichain,
-    projectId,
-    subprojectId,
-    workflowitemId,
-    userIntent,
-    req.token.userId,
-    new Date(),
-    1,
-    {},
-  );
+  const event = {
+    intent: userIntent,
+    createdBy: req.token.userId,
+    creationTimestamp: new Date(),
+    dataVersion: 1,
+    data: {},
+  };
+
+  await Workflowitem.publish(multichain, projectId, subprojectId, workflowitemId, event);
 
   return [
     200,

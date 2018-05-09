@@ -25,17 +25,15 @@ export const assignWorkflowitem = async (
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
-  await Workflowitem.publish(
-    multichain,
-    projectId,
-    subprojectId,
-    workflowitemId,
-    userIntent,
-    req.token.userId,
-    new Date(),
-    1,
-    { userId },
-  );
+  const event = {
+    intent: userIntent,
+    createdBy: req.token.userId,
+    creationTimestamp: new Date(),
+    dataVersion: 1,
+    data: { userId },
+  };
+
+  await Workflowitem.publish(multichain, projectId, subprojectId, workflowitemId, event);
 
   return [
     200,
