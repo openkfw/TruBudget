@@ -337,12 +337,62 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
+  /**
+   * @api {post} /workflowitem.intent.grantPermission Grant permission
+   * @apiVersion 1.0.0
+   * @apiName workflowitem.intent.grantPermission
+   * @apiGroup workflowitem
+   * @apiDescription Grant a permission to a user. After this call has returned, the
+   * user will be allowed to execute the given intent.
+   *
+   * @apiParam {String} userId The user the permission should be granted to.
+   * @apiParam {String} intent The intent the user should get permissions for.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "userId": "alice",
+   *       "intent": "workflowitem.close"
+   *     }
+   *   }
+   *
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
   router.post("/workflowitem.intent.grantPermission", (req: AuthenticatedRequest, res) => {
     grantWorkflowitemPermission(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
 
+  /**
+   * @api {post} /workflowitem.intent.revokePermission Revoke permission
+   * @apiVersion 1.0.0
+   * @apiName workflowitem.intent.revokePermission
+   * @apiGroup workflowitem
+   * @apiDescription Revoke a permission from a user. After this call has returned, the
+   * user will no longer be able to execute the given intent.
+   *
+   * @apiParam {String} userId The user the permission should be revoked from.
+   * @apiParam {String} intent What the user should no longer be allowed to do.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "userId": "alice",
+   *       "intent": "workflowitem.close"
+   *     }
+   *   }
+   *
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
   router.post("/workflowitem.intent.revokePermission", (req: AuthenticatedRequest, res) => {
     revokeWorkflowitemPermission(multichainClient, req)
       .then(response => send(res, response))

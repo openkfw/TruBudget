@@ -2,6 +2,10 @@
   "name": "trubudget",
   "version": "1.0.0",
   "description": "",
+  "apidoc": {
+    "title": "TruBudget",
+    "url": "https://trubudget.net"
+  },
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -16,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apidoc": "^0.17.6",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
