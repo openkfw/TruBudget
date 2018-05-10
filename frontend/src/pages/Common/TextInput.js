@@ -3,14 +3,15 @@ import TextField from "material-ui/TextField";
 
 const styles = {
   textField: {
-    width: 220
+    width: 200,
+    paddingRight: 20
   }
 };
 
 const TextInput = ({
   ariaLabel,
-  floatingLabelText,
-  hintText,
+  label,
+  helperText,
   value,
   onChange,
   onBlur,
@@ -20,9 +21,8 @@ const TextInput = ({
   disabled = false
 }) => (
   <TextField
-    id={hintText}
-    floatingLabelText={floatingLabelText}
-    hintText={hintText}
+    label={label}
+    helperText={helperText}
     multiLine={multiLine}
     aria-label={ariaLabel}
     style={styles.textField}

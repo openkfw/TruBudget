@@ -34,8 +34,8 @@ const WorkflowCreation = props => {
           <TextInput
             onChange={props.storeWorkflowName}
             value={props.workflowToAdd.name}
-            floatingLabelText={strings.workflow.workflow_title}
-            hintText={strings.workflow.workflow_title_description}
+            label={strings.workflow.workflow_title}
+            helperText={strings.workflow.workflow_title_description}
           />
         </div>
       )

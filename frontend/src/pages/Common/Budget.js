@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import Dropdown from "./Dropdown";
+import { MenuItem } from "material-ui/Menu";
+
+import DropwDown from "./NewDropdown";
 import TextInput from "./TextInput";
+
 import { getCurrencies, preselectCurrency, fromAmountString } from "../../helper";
 
 const styles = {
@@ -19,6 +22,15 @@ class Budget extends Component {
     preselectCurrency(this.props.parentCurrency, this.props.storeCurrency);
   }
 
+  getMenuItems(currencies) {
+    return currencies.map(currency => {
+      return (
+        <MenuItem value={currency.value} disabled={currency.disabled}>
+          {currency.primaryText}
+        </MenuItem>
+      );
+    });
+  }
   render() {
     const {
       parentCurrency,
@@ -34,16 +46,12 @@ class Budget extends Component {
     const currencies = getCurrencies(parentCurrency);
     return (
       <div style={styles.inputDiv}>
-        <Dropdown
-          title={currencyTitle}
-          value={currency}
-          onChange={storeCurrency}
-          items={currencies}
-          disabled={budgetDisabled}
-        />
+        <DropwDown floatingLabel={currencyTitle} value={currency} onChange={storeCurrency} disabled={budgetDisabled}>
+          {this.getMenuItems(currencies)}
+        </DropwDown>
         <TextInput
-          floatingLabelText={budgetLabel}
-          hintText={budgetHintText}
+          label={budgetLabel}
+          helperText={budgetHintText}
           value={budget}
           onChange={v => {
             if (/^[0-9,.-]*$/.test(v)) storeBudget(v);

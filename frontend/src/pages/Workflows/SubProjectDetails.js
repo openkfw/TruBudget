@@ -29,9 +29,8 @@ import DoneIcon from "@material-ui/icons/Check";
 import AssigneeIcon from "@material-ui/icons/Group";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "material-ui/IconButton";
-
-import Button from "material-ui/Button";
 import TextField from "material-ui/TextField";
+import Button from "material-ui/Button";
 
 import GaugeChart from "../Common/GaugeChart";
 import strings from "../../localizeStrings";
@@ -162,12 +161,12 @@ const disableEditMode = (
 };
 
 const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }) => {
-  const floatingLabelText = strings.common.budget;
+  const label = strings.common.budget;
   return (
     <div style={styles.budget}>
       <ListItem style={{ marginTop: "10px" }} disabled={true} leftIcon={<AmountIcon />} />
       <TextField
-        floatingLabelText={floatingLabelText}
+        label={label}
         style={styles.textfield}
         type="number"
         value={subProjectAmount}

@@ -1,5 +1,5 @@
 import React from "react";
-import Dialog from "material-ui/Dialog";
+import Dialog, { DialogTitle, DialogActions } from "material-ui/Dialog";
 import Button from "material-ui/Button";
 import strings from "../../localizeStrings";
 import CreationDialogStepper from "./CreationDialogStepper";
@@ -12,13 +12,13 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   const requiredInfoAdded = steps[currentStep].nextDisabled;
 
   const cancelButton = (
-    <Button aria-label="cancel" secondary={true} onTouchTap={() => handleCancel(props)}>
+    <Button aria-label="cancel" secondary={true} onClick={() => handleCancel(props)}>
       {strings.common.cancel}
     </Button>
   );
   const backButton =
     numberOfSteps > 1 ? (
-      <Button aria-label="back" primary={true} disabled={isFirstStep} onTouchTap={() => handleBack(props)}>
+      <Button aria-label="back" primary={true} disabled={isFirstStep} onClick={() => handleBack(props)}>
         {strings.common.back}
       </Button>
     ) : null;
@@ -28,7 +28,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
         aria-label="next"
         primary={true}
         disabled={isLastStep ? isLastStep : requiredInfoAdded}
-        onTouchTap={() => handleNext(props)}
+        onClick={() => handleNext(props)}
       >
         {strings.common.next}
       </Button>
@@ -38,7 +38,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
       aria-label="submit"
       primary={true}
       disabled={isLastStep ? requiredInfoAdded : !editMode}
-      onTouchTap={() => handleSubmit(props)}
+      onClick={() => handleSubmit(props)}
     >
       {strings.common.submit}
     </Button>
@@ -72,8 +72,6 @@ const CreationDialog = props => {
   return (
     <Dialog
       open={creationDialogShown}
-      title={title}
-      modal={true}
       autoScrollBodyContent={true}
       bodyStyle={{
         minHeight: "200px"
@@ -88,9 +86,10 @@ const CreationDialog = props => {
         flexDirection: "row",
         justifyContent: "space-between"
       }}
-      actions={getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}
     >
+      <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
+      <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>
     </Dialog>
   );
 };

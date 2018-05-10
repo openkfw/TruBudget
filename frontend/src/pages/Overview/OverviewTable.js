@@ -1,43 +1,55 @@
 import React from "react";
 
-import { toAmountString, statusMapping, tsToString } from "../../helper";
-import { Card, CardActions, CardMedia, CardTitle } from "material-ui/Card";
+import Card, { CardActions, CardMedia, CardTitle } from "material-ui/Card";
 import Button from "material-ui/Button";
-import { List, ListItem } from "material-ui/List";
+import List, { ListItem } from "material-ui/List";
 import CommentIcon from "@material-ui/icons/ShortText";
 import DateIcon from "@material-ui/icons/DateRange";
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import InfoIcon from "@material-ui/icons/Search";
 import ContentAdd from "@material-ui/icons/Add";
 import _ from "lodash";
-import { ACMECorpDarkBlue } from "../../colors";
+import { withStyles } from "material-ui/styles";
+
+import { toAmountString, statusMapping, tsToString } from "../../helper";
 import strings from "../../localizeStrings";
-
 import { canCreateProject, canViewProjectDetails } from "../../permissions";
+import { ListItemIcon, CardHeader } from "material-ui";
+import { ListItemText } from "material-ui";
+import { CardContent } from "material-ui";
+import { Typography } from "material-ui";
 
-const getTableEntries = ({ projects, history }) => {
+const styles = {
+  card: {
+    maxWidth: 300,
+    margin: "35px",
+    width: "35%"
+  },
+  cardHeader: {
+    paddingLeft: 0
+  },
+  listItem: {
+    opacity: 1
+  },
+  media: {
+    paddingTop: "70%"
+  },
+  button: {
+    minHeight: "56px"
+  }
+};
+
+const getTableEntries = ({ projects, history, classes }) => {
   return projects.map((project, index) => {
-    const {
-      displayName,
-      amount,
-      currency,
-      status,
-      description,
-      thumbnail = "/Thumbnail_0008.jpg",
-      creationUnixTs
-    } = project;
+    const { displayName, amount, currency, status, thumbnail = "/Thumbnail_0008.jpg", creationUnixTs } = project;
     const amountString = toAmountString(amount, currency);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_.isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);
 
     return (
-      <Card aria-label="project" key={index} style={{ margin: "20px", width: "35%", maxWidth: "300px" }}>
-        <Card>
-          <CardMedia overlay={<CardTitle title={displayName} subtitle={mappedStatus} />}>
-            <img style={{ height: "250px", width: "250px" }} src={imagePath} alt="projectType" />
-          </CardMedia>
-        </Card>
+      <Card aria-label="project" key={index} className={classes.card}>
+        <CardMedia className={classes.media} image={imagePath} />
         <CardActions
           style={{
             display: "flex",
@@ -48,36 +60,38 @@ const getTableEntries = ({ projects, history }) => {
           }}
         >
           <Button
+            className={classes.button}
             disabled={!canViewProjectDetails(project.allowedIntents)}
-            backgroundColor={ACMECorpDarkBlue}
-            style={{ zIndex: 2 }}
-            onTouchTap={() => history.push("/projects/" + project.id)}
+            color="primary"
+            onClick={() => history.push("/projects/" + project.id)}
             variant="fab"
           >
             <InfoIcon />
           </Button>
         </CardActions>
-        <List>
-          <ListItem
-            disabled={true}
-            leftIcon={<CommentIcon />}
-            primaryText={description}
-            secondaryText={strings.common.comment}
-          />
-          <ListItem
-            disabled={true}
-            leftIcon={<AmountIcon />}
-            primaryText={amountString}
-            secondaryText={strings.common.budget}
-          />
-
-          <ListItem
-            disabled={true}
-            leftIcon={<DateIcon />}
-            primaryText={dateString}
-            secondaryText={strings.common.created}
-          />
-        </List>
+        <CardContent>
+          <CardHeader className={classes.cardHeader} title={displayName} subheader={mappedStatus} />
+          <List>
+            {/* <ListItem className={classes.listItem} disabled={true}>
+              <ListItemIcon>
+                <CommentIcon />
+              </ListItemIcon>
+              <ListItemText primary={description} secondary={strings.common.comment} />
+            </ListItem> */}
+            <ListItem className={classes.listItem} disabled={true}>
+              <ListItemIcon>
+                <AmountIcon />
+              </ListItemIcon>
+              <ListItemText primary={amountString} secondary={strings.common.budget} />
+            </ListItem>
+            <ListItem className={classes.listItem} disabled={true}>
+              <ListItemIcon>
+                <DateIcon />
+              </ListItemIcon>
+              <ListItemText primary={dateString} secondary={strings.common.created} />
+            </ListItem>
+          </List>
+        </CardContent>
       </Card>
     );
   });
@@ -101,7 +115,7 @@ const OverviewTable = props => {
       }}
     >
       {tableEntries}
-      <Card style={{ margin: "20px", width: "25%", opacity: "0.7" }}>
+      <Card style={{ margin: "35px", width: "25%", opacity: "0.7" }}>
         <div
           style={{
             display: "flex",
@@ -114,11 +128,12 @@ const OverviewTable = props => {
         >
           <CardActions>
             <Button
+              className={props.classes.button}
               aria-label="create"
               disabled={!canCreateProject(props.allowedIntents)}
-              onTouchTap={() => props.showProjectDialog()}
-              style={{ height: "100%", opacity: "1.0" }}
+              onClick={() => props.showProjectDialog()}
               variant="fab"
+              color="primary"
             >
               <ContentAdd />
             </Button>
@@ -129,4 +144,4 @@ const OverviewTable = props => {
   );
 };
 
-export default OverviewTable;
+export default withStyles(styles)(OverviewTable);
