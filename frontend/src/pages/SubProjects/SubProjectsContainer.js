@@ -37,7 +37,7 @@ class SubProjectsContainer extends Component {
     return (
       <div>
         <div style={globalStyles.innerContainer}>
-          {/* <ProjectPermissionsContainer title={strings.project.project_permissions_title} /> */}
+          <ProjectPermissionsContainer title={strings.project.project_permissions_title} />
           {/* <ProjectAssigneeContainer projectId={this.props.projectId} assignee={this.props.projectAssignee} /> */}
           <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} canAssignProject={canAssignProject} />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
