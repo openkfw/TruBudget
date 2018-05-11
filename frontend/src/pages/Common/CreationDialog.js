@@ -45,13 +45,13 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   );
 
   const leftActions = (
-    <div>
+    <div key="leftactions">
       {cancelButton}
       {backButton}
     </div>
   );
   const rightActions = (
-    <div>
+    <div key="rightactions">
       {nextButton}
       {submitButton}
     </div>

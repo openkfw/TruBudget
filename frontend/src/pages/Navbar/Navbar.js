@@ -34,7 +34,7 @@ const Navbar = ({
   classes
 }) => (
   <div>
-    <AppBar classes={classes}>
+    <AppBar classes={classes} position="absolute">
       <Toolbar>
         <LeftNavbarNavigation onToggleSidebar={onToggleSidebar} />
         <MainNavbarNavigation

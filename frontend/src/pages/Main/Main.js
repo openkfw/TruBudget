@@ -41,7 +41,7 @@ const Main = props => {
       <div style={{ width: "100%" }}>
         <Route component={NavbarContainer} />
       </div>
-      <div className="container">
+      <div className="container" style={{ marginTop: "48px" }}>
         <Switch>
           <Route exact path="/" component={Placeholder} />
           <Route exact path="/projects/:project/:subproject" component={withInitialLoading(WorkflowContainer)} />
