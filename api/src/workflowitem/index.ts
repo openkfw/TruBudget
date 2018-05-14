@@ -4,6 +4,7 @@ import { getUserAndGroups } from "../authz/index";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import deepcopy from "../lib/deepcopy";
 import { asMapKey } from "../multichain/Client";
 import { MultichainClient } from "../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
@@ -14,8 +15,6 @@ const workflowitemKey = (subprojectId, workflowitemId) => [
   workflowitemsGroupKey(subprojectId),
   workflowitemId,
 ];
-
-const deepcopy = (x: any): any => JSON.parse(JSON.stringify(x));
 
 export interface WorkflowitemResource {
   log: Event[];
