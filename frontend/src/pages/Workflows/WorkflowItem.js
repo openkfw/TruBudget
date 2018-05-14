@@ -259,7 +259,9 @@ export const WorkflowItem = SortableElement(
               <Typography variant="body1">{displayName}</Typography>
             </div>
             <div style={{ ...itemStyle, ...styles.listText, flex: 5 }}>
-              <Typography variant="body1">{getAmountField(amount, amountType)}</Typography>
+              <Typography variant="body1" component="div">
+                {getAmountField(amount, amountType)}
+              </Typography>
             </div>
             <div style={{ ...styles.listText, ...styles.chipRow, flex: 2 }}>
               <Chip
@@ -293,41 +295,34 @@ export const RedactedWorkflowItem = SortableElement(
     const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
 
     return (
-      <Card
-        elevation={workflowSelectable ? 1 : 0}
-        key={mapIndex}
-        style={{
-          marginLeft: "50px",
-          marginRight: "10px",
-          marginTop: "15px",
-          marginBottom: "15px",
-          position: "relative"
-        }}
-      >
+      <div style={{ position: "relative" }}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
-        <Table>
-          <TableBody>
-            <TableRow style={tableStyle} disabled={workflowSelectable}>
-              <TableCell colSpan={1}>
-                <IconButton style={styles.infoButton}>
-                  <HiddenIcon />
-                </IconButton>
-              </TableCell>
-              <TableCell style={{ ...itemStyle, ...styles.listText, ...styles.redacted }} colSpan={3}>
-                {strings.workflow.workflow_redacted}
-              </TableCell>
-              <TableCell style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
-                {null}
-              </TableCell>
-              <TableCell style={{ ...itemStyle, ...styles.listText }} colSpan={2}>
-                {null}
-              </TableCell>
-              <TableCell colSpan={3}>{null}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Card>
+        <Card
+          elevation={workflowSelectable ? 1 : 0}
+          key={mapIndex}
+          style={{
+            marginLeft: "50px",
+            marginRight: "10px",
+            marginTop: "15px",
+            marginBottom: "15px"
+          }}
+        >
+          <div style={{ ...tableStyle, ...styles.workflowContent }}>
+            <div style={{ flex: 1 }}>
+              <IconButton style={styles.infoButton}>
+                <HiddenIcon />
+              </IconButton>
+            </div>
+            <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
+              <Typography variant="body1">{strings.workflow.workflow_redacted}</Typography>
+            </div>
+            <div style={{ ...itemStyle, ...styles.listText, flex: 5 }}>{null}</div>
+            <div style={{ ...styles.listText, ...styles.chipRow, flex: 2 }}>{null}</div>
+            {null}
+          </div>
+        </Card>
+      </div>
     );
   }
 );
