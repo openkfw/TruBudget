@@ -88,7 +88,6 @@ describe("subproject.viewDetails", () => {
                     },
                   },
                 },
-                log: [],
               },
             },
           ];

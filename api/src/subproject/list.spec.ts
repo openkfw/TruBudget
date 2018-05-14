@@ -6,51 +6,72 @@ import { getSubprojectList } from "./list";
 
 describe("subproject.list", () => {
   it("works", async () => {
+    const projectId = "the-sample-project";
     const multichain: any = {
-      getLatestValues: (streamName, key, nValues) => {
-        expect(streamName).to.eql("the-sample-project");
-        expect(key).to.eql("subprojects");
-        const subprojects = [
-          {
-            key: ["subprojects", "one"],
-            resource: {
+      v2_readStreamItems: async (streamName, key, nValues) => {
+        expect(streamName).to.eql(projectId);
+        let events;
+        if (key === `subprojects`) {
+          const subprojectOne = "one";
+          const subprojectTwo = "two";
+          events = [
+            {
+              keys: ["subprojects", subprojectOne],
               data: {
-                id: "one",
-                displayName: "subproject one",
-                status: "open",
-                amount: "1",
-                currency: "EUR",
-                description: "",
+                json: {
+                  key: subprojectOne,
+                  intent: "project.createSubproject",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:27:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    subproject: {
+                      id: subprojectOne,
+                      displayName: `Subproject ${subprojectOne}`,
+                      status: "open",
+                      amount: "1",
+                      currency: "EUR",
+                      description: "",
+                    },
+                    permissions: {
+                      "subproject.viewSummary": ["alice"],
+                      "subproject.viewDetails": ["alice"],
+                      "subproject.close": ["alice"],
+                    },
+                  },
+                },
               },
-              permissions: {
-                "subproject.viewSummary": ["alice"],
-                "subproject.viewDetails": ["alice"],
-                "subproject.close": ["alice"],
-              },
-              log: [],
             },
-          },
-          {
-            key: ["subprojects", "two"],
-            resource: {
+            {
+              keys: ["subprojects", subprojectTwo],
               data: {
-                id: "two",
-                displayName: "subproject two",
-                status: "open",
-                amount: "2",
-                currency: "USD",
-                description: "",
+                json: {
+                  key: subprojectTwo,
+                  intent: "project.createSubproject",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:28:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    subproject: {
+                      id: subprojectTwo,
+                      displayName: `Subproject ${subprojectTwo}`,
+                      status: "open",
+                      amount: "2",
+                      currency: "USD",
+                      description: "",
+                    },
+                    permissions: {
+                      "subproject.viewSummary": ["alice"],
+                    },
+                  },
+                },
               },
-              permissions: {
-                "subproject.viewSummary": ["alice"],
-                "subproject.viewDetails": [],
-                "subproject.close": [],
-              },
-              log: [],
             },
-          },
-        ];
-        return subprojects;
+          ];
+        } else {
+          expect(true, `perhaps missing impl for key=${key}`).to.eql(false);
+        }
+        return events;
       },
     };
 
@@ -68,40 +89,23 @@ describe("subproject.list", () => {
       req as AuthenticatedRequest,
     );
     expect(status).to.eql(200);
-    expect(response).to.eql({
-      apiVersion: "1.0",
-      data: {
-        items: [
-          {
-            id: "one",
-            displayName: "subproject one",
-            status: "open",
-            amount: "1",
-            currency: "EUR",
-            description: "",
-            allowedIntents: [
-              "subproject.viewSummary",
-              "subproject.viewDetails",
-              "subproject.close",
-            ],
-          },
-          {
-            id: "two",
-            displayName: "subproject two",
-            status: "open",
-            amount: "2",
-            currency: "USD",
-            description: "",
-            allowedIntents: ["subproject.viewSummary"],
-          },
-        ],
-      },
-    });
+    const subprojects = (response as any).data.items;
+    expect(subprojects.length).to.eql(2);
+
+    expect(subprojects[0].data.id).to.eql("one");
+    expect(subprojects[0].allowedIntents).to.eql([
+      "subproject.viewSummary",
+      "subproject.viewDetails",
+      "subproject.close",
+    ]);
+
+    expect(subprojects[1].data.id).to.eql("two");
+    expect(subprojects[1].allowedIntents).to.eql(["subproject.viewSummary"]);
   });
 
   it("throws stream-not-found error if the project does not exist", done => {
     const multichain: any = {
-      getLatestValues: (streamName, key, nValues) => {
+      v2_readStreamItems: async (streamName, key, nValues) => {
         expect(streamName).to.eql("the-sample-project");
         expect(key).to.eql("subprojects");
         const err: TruBudgetError = { kind: "NotFound", what: { reason: "Because it's a test." } };
