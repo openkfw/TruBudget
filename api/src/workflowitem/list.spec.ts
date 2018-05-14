@@ -9,19 +9,6 @@ describe("workflowitem.list", () => {
     const subprojectId = "the-subproject";
 
     const multichain: any = {
-      getValue: async (streamName, key) => {
-        expect(streamName).to.eql(projectId);
-        expect(key).to.eql(`${subprojectId}_workflowitem_ordering`);
-        return {
-          key: [key],
-          resource: {
-            log: [],
-            permissions: {},
-            // The third workflowitem should come first, the others sorted by ctime:
-            data: ["three"],
-          },
-        };
-      },
       v2_readStreamItems: async (streamName, key, nValues) => {
         expect(streamName).to.eql(projectId);
         let events;
