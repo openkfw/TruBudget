@@ -3,6 +3,7 @@ import { SortableElement } from "react-sortable-hoc";
 import Table, { TableBody, TableRow, TableCell } from "material-ui/Table";
 import Card from "material-ui/Card";
 import Avatar from "material-ui/Avatar";
+import Typography from "@material-ui/core/Typography";
 
 import InfoIcon from "@material-ui/icons/InfoOutline";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
@@ -100,6 +101,15 @@ const styles = {
   },
   chipRow: {
     paddingLeft: 10
+  },
+  workflowContent: {
+    display: "flex",
+
+    alignItems: "center",
+    padding: "4px 8px 4px 4px"
+  },
+  workflowCell: {
+    flex: 1
   }
 };
 
@@ -167,7 +177,7 @@ const getAmountField = (amount, type) => {
   return (
     <div style={styles.chipDiv}>
       <div>{amountToShow}</div>
-      {noBudgetAllocated ? null : <Chip style={styles.amountChip}>{amountTypes(type)}</Chip>}
+      {noBudgetAllocated ? null : <Chip style={styles.amountChip} label={amountTypes(type)} />}
     </div>
   );
 };
@@ -186,7 +196,7 @@ const renderActionButtons = (
   };
 
   return (
-    <TableCell colSpan={3}>
+    <div style={{ flex: 2 }}>
       <div style={styles.actions}>
         <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
           <EditIcon />
@@ -198,7 +208,7 @@ const renderActionButtons = (
           <DoneIcon />
         </IconButton>
       </div>
-    </TableCell>
+    </div>
   );
 };
 
@@ -217,7 +227,11 @@ export const WorkflowItem = SortableElement(
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const amount = toAmountString(workflow.amount, workflow.currency);
     const tableStyle = styles[status];
-    const itemStyle = workflowSelectable ? {} : { opacity: 0.3 };
+    const itemStyle = workflowSelectable
+      ? {}
+      : {
+          opacity: 0.3
+        };
 
     const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
     const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
@@ -239,34 +253,31 @@ export const WorkflowItem = SortableElement(
             marginBottom: "15px"
           }}
         >
-          <Table>
-            <TableBody>
-              <TableRow style={tableStyle} disabled={workflowSelectable}>
-                <TableCell colSpan={1}>{infoButton}</TableCell>
-                <TableCell style={{ ...itemStyle, ...styles.text }} colSpan={3}>
-                  {displayName}
-                </TableCell>
-                <TableCell style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
-                  {getAmountField(amount, amountType)}
-                </TableCell>
-                <TableCell style={{ ...styles.listText, ...styles.chipRow }} colSpan={2}>
-                  <Chip onClick={canAssign ? () => showWorkflowItemAssignee(id, assignee) : undefined}>
-                    <Avatar src="/lego_avatar_male1.jpg" />
-                    {assignee}
-                  </Chip>
-                </TableCell>
-                {renderActionButtons(
-                  showEdit,
-                  editWorkflow.bind(this, workflow, props),
-                  canViewWorkflowItemPermissions(allowedIntents),
-                  () => props.showWorkflowItemPermissions(id),
-                  showClose,
-                  () => props.closeWorkflowItem(id),
-                  currentWorkflowSelectable
-                )}
-              </TableRow>
-            </TableBody>
-          </Table>
+          <div style={{ ...tableStyle, ...styles.workflowContent }}>
+            <div style={{ flex: 1 }}>{infoButton}</div>
+            <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
+              <Typography variant="body1">{displayName}</Typography>
+            </div>
+            <div style={{ ...itemStyle, ...styles.listText, flex: 5 }}>
+              <Typography variant="body1">{getAmountField(amount, amountType)}</Typography>
+            </div>
+            <div style={{ ...styles.listText, ...styles.chipRow, flex: 2 }}>
+              <Chip
+                onClick={canAssign ? () => showWorkflowItemAssignee(id, assignee) : undefined}
+                avatar={<Avatar src="/lego_avatar_male1.jpg" />}
+                label={assignee}
+              />
+            </div>
+            {renderActionButtons(
+              showEdit,
+              editWorkflow.bind(this, workflow, props),
+              canViewWorkflowItemPermissions(allowedIntents),
+              () => props.showWorkflowItemPermissions(id),
+              showClose,
+              () => props.closeWorkflowItem(id),
+              currentWorkflowSelectable
+            )}
+          </div>
         </Card>
       </div>
     );
@@ -279,7 +290,7 @@ export const RedactedWorkflowItem = SortableElement(
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const tableStyle = styles[status];
 
-    const itemStyle = workflowSelectable ? {} : { opacity: 0.3 };
+    const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
 
     return (
       <Card

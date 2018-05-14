@@ -1,7 +1,8 @@
 import React from "react";
-import Card, { CardHeader } from "material-ui/Card";
+import Card, { CardHeader, CardContent } from "material-ui/Card";
 import Table, { TableHead, TableCell, TableRow } from "material-ui/Table";
 import { arrayMove } from "react-sortable-hoc";
+import Typography from "@material-ui/core/Typography";
 
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
@@ -20,27 +21,25 @@ const styles = {
 const createTableHeader = () => (
   <Card>
     <CardHeader style={{ backgroundColor: ACMECorpLightgreen }} title={strings.workflow.workflow_table_title} />
-    <div style={{ marginLeft: "50px", marginRight: "10px", position: "relative" }}>
-      <Table>
-        <TableHead style={{ borderBottom: "0px" }}>
-          <TableRow style={{ borderBottom: "0px" }}>
-            <TableCell style={styles.listText} colSpan={1} />
-            <TableCell style={styles.listText} colSpan={3}>
-              {strings.workflow.workflow_type_workflow}
-            </TableCell>
-            <TableCell style={styles.listText} colSpan={3}>
-              {strings.common.budget}
-            </TableCell>
-            <TableCell style={styles.listText} colSpan={2}>
-              {strings.common.assignee}
-            </TableCell>
-            <TableCell style={{ ...styles.actions, ...styles.listText }} colSpan={3}>
-              {strings.common.actions}
-            </TableCell>
-          </TableRow>
-        </TableHead>
-      </Table>
-    </div>
+    <CardContent>
+      <div style={{ marginLeft: "12px", position: "relative" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ flex: 1 }} />
+          <div style={{ flex: 5 }}>
+            <Typography variant="body2">{strings.workflow.workflow_type_workflow}</Typography>
+          </div>
+          <div style={{ flex: 5 }}>
+            <Typography variant="body2">{strings.common.budget}</Typography>
+          </div>
+          <div style={{ flex: 2 }}>
+            <Typography variant="body2">{strings.common.assignee}</Typography>
+          </div>
+          <div style={{ flex: 2 }}>
+            <Typography variant="body2">{strings.common.actions}</Typography>
+          </div>
+        </div>
+      </div>
+    </CardContent>
   </Card>
 );
 

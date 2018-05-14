@@ -101,7 +101,7 @@ const Workflow = props => {
           mini={true}
           disabled={props.workflowSortEnabled}
           onClick={() => props.openHistory()}
-          color="secondary"
+          color="default"
           variant="fab"
           style={{
             position: "relative",
