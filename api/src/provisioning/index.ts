@@ -200,7 +200,8 @@ const findWorkflowitem = async (project, subproject, workflowitem) => {
   return axios
     .get(`/workflowitem.list?projectId=${project.id}&subprojectId=${subproject.id}`)
     .then(res => res.data.data.workflowitems)
-    .then(items => items.find(item => item.displayName === workflowitem.displayName));
+    .then(items => items.find(item => item.data.displayName === workflowitem.displayName))
+    .then(item => item.data);
 };
 
 const grantPermissions = async (permissions: object, projectId, subprojectId?, workflowitemId?) => {

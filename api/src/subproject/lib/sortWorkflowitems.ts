@@ -7,20 +7,18 @@ export const sortWorkflowitems = async (
   projectId: string,
   workflowitems: Workflowitem.WorkflowitemResource[],
 ): Promise<Workflowitem.WorkflowitemResource[]> => {
-  const itemMap = workflowitems.reduce((map, resource) => {
-    map[resource.data.id] = resource;
-    return map;
-  }, {});
+  const itemMap = new Map<string, Workflowitem.WorkflowitemResource>();
+  for (const resource of workflowitems) {
+    itemMap.set(resource.data.id, resource);
+  }
 
   const ordering = await Subproject.getWorkflowitemOrdering(multichain, projectId);
 
   // Start with all items that occur in the ordering:
-  const orderedItems = ordering.map(
-    id => popProperty(itemMap, id) as Workflowitem.WorkflowitemResource,
-  );
+  const orderedItems = ordering.map(id => pop(itemMap, id));
 
   // Add remaining items sorted by their ctime:
-  const remainingItems = Object.values(itemMap) as Workflowitem.WorkflowitemResource[];
+  const remainingItems = [...itemMap.values()];
   remainingItems.sort(byCreationTime).forEach(item => orderedItems.push(item));
 
   return orderedItems;
@@ -46,8 +44,11 @@ const byCreationTime = (
   }
 };
 
-const popProperty = (obj: object, key: string): object => {
-  const val = obj[key];
-  delete obj[key];
-  return val;
+const pop = (
+  map: Map<string, Workflowitem.WorkflowitemResource>,
+  key: string,
+): Workflowitem.WorkflowitemResource => {
+  const val = map.get(key);
+  map.delete(key);
+  return val!;
 };

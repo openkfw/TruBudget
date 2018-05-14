@@ -1,9 +1,10 @@
+import * as Workflowitem from ".";
 import { throwIfUnauthorized } from "../authz";
+import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain";
-import { sortWorkflowitems } from "../subproject/lib/sortSubprojects";
-import * as Workflowitem from "./index";
+import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
 
 export const closeWorkflowitem = async (
   multichain: MultichainClient,
@@ -15,18 +16,21 @@ export const closeWorkflowitem = async (
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
   const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
 
+  const userIntent: Intent = "workflowitem.close";
+
   // Is the user allowed to close a workflowitem?
   await throwIfUnauthorized(
     req.token,
-    "workflowitem.close",
+    userIntent,
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
   // We need to make sure that all previous (wrt. ordering) workflowitems are already closed:
-  const allItems = await Workflowitem.getAll(multichain, projectId, subprojectId).then(
+  const sortedItems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
     unsortedItems => sortWorkflowitems(multichain, projectId, unsortedItems),
   );
-  for (const item of allItems) {
+
+  for (const item of sortedItems) {
     if (item.data.id === workflowitemId) {
       break;
     } else if (item.data.status !== "closed") {
@@ -37,7 +41,15 @@ export const closeWorkflowitem = async (
     }
   }
 
-  await Workflowitem.close(multichain, projectId, workflowitemId);
+  const event = {
+    intent: userIntent,
+    createdBy: req.token.userId,
+    creationTimestamp: new Date(),
+    dataVersion: 1,
+    data: {},
+  };
+
+  await Workflowitem.publish(multichain, projectId, subprojectId, workflowitemId, event);
 
   return [
     200,

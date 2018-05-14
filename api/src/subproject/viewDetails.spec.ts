@@ -5,15 +5,19 @@ import { getSubprojectDetails } from "./viewDetails";
 
 describe("subproject.viewDetails", () => {
   it("works", async () => {
+    const projectId = "the-sample-project";
+    const subprojectId = "the-sample-subproject";
+    const workflowitemId = "the-sample-workflow";
+
     const multichain: any = {
       getValue: async (streamName, key, nValues) => {
-        expect(streamName).to.eql("the-sample-project");
+        expect(streamName).to.eql(projectId);
         if (key === "self") {
           return {
             key: ["self"],
             resource: {
               data: {
-                id: "the-sample-project",
+                id: projectId,
                 displayName: "The Sample Project",
               },
               permissions: {},
@@ -22,10 +26,10 @@ describe("subproject.viewDetails", () => {
           };
         } else if (key === "the-sample-subproject") {
           return {
-            key: ["subprojects", "the-sample-subproject"],
+            key: ["subprojects", subprojectId],
             resource: {
               data: {
-                id: "the-sample-subproject",
+                id: subprojectId,
                 displayName: "The Sample Subproject",
                 status: "open",
                 amount: "1",
@@ -46,30 +50,39 @@ describe("subproject.viewDetails", () => {
           throw Error(`unexpected key: ${key}`);
         }
       },
-      getLatestValues: async (streamName, key, nValues) => {
-        expect(streamName).to.eql("the-sample-project");
-        if (key === "the-sample-subproject_workflows") {
-          return [
-            {
-              key: ["the-sample-subproject_workflows", "wf-one"],
-              resource: {
+      v2_readStreamItems: async (streamName, key, nValues) => {
+        expect(streamName).to.eql(projectId);
+        expect(key).to.eql(`${subprojectId}_workflows`);
+        const events = [
+          {
+            keys: [`${subprojectId}_workflows`, "the-sample-workflow"],
+            data: {
+              json: {
+                key: "the-sample-workflow",
+                intent: "subproject.createWorkflowitem",
+                createdBy: "alice",
+                createdAt: "2018-05-08T11:27:00.385Z",
+                dataVersion: 1,
                 data: {
-                  id: "wf-one",
-                  amount: "11",
-                  currency: "EUR",
-                  comment: "",
-                  status: "open",
+                  workflowitem: {
+                    id: "the-sample-workflow",
+                    displayName: "the-sample-workflow",
+                    amount: "11",
+                    currency: "EUR",
+                    amountType: "N/A",
+                    description: "",
+                    status: "open",
+                    documents: [],
+                  },
+                  permissions: {
+                    "workflowitem.view": ["alice"],
+                  },
                 },
-                permissions: {
-                  "workflowitem.view": ["alice"],
-                },
-                log: [],
               },
             },
-          ];
-        } else {
-          throw Error(`unexpected key: ${key}`);
-        }
+          },
+        ];
+        return events;
       },
     };
 
@@ -80,6 +93,7 @@ describe("subproject.viewDetails", () => {
       },
       token: {
         userId: "alice",
+        organization: "Umbrella Corp.",
       },
     };
 
@@ -88,33 +102,16 @@ describe("subproject.viewDetails", () => {
       req as AuthenticatedRequest,
     );
     expect(status).to.eql(200);
-    expect(response).to.eql({
-      apiVersion: "1.0",
-      data: {
-        subproject: {
-          id: "the-sample-subproject",
-          displayName: "The Sample Subproject",
-          status: "open",
-          amount: "1",
-          currency: "EUR",
-          description: "",
-          allowedIntents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.close"],
-        },
-        workflowitems: [
-          {
-            id: "wf-one",
-            amount: "11",
-            currency: "EUR",
-            comment: "",
-            status: "open",
-            allowedIntents: ["workflowitem.view"],
-          },
-        ],
-        parentProject: {
-          id: "the-sample-project",
-          displayName: "The Sample Project",
-        },
-      },
-    });
+    const { subproject, workflowitems, parentProject } = (response as any).data;
+
+    expect(subproject.id).to.eql(subprojectId);
+
+    expect(workflowitems.length).to.eql(1);
+    expect(workflowitems[0].data.id).to.eql(workflowitemId);
+    expect(workflowitems[0].log[0].key).to.eql(workflowitemId);
+    expect(workflowitems[0].permissions).to.eql(undefined);
+    expect(workflowitems[0].allowedIntents).to.eql(["workflowitem.view"]);
+
+    expect(parentProject.id).to.eql(projectId);
   });
 });

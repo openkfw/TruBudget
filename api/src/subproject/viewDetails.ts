@@ -1,11 +1,12 @@
 import * as Subproject from ".";
 import { throwIfUnauthorized } from "../authz";
+import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib";
 import { MultichainClient } from "../multichain";
 import * as Project from "../project";
 import * as Workflowitem from "../workflowitem";
-import { sortWorkflowitems } from "./lib/sortSubprojects";
+import { sortWorkflowitems } from "./lib/sortWorkflowitems";
 
 export const getSubprojectDetails = async (
   multichain: MultichainClient,
@@ -23,18 +24,18 @@ export const getSubprojectDetails = async (
     subprojectId,
   );
 
+  const userIntent: Intent = "subproject.viewDetails";
+
   // Is the user allowed to view subproject details?
   await throwIfUnauthorized(
     req.token,
-    "subproject.viewDetails",
+    userIntent,
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
-  const workflowitems: Array<
-    Workflowitem.DataWithIntents | Workflowitem.ObscuredDataWithIntents
-  > = await Workflowitem.getAll(multichain, projectId, subprojectId)
-    .then(allItems => sortWorkflowitems(multichain, projectId, allItems))
-    .then(sortedItems => Workflowitem.forUser(req.token, sortedItems));
+  const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
+    unsortedItems => sortWorkflowitems(multichain, projectId, unsortedItems),
+  );
 
   const parentProject = await Project.get(multichain, req.token, projectId);
 

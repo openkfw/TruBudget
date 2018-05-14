@@ -667,9 +667,9 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
   }, showLoading);
 }
 
-export function* grantWorkflowItemPermissionsSaga({ projectId, workflowitemId, intent, user, showLoading }) {
+export function* grantWorkflowItemPermissionsSaga({ projectId, subprojectId, workflowitemId, intent, user, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.grantWorkflowItemPermissions, projectId, workflowitemId, intent, user);
+    yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
 
     yield put({
       type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS
@@ -678,6 +678,7 @@ export function* grantWorkflowItemPermissionsSaga({ projectId, workflowitemId, i
     yield put({
       type: FETCH_WORKFLOWITEM_PERMISSIONS,
       projectId,
+      subprojectId,
       workflowitemId,
       showLoading: true
     });
@@ -703,7 +704,7 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
 
 export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemId, assigneeId, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.assignWorkflowItem, projectId, workflowitemId, assigneeId);
+    yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
     yield put({
       type: ASSIGN_WORKFLOWITEM_SUCCESS
     });
