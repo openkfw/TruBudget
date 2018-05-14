@@ -41,19 +41,24 @@ const getStaticBreadcrumb = name => {
 //   return breadcrumb ? breadcrumb : '...';
 // };
 
+const short = (text, size = 12) =>
+  text.length > size
+    ? `${text.slice(0, Math.floor(size / 2))}...${text.slice(text.length - Math.floor(size / 2), text.length)}`
+    : text;
+
 const getPathName = (name, index, currentProject, currentSubProject) => {
   const staticName = getStaticBreadcrumb(name);
   if (!staticName) {
     switch (index) {
       case 2:
-        return currentProject;
+        return short(currentProject);
       case 3:
-        return currentSubProject;
+        return short(currentSubProject);
       default:
         return "...";
     }
   } else {
-    return staticName;
+    return short(staticName);
   }
 };
 
@@ -68,12 +73,8 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
     const isLastItem = index === paths.length - 1;
     return (
       <div key={index} style={styles.breadcrumb}>
-        <div>{index ? <ChevronRight style={{ height: "16px" }} /> : null}</div>
-        <Button
-          disabled={isLastItem}
-          style={{ color: isLastItem ? ACMECorpGrey : colors.lightColor }}
-          onClick={() => history.push(accumulatedPath[index])}
-        >
+        <div>{index ? <ChevronRight color="primary" style={{ height: "16px" }} /> : null}</div>
+        <Button disabled={isLastItem} color="primary" onClick={() => history.push(accumulatedPath[index])}>
           {index ? getPathName(path, index, currentProject, currentSubProject) : strings.navigation.main_site}
         </Button>
       </div>
