@@ -8,6 +8,7 @@ import Budget from "../Common/Budget";
 
 const styles = {
   container: {
+    marginTop: 20,
     display: "flex",
     flex: 1,
     flexDirection: "column",
@@ -15,7 +16,8 @@ const styles = {
     alignItems: "center"
   },
   selections: {
-    display: "flex"
+    display: "flex",
+    flexDirection: "row"
   },
   buttons: {
     width: "auto",
@@ -75,8 +77,7 @@ class WorkflowCreationAmount extends Component {
             width: "100%",
             display: "flex",
             flexDirection: "row",
-            justifyContent: "center",
-            marginTop: "10px"
+            justifyContent: "center"
           }}
         >
           <Budget

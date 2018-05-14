@@ -3,7 +3,11 @@ import Button from "material-ui/Button";
 import FingerPrint from "@material-ui/icons/Fingerprint";
 import { CircularProgress } from "material-ui/Progress";
 
-import { Table, TableBody, TableRow, TableRowColumn } from "material-ui/Table";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+
 import _ from "lodash";
 
 import { ACMECorpSuperLightgreen, lightRed } from "../../colors";
@@ -92,25 +96,25 @@ class DocumentOverview extends Component {
 
       return (
         <TableRow key={index + "document"} selectable={false}>
-          <TableRowColumn style={{ textAlign: "center" }}>
+          <TableCell style={{ textAlign: "center" }}>
             {hash ? this.generateHashIcon(hash) : <CircularProgress size={20} />}
-          </TableRowColumn>
-          <TableRowColumn>{name}</TableRowColumn>
-          {validationActive ? <TableRowColumn>{this.generateUploadIcon(hash, validated)}</TableRowColumn> : null}
+          </TableCell>
+          <TableCell>{name}</TableCell>
+          {validationActive ? <TableCell>{this.generateUploadIcon(hash, validated)}</TableCell> : null}
         </TableRow>
       );
     });
 
   generateEmptyList = () => (
     <TableRow selectable={false}>
-      <TableRowColumn>{strings.workflow.workflow_no_documents}</TableRowColumn>
+      <TableCell>{strings.workflow.workflow_no_documents}</TableCell>
     </TableRow>
   );
 
   render = () => {
     const { documents, validationActive, validatedDocuments } = this.props;
     return (
-      <Table selectable={false}>
+      <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }} selectable={false}>
         <TableBody displayRowCheckbox={false}>
           {_.isEmpty(documents)
             ? this.generateEmptyList()

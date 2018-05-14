@@ -71,8 +71,10 @@ const Workflow = props => {
             : submitSort(props, allowedToCreateWorkflows)}
         </div> */}
         <WorkflowTable {...props} />
-        {/* <ChangeLog {...props} />
-      <WorkflowCreation {...props} /> */}
+        {/* <ChangeLog {...props} />*/}
+        <div>
+          <WorkflowCreation {...props} />
+        </div>
       </Card>
       <div
         style={{

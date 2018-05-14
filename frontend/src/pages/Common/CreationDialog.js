@@ -26,7 +26,6 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
     numberOfSteps > 1 ? (
       <Button
         aria-label="next"
-        primary={true}
         color="primary"
         disabled={isLastStep ? isLastStep : requiredInfoAdded}
         onClick={() => handleNext(props)}
@@ -71,7 +70,7 @@ const handleNext = props => props.setCurrentStep(props.currentStep + 1);
 const CreationDialog = props => {
   const { creationDialogShown, title, handleSubmit } = props;
   return (
-    <Dialog open={creationDialogShown}>
+    <Dialog maxWidth="md" open={creationDialogShown}>
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
       <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>

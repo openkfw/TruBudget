@@ -1,5 +1,5 @@
 import React from "react";
-import Dialog from "material-ui/Dialog";
+import Dialog, { DialogContent, DialogActions } from "material-ui/Dialog";
 
 import Divider from "material-ui/Divider";
 import TextField from "material-ui/TextField";
@@ -8,9 +8,12 @@ import _ from "lodash";
 import { toAmountString, statusMapping } from "../../helper";
 import DocumentOverview from "../Documents/DocumentOverview";
 import strings from "../../localizeStrings";
+import { Typography, DialogContentText } from "@material-ui/core";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const styles = {
   textfield: {
+    width: "50%",
     right: -30
   },
   closeButton: {
@@ -28,6 +31,14 @@ const styles = {
   paper: {
     width: "70%",
     marginTop: "10px"
+  },
+  dialogContent: {
+    width: "500px"
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
   }
 };
 
@@ -38,7 +49,7 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
   };
 
   if (showWorkflowDetails) {
-    workflowItem = workflowItems.find(workflow => workflow.txid === showDetailsItemId);
+    workflowItem = workflowItems.find(workflow => workflow.id === showDetailsItemId);
   }
 
   return workflowItem;
@@ -61,58 +72,68 @@ const WorkflowDetails = ({
   validateDocument,
   validatedDocuments
 }) => {
-  const actions = [<Button onTouchTap={hideWorkflowDetails}>{strings.common.close}</Button>];
+  const actions = [<Button onClick={hideWorkflowDetails}>{strings.common.close}</Button>];
 
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
   const status = workflowItem.status;
   const trimmedComment = removeNewLines(workflowItem.description);
+
+  console.log(toAmountString(workflowItem.amount, workflowItem.currency));
   return (
-    <Dialog
-      autoScrollBodyContent={true}
-      open={showWorkflowDetails}
-      actions={actions}
-      title={workflowItem.displayName}
-      modal={false}
-      style={styles.dialog}
-    >
-      <div>
-        {strings.common.budget}:
-        <TextField
-          id={strings.common.budget}
-          disabled={true}
-          hintText={toAmountString(workflowItem.amount, workflowItem.currency)}
-          style={styles.textfield}
-          underlineShow={false}
-        />
+    <Dialog autoScrollBodyContent={true} open={showWorkflowDetails} modal={false} style={styles.dialog}>
+      <DialogTitle>{workflowItem.displayName}</DialogTitle>
+      <DialogContent style={styles.dialogContent}>
+        <div style={styles.row}>
+          <Typography variant="subheading">{strings.common.budget}:</Typography>
+          <TextField
+            id={strings.common.budget}
+            disabled={true}
+            label={toAmountString(workflowItem.amount, workflowItem.currency)}
+            helperText={" "}
+            style={styles.textfield}
+            underlineShow={false}
+          />
+        </div>
         <Divider />
-        {strings.common.comment}:
-        <TextField
-          id={strings.common.comment}
-          disabled={true}
-          multiline={true}
-          hintText={trimmedComment}
-          style={styles.textfield}
-          underlineShow={false}
-        />
+        <div style={styles.row}>
+          <Typography variant="subheading">{strings.common.comment}:</Typography>
+          <TextField
+            id={strings.common.comment}
+            disabled={true}
+            multiline={true}
+            label={trimmedComment}
+            helperText={" "}
+            style={styles.textfield}
+            underlineShow={false}
+          />
+        </div>
         <Divider />
-        {strings.workflow.workflow_documents}:
-        <DocumentOverview
-          id={strings.workflow.workflow_documents}
-          documents={workflowItem.documents}
-          validateDocument={validateDocument}
-          validatedDocuments={validatedDocuments}
-        />
+        <div style={styles.row}>
+          <Typography variant="subheading"> {strings.workflow.workflow_documents}:</Typography>
+
+          <DocumentOverview
+            id={strings.workflow.workflow_documents}
+            documents={workflowItem.documents}
+            validateDocument={validateDocument}
+            validatedDocuments={validatedDocuments}
+          />
+        </div>
         <Divider />
-        {strings.common.status}:
-        <TextField
-          id={strings.common.status}
-          disabled={true}
-          hintText={statusMapping(status)}
-          style={styles.textfield}
-          underlineShow={false}
-        />
+        <div style={styles.row}>
+          <Typography variant="subheading">{strings.common.status}:</Typography>
+          <TextField
+            id={strings.common.comment}
+            disabled={true}
+            label={statusMapping(status)}
+            helperText={" "}
+            style={styles.textfield}
+            underlineShow={false}
+          />
+        </div>
+
         <Divider />
-      </div>
+      </DialogContent>
+      <DialogActions>{actions}</DialogActions>
     </Dialog>
   );
 };

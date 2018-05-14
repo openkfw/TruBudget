@@ -65,7 +65,7 @@ const WorkflowTable = props => {
     <div style={{ paddingBottom: "8px" }}>
       {createTableHeader()}
       {createWorkflowItems(props)}
-      {/* <WorkflowDetails {...props} /> */}
+      {<WorkflowDetails {...props} />}
     </div>
   );
 };

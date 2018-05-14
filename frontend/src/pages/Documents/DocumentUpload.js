@@ -35,20 +35,15 @@ export default class DocumentUpload extends Component {
         <div>
           <DocumentOverview documents={this.props.workflowDocuments} validationActive={false} />
         </div>
-        <div>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
           <TextField
-            hintText={strings.workflow.workflow_document_description}
-            floatingLabelText={strings.workflow.workflow_document_name}
+            helperText={strings.workflow.workflow_document_description}
+            label={strings.workflow.workflow_document_name}
             value={this.state.name}
             onChange={event => this.setState({ name: event.target.value })}
           />
-          <Button
-            labelPosition="before"
-            containerElement="label"
-            label={strings.workflow.workflow_upload_document}
-            style={styles.uploadButton}
-            disabled={_.isEmpty(this.state.name)}
-          >
+          <Button style={styles.uploadButton} disabled={_.isEmpty(this.state.name)}>
+            {strings.workflow.workflow_upload_document}
             {_.isEmpty(this.state.name) ? null : (
               <input
                 id="docupload"

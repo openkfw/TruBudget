@@ -159,7 +159,7 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
   if (!workflowSortEnabled) {
     return (
-      <IconButton style={styles.infoButton} onClick={() => openWorkflowDetails(workflow.txid)}>
+      <IconButton style={styles.infoButton} onClick={() => openWorkflowDetails(workflow.id)}>
         <InfoIcon />
       </IconButton>
     );
