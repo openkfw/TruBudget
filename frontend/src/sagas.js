@@ -667,7 +667,14 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
   }, showLoading);
 }
 
-export function* grantWorkflowItemPermissionsSaga({ projectId, subprojectId, workflowitemId, intent, user, showLoading }) {
+export function* grantWorkflowItemPermissionsSaga({
+  projectId,
+  subprojectId,
+  workflowitemId,
+  intent,
+  user,
+  showLoading
+}) {
   yield execute(function*() {
     yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
 

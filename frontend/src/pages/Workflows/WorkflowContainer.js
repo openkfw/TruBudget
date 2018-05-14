@@ -89,6 +89,7 @@ class WorkflowContainer extends Component {
           />
           <WorkflowItemPermissionsContainer
             projectId={this.projectId}
+            subProjectId={this.subProjectId}
             title={strings.workflow.workflow_permissions_title}
           />
           <Workflow
