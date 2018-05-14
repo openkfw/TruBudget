@@ -287,7 +287,7 @@ export async function isClosed(
     const event = item.data.json;
     switch (event.intent) {
       case "project.createSubproject": {
-        if (event.data.workflowitem.status === "closed") {
+        if (event.data.subproject.status === "closed") {
           return true;
         }
         break;

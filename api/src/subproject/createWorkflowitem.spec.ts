@@ -10,22 +10,6 @@ describe("subproject.createWorkflowitem", () => {
     const workflowitemId = "my-workflowitem";
 
     const multichain: any = {
-      getValue: async (streamName, keys) => {
-        expect(streamName).to.eql(projectId);
-        expect(keys).to.eql(subprojectId);
-        return {
-          key: ["subprojects", subprojectId],
-          resource: {
-            data: {
-              status: "open",
-            },
-            log: null,
-            permissions: {
-              "subproject.createWorkflowitem": ["alice"],
-            },
-          },
-        };
-      },
       getRpcClient: () => ({
         invoke: (method, streamName, keys, payload) => {
           expect(method).to.eql("publish");
@@ -36,6 +20,41 @@ describe("subproject.createWorkflowitem", () => {
           expect(event.intent).to.eql("subproject.createWorkflowitem");
         },
       }),
+      v2_readStreamItems: async (streamName, key, nValues) => {
+        expect(streamName).to.eql(projectId);
+        let events;
+        if (key === subprojectId) {
+          events = [
+            {
+              keys: ["subprojects", subprojectId],
+              data: {
+                json: {
+                  key: subprojectId,
+                  intent: "project.createSubproject",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:27:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    subproject: {
+                      id: subprojectId,
+                      displayName: `Subproject ${subprojectId}`,
+                      status: "open",
+                      amount: "1",
+                      currency: "EUR",
+                      description: "",
+                    },
+                    permissions: {
+                      "subproject.createWorkflowitem": ["alice"],
+                    },
+                  },
+                },
+              },
+            },
+          ];
+        }
+
+        return events;
+      },
     };
 
     const req = {
