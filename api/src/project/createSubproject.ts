@@ -1,6 +1,7 @@
 import * as Project from ".";
 import { throwIfUnauthorized } from "../authz/index";
 import Intent from "../authz/intents";
+import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import {
   AuthenticatedRequest,
@@ -11,13 +12,12 @@ import {
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
-import * as Subproject from "../subproject";
-import { assign } from "../subproject/index";
+import * as Subproject from "../subproject/model/Subproject";
 
-export const createSubproject = async (
+export async function createSubproject(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const body = req.body;
 
   if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
@@ -26,32 +26,53 @@ export const createSubproject = async (
 
   const projectId: string = value("projectId", data.projectId, isNonemptyString);
 
-  throwParseErrorIfUndefined(data, ["subproject"]);
-  const subproject = data.subproject;
+  const userIntent: Intent = "project.createSubproject";
 
   // Is the user allowed to create subprojects?
   await throwIfUnauthorized(
     req.token,
-    "project.createSubproject",
+    userIntent,
     await Project.getPermissions(multichain, projectId),
   );
 
-  await Subproject.create(
-    multichain,
-    req.token,
-    projectId,
-    {
-      id: value("id", subproject.id, isNonemptyString, randomString()),
-      creationUnixTs: Date.now().toString(),
-      status: value("status", subproject.status, x => ["open", "closed"].includes(x), "open"),
-      displayName: value("displayName", subproject.displayName, isNonemptyString),
-      description: value("description", subproject.description, isNonemptyString),
-      amount: value("amount", subproject.amount, isNonemptyString),
-      assignee: value("assignee", subproject.assignee, isUserOrUndefined, req.token.userId),
-      currency: value("currency", subproject.currency, isNonemptyString).toUpperCase(),
+  // Make sure the parent project is not already closed:
+  if (await Project.isClosed(multichain, projectId)) {
+    throw {
+      kind: "PreconditionError",
+      message: "Cannot add a subproject to a closed project.",
+    };
+  }
+
+  throwParseErrorIfUndefined(data, ["subproject"]);
+  const subprojectArgs = data.subproject;
+
+  const subprojectId = value("id", subprojectArgs.id, isNonemptyString, randomString());
+
+  const ctime = new Date();
+
+  const subproject: Subproject.Data = {
+    id: subprojectId,
+    creationUnixTs: ctime.getTime().toString(),
+    status: value("status", subprojectArgs.status, x => ["open", "closed"].includes(x), "open"),
+    displayName: value("displayName", subprojectArgs.displayName, isNonemptyString),
+    description: value("description", subprojectArgs.description, isNonemptyString),
+    amount: value("amount", subprojectArgs.amount, isNonemptyString),
+    currency: value("currency", subprojectArgs.currency, isNonemptyString).toUpperCase(),
+    assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.token.userId),
+  };
+
+  const event = {
+    intent: userIntent,
+    createdBy: req.token.userId,
+    creationTimestamp: ctime,
+    dataVersion: 1,
+    data: {
+      subproject,
+      permissions: getSubprojectDefaultPermissions(req.token),
     },
-    defaultPermissions(req.token.userId),
-  );
+  };
+
+  await Subproject.publish(multichain, projectId, subprojectId, event);
 
   return [
     201,
@@ -60,10 +81,10 @@ export const createSubproject = async (
       data: { created: true },
     },
   ];
-};
+}
 
-const defaultPermissions = (userId: string): AllowedUserGroupsByIntent => {
-  if (userId === "root") return {};
+function getSubprojectDefaultPermissions(token: AuthToken): AllowedUserGroupsByIntent {
+  if (token.userId === "root") return {};
 
   const intents: Intent[] = [
     "subproject.intent.listPermissions",
@@ -77,5 +98,5 @@ const defaultPermissions = (userId: string): AllowedUserGroupsByIntent => {
     "subproject.archive",
     "subproject.createWorkflowitem",
   ];
-  return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
-};
+  return intents.reduce((obj, intent) => ({ ...obj, [intent]: [token.userId] }), {});
+}

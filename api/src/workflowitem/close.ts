@@ -27,7 +27,7 @@ export const closeWorkflowitem = async (
 
   // We need to make sure that all previous (wrt. ordering) workflowitems are already closed:
   const sortedItems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
-    unsortedItems => sortWorkflowitems(multichain, projectId, unsortedItems),
+    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
   );
 
   for (const item of sortedItems) {

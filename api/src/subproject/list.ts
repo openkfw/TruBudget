@@ -1,21 +1,17 @@
-import * as Subproject from ".";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import * as Subproject from "./model/Subproject";
 
-export const getSubprojectList = async (
+export async function getSubprojectList(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
 
-  const subprojects: Subproject.SubprojectDataWithIntents[] = await Subproject.getAllForUser(
-    multichain,
-    req.token,
-    projectId,
-  );
+  const subprojects = await Subproject.get(multichain, req.token, projectId);
 
   return [
     200,
@@ -26,4 +22,4 @@ export const getSubprojectList = async (
       },
     },
   ];
-};
+}

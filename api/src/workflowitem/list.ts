@@ -14,7 +14,7 @@ export const getWorkflowitemList = async (
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
   const sortedItems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
-    unsortedItems => sortWorkflowitems(multichain, projectId, unsortedItems),
+    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
   );
 
   return [

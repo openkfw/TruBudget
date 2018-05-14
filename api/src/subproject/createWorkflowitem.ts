@@ -1,4 +1,3 @@
-import * as Subproject from ".";
 import { throwIfUnauthorized } from "../authz/index";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
@@ -13,13 +12,14 @@ import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../lib/v
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Workflowitem from "../workflowitem";
+import * as Subproject from "./model/Subproject";
 
 const isUndefinedOrNull = x => x === undefined || x === null;
 
-export const createWorkflowitem = async (
+export async function createWorkflowitem(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const body = req.body;
 
   if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
@@ -119,9 +119,9 @@ export const createWorkflowitem = async (
       data: { created: true },
     },
   ];
-};
+}
 
-const getWorkflowitemDefaultPermissions = (token: AuthToken): AllowedUserGroupsByIntent => {
+function getWorkflowitemDefaultPermissions(token: AuthToken): AllowedUserGroupsByIntent {
   if (token.userId === "root") return {};
 
   const intents: Intent[] = [
@@ -135,4 +135,4 @@ const getWorkflowitemDefaultPermissions = (token: AuthToken): AllowedUserGroupsB
     "workflowitem.archive",
   ];
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [token.userId] }), {});
-};
+}

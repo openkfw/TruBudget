@@ -173,3 +173,8 @@ export const getAllForUser = async (
     }),
   );
 };
+
+export async function isClosed(multichain: MultichainClient, projectId: string): Promise<boolean> {
+  const streamItem = await multichain.getValue(projectId, "self");
+  return streamItem.resource.data.status === "closed";
+}
