@@ -1,7 +1,7 @@
 import * as Workflowitem from "..";
 import { throwIfUnauthorized } from "../../authz";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
+import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 
 export const getWorkflowitemPermissions = async (

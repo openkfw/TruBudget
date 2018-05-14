@@ -1,6 +1,6 @@
 import * as Workflowitem from ".";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
 

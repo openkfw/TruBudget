@@ -1,12 +1,12 @@
 import * as Project from "..";
 import { throwIfUnauthorized } from "../../authz";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
+import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 
 export const getProjectPermissions = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = req.query;
 
@@ -16,7 +16,7 @@ export const getProjectPermissions = async (
   await throwIfUnauthorized(
     req.token,
     "project.intent.listPermissions",
-    await Project.getPermissions(multichain, projectId)
+    await Project.getPermissions(multichain, projectId),
   );
 
   const permissions = await Project.getPermissions(multichain, projectId);
@@ -25,7 +25,7 @@ export const getProjectPermissions = async (
     200,
     {
       apiVersion: "1.0",
-      data: permissions
-    }
+      data: permissions,
+    },
   ];
 };

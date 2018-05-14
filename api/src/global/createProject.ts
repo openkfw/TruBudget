@@ -3,7 +3,7 @@ import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent } from "../authz/types";
 import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value, isUserOrUndefined } from "../lib";
+import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project";

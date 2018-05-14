@@ -4,7 +4,7 @@ import { getAllowedIntents, getUserAndGroups } from "../authz/index";
 import { globalIntents } from "../authz/intents";
 import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { hashPassword, isPasswordMatch } from "./password";
 

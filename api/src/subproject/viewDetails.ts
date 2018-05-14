@@ -2,7 +2,7 @@ import * as Subproject from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import * as Project from "../project";
 import * as Workflowitem from "../workflowitem";

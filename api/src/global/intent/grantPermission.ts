@@ -2,12 +2,12 @@ import * as Global from "..";
 import { throwIfUnauthorized } from "../../authz";
 import { allIntents } from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
+import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 
 export const grantGlobalPermission = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -18,7 +18,7 @@ export const grantGlobalPermission = async (
   await throwIfUnauthorized(
     req.token,
     "global.intent.grantPermission",
-    await Global.getPermissions(multichain)
+    await Global.getPermissions(multichain),
   );
 
   await Global.grantPermission(multichain, userId, intent);
@@ -27,7 +27,7 @@ export const grantGlobalPermission = async (
     200,
     {
       apiVersion: "1.0",
-      data: "OK"
-    }
+      data: "OK",
+    },
   ];
 };

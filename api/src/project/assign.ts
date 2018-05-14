@@ -1,8 +1,8 @@
+import * as Project from ".";
 import { throwIfUnauthorized } from "../authz";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
-import * as Project from ".";
 
 export const assignProject = async (
   multichain: MultichainClient,

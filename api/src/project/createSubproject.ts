@@ -8,7 +8,7 @@ import {
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
-import { isNonemptyString, value, isUserOrUndefined } from "../lib";
+import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Subproject from "../subproject";

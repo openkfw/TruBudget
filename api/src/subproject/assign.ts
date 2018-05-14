@@ -1,6 +1,6 @@
 import { throwIfUnauthorized } from "../authz";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import * as Subproject from ".";
 

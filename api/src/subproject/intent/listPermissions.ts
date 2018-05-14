@@ -1,12 +1,12 @@
 import * as Subproject from "..";
 import { throwIfUnauthorized } from "../../authz";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
+import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 
 export const getSubprojectPermissions = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = req.query;
 
@@ -17,7 +17,7 @@ export const getSubprojectPermissions = async (
   await throwIfUnauthorized(
     req.token,
     "subproject.intent.listPermissions",
-    await Subproject.getPermissions(multichain, projectId, subprojectId)
+    await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
   const permissions = await Subproject.getPermissions(multichain, projectId, subprojectId);
@@ -26,7 +26,7 @@ export const getSubprojectPermissions = async (
     200,
     {
       apiVersion: "1.0",
-      data: permissions
-    }
+      data: permissions,
+    },
   ];
 };

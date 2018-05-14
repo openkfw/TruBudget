@@ -2,12 +2,12 @@ import * as Subproject from "..";
 import { throwIfUnauthorized } from "../../authz";
 import { allIntents } from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
+import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 
 export const revokeSubprojectPermission = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -20,7 +20,7 @@ export const revokeSubprojectPermission = async (
   await throwIfUnauthorized(
     req.token,
     "subproject.intent.revokePermission",
-    await Subproject.getPermissions(multichain, projectId, subprojectId)
+    await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
   await Subproject.revokePermission(multichain, projectId, subprojectId, userId, intent);
@@ -29,7 +29,7 @@ export const revokeSubprojectPermission = async (
     200,
     {
       apiVersion: "1.0",
-      data: "OK"
-    }
+      data: "OK",
+    },
   ];
 };

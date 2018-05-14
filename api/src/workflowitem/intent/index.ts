@@ -2,7 +2,7 @@ import * as Workflowitem from "..";
 import { throwIfUnauthorized } from "../../authz";
 import { allIntents } from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib";
+import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 
 export const changeWorkflowitemPermission = async (

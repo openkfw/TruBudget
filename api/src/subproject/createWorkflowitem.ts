@@ -9,7 +9,7 @@ import {
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
-import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../lib";
+import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Workflowitem from "../workflowitem";
