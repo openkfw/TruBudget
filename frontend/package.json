@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/codemod": "^1.0.0-beta.45",
+    "@material-ui/core": "^1.0.0-rc.0",
     "@material-ui/icons": "^1.0.0-beta.43",
     "accounting": "^0.4.1",
     "axios": "^0.16.0",
