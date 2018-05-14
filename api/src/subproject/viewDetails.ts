@@ -17,7 +17,9 @@ export async function getSubprojectDetails(
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
-  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId);
+  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
+    result => result[0],
+  );
 
   const userIntent: Intent = "subproject.viewDetails";
 
