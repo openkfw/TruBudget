@@ -1,7 +1,7 @@
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
-import { Table, TableBody, TableRow, TableRowColumn } from "material-ui/Table";
-import { Card } from "material-ui/Card";
+import Table, { TableBody, TableRow, TableCell } from "material-ui/Table";
+import Card from "material-ui/Card";
 import Avatar from "material-ui/Avatar";
 
 import InfoIcon from "@material-ui/icons/InfoOutline";
@@ -43,8 +43,9 @@ const styles = {
     textAlign: "center",
     display: "inline-block",
     position: "absolute",
-    top: "14px",
-    left: "-35px"
+    top: "18px",
+    left: "16px",
+    borderRadius: "10px"
   },
   actions: {
     display: "flex",
@@ -56,16 +57,16 @@ const styles = {
     borderLeftStyle: "solid",
     borderLeftColor: "black",
     height: "100%",
-    left: "-26px",
-    bottom: "30px"
+    left: "25px",
+    bottom: "34px"
   },
   firstLine: {
     position: "absolute",
     borderLeft: "2px solid",
     borderLeftColor: "black",
-    height: "34px",
-    left: "-26px",
-    bottom: "30px"
+    height: "38px",
+    left: "25px",
+    bottom: "34px"
   },
   editButtons: {
     minWidth: "40px",
@@ -127,7 +128,7 @@ const StepDot = ({ status, selectable }) => {
       Icon = OpenIcon;
   }
   return (
-    <Paper style={styles.dots} zDepth={2} circle={true}>
+    <Paper style={styles.dots} elevation={2} disabled={selectable}>
       <Icon style={{ width: "14px", height: "20px", opacity: selectable ? 1 : 0.3 }} />
     </Paper>
   );
@@ -148,7 +149,7 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
   if (!workflowSortEnabled) {
     return (
-      <IconButton style={styles.infoButton} onTouchTap={() => openWorkflowDetails(workflow.txid)}>
+      <IconButton style={styles.infoButton} onClick={() => openWorkflowDetails(workflow.txid)}>
         <InfoIcon />
       </IconButton>
     );
@@ -185,19 +186,19 @@ const renderActionButtons = (
   };
 
   return (
-    <TableRowColumn colSpan={3}>
+    <TableCell colSpan={3}>
       <div style={styles.actions}>
-        <IconButton disabled={!canEditWorkflow} onTouchTap={edit} style={canEditWorkflow ? {} : hideStyle}>
+        <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
           <EditIcon />
         </IconButton>
-        <IconButton disabled={!canListWorkflowPermissions} onTouchTap={showPerm}>
+        <IconButton disabled={!canListWorkflowPermissions} onClick={showPerm}>
           <PermissionIcon />
         </IconButton>
-        <IconButton disabled={!canCloseWorkflow} onTouchTap={close} style={canCloseWorkflow ? {} : hideStyle}>
+        <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
           <DoneIcon />
         </IconButton>
       </div>
-    </TableRowColumn>
+    </TableCell>
   );
 };
 
@@ -225,55 +226,49 @@ export const WorkflowItem = SortableElement(
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
 
     return (
-      <Card
-        zDepth={workflowSelectable ? 1 : 0}
-        key={mapIndex}
-        style={{
-          marginLeft: "50px",
-          marginRight: "10px",
-          marginTop: "15px",
-          marginBottom: "15px",
-          position: "relative"
-        }}
-      >
+      <div style={{ position: "relative" }}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
-        <Table>
-          <TableBody displayRowCheckbox={false}>
-            <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
-              <TableRowColumn colSpan={1}>{infoButton}</TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.text }} colSpan={3}>
-                {displayName}
-              </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
-                {getAmountField(amount, amountType)}
-              </TableRowColumn>
-              <TableRowColumn style={{ ...styles.listText, ...styles.chipRow }} colSpan={2}>
-                {canAssign ? (
-                  <Chip onClick={() => showWorkflowItemAssignee(id, assignee)}>
+        <Card
+          elevation={workflowSelectable ? 1 : 0}
+          key={mapIndex}
+          style={{
+            marginLeft: "50px",
+            marginRight: "10px",
+            marginTop: "15px",
+            marginBottom: "15px"
+          }}
+        >
+          <Table>
+            <TableBody>
+              <TableRow style={tableStyle} disabled={workflowSelectable}>
+                <TableCell colSpan={1}>{infoButton}</TableCell>
+                <TableCell style={{ ...itemStyle, ...styles.text }} colSpan={3}>
+                  {displayName}
+                </TableCell>
+                <TableCell style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
+                  {getAmountField(amount, amountType)}
+                </TableCell>
+                <TableCell style={{ ...styles.listText, ...styles.chipRow }} colSpan={2}>
+                  <Chip onClick={canAssign ? () => showWorkflowItemAssignee(id, assignee) : undefined}>
                     <Avatar src="/lego_avatar_male1.jpg" />
                     {assignee}
                   </Chip>
-                ) : (
-                  <Chip>
-                    <Avatar src="/lego_avatar_male1.jpg" />
-                    {assignee}
-                  </Chip>
+                </TableCell>
+                {renderActionButtons(
+                  showEdit,
+                  editWorkflow.bind(this, workflow, props),
+                  canViewWorkflowItemPermissions(allowedIntents),
+                  () => props.showWorkflowItemPermissions(id),
+                  showClose,
+                  () => props.closeWorkflowItem(id),
+                  currentWorkflowSelectable
                 )}
-              </TableRowColumn>
-              {renderActionButtons(
-                showEdit,
-                editWorkflow.bind(this, workflow, props),
-                canViewWorkflowItemPermissions(allowedIntents),
-                () => props.showWorkflowItemPermissions(id),
-                showClose,
-                () => props.closeWorkflowItem(id),
-                currentWorkflowSelectable
-              )}
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Card>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Card>
+      </div>
     );
   }
 );
@@ -288,7 +283,7 @@ export const RedactedWorkflowItem = SortableElement(
 
     return (
       <Card
-        zDepth={workflowSelectable ? 1 : 0}
+        elevation={workflowSelectable ? 1 : 0}
         key={mapIndex}
         style={{
           marginLeft: "50px",
@@ -301,23 +296,23 @@ export const RedactedWorkflowItem = SortableElement(
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
         <Table>
-          <TableBody displayRowCheckbox={false}>
-            <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
-              <TableRowColumn colSpan={1}>
+          <TableBody>
+            <TableRow style={tableStyle} disabled={workflowSelectable}>
+              <TableCell colSpan={1}>
                 <IconButton style={styles.infoButton}>
                   <HiddenIcon />
                 </IconButton>
-              </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText, ...styles.redacted }} colSpan={3}>
+              </TableCell>
+              <TableCell style={{ ...itemStyle, ...styles.listText, ...styles.redacted }} colSpan={3}>
                 {strings.workflow.workflow_redacted}
-              </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
+              </TableCell>
+              <TableCell style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
                 {null}
-              </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={2}>
+              </TableCell>
+              <TableCell style={{ ...itemStyle, ...styles.listText }} colSpan={2}>
                 {null}
-              </TableRowColumn>
-              <TableRowColumn colSpan={3}>{null}</TableRowColumn>
+              </TableCell>
+              <TableCell colSpan={3}>{null}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

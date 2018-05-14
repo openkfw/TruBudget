@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "material-ui/Card";
+import Card from "material-ui/Card";
 import Button from "material-ui/Button";
 import ContentAdd from "@material-ui/icons/Add";
 import HistoryIcon from "@material-ui/icons/Reorder";
@@ -16,14 +16,11 @@ import { canCreateWorkflowItems } from "../../permissions";
 const enableWorkflowSort = (props, allowedToSort) => (
   <Button
     disabled={!allowedToSort}
-    onTouchTap={() => props.enableWorkflowSort()}
+    onClick={() => props.enableWorkflowSort()}
     style={{
       position: "relative",
       marginTop: "8px",
       zIndex: 2
-    }}
-    labelStyle={{
-      fontWeight: "200"
     }}
     icon={<SortIcon color={!allowedToSort ? ACMECorpGrey : ACMECorpDarkBlue} />}
   >
@@ -34,7 +31,7 @@ const enableWorkflowSort = (props, allowedToSort) => (
 const submitSort = (props, allowedToSort) => (
   <Button
     disabled={!allowedToSort}
-    onTouchTap={() => props.postWorkflowSort(props.location.pathname.split("/")[3], props.workflowItems)}
+    onClick={() => props.postWorkflowSort(props.location.pathname.split("/")[3], props.workflowItems)}
     variant="fab"
     style={{
       position: "relative",
@@ -50,12 +47,33 @@ const submitSort = (props, allowedToSort) => (
 const Workflow = props => {
   const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents);
   return (
-    <Card
+    <div
       style={{
         width: "100%",
         position: "relative"
       }}
     >
+      <Card>
+        {/* TODO: <div
+          style={{
+            display: "flex",
+            position: "absolute",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            top: "51px",
+            left: "3px",
+            opacity: "0.7",
+            zIndex: 10
+          }}
+        >
+          {!props.workflowSortEnabled
+            ? enableWorkflowSort(props, allowedToCreateWorkflows)
+            : submitSort(props, allowedToCreateWorkflows)}
+        </div> */}
+        <WorkflowTable {...props} />
+        {/* <ChangeLog {...props} />
+      <WorkflowCreation {...props} /> */}
+      </Card>
       <div
         style={{
           display: "flex",
@@ -70,8 +88,8 @@ const Workflow = props => {
         {/* Button is disabled either if the user is not allowed to edit or the user is in "sort" mode */}
         <Button
           disabled={props.workflowSortEnabled ? props.workflowSortEnabled : !allowedToCreateWorkflows}
-          backgroundColor={ACMECorpDarkBlue}
-          onTouchTap={() => props.openWorkflowDialog(false)}
+          color="primary"
+          onClick={() => props.openWorkflowDialog(false)}
           variant="fab"
           style={{
             position: "relative"
@@ -82,8 +100,8 @@ const Workflow = props => {
         <Button
           mini={true}
           disabled={props.workflowSortEnabled}
-          onTouchTap={() => props.openHistory()}
-          backgroundColor={ACMECorpLightgreen}
+          onClick={() => props.openHistory()}
+          color="secondary"
           variant="fab"
           style={{
             position: "relative",
@@ -94,26 +112,7 @@ const Workflow = props => {
           <HistoryIcon />
         </Button>
       </div>
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-          top: "51px",
-          left: "3px",
-          opacity: "0.7",
-          zIndex: 10
-        }}
-      >
-        {!props.workflowSortEnabled
-          ? enableWorkflowSort(props, allowedToCreateWorkflows)
-          : submitSort(props, allowedToCreateWorkflows)}
-      </div>
-      <WorkflowTable {...props} />
-      <ChangeLog {...props} />
-      <WorkflowCreation {...props} />
-    </Card>
+    </div>
   );
 };
 

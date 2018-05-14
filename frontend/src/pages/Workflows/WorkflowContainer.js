@@ -82,11 +82,6 @@ class WorkflowContainer extends Component {
             canViewPermissions={canViewPermissions}
             canAssinSubproject={canAssinSubproject}
           />
-          {/* <Workflow
-            {...this.props}
-            createWorkflowItem={this.createWorkflowItem}
-            closeWorkflowItem={this.closeWorkflowItem}
-          />
           <SubprojectPermissionsContainer
             projectId={this.projectId}
             subProjectId={this.subProjectId}
@@ -96,7 +91,13 @@ class WorkflowContainer extends Component {
             projectId={this.projectId}
             title={strings.workflow.workflow_permissions_title}
           />
-          <SubProjectAssigneeController
+          <Workflow
+            {...this.props}
+            createWorkflowItem={this.createWorkflowItem}
+            closeWorkflowItem={this.closeWorkflowItem}
+          />
+          {/*
+            <SubProjectAssigneeController
             assignee={this.props.assignee}
             projectId={this.projectId}
             subprojectId={this.subProjectId}

@@ -2,6 +2,7 @@ import React from "react";
 import _ from "lodash";
 import Card, { CardHeader, CardMedia } from "material-ui/Card";
 import { Doughnut } from "react-chartjs-2";
+import Typography from "material-ui/Typography";
 
 import {
   toAmountString,
@@ -144,7 +145,6 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
           <AmountIcon />
         </ListItemIcon>
         <ListItemText primary={amountString} secondary={strings.common.budget} />
-        <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(props, amountString)} />
       </ListItem>
     </div>
   );
@@ -228,12 +228,10 @@ const SubProjectDetails = ({
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <CardHeader title={displayName} subtitle={description} />
+        <CardHeader title={displayName} subheader={description} avatar={<Avatar>{displayName[0]}</Avatar>} />
         <List>
           <Divider />
-          {budgetEditEnabled && allowedToEdit
-            ? getEditableBudget(props)
-            : getNotEditableBudget(amountString, allowedToEdit, props)}
+          {getNotEditableBudget(amountString, allowedToEdit, props)}
           <Divider />
           <ListItem disabled={false}>
             <ListItemIcon>{statusIcon}</ListItemIcon>
@@ -249,36 +247,31 @@ const SubProjectDetails = ({
           <Divider />
           <ListItem disabled={false}>
             <ListItemIcon>
-              <AssigneeIcon style={styles.assigneeIcon} />
+              <AssigneeIcon />
             </ListItemIcon>
             <ListItemText
               primary={
-                canAssinSubproject ? (
-                  <Chip
-                    label={assignee}
-                    onClick={showSubProjectAssignee}
-                    avatar={<Avatar src="/lego_avatar_male1.jpg" />}
-                  />
-                ) : (
-                  <Chip label={assignee} avatar={<Avatar src="/lego_avatar_male1.jpg" />} />
-                )
+                <Chip
+                  disabled
+                  label={assignee}
+                  onClick={canAssinSubproject ? showSubProjectAssignee : undefined}
+                  avatar={<Avatar src="/lego_avatar_male1.jpg" />}
+                />
               }
+              secondary={strings.common.assignee}
             />
           </ListItem>
           <Divider />
-          <ListItem style={styles.permissionContainer} disabled={false}>
-            <ListItemText
-              primary={
-                <Button
-                  secondary={true}
-                  disabled={!canViewPermissions}
-                  onClick={showSubProjectPermissions}
-                  icon={<PermissionIcon style={styles.icon} />}
-                >
-                  Permissions
-                </Button>
-              }
-            />
+          <ListItem style={styles.permissionContainer}>
+            <Button
+              disabled={!canViewPermissions}
+              onClick={showSubProjectPermissions}
+              icon={<PermissionIcon style={styles.icon} />}
+              variant="raised"
+              color="primary"
+            >
+              Permissions
+            </Button>
           </ListItem>
         </List>
       </Card>
@@ -286,9 +279,9 @@ const SubProjectDetails = ({
         <CardHeader title={strings.common.budget_distribution} />
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text} disabled={false}>
+          <ListItem style={styles.text}>
             <ListItemIcon>
-              <UnspentIcon color={workflowBudgetColorPalette[1]} />
+              <UnspentIcon color="primary" />
             </ListItemIcon>
             <ListItemText primary={unSpendBudgetString} secondary={strings.common.assigned_budget} />
           </ListItem>
@@ -296,9 +289,9 @@ const SubProjectDetails = ({
         </div>
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text} disabled={false}>
+          <ListItem style={styles.text}>
             <ListItemIcon>
-              <SpentIcon color={workflowBudgetColorPalette[2]} />
+              <SpentIcon color="primary" />
             </ListItemIcon>
             <ListItemText primary={spendBudgetString} secondary={strings.common.disbursed_budget} />
           </ListItem>
@@ -306,53 +299,42 @@ const SubProjectDetails = ({
         </div>
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text} disabled={false}>
+          <ListItem style={styles.text}>
             <ListItemIcon>
-              <NotAssignedIcon color={workflowBudgetColorPalette[0]} />
+              <NotAssignedIcon color="primary" />
             </ListItemIcon>
             <ListItemText primary={disbursedBudgetString} secondary={strings.common.disbursement} />
           </ListItem>
           <GaugeChart size={0.2} responsive={false} value={createRatio(currentDisbursementRatio)} />
         </div>
-
         <Divider />
       </Card>
       <Card style={styles.card}>
         <CardHeader title={strings.common.task_status} />
         <Divider />
-        <CardMedia style={styles.cardMedia}>
+        <ListItem style={styles.cardMedia}>
           <Doughnut data={createTaskData(workflowItems, "workflows")} />
-        </CardMedia>
+        </ListItem>
         <Divider />
-        <ListItem disabled={true}>
+        <ListItem>
           <div style={styles.tasksChart}>
             <div style={styles.taskChartItem}>
-              <div style={styles.text}>{statusDetails.open.toString()}</div>
+              <Typography>{statusDetails.open.toString()}</Typography>
               <div>
-                <IconButton
-                  disableTouchRipple
-                  tooltip={strings.common.open}
-                  style={styles.iconButton}
-                  tooltipStyles={styles.tooltip}
-                  iconStyle={styles.icon}
-                >
+                <IconButton disabled>
                   <OpenIcon />
                 </IconButton>
               </div>
+              <Typography variant="caption">{strings.common.open}</Typography>
             </div>
             <div style={styles.taskChartItem}>
-              <div style={styles.text}>{statusDetails.done.toString()}</div>
+              <Typography>{statusDetails.done.toString()}</Typography>
               <div>
-                <IconButton
-                  disableTouchRipple
-                  tooltip={strings.common.done}
-                  style={styles.iconButton}
-                  tooltipStyles={styles.tooltip}
-                  iconStyle={styles.icon}
-                >
+                <IconButton disabled>
                   <DoneIcon />
                 </IconButton>
               </div>
+              <Typography variant="caption">{strings.common.done}</Typography>
             </div>
           </div>
         </ListItem>

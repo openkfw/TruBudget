@@ -80,7 +80,6 @@ class PermissionSelection extends Component {
   };
 
   render() {
-    console.log(this.props.permissions[this.props.name]);
     return (
       <FormControl>
         <InputLabel htmlFor={`${this.props.name}-selection`}>{this.resolveSelectionTitle()}</InputLabel>
@@ -88,7 +87,6 @@ class PermissionSelection extends Component {
           multiple
           style={{ width: "200px" }}
           autoWidth
-          displayEmpty
           value={this.props.permissions[this.props.name]}
           input={<Input id={`${this.props.name}-selection`} />}
           MenuProps={{
