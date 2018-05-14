@@ -90,7 +90,7 @@ export default function detailviewReducer(state = defaultState, action) {
         currency: subproject.currency,
         allowedIntents: fromJS(subproject.allowedIntents),
         assignee: fromJS(subproject.assignee),
-        workflowItems: fromJS(workflowitems),
+        workflowItems: fromJS(workflowitems.map(resource => ({...resource.data, allowedIntents: resource.allowedIntents}))),
         parentProject: fromJS(parentProject)
       });
     case SHOW_WORKFLOW_DIALOG:

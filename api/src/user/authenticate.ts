@@ -1,6 +1,6 @@
 import * as jsonwebtoken from "jsonwebtoken";
 import * as User from ".";
-import { getAllowedIntents } from "../authz/index";
+import { getAllowedIntents, getUserAndGroups } from "../authz/index";
 import { globalIntents } from "../authz/intents";
 import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
@@ -78,11 +78,14 @@ const authenticate = async (
   }
 
   const token = { userId: storedUser.id, organization: storedUser.organization };
+  const globalPermissions = await Global.getPermissions(multichain);
   return {
     id,
     displayName: storedUser.displayName,
     organization: storedUser.organization,
-    allowedIntents: await getAllowedIntents(token, await Global.getPermissions(multichain)),
+    allowedIntents: await getUserAndGroups(token).then(async userAndGroups =>
+      getAllowedIntents(userAndGroups, globalPermissions),
+    ),
     token: createToken(jwtSecret, id, storedUser.organization),
   };
 };

@@ -1,8 +1,11 @@
 import { getAllowedIntents } from "../authz";
+import { isAllowedToSeeEvent } from "../authz/history";
+import { getUserAndGroups } from "../authz/index";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
-import { MultichainClient, Resource } from "../multichain/Client.h";
+import { asMapKey } from "../multichain/Client";
+import { MultichainClient } from "../multichain/Client.h";
 
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 
@@ -11,7 +14,24 @@ const workflowitemKey = (subprojectId, workflowitemId) => [
   workflowitemId,
 ];
 
-export interface WorkflowitemResource extends Resource {
+const deepcopy = (x: any): any => JSON.parse(JSON.stringify(x));
+
+interface Event {
+  key: string; // the resource ID (same for all events that relate to the same resource)
+  intent: Intent;
+  createdBy: string;
+  createdAt: string;
+  dataVersion: number; // integer
+  data: any;
+}
+
+const throwUnsupportedEventVersion = (event: Event): never => {
+  throw { kind: "UnsupportedEventVersion", event };
+};
+
+export interface WorkflowitemResource {
+  log: Event[];
+  allowedIntents: Intent[];
   data: Data;
 }
 
@@ -28,16 +48,7 @@ export interface Data {
   documents: Document[];
 }
 
-export interface Document {
-  description: string;
-  hash: string;
-}
-
-export interface DataWithIntents extends Data {
-  allowedIntents: Intent[];
-}
-
-export interface ObscuredDataWithIntents {
+export interface ObscuredData {
   id: string;
   creationUnixTs: string;
   displayName: null;
@@ -48,98 +59,211 @@ export interface ObscuredDataWithIntents {
   status: "open" | "closed";
   assignee: null;
   documents: null;
-  allowedIntents: Intent[];
 }
 
-export const create = async (
+export interface Document {
+  description: string;
+  hash: string;
+}
+
+const redactWorkflowitemData = (workflowitem: Data): ObscuredData => ({
+  id: workflowitem.id,
+  creationUnixTs: workflowitem.creationUnixTs,
+  displayName: null,
+  amount: null,
+  currency: null,
+  amountType: null,
+  description: null,
+  status: workflowitem.status,
+  assignee: null,
+  documents: null,
+});
+
+export const publish = async (
   multichain: MultichainClient,
-  token: AuthToken,
   projectId: string,
   subprojectId: string,
-  data: Data,
-  permissions: AllowedUserGroupsByIntent,
+  workflowitemId: string,
+  args: {
+    intent: Intent;
+    createdBy: string;
+    creationTimestamp: Date;
+    dataVersion: number; // integer
+    data: object;
+  },
 ): Promise<void> => {
-  const resource: WorkflowitemResource = {
-    log: [
-      { creationUnixTs: data.creationUnixTs, issuer: token.userId, action: "workflowitem_created" },
-    ],
-    permissions,
+  const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
+  const event: Event = {
+    key: workflowitemId,
+    intent,
+    createdBy,
+    createdAt: creationTimestamp.toISOString(),
+    dataVersion,
     data,
   };
-  return multichain.setValue(projectId, workflowitemKey(subprojectId, data.id), resource);
+  return multichain
+    .getRpcClient()
+    .invoke("publish", projectId, workflowitemKey(subprojectId, workflowitemId), {
+      json: event,
+    });
 };
 
-export const getAll = async (
+export const get = async (
   multichain: MultichainClient,
+  token: AuthToken,
   projectId: string,
   subprojectId: string,
+  workflowitemId?: string,
 ): Promise<WorkflowitemResource[]> => {
-  const streamItems = await multichain.getLatestValues(
-    projectId,
-    workflowitemsGroupKey(subprojectId),
-  );
-  return streamItems.map(x => x.resource);
+  const queryKey =
+    workflowitemId !== undefined ? workflowitemId : workflowitemsGroupKey(subprojectId);
+
+  const streamItems = await multichain.v2_readStreamItems(projectId, queryKey);
+  const userAndGroups = await getUserAndGroups(token);
+  const resourceMap = new Map<string, WorkflowitemResource>();
+  const permissionsMap = new Map<string, AllowedUserGroupsByIntent>();
+
+  for (const item of streamItems) {
+    const event = item.data.json as Event;
+
+    let resource = resourceMap.get(asMapKey(item));
+    if (resource === undefined) {
+      const result = handleCreate(event);
+      if (result === undefined) {
+        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
+      }
+      resource = result.resource;
+      permissionsMap.set(asMapKey(item), result.permissions);
+    } else {
+      // We've already encountered this workflowitem, so we can apply operations on it.
+      const permissions = permissionsMap.get(asMapKey(item))!;
+      const hasProcessedEvent =
+        applyAssign(event, resource) ||
+        applyClose(event, resource) ||
+        applyGrantPermission(event, permissions) ||
+        applyRevokePermission(event, permissions);
+      if (!hasProcessedEvent) {
+        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+      }
+    }
+
+    if (resource !== undefined) {
+      // Save all events to the log for now; we'll filter them once we
+      // know the final resource permissions.
+      resource.log.push(event);
+      resourceMap.set(asMapKey(item), resource);
+    }
+  }
+
+  for (const [key, permissions] of permissionsMap.entries()) {
+    const resource = resourceMap.get(key);
+    if (resource !== undefined) {
+      resource.allowedIntents = await getAllowedIntents(userAndGroups, permissions);
+    }
+  }
+
+  const unfilteredResources = [...resourceMap.values()];
+
+  // Instead of filtering out workflowitems the user is not allowed to see,
+  // we simply blank out all fields except the status, which is considered "public".
+  const allowedToSeeDataIntent: Intent = "workflowitem.view";
+  const filteredResources = unfilteredResources.map(resource => {
+    // Redact data if the user is not allowed to view it:
+    const isAllowedToSeeData = resource.allowedIntents.includes(allowedToSeeDataIntent);
+    if (!isAllowedToSeeData) resource.data = redactWorkflowitemData(resource.data) as any;
+
+    // Filter event log according to the user permissions and the type of event:
+    resource.log = resource.log.filter(event =>
+      isAllowedToSeeEvent(resource.allowedIntents, event.intent),
+    );
+
+    return resource;
+  });
+
+  return filteredResources;
 };
 
-export const forUser = async (
-  token: AuthToken,
-  resources: WorkflowitemResource[],
-): Promise<Array<DataWithIntents | ObscuredDataWithIntents>> => {
-  const allWorkflowitems = await Promise.all(
-    resources.map(async resource => {
+const handleCreate = (
+  event: Event,
+): { resource: WorkflowitemResource; permissions: AllowedUserGroupsByIntent } | undefined => {
+  if (event.intent !== "subproject.createWorkflowitem") return undefined;
+  switch (event.dataVersion) {
+    case 1: {
+      const { workflowitem, permissions } = event.data;
       return {
-        ...resource.data,
-        allowedIntents: await getAllowedIntents(token, resource.permissions),
-      };
-    }),
-  );
-  // Instead of filtering out workflowitems the user is not allowed to see,
-  // we simply blank out all fields except the status, which is considered "public":
-  const allowedToSeeIntent: Intent = "workflowitem.view";
-  const clearedWorkflowitems = allWorkflowitems.map(workflowitem => {
-    const isAllowedToSee = workflowitem.allowedIntents.includes(allowedToSeeIntent);
-    if (isAllowedToSee) {
-      return workflowitem;
-    } else {
-      return {
-        id: workflowitem.id,
-        creationUnixTs: workflowitem.creationUnixTs,
-        displayName: null,
-        amount: null,
-        currency: null,
-        amountType: null,
-        description: null,
-        status: workflowitem.status,
-        assignee: null,
-        documents: null,
-        allowedIntents: workflowitem.allowedIntents,
+        resource: {
+          data: deepcopy(workflowitem),
+          log: [], // event is added below, right before updating the map
+          allowedIntents: [], // is set later using permissionsMap
+        },
+        permissions: deepcopy(permissions),
       };
     }
-  });
-  return clearedWorkflowitems;
+  }
+  throwUnsupportedEventVersion(event);
 };
 
-export const close = async (
-  multichain: MultichainClient,
-  projectId: string,
-  workflowitemId: string,
-): Promise<void> => {
-  await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
-    workflowitem.data.status = "closed";
-    return workflowitem;
-  });
+const applyAssign = (event: Event, resource: WorkflowitemResource): true | undefined => {
+  if (event.intent !== "workflowitem.assign") return;
+  switch (event.dataVersion) {
+    case 1: {
+      const { userId } = event.data;
+      resource.data.assignee = userId;
+      return true;
+    }
+  }
+  throwUnsupportedEventVersion(event);
 };
 
-export const assign = async (
-  multichain: MultichainClient,
-  projectId: string,
-  workflowitemId: string,
-  userId: string,
-): Promise<void> => {
-  await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
-    workflowitem.data.assignee = userId;
-    return workflowitem;
-  });
+const applyClose = (event: Event, resource: WorkflowitemResource): true | undefined => {
+  if (event.intent !== "workflowitem.close") return;
+  switch (event.dataVersion) {
+    case 1: {
+      resource.data.status = "closed";
+      return true;
+    }
+  }
+  throwUnsupportedEventVersion(event);
+};
+
+const applyGrantPermission = (
+  event: Event,
+  permissions: AllowedUserGroupsByIntent,
+): true | undefined => {
+  if (event.intent !== "workflowitem.intent.grantPermission") return;
+  switch (event.dataVersion) {
+    case 1: {
+      const { userId, intent } = event.data;
+      const permissionsForIntent: People = permissions[intent] || [];
+      if (!permissionsForIntent.includes(userId)) {
+        permissionsForIntent.push(userId);
+      }
+      permissions[intent] = permissionsForIntent;
+      return true;
+    }
+  }
+  throwUnsupportedEventVersion(event);
+};
+
+const applyRevokePermission = (
+  event: Event,
+  permissions: AllowedUserGroupsByIntent,
+): true | undefined => {
+  if (event.intent !== "workflowitem.intent.revokePermission") return;
+  switch (event.dataVersion) {
+    case 1: {
+      const { userId, intent } = event.data;
+      const permissionsForIntent: People = permissions[intent] || [];
+      const userIndex = permissionsForIntent.indexOf(userId);
+      if (userIndex !== -1) {
+        // Remove the user from the array:
+        permissionsForIntent.splice(userIndex, 1);
+        permissions[intent] = permissionsForIntent;
+      }
+      return true;
+    }
+  }
+  throwUnsupportedEventVersion(event);
 };
 
 export const getPermissions = async (
@@ -147,58 +271,66 @@ export const getPermissions = async (
   projectId: string,
   workflowitemId: string,
 ): Promise<AllowedUserGroupsByIntent> => {
-  const streamItem = await multichain.getValue(projectId, workflowitemId);
-  return streamItem.resource.permissions;
-};
-
-export const grantPermission = async (
-  multichain: MultichainClient,
-  projectId: string,
-  workflowitemId: string,
-  userId: string,
-  intent: Intent,
-): Promise<void> => {
-  await multichain.updateValue(projectId, workflowitemId, (workflowitem: WorkflowitemResource) => {
-    const permissionsForIntent: People = workflowitem.permissions[intent] || [];
-    if (!permissionsForIntent.includes(userId)) {
-      permissionsForIntent.push(userId);
-      workflowitem.permissions[intent] = permissionsForIntent;
+  const streamItems = await multichain.v2_readStreamItems(projectId, workflowitemId);
+  let permissions: AllowedUserGroupsByIntent | undefined;
+  for (const item of streamItems) {
+    const event = item.data.json;
+    if (permissions === undefined) {
+      const result = handleCreate(event);
+      if (result !== undefined) {
+        permissions = result.permissions;
+      } else {
+        // skip event
+      }
+    } else {
+      // Permissions has been initialized.
+      const _hasProcessedEvent =
+        applyGrantPermission(event, permissions) || applyRevokePermission(event, permissions);
     }
-    return workflowitem;
-  });
+  }
+  if (permissions === undefined) {
+    throw { kind: "NotFound", what: `Workflowitem ${workflowitemId} of project ${projectId}.` };
+  }
+  return permissions;
 };
-
-export const revokePermission = async (
-  multichain: MultichainClient,
-  projectId: string,
-  workflowitemId: string,
-  userId: string,
-  intent: Intent,
-): Promise<void> => {
-  await multichain.updateValue(projectId, workflowitemId, (workflowitem: Resource) => {
-    const permissionsForIntent: People = workflowitem.permissions[intent] || [];
-    const userIndex = permissionsForIntent.indexOf(userId);
-    if (userIndex === -1) {
-      // Remove the user from the array:
-      permissionsForIntent.splice(userIndex, 1);
-      workflowitem.permissions[intent] = permissionsForIntent;
-    }
-    return workflowitem;
-  });
-};
-
-/*
- * higher-level
- */
 
 export const areAllClosed = async (
   multichain: MultichainClient,
   projectId: string,
   subprojectId: string,
 ): Promise<boolean> => {
-  return multichain
-    .getLatestValues(projectId, workflowitemsGroupKey(subprojectId))
-    .then(streamItems =>
-      streamItems.map(x => x.resource.data.status).every(status => status === "closed"),
-    );
+  const streamItems = await multichain.v2_readStreamItems(
+    projectId,
+    workflowitemsGroupKey(subprojectId),
+  );
+
+  type statusType = string;
+  const resultMap = new Map<string, statusType>();
+
+  for (const item of streamItems) {
+    const event = item.data.json;
+    switch (event.intent) {
+      case "subproject.createWorkflowitem": {
+        resultMap.set(asMapKey(item), event.data.workflowitem.status);
+        break;
+      }
+      case "workflowitem.close": {
+        resultMap.set(asMapKey(item), "closed");
+        break;
+      }
+      default: {
+        /* ignoring other events */
+      }
+    }
+  }
+
+  // const offendingItems: StreamKey[] = [];
+  // for (const [keys, status] of resultMap.entries()) {
+  //   if (status !== "closed") offendingItems.push(keys);
+  // }
+
+  for (const status of resultMap.values()) {
+    if (status !== "closed") return false;
+  }
+  return true;
 };
