@@ -23,9 +23,9 @@ class Budget extends Component {
   }
 
   getMenuItems(currencies) {
-    return currencies.map(currency => {
+    return currencies.map((currency, index) => {
       return (
-        <MenuItem value={currency.value} disabled={currency.disabled}>
+        <MenuItem key={index} value={currency.value} disabled={currency.disabled}>
           {currency.primaryText}
         </MenuItem>
       );
@@ -46,7 +46,13 @@ class Budget extends Component {
     const currencies = getCurrencies(parentCurrency);
     return (
       <div style={styles.inputDiv}>
-        <DropwDown floatingLabel={currencyTitle} value={currency} onChange={storeCurrency} disabled={budgetDisabled}>
+        <DropwDown
+          style={{ minWidth: 120 }}
+          floatingLabel={currencyTitle}
+          value={currency}
+          onChange={storeCurrency}
+          disabled={budgetDisabled}
+        >
           {this.getMenuItems(currencies)}
         </DropwDown>
         <TextInput

@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import { Card, CardHeader, CardMedia } from "material-ui/Card";
+import Card, { CardHeader, CardMedia } from "material-ui/Card";
 import { Doughnut } from "react-chartjs-2";
 
 import {
@@ -13,7 +13,7 @@ import {
   calculateWorkflowBudget,
   getProgressInformation
 } from "../../helper.js";
-import { List, ListItem } from "material-ui/List";
+import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import Chip from "material-ui/Chip";
 import Avatar from "material-ui/Avatar";
 import Divider from "material-ui/Divider";
@@ -139,13 +139,13 @@ const enableEditMode = ({ storeSubProjectAmount, enableBudgetEdit }, amountStrin
 const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   return (
     <div style={styles.budget}>
-      <ListItem
-        disabled={true}
-        leftIcon={<AmountIcon />}
-        primaryText={amountString}
-        secondaryText={strings.common.budget}
-      />
-      <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(props, amountString)} />
+      <ListItem disabled={false}>
+        <ListItemIcon>
+          <AmountIcon />
+        </ListItemIcon>
+        <ListItemText primary={amountString} secondary={strings.common.budget} />
+        <EditIcon style={styles.editIcon} onTouchTap={() => enableEditMode(props, amountString)} />
+      </ListItem>
     </div>
   );
 };
@@ -164,19 +164,24 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
   const label = strings.common.budget;
   return (
     <div style={styles.budget}>
-      <ListItem style={{ marginTop: "10px" }} disabled={true} leftIcon={<AmountIcon />} />
-      <TextField
-        label={label}
-        style={styles.textfield}
-        type="number"
-        value={subProjectAmount}
-        onChange={event => storeSubProjectAmount(event.target.value)}
-      />
-      <DoneIcon
-        color={ACMECorpLightgreen}
-        style={styles.doneIcon}
-        onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)}
-      />
+      <ListItem style={{ marginTop: "10px" }} disabled={false}>
+        <ListItemIcon>
+          <AmountIcon />
+        </ListItemIcon>
+
+        <TextField
+          label={label}
+          style={styles.textfield}
+          type="number"
+          value={subProjectAmount}
+          onChange={event => storeSubProjectAmount(event.target.value)}
+        />
+        <DoneIcon
+          color={ACMECorpLightgreen}
+          style={styles.doneIcon}
+          onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)}
+        />
+      </ListItem>
     </div>
   );
 };
@@ -230,83 +235,83 @@ const SubProjectDetails = ({
             ? getEditableBudget(props)
             : getNotEditableBudget(amountString, allowedToEdit, props)}
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={statusIcon}
-            primaryText={mappedStatus}
-            secondaryText={strings.common.status}
-          />
+          <ListItem disabled={false}>
+            <ListItemIcon>{statusIcon}</ListItemIcon>
+            <ListItemText primary={mappedStatus} secondary={strings.common.status} />
+          </ListItem>
           <Divider />
-          <ListItem disabled={true} leftIcon={<DateIcon />} primaryText={date} secondaryText={strings.common.created} />
+          <ListItem disabled={false}>
+            <ListItemIcon>
+              <DateIcon />
+            </ListItemIcon>
+            <ListItemText primary={date} secondary={strings.common.created} />
+          </ListItem>
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<AssigneeIcon style={styles.assigneeIcon} />}
-            primaryText={
-              canAssinSubproject ? (
-                <Chip onClick={showSubProjectAssignee}>
-                  <Avatar src="/lego_avatar_male1.jpg" />
-                  {assignee}
-                </Chip>
-              ) : (
-                <Chip>
-                  <Avatar src="/lego_avatar_male1.jpg" />
-                  {assignee}
-                </Chip>
-              )
-            }
-          />
+          <ListItem disabled={false}>
+            <ListItemIcon>
+              <AssigneeIcon style={styles.assigneeIcon} />
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                canAssinSubproject ? (
+                  <Chip
+                    label={assignee}
+                    onClick={showSubProjectAssignee}
+                    avatar={<Avatar src="/lego_avatar_male1.jpg" />}
+                  />
+                ) : (
+                  <Chip label={assignee} avatar={<Avatar src="/lego_avatar_male1.jpg" />} />
+                )
+              }
+            />
+          </ListItem>
           <Divider />
-          <ListItem
-            style={styles.permissionContainer}
-            disabled={true}
-            leftIcon={null}
-            primaryText={
-              <Button
-                secondary={true}
-                disabled={!canViewPermissions}
-                onClick={showSubProjectPermissions}
-                icon={<PermissionIcon style={styles.icon} />}
-              >
-                Permissions
-              </Button>
-            }
-          />
+          <ListItem style={styles.permissionContainer} disabled={false}>
+            <ListItemText
+              primary={
+                <Button
+                  secondary={true}
+                  disabled={!canViewPermissions}
+                  onClick={showSubProjectPermissions}
+                  icon={<PermissionIcon style={styles.icon} />}
+                >
+                  Permissions
+                </Button>
+              }
+            />
+          </ListItem>
         </List>
       </Card>
       <Card style={styles.card}>
         <CardHeader title={strings.common.budget_distribution} />
         <Divider />
         <div style={styles.charts}>
-          <ListItem
-            style={styles.text}
-            disabled={true}
-            leftIcon={<UnspentIcon color={workflowBudgetColorPalette[1]} />}
-            primaryText={unSpendBudgetString}
-            secondaryText={strings.common.assigned_budget}
-          />
+          <ListItem style={styles.text} disabled={false}>
+            <ListItemIcon>
+              <UnspentIcon color={workflowBudgetColorPalette[1]} />
+            </ListItemIcon>
+            <ListItemText primary={unSpendBudgetString} secondary={strings.common.assigned_budget} />
+          </ListItem>
           <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
         </div>
         <Divider />
         <div style={styles.charts}>
-          <ListItem
-            style={styles.text}
-            disabled={true}
-            leftIcon={<SpentIcon color={workflowBudgetColorPalette[2]} />}
-            primaryText={spendBudgetString}
-            secondaryText={strings.common.disbursed_budget}
-          />
+          <ListItem style={styles.text} disabled={false}>
+            <ListItemIcon>
+              <SpentIcon color={workflowBudgetColorPalette[2]} />
+            </ListItemIcon>
+            <ListItemText primary={spendBudgetString} secondary={strings.common.disbursed_budget} />
+          </ListItem>
           <GaugeChart size={0.2} responsive={false} value={createRatio(consumptionBudgetRatio)} />
         </div>
         <Divider />
         <div style={styles.charts}>
-          <ListItem
-            style={styles.text}
-            disabled={true}
-            leftIcon={<NotAssignedIcon color={workflowBudgetColorPalette[0]} />}
-            primaryText={disbursedBudgetString}
-            secondaryText={strings.common.disbursement}
-          />
+          <ListItem style={styles.text} disabled={false}>
+            <ListItemIcon>
+              <NotAssignedIcon color={workflowBudgetColorPalette[0]} />
+            </ListItemIcon>
+            <ListItemText primary={disbursedBudgetString} secondary={strings.common.disbursement} />
+          </ListItem>
           <GaugeChart size={0.2} responsive={false} value={createRatio(currentDisbursementRatio)} />
         </div>
 

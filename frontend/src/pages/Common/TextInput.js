@@ -16,14 +16,14 @@ const TextInput = ({
   onChange,
   onBlur,
   pattern,
-  multiLine = false,
+  multiline = false,
   type = "text",
   disabled = false
 }) => (
   <TextField
     label={label}
     helperText={helperText}
-    multiLine={multiLine}
+    multiline={multiline}
     aria-label={ariaLabel}
     style={styles.textField}
     disabled={disabled}

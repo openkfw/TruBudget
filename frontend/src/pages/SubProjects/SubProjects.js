@@ -8,7 +8,7 @@ import { ACMECorpLightgreen, ACMECorpDarkBlue } from "../../colors.js";
 // import ChangeLog from "../Notifications/ChangeLog";
 
 import SubProjectsTable from "./SubProjectsTable";
-// import SubProjectCreation from "./SubProjectCreation";
+import SubProjectCreation from "./SubProjectCreation";
 
 const SubProjects = props => {
   return (
@@ -19,7 +19,7 @@ const SubProjects = props => {
       }}
     >
       <Card>
-        {/* <SubProjectCreation {...props} /> */}
+        <SubProjectCreation {...props} />
 
         <SubProjectsTable {...props} />
         {/* <ChangeLog {...props} /> */}

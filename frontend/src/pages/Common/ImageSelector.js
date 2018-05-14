@@ -39,22 +39,21 @@ const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
   return (
     <div style={styles.root}>
       <Subheader style={styles.subHeader}>Thumbnail</Subheader>
-      <GridList cellHeight={100} style={styles.gridList}>
+      <GridList cellHeight={150} style={styles.gridList}>
         {images.map(image => (
-          <GridListTile key={image.src}>
+          <GridListTile onClick={() => onTouchTap(image.src)} key={image.src}>
             <img alt={image.src} src={image.src} />
             <GridListTileBar
               actionIcon={
                 <IconButton>
-                  {selectedImage === image.src ? <FilledStar color="white" /> : <NotFilledStar color="white" />}
+                  {selectedImage === image.src ? <FilledStar color="primary" /> : <NotFilledStar color="primary" />}
                 </IconButton>
               }
               title=" " // Otherwise the action buttons would not be visible
-              onClick={() => onTouchTap(image.src)}
               className={classes.tileBar}
               actionPosition="right"
               titlePosition="top"
-              titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
+              titlebackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
             />
           </GridListTile>
         ))}

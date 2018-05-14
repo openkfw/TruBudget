@@ -82,7 +82,7 @@ class WorkflowContainer extends Component {
             canViewPermissions={canViewPermissions}
             canAssinSubproject={canAssinSubproject}
           />
-          <Workflow
+          {/* <Workflow
             {...this.props}
             createWorkflowItem={this.createWorkflowItem}
             closeWorkflowItem={this.closeWorkflowItem}
@@ -106,7 +106,7 @@ class WorkflowContainer extends Component {
             projectId={this.projectId}
             subprojectId={this.subProjectId}
             workflowItems={this.props.workflowItems}
-          />
+          /> */}
         </div>
       </div>
     );

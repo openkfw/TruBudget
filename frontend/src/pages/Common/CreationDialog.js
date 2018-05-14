@@ -12,13 +12,13 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   const requiredInfoAdded = steps[currentStep].nextDisabled;
 
   const cancelButton = (
-    <Button aria-label="cancel" secondary={true} onClick={() => handleCancel(props)}>
+    <Button aria-label="cancel" color="secondary" onClick={() => handleCancel(props)}>
       {strings.common.cancel}
     </Button>
   );
   const backButton =
     numberOfSteps > 1 ? (
-      <Button aria-label="back" primary={true} disabled={isFirstStep} onClick={() => handleBack(props)}>
+      <Button aria-label="back" color="primary" disabled={isFirstStep} onClick={() => handleBack(props)}>
         {strings.common.back}
       </Button>
     ) : null;
@@ -27,6 +27,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
       <Button
         aria-label="next"
         primary={true}
+        color="primary"
         disabled={isLastStep ? isLastStep : requiredInfoAdded}
         onClick={() => handleNext(props)}
       >
@@ -36,7 +37,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   const submitButton = (
     <Button
       aria-label="submit"
-      primary={true}
+      color="primary"
       disabled={isLastStep ? requiredInfoAdded : !editMode}
       onClick={() => handleSubmit(props)}
     >
@@ -70,23 +71,7 @@ const handleNext = props => props.setCurrentStep(props.currentStep + 1);
 const CreationDialog = props => {
   const { creationDialogShown, title, handleSubmit } = props;
   return (
-    <Dialog
-      open={creationDialogShown}
-      autoScrollBodyContent={true}
-      bodyStyle={{
-        minHeight: "200px"
-      }}
-      contentStyle={{
-        width: "55%",
-        maxWidth: "none"
-      }}
-      actionsContainerStyle={{
-        display: "flex",
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "space-between"
-      }}
-    >
+    <Dialog open={creationDialogShown}>
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
       <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>

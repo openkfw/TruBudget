@@ -29,7 +29,7 @@ class Identifier extends Component {
           helperText={this.props.commentHintText}
           value={this.props.comment}
           onChange={this.props.commentOnChange}
-          multiLine={true}
+          multiline={true}
           aria-label="commentinput"
         />
       </div>

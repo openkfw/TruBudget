@@ -89,7 +89,7 @@ const WorkflowDetails = ({
         <TextField
           id={strings.common.comment}
           disabled={true}
-          multiLine={true}
+          multiline={true}
           hintText={trimmedComment}
           style={styles.textfield}
           underlineShow={false}

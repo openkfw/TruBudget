@@ -61,7 +61,7 @@ const WorkflowCreation = props => {
           <TextInput
             onChange={props.storeWorkflowComment}
             value={props.workflowToAdd.comment}
-            multiLine={true}
+            multiline={true}
             floatingLabelText={strings.workflow.workflow_comment}
             hintText={strings.common.comment_description}
           />
