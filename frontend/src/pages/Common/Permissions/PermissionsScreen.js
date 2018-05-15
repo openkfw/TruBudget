@@ -45,6 +45,7 @@ class PermissionSelection extends Component {
   }
 
   resolveSelections = (user, permissions) => {
+    if (!user || !permissions) return [];
     return permissions.map(id => user.find(u => u.id === id)).map(u => u.displayName);
   };
 

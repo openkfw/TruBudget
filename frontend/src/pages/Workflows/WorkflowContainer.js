@@ -46,6 +46,7 @@ import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer
 import strings from "../../localizeStrings";
 import SubProjectAssigneeController from "./SubProjectAssigneeController";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer";
+import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -97,6 +98,7 @@ class WorkflowContainer extends Component {
             createWorkflowItem={this.createWorkflowItem}
             closeWorkflowItem={this.closeWorkflowItem}
           />
+          <SubProjectHistoryContainer />
           {/*
             <SubProjectAssigneeController
             assignee={this.props.assignee}

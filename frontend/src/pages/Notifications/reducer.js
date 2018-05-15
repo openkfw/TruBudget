@@ -4,7 +4,8 @@ import {
   SNACKBAR_MESSAGE,
   FETCH_NOTIFICATIONS_SUCCESS,
   FETCH_HISTORY_SUCCESS,
-  OPEN_HISTORY
+  OPEN_HISTORY,
+  HIDE_HISTORY
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import { FETCH_UPDATES_SUCCESS } from "../LiveUpdates/actions";
@@ -33,7 +34,9 @@ export default function navbarReducer(state = defaultState, action) {
     case FETCH_HISTORY_SUCCESS:
       return state.set("historyItems", fromJS(action.historyItems));
     case OPEN_HISTORY:
-      return state.set("showHistory", action.show);
+      return state.set("showHistory", true);
+    case HIDE_HISTORY:
+      return state.set("showHistory", false);
     case LOGOUT:
       return defaultState;
     default:
