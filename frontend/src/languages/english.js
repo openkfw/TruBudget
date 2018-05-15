@@ -36,7 +36,8 @@ const en = {
     password: "Password",
     incorrect_username: "Incorrect username",
     incorrect_password: "Incorrect password",
-    added: "Added"
+    added: "Added",
+    search: "Search"
   },
 
   adminDashboard: {

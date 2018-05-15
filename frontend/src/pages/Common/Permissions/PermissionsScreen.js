@@ -1,72 +1,41 @@
 import React, { Component } from "react";
 
-import Table, { TableBody, TableHead, TableCell, TableRow } from "material-ui/Table";
-
-import { MenuItem } from "material-ui/Menu";
-import Select from "material-ui/Select";
-import { FormControl } from "material-ui/Form";
-import Checkbox from "material-ui/Checkbox";
-
-import Dialog, { DialogActions, DialogContent, DialogTitle } from "material-ui/Dialog";
-
-import Button from "material-ui/Button";
-
-import strings from "../../../localizeStrings";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import Checkbox from "@material-ui/core/Checkbox";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 
-const styles = {
-  container: {
-    padding: 0
-  },
-  dialog: {
-    paddingLeft: 0,
-    paddingRight: 0
-  },
-  tableRow: {
-    borderWidth: 0
-  },
-  heading: {
-    textAlign: "center",
-    fontSize: "14px",
-    verticalAlign: "bottom",
-    paddingBottom: "8px"
-  }
-};
+import strings from "../../../localizeStrings";
 
 const PermissionsScreen = props => (
-  <Dialog disableBackdropClick disableEscapeKeyDown open={props.show} style={styles.dialog}>
+  <Dialog open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>
     <DialogContent>
-      <div style={styles.container}>
+      <div>
         <PermissionsTable {...props} />
       </div>
     </DialogContent>
     <DialogActions>
       <Button color="primary" onClick={props.onClose}>
-        Close
+        {strings.common.close}
       </Button>
     </DialogActions>
   </Dialog>
 );
 
-const tableStyle = {
-  container: {}
-};
-
-const selectionStyle = {
-  searchContainer: {
-    marginLeft: "12px",
-    marginRight: "12px"
-  },
-  selectionContainer: {}
-};
 class PermissionSelection extends Component {
   constructor() {
     super();
@@ -94,7 +63,7 @@ class PermissionSelection extends Component {
         >
           <ListItem className="noFocus" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
             <FormControl>
-              <InputLabel>Search</InputLabel>
+              <InputLabel>{strings.common.search}</InputLabel>
               <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
             </FormControl>
           </ListItem>
@@ -125,7 +94,7 @@ const renderUserSelection = (user, permissionedUser, permissionName, grantPermis
   });
 
 const renderPermission = (name, userList, permissions, grantPermission) => (
-  <ListItem key={name + "perm"} style={styles.tableRow}>
+  <ListItem key={name + "perm"}>
     <ListItemText
       primary={
         <PermissionSelection
@@ -140,31 +109,8 @@ const renderPermission = (name, userList, permissions, grantPermission) => (
   </ListItem>
 );
 
-// const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder }) => (
-//   <div style={tableStyle.container}>
-//     {intentOrder.map(section => {
-//       return (
-//         <Table key={strings.permissions[section.name]}>
-//           <TableHead>
-//             <TableRow>
-//               <TableCell colSpan="3" style={styles.heading}>
-//                 {strings.permissions[section.name]}
-//               </TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {section.intents
-//               .filter(i => permissions[i] !== undefined)
-//               .map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))}
-//           </TableBody>
-//         </Table>
-//       );
-//     })}
-//   </div>
-// );
-
 const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder }) => (
-  <div style={tableStyle.container}>
+  <div>
     {intentOrder.map(section => {
       return (
         <Card key={section.name + "section"} style={{ marginTop: "12px", marginBottom: "12px" }}>
