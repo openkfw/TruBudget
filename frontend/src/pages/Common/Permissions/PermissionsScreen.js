@@ -4,17 +4,22 @@ import Table, { TableBody, TableHead, TableCell, TableRow } from "material-ui/Ta
 
 import { MenuItem } from "material-ui/Menu";
 import Select from "material-ui/Select";
-import Input, { InputLabel } from "material-ui/Input";
 import { FormControl } from "material-ui/Form";
-import { ListItemText } from "material-ui/List";
 import Checkbox from "material-ui/Checkbox";
 
-import TextField from "material-ui/TextField";
 import Dialog, { DialogActions, DialogContent, DialogTitle } from "material-ui/Dialog";
 
 import Button from "material-ui/Button";
 
 import strings from "../../../localizeStrings";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 
 const styles = {
   container: {
@@ -36,7 +41,7 @@ const styles = {
 };
 
 const PermissionsScreen = props => (
-  <Dialog disableBackdropClick disableEscapeKeyDown maxWidth={false} open={props.show} fullWidth style={styles.dialog}>
+  <Dialog disableBackdropClick disableEscapeKeyDown open={props.show} style={styles.dialog}>
     <DialogTitle>{props.title}</DialogTitle>
     <DialogContent>
       <div style={styles.container}>
@@ -70,39 +75,30 @@ class PermissionSelection extends Component {
     };
   }
 
-  resolveSelectionTitle = () => {
-    const userListAvailable = this.props.userList.length > 0;
-
-    if (!userListAvailable) {
-      return `...`;
-    }
-    return `${this.props.permissions[this.props.name].length} selection(s)`;
+  resolveSelections = (user, permissions) => {
+    return permissions.map(id => user.find(u => u.id === id)).map(u => u.displayName);
   };
 
   render() {
+    const selections = this.resolveSelections(this.props.userList, this.props.permissions[this.props.name]);
     return (
-      <FormControl>
-        <InputLabel htmlFor={`${this.props.name}-selection`}>{this.resolveSelectionTitle()}</InputLabel>
+      <FormControl key={this.props.name + "form"}>
         <Select
           multiple
-          style={{ width: "200px" }}
-          autoWidth
-          value={this.props.permissions[this.props.name]}
-          input={<Input id={`${this.props.name}-selection`} />}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                maxHeight: 200,
-                width: 250
-              }
-            }
-            // onClose: () => this.setState({ searchTerm: "" })
+          style={{
+            width: "200px"
           }}
+          autoWidth
+          value={selections}
+          renderValue={s => s.join(", ")}
         >
-          {/* <div style={selectionStyle.searchContainer}>
-          <TextField fullWidth hintText="Search" onChange={e => this.setState({ searchTerm: e.target.value })} />
-        </div> */}
-          <div style={selectionStyle.selectionContainer}>
+          <ListItem className="noFocus" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <FormControl>
+              <InputLabel>Search</InputLabel>
+              <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
+            </FormControl>
+          </ListItem>
+          <div className="noFocus">
             {renderUserSelection(
               this.props.userList.filter(u =>
                 u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())
@@ -121,7 +117,7 @@ class PermissionSelection extends Component {
 const renderUserSelection = (user, permissionedUser, permissionName, grantPermission) =>
   user.map(u => {
     return (
-      <MenuItem key={u.id} value={u.id} onClick={() => grantPermission(permissionName, u.id)}>
+      <MenuItem key={u.id + "selection"} value={u.id} onClick={() => grantPermission(permissionName, u.id)}>
         <Checkbox checked={permissionedUser.indexOf(u.id) > -1} />
         <ListItemText primary={u.displayName} />
       </MenuItem>
@@ -129,37 +125,58 @@ const renderUserSelection = (user, permissionedUser, permissionName, grantPermis
   });
 
 const renderPermission = (name, userList, permissions, grantPermission) => (
-  <TableRow key={name} style={styles.tableRow}>
-    <TableCell>{strings.permissions[name.replace(/[.]/g, "_")] || name}</TableCell>
-    <TableCell>
-      <PermissionSelection
-        name={name}
-        userList={userList}
-        permissions={permissions}
-        grantPermission={grantPermission}
-      />
-    </TableCell>
-  </TableRow>
+  <ListItem key={name + "perm"} style={styles.tableRow}>
+    <ListItemText
+      primary={
+        <PermissionSelection
+          name={name}
+          userList={userList}
+          permissions={permissions}
+          grantPermission={grantPermission}
+        />
+      }
+      secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
+    />
+  </ListItem>
 );
+
+// const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder }) => (
+//   <div style={tableStyle.container}>
+//     {intentOrder.map(section => {
+//       return (
+//         <Table key={strings.permissions[section.name]}>
+//           <TableHead>
+//             <TableRow>
+//               <TableCell colSpan="3" style={styles.heading}>
+//                 {strings.permissions[section.name]}
+//               </TableCell>
+//             </TableRow>
+//           </TableHead>
+//           <TableBody>
+//             {section.intents
+//               .filter(i => permissions[i] !== undefined)
+//               .map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))}
+//           </TableBody>
+//         </Table>
+//       );
+//     })}
+//   </div>
+// );
 
 const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder }) => (
   <div style={tableStyle.container}>
     {intentOrder.map(section => {
       return (
-        <Table key={strings.permissions[section.name]}>
-          <TableHead>
-            <TableRow>
-              <TableCell colSpan="3" style={styles.heading}>
-                {strings.permissions[section.name]}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {section.intents
-              .filter(i => permissions[i] !== undefined)
-              .map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))}
-          </TableBody>
-        </Table>
+        <Card key={section.name + "section"} style={{ marginTop: "12px", marginBottom: "12px" }}>
+          <CardHeader subheader={strings.permissions[section.name]} />
+          <CardContent>
+            <List>
+              {section.intents
+                .filter(i => permissions[i] !== undefined)
+                .map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))}
+            </List>
+          </CardContent>
+        </Card>
       );
     })}
   </div>
