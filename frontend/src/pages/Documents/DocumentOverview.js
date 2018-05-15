@@ -95,7 +95,7 @@ class DocumentOverview extends Component {
       if (validationActive) validated = validatedDocuments[hash];
 
       return (
-        <TableRow key={index + "document"} selectable={false}>
+        <TableRow key={index + "document"}>
           <TableCell style={{ textAlign: "center" }}>
             {hash ? this.generateHashIcon(hash) : <CircularProgress size={20} />}
           </TableCell>
@@ -106,7 +106,7 @@ class DocumentOverview extends Component {
     });
 
   generateEmptyList = () => (
-    <TableRow selectable={false}>
+    <TableRow>
       <TableCell>{strings.workflow.workflow_no_documents}</TableCell>
     </TableRow>
   );
@@ -114,8 +114,8 @@ class DocumentOverview extends Component {
   render = () => {
     const { documents, validationActive, validatedDocuments } = this.props;
     return (
-      <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }} selectable={false}>
-        <TableBody displayRowCheckbox={false}>
+      <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+        <TableBody>
           {_.isEmpty(documents)
             ? this.generateEmptyList()
             : this.generateDocumentList(documents, validationActive, validatedDocuments)}

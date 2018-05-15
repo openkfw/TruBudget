@@ -1,11 +1,17 @@
 import React from "react";
 import Dialog, { DialogContent, DialogActions } from "material-ui/Dialog";
+import Card, { CardHeader, CardMedia } from "material-ui/Card";
+import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import AssigneeIcon from "@material-ui/icons/Group";
+
+import Avatar from "material-ui/Avatar";
 
 import Divider from "material-ui/Divider";
 import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
 import _ from "lodash";
-import { toAmountString, statusMapping } from "../../helper";
+import { toAmountString, statusMapping, statusIconMapping } from "../../helper";
 import DocumentOverview from "../Documents/DocumentOverview";
 import strings from "../../localizeStrings";
 import { Typography, DialogContentText } from "@material-ui/core";
@@ -72,68 +78,53 @@ const WorkflowDetails = ({
   validateDocument,
   validatedDocuments
 }) => {
-  const actions = [<Button onClick={hideWorkflowDetails}>{strings.common.close}</Button>];
-
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
   const status = workflowItem.status;
-  const trimmedComment = removeNewLines(workflowItem.description);
+  const { displayName, description, amountType, assignee } = workflowItem;
+  const trimmedComment = removeNewLines(description);
 
-  console.log(toAmountString(workflowItem.amount, workflowItem.currency));
   return (
-    <Dialog autoScrollBodyContent={true} open={showWorkflowDetails} modal={false} style={styles.dialog}>
-      <DialogTitle>{workflowItem.displayName}</DialogTitle>
+    <Dialog open={showWorkflowDetails} style={styles.dialog} onClose={hideWorkflowDetails}>
+      <DialogTitle>{"Workflow details"}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
-        <div style={styles.row}>
-          <Typography variant="subheading">{strings.common.budget}:</Typography>
-          <TextField
-            id={strings.common.budget}
-            disabled={true}
-            label={toAmountString(workflowItem.amount, workflowItem.currency)}
-            helperText={" "}
-            style={styles.textfield}
-            underlineShow={false}
-          />
-        </div>
-        <Divider />
-        <div style={styles.row}>
-          <Typography variant="subheading">{strings.common.comment}:</Typography>
-          <TextField
-            id={strings.common.comment}
-            disabled={true}
-            multiline={true}
-            label={trimmedComment}
-            helperText={" "}
-            style={styles.textfield}
-            underlineShow={false}
-          />
-        </div>
-        <Divider />
-        <div style={styles.row}>
-          <Typography variant="subheading"> {strings.workflow.workflow_documents}:</Typography>
-
-          <DocumentOverview
-            id={strings.workflow.workflow_documents}
-            documents={workflowItem.documents}
-            validateDocument={validateDocument}
-            validatedDocuments={validatedDocuments}
-          />
-        </div>
-        <Divider />
-        <div style={styles.row}>
-          <Typography variant="subheading">{strings.common.status}:</Typography>
-          <TextField
-            id={strings.common.comment}
-            disabled={true}
-            label={statusMapping(status)}
-            helperText={" "}
-            style={styles.textfield}
-            underlineShow={false}
-          />
-        </div>
-
-        <Divider />
+        <List>
+          <ListItem>
+            <Avatar>{displayName ? displayName[0] : "?"}</Avatar>
+            <ListItemText primary={displayName} secondary={trimmedComment} />
+          </ListItem>
+          <ListItem>
+            <Avatar>
+              <AmountIcon />
+            </Avatar>
+            <ListItemText
+              primary={amountType !== "N/A" ? toAmountString(workflowItem.amount, workflowItem.currency) : "N/A"}
+              secondary={strings.common.budget}
+            />
+          </ListItem>
+          <ListItem>
+            <Avatar>{statusIconMapping[status]}</Avatar>
+            <ListItemText primary={statusMapping(status)} secondary={strings.common.status} />
+          </ListItem>
+          <ListItem>
+            <Avatar>
+              <AssigneeIcon />
+            </Avatar>
+            <ListItemText primary={assignee} secondary={strings.common.assignee} />
+          </ListItem>
+          <Divider />
+          <ListItem>
+            <DocumentOverview
+              id={strings.workflow.workflow_documents}
+              documents={workflowItem.documents}
+              validateDocument={validateDocument}
+              validatedDocuments={validatedDocuments}
+            />
+          </ListItem>
+        </List>
       </DialogContent>
-      <DialogActions>{actions}</DialogActions>
+      <DialogActions>
+        <Button onClick={hideWorkflowDetails}>{strings.common.close}</Button>
+      </DialogActions>
     </Dialog>
   );
 };
