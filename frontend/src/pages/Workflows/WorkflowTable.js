@@ -1,6 +1,5 @@
 import React from "react";
 import Card, { CardHeader, CardContent } from "material-ui/Card";
-import Table, { TableHead, TableCell, TableRow } from "material-ui/Table";
 import { arrayMove } from "react-sortable-hoc";
 import Typography from "@material-ui/core/Typography";
 
@@ -25,13 +24,13 @@ const createTableHeader = () => (
       <div style={{ marginLeft: "12px", position: "relative" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ flex: 1 }} />
-          <div style={{ flex: 5 }}>
+          <div style={{ flex: 4 }}>
             <Typography variant="body2">{strings.workflow.workflow_type_workflow}</Typography>
           </div>
-          <div style={{ flex: 5 }}>
+          <div style={{ flex: 4 }}>
             <Typography variant="body2">{strings.common.budget}</Typography>
           </div>
-          <div style={{ flex: 2 }}>
+          <div style={{ flex: 4 }}>
             <Typography variant="body2">{strings.common.assignee}</Typography>
           </div>
           <div style={{ flex: 2 }}>

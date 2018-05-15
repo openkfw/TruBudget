@@ -75,7 +75,6 @@ const mapStateToProps = state => {
     thumbnail: state.getIn(["overview", "thumbnail"]),
     currency: state.getIn(["overview", "currency"]),
     projectApprover: state.getIn(["overview", "projectApprover"]),
-    projectAssignee: state.getIn(["overview", "projectAssignee"]),
     projectBank: state.getIn(["overview", "projectBank"]),
     loggedInUser: state.getIn(["login", "loggedInUser"]),
     roles: state.getIn(["login", "roles"])

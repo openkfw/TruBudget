@@ -39,6 +39,7 @@ import strings from "../../localizeStrings";
 import { ACMECorpLightgreen } from "../../colors";
 
 import { workflowBudgetColorPalette, red } from "../../colors";
+import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 
 const styles = {
   container: {
@@ -193,6 +194,7 @@ const SubProjectDetails = ({
   description,
   amount,
   currency,
+  id,
   status,
   roles,
   assignee,
@@ -201,6 +203,7 @@ const SubProjectDetails = ({
   budgetEditEnabled,
   canViewPermissions,
   canAssinSubproject,
+  parentProject,
   showSubProjectPermissions,
   showSubProjectAssignee,
   ...props
@@ -249,16 +252,11 @@ const SubProjectDetails = ({
             <ListItemIcon>
               <AssigneeIcon />
             </ListItemIcon>
-            <ListItemText
-              primary={
-                <Chip
-                  disabled
-                  label={assignee}
-                  onClick={canAssinSubproject ? showSubProjectAssignee : undefined}
-                  avatar={<Avatar src="/lego_avatar_male1.jpg" />}
-                />
-              }
-              secondary={strings.common.assignee}
+            <SubProjectAssigneeContainer
+              projectId={parentProject ? parentProject.id : ""}
+              subprojectId={id}
+              disabled={!canAssinSubproject}
+              assignee={assignee}
             />
           </ListItem>
           <Divider />

@@ -44,7 +44,6 @@ import { toJS } from "../../helper";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
 import strings from "../../localizeStrings";
-import SubProjectAssigneeController from "./SubProjectAssigneeController";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer";
 import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
 
@@ -99,18 +98,6 @@ class WorkflowContainer extends Component {
             closeWorkflowItem={this.closeWorkflowItem}
           />
           <SubProjectHistoryContainer />
-          {/*
-            <SubProjectAssigneeController
-            assignee={this.props.assignee}
-            projectId={this.projectId}
-            subprojectId={this.subProjectId}
-          />
-
-          <WorkflowAssigneeContainer
-            projectId={this.projectId}
-            subprojectId={this.subProjectId}
-            workflowItems={this.props.workflowItems}
-          /> */}
         </div>
       </div>
     );
@@ -176,7 +163,7 @@ const mapStateToProps = state => {
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
-
+    parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
     workflowDialogVisible: state.getIn(["workflow", "workflowDialogVisible"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),

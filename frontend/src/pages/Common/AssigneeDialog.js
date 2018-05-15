@@ -1,137 +1,77 @@
-// import React, { Component } from "react";
+import React, { Component } from "react";
 
-// import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from "material-ui/Table";
+import { MenuItem } from "material-ui/Menu";
 
-// import SelectField from "material-ui/SelectField";
-// import { MenuItem } from "material-ui/Menu";
+import strings from "../../localizeStrings";
 
-// import TextField from "material-ui/TextField";
-// import Dialog from "material-ui/Dialog";
+import { FormControl, Checkbox } from "@material-ui/core";
+import Select from "material-ui/Select";
 
-// import Button from "material-ui/Button";
+const styles = {
+  formControl: {
+    marginLeft: 15
+  },
+  select: {
+    width: 180
+  },
+  checkbox: {
+    height: 30
+  }
+};
 
-// const styles = {
-//   container: {
-//     padding: 0
-//   },
-//   dialog: {
-//     padding: 0
-//   },
-//   contentStyle: {
-//     width: "40%",
-//     maxWidth: "none"
-//   },
-//   tableBody: {
-//     height: "75px",
-//     display: "flex",
-//     justifyContent: "center",
-//     alignItems: "center"
-//   }
-// };
+const AssigneeDialog = ({ assigneeId, users, assign, disabled }) => {
+  return <AssigneeTable assign={assign} disabled={disabled} assigneeId={assigneeId} users={users} />;
+};
 
-// const AssigneeDialog = ({ assigneeId, users, show, onClose, assign }) => {
-//   return (
-//     <Dialog
-//       actions={[
-//         <Button primary={true} onClick={() => onClose()}>
-//           Close
-//         </Button>
-//       ]}
-//       modal={true}
-//       open={show}
-//       autoScrollBodyContent={true}
-//       bodyStyle={styles.dialog}
-//       contentStyle={styles.contentStyle}
-//     >
-//       <div style={styles.container}>
-//         <AssigneeTable assign={assign} assigneeId={assigneeId} users={users} />
-//       </div>
-//     </Dialog>
-//   );
-// };
+class AssigneeTable extends Component {
+  constructor() {
+    super();
+    this.state = {
+      searchTerm: ""
+    };
+  }
 
-// const selectionStyle = {
-//   searchContainer: {
-//     marginLeft: "12px",
-//     marginRight: "12px"
-//   },
-//   selectionContainer: {}
-// };
+  renderUsers(users, assigneeId, disabled) {
+    return users.map(u => {
+      const { id, displayName } = u;
+      return (
+        <MenuItem key={id} value={id}>
+          <Checkbox style={styles.checkbox} disabled={disabled} checked={id === assigneeId} />
+          {displayName}
+        </MenuItem>
+      );
+    });
+  }
 
-// class AssigneeTable extends Component {
-//   constructor() {
-//     super();
-//     this.state = {
-//       searchTerm: ""
-//     };
-//   }
+  renderTitle(assignee) {
+    if (!assignee) {
+      return "...";
+    }
+    return assignee.id;
+  }
 
-//   renderUsers(users, assigneeId) {
-//     return users.map(u => {
-//       const { id, displayName } = u;
-//       return (
-//         <MenuItem
-//           key={id}
-//           checked={id === assigneeId}
-//           insetChildren={true}
-//           value={displayName}
-//           primaryText={displayName}
-//           onClick={() => this.props.assign(id)}
-//         />
-//       );
-//     });
-//   }
+  render() {
+    const { assigneeId, users, disabled } = this.props;
+    const selection = this.renderUsers(
+      users.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
+      assigneeId,
+      disabled
+    );
+    const assignee = users.find(user => user.id === assigneeId);
 
-//   renderTitle(assignee) {
-//     if (!assignee) {
-//       return "...";
-//     }
-//     return assignee.displayName;
-//   }
-
-//   render() {
-//     const { assigneeId, users } = this.props;
-//     const selection = this.renderUsers(
-//       users.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
-//       assigneeId
-//     );
-//     const assignee = users.find(user => user.id === assigneeId);
-
-//     return (
-//       <Table style={{ maxHeight: "250px" }} selectable={false}>
-//         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-//           <TableRow>
-//             <TableHeaderColumn>Assignee</TableHeaderColumn>
-//           </TableRow>
-//         </TableHeader>
-//         <TableBody displayRowCheckbox={false}>
-//           <TableRow style={styles.tableBody}>
-//             <TableRowColumn>
-//               <SelectField
-//                 multiple={true}
-//                 hintText={this.renderTitle(assignee)}
-//                 maxHeight={250}
-//                 autoWidth={true}
-//                 dropDownMenuProps={{
-//                   onClose: () => this.setState({ searchTerm: "" })
-//                 }}
-//               >
-//                 <div style={selectionStyle.searchContainer}>
-//                   <TextField
-//                     fullWidth
-//                     hintText="Search"
-//                     onChange={e => this.setState({ searchTerm: e.target.value })}
-//                   />
-//                 </div>
-//                 <div style={selectionStyle.selectionContainer}>{selection}</div>
-//               </SelectField>
-//             </TableRowColumn>
-//           </TableRow>
-//         </TableBody>
-//       </Table>
-//     );
-//   }
-// }
+    return (
+      <FormControl disabled={disabled} style={styles.formControl}>
+        <Select
+          style={styles.select}
+          value={this.renderTitle(assignee)}
+          onChange={event => this.props.assign(event.target.value)}
+        >
+          {selection}
+        </Select>
+      </FormControl>
+    );
+  }
+}
 
 // TODO: update selectfield material v1
-export default null;
+export default AssigneeDialog;

@@ -34,6 +34,7 @@ import CompletionIcon from "@material-ui/icons/TrendingUp";
 import GaugeChart from "../Common/GaugeChart";
 import { budgetStatusColorPalette, red } from "../../colors";
 import strings from "../../localizeStrings";
+import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
 
 const styles = {
   container: {
@@ -120,6 +121,7 @@ const ProjectDetails = ({
   projectName,
   projectCurrency,
   projectAmount,
+  projectId,
   subProjects,
   projectComment,
   projectStatus,
@@ -130,7 +132,8 @@ const ProjectDetails = ({
   canAssignProject,
   canViewPermissions,
   showProjectPermissions,
-  showProjectAssignees
+  showProjectAssignees,
+  ...rest
 }) => {
   const {
     amountString,
@@ -140,6 +143,7 @@ const ProjectDetails = ({
     statusDetails,
     allocatedRatio
   } = calculateMetrics(subProjects, projectAmount, projectCurrency);
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -172,17 +176,7 @@ const ProjectDetails = ({
             <ListItemIcon>
               <AssigneeIcon />
             </ListItemIcon>
-            <ListItemText
-              primary={
-                <Chip
-                  disabled
-                  onClick={canAssignProject ? () => showProjectAssignees() : undefined}
-                  avatar={<Avatar src="/lego_avatar_male1.jpg" />}
-                  label={projectAssignee}
-                />
-              }
-              secondary={strings.common.assignee}
-            />
+            <ProjectAssigneeContainer projectId={projectId} disabled={!canAssignProject} assignee={projectAssignee} />
           </ListItem>
           <Divider />
           <ListItem style={styles.permissionContainer}>

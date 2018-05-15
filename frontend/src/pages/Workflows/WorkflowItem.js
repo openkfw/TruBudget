@@ -1,6 +1,5 @@
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
-import Table, { TableBody, TableRow, TableCell } from "material-ui/Table";
 import Card from "material-ui/Card";
 import Avatar from "material-ui/Avatar";
 import Typography from "@material-ui/core/Typography";
@@ -23,6 +22,7 @@ import {
   canCloseWorkflowItem,
   canAssignWorkflowItem
 } from "../../permissions.js";
+import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
 const styles = {
   in_progress: {
@@ -99,9 +99,7 @@ const styles = {
   chip: {
     margin: 4
   },
-  chipRow: {
-    paddingLeft: 10
-  },
+
   workflowContent: {
     display: "flex",
 
@@ -221,12 +219,14 @@ export const WorkflowItem = SortableElement(
     currentWorkflowSelectable,
     workflowSortEnabled,
     showWorkflowItemAssignee,
+    parentProject,
     ...props
   }) => {
     const { id, status, displayName, amountType, allowedIntents, assignee } = workflow;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const amount = toAmountString(workflow.amount, workflow.currency);
     const tableStyle = styles[status];
+    const subprojectId = props.id;
     const itemStyle = workflowSelectable
       ? {}
       : {
@@ -238,7 +238,6 @@ export const WorkflowItem = SortableElement(
     const infoButton = getInfoButton(props, workflow);
 
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
-
     return (
       <div style={{ position: "relative" }}>
         {createLine(mapIndex === 0, workflowSelectable)}
@@ -255,19 +254,21 @@ export const WorkflowItem = SortableElement(
         >
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>{infoButton}</div>
-            <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
+            <div style={{ ...itemStyle, ...styles.text, flex: 4 }}>
               <Typography variant="body1">{displayName}</Typography>
             </div>
-            <div style={{ ...itemStyle, ...styles.listText, flex: 5 }}>
+            <div style={{ ...itemStyle, ...styles.listText, flex: 4 }}>
               <Typography variant="body1" component="div">
                 {getAmountField(amount, amountType)}
               </Typography>
             </div>
-            <div style={{ ...styles.listText, ...styles.chipRow, flex: 2 }}>
-              <Chip
-                onClick={canAssign ? () => showWorkflowItemAssignee(id, assignee) : undefined}
-                avatar={<Avatar src="/lego_avatar_male1.jpg" />}
-                label={assignee}
+            <div style={{ ...styles.listText, flex: 4 }}>
+              <WorkflowAssigneeContainer
+                projectId={parentProject ? parentProject.id : ""}
+                subprojectId={subprojectId}
+                workflowitemId={id}
+                disabled={!canAssign}
+                assignee={assignee}
               />
             </div>
             {renderActionButtons(
