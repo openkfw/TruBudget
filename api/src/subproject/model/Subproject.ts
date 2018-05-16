@@ -8,8 +8,14 @@ import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 
+export interface AugmentedEvent extends Event {
+  snapshot: {
+    displayName: string;
+  };
+}
+
 export interface SubprojectResource {
-  log: Event[];
+  log: AugmentedEvent[];
   allowedIntents: Intent[];
   data: Data;
 }
@@ -97,7 +103,10 @@ export async function get(
     if (resource !== undefined) {
       // Save all events to the log for now; we'll filter them once we
       // know the final resource permissions.
-      resource.log.push(event);
+      resource.log.push({
+        ...event,
+        snapshot: { displayName: deepcopy(resource.data.displayName) },
+      });
       resourceMap.set(asMapKey(item), resource);
     }
   }

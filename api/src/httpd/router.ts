@@ -19,6 +19,7 @@ import { getSubprojectPermissions } from "../subproject/intent/listPermissions";
 import { revokeSubprojectPermission } from "../subproject/intent/revokePermission";
 import { getSubprojectList } from "../subproject/list";
 import { getSubprojectDetails } from "../subproject/viewDetails";
+import { getSubprojectHistory } from "../subproject/viewHistory";
 import { authenticateUser } from "../user/authenticate";
 import { getUserList } from "../user/list";
 import { assignWorkflowitem } from "../workflowitem/assign";
@@ -248,6 +249,12 @@ export const createRouter = (
 
   router.post("/subproject.createWorkflowitem", (req: AuthenticatedRequest, res) => {
     createWorkflowitem(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.get("/subproject.viewHistory", (req: AuthenticatedRequest, res) => {
+    getSubprojectHistory(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

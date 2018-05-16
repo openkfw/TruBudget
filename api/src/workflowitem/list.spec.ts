@@ -207,37 +207,39 @@ describe("workflowitem.list", () => {
     expect(workflowitems[indexOfOne].data.id).to.eql("one");
     const one = workflowitems[indexOfOne];
 
-    expect(one.log.length).to.eql(3);
-    expect(one.log[0].key, "key = workflowitem ID").to.eql("one");
-    expect(one.log[0].data.workflowitem.status, "open in 1st log").to.eql("open");
-    expect(one.log[0].data.workflowitem.assignee, "assignee in 1st log").to.eql(undefined);
+    // TODO: also call the history endpoint here!
+    // expect(one.log.length).to.eql(3);
+    // expect(one.log[0].key, "key = workflowitem ID").to.eql("one");
+    // expect(one.log[0].data.workflowitem.status, "open in 1st log").to.eql("open");
+    // expect(one.log[0].data.workflowitem.assignee, "assignee in 1st log").to.eql(undefined);
 
     expect(one.data.status).to.eql("closed");
     expect(one.data.assignee).to.eql("alice");
     expect(one.permissions, "permissions filtered out").to.eql(undefined);
 
-    // When creating the workflowitem, Alice was not granted the permission to archive it:
-    expect(one.log[0].data.permissions["workflowitem.archive"], "allowedIntents in 1st log").to.eql(
-      [],
-    );
-    // She has been granted that permission later on:
-    expect(one.allowedIntents.includes("workflowitem.archive"), "allowed by later event").to.equal(
-      true,
-    );
-    // But she can't see that in the log as she has no permissions to list permissions:
-    const isNoPermissionGrantEvent = event =>
-      event.intent !== "workflowitem.intent.grantPermission";
-    expect(
-      one.log.every(isNoPermissionGrantEvent),
-      `there should be no grantPermission event in ${JSON.stringify(one.log, null, 2)}`,
-    ).to.equal(true);
+    // TODO: also call the history endpoint here!
+    // // When creating the workflowitem, Alice was not granted the permission to archive it:
+    // expect(one.log[0].data.permissions["workflowitem.archive"], "allowedIntents in 1st log").to.eql(
+    //   [],
+    // );
+    // // She has been granted that permission later on:
+    // expect(one.allowedIntents.includes("workflowitem.archive"), "allowed by later event").to.equal(
+    //   true,
+    // );
+    // // But she can't see that in the log as she has no permissions to list permissions:
+    // const isNoPermissionGrantEvent = event =>
+    //   event.intent !== "workflowitem.intent.grantPermission";
+    // expect(
+    //   one.log.every(isNoPermissionGrantEvent),
+    //   `there should be no grantPermission event in ${JSON.stringify(one.log, null, 2)}`,
+    // ).to.equal(true);
 
     const indexOfTwo = 2;
     expect(workflowitems[indexOfTwo].data.id).to.eql("two");
-    expect(workflowitems[indexOfTwo].log[0].key, "key = workflowitem ID").to.eql("two");
+    // expect(workflowitems[indexOfTwo].log[0].key, "key = workflowitem ID").to.eql("two");
 
     const indexOfThree = 0; // comes first because of the workflowitem_ordering
     expect(workflowitems[indexOfThree].data.id).to.eql("three");
-    expect(workflowitems[indexOfThree].log[0].key, "key = workflowitem ID").to.eql("three");
+    // expect(workflowitems[indexOfThree].log[0].key, "key = workflowitem ID").to.eql("three");
   });
 });

@@ -49,6 +49,10 @@ export async function fetchWorkflowitemOrdering(
 
   const streamItems = await multichain
     .v2_readStreamItems(projectId, workflowitemOrderingKey(subprojectId), nValues)
+    .then(items => {
+      if (items.length > 0) return items;
+      else throw { kind: "NotFound", what: workflowitemOrderingKey(subprojectId) };
+    })
     .catch(err => {
       if (err.kind === "NotFound") {
         return [{ data: { json: { dataVersion: 1, data: [] } } }];

@@ -122,7 +122,6 @@ describe("subproject.viewDetails", () => {
 
     expect(workflowitems.length).to.eql(1);
     expect(workflowitems[0].data.id).to.eql(workflowitemId);
-    expect(workflowitems[0].log[0].key).to.eql(workflowitemId);
     expect(workflowitems[0].permissions).to.eql(undefined);
     expect(workflowitems[0].allowedIntents).to.eql(["workflowitem.view"]);
 

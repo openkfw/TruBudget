@@ -218,6 +218,8 @@ export class RpcMultichainClient implements MultichainClient {
     key: string,
     nValues: number = maxItemCount,
   ): Promise<Liststreamkeyitems.Item[]> {
+    if (nValues <= 0) throw Error(`expected nValues > 0, got ${nValues}`);
+
     return this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch(err => {

@@ -16,6 +16,7 @@ type Intent =
   | "project.close"
   | "project.archive"
   | "project.createSubproject"
+  | "project.viewHistory"
   | "subproject.intent.listPermissions"
   | "subproject.intent.grantPermission"
   | "subproject.intent.revokePermission"
@@ -27,6 +28,7 @@ type Intent =
   | "subproject.archive"
   | "subproject.createWorkflowitem"
   | "subproject.reorderWorkflowitems"
+  | "subproject.viewHistory"
   | "workflowitem.intent.listPermissions"
   | "workflowitem.intent.grantPermission"
   | "workflowitem.intent.revokePermission"
@@ -65,6 +67,7 @@ export const allIntents: Intent[] = [
   "project.close",
   "project.archive",
   "project.createSubproject",
+  "project.viewHistory",
   "subproject.intent.listPermissions",
   "subproject.intent.grantPermission",
   "subproject.intent.revokePermission",
@@ -75,6 +78,8 @@ export const allIntents: Intent[] = [
   "subproject.close",
   "subproject.archive",
   "subproject.createWorkflowitem",
+  "subproject.reorderWorkflowitems",
+  "subproject.viewHistory",
   "workflowitem.intent.listPermissions",
   "workflowitem.intent.grantPermission",
   "workflowitem.intent.revokePermission",
