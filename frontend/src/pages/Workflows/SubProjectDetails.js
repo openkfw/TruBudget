@@ -1,8 +1,31 @@
 import React from "react";
-import _ from "lodash";
-import Card, { CardHeader, CardMedia } from "material-ui/Card";
+
+import _isNaN from "lodash/isNaN";
+import _isUndefined from "lodash/isUndefined";
+
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import AssigneeIcon from "@material-ui/icons/Group";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import DateIcon from "@material-ui/icons/DateRange";
+import Divider from "@material-ui/core/Divider";
+import DoneIcon from "@material-ui/icons/Check";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import NotAssignedIcon from "@material-ui/icons/SpaceBar";
+import OpenIcon from "@material-ui/icons/Remove";
+import PermissionIcon from "@material-ui/icons/LockOpen";
+import SpentIcon from "@material-ui/icons/RemoveCircle";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import UnspentIcon from "@material-ui/icons/AddCircle";
+
 import { Doughnut } from "react-chartjs-2";
-import Typography from "material-ui/Typography";
 
 import {
   toAmountString,
@@ -14,24 +37,6 @@ import {
   calculateWorkflowBudget,
   getProgressInformation
 } from "../../helper.js";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
-import Chip from "material-ui/Chip";
-import Avatar from "material-ui/Avatar";
-import Divider from "material-ui/Divider";
-
-import AmountIcon from "@material-ui/icons/AccountBalance";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-import UnspentIcon from "@material-ui/icons/AddCircle";
-import SpentIcon from "@material-ui/icons/RemoveCircle";
-import NotAssignedIcon from "@material-ui/icons/SpaceBar";
-import DateIcon from "@material-ui/icons/DateRange";
-import OpenIcon from "@material-ui/icons/Remove";
-import DoneIcon from "@material-ui/icons/Check";
-import AssigneeIcon from "@material-ui/icons/Group";
-import EditIcon from "@material-ui/icons/Edit";
-import IconButton from "material-ui/IconButton";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
 
 import GaugeChart from "../Common/GaugeChart";
 import strings from "../../localizeStrings";
@@ -187,7 +192,7 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
   );
 };
 
-const createRatio = ratio => (_.isNaN(ratio) ? 0 : ratio * 100);
+const createRatio = ratio => (_isNaN(ratio) ? 0 : ratio * 100);
 
 const SubProjectDetails = ({
   displayName,
@@ -225,9 +230,9 @@ const SubProjectDetails = ({
 
   const allowedToEdit = false;
 
-  const allocatedBudgetRatio = _.isUndefined(amount) ? 0 : assignedBudget / amount;
-  const consumptionBudgetRatio = _.isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
-  const currentDisbursementRatio = _.isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
+  const allocatedBudgetRatio = _isUndefined(amount) ? 0 : assignedBudget / amount;
+  const consumptionBudgetRatio = _isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
+  const currentDisbursementRatio = _isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
   return (
     <div style={styles.container}>
       <Card style={styles.card}>

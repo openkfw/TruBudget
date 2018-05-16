@@ -1,7 +1,8 @@
 import React from "react";
+
+import Typography from "@material-ui/core/Typography";
+
 import NavbarIcons from "./NavbarIcons";
-import colors from "../../colors";
-import Typography from "material-ui/Typography";
 
 const styles = {
   container: {

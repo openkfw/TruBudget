@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
 import { fetchWorkflowItemPermissions, grantWorkflowItemPermission, hideWorkflowItemPermissions } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";

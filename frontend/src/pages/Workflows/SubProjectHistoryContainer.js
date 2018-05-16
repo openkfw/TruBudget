@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fromJS } from "immutable";
+
 import sortBy from "lodash/sortBy";
 
 import RessourceHistory from "../Common/History/RessourceHistory";

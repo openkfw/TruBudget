@@ -1,5 +1,6 @@
 import React from "react";
-import Drawer from "material-ui/Drawer";
+
+import Drawer from "@material-ui/core/Drawer";
 
 import SideNavCard from "./SideNavCard";
 

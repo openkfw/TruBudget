@@ -1,12 +1,11 @@
 import React from "react";
-import IconButton from "material-ui/IconButton";
+
+import Badge from "@material-ui/core/Badge";
 import BubbleIcon from "@material-ui/icons/ChatBubbleOutline";
+import IconButton from "@material-ui/core/IconButton";
+import { withStyles } from "@material-ui/core/styles";
 
-import Badge from "material-ui/Badge";
-
-import colors from "../../colors";
 import strings from "../../localizeStrings";
-import { withStyles } from "material-ui/styles";
 
 const styles = {
   badge: {

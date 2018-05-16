@@ -1,11 +1,15 @@
 import React from "react";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
-import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
+
+import Avatar from "@material-ui/core/Avatar";
+import Divider from "@material-ui/core/Divider";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import NetworkIcon from "@material-ui/icons/DeviceHub";
 import ProjectIcon from "@material-ui/icons/Business";
-import Divider from "material-ui/Divider";
-import Avatar from "material-ui/Avatar";
-import Subheader from "material-ui/List/ListSubheader";
+import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
+import Subheader from "@material-ui/core/ListSubheader";
 
 import colors from "../../colors";
 import strings from "../../localizeStrings";

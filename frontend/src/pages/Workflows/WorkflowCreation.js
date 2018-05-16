@@ -1,11 +1,12 @@
 import React from "react";
+
+import Divider from "@material-ui/core/Divider";
+
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
-import TextInput from "../Common/TextInput";
 import WorkflowCreationAmount from "./WorkflowCreationAmount";
 import DocumentUpload from "../Documents/DocumentUpload";
 import Identifier from "../Common/Identifier";
-import { Divider } from "@material-ui/core";
 
 const handleSubmit = props => {
   const {

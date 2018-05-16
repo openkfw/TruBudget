@@ -1,18 +1,18 @@
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
-import Card from "material-ui/Card";
-import Avatar from "material-ui/Avatar";
-import Typography from "@material-ui/core/Typography";
 
-import InfoIcon from "@material-ui/icons/InfoOutline";
-import HiddenIcon from "@material-ui/icons/VisibilityOff";
-import OpenIcon from "@material-ui/icons/Remove";
+import Card from "@material-ui/core/Card";
+import Chip from "@material-ui/core/Chip";
 import DoneIcon from "@material-ui/icons/Check";
 import EditIcon from "@material-ui/icons/Edit";
+import HiddenIcon from "@material-ui/icons/VisibilityOff";
+import IconButton from "@material-ui/core/IconButton";
+import InfoIcon from "@material-ui/icons/InfoOutline";
+import OpenIcon from "@material-ui/icons/Remove";
+import Paper from "@material-ui/core/Paper";
 import PermissionIcon from "@material-ui/icons/LockOpen";
-import Paper from "material-ui/Paper";
-import Chip from "material-ui/Chip";
-import IconButton from "material-ui/IconButton";
+import Typography from "@material-ui/core/Typography";
+
 import { toAmountString, amountTypes } from "../../helper.js";
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from "../../colors.js";
 import strings from "../../localizeStrings";

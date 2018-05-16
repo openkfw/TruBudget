@@ -1,8 +1,9 @@
 import React from "react";
-import Stepper from "@material-ui/core/Stepper";
+
 import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
 import StepButton from "@material-ui/core/StepButton";
+import StepLabel from "@material-ui/core/StepLabel";
+import Stepper from "@material-ui/core/Stepper";
 
 const getStepContent = ({ currentStep = 0, steps, ...props }) => {
   return steps[currentStep].content;

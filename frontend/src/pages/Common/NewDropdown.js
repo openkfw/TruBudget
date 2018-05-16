@@ -1,7 +1,8 @@
 import React from "react";
-import { InputLabel } from "material-ui/Input";
-import { FormControl } from "material-ui/Form";
-import Select from "material-ui/Select";
+
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
 
 class Dropdown extends React.Component {
   render() {

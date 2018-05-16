@@ -1,11 +1,14 @@
 import React from "react";
-import Avatar from "material-ui/Avatar";
-import { List, ListItem } from "material-ui/List";
-import Subheader from "material-ui/List/ListSubheader";
-import Chip from "material-ui/Chip";
+
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 import NotOK from "@material-ui/icons/Close";
 import OK from "@material-ui/icons/Check";
-import _ from "lodash";
+import Subheader from "@material-ui/core/ListSubheader";
+
+import _values from "lodash/values";
 
 import { ACMECorpSuperLightgreen, ACMECorpLightgrey, ACMECorpGreen, red, lightRed } from "../../colors";
 import strings from "../../localizeStrings";
@@ -66,7 +69,7 @@ const createListItems = users =>
   });
 
 const TrusteesList = ({ users, loggedInUser }) => {
-  const otherUsers = _.values(users).filter(user => user.id !== loggedInUser.id);
+  const otherUsers = _values(users).filter(user => user.id !== loggedInUser.id);
   return (
     <List>
       <Subheader>{strings.navigation.other_trustees}</Subheader>

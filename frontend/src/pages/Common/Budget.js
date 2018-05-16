@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { MenuItem } from "material-ui/Menu";
+
+import MenuItem from "@material-ui/core/MenuItem";
 
 import DropwDown from "./NewDropdown";
 import TextInput from "./TextInput";

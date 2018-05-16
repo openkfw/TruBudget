@@ -1,11 +1,14 @@
 import React from "react";
-import _ from "lodash";
+
+import _isEmpty from "lodash/isEmpty";
+import _map from "lodash/map";
+import _isNumber from "lodash/isNumber";
 
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
 import ProjectCreationContent from "./ProjectCreationContent";
 
-const extractRole = roles => _.map(roles, role => role.role);
+const extractRole = roles => _map(roles, role => role.role);
 
 const handleSubmit = props => {
   const {
@@ -47,7 +50,7 @@ const ProjectCreation = props => {
     {
       title: strings.project.project_details,
       content: <ProjectCreationContent {...props} />,
-      nextDisabled: _.isEmpty(props.displayName) || _.isEmpty(props.description) || !_.isNumber(props.amount)
+      nextDisabled: _isEmpty(props.displayName) || _isEmpty(props.description) || !_isNumber(props.amount)
     }
   ];
   return (

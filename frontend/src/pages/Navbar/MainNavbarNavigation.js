@@ -1,9 +1,10 @@
 import React from "react";
+
+import Button from "@material-ui/core/Button";
 import ChevronRight from "@material-ui/icons/ChevronRight";
-import Button from "material-ui/Button";
-import colors, { ACMECorpGrey } from "../../colors";
+import Typography from "@material-ui/core/Typography";
+
 import strings from "../../localizeStrings";
-import Typography from "material-ui/Typography";
 
 const styles = {
   container: {

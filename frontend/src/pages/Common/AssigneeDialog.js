@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 
-import { MenuItem } from "material-ui/Menu";
-
-import strings from "../../localizeStrings";
-
-import { FormControl, Checkbox } from "@material-ui/core";
-import Select from "material-ui/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 
 const styles = {
   formControl: {

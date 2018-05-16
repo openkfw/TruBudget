@@ -1,6 +1,7 @@
 import React from "react";
-import Card from "material-ui/Card";
-import Button from "material-ui/Button";
+
+import Card from "@material-ui/core/Card";
+import Button from "@material-ui/core/Button";
 import ContentAdd from "@material-ui/icons/Add";
 import HistoryIcon from "@material-ui/icons/Reorder";
 import SortIcon from "@material-ui/icons/LowPriority";
@@ -8,8 +9,7 @@ import DoneIcon from "@material-ui/icons/Check";
 
 import WorkflowTable from "./WorkflowTable";
 import WorkflowCreation from "./WorkflowCreation";
-import ChangeLog from "../Notifications/ChangeLog";
-import { ACMECorpGrey, ACMECorpDarkBlue, ACMECorpLightgreen } from "../../colors.js";
+import { ACMECorpGrey, ACMECorpDarkBlue } from "../../colors.js";
 import strings from "../../localizeStrings";
 import { canCreateWorkflowItems } from "../../permissions";
 

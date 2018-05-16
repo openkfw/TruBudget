@@ -1,23 +1,26 @@
 import React from "react";
 
-import Card, { CardActions, CardMedia, CardTitle } from "material-ui/Card";
-import Button from "material-ui/Button";
-import List, { ListItem } from "material-ui/List";
-import CommentIcon from "@material-ui/icons/ShortText";
-import DateIcon from "@material-ui/icons/DateRange";
+import _isEmpty from "lodash";
+
+import { withStyles } from "@material-ui/core/styles";
 import AmountIcon from "@material-ui/icons/AccountBalance";
-import InfoIcon from "@material-ui/icons/Search";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
 import ContentAdd from "@material-ui/icons/Add";
-import _ from "lodash";
-import { withStyles } from "material-ui/styles";
+import DateIcon from "@material-ui/icons/DateRange";
+import InfoIcon from "@material-ui/icons/Search";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 
 import { toAmountString, statusMapping, tsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import { canCreateProject, canViewProjectDetails } from "../../permissions";
-import { ListItemIcon, CardHeader } from "material-ui";
-import { ListItemText } from "material-ui";
-import { CardContent } from "material-ui";
-import { Typography } from "material-ui";
 
 const styles = {
   card: {
@@ -44,7 +47,7 @@ const getTableEntries = ({ projects, history, classes }) => {
     const { displayName, amount, currency, status, thumbnail = "/Thumbnail_0008.jpg", creationUnixTs } = project;
     const amountString = toAmountString(amount, currency);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
-    const imagePath = !_.isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
+    const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);
 
     return (

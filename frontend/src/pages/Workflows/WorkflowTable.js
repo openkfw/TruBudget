@@ -1,21 +1,15 @@
 import React from "react";
-import Card, { CardHeader, CardContent } from "material-ui/Card";
 import { arrayMove } from "react-sortable-hoc";
+
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
 import Typography from "@material-ui/core/Typography";
 
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
 import { ACMECorpLightgreen } from "../../colors.js";
 import strings from "../../localizeStrings";
-
-const styles = {
-  listText: {
-    fontSize: "14px"
-  },
-  actions: {
-    textAlign: "center"
-  }
-};
 
 const createTableHeader = () => (
   <Card>

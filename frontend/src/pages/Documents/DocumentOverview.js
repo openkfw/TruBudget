@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import Button from "material-ui/Button";
-import FingerPrint from "@material-ui/icons/Fingerprint";
-import { CircularProgress } from "material-ui/Progress";
 
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import FingerPrint from "@material-ui/icons/Fingerprint";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
-import _ from "lodash";
+import _isUndefined from "lodash/isUndefined";
+import _isEmpty from "lodash/isEmpty";
 
 import { ACMECorpSuperLightgreen, lightRed } from "../../colors";
 import strings from "../../localizeStrings";
@@ -40,7 +41,7 @@ class DocumentOverview extends Component {
     let style = null;
     let label = null;
 
-    if (_.isUndefined(validated)) {
+    if (_isUndefined(validated)) {
       label = strings.workflow.workflow_document_validate;
       style = styles.uploadButton;
     } else if (validated === true) {
@@ -116,7 +117,7 @@ class DocumentOverview extends Component {
     return (
       <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
         <TableBody>
-          {_.isEmpty(documents)
+          {_isEmpty(documents)
             ? this.generateEmptyList()
             : this.generateDocumentList(documents, validationActive, validatedDocuments)}
         </TableBody>

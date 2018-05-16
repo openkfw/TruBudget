@@ -1,11 +1,15 @@
 import React from "react";
+import { Iterable } from "immutable";
 import moment from "moment";
+
 import OpenIcon from "@material-ui/icons/Remove";
 import DoneIcon from "@material-ui/icons/Check";
 
+import _isEmpty from "lodash/isEmpty";
+import _isUndefined from "lodash/isUndefined";
+import _isString from "lodash/isString";
+
 import accounting from "accounting";
-import _ from "lodash";
-import { Iterable } from "immutable";
 import strings from "./localizeStrings";
 import currencies from "./currency";
 
@@ -39,7 +43,7 @@ const getCurrencyFormat = currency => ({
 export const fromAmountString = (amount, currency) => {
   // Unformatting an empty string will result in an error
   // we use '' as default value for number fields to prevent users from an unerasable 0
-  if (_.isString(amount) && amount.trim().length <= 0) {
+  if (_isString(amount) && amount.trim().length <= 0) {
     return "";
   }
 
@@ -48,7 +52,7 @@ export const fromAmountString = (amount, currency) => {
 
 export const getCurrencies = parentCurrency => {
   return ["EUR", "USD", "BRL"].map(currency => {
-    const disabled = !_.isEmpty(parentCurrency) && !(parentCurrency === currency);
+    const disabled = !_isEmpty(parentCurrency) && !(parentCurrency === currency);
     return {
       disabled,
       primaryText: currency,
@@ -233,7 +237,7 @@ export const getProgressInformation = items => {
 };
 
 export const preselectCurrency = (parentCurrency, setCurrency) => {
-  const preSelectedCurrency = _.isUndefined(parentCurrency) ? "EUR" : parentCurrency;
+  const preSelectedCurrency = _isUndefined(parentCurrency) ? "EUR" : parentCurrency;
   setCurrency(preSelectedCurrency);
 };
 export const createTaskData = (items, type) => {
@@ -249,7 +253,7 @@ export const getNextIncompletedItem = items => {
 };
 
 export const getNextAction = (item, assignee, bank, approver) => {
-  if (!_.isUndefined(item) && !_.isUndefined(item.details.status) && !_.isEmpty(item.details.status)) {
+  if (!_isUndefined(item) && !_isUndefined(item.details.status) && !_isEmpty(item.details.status)) {
     if (item.details.status === "in_review") {
       // Decide if transaction or workflow to show the right reviewer
       const action = item.details.status + "_" + item.details.type;
@@ -268,7 +272,7 @@ export const isAdminNode = nodePermissions => {
 export const getAssignedOrganization = (definedRoles, assignedRoles) =>
   assignedRoles.reduce((acc, assignedRole, index) => {
     const organization = definedRoles.find(role => assignedRole === role.role);
-    if (!_.isEmpty(organization)) {
+    if (!_isEmpty(organization)) {
       const assignedOrganization = organization.organization;
       const nextString = index ? `, ${assignedOrganization}` : `${assignedOrganization}`;
       return acc + nextString;

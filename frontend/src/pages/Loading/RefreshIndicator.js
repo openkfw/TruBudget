@@ -1,7 +1,6 @@
 import React from "react";
-import { CircularProgress } from "material-ui/Progress";
 
-import { ACMECorpLightgreen } from "../../colors";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = {
   container: {
@@ -36,7 +35,5 @@ const Refresh = props => (
     </div>
   </div>
 );
-
-// TODO: SET Correct Color material v1
 
 export default Refresh;

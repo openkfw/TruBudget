@@ -1,10 +1,11 @@
 import React from "react";
-import { Card } from "material-ui/Card";
 
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
 import GroupIcon from "@material-ui/icons/Group";
-import UsersIcon from "@material-ui/icons/Person";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
-import CardHeader from "material-ui/Card/CardHeader";
+import UsersIcon from "@material-ui/icons/Person";
+
 import CountUp from "react-countup";
 
 const styles = {

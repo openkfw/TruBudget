@@ -1,10 +1,13 @@
 import React, { Component } from "react";
-import _ from "lodash";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
+
+import _isEmpty from "lodash/isEmpty";
+
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 import DocumentOverview from "./DocumentOverview";
 import strings from "../../localizeStrings";
+
 const styles = {
   uploadButton: {
     verticalAlign: "middle"
@@ -42,9 +45,9 @@ export default class DocumentUpload extends Component {
             value={this.state.name}
             onChange={event => this.setState({ name: event.target.value })}
           />
-          <Button style={styles.uploadButton} disabled={_.isEmpty(this.state.name)}>
+          <Button style={styles.uploadButton} disabled={_isEmpty(this.state.name)}>
             {strings.workflow.workflow_upload_document}
-            {_.isEmpty(this.state.name) ? null : (
+            {_isEmpty(this.state.name) ? null : (
               <input
                 id="docupload"
                 type="file"

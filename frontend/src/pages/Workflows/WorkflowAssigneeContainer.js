@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import AssigneeDialog from "../Common/AssigneeDialog";
-import { hideWorkflowAssignee, assignWorkflowItem } from "./actions";
+import { assignWorkflowItem } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";

@@ -1,21 +1,23 @@
 import React from "react";
-import Dialog, { DialogContent, DialogActions } from "material-ui/Dialog";
-import Card, { CardHeader, CardMedia } from "material-ui/Card";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
+
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Divider from "@material-ui/core/Divider";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
-import Avatar from "material-ui/Avatar";
+import _isEmpty from "lodash/isEmpty";
 
-import Divider from "material-ui/Divider";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
-import _ from "lodash";
 import { toAmountString, statusMapping, statusIconMapping } from "../../helper";
 import DocumentOverview from "../Documents/DocumentOverview";
 import strings from "../../localizeStrings";
-import { Typography, DialogContentText } from "@material-ui/core";
-import DialogTitle from "@material-ui/core/DialogTitle";
 
 const styles = {
   textfield: {
@@ -62,7 +64,7 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
 };
 const removeNewLines = text => {
   let formattedText = "";
-  if (!_.isEmpty(text)) {
+  if (!_isEmpty(text)) {
     formattedText = text.replace(/\n/g, " ");
   }
   return formattedText;

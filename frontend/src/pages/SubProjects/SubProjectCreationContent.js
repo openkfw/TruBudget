@@ -1,5 +1,6 @@
 import React from "react";
-import Divider from "material-ui/Divider";
+
+import Divider from "@material-ui/core/Divider";
 
 import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";

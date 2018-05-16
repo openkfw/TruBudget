@@ -1,11 +1,9 @@
 import React from "react";
-import Card from "material-ui/Card";
-import Button from "material-ui/Button";
+
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
 import ContentAdd from "@material-ui/icons/Add";
 import HistoryIcon from "@material-ui/icons/Reorder";
-
-import { ACMECorpLightgreen, ACMECorpDarkBlue } from "../../colors.js";
-// import ChangeLog from "../Notifications/ChangeLog";
 
 import SubProjectsTable from "./SubProjectsTable";
 import SubProjectCreation from "./SubProjectCreation";

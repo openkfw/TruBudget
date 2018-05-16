@@ -13,6 +13,7 @@ import {
   showProjectPermissions,
   showProjectAssignees
 } from "./actions";
+
 import SubProjects from "./SubProjects";
 import { showSnackBar, storeSnackBarMessage, showHistory } from "../Notifications/actions";
 import { setSelectedView } from "../Navbar/actions";

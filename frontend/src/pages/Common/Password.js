@@ -1,6 +1,8 @@
 import React from "react";
-import TextField from "material-ui/TextField";
+
 import PasswordIcon from "@material-ui/icons/Lock";
+import TextField from "@material-ui/core/TextField";
+
 import { ACMECorpDarkBlue } from "../../colors";
 import strings from "../../localizeStrings";
 

@@ -1,8 +1,27 @@
 import React from "react";
-import Card, { CardHeader } from "material-ui/Card";
-import Typography from "material-ui/Typography";
-import Tooltip from "material-ui/Tooltip";
+
 import { Doughnut } from "react-chartjs-2";
+
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import AssigneeIcon from "@material-ui/icons/Group";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CompletionIcon from "@material-ui/icons/TrendingUp";
+import DateIcon from "@material-ui/icons/DateRange";
+import Divider from "@material-ui/core/Divider";
+import DoneIcon from "@material-ui/icons/Check";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import OpenIcon from "@material-ui/icons/Remove";
+import PermissionIcon from "@material-ui/icons/LockOpen";
+import Typography from "@material-ui/core/Typography";
+import UnspentIcon from "@material-ui/icons/AddCircle";
+
 import {
   toAmountString,
   getAllocationRatio,
@@ -15,24 +34,9 @@ import {
   calculateUnspentAmount,
   getProgressInformation
 } from "../../helper.js";
-import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import Chip from "material-ui/Chip";
-import Avatar from "material-ui/Avatar";
-
-import Button from "material-ui/Button";
-import AmountIcon from "@material-ui/icons/AccountBalance";
-import UnspentIcon from "@material-ui/icons/AddCircle";
-import DateIcon from "@material-ui/icons/DateRange";
-import OpenIcon from "@material-ui/icons/Remove";
-import DoneIcon from "@material-ui/icons/Check";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-import AssigneeIcon from "@material-ui/icons/Group";
-import IconButton from "material-ui/IconButton";
-import CompletionIcon from "@material-ui/icons/TrendingUp";
 
 import GaugeChart from "../Common/GaugeChart";
-import { budgetStatusColorPalette, red } from "../../colors";
+import { red } from "../../colors";
 import strings from "../../localizeStrings";
 import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
 

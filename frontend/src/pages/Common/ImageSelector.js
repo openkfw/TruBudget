@@ -1,11 +1,15 @@
 import React from "react";
-import GridList, { GridListTile, GridListTileBar } from "material-ui/GridList";
-import { withStyles } from "material-ui/styles";
-import IconButton from "material-ui/IconButton";
-import NotFilledStar from "@material-ui/icons/StarBorder";
+
 import FilledStar from "@material-ui/icons/Star";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import GridListTileBar from "@material-ui/core/GridListTileBar";
+import IconButton from "@material-ui/core/IconButton";
+import NotFilledStar from "@material-ui/icons/StarBorder";
+import Subheader from "@material-ui/core/ListSubheader";
+import { withStyles } from "@material-ui/core/styles";
+
 import { images } from "./images";
-import Subheader from "material-ui/List/ListSubheader";
 
 const styles = {
   root: {

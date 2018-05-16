@@ -1,15 +1,22 @@
-import React from 'react';
-import Snackbar from 'material-ui/Snackbar';
+import React from "react";
+import Snackbar from "@material-ui/core/Snackbar";
 
-const NotificationsSnackbar = (props) => {
-    const snackbarStyle = props.snackBarMessageIsError ? {
-        backgroundColor: 'red',
-        color: 'white'
-    } : undefined;
+const NotificationsSnackbar = props => {
+  const snackbarStyle = props.snackBarMessageIsError
+    ? {
+        backgroundColor: "red",
+        color: "white"
+      }
+    : undefined;
 
-    return (
-        <Snackbar open={ props.showSnackBar } message={ props.snackBarMessage } autoHideDuration={ 4000 } onRequestClose={ props.closeSnackBar } bodyStyle={ snackbarStyle }
-        />
-    )
-}
+  return (
+    <Snackbar
+      open={props.showSnackBar}
+      message={props.snackBarMessage}
+      autoHideDuration={4000}
+      onRequestClose={props.closeSnackBar}
+      bodyStyle={snackbarStyle}
+    />
+  );
+};
 export default NotificationsSnackbar;

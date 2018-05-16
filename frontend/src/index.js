@@ -3,12 +3,9 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 import { Route, Switch } from "react-router";
-import { MuiThemeProvider, createMuiTheme } from "material-ui/styles";
-//import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-//import getMuiTheme from "material-ui/styles/getMuiTheme";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import createHistory from "history/createBrowserHistory";
 
-import { ACMECorpLightgrey, ACMECorpGrey, ACMECorpLightgreen, ACMECorpGreen, ACMECorpLightblue, ACMECorpBlue } from "./colors";
 import red from "material-ui/colors/red";
 import blue from "material-ui/colors/blue";
 

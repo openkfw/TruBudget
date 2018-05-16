@@ -1,12 +1,13 @@
 import React from "react";
-import AppBar from "material-ui/AppBar";
-import Toolbar from "material-ui/Toolbar";
+
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import { withStyles } from "@material-ui/core/styles";
 
 import SideNav from "./SideNav";
 import LeftNavbarNavigation from "./LeftNavbarNavigation";
 import MainNavbarNavigation from "./MainNavbarNavigation";
 import RightNavbarNavigation from "./RightNavbarNavigation";
-import { withStyles } from "material-ui/styles";
 
 const styles = {
   root: {
