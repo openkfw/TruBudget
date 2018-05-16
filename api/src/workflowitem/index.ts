@@ -16,8 +16,14 @@ const workflowitemKey = (subprojectId, workflowitemId) => [
   workflowitemId,
 ];
 
+export interface AugmentedEvent extends Event {
+  snapshot: {
+    displayName: string;
+  };
+}
+
 export interface WorkflowitemResource {
-  log: Event[];
+  log: AugmentedEvent[];
   allowedIntents: Intent[];
   data: Data;
 }
@@ -137,7 +143,10 @@ export const get = async (
     if (resource !== undefined) {
       // Save all events to the log for now; we'll filter them once we
       // know the final resource permissions.
-      resource.log.push(event);
+      resource.log.push({
+        ...event,
+        snapshot: { displayName: deepcopy(resource.data.displayName) },
+      });
       resourceMap.set(asMapKey(item), resource);
     }
   }
