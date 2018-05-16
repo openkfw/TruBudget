@@ -220,6 +220,7 @@ export const WorkflowItem = SortableElement(
     workflowSortEnabled,
     showWorkflowItemAssignee,
     parentProject,
+    users,
     ...props
   }) => {
     const { id, status, displayName, amountType, allowedIntents, assignee } = workflow;
@@ -268,6 +269,7 @@ export const WorkflowItem = SortableElement(
                 subprojectId={subprojectId}
                 workflowitemId={id}
                 disabled={!canAssign}
+                users={users}
                 assignee={assignee}
               />
             </div>

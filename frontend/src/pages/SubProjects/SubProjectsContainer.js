@@ -21,12 +21,14 @@ import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
 import strings from "../../localizeStrings";
+import { fetchUser } from "../Login/actions";
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
     const projectId = this.props.location.pathname.split("/")[2];
     this.props.setSelectedView(projectId, "project");
     this.props.fetchAllProjectDetails(projectId, true);
+    this.props.fetchUser();
   }
 
   render() {
@@ -62,12 +64,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(showHistory(false)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     showProjectPermissions: () => dispatch(showProjectPermissions()),
-    showProjectAssignees: () => dispatch(showProjectAssignees())
+    showProjectAssignees: () => dispatch(showProjectAssignees()),
+    fetchUser: () => dispatch(fetchUser(true))
   };
 };
 
 const mapStateToProps = state => {
   return {
+    users: state.getIn(["login", "user"]),
     projectId: state.getIn(["detailview", "id"]),
     projectName: state.getIn(["detailview", "projectName"]),
     projectAmount: state.getIn(["detailview", "projectAmount"]),
@@ -92,7 +96,8 @@ const mapStateToProps = state => {
     user: state.getIn(["login", "user"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     thumbnail: state.getIn(["detailview", "thumbnail"]),
-    logs: state.getIn(["detailview", "logs"])
+    logs: state.getIn(["detailview", "logs"]),
+    users: state.getIn(["login", "user"])
   };
 };
 

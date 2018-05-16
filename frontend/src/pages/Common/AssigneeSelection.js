@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 import { MenuItem } from "material-ui/Menu";
 
-import strings from "../../localizeStrings";
-
 import { FormControl, Checkbox } from "@material-ui/core";
 import Select from "material-ui/Select";
 
@@ -19,11 +17,7 @@ const styles = {
   }
 };
 
-const AssigneeDialog = ({ assigneeId, users, assign, disabled }) => {
-  return <AssigneeTable assign={assign} disabled={disabled} assigneeId={assigneeId} users={users} />;
-};
-
-class AssigneeTable extends Component {
+class AssigneeSelection extends Component {
   constructor() {
     super();
     this.state = {
@@ -52,6 +46,7 @@ class AssigneeTable extends Component {
 
   render() {
     const { assigneeId, users, disabled } = this.props;
+
     const selection = this.renderUsers(
       users.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
       assigneeId,
@@ -74,4 +69,4 @@ class AssigneeTable extends Component {
 }
 
 // TODO: update selectfield material v1
-export default AssigneeDialog;
+export default AssigneeSelection;

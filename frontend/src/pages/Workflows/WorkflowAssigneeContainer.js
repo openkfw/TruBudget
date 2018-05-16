@@ -1,16 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import AssigneeDialog from "../Common/AssigneeDialog";
-import { hideWorkflowAssignee, assignWorkflowItem } from "./actions";
+import AssigneeSelection from "../Common/AssigneeSelection";
+import { assignWorkflowItem } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
-import { fetchUser } from "../Login/actions";
 
 class WorkflowAssigneeContainer extends Component {
-  componentWillMount() {
-    this.props.fetchUser();
-  }
-
   assignWorkflow = userId => {
     const { projectId, subprojectId, workflowitemId } = this.props;
     this.props.assignWorkflow(projectId, subprojectId, workflowitemId, userId);
@@ -27,7 +22,7 @@ class WorkflowAssigneeContainer extends Component {
   render() {
     const assignee = this.getWorkflowAssignee(this.props.workflowItems, this.props.workflowitemId);
     return (
-      <AssigneeDialog
+      <AssigneeSelection
         assigneeId={assignee}
         users={this.props.users}
         title={this.props.title}
@@ -39,7 +34,6 @@ class WorkflowAssigneeContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    users: state.getIn(["login", "user"]),
     workflowItems: state.getIn(["workflow", "workflowItems"])
   };
 };
@@ -47,8 +41,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     assignWorkflow: (projectId, subProjectId, workflowId, userId) =>
-      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, userId)),
-    fetchUser: () => dispatch(fetchUser(true))
+      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, userId))
   };
 };
 

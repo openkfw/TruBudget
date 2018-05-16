@@ -204,6 +204,7 @@ const SubProjectDetails = ({
   canViewPermissions,
   canAssinSubproject,
   parentProject,
+  users,
   showSubProjectPermissions,
   showSubProjectAssignee,
   ...props
@@ -228,6 +229,7 @@ const SubProjectDetails = ({
   const allocatedBudgetRatio = _.isUndefined(amount) ? 0 : assignedBudget / amount;
   const consumptionBudgetRatio = _.isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
   const currentDisbursementRatio = _.isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -255,6 +257,7 @@ const SubProjectDetails = ({
             <SubProjectAssigneeContainer
               projectId={parentProject ? parentProject.id : ""}
               subprojectId={id}
+              users={users}
               disabled={!canAssinSubproject}
               assignee={assignee}
             />
