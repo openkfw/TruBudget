@@ -1,6 +1,6 @@
 import * as Workflowitem from ".";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
 
@@ -14,7 +14,7 @@ export const getWorkflowitemList = async (
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
   const sortedItems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
-    unsortedItems => sortWorkflowitems(multichain, projectId, unsortedItems),
+    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
   );
 
   return [

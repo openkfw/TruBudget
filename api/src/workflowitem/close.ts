@@ -2,7 +2,7 @@ import * as Workflowitem from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
 
@@ -27,7 +27,7 @@ export const closeWorkflowitem = async (
 
   // We need to make sure that all previous (wrt. ordering) workflowitems are already closed:
   const sortedItems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
-    unsortedItems => sortWorkflowitems(multichain, projectId, unsortedItems),
+    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
   );
 
   for (const item of sortedItems) {

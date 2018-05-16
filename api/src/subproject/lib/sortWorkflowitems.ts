@@ -1,10 +1,11 @@
-import * as Subproject from "..";
 import { MultichainClient } from "../../multichain";
 import * as Workflowitem from "../../workflowitem";
+import { fetchWorkflowitemOrdering } from "../model/WorkflowitemOrdering";
 
 export const sortWorkflowitems = async (
   multichain: MultichainClient,
   projectId: string,
+  subprojectId: string,
   workflowitems: Workflowitem.WorkflowitemResource[],
 ): Promise<Workflowitem.WorkflowitemResource[]> => {
   const itemMap = new Map<string, Workflowitem.WorkflowitemResource>();
@@ -12,7 +13,7 @@ export const sortWorkflowitems = async (
     itemMap.set(resource.data.id, resource);
   }
 
-  const ordering = await Subproject.getWorkflowitemOrdering(multichain, projectId);
+  const ordering = await fetchWorkflowitemOrdering(multichain, projectId, subprojectId);
 
   // Start with all items that occur in the ordering:
   const orderedItems = ordering.map(id => pop(itemMap, id));

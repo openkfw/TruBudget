@@ -9,172 +9,177 @@ describe("workflowitem.list", () => {
     const subprojectId = "the-subproject";
 
     const multichain: any = {
-      getValue: async (streamName, key) => {
-        expect(streamName).to.eql(projectId);
-        expect(key).to.eql("workflowitem_ordering");
-        return {
-          key: [key],
-          resource: {
-            log: [],
-            permissions: {},
-            // The third workflowitem should come first, the others sorted by ctime:
-            data: ["three"],
-          },
-        };
-      },
       v2_readStreamItems: async (streamName, key, nValues) => {
         expect(streamName).to.eql(projectId);
-        expect(key).to.eql(`${subprojectId}_workflows`);
-        const events = [
-          {
-            keys: [`${subprojectId}_workflows`, "one"],
-            data: {
-              json: {
-                key: "one",
-                intent: "subproject.createWorkflowitem",
-                createdBy: "bob",
-                createdAt: "2018-05-08T11:27:00.385Z",
-                dataVersion: 1,
-                data: {
-                  workflowitem: {
-                    id: "one",
-                    displayName: "item one",
-                    amount: "1",
-                    currency: "EUR",
-                    amountType: "N/A",
-                    description: "",
-                    status: "open",
-                    documents: [],
-                    assignee: undefined,
-                  },
-                  permissions: {
-                    "workflowitem.view": ["alice"],
-                    "workflowitem.assign": ["alice"],
-                    "workflowitem.archive": [],
+        let events;
+        if (key === `${subprojectId}_workflowitem_ordering`) {
+          events = [
+            {
+              keys: [`${subprojectId}_workflowitem_ordering`],
+              data: {
+                json: {
+                  key: subprojectId,
+                  intent: "subproject.reorderWorkflowitems",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:27:00.385Z",
+                  dataVersion: 1,
+                  data: ["three"],
+                },
+              },
+            },
+          ];
+        } else if (key === `${subprojectId}_workflows`) {
+          events = [
+            {
+              keys: [`${subprojectId}_workflows`, "one"],
+              data: {
+                json: {
+                  key: "one",
+                  intent: "subproject.createWorkflowitem",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:27:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    workflowitem: {
+                      id: "one",
+                      displayName: "item one",
+                      amount: "1",
+                      currency: "EUR",
+                      amountType: "N/A",
+                      description: "",
+                      status: "open",
+                      documents: [],
+                      assignee: undefined,
+                    },
+                    permissions: {
+                      "workflowitem.view": ["alice"],
+                      "workflowitem.assign": ["alice"],
+                      "workflowitem.archive": [],
+                    },
                   },
                 },
               },
             },
-          },
-          {
-            keys: [`${subprojectId}_workflows`, "one"],
-            data: {
-              json: {
-                key: "one",
-                intent: "workflowitem.assign",
-                createdBy: "bob",
-                createdAt: "2018-05-08T11:30:00.385Z",
-                dataVersion: 1,
-                data: { userId: "alice" },
-              },
-            },
-          },
-          {
-            keys: [`${subprojectId}_workflows`, "one"],
-            data: {
-              json: {
-                key: "one",
-                intent: "workflowitem.close",
-                createdBy: "bob",
-                createdAt: "2018-05-08T11:28:00.385Z",
-                dataVersion: 1,
-                data: {},
-              },
-            },
-          },
-          // alice is granted the permission to archive, but she doesn't see that in the log:
-          {
-            keys: [`${subprojectId}_workflows`, "one"],
-            data: {
-              json: {
-                key: "one",
-                intent: "workflowitem.intent.grantPermission",
-                createdBy: "bob",
-                createdAt: "2018-05-08T11:29:00.385Z",
-                dataVersion: 1,
-                data: {
-                  userId: "alice",
-                  intent: "workflowitem.archive",
+            {
+              keys: [`${subprojectId}_workflows`, "one"],
+              data: {
+                json: {
+                  key: "one",
+                  intent: "workflowitem.assign",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:30:00.385Z",
+                  dataVersion: 1,
+                  data: { userId: "alice" },
                 },
               },
             },
-          },
-          {
-            keys: [`${subprojectId}_workflows`, "two"],
-            data: {
-              json: {
-                key: "two",
-                intent: "subproject.createWorkflowitem",
-                createdBy: "bob",
-                createdAt: "2018-05-08T11:29:00.385Z",
-                dataVersion: 1,
-                data: {
-                  workflowitem: {
-                    id: "two",
-                    displayName: "item two",
-                    amount: "2",
-                    currency: "USD",
-                    amountType: "disbursed",
-                    description: "some comment",
-                    status: "open",
-                    documents: [],
-                  },
-                  permissions: {
-                    "workflowitem.view": ["alice"],
-                    "workflowitem.assign": [],
-                    "workflowitem.archive": [],
+            {
+              keys: [`${subprojectId}_workflows`, "one"],
+              data: {
+                json: {
+                  key: "one",
+                  intent: "workflowitem.close",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:28:00.385Z",
+                  dataVersion: 1,
+                  data: {},
+                },
+              },
+            },
+            // alice is granted the permission to archive, but she doesn't see that in the log:
+            {
+              keys: [`${subprojectId}_workflows`, "one"],
+              data: {
+                json: {
+                  key: "one",
+                  intent: "workflowitem.intent.grantPermission",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:29:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    userId: "alice",
+                    intent: "workflowitem.archive",
                   },
                 },
               },
             },
-          },
-          // alice is granted the permission to list permissions, which she can also observe in the log:
-          {
-            keys: [`${subprojectId}_workflows`, "two"],
-            data: {
-              json: {
-                key: "two",
-                intent: "workflowitem.intent.grantPermission",
-                createdBy: "bob",
-                createdAt: "2018-05-08T12:28:00.385Z",
-                dataVersion: 1,
-                data: {
-                  userId: "alice",
-                  intent: "workflowitem.list.permissions",
-                },
-              },
-            },
-          },
-          {
-            keys: [`${subprojectId}_workflows`, "three"],
-            data: {
-              json: {
-                key: "three",
-                intent: "subproject.createWorkflowitem",
-                createdBy: "bob",
-                createdAt: "2018-05-08T12:29:00.385Z",
-                dataVersion: 1,
-                data: {
-                  workflowitem: {
-                    id: "three",
-                    displayName: "item three",
-                    amount: "3",
-                    currency: "USD",
-                    amountType: "disbursed",
-                    description: "some comment",
-                    status: "open",
-                    documents: [],
-                  },
-                  permissions: {
-                    "workflowitem.view": ["alice"],
-                    "workflowitem.assign": [],
-                    "workflowitem.archive": [],
+            {
+              keys: [`${subprojectId}_workflows`, "two"],
+              data: {
+                json: {
+                  key: "two",
+                  intent: "subproject.createWorkflowitem",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T11:29:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    workflowitem: {
+                      id: "two",
+                      displayName: "item two",
+                      amount: "2",
+                      currency: "USD",
+                      amountType: "disbursed",
+                      description: "some comment",
+                      status: "open",
+                      documents: [],
+                    },
+                    permissions: {
+                      "workflowitem.view": ["alice"],
+                      "workflowitem.assign": [],
+                      "workflowitem.archive": [],
+                    },
                   },
                 },
               },
             },
-          },
-        ];
+            // alice is granted the permission to list permissions, which she can also observe in the log:
+            {
+              keys: [`${subprojectId}_workflows`, "two"],
+              data: {
+                json: {
+                  key: "two",
+                  intent: "workflowitem.intent.grantPermission",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T12:28:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    userId: "alice",
+                    intent: "workflowitem.list.permissions",
+                  },
+                },
+              },
+            },
+            {
+              keys: [`${subprojectId}_workflows`, "three"],
+              data: {
+                json: {
+                  key: "three",
+                  intent: "subproject.createWorkflowitem",
+                  createdBy: "bob",
+                  createdAt: "2018-05-08T12:29:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    workflowitem: {
+                      id: "three",
+                      displayName: "item three",
+                      amount: "3",
+                      currency: "USD",
+                      amountType: "disbursed",
+                      description: "some comment",
+                      status: "open",
+                      documents: [],
+                    },
+                    permissions: {
+                      "workflowitem.view": ["alice"],
+                      "workflowitem.assign": [],
+                      "workflowitem.archive": [],
+                    },
+                  },
+                },
+              },
+            },
+          ];
+        }
         return events;
       },
     };

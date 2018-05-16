@@ -1,7 +1,7 @@
 import * as Global from ".";
 import { throwIfUnauthorized } from "../authz/index";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import * as User from "../user";
 import { hashPassword } from "../user/password";

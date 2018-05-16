@@ -1,10 +1,11 @@
-import { throwParseError } from "./httpd/lib";
-import * as User from "./user";
+import { throwParseError } from "../httpd/lib";
+import * as User from "../user";
 
-export const isNonemptyString = (x: any): boolean => typeof x === "string" && x.length > 0;
-// export const negate = (f: (any) => boolean) => (x: any): boolean => !f(x);
+export function isNonemptyString(x: any): boolean {
+  return typeof x === "string" && x.length > 0;
+}
 
-export const isUserOrUndefined = async (multichain, input) => {
+export async function isUserOrUndefined(multichain, input) {
   if (input === undefined) {
     return true;
   } else {
@@ -21,26 +22,28 @@ export const isUserOrUndefined = async (multichain, input) => {
       return false;
     }
   }
-};
+}
 
-export const findBadKeysInObject = (
+export function findBadKeysInObject(
   expectedKeys: string[],
   isGood: (val: any) => boolean,
   candidate: any,
-): string[] => expectedKeys.filter(key => typeof candidate !== "object" || !isGood(candidate[key]));
+): string[] {
+  return expectedKeys.filter(key => typeof candidate !== "object" || !isGood(candidate[key]));
+}
 
-export const value = (name, val, isValid, defaultValue?) => {
+export function value(name, val, isValid, defaultValue?) {
   if (val === undefined) {
     val = defaultValue; // might be undefined
   }
   if (!isValid(val)) throwParseError([name]);
   return val;
-};
+}
 
-export const asyncValue = async (name, val, isValid, defaultValue?) => {
+export async function asyncValue(name, val, isValid, defaultValue?) {
   if (val === undefined) {
     val = defaultValue; // might be undefined
   }
   if (!(await isValid(val).catch(_err => false))) throwParseError([name]);
   return val;
-};
+}

@@ -4,8 +4,10 @@ import { getUserAndGroups } from "../authz/index";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import deepcopy from "../lib/deepcopy";
 import { asMapKey } from "../multichain/Client";
 import { MultichainClient } from "../multichain/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../multichain/event";
 
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 
@@ -13,21 +15,6 @@ const workflowitemKey = (subprojectId, workflowitemId) => [
   workflowitemsGroupKey(subprojectId),
   workflowitemId,
 ];
-
-const deepcopy = (x: any): any => JSON.parse(JSON.stringify(x));
-
-interface Event {
-  key: string; // the resource ID (same for all events that relate to the same resource)
-  intent: Intent;
-  createdBy: string;
-  createdAt: string;
-  dataVersion: number; // integer
-  data: any;
-}
-
-const throwUnsupportedEventVersion = (event: Event): never => {
-  throw { kind: "UnsupportedEventVersion", event };
-};
 
 export interface WorkflowitemResource {
   log: Event[];
@@ -183,9 +170,9 @@ export const get = async (
   return filteredResources;
 };
 
-const handleCreate = (
+function handleCreate(
   event: Event,
-): { resource: WorkflowitemResource; permissions: AllowedUserGroupsByIntent } | undefined => {
+): { resource: WorkflowitemResource; permissions: AllowedUserGroupsByIntent } | undefined {
   if (event.intent !== "subproject.createWorkflowitem") return undefined;
   switch (event.dataVersion) {
     case 1: {
@@ -193,7 +180,7 @@ const handleCreate = (
       return {
         resource: {
           data: deepcopy(workflowitem),
-          log: [], // event is added below, right before updating the map
+          log: [], // event is added later
           allowedIntents: [], // is set later using permissionsMap
         },
         permissions: deepcopy(permissions),
@@ -201,9 +188,9 @@ const handleCreate = (
     }
   }
   throwUnsupportedEventVersion(event);
-};
+}
 
-const applyAssign = (event: Event, resource: WorkflowitemResource): true | undefined => {
+function applyAssign(event: Event, resource: WorkflowitemResource): true | undefined {
   if (event.intent !== "workflowitem.assign") return;
   switch (event.dataVersion) {
     case 1: {
@@ -213,9 +200,9 @@ const applyAssign = (event: Event, resource: WorkflowitemResource): true | undef
     }
   }
   throwUnsupportedEventVersion(event);
-};
+}
 
-const applyClose = (event: Event, resource: WorkflowitemResource): true | undefined => {
+function applyClose(event: Event, resource: WorkflowitemResource): true | undefined {
   if (event.intent !== "workflowitem.close") return;
   switch (event.dataVersion) {
     case 1: {
@@ -224,12 +211,12 @@ const applyClose = (event: Event, resource: WorkflowitemResource): true | undefi
     }
   }
   throwUnsupportedEventVersion(event);
-};
+}
 
-const applyGrantPermission = (
+function applyGrantPermission(
   event: Event,
   permissions: AllowedUserGroupsByIntent,
-): true | undefined => {
+): true | undefined {
   if (event.intent !== "workflowitem.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
@@ -243,12 +230,12 @@ const applyGrantPermission = (
     }
   }
   throwUnsupportedEventVersion(event);
-};
+}
 
-const applyRevokePermission = (
+function applyRevokePermission(
   event: Event,
   permissions: AllowedUserGroupsByIntent,
-): true | undefined => {
+): true | undefined {
   if (event.intent !== "workflowitem.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {
@@ -264,13 +251,13 @@ const applyRevokePermission = (
     }
   }
   throwUnsupportedEventVersion(event);
-};
+}
 
-export const getPermissions = async (
+export async function getPermissions(
   multichain: MultichainClient,
   projectId: string,
   workflowitemId: string,
-): Promise<AllowedUserGroupsByIntent> => {
+): Promise<AllowedUserGroupsByIntent> {
   const streamItems = await multichain.v2_readStreamItems(projectId, workflowitemId);
   let permissions: AllowedUserGroupsByIntent | undefined;
   for (const item of streamItems) {
@@ -292,13 +279,13 @@ export const getPermissions = async (
     throw { kind: "NotFound", what: `Workflowitem ${workflowitemId} of project ${projectId}.` };
   }
   return permissions;
-};
+}
 
-export const areAllClosed = async (
+export async function areAllClosed(
   multichain: MultichainClient,
   projectId: string,
   subprojectId: string,
-): Promise<boolean> => {
+): Promise<boolean> {
   const streamItems = await multichain.v2_readStreamItems(
     projectId,
     workflowitemsGroupKey(subprojectId),
@@ -333,4 +320,4 @@ export const areAllClosed = async (
     if (status !== "closed") return false;
   }
   return true;
-};
+}

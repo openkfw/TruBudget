@@ -1,27 +1,24 @@
-import * as Subproject from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib";
+import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import * as Project from "../project";
 import * as Workflowitem from "../workflowitem";
 import { sortWorkflowitems } from "./lib/sortWorkflowitems";
+import * as Subproject from "./model/Subproject";
 
-export const getSubprojectDetails = async (
+export async function getSubprojectDetails(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
-  const subproject: Subproject.SubprojectDataWithIntents = await Subproject.getForUser(
-    multichain,
-    req.token,
-    projectId,
-    subprojectId,
+  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
+    result => result[0],
   );
 
   const userIntent: Intent = "subproject.viewDetails";
@@ -34,7 +31,7 @@ export const getSubprojectDetails = async (
   );
 
   const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
-    unsortedItems => sortWorkflowitems(multichain, projectId, unsortedItems),
+    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
   );
 
   const parentProject = await Project.get(multichain, req.token, projectId);
@@ -50,4 +47,4 @@ export const getSubprojectDetails = async (
       },
     },
   ];
-};
+}
