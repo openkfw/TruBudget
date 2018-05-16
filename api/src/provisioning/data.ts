@@ -21,6 +21,7 @@ export const amazonasFundProject = {
       currency: "BRL",
       assignee: "jdoe",
       permissions: {
+        "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"],
       },
       workflows: [
