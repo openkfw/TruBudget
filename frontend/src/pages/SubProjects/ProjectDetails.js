@@ -133,6 +133,7 @@ const ProjectDetails = ({
   projectAssignee,
   roles,
   thumbnail,
+  users,
   canAssignProject,
   canViewPermissions,
   showProjectPermissions,
@@ -147,7 +148,6 @@ const ProjectDetails = ({
     statusDetails,
     allocatedRatio
   } = calculateMetrics(subProjects, projectAmount, projectCurrency);
-
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -180,7 +180,12 @@ const ProjectDetails = ({
             <ListItemIcon>
               <AssigneeIcon />
             </ListItemIcon>
-            <ProjectAssigneeContainer projectId={projectId} disabled={!canAssignProject} assignee={projectAssignee} />
+            <ProjectAssigneeContainer
+              users={users}
+              projectId={projectId}
+              disabled={!canAssignProject}
+              assignee={projectAssignee}
+            />
           </ListItem>
           <Divider />
           <ListItem style={styles.permissionContainer}>

@@ -1,23 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import AssigneeDialog from "../Common/AssigneeDialog";
+import AssigneeSelection from "../Common/AssigneeSelection";
 import { assignProject } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
-import { fetchUser } from "../Login/actions";
 
 class ProjectAssigneeContainer extends Component {
-  componentWillMount() {
-    this.props.fetchUser();
-  }
-
   assignProject = userId => {
     this.props.assignProject(this.props.projectId, userId);
   };
 
   render() {
     return (
-      <AssigneeDialog
+      <AssigneeSelection
         assigneeId={this.props.assignee}
         users={this.props.users}
         disabled={this.props.disabled}
@@ -29,14 +24,11 @@ class ProjectAssigneeContainer extends Component {
 }
 
 const mapStateToProps = state => {
-  return {
-    users: state.getIn(["login", "user"])
-  };
+  return {};
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchUser: () => dispatch(fetchUser(true)),
     assignProject: (projectId, userId) => dispatch(assignProject(projectId, userId))
   };
 };

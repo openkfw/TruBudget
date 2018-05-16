@@ -209,6 +209,7 @@ const SubProjectDetails = ({
   canViewPermissions,
   canAssinSubproject,
   parentProject,
+  users,
   showSubProjectPermissions,
   showSubProjectAssignee,
   ...props
@@ -260,6 +261,7 @@ const SubProjectDetails = ({
             <SubProjectAssigneeContainer
               projectId={parentProject ? parentProject.id : ""}
               subprojectId={id}
+              users={users}
               disabled={!canAssinSubproject}
               assignee={assignee}
             />
