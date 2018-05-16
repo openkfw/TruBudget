@@ -1,6 +1,6 @@
 import React from "react";
 
-import _isEmpty from "lodash";
+import _isEmpty from "lodash/isEmpty";
 
 import { withStyles } from "@material-ui/core/styles";
 import AmountIcon from "@material-ui/icons/AccountBalance";

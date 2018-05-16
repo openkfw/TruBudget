@@ -8,13 +8,13 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import SettingsIcon from "@material-ui/icons/Settings";
+import Typography from "@material-ui/core/Typography";
 
 import { ACMECorpLightgreen } from "../../colors";
 
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import strings from "../../localizeStrings";
-import Typography from "material-ui/Typography";
 import Dropdown from "../Common/NewDropdown";
 
 //import { isAdminNode } from '../../helper';

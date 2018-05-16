@@ -1,4 +1,4 @@
-import redPalette from "material-ui/colors/red";
+import redPalette from "@material-ui/core/colors/red";
 
 const colors = {
   lightColor: "white"
