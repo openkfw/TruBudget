@@ -8,6 +8,16 @@ import * as Workflowitem from "../workflowitem";
 import { sortWorkflowitems } from "./lib/sortWorkflowitems";
 import * as Subproject from "./model/Subproject";
 
+interface WorkflowitemDTO {
+  allowedIntents: Intent[];
+  data: Workflowitem.Data;
+}
+
+function removeEventLog(workflowitem: Workflowitem.WorkflowitemResource): WorkflowitemDTO {
+  delete workflowitem.log;
+  return workflowitem;
+}
+
 export async function getSubprojectDetails(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
@@ -30,9 +40,14 @@ export async function getSubprojectDetails(
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
-  const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
-    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
-  );
+  const workflowitems: WorkflowitemDTO[] = await Workflowitem.get(
+    multichain,
+    req.token,
+    projectId,
+    subprojectId,
+  )
+    .then(unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems))
+    .then(sortedItems => sortedItems.map(removeEventLog));
 
   const parentProject = await Project.get(multichain, req.token, projectId);
 
