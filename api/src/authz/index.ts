@@ -1,6 +1,7 @@
 import Intent from "./intents";
 import { AuthToken } from "./token";
 import { AllowedUserGroupsByIntent, GroupId, People } from "./types";
+import { allIntents } from "./intents";
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
@@ -19,9 +20,12 @@ export const getAllowedIntents = (
   userAndGroups: People,
   resourcePermissions: AllowedUserGroupsByIntent,
 ): Intent[] => {
-  const isRoot = userAndGroups.includes("root");
-  const allowedIntents = Object.keys(resourcePermissions as any).filter(
-    intent => isRoot || hasIntersection(userAndGroups, resourcePermissions[intent]),
+  if (userAndGroups.includes("root")) {
+    return allIntents;
+  }
+
+  const allowedIntents = Object.keys(resourcePermissions as any).filter(intent =>
+    hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
   return allowedIntents;
 };
