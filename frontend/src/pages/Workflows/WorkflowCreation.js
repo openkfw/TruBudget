@@ -1,9 +1,12 @@
 import React from "react";
+
+import Divider from "@material-ui/core/Divider";
+
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
-import TextInput from "../Common/TextInput";
 import WorkflowCreationAmount from "./WorkflowCreationAmount";
 import DocumentUpload from "../Documents/DocumentUpload";
+import Identifier from "../Common/Identifier";
 
 const handleSubmit = props => {
   const {
@@ -25,49 +28,45 @@ const handleSubmit = props => {
   onWorkflowDialogCancel();
 };
 
+const Content = props => {
+  return (
+    <div style={{ width: "100%" }}>
+      <div style={{ width: "100%" }}>
+        <Identifier
+          nameLabel={strings.workflow.workflow_title}
+          nameHintText={strings.workflow.workflow_title_description}
+          name={props.workflowToAdd.name}
+          nameOnChange={props.storeWorkflowName}
+          commentLabel={strings.workflow.workflow_comment}
+          commentHintText={strings.common.comment_description}
+          comment={props.workflowToAdd.comment}
+          commentOnChange={props.storeWorkflowComment}
+        />
+      </div>
+      <Divider />
+      <WorkflowCreationAmount
+        subProjectCurrency={props.currency}
+        storeWorkflowAmount={props.storeWorkflowAmount}
+        storeWorkflowAmountType={props.storeWorkflowAmountType}
+        storeWorkflowCurrency={props.storeWorkflowCurrency}
+        workflowAmount={props.workflowToAdd.amount}
+        workflowAmountType={props.workflowToAdd.amountType}
+        workflowCurrency={props.workflowToAdd.currency}
+      />
+    </div>
+  );
+};
 const WorkflowCreation = props => {
   const steps = [
     {
       title: strings.workflow.workflow_name,
       content: (
-        <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-          <TextInput
-            onChange={props.storeWorkflowName}
-            value={props.workflowToAdd.name}
-            floatingLabelText={strings.workflow.workflow_title}
-            hintText={strings.workflow.workflow_title_description}
-          />
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Content {...props} />
         </div>
       )
     },
-    {
-      title: strings.common.budget,
-      content: (
-        <WorkflowCreationAmount
-          subProjectCurrency={props.currency}
-          storeWorkflowAmount={props.storeWorkflowAmount}
-          storeWorkflowAmountType={props.storeWorkflowAmountType}
-          storeWorkflowCurrency={props.storeWorkflowCurrency}
-          workflowAmount={props.workflowToAdd.amount}
-          workflowAmountType={props.workflowToAdd.amountType}
-          workflowCurrency={props.workflowToAdd.currency}
-        />
-      )
-    },
-    {
-      title: strings.common.comment,
-      content: (
-        <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-          <TextInput
-            onChange={props.storeWorkflowComment}
-            value={props.workflowToAdd.comment}
-            multiLine={true}
-            floatingLabelText={strings.workflow.workflow_comment}
-            hintText={strings.common.comment_description}
-          />
-        </div>
-      )
-    },
+
     {
       title: strings.workflow.workflow_documents,
       content: <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />

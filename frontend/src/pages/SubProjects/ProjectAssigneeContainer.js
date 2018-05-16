@@ -1,34 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import AssigneeDialog from "../Common/AssigneeDialog";
-import { hideProjectAssignees, assignProject } from "./actions";
+import AssigneeSelection from "../Common/AssigneeSelection";
+import { assignProject } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
-import { fetchUser } from "../Login/actions";
 
 class ProjectAssigneeContainer extends Component {
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.show && nextProps.show) {
-      this.props.fetchUser();
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.onClose();
-  }
-
   assignProject = userId => {
     this.props.assignProject(this.props.projectId, userId);
   };
 
   render() {
     return (
-      <AssigneeDialog
+      <AssigneeSelection
         assigneeId={this.props.assignee}
         users={this.props.users}
+        disabled={this.props.disabled}
         title={this.props.title}
-        show={this.props.show}
-        onClose={this.props.onClose}
         assign={this.assignProject}
       />
     );
@@ -36,16 +24,11 @@ class ProjectAssigneeContainer extends Component {
 }
 
 const mapStateToProps = state => {
-  return {
-    show: state.getIn(["detailview", "showProjectAssignees"]),
-    users: state.getIn(["login", "user"])
-  };
+  return {};
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onClose: () => dispatch(hideProjectAssignees()),
-    fetchUser: () => dispatch(fetchUser(true)),
     assignProject: (projectId, userId) => dispatch(assignProject(projectId, userId))
   };
 };

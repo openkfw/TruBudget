@@ -1,8 +1,28 @@
 import React from "react";
-import ChevronRight from "material-ui/svg-icons/navigation/chevron-right";
-import FlatButton from "material-ui/FlatButton";
-import colors, { ACMECorpGrey } from "../../colors";
+
+import Button from "@material-ui/core/Button";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import Typography from "@material-ui/core/Typography";
+
 import strings from "../../localizeStrings";
+
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  breadcrumbs: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start"
+  },
+  breadcrumb: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  }
+};
 
 const getStaticBreadcrumb = name => {
   switch (name) {
@@ -22,19 +42,24 @@ const getStaticBreadcrumb = name => {
 //   return breadcrumb ? breadcrumb : '...';
 // };
 
+const short = (text, size = 12) =>
+  text.length > size
+    ? `${text.slice(0, Math.floor(size / 2))}...${text.slice(text.length - Math.floor(size / 2), text.length)}`
+    : text;
+
 const getPathName = (name, index, currentProject, currentSubProject) => {
   const staticName = getStaticBreadcrumb(name);
   if (!staticName) {
     switch (index) {
       case 2:
-        return currentProject;
+        return short(currentProject);
       case 3:
-        return currentSubProject;
+        return short(currentSubProject);
       default:
         return "...";
     }
   } else {
-    return staticName;
+    return short(staticName);
   }
 };
 
@@ -48,15 +73,12 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
   return paths.map((path, index) => {
     const isLastItem = index === paths.length - 1;
     return (
-      <span key={index}>
-        <span>{index ? <ChevronRight color={colors.lightColor} style={{ height: "16px" }} /> : null}</span>
-        <FlatButton
-          label={index ? getPathName(path, index, currentProject, currentSubProject) : strings.navigation.main_site}
-          disabled={isLastItem}
-          style={{ color: isLastItem ? ACMECorpGrey : colors.lightColor }}
-          onTouchTap={() => history.push(accumulatedPath[index])}
-        />
-      </span>
+      <div key={index} style={styles.breadcrumb}>
+        <div>{index ? <ChevronRight color="primary" style={{ height: "16px" }} /> : null}</div>
+        <Button disabled={isLastItem} color="primary" onClick={() => history.push(accumulatedPath[index])}>
+          {index ? getPathName(path, index, currentProject, currentSubProject) : strings.navigation.main_site}
+        </Button>
+      </div>
     );
   });
 };
@@ -72,11 +94,11 @@ const MainNavbarNavigation = ({
   const textColor = productionActive ? "#f0ebe6" : "#f44336";
   const navbarTitle = productionActive ? "TruBudget" : "TruBudget (Test)";
   return (
-    <div>
-      <div>
-        <span style={{ paddingRight: "50px", color: textColor }}>{navbarTitle}</span>
-        {createBreadcrumb(route, history, currentProject, currentSubProject)}
-      </div>
+    <div style={styles.container}>
+      <Typography variant="title" color="inherit" style={{ paddingRight: "50px", color: textColor }}>
+        {navbarTitle}
+      </Typography>
+      <div style={styles.breadcrumbs}>{createBreadcrumb(route, history, currentProject, currentSubProject)}</div>
     </div>
   );
 };

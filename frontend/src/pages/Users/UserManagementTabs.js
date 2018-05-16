@@ -1,5 +1,8 @@
 import React from "react";
-import { Tabs, Tab } from "material-ui/Tabs";
+
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+
 import OrganisationsTable from "./OrgansationsTable";
 import UsersTable from "./UsersTable";
 import GroupsTable from "./GroupsTable";

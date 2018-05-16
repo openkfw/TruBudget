@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
+
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 
 import strings from "../../localizeStrings";
 import { preselectCurrency, toAmountString } from "../../helper";
@@ -7,6 +10,7 @@ import Budget from "../Common/Budget";
 
 const styles = {
   container: {
+    marginTop: 20,
     display: "flex",
     flex: 1,
     flexDirection: "column",
@@ -14,7 +18,8 @@ const styles = {
     alignItems: "center"
   },
   selections: {
-    display: "flex"
+    display: "flex",
+    flexDirection: "row"
   },
   buttons: {
     width: "auto",
@@ -46,24 +51,35 @@ class WorkflowCreationAmount extends Component {
     return (
       <div style={styles.container}>
         <div>
-          <RadioButtonGroup
+          <RadioGroup
             style={styles.selections}
             name="workflowAmountType"
-            defaultSelected={workflowAmountType}
+            value={workflowAmountType}
             onChange={(event, value) => storeWorkflowAmountType(value)}
           >
-            <RadioButton style={styles.buttons} value="N/A" label={strings.workflow.workflow_budget_na} />
-            <RadioButton style={styles.buttons} value="allocated" label={strings.workflow.workflow_budget_allocated} />
-            <RadioButton style={styles.buttons} value="disbursed" label={strings.workflow.workflow_budget_disbursed} />
-          </RadioButtonGroup>
+            <FormControlLabel
+              value="N/A"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_na}
+            />
+            <FormControlLabel
+              value="allocated"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_allocated}
+            />
+            <FormControlLabel
+              value="disbursed"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_disbursed}
+            />
+          </RadioGroup>
         </div>
         <div
           style={{
             width: "100%",
             display: "flex",
             flexDirection: "row",
-            justifyContent: "center",
-            marginTop: "10px"
+            justifyContent: "center"
           }}
         >
           <Budget

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import UserManagement from "./UserManagement";

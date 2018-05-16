@@ -1,62 +1,41 @@
 import React, { Component } from "react";
 
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from "material-ui/Table";
-
-import SelectField from "material-ui/SelectField";
-import MenuItem from "material-ui/MenuItem";
-
-import TextField from "material-ui/TextField";
-import Dialog from "material-ui/Dialog";
-
-import FlatButton from "material-ui/FlatButton";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import Checkbox from "@material-ui/core/Checkbox";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 
 import strings from "../../../localizeStrings";
 
-const styles = {
-  container: {
-    padding: 0
-  },
-  dialog: {
-    paddingLeft: 0,
-    paddingRight: 0
-  },
-  tableRow: {
-    borderWidth: 0
-  },
-  heading: {
-    textAlign: "center",
-    fontSize: "14px",
-    verticalAlign: "bottom",
-    paddingBottom: "8px"
-  }
-};
-
 const PermissionsScreen = props => (
-  <Dialog
-    title={props.title}
-    actions={[<FlatButton label="Close" primary={true} onClick={props.onClose} />]}
-    modal={true}
-    open={props.show}
-    autoScrollBodyContent={true}
-    bodyStyle={styles.dialog}
-  >
-    <div style={styles.container}>
-      <PermissionsTable {...props} />
-    </div>
+  <Dialog open={props.show} onClose={props.onClose}>
+    <DialogTitle>{props.title}</DialogTitle>
+    <DialogContent>
+      <div>
+        <PermissionsTable {...props} />
+      </div>
+    </DialogContent>
+    <DialogActions>
+      <Button color="primary" onClick={props.onClose}>
+        {strings.common.close}
+      </Button>
+    </DialogActions>
   </Dialog>
 );
 
-const tableStyle = {
-  container: {}
-};
-
-const selectionStyle = {
-  searchContainer: {
-    marginLeft: "12px",
-    marginRight: "12px"
-  },
-  selectionContainer: {}
-};
 class PermissionSelection extends Component {
   constructor() {
     super();
@@ -65,38 +44,42 @@ class PermissionSelection extends Component {
     };
   }
 
-  resolveSelectionTitle = () => {
-    const userListAvailable = this.props.userList.length > 0;
-
-    if (!userListAvailable) {
-      return `...`;
-    }
-    return `${this.props.permissions[this.props.name].length} selection(s)`;
+  resolveSelections = (user, permissions) => {
+    if (!user || !permissions) return [];
+    return permissions.map(id => user.find(u => u.id === id)).map(u => u.displayName);
   };
 
   render() {
+    const selections = this.resolveSelections(this.props.userList, this.props.permissions[this.props.name]);
     return (
-      <SelectField
-        multiple={true}
-        hintText={this.resolveSelectionTitle()}
-        maxHeight={250}
-        autoWidth={true}
-        dropDownMenuProps={{
-          onClose: () => this.setState({ searchTerm: "" })
-        }}
-      >
-        <div style={selectionStyle.searchContainer}>
-          <TextField fullWidth hintText="Search" onChange={e => this.setState({ searchTerm: e.target.value })} />
-        </div>
-        <div style={selectionStyle.selectionContainer}>
-          {renderUserSelection(
-            this.props.userList.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
-            this.props.permissions[this.props.name],
-            this.props.name,
-            this.props.grantPermission
-          )}
-        </div>
-      </SelectField>
+      <FormControl key={this.props.name + "form"}>
+        <Select
+          multiple
+          style={{
+            width: "200px"
+          }}
+          autoWidth
+          value={selections}
+          renderValue={s => s.join(", ")}
+        >
+          <ListItem className="noFocus" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <FormControl>
+              <InputLabel>{strings.common.search}</InputLabel>
+              <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
+            </FormControl>
+          </ListItem>
+          <div className="noFocus">
+            {renderUserSelection(
+              this.props.userList.filter(u =>
+                u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())
+              ),
+              this.props.permissions[this.props.name],
+              this.props.name,
+              this.props.grantPermission
+            )}
+          </div>
+        </Select>
+      </FormControl>
     );
   }
 }
@@ -104,49 +87,43 @@ class PermissionSelection extends Component {
 const renderUserSelection = (user, permissionedUser, permissionName, grantPermission) =>
   user.map(u => {
     return (
-      <MenuItem
-        key={u.id}
-        insetChildren={true}
-        checked={permissionedUser.indexOf(u.id) > -1}
-        value={u.displayName}
-        primaryText={u.displayName}
-        onClick={() => grantPermission(permissionName, u.id)}
-      />
+      <MenuItem key={u.id + "selection"} value={u.id} onClick={() => grantPermission(permissionName, u.id)}>
+        <Checkbox checked={permissionedUser.indexOf(u.id) > -1} />
+        <ListItemText primary={u.displayName} />
+      </MenuItem>
     );
   });
 
 const renderPermission = (name, userList, permissions, grantPermission) => (
-  <TableRow key={name} style={styles.tableRow}>
-    <TableRowColumn>{strings.permissions[name.replace(/[.]/g, "_")] || name}</TableRowColumn>
-    <TableRowColumn>
-      <PermissionSelection
-        name={name}
-        userList={userList}
-        permissions={permissions}
-        grantPermission={grantPermission}
-      />
-    </TableRowColumn>
-  </TableRow>
+  <ListItem key={name + "perm"}>
+    <ListItemText
+      primary={
+        <PermissionSelection
+          name={name}
+          userList={userList}
+          permissions={permissions}
+          grantPermission={grantPermission}
+        />
+      }
+      secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
+    />
+  </ListItem>
 );
 
 const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder }) => (
-  <div style={tableStyle.container}>
+  <div>
     {intentOrder.map(section => {
       return (
-        <Table key={strings.permissions[section.name]} selectable={false}>
-          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-            <TableRow>
-              <TableHeaderColumn colSpan="3" style={styles.heading}>
-                {strings.permissions[section.name]}
-              </TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false}>
-            {section.intents
-              .filter(i => permissions[i] !== undefined)
-              .map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))}
-          </TableBody>
-        </Table>
+        <Card key={section.name + "section"} style={{ marginTop: "12px", marginBottom: "12px" }}>
+          <CardHeader subheader={strings.permissions[section.name]} />
+          <CardContent>
+            <List>
+              {section.intents
+                .filter(i => permissions[i] !== undefined)
+                .map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))}
+            </List>
+          </CardContent>
+        </Card>
       );
     })}
   </div>

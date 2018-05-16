@@ -1,8 +1,15 @@
 import React from "react";
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from "material-ui/Table";
-import FlatButton from "material-ui/FlatButton";
+
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+
 import { toAmountString, statusMapping } from "../../helper";
-import { Card, CardHeader } from "material-ui/Card";
 import { ACMECorpLightgreen } from "../../colors.js";
 import strings from "../../localizeStrings";
 import { canViewSubProjectDetails } from "../../permissions";
@@ -16,19 +23,20 @@ const getTableEntries = (subProjects, location, history) => {
   return subProjects.map((subProject, index) => {
     var amount = toAmountString(subProject.amount, subProject.currency);
     return (
-      <TableRow key={index} selectable={false}>
-        <TableRowColumn style={styles.tableText}>{subProject.displayName}</TableRowColumn>
-        <TableRowColumn style={styles.tableText}>{amount}</TableRowColumn>
-        <TableRowColumn style={styles.tableText}>{statusMapping(subProject.status)}</TableRowColumn>
-        <TableRowColumn>
-          <FlatButton
+      <TableRow key={index}>
+        <TableCell style={styles.tableText}>{subProject.displayName}</TableCell>
+        <TableCell style={styles.tableText}>{amount}</TableCell>
+        <TableCell style={styles.tableText}>{statusMapping(subProject.status)}</TableCell>
+        <TableCell>
+          <Button
             style={styles.tableText}
-            label={strings.subproject.subproject_select_button}
             disabled={!canViewSubProjectDetails(subProject.allowedIntents)}
-            onTouchTap={() => history.push("/projects/" + location.pathname.split("/")[2] + "/" + subProject.id)}
-            secondary={true}
-          />
-        </TableRowColumn>
+            onClick={() => history.push("/projects/" + location.pathname.split("/")[2] + "/" + subProject.id)}
+            color="secondary"
+          >
+            {strings.subproject.subproject_select_button}
+          </Button>
+        </TableCell>
       </TableRow>
     );
   });
@@ -54,17 +62,17 @@ const SubProjectsTable = ({
   const tableEntries = getTableEntries(subProjects, location, history);
   return (
     <Card>
-      <CardHeader titleColor="white" style={{ backgroundColor: ACMECorpLightgreen }} title={strings.common.subprojects} />
+      <CardHeader style={{ backgroundColor: ACMECorpLightgreen }} title={strings.common.subprojects} />
       <Table>
-        <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+        <TableHead>
           <TableRow>
-            <TableHeaderColumn style={styles.tableText}>{strings.common.subproject}</TableHeaderColumn>
-            <TableHeaderColumn style={styles.tableText}>{strings.common.budget}</TableHeaderColumn>
-            <TableHeaderColumn style={styles.tableText}>{strings.common.status}</TableHeaderColumn>
-            <TableHeaderColumn style={styles.tableText}> </TableHeaderColumn>
+            <TableCell style={styles.tableText}>{strings.common.subproject}</TableCell>
+            <TableCell style={styles.tableText}>{strings.common.budget}</TableCell>
+            <TableCell style={styles.tableText}>{strings.common.status}</TableCell>
+            <TableCell style={styles.tableText}> </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody displayRowCheckbox={false}>{tableEntries}</TableBody>
+        </TableHead>
+        <TableBody>{tableEntries}</TableBody>
       </Table>
     </Card>
   );

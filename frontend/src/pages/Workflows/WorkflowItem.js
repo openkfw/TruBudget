@@ -1,18 +1,18 @@
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
-import { Table, TableBody, TableRow, TableRowColumn } from "material-ui/Table";
-import { Card } from "material-ui/Card";
-import Avatar from "material-ui/Avatar";
 
-import InfoIcon from "material-ui/svg-icons/action/info-outline";
-import HiddenIcon from "material-ui/svg-icons/action/visibility-off";
-import Paper from "material-ui/Paper";
-import Chip from "material-ui/Chip";
-import OpenIcon from "material-ui/svg-icons/content/remove";
-import DoneIcon from "material-ui/svg-icons/navigation/check";
-import EditIcon from "material-ui/svg-icons/image/edit";
-import PermissionIcon from "material-ui/svg-icons/action/lock-open";
-import IconButton from "material-ui/IconButton";
+import Card from "@material-ui/core/Card";
+import Chip from "@material-ui/core/Chip";
+import DoneIcon from "@material-ui/icons/Check";
+import EditIcon from "@material-ui/icons/Edit";
+import HiddenIcon from "@material-ui/icons/VisibilityOff";
+import IconButton from "@material-ui/core/IconButton";
+import InfoIcon from "@material-ui/icons/InfoOutline";
+import OpenIcon from "@material-ui/icons/Remove";
+import Paper from "@material-ui/core/Paper";
+import PermissionIcon from "@material-ui/icons/LockOpen";
+import Typography from "@material-ui/core/Typography";
+
 import { toAmountString, amountTypes } from "../../helper.js";
 import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from "../../colors.js";
 import strings from "../../localizeStrings";
@@ -22,6 +22,7 @@ import {
   canCloseWorkflowItem,
   canAssignWorkflowItem
 } from "../../permissions.js";
+import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
 const styles = {
   in_progress: {
@@ -43,8 +44,9 @@ const styles = {
     textAlign: "center",
     display: "inline-block",
     position: "absolute",
-    top: "14px",
-    left: "-35px"
+    top: "18px",
+    left: "16px",
+    borderRadius: "10px"
   },
   actions: {
     display: "flex",
@@ -56,16 +58,16 @@ const styles = {
     borderLeftStyle: "solid",
     borderLeftColor: "black",
     height: "100%",
-    left: "-26px",
-    bottom: "30px"
+    left: "25px",
+    bottom: "34px"
   },
   firstLine: {
     position: "absolute",
     borderLeft: "2px solid",
     borderLeftColor: "black",
-    height: "34px",
-    left: "-26px",
-    bottom: "30px"
+    height: "38px",
+    left: "25px",
+    bottom: "34px"
   },
   editButtons: {
     minWidth: "40px",
@@ -97,8 +99,15 @@ const styles = {
   chip: {
     margin: 4
   },
-  chipRow: {
-    paddingLeft: 10
+
+  workflowContent: {
+    display: "flex",
+
+    alignItems: "center",
+    padding: "4px 8px 4px 4px"
+  },
+  workflowCell: {
+    flex: 1
   }
 };
 
@@ -127,7 +136,7 @@ const StepDot = ({ status, selectable }) => {
       Icon = OpenIcon;
   }
   return (
-    <Paper style={styles.dots} zDepth={2} circle={true}>
+    <Paper style={styles.dots} elevation={2} disabled={selectable}>
       <Icon style={{ width: "14px", height: "20px", opacity: selectable ? 1 : 0.3 }} />
     </Paper>
   );
@@ -148,7 +157,7 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
   if (!workflowSortEnabled) {
     return (
-      <IconButton style={styles.infoButton} onTouchTap={() => openWorkflowDetails(workflow.txid)}>
+      <IconButton style={styles.infoButton} onClick={() => openWorkflowDetails(workflow.id)}>
         <InfoIcon />
       </IconButton>
     );
@@ -166,7 +175,7 @@ const getAmountField = (amount, type) => {
   return (
     <div style={styles.chipDiv}>
       <div>{amountToShow}</div>
-      {noBudgetAllocated ? null : <Chip style={styles.amountChip}>{amountTypes(type)}</Chip>}
+      {noBudgetAllocated ? null : <Chip style={styles.amountChip} label={amountTypes(type)} />}
     </div>
   );
 };
@@ -185,19 +194,19 @@ const renderActionButtons = (
   };
 
   return (
-    <TableRowColumn colSpan={3}>
+    <div style={{ flex: 2 }}>
       <div style={styles.actions}>
-        <IconButton disabled={!canEditWorkflow} onTouchTap={edit} style={canEditWorkflow ? {} : hideStyle}>
+        <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
           <EditIcon />
         </IconButton>
-        <IconButton disabled={!canListWorkflowPermissions} onTouchTap={showPerm}>
+        <IconButton disabled={!canListWorkflowPermissions} onClick={showPerm}>
           <PermissionIcon />
         </IconButton>
-        <IconButton disabled={!canCloseWorkflow} onTouchTap={close} style={canCloseWorkflow ? {} : hideStyle}>
+        <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
           <DoneIcon />
         </IconButton>
       </div>
-    </TableRowColumn>
+    </div>
   );
 };
 
@@ -210,70 +219,72 @@ export const WorkflowItem = SortableElement(
     currentWorkflowSelectable,
     workflowSortEnabled,
     showWorkflowItemAssignee,
+    parentProject,
+    users,
     ...props
   }) => {
     const { id, status, displayName, amountType, allowedIntents, assignee } = workflow;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const amount = toAmountString(workflow.amount, workflow.currency);
     const tableStyle = styles[status];
-    const itemStyle = workflowSelectable ? {} : { opacity: 0.3 };
+    const subprojectId = props.id;
+    const itemStyle = workflowSelectable
+      ? {}
+      : {
+          opacity: 0.3
+        };
 
     const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
     const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
     const infoButton = getInfoButton(props, workflow);
 
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
-
     return (
-      <Card
-        zDepth={workflowSelectable ? 1 : 0}
-        key={mapIndex}
-        style={{
-          marginLeft: "50px",
-          marginRight: "10px",
-          marginTop: "15px",
-          marginBottom: "15px",
-          position: "relative"
-        }}
-      >
+      <div style={{ position: "relative" }}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
-        <Table>
-          <TableBody displayRowCheckbox={false}>
-            <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
-              <TableRowColumn colSpan={1}>{infoButton}</TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.text }} colSpan={3}>
-                {displayName}
-              </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
+        <Card
+          elevation={workflowSelectable ? 1 : 0}
+          key={mapIndex}
+          style={{
+            marginLeft: "50px",
+            marginRight: "10px",
+            marginTop: "15px",
+            marginBottom: "15px"
+          }}
+        >
+          <div style={{ ...tableStyle, ...styles.workflowContent }}>
+            <div style={{ flex: 1 }}>{infoButton}</div>
+            <div style={{ ...itemStyle, ...styles.text, flex: 4 }}>
+              <Typography variant="body1">{displayName}</Typography>
+            </div>
+            <div style={{ ...itemStyle, ...styles.listText, flex: 4 }}>
+              <Typography variant="body1" component="div">
                 {getAmountField(amount, amountType)}
-              </TableRowColumn>
-              <TableRowColumn style={{ ...styles.listText, ...styles.chipRow }} colSpan={2}>
-                {canAssign ? (
-                  <Chip onClick={() => showWorkflowItemAssignee(id, assignee)}>
-                    <Avatar src="/lego_avatar_male1.jpg" />
-                    {assignee}
-                  </Chip>
-                ) : (
-                  <Chip>
-                    <Avatar src="/lego_avatar_male1.jpg" />
-                    {assignee}
-                  </Chip>
-                )}
-              </TableRowColumn>
-              {renderActionButtons(
-                showEdit,
-                editWorkflow.bind(this, workflow, props),
-                canViewWorkflowItemPermissions(allowedIntents),
-                () => props.showWorkflowItemPermissions(id),
-                showClose,
-                () => props.closeWorkflowItem(id),
-                currentWorkflowSelectable
-              )}
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Card>
+              </Typography>
+            </div>
+            <div style={{ ...styles.listText, flex: 4 }}>
+              <WorkflowAssigneeContainer
+                projectId={parentProject ? parentProject.id : ""}
+                subprojectId={subprojectId}
+                workflowitemId={id}
+                disabled={!canAssign}
+                users={users}
+                assignee={assignee}
+              />
+            </div>
+            {renderActionButtons(
+              showEdit,
+              editWorkflow.bind(this, workflow, props),
+              canViewWorkflowItemPermissions(allowedIntents),
+              () => props.showWorkflowItemPermissions(id),
+              showClose,
+              () => props.closeWorkflowItem(id),
+              currentWorkflowSelectable
+            )}
+          </div>
+        </Card>
+      </div>
     );
   }
 );
@@ -284,44 +295,37 @@ export const RedactedWorkflowItem = SortableElement(
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const tableStyle = styles[status];
 
-    const itemStyle = workflowSelectable ? {} : { opacity: 0.3 };
+    const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
 
     return (
-      <Card
-        zDepth={workflowSelectable ? 1 : 0}
-        key={mapIndex}
-        style={{
-          marginLeft: "50px",
-          marginRight: "10px",
-          marginTop: "15px",
-          marginBottom: "15px",
-          position: "relative"
-        }}
-      >
+      <div style={{ position: "relative" }}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
-        <Table>
-          <TableBody displayRowCheckbox={false}>
-            <TableRow style={tableStyle} selectable={false} disabled={workflowSelectable}>
-              <TableRowColumn colSpan={1}>
-                <IconButton style={styles.infoButton}>
-                  <HiddenIcon />
-                </IconButton>
-              </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText, ...styles.redacted }} colSpan={3}>
-                {strings.workflow.workflow_redacted}
-              </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={3}>
-                {null}
-              </TableRowColumn>
-              <TableRowColumn style={{ ...itemStyle, ...styles.listText }} colSpan={2}>
-                {null}
-              </TableRowColumn>
-              <TableRowColumn colSpan={3}>{null}</TableRowColumn>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Card>
+        <Card
+          elevation={workflowSelectable ? 1 : 0}
+          key={mapIndex}
+          style={{
+            marginLeft: "50px",
+            marginRight: "10px",
+            marginTop: "15px",
+            marginBottom: "15px"
+          }}
+        >
+          <div style={{ ...tableStyle, ...styles.workflowContent }}>
+            <div style={{ flex: 1 }}>
+              <IconButton style={styles.infoButton}>
+                <HiddenIcon />
+              </IconButton>
+            </div>
+            <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
+              <Typography variant="body1">{strings.workflow.workflow_redacted}</Typography>
+            </div>
+            <div style={{ ...itemStyle, ...styles.listText, flex: 5 }}>{null}</div>
+            <div style={{ ...styles.listText, ...styles.chipRow, flex: 2 }}>{null}</div>
+            {null}
+          </div>
+        </Card>
+      </div>
     );
   }
 );

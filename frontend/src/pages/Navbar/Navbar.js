@@ -1,43 +1,70 @@
-import React from 'react';
-import AppBar from 'material-ui/AppBar';
+import React from "react";
 
-import SideNav from './SideNav';
-import LeftNavbarNavigation from './LeftNavbarNavigation';
-import MainNavbarNavigation from './MainNavbarNavigation';
-import RightNavbarNavigation from './RightNavbarNavigation';
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import { withStyles } from "@material-ui/core/styles";
+
+import SideNav from "./SideNav";
+import LeftNavbarNavigation from "./LeftNavbarNavigation";
+import MainNavbarNavigation from "./MainNavbarNavigation";
+import RightNavbarNavigation from "./RightNavbarNavigation";
 
 const styles = {
-  navbar: {
-    backgroundColor: 'transparent',
-    boxShadow: 'transparent'
+  root: {
+    backgroundColor: "transparent",
+    boxShadow: "none"
   }
-}
+};
 
 const Navbar = ({
-  onToggleSidebar, peers, unreadNotifications,
-  showSidebar, history, route,
-  logout, streamNames, productionActive,
-  displayName, organization, avatar, avatarBackground,
-  currentProject, currentSubProject
+  onToggleSidebar,
+  peers,
+  unreadNotifications,
+  showSidebar,
+  history,
+  route,
+  logout,
+  streamNames,
+  productionActive,
+  displayName,
+  organization,
+  avatar,
+  avatarBackground,
+  currentProject,
+  currentSubProject,
+  classes
 }) => (
-    <div >
-      <AppBar
-        title={<MainNavbarNavigation productionActive={productionActive} history={history} route={route} currentProject={currentProject} currentSubProject={currentSubProject} />}
-        iconElementLeft={<LeftNavbarNavigation onToggleSidebar={onToggleSidebar} />}
-        iconElementRight={<RightNavbarNavigation organization={organization} unreadNotifications={unreadNotifications} peers={peers} history={history} logout={logout} />}
-        style={styles.navbar}
-      />
-      <SideNav
-        onToggleSidebar={onToggleSidebar}
-        showSidebar={showSidebar}
-        history={history}
-        logout={logout}
-        displayName={displayName}
-        organization={organization}
-        avatar={avatar}
-        avatarBackground={avatarBackground}
-      />
-    </div>
-  );
+  <div>
+    <AppBar classes={classes} position="absolute">
+      <Toolbar>
+        <LeftNavbarNavigation onToggleSidebar={onToggleSidebar} />
+        <MainNavbarNavigation
+          productionActive={productionActive}
+          history={history}
+          route={route}
+          currentProject={currentProject}
+          currentSubProject={currentSubProject}
+        />
+        <RightNavbarNavigation
+          organization={organization}
+          unreadNotifications={unreadNotifications}
+          peers={peers}
+          history={history}
+          logout={logout}
+        />
+      </Toolbar>
+    </AppBar>
+    <SideNav
+      onToggleSidebar={onToggleSidebar}
+      showSidebar={showSidebar}
+      history={history}
+      logout={logout}
+      displayName={displayName}
+      organization={organization}
+      avatar={avatar}
+      avatarBackground={avatarBackground}
+    />
+  </div>
+);
 
-export default Navbar;
+export default withStyles(styles)(Navbar);

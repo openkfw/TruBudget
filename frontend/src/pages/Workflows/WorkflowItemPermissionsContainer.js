@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
 import { fetchWorkflowItemPermissions, grantWorkflowItemPermission, hideWorkflowItemPermissions } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
@@ -16,7 +17,7 @@ class WorkflowItemPermissionsContainer extends Component {
   }
 
   grantPermission = (_, permission, user) => {
-    this.props.grantPermission(this.props.projectId, this.props.wId, permission, user);
+    this.props.grantPermission(this.props.projectId, this.props.subProjectId, this.props.wId, permission, user);
   };
 
   render() {
@@ -38,8 +39,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onClose: () => dispatch(hideWorkflowItemPermissions()),
-    grantPermission: (pId, wId, permission, user) =>
-      dispatch(grantWorkflowItemPermission(pId, wId, permission, user, true)),
+    grantPermission: (pId, sId, wId, permission, user) =>
+      dispatch(grantWorkflowItemPermission(pId, sId, wId, permission, user, true)),
     fetchWorkflowItemPermissions: (pId, wId, showLoading) =>
       dispatch(fetchWorkflowItemPermissions(pId, wId, showLoading)),
     fetchUser: () => dispatch(fetchUser(true))

@@ -1,6 +1,27 @@
 import React from "react";
-import { Card, CardMedia, CardHeader } from "material-ui/Card";
+
 import { Doughnut } from "react-chartjs-2";
+
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import AssigneeIcon from "@material-ui/icons/Group";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CompletionIcon from "@material-ui/icons/TrendingUp";
+import DateIcon from "@material-ui/icons/DateRange";
+import Divider from "@material-ui/core/Divider";
+import DoneIcon from "@material-ui/icons/Check";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import OpenIcon from "@material-ui/icons/Remove";
+import PermissionIcon from "@material-ui/icons/LockOpen";
+import Typography from "@material-ui/core/Typography";
+import UnspentIcon from "@material-ui/icons/AddCircle";
+
 import {
   toAmountString,
   getAllocationRatio,
@@ -13,25 +34,11 @@ import {
   calculateUnspentAmount,
   getProgressInformation
 } from "../../helper.js";
-import { List, ListItem } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import Chip from "material-ui/Chip";
-import Avatar from "material-ui/Avatar";
-
-import RaisedButton from "material-ui/RaisedButton";
-import AmountIcon from "material-ui/svg-icons/action/account-balance";
-import UnspentIcon from "material-ui/svg-icons/content/add-circle";
-import DateIcon from "material-ui/svg-icons/action/date-range";
-import OpenIcon from "material-ui/svg-icons/content/remove";
-import DoneIcon from "material-ui/svg-icons/navigation/check";
-import PermissionIcon from "material-ui/svg-icons/action/lock-open";
-import AssigneeIcon from "material-ui/svg-icons/social/group";
-import IconButton from "material-ui/IconButton";
-import CompletionIcon from "material-ui/svg-icons/action/trending-up";
 
 import GaugeChart from "../Common/GaugeChart";
-import { budgetStatusColorPalette, red } from "../../colors";
+import { red } from "../../colors";
 import strings from "../../localizeStrings";
+import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
 
 const styles = {
   container: {
@@ -98,9 +105,6 @@ const styles = {
     marginTop: "10px",
     marginBottom: "10px",
     marginRight: "10px"
-  },
-  assigneeIcon: {
-    marginTop: 20
   }
 };
 
@@ -121,6 +125,7 @@ const ProjectDetails = ({
   projectName,
   projectCurrency,
   projectAmount,
+  projectId,
   subProjects,
   projectComment,
   projectStatus,
@@ -128,10 +133,12 @@ const ProjectDetails = ({
   projectAssignee,
   roles,
   thumbnail,
+  users,
   canAssignProject,
   canViewPermissions,
   showProjectPermissions,
-  showProjectAssignees
+  showProjectAssignees,
+  ...rest
 }) => {
   const {
     amountString,
@@ -144,87 +151,78 @@ const ProjectDetails = ({
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <CardHeader title={projectName} subtitle={projectComment} avatar={thumbnail} />
+        <CardHeader title={projectName} subheader={projectComment} avatar={<Avatar>{projectName[0]}</Avatar>} />
         <List>
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<AmountIcon />}
-            primaryText={<div aria-label="projectbudget"> {amountString} </div>}
-            secondaryText={strings.common.budget}
-          />
+          <ListItem>
+            <ListItemIcon>
+              <AmountIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={<div aria-label="projectbudget"> {amountString} </div>}
+              secondary={strings.common.budget}
+            />
+          </ListItem>
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={statusIconMapping[projectStatus]}
-            primaryText={statusMapping(projectStatus)}
-            secondaryText={strings.common.status}
-          />
+          <ListItem>
+            <ListItemIcon>{statusIconMapping[projectStatus]}</ListItemIcon>
+            <ListItemText primary={statusMapping(projectStatus)} secondary={strings.common.status} />
+          </ListItem>
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<DateIcon />}
-            primaryText={tsToString(projectTS)}
-            secondaryText={strings.common.created}
-          />
+          <ListItem>
+            <ListItemIcon>
+              <DateIcon />
+            </ListItemIcon>
+            <ListItemText primary={tsToString(projectTS)} secondary={strings.common.created} />
+          </ListItem>
           <Divider />
-          <ListItem
-            disabled={true}
-            leftIcon={<AssigneeIcon style={styles.assigneeIcon} />}
-            primaryText={
-              canAssignProject ? (
-                <Chip onClick={() => showProjectAssignees()}>
-                  <Avatar src="/lego_avatar_male1.jpg" />
-                  {projectAssignee}
-                </Chip>
-              ) : (
-                <Chip>
-                  <Avatar src="/lego_avatar_male1.jpg" />
-                  {projectAssignee}
-                </Chip>
-              )
-            }
-          />
+          <ListItem>
+            <ListItemIcon>
+              <AssigneeIcon />
+            </ListItemIcon>
+            <ProjectAssigneeContainer
+              users={users}
+              projectId={projectId}
+              disabled={!canAssignProject}
+              assignee={projectAssignee}
+            />
+          </ListItem>
           <Divider />
-          <ListItem
-            style={styles.permissionContainer}
-            disabled={true}
-            leftIcon={null}
-            primaryText={
-              <RaisedButton
-                label="Permissions"
-                secondary={true}
-                disabled={!canViewPermissions}
-                onClick={showProjectPermissions}
-                icon={<PermissionIcon style={styles.icon} />}
-              />
-            }
-          />
+          <ListItem style={styles.permissionContainer}>
+            <Button
+              disabled={!canViewPermissions}
+              onClick={showProjectPermissions}
+              icon={<PermissionIcon style={styles.icon} />}
+              variant="raised"
+              color="primary"
+            >
+              Permissions
+            </Button>
+          </ListItem>
         </List>
       </Card>
+
       <Card style={styles.card}>
         <CardHeader title={strings.common.budget_distribution} />
         <Divider />
         <div style={styles.charts}>
-          <ListItem
-            style={styles.text}
-            disabled={true}
-            leftIcon={<UnspentIcon color={budgetStatusColorPalette[1]} />}
-            primaryText={spentAmountString}
-            secondaryText={strings.common.assigned_budget}
-          />
+          <ListItem style={styles.text}>
+            <ListItemIcon>
+              <UnspentIcon color="primary" />
+            </ListItemIcon>
+            <ListItemText primary={spentAmountString} secondary={strings.common.assigned_budget} />
+          </ListItem>
           <GaugeChart size={0.2} responsive={false} value={allocatedRatio} />
         </div>
 
         <Divider />
         <div style={styles.charts}>
-          <ListItem
-            style={styles.text}
-            disabled={true}
-            leftIcon={<CompletionIcon color={budgetStatusColorPalette[1]} />}
-            primaryText={completionString}
-            secondaryText={strings.common.completion}
-          />
+          <ListItem style={styles.text}>
+            <ListItemIcon>
+              <CompletionIcon color="primary" />
+            </ListItemIcon>
+            <ListItemText primary={completionString} secondary={strings.common.completion} />
+          </ListItem>
           <GaugeChart size={0.2} responsive={false} value={completionRatio} />
         </div>
         <Divider />
@@ -232,39 +230,28 @@ const ProjectDetails = ({
       <Card style={styles.card}>
         <CardHeader title={strings.common.task_status} />
         <Divider />
-        <CardMedia style={styles.cardMedia}>
+        <ListItem style={styles.cardMedia}>
           <Doughnut data={createTaskData(subProjects, "subprojects")} />
-        </CardMedia>
-        <Divider />
-        <ListItem disabled={true}>
+        </ListItem>
+        <ListItem>
           <div style={styles.tasksChart}>
             <div style={styles.taskChartItem}>
-              <div style={styles.text}>{statusDetails.open.toString()}</div>
+              <Typography>{statusDetails.open.toString()}</Typography>
               <div>
-                <IconButton
-                  disableTouchRipple
-                  tooltip={strings.common.open}
-                  style={styles.iconButton}
-                  tooltipStyles={styles.tooltip}
-                  iconStyle={styles.icon}
-                >
+                <IconButton disabled>
                   <OpenIcon />
                 </IconButton>
               </div>
+              <Typography variant="caption">{strings.common.open}</Typography>
             </div>
             <div style={styles.taskChartItem}>
-              <div style={styles.text}>{statusDetails.done.toString()}</div>
+              <Typography>{statusDetails.done.toString()}</Typography>
               <div>
-                <IconButton
-                  disableTouchRipple
-                  tooltip={strings.common.done}
-                  style={styles.iconButton}
-                  tooltipStyles={styles.tooltip}
-                  iconStyle={styles.icon}
-                >
+                <IconButton disabled>
                   <DoneIcon />
                 </IconButton>
               </div>
+              <Typography variant="caption">{strings.common.done}</Typography>
             </div>
           </div>
         </ListItem>

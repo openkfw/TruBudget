@@ -1,17 +1,16 @@
-import React from 'react';
-import MenuIcon from 'material-ui/svg-icons/navigation/menu';
-import IconButton from 'material-ui/IconButton';
+import React from "react";
 
-import colors from '../../colors'
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
 
-const LeftNavbarNavigation = ({onToggleSidebar}) => {
+const LeftNavbarNavigation = ({ onToggleSidebar }) => {
   return (
     <div>
-      <IconButton onTouchTap={onToggleSidebar}>
-        <MenuIcon color={colors.lightColor}/>
+      <IconButton onClick={onToggleSidebar}>
+        <MenuIcon color="primary" />
       </IconButton>
     </div>
-  )
-}
+  );
+};
 
 export default LeftNavbarNavigation;

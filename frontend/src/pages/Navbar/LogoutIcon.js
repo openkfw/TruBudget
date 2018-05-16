@@ -1,21 +1,22 @@
-import React from 'react';
-import IconButton from 'material-ui/IconButton';
-import PowerIcon from 'material-ui/svg-icons/action/power-settings-new';
+import React from "react";
 
-import colors from '../../colors';
-import strings from '../../localizeStrings';
+import IconButton from "@material-ui/core/IconButton";
+import PowerIcon from "@material-ui/icons/PowerSettingsNew";
+
+import strings from "../../localizeStrings";
 
 const LogoutIcon = ({ history, logout }) => {
   return (
     <IconButton
       tooltip={strings.navigation.logout}
-      onTouchTap={() => {
+      onClick={() => {
         logout();
-        history.push('/login');
-      }}>
-      <PowerIcon color={colors.lightColor} />
+        history.push("/login");
+      }}
+    >
+      <PowerIcon color="primary" />
     </IconButton>
-  )
-}
+  );
+};
 
 export default LogoutIcon;

@@ -1,25 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import AssigneeDialog from "../Common/AssigneeDialog";
-import { hideWorkflowAssignee, assignWorkflowItem } from "./actions";
+import AssigneeSelection from "../Common/AssigneeSelection";
+import { assignWorkflowItem } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
-import { fetchUser } from "../Login/actions";
 
 class WorkflowAssigneeContainer extends Component {
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.show && nextProps.show) {
-      this.props.fetchUser();
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.onClose();
-  }
-
   assignWorkflow = userId => {
-    const { projectId, subprojectId, workflowRefId } = this.props;
-    this.props.assignWorkflow(projectId, subprojectId, workflowRefId, userId);
+    const { projectId, subprojectId, workflowitemId } = this.props;
+    this.props.assignWorkflow(projectId, subprojectId, workflowitemId, userId);
   };
 
   getWorkflowAssignee = (workflowItems, selectedId) => {
@@ -31,15 +20,13 @@ class WorkflowAssigneeContainer extends Component {
   };
 
   render() {
-    const assignee = this.getWorkflowAssignee(this.props.workflowItems, this.props.workflowRefId);
+    const assignee = this.getWorkflowAssignee(this.props.workflowItems, this.props.workflowitemId);
     return (
-      <AssigneeDialog
+      <AssigneeSelection
         assigneeId={assignee}
         users={this.props.users}
         title={this.props.title}
-        show={this.props.show}
         assign={this.assignWorkflow}
-        onClose={this.props.onClose}
       />
     );
   }
@@ -47,18 +34,14 @@ class WorkflowAssigneeContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    show: state.getIn(["workflow", "showWorkflowAssignee"]),
-    users: state.getIn(["login", "user"]),
-    workflowRefId: state.getIn(["workflow", "workflowItemReference"])
+    workflowItems: state.getIn(["workflow", "workflowItems"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     assignWorkflow: (projectId, subProjectId, workflowId, userId) =>
-      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, userId)),
-    onClose: () => dispatch(hideWorkflowAssignee()),
-    fetchUser: () => dispatch(fetchUser(true))
+      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, userId))
   };
 };
 

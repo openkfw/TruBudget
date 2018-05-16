@@ -44,8 +44,9 @@ import { toJS } from "../../helper";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
 import strings from "../../localizeStrings";
-import SubProjectAssigneeController from "./SubProjectAssigneeController";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer";
+import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
+import { fetchUser } from "../Login/actions";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -58,6 +59,7 @@ class WorkflowContainer extends Component {
   componentWillMount() {
     this.props.setSelectedView(this.subProjectId, "subProject");
     this.props.fetchAllSubprojectDetails(this.projectId, this.subProjectId, true);
+    this.props.fetchUser();
   }
 
   componentWillUnmount() {
@@ -82,11 +84,6 @@ class WorkflowContainer extends Component {
             canViewPermissions={canViewPermissions}
             canAssinSubproject={canAssinSubproject}
           />
-          <Workflow
-            {...this.props}
-            createWorkflowItem={this.createWorkflowItem}
-            closeWorkflowItem={this.closeWorkflowItem}
-          />
           <SubprojectPermissionsContainer
             projectId={this.projectId}
             subProjectId={this.subProjectId}
@@ -94,19 +91,15 @@ class WorkflowContainer extends Component {
           />
           <WorkflowItemPermissionsContainer
             projectId={this.projectId}
+            subProjectId={this.subProjectId}
             title={strings.workflow.workflow_permissions_title}
           />
-          <SubProjectAssigneeController
-            assignee={this.props.assignee}
-            projectId={this.projectId}
-            subprojectId={this.subProjectId}
+          <Workflow
+            {...this.props}
+            createWorkflowItem={this.createWorkflowItem}
+            closeWorkflowItem={this.closeWorkflowItem}
           />
-
-          <WorkflowAssigneeContainer
-            projectId={this.projectId}
-            subprojectId={this.subProjectId}
-            workflowItems={this.props.workflowItems}
-          />
+          <SubProjectHistoryContainer />
         </div>
       </div>
     );
@@ -155,7 +148,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     clearDocuments: () => dispatch(clearDocuments()),
     validateDocument: (payload, hash) => dispatch(validateDocument(payload, hash)),
     prefillDocuments: documents => dispatch(prefillDocuments(documents)),
-
+    fetchUser: () => dispatch(fetchUser(true)),
     isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired))
   };
 };
@@ -172,7 +165,7 @@ const mapStateToProps = state => {
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
-
+    parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
     workflowDialogVisible: state.getIn(["workflow", "workflowDialogVisible"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
@@ -188,7 +181,8 @@ const mapStateToProps = state => {
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),
     subProjectAmount: state.getIn(["workflow", "subProjectAmount"]),
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
-    validatedDocuments: state.getIn(["documents", "validatedDocuments"])
+    validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
+    users: state.getIn(["login", "user"])
   };
 };
 

@@ -1,30 +1,45 @@
-import React from 'react';
-import _ from 'lodash';
+import React from "react";
 
-import CreationDialog from '../Common/CreationDialog';
-import strings from '../../localizeStrings'
-import SubProjectCreationContent from './SubProjectCreationContent';
+import _isEmpty from "lodash/isEmpty";
+import _isNumber from "lodash/isNumber";
 
-const handleSubmit = (props) => {
-  const { createSubProject, onDialogCancel, showSnackBar, storeSnackBarMessage,
-    subProjectName, subProjectAmount, subProjectComment, subProjectCurrency, location } = props;
-  createSubProject(subProjectName, subProjectAmount, subProjectComment, subProjectCurrency, location.pathname.split('/')[2]);
+import CreationDialog from "../Common/CreationDialog";
+import strings from "../../localizeStrings";
+import SubProjectCreationContent from "./SubProjectCreationContent";
+
+const handleSubmit = props => {
+  const {
+    createSubProject,
+    onDialogCancel,
+    showSnackBar,
+    storeSnackBarMessage,
+    subProjectName,
+    subProjectAmount,
+    subProjectComment,
+    subProjectCurrency,
+    location
+  } = props;
+  createSubProject(
+    subProjectName,
+    subProjectAmount,
+    subProjectComment,
+    subProjectCurrency,
+    location.pathname.split("/")[2]
+  );
   onDialogCancel();
-  storeSnackBarMessage(strings.common.added + ' ' + subProjectName)
+  storeSnackBarMessage(strings.common.added + " " + subProjectName);
   showSnackBar();
-}
+};
 
-
-
-const SubProjectCreation = (props) => {
-
+const SubProjectCreation = props => {
   const steps = [
     {
       title: strings.project.project_details,
-      content: < SubProjectCreationContent {...props} />,
-      nextDisabled: (_.isEmpty(props.subProjectName) || _.isEmpty(props.subProjectComment) || !_.isNumber(props.subProjectAmount))
+      content: <SubProjectCreationContent {...props} />,
+      nextDisabled:
+        _isEmpty(props.subProjectName) || _isEmpty(props.subProjectComment) || !_isNumber(props.subProjectAmount)
     }
-  ]
+  ];
   return (
     <CreationDialog
       title={strings.subproject.subproject_add}
@@ -33,8 +48,9 @@ const SubProjectCreation = (props) => {
       handleSubmit={handleSubmit}
       steps={steps}
       numberOfSteps={steps.length}
-      {...props} />
-  )
-}
+      {...props}
+    />
+  );
+};
 
 export default SubProjectCreation;

@@ -3,12 +3,11 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 import { Route, Switch } from "react-router";
-import injectTapEventPlugin from "react-tap-event-plugin";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import createHistory from "history/createBrowserHistory";
 
-import { ACMECorpLightgrey, ACMECorpGrey, ACMECorpLightgreen, ACMECorpGreen, ACMECorpLightblue, ACMECorpBlue } from "./colors";
+import red from "@material-ui/core/colors/red";
+import blue from "@material-ui/core/colors/blue";
 
 import Main from "./pages/Main/Main";
 import LoginPageContainer from "./pages/Login/LoginPageContainer";
@@ -22,17 +21,10 @@ const history = createHistory();
 const initialState = {};
 const store = configureStore(initialState, history);
 
-injectTapEventPlugin();
-
-const muiTheme = getMuiTheme({
+const muiTheme = createMuiTheme({
   palette: {
-    primary1Color: ACMECorpLightgreen,
-    primary2Color: ACMECorpBlue,
-    primary3Color: ACMECorpLightgrey,
-    accent1Color: ACMECorpGreen,
-    accent2Color: ACMECorpLightblue,
-    accent3Color: ACMECorpGrey,
-    alternateTextColor: ACMECorpLightgrey
+    primary: blue,
+    secondary: red
   }
 });
 
@@ -41,7 +33,7 @@ class Root extends Component {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <MuiThemeProvider muiTheme={muiTheme}>
+          <MuiThemeProvider theme={muiTheme}>
             <Switch>
               <Route key={1} exact path="/login" component={withInitialLoading(LoginPageContainer)} />
               <PrivateRoute component={Main} />

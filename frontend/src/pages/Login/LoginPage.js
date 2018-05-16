@@ -1,17 +1,22 @@
 import React from "react";
-import { Card, CardTitle, CardText } from "material-ui/Card";
-import Divider from "material-ui/Divider";
+
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import SettingsIcon from "@material-ui/icons/Settings";
+import Typography from "@material-ui/core/Typography";
+
 import { ACMECorpLightgreen } from "../../colors";
-import SettingsIcon from "material-ui/svg-icons/action/settings";
-import IconButton from "material-ui/IconButton";
-import RaisedButton from "material-ui/RaisedButton";
-import SelectField from "material-ui/SelectField";
-import MenuItem from "material-ui/MenuItem";
-import DropDownMenu from "material-ui/DropDownMenu";
 
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import strings from "../../localizeStrings";
+import Dropdown from "../Common/NewDropdown";
+
 //import { isAdminNode } from '../../helper';
 
 const LoginPage = ({
@@ -54,17 +59,19 @@ const LoginPage = ({
             justifyContent: "center"
           }}
         >
-          <CardTitle title="TruBudget" subtitle={strings.login.tru_budget_description} />
-          <SelectField
-            onChange={(event, index, value) => storeEnvironment(value)}
-            floatingLabelText={strings.login.environment}
-            value={environment}
-            floatingLabelStyle={{ color: ACMECorpLightgreen }}
-            style={{ width: "40%", marginRight: "8px" }}
-          >
-            <MenuItem value="Test" primaryText={strings.login.test_env} />
-            <MenuItem value="Prod" primaryText={strings.login.production_env} />
-          </SelectField>
+          <CardHeader title="TruBudget" subheader={strings.login.tru_budget_description} />
+          <div style={{ width: "40%", marginRight: "8px" }}>
+            <Dropdown
+              onChange={storeEnvironment}
+              floatingLabel={strings.login.environment}
+              value={environment}
+              floatingLabelStyle={{ color: ACMECorpLightgreen }}
+              id="environment_selection"
+            >
+              <MenuItem value="Test">{strings.login.test_env}</MenuItem>
+              <MenuItem value="Prod">{strings.login.production_env}</MenuItem>
+            </Dropdown>
+          </div>
         </div>
         <Divider />
         <Username username={username} storeUsername={storeUsername} loginFailed={loginUnsuccessful} />
@@ -85,26 +92,26 @@ const LoginPage = ({
             justifyContent: "space-between"
           }}
         >
-          <DropDownMenu
-            style={{ marginLeft: 5 }}
-            value={language}
-            onChange={(event, index, value) => setLanguage(value)}
-          >
-            <MenuItem value="en-gb" primaryText={strings.language.english} />
-            <MenuItem value="fr" primaryText={strings.language.french} />
-            <MenuItem value="pt" primaryText={strings.language.portuguese} />
-            <MenuItem value="de" primaryText={strings.language.german} />
-          </DropDownMenu>
-          <RaisedButton
-            label={strings.login.login_button_title}
+          <Dropdown value={language} id="language_selection" onChange={setLanguage} style={{ marginLeft: "10px" }}>
+            <MenuItem value="en-gb">{strings.language.english}</MenuItem>
+            <MenuItem value="fr">{strings.language.french}</MenuItem>
+            <MenuItem value="pt">{strings.language.portuguese}</MenuItem>
+            <MenuItem value="de">{strings.language.german}</MenuItem>
+          </Dropdown>
+          <Button
             aria-label="loginbutton"
             style={{ marginRight: 20, marginTop: 5 }}
-            onTouchTap={() => loginWithCredentails(username, password)}
-          />
+            onClick={() => loginWithCredentails(username, password)}
+            variant="raised"
+          >
+            {strings.login.login_button_title}
+          </Button>
         </div>
         <Divider />
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-          <CardText style={{ fontSize: "11px" }}>{strings.login.accenture_tag}</CardText>
+          <CardContent style={{ fontSize: "11px" }}>
+            <Typography variant="caption">{strings.login.accenture_tag}</Typography>
+          </CardContent>
           <IconButton disabled={!(connectedToAdminNode > -1)} onClick={() => history.push("/admin")}>
             <SettingsIcon />
           </IconButton>

@@ -3,6 +3,10 @@
   width: 74%;
 }
 
+.noFocus {
+  outline: 0;
+}
+
 @media (max-width: 1000px) {
   .container {
     flex: 1;

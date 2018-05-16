@@ -1,50 +1,38 @@
 import React from "react";
-import { Card, CardHeader } from "material-ui/Card";
-import { Table, TableHeader, TableHeaderColumn, TableRow } from "material-ui/Table";
 import { arrayMove } from "react-sortable-hoc";
+
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import Typography from "@material-ui/core/Typography";
 
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
 import { ACMECorpLightgreen } from "../../colors.js";
 import strings from "../../localizeStrings";
 
-const styles = {
-  listText: {
-    fontSize: "14px"
-  },
-  actions: {
-    textAlign: "center"
-  }
-};
-
 const createTableHeader = () => (
   <Card>
-    <CardHeader
-      titleColor="white"
-      style={{ backgroundColor: ACMECorpLightgreen }}
-      title={strings.workflow.workflow_table_title}
-    />
-    <div style={{ marginLeft: "50px", marginRight: "10px", position: "relative" }}>
-      <Table>
-        <TableHeader displaySelectAll={false} adjustForCheckbox={false} style={{ borderBottom: "0px" }}>
-          <TableRow displayBorder={false}>
-            <TableHeaderColumn style={styles.listText} colSpan={1} />
-            <TableHeaderColumn style={styles.listText} colSpan={3}>
-              {strings.workflow.workflow_type_workflow}
-            </TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={3}>
-              {strings.common.budget}
-            </TableHeaderColumn>
-            <TableHeaderColumn style={styles.listText} colSpan={2}>
-              {strings.common.assignee}
-            </TableHeaderColumn>
-            <TableHeaderColumn style={{ ...styles.actions, ...styles.listText }} colSpan={3}>
-              {strings.common.actions}
-            </TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-      </Table>
-    </div>
+    <CardHeader style={{ backgroundColor: ACMECorpLightgreen }} title={strings.workflow.workflow_table_title} />
+    <CardContent>
+      <div style={{ marginLeft: "12px", position: "relative" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ flex: 1 }} />
+          <div style={{ flex: 4 }}>
+            <Typography variant="body2">{strings.workflow.workflow_type_workflow}</Typography>
+          </div>
+          <div style={{ flex: 4 }}>
+            <Typography variant="body2">{strings.common.budget}</Typography>
+          </div>
+          <div style={{ flex: 4 }}>
+            <Typography variant="body2">{strings.common.assignee}</Typography>
+          </div>
+          <div style={{ flex: 2 }}>
+            <Typography variant="body2">{strings.common.actions}</Typography>
+          </div>
+        </div>
+      </div>
+    </CardContent>
   </Card>
 );
 
@@ -70,7 +58,7 @@ const WorkflowTable = props => {
     <div style={{ paddingBottom: "8px" }}>
       {createTableHeader()}
       {createWorkflowItems(props)}
-      <WorkflowDetails {...props} />
+      {<WorkflowDetails {...props} />}
     </div>
   );
 };
