@@ -3,7 +3,7 @@ import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
-import * as Project from "../project";
+import * as Project from "../project/model/Project";
 import * as Workflowitem from "../workflowitem";
 import { sortWorkflowitems } from "./lib/sortWorkflowitems";
 import * as Subproject from "./model/Subproject";
@@ -27,10 +27,6 @@ export async function getSubprojectDetails(
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
-  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
-    result => result[0],
-  );
-
   const userIntent: Intent = "subproject.viewDetails";
 
   // Is the user allowed to view subproject details?
@@ -40,16 +36,23 @@ export async function getSubprojectDetails(
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
-  const workflowitems: WorkflowitemDTO[] = await Workflowitem.get(
-    multichain,
-    req.token,
-    projectId,
-    subprojectId,
-  )
+  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
+    result => result[0],
+  );
+
+  const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId)
     .then(unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems))
     .then(sortedItems => sortedItems.map(removeEventLog));
 
-  const parentProject = await Project.get(multichain, req.token, projectId);
+  const parentProject = await Project.get(multichain, req.token, projectId).then(result => {
+    if (result.length) {
+      const { id, displayName } = result[0].data;
+      return { id, displayName };
+    } else {
+      // The callee is not allowed to see the parent project
+      return { id: undefined, displayName: undefined };
+    }
+  });
 
   return [
     200,
@@ -58,7 +61,7 @@ export async function getSubprojectDetails(
       data: {
         subproject,
         workflowitems,
-        parentProject: { id: parentProject.id, displayName: parentProject.displayName },
+        parentProject,
       },
     },
   ];

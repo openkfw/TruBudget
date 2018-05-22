@@ -1,10 +1,20 @@
-import * as Project from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import * as Subproject from "../subproject/model/Subproject";
+import * as Project from "./model/Project";
+
+interface SubprojectDTO {
+  allowedIntents: Intent[];
+  data: Subproject.Data;
+}
+
+function removeEventLog(subproject: Subproject.SubprojectResource): SubprojectDTO {
+  delete subproject.log;
+  return subproject;
+}
 
 export const getProjectDetails = async (
   multichain: MultichainClient,
@@ -13,12 +23,6 @@ export const getProjectDetails = async (
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
-
-  const resource: Project.ProjectDataWithIntents = await Project.getForUser(
-    multichain,
-    req.token,
-    projectId,
-  );
 
   const userIntent: Intent = "project.viewDetails";
 
@@ -29,7 +33,20 @@ export const getProjectDetails = async (
     await Project.getPermissions(multichain, projectId),
   );
 
-  const subprojects = await Subproject.get(multichain, req.token, projectId);
+  const project = await Project.get(multichain, req.token, projectId).then(result => result[0]);
 
-  return [200, { apiVersion: "1.0", data: { ...resource, subprojects } }];
+  const subprojects = await Subproject.get(multichain, req.token, projectId).then(items =>
+    items.map(removeEventLog),
+  );
+
+  return [
+    200,
+    {
+      apiVersion: "1.0",
+      data: {
+        project,
+        subprojects,
+      },
+    },
+  ];
 };

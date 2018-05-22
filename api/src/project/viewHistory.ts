@@ -4,35 +4,34 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
-import * as Workflowitem from "../workflowitem";
-import * as Subproject from "./model/Subproject";
+import * as Subproject from "../subproject/model/Subproject";
+import * as Project from "./model/Project";
 
-export async function getSubprojectHistory(
+export async function getProjectHistory(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
-  const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
-  const userIntent: Intent = "subproject.viewHistory";
+  const userIntent: Intent = "project.viewHistory";
 
-  // Is the user allowed to view the subproject history?
+  // Is the user allowed to view the project history?
   await throwIfUnauthorized(
     req.token,
     userIntent,
-    await Subproject.getPermissions(multichain, projectId, subprojectId),
+    await Project.getPermissions(multichain, projectId),
   );
 
-  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
+  const project = await Project.get(multichain, req.token, projectId).then(
     resources => resources[0],
   );
 
-  const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId);
+  const subprojects = await Subproject.get(multichain, req.token, projectId);
 
-  const events = workflowitems
-    .reduce((eventsAcc, workflowitem) => eventsAcc.concat(workflowitem.log), subproject.log)
+  const events = subprojects
+    .reduce((eventsAcc, subproject) => eventsAcc.concat(subproject.log), project.log)
     .sort(compareEvents);
 
   return [

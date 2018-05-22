@@ -1,4 +1,3 @@
-import * as Project from ".";
 import { throwIfUnauthorized } from "../authz/index";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
@@ -13,6 +12,7 @@ import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Subproject from "../subproject/model/Subproject";
+import * as Project from "./model/Project";
 
 export async function createSubproject(
   multichain: MultichainClient,

@@ -1,8 +1,9 @@
-import * as Project from ".";
 import { throwIfUnauthorized } from "../authz";
+import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import * as Project from "./model/Project";
 
 export const assignProject = async (
   multichain: MultichainClient,
@@ -13,14 +14,24 @@ export const assignProject = async (
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);
 
-  // Is the user allowed to (re-)assign a workflowitem?
+  const userIntent: Intent = "project.assign";
+
+  // Is the user allowed to (re-)assign a project?
   await throwIfUnauthorized(
     req.token,
-    "project.assign",
+    userIntent,
     await Project.getPermissions(multichain, projectId),
   );
 
-  await Project.assign(multichain, projectId, userId);
+  const event = {
+    intent: userIntent,
+    createdBy: req.token.userId,
+    creationTimestamp: new Date(),
+    dataVersion: 1,
+    data: { userId },
+  };
+
+  await Project.publish(multichain, projectId, event);
 
   return [
     200,
