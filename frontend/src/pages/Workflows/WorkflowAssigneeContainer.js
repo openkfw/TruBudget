@@ -15,8 +15,8 @@ class WorkflowAssigneeContainer extends Component {
     if (workflowItems.length === 0 || !selectedId) {
       return "";
     }
-    const selectedWorkflowItem = workflowItems.find(workflow => workflow.id === selectedId);
-    return selectedWorkflowItem.assignee;
+    const selectedWorkflowItem = workflowItems.find(workflow => workflow.data.id === selectedId);
+    return selectedWorkflowItem.data.assignee;
   };
 
   render() {

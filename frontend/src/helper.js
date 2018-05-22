@@ -171,7 +171,7 @@ export const getAllocationRatio = (spentAmount, projectAmount) => {
 export const calculateWorkflowBudget = workflows => {
   return workflows.reduce(
     (acc, workflow) => {
-      const { amount, amountType, status } = workflow;
+      const { amount, amountType, status } = workflow.data;
       const parsedAmount = parseFloat(amount, 10);
       const next = {
         assigned: amountType === "allocated" ? acc.assigned + parsedAmount : acc.assigned,
