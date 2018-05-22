@@ -43,8 +43,8 @@ const styles = {
 };
 
 const getTableEntries = ({ projects, history, classes }) => {
-  return projects.map((project, index) => {
-    const { displayName, amount, currency, status, thumbnail = "/Thumbnail_0008.jpg", creationUnixTs } = project;
+  return projects.map(({ data, allowedIntents }, index) => {
+    const { displayName, id, amount, currency, status, thumbnail = "/Thumbnail_0008.jpg", creationUnixTs } = data;
     const amountString = toAmountString(amount, currency);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
@@ -64,9 +64,9 @@ const getTableEntries = ({ projects, history, classes }) => {
         >
           <Button
             className={classes.button}
-            disabled={!canViewProjectDetails(project.allowedIntents)}
+            disabled={!canViewProjectDetails(allowedIntents)}
             color="primary"
-            onClick={() => history.push("/projects/" + project.id)}
+            onClick={() => history.push("/projects/" + id)}
             variant="fab"
           >
             <InfoIcon />
