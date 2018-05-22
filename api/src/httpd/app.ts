@@ -6,7 +6,7 @@ import { AuthToken } from "../authz/token";
 const addTokenHandling = (app, jwtSecret: string) => {
   app.use(
     expressJwt({ secret: jwtSecret }).unless({
-      path: ["/health", "/user.authenticate"],
+      path: ["/liveness", "/readiness", "/user.authenticate"],
     }),
   );
   app.use(function customAuthTokenErrorHandler(err, req, res, next) {
@@ -25,12 +25,21 @@ const addTokenHandling = (app, jwtSecret: string) => {
 };
 
 const logging = (req: express.Request, res, next) => {
-  const details = [
-    (req as any).token !== undefined ? `user=${((req as any).token as AuthToken).userId}` : null,
-    Object.keys(req.query).length !== 0 ? `query=${JSON.stringify(req.query)}` : null,
-    Object.keys(req.body).length !== 0 ? `body=${JSON.stringify(req.body)}` : null,
-  ].filter(x => x !== null);
-  console.log(`\n${req.method} ${req.path} [${details.join(" ")}]`);
+  switch (req.path) {
+    case "/liveness":
+    case "/readiness":
+      break;
+    default: {
+      const details = [
+        (req as any).token !== undefined
+          ? `user=${((req as any).token as AuthToken).userId}`
+          : null,
+        Object.keys(req.query).length !== 0 ? `query=${JSON.stringify(req.query)}` : null,
+        Object.keys(req.body).length !== 0 ? `body=${JSON.stringify(req.body)}` : null,
+      ].filter(x => x !== null);
+      console.log(`\n${req.method} ${req.path} [${details.join(" ")}]`);
+    }
+  }
   next();
 };
 

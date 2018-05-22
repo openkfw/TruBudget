@@ -12,6 +12,7 @@ import { getProjectPermissions } from "../project/intent/listPermissions";
 import { revokeProjectPermission } from "../project/intent/revokePermission";
 import { getProjectList } from "../project/list";
 import { getProjectDetails } from "../project/viewDetails";
+import { getProjectHistory } from "../project/viewHistory";
 import { assignSubproject } from "../subproject/assign";
 import { createWorkflowitem } from "../subproject/createWorkflowitem";
 import { grantSubprojectPermission } from "../subproject/intent/grantPermission";
@@ -29,7 +30,6 @@ import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissio
 import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
 import { getWorkflowitemList } from "../workflowitem/list";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
-import { getProjectHistory } from "../project/viewHistory";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -130,7 +130,14 @@ export const createRouter = (
 ) => {
   const router = express.Router();
 
-  router.get("/health", (req, res) => res.status(200).send("OK"));
+  router.get("/readiness", (req, res) =>
+    multichainClient
+      .getInfo()
+      .then(() => res.status(200).send("OK"))
+      .catch(() => res.status(503).send("Service unavailable.")),
+  );
+
+  router.get("/liveness", (req, res) => res.status(200).send("OK"));
 
   // ------------------------------------------------------------
   //       global
