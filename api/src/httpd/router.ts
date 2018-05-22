@@ -29,6 +29,7 @@ import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissio
 import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
 import { getWorkflowitemList } from "../workflowitem/list";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
+import { getProjectHistory } from "../project/viewHistory";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -197,8 +198,20 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
+  router.post("/project.assign", (req: AuthenticatedRequest, res) => {
+    assignProject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
   router.post("/project.createSubproject", (req: AuthenticatedRequest, res) => {
     createSubproject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.get("/project.viewHistory", (req: AuthenticatedRequest, res) => {
+    getProjectHistory(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
@@ -220,11 +233,7 @@ export const createRouter = (
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
-  router.post("/project.assign", (req: AuthenticatedRequest, res) => {
-    assignProject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+
   // ------------------------------------------------------------
   //       subproject
   // ------------------------------------------------------------
