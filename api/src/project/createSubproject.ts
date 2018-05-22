@@ -97,6 +97,8 @@ function getSubprojectDefaultPermissions(token: AuthToken): AllowedUserGroupsByI
     "subproject.close",
     "subproject.archive",
     "subproject.createWorkflowitem",
+    "subproject.reorderWorkflowitems",
+    "subproject.viewHistory",
   ];
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [token.userId] }), {});
 }
