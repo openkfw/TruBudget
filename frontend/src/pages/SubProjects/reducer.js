@@ -50,16 +50,16 @@ export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
       return state.merge({
-        id: action.id,
-        projectName: action.displayName,
-        projectAmount: fromAmountString(action.amount),
-        projectCurrency: action.currency,
-        projectComment: action.description,
-        projectStatus: action.status,
-        projectTS: action.creationUnixTs,
-        projectAssignee: action.assignee,
-        allowedIntents: fromJS(action.allowedIntents),
-        logs: fromJS(action.logs),
+        id: action.project.data.id,
+        projectName: action.project.data.displayName,
+        projectAmount: fromAmountString(action.project.data.amount),
+        projectCurrency: action.project.data.currency,
+        projectComment: action.project.data.description,
+        projectStatus: action.project.data.status,
+        projectTS: action.project.data.creationUnixTs,
+        projectAssignee: action.project.data.assignee,
+        allowedIntents: fromJS(action.project.allowedIntents),
+        logs: fromJS(action.project.log),
         subProjects: fromJS(action.subprojects)
       });
     case SHOW_PROJECT_PERMISSIONS:

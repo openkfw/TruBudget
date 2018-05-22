@@ -1,7 +1,6 @@
 import { fromJS, Set } from "immutable";
 
 import {
-  FETCH_PROJECTS_SUCCESS,
   PROJECT_NAME,
   PROJECT_AMOUNT,
   PROJECT_COMMENT,
@@ -19,7 +18,6 @@ import {
   FETCH_ALL_PROJECTS_SUCCESS
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
-import { FETCH_UPDATES_SUCCESS } from "../LiveUpdates/actions";
 
 const defaultState = fromJS({
   projects: Set(),
@@ -43,9 +41,6 @@ const defaultState = fromJS({
 
 export default function overviewReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_UPDATES_SUCCESS:
-    case FETCH_PROJECTS_SUCCESS:
-      return state.set("projects", fromJS(action.projects));
     case SHOW_PROJECT_DIALOG:
       return state.set("dialogShown", true);
     case CANCEL_PROJECT_DIALOG:
@@ -96,8 +91,7 @@ export default function overviewReducer(state = defaultState, action) {
       return state.update("projectBank", bank => bank.delete(action.role));
     case FETCH_ALL_PROJECTS_SUCCESS:
       return state.merge({
-        projects: action.projects,
-        roles: action.roles
+        projects: fromJS(action.projects)
       });
     case LOGOUT:
       return defaultState;

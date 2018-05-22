@@ -31,7 +31,36 @@ describe("subproject.viewDetails", () => {
       v2_readStreamItems: async (streamName, key, nValues) => {
         expect(streamName).to.eql(projectId);
         let events;
-        if (key === `${subprojectId}_workflows`) {
+        if (key === "self") {
+          events = [
+            {
+              keys: ["self"],
+              data: {
+                json: {
+                  key: projectId,
+                  intent: "global.createProject",
+                  createdBy: "alice",
+                  createdAt: "2018-05-08T10:27:00.385Z",
+                  dataVersion: 1,
+                  data: {
+                    project: {
+                      id: projectId,
+                      creationUnixTs: new Date("2018-05-08T10:27:00.385Z").getTime().toString(),
+                      status: "open",
+                      displayName: "The Sample Project",
+                      description: "This project has no description.",
+                      amount: "923",
+                      currency: "EUR",
+                    },
+                    permissions: {
+                      "project.viewSummary": ["alice"],
+                    },
+                  },
+                },
+              },
+            },
+          ];
+        } else if (key === `${subprojectId}_workflows`) {
           events = [
             {
               keys: [`${subprojectId}_workflows`, "the-sample-workflow"],
@@ -125,6 +154,6 @@ describe("subproject.viewDetails", () => {
     expect(workflowitems[0].permissions).to.eql(undefined);
     expect(workflowitems[0].allowedIntents).to.eql(["workflowitem.view"]);
 
-    expect(parentProject.id).to.eql(projectId);
+    expect(parentProject.id, "Is the user allowed to view the parent project?").to.eql(projectId);
   });
 });

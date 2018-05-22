@@ -137,7 +137,7 @@ const createDoughnutData = (labels, data, colors = taskStatusColorPalette) => ({
 
 export const calculateUnspentAmount = items => {
   const amount = items.reduce((acc, item) => {
-    return acc + parseFloat(item.amount, 10);
+    return acc + parseFloat(item.data.amount, 10);
   }, 0);
   return amount;
 };
@@ -150,7 +150,7 @@ export const getCompletionRatio = subprojects => {
 
 const getCompletedSubprojects = subprojects => {
   const completedSubprojects = subprojects.filter(subproject => {
-    return subproject.status === "closed";
+    return subproject.data.status === "closed";
   });
   return completedSubprojects;
 };
@@ -171,7 +171,7 @@ export const getAllocationRatio = (spentAmount, projectAmount) => {
 export const calculateWorkflowBudget = workflows => {
   return workflows.reduce(
     (acc, workflow) => {
-      const { amount, amountType, status } = workflow;
+      const { amount, amountType, status } = workflow.data;
       const parsedAmount = parseFloat(amount, 10);
       const next = {
         assigned: amountType === "allocated" ? acc.assigned + parsedAmount : acc.assigned,
@@ -225,7 +225,7 @@ export const getProgressInformation = items => {
     done: 0
   };
   const projectStatus = items.reduce((acc, item) => {
-    const status = item.status;
+    const status = item.data.status;
     return {
       open: status === "open" ? acc.open + 1 : acc.open,
       inProgress: status === "in_progress" ? acc.inProgress + 1 : acc.inProgress,

@@ -81,22 +81,16 @@ export default function detailviewReducer(state = defaultState, action) {
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
       const { subproject, workflowitems, parentProject } = action;
       return state.merge({
-        id: subproject.id,
-        created: subproject.creationUnixTs,
-        displayName: subproject.displayName,
-        description: subproject.description,
-        status: subproject.status,
-        amount: fromAmountString(subproject.amount),
-        currency: subproject.currency,
+        id: subproject.data.id,
+        created: subproject.data.creationUnixTs,
+        displayName: subproject.data.displayName,
+        description: subproject.data.description,
+        status: subproject.data.status,
+        amount: fromAmountString(subproject.data.amount),
+        currency: subproject.data.currency,
         allowedIntents: fromJS(subproject.allowedIntents),
-        assignee: fromJS(subproject.assignee),
-        workflowItems: fromJS(
-          workflowitems.map(resource => ({
-            ...resource.data,
-            allowedIntents: resource.allowedIntents,
-            log: resource.log
-          }))
-        ),
+        assignee: fromJS(subproject.data.assignee),
+        workflowItems: fromJS(workflowitems),
         parentProject: fromJS(parentProject)
       });
     case SHOW_WORKFLOW_DIALOG:

@@ -106,7 +106,7 @@ const provisionFromData = async () => {
   });
   const project = await findProject(projectTemplate);
 
-  await grantPermissions(projectTemplate.permissions, project.id);
+  await grantPermissions(projectTemplate.permissions, project.data.id);
 
   for (const subprojectTemplate of projectTemplate.subprojects) {
     await provisionSubproject(project, subprojectTemplate);
@@ -115,7 +115,7 @@ const provisionFromData = async () => {
   // TODO: this is supported by the API starting with #62
   // if (isToBeClosed) {
   //   await axios.post("/project.close", {
-  //     projectId: project.id,
+  //     projectId: project.data.id,
   //   });
   // }
 
@@ -126,14 +126,14 @@ const findProject = async project => {
   return axios
     .get("/project.list")
     .then(res => res.data.data.items)
-    .then(projects => projects.find(p => p.displayName === project.displayName));
+    .then(projects => projects.find(p => p.data.displayName === project.displayName));
 };
 
 const provisionSubproject = async (project, subprojectTemplate) => {
   const _isToBeClosed = subprojectTemplate.status === "closed";
 
   await axios.post("/project.createSubproject", {
-    projectId: project.id,
+    projectId: project.data.id,
     subproject: {
       displayName: subprojectTemplate.displayName,
       description: subprojectTemplate.description,
@@ -145,7 +145,7 @@ const provisionSubproject = async (project, subprojectTemplate) => {
   });
   const subproject = await findSubproject(project, subprojectTemplate);
 
-  await grantPermissions(subprojectTemplate.permissions, project.id, subproject.id);
+  await grantPermissions(subprojectTemplate.permissions, project.data.id, subproject.data.id);
 
   for (const workflowitemTemplate of subprojectTemplate.workflows) {
     await provisionWorkflowitem(project, subproject, workflowitemTemplate);
@@ -164,15 +164,15 @@ const provisionSubproject = async (project, subprojectTemplate) => {
 
 const findSubproject = async (project, subproject) => {
   return axios
-    .get(`/subproject.list?projectId=${project.id}`)
+    .get(`/subproject.list?projectId=${project.data.id}`)
     .then(res => res.data.data.items)
-    .then(subprojects => subprojects.find(x => x.displayName === subproject.displayName));
+    .then(subprojects => subprojects.find(x => x.data.displayName === subproject.displayName));
 };
 
 const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) => {
   const data = {
-    projectId: project.id,
-    subprojectId: subproject.id,
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
     displayName: workflowitemTemplate.displayName,
     description: workflowitemTemplate.description,
     amountType: workflowitemTemplate.amountType,
@@ -188,9 +188,9 @@ const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) 
 
   await grantPermissions(
     workflowitemTemplate.permissions,
-    project.id,
-    subproject.id,
-    workflowitem.id,
+    project.data.id,
+    subproject.data.id,
+    workflowitem.data.id,
   );
 
   console.log(`Workflowitem ${fmtList([project, subproject, workflowitem])} created.`);
@@ -198,10 +198,9 @@ const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) 
 
 const findWorkflowitem = async (project, subproject, workflowitem) => {
   return axios
-    .get(`/workflowitem.list?projectId=${project.id}&subprojectId=${subproject.id}`)
+    .get(`/workflowitem.list?projectId=${project.data.id}&subprojectId=${subproject.data.id}`)
     .then(res => res.data.data.workflowitems)
-    .then(items => items.find(item => item.data.displayName === workflowitem.displayName))
-    .then(item => item.data);
+    .then(items => items.find(item => item.data.displayName === workflowitem.displayName));
 };
 
 const grantPermissions = async (permissions: object, projectId, subprojectId?, workflowitemId?) => {
@@ -215,9 +214,11 @@ const grantPermissions = async (permissions: object, projectId, subprojectId?, w
   } else if (subprojectId !== undefined) {
     url = "/subproject.intent.grantPermission";
     body = { projectId, subprojectId };
-  } else {
+  } else if (projectId !== undefined) {
     url = "/project.intent.grantPermission";
     body = { projectId };
+  } else {
+    throw Error("not even projectId is given..");
   }
 
   for (const [intent, users] of Object.entries(permissions)) {
@@ -233,6 +234,6 @@ const grantPermissions = async (permissions: object, projectId, subprojectId?, w
 
 const fmtList = l =>
   l
-    .map(x => (x.displayName === undefined ? x : x.displayName))
+    .map(x => (x.data.displayName === undefined ? x : x.data.displayName))
     .map(x => `"${x}"`)
     .join(" > ");

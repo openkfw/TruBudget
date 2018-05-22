@@ -215,7 +215,6 @@ export const WorkflowItem = SortableElement(
     workflow,
     mapIndex,
     index,
-    permissions,
     currentWorkflowSelectable,
     workflowSortEnabled,
     showWorkflowItemAssignee,
@@ -223,9 +222,10 @@ export const WorkflowItem = SortableElement(
     users,
     ...props
   }) => {
-    const { id, status, displayName, amountType, allowedIntents, assignee } = workflow;
+    const { id, status, displayName, amountType, assignee, currency } = workflow.data;
+    const allowedIntents = workflow.allowedIntents;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
-    const amount = toAmountString(workflow.amount, workflow.currency);
+    const amount = toAmountString(workflow.data.amount, currency);
     const tableStyle = styles[status];
     const subprojectId = props.id;
     const itemStyle = workflowSelectable
@@ -236,7 +236,7 @@ export const WorkflowItem = SortableElement(
 
     const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
     const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
-    const infoButton = getInfoButton(props, workflow);
+    const infoButton = getInfoButton(props, workflow.data);
 
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
     return (
@@ -275,7 +275,7 @@ export const WorkflowItem = SortableElement(
             </div>
             {renderActionButtons(
               showEdit,
-              editWorkflow.bind(this, workflow, props),
+              editWorkflow.bind(this, workflow.data, props),
               canViewWorkflowItemPermissions(allowedIntents),
               () => props.showWorkflowItemPermissions(id),
               showClose,

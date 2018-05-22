@@ -47,10 +47,10 @@ export default function navbarReducer(state = defaultState, action) {
         streamNames: action.streamNames
       });
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
-      return state.set("currentProject", action.displayName);
+      return state.set("currentProject", action.project.data.displayName);
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
       return state.merge({
-        currentSubProject: action.subproject.displayName,
+        currentSubProject: action.subproject.data.displayName,
         currentProject: action.parentProject.displayName
       });
     case LOGOUT:

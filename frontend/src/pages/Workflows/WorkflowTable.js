@@ -36,21 +36,13 @@ const createTableHeader = () => (
   </Card>
 );
 
-const createWorkflowItems = ({ workflowItems, permissions, ...props }) => {
+const createWorkflowItems = ({ workflowItems, ...props }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     workflowItems = arrayMove(workflowItems, oldIndex, newIndex);
     props.updateWorkflowSortOnState(workflowItems);
   };
 
-  return (
-    <WorkflowList
-      lockAxis={"y"}
-      workflowItems={workflowItems}
-      onSortEnd={onSortEnd}
-      permissions={permissions}
-      {...props}
-    />
-  );
+  return <WorkflowList lockAxis={"y"} workflowItems={workflowItems} onSortEnd={onSortEnd} {...props} />;
 };
 // Not sure about the Name
 const WorkflowTable = props => {
