@@ -57,14 +57,13 @@ export async function publish(
   };
 
   const publishEvent = () => {
-    console.log("PUBLISHING NOW");
+    console.log(`Publishing ${intent} to ${projectId}/${projectSelfKey}`);
     return multichain.getRpcClient().invoke("publish", projectId, projectSelfKey, {
       json: event,
     });
   };
 
   return publishEvent().catch(err => {
-    console.log(`TRIED 1st TIME, CATCHED ERROR: ${JSON.stringify(err)}`);
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
       return multichain
@@ -92,12 +91,21 @@ async function fetchStreamItems(
         .filter(stream => stream.details.kind === "project")
         .map(stream => stream.name)
         .map(streamName =>
-          multichain.v2_readStreamItems(streamName, projectSelfKey).catch(err => {
-            console.log(
-              `Failed to fetch '${projectSelfKey}' stream item from project stream ${streamName}`,
-            );
-            return null;
-          }),
+          multichain
+            .v2_readStreamItems(streamName, projectSelfKey)
+            .then(items =>
+              items.map(item => {
+                // Make it possible to associate the "self" key to the actual project later on:
+                item.keys = [streamName, projectSelfKey];
+                return item;
+              }),
+            )
+            .catch(err => {
+              console.log(
+                `Failed to fetch '${projectSelfKey}' stream item from project stream ${streamName}`,
+              );
+              return null;
+            }),
         ),
     ).then(lists => lists.filter(x => x !== null))) as Liststreamkeyitems.Item[][];
     // Remove failed attempts and flatten into a single list of stream items:
