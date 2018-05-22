@@ -1,6 +1,8 @@
+const URL = Cypress.env("FRONTEND_URL") || "localhost:3000";
+
 describe("Login", function() {
   beforeEach(function() {
-    cy.visit("http://localhost/");
+    cy.visit(`http://${URL}/`);
   });
 
   it("Log in and out", function() {
