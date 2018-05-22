@@ -37,6 +37,7 @@ const LoginPage = ({
   const connectedToAdminNode = -1;
   return (
     <div
+      id="loginpage"
       style={{
         backgroundImage: 'url("/welcome.jpg")',
         backgroundSize: "cover",
@@ -74,12 +75,13 @@ const LoginPage = ({
           </div>
         </div>
         <Divider />
-        <Username username={username} storeUsername={storeUsername} loginFailed={loginUnsuccessful} />
+        <Username username={username} storeUsername={storeUsername} loginFailed={loginUnsuccessful} id="username" />
         <Password
           password={password}
           storePassword={storePassword}
           loginFailed={loginUnsuccessful}
           nextBestAction={() => loginWithCredentails(username, password)}
+          id="password"
         />
         <div
           style={{
@@ -103,6 +105,7 @@ const LoginPage = ({
             style={{ marginRight: 20, marginTop: 5 }}
             onClick={() => loginWithCredentails(username, password)}
             variant="raised"
+            id="loginbutton"
           >
             {strings.login.login_button_title}
           </Button>
