@@ -1,0 +1,43 @@
+version: '3.2'
+services:
+  api:
+    image: index.docker.io/trubudget/v1/api:${TAG}
+    environment:
+      RPC_HOST: master
+      RPC_PORT: ${RPC_PORT}
+      PORT: ${API_PORT}
+      # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
+    links: 
+      - master
+
+  master:
+    image: index.docker.io/trubudget/v1/blockchain:${TAG}
+    environment:
+      CHAINNAME: ${CHAINNAME}
+      RPC_PORT: ${RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+
+  frontend:
+    image: index.docker.io/trubudget/v1/frontend:${TAG}
+    ports:
+      - "80:80" # Mapping the nginx port 
+    environment:
+      PROD_API_HOST: api
+      PROD_API_PORT: ${API_PORT}
+      TEST_API_HOST: api
+      TEST_API_PORT: ${API_PORT}
+    links:
+      - api
+  
+  e2etest:
+    build: 
+      context: '../../frontend'
+      dockerfile: 'cypress/Dockerfile'
+    links:
+      - frontend
+    depends_on:
+      - frontend
+      - master
+      - api
+
+  

@@ -8,6 +8,7 @@ import strings from "../../localizeStrings";
 const LogoutIcon = ({ history, logout }) => {
   return (
     <IconButton
+      id="logoutbutton"
       tooltip={strings.navigation.logout}
       onClick={() => {
         logout();

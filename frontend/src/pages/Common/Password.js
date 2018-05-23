@@ -32,7 +32,7 @@ const handleEnter = (e, action = () => {}) => {
   }
 };
 
-const Password = ({ password, storePassword, loginFailed, nextBestAction }) => {
+const Password = ({ password, storePassword, loginFailed, nextBestAction, ...props }) => {
   return (
     <div style={styles.container}>
       <PasswordIcon style={styles.icon} />
@@ -46,6 +46,7 @@ const Password = ({ password, storePassword, loginFailed, nextBestAction }) => {
         onKeyPress={e => handleEnter(e, nextBestAction)}
         type="password"
         helperText={loginFailed ? strings.common.incorrect_password : null}
+        {...props}
       />
     </div>
   );

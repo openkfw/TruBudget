@@ -18,3 +18,7 @@ yarn-error.log*
 
 DOCKER_REGISTRY_PASSWORD
 
+# cypress
+
+cypress/screenshots
+cypress/videos
