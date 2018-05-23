@@ -5,6 +5,8 @@ import { grantGlobalPermission } from "../global/intent/grantPermission";
 import { getGlobalPermissions } from "../global/intent/listPermissions";
 import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
+import { getNotificationList } from "../notification/controller/list";
+import { markNotificationRead } from "../notification/controller/markRead";
 import { assignProject } from "../project/assign";
 import { createSubproject } from "../project/createSubproject";
 import { grantProjectPermission } from "../project/intent/grantPermission";
@@ -329,6 +331,22 @@ export const createRouter = (
 
   router.post("/workflowitem.intent.revokePermission", (req: AuthenticatedRequest, res) => {
     revokeWorkflowitemPermission(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  // ------------------------------------------------------------
+  //      notification
+  // ------------------------------------------------------------
+
+  router.get("/notification.list", (req: AuthenticatedRequest, res) => {
+    getNotificationList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/notification.markRead", (req: AuthenticatedRequest, res) => {
+    markNotificationRead(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
