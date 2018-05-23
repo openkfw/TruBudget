@@ -34,7 +34,7 @@ services:
       context: '../../frontend'
       dockerfile: 'cypress/Dockerfile'
     environment:
-      FRONTEND_URL: frontend
+      CYPRESS_FRONTEND_URL: frontend
     links:
       - frontend
     depends_on:
