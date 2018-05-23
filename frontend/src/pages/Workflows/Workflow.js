@@ -44,6 +44,13 @@ const submitSort = (props, allowedToSort) => (
   </Button>
 );
 
+const openHistory = ({ parentProject, id, fetchSubprojectHistory, openHistory }) => {
+  const projectId = parentProject.id;
+  const subprojectId = id;
+  fetchSubprojectHistory(projectId, subprojectId, true);
+  openHistory();
+};
+
 const Workflow = props => {
   const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents);
   return (
@@ -102,7 +109,7 @@ const Workflow = props => {
         <Button
           mini={true}
           disabled={props.workflowSortEnabled}
-          onClick={() => props.openHistory()}
+          onClick={() => openHistory(props)}
           color="default"
           variant="fab"
           style={{

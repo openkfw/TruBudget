@@ -19,13 +19,17 @@ const calculateHistory = items => {
 
 const mapIntent = (intent, data) => {
   switch (intent) {
+    case "global.createProject":
+      return `Created project ${data.project.displayName}`;
+    case "project.intent.grantPermission":
+      return `Granted permission "${strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent}" to ${
+        data.userId
+      }`;
     case "project.createSubproject":
-      return `Created subproject ${data.subproject.displayName}`;
-    case "subproject.createWorkflowitem":
-      return `Created workflow item ${data.workflowitem.displayName}`;
-    case "workflowitem.close":
+      return `Created workflow item ${data.subproject.displayName}`;
+    case "subproject.close":
       return `Closed workflow item ???`;
-    case "workflowitem.intent.grantPermission":
+    case "subproject.intent.grantPermission":
       return `Granted permission "${strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent}" to ${
         data.userId
       }`;
@@ -36,7 +40,7 @@ const mapIntent = (intent, data) => {
   }
 };
 
-class SubProjectHistoryContainer extends Component {
+class ProjectHistoryContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -67,7 +71,7 @@ class SubProjectHistoryContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    items: state.getIn(["workflow", "historyItems"]),
+    items: state.getIn(["detailview", "historyItems"]),
     show: state.getIn(["notifications", "showHistory"])
   };
 };
@@ -77,4 +81,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubProjectHistoryContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectHistoryContainer);

@@ -28,7 +28,8 @@ import {
   SHOW_WORKFLOW_ASSIGNEES,
   HIDE_WORKFLOW_ASSIGNEES,
   SHOW_SUBPROJECT_ASSIGNEES,
-  HIDE_SUBPROJECT_ASSIGNEES
+  HIDE_SUBPROJECT_ASSIGNEES,
+  FETCH_SUBPROJECT_HISTORY_SUCCESS
 } from "./actions";
 
 import { LOGOUT } from "../Login/actions";
@@ -182,6 +183,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", false);
+    case FETCH_SUBPROJECT_HISTORY_SUCCESS:
+      return state.set("historyItems", action.events);
     case LOGOUT:
       return defaultState;
     default:

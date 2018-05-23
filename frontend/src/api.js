@@ -51,6 +51,7 @@ class Api {
     });
 
   viewProjectDetails = projectId => axios.get(`/project.viewDetails?projectId=${projectId}`);
+  viewProjectHistory = projectId => axios.get(`/project.viewHistory?projectId=${projectId}`);
 
   listProjectIntents = projectId => axios.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
@@ -70,6 +71,9 @@ class Api {
 
   viewSubProjectDetails = (projectId, subprojectId) =>
     axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
+
+  viewSubProjectHistory = (projectId, subprojectId) =>
+    axios.get(`/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}`);
 
   createWorkflowItem = payload =>
     axios.post(`/subproject.createWorkflowitem`, {

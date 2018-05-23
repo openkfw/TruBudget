@@ -11,11 +11,12 @@ import {
   storeSubProjectAmount,
   storeSubProjectComment,
   showProjectPermissions,
-  showProjectAssignees
+  showProjectAssignees,
+  fetchProjectHistory
 } from "./actions";
 
 import SubProjects from "./SubProjects";
-import { showSnackBar, storeSnackBarMessage, showHistory } from "../Notifications/actions";
+import { showSnackBar, storeSnackBarMessage, showHistory, hideHistory } from "../Notifications/actions";
 import { setSelectedView } from "../Navbar/actions";
 import ProjectDetails from "./ProjectDetails";
 import globalStyles from "../../styles";
@@ -23,6 +24,7 @@ import { toJS } from "../../helper";
 import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
 import strings from "../../localizeStrings";
 import { fetchUser } from "../Login/actions";
+import ProjectHistoryContainer from "./ProjectHistoryContainer";
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
@@ -42,6 +44,7 @@ class SubProjectsContainer extends Component {
           <ProjectPermissionsContainer title={strings.project.project_permissions_title} />
           <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} canAssignProject={canAssignProject} />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
+          <ProjectHistoryContainer />
         </div>
       </div>
     );
@@ -61,8 +64,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
     showSnackBar: () => dispatch(showSnackBar(true)),
     storeSnackBarMessage: message => dispatch(storeSnackBarMessage(message)),
-    openHistory: () => dispatch(showHistory(true)),
-    hideHistory: () => dispatch(showHistory(false)),
+    openHistory: () => dispatch(showHistory()),
+    hideHistory: () => dispatch(hideHistory()),
+    fetchProjectHistory: (pId, showLoading) => dispatch(fetchProjectHistory(pId, showLoading)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     showProjectPermissions: () => dispatch(showProjectPermissions()),
     showProjectAssignees: () => dispatch(showProjectAssignees()),
@@ -92,13 +96,11 @@ const mapStateToProps = state => {
     subProjectCurrency: state.getIn(["detailview", "subProjectCurrency"]),
     showHistory: state.getIn(["notifications", "showHistory"]),
     loggedInUser: state.getIn(["login", "loggedInUser"]),
-    users: state.getIn(["login", "users"]),
     roles: state.getIn(["login", "roles"]),
     user: state.getIn(["login", "user"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     thumbnail: state.getIn(["detailview", "thumbnail"]),
-    logs: state.getIn(["detailview", "logs"]),
-    users: state.getIn(["login", "user"])
+    logs: state.getIn(["detailview", "logs"])
   };
 };
 
