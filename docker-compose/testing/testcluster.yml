@@ -42,6 +42,4 @@ services:
       - master
       - api
 
-volumes:
-  
   
