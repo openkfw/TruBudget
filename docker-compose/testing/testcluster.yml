@@ -33,8 +33,6 @@ services:
     build: 
       context: '../../frontend'
       dockerfile: 'cypress/Dockerfile'
-    environment:
-      CYPRESS_FRONTEND_URL: frontend
     links:
       - frontend
     depends_on:
