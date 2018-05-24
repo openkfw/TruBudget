@@ -1,8 +1,11 @@
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
+import { AuthToken } from "../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import { Event } from "../multichain/event";
+import { createNotification } from "../notification/create";
 import * as Project from "./model/Project";
 
 export const assignProject = async (
@@ -23,21 +26,61 @@ export const assignProject = async (
     await Project.getPermissions(multichain, projectId),
   );
 
+  const publishedEvent = await sendEventToDatabase(
+    multichain,
+    req.token,
+    userIntent,
+    userId,
+    projectId,
+  );
+
+  await notifyProjectAssignee(multichain, req.token, projectId, publishedEvent);
+
+  return [200, { apiVersion: "1.0", data: "OK" }];
+};
+
+async function sendEventToDatabase(
+  multichain: MultichainClient,
+  token: AuthToken,
+  userIntent: Intent,
+  userId: string,
+  projectId: string,
+): Promise<Event> {
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: { userId },
   };
+  const publishedEvent = await Project.publish(multichain, projectId, event);
+  return publishedEvent;
+}
 
-  await Project.publish(multichain, projectId, event);
+/**
+ * If the project is assigned to someone else, that person is notified about the
+ * change.
+ */
+async function notifyProjectAssignee(
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string,
+  publishedEvent: Event,
+): Promise<void> {
+  const project = await Project.get(multichain, token, projectId).then(
+    x => (x.length ? x[0] : undefined),
+  );
 
-  return [
-    200,
-    {
-      apiVersion: "1.0",
-      data: "OK",
-    },
-  ];
-};
+  if (project === undefined) return;
+  const assignee = project.data.assignee;
+
+  if (assignee === undefined || assignee === token.userId) return;
+
+  await createNotification(
+    multichain,
+    [{ id: projectId, type: "project" }],
+    token.userId,
+    assignee,
+    publishedEvent,
+  );
+}

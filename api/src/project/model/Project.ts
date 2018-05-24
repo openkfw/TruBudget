@@ -45,7 +45,7 @@ export async function publish(
     dataVersion: number; // integer
     data: object;
   },
-): Promise<void> {
+): Promise<Event> {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
   const event: Event = {
     key: projectId,
@@ -58,9 +58,12 @@ export async function publish(
 
   const publishEvent = () => {
     console.log(`Publishing ${intent} to ${projectId}/${projectSelfKey}`);
-    return multichain.getRpcClient().invoke("publish", projectId, projectSelfKey, {
-      json: event,
-    });
+    return multichain
+      .getRpcClient()
+      .invoke("publish", projectId, projectSelfKey, {
+        json: event,
+      })
+      .then(() => event);
   };
 
   return publishEvent().catch(err => {
