@@ -34,6 +34,7 @@ import {
 
 import { LOGOUT } from "../Login/actions";
 import { fromAmountString } from "../../helper";
+import { HIDE_HISTORY } from "../Notifications/actions";
 
 const defaultState = fromJS({
   id: "",
@@ -185,6 +186,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showSubProjectAssignee", false);
     case FETCH_SUBPROJECT_HISTORY_SUCCESS:
       return state.set("historyItems", action.events);
+    case HIDE_HISTORY:
+      return state.set("historyItems", []);
     case LOGOUT:
       return defaultState;
     default:
