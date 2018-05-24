@@ -23,3 +23,30 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+const baseUrl = Cypress.env("API_BASE_URL") || "/test";
+
+Cypress.Commands.add("login", () => {
+  cy
+    .request({
+      url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
+      method: "POST",
+      body: { apiVersion: "1.0", data: { user: { id: "mstein", password: "test" } } }
+    })
+    .its("body")
+    .then(body => {
+      const state = {
+        login: {
+          jwt: body.data.user.token,
+          environment: "Test",
+          productionActive: false,
+          language: "en-gb",
+          id: body.data.user.id,
+          displayName: body.data.user.displayName,
+          organization: body.data.user.organization,
+          allowedIntents: body.data.user.allowedIntents
+        }
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    });
+});

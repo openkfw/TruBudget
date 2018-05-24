@@ -6,7 +6,7 @@ import { AuthToken } from "../authz/token";
 const addTokenHandling = (app, jwtSecret: string) => {
   app.use(
     expressJwt({ secret: jwtSecret }).unless({
-      path: ["/liveness", "/readiness", "/user.authenticate"],
+      path: ["/api/liveness", "/api/readiness", "/api/user.authenticate"],
     }),
   );
   app.use(function customAuthTokenErrorHandler(err, req, res, next) {
@@ -26,8 +26,8 @@ const addTokenHandling = (app, jwtSecret: string) => {
 
 const logging = (req: express.Request, res, next) => {
   switch (req.path) {
-    case "/liveness":
-    case "/readiness":
+    case "/api/liveness":
+    case "/api/readiness":
       break;
     default: {
       const details = [

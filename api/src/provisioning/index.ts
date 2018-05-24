@@ -53,7 +53,7 @@ export const provisionBlockchain = async (
   rootSecret: string,
   multichainClient: MultichainClient,
 ) => {
-  axios.defaults.baseURL = `http://localhost:${port}`;
+  axios.defaults.baseURL = `http://localhost:${port}/api`;
   axios.defaults.timeout = 5000;
 
   let connected = false;

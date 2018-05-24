@@ -39,7 +39,7 @@ const multichainClient = new RpcMultichainClient({
 });
 
 const app = createBasicApp(jwtSecret, rootSecret);
-app.use("/", createRouter(multichainClient, jwtSecret, rootSecret));
+app.use("/api", createRouter(multichainClient, jwtSecret, rootSecret));
 
 /*
  * Run the app:

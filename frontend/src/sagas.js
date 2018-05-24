@@ -121,7 +121,7 @@ function* callApi(func, ...args) {
   yield call(api.setAuthorizationHeader, token);
   const env = yield select(getEnvironment);
   // TODO dont set the environment on each call
-  const prefix = env === "Test" ? "/test" : "/api";
+  const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
   const { data } = yield call(func, ...args);
   return data;
