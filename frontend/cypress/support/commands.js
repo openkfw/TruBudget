@@ -24,10 +24,12 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+const baseUrl = Cypress.env("API_BASE_URL") || "/test";
+
 Cypress.Commands.add("login", () => {
   cy
     .request({
-      url: "/user.authenticate", // assuming you've exposed a seeds route
+      url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
       method: "POST",
       body: { apiVersion: "1.0", data: { user: { id: "mstein", password: "test" } } }
     })
