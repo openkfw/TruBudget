@@ -1,5 +1,6 @@
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
+import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 
@@ -10,14 +11,14 @@ type NotificationId = string;
 export interface EventData {
   notificationId: NotificationId;
   resourceId: string;
-  resourceType: string;
+  resourceType: ResourceType;
   isRead: boolean;
 }
 
 export interface NotificationDto {
   notificationId: NotificationId;
   resourceId: string;
-  resourceType: string;
+  resourceType: ResourceType;
   createdBy: string;
   createdAt: string;
   isRead: boolean;

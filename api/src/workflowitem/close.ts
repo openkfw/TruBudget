@@ -5,6 +5,7 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
+import { createNotification } from "../notification/create";
 
 export const closeWorkflowitem = async (
   multichain: MultichainClient,
@@ -50,6 +51,22 @@ export const closeWorkflowitem = async (
   };
 
   await Workflowitem.publish(multichain, projectId, subprojectId, workflowitemId, event);
+
+  // If the workflowitem is assigned to someone else, that person is notified about the change:
+  const workflowitem = sortedItems.find(item => item.data.id === workflowitemId);
+  if (
+    workflowitem !== undefined &&
+    workflowitem.data.assignee !== undefined &&
+    workflowitem.data.assignee !== req.token.userId
+  ) {
+    await createNotification(
+      multichain,
+      workflowitemId,
+      "workflowitem",
+      req.token.userId,
+      workflowitem.data.assignee,
+    );
+  }
 
   return [
     200,
