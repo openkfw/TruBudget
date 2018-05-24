@@ -1,9 +1,11 @@
 import * as Workflowitem from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
+import { AuthToken } from "../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import { Event } from "../multichain/event";
 import { createNotification } from "../notification/create";
 import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
 import * as Subproject from "../subproject/model/Subproject";
@@ -28,10 +30,55 @@ export const closeWorkflowitem = async (
   );
 
   // We need to make sure that all previous (wrt. ordering) workflowitems are already closed:
-  const sortedItems = await Workflowitem.get(multichain, req.token, projectId, subprojectId).then(
-    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
+  const sortedItems = await ensureAllPreviousWorkflowitemsAreClosed(
+    multichain,
+    req.token,
+    projectId,
+    subprojectId,
+    workflowitemId,
   );
 
+  const publishedEvent = await sendEventToDatabase(
+    multichain,
+    req.token,
+    userIntent,
+    projectId,
+    subprojectId,
+    workflowitemId,
+  );
+
+  const workflowitemAssignee = await notifyWorkflowitemAssignee(
+    multichain,
+    req.token,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    publishedEvent,
+    sortedItems,
+  );
+  await notifySubprojectAssignee(
+    multichain,
+    req.token,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    publishedEvent,
+    workflowitemAssignee,
+  );
+
+  return [200, { apiVersion: "1.0", data: "OK" }];
+};
+
+async function ensureAllPreviousWorkflowitemsAreClosed(
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+): Promise<Workflowitem.WorkflowitemResource[]> {
+  const sortedItems = await Workflowitem.get(multichain, token, projectId, subprojectId).then(
+    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
+  );
   for (const item of sortedItems) {
     if (item.data.id === workflowitemId) {
       break;
@@ -42,15 +89,24 @@ export const closeWorkflowitem = async (
       };
     }
   }
+  return sortedItems;
+}
 
+async function sendEventToDatabase(
+  multichain: MultichainClient,
+  token: AuthToken,
+  userIntent: Intent,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+): Promise<Event> {
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: {},
   };
-
   const publishedEvent = await Workflowitem.publish(
     multichain,
     projectId,
@@ -58,57 +114,83 @@ export const closeWorkflowitem = async (
     workflowitemId,
     event,
   );
+  return publishedEvent;
+}
 
-  // If the workflowitem is assigned to someone else, that person is notified about the change:
+/**
+ * If the workflowitem is assigned to someone else, that person is notified about the
+ * change.
+ *
+ * @returns The workflowitem assignee, or undefined if unset.
+ */
+async function notifyWorkflowitemAssignee(
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+  publishedEvent: Event,
+  sortedItems: Workflowitem.WorkflowitemResource[],
+): Promise<string | undefined> {
   const workflowitem = sortedItems.find(item => item.data.id === workflowitemId);
-  if (
-    workflowitem !== undefined &&
-    workflowitem.data.assignee !== undefined &&
-    workflowitem.data.assignee !== req.token.userId
-  ) {
-    await createNotification(
-      multichain,
-      [
-        { id: workflowitemId, type: "workflowitem" },
-        { id: subprojectId, type: "subproject" },
-        { id: projectId, type: "project" },
-      ],
-      req.token.userId,
-      workflowitem.data.assignee,
-      publishedEvent,
-    );
-  }
-  // If the associated subproject is
-  // (1) assigned to someone else and
-  // (2) not assigned to the same guy the workflowitem is assigned to,
-  // that person is notified about the change too:
-  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
+
+  if (workflowitem === undefined) return;
+  const assignee = workflowitem.data.assignee;
+
+  if (assignee === undefined || assignee === token.userId) return;
+
+  await createNotification(
+    multichain,
+    [
+      { id: workflowitemId, type: "workflowitem" },
+      { id: subprojectId, type: "subproject" },
+      { id: projectId, type: "project" },
+    ],
+    token.userId,
+    assignee,
+    publishedEvent,
+  );
+  return assignee;
+}
+
+/**
+ *  If the associated subproject is (1) assigned to someone else and (2) not assigned to
+ *  the same guy the workflowitem is assigned to, that person is notified about the
+ *  change too.
+ */
+async function notifySubprojectAssignee(
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+  publishedEvent: Event,
+  workflowitemAssignee?: string,
+): Promise<void> {
+  const subproject = await Subproject.get(multichain, token, projectId, subprojectId).then(
     x => (x.length ? x[0] : undefined),
   );
+
+  if (subproject === undefined) return;
+  const subprojectAssignee = subproject.data.assignee;
+
   if (
-    subproject !== undefined &&
-    subproject.data.assignee !== undefined &&
-    subproject.data.assignee !== req.token.userId &&
-    (workflowitem === undefined || subproject.data.assignee !== workflowitem.data.assignee)
+    subprojectAssignee === undefined ||
+    subprojectAssignee === token.userId ||
+    subprojectAssignee === workflowitemAssignee
   ) {
-    await createNotification(
-      multichain,
-      [
-        { id: workflowitemId, type: "workflowitem" },
-        { id: subprojectId, type: "subproject" },
-        { id: projectId, type: "project" },
-      ],
-      req.token.userId,
-      subproject.data.assignee,
-      publishedEvent,
-    );
+    return;
   }
 
-  return [
-    200,
-    {
-      apiVersion: "1.0",
-      data: "OK",
-    },
-  ];
-};
+  await createNotification(
+    multichain,
+    [
+      { id: workflowitemId, type: "workflowitem" },
+      { id: subprojectId, type: "subproject" },
+      { id: projectId, type: "project" },
+    ],
+    token.userId,
+    subprojectAssignee,
+    publishedEvent,
+  );
+}
