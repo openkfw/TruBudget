@@ -4,6 +4,7 @@ import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import { createNotification } from "../notification/create";
 
 export const assignWorkflowitem = async (
   multichain: MultichainClient,
@@ -34,6 +35,24 @@ export const assignWorkflowitem = async (
   };
 
   await Workflowitem.publish(multichain, projectId, subprojectId, workflowitemId, event);
+
+  // If the workflowitem has been assigned to someone else, that person is notified about the change:
+  const workflowitem = await Workflowitem.get(
+    multichain,
+    req.token,
+    projectId,
+    subprojectId,
+    workflowitemId,
+  ).then(x => x[0]);
+  if (workflowitem.data.assignee !== undefined && workflowitem.data.assignee !== req.token.userId) {
+    await createNotification(
+      multichain,
+      workflowitemId,
+      "workflowitem",
+      req.token.userId,
+      workflowitem.data.assignee,
+    );
+  }
 
   return [
     200,
