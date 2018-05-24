@@ -79,16 +79,25 @@ export async function get(
   });
   const notificationsById = new Map<NotificationId, NotificationDto>();
 
+  let skipEvents = since !== undefined;
+
   for (const item of streamItems) {
     const event = item.data.json as Event;
 
     const notificationId = getNotificationId(event);
+    if (skipEvents) {
+      if (notificationId === since) {
+        // stop skipping events, starting with the next event
+        skipEvents = false;
+      }
+      continue; // skip this event
+    }
+
     let notification = notificationsById.get(notificationId);
     if (notification === undefined) {
       notification = handleCreate(event);
-      if (notification === undefined) {
-        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
-      }
+      // We ignore that this might fail, because the event could relate to a notification
+      // that has already been skipped.
     } else {
       // We've already encountered this notification, so we can apply operations on it.
       const hasProcessedEvent = applyMarkRead(event, notification);
