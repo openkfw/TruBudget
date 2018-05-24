@@ -6,6 +6,7 @@ import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { createNotification } from "../notification/create";
 import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
+import * as Subproject from "../subproject/model/Subproject";
 
 export const closeWorkflowitem = async (
   multichain: MultichainClient,
@@ -74,6 +75,31 @@ export const closeWorkflowitem = async (
       ],
       req.token.userId,
       workflowitem.data.assignee,
+      publishedEvent,
+    );
+  }
+  // If the associated subproject is
+  // (1) assigned to someone else and
+  // (2) not assigned to the same guy the workflowitem is assigned to,
+  // that person is notified about the change too:
+  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
+    x => (x.length ? x[0] : undefined),
+  );
+  if (
+    subproject !== undefined &&
+    subproject.data.assignee !== undefined &&
+    subproject.data.assignee !== req.token.userId &&
+    (workflowitem === undefined || subproject.data.assignee !== workflowitem.data.assignee)
+  ) {
+    await createNotification(
+      multichain,
+      [
+        { id: workflowitemId, type: "workflowitem" },
+        { id: subprojectId, type: "subproject" },
+        { id: projectId, type: "project" },
+      ],
+      req.token.userId,
+      subproject.data.assignee,
       publishedEvent,
     );
   }
