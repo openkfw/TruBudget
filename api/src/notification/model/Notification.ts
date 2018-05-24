@@ -1,5 +1,6 @@
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
+import deepcopy from "../../lib/deepcopy";
 import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
@@ -8,20 +9,23 @@ const streamName = "notifications";
 
 type NotificationId = string;
 
-export interface EventData {
-  notificationId: NotificationId;
-  resourceId: string;
-  resourceType: ResourceType;
-  isRead: boolean;
+export interface NotificationResourceDescription {
+  id: string;
+  type: ResourceType;
 }
 
-export interface NotificationDto {
+export interface EventData {
   notificationId: NotificationId;
-  resourceId: string;
-  resourceType: ResourceType;
-  createdBy: string;
-  createdAt: string;
+  resources: NotificationResourceDescription[];
   isRead: boolean;
+  originalEvent: Event;
+}
+
+export interface Notification {
+  notificationId: NotificationId;
+  resources: NotificationResourceDescription[];
+  isRead: boolean;
+  originalEvent: Event;
 }
 
 export async function publish(
@@ -68,7 +72,7 @@ export async function get(
   multichain: MultichainClient,
   token: AuthToken,
   since?: string,
-): Promise<NotificationDto[]> {
+): Promise<Notification[]> {
   const streamItems = await multichain.v2_readStreamItems(streamName, token.userId).catch(err => {
     if (err.kind === "NotFound" && err.what === "stream notifications") {
       // The stream does not exist yet, which happens on (freshly installed) systems that
@@ -78,7 +82,7 @@ export async function get(
       throw err;
     }
   });
-  const notificationsById = new Map<NotificationId, NotificationDto>();
+  const notificationsById = new Map<NotificationId, Notification>();
 
   let skipEvents = since !== undefined;
 
@@ -117,9 +121,9 @@ export async function get(
   return unorderedNotifications.sort(compareNotifications);
 }
 
-function compareNotifications(a: NotificationDto, b: NotificationDto): number {
-  const tsA = new Date(a.createdAt);
-  const tsB = new Date(b.createdAt);
+function compareNotifications(a: Notification, b: Notification): number {
+  const tsA = new Date(a.originalEvent.createdAt);
+  const tsB = new Date(b.originalEvent.createdAt);
   if (tsA < tsB) return 1;
   if (tsA > tsB) return -1;
   return 0;
@@ -135,21 +139,17 @@ function getNotificationId(event: Event): NotificationId {
   return "exception already thrown, thus this is unreachable code";
 }
 
-function handleCreate(event: Event): NotificationDto | undefined {
+function handleCreate(event: Event): Notification | undefined {
   if (event.intent !== "notification.create") return undefined;
   switch (event.dataVersion) {
     case 1: {
-      return {
-        ...event.data,
-        createdBy: event.createdBy,
-        createdAt: event.createdAt,
-      };
+      return deepcopy(event.data);
     }
   }
   throwUnsupportedEventVersion(event);
 }
 
-function applyMarkRead(event: Event, notification: NotificationDto): true | undefined {
+function applyMarkRead(event: Event, notification: Notification): true | undefined {
   if (event.intent !== "notification.markRead") return;
   switch (event.dataVersion) {
     case 1: {

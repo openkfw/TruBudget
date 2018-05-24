@@ -3,8 +3,8 @@ import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
-import * as Subproject from "./model/Subproject";
 import { createNotification } from "../notification/create";
+import * as Subproject from "./model/Subproject";
 
 export const assignSubproject = async (
   multichain: MultichainClient,
@@ -33,7 +33,7 @@ export const assignSubproject = async (
     data: { userId },
   };
 
-  await Subproject.publish(multichain, projectId, subprojectId, event);
+  const publishedEvent = await Subproject.publish(multichain, projectId, subprojectId, event);
 
   // If the subproject has been assigned to someone else, that person is notified about the change:
   const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
@@ -42,10 +42,10 @@ export const assignSubproject = async (
   if (subproject.data.assignee !== undefined && subproject.data.assignee !== req.token.userId) {
     await createNotification(
       multichain,
-      subprojectId,
-      "subproject",
+      [{ id: subprojectId, type: "subproject" }, { id: projectId, type: "project" }],
       req.token.userId,
       subproject.data.assignee,
+      publishedEvent,
     );
   }
 

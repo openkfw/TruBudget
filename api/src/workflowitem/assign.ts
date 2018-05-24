@@ -34,7 +34,13 @@ export const assignWorkflowitem = async (
     data: { userId },
   };
 
-  await Workflowitem.publish(multichain, projectId, subprojectId, workflowitemId, event);
+  const publishedEvent = await Workflowitem.publish(
+    multichain,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    event,
+  );
 
   // If the workflowitem has been assigned to someone else, that person is notified about the change:
   const workflowitem = await Workflowitem.get(
@@ -47,10 +53,14 @@ export const assignWorkflowitem = async (
   if (workflowitem.data.assignee !== undefined && workflowitem.data.assignee !== req.token.userId) {
     await createNotification(
       multichain,
-      workflowitemId,
-      "workflowitem",
+      [
+        { id: workflowitemId, type: "workflowitem" },
+        { id: subprojectId, type: "subproject" },
+        { id: projectId, type: "project" },
+      ],
       req.token.userId,
       workflowitem.data.assignee,
+      publishedEvent,
     );
   }
 

@@ -84,7 +84,7 @@ export const publish = async (
     dataVersion: number; // integer
     data: object;
   },
-): Promise<void> => {
+): Promise<Event> => {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
   const event: Event = {
     key: workflowitemId,
@@ -94,11 +94,12 @@ export const publish = async (
     dataVersion,
     data,
   };
-  return multichain
+  await multichain
     .getRpcClient()
     .invoke("publish", projectId, workflowitemKey(subprojectId, workflowitemId), {
       json: event,
     });
+  return event;
 };
 
 export const get = async (
