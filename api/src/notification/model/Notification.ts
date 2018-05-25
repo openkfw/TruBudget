@@ -4,6 +4,7 @@ import deepcopy from "../../lib/deepcopy";
 import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
+import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
 
 const streamName = "notifications";
 
@@ -71,31 +72,36 @@ export async function publish(
 export async function get(
   multichain: MultichainClient,
   token: AuthToken,
-  since?: string,
+  sinceId?: string,
 ): Promise<Notification[]> {
-  const streamItems = await multichain.v2_readStreamItems(streamName, token.userId).catch(err => {
-    if (err.kind === "NotFound" && err.what === "stream notifications") {
-      // The stream does not exist yet, which happens on (freshly installed) systems that
-      // have not seen any notifications yet.
-      return [];
-    } else {
-      throw err;
-    }
-  });
+  const streamItems: Liststreamkeyitems.Item[] = await multichain
+    .v2_readStreamItems(streamName, token.userId)
+    .catch(err => {
+      if (err.kind === "NotFound" && err.what === "stream notifications") {
+        // The stream does not exist yet, which happens on (freshly installed) systems that
+        // have not seen any notifications yet.
+        return [];
+      } else {
+        throw err;
+      }
+    });
   const notificationsById = new Map<NotificationId, Notification>();
 
-  let skipEvents = since !== undefined;
+  let fromIndex = 0;
+  if (sinceId) {
+    fromIndex = streamItems.findIndex(
+      item => getNotificationId(item.data.json as Event) === sinceId,
+    );
+    if (fromIndex === -1) fromIndex = 0;
+  }
 
-  for (const item of streamItems) {
-    const event = item.data.json as Event;
+  for (let i = fromIndex; i < streamItems.length; ++i) {
+    const event = streamItems[i].data.json as Event;
 
     const notificationId = getNotificationId(event);
-    if (skipEvents) {
-      if (notificationId === since) {
-        // stop skipping events, starting with the next event
-        skipEvents = false;
-      }
-      continue; // skip this event
+    if (sinceId === notificationId) {
+      // The "sinceId"-event is not included in the response
+      continue;
     }
 
     let notification = notificationsById.get(notificationId);

@@ -1,3 +1,4 @@
+import * as winston from "winston";
 import { AuthToken } from "../../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { ResourceType } from "../../lib/resourceTypes";
@@ -7,7 +8,6 @@ import * as Project from "../../project/model/Project";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Workflowitem from "../../workflowitem";
 import * as Notification from "../model/Notification";
-import * as winston from "winston";
 
 type ResourceMetadataMap = object;
 
@@ -28,9 +28,9 @@ export const getNotificationList = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
-  const since: string | undefined = req.query.since;
+  const sinceId: string | undefined = req.query.sinceId;
 
-  const rawNotifications = await Notification.get(multichain, req.token, since);
+  const rawNotifications = await Notification.get(multichain, req.token, sinceId);
 
   const notifications: NotificationDto[] = [];
   for (const rawNotification of rawNotifications) {
