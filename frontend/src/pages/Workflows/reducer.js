@@ -185,9 +185,9 @@ export default function detailviewReducer(state = defaultState, action) {
     case HIDE_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", false);
     case FETCH_SUBPROJECT_HISTORY_SUCCESS:
-      return state.set("historyItems", action.events);
+      return state.set("historyItems", fromJS(action.events));
     case HIDE_HISTORY:
-      return state.set("historyItems", []);
+      return state.set("historyItems", fromJS([]));
     case LOGOUT:
       return defaultState;
     default:
