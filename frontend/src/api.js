@@ -29,7 +29,9 @@ class Api {
 
   setBaseUrl = url => {
     if (!devMode) {
-      axios.defaults.baseURL = url;
+      axios.defaults.baseURL = `${url}/api`;
+    } else {
+      axios.defaults.baseURL = `/api`;
     }
   };
 

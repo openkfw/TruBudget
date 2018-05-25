@@ -26,7 +26,7 @@ const styles = {
   }
 };
 
-const Username = ({ username, storeUsername, loginFailed }) => {
+const Username = ({ username, storeUsername, loginFailed, ...props }) => {
   return (
     <div style={styles.container}>
       <UsernameIcon style={styles.icon} />
@@ -38,6 +38,7 @@ const Username = ({ username, storeUsername, loginFailed }) => {
         error={loginFailed}
         onChange={event => storeUsername(event.target.value)}
         helperText={loginFailed ? strings.common.incorrect_username : null}
+        {...props}
       />
     </div>
   );

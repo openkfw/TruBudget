@@ -51,7 +51,7 @@ const getTableEntries = ({ projects, history, classes }) => {
     const dateString = tsToString(creationUnixTs);
 
     return (
-      <Card aria-label="project" key={index} className={classes.card}>
+      <Card aria-label="project" key={index} className={classes.card} data-test="projectcard">
         <CardMedia className={classes.media} image={imagePath} />
         <CardActions
           style={{
@@ -73,7 +73,12 @@ const getTableEntries = ({ projects, history, classes }) => {
           </Button>
         </CardActions>
         <CardContent>
-          <CardHeader className={classes.cardHeader} title={displayName} subheader={mappedStatus} />
+          <CardHeader
+            data-test="projectheader"
+            className={classes.cardHeader}
+            title={displayName}
+            subheader={mappedStatus}
+          />
           <List>
             {/* <ListItem className={classes.listItem} disabled={true}>
               <ListItemIcon>
@@ -85,13 +90,13 @@ const getTableEntries = ({ projects, history, classes }) => {
               <ListItemIcon>
                 <AmountIcon />
               </ListItemIcon>
-              <ListItemText primary={amountString} secondary={strings.common.budget} />
+              <ListItemText data-test="projectbudget" primary={amountString} secondary={strings.common.budget} />
             </ListItem>
             <ListItem className={classes.listItem} disabled={true}>
               <ListItemIcon>
                 <DateIcon />
               </ListItemIcon>
-              <ListItemText primary={dateString} secondary={strings.common.created} />
+              <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
           </List>
         </CardContent>
@@ -118,7 +123,7 @@ const OverviewTable = props => {
       }}
     >
       {tableEntries}
-      <Card style={{ margin: "35px", width: "25%", opacity: "0.7" }}>
+      <Card data-test="projectcreation" style={{ margin: "35px", width: "25%", opacity: "0.7" }}>
         <div
           style={{
             display: "flex",
