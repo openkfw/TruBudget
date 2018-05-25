@@ -1,16 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { fetchNotifications, markNotificationAsRead } from "./actions";
+import { markNotificationAsRead, fetchNotificationsWithId } from "./actions";
 import NotificationPage from "./NotificationPage";
 
 import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 
 class NotificationPageContainer extends Component {
-  componentWillMount() {
-    this.props.fetchNotifications(true);
+  componentDidMount() {
+    this.fetch();
   }
+
+  fetch = () => {
+    const { notifications, fetchNotifications } = this.props;
+    const fromId = notifications.length > 0 ? notifications[0].notificationId : "";
+    fetchNotifications(fromId);
+  };
 
   render() {
     return (
@@ -23,7 +29,7 @@ class NotificationPageContainer extends Component {
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    fetchNotifications: showLoading => dispatch(fetchNotifications(showLoading)),
+    fetchNotifications: id => dispatch(fetchNotificationsWithId(id, true)),
     markNotificationAsRead: notificationId => dispatch(markNotificationAsRead(notificationId))
   };
 };
@@ -31,9 +37,6 @@ const mapDispatchToProps = (dispatch, props) => {
 const mapStateToProps = state => {
   return {
     notifications: state.getIn(["notifications", "notifications"])
-    // loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
-    // users: state.getIn(['login', 'users']).toJS(),
-    // streamNames: state.getIn(['navbar', 'streamNames']).toJS(),
   };
 };
 

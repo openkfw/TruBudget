@@ -386,16 +386,6 @@ export function* getEnvironmentSaga() {
 //   }
 // }
 
-export function* fetchNotificationSaga({ fromId, showLoading }) {
-  yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications);
-    yield put({
-      type: FETCH_NOTIFICATIONS_SUCCESS,
-      notifications: data.notifications
-    });
-  }, showLoading);
-}
-
 export function* fetchNotificationWithIdSaga({ fromId, showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.fetchNotifications, fromId);
@@ -828,9 +818,6 @@ export function* watchCreateProject() {
 //   yield takeEvery(FETCH_NODE_INFORMATION, fetchNodeInformationSaga)
 // }
 
-export function* watchFetchNotifications() {
-  yield takeLatest(FETCH_NOTIFICATIONS, fetchNotificationSaga);
-}
 export function* watchFetchNotificationsWithId() {
   yield takeLatest(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
 }
@@ -971,7 +958,6 @@ export default function* rootSaga() {
       watchAssignWorkflowItem(),
 
       // Notifications
-      watchFetchNotifications(),
       watchFetchNotificationsWithId(),
       watchMarkNotificationAsRead()
 

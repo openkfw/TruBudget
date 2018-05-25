@@ -3,32 +3,32 @@ import React from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Unread from "@material-ui/icons/Email";
+import Read from "@material-ui/icons/MailOutline";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import NotificationsNone from "@material-ui/icons/NotificationsNone";
 import LaunchIcon from "@material-ui/icons/Launch";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
-import { tsToString } from "../../helper";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+
 import moment from "moment";
-import { Typography } from "@material-ui/core";
 
 const styles = {
   root: {
     width: "100%",
     backgroundColor: "white"
   },
-  tsText: {
-    display: "flex",
-    justifyContent: "flex-end",
-    marginRight: "40px"
-  },
+  tsText: {},
   viewButton: {
     marginRight: "20px"
   },
   notRead: {
     fontWeight: "bold"
+  },
+  row: {
+    display: "flex",
+    flex: 1
   }
 };
 
@@ -64,35 +64,57 @@ const parseURI = ({ resources }) => {
   }
 };
 
+const fetchRessourceName = (res, type) => {
+  const r = res.find(v => v.type === type);
+  if (r !== undefined) {
+    return r.displayName || "Redacted";
+  } else {
+    return "-";
+  }
+};
+
+const hasAccess = res => res.reduce((acc, r) => acc && r.displayName !== undefined, false);
+
 const getListItems = ({ notifications, history, markNotificationAsRead }) =>
   notifications.map((notification, index) => {
+    console.log(notification);
     const { primaryText, secondaryText } = intentMapping(notification);
-    const createdAt = moment(notification.originalEvent.createdAt).fromNow();
+    const { originalEvent, notificationId, isRead, resources } = notification;
+    const createdAt = moment(originalEvent.createdAt).fromNow();
     const redirectUri = parseURI(notification);
     return (
       <div key={index}>
         <Divider />
         <ListItem
+          component="div"
+          style={styles.row}
           key={index}
-          button={notification.isRead ? false : true}
-          onClick={notification.isRead ? undefined : () => markNotificationAsRead(notification.notificationId)}
+          button={isRead ? false : true}
+          onClick={isRead ? undefined : () => markNotificationAsRead(notificationId)}
         >
-          <ListItemIcon>
-            <NotificationsNone />
-          </ListItemIcon>
+          <div style={{ flex: 1, opacity: isRead ? 0.3 : 1 }}>
+            <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
+          </div>
           <ListItemText
-            primary={<Typography style={notification.isRead ? null : styles.notRead}> {primaryText}</Typography>}
-            secondary={<Typography style={notification.isRead ? {} : styles.notRead}> {secondaryText}</Typography>}
+            style={{ flex: 3 }}
+            component="div"
+            primary={fetchRessourceName(resources, "project")}
+            secondary={fetchRessourceName(resources, "subproject")}
           />
-          <ListItemText
-            style={styles.tsText}
-            secondary={<Typography style={notification.isRead ? null : styles.notRead}> {createdAt}</Typography>}
-          />
-          <ListItemSecondaryAction style={styles.viewButton}>
-            <Button mini color="primary" variant="fab" onClick={() => history.push(redirectUri)}>
+
+          <ListItemText style={{ flex: 5 }} component="div" primary={secondaryText} />
+          <ListItemText style={{ flex: 2 }} component="div" primary={originalEvent.createdBy} secondary={createdAt} />
+          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+            <Button
+              mini
+              disabled={!hasAccess(resources)}
+              color="primary"
+              variant="fab"
+              onClick={() => history.push(redirectUri)}
+            >
               <LaunchIcon />
             </Button>
-          </ListItemSecondaryAction>
+          </div>
         </ListItem>
       </div>
     );
@@ -101,17 +123,10 @@ const getListItems = ({ notifications, history, markNotificationAsRead }) =>
 const NotificationsList = props => {
   const listItems = getListItems(props);
   return (
-    <div style={styles.root}>
-      <List
-        subheader={
-          <ListSubheader>
-            <h1>Notifications</h1>
-          </ListSubheader>
-        }
-      >
-        {listItems}
-      </List>
-    </div>
+    <Card>
+      <CardHeader title="Notifications" />
+      <List component="div">{listItems}</List>
+    </Card>
   );
 };
 

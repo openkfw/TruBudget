@@ -9,7 +9,6 @@ import {
   FETCH_NOTIFICATIONS_WITH_ID_SUCCESS
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
-import { FETCH_UPDATES_SUCCESS } from "../LiveUpdates/actions";
 
 const defaultState = fromJS({
   notifications: [],
@@ -24,10 +23,6 @@ export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_NOTIFICATIONS_WITH_ID_SUCCESS:
       return state.set("notifications", fromJS(action.notifications).concat(state.get("notifications")));
-    case FETCH_UPDATES_SUCCESS:
-    case FETCH_NOTIFICATIONS_SUCCESS:
-      // Prepend the new notifications to the existing ones
-      return state.set("notifications", fromJS(action.notifications));
     case SHOW_SNACKBAR:
       return state.merge({
         showSnackBar: action.show,

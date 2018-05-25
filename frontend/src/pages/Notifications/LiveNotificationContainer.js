@@ -10,12 +10,25 @@ class LiveNotificationContainer extends Component {
     this.startUpdates();
   }
 
+  componentWillUnmount() {
+    this.stopUpdates();
+  }
+
   startUpdates() {
+    this.fetch();
     this.timer = setInterval(() => {
-      const { notifications, fetchNotifications } = this.props;
-      const fromId = notifications.length > 0 ? notifications[0].notificationId : "";
-      fetchNotifications(fromId, false);
+      this.fetch();
     }, 15000);
+  }
+
+  fetch() {
+    const { notifications, fetchNotifications } = this.props;
+    const fromId = notifications.length > 0 ? notifications[0].notificationId : "";
+    fetchNotifications(fromId, false);
+  }
+
+  stopUpdates() {
+    clearInterval(this.timer);
   }
 
   render() {

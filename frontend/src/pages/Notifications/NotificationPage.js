@@ -23,7 +23,7 @@ const styles = {
 
 const NotificationPage = ({ notifications, streamNames, users, loggedInUser, markNotificationAsRead, history }) => {
   return (
-    <div style={styles.card}>
+    <div>
       {/* <Card style={{ width: "100%", marginBottom: "10px" }}>
         <CardHeader
           title={strings.notification.notification_title}

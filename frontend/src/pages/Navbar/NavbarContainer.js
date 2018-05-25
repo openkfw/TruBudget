@@ -10,7 +10,12 @@ import { toJS } from "../../helper";
 class NavbarContainer extends Component {
   componentWillMount() {}
   render() {
-    return <Navbar {...this.props} />;
+    return (
+      <Navbar
+        {...this.props}
+        unreadNotifications={this.props.notifications.reduce((acc, n) => (n.isRead ? acc : acc + 1), 0)}
+      />
+    );
   }
 }
 
@@ -25,7 +30,7 @@ const mapStateToProps = state => {
   return {
     showSidebar: state.getIn(["navbar", "showSidebar"]),
     peers: state.getIn(["navbar", "peers"]),
-    unreadNotifications: state.getIn(["navbar", "unreadNotifications"]),
+    notifications: state.getIn(["notifications", "notifications"]),
     route: state.getIn(["route", "locationBeforeTransitions"]),
     streamNames: state.getIn(["navbar", "streamNames"]),
     displayName: state.getIn(["login", "displayName"]),
