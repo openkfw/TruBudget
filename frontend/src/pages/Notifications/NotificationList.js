@@ -73,7 +73,7 @@ const fetchRessourceName = (res, type) => {
   }
 };
 
-const hasAccess = res => res.reduce((acc, r) => acc && r.displayName !== undefined, false);
+const hasAccess = res => res.reduce((acc, r) => acc && r.displayName !== undefined, true);
 
 const getListItems = ({ notifications, history, markNotificationAsRead }) =>
   notifications.map((notification, index) => {
