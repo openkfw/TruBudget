@@ -92,8 +92,7 @@ const provisionFromData = async () => {
     return;
   }
 
-  // TODO: the status field comes with #62
-  // const isToBeClosed = projectTemplate.status === "closed";
+  const isToBeClosed = projectTemplate.status === "closed";
 
   await axios.post("/global.createProject", {
     project: {
@@ -112,12 +111,11 @@ const provisionFromData = async () => {
     await provisionSubproject(project, subprojectTemplate);
   }
 
-  // TODO: this is supported by the API starting with #62
-  // if (isToBeClosed) {
-  //   await axios.post("/project.close", {
-  //     projectId: project.data.id,
-  //   });
-  // }
+  if (isToBeClosed) {
+    await axios.post("/project.close", {
+      projectId: project.data.id,
+    });
+  }
 
   console.log(`Project ${fmtList([project])} created.`);
 };
@@ -130,7 +128,7 @@ const findProject = async project => {
 };
 
 const provisionSubproject = async (project, subprojectTemplate) => {
-  const _isToBeClosed = subprojectTemplate.status === "closed";
+  const isToBeClosed = subprojectTemplate.status === "closed";
 
   await axios.post("/project.createSubproject", {
     projectId: project.data.id,
@@ -151,13 +149,12 @@ const provisionSubproject = async (project, subprojectTemplate) => {
     await provisionWorkflowitem(project, subproject, workflowitemTemplate);
   }
 
-  // TODO: this is supported by the API starting with #62
-  // if (isToBeClosed) {
-  //   await axios.post("/subproject.close", {
-  //     projectId: project.id,
-  //     subprojectId: subproject.id,
-  //   });
-  // }
+  if (isToBeClosed) {
+    await axios.post("/subproject.close", {
+      projectId: project.data.id,
+      subprojectId: subproject.data.id,
+    });
+  }
 
   console.log(`Subproject ${fmtList([project, subproject])} created.`);
 };
@@ -170,13 +167,14 @@ const findSubproject = async (project, subproject) => {
 };
 
 const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) => {
+  const isToBeClosed = workflowitemTemplate.status === "closed";
   const data = {
     projectId: project.data.id,
     subprojectId: subproject.data.id,
     displayName: workflowitemTemplate.displayName,
     description: workflowitemTemplate.description,
     amountType: workflowitemTemplate.amountType,
-    status: workflowitemTemplate.status,
+    status: "open",
     assignee: workflowitemTemplate.assignee,
   };
   const amount = workflowitemTemplate.amount ? workflowitemTemplate.amount.toString() : undefined;
@@ -192,6 +190,14 @@ const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) 
     subproject.data.id,
     workflowitem.data.id,
   );
+
+  if (isToBeClosed) {
+    await axios.post("/workflowitem.close", {
+      projectId: project.data.id,
+      subprojectId: subproject.data.id,
+      workflowitemId: workflowitem.data.id,
+    });
+  }
 
   console.log(`Workflowitem ${fmtList([project, subproject, workflowitem])} created.`);
 };
