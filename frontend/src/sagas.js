@@ -19,7 +19,9 @@ import {
   GRANT_PERMISSION,
   GRANT_PERMISSION_SUCCESS,
   ASSIGN_PROJECT_SUCCESS,
-  ASSIGN_PROJECT
+  ASSIGN_PROJECT,
+  FETCH_PROJECT_HISTORY_SUCCESS,
+  FETCH_PROJECT_HISTORY
 } from "./pages/SubProjects/actions";
 import { SHOW_SNACKBAR, SNACKBAR_MESSAGE } from "./pages/Notifications/actions";
 import {
@@ -40,7 +42,9 @@ import {
   ASSIGN_WORKFLOWITEM_SUCCESS,
   ASSIGN_WORKFLOWITEM,
   ASSIGN_SUBPROJECT_SUCCESS,
-  ASSIGN_SUBPROJECT
+  ASSIGN_SUBPROJECT,
+  FETCH_SUBPROJECT_HISTORY,
+  FETCH_SUBPROJECT_HISTORY_SUCCESS
 } from "./pages/Workflows/actions";
 
 import {
@@ -576,11 +580,19 @@ export function* fetchAllProjectsSaga({ showLoading }) {
 export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
   yield execute(function*() {
     const projectDetails = yield callApi(api.viewProjectDetails, projectId);
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
       ...projectDetails.data
+    });
+  }, showLoading);
+}
+
+export function* fetchProjectHistorySaga({ projectId, showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.viewProjectHistory, projectId);
+    yield put({
+      type: FETCH_PROJECT_HISTORY_SUCCESS,
+      ...data
     });
   }, showLoading);
 }
@@ -590,6 +602,16 @@ export function* fetchAllSubprojectDetailsSaga({ projectId, subprojectId, showLo
     const { data } = yield callApi(api.viewSubProjectDetails, projectId, subprojectId);
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
+      ...data
+    });
+  }, showLoading);
+}
+
+export function* fetchSubprojectHistorySaga({ projectId, subprojectId, showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId);
+    yield put({
+      type: FETCH_SUBPROJECT_HISTORY_SUCCESS,
       ...data
     });
   }, showLoading);
@@ -760,8 +782,15 @@ export function* watchFetchAllSubprojectDetails() {
   yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga);
 }
 
+export function* watchFetchSubprojectHistory() {
+  yield takeEvery(FETCH_SUBPROJECT_HISTORY, fetchSubprojectHistorySaga);
+}
+
 export function* watchFetchAllProjectDetails() {
   yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga);
+}
+export function* watchFetchProjectHistorySaga() {
+  yield takeEvery(FETCH_PROJECT_HISTORY, fetchProjectHistorySaga);
 }
 
 export function* watchFetchAllProjects() {
@@ -935,6 +964,7 @@ export default function* rootSaga() {
       watchFetchProjectPermissions(),
       watchGrantPermissions(),
       watchAssignProject(),
+      watchFetchProjectHistorySaga(),
 
       // Subproject
       watchCreateSubProject(),
@@ -942,6 +972,7 @@ export default function* rootSaga() {
       watchFetchSubProjectPermissions(),
       watchGrantSubProjectPermissions(),
       watchAssignSubproject(),
+      watchFetchSubprojectHistory(),
 
       // Workflow
       watchCreateWorkflowItem(),

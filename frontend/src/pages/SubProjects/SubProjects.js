@@ -46,7 +46,7 @@ const SubProjects = props => {
         </Button>
         <Button
           mini={true}
-          onClick={() => props.openHistory()}
+          onClick={() => props.openHistory(props.projectId)}
           variant="fab"
           style={{
             position: "relative",
