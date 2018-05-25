@@ -7,7 +7,7 @@ import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 
 const streamName = "notifications";
 
-type NotificationId = string;
+export type NotificationId = string;
 
 export interface NotificationResourceDescription {
   id: string;
