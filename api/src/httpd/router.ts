@@ -30,6 +30,7 @@ import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissio
 import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
 import { getWorkflowitemList } from "../workflowitem/list";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
+import { closeSubproject } from "../subproject/close";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -259,6 +260,12 @@ export const createRouter = (
 
   router.post("/subproject.assign", (req: AuthenticatedRequest, res) => {
     assignSubproject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/subproject.close", (req: AuthenticatedRequest, res) => {
+    closeSubproject(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
