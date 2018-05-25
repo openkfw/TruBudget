@@ -6,6 +6,7 @@ import { getGlobalPermissions } from "../global/intent/listPermissions";
 import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
 import { assignProject } from "../project/assign";
+import { closeProject } from "../project/close";
 import { createSubproject } from "../project/createSubproject";
 import { grantProjectPermission } from "../project/intent/grantPermission";
 import { getProjectPermissions } from "../project/intent/listPermissions";
@@ -14,6 +15,7 @@ import { getProjectList } from "../project/list";
 import { getProjectDetails } from "../project/viewDetails";
 import { getProjectHistory } from "../project/viewHistory";
 import { assignSubproject } from "../subproject/assign";
+import { closeSubproject } from "../subproject/close";
 import { createWorkflowitem } from "../subproject/createWorkflowitem";
 import { grantSubprojectPermission } from "../subproject/intent/grantPermission";
 import { getSubprojectPermissions } from "../subproject/intent/listPermissions";
@@ -30,7 +32,6 @@ import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissio
 import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
 import { getWorkflowitemList } from "../workflowitem/list";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
-import { closeSubproject } from "../subproject/close";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -208,6 +209,12 @@ export const createRouter = (
 
   router.post("/project.assign", (req: AuthenticatedRequest, res) => {
     assignProject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/project.close", (req: AuthenticatedRequest, res) => {
+    closeProject(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
