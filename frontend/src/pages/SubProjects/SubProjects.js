@@ -8,11 +8,6 @@ import HistoryIcon from "@material-ui/icons/Reorder";
 import SubProjectsTable from "./SubProjectsTable";
 import SubProjectCreation from "./SubProjectCreation";
 
-const openHistory = ({ openHistory, fetchProjectHistory, projectId }) => {
-  fetchProjectHistory(projectId, true);
-  openHistory();
-};
-
 const SubProjects = props => {
   return (
     <div
@@ -51,7 +46,7 @@ const SubProjects = props => {
         </Button>
         <Button
           mini={true}
-          onClick={() => openHistory(props)}
+          onClick={() => props.openHistory(props.projectId)}
           variant="fab"
           style={{
             position: "relative",

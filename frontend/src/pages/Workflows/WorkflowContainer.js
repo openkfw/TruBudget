@@ -124,7 +124,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showSubProjectPermissions: () => dispatch(showSubProjectPermissions()),
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
-    openHistory: () => dispatch(showHistory()),
+    openHistory: (projectId, subprojectId) => {
+      dispatch(fetchSubprojectHistory(projectId, subprojectId, true));
+      dispatch(showHistory());
+    },
     openWorkflowDetails: txid => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
@@ -132,7 +135,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
     editWorkflowItem: (stream, key, workflowToAdd, documents, previousState) =>
       dispatch(editWorkflowItem(stream, key, workflowToAdd, documents, previousState)),
-    fetchHistoryItems: subProjectName => dispatch(fetchHistoryItems(subProjectName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     updateWorkflowSortOnState: items => dispatch(updateWorkflowSortOnState(items)),

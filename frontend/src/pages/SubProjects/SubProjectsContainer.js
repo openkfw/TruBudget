@@ -64,9 +64,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
     showSnackBar: () => dispatch(showSnackBar(true)),
     storeSnackBarMessage: message => dispatch(storeSnackBarMessage(message)),
-    openHistory: () => dispatch(showHistory()),
+    openHistory: projectId => {
+      dispatch(fetchProjectHistory(projectId, true));
+      dispatch(showHistory());
+    },
     hideHistory: () => dispatch(hideHistory()),
-    fetchProjectHistory: (pId, showLoading) => dispatch(fetchProjectHistory(pId, showLoading)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     showProjectPermissions: () => dispatch(showProjectPermissions()),
     showProjectAssignees: () => dispatch(showProjectAssignees()),

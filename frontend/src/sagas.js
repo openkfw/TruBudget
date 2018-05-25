@@ -580,8 +580,6 @@ export function* fetchAllProjectsSaga({ showLoading }) {
 export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
   yield execute(function*() {
     const projectDetails = yield callApi(api.viewProjectDetails, projectId);
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
       ...projectDetails.data
@@ -592,8 +590,6 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
 export function* fetchProjectHistorySaga({ projectId, showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.viewProjectHistory, projectId);
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
     yield put({
       type: FETCH_PROJECT_HISTORY_SUCCESS,
       ...data
