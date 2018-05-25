@@ -8,6 +8,8 @@ export const OPEN_HISTORY = "OPEN_HISTORY";
 export const HIDE_HISTORY = "HIDE_HISTORY";
 export const FETCH_HISTORY = "FETCH_HISTORY";
 export const FETCH_HISTORY_SUCCESS = "FETCH_HISTORY_SUCCESS";
+export const FETCH_NOTIFICATIONS_WITH_ID = "FETCH_NOTIFICATIONS_WITH_ID";
+export const FETCH_NOTIFICATIONS_WITH_ID_SUCCESS = "FETCH_NOTIFICATIONS_WITH_ID_SUCCESS";
 
 export function showSnackBar(show, isError = false) {
   return {
@@ -22,19 +24,24 @@ export function storeSnackBarMessage(message) {
     message: message
   };
 }
-export function fetchNotifications(user) {
+export function fetchNotificationsWithId(fromId, showLoading) {
+  return {
+    type: FETCH_NOTIFICATIONS_WITH_ID,
+    fromId,
+    showLoading
+  };
+}
+export function fetchNotifications(showLoading) {
   return {
     type: FETCH_NOTIFICATIONS,
-    user
+    showLoading
   };
 }
 
-export function markNotificationAsRead(user, id, data) {
+export function markNotificationAsRead(notificationId) {
   return {
     type: MARK_NOTIFICATION_AS_READ,
-    id,
-    user,
-    data: { ...data, done: true }
+    notificationId
   };
 }
 

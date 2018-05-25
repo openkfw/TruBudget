@@ -15,6 +15,7 @@ import Placeholder from "./Placeholder";
 import Footer from "./Footer";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
+import LiveNotificationContainer from "../Notifications/LiveNotificationContainer";
 
 const Main = props => {
   return (
@@ -42,13 +43,14 @@ const Main = props => {
         <Route component={NavbarContainer} />
       </div>
       <div className="container" style={{ marginTop: "48px" }}>
+        <Route component={LiveNotificationContainer} />
         <Switch>
           <Route exact path="/" component={Placeholder} />
           <Route exact path="/projects/:project/:subproject" component={withInitialLoading(WorkflowContainer)} />
           <Route exact path="/projects" component={withInitialLoading(OverviewContainer)} />
           <Route exact path="/projects/:project" component={withInitialLoading(SubProjectsContainer)} />
           <Route exact path="/network" component={DashboardContainer} />
-          <Route exact path="/notifications" component={NotificationPageContainer} />
+          <Route exact path="/notifications" component={withInitialLoading(NotificationPageContainer)} />
           <Route exact path="/users" component={UserManagementContainer} />
           <Route component={NotFound} />
         </Switch>

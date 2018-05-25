@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import Transition from "react-transition-group/Transition";
 
 import Card from "@material-ui/core/Card";
-import CardText from "@material-ui/core/CardText";
-import CardHeader from "@material-ui/core/CardHeader";
 
 import _some from "lodash/some";
 import _isEmpty from "lodash/isEmpty";
@@ -44,7 +42,6 @@ export default class FlyInNotification extends Component {
 
     const oldNotifications = prevProps.notifications;
     const newNotifications = this.props.notifications;
-
     if (newNotifications.length > 0 && !isFirstRequest) {
       this.compareAndFireNotifications(oldNotifications, newNotifications);
     }
@@ -115,8 +112,20 @@ export default class FlyInNotification extends Component {
             marginBottom: "8px"
           }}
         >
-          <CardHeader style={{ fontSize: "8pt" }} title={user.name} subtitle={user.organization} avatar={user.avatar} />
-          <CardText>{this.getDescription(data)}</CardText>
+          {/* <CardHeader
+            // avatar={
+            //   <Avatar aria-label="Recipe" className={classes.avatar}>
+            //     R
+            //   </Avatar>
+            // }
+
+style={{ fontSize: "8pt" }}
+            title="Shrimp and Chorizo Paella"
+            subheader="September 14, 2016"
+          />
+          <CardHeader  title={user.name} subtitle={user.organization} avatar={user.avatar} />
+          <CardTex>{this.getDescription(data)}</CardText>
+          */}
         </Card>
       );
     });

@@ -21,7 +21,16 @@ import {
   ASSIGN_PROJECT_SUCCESS,
   ASSIGN_PROJECT
 } from "./pages/SubProjects/actions";
-import { SHOW_SNACKBAR, SNACKBAR_MESSAGE } from "./pages/Notifications/actions";
+import {
+  SHOW_SNACKBAR,
+  SNACKBAR_MESSAGE,
+  FETCH_NOTIFICATIONS_SUCCESS,
+  FETCH_NOTIFICATIONS,
+  MARK_NOTIFICATION_AS_READ_SUCCESS,
+  MARK_NOTIFICATION_AS_READ,
+  FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
+  FETCH_NOTIFICATIONS_WITH_ID
+} from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
   CREATE_WORKFLOW_SUCCESS,
@@ -123,6 +132,7 @@ function* callApi(func, ...args) {
   // TODO dont set the environment on each call
   const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
+
   const { data } = yield call(func, ...args);
   return data;
 }
@@ -305,18 +315,6 @@ export function* getEnvironmentSaga() {
 //   }
 // }
 
-// export function* fetchNotificationSaga({ user }) {
-//   try {
-//     const notifications = yield callApi(api.fetchNotifications, user)
-//     yield put({
-//       type: FETCH_NOTIFICATIONS_SUCCESS,
-//       notifications: notifications.data
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
 // export function* postWorkflowSortSaga({ streamName, order, sortEnabled }) {
 //   try {
 //     yield callApi(api.postWorkflowSort, streamName, order);
@@ -330,21 +328,6 @@ export function* getEnvironmentSaga() {
 //     yield put({
 //       type: ENABLE_WORKFLOW_SORT,
 //       sortEnabled
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* markNotificationAsReadSaga({ user, id, data }) {
-//   try {
-//     yield callApi(api.markNotificationAsRead, user, id, data);
-//     yield put({
-//       type: MARK_NOTIFICATION_AS_READ_SUCCESS
-//     });
-//     yield put({
-//       type: FETCH_NOTIFICATIONS,
-//       user
 //     });
 //   } catch (error) {
 //     yield handleError(error);
@@ -402,6 +385,39 @@ export function* getEnvironmentSaga() {
 //     yield handleError(error);
 //   }
 // }
+
+export function* fetchNotificationSaga({ fromId, showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.fetchNotifications);
+    yield put({
+      type: FETCH_NOTIFICATIONS_SUCCESS,
+      notifications: data.notifications
+    });
+  }, showLoading);
+}
+
+export function* fetchNotificationWithIdSaga({ fromId, showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.fetchNotifications, fromId);
+    yield put({
+      type: FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
+      notifications: data.notifications
+    });
+  }, showLoading);
+}
+
+export function* markNotificationAsReadSaga({ notificationId }) {
+  yield execute(function*() {
+    yield callApi(api.markNotificationAsRead, notificationId);
+    yield put({
+      type: MARK_NOTIFICATION_AS_READ_SUCCESS
+    });
+    yield put({
+      type: FETCH_NOTIFICATIONS,
+      showLoading: false
+    });
+  }, false);
+}
 
 export function* loginSaga({ user }) {
   function* login() {
@@ -812,15 +828,19 @@ export function* watchCreateProject() {
 //   yield takeEvery(FETCH_NODE_INFORMATION, fetchNodeInformationSaga)
 // }
 
-// export function* watchFetchNotifications() {
-//   yield takeLatest(FETCH_NOTIFICATIONS, fetchNotificationSaga)
-// }
+export function* watchFetchNotifications() {
+  yield takeLatest(FETCH_NOTIFICATIONS, fetchNotificationSaga);
+}
+export function* watchFetchNotificationsWithId() {
+  yield takeLatest(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
+}
+
 // export function* watchPostWorkflowSort() {
 //   yield takeLatest(POST_WORKFLOW_SORT, postWorkflowSortSaga)
 // }
-// export function* watchMarkNotificationAsRead() {
-//   yield takeLatest(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga)
-// }
+export function* watchMarkNotificationAsRead() {
+  yield takeLatest(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
+}
 
 // export function* watchFetchUsers() {
 //   yield takeLatest(FETCH_USERS, fetchUsersSaga)
@@ -948,14 +968,18 @@ export default function* rootSaga() {
       watchFetchWorkflowItemPermissions(),
       watchGrantWorkflowitemPermissions(),
       watchCloseWorkflowItem(),
-      watchAssignWorkflowItem()
+      watchAssignWorkflowItem(),
+
+      // Notifications
+      watchFetchNotifications(),
+      watchFetchNotificationsWithId(),
+      watchMarkNotificationAsRead()
+
       // watchFetchPeers(),
       // watchFetchProjects(),
       // watchFetchProjectDetails(),
       // watchEditWorkflowItem(),
       // watchFetchNodeInformation(),
-      // watchFetchNotifications(),
-      // watchMarkNotificationAsRead(),
       // watchFetchWorkflowItems(),
       // watchFetchRoles(),
       // watchAdminLogin(),

@@ -103,6 +103,11 @@ class Api {
   closeWorkflowItem = (projectId, subprojectId, workflowitemId) =>
     axios.post(`/workflowitem.close`, { projectId, subprojectId, workflowitemId });
 
+  fetchNotifications = (fromId = "") => {
+    return axios.get(`/notification.list?sinceId=${fromId}`);
+  };
+
+  markNotificationAsRead = notificationId => axios.post(`/notification.markRead`, { notificationId });
   // loginAdmin = async (username, password) => {
   //   const { data } = await axios.post(`/login`, { username, password })
   //   return data;
