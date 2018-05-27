@@ -3,11 +3,13 @@ import Transition from "react-transition-group/Transition";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import LaunchIcon from "@material-ui/icons/Launch";
+import Typography from "@material-ui/core/Typography";
 
-import _some from "lodash/some";
 import _isEmpty from "lodash/isEmpty";
-
-import strings from "../../localizeStrings";
 
 const styles = {
   notification: {
@@ -36,7 +38,7 @@ export default class FlyInNotification extends Component {
       const ids = props.notifications.map(n => n.notificationId);
       setTimeout(() => {
         this.removeNotification(ids);
-      }, 4000);
+      }, 7000);
     }
     this.setState({
       notifications: props.notifications
@@ -50,30 +52,29 @@ export default class FlyInNotification extends Component {
   }
 
   getMessages = () => {
-    return this.state.notifications.map(({ data, id }, index) => {
+    return this.state.notifications.map(({ notificationId, originalEvent }) => {
+      const { createdBy } = originalEvent;
       return (
         <Card
-          key={id}
+          key={notificationId + "flyin"}
           style={{
             width: "300px",
             marginBottom: "8px"
           }}
         >
-          <CardContent>h1</CardContent>
-          {/* <CardHeader
-            // avatar={
-            //   <Avatar aria-label="Recipe" className={classes.avatar}>
-            //     R
-            //   </Avatar>
-            // }
-
-style={{ fontSize: "8pt" }}
-            title="Shrimp and Chorizo Paella"
-            subheader="September 14, 2016"
+          <CardHeader
+            avatar={<Avatar>{createdBy[0] || "?"}</Avatar>}
+            action={
+              <IconButton>
+                <LaunchIcon />
+              </IconButton>
+            }
+            title="Project"
+            subheader="Subproject"
           />
-          <CardHeader  title={user.name} subtitle={user.organization} avatar={user.avatar} />
-          <CardTex>{this.getDescription(data)}</CardText>
-          */}
+          <CardContent>
+            <Typography component="p">Project Amazonas Fund 53 was assigned to you</Typography>
+          </CardContent>
         </Card>
       );
     });
