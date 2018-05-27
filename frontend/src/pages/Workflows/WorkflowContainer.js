@@ -31,7 +31,8 @@ import {
   showWorkflowItemPermissions,
   closeWorkflowItem,
   showWorkflowItemAssignee,
-  showSubProjectAssignee
+  showSubProjectAssignee,
+  fetchSubprojectHistory
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -44,7 +45,6 @@ import { toJS } from "../../helper";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
 import strings from "../../localizeStrings";
-import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer";
 import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
 import { fetchUser } from "../Login/actions";
 
@@ -109,6 +109,7 @@ class WorkflowContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
+    fetchSubprojectHistory: (pId, sId, loading) => dispatch(fetchSubprojectHistory(pId, sId, loading)),
     openWorkflowDialog: editMode => dispatch(showWorkflowDialog(editMode)),
     onWorkflowDialogCancel: () => dispatch(onWorkflowDialogCancel(false)),
     storeWorkflowComment: comment => dispatch(storeWorkflowComment(comment)),
@@ -123,8 +124,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showSubProjectPermissions: () => dispatch(showSubProjectPermissions()),
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
-    openHistory: () => dispatch(showHistory(true)),
-    hideHistory: () => dispatch(showHistory(false)),
+    openHistory: (projectId, subprojectId) => {
+      dispatch(fetchSubprojectHistory(projectId, subprojectId, true));
+      dispatch(showHistory());
+    },
     openWorkflowDetails: txid => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
@@ -132,7 +135,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
     editWorkflowItem: (stream, key, workflowToAdd, documents, previousState) =>
       dispatch(editWorkflowItem(stream, key, workflowToAdd, documents, previousState)),
-    fetchHistoryItems: subProjectName => dispatch(fetchHistoryItems(subProjectName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     updateWorkflowSortOnState: items => dispatch(updateWorkflowSortOnState(items)),

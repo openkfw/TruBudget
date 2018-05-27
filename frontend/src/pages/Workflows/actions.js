@@ -31,8 +31,9 @@ export const POST_WORKFLOW_SORT_SUCCESS = "POST_WORKFLOW_SORT_SUCCESS";
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
 export const OPEN_HISTORY = "OPEN_HISTORY";
 export const OPEN_HISTORY_SUCCESS = "OPEN_HISTORY_SUCCESS";
-export const FETCH_HISTORY = "FETCH_HISTORY";
-export const FETCH_HISTORY_SUCCESS = "FETCH_HISTORY_SUCCESS";
+
+export const FETCH_SUBPROJECT_HISTORY = "FETCH_SUBPROJECT_HISTORY";
+export const FETCH_SUBPROJECT_HISTORY_SUCCESS = "FETCH_SUBPROJECT_HISTORY_SUCCESS";
 
 export const ENABLE_BUDGET_EDIT = "ENABLE_BUDGET_EDIT";
 export const POST_SUBPROJECT_EDIT = "POST_SUBPROJECT_EDIT";
@@ -79,6 +80,15 @@ export const HIDE_SUBPROJECT_ASSIGNEES = "HIDE_SUBPROJECT_ASSIGNEES";
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
+    projectId,
+    subprojectId,
+    showLoading
+  };
+}
+
+export function fetchSubprojectHistory(projectId, subprojectId, showLoading = false) {
+  return {
+    type: FETCH_SUBPROJECT_HISTORY,
     projectId,
     subprojectId,
     showLoading
@@ -251,24 +261,10 @@ export function updateWorkflowSortOnState(workflowItems) {
   };
 }
 
-export function showHistory(show) {
-  return {
-    type: OPEN_HISTORY,
-    show
-  };
-}
-
 export function fetchWorkflowItems(streamName) {
   return {
     type: FETCH_WORKFLOW_ITEMS,
     streamName: streamName
-  };
-}
-
-export function fetchHistoryItems(project) {
-  return {
-    type: FETCH_HISTORY,
-    project
   };
 }
 

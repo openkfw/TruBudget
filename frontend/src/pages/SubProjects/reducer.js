@@ -13,11 +13,13 @@ import {
   SHOW_PROJECT_PERMISSIONS,
   HIDE_PROJECT_PERMISSIONS,
   SHOW_PROJECT_ASSIGNEES,
-  HIDE_PROJECT_ASSIGNEES
+  HIDE_PROJECT_ASSIGNEES,
+  FETCH_PROJECT_HISTORY_SUCCESS
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
 import { fromAmountString } from "../../helper";
+import { HIDE_HISTORY } from "../Notifications/actions";
 
 const defaultState = fromJS({
   id: "",
@@ -40,6 +42,7 @@ const defaultState = fromJS({
   roles: [],
   permissions: {},
   logs: [],
+  historyItems: [],
   thumbnail: "/Thumbnail_0001.jpg",
   allowedIntents: [],
   permissionDialogShown: false,
@@ -100,6 +103,10 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showProjectAssignees", true);
     case HIDE_PROJECT_ASSIGNEES:
       return state.set("showProjectAssignees", false);
+    case FETCH_PROJECT_HISTORY_SUCCESS:
+      return state.set("historyItems", fromJS(action.events));
+    case HIDE_HISTORY:
+      return state.set("historyItems", fromJS([]));
     case LOGOUT:
       return defaultState;
     default:

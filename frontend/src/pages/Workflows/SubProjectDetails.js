@@ -43,7 +43,6 @@ import strings from "../../localizeStrings";
 
 import { ACMECorpLightgreen } from "../../colors";
 
-import { workflowBudgetColorPalette, red } from "../../colors";
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 
 const styles = {
@@ -65,10 +64,6 @@ const styles = {
   },
   text: {
     fontSize: "14px"
-  },
-
-  overspent: {
-    color: red
   },
 
   tasksChart: {

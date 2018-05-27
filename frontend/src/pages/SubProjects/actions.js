@@ -31,9 +31,19 @@ export const HIDE_PROJECT_ASSIGNEES = "HIDE_PROJECT_ASSIGNEES";
 export const ASSIGN_PROJECT = "ASSIGN_PROJECT";
 export const ASSIGN_PROJECT_SUCCESS = "ASSIGN_PROJECT_SUCCESS";
 
+export const FETCH_PROJECT_HISTORY = "FETCH_PROJECT_HISTORY";
+export const FETCH_PROJECT_HISTORY_SUCCESS = "FETCH_PROJECT_HISTORY_SUCCESS";
+
 export function fetchAllProjectDetails(projectId, showLoading = false) {
   return {
     type: FETCH_ALL_PROJECT_DETAILS,
+    projectId,
+    showLoading
+  };
+}
+export function fetchProjectHistory(projectId, showLoading = false) {
+  return {
+    type: FETCH_PROJECT_HISTORY,
     projectId,
     showLoading
   };
