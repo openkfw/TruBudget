@@ -1,5 +1,3 @@
-export const FETCH_NOTIFICATIONS = "FETCH_NOTIFICATIONS";
-export const FETCH_NOTIFICATIONS_SUCCESS = "FETCH_NOTIFICATIONS_SUCCESS";
 export const SHOW_SNACKBAR = "SHOW_SNACKBAR";
 export const SNACKBAR_MESSAGE = "SNACKBAR_MESSAGE";
 export const MARK_NOTIFICATION_AS_READ = "MARK_NOTIFICATION_AS_READ";
@@ -10,6 +8,8 @@ export const FETCH_HISTORY = "FETCH_HISTORY";
 export const FETCH_HISTORY_SUCCESS = "FETCH_HISTORY_SUCCESS";
 export const FETCH_NOTIFICATIONS_WITH_ID = "FETCH_NOTIFICATIONS_WITH_ID";
 export const FETCH_NOTIFICATIONS_WITH_ID_SUCCESS = "FETCH_NOTIFICATIONS_WITH_ID_SUCCESS";
+export const FETCH_ALL_NOTIFICATIONS = "FETCH_ALL_NOTIFICATIONS";
+export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS";
 
 export function showSnackBar(show, isError = false) {
   return {
@@ -24,16 +24,18 @@ export function storeSnackBarMessage(message) {
     message: message
   };
 }
-export function fetchNotificationsWithId(fromId, showLoading) {
+
+export function fetchAllNotifications(showLoading = false) {
   return {
-    type: FETCH_NOTIFICATIONS_WITH_ID,
-    fromId,
+    type: FETCH_ALL_NOTIFICATIONS,
     showLoading
   };
 }
-export function fetchNotifications(showLoading) {
+
+export function fetchNotificationsWithId(fromId, showLoading = false) {
   return {
-    type: FETCH_NOTIFICATIONS,
+    type: FETCH_NOTIFICATIONS_WITH_ID,
+    fromId,
     showLoading
   };
 }

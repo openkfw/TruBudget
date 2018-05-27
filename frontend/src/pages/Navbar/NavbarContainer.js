@@ -4,17 +4,21 @@ import { connect } from "react-redux";
 import { toggleSidebar } from "./actions";
 import { logout } from "../Login/actions";
 
+import FlyInNotifications from "../Notifications/FlyInNotifications";
+
 import Navbar from "./Navbar";
 import { toJS } from "../../helper";
 
 class NavbarContainer extends Component {
-  componentWillMount() {}
   render() {
     return (
-      <Navbar
-        {...this.props}
-        unreadNotifications={this.props.notifications.reduce((acc, n) => (n.isRead ? acc : acc + 1), 0)}
-      />
+      <div>
+        <Navbar
+          {...this.props}
+          unreadNotifications={this.props.notifications.reduce((acc, n) => (n.isRead ? acc : acc + 1), 0)}
+        />
+        <FlyInNotifications notifications={this.props.newNotifications} />
+      </div>
     );
   }
 }
@@ -31,6 +35,7 @@ const mapStateToProps = state => {
     showSidebar: state.getIn(["navbar", "showSidebar"]),
     peers: state.getIn(["navbar", "peers"]),
     notifications: state.getIn(["notifications", "notifications"]),
+    newNotifications: state.getIn(["notifications", "newNotifications"]),
     route: state.getIn(["route", "locationBeforeTransitions"]),
     streamNames: state.getIn(["navbar", "streamNames"]),
     displayName: state.getIn(["login", "displayName"]),

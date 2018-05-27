@@ -24,12 +24,12 @@ import {
 import {
   SHOW_SNACKBAR,
   SNACKBAR_MESSAGE,
-  FETCH_NOTIFICATIONS_SUCCESS,
-  FETCH_NOTIFICATIONS,
   MARK_NOTIFICATION_AS_READ_SUCCESS,
   MARK_NOTIFICATION_AS_READ,
   FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
-  FETCH_NOTIFICATIONS_WITH_ID
+  FETCH_NOTIFICATIONS_WITH_ID,
+  FETCH_ALL_NOTIFICATIONS,
+  FETCH_ALL_NOTIFICATIONS_SUCCESS
 } from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
@@ -386,6 +386,16 @@ export function* getEnvironmentSaga() {
 //   }
 // }
 
+export function* fetchAllNotificationsSaga({ showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.fetchNotifications);
+    yield put({
+      type: FETCH_ALL_NOTIFICATIONS_SUCCESS,
+      notifications: data.notifications
+    });
+  }, showLoading);
+}
+
 export function* fetchNotificationWithIdSaga({ fromId, showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.fetchNotifications, fromId);
@@ -403,7 +413,7 @@ export function* markNotificationAsReadSaga({ notificationId }) {
       type: MARK_NOTIFICATION_AS_READ_SUCCESS
     });
     yield put({
-      type: FETCH_NOTIFICATIONS,
+      type: FETCH_ALL_NOTIFICATIONS,
       showLoading: false
     });
   }, false);
@@ -818,6 +828,10 @@ export function* watchCreateProject() {
 //   yield takeEvery(FETCH_NODE_INFORMATION, fetchNodeInformationSaga)
 // }
 
+export function* watchFetchAllNotifications() {
+  yield takeLatest(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
+}
+
 export function* watchFetchNotificationsWithId() {
   yield takeLatest(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
 }
@@ -958,6 +972,7 @@ export default function* rootSaga() {
       watchAssignWorkflowItem(),
 
       // Notifications
+      watchFetchAllNotifications(),
       watchFetchNotificationsWithId(),
       watchMarkNotificationAsRead()
 

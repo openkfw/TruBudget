@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import LiveNotification from "./LiveNotification";
-import { showSnackBar, storeSnackBarMessage, fetchNotificationsWithId } from "./actions.js";
+import { showSnackBar, storeSnackBarMessage, fetchNotificationsWithId, fetchAllNotifications } from "./actions.js";
 import { toJS } from "../../helper";
 
 class LiveNotificationContainer extends Component {
   componentWillMount() {
+    this.props.fetchAllNotifications();
     this.startUpdates();
   }
 
@@ -15,7 +16,6 @@ class LiveNotificationContainer extends Component {
   }
 
   startUpdates() {
-    this.fetch();
     this.timer = setInterval(() => {
       this.fetch();
     }, 15000);
@@ -38,7 +38,8 @@ class LiveNotificationContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchNotifications: (fromId, showLoading) => dispatch(fetchNotificationsWithId(fromId, showLoading))
+    fetchNotifications: (fromId, showLoading) => dispatch(fetchNotificationsWithId(fromId, showLoading)),
+    fetchAllNotifications: () => dispatch(fetchAllNotifications(true))
   };
 };
 
