@@ -22,12 +22,14 @@ class WorkflowAssigneeContainer extends Component {
   render() {
     const assignee = this.getWorkflowAssignee(this.props.workflowItems, this.props.workflowitemId);
     return (
-      <AssigneeSelection
-        assigneeId={assignee}
-        users={this.props.users}
-        title={this.props.title}
-        assign={this.assignWorkflow}
-      />
+      <div style={{ width: "60%" }}>
+        <AssigneeSelection
+          assigneeId={assignee}
+          users={this.props.users}
+          title={this.props.title}
+          assign={this.assignWorkflow}
+        />
+      </div>
     );
   }
 }

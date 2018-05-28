@@ -4,17 +4,21 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   formControl: {
-    marginLeft: 15
-  },
-  select: {
-    width: 180
+    marginLeft: 15,
+    minWidth: 120,
+    width: "100%"
   },
   checkbox: {
     height: 30
-  }
+  },
+  selectMenu: {
+    whiteSpace: "pre-wrap"
+  },
+  select: {}
 };
 
 class AssigneeSelection extends Component {
@@ -45,7 +49,7 @@ class AssigneeSelection extends Component {
   }
 
   render() {
-    const { assigneeId, users, disabled } = this.props;
+    const { assigneeId, users, disabled, classes } = this.props;
 
     const selection = this.renderUsers(
       users.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
@@ -55,9 +59,9 @@ class AssigneeSelection extends Component {
     const assignee = users.find(user => user.id === assigneeId);
 
     return (
-      <FormControl disabled={disabled} style={styles.formControl}>
+      <FormControl disabled={disabled} className={classes.formControl}>
         <Select
-          style={styles.select}
+          classes={{ select: classes.select, selectMenu: classes.selectMenu }}
           value={this.renderTitle(assignee)}
           onChange={event => this.props.assign(event.target.value)}
         >
@@ -69,4 +73,4 @@ class AssigneeSelection extends Component {
 }
 
 // TODO: update selectfield material v1
-export default AssigneeSelection;
+export default withStyles(styles)(AssigneeSelection);
