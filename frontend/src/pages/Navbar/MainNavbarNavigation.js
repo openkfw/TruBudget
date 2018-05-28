@@ -17,7 +17,8 @@ const styles = {
   breadcrumbs: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
+    marginLeft: "12px"
   },
   breadcrumb: {
     display: "flex",
