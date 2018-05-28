@@ -108,6 +108,7 @@ export const get = async (
   projectId: string,
   subprojectId: string,
   workflowitemId?: string,
+  skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
 ): Promise<WorkflowitemResource[]> => {
   const queryKey =
     workflowitemId !== undefined ? workflowitemId : workflowitemsGroupKey(subprojectId);
@@ -160,6 +161,13 @@ export const get = async (
   }
 
   const unfilteredResources = [...resourceMap.values()];
+
+  if (
+    skipAuthorizationCheck ===
+    "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!"
+  ) {
+    return unfilteredResources;
+  }
 
   // Instead of filtering out workflowitems the user is not allowed to see,
   // we simply blank out all fields except the status, which is considered "public".

@@ -5,8 +5,10 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
+import { notifyAssignee } from "../notification/create";
+import * as Notification from "../notification/model/Notification";
+import * as Project from "../project/model/Project";
 import * as Workflowitem from "../workflowitem";
-import { notifySubprojectAssignee } from "./lib/notifySubprojectAssignee";
 import * as Subproject from "./model/Subproject";
 
 export const closeSubproject = async (
@@ -44,7 +46,48 @@ export const closeSubproject = async (
     subprojectId,
   );
 
-  await notifySubprojectAssignee(multichain, req.token, projectId, subprojectId, publishedEvent);
+  const resourceDescriptions: Notification.NotificationResourceDescription[] = [
+    { id: subprojectId, type: "subproject" },
+    { id: projectId, type: "project" },
+  ];
+  const createdBy = req.token.userId;
+
+  // If the subproject is assigned to someone else, that person is notified about the
+  // change:
+  const subprojectAssignee = await notifyAssignee(
+    multichain,
+    resourceDescriptions,
+    createdBy,
+    await Subproject.get(
+      multichain,
+      req.token,
+      projectId,
+      subprojectId,
+      "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+    ),
+    publishedEvent,
+    [req.token.userId], // skipNotificationsFor
+  );
+
+  // If the parent project is (1) not assigned to the token user and (2) not assigned to
+  // the same guy the subproject is assigned to, that person is notified about the change
+  // too.
+  const skipNotificationsFor = [req.token.userId].concat(
+    subprojectAssignee ? [subprojectAssignee] : [],
+  );
+  await notifyAssignee(
+    multichain,
+    resourceDescriptions,
+    createdBy,
+    await Project.get(
+      multichain,
+      req.token,
+      projectId,
+      "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+    ),
+    publishedEvent,
+    skipNotificationsFor,
+  );
 
   return [200, { apiVersion: "1.0", data: "OK" }];
 };

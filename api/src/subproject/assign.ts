@@ -5,7 +5,8 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
-import { notifySubprojectAssignee } from "./lib/notifySubprojectAssignee";
+import { notifyAssignee } from "../notification/create";
+import * as Notification from "../notification/model/Notification";
 import * as Subproject from "./model/Subproject";
 
 export const assignSubproject = async (
@@ -36,7 +37,28 @@ export const assignSubproject = async (
     subprojectId,
   );
 
-  await notifySubprojectAssignee(multichain, req.token, projectId, subprojectId, publishedEvent);
+  // If the subproject is assigned to someone else, that person is notified about the
+  // change:
+  const resourceDescriptions: Notification.NotificationResourceDescription[] = [
+    { id: subprojectId, type: "subproject" },
+    { id: projectId, type: "project" },
+  ];
+  const createdBy = req.token.userId;
+  const skipNotificationsFor = [req.token.userId];
+  await notifyAssignee(
+    multichain,
+    resourceDescriptions,
+    createdBy,
+    await Subproject.get(
+      multichain,
+      req.token,
+      projectId,
+      subprojectId,
+      "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+    ),
+    publishedEvent,
+    skipNotificationsFor,
+  );
 
   return [200, { apiVersion: "1.0", data: "OK" }];
 };

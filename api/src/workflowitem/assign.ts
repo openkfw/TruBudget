@@ -6,7 +6,8 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
-import { notifyWorkflowitemAssignee } from "./lib/notifyAssignee";
+import { notifyAssignee } from "../notification/create";
+import * as Notification from "../notification/model/Notification";
 
 export const assignWorkflowitem = async (
   multichain: MultichainClient,
@@ -38,13 +39,29 @@ export const assignWorkflowitem = async (
     workflowitemId,
   );
 
-  await notifyWorkflowitemAssignee(
+  // If the workflowitem is assigned to someone else, that person is notified about the
+  // change:
+  const resourceDescriptions: Notification.NotificationResourceDescription[] = [
+    { id: workflowitemId, type: "workflowitem" },
+    { id: subprojectId, type: "subproject" },
+    { id: projectId, type: "project" },
+  ];
+  const createdBy = req.token.userId;
+  const skipNotificationsFor = [req.token.userId];
+  await notifyAssignee(
     multichain,
-    req.token,
-    projectId,
-    subprojectId,
-    workflowitemId,
+    resourceDescriptions,
+    createdBy,
+    await Workflowitem.get(
+      multichain,
+      req.token,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+    ),
     publishedEvent,
+    skipNotificationsFor,
   );
 
   return [200, { apiVersion: "1.0", data: "OK" }];

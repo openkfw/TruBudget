@@ -6,7 +6,8 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
-import { createNotification } from "../notification/create";
+import { notifyAssignee } from "../notification/create";
+import * as Notification from "../notification/model/Notification";
 import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
 import * as Subproject from "../subproject/model/Subproject";
 
@@ -47,23 +48,52 @@ export const closeWorkflowitem = async (
     workflowitemId,
   );
 
-  const workflowitemAssignee = await notifyWorkflowitemAssignee(
+  const resourceDescriptions: Notification.NotificationResourceDescription[] = [
+    { id: workflowitemId, type: "workflowitem" },
+    { id: subprojectId, type: "subproject" },
+    { id: projectId, type: "project" },
+  ];
+  const createdBy = req.token.userId;
+
+  // If the workflowitem is assigned to someone else, that person is notified about the
+  // change:
+  const workflowitemAssignee = await notifyAssignee(
     multichain,
-    req.token,
-    projectId,
-    subprojectId,
-    workflowitemId,
+    resourceDescriptions,
+    createdBy,
+    await Workflowitem.get(
+      multichain,
+      req.token,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+    ),
     publishedEvent,
-    sortedItems,
+    [req.token.userId], // skipNotificationsFor
   );
-  await notifySubprojectAssignee(
+
+  // If the parent subproject is (1) not assigned to the token user and (2) not assigned
+  // to the same guy the workflowitem is assigned to, that person is notified about the
+  // change too.
+  console.log(`the workflowitem assignee: ${workflowitemAssignee}`);
+  const skipNotificationsFor = [req.token.userId].concat(
+    workflowitemAssignee ? [workflowitemAssignee] : [],
+  );
+  console.log(` => skip notifications for ${skipNotificationsFor}`);
+  await notifyAssignee(
     multichain,
-    req.token,
-    projectId,
-    subprojectId,
-    workflowitemId,
+    resourceDescriptions,
+    createdBy,
+    await Subproject.get(
+      multichain,
+      req.token,
+      projectId,
+      subprojectId,
+      "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+    ),
     publishedEvent,
-    workflowitemAssignee,
+    skipNotificationsFor,
   );
 
   return [200, { apiVersion: "1.0", data: "OK" }];
@@ -115,82 +145,4 @@ async function sendEventToDatabase(
     event,
   );
   return publishedEvent;
-}
-
-/**
- * If the workflowitem is assigned to someone else, that person is notified about the
- * change.
- *
- * @returns The workflowitem assignee, or undefined if unset.
- */
-async function notifyWorkflowitemAssignee(
-  multichain: MultichainClient,
-  token: AuthToken,
-  projectId: string,
-  subprojectId: string,
-  workflowitemId: string,
-  publishedEvent: Event,
-  sortedItems: Workflowitem.WorkflowitemResource[],
-): Promise<string | undefined> {
-  const workflowitem = sortedItems.find(item => item.data.id === workflowitemId);
-
-  if (workflowitem === undefined) return;
-  const assignee = workflowitem.data.assignee;
-
-  if (assignee === undefined || assignee === token.userId) return;
-
-  await createNotification(
-    multichain,
-    [
-      { id: workflowitemId, type: "workflowitem" },
-      { id: subprojectId, type: "subproject" },
-      { id: projectId, type: "project" },
-    ],
-    token.userId,
-    assignee,
-    publishedEvent,
-  );
-  return assignee;
-}
-
-/**
- *  If the associated subproject is (1) assigned to someone else and (2) not assigned to
- *  the same guy the workflowitem is assigned to, that person is notified about the
- *  change too.
- */
-async function notifySubprojectAssignee(
-  multichain: MultichainClient,
-  token: AuthToken,
-  projectId: string,
-  subprojectId: string,
-  workflowitemId: string,
-  publishedEvent: Event,
-  workflowitemAssignee?: string,
-): Promise<void> {
-  const subproject = await Subproject.get(multichain, token, projectId, subprojectId).then(
-    x => (x.length ? x[0] : undefined),
-  );
-
-  if (subproject === undefined) return;
-  const subprojectAssignee = subproject.data.assignee;
-
-  if (
-    subprojectAssignee === undefined ||
-    subprojectAssignee === token.userId ||
-    subprojectAssignee === workflowitemAssignee
-  ) {
-    return;
-  }
-
-  await createNotification(
-    multichain,
-    [
-      { id: workflowitemId, type: "workflowitem" },
-      { id: subprojectId, type: "subproject" },
-      { id: projectId, type: "project" },
-    ],
-    token.userId,
-    subprojectAssignee,
-    publishedEvent,
-  );
 }

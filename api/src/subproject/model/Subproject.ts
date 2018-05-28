@@ -69,6 +69,7 @@ export async function get(
   token: AuthToken,
   projectId: string,
   subprojectId?: string,
+  skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
 ): Promise<SubprojectResource[]> {
   const queryKey = subprojectId !== undefined ? subprojectId : subprojectsGroupKey;
 
@@ -120,6 +121,13 @@ export async function get(
   }
 
   const unfilteredResources = [...resourceMap.values()];
+
+  if (
+    skipAuthorizationCheck ===
+    "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!"
+  ) {
+    return unfilteredResources;
+  }
 
   // Subprojects the user is not allowed to see are simply left out of the response. The
   // remaining have their event log filtered according to what the user is entitled to
