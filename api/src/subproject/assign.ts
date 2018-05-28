@@ -5,7 +5,7 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
-import { createNotification } from "../notification/create";
+import { notifySubprojectAssignee } from "./lib/notifySubprojectAssignee";
 import * as Subproject from "./model/Subproject";
 
 export const assignSubproject = async (
@@ -58,33 +58,4 @@ async function sendEventToDatabase(
   };
   const publishedEvent = await Subproject.publish(multichain, projectId, subprojectId, event);
   return publishedEvent;
-}
-
-/**
- * If the subproject is assigned to someone else, that person is notified about the
- * change.
- */
-async function notifySubprojectAssignee(
-  multichain: MultichainClient,
-  token: AuthToken,
-  projectId: string,
-  subprojectId: string,
-  publishedEvent: Event,
-): Promise<void> {
-  const subproject = await Subproject.get(multichain, token, projectId, subprojectId).then(
-    x => (x.length ? x[0] : undefined),
-  );
-
-  if (subproject === undefined) return;
-  const assignee = subproject.data.assignee;
-
-  if (assignee === undefined || assignee === token.userId) return;
-
-  await createNotification(
-    multichain,
-    [{ id: subprojectId, type: "subproject" }, { id: projectId, type: "project" }],
-    token.userId,
-    assignee,
-    publishedEvent,
-  );
 }

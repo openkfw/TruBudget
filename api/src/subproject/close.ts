@@ -1,9 +1,12 @@
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
+import { AuthToken } from "../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import { Event } from "../multichain/event";
 import * as Workflowitem from "../workflowitem";
+import { notifySubprojectAssignee } from "./lib/notifySubprojectAssignee";
 import * as Subproject from "./model/Subproject";
 
 export const closeSubproject = async (
@@ -33,15 +36,33 @@ export const closeSubproject = async (
     };
   }
 
+  const publishedEvent = await sendEventToDatabase(
+    multichain,
+    req.token,
+    userIntent,
+    projectId,
+    subprojectId,
+  );
+
+  await notifySubprojectAssignee(multichain, req.token, projectId, subprojectId, publishedEvent);
+
+  return [200, { apiVersion: "1.0", data: "OK" }];
+};
+
+async function sendEventToDatabase(
+  multichain: MultichainClient,
+  token: AuthToken,
+  userIntent: Intent,
+  projectId: string,
+  subprojectId: string,
+): Promise<Event> {
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: {},
   };
-
-  await Subproject.publish(multichain, projectId, subprojectId, event);
-
-  return [200, { apiVersion: "1.0", data: "OK" }];
-};
+  const publishedEvent = await Subproject.publish(multichain, projectId, subprojectId, event);
+  return publishedEvent;
+}
