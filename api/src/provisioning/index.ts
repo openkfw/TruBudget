@@ -1,7 +1,7 @@
 const axios = require("axios");
 import * as winston from "winston";
 import { MultichainClient } from "../multichain";
-import { amazonasFundProject, testProjectOpenSubprojects } from "./data";
+import { amazonasFundProject, closeProjectTest } from "./data";
 import { provisionUsers } from "./users";
 
 const DEFAULT_API_VERSION = "1.0";
@@ -82,7 +82,6 @@ export const provisionBlockchain = async (
   // const subprojectId = await provisionSubprojects(axios, projectId);
   // await provisionWorkflowitems(axios, projectId, subprojectId);
   await provisionFromData(amazonasFundProject);
-  await provisionFromData(testProjectOpenSubprojects);
   await runIntegrationTests(rootSecret);
 };
 
@@ -257,8 +256,9 @@ async function runIntegrationTests(rootSecret: string) {
 
 async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: string) {
   await impersonate("mstein", "test");
+  await provisionFromData(closeProjectTest);
 
-  const project = await findProject(testProjectOpenSubprojects);
+  const project = await findProject(closeProjectTest);
   if (project.data.status === "closed") {
     console.log("skipped: test project close only works if all subprojects are closed");
     return;
@@ -276,7 +276,7 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: st
 
   // Let's close the subproject (as root, because not visible to mstein):
   await impersonate("root", rootSecret);
-  const subprojectTemplate = testProjectOpenSubprojects.subprojects[1];
+  const subprojectTemplate = closeProjectTest.subprojects[1];
   if (subprojectTemplate.status !== "open") throw Error("Unexpected test data.");
   const subproject = await findSubproject(project, subprojectTemplate);
   await axios.post("/subproject.close", {
@@ -289,7 +289,20 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: st
   await axios.post("/project.close", {
     projectId: project.data.id,
   });
-  await findProject(testProjectOpenSubprojects).then(x => {
+  await findProject(closeProjectTest).then(x => {
     if (x.data.status !== "closed") throw Error("failed");
+  });
+
+  // Hide the test project
+  await impersonate("root", rootSecret);
+  await axios.post("/project.intent.revokePermission", {
+    projectId: project.data.id,
+    userId: "mstein",
+    intent: "project.viewSummary",
+  });
+  await axios.post("/project.intent.revokePermission", {
+    projectId: project.data.id,
+    userId: "mstein",
+    intent: "project.viewDetails",
   });
 }

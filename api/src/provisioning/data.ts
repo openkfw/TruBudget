@@ -324,7 +324,7 @@ export const amazonasFundProject = {
   ],
 };
 
-export const testProjectOpenSubprojects = {
+export const closeProjectTest = {
   displayName: "project.close test project",
   description: "project.close test data",
   status: "open",
