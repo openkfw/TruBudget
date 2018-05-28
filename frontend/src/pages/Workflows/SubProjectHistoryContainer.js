@@ -7,6 +7,7 @@ import sortBy from "lodash/sortBy";
 import RessourceHistory from "../Common/History/RessourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
+import { toJS } from "../../helper";
 
 const calculateHistory = items => {
   return sortBy(
@@ -17,21 +18,23 @@ const calculateHistory = items => {
   ).reverse();
 };
 
-const mapIntent = (intent, data) => {
+const mapIntent = ({ createdBy, intent, data, snapshot }) => {
   switch (intent) {
     case "project.createSubproject":
-      return `Created subproject ${data.subproject.displayName}`;
+      return `${createdBy} created subproject ${snapshot.displayName}`;
     case "subproject.createWorkflowitem":
-      return `Created workflow item ${data.workflowitem.displayName}`;
+      return `${createdBy} created workflow item ${snapshot.displayName}`;
+    case "subproject.assign":
+      return `${createdBy} assigned subproject ${snapshot.displayName} to ${data.userId}`;
     case "workflowitem.close":
-      return `Closed workflow item ???`;
+      return `${createdBy} closed workflow item ${snapshot.displayName}`;
     case "workflowitem.intent.grantPermission":
-      return `Granted permission "${strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent}" to ${
-        data.userId
-      }`;
+      return `${createdBy} granted permission "${strings.permissions[data.intent.replace(/[.]/g, "_")] ||
+        data.intent}" to ${data.userId}`;
+    case "workflowitem.assign":
+      return `${createdBy} assigned workflowitem ${snapshot.displayName} to ${data.userId}`;
     default:
       console.log(intent);
-      console.log(data);
       return "Intent not defined";
   }
 };
@@ -40,7 +43,7 @@ class SubProjectHistoryContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ressourceHistory: [],
+      ressourceHistory: fromJS([]),
       items: fromJS([])
     };
   }
@@ -49,6 +52,7 @@ class SubProjectHistoryContainer extends Component {
     // only calculate if history is shown and workflow state changed
     if (nextProps.show && nextProps.items !== prevState.items) {
       const ressourceHistory = calculateHistory(nextProps.items);
+      console.log(ressourceHistory);
       return {
         items: nextProps.items,
         ressourceHistory
@@ -77,4 +81,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubProjectHistoryContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectHistoryContainer));

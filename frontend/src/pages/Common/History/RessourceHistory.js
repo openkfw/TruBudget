@@ -31,12 +31,12 @@ export default ({ show, close, ressourceHistory, mapIntent }) => {
   return (
     <Drawer open={show} onClose={close} anchor="right">
       {ressourceHistory.length > 0 ? (
-        <List subheader={<ListSubheader>History</ListSubheader>} style={styles.list}>
+        <List subheader={<ListSubheader disableSticky>History</ListSubheader>} style={styles.list}>
           {ressourceHistory.map(i => (
             <ListItem key={i.key + i.createdAt}>
               <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
               <ListItemText
-                primary={mapIntent(i.intent, i.data)}
+                primary={mapIntent(i)}
                 secondary={i.createdAt ? moment(i.createdAt).fromNow() : "Processing ..."}
               />
             </ListItem>

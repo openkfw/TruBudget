@@ -10,7 +10,9 @@ const styles = {
   container: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    paddingLeft: "12px",
+    paddingRight: "12px"
   },
   breadcrumbs: {
     display: "flex",
@@ -91,11 +93,10 @@ const MainNavbarNavigation = ({
   currentProject,
   currentSubProject
 }) => {
-  const textColor = productionActive ? "#f0ebe6" : "#f44336";
   const navbarTitle = productionActive ? "TruBudget" : "TruBudget (Test)";
   return (
     <div style={styles.container}>
-      <Typography variant="title" color="inherit" style={{ paddingRight: "50px", color: textColor }}>
+      <Typography variant="button" color={productionActive ? "primary" : "secondary"}>
         {navbarTitle}
       </Typography>
       <div style={styles.breadcrumbs}>{createBreadcrumb(route, history, currentProject, currentSubProject)}</div>
