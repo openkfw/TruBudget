@@ -201,10 +201,10 @@ const pt = {
     done_workflow: "Status do workflow {0} alterado para Finalizado",
     done_transaction: "Status da transação {0} alterado para Finalizado",
 
-    subproject_assign: "Subproject {0} was assigned to you",
-    project_assign: "Project {0} was assigned to you",
-    workflowitem_assign: "Workflowitem {0} was assigned to you",
-    no_permissions: "(No permissions to see further details)"
+    subproject_assign: "Portuguese: Subproject {0} was assigned to you",
+    project_assign: "Portuguese: Project {0} was assigned to you",
+    workflowitem_assign: "Portuguese: Workflowitem {0} was assigned to you",
+    no_permissions: "Portuguese: (No permissions to see further details)"
   },
 
   history: {

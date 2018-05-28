@@ -164,7 +164,12 @@ const fr = {
     review_workflow: "Vous êtes assigné à examiner l'élément de workflow {0}",
     review_transaction: "Vous êtes chargé d'examiner la transaction {0}",
     done_workflow: "L'état du flux de travail {0} est défini sur terminé",
-    done_transaction: "L'état de la transaction {0} est défini sur Terminé"
+    done_transaction: "L'état de la transaction {0} est défini sur Terminé",
+
+    subproject_assign: "French: Subproject {0} was assigned to you",
+    project_assign: "French: Project {0} was assigned to you",
+    workflowitem_assign: "French: Workflowitem {0} was assigned to you",
+    no_permissions: "French: (No permissions to see further details)"
   },
 
   history: {
