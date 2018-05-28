@@ -8,17 +8,11 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   formControl: {
-    marginLeft: 15,
-    minWidth: 120,
     width: "100%"
   },
   checkbox: {
     height: 30
-  },
-  selectMenu: {
-    whiteSpace: "pre-wrap"
-  },
-  select: {}
+  }
 };
 
 class AssigneeSelection extends Component {
@@ -61,7 +55,7 @@ class AssigneeSelection extends Component {
     return (
       <FormControl disabled={disabled} className={classes.formControl}>
         <Select
-          classes={{ select: classes.select, selectMenu: classes.selectMenu }}
+          classes={{ selectMenu: classes.selectMenu }}
           value={this.renderTitle(assignee)}
           onChange={event => this.props.assign(event.target.value)}
         >
@@ -72,5 +66,4 @@ class AssigneeSelection extends Component {
   }
 }
 
-// TODO: update selectfield material v1
 export default withStyles(styles)(AssigneeSelection);

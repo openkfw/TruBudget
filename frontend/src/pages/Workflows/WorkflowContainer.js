@@ -75,14 +75,14 @@ class WorkflowContainer extends Component {
 
   render() {
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
-    const canAssinSubproject = canAssignSubProject(this.props.allowedIntents);
+    const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
     return (
       <div>
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails
             {...this.props}
             canViewPermissions={canViewPermissions}
-            canAssinSubproject={canAssinSubproject}
+            canAssignSubproject={canAssignSubproject}
           />
           <SubprojectPermissionsContainer
             projectId={this.projectId}

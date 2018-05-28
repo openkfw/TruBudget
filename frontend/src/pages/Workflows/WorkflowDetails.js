@@ -80,14 +80,10 @@ const WorkflowDetails = ({
   validateDocument,
   validatedDocuments
 }) => {
-  console.log(workflowItems);
-  console.log(showWorkflowDetails);
-  console.log(showDetailsItemId);
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-  const status = workflowItem.status;
-  const { displayName, description, amountType, assignee, amount, currency } = workflowItem.data;
+  const { displayName, description, amountType, status, assignee, amount, currency } = workflowItem.data;
   const trimmedComment = removeNewLines(description);
-
+  const assignedUser = users.find(user => user.id === assignee);
   return (
     <Dialog open={showWorkflowDetails} style={styles.dialog} onClose={hideWorkflowDetails}>
       <DialogTitle>{"Workflow details"}</DialogTitle>
@@ -114,7 +110,7 @@ const WorkflowDetails = ({
             <Avatar>
               <AssigneeIcon />
             </Avatar>
-            <ListItemText primary={assignee} secondary={strings.common.assignee} />
+            <ListItemText primary={assignedUser ? assignedUser.displayName : ""} secondary={strings.common.assignee} />
           </ListItem>
           <Divider />
           <ListItem>
