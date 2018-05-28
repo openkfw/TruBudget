@@ -1,7 +1,7 @@
 const axios = require("axios");
 import * as winston from "winston";
 import { MultichainClient } from "../multichain";
-import { amazonasFundProject } from "./data";
+import { amazonasFundProject, testProjectOpenSubprojects } from "./data";
 import { provisionUsers } from "./users";
 
 const DEFAULT_API_VERSION = "1.0";
@@ -35,9 +35,9 @@ axios.defaults.transformRequest = [
 //   console.log(`The TruBudget API is now ready.`);
 // };
 
-const authenticate = async (userId: string, rootSecret: string) => {
+const authenticate = async (userId: string, password: string) => {
   const response = await axios.post("/user.authenticate", {
-    user: { id: userId, password: rootSecret },
+    user: { id: userId, password },
   });
   const body = response.data;
   if (body.apiVersion !== "1.0") throw Error("unexpected API version");
@@ -46,6 +46,12 @@ const authenticate = async (userId: string, rootSecret: string) => {
 
 function timeout(ms) {
   return () => new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function impersonate(userId, password) {
+  const token = await authenticate(userId, password);
+  console.log(`Now logged in as ${userId}`);
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
 
 export const provisionBlockchain = async (
@@ -69,21 +75,19 @@ export const provisionBlockchain = async (
     }
   }
 
-  let token = await authenticate("root", rootSecret);
-  console.log("Authentication as root done");
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+  await impersonate("root", rootSecret);
   await provisionUsers(axios);
-  token = await authenticate("mstein", "test");
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+  await impersonate("mstein", "test");
   // const projectId = await provisionProjects(axios);
   // const subprojectId = await provisionSubprojects(axios, projectId);
   // await provisionWorkflowitems(axios, projectId, subprojectId);
-  await provisionFromData();
+  await provisionFromData(amazonasFundProject);
+  await provisionFromData(testProjectOpenSubprojects);
+  await runIntegrationTests(rootSecret);
 };
 
-const provisionFromData = async () => {
+export const provisionFromData = async projectTemplate => {
   // Don't continue if the project already exists:
-  const projectTemplate = amazonasFundProject;
   const projectExists = await findProject(projectTemplate).then(
     existingProject => existingProject !== undefined,
   );
@@ -120,11 +124,11 @@ const provisionFromData = async () => {
   console.log(`Project ${fmtList([project])} created.`);
 };
 
-const findProject = async project => {
+const findProject = async projectTemplate => {
   return axios
     .get("/project.list")
     .then(res => res.data.data.items)
-    .then(projects => projects.find(p => p.data.displayName === project.displayName));
+    .then(projects => projects.find(p => p.data.displayName === projectTemplate.displayName));
 };
 
 const provisionSubproject = async (project, subprojectTemplate) => {
@@ -159,11 +163,13 @@ const provisionSubproject = async (project, subprojectTemplate) => {
   console.log(`Subproject ${fmtList([project, subproject])} created.`);
 };
 
-const findSubproject = async (project, subproject) => {
+const findSubproject = async (project, subprojectTemplate) => {
   return axios
     .get(`/subproject.list?projectId=${project.data.id}`)
     .then(res => res.data.data.items)
-    .then(subprojects => subprojects.find(x => x.data.displayName === subproject.displayName));
+    .then(subprojects =>
+      subprojects.find(x => x.data.displayName === subprojectTemplate.displayName),
+    );
 };
 
 const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) => {
@@ -202,11 +208,11 @@ const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) 
   console.log(`Workflowitem ${fmtList([project, subproject, workflowitem])} created.`);
 };
 
-const findWorkflowitem = async (project, subproject, workflowitem) => {
+const findWorkflowitem = async (project, subproject, workflowitemTemplate) => {
   return axios
     .get(`/workflowitem.list?projectId=${project.data.id}&subprojectId=${subproject.data.id}`)
     .then(res => res.data.data.workflowitems)
-    .then(items => items.find(item => item.data.displayName === workflowitem.displayName));
+    .then(items => items.find(item => item.data.displayName === workflowitemTemplate.displayName));
 };
 
 const grantPermissions = async (permissions: object, projectId, subprojectId?, workflowitemId?) => {
@@ -243,3 +249,42 @@ const fmtList = l =>
     .map(x => (x.data.displayName === undefined ? x : x.data.displayName))
     .map(x => `"${x}"`)
     .join(" > ");
+
+async function runIntegrationTests(rootSecret: string) {
+  testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret);
+  console.log(`Integration tests complete.`);
+}
+
+async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: string) {
+  await impersonate("mstein", "test");
+
+  const project = await findProject(testProjectOpenSubprojects);
+  // This should fail as long as one subproject is still open:
+  await axios
+    .post("/project.close", {
+      projectId: project.data.id,
+    })
+    .then(result => {
+      throw Error(`Expected project.close to fail, got ${JSON.stringify(result.data)}`);
+    })
+    .catch(() => "expected!");
+
+  // Let's close the subproject (as root, because not visible to mstein):
+  await impersonate("root", rootSecret);
+  const subprojectTemplate = testProjectOpenSubprojects.subprojects[1];
+  if (subprojectTemplate.status !== "open") throw Error("Unexpected test data.");
+  const subproject = await findSubproject(project, subprojectTemplate);
+  await axios.post("/subproject.close", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+  });
+
+  // Now closing the project should work:
+  await impersonate("mstein", "test");
+  await axios.post("/project.close", {
+    projectId: project.data.id,
+  });
+  await findProject(testProjectOpenSubprojects).then(x => {
+    if (x.data.status !== "closed") throw Error("failed");
+  });
+}
