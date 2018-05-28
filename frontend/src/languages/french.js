@@ -169,7 +169,9 @@ const fr = {
     subproject_assign: "French: Subproject {0} was assigned to you",
     project_assign: "French: Project {0} was assigned to you",
     workflowitem_assign: "French: Workflowitem {0} was assigned to you",
-    no_permissions: "French: (No permissions to see further details)"
+    no_permissions: "French: (No permissions to see further details)",
+    subproject_close: "French: Subproject {0} was closed",
+    workflowitem_close: "French: Workflowitem {0} was closed"
   },
 
   history: {
@@ -186,7 +188,18 @@ const fr = {
     edit_documents: "Documents modifiés pour l'élément workflow {0}",
     edit_subproject: "Montant de {0} augmenté à {1}",
     first_sort: "Déplacé {0} au premier poste",
-    sort: "Déplacé {0} après {1}"
+    sort: "Déplacé {0} après {1}",
+
+    project_create: "French: {0} created project {1}",
+    project_grantPermission: "French: {0} granted permission {1} to {2}",
+    project_createSubproject: "French: {0} created subproject {1}",
+    subproject_assign: "French: {0} assigned project {1} to {2}",
+    subproject_close: "French: {0} closed subproject {1}",
+    subproject_grantPermission: "French: {0} granted permission {1} to {2}",
+    subproject_createWorkflowitem: "French: {0} created workflow item {1}",
+    workflowitem_close: "French: {0} closed workflow item {1}",
+    workflowitem_grantPermission: "French: {0} granted permission {1} to {2}",
+    workflowitem_assign: "French: {0} assigned workflowitem {1} to {2}"
   },
   permissions: {
     view: "French: View permissions",

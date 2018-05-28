@@ -14,7 +14,7 @@ class SubProjectAssigneeContainer extends Component {
   };
 
   render() {
-    const { assignee, disabled, users, classes } = this.props;
+    const { assignee, disabled, users } = this.props;
     return <AssigneeSelection assigneeId={assignee} disabled={disabled} users={users} assign={this.assignSubproject} />;
   }
 }

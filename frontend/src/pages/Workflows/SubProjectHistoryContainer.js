@@ -7,7 +7,7 @@ import sortBy from "lodash/sortBy";
 import RessourceHistory from "../Common/History/RessourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
-import { toJS } from "../../helper";
+import { toJS, formatString } from "../../helper";
 
 const calculateHistory = items => {
   return sortBy(
@@ -21,18 +21,31 @@ const calculateHistory = items => {
 const mapIntent = ({ createdBy, intent, data, snapshot }) => {
   switch (intent) {
     case "project.createSubproject":
-      return `${createdBy} created subproject ${snapshot.displayName}`;
+      return formatString(strings.history.project_createSubproject, createdBy, snapshot.displayName);
     case "subproject.createWorkflowitem":
-      return `${createdBy} created workflow item ${snapshot.displayName}`;
+      return formatString(strings.history.subproject_createWorkflowitem, createdBy, snapshot.displayName);
     case "subproject.assign":
-      return `${createdBy} assigned subproject ${snapshot.displayName} to ${data.userId}`;
+      return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.userId);
     case "workflowitem.close":
-      return `${createdBy} closed workflow item ${snapshot.displayName}`;
+      return formatString(strings.history.workflowitem_close, createdBy, snapshot.displayName);
+    case "subproject.close":
+      return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
+    case "subproject.intent.grantPermission":
+      return formatString(
+        strings.history.subproject_grantPermission,
+        createdBy,
+        strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent,
+        data.userId
+      );
     case "workflowitem.intent.grantPermission":
-      return `${createdBy} granted permission "${strings.permissions[data.intent.replace(/[.]/g, "_")] ||
-        data.intent}" to ${data.userId}`;
+      return formatString(
+        strings.history.workflowitem_grantPermission,
+        createdBy,
+        strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent,
+        data.userId
+      );
     case "workflowitem.assign":
-      return `${createdBy} assigned workflowitem ${snapshot.displayName} to ${data.userId}`;
+      return formatString(strings.history.workflowitem_assign, createdBy, snapshot.displayName, data.userId);
     default:
       console.log(intent);
       return "Intent not defined";

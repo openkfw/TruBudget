@@ -164,7 +164,10 @@ const de = {
     subproject_assign: "German: Subproject {0} was assigned to you",
     project_assign: "German: Project {0} was assigned to you",
     workflowitem_assign: "German: Workflowitem {0} was assigned to you",
-    no_permissions: "German: (No permissions to see further details)"
+    no_permissions: "German: (No permissions to see further details)",
+    subproject_close: "German: Subproject {0} was closed",
+
+    workflowitem_close: "German: Workflowitem {0} was closed"
   },
 
   history: {
@@ -181,7 +184,18 @@ const de = {
     edit_documents: "Documents changed for workflow item {0}",
     edit_subproject: "Amount of {0} increased to {1}",
     first_sort: "Moved {0} to first position",
-    sort: "Moved {0} after {1}"
+    sort: "Moved {0} after {1}",
+
+    project_create: "German: {0} created project {1}",
+    project_grantPermission: "German: {0} granted permission {1} to {2}",
+    project_createSubproject: "German: {0} created subproject {1}",
+    subproject_assign: "German: {0} assigned project {1} to {2}",
+    subproject_close: "German: {0} closed subproject {1}",
+    subproject_grantPermission: "German: {0} granted permission {1} to {2}",
+    subproject_createWorkflowitem: "German: {0} created workflow item {1}",
+    workflowitem_close: "German: {0} closed workflow item {1}",
+    workflowitem_grantPermission: "German: {0} granted permission {1} to {2}",
+    workflowitem_assign: "German: {0} assigned workflowitem {1} to {2}"
   },
   permissions: {
     view: "German: View permissions",
