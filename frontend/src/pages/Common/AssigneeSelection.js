@@ -57,7 +57,7 @@ class AssigneeSelection extends Component {
         <Select
           classes={{ selectMenu: classes.selectMenu }}
           value={this.renderTitle(assignee)}
-          onChange={event => this.props.assign(event.target.value)}
+          onChange={event => (event.target.value !== assigneeId ? this.props.assign(event.target.value) : undefined)}
         >
           {selection}
         </Select>
