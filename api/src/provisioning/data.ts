@@ -1,6 +1,7 @@
 export const amazonasFundProject = {
   displayName: "Amazonas Fund 53",
   description: "Projects in 2017",
+  status: "open",
   amount: "32000000",
   assignee: "jdoe",
   currency: "BRL",
@@ -92,7 +93,7 @@ export const amazonasFundProject = {
     {
       displayName: "Consultancy supervision",
       description: "No description.",
-      status: "closed",
+      status: "open",
       amount: "750000",
       currency: "BRL",
       assignee: "jdoe",
@@ -319,6 +320,53 @@ export const amazonasFundProject = {
           amountType: "N/A",
         },
       ],
+    },
+  ],
+};
+
+export const testProjectOpenSubprojects = {
+  displayName: "project.close test project",
+  description: "project.close test data",
+  status: "open",
+  amount: "9999",
+  assignee: "mstein",
+  currency: "EUR",
+  permissions: {
+    "project.viewDetails": ["mstein"],
+    "project.viewSummary": ["mstein"],
+    "project.close": ["mstein"],
+    "project.intent.listPermissions": ["mstein"],
+    "project.intent.grantPermission": ["mstein"],
+    "project.intent.revokePermission": ["mstein"],
+  },
+  subprojects: [
+    {
+      displayName: "Subproject A",
+      description: "No description.",
+      status: "closed",
+      amount: "1000",
+      currency: "EUR",
+      assignee: "mstein",
+      permissions: {
+        "subproject.viewSummary": ["mstein"],
+        "subproject.viewDetails": ["mstein"],
+        "subproject.close": ["mstein"],
+      },
+      workflows: [],
+    },
+    {
+      displayName: "Subproject B",
+      description: "Open and not visible to mstein",
+      status: "open",
+      amount: "1000",
+      currency: "EUR",
+      assignee: "jdoe",
+      permissions: {
+        "subproject.viewSummary": ["jdoe"],
+        "subproject.viewDetails": ["jdoe"],
+        "subproject.close": ["jdoe"],
+      },
+      workflows: [],
     },
   ],
 };

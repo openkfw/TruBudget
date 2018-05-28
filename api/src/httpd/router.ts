@@ -8,6 +8,7 @@ import { MultichainClient } from "../multichain";
 import { getNotificationList } from "../notification/controller/list";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { assignProject } from "../project/assign";
+import { closeProject } from "../project/close";
 import { createSubproject } from "../project/createSubproject";
 import { grantProjectPermission } from "../project/intent/grantPermission";
 import { getProjectPermissions } from "../project/intent/listPermissions";
@@ -16,6 +17,7 @@ import { getProjectList } from "../project/list";
 import { getProjectDetails } from "../project/viewDetails";
 import { getProjectHistory } from "../project/viewHistory";
 import { assignSubproject } from "../subproject/assign";
+import { closeSubproject } from "../subproject/close";
 import { createWorkflowitem } from "../subproject/createWorkflowitem";
 import { grantSubprojectPermission } from "../subproject/intent/grantPermission";
 import { getSubprojectPermissions } from "../subproject/intent/listPermissions";
@@ -213,6 +215,12 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
+  router.post("/project.close", (req: AuthenticatedRequest, res) => {
+    closeProject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
   router.post("/project.createSubproject", (req: AuthenticatedRequest, res) => {
     createSubproject(multichainClient, req)
       .then(response => send(res, response))
@@ -261,6 +269,12 @@ export const createRouter = (
 
   router.post("/subproject.assign", (req: AuthenticatedRequest, res) => {
     assignSubproject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post("/subproject.close", (req: AuthenticatedRequest, res) => {
+    closeSubproject(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
