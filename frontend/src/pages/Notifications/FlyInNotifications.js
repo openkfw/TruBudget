@@ -2,13 +2,16 @@ import React, { Component } from "react";
 import Transition from "react-transition-group/Transition";
 
 import Card from "@material-ui/core/Card";
-import CardText from "@material-ui/core/CardText";
+import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import LaunchIcon from "@material-ui/icons/Launch";
+import Typography from "@material-ui/core/Typography";
 
-import _some from "lodash/some";
 import _isEmpty from "lodash/isEmpty";
 
-import strings from "../../localizeStrings";
+import { intentMapping, parseURI, fetchRessourceName, hasAccess } from "./helper";
 
 const styles = {
   notification: {
@@ -28,102 +31,64 @@ export default class FlyInNotification extends Component {
     super();
 
     this.state = {
-      id: 0,
-      notificationStack: []
+      notifications: []
     };
-
-    this.mountingTime = undefined;
   }
 
-  componentDidMount = () => {
-    this.mountingTime = Date.now();
-  };
-
-  componentDidUpdate = prevProps => {
-    const isFirstRequest = this.mountingTime > Date.now() - 2000;
-
-    const oldNotifications = prevProps.notifications;
-    const newNotifications = this.props.notifications;
-
-    if (newNotifications.length > 0 && !isFirstRequest) {
-      this.compareAndFireNotifications(oldNotifications, newNotifications);
+  componentWillReceiveProps = props => {
+    if (!_isEmpty(props.notifications)) {
+      const ids = props.notifications.map(n => n.notificationId);
+      setTimeout(() => {
+        this.removeNotification(ids);
+      }, 7000);
     }
-  };
-
-  componentWillUnmount = () => {
-    this.state.notificationStack.map(notification => clearTimeout(notification.timer));
-  };
-
-  mapNotifications = notification => {
-    return {
-      key: notification.key,
-      data: notification.data
-    };
-  };
-
-  filterNotifications = notification => notification.data.done === false;
-
-  compareAndFireNotifications = (oldN, newN) => {
-    const oldData = oldN
-      .map(this.mapNotifications)
-      .filter(this.filterNotifications)
-      .sort();
-    const newData = newN
-      .map(this.mapNotifications)
-      .filter(this.filterNotifications)
-      .sort();
-
-    const changedData = newData.filter(data => !_some(oldData, data));
-
-    changedData.map(notification => this.showNotification(notification.data));
-  };
-
-  showNotification = data => {
-    const id = this.state.id + 1;
-
-    const timer = setTimeout(() => {
-      this.removeNotification(id);
-    }, 7000);
-
     this.setState({
-      id,
-      notificationStack: [...this.state.notificationStack, { data, id, timer }]
+      notifications: props.notifications
     });
   };
 
-  removeNotification(id) {
-    const notifications = this.state.notificationStack.filter(notification => id !== notification.id);
+  removeNotification(ids) {
     this.setState({
-      notificationStack: notifications
+      notifications: this.state.notifications.filter(n => ids.indexOf(n.notificationId) < 0)
     });
   }
 
-  getDescription = data => {
-    const { action, workflowItem } = data;
-    const templateString = strings.notification[action];
-    return strings.formatString(templateString, workflowItem);
-  };
-
-  getMessages = () => {
-    return this.state.notificationStack.map(({ data, id }, index) => {
-      const user = this.props.users[data.issuer];
+  getMessages = history => {
+    return this.state.notifications.map(({ notificationId, originalEvent, resources }) => {
+      const { createdBy } = originalEvent;
+      const message = intentMapping({ originalEvent, resources });
       return (
         <Card
-          key={id}
+          key={notificationId + "flyin"}
           style={{
             width: "300px",
             marginBottom: "8px"
           }}
         >
-          <CardHeader style={{ fontSize: "8pt" }} title={user.name} subtitle={user.organization} avatar={user.avatar} />
-          <CardText>{this.getDescription(data)}</CardText>
+          <CardHeader
+            avatar={<Avatar>{createdBy[0] || "?"}</Avatar>}
+            action={
+              <IconButton
+                disabled={!hasAccess(resources)}
+                color="primary"
+                onClick={() => history.push(parseURI({ resources }))}
+              >
+                <LaunchIcon />
+              </IconButton>
+            }
+            title={fetchRessourceName(resources, "project")}
+            subheader={fetchRessourceName(resources, "subproject")}
+          />
+          <CardContent>
+            <Typography component="p">{message}</Typography>
+          </CardContent>
         </Card>
       );
     });
   };
 
   render() {
-    const show = !_isEmpty(this.state.notificationStack);
+    const show = !_isEmpty(this.props.notifications);
 
     return (
       <div
@@ -142,7 +107,7 @@ export default class FlyInNotification extends Component {
                 ...styles.notificationTransition[state]
               }}
             >
-              {this.getMessages()}
+              {this.getMessages(this.props.history)}
             </div>
           )}
         </Transition>

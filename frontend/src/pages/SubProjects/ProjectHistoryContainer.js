@@ -7,6 +7,7 @@ import sortBy from "lodash/sortBy";
 import RessourceHistory from "../Common/History/RessourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
+import { toJS, formatString } from "../../helper";
 
 const calculateHistory = items => {
   return sortBy(
@@ -17,25 +18,28 @@ const calculateHistory = items => {
   ).reverse();
 };
 
-const mapIntent = (intent, data) => {
+const mapIntent = ({ createdBy, intent, data, snapshot }) => {
   switch (intent) {
     case "global.createProject":
-      return `Created project ${data.project.displayName}`;
+      return formatString(strings.history.project_create, createdBy, snapshot.displayName);
     case "project.intent.grantPermission":
-      return `Granted permission "${strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent}" to ${
-        data.userId
-      }`;
+      const grantedIntent = strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent;
+      return formatString(strings.history.project_grantPermission, createdBy, grantedIntent, data.userId);
     case "project.createSubproject":
-      return `Created workflow item ${data.subproject.displayName}`;
+      return formatString(strings.history.project_createSubproject, createdBy, snapshot.displayName);
+    case "subproject.assign":
+      return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.userId);
     case "subproject.close":
-      return `Closed workflow item ???`;
+      return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
     case "subproject.intent.grantPermission":
-      return `Granted permission "${strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent}" to ${
+      return formatString(
+        strings.history.subproject_grantPermission,
+        createdBy,
+        strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent,
         data.userId
-      }`;
+      );
     default:
       console.log(intent);
-      console.log(data);
       return "Intent not defined";
   }
 };
@@ -44,7 +48,7 @@ class ProjectHistoryContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ressourceHistory: [],
+      ressourceHistory: fromJS([]),
       items: fromJS([])
     };
   }
@@ -81,4 +85,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectHistoryContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(ProjectHistoryContainer));

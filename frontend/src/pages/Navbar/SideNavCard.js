@@ -74,12 +74,6 @@ const SideNavCard = ({ avatarBackground, avatar, displayName, organization, hist
         </ListItemIcon>
         <ListItemText primary={strings.navigation.menu_item_notifications} />
       </ListItem>
-      <ListItem button onClick={() => history.push("/network")}>
-        <ListItemIcon>
-          <NetworkIcon />
-        </ListItemIcon>
-        <ListItemText primary={strings.navigation.menu_item_network} />
-      </ListItem>
     </List>
     <Divider />
   </div>

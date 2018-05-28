@@ -6,8 +6,8 @@ import NotificationsSnackbar from "./NotificationsSnackbar";
 const LiveNotification = props => {
   return (
     <div>
-      <NotificationsSnackbar {...props} />
-      <FlyInNotifications notifications={props.notifications} users={props.users} />
+      {/* <NotificationsSnackbar {...props} /> */}
+      {/* <FlyInNotifications notifications={props.notifications} users={props.users} /> */}
     </div>
   );
 };

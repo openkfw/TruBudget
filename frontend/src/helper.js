@@ -164,6 +164,11 @@ export const getCompletionString = subprojects => {
   );
 };
 
+export const formatString = (text, ...args) => {
+  const x = strings.formatString(text, ...args).join(" ");
+  return x;
+};
+
 export const getAllocationRatio = (spentAmount, projectAmount) => {
   const allocationRatio = spentAmount / projectAmount * 100;
   return allocationRatio > 0 ? allocationRatio : 0;

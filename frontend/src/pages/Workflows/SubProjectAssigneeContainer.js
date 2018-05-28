@@ -4,6 +4,8 @@ import AssigneeSelection from "../Common/AssigneeSelection";
 import { assignSubproject } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
+import { withStyles } from "@material-ui/core";
+const styles = {};
 
 class SubProjectAssigneeContainer extends Component {
   assignSubproject = userId => {
@@ -12,9 +14,8 @@ class SubProjectAssigneeContainer extends Component {
   };
 
   render() {
-    return (
-      <AssigneeSelection assigneeId={this.props.assignee} users={this.props.users} assign={this.assignSubproject} />
-    );
+    const { assignee, disabled, users } = this.props;
+    return <AssigneeSelection assigneeId={assignee} disabled={disabled} users={users} assign={this.assignSubproject} />;
   }
 }
 
@@ -28,4 +29,6 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(SubProjectAssigneeContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withInitialLoading(toJS(withStyles(styles)(SubProjectAssigneeContainer)))
+);

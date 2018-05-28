@@ -45,7 +45,7 @@ export async function publish(
     dataVersion: number; // integer
     data: object;
   },
-): Promise<void> {
+): Promise<Event> {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
   const event: Event = {
     key: projectId,
@@ -58,9 +58,12 @@ export async function publish(
 
   const publishEvent = () => {
     console.log(`Publishing ${intent} to ${projectId}/${projectSelfKey}`);
-    return multichain.getRpcClient().invoke("publish", projectId, projectSelfKey, {
-      json: event,
-    });
+    return multichain
+      .getRpcClient()
+      .invoke("publish", projectId, projectSelfKey, {
+        json: event,
+      })
+      .then(() => event);
   };
 
   return publishEvent().catch(err => {
@@ -117,6 +120,7 @@ export async function get(
   multichain: MultichainClient,
   token: AuthToken,
   projectId?: string,
+  skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
 ): Promise<ProjectResource[]> {
   const streamItems = await fetchStreamItems(multichain, projectId);
   const userAndGroups = await getUserAndGroups(token);
@@ -166,6 +170,13 @@ export async function get(
   }
 
   const unfilteredResources = [...resourceMap.values()];
+
+  if (
+    skipAuthorizationCheck ===
+    "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!"
+  ) {
+    return unfilteredResources;
+  }
 
   // Projects the user is not allowed to see are simply left out of the response. The
   // remaining have their event log filtered according to what the user is entitled to

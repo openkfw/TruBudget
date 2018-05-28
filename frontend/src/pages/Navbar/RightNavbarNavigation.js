@@ -20,7 +20,7 @@ const styles = {
 const RightNavbarNavigations = ({ peers, unreadNotifications, history, logout, organization }) => {
   return (
     <div style={styles.container}>
-      <Typography variant="button" color="inherit" style={styles.organization}>
+      <Typography variant="button" color="primary" style={styles.organization}>
         {organization}
       </Typography>
       <NavbarIcons unreadNotifications={unreadNotifications} peers={peers} history={history} logout={logout} />

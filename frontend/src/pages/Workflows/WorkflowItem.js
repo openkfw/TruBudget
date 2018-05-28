@@ -196,9 +196,9 @@ const renderActionButtons = (
   return (
     <div style={{ flex: 2 }}>
       <div style={styles.actions}>
-        <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
+        {/* <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
           <EditIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton disabled={!canListWorkflowPermissions} onClick={showPerm}>
           <PermissionIcon />
         </IconButton>

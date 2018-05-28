@@ -75,14 +75,14 @@ class WorkflowContainer extends Component {
 
   render() {
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
-    const canAssinSubproject = canAssignSubProject(this.props.allowedIntents);
+    const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
     return (
       <div>
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails
             {...this.props}
             canViewPermissions={canViewPermissions}
-            canAssinSubproject={canAssinSubproject}
+            canAssignSubproject={canAssignSubproject}
           />
           <SubprojectPermissionsContainer
             projectId={this.projectId}
@@ -96,6 +96,8 @@ class WorkflowContainer extends Component {
           />
           <Workflow
             {...this.props}
+            projectId={this.projectId}
+            subProjectId={this.subProjectId}
             createWorkflowItem={this.createWorkflowItem}
             closeWorkflowItem={this.closeWorkflowItem}
           />
@@ -109,7 +111,6 @@ class WorkflowContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
-    fetchSubprojectHistory: (pId, sId, loading) => dispatch(fetchSubprojectHistory(pId, sId, loading)),
     openWorkflowDialog: editMode => dispatch(showWorkflowDialog(editMode)),
     onWorkflowDialogCancel: () => dispatch(onWorkflowDialogCancel(false)),
     storeWorkflowComment: comment => dispatch(storeWorkflowComment(comment)),

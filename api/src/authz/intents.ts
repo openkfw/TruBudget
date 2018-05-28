@@ -36,7 +36,10 @@ type Intent =
   | "workflowitem.assign"
   | "workflowitem.update"
   | "workflowitem.close"
-  | "workflowitem.archive";
+  | "workflowitem.archive"
+  | "notification.list"
+  | "notification.markRead"
+  | "notification.create";
 
 export const globalIntents: Intent[] = [
   "global.intent.listPermissions",
@@ -47,7 +50,12 @@ export const globalIntents: Intent[] = [
   "user.authenticate",
 ];
 
-export const userDefaultIntents: Intent[] = ["user.authenticate", "user.view"];
+export const userDefaultIntents: Intent[] = [
+  "user.authenticate",
+  "user.view",
+  "notification.list",
+  "notification.markRead",
+];
 
 export const allIntents: Intent[] = [
   "global.intent.listPermissions",
@@ -88,6 +96,9 @@ export const allIntents: Intent[] = [
   "workflowitem.update",
   "workflowitem.close",
   "workflowitem.archive",
+  "notification.list",
+  "notification.markRead",
+  "notification.create",
 ];
 
 export default Intent;

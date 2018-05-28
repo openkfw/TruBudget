@@ -57,7 +57,7 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
   };
 
   if (showWorkflowDetails) {
-    workflowItem = workflowItems.find(workflow => workflow.id === showDetailsItemId);
+    workflowItem = workflowItems.find(workflow => workflow.data.id === showDetailsItemId);
   }
 
   return workflowItem;
@@ -81,10 +81,9 @@ const WorkflowDetails = ({
   validatedDocuments
 }) => {
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-  const status = workflowItem.status;
-  const { displayName, description, amountType, assignee } = workflowItem;
+  const { displayName, description, amountType, status, assignee, amount, currency } = workflowItem.data;
   const trimmedComment = removeNewLines(description);
-
+  const assignedUser = users.find(user => user.id === assignee);
   return (
     <Dialog open={showWorkflowDetails} style={styles.dialog} onClose={hideWorkflowDetails}>
       <DialogTitle>{"Workflow details"}</DialogTitle>
@@ -99,7 +98,7 @@ const WorkflowDetails = ({
               <AmountIcon />
             </Avatar>
             <ListItemText
-              primary={amountType !== "N/A" ? toAmountString(workflowItem.amount, workflowItem.currency) : "N/A"}
+              primary={amountType !== "N/A" ? toAmountString(amount, currency) : "N/A"}
               secondary={strings.common.budget}
             />
           </ListItem>
@@ -111,7 +110,7 @@ const WorkflowDetails = ({
             <Avatar>
               <AssigneeIcon />
             </Avatar>
-            <ListItemText primary={assignee} secondary={strings.common.assignee} />
+            <ListItemText primary={assignedUser ? assignedUser.displayName : ""} secondary={strings.common.assignee} />
           </ListItem>
           <Divider />
           <ListItem>

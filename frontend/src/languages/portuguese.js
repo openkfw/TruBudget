@@ -199,7 +199,14 @@ const pt = {
     review_workflow: "Você foi solicitado a revisar o workflow {0}",
     review_transaction: "Você foi solicitado a revisar a transação {0}",
     done_workflow: "Status do workflow {0} alterado para Finalizado",
-    done_transaction: "Status da transação {0} alterado para Finalizado"
+    done_transaction: "Status da transação {0} alterado para Finalizado",
+
+    subproject_assign: "Portuguese: Subproject {0} was assigned to you",
+    project_assign: "Portuguese: Project {0} was assigned to you",
+    workflowitem_assign: "Portuguese: Workflowitem {0} was assigned to you",
+    no_permissions: "Portuguese: (No permissions to see further details)",
+    subproject_close: "Portuguese: Subproject {0} was closed",
+    workflowitem_close: "Portuguese: Workflowitem {0} was closed"
   },
 
   history: {
@@ -216,7 +223,18 @@ const pt = {
     edit_documents: "Documentos alterados para workflow {0}",
     edit_subproject: "Valor de {0} subiu para {1}",
     first_sort: "{0} foi movido para a primeira posição",
-    sort: "{0} foi movido após {1}"
+    sort: "{0} foi movido após {1}",
+
+    project_create: "Portuguese: {0} created project {1}",
+    project_grantPermission: "Portuguese: {0} granted permission {1} to {2}",
+    project_createSubproject: "Portuguese: {0} created subproject {1}",
+    subproject_assign: "Portuguese: {0} assigned project {1} to {2}",
+    subproject_close: "Portuguese: {0} closed subproject {1}",
+    subproject_grantPermission: "Portuguese: {0} granted permission {1} to {2}",
+    subproject_createWorkflowitem: "Portuguese: {0} created workflow item {1}",
+    workflowitem_close: "Portuguese: {0} closed workflow item {1}",
+    workflowitem_grantPermission: "Portuguese: {0} granted permission {1} to {2}",
+    workflowitem_assign: "Portuguese: {0} assigned workflowitem {1} to {2}"
   },
   permissions: {
     view: "Pt: View permissions",

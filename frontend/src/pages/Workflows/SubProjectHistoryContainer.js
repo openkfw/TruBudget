@@ -7,6 +7,7 @@ import sortBy from "lodash/sortBy";
 import RessourceHistory from "../Common/History/RessourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
+import { toJS, formatString } from "../../helper";
 
 const calculateHistory = items => {
   return sortBy(
@@ -17,21 +18,36 @@ const calculateHistory = items => {
   ).reverse();
 };
 
-const mapIntent = (intent, data) => {
+const mapIntent = ({ createdBy, intent, data, snapshot }) => {
   switch (intent) {
     case "project.createSubproject":
-      return `Created subproject ${data.subproject.displayName}`;
+      return formatString(strings.history.project_createSubproject, createdBy, snapshot.displayName);
     case "subproject.createWorkflowitem":
-      return `Created workflow item ${data.workflowitem.displayName}`;
+      return formatString(strings.history.subproject_createWorkflowitem, createdBy, snapshot.displayName);
+    case "subproject.assign":
+      return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.userId);
     case "workflowitem.close":
-      return `Closed workflow item ???`;
-    case "workflowitem.intent.grantPermission":
-      return `Granted permission "${strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent}" to ${
+      return formatString(strings.history.workflowitem_close, createdBy, snapshot.displayName);
+    case "subproject.close":
+      return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
+    case "subproject.intent.grantPermission":
+      return formatString(
+        strings.history.subproject_grantPermission,
+        createdBy,
+        strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent,
         data.userId
-      }`;
+      );
+    case "workflowitem.intent.grantPermission":
+      return formatString(
+        strings.history.workflowitem_grantPermission,
+        createdBy,
+        strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent,
+        data.userId
+      );
+    case "workflowitem.assign":
+      return formatString(strings.history.workflowitem_assign, createdBy, snapshot.displayName, data.userId);
     default:
       console.log(intent);
-      console.log(data);
       return "Intent not defined";
   }
 };
@@ -40,7 +56,7 @@ class SubProjectHistoryContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ressourceHistory: [],
+      ressourceHistory: fromJS([]),
       items: fromJS([])
     };
   }
@@ -49,6 +65,7 @@ class SubProjectHistoryContainer extends Component {
     // only calculate if history is shown and workflow state changed
     if (nextProps.show && nextProps.items !== prevState.items) {
       const ressourceHistory = calculateHistory(nextProps.items);
+      console.log(ressourceHistory);
       return {
         items: nextProps.items,
         ressourceHistory
@@ -77,4 +94,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubProjectHistoryContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectHistoryContainer));

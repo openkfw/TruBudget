@@ -7,33 +7,35 @@ import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
 import { notifyAssignee } from "../notification/create";
 import * as Notification from "../notification/model/Notification";
+import * as Subproject from "../subproject/model/Subproject";
 import * as Project from "./model/Project";
 
-export const assignProject = async (
+export const closeProject = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
 
-  const userIntent: Intent = "project.assign";
+  const userIntent: Intent = "project.close";
 
-  // Is the user allowed to (re-)assign a project?
+  // Is the user allowed to close a project?
   await throwIfUnauthorized(
     req.token,
     userIntent,
     await Project.getPermissions(multichain, projectId),
   );
 
-  const publishedEvent = await sendEventToDatabase(
-    multichain,
-    req.token,
-    userIntent,
-    userId,
-    projectId,
-  );
+  // All assiciated subprojects need to be closed:
+  if (!(await Subproject.areAllClosed(multichain, projectId))) {
+    throw {
+      kind: "PreconditionError",
+      message: "Cannot close a project if at least one associated subproject is not yet closed.",
+    };
+  }
+
+  const publishedEvent = await sendEventToDatabase(multichain, req.token, userIntent, projectId);
 
   const resourceDescriptions: Notification.NotificationResourceDescription[] = [
     { id: projectId, type: "project" },
@@ -61,7 +63,6 @@ async function sendEventToDatabase(
   multichain: MultichainClient,
   token: AuthToken,
   userIntent: Intent,
-  userId: string,
   projectId: string,
 ): Promise<Event> {
   const event = {
@@ -69,7 +70,7 @@ async function sendEventToDatabase(
     createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId },
+    data: {},
   };
   const publishedEvent = await Project.publish(multichain, projectId, event);
   return publishedEvent;

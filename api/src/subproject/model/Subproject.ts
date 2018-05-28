@@ -48,7 +48,7 @@ export async function publish(
     dataVersion: number; // integer
     data: object;
   },
-): Promise<void> {
+): Promise<Event> {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
   const event: Event = {
     key: subprojectId,
@@ -58,9 +58,10 @@ export async function publish(
     dataVersion,
     data,
   };
-  return multichain.getRpcClient().invoke("publish", projectId, subprojectKey(subprojectId), {
+  await multichain.getRpcClient().invoke("publish", projectId, subprojectKey(subprojectId), {
     json: event,
   });
+  return event;
 }
 
 export async function get(
@@ -68,6 +69,7 @@ export async function get(
   token: AuthToken,
   projectId: string,
   subprojectId?: string,
+  skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
 ): Promise<SubprojectResource[]> {
   const queryKey = subprojectId !== undefined ? subprojectId : subprojectsGroupKey;
 
@@ -119,6 +121,13 @@ export async function get(
   }
 
   const unfilteredResources = [...resourceMap.values()];
+
+  if (
+    skipAuthorizationCheck ===
+    "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!"
+  ) {
+    return unfilteredResources;
+  }
 
   // Subprojects the user is not allowed to see are simply left out of the response. The
   // remaining have their event log filtered according to what the user is entitled to
@@ -261,7 +270,7 @@ export async function areAllClosed(
     const event = item.data.json;
     switch (event.intent) {
       case "project.createSubproject": {
-        resultMap.set(asMapKey(item), event.data.workflowitem.status);
+        resultMap.set(asMapKey(item), event.data.subproject.status);
         break;
       }
       case "subproject.close": {
@@ -312,68 +321,3 @@ export async function isClosed(
 
   return false;
 }
-
-// 00000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-// export const create = async (
-//   multichain: MultichainClient,
-//   token: AuthToken,
-//   projectId: string,
-//   data: SubprojectData,
-//   permissions: AllowedUserGroupsByIntent,
-// ): Promise<void> => {
-//   const subprojectId = data.id;
-//   const resource: SubprojectResource = {
-//     data,
-//     log: [
-//       {
-//         // not taken from data in case subprojects are created after the fact, as
-//         // the log entry's ctime should always be the actual time of creation:
-//         creationUnixTs: Date.now().toString(),
-//         issuer: token.userId,
-//         action: "subproject_created",
-//       },
-//     ],
-//     permissions,
-//   };
-//   return multichain.setValue(projectId, [SUBPROJECTS_KEY, subprojectId], resource);
-// };
-
-// export const getForUser = async (
-//   multichain: MultichainClient,
-//   token: AuthToken,
-//   projectId: string,
-//   subprojectId: string,
-// ): Promise<SubprojectDataWithIntents> => {
-//   const streamItem = await multichain.getValue(projectId, subprojectId);
-//   const resource = streamItem.resource;
-//   return {
-//     ...resource.data,
-//     allowedIntents: await getUserAndGroups(token).then(userAndGroups =>
-//       getAllowedIntents(userAndGroups, resource.permissions),
-//     ),
-//   };
-// };
-
-// export const getAllForUser = async (
-//   multichain: MultichainClient,
-//   token: AuthToken,
-//   projectId: string,
-// ): Promise<SubprojectDataWithIntents[]> => {
-//   const resources = await getAll(multichain, projectId);
-//   const allSubprojects = await Promise.all(
-//     resources.map(async resource => {
-//       return {
-//         ...resource.data,
-//         allowedIntents: await getUserAndGroups(token).then(userAndGroups =>
-//           getAllowedIntents(userAndGroups, resource.permissions),
-//         ),
-//       };
-//     }),
-//   );
-//   const allowedToSeeIntents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
-//   const clearedSubprojects = allSubprojects.filter(subproject =>
-//     subproject.allowedIntents.some(intent => allowedToSeeIntents.includes(intent)),
-//   );
-//   return clearedSubprojects;
-// };

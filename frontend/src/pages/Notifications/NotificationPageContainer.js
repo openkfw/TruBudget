@@ -1,39 +1,37 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import { fetchNotifications, markNotificationAsRead } from './actions';
-import NotificationPage from './NotificationPage';
+import { markNotificationAsRead, fetchAllNotifications } from "./actions";
+import NotificationPage from "./NotificationPage";
 
-import globalStyles from '../../styles';
+import globalStyles from "../../styles";
+import { toJS } from "../../helper";
 
 class NotificationPageContainer extends Component {
-  componentWillMount() {
-    this.props.fetchNotifications(this.props.loggedInUser.id);
+  componentDidMount() {
+    this.props.fetchNotifications();
   }
 
   render() {
-
     return (
       <div style={globalStyles.innerContainer}>
         <NotificationPage {...this.props} />
-      </div>)
+      </div>
+    );
   }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    fetchNotifications: (user) => dispatch(fetchNotifications(user)),
-    markNotificationAsRead: (user, id, data) => dispatch(markNotificationAsRead(user, id, data))
+    fetchNotifications: id => dispatch(fetchAllNotifications(true)),
+    markNotificationAsRead: notificationId => dispatch(markNotificationAsRead(notificationId))
   };
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    list: state.getIn(['notifications', 'list']).toJS(),
-    loggedInUser: state.getIn(['login', 'loggedInUser']).toJS(),
-    users: state.getIn(['login', 'users']).toJS(),
-    streamNames: state.getIn(['navbar', 'streamNames']).toJS(),
-  }
-}
+    notifications: state.getIn(["notifications", "notifications"])
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(NotificationPageContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(NotificationPageContainer));

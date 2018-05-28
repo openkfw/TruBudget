@@ -4,6 +4,13 @@ import AssigneeSelection from "../Common/AssigneeSelection";
 import { assignWorkflowItem } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
+import { withStyles } from "@material-ui/core";
+
+const styles = {
+  assigneeContainer: {
+    width: "80%"
+  }
+};
 
 class WorkflowAssigneeContainer extends Component {
   assignWorkflow = userId => {
@@ -20,14 +27,18 @@ class WorkflowAssigneeContainer extends Component {
   };
 
   render() {
-    const assignee = this.getWorkflowAssignee(this.props.workflowItems, this.props.workflowitemId);
+    const { workflowItems, workflowitemId, users, title, classes, disabled } = this.props;
+    const assignee = this.getWorkflowAssignee(workflowItems, workflowitemId);
     return (
-      <AssigneeSelection
-        assigneeId={assignee}
-        users={this.props.users}
-        title={this.props.title}
-        assign={this.assignWorkflow}
-      />
+      <div className={classes.assigneeContainer}>
+        <AssigneeSelection
+          assigneeId={assignee}
+          disabled={disabled}
+          users={users}
+          title={title}
+          assign={this.assignWorkflow}
+        />
+      </div>
     );
   }
 }
@@ -45,4 +56,6 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(WorkflowAssigneeContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withInitialLoading(toJS(withStyles(styles)(WorkflowAssigneeContainer)))
+);

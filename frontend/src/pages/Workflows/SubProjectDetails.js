@@ -202,7 +202,7 @@ const SubProjectDetails = ({
   created,
   budgetEditEnabled,
   canViewPermissions,
-  canAssinSubproject,
+  canAssignSubproject,
   parentProject,
   users,
   showSubProjectPermissions,
@@ -257,7 +257,7 @@ const SubProjectDetails = ({
               projectId={parentProject ? parentProject.id : ""}
               subprojectId={id}
               users={users}
-              disabled={!canAssinSubproject}
+              disabled={!canAssignSubproject}
               assignee={assignee}
             />
           </ListItem>

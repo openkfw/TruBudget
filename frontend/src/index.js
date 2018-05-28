@@ -6,8 +6,8 @@ import { Route, Switch } from "react-router";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import createHistory from "history/createBrowserHistory";
 
-import red from "@material-ui/core/colors/red";
-import blue from "@material-ui/core/colors/blue";
+import red from "@material-ui/core/colors/deepOrange";
+import blue from "@material-ui/core/colors/indigo";
 
 import Main from "./pages/Main/Main";
 import LoginPageContainer from "./pages/Login/LoginPageContainer";

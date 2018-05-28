@@ -1,7 +1,6 @@
-import Intent from "./intents";
+import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
 import { AllowedUserGroupsByIntent, GroupId, People } from "./types";
-import { allIntents } from "./intents";
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);

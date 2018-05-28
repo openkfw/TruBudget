@@ -1,7 +1,6 @@
 import { fromJS } from "immutable";
 
 import { TOGGLE_SIDEBAR, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES_SUCCESS, SET_SELECTED_VIEW } from "./actions";
-import { FETCH_NOTIFICATIONS_SUCCESS } from "../Notifications/actions";
 import { FETCH_UPDATES_SUCCESS } from "../LiveUpdates/actions";
 import { LOGOUT } from "../Login/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
@@ -19,8 +18,8 @@ const defaultState = fromJS({
 });
 
 const countUnreadNotifications = notifications =>
-  notifications.reduce((acc, { data }) => {
-    return data.done === false ? acc + 1 : acc;
+  notifications.reduce((acc, notification) => {
+    return notification.isRead === false ? acc + 1 : acc;
   }, 0);
 
 export default function navbarReducer(state = defaultState, action) {
@@ -31,8 +30,6 @@ export default function navbarReducer(state = defaultState, action) {
       return state.merge({
         peers: action.peers
       });
-    case FETCH_NOTIFICATIONS_SUCCESS:
-      return state.set("unreadNotifications", countUnreadNotifications(action.notifications));
     case FETCH_STREAM_NAMES_SUCCESS:
       return state.set("streamNames", fromJS(action.streamNames));
     case SET_SELECTED_VIEW:
