@@ -1,10 +1,12 @@
 import * as Workflowitem from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
+import { AuthToken } from "../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
-import { createNotification } from "../notification/create";
+import { Event } from "../multichain/event";
+import { notifyWorkflowitemAssignee } from "./lib/notifyAssignee";
 
 export const assignWorkflowitem = async (
   multichain: MultichainClient,
@@ -26,14 +28,44 @@ export const assignWorkflowitem = async (
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
+  const publishedEvent = await sendEventToDatabase(
+    multichain,
+    req.token,
+    userIntent,
+    userId,
+    projectId,
+    subprojectId,
+    workflowitemId,
+  );
+
+  await notifyWorkflowitemAssignee(
+    multichain,
+    req.token,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    publishedEvent,
+  );
+
+  return [200, { apiVersion: "1.0", data: "OK" }];
+};
+
+async function sendEventToDatabase(
+  multichain: MultichainClient,
+  token: AuthToken,
+  userIntent: Intent,
+  userId: string,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+): Promise<Event> {
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: { userId },
   };
-
   const publishedEvent = await Workflowitem.publish(
     multichain,
     projectId,
@@ -41,34 +73,5 @@ export const assignWorkflowitem = async (
     workflowitemId,
     event,
   );
-
-  // If the workflowitem has been assigned to someone else, that person is notified about the change:
-  const workflowitem = await Workflowitem.get(
-    multichain,
-    req.token,
-    projectId,
-    subprojectId,
-    workflowitemId,
-  ).then(x => x[0]);
-  if (workflowitem.data.assignee !== undefined && workflowitem.data.assignee !== req.token.userId) {
-    await createNotification(
-      multichain,
-      [
-        { id: workflowitemId, type: "workflowitem" },
-        { id: subprojectId, type: "subproject" },
-        { id: projectId, type: "project" },
-      ],
-      req.token.userId,
-      workflowitem.data.assignee,
-      publishedEvent,
-    );
-  }
-
-  return [
-    200,
-    {
-      apiVersion: "1.0",
-      data: "OK",
-    },
-  ];
-};
+  return publishedEvent;
+}
