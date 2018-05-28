@@ -57,7 +57,7 @@ const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) 
   };
 
   if (showWorkflowDetails) {
-    workflowItem = workflowItems.find(workflow => workflow.id === showDetailsItemId);
+    workflowItem = workflowItems.find(workflow => workflow.data.id === showDetailsItemId);
   }
 
   return workflowItem;
@@ -80,9 +80,12 @@ const WorkflowDetails = ({
   validateDocument,
   validatedDocuments
 }) => {
+  console.log(workflowItems);
+  console.log(showWorkflowDetails);
+  console.log(showDetailsItemId);
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
   const status = workflowItem.status;
-  const { displayName, description, amountType, assignee } = workflowItem;
+  const { displayName, description, amountType, assignee, amount, currency } = workflowItem.data;
   const trimmedComment = removeNewLines(description);
 
   return (
@@ -99,7 +102,7 @@ const WorkflowDetails = ({
               <AmountIcon />
             </Avatar>
             <ListItemText
-              primary={amountType !== "N/A" ? toAmountString(workflowItem.amount, workflowItem.currency) : "N/A"}
+              primary={amountType !== "N/A" ? toAmountString(amount, currency) : "N/A"}
               secondary={strings.common.budget}
             />
           </ListItem>
