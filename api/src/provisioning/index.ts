@@ -251,7 +251,7 @@ const fmtList = l =>
     .join(" > ");
 
 async function runIntegrationTests(rootSecret: string) {
-  testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret);
+  await testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret);
   console.log(`Integration tests complete.`);
 }
 
@@ -259,6 +259,11 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: st
   await impersonate("mstein", "test");
 
   const project = await findProject(testProjectOpenSubprojects);
+  if (project.data.status === "closed") {
+    console.log("skipped: test project close only works if all subprojects are closed");
+    return;
+  }
+
   // This should fail as long as one subproject is still open:
   await axios
     .post("/project.close", {
