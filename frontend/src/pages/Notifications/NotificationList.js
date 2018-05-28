@@ -36,7 +36,6 @@ const styles = {
 
 const getListItems = ({ notifications, history, markNotificationAsRead }) =>
   notifications.map((notification, index) => {
-    console.log(notification);
     const message = intentMapping(notification);
     const { originalEvent, notificationId, isRead, resources } = notification;
     const createdAt = moment(originalEvent.createdAt).fromNow();

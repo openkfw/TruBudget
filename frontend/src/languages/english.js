@@ -199,7 +199,12 @@ const en = {
     review_workflow: "You are assigned to review the workflow item {0}",
     review_transaction: "You are assigned to review the transaction {0}",
     done_workflow: "Status of workflow {0} set to Done",
-    done_transaction: "Status of transaction {0} set to Done"
+    done_transaction: "Status of transaction {0} set to Done",
+
+    subproject_assign: "Subproject {0} was assigned to you",
+    project_assign: "Project {0} was assigned to you",
+    workflowitem_assign: "Workflowitem {0} was assigned to you",
+    no_permissions: "(No permissions to see further details)"
   },
 
   history: {
