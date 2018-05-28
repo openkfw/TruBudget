@@ -11,7 +11,7 @@ describe("Overview Page", function() {
   });
 
   it("Show example project", function() {
-    cy.get("[data-test=projectcard]").should("have.length", 1);
+    cy.get("[data-test=projectcard]").should("have.length.above", 1);
     cy
       .get("[data-test=projectcard]")
       .eq(0)
