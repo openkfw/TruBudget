@@ -11,6 +11,8 @@ import Typography from "@material-ui/core/Typography";
 
 import _isEmpty from "lodash/isEmpty";
 
+import { intentMapping, parseURI, fetchRessourceName, hasAccess } from "./helper";
+
 const styles = {
   notification: {
     position: "absolute",
@@ -51,9 +53,10 @@ export default class FlyInNotification extends Component {
     });
   }
 
-  getMessages = () => {
-    return this.state.notifications.map(({ notificationId, originalEvent }) => {
+  getMessages = history => {
+    return this.state.notifications.map(({ notificationId, originalEvent, resources }) => {
       const { createdBy } = originalEvent;
+      const message = intentMapping({ originalEvent, resources });
       return (
         <Card
           key={notificationId + "flyin"}
@@ -65,15 +68,19 @@ export default class FlyInNotification extends Component {
           <CardHeader
             avatar={<Avatar>{createdBy[0] || "?"}</Avatar>}
             action={
-              <IconButton>
+              <IconButton
+                disabled={!hasAccess(resources)}
+                color="primary"
+                onClick={() => history.push(parseURI({ resources }))}
+              >
                 <LaunchIcon />
               </IconButton>
             }
-            title="Project"
-            subheader="Subproject"
+            title={fetchRessourceName(resources, "project")}
+            subheader={fetchRessourceName(resources, "subproject")}
           />
           <CardContent>
-            <Typography component="p">Project Amazonas Fund 53 was assigned to you</Typography>
+            <Typography component="p">{message}</Typography>
           </CardContent>
         </Card>
       );
@@ -100,7 +107,7 @@ export default class FlyInNotification extends Component {
                 ...styles.notificationTransition[state]
               }}
             >
-              {this.getMessages()}
+              {this.getMessages(this.props.history)}
             </div>
           )}
         </Transition>

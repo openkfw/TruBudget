@@ -17,7 +17,7 @@ class NavbarContainer extends Component {
           {...this.props}
           unreadNotifications={this.props.notifications.reduce((acc, n) => (n.isRead ? acc : acc + 1), 0)}
         />
-        <FlyInNotifications notifications={this.props.newNotifications} />
+        <FlyInNotifications history={this.props.history} notifications={this.props.newNotifications} />
       </div>
     );
   }

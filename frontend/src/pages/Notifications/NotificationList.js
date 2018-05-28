@@ -14,6 +14,8 @@ import CardHeader from "@material-ui/core/CardHeader";
 
 import moment from "moment";
 
+import { intentMapping, parseURI, fetchRessourceName, hasAccess } from "./helper";
+
 const styles = {
   root: {
     width: "100%",
@@ -32,53 +34,10 @@ const styles = {
   }
 };
 
-const intentMapping = ({ originalEvent, resources }) => {
-  switch (originalEvent.intent) {
-    case "subproject.assign":
-      const subproject = resources.find(resource => resource.type === "subproject");
-      return { secondaryText: `Subproject ${subproject.displayName} was assigned to you`, primaryText: "Assignment" };
-    case "workflowitem.assign":
-      const workflowitem = resources.find(resource => resource.type === "workflowitem");
-      return {
-        secondaryText: `Workflowitem ${workflowitem.displayName} was assigned to you`,
-        primaryText: "Assignment"
-      };
-    case "project.assign":
-      const project = resources.find(resource => resource.type === "project");
-      return {
-        secondaryText: `Project ${project.displayName} was assigned to you`,
-        primaryText: "Assignment"
-      };
-    default:
-      return "Intent not found";
-  }
-};
-
-const parseURI = ({ resources }) => {
-  const project = resources.find(resource => resource.type === "project");
-  const subproject = resources.find(resource => resource.type === "subproject");
-  if (subproject) {
-    return `/projects/${project.id}/${subproject.id}`;
-  } else {
-    return `/projects/${project.id}`;
-  }
-};
-
-const fetchRessourceName = (res, type) => {
-  const r = res.find(v => v.type === type);
-  if (r !== undefined) {
-    return r.displayName || "Redacted";
-  } else {
-    return "-";
-  }
-};
-
-const hasAccess = res => res.reduce((acc, r) => acc && r.displayName !== undefined, true);
-
 const getListItems = ({ notifications, history, markNotificationAsRead }) =>
   notifications.map((notification, index) => {
     console.log(notification);
-    const { primaryText, secondaryText } = intentMapping(notification);
+    const message = intentMapping(notification);
     const { originalEvent, notificationId, isRead, resources } = notification;
     const createdAt = moment(originalEvent.createdAt).fromNow();
     const redirectUri = parseURI(notification);
@@ -102,7 +61,7 @@ const getListItems = ({ notifications, history, markNotificationAsRead }) =>
             secondary={fetchRessourceName(resources, "subproject")}
           />
 
-          <ListItemText style={{ flex: 5 }} component="div" primary={secondaryText} />
+          <ListItemText style={{ flex: 5 }} component="div" primary={message} />
           <ListItemText style={{ flex: 2 }} component="div" primary={originalEvent.createdBy} secondary={createdAt} />
           <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
             <Button
