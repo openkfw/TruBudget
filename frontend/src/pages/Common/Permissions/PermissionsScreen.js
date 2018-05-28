@@ -56,7 +56,7 @@ class PermissionSelection extends Component {
         <Select
           multiple
           style={{
-            width: "200px"
+            width: "350px"
           }}
           autoWidth
           value={selections}
