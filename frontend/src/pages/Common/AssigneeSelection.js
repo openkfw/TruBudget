@@ -5,13 +5,14 @@ import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import { withStyles } from "@material-ui/core/styles";
-
+import { ListItem, InputLabel, Input, ListItemText, Typography } from "@material-ui/core";
+import strings from "../../localizeStrings";
 const styles = {
   formControl: {
     width: "100%"
   },
   checkbox: {
-    height: 30
+    height: "10px"
   }
 };
 
@@ -27,9 +28,9 @@ class AssigneeSelection extends Component {
     return users.map(u => {
       const { id, displayName } = u;
       return (
-        <MenuItem key={id} value={id}>
+        <MenuItem key={id} value={id} onClick={() => (id !== assigneeId ? this.props.assign(id) : undefined)}>
           <Checkbox style={styles.checkbox} disabled={disabled} checked={id === assigneeId} />
-          {displayName}
+          <ListItemText primary={displayName} />
         </MenuItem>
       );
     });
@@ -37,9 +38,9 @@ class AssigneeSelection extends Component {
 
   renderTitle(assignee) {
     if (!assignee) {
-      return "...";
+      return ["..."];
     }
-    return assignee.id;
+    return [assignee.displayName];
   }
 
   render() {
@@ -57,9 +58,22 @@ class AssigneeSelection extends Component {
         <Select
           classes={{ selectMenu: classes.selectMenu }}
           value={this.renderTitle(assignee)}
-          onChange={event => (event.target.value !== assigneeId ? this.props.assign(event.target.value) : undefined)}
+          renderValue={s => (
+            <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
+              <Checkbox style={styles.checkbox} checked={true} />
+              <Typography variant="body1">{s} </Typography>
+            </div>
+          )}
+          multiple
+          onClose={() => this.setState({ searchTerm: "" })}
         >
-          {selection}
+          <div className="noFocus" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <FormControl>
+              <InputLabel>{strings.common.search}</InputLabel>
+              <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
+            </FormControl>
+          </div>
+          <div>{selection}</div>
         </Select>
       </FormControl>
     );
