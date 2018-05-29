@@ -19,8 +19,8 @@ export async function getProjectHistory(
     resources => resources[0],
   );
 
+  // Add subprojects' logs to the project log and sort by creation time:
   const subprojects = await Subproject.get(multichain, req.token, projectId);
-
   const events = subprojects
     .reduce((eventsAcc, subproject) => eventsAcc.concat(subproject.log), project.log)
     .sort(compareEvents);

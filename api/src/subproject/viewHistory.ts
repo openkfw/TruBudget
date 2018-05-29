@@ -20,8 +20,8 @@ export async function getSubprojectHistory(
     resources => resources[0],
   );
 
+  // Add workflowitems' logs to the subproject log and sort by creation time:
   const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId);
-
   const events = workflowitems
     .reduce((eventsAcc, workflowitem) => eventsAcc.concat(workflowitem.log), subproject.log)
     .sort(compareEvents);
