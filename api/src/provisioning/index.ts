@@ -251,6 +251,7 @@ const fmtList = l =>
 
 async function runIntegrationTests(rootSecret: string) {
   await testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret);
+  await testApiDocIsAvailable();
   console.log(`Integration tests complete.`);
 }
 
@@ -305,4 +306,8 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: st
     userId: "mstein",
     intent: "project.viewDetails",
   });
+}
+
+async function testApiDocIsAvailable() {
+  await axios.get("/doc").then(() => console.log("/api/doc OK"));
 }

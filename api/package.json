@@ -3,18 +3,28 @@
   "version": "1.0.0",
   "description": "",
   "apidoc": {
+    "name": "TruBudget",
     "title": "TruBudget",
-    "url": "https://trubudget.net"
+    "url": "https://trubudget.net",
+    "order": [
+      "User",
+      "Global",
+      "Project",
+      "Subproject",
+      "Workflowitem",
+      "Notification"
+    ]
   },
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run doc",
     "dev": "tsc --watch & nodemon dist",
     "test": "tsc --watch & mocha --watch dist/*.spec.js dist/**/*.spec.js",
     "lint": "eslint src --ext ts",
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
     "tsc": "tsc",
-    "doc": "apidoc -i src -o doc"
+    "doc": "apidoc -i src -o doc",
+    "view-doc": "npm run doc && open doc/index.html"
   },
   "keywords": [],
   "author": "",
