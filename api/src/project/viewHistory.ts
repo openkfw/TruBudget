@@ -15,15 +15,6 @@ export async function getProjectHistory(
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
 
-  const userIntent: Intent = "project.viewHistory";
-
-  // Is the user allowed to view the project history?
-  await throwIfUnauthorized(
-    req.token,
-    userIntent,
-    await Project.getPermissions(multichain, projectId),
-  );
-
   const project = await Project.get(multichain, req.token, projectId).then(
     resources => resources[0],
   );

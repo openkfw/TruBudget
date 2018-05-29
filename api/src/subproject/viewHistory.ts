@@ -16,15 +16,6 @@ export async function getSubprojectHistory(
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
-  const userIntent: Intent = "subproject.viewHistory";
-
-  // Is the user allowed to view the subproject history?
-  await throwIfUnauthorized(
-    req.token,
-    userIntent,
-    await Subproject.getPermissions(multichain, projectId, subprojectId),
-  );
-
   const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
     resources => resources[0],
   );
