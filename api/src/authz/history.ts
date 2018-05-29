@@ -1,4 +1,6 @@
+import * as winston from "winston";
 import { hasIntersection } from ".";
+import { Event } from "../multichain/event";
 import Intent from "./intents";
 
 const requiredPermissions = new Map<Intent, Intent[]>([
@@ -28,15 +30,73 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["workflowitem.archive", ["workflowitem.view"]],
 ]);
 
-export const isAllowedToSeeEvent = (userIntents: Intent[], observedIntent: Intent): boolean => {
+export function onlyAllowedData(event: Event, userIntents: Intent[]): Event | null {
+  const observedIntent = event.intent;
   if (requiredPermissions.has(observedIntent)) {
     const allowedIntents = requiredPermissions.get(observedIntent);
-    return hasIntersection(allowedIntents, userIntents);
+    const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
+    if (!isAllowedToSee) return null;
+    return redactEvent(event, userIntents);
   } else if (userIntents.includes(observedIntent)) {
     // If not explicitly stated otherwise, always allow to see events related to
     // something the user is already entitled for
-    return true;
+    return event;
   } else {
-    return false;
+    return null;
   }
-};
+}
+
+function redactEvent(event: Event, userIntents: Intent[]): Event {
+  if (event.intent === "global.createProject") {
+    // Special handling for permissions:
+    if (event.dataVersion === 1) {
+      if (userIntents.includes("project.intent.listPermissions")) {
+        // The user is allowed to see permissions, no need to redact anything:
+      } else {
+        // The user is not allowed to see the permissions, but he's allowed to _see_ the
+        // creation event, so we're filtering out the permissions from the event's data
+        // object:
+        delete event.data.permissions;
+      }
+    } else {
+      winston.warn(`Don't know how to handle this event:`, event);
+      // Since we don't know what data looks like, we remove it altogether:
+      event.data = {};
+    }
+  } else if (event.intent === "project.createSubproject") {
+    // Special handling for permissions:
+    if (event.dataVersion === 1) {
+      if (userIntents.includes("subproject.intent.listPermissions")) {
+        // The user is allowed to see permissions, no need to redact anything:
+      } else {
+        // The user is not allowed to see the permissions, but he's allowed to _see_ the
+        // creation event, so we're filtering out the permissions from the event's data
+        // object:
+        delete event.data.permissions;
+      }
+    } else {
+      winston.warn(`Don't know how to handle this event:`, event);
+      // Since we don't know what data looks like, we remove it altogether:
+      event.data = {};
+    }
+  } else if (event.intent === "subproject.createWorkflowitem") {
+    // Special handling for permissions:
+    if (event.dataVersion === 1) {
+      if (userIntents.includes("workflowitem.intent.listPermissions")) {
+        // The user is allowed to see permissions, no need to redact anything:
+      } else {
+        // The user is not allowed to see the permissions, but he's allowed to _see_ the
+        // creation event, so we're filtering out the permissions from the event's data
+        // object:
+        delete event.data.permissions;
+      }
+    } else {
+      winston.warn(`Don't know how to handle this event:`, event);
+      // Since we don't know what data looks like, we remove it altogether:
+      event.data = {};
+    }
+  } else {
+    // No special handling needed
+  }
+  return event;
+}

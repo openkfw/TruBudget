@@ -1,10 +1,11 @@
 import { getAllowedIntents } from "../authz";
-import { isAllowedToSeeEvent } from "../authz/history";
+import { onlyAllowedData } from "../authz/history";
 import { getUserAndGroups } from "../authz/index";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
+import { isNotEmpty } from "../lib/isNotEmpty";
 import { asMapKey } from "../multichain/Client";
 import { MultichainClient } from "../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
@@ -178,9 +179,9 @@ export const get = async (
     if (!isAllowedToSeeData) resource.data = redactWorkflowitemData(resource.data) as any;
 
     // Filter event log according to the user permissions and the type of event:
-    resource.log = resource.log.filter(event =>
-      isAllowedToSeeEvent(resource.allowedIntents, event.intent),
-    );
+    resource.log = resource.log
+      .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
+      .filter(isNotEmpty);
 
     return resource;
   });

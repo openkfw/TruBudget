@@ -1,9 +1,10 @@
-import { isAllowedToSeeEvent } from "../../authz/history";
+import { onlyAllowedData } from "../../authz/history";
 import { getAllowedIntents, getUserAndGroups } from "../../authz/index";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../../authz/types";
 import deepcopy from "../../lib/deepcopy";
+import { isNotEmpty } from "../../lib/isNotEmpty";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
@@ -89,7 +90,7 @@ async function fetchStreamItems(
     // project-stream's self key, which includes the actual project data, as stream
     // items.
     const streams = await multichain.streams();
-    const streamItemLists = (await Promise.all(
+    const streamItemLists = await Promise.all(
       streams
         .filter(stream => stream.details.kind === "project")
         .map(stream => stream.name)
@@ -110,7 +111,7 @@ async function fetchStreamItems(
               return null;
             }),
         ),
-    ).then(lists => lists.filter(x => x !== null))) as Liststreamkeyitems.Item[][];
+    ).then(lists => lists.filter(isNotEmpty));
     // Remove failed attempts and flatten into a single list of stream items:
     return streamItemLists.reduce((acc, x) => acc.concat(x), []);
   }
@@ -186,9 +187,9 @@ export async function get(
     .filter(resource => resource.allowedIntents.includes(allowedToSeeDataIntent))
     .map(resource => {
       // Filter event log according to the user permissions and the type of event:
-      resource.log = resource.log.filter(event =>
-        isAllowedToSeeEvent(resource.allowedIntents, event.intent),
-      );
+      resource.log = resource.log
+        .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
+        .filter(isNotEmpty);
       return resource;
     });
 
