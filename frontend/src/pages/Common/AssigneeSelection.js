@@ -60,8 +60,10 @@ class AssigneeSelection extends Component {
           value={this.renderTitle(assignee)}
           renderValue={s => (
             <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
-              <Checkbox style={styles.checkbox} checked={true} />
-              <Typography variant="body1">{s} </Typography>
+              <Checkbox style={styles.checkbox} disabled={disabled} checked={true} />
+              <Typography disabled={disabled} variant="body1">
+                {s}
+              </Typography>
             </div>
           )}
           multiple
