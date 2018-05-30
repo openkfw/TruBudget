@@ -15,7 +15,7 @@ winston.add(winstonConsole);
  * Deal with the environment:
  */
 
-const port: number = (process.env.PORT && parseInt(process.env.PORT, 10)) || 3000;
+const port: number = (process.env.PORT && parseInt(process.env.PORT, 10)) || 8080;
 
 const jwtSecret: string = process.env.JWT_SECRET || randomString(32);
 if (jwtSecret.length < 32) {

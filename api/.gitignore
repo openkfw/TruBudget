@@ -1,5 +1,6 @@
 DOCKER_REGISTRY_PASSWORD
 /dist/
+/doc/
 
 # Created by https://www.gitignore.io/api/node,visualstudiocode
 
