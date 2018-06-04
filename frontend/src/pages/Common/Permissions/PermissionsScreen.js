@@ -21,7 +21,7 @@ import Select from "@material-ui/core/Select";
 import strings from "../../../localizeStrings";
 
 const PermissionsScreen = props => (
-  <Dialog open={props.show} onClose={props.onClose}>
+  <Dialog data-test="permission-container" open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>
     <DialogContent>
       <div>
@@ -29,7 +29,7 @@ const PermissionsScreen = props => (
       </div>
     </DialogContent>
     <DialogActions>
-      <Button color="primary" onClick={props.onClose}>
+      <Button data-test="permission-close" color="primary" onClick={props.onClose}>
         {strings.common.close}
       </Button>
     </DialogActions>
@@ -52,7 +52,7 @@ class PermissionSelection extends Component {
   render() {
     const selections = this.resolveSelections(this.props.userList, this.props.permissions[this.props.name]);
     return (
-      <FormControl key={this.props.name + "form"}>
+      <FormControl data-test={`permission-select-${this.props.name}`} key={this.props.name + "form"}>
         <Select
           multiple
           style={{
@@ -68,7 +68,7 @@ class PermissionSelection extends Component {
               <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
             </FormControl>
           </ListItem>
-          <div className="noFocus">
+          <div data-test="permission-list" className="noFocus">
             {renderUserSelection(
               this.props.userList.filter(u =>
                 u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())

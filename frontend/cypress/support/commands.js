@@ -26,6 +26,8 @@
 
 const baseUrl = Cypress.env("API_BASE_URL") || "/test";
 
+let token = undefined;
+
 Cypress.Commands.add("login", () => {
   cy
     .request({
@@ -48,5 +50,19 @@ Cypress.Commands.add("login", () => {
         }
       };
       localStorage.setItem("state", JSON.stringify(state));
+      token = body.data.user.token;
     });
+});
+
+Cypress.Commands.add("fetchProjects", () => {
+  cy
+    .request({
+      url: `${baseUrl}/api/project.list`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .its("body")
+    .then(body => Promise.resolve(body.data.items));
 });
