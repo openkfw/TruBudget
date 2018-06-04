@@ -75,7 +75,9 @@ class PermissionSelection extends Component {
               ),
               this.props.permissions[this.props.name],
               this.props.name,
-              this.props.grantPermission
+              this.props.grant,
+              this.props.revoke,
+              this.props.myself
             )}
           </div>
         </Select>
@@ -84,17 +86,23 @@ class PermissionSelection extends Component {
   }
 }
 
-const renderUserSelection = (user, permissionedUser, permissionName, grantPermission) =>
+const renderUserSelection = (user, permissionedUser, permissionName, grant, revoke, myself) =>
   user.map(u => {
+    const checked = permissionedUser.indexOf(u.id) > -1;
     return (
-      <MenuItem key={u.id + "selection"} value={u.id} onClick={() => grantPermission(permissionName, u.id)}>
-        <Checkbox checked={permissionedUser.indexOf(u.id) > -1} />
+      <MenuItem
+        disabled={u.id === myself && checked}
+        key={u.id + "selection"}
+        value={u.id}
+        onClick={checked ? () => revoke(permissionName, u.id) : () => grant(permissionName, u.id)}
+      >
+        <Checkbox checked={checked} />
         <ListItemText primary={u.displayName} />
       </MenuItem>
     );
   });
 
-const renderPermission = (name, userList, permissions, grantPermission) => (
+const renderPermission = (name, userList, permissions, myself, grant, revoke) => (
   <ListItem key={name + "perm"}>
     <ListItemText
       primary={
@@ -102,7 +110,9 @@ const renderPermission = (name, userList, permissions, grantPermission) => (
           name={name}
           userList={userList}
           permissions={permissions}
-          grantPermission={grantPermission}
+          grant={grant}
+          revoke={revoke}
+          myself={myself}
         />
       }
       secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
@@ -110,7 +120,7 @@ const renderPermission = (name, userList, permissions, grantPermission) => (
   </ListItem>
 );
 
-const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder }) => (
+const PermissionsTable = ({ permissions, user, grant, revoke, id, intentOrder, myself }) => (
   <div>
     {intentOrder.map(section => {
       return (
@@ -120,7 +130,7 @@ const PermissionsTable = ({ permissions, user, grantPermission, id, intentOrder 
             <List>
               {section.intents
                 .filter(i => permissions[i] !== undefined)
-                .map(p => renderPermission(p, user, permissions, grantPermission.bind(this, id)))}
+                .map(p => renderPermission(p, user, permissions, myself, grant.bind(this, id), revoke.bind(this, id)))}
             </List>
           </CardContent>
         </Card>

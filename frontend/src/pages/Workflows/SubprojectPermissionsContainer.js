@@ -32,7 +32,8 @@ const mapStateToProps = state => {
     permissions: state.getIn(["workflow", "permissions"]),
     user: state.getIn(["login", "user"]),
     show: state.getIn(["workflow", "showSubProjectPermissions"]),
-    id: state.getIn(["workflow", "id"])
+    id: state.getIn(["workflow", "id"]),
+    myself: state.getIn(["login", "id"])
   };
 };
 

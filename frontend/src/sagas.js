@@ -21,7 +21,9 @@ import {
   ASSIGN_PROJECT_SUCCESS,
   ASSIGN_PROJECT,
   FETCH_PROJECT_HISTORY_SUCCESS,
-  FETCH_PROJECT_HISTORY
+  FETCH_PROJECT_HISTORY,
+  REVOKE_PERMISSION_SUCCESS,
+  REVOKE_PERMISSION
 } from "./pages/SubProjects/actions";
 import {
   SHOW_SNACKBAR,
@@ -686,6 +688,23 @@ export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) 
   }, showLoading);
 }
 
+export function* revokePermissionsSaga({ projectId, intent, user, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.revokeProjectPermissions, projectId, intent, user);
+    //const { data } = yield callApi(api.listProjectIntents, projectId)
+    //const history = yield callApi(api.fetchHistory, projectId);
+    //const roles = yield callApi(api.fetchRoles);
+    yield put({
+      type: REVOKE_PERMISSION_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_PROJECT_PERMISSIONS,
+      projectId
+    });
+  }, showLoading);
+}
+
 export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
   yield execute(function*() {
     yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, user);
@@ -949,6 +968,9 @@ export function* watchFetchWorkflowItemPermissions() {
 export function* watchGrantPermissions() {
   yield takeEvery(GRANT_PERMISSION, grantPermissionsSaga);
 }
+export function* watchRevokePermissions() {
+  yield takeEvery(REVOKE_PERMISSION, revokePermissionsSaga);
+}
 export function* watchGrantSubProjectPermissions() {
   yield takeEvery(GRANT_SUBPROJECT_PERMISSION, grantSubProjectPermissionsSaga);
 }
@@ -984,6 +1006,7 @@ export default function* rootSaga() {
       watchFetchAllProjectDetails(),
       watchFetchProjectPermissions(),
       watchGrantPermissions(),
+      watchRevokePermissions(),
       watchAssignProject(),
       watchFetchProjectHistorySaga(),
 

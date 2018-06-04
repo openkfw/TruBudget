@@ -14,6 +14,9 @@ export const HIDE_PROJECT_PERMISSIONS = "HIDE_PROJECT_PERMISSIONS";
 export const GRANT_PERMISSION = "GRANT_PERMISSION";
 export const GRANT_PERMISSION_SUCCESS = "GRANT_PERMISSION_SUCCESS";
 
+export const REVOKE_PERMISSION = "REVOKE_PERMISSION";
+export const REVOKE_PERMISSION_SUCCESS = "REVOKE_PERMISSION_SUCCESS";
+
 export const CREATE_SUBPROJECT = "CREATE_SUBPROJECT";
 export const CREATE_SUBPROJECT_SUCCESS = "CREATE_SUBPROJECT_SUCCESS";
 
@@ -91,6 +94,16 @@ export function hideProjectPermissions() {
 export function grantPermission(projectId, intent, user, showLoading = false) {
   return {
     type: GRANT_PERMISSION,
+    projectId,
+    intent,
+    user,
+    showLoading
+  };
+}
+
+export function revokePermission(projectId, intent, user, showLoading = false) {
+  return {
+    type: REVOKE_PERMISSION,
     projectId,
     intent,
     user,
