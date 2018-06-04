@@ -3,7 +3,7 @@ import Intent from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
-import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
+import { sortWorkflowitems } from "../subproject/sortWorkflowitems";
 
 interface WorkflowitemDTO {
   allowedIntents: Intent[];

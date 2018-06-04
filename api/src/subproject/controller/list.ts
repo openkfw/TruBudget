@@ -1,7 +1,7 @@
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import * as Subproject from "./model/Subproject";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import * as Subproject from "../model/Subproject";
 
 export async function getSubprojectList(
   multichain: MultichainClient,

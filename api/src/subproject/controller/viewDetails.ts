@@ -1,12 +1,12 @@
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import * as Project from "../project/model/Project";
-import * as Workflowitem from "../workflowitem";
-import { sortWorkflowitems } from "./lib/sortWorkflowitems";
-import * as Subproject from "./model/Subproject";
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import * as Project from "../../project/model/Project";
+import * as Workflowitem from "../../workflowitem";
+import * as Subproject from "../model/Subproject";
+import { sortWorkflowitems } from "../sortWorkflowitems";
 
 interface WorkflowitemDTO {
   allowedIntents: Intent[];

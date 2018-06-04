@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { TruBudgetError } from "../error";
-import { AuthenticatedRequest } from "../httpd/lib";
-import { MultichainClient } from "../multichain/Client.h";
+import { TruBudgetError } from "../../error";
+import { AuthenticatedRequest } from "../../httpd/lib";
+import { MultichainClient } from "../../multichain/Client.h";
 import { getSubprojectList } from "./list";
 
 describe("subproject.list", () => {

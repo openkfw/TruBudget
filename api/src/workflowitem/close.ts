@@ -8,8 +8,8 @@ import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
 import { notifyAssignee } from "../notification/create";
 import * as Notification from "../notification/model/Notification";
-import { sortWorkflowitems } from "../subproject/lib/sortWorkflowitems";
 import * as Subproject from "../subproject/model/Subproject";
+import { sortWorkflowitems } from "../subproject/sortWorkflowitems";
 
 export const closeWorkflowitem = async (
   multichain: MultichainClient,

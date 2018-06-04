@@ -1,11 +1,11 @@
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { Event } from "../multichain/event";
-import * as Workflowitem from "../workflowitem";
-import * as Subproject from "./model/Subproject";
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { Event } from "../../multichain/event";
+import * as Workflowitem from "../../workflowitem";
+import * as Subproject from "../model/Subproject";
 
 export async function getSubprojectHistory(
   multichain: MultichainClient,

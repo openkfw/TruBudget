@@ -1,18 +1,18 @@
-import { throwIfUnauthorized } from "../authz/index";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { throwIfUnauthorized } from "../../authz/index";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AllowedUserGroupsByIntent } from "../../authz/types";
 import {
   AuthenticatedRequest,
   HttpResponse,
   throwParseError,
   throwParseErrorIfUndefined,
-} from "../httpd/lib";
-import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
-import { MultichainClient } from "../multichain/Client.h";
-import { randomString } from "../multichain/hash";
-import * as Workflowitem from "../workflowitem";
-import * as Subproject from "./model/Subproject";
+} from "../../httpd/lib";
+import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain/Client.h";
+import { randomString } from "../../multichain/hash";
+import * as Workflowitem from "../../workflowitem";
+import * as Subproject from "../model/Subproject";
 
 const isUndefinedOrNull = x => x === undefined || x === null;
 
