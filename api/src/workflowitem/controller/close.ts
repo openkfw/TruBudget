@@ -1,20 +1,20 @@
-import * as Workflowitem from ".";
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { Event } from "../multichain/event";
-import { notifyAssignee } from "../notification/create";
-import * as Notification from "../notification/model/Notification";
-import * as Subproject from "../subproject/model/Subproject";
-import { sortWorkflowitems } from "../subproject/sortWorkflowitems";
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { Event } from "../../multichain/event";
+import { notifyAssignee } from "../../notification/create";
+import * as Notification from "../../notification/model/Notification";
+import * as Subproject from "../../subproject/model/Subproject";
+import { sortWorkflowitems } from "../../subproject/sortWorkflowitems";
+import * as Workflowitem from "../model/workflowitem";
 
-export const closeWorkflowitem = async (
+export async function closeWorkflowitem(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -97,7 +97,7 @@ export const closeWorkflowitem = async (
   );
 
   return [200, { apiVersion: "1.0", data: "OK" }];
-};
+}
 
 async function ensureAllPreviousWorkflowitemsAreClosed(
   multichain: MultichainClient,

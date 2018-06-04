@@ -1,14 +1,14 @@
-import { getAllowedIntents } from "../authz";
-import { onlyAllowedData } from "../authz/history";
-import { getUserAndGroups } from "../authz/index";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
-import deepcopy from "../lib/deepcopy";
-import { isNotEmpty } from "../lib/isNotEmpty";
-import { asMapKey } from "../multichain/Client";
-import { MultichainClient } from "../multichain/Client.h";
-import { Event, throwUnsupportedEventVersion } from "../multichain/event";
+import { getAllowedIntents } from "../../authz";
+import { onlyAllowedData } from "../../authz/history";
+import { getUserAndGroups } from "../../authz/index";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AllowedUserGroupsByIntent, People } from "../../authz/types";
+import deepcopy from "../../lib/deepcopy";
+import { isNotEmpty } from "../../lib/isNotEmpty";
+import { asMapKey } from "../../multichain/Client";
+import { MultichainClient } from "../../multichain/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 
@@ -73,7 +73,7 @@ const redactWorkflowitemData = (workflowitem: Data): ObscuredData => ({
   documents: null,
 });
 
-export const publish = async (
+export async function publish(
   multichain: MultichainClient,
   projectId: string,
   subprojectId: string,
@@ -85,7 +85,7 @@ export const publish = async (
     dataVersion: number; // integer
     data: object;
   },
-): Promise<Event> => {
+): Promise<Event> {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
   const event: Event = {
     key: workflowitemId,
@@ -101,16 +101,16 @@ export const publish = async (
       json: event,
     });
   return event;
-};
+}
 
-export const get = async (
+export async function get(
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string,
   subprojectId: string,
   workflowitemId?: string,
   skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-): Promise<WorkflowitemResource[]> => {
+): Promise<WorkflowitemResource[]> {
   const queryKey =
     workflowitemId !== undefined ? workflowitemId : workflowitemsGroupKey(subprojectId);
 
@@ -187,7 +187,7 @@ export const get = async (
   });
 
   return filteredResources;
-};
+}
 
 function handleCreate(
   event: Event,

@@ -11,7 +11,7 @@ import {
 import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
-import * as Workflowitem from "../../workflowitem";
+import * as Workflowitem from "../../workflowitem/model/workflowitem";
 import * as Subproject from "../model/Subproject";
 
 const isUndefinedOrNull = x => x === undefined || x === null;

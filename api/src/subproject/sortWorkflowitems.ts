@@ -1,5 +1,5 @@
 import { MultichainClient } from "../multichain";
-import * as Workflowitem from "../workflowitem";
+import * as Workflowitem from "../workflowitem/model/workflowitem";
 import { fetchWorkflowitemOrdering } from "./model/WorkflowitemOrdering";
 
 export const sortWorkflowitems = async (

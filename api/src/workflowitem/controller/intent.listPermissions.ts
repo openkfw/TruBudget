@@ -1,13 +1,13 @@
-import * as Workflowitem from "..";
 import { throwIfUnauthorized } from "../../authz";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
+import * as Workflowitem from "../model/workflowitem";
 
-export const getWorkflowitemPermissions = async (
+export async function getWorkflowitemPermissions(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId = value("projectId", input.projectId, isNonemptyString);
@@ -33,4 +33,4 @@ export const getWorkflowitemPermissions = async (
       data: workflowitemPermissions,
     },
   ];
-};
+}

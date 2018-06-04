@@ -27,12 +27,12 @@ import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { authenticateUser } from "../user/authenticate";
 import { getUserList } from "../user/list";
-import { assignWorkflowitem } from "../workflowitem/assign";
-import { closeWorkflowitem } from "../workflowitem/close";
-import { grantWorkflowitemPermission } from "../workflowitem/intent/grantPermission";
-import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissions";
-import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
-import { getWorkflowitemList } from "../workflowitem/list";
+import { assignWorkflowitem } from "../workflowitem/controller/assign";
+import { closeWorkflowitem } from "../workflowitem/controller/close";
+import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
+import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
+import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
+import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
