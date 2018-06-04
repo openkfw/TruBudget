@@ -32,11 +32,33 @@ export interface Data {
   assignee?: string;
 }
 
+export interface RedactedData {
+  id: string;
+  creationUnixTs: string;
+  status: "open" | "closed";
+  displayName: null;
+  description: null;
+  amount: null;
+  currency: null;
+  assignee: null;
+}
+
 const subprojectsGroupKey = "subprojects";
 
 function subprojectKey(subprojectId: string): string[] {
   return [subprojectsGroupKey, subprojectId];
 }
+
+const redactSubprojectData = (subproject: Data): RedactedData => ({
+  id: subproject.id,
+  creationUnixTs: subproject.creationUnixTs,
+  status: subproject.status,
+  displayName: null,
+  description: null,
+  amount: null,
+  currency: null,
+  assignee: null,
+});
 
 export async function publish(
   multichain: MultichainClient,
@@ -130,19 +152,20 @@ export async function get(
     return unfilteredResources;
   }
 
-  // Subprojects the user is not allowed to see are simply left out of the response. The
-  // remaining have their event log filtered according to what the user is entitled to
-  // know.
+  // Instead of filtering out subprojects the user is not allowed to see,
+  // we simply blank out all fields except the status, which is considered "public".
   const allowedToSeeDataIntent: Intent = "subproject.viewSummary";
-  const filteredResources = unfilteredResources
-    .filter(resource => resource.allowedIntents.includes(allowedToSeeDataIntent))
-    .map(resource => {
-      // Filter event log according to the user permissions and the type of event:
-      resource.log = resource.log
-        .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
-        .filter(isNotEmpty);
-      return resource;
-    });
+  const filteredResources = unfilteredResources.map(resource => {
+    const isAllowedToSeeData = resource.allowedIntents.includes(allowedToSeeDataIntent);
+    if (!isAllowedToSeeData) resource.data = redactSubprojectData(resource.data) as any;
+
+    // Filter event log according to the user permissions and the type of event:
+    resource.log = resource.log
+      .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
+      .filter(isNotEmpty);
+
+    return resource;
+  });
 
   return filteredResources;
 }

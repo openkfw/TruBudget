@@ -42,7 +42,7 @@ export interface Data {
   documents: Document[];
 }
 
-export interface ObscuredData {
+export interface RedactedData {
   id: string;
   creationUnixTs: string;
   displayName: null;
@@ -60,7 +60,7 @@ export interface Document {
   hash: string;
 }
 
-const redactWorkflowitemData = (workflowitem: Data): ObscuredData => ({
+const redactWorkflowitemData = (workflowitem: Data): RedactedData => ({
   id: workflowitem.id,
   creationUnixTs: workflowitem.creationUnixTs,
   displayName: null,
