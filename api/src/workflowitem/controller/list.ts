@@ -1,9 +1,9 @@
-import * as Workflowitem from ".";
-import Intent from "../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { sortWorkflowitems } from "../subproject/sortWorkflowitems";
+import Intent from "../../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { sortWorkflowitems } from "../../subproject/sortWorkflowitems";
+import * as Workflowitem from "../model/Workflowitem";
 
 interface WorkflowitemDTO {
   allowedIntents: Intent[];
@@ -15,10 +15,10 @@ function removeEventLog(workflowitem: Workflowitem.WorkflowitemResource): Workfl
   return workflowitem;
 }
 
-export const getWorkflowitemList = async (
+export async function getWorkflowitemList(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -42,4 +42,4 @@ export const getWorkflowitemList = async (
       },
     },
   ];
-};
+}

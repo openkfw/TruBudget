@@ -1,28 +1,43 @@
-import * as Workflowitem from ".";
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { Event } from "../multichain/event";
-import { notifyAssignee } from "../notification/create";
-import * as Notification from "../notification/model/Notification";
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isEmpty, isNotEmpty } from "../../lib/isNotEmpty";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { Event } from "../../multichain/event";
+import { notifyAssignee } from "../../notification/create";
+import * as Notification from "../../notification/model/Notification";
+import * as Workflowitem from "../model/Workflowitem";
 
-export const assignWorkflowitem = async (
+export async function updateWorkflowitem(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
   const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
 
-  const userIntent: Intent = "workflowitem.assign";
+  const theUpdate: Workflowitem.Update = {};
+  if (isNotEmpty(input.displayName)) theUpdate.displayName = input.displayName;
+  if (isNotEmpty(input.amount)) theUpdate.amount = input.amount;
+  if (isNotEmpty(input.currency)) theUpdate.currency = input.currency;
+  if (isNotEmpty(input.amountType)) theUpdate.amountType = input.amountType;
+  if (isNotEmpty(input.description)) theUpdate.description = input.description;
 
-  // Is the user allowed to (re-)assign a workflowitem?
+  if (isEmpty(theUpdate)) {
+    return [200, { apiVersion: "1.0", data: "OK" }];
+  }
+  if (input.amountType === "N/A") {
+    delete input.amount;
+    delete input.currency;
+  }
+
+  const userIntent: Intent = "workflowitem.update";
+
+  // Is the user allowed to update a workflowitem's basic data?
   await throwIfUnauthorized(
     req.token,
     userIntent,
@@ -33,7 +48,7 @@ export const assignWorkflowitem = async (
     multichain,
     req.token,
     userIntent,
-    userId,
+    theUpdate,
     projectId,
     subprojectId,
     workflowitemId,
@@ -65,13 +80,13 @@ export const assignWorkflowitem = async (
   );
 
   return [200, { apiVersion: "1.0", data: "OK" }];
-};
+}
 
 async function sendEventToDatabase(
   multichain: MultichainClient,
   token: AuthToken,
   userIntent: Intent,
-  userId: string,
+  theUpdate: Workflowitem.Update,
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
@@ -81,7 +96,7 @@ async function sendEventToDatabase(
     createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId },
+    data: theUpdate,
   };
   const publishedEvent = await Workflowitem.publish(
     multichain,
@@ -90,5 +105,6 @@ async function sendEventToDatabase(
     workflowitemId,
     event,
   );
+  console.log("PUBLISHED EVENT", JSON.stringify(publishedEvent));
   return publishedEvent;
 }
