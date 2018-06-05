@@ -137,7 +137,7 @@ const provisionSubproject = async (project, subprojectTemplate) => {
     projectId: project.data.id,
     subproject: {
       displayName: subprojectTemplate.displayName,
-      description: subprojectTemplate.description,
+      description: "FAILED UPDATE?",
       status: "open", // otherwise we won't be able to add workflowitems
       amount: subprojectTemplate.amount,
       currency: subprojectTemplate.currency,
@@ -147,6 +147,13 @@ const provisionSubproject = async (project, subprojectTemplate) => {
   const subproject = await findSubproject(project, subprojectTemplate);
 
   await grantPermissions(subprojectTemplate.permissions, project.data.id, subproject.data.id);
+
+  // Testing updates:
+  await axios.post("/subproject.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    description: subprojectTemplate.description || "",
+  });
 
   for (const workflowitemTemplate of subprojectTemplate.workflows) {
     await provisionWorkflowitem(project, subproject, workflowitemTemplate);

@@ -9,9 +9,9 @@ import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
-import * as Workflowitem from "../model/Workflowitem";
+import * as Subproject from "../model/Subproject";
 
-export async function updateWorkflowitem(
+export async function updateSubproject(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
@@ -19,32 +19,21 @@ export async function updateWorkflowitem(
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
-  const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
 
-  const theUpdate: Workflowitem.Update = {};
-  inheritDefinedProperties(theUpdate, input, [
-    "displayName",
-    "description",
-    "amount",
-    "currency",
-    "amountType",
-  ]);
+  const theUpdate: Subproject.Update = {};
+  inheritDefinedProperties(theUpdate, input, ["displayName", "description", "amount", "currency"]);
 
   if (isEmpty(theUpdate)) {
     return ok();
   }
-  if (theUpdate.amountType === "N/A") {
-    delete theUpdate.amount;
-    delete theUpdate.currency;
-  }
 
-  const userIntent: Intent = "workflowitem.update";
+  const userIntent: Intent = "subproject.update";
 
   // Is the user allowed to update a workflowitem's basic data?
   await throwIfUnauthorized(
     req.token,
     userIntent,
-    await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
+    await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
   const publishedEvent = await sendEventToDatabase(
@@ -54,13 +43,11 @@ export async function updateWorkflowitem(
     theUpdate,
     projectId,
     subprojectId,
-    workflowitemId,
   );
 
-  // If the workflowitem is assigned to someone else, that person is notified about the
+  // If the suproject is assigned to someone else, that person is notified about the
   // change:
   const resourceDescriptions: Notification.NotificationResourceDescription[] = [
-    { id: workflowitemId, type: "workflowitem" },
     { id: subprojectId, type: "subproject" },
     { id: projectId, type: "project" },
   ];
@@ -70,12 +57,11 @@ export async function updateWorkflowitem(
     multichain,
     resourceDescriptions,
     createdBy,
-    await Workflowitem.get(
+    await Subproject.get(
       multichain,
       req.token,
       projectId,
       subprojectId,
-      workflowitemId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
     ),
     publishedEvent,
@@ -93,10 +79,9 @@ async function sendEventToDatabase(
   multichain: MultichainClient,
   token: AuthToken,
   userIntent: Intent,
-  theUpdate: Workflowitem.Update,
+  theUpdate: Subproject.Update,
   projectId: string,
   subprojectId: string,
-  workflowitemId: string,
 ): Promise<Event> {
   const event = {
     intent: userIntent,
@@ -105,12 +90,6 @@ async function sendEventToDatabase(
     dataVersion: 1,
     data: theUpdate,
   };
-  const publishedEvent = await Workflowitem.publish(
-    multichain,
-    projectId,
-    subprojectId,
-    workflowitemId,
-    event,
-  );
+  const publishedEvent = await Subproject.publish(multichain, projectId, subprojectId, event);
   return publishedEvent;
 }

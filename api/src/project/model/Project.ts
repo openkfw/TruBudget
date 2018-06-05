@@ -4,7 +4,7 @@ import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../../authz/types";
 import deepcopy from "../../lib/deepcopy";
-import { isNotEmpty } from "../../lib/isNotEmpty";
+import { isNotEmpty } from "../../lib/emptyChecks";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
