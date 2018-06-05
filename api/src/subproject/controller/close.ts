@@ -8,7 +8,7 @@ import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
 import * as Project from "../../project/model/Project";
-import * as Workflowitem from "../../workflowitem/model/workflowitem";
+import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
 
 export const closeSubproject = async (

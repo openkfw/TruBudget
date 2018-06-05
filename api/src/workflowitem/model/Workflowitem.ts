@@ -20,6 +20,9 @@ const workflowitemKey = (subprojectId, workflowitemId) => [
 export interface AugmentedEvent extends Event {
   snapshot: {
     displayName: string;
+    amount: string;
+    currency: string;
+    amountType: string;
   };
 }
 
@@ -53,6 +56,14 @@ export interface ObscuredData {
   status: "open" | "closed";
   assignee: null;
   documents: null;
+}
+
+export interface Update {
+  displayName?: string;
+  amount?: string;
+  currency?: string;
+  amountType?: "N/A" | "disbursed" | "allocated";
+  description?: string;
 }
 
 export interface Document {
@@ -95,11 +106,11 @@ export async function publish(
     dataVersion,
     data,
   };
-  await multichain
-    .getRpcClient()
-    .invoke("publish", projectId, workflowitemKey(subprojectId, workflowitemId), {
-      json: event,
-    });
+  const streamName = projectId;
+  const streamItemKey = workflowitemKey(subprojectId, workflowitemId);
+  const streamItem = { json: event };
+  console.log(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
   return event;
 }
 
@@ -134,6 +145,7 @@ export async function get(
       // We've already encountered this workflowitem, so we can apply operations on it.
       const permissions = permissionsMap.get(asMapKey(item))!;
       const hasProcessedEvent =
+        applyUpdate(event, resource) ||
         applyAssign(event, resource) ||
         applyClose(event, resource) ||
         applyGrantPermission(event, permissions) ||
@@ -148,7 +160,12 @@ export async function get(
       // know the final resource permissions.
       resource.log.push({
         ...event,
-        snapshot: { displayName: deepcopy(resource.data.displayName) },
+        snapshot: {
+          displayName: deepcopy(resource.data.displayName),
+          amount: deepcopy(resource.data.amount),
+          currency: deepcopy(resource.data.currency),
+          amountType: deepcopy(resource.data.amountType),
+        },
       });
       resourceMap.set(asMapKey(item), resource);
     }
@@ -207,6 +224,26 @@ function handleCreate(
     }
   }
   throwUnsupportedEventVersion(event);
+}
+
+function applyUpdate(event: Event, resource: WorkflowitemResource): true | undefined {
+  if (event.intent !== "workflowitem.update") return;
+  switch (event.dataVersion) {
+    case 1: {
+      const update: Update = event.data;
+      ["displayName", "amount", "currency", "amountType", "description"].forEach(key => {
+        setIfDefinedAndToUndefinedIfNull(resource.data, key, update[key]);
+      });
+      return true;
+    }
+  }
+  throwUnsupportedEventVersion(event);
+}
+
+function setIfDefinedAndToUndefinedIfNull(obj, key, val) {
+  if (val === undefined) return;
+  if (val === null) val = undefined;
+  obj[key] = val;
 }
 
 function applyAssign(event: Event, resource: WorkflowitemResource): true | undefined {

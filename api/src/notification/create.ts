@@ -6,7 +6,7 @@ import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
 import * as Project from "../project/model/Project";
 import * as Subproject from "../subproject/model/Subproject";
-import * as Workflowitem from "../workflowitem/model/workflowitem";
+import * as Workflowitem from "../workflowitem/model/Workflowitem";
 import * as Notification from "./model/Notification";
 
 export async function createNotification(
@@ -42,7 +42,7 @@ export async function notifyAssignee(
   multichain: MultichainClient,
   resourceDescriptions: Notification.NotificationResourceDescription[],
   createdBy: UserId,
-  resource:
+  resourceOrResourceList:
     | Project.ProjectResource
     | Project.ProjectResource[]
     | Subproject.SubprojectResource
@@ -53,13 +53,7 @@ export async function notifyAssignee(
   publishedEvent: Event,
   skipNotificationsFor: UserId[],
 ): Promise<string | undefined> {
-  if (Array.isArray(resource)) {
-    if (resource.length) {
-      resource = resource[0];
-    } else {
-      resource = undefined;
-    }
-  }
+  const resource = getResource(resourceOrResourceList);
 
   if (resource === undefined) return;
   const assignee = resource.data.assignee;
@@ -70,4 +64,31 @@ export async function notifyAssignee(
   await createNotification(multichain, resourceDescriptions, createdBy, assignee, publishedEvent);
 
   return assignee;
+}
+
+function getResource(
+  resourceOrResourceList:
+    | Project.ProjectResource
+    | Project.ProjectResource[]
+    | Subproject.SubprojectResource
+    | Subproject.SubprojectResource[]
+    | Workflowitem.WorkflowitemResource
+    | Workflowitem.WorkflowitemResource[]
+    | undefined,
+):
+  | Project.ProjectResource
+  | Subproject.SubprojectResource
+  | Workflowitem.WorkflowitemResource
+  | undefined {
+  if (Array.isArray(resourceOrResourceList)) {
+    const resourceList = resourceOrResourceList;
+    if (resourceList.length > 0) {
+      return resourceList[0];
+    } else {
+      return undefined;
+    }
+  } else {
+    const resource = resourceOrResourceList;
+    return resource;
+  }
 }
