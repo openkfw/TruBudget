@@ -5,7 +5,8 @@ import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../../authz/types";
 import deepcopy from "../../lib/deepcopy";
-import { isNotEmpty } from "../../lib/isNotEmpty";
+import { isNotEmpty } from "../../lib/emptyChecks";
+import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
@@ -109,7 +110,7 @@ export async function publish(
   const streamName = projectId;
   const streamItemKey = workflowitemKey(subprojectId, workflowitemId);
   const streamItem = { json: event };
-  console.log(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
   await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
   return event;
 }
@@ -231,19 +232,11 @@ function applyUpdate(event: Event, resource: WorkflowitemResource): true | undef
   switch (event.dataVersion) {
     case 1: {
       const update: Update = event.data;
-      ["displayName", "amount", "currency", "amountType", "description"].forEach(key => {
-        setIfDefinedAndToUndefinedIfNull(resource.data, key, update[key]);
-      });
+      inheritDefinedProperties(resource.data, update);
       return true;
     }
   }
   throwUnsupportedEventVersion(event);
-}
-
-function setIfDefinedAndToUndefinedIfNull(obj, key, val) {
-  if (val === undefined) return;
-  if (val === null) val = undefined;
-  obj[key] = val;
 }
 
 function applyAssign(event: Event, resource: WorkflowitemResource): true | undefined {

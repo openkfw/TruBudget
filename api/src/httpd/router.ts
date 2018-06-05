@@ -35,6 +35,7 @@ import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
+import { updateSubproject } from "../subproject/controller/update";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -585,6 +586,49 @@ export const createRouter = (
   });
 
   /**
+   * @api {post} /subproject.update Update
+   * @apiVersion 1.0.0
+   * @apiName subproject.update
+   * @apiGroup Subproject
+   * @apiPermission user
+   * @apiDescription Partially update a subproject. Only properties mentioned in the
+   * request body are touched, others are not affected. The assigned user will be
+   * notified about the change.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} [data.displayName]
+   * @apiParam {String} [data.description]
+   * @apiParam {String} [data.amount]
+   * @apiParam {String} [data.currency]
+   * @apiParam {String} data.subprojectId The subproject to be modified.
+   * @apiParam {String} data.projectId The project the subproject belongs to.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "displayName": "My Subproject",
+   *       "description": "",
+   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
+   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
+   *     }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
+  router.post("/subproject.update", (req: AuthenticatedRequest, res) => {
+    updateSubproject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
    * @api {post} /subproject.close Close
    * @apiVersion 1.0.0
    * @apiName subproject.close
@@ -812,8 +856,8 @@ export const createRouter = (
    * @apiGroup Workflowitem
    * @apiPermission user
    * @apiDescription Partially update a workflowitem. Only properties mentioned in the
-   * request body are touched, others are not affected. To delete a property, set it to
-   * null. The assigned user will be notified about the change.
+   * request body are touched, others are not affected. The assigned user will be
+   * notified about the change.
    *
    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiParam {Object} data Request payload.
@@ -822,7 +866,7 @@ export const createRouter = (
    * @apiParam {String} [data.currency]
    * @apiParam {String} [data.amountType]
    * @apiParam {String} [data.description]
-   * @apiParam {String} data.workflowitemId The workflowitem to be re-assigned.
+   * @apiParam {String} data.workflowitemId The workflowitem to be modified.
    * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
    * @apiParam {String} data.projectId The project the workflowitem belongs to.
    * @apiParamExample {json} Request

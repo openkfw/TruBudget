@@ -4,7 +4,8 @@ import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../../authz/types";
 import deepcopy from "../../lib/deepcopy";
-import { isNotEmpty } from "../../lib/isNotEmpty";
+import { isNotEmpty } from "../../lib/emptyChecks";
+import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
@@ -30,6 +31,13 @@ export interface Data {
   amount: string;
   currency: string;
   assignee?: string;
+}
+
+export interface Update {
+  displayName?: string;
+  description?: string;
+  amount?: string;
+  currency?: string;
 }
 
 const subprojectsGroupKey = "subprojects";
@@ -59,9 +67,11 @@ export async function publish(
     dataVersion,
     data,
   };
-  await multichain.getRpcClient().invoke("publish", projectId, subprojectKey(subprojectId), {
-    json: event,
-  });
+  const streamName = projectId;
+  const streamItemKey = subprojectKey(subprojectId);
+  const streamItem = { json: event };
+  console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+  await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
   return event;
 }
 
@@ -94,6 +104,7 @@ export async function get(
       // We've already encountered this subproject, so we can apply operations on it.
       const permissions = permissionsMap.get(asMapKey(item))!;
       const hasProcessedEvent =
+        applyUpdate(event, resource) ||
         applyAssign(event, resource) ||
         applyClose(event, resource) ||
         applyGrantPermission(event, permissions) ||
@@ -162,6 +173,18 @@ function handleCreate(
         },
         permissions: deepcopy(permissions),
       };
+    }
+  }
+  throwUnsupportedEventVersion(event);
+}
+
+function applyUpdate(event: Event, resource: SubprojectResource): true | undefined {
+  if (event.intent !== "subproject.update") return;
+  switch (event.dataVersion) {
+    case 1: {
+      const update: Update = event.data;
+      inheritDefinedProperties(resource.data, update);
+      return true;
     }
   }
   throwUnsupportedEventVersion(event);
