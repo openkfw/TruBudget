@@ -14,7 +14,24 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+const baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+
+const waitForBackend = (loginCount = 0) => {
+  cy.task("waitForBackend", `${baseUrl}/api/user.authenticate`).then(success => {
+    if (!success) {
+      if (loginCount < 10) {
+        cy.wait(5000).then(() => waitForBackend(loginCount + 1));
+      } else {
+        throw new Error(`Could not start test, it seems backend was not ready!`);
+      }
+    } else {
+      return;
+    }
+  });
+};
+
+before(() => waitForBackend());

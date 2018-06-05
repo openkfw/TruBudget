@@ -33,7 +33,7 @@
     "redux-saga": "^0.14.4"
   },
   "devDependencies": {
-    "cypress": "^2.1.0",
+    "cypress": "^3.0.0",
     "react-scripts": "^1.1.1",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
