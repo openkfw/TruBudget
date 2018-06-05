@@ -45,7 +45,7 @@ const authenticate = async (userId: string, password: string) => {
 };
 
 function timeout(ms) {
-  return () => new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function impersonate(userId, password) {
@@ -68,6 +68,8 @@ export const provisionBlockchain = async (
       winston.info("Checking multichain availability...");
       const info = await multichainClient.getInfo();
       winston.info(`Connected to ${info.nodeaddress}`);
+      // wait a bit until node is fully set up
+      await timeout(5000);
       connected = true;
     } catch (err) {
       winston.error("Error while checking multichain, retrying after pause...");

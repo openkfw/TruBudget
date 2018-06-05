@@ -1,4 +1,4 @@
 {
-  "videoCompression": 10,
+  "video": false,
   "baseUrl": "http://localhost:80"
 }
