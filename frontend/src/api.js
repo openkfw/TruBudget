@@ -60,6 +60,9 @@ class Api {
   grantProjectPermissions = (projectId, intent, userId) =>
     axios.post(`/project.intent.grantPermission`, { projectId, intent, userId });
 
+  revokeProjectPermissions = (projectId, intent, userId) =>
+    axios.post(`/project.intent.revokePermission`, { projectId, intent, userId });
+
   createSubProject = (projectId, name, amount, description, currency) =>
     axios.post(`/project.createSubproject`, {
       projectId,
@@ -90,11 +93,17 @@ class Api {
   grantSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
     axios.post(`/subproject.intent.grantPermission`, { projectId, subprojectId, intent, userId });
 
+  revokeSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
+    axios.post(`/subproject.intent.revokePermission`, { projectId, subprojectId, intent, userId });
+
   listWorkflowItemPermissions = (projectId, workflowitemId) =>
     axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
 
   grantWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, userId) =>
     axios.post(`/workflowitem.intent.grantPermission`, { projectId, subprojectId, workflowitemId, intent, userId });
+
+  revokeWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, userId) =>
+    axios.post(`/workflowitem.intent.revokePermission`, { projectId, subprojectId, workflowitemId, intent, userId });
 
   assignWorkflowItem = (projectId, subprojectId, workflowitemId, userId) =>
     axios.post(`/workflowitem.assign`, { projectId, subprojectId, workflowitemId, userId });
@@ -112,92 +121,6 @@ class Api {
   };
 
   markNotificationAsRead = notificationId => axios.post(`/notification.markRead`, { notificationId });
-  // loginAdmin = async (username, password) => {
-  //   const { data } = await axios.post(`/login`, { username, password })
-  //   return data;
-  // }
-  //
-  // addUser = (username, fullName, avatar, password, role) => axios.post(`/users`, {
-  //   id: username,
-  //   name: fullName,
-  //   avatar_back: avatar,
-  //   password,
-  //   role,
-  //   avatar
-  // })
-  // addRole = (id, organization, read, write, admin) => axios.post(`/roles`, {
-  //   id,
-  //   organization,
-  //   read,
-  //   write,
-  //   admin
-  // })
-  // fetchPermissions = () => axios.get(`/permissions`);
-  // fetchPeers = () => axios.get(`/peers`);
-
-  // fetchStreamNames = () => axios.get(`/projects/mapping`);
-  // fetchStreamItems = (flowName) => axios.get(`/streams/` + flowName);
-  // postSubProject = (parentProject, subProjectName, subProjectAmount, subProjectComment, subProjectCurrency) => axios.post(`/subprojects`, {
-  //   parentStream: parentProject,
-  //   name: subProjectName,
-  //   amount: subProjectAmount,
-  //   comment: subProjectComment,
-  //   currency: subProjectCurrency,
-  //   status: `open`
-  // })
-  // fetchNodeInformation = () => axios.get(`/nodes`);
-  // fetchNotifications = (user) => axios.get(`/notifications/` + user);
-  // fetchWorkflowItems = (subProjectName) => axios.get(`/subprojects/` + subProjectName);
-  // // fetch the user to the existing JWToken
-  // fetchUser = () => axios.get(`/users/mapping`)
-  // fetchUsers = () => axios.get(`/users`);
-  // fetchRoles = () => axios.get(`/roles`);
-  // postWorkflowItem = (stream, workflowItemName, amount, amountType, currency, comment, documents, status, type, approvalRequired) => axios.post(`/workflows`, {
-  //   streamName: stream,
-  //   workflowName: workflowItemName,
-  //   amount,
-  //   amountType,
-  //   currency,
-  //   comment,
-  //   documents,
-  //   status,
-  //   type,
-  //   approvalRequired
-  // })
-  // editWorkflowItem = (stream, key, workflowItemName, amount, amountType, currency, comment, documents, status, txid, previousState, type, approvalRequired) => axios.put(`/workflows/` + workflowItemName, {
-  //   streamName: stream,
-  //   key,
-  //   workflowName: workflowItemName,
-  //   amount,
-  //   amountType,
-  //   currency,
-  //   comment,
-  //   documents,
-  //   status,
-  //   previousState,
-  //   type,
-  //   approvalRequired
-  // })
-  // fetchHistory = (project) => axios.get(`/history/` + project);
-  // markNotificationAsRead = (user, id, data) => axios.put(`/notifications/${user}/${id}`, data);
-  // postWorkflowSort = (streamName, workflowOrder) => axios.put(`/subprojects/` + streamName + `/sort`, {
-  //   order: workflowOrder
-  // });
-  // editSubProject = (parentProject, subProjectName, status, amount) => axios.put(`/subprojects/` + subProjectName, {
-  //   parent: parentProject,
-  //   status: status,
-  //   amount: amount
-  // });
-  // hashDocument = (payload) => {
-  //   const data = new FormData();
-  //   data.append(`doc`, payload);
-  //   return axios.post(`/documents`, data)
-  // };
-  // validateDocument = (payload, hash) => {
-  //   const data = new FormData();
-  //   data.append(`doc`, payload);
-  //   return axios.post(`/documents/` + hash, data)
-  // };
 }
 
 export default Api;

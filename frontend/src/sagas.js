@@ -21,7 +21,9 @@ import {
   ASSIGN_PROJECT_SUCCESS,
   ASSIGN_PROJECT,
   FETCH_PROJECT_HISTORY_SUCCESS,
-  FETCH_PROJECT_HISTORY
+  FETCH_PROJECT_HISTORY,
+  REVOKE_PERMISSION_SUCCESS,
+  REVOKE_PERMISSION
 } from "./pages/SubProjects/actions";
 import {
   SHOW_SNACKBAR,
@@ -53,7 +55,11 @@ import {
   ASSIGN_SUBPROJECT_SUCCESS,
   ASSIGN_SUBPROJECT,
   FETCH_SUBPROJECT_HISTORY,
-  FETCH_SUBPROJECT_HISTORY_SUCCESS
+  FETCH_SUBPROJECT_HISTORY_SUCCESS,
+  REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
+  REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+  REVOKE_SUBPROJECT_PERMISSION,
+  REVOKE_WORKFLOWITEM_PERMISSION
 } from "./pages/Workflows/actions";
 
 import {
@@ -686,6 +692,23 @@ export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) 
   }, showLoading);
 }
 
+export function* revokePermissionsSaga({ projectId, intent, user, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.revokeProjectPermissions, projectId, intent, user);
+    //const { data } = yield callApi(api.listProjectIntents, projectId)
+    //const history = yield callApi(api.fetchHistory, projectId);
+    //const roles = yield callApi(api.fetchRoles);
+    yield put({
+      type: REVOKE_PERMISSION_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_PROJECT_PERMISSIONS,
+      projectId
+    });
+  }, showLoading);
+}
+
 export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
   yield execute(function*() {
     yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, user);
@@ -694,6 +717,25 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
     //const roles = yield callApi(api.fetchRoles);
     yield put({
       type: GRANT_SUBPROJECT_PERMISSION_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_SUBPROJECT_PERMISSIONS,
+      projectId,
+      subprojectId,
+      showLoading: true
+    });
+  }, showLoading);
+}
+
+export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, user);
+    //const { data } = yield callApi(api.listProjectIntents, projectId)
+    //const history = yield callApi(api.fetchHistory, projectId);
+    //const roles = yield callApi(api.fetchRoles);
+    yield put({
+      type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS
     });
 
     yield put({
@@ -718,6 +760,31 @@ export function* grantWorkflowItemPermissionsSaga({
 
     yield put({
       type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_WORKFLOWITEM_PERMISSIONS,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      showLoading: true
+    });
+  }, showLoading);
+}
+
+export function* revokeWorkflowItemPermissionsSaga({
+  projectId,
+  subprojectId,
+  workflowitemId,
+  intent,
+  user,
+  showLoading
+}) {
+  yield execute(function*() {
+    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
+
+    yield put({
+      type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
     });
 
     yield put({
@@ -949,11 +1016,20 @@ export function* watchFetchWorkflowItemPermissions() {
 export function* watchGrantPermissions() {
   yield takeEvery(GRANT_PERMISSION, grantPermissionsSaga);
 }
+export function* watchRevokePermissions() {
+  yield takeEvery(REVOKE_PERMISSION, revokePermissionsSaga);
+}
 export function* watchGrantSubProjectPermissions() {
   yield takeEvery(GRANT_SUBPROJECT_PERMISSION, grantSubProjectPermissionsSaga);
 }
+export function* watchRevokeSubProjectPermissions() {
+  yield takeEvery(REVOKE_SUBPROJECT_PERMISSION, revokeSubProjectPermissionsSaga);
+}
 export function* watchGrantWorkflowitemPermissions() {
   yield takeEvery(GRANT_WORKFLOWITEM_PERMISSION, grantWorkflowItemPermissionsSaga);
+}
+export function* watchRevokeWorkflowitemPermissions() {
+  yield takeEvery(REVOKE_WORKFLOWITEM_PERMISSION, revokeWorkflowItemPermissionsSaga);
 }
 export function* watchCloseWorkflowItem() {
   yield takeEvery(CLOSE_WORKFLOWITEM, closeWorkflowItemSaga);
@@ -984,6 +1060,7 @@ export default function* rootSaga() {
       watchFetchAllProjectDetails(),
       watchFetchProjectPermissions(),
       watchGrantPermissions(),
+      watchRevokePermissions(),
       watchAssignProject(),
       watchFetchProjectHistorySaga(),
 
@@ -992,6 +1069,7 @@ export default function* rootSaga() {
       watchFetchAllSubprojectDetails(),
       watchFetchSubProjectPermissions(),
       watchGrantSubProjectPermissions(),
+      watchRevokeSubProjectPermissions(),
       watchAssignSubproject(),
       watchFetchSubprojectHistory(),
 
@@ -999,6 +1077,7 @@ export default function* rootSaga() {
       watchCreateWorkflowItem(),
       watchFetchWorkflowItemPermissions(),
       watchGrantWorkflowitemPermissions(),
+      watchRevokeWorkflowitemPermissions(),
       watchCloseWorkflowItem(),
       watchAssignWorkflowItem(),
 
@@ -1006,27 +1085,6 @@ export default function* rootSaga() {
       watchFetchAllNotifications(),
       watchFetchNotificationsWithId(),
       watchMarkNotificationAsRead()
-
-      // watchFetchPeers(),
-      // watchFetchProjects(),
-      // watchFetchProjectDetails(),
-      // watchEditWorkflowItem(),
-      // watchFetchNodeInformation(),
-      // watchFetchWorkflowItems(),
-      // watchFetchRoles(),
-      // watchAdminLogin(),
-      // watchFetchUser(),
-      // watchAdminLogout(),
-      // watchFetchStreamNames(),
-      // watchFetchHistory(),
-      // watchPostWorkflowSort(),
-      // watchEditSubProject(),
-      // watchValidateDocument(),
-      // watchAddDocument(),
-      // watchFetchUpdates(),
-      // watchFetchNodePermissions(),
-      // watchAddUser(),
-      // watchAddRole(),
     ];
   } catch (error) {
     console.log(error);

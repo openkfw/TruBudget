@@ -53,6 +53,9 @@ export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSION
 export const GRANT_SUBPROJECT_PERMISSION = "GRANT_SUBPROJECT_PERMISSION";
 export const GRANT_SUBPROJECT_PERMISSION_SUCCESS = "GRANT_SUBPROJECT_PERMISSION_SUCCESS";
 
+export const REVOKE_SUBPROJECT_PERMISSION = "REVOKE_SUBPROJECT_PERMISSION";
+export const REVOKE_SUBPROJECT_PERMISSION_SUCCESS = "REVOKE_SUBPROJECT_PERMISSION_SUCCESS";
+
 export const SHOW_WORKFLOWITEM_PERMISSIONS = "SHOW_WORKFLOWITEM_PERMISSIONS";
 export const HIDE_WORKFLOWITEM_PERMISSIONS = "HIDE_WORKFLOWITEM_PERMISSIONS";
 
@@ -61,6 +64,9 @@ export const FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS = "FETCH_WORKFLOWITEM_PERMIS
 
 export const GRANT_WORKFLOWITEM_PERMISSION = "GRANT_WORKFLOWITEM_PERMISSION";
 export const GRANT_WORKFLOWITEM_PERMISSION_SUCCESS = "GRANT_WORKFLOWITEM_PERMISSION_SUCCESS";
+
+export const REVOKE_WORKFLOWITEM_PERMISSION = "REVOKE_WORKFLOWITEM_PERMISSION";
+export const REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS = "REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS";
 
 export const ASSIGN_WORKFLOWITEM = "ASSIGN_WORKFLOWITEM";
 export const ASSIGN_WORKFLOWITEM_SUCCESS = "ASSIGN_WORKFLOWITEM_SUCCESS";
@@ -169,6 +175,17 @@ export function grantSubProjectPermission(projectId, subprojectId, intent, user,
   };
 }
 
+export function revokeSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
+  return {
+    type: REVOKE_SUBPROJECT_PERMISSION,
+    projectId,
+    subprojectId,
+    intent,
+    user,
+    showLoading
+  };
+}
+
 export function showWorkflowItemPermissions(wId) {
   return {
     type: SHOW_WORKFLOWITEM_PERMISSIONS,
@@ -201,6 +218,24 @@ export function grantWorkflowItemPermission(
 ) {
   return {
     type: GRANT_WORKFLOWITEM_PERMISSION,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    intent,
+    user,
+    showLoading
+  };
+}
+export function revokeWorkflowItemPermission(
+  projectId,
+  subprojectId,
+  workflowitemId,
+  intent,
+  user,
+  showLoading = false
+) {
+  return {
+    type: REVOKE_WORKFLOWITEM_PERMISSION,
     projectId,
     subprojectId,
     workflowitemId,

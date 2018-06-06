@@ -264,6 +264,7 @@ const SubProjectDetails = ({
           <Divider />
           <ListItem style={styles.permissionContainer}>
             <Button
+              data-test="spp-button"
               disabled={!canViewPermissions}
               onClick={showSubProjectPermissions}
               icon={<PermissionIcon style={styles.icon} />}

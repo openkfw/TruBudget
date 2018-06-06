@@ -8,6 +8,7 @@ import RessourceHistory from "../Common/History/RessourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
 import { toJS, formatString } from "../../helper";
+import { formatPermission } from "../Common/History/helper";
 
 const calculateHistory = items => {
   return sortBy(
@@ -23,8 +24,9 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "global.createProject":
       return formatString(strings.history.project_create, createdBy, snapshot.displayName);
     case "project.intent.grantPermission":
-      const grantedIntent = strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent;
-      return formatString(strings.history.project_grantPermission, createdBy, grantedIntent, data.userId);
+      return formatString(strings.history.project_grantPermission, createdBy, formatPermission(data), data.userId);
+    case "project.intent.revokePermission":
+      return formatString(strings.history.project_revokePermission, createdBy, formatPermission(data), data.userId);
     case "project.createSubproject":
       return formatString(strings.history.project_createSubproject, createdBy, snapshot.displayName);
     case "subproject.assign":
@@ -33,10 +35,19 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
       return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
     case "subproject.intent.grantPermission":
       return formatString(
-        strings.history.subproject_grantPermission,
+        strings.history.subproject_grantPermission_details,
         createdBy,
-        strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent,
-        data.userId
+        formatPermission(data),
+        data.userId,
+        snapshot.displayName
+      );
+    case "subproject.intent.revokePermission":
+      return formatString(
+        strings.history.subproject_revokePermission_details,
+        createdBy,
+        formatPermission(data),
+        data.userId,
+        snapshot.displayName
       );
     default:
       console.log(intent);

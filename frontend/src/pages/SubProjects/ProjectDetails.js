@@ -190,6 +190,7 @@ const ProjectDetails = ({
           <Divider />
           <ListItem style={styles.permissionContainer}>
             <Button
+              data-test="pp-button"
               disabled={!canViewPermissions}
               onClick={showProjectPermissions}
               icon={<PermissionIcon style={styles.icon} />}

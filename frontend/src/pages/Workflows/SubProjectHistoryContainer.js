@@ -8,6 +8,7 @@ import RessourceHistory from "../Common/History/RessourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
 import { toJS, formatString } from "../../helper";
+import { formatPermission } from "../Common/History/helper";
 
 const calculateHistory = items => {
   return sortBy(
@@ -31,18 +32,18 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "subproject.close":
       return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
     case "subproject.intent.grantPermission":
-      return formatString(
-        strings.history.subproject_grantPermission,
-        createdBy,
-        strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent,
-        data.userId
-      );
+      return formatString(strings.history.subproject_grantPermission, createdBy, formatPermission(data), data.userId);
     case "workflowitem.intent.grantPermission":
+      return formatString(strings.history.workflowitem_grantPermission, createdBy, formatPermission(data), data.userId);
+    case "subproject.intent.revokePermission":
+      return formatString(strings.history.subproject_revokePermission, createdBy, formatPermission(data), data.userId);
+    case "workflowitem.intent.revokePermission":
       return formatString(
-        strings.history.workflowitem_grantPermission,
+        strings.history.workflowitem_revokePermission,
         createdBy,
-        strings.permissions[data.intent.replace(/[.]/g, "_")] || data.intent,
-        data.userId
+        formatPermission(data),
+        data.userId,
+        snapshot.displayName
       );
     case "workflowitem.assign":
       return formatString(strings.history.workflowitem_assign, createdBy, snapshot.displayName, data.userId);

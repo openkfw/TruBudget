@@ -199,7 +199,11 @@ const renderActionButtons = (
         {/* <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
           <EditIcon />
         </IconButton> */}
-        <IconButton disabled={!canListWorkflowPermissions} onClick={showPerm}>
+        <IconButton
+          disabled={!canListWorkflowPermissions}
+          onClick={showPerm}
+          style={canListWorkflowPermissions ? {} : hideStyle}
+        >
           <PermissionIcon />
         </IconButton>
         <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
@@ -291,7 +295,7 @@ export const WorkflowItem = SortableElement(
 
 export const RedactedWorkflowItem = SortableElement(
   ({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-    const { status } = workflow;
+    const { status } = workflow.data;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const tableStyle = styles[status];
 

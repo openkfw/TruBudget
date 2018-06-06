@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
-import { fetchSubProjectPermissions, hideSubProjectPermissions, grantSubProjectPermission } from "./actions";
+import {
+  fetchSubProjectPermissions,
+  hideSubProjectPermissions,
+  grantSubProjectPermission,
+  revokeSubProjectPermission
+} from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
@@ -16,13 +21,28 @@ class SubProjectPermissionsContainer extends Component {
     }
   }
 
-  grantPermission = (_, permission, user) => {
-    this.props.grantPermission(this.props.projectId, this.props.subProjectId, permission, user);
+  grant = (_, permission, user) => {
+    this.props.grant(this.props.projectId, this.props.subProjectId, permission, user);
   };
+
+  revoke = (_, permission, user) => {
+    this.props.revoke(this.props.projectId, this.props.subProjectId, permission, user);
+  };
+
+  isEnabled(allowedIntents) {
+    const necessaryIntents = ["subproject.intent.grantPermission", "subproject.intent.revokePermission"];
+    return necessaryIntents.some(i => allowedIntents.includes(i));
+  }
 
   render() {
     return (
-      <PermissionsScreen {...this.props} grantPermission={this.grantPermission} intentOrder={subProjectIntentOrder} />
+      <PermissionsScreen
+        {...this.props}
+        grant={this.grant}
+        revoke={this.revoke}
+        intentOrder={subProjectIntentOrder}
+        disabled={!this.isEnabled(this.props.allowedIntents)}
+      />
     );
   }
 }
@@ -30,17 +50,19 @@ class SubProjectPermissionsContainer extends Component {
 const mapStateToProps = state => {
   return {
     permissions: state.getIn(["workflow", "permissions"]),
+    allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     user: state.getIn(["login", "user"]),
     show: state.getIn(["workflow", "showSubProjectPermissions"]),
-    id: state.getIn(["workflow", "id"])
+    id: state.getIn(["workflow", "id"]),
+    myself: state.getIn(["login", "id"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onClose: () => dispatch(hideSubProjectPermissions()),
-    grantPermission: (pId, sId, permission, user) =>
-      dispatch(grantSubProjectPermission(pId, sId, permission, user, true)),
+    grant: (pId, sId, permission, user) => dispatch(grantSubProjectPermission(pId, sId, permission, user, true)),
+    revoke: (pId, sId, permission, user) => dispatch(revokeSubProjectPermission(pId, sId, permission, user, true)),
     fetchSubProjectPermissions: (pId, sId, showLoading) => dispatch(fetchSubProjectPermissions(pId, sId, showLoading)),
     fetchUser: () => dispatch(fetchUser(true))
   };
