@@ -72,6 +72,13 @@ class WorkflowContainer extends Component {
     this.props.createWorkflowItem(this.projectId, this.subProjectId, workflow, documents);
   };
 
+  closeSubproject = () => {
+    const openWorkflowItems = this.props.workflowItems.find(wItem => wItem.data.status === "open");
+    if (!openWorkflowItems) {
+      this.props.closeSubproject(this.projectId, this.subProjectId);
+    }
+  };
+
   closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subProjectId, wId);
 
   closeSubproject = () => this.props.closeSubproject(this.projectId, this.subProjectId, true);

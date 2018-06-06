@@ -41,7 +41,10 @@ class SubProjectsContainer extends Component {
   }
 
   closeProject = () => {
-    this.props.closeProject(this.projectId);
+    const openSubprojects = this.props.subProjects.find(subproject => subproject.data.status === "open");
+    if (!openSubprojects) {
+      this.props.closeProject(this.projectId);
+    }
   };
 
   render() {

@@ -24,6 +24,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
 import PermissionIcon from "@material-ui/icons/LockOpen";
+import Status from "../Common/Status";
 
 import { Doughnut } from "react-chartjs-2";
 
