@@ -82,6 +82,7 @@ function getProjectDefaultPermissions(token: AuthToken): AllowedUserGroupsByInte
     "project.viewSummary",
     "project.viewDetails",
     "project.assign",
+    "project.update",
     "project.intent.listPermissions",
     "project.intent.grantPermission",
     "project.intent.revokePermission",

@@ -1,5 +1,6 @@
+import { getAllowedIntents } from "../../authz";
 import { onlyAllowedData } from "../../authz/history";
-import { getAllowedIntents, getUserAndGroups } from "../../authz/index";
+import { getUserAndGroups } from "../../authz/index";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../../authz/types";
@@ -9,15 +10,24 @@ import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
-import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+
+const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
+
+const workflowitemKey = (subprojectId, workflowitemId) => [
+  workflowitemsGroupKey(subprojectId),
+  workflowitemId,
+];
 
 export interface AugmentedEvent extends Event {
   snapshot: {
     displayName: string;
+    amount: string;
+    currency: string;
+    amountType: string;
   };
 }
 
-export interface ProjectResource {
+export interface WorkflowitemResource {
   log: AugmentedEvent[];
   allowedIntents: Intent[];
   data: Data;
@@ -26,28 +36,60 @@ export interface ProjectResource {
 export interface Data {
   id: string;
   creationUnixTs: string;
-  status: "open" | "closed";
   displayName: string;
-  assignee?: string;
-  description: string;
   amount: string;
   currency: string;
-  thumbnail: string;
+  amountType: "N/A" | "disbursed" | "allocated";
+  description: string;
+  status: "open" | "closed";
+  assignee?: string;
+  documents: Document[];
+}
+
+export interface ObscuredData {
+  id: string;
+  creationUnixTs: string;
+  displayName: null;
+  amount: null;
+  currency: null;
+  amountType: null;
+  description: null;
+  status: "open" | "closed";
+  assignee: null;
+  documents: null;
 }
 
 export interface Update {
   displayName?: string;
-  description?: string;
   amount?: string;
   currency?: string;
-  thumbnail?: string;
+  amountType?: "N/A" | "disbursed" | "allocated";
+  description?: string;
 }
 
-const projectSelfKey = "self";
+export interface Document {
+  description: string;
+  hash: string;
+}
+
+const redactWorkflowitemData = (workflowitem: Data): ObscuredData => ({
+  id: workflowitem.id,
+  creationUnixTs: workflowitem.creationUnixTs,
+  displayName: null,
+  amount: null,
+  currency: null,
+  amountType: null,
+  description: null,
+  status: workflowitem.status,
+  assignee: null,
+  documents: null,
+});
 
 export async function publish(
   multichain: MultichainClient,
   projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
   args: {
     intent: Intent;
     createdBy: string;
@@ -58,7 +100,7 @@ export async function publish(
 ): Promise<Event> {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
   const event: Event = {
-    key: projectId,
+    key: workflowitemId,
     intent,
     createdBy,
     createdAt: creationTimestamp.toISOString(),
@@ -66,76 +108,27 @@ export async function publish(
     data,
   };
   const streamName = projectId;
-  const streamItemKey = projectSelfKey;
+  const streamItemKey = workflowitemKey(subprojectId, workflowitemId);
   const streamItem = { json: event };
-
-  const publishEvent = () => {
-    console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
-    return multichain
-      .getRpcClient()
-      .invoke("publish", streamName, streamItemKey, streamItem)
-      .then(() => event);
-  };
-
-  return publishEvent().catch(err => {
-    if (err.code === -708) {
-      // The stream does not exist yet. Create the stream and try again:
-      return multichain
-        .getOrCreateStream({ kind: "project", name: streamName })
-        .then(() => publishEvent());
-    } else {
-      throw err;
-    }
-  });
-}
-
-async function fetchStreamItems(
-  multichain: MultichainClient,
-  projectId?: string,
-): Promise<Liststreamkeyitems.Item[]> {
-  if (projectId !== undefined) {
-    return multichain.v2_readStreamItems(projectId, projectSelfKey);
-  } else {
-    // This fetches all the streams, keeping only project streams; then fetches the
-    // project-stream's self key, which includes the actual project data, as stream
-    // items.
-    const streams = await multichain.streams();
-    const streamItemLists = await Promise.all(
-      streams
-        .filter(stream => stream.details.kind === "project")
-        .map(stream => stream.name)
-        .map(streamName =>
-          multichain
-            .v2_readStreamItems(streamName, projectSelfKey)
-            .then(items =>
-              items.map(item => {
-                // Make it possible to associate the "self" key to the actual project later on:
-                item.keys = [streamName, projectSelfKey];
-                return item;
-              }),
-            )
-            .catch(err => {
-              console.log(
-                `Failed to fetch '${projectSelfKey}' stream item from project stream ${streamName}`,
-              );
-              return null;
-            }),
-        ),
-    ).then(lists => lists.filter(isNotEmpty));
-    // Remove failed attempts and flatten into a single list of stream items:
-    return streamItemLists.reduce((acc, x) => acc.concat(x), []);
-  }
+  console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+  await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
+  return event;
 }
 
 export async function get(
   multichain: MultichainClient,
   token: AuthToken,
-  projectId?: string,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId?: string,
   skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-): Promise<ProjectResource[]> {
-  const streamItems = await fetchStreamItems(multichain, projectId);
+): Promise<WorkflowitemResource[]> {
+  const queryKey =
+    workflowitemId !== undefined ? workflowitemId : workflowitemsGroupKey(subprojectId);
+
+  const streamItems = await multichain.v2_readStreamItems(projectId, queryKey);
   const userAndGroups = await getUserAndGroups(token);
-  const resourceMap = new Map<string, ProjectResource>();
+  const resourceMap = new Map<string, WorkflowitemResource>();
   const permissionsMap = new Map<string, AllowedUserGroupsByIntent>();
 
   for (const item of streamItems) {
@@ -150,7 +143,7 @@ export async function get(
       resource = result.resource;
       permissionsMap.set(asMapKey(item), result.permissions);
     } else {
-      // We've already encountered this project, so we can apply operations on it.
+      // We've already encountered this workflowitem, so we can apply operations on it.
       const permissions = permissionsMap.get(asMapKey(item))!;
       const hasProcessedEvent =
         applyUpdate(event, resource) ||
@@ -168,7 +161,12 @@ export async function get(
       // know the final resource permissions.
       resource.log.push({
         ...event,
-        snapshot: { displayName: deepcopy(resource.data.displayName) },
+        snapshot: {
+          displayName: deepcopy(resource.data.displayName),
+          amount: deepcopy(resource.data.amount),
+          currency: deepcopy(resource.data.currency),
+          amountType: deepcopy(resource.data.amountType),
+        },
       });
       resourceMap.set(asMapKey(item), resource);
     }
@@ -190,33 +188,35 @@ export async function get(
     return unfilteredResources;
   }
 
-  // Projects the user is not allowed to see are simply left out of the response. The
-  // remaining have their event log filtered according to what the user is entitled to
-  // know.
-  const allowedToSeeDataIntent: Intent = "project.viewSummary";
-  const filteredResources = unfilteredResources
-    .filter(resource => resource.allowedIntents.includes(allowedToSeeDataIntent))
-    .map(resource => {
-      // Filter event log according to the user permissions and the type of event:
-      resource.log = resource.log
-        .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
-        .filter(isNotEmpty);
-      return resource;
-    });
+  // Instead of filtering out workflowitems the user is not allowed to see,
+  // we simply blank out all fields except the status, which is considered "public".
+  const allowedToSeeDataIntent: Intent = "workflowitem.view";
+  const filteredResources = unfilteredResources.map(resource => {
+    // Redact data if the user is not allowed to view it:
+    const isAllowedToSeeData = resource.allowedIntents.includes(allowedToSeeDataIntent);
+    if (!isAllowedToSeeData) resource.data = redactWorkflowitemData(resource.data) as any;
+
+    // Filter event log according to the user permissions and the type of event:
+    resource.log = resource.log
+      .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
+      .filter(isNotEmpty);
+
+    return resource;
+  });
 
   return filteredResources;
 }
 
 function handleCreate(
   event: Event,
-): { resource: ProjectResource; permissions: AllowedUserGroupsByIntent } | undefined {
-  if (event.intent !== "global.createProject") return undefined;
+): { resource: WorkflowitemResource; permissions: AllowedUserGroupsByIntent } | undefined {
+  if (event.intent !== "subproject.createWorkflowitem") return undefined;
   switch (event.dataVersion) {
     case 1: {
-      const { project, permissions } = event.data;
+      const { workflowitem, permissions } = event.data;
       return {
         resource: {
-          data: deepcopy(project),
+          data: deepcopy(workflowitem),
           log: [], // event is added later
           allowedIntents: [], // is set later using permissionsMap
         },
@@ -227,8 +227,8 @@ function handleCreate(
   throwUnsupportedEventVersion(event);
 }
 
-function applyUpdate(event: Event, resource: ProjectResource): true | undefined {
-  if (event.intent !== "project.update") return;
+function applyUpdate(event: Event, resource: WorkflowitemResource): true | undefined {
+  if (event.intent !== "workflowitem.update") return;
   switch (event.dataVersion) {
     case 1: {
       const update: Update = event.data;
@@ -239,8 +239,8 @@ function applyUpdate(event: Event, resource: ProjectResource): true | undefined 
   throwUnsupportedEventVersion(event);
 }
 
-function applyAssign(event: Event, resource: ProjectResource): true | undefined {
-  if (event.intent !== "project.assign") return;
+function applyAssign(event: Event, resource: WorkflowitemResource): true | undefined {
+  if (event.intent !== "workflowitem.assign") return;
   switch (event.dataVersion) {
     case 1: {
       const { userId } = event.data;
@@ -251,8 +251,8 @@ function applyAssign(event: Event, resource: ProjectResource): true | undefined 
   throwUnsupportedEventVersion(event);
 }
 
-function applyClose(event: Event, resource: ProjectResource): true | undefined {
-  if (event.intent !== "project.close") return;
+function applyClose(event: Event, resource: WorkflowitemResource): true | undefined {
+  if (event.intent !== "workflowitem.close") return;
   switch (event.dataVersion) {
     case 1: {
       resource.data.status = "closed";
@@ -266,7 +266,7 @@ function applyGrantPermission(
   event: Event,
   permissions: AllowedUserGroupsByIntent,
 ): true | undefined {
-  if (event.intent !== "project.intent.grantPermission") return;
+  if (event.intent !== "workflowitem.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
       const { userId, intent } = event.data;
@@ -285,7 +285,7 @@ function applyRevokePermission(
   event: Event,
   permissions: AllowedUserGroupsByIntent,
 ): true | undefined {
-  if (event.intent !== "project.intent.revokePermission") return;
+  if (event.intent !== "workflowitem.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {
       const { userId, intent } = event.data;
@@ -305,8 +305,9 @@ function applyRevokePermission(
 export async function getPermissions(
   multichain: MultichainClient,
   projectId: string,
+  workflowitemId: string,
 ): Promise<AllowedUserGroupsByIntent> {
-  const streamItems = await fetchStreamItems(multichain, projectId);
+  const streamItems = await multichain.v2_readStreamItems(projectId, workflowitemId);
   let permissions: AllowedUserGroupsByIntent | undefined;
   for (const item of streamItems) {
     const event = item.data.json;
@@ -324,13 +325,20 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
-    throw { kind: "NotFound", what: `Project ${projectId}.` };
+    throw { kind: "NotFound", what: `Workflowitem ${workflowitemId} of project ${projectId}.` };
   }
   return permissions;
 }
 
-export async function areAllClosed(multichain: MultichainClient): Promise<boolean> {
-  const streamItems = await fetchStreamItems(multichain);
+export async function areAllClosed(
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+): Promise<boolean> {
+  const streamItems = await multichain.v2_readStreamItems(
+    projectId,
+    workflowitemsGroupKey(subprojectId),
+  );
 
   type statusType = string;
   const resultMap = new Map<string, statusType>();
@@ -338,11 +346,11 @@ export async function areAllClosed(multichain: MultichainClient): Promise<boolea
   for (const item of streamItems) {
     const event = item.data.json;
     switch (event.intent) {
-      case "global.createProject": {
+      case "subproject.createWorkflowitem": {
         resultMap.set(asMapKey(item), event.data.workflowitem.status);
         break;
       }
-      case "project.close": {
+      case "workflowitem.close": {
         resultMap.set(asMapKey(item), "closed");
         break;
       }
@@ -361,28 +369,4 @@ export async function areAllClosed(multichain: MultichainClient): Promise<boolea
     if (status !== "closed") return false;
   }
   return true;
-}
-
-export async function isClosed(multichain: MultichainClient, projectId: string): Promise<boolean> {
-  const streamItems = await fetchStreamItems(multichain, projectId);
-
-  for (const item of streamItems) {
-    const event = item.data.json;
-    switch (event.intent) {
-      case "global.createProject": {
-        if (event.data.project.status === "closed") {
-          return true;
-        }
-        break;
-      }
-      case "project.close": {
-        return true;
-      }
-      default: {
-        /* ignoring other events */
-      }
-    }
-  }
-
-  return false;
 }

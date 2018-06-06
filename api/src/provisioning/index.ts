@@ -102,7 +102,7 @@ export const provisionFromData = async projectTemplate => {
   await axios.post("/global.createProject", {
     project: {
       displayName: projectTemplate.displayName,
-      description: projectTemplate.description,
+      description: "FAILED UPDATE?",
       amount: projectTemplate.amount,
       assignee: projectTemplate.assignee,
       currency: projectTemplate.currency,
@@ -111,6 +111,12 @@ export const provisionFromData = async projectTemplate => {
   const project = await findProject(projectTemplate);
 
   await grantPermissions(projectTemplate.permissions, project.data.id);
+
+  // Testing updates:
+  await axios.post("/project.update", {
+    projectId: project.data.id,
+    description: projectTemplate.description || "",
+  });
 
   for (const subprojectTemplate of projectTemplate.subprojects) {
     await provisionSubproject(project, subprojectTemplate);
@@ -139,7 +145,7 @@ const provisionSubproject = async (project, subprojectTemplate) => {
     projectId: project.data.id,
     subproject: {
       displayName: subprojectTemplate.displayName,
-      description: subprojectTemplate.description,
+      description: "FAILED UPDATE?",
       status: "open", // otherwise we won't be able to add workflowitems
       amount: subprojectTemplate.amount,
       currency: subprojectTemplate.currency,
@@ -149,6 +155,13 @@ const provisionSubproject = async (project, subprojectTemplate) => {
   const subproject = await findSubproject(project, subprojectTemplate);
 
   await grantPermissions(subprojectTemplate.permissions, project.data.id, subproject.data.id);
+
+  // Testing updates:
+  await axios.post("/subproject.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    description: subprojectTemplate.description || "",
+  });
 
   for (const workflowitemTemplate of subprojectTemplate.workflows) {
     await provisionWorkflowitem(project, subproject, workflowitemTemplate);
@@ -179,7 +192,7 @@ const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) 
     projectId: project.data.id,
     subprojectId: subproject.data.id,
     displayName: workflowitemTemplate.displayName,
-    description: workflowitemTemplate.description,
+    description: "FAILED UPDATE?",
     amountType: workflowitemTemplate.amountType,
     status: "open",
     assignee: workflowitemTemplate.assignee,
@@ -190,6 +203,14 @@ const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) 
   await axios.post("/subproject.createWorkflowitem", body);
 
   const workflowitem = await findWorkflowitem(project, subproject, workflowitemTemplate);
+
+  // Testing updates:
+  await axios.post("/workflowitem.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    workflowitemId: workflowitem.data.id,
+    description: workflowitemTemplate.description || "",
+  });
 
   await grantPermissions(
     workflowitemTemplate.permissions,
