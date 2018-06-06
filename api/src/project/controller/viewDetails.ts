@@ -1,10 +1,10 @@
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import * as Subproject from "../subproject/model/Subproject";
-import * as Project from "./model/Project";
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import * as Subproject from "../../subproject/model/Subproject";
+import * as Project from "../model/Project";
 
 interface SubprojectDTO {
   allowedIntents: Intent[];
@@ -16,10 +16,10 @@ function removeEventLog(subproject: Subproject.SubprojectResource): SubprojectDT
   return subproject;
 }
 
-export const getProjectDetails = async (
+export async function getProjectDetails(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -49,4 +49,4 @@ export const getProjectDetails = async (
       },
     },
   ];
-};
+}

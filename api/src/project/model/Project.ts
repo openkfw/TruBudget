@@ -4,7 +4,8 @@ import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../../authz/types";
 import deepcopy from "../../lib/deepcopy";
-import { isNotEmpty } from "../../lib/isNotEmpty";
+import { isNotEmpty } from "../../lib/emptyChecks";
+import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
@@ -34,6 +35,14 @@ export interface Data {
   thumbnail: string;
 }
 
+export interface Update {
+  displayName?: string;
+  description?: string;
+  amount?: string;
+  currency?: string;
+  thumbnail?: string;
+}
+
 const projectSelfKey = "self";
 
 export async function publish(
@@ -56,14 +65,15 @@ export async function publish(
     dataVersion,
     data,
   };
+  const streamName = projectId;
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
 
   const publishEvent = () => {
-    console.log(`Publishing ${intent} to ${projectId}/${projectSelfKey}`);
+    console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
     return multichain
       .getRpcClient()
-      .invoke("publish", projectId, projectSelfKey, {
-        json: event,
-      })
+      .invoke("publish", streamName, streamItemKey, streamItem)
       .then(() => event);
   };
 
@@ -71,7 +81,7 @@ export async function publish(
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
       return multichain
-        .getOrCreateStream({ kind: "project", name: projectId })
+        .getOrCreateStream({ kind: "project", name: streamName })
         .then(() => publishEvent());
     } else {
       throw err;
@@ -143,6 +153,7 @@ export async function get(
       // We've already encountered this project, so we can apply operations on it.
       const permissions = permissionsMap.get(asMapKey(item))!;
       const hasProcessedEvent =
+        applyUpdate(event, resource) ||
         applyAssign(event, resource) ||
         applyClose(event, resource) ||
         applyGrantPermission(event, permissions) ||
@@ -211,6 +222,18 @@ function handleCreate(
         },
         permissions: deepcopy(permissions),
       };
+    }
+  }
+  throwUnsupportedEventVersion(event);
+}
+
+function applyUpdate(event: Event, resource: ProjectResource): true | undefined {
+  if (event.intent !== "project.update") return;
+  switch (event.dataVersion) {
+    case 1: {
+      const update: Update = event.data;
+      inheritDefinedProperties(resource.data, update);
+      return true;
     }
   }
   throwUnsupportedEventVersion(event);

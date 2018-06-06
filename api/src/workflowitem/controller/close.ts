@@ -1,20 +1,20 @@
-import * as Workflowitem from ".";
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { Event } from "../multichain/event";
-import { notifyAssignee } from "../notification/create";
-import * as Notification from "../notification/model/Notification";
-import * as Subproject from "../subproject/model/Subproject";
-import { sortWorkflowitems } from "../subproject/sortWorkflowitems";
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { Event } from "../../multichain/event";
+import { notifyAssignee } from "../../notification/create";
+import * as Notification from "../../notification/model/Notification";
+import * as Subproject from "../../subproject/model/Subproject";
+import { sortWorkflowitems } from "../../subproject/sortWorkflowitems";
+import * as Workflowitem from "../model/Workflowitem";
 
-export const closeWorkflowitem = async (
+export async function closeWorkflowitem(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -76,11 +76,9 @@ export const closeWorkflowitem = async (
   // If the parent subproject is (1) not assigned to the token user and (2) not assigned
   // to the same guy the workflowitem is assigned to, that person is notified about the
   // change too.
-  console.log(`the workflowitem assignee: ${workflowitemAssignee}`);
   const skipNotificationsFor = [req.token.userId].concat(
     workflowitemAssignee ? [workflowitemAssignee] : [],
   );
-  console.log(` => skip notifications for ${skipNotificationsFor}`);
   await notifyAssignee(
     multichain,
     resourceDescriptions,
@@ -97,7 +95,7 @@ export const closeWorkflowitem = async (
   );
 
   return [200, { apiVersion: "1.0", data: "OK" }];
-};
+}
 
 async function ensureAllPreviousWorkflowitemsAreClosed(
   multichain: MultichainClient,

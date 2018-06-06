@@ -1,14 +1,15 @@
-import { getAllowedIntents } from "../authz";
-import { onlyAllowedData } from "../authz/history";
-import { getUserAndGroups } from "../authz/index";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
-import deepcopy from "../lib/deepcopy";
-import { isNotEmpty } from "../lib/isNotEmpty";
-import { asMapKey } from "../multichain/Client";
-import { MultichainClient } from "../multichain/Client.h";
-import { Event, throwUnsupportedEventVersion } from "../multichain/event";
+import { getAllowedIntents } from "../../authz";
+import { onlyAllowedData } from "../../authz/history";
+import { getUserAndGroups } from "../../authz/index";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AllowedUserGroupsByIntent, People } from "../../authz/types";
+import deepcopy from "../../lib/deepcopy";
+import { isNotEmpty } from "../../lib/emptyChecks";
+import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
+import { asMapKey } from "../../multichain/Client";
+import { MultichainClient } from "../../multichain/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 
@@ -20,6 +21,9 @@ const workflowitemKey = (subprojectId, workflowitemId) => [
 export interface AugmentedEvent extends Event {
   snapshot: {
     displayName: string;
+    amount: string;
+    currency: string;
+    amountType: string;
   };
 }
 
@@ -55,6 +59,14 @@ export interface RedactedData {
   documents: null;
 }
 
+export interface Update {
+  displayName?: string;
+  amount?: string;
+  currency?: string;
+  amountType?: "N/A" | "disbursed" | "allocated";
+  description?: string;
+}
+
 export interface Document {
   description: string;
   hash: string;
@@ -73,7 +85,7 @@ const redactWorkflowitemData = (workflowitem: Data): RedactedData => ({
   documents: null,
 });
 
-export const publish = async (
+export async function publish(
   multichain: MultichainClient,
   projectId: string,
   subprojectId: string,
@@ -85,7 +97,7 @@ export const publish = async (
     dataVersion: number; // integer
     data: object;
   },
-): Promise<Event> => {
+): Promise<Event> {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
   const event: Event = {
     key: workflowitemId,
@@ -95,22 +107,22 @@ export const publish = async (
     dataVersion,
     data,
   };
-  await multichain
-    .getRpcClient()
-    .invoke("publish", projectId, workflowitemKey(subprojectId, workflowitemId), {
-      json: event,
-    });
+  const streamName = projectId;
+  const streamItemKey = workflowitemKey(subprojectId, workflowitemId);
+  const streamItem = { json: event };
+  console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+  await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
   return event;
-};
+}
 
-export const get = async (
+export async function get(
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string,
   subprojectId: string,
   workflowitemId?: string,
   skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-): Promise<WorkflowitemResource[]> => {
+): Promise<WorkflowitemResource[]> {
   const queryKey =
     workflowitemId !== undefined ? workflowitemId : workflowitemsGroupKey(subprojectId);
 
@@ -134,6 +146,7 @@ export const get = async (
       // We've already encountered this workflowitem, so we can apply operations on it.
       const permissions = permissionsMap.get(asMapKey(item))!;
       const hasProcessedEvent =
+        applyUpdate(event, resource) ||
         applyAssign(event, resource) ||
         applyClose(event, resource) ||
         applyGrantPermission(event, permissions) ||
@@ -148,7 +161,12 @@ export const get = async (
       // know the final resource permissions.
       resource.log.push({
         ...event,
-        snapshot: { displayName: deepcopy(resource.data.displayName) },
+        snapshot: {
+          displayName: deepcopy(resource.data.displayName),
+          amount: deepcopy(resource.data.amount),
+          currency: deepcopy(resource.data.currency),
+          amountType: deepcopy(resource.data.amountType),
+        },
       });
       resourceMap.set(asMapKey(item), resource);
     }
@@ -187,7 +205,7 @@ export const get = async (
   });
 
   return filteredResources;
-};
+}
 
 function handleCreate(
   event: Event,
@@ -204,6 +222,18 @@ function handleCreate(
         },
         permissions: deepcopy(permissions),
       };
+    }
+  }
+  throwUnsupportedEventVersion(event);
+}
+
+function applyUpdate(event: Event, resource: WorkflowitemResource): true | undefined {
+  if (event.intent !== "workflowitem.update") return;
+  switch (event.dataVersion) {
+    case 1: {
+      const update: Update = event.data;
+      inheritDefinedProperties(resource.data, update);
+      return true;
     }
   }
   throwUnsupportedEventVersion(event);

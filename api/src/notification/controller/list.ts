@@ -6,7 +6,7 @@ import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import * as Project from "../../project/model/Project";
 import * as Subproject from "../../subproject/model/Subproject";
-import * as Workflowitem from "../../workflowitem";
+import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Notification from "../model/Notification";
 
 type ResourceMetadataMap = object;

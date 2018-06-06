@@ -1,10 +1,10 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { MultichainClient } from "../../multichain";
-import { changeSubprojectPermission } from "../intent";
+import { changeWorkflowitemPermission } from "../intent";
 
-export async function grantSubprojectPermission(
+export async function revokeWorkflowitemPermission(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
-  return changeSubprojectPermission(multichain, req, "subproject.intent.grantPermission");
+  return changeWorkflowitemPermission(multichain, req, "workflowitem.intent.revokePermission");
 }

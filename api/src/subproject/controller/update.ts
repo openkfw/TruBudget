@@ -1,48 +1,53 @@
-import * as Workflowitem from ".";
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { Event } from "../multichain/event";
-import { notifyAssignee } from "../notification/create";
-import * as Notification from "../notification/model/Notification";
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isEmpty } from "../../lib/emptyChecks";
+import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { Event } from "../../multichain/event";
+import { notifyAssignee } from "../../notification/create";
+import * as Notification from "../../notification/model/Notification";
+import * as Subproject from "../model/Subproject";
 
-export const assignWorkflowitem = async (
+export async function updateSubproject(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
-  const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
 
-  const userIntent: Intent = "workflowitem.assign";
+  const theUpdate: Subproject.Update = {};
+  inheritDefinedProperties(theUpdate, input, ["displayName", "description", "amount", "currency"]);
 
-  // Is the user allowed to (re-)assign a workflowitem?
+  if (isEmpty(theUpdate)) {
+    return ok();
+  }
+
+  const userIntent: Intent = "subproject.update";
+
+  // Is the user allowed to update a subproject's basic data?
   await throwIfUnauthorized(
     req.token,
     userIntent,
-    await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
+    await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
   const publishedEvent = await sendEventToDatabase(
     multichain,
     req.token,
     userIntent,
-    userId,
+    theUpdate,
     projectId,
     subprojectId,
-    workflowitemId,
   );
 
-  // If the workflowitem is assigned to someone else, that person is notified about the
+  // If the suproject is assigned to someone else, that person is notified about the
   // change:
   const resourceDescriptions: Notification.NotificationResourceDescription[] = [
-    { id: workflowitemId, type: "workflowitem" },
     { id: subprojectId, type: "subproject" },
     { id: projectId, type: "project" },
   ];
@@ -52,43 +57,39 @@ export const assignWorkflowitem = async (
     multichain,
     resourceDescriptions,
     createdBy,
-    await Workflowitem.get(
+    await Subproject.get(
       multichain,
       req.token,
       projectId,
       subprojectId,
-      workflowitemId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
     ),
     publishedEvent,
     skipNotificationsFor,
   );
 
+  return ok();
+}
+
+function ok(): HttpResponse {
   return [200, { apiVersion: "1.0", data: "OK" }];
-};
+}
 
 async function sendEventToDatabase(
   multichain: MultichainClient,
   token: AuthToken,
   userIntent: Intent,
-  userId: string,
+  theUpdate: Subproject.Update,
   projectId: string,
   subprojectId: string,
-  workflowitemId: string,
 ): Promise<Event> {
   const event = {
     intent: userIntent,
     createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId },
+    data: theUpdate,
   };
-  const publishedEvent = await Workflowitem.publish(
-    multichain,
-    projectId,
-    subprojectId,
-    workflowitemId,
-    event,
-  );
+  const publishedEvent = await Subproject.publish(multichain, projectId, subprojectId, event);
   return publishedEvent;
 }

@@ -7,15 +7,16 @@ import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
 import { getNotificationList } from "../notification/controller/list";
 import { markNotificationRead } from "../notification/controller/markRead";
-import { assignProject } from "../project/assign";
-import { closeProject } from "../project/close";
-import { createSubproject } from "../project/createSubproject";
-import { grantProjectPermission } from "../project/intent/grantPermission";
-import { getProjectPermissions } from "../project/intent/listPermissions";
-import { revokeProjectPermission } from "../project/intent/revokePermission";
-import { getProjectList } from "../project/list";
-import { getProjectDetails } from "../project/viewDetails";
-import { getProjectHistory } from "../project/viewHistory";
+import { assignProject } from "../project/controller/assign";
+import { closeProject } from "../project/controller/close";
+import { createSubproject } from "../project/controller/createSubproject";
+import { grantProjectPermission } from "../project/controller/intent.grantPermission";
+import { getProjectPermissions } from "../project/controller/intent.listPermissions";
+import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
+import { getProjectList } from "../project/controller/list";
+import { updateProject } from "../project/controller/update";
+import { getProjectDetails } from "../project/controller/viewDetails";
+import { getProjectHistory } from "../project/controller/viewHistory";
 import { assignSubproject } from "../subproject/controller/assign";
 import { closeSubproject } from "../subproject/controller/close";
 import { createWorkflowitem } from "../subproject/controller/createWorkflowitem";
@@ -23,16 +24,18 @@ import { grantSubprojectPermission } from "../subproject/controller/intent.grant
 import { getSubprojectPermissions } from "../subproject/controller/intent.listPermissions";
 import { revokeSubprojectPermission } from "../subproject/controller/intent.revokePermission";
 import { getSubprojectList } from "../subproject/controller/list";
+import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { authenticateUser } from "../user/authenticate";
 import { getUserList } from "../user/list";
-import { assignWorkflowitem } from "../workflowitem/assign";
-import { closeWorkflowitem } from "../workflowitem/close";
-import { grantWorkflowitemPermission } from "../workflowitem/intent/grantPermission";
-import { getWorkflowitemPermissions } from "../workflowitem/intent/listPermissions";
-import { revokeWorkflowitemPermission } from "../workflowitem/intent/revokePermission";
-import { getWorkflowitemList } from "../workflowitem/list";
+import { assignWorkflowitem } from "../workflowitem/controller/assign";
+import { closeWorkflowitem } from "../workflowitem/controller/close";
+import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
+import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
+import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
+import { getWorkflowitemList } from "../workflowitem/controller/list";
+import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
@@ -358,6 +361,48 @@ export const createRouter = (
   });
 
   /**
+   * @api {post} /project.update Update
+   * @apiVersion 1.0.0
+   * @apiName project.update
+   * @apiGroup Project
+   * @apiPermission user
+   * @apiDescription Partially update a project. Only properties mentioned in the
+   * request body are touched, others are not affected. The assigned user will be
+   * notified about the change.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} [data.displayName]
+   * @apiParam {String} [data.description]
+   * @apiParam {String} [data.amount]
+   * @apiParam {String} [data.currency]
+   * @apiParam {String} [data.thumbnail]
+   * @apiParam {String} data.projectId The project to be modified.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "displayName": "My Project",
+   *       "description": "",
+   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
+   *     }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
+  router.post("/project.update", (req: AuthenticatedRequest, res) => {
+    updateProject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
    * @api {post} /project.close Close
    * @apiVersion 1.0.0
    * @apiName project.close
@@ -584,6 +629,49 @@ export const createRouter = (
   });
 
   /**
+   * @api {post} /subproject.update Update
+   * @apiVersion 1.0.0
+   * @apiName subproject.update
+   * @apiGroup Subproject
+   * @apiPermission user
+   * @apiDescription Partially update a subproject. Only properties mentioned in the
+   * request body are touched, others are not affected. The assigned user will be
+   * notified about the change.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} [data.displayName]
+   * @apiParam {String} [data.description]
+   * @apiParam {String} [data.amount]
+   * @apiParam {String} [data.currency]
+   * @apiParam {String} data.subprojectId The subproject to be modified.
+   * @apiParam {String} data.projectId The project the subproject belongs to.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "displayName": "My Subproject",
+   *       "description": "",
+   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
+   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
+   *     }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
+  router.post("/subproject.update", (req: AuthenticatedRequest, res) => {
+    updateSubproject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
    * @api {post} /subproject.close Close
    * @apiVersion 1.0.0
    * @apiName subproject.close
@@ -800,6 +888,52 @@ export const createRouter = (
    */
   router.post("/workflowitem.assign", (req: AuthenticatedRequest, res) => {
     assignWorkflowitem(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /workflowitem.update Update
+   * @apiVersion 1.0.0
+   * @apiName workflowitem.update
+   * @apiGroup Workflowitem
+   * @apiPermission user
+   * @apiDescription Partially update a workflowitem. Only properties mentioned in the
+   * request body are touched, others are not affected. The assigned user will be
+   * notified about the change.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} [data.displayName]
+   * @apiParam {String} [data.amount]
+   * @apiParam {String} [data.currency]
+   * @apiParam {String} [data.amountType]
+   * @apiParam {String} [data.description]
+   * @apiParam {String} data.workflowitemId The workflowitem to be modified.
+   * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
+   * @apiParam {String} data.projectId The project the workflowitem belongs to.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "displayName": "My Workflowitem",
+   *       "description": "",
+   *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
+   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
+   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
+   *     }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
+  router.post("/workflowitem.update", (req: AuthenticatedRequest, res) => {
+    updateWorkflowitem(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

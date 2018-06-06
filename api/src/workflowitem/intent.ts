@@ -1,15 +1,15 @@
-import * as Workflowitem from "..";
-import { throwIfUnauthorized } from "../../authz";
-import { allIntents } from "../../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { throwIfUnauthorized } from "../authz";
+import { allIntents } from "../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, value } from "../lib/validation";
+import { MultichainClient } from "../multichain";
+import * as Workflowitem from "./model/Workflowitem";
 
-export const changeWorkflowitemPermission = async (
+export async function changeWorkflowitemPermission(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
   userIntent: "workflowitem.intent.grantPermission" | "workflowitem.intent.revokePermission",
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -42,4 +42,4 @@ export const changeWorkflowitemPermission = async (
       data: "OK",
     },
   ];
-};
+}
