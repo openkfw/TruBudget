@@ -66,3 +66,16 @@ Cypress.Commands.add("fetchProjects", () => {
     .its("body")
     .then(body => Promise.resolve(body.data.items));
 });
+
+Cypress.Commands.add("fetchSubprojects", projectId => {
+  cy
+    .request({
+      url: `${baseUrl}/api/project.viewDetails?projectId=${projectId}`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .its("body")
+    .then(body => Promise.resolve(body.data.subprojects));
+});
