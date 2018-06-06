@@ -1,11 +1,11 @@
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { MultichainClient } from "../multichain";
-import * as Project from "./model/Project";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { MultichainClient } from "../../multichain";
+import * as Project from "../model/Project";
 
-export const getProjectList = async (
+export async function getProjectList(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const projects = await Project.get(multichain, req.token);
 
   return [
@@ -17,4 +17,4 @@ export const getProjectList = async (
       },
     },
   ];
-};
+}

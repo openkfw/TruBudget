@@ -9,31 +9,36 @@ import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
-import * as Subproject from "../model/Subproject";
+import * as Project from "../model/Project";
 
-export async function updateSubproject(
+export async function updateProject(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
-  const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
-  const theUpdate: Subproject.Update = {};
-  inheritDefinedProperties(theUpdate, input, ["displayName", "description", "amount", "currency"]);
+  const theUpdate: Project.Update = {};
+  inheritDefinedProperties(theUpdate, input, [
+    "displayName",
+    "description",
+    "amount",
+    "currency",
+    "thumbnail",
+  ]);
 
   if (isEmpty(theUpdate)) {
     return ok();
   }
 
-  const userIntent: Intent = "subproject.update";
+  const userIntent: Intent = "project.update";
 
-  // Is the user allowed to update a subproject's basic data?
+  // Is the user allowed to update a project's basic data?
   await throwIfUnauthorized(
     req.token,
     userIntent,
-    await Subproject.getPermissions(multichain, projectId, subprojectId),
+    await Project.getPermissions(multichain, projectId),
   );
 
   const publishedEvent = await sendEventToDatabase(
@@ -42,13 +47,11 @@ export async function updateSubproject(
     userIntent,
     theUpdate,
     projectId,
-    subprojectId,
   );
 
-  // If the suproject is assigned to someone else, that person is notified about the
+  // If the project is assigned to someone else, that person is notified about the
   // change:
   const resourceDescriptions: Notification.NotificationResourceDescription[] = [
-    { id: subprojectId, type: "subproject" },
     { id: projectId, type: "project" },
   ];
   const createdBy = req.token.userId;
@@ -57,11 +60,10 @@ export async function updateSubproject(
     multichain,
     resourceDescriptions,
     createdBy,
-    await Subproject.get(
+    await Project.get(
       multichain,
       req.token,
       projectId,
-      subprojectId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
     ),
     publishedEvent,
@@ -79,9 +81,8 @@ async function sendEventToDatabase(
   multichain: MultichainClient,
   token: AuthToken,
   userIntent: Intent,
-  theUpdate: Subproject.Update,
+  theUpdate: Project.Update,
   projectId: string,
-  subprojectId: string,
 ): Promise<Event> {
   const event = {
     intent: userIntent,
@@ -90,6 +91,6 @@ async function sendEventToDatabase(
     dataVersion: 1,
     data: theUpdate,
   };
-  const publishedEvent = await Subproject.publish(multichain, projectId, subprojectId, event);
+  const publishedEvent = await Project.publish(multichain, projectId, event);
   return publishedEvent;
 }

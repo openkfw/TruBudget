@@ -100,7 +100,7 @@ export const provisionFromData = async projectTemplate => {
   await axios.post("/global.createProject", {
     project: {
       displayName: projectTemplate.displayName,
-      description: projectTemplate.description,
+      description: "FAILED UPDATE?",
       amount: projectTemplate.amount,
       assignee: projectTemplate.assignee,
       currency: projectTemplate.currency,
@@ -109,6 +109,12 @@ export const provisionFromData = async projectTemplate => {
   const project = await findProject(projectTemplate);
 
   await grantPermissions(projectTemplate.permissions, project.data.id);
+
+  // Testing updates:
+  await axios.post("/project.update", {
+    projectId: project.data.id,
+    description: projectTemplate.description || "",
+  });
 
   for (const subprojectTemplate of projectTemplate.subprojects) {
     await provisionSubproject(project, subprojectTemplate);

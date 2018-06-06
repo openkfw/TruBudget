@@ -1,9 +1,9 @@
-import { throwIfUnauthorized } from "../../authz";
-import { allIntents } from "../../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
-import * as Project from "../model/Project";
+import { throwIfUnauthorized } from "../authz";
+import { allIntents } from "../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, value } from "../lib/validation";
+import { MultichainClient } from "../multichain";
+import * as Project from "./model/Project";
 
 export async function changeProjectPermission(
   multichain: MultichainClient,
