@@ -32,7 +32,8 @@ import {
   closeWorkflowItem,
   showWorkflowItemAssignee,
   showSubProjectAssignee,
-  fetchSubprojectHistory
+  fetchSubprojectHistory,
+  closeSubproject
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -71,6 +72,13 @@ class WorkflowContainer extends Component {
     this.props.createWorkflowItem(this.projectId, this.subProjectId, workflow, documents);
   };
 
+  closeSubproject = () => {
+    const openWorkflowItems = this.props.workflowItems.find(wItem => wItem.data.status === "open");
+    if (!openWorkflowItems) {
+      this.props.closeSubproject(this.projectId, this.subProjectId);
+    }
+  };
+
   closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subProjectId, wId);
 
   render() {
@@ -83,6 +91,7 @@ class WorkflowContainer extends Component {
             {...this.props}
             canViewPermissions={canViewPermissions}
             canAssignSubproject={canAssignSubproject}
+            closeSubproject={this.closeSubproject}
           />
           <SubprojectPermissionsContainer
             projectId={this.projectId}
@@ -131,6 +140,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     openWorkflowDetails: txid => dispatch(showWorkflowDetails(true, txid)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
+    closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
     showWorkflowItemAssignee: (workflowId, assignee) => dispatch(showWorkflowItemAssignee(workflowId, assignee)),
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),

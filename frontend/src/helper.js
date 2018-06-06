@@ -79,7 +79,7 @@ export const tsToString = ts => {
 export const statusMapping = status => {
   switch (status) {
     case "closed":
-      return strings.common.done;
+      return strings.common.closed;
     case "open":
       return strings.common.open;
     default:

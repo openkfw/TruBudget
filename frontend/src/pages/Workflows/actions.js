@@ -77,6 +77,9 @@ export const ASSIGN_SUBPROJECT_SUCCESS = "ASSIGN_SUBPROJECT_SUCCESS";
 export const CLOSE_WORKFLOWITEM = "CLOSE_WORKFLOWITEM";
 export const CLOSE_WORKFLOWITEM_SUCCESS = "CLOSE_WORKFLOWITEM_SUCCESS";
 
+export const CLOSE_SUBPROJECT = "CLOSE_SUBPROJECT";
+export const CLOSE_SUBPROJECT_SUCCESS = "CLOSE_SUBPROJECT_SUCCESS";
+
 export const SHOW_WORKFLOW_ASSIGNEES = "SHOW_WORKFLOW_ASSIGNEES";
 export const HIDE_WORKFLOW_ASSIGNEES = "HIDE_WORKFLOW_ASSIGNEES";
 
@@ -444,6 +447,14 @@ export function postSubProjectEdit(parent, streamName, status, amount) {
   };
 }
 
+export function closeSubproject(projectId, subprojectId, showLoading = false) {
+  return {
+    type: CLOSE_SUBPROJECT,
+    projectId,
+    subprojectId,
+    showLoading
+  };
+}
 export function closeWorkflowItem(projectId, subprojectId, workflowitemId, showLoading = false) {
   return {
     type: CLOSE_WORKFLOWITEM,

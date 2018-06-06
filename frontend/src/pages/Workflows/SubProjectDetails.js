@@ -204,6 +204,7 @@ const SubProjectDetails = ({
   users,
   showSubProjectPermissions,
   showSubProjectAssignee,
+  closeSubproject,
   ...props
 }) => {
   const amountString = toAmountString(amount, currency);
@@ -236,7 +237,10 @@ const SubProjectDetails = ({
           <Divider />
           <ListItem disabled={false}>
             <ListItemIcon>{statusIcon}</ListItemIcon>
-            <ListItemText primary={mappedStatus} secondary={strings.common.status} />
+            <ListItemText
+              primary={<Status status={mappedStatus} close={closeSubproject} />}
+              secondary={strings.common.status}
+            />
           </ListItem>
           <Divider />
           <ListItem disabled={false}>

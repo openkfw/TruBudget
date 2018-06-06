@@ -11,6 +11,7 @@ const en = {
     created: "Created",
     status: "Status",
     actions: "Actions",
+    closed: "Closed",
     assigned: "Assigned",
     not_assigned: "Not assigned",
     not_assigned_budget: "Not Assigned Budget",

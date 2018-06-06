@@ -12,7 +12,8 @@ import {
   storeSubProjectComment,
   showProjectPermissions,
   showProjectAssignees,
-  fetchProjectHistory
+  fetchProjectHistory,
+  closeProject
 } from "./actions";
 
 import SubProjects from "./SubProjects";
@@ -27,12 +28,23 @@ import { fetchUser } from "../Login/actions";
 import ProjectHistoryContainer from "./ProjectHistoryContainer";
 
 class SubProjectsContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.projectId = this.props.location.pathname.split("/")[2];
+  }
+
   componentWillMount() {
-    const projectId = this.props.location.pathname.split("/")[2];
-    this.props.setSelectedView(projectId, "project");
-    this.props.fetchAllProjectDetails(projectId, true);
+    this.props.setSelectedView(this.projectId, "project");
+    this.props.fetchAllProjectDetails(this.projectId, true);
     this.props.fetchUser();
   }
+
+  closeProject = () => {
+    const openSubprojects = this.props.subProjects.find(subproject => subproject.data.status === "open");
+    if (!openSubprojects) {
+      this.props.closeProject(this.projectId);
+    }
+  };
 
   render() {
     const canViewPermissions = this.props.allowedIntents.indexOf("project.intent.listPermissions") > -1;
@@ -42,7 +54,12 @@ class SubProjectsContainer extends Component {
       <div>
         <div style={globalStyles.innerContainer}>
           <ProjectPermissionsContainer title={strings.project.project_permissions_title} />
-          <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} canAssignProject={canAssignProject} />
+          <ProjectDetails
+            {...this.props}
+            canViewPermissions={canViewPermissions}
+            canAssignProject={canAssignProject}
+            closeProject={this.closeProject}
+          />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
           <ProjectHistoryContainer />
         </div>
@@ -72,7 +89,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     showProjectPermissions: () => dispatch(showProjectPermissions()),
     showProjectAssignees: () => dispatch(showProjectAssignees()),
-    fetchUser: () => dispatch(fetchUser(true))
+    fetchUser: () => dispatch(fetchUser(true)),
+    closeProject: pId => dispatch(closeProject(pId, true))
   };
 };
 

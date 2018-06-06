@@ -37,6 +37,9 @@ export const ASSIGN_PROJECT_SUCCESS = "ASSIGN_PROJECT_SUCCESS";
 export const FETCH_PROJECT_HISTORY = "FETCH_PROJECT_HISTORY";
 export const FETCH_PROJECT_HISTORY_SUCCESS = "FETCH_PROJECT_HISTORY_SUCCESS";
 
+export const CLOSE_PROJECT = "CLOSE_PROJECT";
+export const CLOSE_PROJECT_SUCCESS = "CLOSE_PROJECT_SUCCESS";
+
 export function fetchAllProjectDetails(projectId, showLoading = false) {
   return {
     type: FETCH_ALL_PROJECT_DETAILS,
@@ -168,5 +171,13 @@ export function storeSubProjectComment(comment) {
   return {
     type: SUBPROJECT_COMMENT,
     comment: comment
+  };
+}
+
+export function closeProject(projectId, showLoading = false) {
+  return {
+    type: CLOSE_PROJECT,
+    projectId,
+    showLoading
   };
 }

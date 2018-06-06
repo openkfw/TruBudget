@@ -143,6 +143,7 @@ const ProjectDetails = ({
   canViewPermissions,
   showProjectPermissions,
   showProjectAssignees,
+  closeProject,
   ...rest
 }) => {
   const {
@@ -171,7 +172,10 @@ const ProjectDetails = ({
           <Divider />
           <ListItem>
             <ListItemIcon>{statusIconMapping[projectStatus]}</ListItemIcon>
-            <ListItemText primary={statusMapping(projectStatus)} secondary={strings.common.status} />
+            <ListItemText
+              primary={<Status status={statusMapping(projectStatus)} close={closeProject} />}
+              secondary={strings.common.status}
+            />
           </ListItem>
           <Divider />
           <ListItem>

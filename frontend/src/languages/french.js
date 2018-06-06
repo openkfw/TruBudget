@@ -30,7 +30,8 @@ const fr = {
     assignees: "Cessionnaire(s)",
     approver: "Autorisé",
     bank: "Banque",
-    assignee: "Cessionnaire"
+    assignee: "Cessionnaire",
+    closed: "French: Closed"
   },
 
   login: {
