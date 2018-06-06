@@ -29,9 +29,20 @@ class SubProjectPermissionsContainer extends Component {
     this.props.revoke(this.props.projectId, this.props.subProjectId, permission, user);
   };
 
+  isEnabled(allowedIntents) {
+    const necessaryIntents = ["subproject.intent.grantPermission", "subproject.intent.revokePermission"];
+    return necessaryIntents.some(i => allowedIntents.includes(i));
+  }
+
   render() {
     return (
-      <PermissionsScreen {...this.props} grant={this.grant} revoke={this.revoke} intentOrder={subProjectIntentOrder} />
+      <PermissionsScreen
+        {...this.props}
+        grant={this.grant}
+        revoke={this.revoke}
+        intentOrder={subProjectIntentOrder}
+        disabled={!this.isEnabled(this.props.allowedIntents)}
+      />
     );
   }
 }
@@ -39,6 +50,7 @@ class SubProjectPermissionsContainer extends Component {
 const mapStateToProps = state => {
   return {
     permissions: state.getIn(["workflow", "permissions"]),
+    allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     user: state.getIn(["login", "user"]),
     show: state.getIn(["workflow", "showSubProjectPermissions"]),
     id: state.getIn(["workflow", "id"]),

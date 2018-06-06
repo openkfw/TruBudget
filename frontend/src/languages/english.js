@@ -243,6 +243,7 @@ const en = {
   },
 
   permissions: {
+    read_only: "Read-only permissions",
     view: "View permissions",
     write: "Write permissions",
     admin: "Admin permissions",

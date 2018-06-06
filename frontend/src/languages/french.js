@@ -207,6 +207,7 @@ const fr = {
     workflowitem_assign: "French: {0} assigned workflowitem {1} to {2}"
   },
   permissions: {
+    read_only: "French: Read-only permissions",
     view: "French: View permissions",
     write: "French: Write permissions",
     admin: "French: Admin permissions",

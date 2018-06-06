@@ -203,6 +203,7 @@ const de = {
     workflowitem_assign: "German: {0} assigned workflowitem {1} to {2}"
   },
   permissions: {
+    read_only: "German: Read-only permissions",
     view: "German: View permissions",
     write: "German: Write permissions",
     admin: "German: Admin permissions",

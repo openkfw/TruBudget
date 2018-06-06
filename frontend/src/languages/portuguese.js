@@ -242,6 +242,7 @@ const pt = {
     workflowitem_assign: "Portuguese: {0} assigned workflowitem {1} to {2}"
   },
   permissions: {
+    read_only: "Portuguese: Read-only permissions",
     view: "Portuguese: View permissions",
     write: "Portuguese: Write permissions",
     admin: "Pt :Admin permissions",

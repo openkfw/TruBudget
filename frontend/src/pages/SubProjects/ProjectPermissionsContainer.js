@@ -16,14 +16,26 @@ class ProjectPermissionsContainer extends Component {
     }
   }
 
+  isEnabled(allowedIntents) {
+    const necessaryIntents = ["project.intent.grantPermission", "project.intent.revokePermission"];
+    return necessaryIntents.some(i => allowedIntents.includes(i));
+  }
+
   render() {
-    return <PermissionsScreen {...this.props} intentOrder={projectIntentOrder} />;
+    return (
+      <PermissionsScreen
+        {...this.props}
+        intentOrder={projectIntentOrder}
+        disabled={!this.isEnabled(this.props.allowedIntents)}
+      />
+    );
   }
 }
 
 const mapStateToProps = state => {
   return {
     permissions: state.getIn(["detailview", "permissions"]),
+    allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     user: state.getIn(["login", "user"]),
     show: state.getIn(["detailview", "permissionDialogShown"]),
     id: state.getIn(["detailview", "id"]),

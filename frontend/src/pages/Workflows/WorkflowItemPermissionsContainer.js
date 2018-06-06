@@ -28,6 +28,13 @@ class WorkflowItemPermissionsContainer extends Component {
     this.props.revoke(this.props.projectId, this.props.subProjectId, this.props.wId, permission, user);
   };
 
+  isEnabled = (wf, selection) => {
+    const item = wf.filter(i => i.data.id === selection);
+    const allowedIntents = item.length > 0 ? item[0].allowedIntents : [];
+    const necessaryIntents = ["workflowitem.intent.grantPermission", "workflowitem.intent.revokePermission"];
+    return necessaryIntents.some(i => allowedIntents.includes(i));
+  };
+
   render() {
     return (
       <PermissionsScreen
@@ -35,6 +42,7 @@ class WorkflowItemPermissionsContainer extends Component {
         grant={this.grant}
         revoke={this.revoke}
         intentOrder={workflowItemIntentOrder}
+        disabled={!this.isEnabled(this.props.workflowItems, this.props.wId)}
       />
     );
   }
@@ -43,6 +51,7 @@ class WorkflowItemPermissionsContainer extends Component {
 const mapStateToProps = state => {
   return {
     permissions: state.getIn(["workflow", "permissions"]),
+    workflowItems: state.getIn(["workflow", "workflowItems"]),
     user: state.getIn(["login", "user"]),
     show: state.getIn(["workflow", "showWorkflowPermissions"]),
     wId: state.getIn(["workflow", "workflowItemReference"]),
