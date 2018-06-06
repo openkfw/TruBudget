@@ -14,6 +14,7 @@ import { grantProjectPermission } from "../project/controller/intent.grantPermis
 import { getProjectPermissions } from "../project/controller/intent.listPermissions";
 import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
 import { getProjectList } from "../project/controller/list";
+import { updateProject } from "../project/controller/update";
 import { getProjectDetails } from "../project/controller/viewDetails";
 import { getProjectHistory } from "../project/controller/viewHistory";
 import { assignSubproject } from "../subproject/controller/assign";
@@ -355,6 +356,48 @@ export const createRouter = (
    */
   router.post("/project.assign", (req: AuthenticatedRequest, res) => {
     assignProject(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /project.update Update
+   * @apiVersion 1.0.0
+   * @apiName project.update
+   * @apiGroup Project
+   * @apiPermission user
+   * @apiDescription Partially update a project. Only properties mentioned in the
+   * request body are touched, others are not affected. The assigned user will be
+   * notified about the change.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} [data.displayName]
+   * @apiParam {String} [data.description]
+   * @apiParam {String} [data.amount]
+   * @apiParam {String} [data.currency]
+   * @apiParam {String} [data.thumbnail]
+   * @apiParam {String} data.projectId The project to be modified.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "displayName": "My Project",
+   *       "description": "",
+   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
+   *     }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
+  router.post("/project.update", (req: AuthenticatedRequest, res) => {
+    updateProject(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
