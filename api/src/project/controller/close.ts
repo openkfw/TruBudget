@@ -1,19 +1,19 @@
-import { throwIfUnauthorized } from "../authz";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { Event } from "../multichain/event";
-import { notifyAssignee } from "../notification/create";
-import * as Notification from "../notification/model/Notification";
-import * as Subproject from "../subproject/model/Subproject";
-import * as Project from "./model/Project";
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { Event } from "../../multichain/event";
+import { notifyAssignee } from "../../notification/create";
+import * as Notification from "../../notification/model/Notification";
+import * as Subproject from "../../subproject/model/Subproject";
+import * as Project from "../model/Project";
 
-export const closeProject = async (
+export async function closeProject(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -57,7 +57,7 @@ export const closeProject = async (
   );
 
   return [200, { apiVersion: "1.0", data: "OK" }];
-};
+}
 
 async function sendEventToDatabase(
   multichain: MultichainClient,

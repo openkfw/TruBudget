@@ -7,15 +7,15 @@ import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
 import { getNotificationList } from "../notification/controller/list";
 import { markNotificationRead } from "../notification/controller/markRead";
-import { assignProject } from "../project/assign";
-import { closeProject } from "../project/close";
-import { createSubproject } from "../project/createSubproject";
-import { grantProjectPermission } from "../project/intent/grantPermission";
-import { getProjectPermissions } from "../project/intent/listPermissions";
-import { revokeProjectPermission } from "../project/intent/revokePermission";
-import { getProjectList } from "../project/list";
-import { getProjectDetails } from "../project/viewDetails";
-import { getProjectHistory } from "../project/viewHistory";
+import { assignProject } from "../project/controller/assign";
+import { closeProject } from "../project/controller/close";
+import { createSubproject } from "../project/controller/createSubproject";
+import { grantProjectPermission } from "../project/controller/intent.grantPermission";
+import { getProjectPermissions } from "../project/controller/intent.listPermissions";
+import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
+import { getProjectList } from "../project/controller/list";
+import { getProjectDetails } from "../project/controller/viewDetails";
+import { getProjectHistory } from "../project/controller/viewHistory";
 import { assignSubproject } from "../subproject/controller/assign";
 import { closeSubproject } from "../subproject/controller/close";
 import { createWorkflowitem } from "../subproject/controller/createWorkflowitem";
@@ -23,6 +23,7 @@ import { grantSubprojectPermission } from "../subproject/controller/intent.grant
 import { getSubprojectPermissions } from "../subproject/controller/intent.listPermissions";
 import { revokeSubprojectPermission } from "../subproject/controller/intent.revokePermission";
 import { getSubprojectList } from "../subproject/controller/list";
+import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { authenticateUser } from "../user/authenticate";
@@ -35,7 +36,6 @@ import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
-import { updateSubproject } from "../subproject/controller/update";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;

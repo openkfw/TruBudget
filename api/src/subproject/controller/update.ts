@@ -29,7 +29,7 @@ export async function updateSubproject(
 
   const userIntent: Intent = "subproject.update";
 
-  // Is the user allowed to update a workflowitem's basic data?
+  // Is the user allowed to update a subproject's basic data?
   await throwIfUnauthorized(
     req.token,
     userIntent,

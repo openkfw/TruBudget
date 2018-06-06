@@ -56,14 +56,15 @@ export async function publish(
     dataVersion,
     data,
   };
+  const streamName = projectId;
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
 
   const publishEvent = () => {
-    console.log(`Publishing ${intent} to ${projectId}/${projectSelfKey}`);
+    console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
     return multichain
       .getRpcClient()
-      .invoke("publish", projectId, projectSelfKey, {
-        json: event,
-      })
+      .invoke("publish", streamName, streamItemKey, streamItem)
       .then(() => event);
   };
 
@@ -71,7 +72,7 @@ export async function publish(
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
       return multichain
-        .getOrCreateStream({ kind: "project", name: projectId })
+        .getOrCreateStream({ kind: "project", name: streamName })
         .then(() => publishEvent());
     } else {
       throw err;

@@ -1,18 +1,18 @@
-import { throwIfUnauthorized } from "../authz/index";
-import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { throwIfUnauthorized } from "../../authz/index";
+import Intent from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import { AllowedUserGroupsByIntent } from "../../authz/types";
 import {
   AuthenticatedRequest,
   HttpResponse,
   throwParseError,
   throwParseErrorIfUndefined,
-} from "../httpd/lib";
-import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
-import { MultichainClient } from "../multichain/Client.h";
-import { randomString } from "../multichain/hash";
-import * as Subproject from "../subproject/model/Subproject";
-import * as Project from "./model/Project";
+} from "../../httpd/lib";
+import { isNonemptyString, isUserOrUndefined, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain/Client.h";
+import { randomString } from "../../multichain/hash";
+import * as Subproject from "../../subproject/model/Subproject";
+import * as Project from "../model/Project";
 
 export async function createSubproject(
   multichain: MultichainClient,

@@ -1,9 +1,9 @@
-import { throwIfUnauthorized } from "../../authz";
-import { allIntents } from "../../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
-import * as Workflowitem from "../model/Workflowitem";
+import { throwIfUnauthorized } from "../authz";
+import { allIntents } from "../authz/intents";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, value } from "../lib/validation";
+import { MultichainClient } from "../multichain";
+import * as Workflowitem from "./model/Workflowitem";
 
 export async function changeWorkflowitemPermission(
   multichain: MultichainClient,

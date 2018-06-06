@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { MultichainClient } from "../../multichain";
-import { changeSubprojectPermission } from "./intent";
+import { changeSubprojectPermission } from "../intent";
 
 export async function revokeSubprojectPermission(
   multichain: MultichainClient,
