@@ -36,13 +36,14 @@ describe("Project Permissions", function() {
       .then($list => {
         const firstUnchecked = $list.find("input:not(:checked)").first();
         // Use timeout to wait for animation to finish
+        const options = { timeout: 60000 };
         cy
-          .wrap(firstUnchecked, { timeout: 60000 })
-          .click()
+          .wrap(firstUnchecked, options)
+          .click(options)
           .should("be.checked");
         cy
-          .wrap(firstUnchecked, { timeout: 60000 })
-          .click()
+          .wrap(firstUnchecked, options)
+          .click(options)
           .should("not.be.checked");
       });
   });
