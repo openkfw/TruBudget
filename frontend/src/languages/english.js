@@ -227,13 +227,18 @@ const en = {
 
     project_create: "{0} created project {1}",
     project_grantPermission: "{0} granted permission {1} to {2}",
+    project_revokePermission: "{0} revoked permission {1} from {2}",
     project_createSubproject: "{0} created subproject {1}",
     subproject_assign: "{0} assigned project {1} to {2}",
     subproject_close: "{0} closed subproject {1}",
+    subproject_grantPermission_details: "{0} granted permission {1} to {2} on {3}",
+    subproject_revokePermission_details: "{0} revoked permission {1} of {3} from {2}",
     subproject_grantPermission: "{0} granted permission {1} to {2}",
-    subproject_createWorkflowitem: "{0} created workflow item {1}",
-    workflowitem_close: "{0} closed workflow item {1}",
-    workflowitem_grantPermission: "{0} granted permission {1} to {2}",
+    subproject_revokePermission: "{0} revoked permission {1} from {2}",
+    subproject_createWorkflowitem: "{0} created workflowitem {1}",
+    workflowitem_close: "{0} closed workflowitem {1}",
+    workflowitem_grantPermission: "{0} granted permission {1} to {2} on {3}",
+    workflowitem_revokePermission: "{0} revoked permission {1} of {3} from {2}",
     workflowitem_assign: "{0} assigned workflowitem {1} to {2}"
   },
 

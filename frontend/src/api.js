@@ -93,11 +93,17 @@ class Api {
   grantSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
     axios.post(`/subproject.intent.grantPermission`, { projectId, subprojectId, intent, userId });
 
+  revokeSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
+    axios.post(`/subproject.intent.revokePermission`, { projectId, subprojectId, intent, userId });
+
   listWorkflowItemPermissions = (projectId, workflowitemId) =>
     axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
 
   grantWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, userId) =>
     axios.post(`/workflowitem.intent.grantPermission`, { projectId, subprojectId, workflowitemId, intent, userId });
+
+  revokeWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, userId) =>
+    axios.post(`/workflowitem.intent.revokePermission`, { projectId, subprojectId, workflowitemId, intent, userId });
 
   assignWorkflowItem = (projectId, subprojectId, workflowitemId, userId) =>
     axios.post(`/workflowitem.assign`, { projectId, subprojectId, workflowitemId, userId });

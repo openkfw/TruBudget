@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
-import { fetchWorkflowItemPermissions, grantWorkflowItemPermission, hideWorkflowItemPermissions } from "./actions";
+import {
+  fetchWorkflowItemPermissions,
+  grantWorkflowItemPermission,
+  hideWorkflowItemPermissions,
+  revokeWorkflowItemPermission
+} from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
@@ -16,13 +21,21 @@ class WorkflowItemPermissionsContainer extends Component {
     }
   }
 
-  grantPermission = (_, permission, user) => {
-    this.props.grantPermission(this.props.projectId, this.props.subProjectId, this.props.wId, permission, user);
+  grant = (_, permission, user) => {
+    this.props.grant(this.props.projectId, this.props.subProjectId, this.props.wId, permission, user);
+  };
+  revoke = (_, permission, user) => {
+    this.props.revoke(this.props.projectId, this.props.subProjectId, this.props.wId, permission, user);
   };
 
   render() {
     return (
-      <PermissionsScreen {...this.props} grantPermission={this.grantPermission} intentOrder={workflowItemIntentOrder} />
+      <PermissionsScreen
+        {...this.props}
+        grant={this.grant}
+        revoke={this.revoke}
+        intentOrder={workflowItemIntentOrder}
+      />
     );
   }
 }
@@ -40,8 +53,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onClose: () => dispatch(hideWorkflowItemPermissions()),
-    grantPermission: (pId, sId, wId, permission, user) =>
+    grant: (pId, sId, wId, permission, user) =>
       dispatch(grantWorkflowItemPermission(pId, sId, wId, permission, user, true)),
+    revoke: (pId, sId, wId, permission, user) =>
+      dispatch(revokeWorkflowItemPermission(pId, sId, wId, permission, user, true)),
     fetchWorkflowItemPermissions: (pId, wId, showLoading) =>
       dispatch(fetchWorkflowItemPermissions(pId, wId, showLoading)),
     fetchUser: () => dispatch(fetchUser(true))

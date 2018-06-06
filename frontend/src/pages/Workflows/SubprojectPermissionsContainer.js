@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
-import { fetchSubProjectPermissions, hideSubProjectPermissions, grantSubProjectPermission } from "./actions";
+import {
+  fetchSubProjectPermissions,
+  hideSubProjectPermissions,
+  grantSubProjectPermission,
+  revokeSubProjectPermission
+} from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
@@ -16,13 +21,17 @@ class SubProjectPermissionsContainer extends Component {
     }
   }
 
-  grantPermission = (_, permission, user) => {
-    this.props.grantPermission(this.props.projectId, this.props.subProjectId, permission, user);
+  grant = (_, permission, user) => {
+    this.props.grant(this.props.projectId, this.props.subProjectId, permission, user);
+  };
+
+  revoke = (_, permission, user) => {
+    this.props.revoke(this.props.projectId, this.props.subProjectId, permission, user);
   };
 
   render() {
     return (
-      <PermissionsScreen {...this.props} grantPermission={this.grantPermission} intentOrder={subProjectIntentOrder} />
+      <PermissionsScreen {...this.props} grant={this.grant} revoke={this.revoke} intentOrder={subProjectIntentOrder} />
     );
   }
 }
@@ -40,8 +49,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onClose: () => dispatch(hideSubProjectPermissions()),
-    grantPermission: (pId, sId, permission, user) =>
-      dispatch(grantSubProjectPermission(pId, sId, permission, user, true)),
+    grant: (pId, sId, permission, user) => dispatch(grantSubProjectPermission(pId, sId, permission, user, true)),
+    revoke: (pId, sId, permission, user) => dispatch(revokeSubProjectPermission(pId, sId, permission, user, true)),
     fetchSubProjectPermissions: (pId, sId, showLoading) => dispatch(fetchSubProjectPermissions(pId, sId, showLoading)),
     fetchUser: () => dispatch(fetchUser(true))
   };

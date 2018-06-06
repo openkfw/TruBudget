@@ -55,7 +55,11 @@ import {
   ASSIGN_SUBPROJECT_SUCCESS,
   ASSIGN_SUBPROJECT,
   FETCH_SUBPROJECT_HISTORY,
-  FETCH_SUBPROJECT_HISTORY_SUCCESS
+  FETCH_SUBPROJECT_HISTORY_SUCCESS,
+  REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
+  REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+  REVOKE_SUBPROJECT_PERMISSION,
+  REVOKE_WORKFLOWITEM_PERMISSION
 } from "./pages/Workflows/actions";
 
 import {
@@ -724,6 +728,25 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
   }, showLoading);
 }
 
+export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, user);
+    //const { data } = yield callApi(api.listProjectIntents, projectId)
+    //const history = yield callApi(api.fetchHistory, projectId);
+    //const roles = yield callApi(api.fetchRoles);
+    yield put({
+      type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_SUBPROJECT_PERMISSIONS,
+      projectId,
+      subprojectId,
+      showLoading: true
+    });
+  }, showLoading);
+}
+
 export function* grantWorkflowItemPermissionsSaga({
   projectId,
   subprojectId,
@@ -737,6 +760,31 @@ export function* grantWorkflowItemPermissionsSaga({
 
     yield put({
       type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_WORKFLOWITEM_PERMISSIONS,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      showLoading: true
+    });
+  }, showLoading);
+}
+
+export function* revokeWorkflowItemPermissionsSaga({
+  projectId,
+  subprojectId,
+  workflowitemId,
+  intent,
+  user,
+  showLoading
+}) {
+  yield execute(function*() {
+    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
+
+    yield put({
+      type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
     });
 
     yield put({
@@ -974,8 +1022,14 @@ export function* watchRevokePermissions() {
 export function* watchGrantSubProjectPermissions() {
   yield takeEvery(GRANT_SUBPROJECT_PERMISSION, grantSubProjectPermissionsSaga);
 }
+export function* watchRevokeSubProjectPermissions() {
+  yield takeEvery(REVOKE_SUBPROJECT_PERMISSION, revokeSubProjectPermissionsSaga);
+}
 export function* watchGrantWorkflowitemPermissions() {
   yield takeEvery(GRANT_WORKFLOWITEM_PERMISSION, grantWorkflowItemPermissionsSaga);
+}
+export function* watchRevokeWorkflowitemPermissions() {
+  yield takeEvery(REVOKE_WORKFLOWITEM_PERMISSION, revokeWorkflowItemPermissionsSaga);
 }
 export function* watchCloseWorkflowItem() {
   yield takeEvery(CLOSE_WORKFLOWITEM, closeWorkflowItemSaga);
@@ -1015,6 +1069,7 @@ export default function* rootSaga() {
       watchFetchAllSubprojectDetails(),
       watchFetchSubProjectPermissions(),
       watchGrantSubProjectPermissions(),
+      watchRevokeSubProjectPermissions(),
       watchAssignSubproject(),
       watchFetchSubprojectHistory(),
 
@@ -1022,6 +1077,7 @@ export default function* rootSaga() {
       watchCreateWorkflowItem(),
       watchFetchWorkflowItemPermissions(),
       watchGrantWorkflowitemPermissions(),
+      watchRevokeWorkflowitemPermissions(),
       watchCloseWorkflowItem(),
       watchAssignWorkflowItem(),
 
@@ -1029,27 +1085,6 @@ export default function* rootSaga() {
       watchFetchAllNotifications(),
       watchFetchNotificationsWithId(),
       watchMarkNotificationAsRead()
-
-      // watchFetchPeers(),
-      // watchFetchProjects(),
-      // watchFetchProjectDetails(),
-      // watchEditWorkflowItem(),
-      // watchFetchNodeInformation(),
-      // watchFetchWorkflowItems(),
-      // watchFetchRoles(),
-      // watchAdminLogin(),
-      // watchFetchUser(),
-      // watchAdminLogout(),
-      // watchFetchStreamNames(),
-      // watchFetchHistory(),
-      // watchPostWorkflowSort(),
-      // watchEditSubProject(),
-      // watchValidateDocument(),
-      // watchAddDocument(),
-      // watchFetchUpdates(),
-      // watchFetchNodePermissions(),
-      // watchAddUser(),
-      // watchAddRole(),
     ];
   } catch (error) {
     console.log(error);

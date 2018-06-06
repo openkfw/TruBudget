@@ -192,13 +192,18 @@ const fr = {
 
     project_create: "French: {0} created project {1}",
     project_grantPermission: "French: {0} granted permission {1} to {2}",
+    project_revokePermission: "French: {0} revoked permission {1} from {2}",
     project_createSubproject: "French: {0} created subproject {1}",
     subproject_assign: "French: {0} assigned project {1} to {2}",
     subproject_close: "French: {0} closed subproject {1}",
+    subproject_grantPermission_details: "French: {0} granted permission {1} to {2} on {3}",
+    subproject_revokePermission_details: "French: {0} revoked permission {1} of {3} from {2}",
     subproject_grantPermission: "French: {0} granted permission {1} to {2}",
-    subproject_createWorkflowitem: "French: {0} created workflow item {1}",
-    workflowitem_close: "French: {0} closed workflow item {1}",
-    workflowitem_grantPermission: "French: {0} granted permission {1} to {2}",
+    subproject_revokePermission: "French: {0} revoked permission {1} from {2}",
+    subproject_createWorkflowitem: "French: {0} created workflowitem {1}",
+    workflowitem_close: "French: {0} closed workflowitem {1}",
+    workflowitem_grantPermission: "French: {0} granted permission {1} to {2} on {3}",
+    workflowitem_revokePermission: "French: {0} revoked permission {1} of {3} from {2}",
     workflowitem_assign: "French: {0} assigned workflowitem {1} to {2}"
   },
   permissions: {
