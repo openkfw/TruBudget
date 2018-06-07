@@ -254,6 +254,7 @@ const en = {
     project_intent_revokePermission: "Revoke permissions",
     project_viewDetails: "View project details",
     project_viewSummary: "View project in overview",
+    project_close: "Close project",
     project_createSubproject: "Create subprojects",
     subproject_archive: "Archive subproject",
     subproject_assign: "Assign subproject",

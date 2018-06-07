@@ -214,6 +214,7 @@ const de = {
     project_intent_revokePermission: "German: Revoke permissions",
     project_viewDetails: "German: View project details",
     project_viewSummary: "German: View project in overview",
+    project_close: "German: Close project",
     project_createSubproject: "German: Create subprojects",
     subproject_archive: "German: Archive subproject",
     subproject_assign: "German: Assign subproject",

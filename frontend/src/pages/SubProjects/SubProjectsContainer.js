@@ -26,6 +26,7 @@ import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
 import strings from "../../localizeStrings";
 import { fetchUser } from "../Login/actions";
 import ProjectHistoryContainer from "./ProjectHistoryContainer";
+import { canViewProjectPermissions, canCreateSubProject, canAssignProject, canCloseProject } from "../../permissions";
 
 class SubProjectsContainer extends Component {
   constructor(props) {
@@ -40,16 +41,14 @@ class SubProjectsContainer extends Component {
   }
 
   closeProject = () => {
-    const openSubprojects = this.props.subProjects.find(subproject => subproject.data.status === "open");
-    if (!openSubprojects) {
-      this.props.closeProject(this.projectId);
-    }
+    this.props.closeProject(this.projectId);
   };
 
   render() {
-    const canViewPermissions = this.props.allowedIntents.indexOf("project.intent.listPermissions") > -1;
-    const canCreateSubProject = this.props.allowedIntents.indexOf("project.createSubproject") > -1;
-    const canAssignProject = this.props.allowedIntents.indexOf("project.assign") > -1;
+    const canViewPermissions = canViewProjectPermissions(this.props.allowedIntents);
+    const canCreateSubproject = canCreateSubProject(this.props.allowedIntents);
+    const canAssign = canAssignProject(this.props.allowedIntents);
+    const canClose = canCloseProject(this.props.allowedIntents);
     return (
       <div>
         <div style={globalStyles.innerContainer}>
@@ -57,10 +56,11 @@ class SubProjectsContainer extends Component {
           <ProjectDetails
             {...this.props}
             canViewPermissions={canViewPermissions}
-            canAssignProject={canAssignProject}
+            canAssignProject={canAssign}
             closeProject={this.closeProject}
+            canClose={canClose}
           />
-          <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
+          <SubProjects {...this.props} canCreateSubProject={canCreateSubproject} />
           <ProjectHistoryContainer />
         </div>
       </div>

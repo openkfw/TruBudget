@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Doughnut } from "react-chartjs-2";
+import _isUndefined from "lodash/isUndefined";
 
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
@@ -58,7 +59,7 @@ const styles = {
   },
   permissionContainer: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "space-around"
   },
   text: {
     fontSize: "14px"
@@ -144,6 +145,7 @@ const ProjectDetails = ({
   showProjectPermissions,
   showProjectAssignees,
   closeProject,
+  canClose,
   ...rest
 }) => {
   const {
@@ -154,6 +156,9 @@ const ProjectDetails = ({
     statusDetails,
     allocatedRatio
   } = calculateMetrics(subProjects, projectAmount, projectCurrency);
+
+  const openSubprojects = subProjects.find(subproject => subproject.data.status === "open");
+  const closeDisabled = !(canClose && _isUndefined(openSubprojects)) || projectStatus === "closed";
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -172,10 +177,7 @@ const ProjectDetails = ({
           <Divider />
           <ListItem>
             <ListItemIcon>{statusIconMapping[projectStatus]}</ListItemIcon>
-            <ListItemText
-              primary={<Status status={statusMapping(projectStatus)} close={closeProject} />}
-              secondary={strings.common.status}
-            />
+            <ListItemText primary={statusMapping(projectStatus)} secondary={strings.common.status} />
           </ListItem>
           <Divider />
           <ListItem>
@@ -197,13 +199,13 @@ const ProjectDetails = ({
             />
           </ListItem>
           <Divider />
+
           <ListItem style={styles.permissionContainer}>
             <Button
-              data-test="pp-button"
+              data-test="spp-button"
               disabled={!canViewPermissions}
               onClick={showProjectPermissions}
-              icon={<PermissionIcon style={styles.icon} />}
-              variant="raised"
+              variant="contained"
               color="primary"
             >
               Permissions

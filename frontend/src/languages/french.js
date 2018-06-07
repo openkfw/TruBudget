@@ -218,6 +218,7 @@ const fr = {
     project_intent_revokePermission: "French: Revoke permissions",
     project_viewDetails: "French: View project details",
     project_viewSummary: "French: View project in overview",
+    project_close: "French: Close project",
     project_createSubproject: "French: Create subprojects",
     subproject_archive: "French: Archive subproject",
     subproject_assign: "French: Assign subproject",
