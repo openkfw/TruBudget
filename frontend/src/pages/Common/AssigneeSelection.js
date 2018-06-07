@@ -5,7 +5,12 @@ import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import { withStyles } from "@material-ui/core/styles";
-import { ListItem, InputLabel, Input, ListItemText, Typography } from "@material-ui/core";
+import ListItem from "@material-ui/core/ListItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
+import ListItemText from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
+
 import strings from "../../localizeStrings";
 const styles = {
   formControl: {
@@ -13,6 +18,17 @@ const styles = {
   },
   checkbox: {
     height: "10px"
+  },
+  selectValue: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
+  formControlContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   }
 };
 
@@ -59,7 +75,7 @@ class AssigneeSelection extends Component {
           classes={{ selectMenu: classes.selectMenu }}
           value={this.renderTitle(assignee)}
           renderValue={s => (
-            <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
+            <div style={styles.selectValue}>
               <Checkbox style={styles.checkbox} disabled={disabled} checked={true} />
               <Typography disabled={disabled} variant="body1">
                 {s}
@@ -69,7 +85,7 @@ class AssigneeSelection extends Component {
           multiple
           onClose={() => this.setState({ searchTerm: "" })}
         >
-          <div className="noFocus" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div className="noFocus" style={styles.formControlContainer}>
             <FormControl>
               <InputLabel>{strings.common.search}</InputLabel>
               <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
