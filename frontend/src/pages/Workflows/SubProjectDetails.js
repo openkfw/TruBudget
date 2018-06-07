@@ -127,8 +127,9 @@ const styles = {
     marginBottom: "10px",
     marginRight: "10px"
   },
-  assigneeIcon: {
-    marginTop: 20
+
+  assingeeIcon: {
+    marginRight: "30px"
   }
 };
 
@@ -250,7 +251,7 @@ const SubProjectDetails = ({
           </ListItem>
           <Divider />
           <ListItem disabled={false}>
-            <ListItemIcon>
+            <ListItemIcon style={styles.assingeeIcon}>
               <AssigneeIcon />
             </ListItemIcon>
             <SubProjectAssigneeContainer
