@@ -3,7 +3,6 @@ import React from "react";
 import PasswordIcon from "@material-ui/icons/Lock";
 import TextField from "@material-ui/core/TextField";
 
-import { ACMECorpDarkBlue } from "../../colors";
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -17,12 +16,6 @@ const styles = {
   icon: {
     marginTop: "20px",
     marginRight: "20px"
-  },
-  floatingLabel: {
-    color: ACMECorpDarkBlue
-  },
-  underlineFocus: {
-    borderBottomColor: ACMECorpDarkBlue
   }
 };
 

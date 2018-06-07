@@ -24,7 +24,6 @@ import SpentIcon from "@material-ui/icons/RemoveCircle";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
-
 import { Doughnut } from "react-chartjs-2";
 
 import {
@@ -40,8 +39,6 @@ import {
 
 import GaugeChart from "../Common/GaugeChart";
 import strings from "../../localizeStrings";
-
-import { ACMECorpLightgreen } from "../../colors";
 
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 
@@ -179,7 +176,6 @@ const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }
           onChange={event => storeSubProjectAmount(event.target.value)}
         />
         <DoneIcon
-          color={ACMECorpLightgreen}
           style={styles.doneIcon}
           onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)}
         />

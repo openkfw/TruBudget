@@ -165,55 +165,7 @@ function* handleLoading(showLoading) {
   }
 }
 
-////////////////////// Specific Sagas start here /////////////////
-
-// export function* fetchPeersSaga(action) {
-//   try {
-//     const peers = yield callApi(api.fetchPeers);
-//     yield put({
-//       type: FETCH_PEERS_SUCCESS,
-//       peers: peers.data
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchProjectDetailsSaga(action) {
-//   try {
-//     const projectDetails = yield callApi(api.fetchProjectDetails, action.project)
-//     yield put({
-//       type: FETCH_PROJECT_DETAILS_SUCCESS,
-//       projectDetails: projectDetails.data
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchProjectsSaga() {
-//   try {
-//     const projects = yield callApi(api.fetchProjects)
-//     yield put({
-//       type: FETCH_PROJECTS_SUCCESS,
-//       projects: projects.data
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchWorkflowItemsSaga(action) {
-//   try {
-//     const workflowItems = yield callApi(api.fetchWorkflowItems, action.streamName);
-//     yield put({
-//       type: FETCH_WORKFLOW_ITEMS_SUCCESS,
-//       workflowItems: workflowItems.data
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
+// SAGAS
 
 export function* createProject(action) {
   yield execute(function*() {
@@ -258,37 +210,6 @@ export function* createWorkflowItemSaga({ type, ...rest }) {
   });
 }
 
-// export function* editWorkflowItemSaga(action) {
-//   const { stream, key, workflowName, amount, amountType, currency, comment, documents, state, txid, previousState, workflowType, approvalRequired } = action;
-//   try {
-//     yield callApi(api.editWorkflowItem, stream, key, workflowName, amount, amountType, currency, comment, documents, state, txid, previousState, workflowType, approvalRequired);
-//     yield put({
-//       type: EDIT_WORKFLOW_SUCCESS
-//     });
-//     yield put({
-//       type: FETCH_WORKFLOW_ITEMS,
-//       streamName: action.stream
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* editSubProjectSaga(action) {
-//   try {
-//     yield callApi(api.editSubProject, action.parent, action.streamName, action.status, action.amount);
-//     yield put({
-//       type: POST_SUBPROJECT_EDIT_SUCCESS
-//     });
-//     yield put({
-//       type: FETCH_WORKFLOW_ITEMS,
-//       streamName: action.streamName
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
 export function* setEnvironmentSaga(action) {
   yield execute(function*() {
     yield put({
@@ -312,89 +233,6 @@ export function* getEnvironmentSaga() {
     });
   });
 }
-
-// export function* fetchNodeInformationSaga() {
-//   try {
-//     const nodeInformation = yield callApi(api.fetchNodeInformation)
-//     yield put({
-//       type: FETCH_NODE_INFORMATION_SUCCESS,
-//       nodeInformation: nodeInformation.data
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* postWorkflowSortSaga({ streamName, order, sortEnabled }) {
-//   try {
-//     yield callApi(api.postWorkflowSort, streamName, order);
-//     yield put({
-//       type: POST_WORKFLOW_SORT_SUCCESS
-//     });
-//     yield put({
-//       type: FETCH_WORKFLOW_ITEMS,
-//       streamName
-//     });
-//     yield put({
-//       type: ENABLE_WORKFLOW_SORT,
-//       sortEnabled
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchUsersSaga() {
-//   try {
-//     const users = yield callApi(api.fetchUsers)
-//     yield put({
-//       type: FETCH_USERS_SUCCESS,
-//       users: users.data
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* addUserSaga({ username, fullName, avatar, password, role }) {
-//   try {
-//     yield callApi(api.addUser, username, fullName, avatar, password, role);
-//     yield put({
-//       type: FETCH_USERS
-//     })
-//     yield put({
-//       type: ADD_USER_SUCCESS
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* addRoleSaga({ name, organization, read, write, admin }) {
-//   try {
-//     yield callApi(api.addRole, name, organization, read, write, admin);
-//     yield put({
-//       type: FETCH_ROLES
-//     });
-//     yield put({
-//       type: ADD_ROLE_SUCCESS
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchRolesSaga() {
-//   try {
-//     const roles = yield callApi(api.fetchRoles);
-//     yield put({
-//       type: FETCH_ROLES_SUCCESS,
-//       roles: roles.data
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
 
 export function* fetchAllNotificationsSaga({ showLoading }) {
   yield execute(function*() {
@@ -452,33 +290,6 @@ export function* loginSaga({ user }) {
   yield execute(login, true, onLoginError);
 }
 
-// export function* adminLoginSaga({ user }) {
-//   try {
-//     const data = yield callApi(api.loginAdmin, user.username, user.password);
-//     yield put({
-//       type: FETCH_ADMIN_USER_SUCCESS,
-//       user: {
-//         username: data.user.id,
-//         ...data.user
-//       },
-//       jwt: data.jwtToken,
-//     })
-//     yield put({
-//       type: ADMIN_LOGIN_SUCCESS
-//     })
-//     yield put({
-//       type: SHOW_ADMIN_LOGIN_ERROR,
-//       show: false
-//     })
-//   } catch (error) {
-//     console.log(error)
-//     yield put({
-//       type: SHOW_ADMIN_LOGIN_ERROR,
-//       show: true
-//     })
-//   }
-// }
-
 export function* fetchUserSaga({ showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listUser);
@@ -497,104 +308,13 @@ export function* logoutSaga() {
   });
 }
 
-// export function* adminLogoutSaga() {
-//   try {
-//     yield put({
-//       type: ADMIN_LOGOUT_SUCCESS
-//     })
-//   } catch (error) {
-//     console.log(error)
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchStreamNamesSaga() {
-//   try {
-//     const streamNames = yield callApi(api.fetchStreamNames)
-//     yield put({
-//       type: FETCH_STREAM_NAMES_SUCCESS,
-//       streamNames: streamNames.data
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchHistorySaga({ project }) {
-//   try {
-//     const history = yield callApi(api.fetchHistory, project);
-//     yield put({
-//       type: FETCH_HISTORY_SUCCESS,
-//       historyItems: history.data
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* validateDocumentSaga({ payload, hash }) {
-//   try {
-//     const response = yield callApi(api.validateDocument, payload, hash);
-//     yield put({
-//       type: VALIDATE_DOCUMENT_SUCCESS,
-//       validates: response.data.validates,
-//       hash
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* addDocumentSaga({ id, payload }) {
-//   try {
-//     const hash = yield callApi(api.hashDocument, payload);
-//     yield put({
-//       type: ADD_DOCUMENT_SUCCESS,
-//       hash: hash.data,
-//       id
-//     })
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchUpdatesSaga({ user }) {
-//   try {
-//     const notifications = yield callApi(api.fetchNotifications, user);
-//     const users = yield callApi(api.fetchUsers);
-//     const peers = yield callApi(api.fetchPeers);
-//     const streamNames = yield callApi(api.fetchStreamNames)
-//     const projects = yield callApi(api.fetchProjects);
-//     yield put({
-//       type: FETCH_UPDATES_SUCCESS,
-//       users: users.data,
-//       peers: peers.data,
-//       notifications: notifications.data,
-//       streamNames: streamNames.data,
-//       projects: projects.data,
-//     });
-//   } catch (error) {
-//     yield handleError(error);
-//   }
-// }
-
-// export function* fetchNodePermissionsSaga() {
-//   const permissions = yield callApi(api.fetchPermissions);
-//   yield put({
-//     type: FETCH_NODE_PERMISSIONS_SUCCESS,
-//     permissions: permissions.data
-//   })
-// }
-
 export function* fetchAllProjectsSaga({ showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listProjects);
-    //TODO
-    //const roles = yield callApi(api.fetchRoles);
+
     yield put({
       type: FETCH_ALL_PROJECTS_SUCCESS,
       projects: data.items
-      //roles: roles.data
     });
   }, showLoading);
 }
@@ -642,13 +362,10 @@ export function* fetchSubprojectHistorySaga({ projectId, subprojectId, showLoadi
 export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listProjectIntents, projectId);
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
+
     yield put({
       type: FETCH_PROJECT_PERMISSIONS_SUCCESS,
       permissions: data || {}
-      //historyItems: history.data,
-      //roles: roles.data
     });
   }, showLoading);
 }
@@ -656,8 +373,7 @@ export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
 export function* fetchSubProjectPermissionsSaga({ projectId, subprojectId, showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listSubProjectPermissions, projectId, subprojectId);
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
+
     yield put({
       type: FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
       permissions: data || {}
@@ -678,9 +394,7 @@ export function* fetchWorkflowItemPermissionsSaga({ projectId, workflowitemId, s
 export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) {
   yield execute(function*() {
     yield callApi(api.grantProjectPermissions, projectId, intent, user);
-    //const { data } = yield callApi(api.listProjectIntents, projectId)
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
+
     yield put({
       type: GRANT_PERMISSION_SUCCESS
     });
@@ -695,9 +409,7 @@ export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) 
 export function* revokePermissionsSaga({ projectId, intent, user, showLoading }) {
   yield execute(function*() {
     yield callApi(api.revokeProjectPermissions, projectId, intent, user);
-    //const { data } = yield callApi(api.listProjectIntents, projectId)
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
+
     yield put({
       type: REVOKE_PERMISSION_SUCCESS
     });
@@ -712,9 +424,7 @@ export function* revokePermissionsSaga({ projectId, intent, user, showLoading })
 export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
   yield execute(function*() {
     yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, user);
-    //const { data } = yield callApi(api.listProjectIntents, projectId)
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
+
     yield put({
       type: GRANT_SUBPROJECT_PERMISSION_SUCCESS
     });
@@ -731,9 +441,7 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
 export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
   yield execute(function*() {
     yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, user);
-    //const { data } = yield callApi(api.listProjectIntents, projectId)
-    //const history = yield callApi(api.fetchHistory, projectId);
-    //const roles = yield callApi(api.fetchRoles);
+
     yield put({
       type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS
     });
@@ -880,26 +588,6 @@ export function* watchFetchAllProjects() {
   yield takeEvery(FETCH_ALL_PROJECTS, fetchAllProjectsSaga);
 }
 
-// export function* watchFetchPeers() {
-//   yield takeEvery(FETCH_PEERS, fetchPeersSaga)
-// }
-
-// export function* watchFetchProjects() {
-//   yield takeEvery(FETCH_PROJECTS, fetchProjectsSaga)
-// }
-
-// export function* watchFetchProjectDetails() {
-//   yield takeEvery(FETCH_PROJECT_DETAILS, fetchProjectDetailsSaga)
-// }
-
-// export function* watchFetchWorkflowItems() {
-//   yield takeEvery(FETCH_WORKFLOW_ITEMS, fetchWorkflowItemsSaga)
-// }
-
-// export function* watchFetchHistory() {
-//   yield takeEvery(FETCH_HISTORY, fetchHistorySaga)
-// }
-
 export function* watchCreateSubProject() {
   yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga);
 }
@@ -908,21 +596,9 @@ export function* watchCreateWorkflowItem() {
   yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga);
 }
 
-// export function* watchEditWorkflowItem() {
-//   yield takeEvery(EDIT_WORKFLOW, editWorkflowItemSaga)
-// }
-
-// export function* watchEditSubProject() {
-//   yield takeEvery(POST_SUBPROJECT_EDIT, editSubProjectSaga)
-// }
-
 export function* watchCreateProject() {
   yield takeEvery(CREATE_PROJECT, createProject);
 }
-
-// export function* watchFetchNodeInformation() {
-//   yield takeEvery(FETCH_NODE_INFORMATION, fetchNodeInformationSaga)
-// }
 
 export function* watchFetchAllNotifications() {
   yield takeLatest(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
@@ -932,60 +608,21 @@ export function* watchFetchNotificationsWithId() {
   yield takeLatest(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
 }
 
-// export function* watchPostWorkflowSort() {
-//   yield takeLatest(POST_WORKFLOW_SORT, postWorkflowSortSaga)
-// }
 export function* watchMarkNotificationAsRead() {
   yield takeLatest(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
 }
-
-// export function* watchFetchUsers() {
-//   yield takeLatest(FETCH_USERS, fetchUsersSaga)
-// }
-
-// export function* watchFetchRoles() {
-//   yield takeLatest(FETCH_ROLES, fetchRolesSaga)
-// }
 
 export function* watchLogin() {
   yield takeLatest(LOGIN, loginSaga);
 }
 
-// export function* watchAdminLogin() {
-//   yield takeLatest(ADMIN_LOGIN, adminLoginSaga)
-// }
-
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserSaga);
 }
 
-// export function* watchAddUser() {
-//   yield takeEvery(ADD_USER, addUserSaga)
-// }
-
-// export function* watchAddRole() {
-//   yield takeEvery(ADD_ROLE, addRoleSaga)
-// }
-
 export function* watchLogout() {
   yield takeEvery(LOGOUT, logoutSaga);
 }
-
-// export function* watchAdminLogout() {
-//   yield takeLatest(ADMIN_LOGOUT, adminLogoutSaga);
-// }
-
-// export function* watchFetchStreamNames() {
-//   yield takeLatest(FETCH_STREAM_NAMES, fetchStreamNamesSaga)
-// }
-
-// export function* watchValidateDocument() {
-//   yield takeLatest(VALIDATE_DOCUMENT, validateDocumentSaga)
-// }
-
-// export function* watchAddDocument() {
-//   yield takeLatest(ADD_DOCUMENT, addDocumentSaga)
-// }
 
 export function* watchSetEnvironment() {
   yield takeLatest(STORE_ENVIRONMENT, setEnvironmentSaga);
@@ -994,14 +631,6 @@ export function* watchSetEnvironment() {
 export function* watchGetEnvironment() {
   yield takeLatest(FETCH_ENVIRONMENT, getEnvironmentSaga);
 }
-
-// export function* watchFetchUpdates() {
-//   yield takeLatest(FETCH_UPDATES, fetchUpdatesSaga)
-// }
-
-// export function* watchFetchNodePermissions() {
-//   yield takeLatest(FETCH_NODE_PERMISSIONS, fetchNodePermissionsSaga)
-// }
 
 export function* watchFetchProjectPermissions() {
   yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga);

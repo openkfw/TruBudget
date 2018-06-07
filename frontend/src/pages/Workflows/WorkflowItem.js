@@ -4,7 +4,6 @@ import { SortableElement } from "react-sortable-hoc";
 import Card from "@material-ui/core/Card";
 import Chip from "@material-ui/core/Chip";
 import DoneIcon from "@material-ui/icons/Check";
-import EditIcon from "@material-ui/icons/Edit";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/InfoOutline";
@@ -14,7 +13,6 @@ import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
 
 import { toAmountString, amountTypes } from "../../helper.js";
-import { ACMECorpLightgrey, ACMECorpSuperLightgreen, ACMECorpLightblue } from "../../colors.js";
 import strings from "../../localizeStrings";
 import {
   canViewWorkflowItemPermissions,
@@ -25,15 +23,6 @@ import {
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
 const styles = {
-  in_progress: {
-    backgroundColor: ACMECorpLightgrey
-  },
-  in_review: {
-    backgroundColor: ACMECorpLightblue
-  },
-  closed: {
-    backgroundColor: ACMECorpSuperLightgreen
-  },
   text: {
     fontSize: "14px"
   },

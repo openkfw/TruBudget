@@ -8,12 +8,11 @@ import Typography from "@material-ui/core/Typography";
 
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
-import { ACMECorpLightgreen } from "../../colors.js";
 import strings from "../../localizeStrings";
 
 const createTableHeader = () => (
   <Card>
-    <CardHeader style={{ backgroundColor: ACMECorpLightgreen }} title={strings.workflow.workflow_table_title} />
+    <CardHeader title={strings.workflow.workflow_table_title} />
     <CardContent>
       <div style={{ marginLeft: "12px", position: "relative" }}>
         <div style={{ display: "flex", alignItems: "center" }}>

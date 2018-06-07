@@ -6,12 +6,10 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import NetworkIcon from "@material-ui/icons/DeviceHub";
 import ProjectIcon from "@material-ui/icons/Business";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import Subheader from "@material-ui/core/ListSubheader";
 
-import colors from "../../colors";
 import strings from "../../localizeStrings";
 
 const SideNavCard = ({ avatarBackground, avatar, displayName, organization, history }) => (
@@ -52,10 +50,7 @@ const SideNavCard = ({ avatarBackground, avatar, displayName, organization, hist
                 }}
               />
             </ListItemIcon>
-            <ListItemText
-              primary={<span style={{ color: colors.lightColor }}>{displayName}</span>}
-              secondary={<span style={{ color: colors.lightColor }}>{organization}</span>}
-            />
+            <ListItemText primary={<span>{displayName}</span>} secondary={<span>{organization}</span>} />
           </ListItem>
         </div>
       </div>

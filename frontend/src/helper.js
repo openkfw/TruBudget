@@ -5,6 +5,8 @@ import moment from "moment";
 import OpenIcon from "@material-ui/icons/Remove";
 import DoneIcon from "@material-ui/icons/Check";
 
+import indigo from "@material-ui/core/colors/indigo";
+
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 import _isString from "lodash/isString";
@@ -13,13 +15,13 @@ import accounting from "accounting";
 import strings from "./localizeStrings";
 import currencies from "./currency";
 
-import { taskStatusColorPalette, budgetStatusColorPalette, workflowBudgetColorPalette } from "./colors";
-
 const numberFormat = {
   decimal: ".",
   thousand: ",",
   precision: 2
 };
+
+const statusColors = [indigo[100], indigo[300]];
 
 export const toJS = WrappedComponent => wrappedComponentProps => {
   const KEY = 0;
@@ -68,27 +70,20 @@ export const toAmountString = (amount, currency) => {
 
   return accounting.formatMoney(amount, getCurrencyFormat(currency));
 };
+
 export const tsToString = ts => {
   let dateString = moment(ts, "x").format("MMM D, YYYY");
   return dateString;
-};
-export const typeMapping = {
-  workflow: strings.workflow.workflow_type_workflow,
-  transaction: strings.workflow.workflow_type_transaction
 };
 
 export const statusMapping = status => {
   switch (status) {
     case "closed":
       return strings.common.done;
-    case "in_review":
-      return strings.common.in_review;
-    case "in_progress":
-      return strings.common.in_progress;
     case "open":
       return strings.common.open;
     default:
-      break;
+      return "unknown";
   }
 };
 
@@ -110,21 +105,13 @@ export const statusIconMapping = {
   open: <OpenIcon />
 };
 
-const actionMapping = (assignee, bank, approver, type) => ({
-  in_review_workflow: `${strings.workflow.workflow_action_in_review} ${approver}`,
-  in_review_transaction: `${strings.workflow.workflow_action_in_review} ${bank}`,
-  // pending: `${strings.workflow.workflow_action_pending_approval} ${bank}`,
-  in_progress: `${strings.workflow.workflow_action_open_in_progress}  ${assignee}`,
-  open: `${strings.workflow.workflow_action_open_in_progress} ${assignee}`
-});
-
 export const roleMapper = {
   approver: strings.common.approver,
   bank: strings.common.bank,
   assignee: strings.common.assignee
 };
 
-const createDoughnutData = (labels, data, colors = taskStatusColorPalette) => ({
+const createDoughnutData = (labels, data, colors = statusColors) => ({
   labels,
   datasets: [
     {
@@ -196,45 +183,20 @@ export const calculateWorkflowBudget = workflows => {
   );
 };
 
-export const createAmountData = (projectAmount, subProjects) => {
-  const subProjectsAmount = calculateUnspentAmount(subProjects);
-  const unspent = projectAmount - subProjectsAmount;
-  return createDoughnutData(
-    [strings.common.assigned, strings.common.not_assigned],
-    [subProjectsAmount, unspent < 0 ? 0 : unspent],
-    budgetStatusColorPalette
-  );
-};
-
 export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) => {
   const notAssigned = amount - assignedBudget - disbursedBudget;
   return notAssigned >= 0 ? notAssigned : 0;
 };
 
-export const createSubprojectAmountData = (subProjectAmount, workflows) => {
-  const { assigned, disbursed } = calculateWorkflowBudget(workflows);
-
-  const budgetLeft = getNotAssignedBudget(subProjectAmount, assigned, disbursed);
-  return createDoughnutData(
-    [strings.common.not_assigned_budget, strings.common.assigned_budget, strings.common.disbursed_budget],
-    [budgetLeft, assigned, disbursed],
-    workflowBudgetColorPalette
-  );
-};
-
 export const getProgressInformation = items => {
   let startValue = {
     open: 0,
-    inProgress: 0,
-    inReview: 0,
     done: 0
   };
   const projectStatus = items.reduce((acc, item) => {
     const status = item.data.status;
     return {
       open: status === "open" ? acc.open + 1 : acc.open,
-      inProgress: status === "in_progress" ? acc.inProgress + 1 : acc.inProgress,
-      inReview: status === "in_review" ? acc.inReview + 1 : acc.inReview,
       done: status === "closed" ? acc.done + 1 : acc.done
     };
   }, startValue);
@@ -245,42 +207,8 @@ export const preselectCurrency = (parentCurrency, setCurrency) => {
   const preSelectedCurrency = _isUndefined(parentCurrency) ? "EUR" : parentCurrency;
   setCurrency(preSelectedCurrency);
 };
+
 export const createTaskData = (items, type) => {
   const projectStatus = getProgressInformation(items);
-  if (type === "workflows") {
-    return createDoughnutData([strings.common.open, strings.common.done], [projectStatus.open, projectStatus.done]);
-  }
   return createDoughnutData([strings.common.open, strings.common.done], [projectStatus.open, projectStatus.done]);
 };
-
-export const getNextIncompletedItem = items => {
-  return items.find(item => (item.status === "open") | (item.status === "in_progress") | (item.status === "in_review"));
-};
-
-export const getNextAction = (item, assignee, bank, approver) => {
-  if (!_isUndefined(item) && !_isUndefined(item.details.status) && !_isEmpty(item.details.status)) {
-    if (item.details.status === "in_review") {
-      // Decide if transaction or workflow to show the right reviewer
-      const action = item.details.status + "_" + item.details.type;
-      return actionMapping(assignee, bank, approver)[action];
-    }
-    return actionMapping(assignee, bank, approver)[item.details.status];
-  } else {
-    return strings.workflow.workflow_no_actions;
-  }
-};
-
-export const isAdminNode = nodePermissions => {
-  return nodePermissions.indexOf("admin");
-};
-
-export const getAssignedOrganization = (definedRoles, assignedRoles) =>
-  assignedRoles.reduce((acc, assignedRole, index) => {
-    const organization = definedRoles.find(role => assignedRole === role.role);
-    if (!_isEmpty(organization)) {
-      const assignedOrganization = organization.organization;
-      const nextString = index ? `, ${assignedOrganization}` : `${assignedOrganization}`;
-      return acc + nextString;
-    }
-    return "";
-  }, "");

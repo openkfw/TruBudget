@@ -10,7 +10,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
 import { toAmountString, statusMapping } from "../../helper";
-import { ACMECorpLightgreen } from "../../colors.js";
 import strings from "../../localizeStrings";
 import { canViewSubProjectDetails } from "../../permissions";
 const styles = {
@@ -64,7 +63,7 @@ const SubProjectsTable = ({
   const tableEntries = getTableEntries(subProjects, location, history);
   return (
     <Card>
-      <CardHeader style={{ backgroundColor: ACMECorpLightgreen }} title={strings.common.subprojects} />
+      <CardHeader title={strings.common.subprojects} />
       <Table>
         <TableHead>
           <TableRow>

@@ -11,7 +11,6 @@ import TableRow from "@material-ui/core/TableRow";
 import _isUndefined from "lodash/isUndefined";
 import _isEmpty from "lodash/isEmpty";
 
-import { ACMECorpSuperLightgreen, lightRed } from "../../colors";
 import strings from "../../localizeStrings";
 const styles = {
   uploadButton: {
@@ -47,14 +46,12 @@ class DocumentOverview extends Component {
     } else if (validated === true) {
       label = strings.workflow.workflow_document_validated + "!";
       style = {
-        ...styles.uploadButton,
-        backgroundColor: ACMECorpSuperLightgreen
+        ...styles.uploadButton
       };
     } else {
       label = strings.workflow.workflow_document_changed + "!";
       style = {
-        ...styles.uploadButton,
-        backgroundColor: lightRed
+        ...styles.uploadButton
       };
     }
 

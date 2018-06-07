@@ -21,6 +21,7 @@ import OpenIcon from "@material-ui/icons/Remove";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
+import Red from "@material-ui/core/colors/red";
 
 import {
   toAmountString,
@@ -36,9 +37,10 @@ import {
 } from "../../helper.js";
 
 import GaugeChart from "../Common/GaugeChart";
-import { red } from "../../colors";
 import strings from "../../localizeStrings";
 import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
+
+const red = Red[500];
 
 const styles = {
   container: {

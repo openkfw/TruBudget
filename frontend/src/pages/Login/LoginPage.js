@@ -10,8 +10,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import SettingsIcon from "@material-ui/icons/Settings";
 import Typography from "@material-ui/core/Typography";
 
-import { ACMECorpLightgreen } from "../../colors";
-
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import strings from "../../localizeStrings";
@@ -66,7 +64,6 @@ const LoginPage = ({
               onChange={storeEnvironment}
               floatingLabel={strings.login.environment}
               value={environment}
-              floatingLabelStyle={{ color: ACMECorpLightgreen }}
               id="environment_selection"
             >
               <MenuItem value="Test">{strings.login.test_env}</MenuItem>
