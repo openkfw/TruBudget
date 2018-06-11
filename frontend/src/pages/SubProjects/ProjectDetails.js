@@ -207,6 +207,18 @@ const ProjectDetails = ({
               color="primary"
             >
               Permissions
+              <PermissionIcon style={styles.icon} />
+            </Button>
+
+            <Button
+              data-test="c-button"
+              disabled={closeDisabled}
+              onClick={closeProject}
+              variant="contained"
+              color="primary"
+            >
+              Close
+              <DoneIcon style={styles.icon} />
             </Button>
           </ListItem>
         </List>

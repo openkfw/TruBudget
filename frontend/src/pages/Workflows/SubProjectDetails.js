@@ -273,6 +273,18 @@ const SubProjectDetails = ({
               color="primary"
             >
               Permissions
+              <PermissionIcon style={styles.icon} />
+            </Button>
+
+            <Button
+              data-test="sc-button"
+              disabled={closeDisabled}
+              onClick={closeSubproject}
+              variant="contained"
+              color="primary"
+            >
+              Close
+              <DoneIcon style={styles.icon} />
             </Button>
           </ListItem>
         </List>
