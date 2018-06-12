@@ -70,8 +70,9 @@ class AssigneeSelection extends Component {
     const assignee = users.find(user => user.id === assigneeId);
 
     return (
-      <FormControl disabled={disabled} className={classes.formControl}>
+      <FormControl data-test="assignee-container" disabled={disabled} className={classes.formControl}>
         <Select
+          data-test="assignee-selection"
           classes={{ selectMenu: classes.selectMenu }}
           value={this.renderTitle(assignee)}
           renderValue={s => (
@@ -91,7 +92,7 @@ class AssigneeSelection extends Component {
               <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
             </FormControl>
           </div>
-          <div>{selection}</div>
+          <div data-test="assignee-list">{selection}</div>
         </Select>
       </FormControl>
     );

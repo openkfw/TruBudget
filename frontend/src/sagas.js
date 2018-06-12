@@ -6,7 +6,9 @@ import {
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
   FETCH_ALL_PROJECTS_SUCCESS,
-  FETCH_ALL_PROJECTS
+  FETCH_ALL_PROJECTS,
+  EDIT_PROJECT,
+  EDIT_PROJECT_SUCCESS
 } from "./pages/Overview/actions";
 
 import {
@@ -142,7 +144,6 @@ function* callApi(func, ...args) {
   // TODO dont set the environment on each call
   const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
-
   const { data } = yield call(func, ...args);
   return data;
 }
@@ -172,6 +173,19 @@ export function* createProject(action) {
     yield callApi(api.createProject, action.name, action.amount, action.comment, action.currency, action.thumbnail);
     yield put({
       type: CREATE_PROJECT_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_PROJECTS,
+      showLoading: true
+    });
+  }, true);
+}
+
+export function* editProjectSaga({ projectId, changes }) {
+  yield execute(function*() {
+    yield callApi(api.editProject, projectId, changes);
+    yield put({
+      type: EDIT_PROJECT_SUCCESS
     });
     yield put({
       type: FETCH_ALL_PROJECTS,
@@ -600,6 +614,10 @@ export function* watchCreateProject() {
   yield takeEvery(CREATE_PROJECT, createProject);
 }
 
+export function* watchEditProject() {
+  yield takeEvery(EDIT_PROJECT, editProjectSaga);
+}
+
 export function* watchFetchAllNotifications() {
   yield takeLatest(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
 }
@@ -692,6 +710,7 @@ export default function* rootSaga() {
       watchRevokePermissions(),
       watchAssignProject(),
       watchFetchProjectHistorySaga(),
+      watchEditProject(),
 
       // Subproject
       watchCreateSubProject(),

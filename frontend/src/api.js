@@ -53,6 +53,12 @@ class Api {
       }
     });
 
+  editProject = (projectId, changes) =>
+    axios.post(`/project.update`, {
+      projectId,
+      ...changes
+    });
+
   viewProjectDetails = projectId => axios.get(`/project.viewDetails?projectId=${projectId}`);
   viewProjectHistory = projectId => axios.get(`/project.viewHistory?projectId=${projectId}`);
 

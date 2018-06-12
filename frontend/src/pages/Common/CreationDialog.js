@@ -72,9 +72,9 @@ const handleBack = props => props.setCurrentStep(props.currentStep - 1);
 const handleNext = props => props.setCurrentStep(props.currentStep + 1);
 
 const CreationDialog = props => {
-  const { creationDialogShown, title, handleSubmit } = props;
+  const { dialogShown, title, handleSubmit } = props;
   return (
-    <Dialog maxWidth="md" open={creationDialogShown}>
+    <Dialog maxWidth="md" open={dialogShown}>
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
       <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>

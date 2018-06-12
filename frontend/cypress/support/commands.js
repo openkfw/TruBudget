@@ -28,12 +28,12 @@ const baseUrl = Cypress.env("API_BASE_URL") || "/test";
 
 let token = undefined;
 
-Cypress.Commands.add("login", () => {
+Cypress.Commands.add("login", (username = "mstein", password = "test") => {
   cy
     .request({
       url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
       method: "POST",
-      body: { apiVersion: "1.0", data: { user: { id: "mstein", password: "test" } } }
+      body: { apiVersion: "1.0", data: { user: { id: username, password: password } } }
     })
     .its("body")
     .then(body => {

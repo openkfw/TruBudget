@@ -1,7 +1,7 @@
 let projects = undefined;
 let subprojects = undefined;
 
-describe("Subproject Permissions", function() {
+describe("Workflow Permissions", function() {
   before(() => {
     cy.login();
     cy
@@ -21,7 +21,7 @@ describe("Subproject Permissions", function() {
     cy.location("pathname").should("eq", `/projects/${projects[0].data.id}/${subprojects[0].data.id}`);
   });
 
-  it("Show and  subproject permissions correctly", function() {
+  it("Show and subproject permissions correctly", function() {
     cy.get("[data-test=spp-button]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test=permission-close]").click();

@@ -7,8 +7,12 @@ export const CREATE_PROJECT_SUCCESS = "CREATE_PROJECT_SUCCESS";
 export const FETCH_ALL_PROJECTS = "FETCH_ALL_PROJECTS";
 export const FETCH_ALL_PROJECTS_SUCCESS = "FETCH_ALL_PROJECTS_SUCCESS";
 
-export const SHOW_PROJECT_DIALOG = "SHOW_PROJECT_DIALOG";
-export const CANCEL_PROJECT_DIALOG = "CANCEL_PROJECT_DIALOG";
+export const SHOW_CREATION_DIALOG = "SHOW_CREATION_DIALOG";
+export const HIDE_CREATION_DIALOG = "HIDE_CREATION_DIALOG";
+
+export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
+export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
+
 export const PROJECT_NAME = "PROJECT_NAME";
 export const PROJECT_AMOUNT = "PROJECT_AMOUNT";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
@@ -16,11 +20,8 @@ export const PROJECT_CURRENCY = "PROJECT_CURRENCY";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
 
-export const ADD_APPROVER_ROLE = "ADD_APPROVER_ROLE";
-export const ADD_BANK_ROLE = "ADD_BANK_ROLE";
-export const REMOVE_ASSIGNEMENT_ROLE = "REMOVE_ASSIGNEMENT_ROLE";
-export const REMOVE_APPROVER_ROLE = "REMOVE_APPROVER_ROLE";
-export const REMOVE_BANK_ROLE = "REMOVE_BANK_ROLE";
+export const EDIT_PROJECT = "EDIT_PROJECT";
+export const EDIT_PROJECT_SUCCESS = "EDIT_PROJECT_SUCCESS";
 
 export function fetchAllProjects(showLoading = false) {
   return {
@@ -29,28 +30,50 @@ export function fetchAllProjects(showLoading = false) {
   };
 }
 
-export function createProject(name, amount, comment, currency, approver, assignee, bank, thumbnail) {
+export function createProject(name, amount, comment, currency, thumbnail) {
   return {
     type: CREATE_PROJECT,
     name,
     amount,
     comment,
     currency,
-    approver,
-    assignee,
-    bank,
     thumbnail
   };
 }
 
-export function showProjectDialog() {
+export function editProject(projectId, changes) {
   return {
-    type: SHOW_PROJECT_DIALOG
+    type: EDIT_PROJECT,
+    projectId,
+    changes
   };
 }
-export function onProjectDialogCancel() {
+
+export function showCreationDialog() {
   return {
-    type: CANCEL_PROJECT_DIALOG
+    type: SHOW_CREATION_DIALOG
+  };
+}
+export function hideCreationDialog() {
+  return {
+    type: HIDE_CREATION_DIALOG
+  };
+}
+
+export function showEditDialog(id, displayName, amount, currency, description, thumbnail) {
+  return {
+    type: SHOW_EDIT_DIALOG,
+    id,
+    displayName,
+    amount,
+    currency,
+    description,
+    thumbnail
+  };
+}
+export function hideEditDialog() {
+  return {
+    type: HIDE_EDIT_DIALOG
   };
 }
 
@@ -93,38 +116,5 @@ export function setCurrentStep(step) {
   return {
     type: PROJECT_CREATION_STEP,
     step
-  };
-}
-
-export function addApproverRole(role) {
-  return {
-    type: ADD_APPROVER_ROLE,
-    role
-  };
-}
-export function addBankRole(role) {
-  return {
-    type: ADD_BANK_ROLE,
-    role
-  };
-}
-
-export function removeAssignmentRole(role) {
-  return {
-    type: REMOVE_ASSIGNEMENT_ROLE,
-    role
-  };
-}
-
-export function removeApproverRole(role) {
-  return {
-    type: REMOVE_APPROVER_ROLE,
-    role
-  };
-}
-export function removeBankRole(role) {
-  return {
-    type: REMOVE_BANK_ROLE,
-    role
   };
 }

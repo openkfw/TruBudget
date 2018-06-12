@@ -42,6 +42,16 @@ const getCurrencyFormat = currency => ({
   ...currencies[currency]
 });
 
+export const compareObjects = (obj1, obj2) => {
+  const changes = {};
+  for (const key of Object.keys(obj1)) {
+    if (obj2[key] != obj1[key]) {
+      changes[key] = obj1[key];
+    }
+  }
+  return changes;
+};
+
 export const fromAmountString = (amount, currency) => {
   // Unformatting an empty string will result in an error
   // we use '' as default value for number fields to prevent users from an unerasable 0

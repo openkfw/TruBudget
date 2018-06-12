@@ -10,9 +10,11 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
+import IconButton from "@material-ui/core/IconButton";
 import ContentAdd from "@material-ui/icons/Add";
 import DateIcon from "@material-ui/icons/DateRange";
 import InfoIcon from "@material-ui/icons/Search";
+import EditIcon from "@material-ui/icons/Edit";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -20,7 +22,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 import { toAmountString, statusMapping, tsToString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canCreateProject, canViewProjectDetails } from "../../permissions";
+import { canCreateProject, canViewProjectDetails, canEditProject } from "../../permissions";
 
 const styles = {
   card: {
@@ -39,17 +41,31 @@ const styles = {
   },
   button: {
     minHeight: "56px"
+  },
+  editIcon: {
+    display: "flex",
+    maxHeight: "10px",
+    alignItems: "center",
+    justifyContent: "flex-end"
   }
 };
 
-const getTableEntries = ({ projects, history, classes }) => {
+const getTableEntries = ({ projects, history, classes, showEditDialog }) => {
   return projects.map(({ data, allowedIntents }, index) => {
-    const { displayName, id, amount, currency, status, thumbnail = "/Thumbnail_0008.jpg", creationUnixTs } = data;
+    const {
+      displayName,
+      id,
+      amount,
+      currency,
+      description,
+      status,
+      thumbnail = "/Thumbnail_0008.jpg",
+      creationUnixTs
+    } = data;
     const amountString = toAmountString(amount, currency);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);
-
     return (
       <Card aria-label="project" key={index} className={classes.card} data-test="projectcard">
         <CardMedia className={classes.media} image={imagePath} />
@@ -98,6 +114,14 @@ const getTableEntries = ({ projects, history, classes }) => {
               </ListItemIcon>
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
+            <div className={classes.editIcon}>
+              <IconButton
+                disabled={!canEditProject(allowedIntents)}
+                onClick={() => showEditDialog(id, displayName, parseFloat(amount), currency, description, thumbnail)}
+              >
+                <EditIcon />
+              </IconButton>
+            </div>
           </List>
         </CardContent>
       </Card>
@@ -139,7 +163,7 @@ const OverviewTable = props => {
               className={props.classes.button}
               aria-label="create"
               disabled={!canCreateProject(props.allowedIntents)}
-              onClick={() => props.showProjectDialog()}
+              onClick={() => props.showCreationDialog()}
               variant="fab"
               color="primary"
             >
