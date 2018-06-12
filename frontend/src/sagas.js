@@ -25,7 +25,9 @@ import {
   FETCH_PROJECT_HISTORY_SUCCESS,
   FETCH_PROJECT_HISTORY,
   REVOKE_PERMISSION_SUCCESS,
-  REVOKE_PERMISSION
+  REVOKE_PERMISSION,
+  EDIT_SUBPROJECT_SUCCESS,
+  EDIT_SUBPROJECT
 } from "./pages/SubProjects/actions";
 import {
   SHOW_SNACKBAR,
@@ -61,7 +63,9 @@ import {
   REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   REVOKE_SUBPROJECT_PERMISSION,
-  REVOKE_WORKFLOWITEM_PERMISSION
+  REVOKE_WORKFLOWITEM_PERMISSION,
+  EDIT_WORKFLOW_ITEM_SUCCESS,
+  EDIT_WORKFLOW_ITEM
 } from "./pages/Workflows/actions";
 
 import {
@@ -194,9 +198,9 @@ export function* editProjectSaga({ projectId, changes }) {
   }, true);
 }
 
-export function* createSubProjectSaga({ projectId, name, amount, comment, currency, showLoading }) {
+export function* createSubProjectSaga({ projectId, name, amount, description, currency, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.createSubProject, projectId, name, `${amount}`, comment, currency);
+    yield callApi(api.createSubProject, projectId, name, `${amount}`, description, currency);
     yield put({
       type: CREATE_SUBPROJECT_SUCCESS
     });
@@ -206,6 +210,20 @@ export function* createSubProjectSaga({ projectId, name, amount, comment, curren
       showLoading
     });
   }, showLoading);
+}
+
+export function* editSubProjectSaga({ projectId, subprojectId, changes }) {
+  yield execute(function*() {
+    yield callApi(api.editSubProject, projectId, subprojectId, changes);
+    yield put({
+      type: EDIT_SUBPROJECT_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_PROJECT_DETAILS,
+      projectId,
+      showLoading: true
+    });
+  }, true);
 }
 
 export function* createWorkflowItemSaga({ type, ...rest }) {
@@ -222,6 +240,22 @@ export function* createWorkflowItemSaga({ type, ...rest }) {
       showLoading: true
     });
   });
+}
+
+export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId, changes }) {
+  yield execute(function*() {
+    yield callApi(api.editWorkflowItem, projectId, subprojectId, workflowitemId, changes);
+    yield put({
+      type: EDIT_WORKFLOW_ITEM_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId: projectId,
+      subprojectId: subprojectId,
+      showLoading: true
+    });
+  }, true);
 }
 
 export function* setEnvironmentSaga(action) {
@@ -606,8 +640,16 @@ export function* watchCreateSubProject() {
   yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga);
 }
 
+export function* watchEditSubProject() {
+  yield takeEvery(EDIT_SUBPROJECT, editSubProjectSaga);
+}
+
 export function* watchCreateWorkflowItem() {
   yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga);
+}
+
+export function* watchEditWorkflowItem() {
+  yield takeEvery(EDIT_WORKFLOW_ITEM, editWorkflowItemSaga);
 }
 
 export function* watchCreateProject() {
@@ -714,6 +756,7 @@ export default function* rootSaga() {
 
       // Subproject
       watchCreateSubProject(),
+      watchEditSubProject(),
       watchFetchAllSubprojectDetails(),
       watchFetchSubProjectPermissions(),
       watchGrantSubProjectPermissions(),
@@ -723,6 +766,7 @@ export default function* rootSaga() {
 
       // Workflow
       watchCreateWorkflowItem(),
+      watchEditWorkflowItem(),
       watchFetchWorkflowItemPermissions(),
       watchGrantWorkflowitemPermissions(),
       watchRevokeWorkflowitemPermissions(),

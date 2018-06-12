@@ -13,15 +13,16 @@ const handleSubmit = props => {
   const { displayName, id } = projectToAdd;
   const originalProject = projects.find(project => project.data.id === id);
   const changes = compareObjects(projectToAdd, originalProject.data);
-  editProject(id, changes);
+  if (!_isEmpty(changes)) {
+    editProject(id, changes);
+    storeSnackBarMessage(strings.common.added + " " + displayName);
+    showSnackBar();
+  }
   onDialogCancel();
-  storeSnackBarMessage(strings.common.added + " " + displayName);
-  showSnackBar();
 };
 
 const ProjectEdit = props => {
   const { displayName, description, amount } = props.projectToAdd;
-  console.log(typeof amount);
   const steps = [
     {
       content: <ProjectCreationContent {...props} />,

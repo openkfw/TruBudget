@@ -8,42 +8,30 @@ import strings from "../../localizeStrings";
 import SubProjectCreationContent from "./SubProjectCreationContent";
 
 const handleSubmit = props => {
-  const {
-    createSubProject,
-    onDialogCancel,
-    showSnackBar,
-    storeSnackBarMessage,
-    subProjectName,
-    subProjectAmount,
-    subProjectComment,
-    subProjectCurrency,
-    location
-  } = props;
-  createSubProject(
-    subProjectName,
-    subProjectAmount,
-    subProjectComment,
-    subProjectCurrency,
-    location.pathname.split("/")[2]
-  );
+  const { createSubProject, onDialogCancel, subprojectToAdd, showSnackBar, storeSnackBarMessage, location } = props;
+  const { displayName, amount, description, currency } = subprojectToAdd;
+  createSubProject(displayName, amount, description, currency, location.pathname.split("/")[2]);
   onDialogCancel();
-  storeSnackBarMessage(strings.common.added + " " + subProjectName);
+  storeSnackBarMessage(strings.common.added + " " + displayName);
   showSnackBar();
 };
 
 const SubProjectCreation = props => {
+  const { subprojectToAdd } = props;
   const steps = [
     {
       title: strings.project.project_details,
       content: <SubProjectCreationContent {...props} />,
       nextDisabled:
-        _isEmpty(props.subProjectName) || _isEmpty(props.subProjectComment) || !_isNumber(props.subProjectAmount)
+        _isEmpty(subprojectToAdd.displayName) ||
+        _isEmpty(subprojectToAdd.description) ||
+        !_isNumber(subprojectToAdd.amount)
     }
   ];
   return (
     <CreationDialog
       title={strings.subproject.subproject_add}
-      creationDialogShown={props.subprojectsDialogVisible}
+      dialogShown={props.createDialogShown}
       onDialogCancel={props.onSubprojectDialogCancel}
       handleSubmit={handleSubmit}
       steps={steps}

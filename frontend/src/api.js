@@ -81,6 +81,9 @@ class Api {
       }
     });
 
+  editSubProject = (projectId, subprojectId, changes) =>
+    axios.post(`/subproject.update`, { projectId, subprojectId, ...changes });
+
   viewSubProjectDetails = (projectId, subprojectId) =>
     axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
 
@@ -102,6 +105,9 @@ class Api {
 
   revokeSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
     axios.post(`/subproject.intent.revokePermission`, { projectId, subprojectId, intent, userId });
+
+  editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) =>
+    axios.post(`/workflowitem.update`, { projectId, subprojectId, workflowitemId, ...changes });
 
   listWorkflowItemPermissions = (projectId, workflowitemId) =>
     axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);

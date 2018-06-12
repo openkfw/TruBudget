@@ -50,7 +50,7 @@ class Budget extends Component {
         <DropwDown
           style={{ minWidth: 120 }}
           floatingLabel={currencyTitle}
-          value={currency}
+          value={currency ? currency : parentCurrency}
           onChange={storeCurrency}
           disabled={budgetDisabled}
         >

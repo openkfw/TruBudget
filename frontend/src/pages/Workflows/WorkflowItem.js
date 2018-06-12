@@ -7,6 +7,7 @@ import DoneIcon from "@material-ui/icons/Check";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/InfoOutline";
+import EditIcon from "@material-ui/icons/Edit";
 import OpenIcon from "@material-ui/icons/Remove";
 import Paper from "@material-ui/core/Paper";
 import PermissionIcon from "@material-ui/icons/LockOpen";
@@ -132,15 +133,7 @@ const StepDot = ({ status, selectable }) => {
 };
 
 const editWorkflow = ({ id, displayName, amount, amountType, currency, description, status, documents }, props) => {
-  props.storeWorkflowName(displayName);
-  props.storeWorkflowAmount(amount);
-  props.storeWorkflowAmountType(amountType);
-  props.storeWorkflowCurrency(currency);
-  props.storeWorkflowComment(description);
-  props.storeWorkflowStatus(status);
-  props.storeWorkflowTxid(id);
-  props.openWorkflowDialog(true);
-  props.prefillDocuments(documents);
+  props.showEditDialog(id, displayName, amount, amountType, description, currency);
 };
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
@@ -185,9 +178,9 @@ const renderActionButtons = (
   return (
     <div style={{ flex: 2 }}>
       <div style={styles.actions}>
-        {/* <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
+        <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
           <EditIcon />
-        </IconButton> */}
+        </IconButton>
         <IconButton
           disabled={!canListWorkflowPermissions}
           onClick={showPerm}

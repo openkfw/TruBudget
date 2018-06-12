@@ -1,15 +1,14 @@
 import { fromJS } from "immutable";
 
 import {
-  SHOW_WORKFLOW_DIALOG,
+  SHOW_CREATE_DIALOG,
   WORKFLOW_NAME,
   WORKFLOW_AMOUNT,
   WORKFLOW_AMOUNT_TYPE,
   WORKFLOW_PURPOSE,
   WORKFLOW_CURRENCY,
-  WORKFLOW_TXID,
   CREATE_WORKFLOW_SUCCESS,
-  EDIT_WORKFLOW_SUCCESS,
+  EDIT_WORKFLOW_ITEM_SUCCESS,
   SHOW_WORKFLOW_DETAILS,
   UPDATE_WORKFLOW_SORT,
   ENABLE_WORKFLOW_SORT,
@@ -17,7 +16,7 @@ import {
   SUBPROJECT_AMOUNT,
   WORKFLOW_CREATION_STEP,
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
-  CANCEL_WORKFLOW_DIALOG,
+  HIDE_CREATE_DIALOG,
   WORKFLOW_STATUS,
   SHOW_SUBPROJECT_PERMISSIONS,
   HIDE_SUBPROJECT_PERMISSIONS,
@@ -29,7 +28,9 @@ import {
   HIDE_WORKFLOW_ASSIGNEES,
   SHOW_SUBPROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_ASSIGNEES,
-  FETCH_SUBPROJECT_HISTORY_SUCCESS
+  FETCH_SUBPROJECT_HISTORY_SUCCESS,
+  SHOW_EDIT_DIALOG,
+  HIDE_EDIT_DIALOG
 } from "./actions";
 
 import { LOGOUT } from "../Login/actions";
@@ -48,20 +49,19 @@ const defaultState = fromJS({
   workflowItems: [],
   parentProject: {},
   workflowToAdd: {
-    name: "",
+    id: "",
+    displayName: "",
     amount: "",
     amountType: "N/A",
     currency: "",
-    comment: "",
-    status: "open",
-    txId: ""
+    description: "",
+    status: "open"
   },
   showSubProjectPermissions: false,
   showWorkflowPermissions: false,
   workflowItemReference: "",
   permissions: {},
-
-  workflowDialogVisible: false,
+  creationDialogShown: false,
   editMode: false,
   showDetails: false,
   showDetailsItemId: "",
@@ -75,7 +75,8 @@ const defaultState = fromJS({
   historyItems: [],
   showWorkflowAssignee: false,
   workflowAssignee: "",
-  showSubProjectAssignee: false
+  showSubProjectAssignee: false,
+  editDialogShown: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -95,14 +96,32 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowItems: fromJS(workflowitems),
         parentProject: fromJS(parentProject)
       });
-    case SHOW_WORKFLOW_DIALOG:
+    case SHOW_EDIT_DIALOG:
       return state.merge({
-        workflowDialogVisible: action.show,
+        workflowToAdd: state
+          .getIn(["workflowToAdd"])
+          .set("id", action.id)
+          .set("displayName", action.displayName)
+          .set("amount", action.amount)
+          .set("amountType", action.amountType)
+          .set("description", action.description)
+          .set("currency", action.currency),
+        editDialogShown: true
+      });
+    case HIDE_EDIT_DIALOG:
+      return state.merge({
+        workflowToAdd: defaultState.getIn(["workflowToAdd"]),
+        editDialogShown: false,
+        currentStep: defaultState.get("currentStep")
+      });
+    case SHOW_CREATE_DIALOG:
+      return state.merge({
+        creationDialogShown: action.show,
         editMode: action.editMode
       });
-    case CANCEL_WORKFLOW_DIALOG:
+    case HIDE_CREATE_DIALOG:
       return state.merge({
-        workflowDialogVisible: action.show,
+        creationDialogShown: action.show,
         workflowToAdd: defaultState.getIn(["workflowToAdd"]),
         editMode: defaultState.get("editMode"),
         currentStep: defaultState.get("currentStep")
@@ -133,23 +152,21 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_CREATION_STEP:
       return state.set("currentStep", action.step);
     case WORKFLOW_NAME:
-      return state.setIn(["workflowToAdd", "name"], action.name);
+      return state.setIn(["workflowToAdd", "displayName"], action.name);
     case WORKFLOW_AMOUNT:
       return state.setIn(["workflowToAdd", "amount"], action.amount);
     case WORKFLOW_AMOUNT_TYPE:
       return state.setIn(["workflowToAdd", "amountType"], action.amountType);
     case WORKFLOW_PURPOSE:
-      return state.setIn(["workflowToAdd", "comment"], action.comment);
+      return state.setIn(["workflowToAdd", "description"], action.description);
     case WORKFLOW_CURRENCY:
       return state.setIn(["workflowToAdd", "currency"], action.currency);
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);
-    case WORKFLOW_TXID:
-      return state.setIn(["workflowToAdd", "txId"], action.txid);
     case SUBPROJECT_AMOUNT:
       return state.set("subProjectAmount", action.amount);
     case CREATE_WORKFLOW_SUCCESS:
-    case EDIT_WORKFLOW_SUCCESS:
+    case EDIT_WORKFLOW_ITEM_SUCCESS:
       return state.merge({
         workflowToAdd: defaultState.getIn(["workflowToAdd"]),
         workflowState: defaultState.get("workflowState"),
@@ -157,8 +174,7 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case SHOW_WORKFLOW_DETAILS:
       return state.merge({
-        showDetails: action.show,
-        showDetailsItemId: action.txid
+        showDetails: action.show
       });
     case ENABLE_WORKFLOW_SORT:
       return state.set("workflowSortEnabled", action.sortEnabled);

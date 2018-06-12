@@ -1,12 +1,16 @@
+import { relativeTimeRounding } from "moment";
+
 export const FETCH_PROJECT_DETAILS = "FETCH_PROJECT_DETAILS";
 export const FETCH_PROJECT_DETAILS_SUCCESS = "FETCH_PROJECT_DETAILS_SUCCESS";
 
 export const FETCH_PROJECT_PERMISSIONS = "FETCH_PROJECT_PERMISSIONS";
 export const FETCH_PROJECT_PERMISSIONS_SUCCESS = "FETCH_PROJECT_PERMISSIONS_SUCCESS";
 
-export const SHOW_SUBPROJECT_DIALOG = "SHOW_SUBPROJECT_DIALOG";
-export const CANCEL_SUBPROJECT_DIALOG = "CANCEL_SUBPROJECT_DIALOG";
-export const SHOW_SUBPROJECT_DIALOG_SUCCESS = "SHOW_SUBPROJECT_DIALOG_SUCCESS";
+export const SHOW_CREATE_DIALOG = "SHOW_CREATE_DIALOG";
+export const HIDE_CREATE_DIALOG = "HIDE_CREATE_DIALOG";
+
+export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
+export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
 
 export const SHOW_PROJECT_PERMISSIONS = "SHOW_PROJECT_PERMISSIONS";
 export const HIDE_PROJECT_PERMISSIONS = "HIDE_PROJECT_PERMISSIONS";
@@ -19,6 +23,9 @@ export const REVOKE_PERMISSION_SUCCESS = "REVOKE_PERMISSION_SUCCESS";
 
 export const CREATE_SUBPROJECT = "CREATE_SUBPROJECT";
 export const CREATE_SUBPROJECT_SUCCESS = "CREATE_SUBPROJECT_SUCCESS";
+
+export const EDIT_SUBPROJECT = "EDIT_SUBPROJECT";
+export const EDIT_SUBPROJECT_SUCCESS = "EDIT_SUBPROJECT_SUCCESS";
 
 export const SUBPROJECT_NAME = "SUBPROJECT_NAME";
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
@@ -119,15 +126,23 @@ export function assignProject(projectId, assigneeId) {
   };
 }
 
-export function createSubProject(projectId, name, amount, comment, currency, showLoading = false) {
+export function createSubProject(projectId, name, amount, description, currency, showLoading = false) {
   return {
     type: CREATE_SUBPROJECT,
     projectId,
     name,
     amount,
-    comment,
+    description,
     currency,
     showLoading
+  };
+}
+export function editSubproject(projectId, subprojectId, changes) {
+  return {
+    type: EDIT_SUBPROJECT,
+    projectId,
+    subprojectId,
+    changes
   };
 }
 
@@ -140,13 +155,13 @@ export function storeSubProjectName(name) {
 
 export function showSubprojectDialog() {
   return {
-    type: SHOW_SUBPROJECT_DIALOG
+    type: SHOW_CREATE_DIALOG
   };
 }
 
 export function onSubprojectDialogCancel() {
   return {
-    type: CANCEL_SUBPROJECT_DIALOG
+    type: HIDE_CREATE_DIALOG
   };
 }
 
@@ -164,9 +179,26 @@ export function storeSubProjectCurrency(currency) {
   };
 }
 
-export function storeSubProjectComment(comment) {
+export function storeSubProjectComment(description) {
   return {
     type: SUBPROJECT_COMMENT,
-    comment: comment
+    description
+  };
+}
+
+export function showEditDialog(id, name, description, amount, currency) {
+  return {
+    type: SHOW_EDIT_DIALOG,
+    id,
+    name,
+    description,
+    amount,
+    currency
+  };
+}
+
+export function hideEditDialog() {
+  return {
+    type: HIDE_EDIT_DIALOG
   };
 }

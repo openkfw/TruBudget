@@ -12,6 +12,7 @@ export const canCloseWorkflowItem = i => can("workflowitem.close", i);
 export const canAssignWorkflowItem = i => can("workflowitem.assign", i);
 export const canViewUserManagement = i => can("global.createUser", i);
 export const canEditProject = i => can("project.update", i);
+export const canEditSubProject = i => can("subproject.update", i);
 
 export const projectIntentOrder = [
   {

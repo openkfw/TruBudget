@@ -8,6 +8,7 @@ const en = {
     comment_description: "Add some comments",
     budget: "Budget",
     comment: "Comment",
+    edit: "Edit",
     created: "Created",
     status: "Status",
     actions: "Actions",

@@ -42,11 +42,14 @@ const styles = {
   button: {
     minHeight: "56px"
   },
-  editIcon: {
+  editContainer: {
     display: "flex",
     maxHeight: "10px",
     alignItems: "center",
     justifyContent: "flex-end"
+  },
+  editIcon: {
+    color: "black"
   }
 };
 
@@ -66,6 +69,8 @@ const getTableEntries = ({ projects, history, classes, showEditDialog }) => {
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);
+    const editDisabled = !(canEditProject(allowedIntents) && status != "closed");
+
     return (
       <Card aria-label="project" key={index} className={classes.card} data-test="projectcard">
         <CardMedia className={classes.media} image={imagePath} />
@@ -114,9 +119,10 @@ const getTableEntries = ({ projects, history, classes, showEditDialog }) => {
               </ListItemIcon>
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
-            <div className={classes.editIcon}>
+            <div className={classes.editContainer}>
               <IconButton
-                disabled={!canEditProject(allowedIntents)}
+                className={classes.editIcon}
+                disabled={editDisabled}
                 onClick={() => showEditDialog(id, displayName, parseFloat(amount), currency, description, thumbnail)}
               >
                 <EditIcon />

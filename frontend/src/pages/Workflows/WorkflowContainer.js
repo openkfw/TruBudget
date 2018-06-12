@@ -14,7 +14,6 @@ import {
   storeWorkflowName,
   createWorkflowItem,
   editWorkflowItem,
-  storeWorkflowTxid,
   showWorkflowDetails,
   updateWorkflowSortOnState,
   enableWorkflowSort,
@@ -32,7 +31,9 @@ import {
   closeWorkflowItem,
   showWorkflowItemAssignee,
   showSubProjectAssignee,
-  fetchSubprojectHistory
+  fetchSubprojectHistory,
+  showEditDialog,
+  hideEditDialog
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -119,7 +120,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowAmountType: type => dispatch(storeWorkflowAmountType(type)),
     storeWorkflowName: name => dispatch(storeWorkflowName(name)),
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
-    storeWorkflowTxid: txid => dispatch(storeWorkflowTxid(txid)),
     createWorkflowItem: (pId, sId, workflowToAdd, documents) =>
       dispatch(createWorkflowItem(pId, sId, workflowToAdd, documents)),
     showSubProjectPermissions: () => dispatch(showSubProjectPermissions()),
@@ -129,13 +129,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(fetchSubprojectHistory(projectId, subprojectId, true));
       dispatch(showHistory());
     },
-    openWorkflowDetails: txid => dispatch(showWorkflowDetails(true, txid)),
+    openWorkflowDetails: () => dispatch(showWorkflowDetails(true)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
     showWorkflowItemAssignee: (workflowId, assignee) => dispatch(showWorkflowItemAssignee(workflowId, assignee)),
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
-    editWorkflowItem: (stream, key, workflowToAdd, documents, previousState) =>
-      dispatch(editWorkflowItem(stream, key, workflowToAdd, documents, previousState)),
+    editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     updateWorkflowSortOnState: items => dispatch(updateWorkflowSortOnState(items)),
@@ -152,7 +151,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     validateDocument: (payload, hash) => dispatch(validateDocument(payload, hash)),
     prefillDocuments: documents => dispatch(prefillDocuments(documents)),
     fetchUser: () => dispatch(fetchUser(true)),
-    isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired))
+    isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
+    showEditDialog: (id, displayName, amount, amountType, description, currency) =>
+      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency)),
+    hideEditDialog: () => dispatch(hideEditDialog())
   };
 };
 
@@ -170,7 +172,8 @@ const mapStateToProps = state => {
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
-    workflowDialogVisible: state.getIn(["workflow", "workflowDialogVisible"]),
+    creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
+    editDialogShown: state.getIn(["workflow", "editDialogShown"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
     workflowState: state.getIn(["workflow", "workflowState"]),
     editMode: state.getIn(["workflow", "editMode"]),

@@ -12,7 +12,9 @@ import {
   storeSubProjectComment,
   showProjectPermissions,
   showProjectAssignees,
-  fetchProjectHistory
+  fetchProjectHistory,
+  showEditDialog,
+  editSubproject
 } from "./actions";
 
 import SubProjects from "./SubProjects";
@@ -25,6 +27,7 @@ import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
 import strings from "../../localizeStrings";
 import { fetchUser } from "../Login/actions";
 import ProjectHistoryContainer from "./ProjectHistoryContainer";
+import { hideEditDialog } from "../Overview/actions";
 
 class SubProjectsContainer extends Component {
   componentWillMount() {
@@ -57,8 +60,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
     storeSubProjectName: name => dispatch(storeSubProjectName(name)),
-    createSubProject: (subprojectName, amount, comment, currency, parentName) =>
-      dispatch(createSubProject(parentName, subprojectName, amount, comment, currency)),
+    createSubProject: (subprojectName, amount, description, currency, parentName) =>
+      dispatch(createSubProject(parentName, subprojectName, amount, description, currency)),
+    editSubproject: (pId, sId, changes) => dispatch(editSubproject(pId, sId, changes)),
     storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),
     storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
@@ -72,6 +76,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     showProjectPermissions: () => dispatch(showProjectPermissions()),
     showProjectAssignees: () => dispatch(showProjectAssignees()),
+    showEditDialog: (id, displayName, description, amount, currency) =>
+      dispatch(showEditDialog(id, displayName, description, amount, currency)),
+    hideEditDialog: () => dispatch(hideEditDialog()),
     fetchUser: () => dispatch(fetchUser(true))
   };
 };
@@ -85,14 +92,13 @@ const mapStateToProps = state => {
     projectComment: state.getIn(["detailview", "projectComment"]),
     projectCurrency: state.getIn(["detailview", "projectCurrency"]),
     projectStatus: state.getIn(["detailview", "projectStatus"]),
+    projectAssignee: state.getIn(["detailview", "projectAssignee"]),
     projectTS: state.getIn(["detailview", "projectTS"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
-    subprojectsDialogVisible: state.getIn(["detailview", "subprojectsDialogVisible"]),
-    subProjectName: state.getIn(["detailview", "subProjectName"]),
+    createDialogShown: state.getIn(["detailview", "createDialogShown"]),
+    editDialogShown: state.getIn(["detailview", "editDialogShown"]),
     showProjectAssignees: state.getIn(["detailview", "showProjectAssignees"]),
-    subProjectAmount: state.getIn(["detailview", "subProjectAmount"]),
-    subProjectComment: state.getIn(["detailview", "subProjectComment"]),
-    subProjectCurrency: state.getIn(["detailview", "subProjectCurrency"]),
+    subprojectToAdd: state.getIn(["detailview", "subprojectToAdd"]),
     showHistory: state.getIn(["notifications", "showHistory"]),
     loggedInUser: state.getIn(["login", "loggedInUser"]),
     roles: state.getIn(["login", "roles"]),

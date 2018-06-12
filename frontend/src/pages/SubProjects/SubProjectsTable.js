@@ -8,29 +8,45 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import IconButton from "@material-ui/core/IconButton";
+import EditIcon from "@material-ui/icons/Edit";
+import { withStyles } from "@material-ui/core";
 
 import { toAmountString, statusMapping } from "../../helper";
 import strings from "../../localizeStrings";
-import { canViewSubProjectDetails } from "../../permissions";
+import { canViewSubProjectDetails, canEditSubProject } from "../../permissions";
+
 const styles = {
   tableText: {
     fontSize: "14px"
   }
 };
 
-const getTableEntries = (subProjects, location, history) => {
+const getTableEntries = (classes, subProjects, location, history, showEditDialog) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
-    const { currency, status, displayName, id } = data;
+    const { currency, status, amount, description, displayName, id } = data;
+    console.log(status);
+    const editDisabled = !(canEditSubProject(allowedIntents) && status != "closed");
 
-    const amount = toAmountString(data.amount, currency);
+    const amountString = toAmountString(amount, currency);
+    console.log(editDisabled);
+    console.log(typeof editDisabled);
     return (
       <TableRow key={index}>
-        <TableCell style={styles.tableText}>{displayName}</TableCell>
-        <TableCell style={styles.tableText}>{amount}</TableCell>
-        <TableCell style={styles.tableText}>{statusMapping(status)}</TableCell>
+        <TableCell className={classes.tableText}>{displayName}</TableCell>
+        <TableCell className={classes.tableText}>{amountString}</TableCell>
+        <TableCell className={classes.tableText}>{statusMapping(status)}</TableCell>
         <TableCell>
           <Button
-            style={styles.tableText}
+            className={classes.tableText}
+            disabled={editDisabled}
+            onClick={() => showEditDialog(id, displayName, description, parseFloat(amount), currency)}
+            color="secondary"
+          >
+            {strings.common.edit}
+          </Button>
+          <Button
+            className={classes.tableText}
             disabled={!canViewSubProjectDetails(allowedIntents)}
             onClick={() => history.push("/projects/" + location.pathname.split("/")[2] + "/" + id)}
             color="secondary"
@@ -43,34 +59,18 @@ const getTableEntries = (subProjects, location, history) => {
   });
 };
 
-const SubProjectsTable = ({
-  subProjects,
-  subprojectVisible,
-  history,
-  location,
-  createSubProject,
-  subProjectName,
-  storeSubProjectName,
-  subProjectAmount,
-  storeSubProjectAmount,
-  subProjectComment,
-  storeSubProjectComment,
-  subProjectCurrency,
-  storeSubProjectCurrency,
-  showSnackBar,
-  storeSnackBarMessage
-}) => {
-  const tableEntries = getTableEntries(subProjects, location, history);
+const SubProjectsTable = ({ classes, subProjects, history, location, showEditDialog }) => {
+  const tableEntries = getTableEntries(classes, subProjects, location, history, showEditDialog);
   return (
     <Card>
       <CardHeader title={strings.common.subprojects} />
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={styles.tableText}>{strings.common.subproject}</TableCell>
-            <TableCell style={styles.tableText}>{strings.common.budget}</TableCell>
-            <TableCell style={styles.tableText}>{strings.common.status}</TableCell>
-            <TableCell style={styles.tableText}> </TableCell>
+            <TableCell className={classes.tableText}>{strings.common.subproject}</TableCell>
+            <TableCell className={classes.tableText}>{strings.common.budget}</TableCell>
+            <TableCell className={classes.tableText}>{strings.common.status}</TableCell>
+            <TableCell className={classes.tableText}> </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{tableEntries}</TableBody>
@@ -79,4 +79,4 @@ const SubProjectsTable = ({
   );
 };
 
-export default SubProjectsTable;
+export default withStyles(styles)(SubProjectsTable);

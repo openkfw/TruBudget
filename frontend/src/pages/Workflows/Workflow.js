@@ -7,6 +7,7 @@ import HistoryIcon from "@material-ui/icons/Reorder";
 
 import WorkflowTable from "./WorkflowTable";
 import WorkflowCreation from "./WorkflowCreation";
+import WorkflowEdit from "./WorkflowEdit";
 import { canCreateWorkflowItems } from "../../permissions";
 
 const Workflow = props => {
@@ -22,6 +23,7 @@ const Workflow = props => {
         <WorkflowTable {...props} />
         <div>
           <WorkflowCreation {...props} />
+          <WorkflowEdit {...props} />
         </div>
       </Card>
       <div

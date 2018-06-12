@@ -7,12 +7,29 @@ import strings from "../../localizeStrings";
 import WorkflowCreationAmount from "./WorkflowCreationAmount";
 import DocumentUpload from "../Documents/DocumentUpload";
 import Identifier from "../Common/Identifier";
+import { compareObjects } from "../../helper";
 
 const handleSubmit = props => {
-  const { createWorkflowItem, onWorkflowDialogCancel, editMode, workflowToAdd, workflowDocuments } = props;
+  const {
+    createWorkflowItem,
+    editWorkflowItem,
+    hideEditDialog,
+    workflowItems,
+    workflowToAdd,
+    workflowDocuments,
+    location
+  } = props;
   const subproject = props.match.params.subproject;
-  createWorkflowItem(workflowToAdd, workflowDocuments);
-  onWorkflowDialogCancel();
+  const { id } = workflowToAdd;
+  const originalItem = workflowItems.find(workflowitem => workflowitem.data.id === id);
+  const changes = compareObjects(workflowToAdd, originalItem.data);
+  if (changes) {
+    const projectId = location.pathname.split("/")[2];
+    const subprojectId = location.pathname.split("/")[3];
+    editWorkflowItem(projectId, subprojectId, id, changes);
+  }
+
+  hideEditDialog();
 };
 
 const Content = props => {
@@ -43,7 +60,8 @@ const Content = props => {
     </div>
   );
 };
-const WorkflowCreation = props => {
+
+const WorkflowEdit = props => {
   const steps = [
     {
       title: strings.workflow.workflow_name,
@@ -62,9 +80,9 @@ const WorkflowCreation = props => {
   return (
     <CreationDialog
       editable={props.editMode}
-      title={props.editMode ? strings.workflow.edit_item : strings.workflow.workflow}
-      dialogShown={props.creationDialogShown}
-      onDialogCancel={props.onWorkflowDialogCancel}
+      title={strings.workflow.edit_item}
+      dialogShown={props.editDialogShown}
+      onDialogCancel={props.hideEditDialog}
       handleSubmit={handleSubmit}
       steps={steps}
       numberOfSteps={steps.length}
@@ -73,4 +91,4 @@ const WorkflowCreation = props => {
   );
 };
 
-export default WorkflowCreation;
+export default WorkflowEdit;

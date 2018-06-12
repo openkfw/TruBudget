@@ -30,7 +30,8 @@ const de = {
     assignees: "Assignee(s)",
     approver: "Approver",
     bank: "Bank",
-    assignee: "Assignee"
+    assignee: "Assignee",
+    edit: "German: Edit"
   },
 
   login: {

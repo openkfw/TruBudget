@@ -6,20 +6,22 @@ import {
   SUBPROJECT_COMMENT,
   SUBPROJECT_CURRENCY,
   CREATE_SUBPROJECT_SUCCESS,
-  SHOW_SUBPROJECT_DIALOG,
-  CANCEL_SUBPROJECT_DIALOG,
+  SHOW_CREATE_DIALOG,
+  HIDE_CREATE_DIALOG,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
   SHOW_PROJECT_PERMISSIONS,
   HIDE_PROJECT_PERMISSIONS,
   SHOW_PROJECT_ASSIGNEES,
   HIDE_PROJECT_ASSIGNEES,
-  FETCH_PROJECT_HISTORY_SUCCESS
+  FETCH_PROJECT_HISTORY_SUCCESS,
+  SHOW_EDIT_DIALOG
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
 import { fromAmountString } from "../../helper";
 import { HIDE_HISTORY } from "../Notifications/actions";
+import { HIDE_EDIT_DIALOG } from "../Overview/actions";
 
 const defaultState = fromJS({
   id: "",
@@ -30,20 +32,24 @@ const defaultState = fromJS({
   projectStatus: "open",
   projectTS: 0,
   subProjects: [],
-  subProjectName: "",
-  subprojectsDialogVisible: false,
-  subProjectAmount: "",
-  subProjectComment: "",
-  subProjectCurrency: "",
+  subprojectToAdd: {
+    id: "",
+    displayName: "",
+    amount: "",
+    description: "",
+    currency: ""
+  },
+  createDialogShown: false,
+  editDialogShown: false,
   showHistory: false,
   roles: [],
   permissions: {},
   logs: [],
   historyItems: [],
-  thumbnail: "/Thumbnail_0001.jpg",
   allowedIntents: [],
   permissionDialogShown: false,
-  showProjectAssignees: false
+  showProjectAssignees: false,
+  projectAssignee: ""
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -71,37 +77,41 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:
       return state.set("permissions", fromJS(action.permissions));
-    case SHOW_SUBPROJECT_DIALOG:
-      return state.set("subprojectsDialogVisible", true);
-    case CANCEL_SUBPROJECT_DIALOG:
-      return state.merge({
-        subProjectName: defaultState.get("subProjectName"),
-        subProjectAmount: defaultState.get("subProjectAmount"),
-        subProjectComment: defaultState.get("subProjectComment"),
-        subProjectCurrency: defaultState.get("subProjectCurrency"),
-        subprojectsDialogVisible: defaultState.get("subprojectsDialogVisible")
-      });
+    case SHOW_CREATE_DIALOG:
+      return state.set("createDialogShown", true);
+    case HIDE_CREATE_DIALOG:
+      return state.merge({ subprojectToAdd: defaultState.getIn(["subprojectToAdd"]), createDialogShown: false });
     case SUBPROJECT_NAME:
-      return state.set("subProjectName", action.name);
+      return state.setIn(["subprojectToAdd", "displayName"], action.name);
     case SUBPROJECT_AMOUNT:
-      return state.set("subProjectAmount", action.amount);
+      return state.setIn(["subprojectToAdd", "amount"], action.amount);
     case SUBPROJECT_COMMENT:
-      return state.set("subProjectComment", action.comment);
+      return state.setIn(["subprojectToAdd", "description"], action.description);
     case SUBPROJECT_CURRENCY:
-      return state.set("subProjectCurrency", action.currency);
+      return state.setIn(["subprojectToAdd", "currency"], action.currency);
     case CREATE_SUBPROJECT_SUCCESS:
-      return state.merge({
-        subProjectName: defaultState.get("subProjectName"),
-        subProjectAmount: defaultState.get("subProjectAmount"),
-        subProjectComment: defaultState.get("subProjectComment"),
-        subProjectCurrency: defaultState.get("subProjectCurrency")
-      });
+      return state.set("subprojectToAdd", defaultState.getIn(["subprojectToAdd"]));
     case SHOW_PROJECT_ASSIGNEES:
       return state.set("showProjectAssignees", true);
     case HIDE_PROJECT_ASSIGNEES:
       return state.set("showProjectAssignees", false);
     case FETCH_PROJECT_HISTORY_SUCCESS:
       return state.set("historyItems", fromJS(action.events));
+    case SHOW_EDIT_DIALOG: {
+      return state.merge({
+        subprojectToAdd: state
+          .getIn(["subprojectToAdd"])
+          .set("id", action.id)
+          .set("displayName", action.name)
+          .set("amount", action.amount)
+          .set("description", action.description)
+          .set("currency", action.currency),
+        editDialogShown: true
+      });
+    }
+    case HIDE_EDIT_DIALOG: {
+      return state.merge({ editDialogShown: false, subprojectToAdd: defaultState.getIn(["subprojectToAdd"]) });
+    }
     case HIDE_HISTORY:
       return state.set("historyItems", fromJS([]));
     case LOGOUT:

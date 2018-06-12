@@ -11,6 +11,7 @@ class ProjectAssigneeContainer extends Component {
   };
 
   render() {
+    console.log(this.props);
     return (
       <AssigneeSelection
         assigneeId={this.props.assignee}

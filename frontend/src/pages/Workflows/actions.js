@@ -1,8 +1,11 @@
 export const FETCH_WORKFLOW_ITEMS = "FETCH_WORKFLOW_ITEMS";
 export const FETCH_WORKFLOW_ITEMS_SUCCESS = "FETCH_WORKFLOW_ITEMS_SUCCESS";
 
-export const SHOW_WORKFLOW_DIALOG = "SHOW_WORKFLOW_DIALOG";
-export const CANCEL_WORKFLOW_DIALOG = "CANCEL_WORKFLOW_DIALOG";
+export const SHOW_CREATE_DIALOG = "SHOW_CREATE_DIALOG";
+export const HIDE_CREATE_DIALOG = "HIDE_CREATE_DIALOG";
+
+export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
+export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
 
 export const WORKFLOW_NAME = "WORKFLOW_NAME";
 export const WORKFLOW_TYPE = "WORKFLOW_TYPE";
@@ -16,10 +19,9 @@ export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_SUCCESS = "CREATE_WORKFLOW_SUCCESS";
-export const EDIT_WORKFLOW = "EDIT_WORKFLOW";
-export const EDIT_WORKFLOW_SUCCESS = "EDIT_WORKFLOW_SUCCESS";
+export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
+export const EDIT_WORKFLOW_ITEM_SUCCESS = "EDIT_WORKFLOW_ITEM_SUCCESS";
 export const WORKFLOW_EDIT = "WORKFLOW_EDIT";
-export const WORKFLOW_TXID = "WORKFLOW_TXID";
 export const SHOW_WORKFLOW_DETAILS = "SHOW_WORKFLOW_DETAILS";
 
 export const UPDATE_WORKFLOW_SORT = "UPDATE_WORKFLOW_SORT";
@@ -122,11 +124,10 @@ export function setCurrentStep(step) {
   };
 }
 
-export function showWorkflowDetails(show, txid) {
+export function showWorkflowDetails(show) {
   return {
     type: SHOW_WORKFLOW_DETAILS,
-    show,
-    txid
+    show
   };
 }
 
@@ -305,7 +306,7 @@ export function fetchWorkflowItems(streamName) {
 
 export function showWorkflowDialog(editMode = false) {
   return {
-    type: SHOW_WORKFLOW_DIALOG,
+    type: SHOW_CREATE_DIALOG,
     show: true,
     editMode
   };
@@ -313,9 +314,27 @@ export function showWorkflowDialog(editMode = false) {
 
 export function onWorkflowDialogCancel(editMode) {
   return {
-    type: CANCEL_WORKFLOW_DIALOG,
+    type: HIDE_CREATE_DIALOG,
     show: false,
     editMode
+  };
+}
+
+export function showEditDialog(id, displayName, amount, amountType, description, currency) {
+  return {
+    type: SHOW_EDIT_DIALOG,
+    id,
+    displayName,
+    amount,
+    amountType,
+    description,
+    currency
+  };
+}
+
+export function hideEditDialog() {
+  return {
+    type: HIDE_EDIT_DIALOG
   };
 }
 
@@ -368,10 +387,10 @@ export function storeWorkflowCurrency(currency) {
   };
 }
 
-export function storeWorkflowComment(comment) {
+export function storeWorkflowComment(description) {
   return {
     type: WORKFLOW_PURPOSE,
-    comment: comment
+    description
   };
 }
 
@@ -382,55 +401,33 @@ export function storeWorkflowStatus(status) {
   };
 }
 
-export function storeWorkflowTxid(txid) {
-  return {
-    type: WORKFLOW_TXID,
-    txid
-  };
-}
-
 export function createWorkflowItem(
   projectId,
   subprojectId,
-  { name, amount, amountType, currency, comment, status },
+  { displayName, amount, amountType, currency, description, status },
   documents
 ) {
   return {
     type: CREATE_WORKFLOW,
     projectId,
     subprojectId,
-    displayName: name,
+    displayName,
     amount: `${amount}`,
     amountType,
     currency,
-    description: comment,
+    description,
     documents,
     status
   };
 }
 
-export function editWorkflowItem(
-  stream,
-  key,
-  { name, amount, amountType, currency, comment, status, txid, type, approvalRequired },
-  documents,
-  previousState
-) {
+export function editWorkflowItem(projectId, subprojectId, workflowitemId, changes) {
   return {
-    type: EDIT_WORKFLOW,
-    stream: stream,
-    key: key,
-    workflowName: name,
-    amount: amount,
-    currency: currency,
-    comment: comment,
-    workflowType: type,
-    state: status,
-    amountType,
-    documents,
-    txid,
-    previousState,
-    approvalRequired
+    type: EDIT_WORKFLOW_ITEM,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    changes
   };
 }
 

@@ -47,7 +47,6 @@ class WorkflowCreationAmount extends Component {
 
     const floatingLabelText = strings.workflow.workflow_budget;
     const hintText = strings.workflow.workflow_budget_description;
-
     return (
       <div style={styles.container}>
         <div>

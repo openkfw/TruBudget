@@ -41,6 +41,20 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
         data.userId,
         snapshot.displayName
       );
+    case "project.update": {
+      const key = Object.keys(data).toString();
+      const updatedField = key.charAt(0).toUpperCase() + key.slice(1);
+      return `${updatedField} of project ${snapshot.displayName} got updated to ${
+        data[key.toString()]
+      } by ${createdBy}`;
+    }
+    case "subproject.update": {
+      const key = Object.keys(data).toString();
+      const updatedField = key.charAt(0).toUpperCase() + key.slice(1);
+      return `${updatedField} of subproject ${snapshot.displayName} got updated to ${
+        data[key.toString()]
+      } by ${createdBy}`;
+    }
     case "subproject.intent.revokePermission":
       return formatString(
         strings.history.subproject_revokePermission_details,

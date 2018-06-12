@@ -36,7 +36,8 @@ const pt = {
     password: "Senha",
     incorrect_username: "Usuário incorreto",
     incorrect_password: "Senha incorreta",
-    added: "Adicionado"
+    added: "Adicionado",
+    edit: "Portuguese: Edit"
   },
 
   adminDashboard: {
