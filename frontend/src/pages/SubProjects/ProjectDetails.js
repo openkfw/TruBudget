@@ -23,7 +23,6 @@ import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
 import Red from "@material-ui/core/colors/red";
-import Status from "../Common/Status";
 
 import {
   toAmountString,
