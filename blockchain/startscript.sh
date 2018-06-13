@@ -1,67 +1,67 @@
 #!/bin/bash
 
-# Fallback for the $CHAINNAME variable
-if [ -z "$CHAINNAME" ]; then
-    CHAINNAME='DockerChain'
-fi
+# Settings for all nodes:
+ORGANIZATION="${ORGANIZATION}"
+CHAINNAME="${CHAINNAME:-DockerChain}"
+RPC_PORT="${RPC_PORT:-8000}"
+RPC_USER="${RPC_USER:-multichainrpc}"
+RPC_PASSWORD="${RPC_PASSWORD:-this-is-insecure-change-it}"
+RPC_ALLOW_IP="${RPC_ALLOW_IP:-0.0.0.0/0.0.0.0}"
 
-# Fallback for the $NETWORK_PORT variable
-if [ -z "$NETWORK_PORT" ]; then
-    NETWORK_PORT=7447
-fi
+# Settings for the master node:
+EXTERNAL_IP="${EXTERNAL_IP}"
 
-# Fallback for the $RPC_PORT variable
-if [ -z "$RPC_PORT" ]; then
-    RPC_PORT=8000
-fi
+# Settings for other nodes:
+P2P_HOST="${P2P_HOST}"
+P2P_PORT="${P2P_PORT:-7447}"
+API_PROTO="${API_PROTO:-https}"
+API_HOST="${API_HOST:-$P2P_HOST}"
+API_PORT="${API_PORT:-8080}"
 
-# Fallback for the $RPC_USER variable
-if [ -z "$RPC_USER" ]; then
-    RPC_USER="multichainrpc"
-fi
+# ---
 
-# Fallback for the $RPC_PASSWORD variable
-if [ -z "$RPC_PASSWORD" ]; then
-    RPC_PASSWORD="this-is-insecure-change-it"
-fi
+function die() {
+    echo "$@"
+    exit 1
+}
 
-# Fallback for the $RPC_ALLOW_IP variable
-if [ -z "$RPC_ALLOW_IP" ]; then
-    RPC_ALLOW_IP="0.0.0.0/0.0.0.0"
-fi
+function ensure() {
+    local var="$1"
+    [[ -z "${!var}" ]] && die "$var not set."
+}
 
-multichain-util create $CHAINNAME
+ensure ORGANIZATION
 
-mkdir -p /root/.multichain/$CHAINNAME/
+is_master=
+[[ -z "$P2P_HOST" ]] && is_master=1
 
-cat << EOF > /root/.multichain/$CHAINNAME/multichain.conf
-rpcuser=$RPC_USER
-rpcpassword=$RPC_PASSWORD
-rpcallowip=$RPC_ALLOW_IP
-rpcport=$RPC_PORT
-autosubscribe=streams
-EOF
+blocknotify_arg=
+[[ -n "$BLOCKNOTIFY_SCRIPT" ]] && blocknotify_arg="-blocknotify=\"$BLOCKNOTIFY_SCRIPT %s\""
 
-cp /root/.multichain/$CHAINNAME/multichain.conf /root/.multichain/multichain.conf
+external_ip_arg=
+[[ -n "$EXTERNAL_IP" ]] && external_ip_arg="-externalip=$EXTERNAL_IP"
 
-if [ ! -z "$BLOCKNOTIFY_SCRIPT" ]; then
-    echo "blocknotify=$BLOCKNOTIFY_SCRIPT %s" >> /root/.multichain/$CHAINNAME/multichain.conf
-fi
+connect_arg="$CHAINNAME"
+[[ $is_master ]] || connect_arg="${CHAINNAME}@${P2P_HOST}:${P2P_PORT}"
 
-if [ -z "$MASTERNODE" ] && [ -z "$MASTERNODE_IP" ]; then
-    echo ">>>>  CREATE NEW BLOCKCHAIN"
-    cp /root/.multichain/$CHAINNAME/multichain.conf /root/.multichain/multichain.conf
-
-    if [ -z "$EXTERNAL_IP"]; then 
-        multichaind -txindex $CHAINNAME
-    else
-        multichaind -txindex $CHAINNAME -externalip=$EXTERNAL_IP
-    fi
+if [[ $is_master ]]; then
+    multichain-util create $CHAINNAME
+    program=multichaind
 else
-    sleep 7
-    if [ -z "$MASTERNODE_IP" ]; then
-      export MASTERNODE_IP=`getent hosts $MASTERNODE | awk -F' ' '{print $1}'`
-    fi
-
-    node /home/node/src/connectToChain.js
+    program="node /home/node/src/connectToChain.js"
+    export API_PROTO
+    export API_HOST
+    export API_PORT
 fi
+
+exec $program \
+-txindex \
+$external_ip_arg \
+$blocknotify_arg \
+-port="$P2P_PORT" \
+-rpcport="$RPC_PORT" \
+-rpcuser="$RPC_USER" \
+-rpcpassword="$RPC_PASSWORD" \
+-rpcallowip="$RPC_ALLOW_IP" \
+-autosubscribe=streams \
+$connect_arg
