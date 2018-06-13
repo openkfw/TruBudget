@@ -26,7 +26,7 @@ const defaultState = fromJS({
     amount: "",
     description: "",
     thumbnail: "/Thumbnail_0001.jpg",
-    currency: "EUR"
+    currency: ""
   },
 
   currentStep: 0,
@@ -47,10 +47,10 @@ export default function overviewReducer(state = defaultState, action) {
         projectToAdd: state
           .getIn(["projectToAdd"])
           .set("id", action.id)
+          .set("currency", action.currency)
           .set("displayName", action.displayName)
           .set("amount", action.amount)
           .set("description", action.description)
-          .set("currency", action.currency)
           .set("thumbnail", action.thumbnail),
         currentStep: action.currentStep,
         editDialogShown: true

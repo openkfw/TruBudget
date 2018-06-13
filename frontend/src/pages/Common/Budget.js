@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import MenuItem from "@material-ui/core/MenuItem";
+import _isEmpty from "lodash/isEmpty";
 
 import DropwDown from "./NewDropdown";
 import TextInput from "./TextInput";
@@ -20,7 +21,9 @@ const styles = {
 
 class Budget extends Component {
   componentWillMount() {
-    preselectCurrency(this.props.parentCurrency, this.props.storeCurrency);
+    if (_isEmpty(this.props.currency)) {
+      preselectCurrency(this.props.parentCurrency, this.props.storeCurrency);
+    }
   }
 
   getMenuItems(currencies) {
