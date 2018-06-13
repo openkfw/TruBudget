@@ -178,6 +178,10 @@ export const createRouter = (
    */
   router.get("/liveness", (req, res) => res.status(200).send("OK"));
 
+  router.post("/nodes", (req, res) => {
+    res.status(500).send("TODO");
+  });
+
   //#region global
   // ------------------------------------------------------------
   //       global

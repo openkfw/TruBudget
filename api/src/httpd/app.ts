@@ -6,7 +6,7 @@ import { AuthToken } from "../authz/token";
 const addTokenHandling = (app, jwtSecret: string) => {
   app.use(
     expressJwt({ secret: jwtSecret }).unless({
-      path: ["/api/liveness", "/api/readiness", "/api/user.authenticate", "/api/doc"],
+      path: ["/api/liveness", "/api/readiness", "/api/user.authenticate", "/api/doc", "/api/nodes"],
     }),
   );
   app.use(function customAuthTokenErrorHandler(err, req, res, next) {
