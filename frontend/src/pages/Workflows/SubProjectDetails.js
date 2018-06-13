@@ -21,14 +21,12 @@ import NotAssignedIcon from "@material-ui/icons/SpaceBar";
 import OpenIcon from "@material-ui/icons/Remove";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import SpentIcon from "@material-ui/icons/RemoveCircle";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
 import { Doughnut } from "react-chartjs-2";
 
 import {
   toAmountString,
-  fromAmountString,
   createTaskData,
   statusIconMapping,
   statusMapping,
@@ -130,12 +128,6 @@ const styles = {
   }
 };
 
-const enableEditMode = ({ storeSubProjectAmount, enableBudgetEdit }, amountString) => {
-  const amount = fromAmountString(amountString);
-  enableBudgetEdit();
-  storeSubProjectAmount(amount);
-};
-
 const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   return (
     <div style={styles.budget}>
@@ -144,41 +136,6 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
           <AmountIcon />
         </ListItemIcon>
         <ListItemText primary={amountString} secondary={strings.common.budget} />
-      </ListItem>
-    </div>
-  );
-};
-
-const disableEditMode = (
-  subProjectAmount,
-  storeSubProjectAmount,
-  { disableBudgetEdit, location, postSubProjectEdit }
-) => {
-  storeSubProjectAmount(0);
-  postSubProjectEdit(location.pathname.split("/")[2], location.pathname.split("/")[3], "open", subProjectAmount);
-  disableBudgetEdit();
-};
-
-const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }) => {
-  const label = strings.common.budget;
-  return (
-    <div style={styles.budget}>
-      <ListItem style={{ marginTop: "10px" }} disabled={false}>
-        <ListItemIcon>
-          <AmountIcon />
-        </ListItemIcon>
-
-        <TextField
-          label={label}
-          style={styles.textfield}
-          type="number"
-          value={subProjectAmount}
-          onChange={event => storeSubProjectAmount(event.target.value)}
-        />
-        <DoneIcon
-          style={styles.doneIcon}
-          onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)}
-        />
       </ListItem>
     </div>
   );

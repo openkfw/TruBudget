@@ -8,8 +8,6 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
 import { withStyles } from "@material-ui/core";
 
 import { toAmountString, statusMapping } from "../../helper";
@@ -25,12 +23,9 @@ const styles = {
 const getTableEntries = (classes, subProjects, location, history, showEditDialog) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
     const { currency, status, amount, description, displayName, id } = data;
-    console.log(status);
     const editDisabled = !(canEditSubProject(allowedIntents) && status != "closed");
 
     const amountString = toAmountString(amount, currency);
-    console.log(editDisabled);
-    console.log(typeof editDisabled);
     return (
       <TableRow key={index}>
         <TableCell className={classes.tableText}>{displayName}</TableCell>

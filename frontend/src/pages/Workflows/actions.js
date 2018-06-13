@@ -304,19 +304,15 @@ export function fetchWorkflowItems(streamName) {
   };
 }
 
-export function showWorkflowDialog(editMode = false) {
+export function showCreateDialog() {
   return {
-    type: SHOW_CREATE_DIALOG,
-    show: true,
-    editMode
+    type: SHOW_CREATE_DIALOG
   };
 }
 
-export function onWorkflowDialogCancel(editMode) {
+export function hideCreateDialog() {
   return {
-    type: HIDE_CREATE_DIALOG,
-    show: false,
-    editMode
+    type: HIDE_CREATE_DIALOG
   };
 }
 

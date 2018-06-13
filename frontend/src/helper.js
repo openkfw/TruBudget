@@ -165,6 +165,13 @@ export const formatString = (text, ...args) => {
   const x = strings.formatString(text, ...args).join(" ");
   return x;
 };
+export const formatUpdateString = (identifier, createdBy, data) => {
+  let string = strings.formatString(strings.history.changed_by, identifier, createdBy);
+  const changes = Object.keys(data)
+    .map(key => formatString(strings.history.to, key, data[key]))
+    .join(", ");
+  return string.concat(changes);
+};
 
 export const getAllocationRatio = (spentAmount, projectAmount) => {
   const allocationRatio = spentAmount / projectAmount * 100;

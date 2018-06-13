@@ -7,7 +7,7 @@ import sortBy from "lodash/sortBy";
 import RessourceHistory from "../Common/History/RessourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
-import { toJS, formatString } from "../../helper";
+import { toJS, formatString, formatUpdateString } from "../../helper";
 import { formatPermission } from "../Common/History/helper";
 
 const calculateHistory = items => {
@@ -41,20 +41,10 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
         data.userId,
         snapshot.displayName
       );
-    case "project.update": {
-      const key = Object.keys(data).toString();
-      const updatedField = key.charAt(0).toUpperCase() + key.slice(1);
-      return `${updatedField} of project ${snapshot.displayName} got updated to ${
-        data[key.toString()]
-      } by ${createdBy}`;
-    }
-    case "subproject.update": {
-      const key = Object.keys(data).toString();
-      const updatedField = key.charAt(0).toUpperCase() + key.slice(1);
-      return `${updatedField} of subproject ${snapshot.displayName} got updated to ${
-        data[key.toString()]
-      } by ${createdBy}`;
-    }
+    case "project.update":
+      return formatUpdateString(strings.common.project, createdBy, data);
+    case "subproject.update":
+      return formatUpdateString(strings.common.subproject, createdBy, data);
     case "subproject.intent.revokePermission":
       return formatString(
         strings.history.subproject_revokePermission_details,

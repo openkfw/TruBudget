@@ -19,8 +19,8 @@ const fr = {
     disbursed_budget: "Budget décaissé",
     budget_distribution: "Affectation budgétaire",
     task_status: "Etat de la tâche",
-    subprojects: "Sous-projets",
-    subproject: "Sous-projet",
+    subprojects: "Sousprojets",
+    subproject: "Sousprojet",
     history: "Historique",
     close: "Fermer",
     open: "Ouvert",
@@ -31,7 +31,9 @@ const fr = {
     approver: "Autorisé",
     bank: "Banque",
     assignee: "Cessionnaire",
-    edit: "French: Edit"
+    edit: "French: Edit",
+    workflowItem: "French: WorkflowItem",
+    project: "French: Project"
   },
 
   login: {
@@ -205,7 +207,9 @@ const fr = {
     workflowitem_close: "French: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "French: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "French: {0} revoked permission {1} of {3} from {2}",
-    workflowitem_assign: "French: {0} assigned workflowitem {1} to {2}"
+    workflowitem_assign: "French: {0} assigned workflowitem {1} to {2}",
+    changed_by: "French: {0} changed by {1}: ",
+    to: "French: {0} to {1}"
   },
   permissions: {
     read_only: "French: Read-only permissions",

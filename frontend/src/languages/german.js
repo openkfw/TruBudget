@@ -19,8 +19,8 @@ const de = {
     disbursed_budget: "Disbursed Budget",
     budget_distribution: "Budget distribution",
     task_status: "Task status",
-    subprojects: "Sub-projects",
-    subproject: "Sub-project",
+    subprojects: "Subprojects",
+    subproject: "Subproject",
     history: "History",
     close: "Close",
     open: "Open",
@@ -31,7 +31,9 @@ const de = {
     approver: "Approver",
     bank: "Bank",
     assignee: "Assignee",
-    edit: "German: Edit"
+    edit: "German: Edit",
+    workflowItem: "German: WorkflowItem",
+    project: "German: Project"
   },
 
   login: {
@@ -201,7 +203,9 @@ const de = {
     workflowitem_close: "German: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "German: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "German: {0} revoked permission {1} of {3} from {2}",
-    workflowitem_assign: "German: {0} assigned workflowitem {1} to {2}"
+    workflowitem_assign: "German: {0} assigned workflowitem {1} to {2}",
+    changed_by: "German: {0} changed by {1}: ",
+    to: "German: {0} to {1}"
   },
   permissions: {
     read_only: "German: Read-only permissions",

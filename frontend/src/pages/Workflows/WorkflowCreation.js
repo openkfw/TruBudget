@@ -9,10 +9,9 @@ import DocumentUpload from "../Documents/DocumentUpload";
 import Identifier from "../Common/Identifier";
 
 const handleSubmit = props => {
-  const { createWorkflowItem, onWorkflowDialogCancel, editMode, workflowToAdd, workflowDocuments } = props;
-  const subproject = props.match.params.subproject;
+  const { createWorkflowItem, hideCreateDialog, workflowToAdd, workflowDocuments } = props;
   createWorkflowItem(workflowToAdd, workflowDocuments);
-  onWorkflowDialogCancel();
+  hideCreateDialog();
 };
 
 const Content = props => {
@@ -61,10 +60,9 @@ const WorkflowCreation = props => {
   ];
   return (
     <CreationDialog
-      editable={props.editMode}
       title={props.editMode ? strings.workflow.edit_item : strings.workflow.workflow}
       dialogShown={props.creationDialogShown}
-      onDialogCancel={props.onWorkflowDialogCancel}
+      onDialogCancel={props.hideCreateDialog}
       handleSubmit={handleSubmit}
       steps={steps}
       numberOfSteps={steps.length}

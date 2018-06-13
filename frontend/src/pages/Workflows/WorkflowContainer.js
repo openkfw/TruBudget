@@ -6,7 +6,7 @@ import globalStyles from "../../styles";
 import {
   fetchWorkflowItems,
   setCurrentStep,
-  showWorkflowDialog,
+  showCreateDialog,
   storeWorkflowComment,
   storeWorkflowCurrency,
   storeWorkflowAmount,
@@ -24,7 +24,6 @@ import {
   postSubProjectEdit,
   isWorkflowApprovalRequired,
   fetchAllSubprojectDetails,
-  onWorkflowDialogCancel,
   storeWorkflowStatus,
   showSubProjectPermissions,
   showWorkflowItemPermissions,
@@ -33,7 +32,8 @@ import {
   showSubProjectAssignee,
   fetchSubprojectHistory,
   showEditDialog,
-  hideEditDialog
+  hideEditDialog,
+  hideCreateDialog
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -65,7 +65,7 @@ class WorkflowContainer extends Component {
 
   componentWillUnmount() {
     this.props.hideWorkflowDetails();
-    this.props.onWorkflowDialogCancel();
+    this.props.hideCreateDialog();
   }
 
   createWorkflowItem = (workflow, documents) => {
@@ -112,8 +112,8 @@ class WorkflowContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
-    openWorkflowDialog: editMode => dispatch(showWorkflowDialog(editMode)),
-    onWorkflowDialogCancel: () => dispatch(onWorkflowDialogCancel(false)),
+    showCreateDialog: () => dispatch(showCreateDialog()),
+    hideCreateDialog: () => dispatch(hideCreateDialog()),
     storeWorkflowComment: comment => dispatch(storeWorkflowComment(comment)),
     storeWorkflowCurrency: currency => dispatch(storeWorkflowCurrency(currency)),
     storeWorkflowAmount: amount => dispatch(storeWorkflowAmount(amount)),
@@ -175,8 +175,6 @@ const mapStateToProps = state => {
     creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
     editDialogShown: state.getIn(["workflow", "editDialogShown"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
-    workflowState: state.getIn(["workflow", "workflowState"]),
-    editMode: state.getIn(["workflow", "editMode"]),
     currentStep: state.getIn(["workflow", "currentStep"]),
     showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
     showDetailsItemId: state.getIn(["workflow", "showDetailsItemId"]),

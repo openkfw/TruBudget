@@ -41,7 +41,7 @@ const Workflow = props => {
         <Button
           disabled={props.workflowSortEnabled ? props.workflowSortEnabled : !allowedToCreateWorkflows}
           color="primary"
-          onClick={() => props.openWorkflowDialog(false)}
+          onClick={() => props.showCreateDialog()}
           variant="fab"
           style={{
             position: "relative"

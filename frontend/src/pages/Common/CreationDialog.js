@@ -9,7 +9,7 @@ import strings from "../../localizeStrings";
 import CreationDialogStepper from "./CreationDialogStepper";
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  const { numberOfSteps, currentStep = 0, steps, editMode } = props;
+  const { numberOfSteps, currentStep = 0, steps } = props;
 
   const isLastStep = currentStep === numberOfSteps - 1;
   const isFirstStep = currentStep === 0;
@@ -41,7 +41,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
     <Button
       aria-label="submit"
       color="primary"
-      disabled={isLastStep ? requiredInfoAdded : !editMode}
+      disabled={isLastStep && requiredInfoAdded}
       onClick={() => handleSubmit(props)}
     >
       {strings.common.submit}

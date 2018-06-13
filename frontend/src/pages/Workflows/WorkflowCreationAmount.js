@@ -47,6 +47,7 @@ class WorkflowCreationAmount extends Component {
 
     const floatingLabelText = strings.workflow.workflow_budget;
     const hintText = strings.workflow.workflow_budget_description;
+    const budgetDisabled = workflowAmountType === "N/A";
     return (
       <div style={styles.container}>
         <div>
@@ -90,7 +91,7 @@ class WorkflowCreationAmount extends Component {
             budgetHintText={hintText + " " + toAmountString(99999.99)}
             budget={workflowAmount}
             storeBudget={storeWorkflowAmount}
-            budgetDisabled={workflowAmountType === "N/A"}
+            disabled={budgetDisabled}
           />
         </div>
       </div>

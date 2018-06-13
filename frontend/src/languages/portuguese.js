@@ -37,7 +37,9 @@ const pt = {
     incorrect_username: "Usuário incorreto",
     incorrect_password: "Senha incorreta",
     added: "Adicionado",
-    edit: "Portuguese: Edit"
+    edit: "Portuguese: Edit",
+    workflowItem: "Portuguese: WorkflowItem",
+    project: "Portuguese: Project"
   },
 
   adminDashboard: {
@@ -240,7 +242,9 @@ const pt = {
     workflowitem_close: "Portuguese: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "Portuguese: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "Portuguese: {0} revoked permission {1} of {3} from {2}",
-    workflowitem_assign: "Portuguese: {0} assigned workflowitem {1} to {2}"
+    workflowitem_assign: "Portuguese: {0} assigned workflowitem {1} to {2}",
+    changed_by: "Portuguese: {0} changed by {1}: ",
+    to: "Portuguese: {0} to {1}"
   },
   permissions: {
     read_only: "Portuguese: Read-only permissions",

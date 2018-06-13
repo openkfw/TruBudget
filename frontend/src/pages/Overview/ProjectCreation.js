@@ -19,7 +19,6 @@ const handleSubmit = props => {
 
 const ProjectCreation = props => {
   const { displayName, description, amount } = props.projectToAdd;
-  console.log(typeof amount);
   const steps = [
     {
       title: strings.project.project_details,

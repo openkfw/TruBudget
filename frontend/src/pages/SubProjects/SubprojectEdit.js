@@ -44,6 +44,7 @@ const SubprojectEdit = props => {
         !_isNumber(subprojectToAdd.amount)
     }
   ];
+
   return (
     <CreationDialog
       title={"Edit Subproject"}

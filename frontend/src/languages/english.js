@@ -20,8 +20,9 @@ const en = {
     disbursed_budget: "Disbursed",
     budget_distribution: "Budget distribution",
     task_status: "Task status",
-    subprojects: "Sub-projects",
-    subproject: "Sub-project",
+    project: "Project",
+    subprojects: "Subprojects",
+    subproject: "Subproject",
     history: "History",
     close: "Close",
     open: "Open",
@@ -38,7 +39,8 @@ const en = {
     incorrect_username: "Incorrect username",
     incorrect_password: "Incorrect password",
     added: "Added",
-    search: "Search"
+    search: "Search",
+    workflowItem: "WorkflowItem"
   },
 
   adminDashboard: {
@@ -240,7 +242,9 @@ const en = {
     workflowitem_close: "{0} closed workflowitem {1}",
     workflowitem_grantPermission: "{0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "{0} revoked permission {1} of {3} from {2}",
-    workflowitem_assign: "{0} assigned workflowitem {1} to {2}"
+    workflowitem_assign: "{0} assigned workflowitem {1} to {2}",
+    changed_by: "{0} changed by {1}: ",
+    to: "{0} to {1}"
   },
 
   permissions: {

@@ -62,7 +62,6 @@ const defaultState = fromJS({
   workflowItemReference: "",
   permissions: {},
   creationDialogShown: false,
-  editMode: false,
   showDetails: false,
   showDetailsItemId: "",
   showHistory: false,
@@ -115,15 +114,11 @@ export default function detailviewReducer(state = defaultState, action) {
         currentStep: defaultState.get("currentStep")
       });
     case SHOW_CREATE_DIALOG:
-      return state.merge({
-        creationDialogShown: action.show,
-        editMode: action.editMode
-      });
+      return state.set("creationDialogShown", true);
     case HIDE_CREATE_DIALOG:
       return state.merge({
-        creationDialogShown: action.show,
+        creationDialogShown: false,
         workflowToAdd: defaultState.getIn(["workflowToAdd"]),
-        editMode: defaultState.get("editMode"),
         currentStep: defaultState.get("currentStep")
       });
     case SHOW_SUBPROJECT_PERMISSIONS:
@@ -168,9 +163,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case CREATE_WORKFLOW_SUCCESS:
     case EDIT_WORKFLOW_ITEM_SUCCESS:
       return state.merge({
-        workflowToAdd: defaultState.getIn(["workflowToAdd"]),
-        workflowState: defaultState.get("workflowState"),
-        editMode: defaultState.get("editMode")
+        workflowToAdd: defaultState.getIn(["workflowToAdd"])
       });
     case SHOW_WORKFLOW_DETAILS:
       return state.merge({

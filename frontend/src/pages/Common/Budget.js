@@ -42,7 +42,7 @@ class Budget extends Component {
       budgetHintText,
       budget,
       storeBudget,
-      budgetDisabled
+      disabled
     } = this.props;
     const currencies = getCurrencies(parentCurrency);
     return (
@@ -50,9 +50,9 @@ class Budget extends Component {
         <DropwDown
           style={{ minWidth: 120 }}
           floatingLabel={currencyTitle}
-          value={currency ? currency : parentCurrency}
+          value={currency}
           onChange={storeCurrency}
-          disabled={budgetDisabled}
+          disabled={disabled}
         >
           {this.getMenuItems(currencies)}
         </DropwDown>
@@ -66,7 +66,7 @@ class Budget extends Component {
           onBlur={e => storeBudget(fromAmountString(e.target.value))}
           type="number"
           aria-label="amount"
-          disabled={budgetDisabled}
+          disabled={disabled}
         />
       </div>
     );

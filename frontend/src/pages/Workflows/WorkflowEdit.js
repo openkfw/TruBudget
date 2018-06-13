@@ -10,15 +10,7 @@ import Identifier from "../Common/Identifier";
 import { compareObjects } from "../../helper";
 
 const handleSubmit = props => {
-  const {
-    createWorkflowItem,
-    editWorkflowItem,
-    hideEditDialog,
-    workflowItems,
-    workflowToAdd,
-    workflowDocuments,
-    location
-  } = props;
+  const { editWorkflowItem, hideEditDialog, workflowItems, workflowToAdd, workflowDocuments, location } = props;
   const subproject = props.match.params.subproject;
   const { id } = workflowToAdd;
   const originalItem = workflowItems.find(workflowitem => workflowitem.data.id === id);
@@ -28,7 +20,6 @@ const handleSubmit = props => {
     const subprojectId = location.pathname.split("/")[3];
     editWorkflowItem(projectId, subprojectId, id, changes);
   }
-
   hideEditDialog();
 };
 
@@ -79,7 +70,6 @@ const WorkflowEdit = props => {
   ];
   return (
     <CreationDialog
-      editable={props.editMode}
       title={strings.workflow.edit_item}
       dialogShown={props.editDialogShown}
       onDialogCancel={props.hideEditDialog}

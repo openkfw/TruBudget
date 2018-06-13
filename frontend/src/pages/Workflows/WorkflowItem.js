@@ -27,7 +27,6 @@ const styles = {
   text: {
     fontSize: "14px"
   },
-  open: {},
   dots: {
     height: 20,
     width: 20,
@@ -59,12 +58,7 @@ const styles = {
     left: "25px",
     bottom: "34px"
   },
-  editButtons: {
-    minWidth: "40px",
-    marginLeft: "5px",
-    marginRight: "5px",
-    backgroundColor: "white"
-  },
+
   infoButton: {
     minWidth: "40px",
     marginLeft: "5px",
@@ -98,6 +92,19 @@ const styles = {
   },
   workflowCell: {
     flex: 1
+  },
+  card: {
+    marginLeft: "50px",
+    marginRight: "10px",
+    marginTop: "15px",
+    marginBottom: "15px"
+  },
+  container: {
+    position: "relative"
+  },
+  icon: {
+    width: "14px",
+    height: "20px"
   }
 };
 
@@ -127,13 +134,16 @@ const StepDot = ({ status, selectable }) => {
   }
   return (
     <Paper style={styles.dots} elevation={2} disabled={selectable}>
-      <Icon style={{ width: "14px", height: "20px", opacity: selectable ? 1 : 0.3 }} />
+      <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
     </Paper>
   );
 };
 
 const editWorkflow = ({ id, displayName, amount, amountType, currency, description, status, documents }, props) => {
-  props.showEditDialog(id, displayName, amount, amountType, description, currency);
+  // Otherwise we need to deal with undefined which causes errors in the editDialog
+  const workflowitemAmount = amount ? amount : "";
+  const workflowitemCurrency = currency ? currency : props.currency;
+  props.showEditDialog(id, displayName, workflowitemAmount, amountType, description, workflowitemCurrency);
 };
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
@@ -226,19 +236,10 @@ export const WorkflowItem = SortableElement(
 
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
     return (
-      <div style={{ position: "relative" }}>
+      <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
-        <Card
-          elevation={workflowSelectable ? 1 : 0}
-          key={mapIndex}
-          style={{
-            marginLeft: "50px",
-            marginRight: "10px",
-            marginTop: "15px",
-            marginBottom: "15px"
-          }}
-        >
+        <Card elevation={workflowSelectable ? 1 : 0} key={mapIndex} style={styles.card}>
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>{infoButton}</div>
             <div style={{ ...itemStyle, ...styles.text, flex: 4 }}>
@@ -284,19 +285,10 @@ export const RedactedWorkflowItem = SortableElement(
     const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
 
     return (
-      <div style={{ position: "relative" }}>
+      <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
-        <Card
-          elevation={workflowSelectable ? 1 : 0}
-          key={mapIndex}
-          style={{
-            marginLeft: "50px",
-            marginRight: "10px",
-            marginTop: "15px",
-            marginBottom: "15px"
-          }}
-        >
+        <Card elevation={workflowSelectable ? 1 : 0} key={mapIndex} style={styles.card}>
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>
               <IconButton style={styles.infoButton}>

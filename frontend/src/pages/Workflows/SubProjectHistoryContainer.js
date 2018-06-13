@@ -7,7 +7,7 @@ import sortBy from "lodash/sortBy";
 import RessourceHistory from "../Common/History/RessourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
-import { toJS, formatString } from "../../helper";
+import { toJS, formatString, formatUpdateString } from "../../helper";
 import { formatPermission } from "../Common/History/helper";
 
 const calculateHistory = items => {
@@ -37,20 +37,10 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
       return formatString(strings.history.workflowitem_grantPermission, createdBy, formatPermission(data), data.userId);
     case "subproject.intent.revokePermission":
       return formatString(strings.history.subproject_revokePermission, createdBy, formatPermission(data), data.userId);
-    case "workflowitem.update": {
-      const key = Object.keys(data).toString();
-      const updatedField = key.charAt(0).toUpperCase() + key.slice(1);
-      return `${updatedField} of workflowitem ${snapshot.displayName} got updated to ${
-        data[key.toString()]
-      } by ${createdBy}`;
-    }
-    case "subproject.update": {
-      const key = Object.keys(data).toString();
-      const updatedField = key.charAt(0).toUpperCase() + key.slice(1);
-      return `${updatedField} of subproject ${snapshot.displayName} got updated to ${
-        data[key.toString()]
-      } by ${createdBy}`;
-    }
+    case "workflowitem.update":
+      return formatUpdateString(strings.common.workflowItem, createdBy, data);
+    case "subproject.update":
+      return formatUpdateString(strings.common.subproject, createdBy, data);
     case "workflowitem.intent.revokePermission":
       return formatString(
         strings.history.workflowitem_revokePermission,
@@ -80,7 +70,6 @@ class SubProjectHistoryContainer extends Component {
     // only calculate if history is shown and workflow state changed
     if (nextProps.show && nextProps.items !== prevState.items) {
       const ressourceHistory = calculateHistory(nextProps.items);
-      console.log(ressourceHistory);
       return {
         items: nextProps.items,
         ressourceHistory
