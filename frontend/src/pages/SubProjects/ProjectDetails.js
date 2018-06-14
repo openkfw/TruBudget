@@ -18,11 +18,13 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import OpenIcon from "@material-ui/icons/Remove";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
 import Red from "@material-ui/core/colors/red";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import {
   toAmountString,
@@ -174,19 +176,16 @@ const ProjectDetails = ({
               secondary={strings.common.budget}
             />
           </ListItem>
-          <Divider />
           <ListItem>
             <ListItemIcon>{statusIconMapping[projectStatus]}</ListItemIcon>
             <ListItemText primary={statusMapping(projectStatus)} secondary={strings.common.status} />
           </ListItem>
-          <Divider />
           <ListItem>
             <ListItemIcon>
               <DateIcon />
             </ListItemIcon>
             <ListItemText primary={tsToString(projectTS)} secondary={strings.common.created} />
           </ListItem>
-          <Divider />
           <ListItem>
             <ListItemIcon style={styles.assingeeIcon}>
               <AssigneeIcon />
@@ -199,29 +198,19 @@ const ProjectDetails = ({
             />
           </ListItem>
           <Divider />
-
+        </List>
+        <List component="nav" subheader={<ListSubheader component="div">Actions</ListSubheader>}>
           <ListItem style={styles.permissionContainer}>
-            <Button
-              data-test="pp-button"
-              disabled={!canViewPermissions}
-              onClick={showProjectPermissions}
-              variant="contained"
-              color="primary"
-            >
-              Permissions
-              <PermissionIcon style={styles.icon} />
-            </Button>
-
-            <Button
-              data-test="c-button"
-              disabled={closeDisabled}
-              onClick={closeProject}
-              variant="contained"
-              color="primary"
-            >
-              Close
-              <DoneIcon style={styles.icon} />
-            </Button>
+            <Tooltip id="tooltip-ppermissions" title="Set permissions">
+              <IconButton data-test="pp-button" disabled={!canViewPermissions} onClick={showProjectPermissions}>
+                <PermissionIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip id="tooltip-pclose" title="Close project">
+              <IconButton data-test="c-button" disabled={closeDisabled} onClick={closeProject} color="secondary">
+                <DoneIcon />
+              </IconButton>
+            </Tooltip>
           </ListItem>
         </List>
       </Card>
