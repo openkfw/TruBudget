@@ -20,8 +20,19 @@ export const PROJECT_CURRENCY = "PROJECT_CURRENCY";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
 
+export const SHOW_PROJECT_PERMISSIONS = "SHOW_PROJECT_PERMISSIONS";
+export const HIDE_PROJECT_PERMISSIONS = "HIDE_PROJECT_PERMISSIONS";
+
 export const EDIT_PROJECT = "EDIT_PROJECT";
 export const EDIT_PROJECT_SUCCESS = "EDIT_PROJECT_SUCCESS";
+export const FETCH_PROJECT_PERMISSIONS = "FETCH_PROJECT_PERMISSIONS";
+export const FETCH_PROJECT_PERMISSIONS_SUCCESS = "FETCH_PROJECT_PERMISSIONS_SUCCESS";
+
+export const GRANT_PERMISSION = "GRANT_PERMISSION";
+export const GRANT_PERMISSION_SUCCESS = "GRANT_PERMISSION_SUCCESS";
+
+export const REVOKE_PERMISSION = "REVOKE_PERMISSION";
+export const REVOKE_PERMISSION_SUCCESS = "REVOKE_PERMISSION_SUCCESS";
 
 export function fetchAllProjects(showLoading = false) {
   return {
@@ -46,6 +57,27 @@ export function editProject(projectId, changes) {
     type: EDIT_PROJECT,
     projectId,
     changes
+  };
+}
+
+export function fetchProjectPermissions(projectId, showLoading = false) {
+  return {
+    type: FETCH_PROJECT_PERMISSIONS,
+    projectId,
+    showLoading
+  };
+}
+
+export function showProjectPermissions(id) {
+  return {
+    type: SHOW_PROJECT_PERMISSIONS,
+    id
+  };
+}
+
+export function hideProjectPermissions() {
+  return {
+    type: HIDE_PROJECT_PERMISSIONS
   };
 }
 
@@ -116,5 +148,25 @@ export function setCurrentStep(step) {
   return {
     type: PROJECT_CREATION_STEP,
     step
+  };
+}
+
+export function grantPermission(projectId, intent, user, showLoading = false) {
+  return {
+    type: GRANT_PERMISSION,
+    projectId,
+    intent,
+    user,
+    showLoading
+  };
+}
+
+export function revokePermission(projectId, intent, user, showLoading = false) {
+  return {
+    type: REVOKE_PERMISSION,
+    projectId,
+    intent,
+    user,
+    showLoading
   };
 }

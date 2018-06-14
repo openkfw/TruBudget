@@ -1,32 +1,33 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEmpty from "lodash/isEmpty";
 
 import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
-import {
-  fetchSubProjectPermissions,
-  hideSubProjectPermissions,
-  grantSubProjectPermission,
-  revokeSubProjectPermission
-} from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
 import { subProjectIntentOrder } from "../../permissions";
+import {
+  hideSubProjectPermissions,
+  grantSubProjectPermission,
+  revokeSubProjectPermission,
+  fetchSubProjectPermissions
+} from "./actions";
 
 class SubProjectPermissionsContainer extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.show && nextProps.show) {
-      this.props.fetchSubProjectPermissions(this.props.projectId, this.props.subProjectId, true);
+      this.props.fetchSubProjectPermissions(nextProps.projectId, nextProps.subprojectId, true);
       this.props.fetchUser();
     }
   }
 
   grant = (_, permission, user) => {
-    this.props.grant(this.props.projectId, this.props.subProjectId, permission, user);
+    this.props.grant(this.props.projectId, this.props.subprojectId, permission, user);
   };
 
   revoke = (_, permission, user) => {
-    this.props.revoke(this.props.projectId, this.props.subProjectId, permission, user);
+    this.props.revoke(this.props.projectId, this.props.subprojectId, permission, user);
   };
 
   isEnabled(allowedIntents) {
@@ -34,14 +35,24 @@ class SubProjectPermissionsContainer extends Component {
     return necessaryIntents.some(i => allowedIntents.includes(i));
   }
 
+  getAllowedIntents = () => {
+    const { subProjects, subprojectId } = this.props;
+    if (subProjects && !_isEmpty(subprojectId)) {
+      const { allowedIntents } = subProjects.find(subproject => subproject.data.id === subprojectId);
+      return allowedIntents;
+    }
+    return [];
+  };
+
   render() {
+    const allowedIntents = this.getAllowedIntents();
     return (
       <PermissionsScreen
         {...this.props}
         grant={this.grant}
         revoke={this.revoke}
         intentOrder={subProjectIntentOrder}
-        disabled={!this.isEnabled(this.props.allowedIntents)}
+        disabled={!this.isEnabled(allowedIntents)}
       />
     );
   }
@@ -49,11 +60,11 @@ class SubProjectPermissionsContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    permissions: state.getIn(["workflow", "permissions"]),
-    allowedIntents: state.getIn(["workflow", "allowedIntents"]),
+    permissions: state.getIn(["detailview", "permissions"]),
+    subprojectId: state.getIn(["detailview", "idForPermissions"]),
+    allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     user: state.getIn(["login", "user"]),
-    show: state.getIn(["workflow", "showSubProjectPermissions"]),
-    id: state.getIn(["workflow", "id"]),
+    show: state.getIn(["detailview", "showSubProjectPermissions"]),
     myself: state.getIn(["login", "id"])
   };
 };

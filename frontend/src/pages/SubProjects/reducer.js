@@ -9,13 +9,13 @@ import {
   SHOW_CREATE_DIALOG,
   HIDE_CREATE_DIALOG,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
-  FETCH_PROJECT_PERMISSIONS_SUCCESS,
-  SHOW_PROJECT_PERMISSIONS,
-  HIDE_PROJECT_PERMISSIONS,
   SHOW_PROJECT_ASSIGNEES,
   HIDE_PROJECT_ASSIGNEES,
   FETCH_PROJECT_HISTORY_SUCCESS,
-  SHOW_EDIT_DIALOG
+  SHOW_EDIT_DIALOG,
+  HIDE_SUBPROJECT_PERMISSIONS,
+  SHOW_SUBPROJECT_PERMISSIONS,
+  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -43,11 +43,12 @@ const defaultState = fromJS({
   editDialogShown: false,
   showHistory: false,
   roles: [],
-  permissions: {},
   logs: [],
   historyItems: [],
   allowedIntents: [],
-  permissionDialogShown: false,
+  showSubProjectPermissions: false,
+  permissions: [],
+  idForPermissions: "",
   showProjectAssignees: false,
   projectAssignee: ""
 });
@@ -68,15 +69,17 @@ export default function detailviewReducer(state = defaultState, action) {
         logs: fromJS(action.project.log),
         subProjects: fromJS(action.subprojects)
       });
-    case SHOW_PROJECT_PERMISSIONS:
-      return state.set("permissionDialogShown", true);
-    case HIDE_PROJECT_PERMISSIONS:
+
+    case SHOW_SUBPROJECT_PERMISSIONS:
       return state.merge({
-        permissionDialogShown: false,
-        permissions: fromJS({})
+        permissions: fromJS({}),
+        idForPermissions: action.id,
+        showSubProjectPermissions: true
       });
-    case FETCH_PROJECT_PERMISSIONS_SUCCESS:
+    case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
       return state.set("permissions", fromJS(action.permissions));
+    case HIDE_SUBPROJECT_PERMISSIONS:
+      return state.set("showSubProjectPermissions", false);
     case SHOW_CREATE_DIALOG:
       return state.set("createDialogShown", true);
     case HIDE_CREATE_DIALOG:

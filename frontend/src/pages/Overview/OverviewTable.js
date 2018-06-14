@@ -11,18 +11,26 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
 import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 import ContentAdd from "@material-ui/icons/Add";
 import DateIcon from "@material-ui/icons/DateRange";
-import InfoIcon from "@material-ui/icons/Search";
+import InfoIcon from "@material-ui/icons/Launch";
 import EditIcon from "@material-ui/icons/Edit";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import PermissionIcon from "@material-ui/icons/LockOpen";
 
 import { toAmountString, statusMapping, tsToString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canCreateProject, canViewProjectDetails, canEditProject } from "../../permissions";
+import {
+  canCreateProject,
+  canViewProjectDetails,
+  canEditProject,
+  canViewProjectPermissions,
+  canCloseProject
+} from "../../permissions";
 
 const styles = {
   card: {
@@ -46,6 +54,7 @@ const styles = {
     display: "flex",
     maxHeight: "10px",
     alignItems: "center",
+    marginTop: "20px",
     justifyContent: "flex-end"
   },
   editIcon: {
@@ -53,7 +62,7 @@ const styles = {
   }
 };
 
-const getTableEntries = ({ projects, history, classes, showEditDialog }) => {
+const getTableEntries = ({ projects, history, classes, showEditDialog, showProjectPermissions }) => {
   return projects.map(({ data, allowedIntents }, index) => {
     const {
       displayName,
@@ -70,6 +79,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog }) => {
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);
     const editDisabled = !(canEditProject(allowedIntents) && status != "closed");
+    const canViewPermissions = canViewProjectPermissions(allowedIntents);
 
     return (
       <Card aria-label="project" key={index} className={classes.card} data-test="projectcard">
@@ -120,13 +130,32 @@ const getTableEntries = ({ projects, history, classes, showEditDialog }) => {
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
             <div className={classes.editContainer}>
-              <IconButton
-                className={classes.editIcon}
-                disabled={editDisabled}
-                onClick={() => showEditDialog(id, displayName, parseFloat(amount), currency, description, thumbnail)}
-              >
-                <EditIcon />
-              </IconButton>
+              <Tooltip id="tooltip-ppermissions" title="Set permissions">
+                <div>
+                  <IconButton
+                    data-test="pp-button"
+                    className={classes.editIcon}
+                    disabled={!canViewPermissions}
+                    onClick={() => showProjectPermissions(id)}
+                  >
+                    <PermissionIcon />
+                  </IconButton>
+                </div>
+              </Tooltip>
+              <Tooltip id="tooltip-pedit" title="Edit Project">
+                <div>
+                  <IconButton
+                    data-test="pe-button"
+                    className={classes.editIcon}
+                    disabled={editDisabled}
+                    onClick={() =>
+                      showEditDialog(id, displayName, parseFloat(amount), currency, description, thumbnail)
+                    }
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </div>
+              </Tooltip>
             </div>
           </List>
         </CardContent>

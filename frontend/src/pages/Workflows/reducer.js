@@ -20,7 +20,6 @@ import {
   WORKFLOW_STATUS,
   SHOW_SUBPROJECT_PERMISSIONS,
   HIDE_SUBPROJECT_PERMISSIONS,
-  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   SHOW_WORKFLOWITEM_PERMISSIONS,
   HIDE_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
@@ -57,7 +56,7 @@ const defaultState = fromJS({
     description: "",
     status: "open"
   },
-  showSubProjectPermissions: false,
+
   showWorkflowPermissions: false,
   workflowItemReference: "",
   permissions: {},
@@ -121,17 +120,11 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowToAdd: defaultState.getIn(["workflowToAdd"]),
         currentStep: defaultState.get("currentStep")
       });
-    case SHOW_SUBPROJECT_PERMISSIONS:
-      return state.merge({
-        permissions: fromJS({}),
-        showSubProjectPermissions: true,
-        showWorkflowPermissions: false
-      });
+
     case SHOW_WORKFLOWITEM_PERMISSIONS:
       return state.merge({
         workflowItemReference: action.wId,
         permissions: fromJS({}),
-        showSubProjectPermissions: false,
         showWorkflowPermissions: true
       });
     case HIDE_WORKFLOWITEM_PERMISSIONS:
@@ -139,9 +132,7 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowItemReference: defaultState.getIn(["workflowItemReference"]),
         showWorkflowPermissions: false
       });
-    case HIDE_SUBPROJECT_PERMISSIONS:
-      return state.set("showSubProjectPermissions", false);
-    case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
+
     case FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS:
       return state.set("permissions", fromJS(action.permissions));
     case WORKFLOW_CREATION_STEP:

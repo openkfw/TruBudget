@@ -2,17 +2,24 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
-import { fetchProjectPermissions, hideProjectPermissions, grantPermission, revokePermission } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
+
+import _isEmpty from "lodash/isEmpty";
 import { projectIntentOrder } from "../../permissions";
+import strings from "../../localizeStrings";
+import { hideProjectPermissions, fetchProjectPermissions, grantPermission, revokePermission } from "./actions";
 
 class ProjectPermissionsContainer extends Component {
+  componentWillMount() {
+    this.props.fetchUser(true);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (!this.props.show && nextProps.show) {
-      this.props.fetchUser(true);
-      this.props.fetchProjectPermissions(this.props.id, true);
+      const projectId = nextProps.id;
+      this.props.fetchProjectPermissions(projectId, true);
     }
   }
 
@@ -21,12 +28,24 @@ class ProjectPermissionsContainer extends Component {
     return necessaryIntents.some(i => allowedIntents.includes(i));
   }
 
+  getAllowedIntents = () => {
+    const { projects, id } = this.props;
+    if (projects && !_isEmpty(id)) {
+      const { allowedIntents } = projects.find(project => project.data.id === id);
+      return allowedIntents;
+    }
+    return [];
+  };
+
   render() {
+    const allowedIntents = this.getAllowedIntents();
+
     return (
       <PermissionsScreen
         {...this.props}
+        title={strings.project.project_permissions_title}
         intentOrder={projectIntentOrder}
-        disabled={!this.isEnabled(this.props.allowedIntents)}
+        disabled={!this.isEnabled(allowedIntents)}
       />
     );
   }
@@ -34,12 +53,11 @@ class ProjectPermissionsContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    permissions: state.getIn(["detailview", "permissions"]),
-    allowedIntents: state.getIn(["detailview", "allowedIntents"]),
+    permissions: state.getIn(["overview", "permissions"]),
     user: state.getIn(["login", "user"]),
-    show: state.getIn(["detailview", "permissionDialogShown"]),
-    id: state.getIn(["detailview", "id"]),
-    myself: state.getIn(["login", "id"])
+    show: state.getIn(["overview", "permissionDialogShown"]),
+    myself: state.getIn(["login", "id"]),
+    id: state.getIn(["overview", "idForPermissions"])
   };
 };
 

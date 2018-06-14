@@ -46,18 +46,6 @@ export const WORKFLOW_CREATION_STEP = "WORKFLOW_CREATION_STEP";
 export const FETCH_ALL_SUBPROJECT_DETAILS = "FETCH_ALL_SUBPROJECT_DETAILS";
 export const FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS = "FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS";
 
-export const SHOW_SUBPROJECT_PERMISSIONS = "SHOW_SUBPROJECT_PERMISSIONS";
-export const HIDE_SUBPROJECT_PERMISSIONS = "HIDE_SUBPROJECT_PERMISSIONS";
-
-export const FETCH_SUBPROJECT_PERMISSIONS = "FETCH_SUBPROJECT_PERMISSIONS";
-export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSIONS_SUCCESS";
-
-export const GRANT_SUBPROJECT_PERMISSION = "GRANT_SUBPROJECT_PERMISSION";
-export const GRANT_SUBPROJECT_PERMISSION_SUCCESS = "GRANT_SUBPROJECT_PERMISSION_SUCCESS";
-
-export const REVOKE_SUBPROJECT_PERMISSION = "REVOKE_SUBPROJECT_PERMISSION";
-export const REVOKE_SUBPROJECT_PERMISSION_SUCCESS = "REVOKE_SUBPROJECT_PERMISSION_SUCCESS";
-
 export const SHOW_WORKFLOWITEM_PERMISSIONS = "SHOW_WORKFLOWITEM_PERMISSIONS";
 export const HIDE_WORKFLOWITEM_PERMISSIONS = "HIDE_WORKFLOWITEM_PERMISSIONS";
 
@@ -134,18 +122,6 @@ export function showWorkflowDetails(show) {
   };
 }
 
-export function showSubProjectPermissions() {
-  return {
-    type: SHOW_SUBPROJECT_PERMISSIONS
-  };
-}
-
-export function hideSubProjectPermissions() {
-  return {
-    type: HIDE_SUBPROJECT_PERMISSIONS
-  };
-}
-
 export function showSubProjectAssignee(assignee) {
   return {
     type: SHOW_SUBPROJECT_ASSIGNEES,
@@ -156,37 +132,6 @@ export function showSubProjectAssignee(assignee) {
 export function hideSubProjectAssignee() {
   return {
     type: HIDE_SUBPROJECT_ASSIGNEES
-  };
-}
-
-export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
-  return {
-    type: FETCH_SUBPROJECT_PERMISSIONS,
-    projectId,
-    subprojectId,
-    showLoading
-  };
-}
-
-export function grantSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
-  return {
-    type: GRANT_SUBPROJECT_PERMISSION,
-    projectId,
-    subprojectId,
-    intent,
-    user,
-    showLoading
-  };
-}
-
-export function revokeSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
-  return {
-    type: REVOKE_SUBPROJECT_PERMISSION,
-    projectId,
-    subprojectId,
-    intent,
-    user,
-    showLoading
   };
 }
 

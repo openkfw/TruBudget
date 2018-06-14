@@ -208,13 +208,13 @@ export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) =>
 export const getProgressInformation = items => {
   let startValue = {
     open: 0,
-    done: 0
+    closed: 0
   };
   const projectStatus = items.reduce((acc, item) => {
     const status = item.data.status;
     return {
       open: status === "open" ? acc.open + 1 : acc.open,
-      done: status === "closed" ? acc.done + 1 : acc.done
+      closed: status === "closed" ? acc.closed + 1 : acc.closed
     };
   }, startValue);
   return projectStatus;
@@ -227,5 +227,5 @@ export const preselectCurrency = (parentCurrency, setCurrency) => {
 
 export const createTaskData = (items, type) => {
   const projectStatus = getProgressInformation(items);
-  return createDoughnutData([strings.common.open, strings.common.done], [projectStatus.open, projectStatus.done]);
+  return createDoughnutData([strings.common.open, strings.common.closed], [projectStatus.open, projectStatus.closed]);
 };

@@ -14,7 +14,8 @@ import {
   hideCreationDialog,
   showEditDialog,
   hideEditDialog,
-  editProject
+  editProject,
+  showProjectPermissions
 } from "./actions";
 import ProjectEdit from "./ProjectEdit";
 
@@ -22,7 +23,8 @@ import Overview from "./Overview";
 import { showSnackBar, storeSnackBarMessage } from "../Notifications/actions";
 import globalStyles from "../../styles";
 import { toJS } from "../../helper";
-import { canEditProject } from "../../permissions";
+
+import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
 
 class OverviewContainer extends Component {
   componentWillMount() {
@@ -34,6 +36,8 @@ class OverviewContainer extends Component {
       <div id="overviewpage">
         <div style={globalStyles.innerContainer}>
           <Overview {...this.props} />
+
+          <ProjectPermissionsContainer {...this.props} />
         </div>
       </div>
     );
@@ -58,7 +62,8 @@ const mapDispatchToProps = dispatch => {
     storeSnackBarMessage: message => dispatch(storeSnackBarMessage(message)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
-    fetchAllProjects: showLoading => dispatch(fetchAllProjects(showLoading))
+    fetchAllProjects: showLoading => dispatch(fetchAllProjects(showLoading)),
+    showProjectPermissions: id => dispatch(showProjectPermissions(id))
   };
 };
 
@@ -70,6 +75,7 @@ const mapStateToProps = state => {
     editDialogShown: state.getIn(["overview", "editDialogShown"]),
     currentStep: state.getIn(["overview", "currentStep"]),
     projectToAdd: state.getIn(["overview", "projectToAdd"]),
+
     loggedInUser: state.getIn(["login", "loggedInUser"]),
     roles: state.getIn(["login", "roles"])
   };

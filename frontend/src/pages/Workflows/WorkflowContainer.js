@@ -25,7 +25,6 @@ import {
   isWorkflowApprovalRequired,
   fetchAllSubprojectDetails,
   storeWorkflowStatus,
-  showSubProjectPermissions,
   showWorkflowItemPermissions,
   closeWorkflowItem,
   showWorkflowItemAssignee,
@@ -44,7 +43,7 @@ import Workflow from "./Workflow";
 import SubProjectDetails from "./SubProjectDetails";
 import { canViewSubProjectPermissions, canAssignSubProject, canCloseSubProject } from "../../permissions";
 import { toJS } from "../../helper";
-import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
+import SubprojectPermissionsContainer from "../SubProjects/SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
 import strings from "../../localizeStrings";
 import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
@@ -85,10 +84,9 @@ class WorkflowContainer extends Component {
   closeSubproject = () => this.props.closeSubproject(this.projectId, this.subProjectId, true);
 
   render() {
-    const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
     const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
     const canCloseSubproject = canCloseSubProject(this.props.allowedIntents);
-
+    const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
     return (
       <div>
         <div style={globalStyles.innerContainer}>
@@ -99,11 +97,7 @@ class WorkflowContainer extends Component {
             closeSubproject={this.closeSubproject}
             canCloseSubproject={canCloseSubproject}
           />
-          <SubprojectPermissionsContainer
-            projectId={this.projectId}
-            subProjectId={this.subProjectId}
-            title={strings.subproject.subproject_permissions_title}
-          />
+
           <WorkflowItemPermissionsContainer
             projectId={this.projectId}
             subProjectId={this.subProjectId}
@@ -136,7 +130,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
     createWorkflowItem: (pId, sId, workflowToAdd, documents) =>
       dispatch(createWorkflowItem(pId, sId, workflowToAdd, documents)),
-    showSubProjectPermissions: () => dispatch(showSubProjectPermissions()),
+
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
     openHistory: (projectId, subprojectId) => {

@@ -14,6 +14,7 @@ import OpenIcon from "@material-ui/icons/Remove";
 import Paper from "@material-ui/core/Paper";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
+import green from "@material-ui/core/colors/lightGreen";
 
 import { toAmountString, amountTypes } from "../../helper.js";
 import strings from "../../localizeStrings";
@@ -241,7 +242,11 @@ export const WorkflowItem = SortableElement(
       <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
-        <Card elevation={workflowSelectable ? 1 : 0} key={mapIndex} style={styles.card}>
+        <Card
+          elevation={workflowSelectable ? 1 : 0}
+          key={mapIndex}
+          style={(styles.card, status === "closed" ? { background: green[50], ...styles.card } : styles.card)}
+        >
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>{infoButton}</div>
             <div style={{ ...itemStyle, ...styles.text, flex: 4 }}>

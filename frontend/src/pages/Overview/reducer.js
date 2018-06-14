@@ -12,7 +12,10 @@ import {
   HIDE_CREATION_DIALOG,
   FETCH_ALL_PROJECTS_SUCCESS,
   SHOW_EDIT_DIALOG,
-  HIDE_EDIT_DIALOG
+  HIDE_EDIT_DIALOG,
+  SHOW_PROJECT_PERMISSIONS,
+  HIDE_PROJECT_PERMISSIONS,
+  FETCH_PROJECT_PERMISSIONS_SUCCESS
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -28,7 +31,9 @@ const defaultState = fromJS({
     thumbnail: "/Thumbnail_0001.jpg",
     currency: ""
   },
-
+  idForPermissions: "",
+  permissions: {},
+  permissionDialogShown: false,
   currentStep: 0,
   initialFetch: false,
   nextButtonEnabled: false,
@@ -42,6 +47,7 @@ export default function overviewReducer(state = defaultState, action) {
   switch (action.type) {
     case SHOW_CREATION_DIALOG:
       return state.set("creationDialogShown", true);
+
     case SHOW_EDIT_DIALOG:
       return state.merge({
         projectToAdd: state
@@ -55,7 +61,14 @@ export default function overviewReducer(state = defaultState, action) {
         currentStep: action.currentStep,
         editDialogShown: true
       });
-
+    case SHOW_PROJECT_PERMISSIONS:
+      return state.merge({ idForPermissions: action.id, permissionDialogShown: true });
+    case HIDE_PROJECT_PERMISSIONS:
+      return state.merge({
+        idForPermissions: defaultState.get("id"),
+        permissionDialogShown: false,
+        permissions: fromJS({})
+      });
     case HIDE_CREATION_DIALOG:
       return state.merge({
         projectToAdd: defaultState.getIn(["projectToAdd"]),
@@ -68,6 +81,9 @@ export default function overviewReducer(state = defaultState, action) {
         currentStep: defaultState.get("currentStep"),
         editDialogShown: defaultState.get("editDialogShown")
       });
+
+    case FETCH_PROJECT_PERMISSIONS_SUCCESS:
+      return state.set("permissions", fromJS(action.permissions));
     case PROJECT_NAME:
       return state.setIn(["projectToAdd", "displayName"], action.name);
     case PROJECT_AMOUNT:

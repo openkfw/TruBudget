@@ -11,6 +11,7 @@ import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import DateIcon from "@material-ui/icons/DateRange";
 import Divider from "@material-ui/core/Divider";
+import Tooltip from "@material-ui/core/Tooltip";
 import DoneIcon from "@material-ui/icons/Check";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
@@ -127,6 +128,15 @@ const styles = {
 
   assingeeIcon: {
     marginRight: "30px"
+  },
+  statusText: {
+    marginLeft: 15
+  },
+  statusContainer: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
   }
 };
 
@@ -161,7 +171,7 @@ const SubProjectDetails = ({
   canAssignSubproject,
   parentProject,
   users,
-  showSubProjectPermissions,
+
   showSubProjectAssignee,
   closeSubproject,
   canCloseSubproject,
@@ -197,9 +207,18 @@ const SubProjectDetails = ({
           <Divider />
           {getNotEditableBudget(amountString, allowedToEdit, props)}
           <Divider />
-          <ListItem disabled={false}>
+          <ListItem>
             <ListItemIcon>{statusIcon}</ListItemIcon>
-            <ListItemText primary={mappedStatus} secondary={strings.common.status} />
+            <div style={styles.statusContainer}>
+              <ListItemText style={styles.statusText} primary={mappedStatus} secondary={strings.common.status} />
+              <Tooltip disabled={true} id="tooltip-pclose" title="Close project">
+                <div>
+                  <IconButton color="primary" data-test="spc-button" disabled={closeDisabled} onClick={closeSubproject}>
+                    <DoneIcon />
+                  </IconButton>
+                </div>
+              </Tooltip>
+            </div>
           </ListItem>
           <Divider />
           <ListItem disabled={false}>
@@ -220,30 +239,6 @@ const SubProjectDetails = ({
               disabled={!canAssignSubproject}
               assignee={assignee}
             />
-          </ListItem>
-          <Divider />
-          <ListItem style={styles.permissionContainer}>
-            <Button
-              data-test="spp-button"
-              disabled={!canViewPermissions}
-              onClick={showSubProjectPermissions}
-              variant="contained"
-              color="primary"
-            >
-              Permissions
-              <PermissionIcon style={styles.icon} />
-            </Button>
-
-            <Button
-              data-test="sc-button"
-              disabled={closeDisabled}
-              onClick={closeSubproject}
-              variant="contained"
-              color="primary"
-            >
-              Close
-              <DoneIcon style={styles.icon} />
-            </Button>
           </ListItem>
         </List>
       </Card>
@@ -300,13 +295,13 @@ const SubProjectDetails = ({
               <Typography variant="caption">{strings.common.open}</Typography>
             </div>
             <div style={styles.taskChartItem}>
-              <Typography>{statusDetails.done.toString()}</Typography>
+              <Typography>{statusDetails.closed.toString()}</Typography>
               <div>
                 <IconButton disabled>
                   <DoneIcon />
                 </IconButton>
               </div>
-              <Typography variant="caption">{strings.common.done}</Typography>
+              <Typography variant="caption">{strings.common.closed}</Typography>
             </div>
           </div>
         </ListItem>

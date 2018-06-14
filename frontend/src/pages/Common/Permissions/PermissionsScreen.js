@@ -20,7 +20,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import Warning from "@material-ui/icons/Warning";
 import Typography from "@material-ui/core/Typography";
-
+import _isEmpty from "lodash/isEmpty";
 import strings from "../../../localizeStrings";
 
 const PermissionsScreen = props => (
@@ -48,7 +48,7 @@ class PermissionSelection extends Component {
   }
 
   resolveSelections = (user, permissions) => {
-    if (!user || !permissions) return [];
+    if (_isEmpty(user) || _isEmpty(permissions)) return [];
     return permissions.map(id => user.find(u => u.id === id)).map(u => u.displayName);
   };
 
