@@ -15,9 +15,11 @@ import {
   HIDE_EDIT_DIALOG,
   SHOW_PROJECT_PERMISSIONS,
   HIDE_PROJECT_PERMISSIONS,
-  FETCH_PROJECT_PERMISSIONS_SUCCESS
+  FETCH_PROJECT_PERMISSIONS_SUCCESS,
+  HIDE_PROJECT_DIALOG
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
+import strings from "../../localizeStrings";
 
 const defaultState = fromJS({
   projects: Set(),
@@ -40,16 +42,17 @@ const defaultState = fromJS({
   roles: [],
   loading: false,
   logs: [],
-  allowedIntents: []
+  allowedIntents: [],
+  dialogTitle: strings.project.add_new_project
 });
 
 export default function overviewReducer(state = defaultState, action) {
   switch (action.type) {
     case SHOW_CREATION_DIALOG:
-      return state.set("creationDialogShown", true);
-
+      return state.merge({ creationDialogShown: true, dialogTitle: strings.project.add_new_project });
     case SHOW_EDIT_DIALOG:
       return state.merge({
+        dialogTitle: strings.project.project_edit_title,
         projectToAdd: state
           .getIn(["projectToAdd"])
           .set("id", action.id)
@@ -69,16 +72,11 @@ export default function overviewReducer(state = defaultState, action) {
         permissionDialogShown: false,
         permissions: fromJS({})
       });
-    case HIDE_CREATION_DIALOG:
+    case HIDE_PROJECT_DIALOG:
       return state.merge({
         projectToAdd: defaultState.getIn(["projectToAdd"]),
         currentStep: defaultState.get("currentStep"),
-        creationDialogShown: defaultState.get("creationDialogShown")
-      });
-    case HIDE_EDIT_DIALOG:
-      return state.merge({
-        projectToAdd: defaultState.getIn(["projectToAdd"]),
-        currentStep: defaultState.get("currentStep"),
+        creationDialogShown: defaultState.get("creationDialogShown"),
         editDialogShown: defaultState.get("editDialogShown")
       });
 

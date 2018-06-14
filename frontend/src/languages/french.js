@@ -71,7 +71,8 @@ const fr = {
       "Les autorités ont autorisé l'approbation des transactions financières",
     project_authority_organization_search: "Rechercher organisations",
     project_authority_role_search: "Search role",
-    project_permissions_title: "French: Set permissions for project"
+    project_permissions_title: "French: Set permissions for project",
+    project_edit_title: "French: Edit Project"
   },
   subproject: {
     subproject_title: "Sous-projet",

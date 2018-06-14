@@ -100,7 +100,8 @@ const pt = {
       "As autoridades competentes para aprovar as transações financeiras",
     project_authority_organization_search: "Pesquisar organizações",
     project_authority_role_search: "Pesquisar papéis",
-    project_permissions_title: "Portuguese: Set permissions for project"
+    project_permissions_title: "Portuguese: Set permissions for project",
+    project_edit_title: "Portuguese: Edit Project"
   },
   subproject: {
     subproject_title: "Nome do subprojeto",

@@ -7,7 +7,7 @@ import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import { toAmountString } from "../../helper";
 
-const SubProjectCreationContent = props => {
+const SubprojectDialogContent = props => {
   return (
     <div>
       <div>
@@ -39,4 +39,4 @@ const SubProjectCreationContent = props => {
   );
 };
 
-export default SubProjectCreationContent;
+export default SubprojectDialogContent;

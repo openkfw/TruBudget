@@ -11,13 +11,11 @@ import {
   setCurrentStep,
   storeProjectThumbnail,
   showCreationDialog,
-  hideCreationDialog,
   showEditDialog,
-  hideEditDialog,
+  hideProjectDialog,
   editProject,
   showProjectPermissions
 } from "./actions";
-import ProjectEdit from "./ProjectEdit";
 
 import Overview from "./Overview";
 import { showSnackBar, storeSnackBarMessage } from "../Notifications/actions";
@@ -50,10 +48,9 @@ const mapDispatchToProps = dispatch => {
       dispatch(createProject(name, amount, comment, currency, thumbnail)),
     editProject: (id, changes) => dispatch(editProject(id, changes)),
     showCreationDialog: () => dispatch(showCreationDialog()),
-    hideCreationDialog: () => dispatch(hideCreationDialog()),
+    hideProjectDialog: () => dispatch(hideProjectDialog()),
     showEditDialog: (id, displayName, amount, currency, description, thumbnail) =>
       dispatch(showEditDialog(id, displayName, amount, currency, description, thumbnail)),
-    hideEditDialog: () => dispatch(hideEditDialog()),
     storeProjectName: name => dispatch(storeProjectName(name)),
     storeProjectAmount: amount => dispatch(storeProjectAmount(amount)),
     storeProjectComment: comment => dispatch(storeProjectComment(comment)),
@@ -75,7 +72,7 @@ const mapStateToProps = state => {
     editDialogShown: state.getIn(["overview", "editDialogShown"]),
     currentStep: state.getIn(["overview", "currentStep"]),
     projectToAdd: state.getIn(["overview", "projectToAdd"]),
-
+    dialogTitle: state.getIn(["overview", "dialogTitle"]),
     loggedInUser: state.getIn(["login", "loggedInUser"]),
     roles: state.getIn(["login", "roles"])
   };

@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import {
   fetchAllProjectDetails,
   showSubprojectDialog,
-  onSubprojectDialogCancel,
   storeSubProjectCurrency,
   createSubProject,
   storeSubProjectName,
@@ -16,8 +15,8 @@ import {
   showEditDialog,
   editSubproject,
   closeProject,
-  hideEditDialog,
-  showSubProjectPermissions
+  showSubProjectPermissions,
+  hideSubprojectDialog
 } from "./actions";
 
 import SubProjects from "./SubProjects";
@@ -82,7 +81,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
-    onSubprojectDialogCancel: () => dispatch(onSubprojectDialogCancel()),
+    hideSubprojectDialog: () => dispatch(hideSubprojectDialog()),
     storeSubProjectName: name => dispatch(storeSubProjectName(name)),
     createSubProject: (subprojectName, amount, description, currency, parentName) =>
       dispatch(createSubProject(parentName, subprojectName, amount, description, currency)),
@@ -101,7 +100,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showProjectAssignees: () => dispatch(showProjectAssignees()),
     showEditDialog: (id, displayName, description, amount, currency) =>
       dispatch(showEditDialog(id, displayName, description, amount, currency)),
-    hideEditDialog: () => dispatch(hideEditDialog()),
     fetchUser: () => dispatch(fetchUser(true)),
     fetchUser: () => dispatch(fetchUser(true)),
     closeProject: pId => dispatch(closeProject(pId, true)),
@@ -121,7 +119,7 @@ const mapStateToProps = state => {
     projectAssignee: state.getIn(["detailview", "projectAssignee"]),
     projectTS: state.getIn(["detailview", "projectTS"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
-    createDialogShown: state.getIn(["detailview", "createDialogShown"]),
+    creationDialogShown: state.getIn(["detailview", "creationDialogShown"]),
     editDialogShown: state.getIn(["detailview", "editDialogShown"]),
     showProjectAssignees: state.getIn(["detailview", "showProjectAssignees"]),
     subprojectToAdd: state.getIn(["detailview", "subprojectToAdd"]),

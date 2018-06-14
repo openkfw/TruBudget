@@ -5,7 +5,7 @@ import _isNumber from "lodash/isNumber";
 
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
-import ProjectCreationContent from "./ProjectCreationContent";
+import ProjectDialogContent from "./ProjectDialogContent";
 import { compareObjects } from "../../helper";
 
 const handleCreate = props => {
@@ -30,37 +30,37 @@ const handleEdit = props => {
   onDialogCancel();
 };
 
-const ProjectCreation = props => {
+const ProjectDialog = props => {
   const { displayName, description, amount } = props.projectToAdd;
 
   const specificProps = props.editDialogShown
     ? {
-        title: "Edit Project",
-        onDialogCancel: props.hideEditDialog,
-        handleSubmit: handleEdit
+        handleSubmit: handleEdit,
+        dialogShown: props.editDialogShown
       }
     : {
-        title: strings.project.add_new_project,
-        onDialogCancel: props.hideCreationDialog,
-        handleSubmit: handleCreate
+        handleSubmit: handleCreate,
+        dialogShown: props.creationDialogShown
       };
 
   const steps = [
     {
       title: strings.project.project_details,
-      content: <ProjectCreationContent {...props} />,
+      content: <ProjectDialogContent {...props} />,
       nextDisabled: _isEmpty(displayName) || _isEmpty(description) || !_isNumber(amount)
     }
   ];
+
   return (
     <CreationDialog
       steps={steps}
+      title={props.dialogTitle}
       numberOfSteps={steps.length}
-      dialogShown={props.creationDialogShown || props.editDialogShown}
+      onDialogCancel={props.hideProjectDialog}
       {...specificProps}
       {...props}
     />
   );
 };
 
-export default ProjectCreation;
+export default ProjectDialog;

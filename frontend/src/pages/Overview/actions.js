@@ -8,7 +8,7 @@ export const FETCH_ALL_PROJECTS = "FETCH_ALL_PROJECTS";
 export const FETCH_ALL_PROJECTS_SUCCESS = "FETCH_ALL_PROJECTS_SUCCESS";
 
 export const SHOW_CREATION_DIALOG = "SHOW_CREATION_DIALOG";
-export const HIDE_CREATION_DIALOG = "HIDE_CREATION_DIALOG";
+export const HIDE_PROJECT_DIALOG = "HIDE_CREATION_DIALOG";
 
 export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
 export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
@@ -86,9 +86,9 @@ export function showCreationDialog() {
     type: SHOW_CREATION_DIALOG
   };
 }
-export function hideCreationDialog() {
+export function hideProjectDialog() {
   return {
-    type: HIDE_CREATION_DIALOG
+    type: HIDE_PROJECT_DIALOG
   };
 }
 
@@ -101,11 +101,6 @@ export function showEditDialog(id, displayName, amount, currency, description, t
     currency,
     description,
     thumbnail
-  };
-}
-export function hideEditDialog() {
-  return {
-    type: HIDE_EDIT_DIALOG
   };
 }
 

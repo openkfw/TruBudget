@@ -8,7 +8,7 @@ import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import { toAmountString } from "../../helper";
 
-const ProjectCreationContent = props => {
+const ProjectDialogContent = props => {
   return (
     <div>
       <div>
@@ -41,4 +41,4 @@ const ProjectCreationContent = props => {
   );
 };
 
-export default ProjectCreationContent;
+export default ProjectDialogContent;

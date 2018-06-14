@@ -6,8 +6,7 @@ import ContentAdd from "@material-ui/icons/Add";
 import HistoryIcon from "@material-ui/icons/Reorder";
 
 import SubProjectsTable from "./SubProjectsTable";
-import SubProjectCreation from "./SubProjectCreation";
-import SubprojectEdit from "./SubprojectEdit";
+import SubprojectDialog from "./SubprojectDialog";
 
 const SubProjects = props => {
   return (
@@ -18,8 +17,7 @@ const SubProjects = props => {
       }}
     >
       <Card>
-        <SubProjectCreation {...props} />
-        <SubprojectEdit {...props} />
+        <SubprojectDialog {...props} />
         <SubProjectsTable {...props} />
         {/* <ChangeLog {...props} /> */}
       </Card>

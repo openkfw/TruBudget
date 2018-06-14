@@ -1,11 +1,10 @@
 export const FETCH_WORKFLOW_ITEMS = "FETCH_WORKFLOW_ITEMS";
 export const FETCH_WORKFLOW_ITEMS_SUCCESS = "FETCH_WORKFLOW_ITEMS_SUCCESS";
 
-export const SHOW_CREATE_DIALOG = "SHOW_CREATE_DIALOG";
-export const HIDE_CREATE_DIALOG = "HIDE_CREATE_DIALOG";
+export const SHOW_WORKFLOW_CREATE = "SHOW_WORKFLOW_CREATE";
+export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 
-export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
-export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
+export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
 export const WORKFLOW_NAME = "WORKFLOW_NAME";
 export const WORKFLOW_TYPE = "WORKFLOW_TYPE";
@@ -254,31 +253,25 @@ export function fetchWorkflowItems(streamName) {
 
 export function showCreateDialog() {
   return {
-    type: SHOW_CREATE_DIALOG
+    type: SHOW_WORKFLOW_CREATE
   };
 }
 
-export function hideCreateDialog() {
+export function hideWorkflowDialog() {
   return {
-    type: HIDE_CREATE_DIALOG
+    type: HIDE_WORKFLOW_DIALOG
   };
 }
 
 export function showEditDialog(id, displayName, amount, amountType, description, currency) {
   return {
-    type: SHOW_EDIT_DIALOG,
+    type: SHOW_WORKFLOW_EDIT,
     id,
     displayName,
     amount,
     amountType,
     description,
     currency
-  };
-}
-
-export function hideEditDialog() {
-  return {
-    type: HIDE_EDIT_DIALOG
   };
 }
 

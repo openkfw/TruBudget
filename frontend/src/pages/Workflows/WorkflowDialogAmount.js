@@ -29,7 +29,7 @@ const styles = {
   }
 };
 
-class WorkflowCreationAmount extends Component {
+class WorkflowDialogAmount extends Component {
   componentWillMount() {
     preselectCurrency(this.props.subProjectCurrency, this.props.storeWorkflowCurrency);
   }
@@ -98,4 +98,4 @@ class WorkflowCreationAmount extends Component {
     );
   }
 }
-export default WorkflowCreationAmount;
+export default WorkflowDialogAmount;

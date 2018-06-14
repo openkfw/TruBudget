@@ -16,10 +16,7 @@ import {
   SUBPROJECT_AMOUNT,
   WORKFLOW_CREATION_STEP,
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
-  HIDE_CREATE_DIALOG,
   WORKFLOW_STATUS,
-  SHOW_SUBPROJECT_PERMISSIONS,
-  HIDE_SUBPROJECT_PERMISSIONS,
   SHOW_WORKFLOWITEM_PERMISSIONS,
   HIDE_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
@@ -28,10 +25,11 @@ import {
   SHOW_SUBPROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_ASSIGNEES,
   FETCH_SUBPROJECT_HISTORY_SUCCESS,
-  SHOW_EDIT_DIALOG,
-  HIDE_EDIT_DIALOG
+  HIDE_WORKFLOW_DIALOG,
+  SHOW_WORKFLOW_EDIT,
+  SHOW_WORKFLOW_CREATE
 } from "./actions";
-
+import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
 import { fromAmountString } from "../../helper";
 import { HIDE_HISTORY } from "../Notifications/actions";
@@ -74,7 +72,8 @@ const defaultState = fromJS({
   showWorkflowAssignee: false,
   workflowAssignee: "",
   showSubProjectAssignee: false,
-  editDialogShown: false
+  editDialogShown: false,
+  dialogTitle: strings.workflow.add_item
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -94,7 +93,7 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowItems: fromJS(workflowitems),
         parentProject: fromJS(parentProject)
       });
-    case SHOW_EDIT_DIALOG:
+    case SHOW_WORKFLOW_EDIT:
       return state.merge({
         workflowToAdd: state
           .getIn(["workflowToAdd"])
@@ -104,18 +103,14 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("amountType", action.amountType)
           .set("description", action.description)
           .set("currency", action.currency),
-        editDialogShown: true
+        editDialogShown: true,
+        dialogTitle: strings.workflow.edit_item
       });
-    case HIDE_EDIT_DIALOG:
+    case SHOW_WORKFLOW_CREATE:
+      return state.merge({ creationDialogShown: true, dialogTitle: strings.workflow.add_item });
+    case HIDE_WORKFLOW_DIALOG:
       return state.merge({
-        workflowToAdd: defaultState.getIn(["workflowToAdd"]),
         editDialogShown: false,
-        currentStep: defaultState.get("currentStep")
-      });
-    case SHOW_CREATE_DIALOG:
-      return state.set("creationDialogShown", true);
-    case HIDE_CREATE_DIALOG:
-      return state.merge({
         creationDialogShown: false,
         workflowToAdd: defaultState.getIn(["workflowToAdd"]),
         currentStep: defaultState.get("currentStep")

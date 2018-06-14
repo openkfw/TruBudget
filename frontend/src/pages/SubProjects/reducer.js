@@ -7,7 +7,7 @@ import {
   SUBPROJECT_CURRENCY,
   CREATE_SUBPROJECT_SUCCESS,
   SHOW_CREATE_DIALOG,
-  HIDE_CREATE_DIALOG,
+  HIDE_SUBPROJECT_DIALOG,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   SHOW_PROJECT_ASSIGNEES,
   HIDE_PROJECT_ASSIGNEES,
@@ -15,13 +15,14 @@ import {
   SHOW_EDIT_DIALOG,
   HIDE_SUBPROJECT_PERMISSIONS,
   SHOW_SUBPROJECT_PERMISSIONS,
-  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS
+  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
+  SHOW_SUBPROJECT_CREATE,
+  SHOW_SUBPROJECT_EDIT
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
-
+import strings from "../../localizeStrings";
 import { fromAmountString } from "../../helper";
 import { HIDE_HISTORY } from "../Notifications/actions";
-import { HIDE_EDIT_DIALOG } from "../Overview/actions";
 
 const defaultState = fromJS({
   id: "",
@@ -39,7 +40,7 @@ const defaultState = fromJS({
     description: "",
     currency: ""
   },
-  createDialogShown: false,
+  creationDialogShown: false,
   editDialogShown: false,
   showHistory: false,
   roles: [],
@@ -50,7 +51,8 @@ const defaultState = fromJS({
   permissions: [],
   idForPermissions: "",
   showProjectAssignees: false,
-  projectAssignee: ""
+  projectAssignee: "",
+  dialogTitle: strings.project.add_new_project
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -80,10 +82,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("permissions", fromJS(action.permissions));
     case HIDE_SUBPROJECT_PERMISSIONS:
       return state.set("showSubProjectPermissions", false);
-    case SHOW_CREATE_DIALOG:
-      return state.set("createDialogShown", true);
-    case HIDE_CREATE_DIALOG:
-      return state.merge({ subprojectToAdd: defaultState.getIn(["subprojectToAdd"]), createDialogShown: false });
+    case SHOW_SUBPROJECT_CREATE:
+      return state.merge({ creationDialogShown: true, dialogTitle: strings.project.add_new_project });
     case SUBPROJECT_NAME:
       return state.setIn(["subprojectToAdd", "displayName"], action.name);
     case SUBPROJECT_AMOUNT:
@@ -100,7 +100,7 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showProjectAssignees", false);
     case FETCH_PROJECT_HISTORY_SUCCESS:
       return state.set("historyItems", fromJS(action.events));
-    case SHOW_EDIT_DIALOG: {
+    case SHOW_SUBPROJECT_EDIT: {
       return state.merge({
         subprojectToAdd: state
           .getIn(["subprojectToAdd"])
@@ -109,11 +109,16 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("amount", action.amount)
           .set("description", action.description)
           .set("currency", action.currency),
-        editDialogShown: true
+        editDialogShown: true,
+        dialogTitle: strings.project.project_edit_title
       });
     }
-    case HIDE_EDIT_DIALOG: {
-      return state.merge({ editDialogShown: false, subprojectToAdd: defaultState.getIn(["subprojectToAdd"]) });
+    case HIDE_SUBPROJECT_DIALOG: {
+      return state.merge({
+        editDialogShown: false,
+        creationDialogShown: false,
+        subprojectToAdd: defaultState.getIn(["subprojectToAdd"])
+      });
     }
     case HIDE_HISTORY:
       return state.set("historyItems", fromJS([]));

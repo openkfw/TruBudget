@@ -4,11 +4,10 @@ import { HIDE_SUBPROJECT_ASSIGNEES } from "../Workflows/actions";
 export const FETCH_PROJECT_DETAILS = "FETCH_PROJECT_DETAILS";
 export const FETCH_PROJECT_DETAILS_SUCCESS = "FETCH_PROJECT_DETAILS_SUCCESS";
 
-export const SHOW_CREATE_DIALOG = "SHOW_CREATE_DIALOG";
-export const HIDE_CREATE_DIALOG = "HIDE_CREATE_DIALOG";
+export const SHOW_SUBPROJECT_CREATE = "SHOW_SUBPROJECT_CREATE";
+export const HIDE_SUBPROJECT_DIALOG = "HIDE_SUBPROJECT_DIALOG";
 
-export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
-export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
+export const SHOW_SUBPROJECT_EDIT = "SHOW_SUBPROJECT_EDIT";
 
 export const CREATE_SUBPROJECT = "CREATE_SUBPROJECT";
 export const CREATE_SUBPROJECT_SUCCESS = "CREATE_SUBPROJECT_SUCCESS";
@@ -149,13 +148,13 @@ export function storeSubProjectName(name) {
 
 export function showSubprojectDialog() {
   return {
-    type: SHOW_CREATE_DIALOG
+    type: SHOW_SUBPROJECT_CREATE
   };
 }
 
-export function onSubprojectDialogCancel() {
+export function hideSubprojectDialog() {
   return {
-    type: HIDE_CREATE_DIALOG
+    type: HIDE_SUBPROJECT_DIALOG
   };
 }
 
@@ -182,7 +181,7 @@ export function storeSubProjectComment(description) {
 
 export function showEditDialog(id, name, description, amount, currency) {
   return {
-    type: SHOW_EDIT_DIALOG,
+    type: SHOW_SUBPROJECT_EDIT,
     id,
     name,
     description,
@@ -200,12 +199,6 @@ export function showSubProjectPermissions(id) {
 export function hideSubProjectPermissions() {
   return {
     type: HIDE_SUBPROJECT_PERMISSIONS
-  };
-}
-
-export function hideEditDialog() {
-  return {
-    type: HIDE_EDIT_DIALOG
   };
 }
 

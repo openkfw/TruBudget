@@ -33,7 +33,8 @@ import {
   showEditDialog,
   hideEditDialog,
   hideCreateDialog,
-  closeSubproject
+  closeSubproject,
+  hideWorkflowDialog
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -65,7 +66,7 @@ class WorkflowContainer extends Component {
 
   componentWillUnmount() {
     this.props.hideWorkflowDetails();
-    this.props.hideCreateDialog();
+    this.props.hideWorkflowDialog();
   }
 
   createWorkflowItem = (workflow, documents) => {
@@ -121,7 +122,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
     showCreateDialog: () => dispatch(showCreateDialog()),
-    hideCreateDialog: () => dispatch(hideCreateDialog()),
+    hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     storeWorkflowComment: comment => dispatch(storeWorkflowComment(comment)),
     storeWorkflowCurrency: currency => dispatch(storeWorkflowCurrency(currency)),
     storeWorkflowAmount: amount => dispatch(storeWorkflowAmount(amount)),
@@ -162,8 +163,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchUser: () => dispatch(fetchUser(true)),
     isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
     showEditDialog: (id, displayName, amount, amountType, description, currency) =>
-      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency)),
-    hideEditDialog: () => dispatch(hideEditDialog())
+      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency))
   };
 };
 
@@ -178,6 +178,7 @@ const mapStateToProps = state => {
     assignee: state.getIn(["workflow", "assignee"]),
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
+    dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
