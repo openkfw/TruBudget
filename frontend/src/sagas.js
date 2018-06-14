@@ -27,7 +27,9 @@ import {
   REVOKE_PERMISSION_SUCCESS,
   REVOKE_PERMISSION,
   EDIT_SUBPROJECT_SUCCESS,
-  EDIT_SUBPROJECT
+  EDIT_SUBPROJECT,
+  CLOSE_PROJECT,
+  CLOSE_PROJECT_SUCCESS
 } from "./pages/SubProjects/actions";
 import {
   SHOW_SNACKBAR,
@@ -65,7 +67,9 @@ import {
   REVOKE_SUBPROJECT_PERMISSION,
   REVOKE_WORKFLOWITEM_PERMISSION,
   EDIT_WORKFLOW_ITEM_SUCCESS,
-  EDIT_WORKFLOW_ITEM
+  EDIT_WORKFLOW_ITEM,
+  CLOSE_SUBPROJECT,
+  CLOSE_SUBPROJECT_SUCCESS
 } from "./pages/Workflows/actions";
 
 import {
@@ -553,6 +557,33 @@ export function* revokeWorkflowItemPermissionsSaga({
   }, showLoading);
 }
 
+export function* closeProjectSaga({ projectId, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.closeProject, projectId);
+    yield put({ type: CLOSE_PROJECT_SUCCESS });
+
+    yield put({
+      type: FETCH_ALL_PROJECT_DETAILS,
+      projectId,
+      showLoading
+    });
+  }, showLoading);
+}
+
+export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.closeSubproject, projectId, subprojectId);
+    yield put({ type: CLOSE_SUBPROJECT_SUCCESS });
+
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId,
+      subprojectId,
+      showLoading
+    });
+  }, showLoading);
+}
+
 export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
   yield execute(function*() {
     yield callApi(api.closeWorkflowItem, projectId, subprojectId, workflowitemId);
@@ -720,6 +751,12 @@ export function* watchGrantWorkflowitemPermissions() {
 export function* watchRevokeWorkflowitemPermissions() {
   yield takeEvery(REVOKE_WORKFLOWITEM_PERMISSION, revokeWorkflowItemPermissionsSaga);
 }
+export function* watchCloseProject() {
+  yield takeEvery(CLOSE_PROJECT, closeProjectSaga);
+}
+export function* watchCloseSubproject() {
+  yield takeEvery(CLOSE_SUBPROJECT, closeSubprojectSaga);
+}
 export function* watchCloseWorkflowItem() {
   yield takeEvery(CLOSE_WORKFLOWITEM, closeWorkflowItemSaga);
 }
@@ -753,6 +790,7 @@ export default function* rootSaga() {
       watchAssignProject(),
       watchFetchProjectHistorySaga(),
       watchEditProject(),
+      watchCloseProject(),
 
       // Subproject
       watchCreateSubProject(),
@@ -763,6 +801,7 @@ export default function* rootSaga() {
       watchRevokeSubProjectPermissions(),
       watchAssignSubproject(),
       watchFetchSubprojectHistory(),
+      watchCloseSubproject(),
 
       // Workflow
       watchCreateWorkflowItem(),

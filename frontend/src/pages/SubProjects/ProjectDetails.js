@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Doughnut } from "react-chartjs-2";
+import _isUndefined from "lodash/isUndefined";
 
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
@@ -17,11 +18,13 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import OpenIcon from "@material-ui/icons/Remove";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
 import Red from "@material-ui/core/colors/red";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import {
   toAmountString,
@@ -58,7 +61,7 @@ const styles = {
   },
   permissionContainer: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "space-around"
   },
   text: {
     fontSize: "14px"
@@ -143,6 +146,8 @@ const ProjectDetails = ({
   canViewPermissions,
   showProjectPermissions,
   showProjectAssignees,
+  closeProject,
+  canClose,
   ...rest
 }) => {
   const {
@@ -153,6 +158,9 @@ const ProjectDetails = ({
     statusDetails,
     allocatedRatio
   } = calculateMetrics(subProjects, projectAmount, projectCurrency);
+
+  const openSubprojects = subProjects.find(subproject => subproject.data.status === "open");
+  const closeDisabled = !(canClose && _isUndefined(openSubprojects)) || projectStatus === "closed";
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -168,19 +176,16 @@ const ProjectDetails = ({
               secondary={strings.common.budget}
             />
           </ListItem>
-          <Divider />
           <ListItem>
             <ListItemIcon>{statusIconMapping[projectStatus]}</ListItemIcon>
             <ListItemText primary={statusMapping(projectStatus)} secondary={strings.common.status} />
           </ListItem>
-          <Divider />
           <ListItem>
             <ListItemIcon>
               <DateIcon />
             </ListItemIcon>
             <ListItemText primary={tsToString(projectTS)} secondary={strings.common.created} />
           </ListItem>
-          <Divider />
           <ListItem>
             <ListItemIcon style={styles.assingeeIcon}>
               <AssigneeIcon />
@@ -193,17 +198,19 @@ const ProjectDetails = ({
             />
           </ListItem>
           <Divider />
+        </List>
+        <List component="nav" subheader={<ListSubheader component="div">Actions</ListSubheader>}>
           <ListItem style={styles.permissionContainer}>
-            <Button
-              data-test="pp-button"
-              disabled={!canViewPermissions}
-              onClick={showProjectPermissions}
-              icon={<PermissionIcon style={styles.icon} />}
-              variant="raised"
-              color="primary"
-            >
-              Permissions
-            </Button>
+            <Tooltip id="tooltip-ppermissions" title="Set permissions">
+              <IconButton data-test="pp-button" disabled={!canViewPermissions} onClick={showProjectPermissions}>
+                <PermissionIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip id="tooltip-pclose" title="Close project">
+              <IconButton data-test="c-button" disabled={closeDisabled} onClick={closeProject} color="secondary">
+                <DoneIcon />
+              </IconButton>
+            </Tooltip>
           </ListItem>
         </List>
       </Card>

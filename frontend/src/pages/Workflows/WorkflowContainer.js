@@ -33,7 +33,8 @@ import {
   fetchSubprojectHistory,
   showEditDialog,
   hideEditDialog,
-  hideCreateDialog
+  hideCreateDialog,
+  closeSubproject
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -41,7 +42,7 @@ import { showHistory, fetchHistoryItems } from "../Notifications/actions";
 import { addDocument, clearDocuments, prefillDocuments, validateDocument } from "../Documents/actions";
 import Workflow from "./Workflow";
 import SubProjectDetails from "./SubProjectDetails";
-import { canViewSubProjectPermissions, canAssignSubProject } from "../../permissions";
+import { canViewSubProjectPermissions, canAssignSubProject, canCloseSubProject } from "../../permissions";
 import { toJS } from "../../helper";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
@@ -72,11 +73,22 @@ class WorkflowContainer extends Component {
     this.props.createWorkflowItem(this.projectId, this.subProjectId, workflow, documents);
   };
 
+  closeSubproject = () => {
+    const openWorkflowItems = this.props.workflowItems.find(wItem => wItem.data.status === "open");
+    if (!openWorkflowItems) {
+      this.props.closeSubproject(this.projectId, this.subProjectId);
+    }
+  };
+
   closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subProjectId, wId);
+
+  closeSubproject = () => this.props.closeSubproject(this.projectId, this.subProjectId, true);
 
   render() {
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
     const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
+    const canCloseSubproject = canCloseSubProject(this.props.allowedIntents);
+
     return (
       <div>
         <div style={globalStyles.innerContainer}>
@@ -84,6 +96,8 @@ class WorkflowContainer extends Component {
             {...this.props}
             canViewPermissions={canViewPermissions}
             canAssignSubproject={canAssignSubproject}
+            closeSubproject={this.closeSubproject}
+            canCloseSubproject={canCloseSubproject}
           />
           <SubprojectPermissionsContainer
             projectId={this.projectId}
@@ -131,6 +145,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     openWorkflowDetails: () => dispatch(showWorkflowDetails(true)),
     hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
+    closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
     showWorkflowItemAssignee: (workflowId, assignee) => dispatch(showWorkflowItemAssignee(workflowId, assignee)),
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),

@@ -14,7 +14,9 @@ import {
   showProjectAssignees,
   fetchProjectHistory,
   showEditDialog,
-  editSubproject
+  editSubproject,
+  closeProject,
+  hideEditDialog
 } from "./actions";
 
 import SubProjects from "./SubProjects";
@@ -27,26 +29,44 @@ import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
 import strings from "../../localizeStrings";
 import { fetchUser } from "../Login/actions";
 import ProjectHistoryContainer from "./ProjectHistoryContainer";
-import { hideEditDialog } from "../Overview/actions";
+import { canViewProjectPermissions, canCreateSubProject, canAssignProject, canCloseProject } from "../../permissions";
 
 class SubProjectsContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.projectId = this.props.location.pathname.split("/")[2];
+  }
+
   componentWillMount() {
-    const projectId = this.props.location.pathname.split("/")[2];
-    this.props.setSelectedView(projectId, "project");
-    this.props.fetchAllProjectDetails(projectId, true);
+    this.props.setSelectedView(this.projectId, "project");
+    this.props.fetchAllProjectDetails(this.projectId, true);
     this.props.fetchUser();
   }
 
+  closeProject = () => {
+    const openSubprojects = this.props.subProjects.find(subproject => subproject.data.status === "open");
+    if (!openSubprojects) {
+      this.props.closeProject(this.projectId);
+    }
+  };
+
   render() {
-    const canViewPermissions = this.props.allowedIntents.indexOf("project.intent.listPermissions") > -1;
-    const canCreateSubProject = this.props.allowedIntents.indexOf("project.createSubproject") > -1;
-    const canAssignProject = this.props.allowedIntents.indexOf("project.assign") > -1;
+    const canViewPermissions = canViewProjectPermissions(this.props.allowedIntents);
+    const canCreateSubproject = canCreateSubProject(this.props.allowedIntents);
+    const canAssign = canAssignProject(this.props.allowedIntents);
+    const canClose = canCloseProject(this.props.allowedIntents);
     return (
       <div>
         <div style={globalStyles.innerContainer}>
           <ProjectPermissionsContainer title={strings.project.project_permissions_title} />
-          <ProjectDetails {...this.props} canViewPermissions={canViewPermissions} canAssignProject={canAssignProject} />
-          <SubProjects {...this.props} canCreateSubProject={canCreateSubProject} />
+          <ProjectDetails
+            {...this.props}
+            canViewPermissions={canViewPermissions}
+            canAssignProject={canAssign}
+            closeProject={this.closeProject}
+            canClose={canClose}
+          />
+          <SubProjects {...this.props} canCreateSubProject={canCreateSubproject} />
           <ProjectHistoryContainer />
         </div>
       </div>
@@ -79,7 +99,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showEditDialog: (id, displayName, description, amount, currency) =>
       dispatch(showEditDialog(id, displayName, description, amount, currency)),
     hideEditDialog: () => dispatch(hideEditDialog()),
-    fetchUser: () => dispatch(fetchUser(true))
+    fetchUser: () => dispatch(fetchUser(true)),
+    fetchUser: () => dispatch(fetchUser(true)),
+    closeProject: pId => dispatch(closeProject(pId, true))
   };
 };
 

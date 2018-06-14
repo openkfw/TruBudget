@@ -39,7 +39,8 @@ const pt = {
     added: "Adicionado",
     edit: "Portuguese: Edit",
     workflowItem: "Portuguese: WorkflowItem",
-    project: "Portuguese: Project"
+    project: "Portuguese: Project",
+    closed: "Portuguese: Closed"
   },
 
   adminDashboard: {
@@ -250,13 +251,14 @@ const pt = {
     read_only: "Portuguese: Read-only permissions",
     view: "Portuguese: View permissions",
     write: "Portuguese: Write permissions",
-    admin: "Pt :Admin permissions",
+    admin: "Portuguese: Admin permissions",
     project_assign: "Portuguese: Assign project to others",
     project_intent_grantPermission: "Portuguese: Grant permissions",
     project_intent_listPermissions: "Portuguese: View permissions",
     project_intent_revokePermission: "Portuguese: Revoke permissions",
     project_viewDetails: "Portuguese: View project details",
     project_viewSummary: "Portuguese: View project in overview",
+    project_close: "Portuguese: Close project",
     project_createSubproject: "Portuguese: Create subprojects",
     subproject_archive: "Portuguese: Archive subproject",
     subproject_assign: "Portuguese: Assign subproject",

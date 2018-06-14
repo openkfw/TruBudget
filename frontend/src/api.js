@@ -126,6 +126,10 @@ class Api {
 
   assignProject = (projectId, userId) => axios.post(`/project.assign`, { projectId, userId });
 
+  closeProject = projectId => axios.post(`/project.close`, { projectId });
+
+  closeSubproject = (projectId, subprojectId) => axios.post(`subproject.close`, { projectId, subprojectId });
+
   closeWorkflowItem = (projectId, subprojectId, workflowitemId) =>
     axios.post(`/workflowitem.close`, { projectId, subprojectId, workflowitemId });
 

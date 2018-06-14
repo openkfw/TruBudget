@@ -1,6 +1,8 @@
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
 
+import lightGreen from "@material-ui/core/colors/lightGreen";
+
 import Card from "@material-ui/core/Card";
 import Chip from "@material-ui/core/Chip";
 import DoneIcon from "@material-ui/icons/Check";
@@ -280,6 +282,7 @@ export const RedactedWorkflowItem = SortableElement(
   ({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
     const { status } = workflow.data;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
+
     const tableStyle = styles[status];
 
     const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };

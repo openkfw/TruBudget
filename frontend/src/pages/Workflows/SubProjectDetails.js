@@ -19,10 +19,11 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import NotAssignedIcon from "@material-ui/icons/SpaceBar";
 import OpenIcon from "@material-ui/icons/Remove";
-import PermissionIcon from "@material-ui/icons/LockOpen";
 import SpentIcon from "@material-ui/icons/RemoveCircle";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
+import PermissionIcon from "@material-ui/icons/LockOpen";
+
 import { Doughnut } from "react-chartjs-2";
 
 import {
@@ -39,6 +40,7 @@ import GaugeChart from "../Common/GaugeChart";
 import strings from "../../localizeStrings";
 
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
+import { Icon } from "@material-ui/core";
 
 const styles = {
   container: {
@@ -55,7 +57,7 @@ const styles = {
   },
   permissionContainer: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "space-around"
   },
   text: {
     fontSize: "14px"
@@ -161,13 +163,16 @@ const SubProjectDetails = ({
   users,
   showSubProjectPermissions,
   showSubProjectAssignee,
+  closeSubproject,
+  canCloseSubproject,
   ...props
 }) => {
   const amountString = toAmountString(amount, currency);
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = tsToString(created);
-
+  const openWorkflowItems = workflowItems.find(wItem => wItem.data.status === "open");
+  const closeDisabled = !(canCloseSubproject && _isUndefined(openWorkflowItems)) || status === "closed";
   const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(
     workflowItems
   );
@@ -183,6 +188,7 @@ const SubProjectDetails = ({
   const allocatedBudgetRatio = _isUndefined(amount) ? 0 : assignedBudget / amount;
   const consumptionBudgetRatio = _isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
   const currentDisbursementRatio = _isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -221,11 +227,22 @@ const SubProjectDetails = ({
               data-test="spp-button"
               disabled={!canViewPermissions}
               onClick={showSubProjectPermissions}
-              icon={<PermissionIcon style={styles.icon} />}
-              variant="raised"
+              variant="contained"
               color="primary"
             >
               Permissions
+              <PermissionIcon style={styles.icon} />
+            </Button>
+
+            <Button
+              data-test="sc-button"
+              disabled={closeDisabled}
+              onClick={closeSubproject}
+              variant="contained"
+              color="primary"
+            >
+              Close
+              <DoneIcon style={styles.icon} />
             </Button>
           </ListItem>
         </List>
