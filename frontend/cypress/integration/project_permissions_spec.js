@@ -8,14 +8,14 @@ describe("Project Permissions", function() {
   beforeEach(function() {
     cy.fixture("testdata.json").as("data");
     cy.login();
-    cy.visit(`/projects/${projects[0].data.id}`);
+    cy.visit(`/projects`);
   });
 
-  it("Show project details page", function() {
-    cy.location("pathname").should("eq", `/projects/${projects[0].data.id}`);
+  it("Show project page", function() {
+    cy.location("pathname").should("eq", `/projects`);
   });
 
-  it("Show and  project permissions correctly", function() {
+  it("Show and project permissions correctly", function() {
     cy.get("[data-test=pp-button]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test=permission-close]").click();
