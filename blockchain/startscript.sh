@@ -55,15 +55,15 @@ if [[ $is_master ]]; then
     -anyone-can-admin=false \
     -anyone-can-mine=false \
     -anyone-can-activate=false\
-    -mining-diversity=0.8  \
+    -mining-diversity=0.3 \
     -mine-empty-rounds=1 \
     -protocol-version=20002 \
-    -admin-consensus-upgrade=1 \
-    -admin-consensus-admin=1 \
-    -admin-consensus-activate=1 \
-    -admin-consensus-mine=1 \
-    -admin-consensus-create=1 \
-    -admin-consensus-issue=1 \
+    -admin-consensus-upgrade=.51 \
+    -admin-consensus-admin=.51 \
+    -admin-consensus-activate=.51 \
+    -admin-consensus-mine=.51 \
+    -admin-consensus-create=0 \
+    -admin-consensus-issue=0 \
     -root-stream-open=false
 
     # Reducing the target-adjust-freq ??, since we are permissioned
