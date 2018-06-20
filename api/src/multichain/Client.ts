@@ -10,10 +10,10 @@ import {
   StreamTxId,
   TxId,
 } from "./Client.h";
-import { ConnectionSettings, RpcClient } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { hexToObject, objectToHex } from "./hexconverter";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import { ConnectionSettings, RpcClient } from "./RpcClient.h";
 
 // Oddly enough, there is no way to tell Multichain to return _everything_..
 const maxItemCount: number = 0x7fffffff;
@@ -197,7 +197,7 @@ export class RpcMultichainClient implements MultichainClient {
   async updateValue(
     streamName: StreamName,
     key: string,
-    updateCallback: (Resource) => Resource,
+    updateCallback: (_: Resource) => Resource,
   ): Promise<void> {
     while (this.hasWriteLock) {
       await sleep(1);
