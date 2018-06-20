@@ -6,7 +6,7 @@ services:
       RPC_HOST: master
       RPC_PORT: ${RPC_PORT}
       PORT: ${API_PORT}
-      # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
+      ORGANIZATION: ${ORGANIZATION}
     links: 
       - master
 
