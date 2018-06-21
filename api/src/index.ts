@@ -43,7 +43,7 @@ const rpcSettings: ConnectionSettings = {
   host: process.env.RPC_HOST || "localhost",
   port: parseInt(process.env.RPC_PORT || "8000", 10),
   username: process.env.RPC_USER || "multichainrpc",
-  password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
+  password: process.env.RPC_PASSWORD || "this-is-insecure-change-it",
 };
 console.log(
   `Connecting to MultiChain node at ${rpcSettings.protocol}://${rpcSettings.host}:${
