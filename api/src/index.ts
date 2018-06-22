@@ -1,5 +1,5 @@
 import * as winston from "winston";
-import { ensureOrganizationStreams } from "./global/organization";
+import { ensureOrganizationStreams } from "./organization/organization";
 import { createBasicApp } from "./httpd/app";
 import { createRouter } from "./httpd/router";
 import { waitUntilReady } from "./lib/liveness";
@@ -58,6 +58,12 @@ app.use("/api", createRouter(multichainClient, jwtSecret, rootSecret));
 /*
  * Run the app:
  */
+
+// Enable useful traces of unhandled-promise warnings:
+process.on("unhandledRejection", err => {
+  console.error("UNHANDLED PROMISE REJECTION:", err);
+  process.exit(1);
+});
 
 app.listen(port, err => {
   if (err) {

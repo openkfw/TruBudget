@@ -4,11 +4,11 @@ import { getAllowedIntents, getUserAndGroups } from "../authz/index";
 import { globalIntents } from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import * as Global from "../global";
-import { getOrganizationAddress } from "../global/organization";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { WalletAddress } from "../network/model/Nodes";
+import { getOrganizationAddress } from "../organization/organization";
 import { hashPassword, isPasswordMatch } from "./password";
 
 export interface UserLoginResponse {
