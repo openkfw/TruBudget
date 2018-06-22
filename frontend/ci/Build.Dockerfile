@@ -5,7 +5,9 @@ WORKDIR /usr/src/app
 
 COPY package.json package-lock.json /usr/src/app/
 RUN sed -i '/"cypress"/d' /usr/src/app/package.json
-RUN while sleep 1; do cmd; done
+RUN date
+RUN sleep 600
+RUN date
 RUN npm ci
 
 COPY . /usr/src/app
