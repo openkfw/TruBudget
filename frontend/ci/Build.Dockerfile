@@ -9,6 +9,7 @@ RUN date
 RUN sleep 60
 RUN sleep 60
 RUN sleep 60
+RUN sleep 60
 RUN date
 RUN npm ci
 
