@@ -39,11 +39,14 @@ function askMasterForPermissions(address, organization) {
   const protocol = process.env.API_PROTO;
   const host = process.env.API_HOST;
   const port = process.env.API_PORT;
-  const url = `${protocol}://${host}:${port}/api/nodes`;
+  const url = `${protocol}://${host}:${port}/api/network.registerNode`;
   console.log(`>>> Registration URL: ${url}`)
   return axios.post(url, {
-    address,
-    organization,
+    apiVersion: "1.0",
+    data: {
+      address,
+      organization,
+    }
   });
 }
 

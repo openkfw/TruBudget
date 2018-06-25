@@ -3,9 +3,9 @@ FROM node:alpine
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json /usr/src/app/
-RUN sed -i '/"cypress"/d' /usr/src/app/package.json
+COPY package*.json ./
+RUN sed -i '/"cypress"/d' package.json
 RUN npm ci
 
-COPY . /usr/src/app
+COPY . ./
 RUN npm run build

@@ -3,7 +3,14 @@ import { RpcClient } from "./RpcClient";
 export { RpcMultichainClient } from "./Client";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 
-export type StreamKind = "global" | "users" | "project" | "subproject" | "notifications";
+export type StreamKind =
+  | "global"
+  | "organization"
+  | "users"
+  | "project"
+  | "subproject"
+  | "notifications"
+  | "nodes";
 
 // The "stream details" are read-only, so they're only used to define the stream's nature:
 interface StreamDetails {

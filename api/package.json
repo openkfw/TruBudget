@@ -5,14 +5,16 @@
   "apidoc": {
     "name": "TruBudget",
     "title": "TruBudget",
-    "url": "https://trubudget.net",
+    "url": "https://trubudget.net/api",
     "order": [
       "User",
       "Global",
       "Project",
       "Subproject",
       "Workflowitem",
-      "Notification"
+      "Notification",
+      "Liveness_and_Readiness",
+      "Network"
     ]
   },
   "main": "index.js",

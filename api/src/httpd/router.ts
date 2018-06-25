@@ -5,6 +5,9 @@ import { grantGlobalPermission } from "../global/intent/grantPermission";
 import { getGlobalPermissions } from "../global/intent/listPermissions";
 import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
+import { getNodeList } from "../network/controller/list";
+import { registerNode } from "../network/controller/registerNode";
+import { voteForNetworkPermission } from "../network/controller/vote";
 import { getNotificationList } from "../notification/controller/list";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { assignProject } from "../project/controller/assign";
@@ -177,10 +180,6 @@ export const createRouter = (
    * @apiDescription Returns "200 OK" if the API is up.
    */
   router.get("/liveness", (req, res) => res.status(200).send("OK"));
-
-  router.post("/nodes", (req, res) => {
-    res.status(500).send("TODO");
-  });
 
   //#region global
   // ------------------------------------------------------------
@@ -1191,6 +1190,66 @@ export const createRouter = (
   });
 
   //#endregion notification
+  //#region network
+  // ------------------------------------------------------------
+  //       network
+  // ------------------------------------------------------------
+
+  /* Used by non-master MultiChain nodes to register their wallet address.
+   *
+   * (undocumented)
+   */
+  router.post("/network.registerNode", (req: AuthenticatedRequest, res) => {
+    registerNode(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {get} /network.voteForPermission Grant/revoke permissions
+   * @apiVersion 1.0.0
+   * @apiName network.voteForPermission
+   * @apiGroup Network
+   * @apiPermission user
+   * @apiDescription Votes for granting/revoking network-level permissions to/from a
+   * registered node (identified by its wallet addresses). After this call, the voted
+   * access level may or may not be in effect, depending on the consensus parameters of
+   * the underlying blockchain.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.address The node (wallet address) to vote for.
+   * @apiParam {String="none","basic","admin"} data.vote The access type voted for. "none"
+   * means no access at all. "basic" means that the node should be able to join the
+   * network, but not run privileged operations, like creating a new organization.
+   * Choose this access type for any additional nodes of an existing organization.
+   * Finally, a node with "admin" permissions can do (almost) everything, which is why
+   * this access type should only be applied to fully trusted nodes.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "address": "13ePdKiZeSd787D6styeaSugyJjpM3SdLBibJy",
+   *       "vote": "admin"
+   *     }
+   *   }
+   *
+   */
+  router.post("/network.voteForPermission", (req: AuthenticatedRequest, res) => {
+    voteForNetworkPermission(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /* List all TruBudget nodes.
+   *
+   * (undocumented)
+   */
+  router.get("/network.list", (req: AuthenticatedRequest, res) => {
+    getNodeList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
 
   return router;
 };

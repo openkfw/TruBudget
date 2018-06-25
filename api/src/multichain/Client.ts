@@ -10,10 +10,10 @@ import {
   StreamTxId,
   TxId,
 } from "./Client.h";
-import { ConnectionSettings, RpcClient } from "./RpcClient.h";
 import { randomString } from "./hash";
 import { hexToObject, objectToHex } from "./hexconverter";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import { ConnectionSettings, RpcClient } from "./RpcClient.h";
 
 // Oddly enough, there is no way to tell Multichain to return _everything_..
 const maxItemCount: number = 0x7fffffff;
@@ -61,7 +61,7 @@ export class RpcMultichainClient implements MultichainClient {
         console.log(`Created stream ${streamName} with options ${JSON.stringify(options)}`),
       )
       .catch(err => {
-        if (options.name && err.code === -705) {
+        if (options.name && err && err.code === -705) {
           // Stream or asset with this name already exists
           return options.name;
         }
@@ -124,7 +124,7 @@ export class RpcMultichainClient implements MultichainClient {
     const items: Liststreamkeyitems.Item[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch(err => {
-        if (err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
+        if (err && err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
         else throw err;
       });
     return items.map(x => ({
@@ -141,7 +141,7 @@ export class RpcMultichainClient implements MultichainClient {
     const allItemsAllValues: Liststreamkeyitems.Item[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch(err => {
-        if (err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
+        if (err && err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
         else throw err;
       });
     const allItemsLatestValues = Array.from(
@@ -197,7 +197,7 @@ export class RpcMultichainClient implements MultichainClient {
   async updateValue(
     streamName: StreamName,
     key: string,
-    updateCallback: (Resource) => Resource,
+    updateCallback: (_: Resource) => Resource,
   ): Promise<void> {
     while (this.hasWriteLock) {
       await sleep(1);
@@ -222,7 +222,7 @@ export class RpcMultichainClient implements MultichainClient {
     return this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch(err => {
-        if (err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
+        if (err && err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
         else throw err;
       });
   }

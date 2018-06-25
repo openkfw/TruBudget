@@ -2,10 +2,13 @@ import * as jsonwebtoken from "jsonwebtoken";
 import * as User from ".";
 import { getAllowedIntents, getUserAndGroups } from "../authz/index";
 import { globalIntents } from "../authz/intents";
+import { AuthToken } from "../authz/token";
 import * as Global from "../global";
+import { getOrganizationAddress } from "../global/organization";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import { WalletAddress } from "../network/model/Nodes";
 import { hashPassword, isPasswordMatch } from "./password";
 
 export interface UserLoginResponse {
@@ -58,7 +61,7 @@ const authenticate = async (
     // instead of simple string comparison:
     const rootSecretHash = await hashPassword(rootSecret);
     if (await isPasswordMatch(password, rootSecretHash)) {
-      return rootUserLoginResponse(createToken(jwtSecret, "root", "root"));
+      return rootUserLoginResponse(createToken(jwtSecret, "root", "root", "root has no address"));
     } else {
       throwError("wrong password");
     }
@@ -77,7 +80,17 @@ const authenticate = async (
     throwError("wrong password");
   }
 
-  const token = { userId: storedUser.id, organization: storedUser.organization };
+  const organizationAddress: WalletAddress = (await getOrganizationAddress(
+    multichain,
+    storedUser.organization,
+  ))!;
+
+  const token: AuthToken = {
+    userId: storedUser.id,
+    organization: storedUser.organization,
+    organizationAddress,
+  };
+  const signedJwt = createToken(jwtSecret, id, storedUser.organization, organizationAddress);
   const globalPermissions = await Global.getPermissions(multichain);
   return {
     id,
@@ -86,12 +99,17 @@ const authenticate = async (
     allowedIntents: await getUserAndGroups(token).then(async userAndGroups =>
       getAllowedIntents(userAndGroups, globalPermissions),
     ),
-    token: createToken(jwtSecret, id, storedUser.organization),
+    token: signedJwt,
   };
 };
 
-const createToken = (secret: string, userId: string, organization: string): string =>
-  jsonwebtoken.sign({ userId, organization }, secret, { expiresIn: "1h" });
+const createToken = (
+  secret: string,
+  userId: string,
+  organization: string,
+  organizationAddress: string,
+): string =>
+  jsonwebtoken.sign({ userId, organization, organizationAddress }, secret, { expiresIn: "1h" });
 
 const rootUserLoginResponse = (token: string): UserLoginResponse => ({
   id: "root",
