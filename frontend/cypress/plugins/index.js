@@ -36,7 +36,7 @@ function hasLoginReady(baseUrl) {
     console.log("Login successful!");
     return true;
   }).catch(err => {
-    console.log(`Authentication failed - likely provisioning is still ongoing; err: ${JSON.stringify(err.data)}`);
+    console.log(`Authentication failed - likely provisioning is still ongoing; err: ${err}`);
     return false;
   });
 }
@@ -51,7 +51,7 @@ async function awaitApiReady(baseUrl) {
   }
   if (nRetries === 0) throw Error("/api/readiness was not OK");
 
-  nRetries = 10;
+  nRetries = 20;
   while (nRetries > 0 && !(await hasLoginReady(baseUrl))) {
     --nRetries;
     await sleep(5000);
