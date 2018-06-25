@@ -13,18 +13,56 @@
 
 const axios = require("axios");
 
-const pingBackend = path =>
-  axios.post(path, {
-    apiVersion: "1.0",
-    data: { user: { id: "mstein", password: "test" } }
+function reportsReadiness(baseUrl) {
+  return axios.get(`${baseUrl}/api/readiness`).then(() => {
+    console.log("API reports readiness!");
+    return true;
+  }).catch(err => {
+    console.log(`API is not ready yet: ${err}`);
+    return false;
   });
+}
 
-module.exports = (on, config) => {
-  on("task", {
-    waitForBackend: path => {
-      return pingBackend(path)
-        .then(() => Promise.resolve(true))
-        .catch(() => Promise.resolve(false));
+function hasLoginReady(baseUrl) {
+  return axios.post(`${baseUrl}/api/user.authenticate`, {
+    apiVersion: "1.0",
+    data: {
+      user: {
+        id: "mstein",
+        password: "test"
+      }
     }
+  }).then(() => {
+    console.log("Login successful!");
+    return true;
+  }).catch(err => {
+    console.log(`Authentication failed - likely provisioning is still ongoing; err: ${JSON.stringify(err.data)}`);
+    return false;
+  });
+}
+
+const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+
+async function awaitApiReady(baseUrl) {
+  let nRetries = 10;
+  while (nRetries > 0 && !(await reportsReadiness(baseUrl))) {
+    --nRetries;
+    await sleep(2000);
+  }
+  if (nRetries === 0) throw Error("/api/readiness was not OK");
+
+  nRetries = 10;
+  while (nRetries > 0 && !(await hasLoginReady(baseUrl))) {
+    --nRetries;
+    await sleep(5000);
+  }
+  if (nRetries === 0) throw Error("user login was not OK");
+
+  return null;
+}
+
+module.exports = (on, _config) => {
+  on("task", {
+    awaitApiReady: awaitApiReady,
   });
 };
