@@ -24,7 +24,7 @@ const waitForBackend = (loginCount = 0) => {
   cy.task("waitForBackend", `${baseUrl}/api/user.authenticate`).then(success => {
     if (!success) {
       if (loginCount < 10) {
-        cy.wait(5000).then(() => waitForBackend(loginCount + 1));
+        cy.wait(10000).then(() => waitForBackend(loginCount + 1));
       } else {
         throw new Error(`Could not start test, it seems backend was not ready!`);
       }
