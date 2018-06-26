@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
-import LaunchIcon from "@material-ui/icons/OpenInBrowser";
+import LaunchIcon from "@material-ui/icons/ZoomIn";
 import Typography from "@material-ui/core/Typography";
 
 import _isEmpty from "lodash/isEmpty";

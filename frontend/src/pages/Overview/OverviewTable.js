@@ -14,7 +14,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import ContentAdd from "@material-ui/icons/Add";
 import DateIcon from "@material-ui/icons/DateRange";
-import ViewIcon from "@material-ui/icons/OpenInBrowser";
+import ViewIcon from "@material-ui/icons/ZoomIn";
 import EditIcon from "@material-ui/icons/Edit";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";

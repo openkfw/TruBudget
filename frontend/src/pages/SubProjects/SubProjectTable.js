@@ -12,7 +12,7 @@ import TableRow from "@material-ui/core/TableRow";
 import { withStyles } from "@material-ui/core";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import EditIcon from "@material-ui/icons/Edit";
-import LaunchIcon from "@material-ui/icons/OpenInBrowser";
+import LaunchIcon from "@material-ui/icons/ZoomIn";
 
 import { toAmountString, statusMapping } from "../../helper";
 import strings from "../../localizeStrings";
