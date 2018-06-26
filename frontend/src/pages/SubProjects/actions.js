@@ -1,6 +1,3 @@
-import { relativeTimeRounding } from "moment";
-import { HIDE_SUBPROJECT_ASSIGNEES } from "../Workflows/actions";
-
 export const FETCH_PROJECT_DETAILS = "FETCH_PROJECT_DETAILS";
 export const FETCH_PROJECT_DETAILS_SUCCESS = "FETCH_PROJECT_DETAILS_SUCCESS";
 

@@ -17,8 +17,7 @@ const handleCreate = props => {
 };
 
 const handleEdit = props => {
-  const { editWorkflowItem, onDialogCancel, workflowItems, workflowToAdd, workflowDocuments, location } = props;
-  const subproject = props.match.params.subproject;
+  const { editWorkflowItem, onDialogCancel, workflowItems, workflowToAdd, location } = props;
   const { id } = workflowToAdd;
   const originalItem = workflowItems.find(workflowitem => workflowitem.data.id === id);
   const changes = compareObjects(workflowToAdd, originalItem.data);
@@ -69,7 +68,7 @@ const WorkflowDialog = props => {
         dialogShown: props.creationDialogShown
       };
 
-  const { displayName, description } = props.workflowToAdd;
+  const { displayName } = props.workflowToAdd;
   const steps = [
     {
       title: strings.workflow.workflow_name,

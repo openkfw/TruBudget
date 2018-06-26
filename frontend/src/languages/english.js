@@ -41,7 +41,10 @@ const en = {
     incorrect_password: "Incorrect password",
     added: "Added",
     search: "Search",
-    workflowItem: "WorkflowItem"
+    workflowItem: "WorkflowItem",
+    show_permissions: "Show Permissions",
+    view: "View",
+    create: "Create"
   },
 
   adminDashboard: {
@@ -101,7 +104,8 @@ const en = {
     project_authority_organization_search: "Search organizations",
     project_authority_role_search: "Search role",
     project_permissions_title: "Set permissions for project",
-    project_edit_title: "Edit Project"
+    project_edit_title: "Edit Project",
+    project_close_info: "Disabled as long as the Subprojects aren't closed"
   },
   subproject: {
     subproject_title: "Sub-Project title",
@@ -114,7 +118,8 @@ const en = {
     subproject_add: "Add new Sub-project",
     subproject_select_button: "Select",
     subproject_completion_string: "{0} of {1} done",
-    subproject_permissions_title: "Set permissions for subproject"
+    subproject_permissions_title: "Set permissions for subproject",
+    subproject_close_info: "Disabled as long as the Workflowitems aren't closed"
   },
   workflow: {
     non_approval: "Non-Approval",

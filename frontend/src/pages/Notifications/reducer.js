@@ -1,8 +1,7 @@
-import { fromJS, toJS } from "immutable";
+import { fromJS } from "immutable";
 import {
   SHOW_SNACKBAR,
   SNACKBAR_MESSAGE,
-  FETCH_NOTIFICATIONS_SUCCESS,
   FETCH_HISTORY_SUCCESS,
   OPEN_HISTORY,
   HIDE_HISTORY,

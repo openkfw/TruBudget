@@ -1,10 +1,9 @@
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
 
-import lightGreen from "@material-ui/core/colors/lightGreen";
-
 import Card from "@material-ui/core/Card";
 import Chip from "@material-ui/core/Chip";
+import Tooltip from "@material-ui/core/Tooltip";
 import DoneIcon from "@material-ui/icons/Check";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
@@ -191,19 +190,31 @@ const renderActionButtons = (
   return (
     <div style={{ flex: 2 }}>
       <div style={styles.actions}>
-        <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
-          <EditIcon />
-        </IconButton>
-        <IconButton
-          disabled={!canListWorkflowPermissions}
-          onClick={showPerm}
-          style={canListWorkflowPermissions ? {} : hideStyle}
-        >
-          <PermissionIcon />
-        </IconButton>
-        <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
-          <DoneIcon />
-        </IconButton>
+        <Tooltip disabled={true} id="tooltip-wedit" title={strings.common.edit}>
+          <div>
+            <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        </Tooltip>
+        <Tooltip disabled={true} id="tooltip-wpermissions" title={strings.common.show_permissions}>
+          <div>
+            <IconButton
+              disabled={!canListWorkflowPermissions}
+              onClick={showPerm}
+              style={canListWorkflowPermissions ? {} : hideStyle}
+            >
+              <PermissionIcon />
+            </IconButton>
+          </div>
+        </Tooltip>
+        <Tooltip disabled={true} id="tooltip-wclose" title={strings.common.close}>
+          <div>
+            <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
+              <DoneIcon />
+            </IconButton>
+          </div>
+        </Tooltip>
       </div>
     </div>
   );

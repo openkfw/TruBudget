@@ -9,7 +9,6 @@ import {
   storeSubProjectName,
   storeSubProjectAmount,
   storeSubProjectComment,
-  showProjectPermissions,
   showProjectAssignees,
   fetchProjectHistory,
   showEditDialog,
@@ -25,14 +24,13 @@ import { setSelectedView } from "../Navbar/actions";
 import ProjectDetails from "./ProjectDetails";
 import globalStyles from "../../styles";
 import { toJS } from "../../helper";
-import ProjectPermissionsContainer from "../Overview/ProjectPermissionsContainer";
 import strings from "../../localizeStrings";
 import { fetchUser } from "../Login/actions";
 import ProjectHistoryContainer from "./ProjectHistoryContainer";
-import { canViewProjectPermissions, canCreateSubProject, canAssignProject, canCloseProject } from "../../permissions";
+import { canCreateSubProject, canAssignProject, canCloseProject } from "../../permissions";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 
-class SubProjectsContainer extends Component {
+class SubProjectContainer extends Component {
   constructor(props) {
     super(props);
     this.projectId = this.props.location.pathname.split("/")[2];
@@ -101,7 +99,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showEditDialog: (id, displayName, description, amount, currency) =>
       dispatch(showEditDialog(id, displayName, description, amount, currency)),
     fetchUser: () => dispatch(fetchUser(true)),
-    fetchUser: () => dispatch(fetchUser(true)),
     closeProject: pId => dispatch(closeProject(pId, true)),
     showSubProjectPermissions: id => dispatch(showSubProjectPermissions(id))
   };
@@ -132,4 +129,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectsContainer));
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectContainer));

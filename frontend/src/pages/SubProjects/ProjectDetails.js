@@ -6,7 +6,6 @@ import _isUndefined from "lodash/isUndefined";
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -194,13 +193,19 @@ const ProjectDetails = ({
                 secondary={strings.common.status}
               />
               <div>
-                <Tooltip disabled={true} id="tooltip-pclose" title="Close project">
-                  <div>
-                    <IconButton color="primary" data-test="pc-button" disabled={closeDisabled} onClick={closeProject}>
-                      <DoneIcon />
-                    </IconButton>
-                  </div>
-                </Tooltip>
+                {projectStatus !== "closed" ? (
+                  <Tooltip
+                    disabled={true}
+                    id="tooltip-pclose"
+                    title={closeDisabled ? strings.project.project_close_info : strings.common.close}
+                  >
+                    <div>
+                      <IconButton color="primary" data-test="pc-button" disabled={closeDisabled} onClick={closeProject}>
+                        <DoneIcon />
+                      </IconButton>
+                    </div>
+                  </Tooltip>
+                ) : null}
               </div>
             </div>
           </ListItem>

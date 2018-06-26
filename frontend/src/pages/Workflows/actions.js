@@ -22,6 +22,7 @@ export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
 export const EDIT_WORKFLOW_ITEM_SUCCESS = "EDIT_WORKFLOW_ITEM_SUCCESS";
 export const WORKFLOW_EDIT = "WORKFLOW_EDIT";
 export const SHOW_WORKFLOW_DETAILS = "SHOW_WORKFLOW_DETAILS";
+export const HIDE_WORKFLOW_DETAILS = "HIDE_WORKFLOW_DETAILS";
 
 export const UPDATE_WORKFLOW_SORT = "UPDATE_WORKFLOW_SORT";
 export const ENABLE_WORKFLOW_SORT = "ENABLE_WORKFLOW_SORT";
@@ -114,10 +115,16 @@ export function setCurrentStep(step) {
   };
 }
 
-export function showWorkflowDetails(show) {
+export function showWorkflowDetails(id) {
   return {
     type: SHOW_WORKFLOW_DETAILS,
-    show
+    id
+  };
+}
+
+export function hideWorkflowDetails() {
+  return {
+    type: HIDE_WORKFLOW_DETAILS
   };
 }
 

@@ -6,7 +6,6 @@ import _isUndefined from "lodash/isUndefined";
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import DateIcon from "@material-ui/icons/DateRange";
@@ -23,7 +22,6 @@ import OpenIcon from "@material-ui/icons/Remove";
 import SpentIcon from "@material-ui/icons/RemoveCircle";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
-import PermissionIcon from "@material-ui/icons/LockOpen";
 
 import { Doughnut } from "react-chartjs-2";
 
@@ -41,7 +39,6 @@ import GaugeChart from "../Common/GaugeChart";
 import strings from "../../localizeStrings";
 
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
-import { Icon } from "@material-ui/core";
 
 const styles = {
   container: {
@@ -198,7 +195,7 @@ const SubProjectDetails = ({
   const allocatedBudgetRatio = _isUndefined(amount) ? 0 : assignedBudget / amount;
   const consumptionBudgetRatio = _isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
   const currentDisbursementRatio = _isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
-
+  const tooltipTitle = closeDisabled ? strings.subproject.subproject_close_info : strings.common.close;
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -211,13 +208,20 @@ const SubProjectDetails = ({
             <ListItemIcon>{statusIcon}</ListItemIcon>
             <div style={styles.statusContainer}>
               <ListItemText style={styles.statusText} primary={mappedStatus} secondary={strings.common.status} />
-              <Tooltip disabled={true} id="tooltip-pclose" title="Close project">
-                <div>
-                  <IconButton color="primary" data-test="spc-button" disabled={closeDisabled} onClick={closeSubproject}>
-                    <DoneIcon />
-                  </IconButton>
-                </div>
-              </Tooltip>
+              {status !== "closed" ? (
+                <Tooltip disabled={true} id="tooltip-sclose" title={tooltipTitle}>
+                  <div>
+                    <IconButton
+                      color="primary"
+                      data-test="spc-button"
+                      disabled={closeDisabled}
+                      onClick={closeSubproject}
+                    >
+                      <DoneIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
             </div>
           </ListItem>
           <Divider />

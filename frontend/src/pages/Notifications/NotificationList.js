@@ -6,7 +6,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Unread from "@material-ui/icons/Email";
 import Read from "@material-ui/icons/MailOutline";
 import ListItemText from "@material-ui/core/ListItemText";
-import LaunchIcon from "@material-ui/icons/Launch";
+import LaunchIcon from "@material-ui/icons/OpenInBrowser";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Card from "@material-ui/core/Card";

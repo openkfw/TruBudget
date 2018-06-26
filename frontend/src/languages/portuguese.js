@@ -40,7 +40,10 @@ const pt = {
     edit: "Portuguese: Edit",
     workflowItem: "Portuguese: WorkflowItem",
     project: "Portuguese: Project",
-    closed: "Portuguese: Closed"
+    closed: "Portuguese: Closed",
+    show_permissions: "Portuguese: Show Permissions",
+    view: "Portuguese: View",
+    create: "Portuguese: Create"
   },
 
   adminDashboard: {
@@ -101,7 +104,8 @@ const pt = {
     project_authority_organization_search: "Pesquisar organizações",
     project_authority_role_search: "Pesquisar papéis",
     project_permissions_title: "Portuguese: Set permissions for project",
-    project_edit_title: "Portuguese: Edit Project"
+    project_edit_title: "Portuguese: Edit Project",
+    project_close_info: "Portuguese: Disabled as long as the Subprojects aren't closed"
   },
   subproject: {
     subproject_title: "Nome do subprojeto",
@@ -114,7 +118,8 @@ const pt = {
     subproject_add: "Criar novo subprojeto",
     subproject_select_button: "Selecionar",
     subproject_completion_string: "{0} de {1} finalizado",
-    subproject_permissions_title: "Portuguese: Set permissions for subproject"
+    subproject_permissions_title: "Portuguese: Set permissions for subproject",
+    subproject_close_info: "Portuguese: Disabled as long as the Workflowitems aren't closed"
   },
   workflow: {
     non_approval: "Aprovação desnecessária",

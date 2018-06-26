@@ -18,7 +18,7 @@ const handleCreate = props => {
 };
 
 const handleEdit = props => {
-  const { editProject, onDialogCancel, showSnackBar, storeSnackBarMessage, projectToAdd, location, projects } = props;
+  const { editProject, onDialogCancel, showSnackBar, storeSnackBarMessage, projectToAdd, projects } = props;
   const { displayName, id } = projectToAdd;
   const originalProject = projects.find(project => project.data.id === id);
   const changes = compareObjects(projectToAdd, originalProject.data);

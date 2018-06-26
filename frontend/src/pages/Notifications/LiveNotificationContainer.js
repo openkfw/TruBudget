@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import LiveNotification from "./LiveNotification";
-import { showSnackBar, storeSnackBarMessage, fetchNotificationsWithId, fetchAllNotifications } from "./actions.js";
+import {
+  // showSnackBar,
+  // storeSnackBarMessage,
+  fetchNotificationsWithId,
+  fetchAllNotifications
+} from "./actions.js";
 import { toJS } from "../../helper";
 
 class LiveNotificationContainer extends Component {

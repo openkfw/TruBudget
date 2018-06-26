@@ -1,7 +1,6 @@
 import { fromJS } from "immutable";
 
 import {
-  SHOW_CREATE_DIALOG,
   WORKFLOW_NAME,
   WORKFLOW_AMOUNT,
   WORKFLOW_AMOUNT_TYPE,
@@ -27,7 +26,8 @@ import {
   FETCH_SUBPROJECT_HISTORY_SUCCESS,
   HIDE_WORKFLOW_DIALOG,
   SHOW_WORKFLOW_EDIT,
-  SHOW_WORKFLOW_CREATE
+  SHOW_WORKFLOW_CREATE,
+  HIDE_WORKFLOW_DETAILS
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -153,7 +153,13 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case SHOW_WORKFLOW_DETAILS:
       return state.merge({
-        showDetails: action.show
+        showDetails: true,
+        showDetailsItemId: action.id
+      });
+    case HIDE_WORKFLOW_DETAILS:
+      return state.merge({
+        showDetails: false,
+        showDetailsItemId: defaultState.getIn("showDetailsItemId")
       });
     case ENABLE_WORKFLOW_SORT:
       return state.set("workflowSortEnabled", action.sortEnabled);

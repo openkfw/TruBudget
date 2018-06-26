@@ -14,7 +14,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import ContentAdd from "@material-ui/icons/Add";
 import DateIcon from "@material-ui/icons/DateRange";
-import InfoIcon from "@material-ui/icons/Launch";
+import ViewIcon from "@material-ui/icons/OpenInBrowser";
 import EditIcon from "@material-ui/icons/Edit";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -24,13 +24,7 @@ import PermissionIcon from "@material-ui/icons/LockOpen";
 
 import { toAmountString, statusMapping, tsToString } from "../../helper";
 import strings from "../../localizeStrings";
-import {
-  canCreateProject,
-  canViewProjectDetails,
-  canEditProject,
-  canViewProjectPermissions,
-  canCloseProject
-} from "../../permissions";
+import { canCreateProject, canViewProjectDetails, canEditProject, canViewProjectPermissions } from "../../permissions";
 
 const styles = {
   card: {
@@ -78,7 +72,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);
-    const editDisabled = !(canEditProject(allowedIntents) && status != "closed");
+    const editDisabled = !(canEditProject(allowedIntents) && status !== "closed");
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
 
     return (
@@ -93,15 +87,19 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
             marginTop: "-40px"
           }}
         >
-          <Button
-            className={classes.button}
-            disabled={!canViewProjectDetails(allowedIntents)}
-            color="primary"
-            onClick={() => history.push("/projects/" + id)}
-            variant="fab"
-          >
-            <InfoIcon />
-          </Button>
+          <Tooltip id="tooltip-pview" title={strings.common.view}>
+            <div>
+              <Button
+                className={classes.button}
+                disabled={!canViewProjectDetails(allowedIntents)}
+                color="primary"
+                onClick={() => history.push("/projects/" + id)}
+                variant="fab"
+              >
+                <ViewIcon />
+              </Button>
+            </div>
+          </Tooltip>
         </CardActions>
         <CardContent>
           <CardHeader
@@ -111,12 +109,6 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
             subheader={mappedStatus}
           />
           <List>
-            {/* <ListItem className={classes.listItem} disabled={true}>
-              <ListItemIcon>
-                <CommentIcon />
-              </ListItemIcon>
-              <ListItemText primary={description} secondary={strings.common.comment} />
-            </ListItem> */}
             <ListItem className={classes.listItem} disabled={true}>
               <ListItemIcon>
                 <AmountIcon />
@@ -130,7 +122,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
             <div className={classes.editContainer}>
-              <Tooltip id="tooltip-ppermissions" title="Set permissions">
+              <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
                 <div>
                   <IconButton
                     data-test="pp-button"
@@ -142,7 +134,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                   </IconButton>
                 </div>
               </Tooltip>
-              <Tooltip id="tooltip-pedit" title="Edit Project">
+              <Tooltip id="tooltip-pedit" title={strings.common.edit}>
                 <div>
                   <IconButton
                     data-test="pe-button"
@@ -194,16 +186,18 @@ const OverviewTable = props => {
           }}
         >
           <CardActions>
-            <Button
-              className={props.classes.button}
-              aria-label="create"
-              disabled={!canCreateProject(props.allowedIntents)}
-              onClick={() => props.showCreationDialog()}
-              variant="fab"
-              color="primary"
-            >
-              <ContentAdd />
-            </Button>
+            <Tooltip id="tooltip-pcreate" title={strings.common.create}>
+              <Button
+                className={props.classes.button}
+                aria-label="create"
+                disabled={!canCreateProject(props.allowedIntents)}
+                onClick={() => props.showCreationDialog()}
+                variant="fab"
+                color="primary"
+              >
+                <ContentAdd />
+              </Button>
+            </Tooltip>
           </CardActions>
         </div>
       </Card>

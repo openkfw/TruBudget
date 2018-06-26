@@ -7,7 +7,7 @@ import UserManagementContainer from "../Users/UserManagementContainer";
 
 import OverviewContainer from "../Overview/OverviewContainer";
 import NotFound from "../NotFound/NotFound";
-import SubProjectsContainer from "../SubProjects/SubProjectsContainer";
+import SubProjectContainer from "../SubProjects/SubProjectContainer";
 import DashboardContainer from "../Dashboard/DashboardContainer";
 import WorkflowContainer from "../Workflows/WorkflowContainer";
 import NotificationPageContainer from "../Notifications/NotificationPageContainer";
@@ -48,7 +48,7 @@ const Main = props => {
           <Route exact path="/" component={Placeholder} />
           <Route exact path="/projects/:project/:subproject" component={withInitialLoading(WorkflowContainer)} />
           <Route exact path="/projects" component={withInitialLoading(OverviewContainer)} />
-          <Route exact path="/projects/:project" component={withInitialLoading(SubProjectsContainer)} />
+          <Route exact path="/projects/:project" component={withInitialLoading(SubProjectContainer)} />
           <Route exact path="/network" component={DashboardContainer} />
           <Route exact path="/notifications" component={withInitialLoading(NotificationPageContainer)} />
           <Route exact path="/users" component={UserManagementContainer} />

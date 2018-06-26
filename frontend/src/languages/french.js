@@ -34,7 +34,10 @@ const fr = {
     edit: "French: Edit",
     workflowItem: "French: WorkflowItem",
     project: "French: Project",
-    closed: "French: Closed"
+    closed: "French: Closed",
+    show_permissions: "French: Show Permissions",
+    view: "French: View",
+    create: "French: Create"
   },
 
   login: {
@@ -72,7 +75,8 @@ const fr = {
     project_authority_organization_search: "Rechercher organisations",
     project_authority_role_search: "Search role",
     project_permissions_title: "French: Set permissions for project",
-    project_edit_title: "French: Edit Project"
+    project_edit_title: "French: Edit Project",
+    project_close_info: "French: Disabled as long as the Subprojects aren't closed"
   },
   subproject: {
     subproject_title: "Sous-projet",
@@ -84,7 +88,8 @@ const fr = {
     subproject_add: "Ajouter un nouveau sous-projet",
     subproject_select_button: "Sélectionnez",
     subproject_completion_string: "{0} cal {1} van",
-    subproject_permissions_title: "French: Set permissions for subproject"
+    subproject_permissions_title: "French: Set permissions for subproject",
+    subproject_close_info: "French: Disabled as long as the Workflowitems aren't closed"
   },
   workflow: {
     workflow_title: "Titre du workflow",

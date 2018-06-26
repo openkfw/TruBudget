@@ -31,20 +31,18 @@ import {
   showSubProjectAssignee,
   fetchSubprojectHistory,
   showEditDialog,
-  hideEditDialog,
-  hideCreateDialog,
   closeSubproject,
-  hideWorkflowDialog
+  hideWorkflowDialog,
+  hideWorkflowDetails
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
-import { showHistory, fetchHistoryItems } from "../Notifications/actions";
+import { showHistory } from "../Notifications/actions";
 import { addDocument, clearDocuments, prefillDocuments, validateDocument } from "../Documents/actions";
 import Workflow from "./Workflow";
 import SubProjectDetails from "./SubProjectDetails";
 import { canViewSubProjectPermissions, canAssignSubProject, canCloseSubProject } from "../../permissions";
 import { toJS } from "../../helper";
-import SubprojectPermissionsContainer from "../SubProjects/SubprojectPermissionsContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
 import strings from "../../localizeStrings";
 import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
@@ -138,8 +136,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(fetchSubprojectHistory(projectId, subprojectId, true));
       dispatch(showHistory());
     },
-    openWorkflowDetails: () => dispatch(showWorkflowDetails(true)),
-    hideWorkflowDetails: () => dispatch(showWorkflowDetails(false)),
+    openWorkflowDetails: id => dispatch(showWorkflowDetails(id)),
+    hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
     showWorkflowItemAssignee: (workflowId, assignee) => dispatch(showWorkflowItemAssignee(workflowId, assignee)),

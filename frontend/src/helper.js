@@ -45,7 +45,7 @@ const getCurrencyFormat = currency => ({
 export const compareObjects = (obj1, obj2) => {
   const changes = {};
   for (const key of Object.keys(obj1)) {
-    if (obj2[key] != obj1[key]) {
+    if (obj2[key] !== obj1[key]) {
       changes[key] = obj1[key];
     }
   }

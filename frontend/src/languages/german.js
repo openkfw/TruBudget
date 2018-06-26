@@ -34,7 +34,10 @@ const de = {
     edit: "German: Edit",
     workflowItem: "German: WorkflowItem",
     project: "German: Project",
-    closed: "German: Closed"
+    closed: "German: Closed",
+    show_permissions: "German: Show Permissions",
+    view: "German: View",
+    create: "German: Create"
   },
 
   login: {
@@ -69,7 +72,8 @@ const de = {
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_authority_organization_search: "Search organizations",
     project_authority_role_search: "Search role",
-    project_edit_title: "German: Edit Project"
+    project_edit_title: "German: Edit Project",
+    project_close_info: "German: Disabled as long as the Subprojects aren't closed"
   },
   subproject: {
     subproject_title: "Sub-Project title",
@@ -80,7 +84,9 @@ const de = {
     subproject_assigned_organization: "Assigned Organization",
     subproject_add: "Add new Sub-project",
     subproject_select_button: "Select",
-    subproject_completion_string: "{0} von {1} erledigt"
+    subproject_completion_string: "{0} von {1} erledigt",
+    subproject_permissions_title: "German: Set permissions for subproject",
+    subproject_close_info: "German: Disabled as long as the Workflowitems aren't closed"
   },
   workflow: {
     workflow_title: "Workflow title",

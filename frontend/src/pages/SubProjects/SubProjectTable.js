@@ -1,6 +1,5 @@
 import React from "react";
 
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Table from "@material-ui/core/Table";
@@ -13,7 +12,7 @@ import TableRow from "@material-ui/core/TableRow";
 import { withStyles } from "@material-ui/core";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import EditIcon from "@material-ui/icons/Edit";
-import LaunchIcon from "@material-ui/icons/Launch";
+import LaunchIcon from "@material-ui/icons/OpenInBrowser";
 
 import { toAmountString, statusMapping } from "../../helper";
 import strings from "../../localizeStrings";
@@ -32,7 +31,7 @@ const styles = {
 const getTableEntries = (classes, subProjects, location, history, showEditDialog, showSubProjectPermissions) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
     const { currency, status, amount, description, displayName, id } = data;
-    const editDisabled = !(canEditSubProject(allowedIntents) && status != "closed");
+    const editDisabled = !(canEditSubProject(allowedIntents) && status !== "closed");
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
     const amountString = toAmountString(amount, currency);
     const redacted = displayName === null && amount === null;
@@ -44,7 +43,7 @@ const getTableEntries = (classes, subProjects, location, history, showEditDialog
           <TableCell className={classes.tableText}>{statusMapping(status)}</TableCell>
           <TableCell>
             <div className={classes.buttonContainer}>
-              <Tooltip id="tooltip-ppermissions" title="Set permissions">
+              <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
                 <div>
                   <IconButton
                     data-test={"spp-button-" + index}
@@ -56,7 +55,7 @@ const getTableEntries = (classes, subProjects, location, history, showEditDialog
                   </IconButton>
                 </div>
               </Tooltip>
-              <Tooltip id="tooltip-pedit" title="Edit Subproject">
+              <Tooltip id="tooltip-pedit" title={strings.common.edit}>
                 <div>
                   <IconButton
                     disabled={editDisabled}
@@ -66,7 +65,7 @@ const getTableEntries = (classes, subProjects, location, history, showEditDialog
                   </IconButton>
                 </div>
               </Tooltip>
-              <Tooltip id="tooltip-inspect" title="Show Subproject">
+              <Tooltip id="tooltip-inspect" title={strings.common.view}>
                 <div>
                   <IconButton
                     disabled={!canViewSubProjectDetails(allowedIntents)}
@@ -81,10 +80,11 @@ const getTableEntries = (classes, subProjects, location, history, showEditDialog
         </TableRow>
       );
     }
+    return null;
   });
 };
 
-const SubProjectsTable = ({ classes, subProjects, history, location, showEditDialog, showSubProjectPermissions }) => {
+const SubProjectTable = ({ classes, subProjects, history, location, showEditDialog, showSubProjectPermissions }) => {
   const tableEntries = getTableEntries(
     classes,
     subProjects,
@@ -111,4 +111,4 @@ const SubProjectsTable = ({ classes, subProjects, history, location, showEditDia
   );
 };
 
-export default withStyles(styles)(SubProjectsTable);
+export default withStyles(styles)(SubProjectTable);

@@ -1,25 +1,18 @@
 import React from "react";
 
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import { Typography } from "@material-ui/core";
-
-import NotificationTable from "./NotificationTable";
 import NotificationList from "./NotificationList";
-import strings from "../../localizeStrings";
 
-const styles = {
-  headline: {},
-  card: {
-    width: "100%",
-    position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    zIndex: 1100
-  }
-};
+// const styles = {
+//   headline: {},
+//   card: {
+//     width: "100%",
+//     position: "relative",
+//     display: "flex",
+//     flexDirection: "column",
+//     alignItems: "center",
+//     zIndex: 1100
+//   }
+// };
 
 const NotificationPage = ({ notifications, streamNames, users, loggedInUser, markNotificationAsRead, history }) => {
   return (

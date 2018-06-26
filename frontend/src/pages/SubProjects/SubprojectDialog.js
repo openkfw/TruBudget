@@ -28,7 +28,7 @@ const handleEdit = props => {
     location
   } = props;
 
-  const { id, displayName, comment, amount, currency } = subprojectToAdd;
+  const { id, displayName } = subprojectToAdd;
   const originalSubproject = subProjects.find(subproject => subproject.data.id === id);
   const changes = compareObjects(subprojectToAdd, originalSubproject.data);
   const projectId = location.pathname.split("/")[2];
