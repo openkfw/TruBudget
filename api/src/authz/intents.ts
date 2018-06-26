@@ -39,7 +39,10 @@ type Intent =
   | "workflowitem.archive"
   | "notification.list"
   | "notification.markRead"
-  | "notification.create";
+  | "notification.create"
+  | "network.registerNode"
+  | "network.list"
+  | "network.voteForPermission";
 
 export const globalIntents: Intent[] = [
   "global.intent.listPermissions",
@@ -99,6 +102,9 @@ export const allIntents: Intent[] = [
   "notification.list",
   "notification.markRead",
   "notification.create",
+  "network.registerNode",
+  "network.list",
+  "network.voteForPermission",
 ];
 
 export default Intent;

@@ -27,9 +27,7 @@ const PermissionsScreen = props => (
   <Dialog data-test="permission-container" open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>
     <DialogContent>
-      <div>
-        <PermissionsTable {...props} disabled={props.disabled} />
-      </div>
+      <PermissionsTable {...props} disabled={props.disabled} />
     </DialogContent>
     <DialogActions>
       <Button data-test="permission-close" color="primary" onClick={props.onClose}>

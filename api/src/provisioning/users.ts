@@ -1,18 +1,52 @@
-const { sleep } = require("./lib");
-
 const users = [
-  { id: "thouse", displayName: "Tom House", password: "test", organization: "Ministry of Health" },
-  { id: "pkleffmann", displayName: "Piet Kleffmann", password: "test", organization: "ACMECorp" },
-  { id: "mstein", displayName: "Mauro Stein", password: "test", organization: "UmbrellaCorp" },
-  { id: "jdoe", displayName: "John Doe", password: "test", organization: "Ministry of Finance" },
+  {
+    id: "thouse",
+    displayName: "Tom House",
+    password: "test",
+    organization: "ACMECorp",
+    // organization: "Ministry of Health"
+  },
+  {
+    id: "pkleffmann",
+    displayName: "Piet Kleffmann",
+    password: "test",
+    organization: "ACMECorp",
+  },
+  {
+    id: "mstein",
+    displayName: "Mauro Stein",
+    password: "test",
+    organization: "ACMECorp",
+    // organization: "UmbrellaCorp",
+  },
+  {
+    id: "jdoe",
+    displayName: "John Doe",
+    password: "test",
+    organization: "ACMECorp",
+    // organization: "Ministry of Finance"
+  },
   {
     id: "jxavier",
     displayName: "Jane Xavier",
     password: "test",
-    organization: "Ministry of Education",
+    organization: "ACMECorp",
+    // organization: "Ministry of Education",
   },
-  { id: "dviolin", displayName: "Dana Violin", password: "test", organization: "Centralbank" },
-  { id: "auditUser", displayName: "Romina Checker", password: "test", organization: "Audit" },
+  {
+    id: "dviolin",
+    displayName: "Dana Violin",
+    password: "test",
+    organization: "ACMECorp",
+    // organization: "Centralbank"
+  },
+  {
+    id: "auditUser",
+    displayName: "Romina Checker",
+    password: "test",
+    organization: "ACMECorp",
+    // organization: "Audit"
+  },
 ];
 
 const createUser = async (axios, user) => {

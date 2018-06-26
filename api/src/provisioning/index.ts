@@ -1,5 +1,5 @@
 const axios = require("axios");
-import * as winston from "winston";
+import { waitUntilReady } from "../lib/liveness";
 import { MultichainClient } from "../multichain";
 import { amazonasFundProject, closeProjectTest } from "./data";
 import { provisionUsers } from "./users";
@@ -61,21 +61,6 @@ export const provisionBlockchain = async (
 ) => {
   axios.defaults.baseURL = `http://localhost:${port}/api`;
   axios.defaults.timeout = 5000;
-
-  let connected = false;
-  while (!connected) {
-    try {
-      winston.info("Checking multichain availability...");
-      const info = await multichainClient.getInfo();
-      winston.info(`Connected to ${info.nodeaddress}`);
-      // wait a bit until node is fully set up
-      await timeout(5000);
-      connected = true;
-    } catch (err) {
-      winston.error("Error while checking multichain, retrying after pause...");
-      await timeout(5000);
-    }
-  }
 
   await impersonate("root", rootSecret);
   await provisionUsers(axios);
