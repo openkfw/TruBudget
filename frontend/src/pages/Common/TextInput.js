@@ -4,7 +4,7 @@ import TextField from "@material-ui/core/TextField";
 
 const styles = {
   textField: {
-    width: 200,
+    width: "45%",
     paddingRight: 20
   }
 };

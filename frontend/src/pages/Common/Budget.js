@@ -7,6 +7,7 @@ import DropwDown from "./NewDropdown";
 import TextInput from "./TextInput";
 
 import { getCurrencies, preselectCurrency, fromAmountString } from "../../helper";
+import { withStyles } from "@material-ui/core";
 
 const styles = {
   inputDiv: {
@@ -15,10 +16,11 @@ const styles = {
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "red"
   }
 };
-
 class Budget extends Component {
   componentWillMount() {
     if (_isEmpty(this.props.currency)) {
@@ -45,13 +47,15 @@ class Budget extends Component {
       budgetHintText,
       budget,
       storeBudget,
-      disabled
+      disabled,
+      classes
     } = this.props;
     const currencies = getCurrencies(parentCurrency);
+    console.log(classes);
     return (
       <div style={styles.inputDiv}>
         <DropwDown
-          style={{ minWidth: 120 }}
+          style={{ minWidth: 160 }}
           floatingLabel={currencyTitle}
           value={currency}
           onChange={storeCurrency}
@@ -75,4 +79,4 @@ class Budget extends Component {
     );
   }
 }
-export default Budget;
+export default withStyles(styles)(Budget);

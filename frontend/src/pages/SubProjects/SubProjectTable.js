@@ -31,7 +31,8 @@ const styles = {
 const getTableEntries = (classes, subProjects, location, history, showEditDialog, showSubProjectPermissions) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
     const { currency, status, amount, description, displayName, id } = data;
-    const editDisabled = !(canEditSubProject(allowedIntents) && status !== "closed");
+    const isOpen = status !== "closed";
+    const editDisabled = !(canEditSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
     const amountString = toAmountString(amount, currency);
     const redacted = displayName === null && amount === null;
@@ -43,38 +44,44 @@ const getTableEntries = (classes, subProjects, location, history, showEditDialog
           <TableCell className={classes.tableText}>{statusMapping(status)}</TableCell>
           <TableCell>
             <div className={classes.buttonContainer}>
-              <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
-                <div>
-                  <IconButton
-                    data-test={"spp-button-" + index}
-                    disabled={!canViewPermissions}
-                    onClick={() => showSubProjectPermissions(id)}
-                    variant="contained"
-                  >
-                    <PermissionIcon />
-                  </IconButton>
-                </div>
-              </Tooltip>
-              <Tooltip id="tooltip-pedit" title={strings.common.edit}>
-                <div>
-                  <IconButton
-                    disabled={editDisabled}
-                    onClick={() => showEditDialog(id, displayName, description, parseFloat(amount), currency)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </div>
-              </Tooltip>
-              <Tooltip id="tooltip-inspect" title={strings.common.view}>
-                <div>
-                  <IconButton
-                    disabled={!canViewSubProjectDetails(allowedIntents)}
-                    onClick={() => history.push("/projects/" + location.pathname.split("/")[2] + "/" + id)}
-                  >
-                    <LaunchIcon />
-                  </IconButton>
-                </div>
-              </Tooltip>
+              {canViewPermissions ? (
+                <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
+                  <div>
+                    <IconButton
+                      data-test={"spp-button-" + index}
+                      disabled={!canViewPermissions}
+                      onClick={() => showSubProjectPermissions(id)}
+                      variant="contained"
+                    >
+                      <PermissionIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
+              {isOpen && !editDisabled ? (
+                <Tooltip id="tooltip-pedit" title={strings.common.edit}>
+                  <div>
+                    <IconButton
+                      disabled={editDisabled}
+                      onClick={() => showEditDialog(id, displayName, description, parseFloat(amount), currency)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
+              {canViewSubProjectDetails(allowedIntents) ? (
+                <Tooltip id="tooltip-inspect" title={strings.common.view}>
+                  <div>
+                    <IconButton
+                      disabled={!canViewSubProjectDetails(allowedIntents)}
+                      onClick={() => history.push("/projects/" + location.pathname.split("/")[2] + "/" + id)}
+                    >
+                      <LaunchIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
             </div>
           </TableCell>
         </TableRow>

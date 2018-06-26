@@ -72,9 +72,9 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);
-    const editDisabled = !(canEditProject(allowedIntents) && status !== "closed");
+    const isOpen = status !== "closed";
+    const editDisabled = !(canEditProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
-
     return (
       <Card aria-label="project" key={index} className={classes.card} data-test="projectcard">
         <CardMedia className={classes.media} image={imagePath} />
@@ -122,32 +122,36 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
             <div className={classes.editContainer}>
-              <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
-                <div>
-                  <IconButton
-                    data-test="pp-button"
-                    className={classes.editIcon}
-                    disabled={!canViewPermissions}
-                    onClick={() => showProjectPermissions(id)}
-                  >
-                    <PermissionIcon />
-                  </IconButton>
-                </div>
-              </Tooltip>
-              <Tooltip id="tooltip-pedit" title={strings.common.edit}>
-                <div>
-                  <IconButton
-                    data-test="pe-button"
-                    className={classes.editIcon}
-                    disabled={editDisabled}
-                    onClick={() =>
-                      showEditDialog(id, displayName, parseFloat(amount), currency, description, thumbnail)
-                    }
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </div>
-              </Tooltip>
+              {canViewPermissions ? (
+                <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
+                  <div>
+                    <IconButton
+                      data-test="pp-button"
+                      className={classes.editIcon}
+                      disabled={!canViewPermissions}
+                      onClick={() => showProjectPermissions(id)}
+                    >
+                      <PermissionIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
+              {isOpen && !editDisabled ? (
+                <Tooltip id="tooltip-pedit" title={strings.common.edit}>
+                  <div>
+                    <IconButton
+                      data-test="pe-button"
+                      className={classes.editIcon}
+                      disabled={editDisabled}
+                      onClick={() =>
+                        showEditDialog(id, displayName, parseFloat(amount), currency, description, thumbnail)
+                      }
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
             </div>
           </List>
         </CardContent>

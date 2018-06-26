@@ -63,15 +63,17 @@ const SubprojectDialog = props => {
     }
   ];
   return (
-    <CreationDialog
-      steps={steps}
-      title={strings.subproject.subproject_add}
-      numberOfSteps={steps.length}
-      dialogShown={props.createDialogShown}
-      onDialogCancel={props.hideSubprojectDialog}
-      {...specifcProps}
-      {...props}
-    />
+    <div>
+      <CreationDialog
+        steps={steps}
+        title={strings.subproject.subproject_add}
+        numberOfSteps={steps.length}
+        dialogShown={props.createDialogShown}
+        onDialogCancel={props.hideSubprojectDialog}
+        {...specifcProps}
+        {...props}
+      />
+    </div>
   );
 };
 
