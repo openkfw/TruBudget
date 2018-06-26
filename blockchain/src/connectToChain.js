@@ -9,11 +9,20 @@ async function relax(ms) {
   return new Promise(res => setInterval(res, ms));
 }
 
+function logFileContent(path) {
+  const content = fs.readFileSync(path, {
+    encoding: "utf8"
+  });
+  console.log(">>", path, content);
+}
+
 function startMultichainDaemon() {
   const prog = "multichaind";
   const args = process.argv.slice(2);
   console.log(`>>> Connecting to ${args[args.length - 1]}`);
   console.log(`>>> args=${args.map(x => x.startsWith("-rpcpassword=") ? "-rpcpassword=..." : x)}`);
+  logFileContent("/root/.multichain/multichain.conf");
+  logFileContent(`/root/.multichain/${process.env.CHAINNAME}/multichain.conf`);
   const mc = spawn(prog, args);
 
   mc.stdout.on('data', (data) => {
