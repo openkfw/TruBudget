@@ -97,6 +97,9 @@ async function buildDisplayNameMap(
   // Lookup table telling us to which subproject a workflowitem belongs to:
   type WorkflowitemId = string;
   const workflowitemParentLookup: Map<WorkflowitemId, SubprojectId> = new Map();
+  // C
+  const subprojectsByProject: Map<ProjectId, Set<SubprojectId>> = new Map();
+  const workflowitemsBySubproject: Map<WorkflowitemId, Set<SubprojectId>> = new Map();
 
   for (const notification of rawNotifications) {
     const projectId = getResourceId(notification.resources, "project");
@@ -110,8 +113,17 @@ async function buildDisplayNameMap(
     projectSet.add(projectId);
     if (subprojectId) {
       subprojectParentLookup.set(subprojectId, projectId);
+
+      const subprojects = subprojectsByProject.get(projectId);
+      if (subprojects) subprojects.add(subprojectId);
+      else subprojectsByProject.set(projectId, new Set([subprojectId]));
+
       if (workflowitemId) {
         workflowitemParentLookup.set(workflowitemId, subprojectId);
+
+        const workflowitems = workflowitemsBySubproject.get(subprojectId);
+        if (workflowitems) workflowitems.add(workflowitemId);
+        else workflowitemsBySubproject.set(subprojectId, new Set([workflowitemId]));
       }
     }
   }
@@ -126,6 +138,37 @@ async function buildDisplayNameMap(
       await getSubprojectDisplayName(multichain, token, projectId, subprojectId),
     );
   }
+  console.time("[C]");
+  // const subprojects = [...subprojectParentLookup.keys()];
+  // const workflowitems = [...workflowitemParentLookup.keys()];
+  for (const [projectId, _] of projectSet.entries()) {
+    displayNamesById.set(projectId, await getProjectDisplayName(multichain, token, projectId));
+
+    const subprojects = subprojectsByProject.get(projectId)!;
+    const projectSubprojectNamesById = await Subproject.get(multichain, token, projectId).then(
+      items =>
+        items.filter(x => subprojects.has(x.data.id)).map(x => [x.data.id, x.data.displayName]),
+    );
+    projectSubprojectNamesById.forEach(([id, displayName]) =>
+      displayNamesById.set(id, displayName),
+    );
+
+    for (const [subprojectId, _] of subprojects.entries()) {
+      const workflowitems = workflowitemsBySubproject.get(subprojectId)!;
+      const subprojectWorkflowitemNamesById = await Workflowitem.get(
+        multichain,
+        token,
+        projectId,
+        subprojectId,
+      ).then(items =>
+        items.filter(x => workflowitems.has(x.data.id)).map(x => [x.data.id, x.data.displayName]),
+      );
+      subprojectWorkflowitemNamesById.forEach(([id, displayName]) =>
+        displayNamesById.set(id, displayName),
+      );
+    }
+  }
+  console.timeEnd("[C]");
 
   for (const [workflowitemId, subprojectId] of workflowitemParentLookup.entries()) {
     const projectId: string = subprojectParentLookup.get(subprojectId)!;
@@ -164,9 +207,12 @@ async function getSubprojectDisplayName(
   projectId: string,
   subprojectId: string,
 ): Promise<string | undefined> {
-  return Subproject.get(multichain, token, projectId, subprojectId).then(items =>
+  console.log("[A]");
+  await Subproject.get(multichain, token, projectId, subprojectId).then(items =>
     items.map(x => x.data.displayName).find(_ => true),
   );
+  console.log("[B]");
+  return Subproject.getDisplayName(multichain, projectId, subprojectId);
 }
 
 async function getWorkflowitemDisplayName(
