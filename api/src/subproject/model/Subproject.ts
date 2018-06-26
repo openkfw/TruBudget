@@ -106,10 +106,7 @@ export async function get(
 ): Promise<SubprojectResource[]> {
   const queryKey = subprojectId !== undefined ? subprojectId : subprojectsGroupKey;
 
-  console.time(`subproject ${subprojectId} read stream items`);
   const streamItems = await multichain.v2_readStreamItems(projectId, queryKey);
-  console.timeEnd(`subproject ${subprojectId} read stream items`);
-  console.time(`subproject ${subprojectId} build up time`);
   const userAndGroups = await getUserAndGroups(token);
   const resourceMap = new Map<string, SubprojectResource>();
   const permissionsMap = new Map<string, AllowedUserGroupsByIntent>();
@@ -149,16 +146,13 @@ export async function get(
       resourceMap.set(asMapKey(item), resource);
     }
   }
-  console.timeEnd(`subproject ${subprojectId} build up time`);
 
-  console.time(`subproject ${subprojectId} augment with allowed intents`);
   for (const [key, permissions] of permissionsMap.entries()) {
     const resource = resourceMap.get(key);
     if (resource !== undefined) {
       resource.allowedIntents = await getAllowedIntents(userAndGroups, permissions);
     }
   }
-  console.timeEnd(`subproject ${subprojectId} augment with allowed intents`);
 
   const unfilteredResources = [...resourceMap.values()];
 
@@ -373,33 +367,4 @@ export async function isClosed(
   }
 
   return false;
-}
-
-export async function getDisplayName(
-  multichain: MultichainClient,
-  projectId: string,
-  subprojectId: string,
-): Promise<string | undefined> {
-  console.time(`getDisplayName(subproject=${subprojectId})`);
-  const streamItems = await multichain.v2_readStreamItems(projectId, subprojectId);
-
-  let resource: SubprojectResource | undefined;
-  for (const item of streamItems) {
-    const event = item.data.json as Event;
-
-    if (resource === undefined) {
-      const result = handleCreate(event);
-      if (result === undefined) {
-        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
-      }
-      resource = result.resource;
-    } else {
-      // We've already encountered this subproject, so we can apply operations on it.
-      const hasProcessedEvent = applyUpdate(event, resource);
-      // skip other events
-    }
-  }
-  console.timeEnd(`getDisplayName(subproject=${subprojectId})`);
-
-  return resource ? resource.data.displayName : undefined;
 }

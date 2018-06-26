@@ -30,22 +30,17 @@ export const getNotificationList = async (
 ): Promise<HttpResponse> => {
   const sinceId: string | undefined = req.query.sinceId;
 
-  console.time("getAll");
   const rawNotifications = await Notification.get(multichain, req.token, sinceId);
-  console.timeEnd("getAll");
 
-  console.time("buildDisplayNameMap");
   const displayNamesById: Map<string, string | undefined> = await buildDisplayNameMap(
     multichain,
     req.token,
     rawNotifications,
   );
-  console.timeEnd("buildDisplayNameMap");
 
-  console.time("augment resource list - new version");
-  const newNotifications: NotificationDto[] = [];
+  const notifications: NotificationDto[] = [];
   for (const rawNotification of rawNotifications) {
-    newNotifications.push({
+    notifications.push({
       notificationId: rawNotification.notificationId,
       resources: rawNotification.resources.map(resourceDescription => ({
         ...resourceDescription,
@@ -55,19 +50,6 @@ export const getNotificationList = async (
       originalEvent: rawNotification.originalEvent,
     });
   }
-  console.timeEnd("augment resource list - new version");
-
-  console.time("augment resource list - old version");
-  const notifications: NotificationDto[] = [];
-  for (const rawNotification of rawNotifications) {
-    notifications.push({
-      notificationId: rawNotification.notificationId,
-      resources: await augmentResourceList(multichain, req.token, rawNotification),
-      isRead: rawNotification.isRead,
-      originalEvent: rawNotification.originalEvent,
-    });
-  }
-  console.timeEnd("augment resource list - old version");
 
   return [
     200,
@@ -97,9 +79,6 @@ async function buildDisplayNameMap(
   // Lookup table telling us to which subproject a workflowitem belongs to:
   type WorkflowitemId = string;
   const workflowitemParentLookup: Map<WorkflowitemId, SubprojectId> = new Map();
-  // C
-  const subprojectsByProject: Map<ProjectId, Set<SubprojectId>> = new Map();
-  const workflowitemsBySubproject: Map<WorkflowitemId, Set<SubprojectId>> = new Map();
 
   for (const notification of rawNotifications) {
     const projectId = getResourceId(notification.resources, "project");
@@ -113,17 +92,8 @@ async function buildDisplayNameMap(
     projectSet.add(projectId);
     if (subprojectId) {
       subprojectParentLookup.set(subprojectId, projectId);
-
-      const subprojects = subprojectsByProject.get(projectId);
-      if (subprojects) subprojects.add(subprojectId);
-      else subprojectsByProject.set(projectId, new Set([subprojectId]));
-
       if (workflowitemId) {
         workflowitemParentLookup.set(workflowitemId, subprojectId);
-
-        const workflowitems = workflowitemsBySubproject.get(subprojectId);
-        if (workflowitems) workflowitems.add(workflowitemId);
-        else workflowitemsBySubproject.set(subprojectId, new Set([workflowitemId]));
       }
     }
   }
@@ -138,37 +108,6 @@ async function buildDisplayNameMap(
       await getSubprojectDisplayName(multichain, token, projectId, subprojectId),
     );
   }
-  console.time("[C]");
-  // const subprojects = [...subprojectParentLookup.keys()];
-  // const workflowitems = [...workflowitemParentLookup.keys()];
-  for (const [projectId, _] of projectSet.entries()) {
-    displayNamesById.set(projectId, await getProjectDisplayName(multichain, token, projectId));
-
-    const subprojects = subprojectsByProject.get(projectId)!;
-    const projectSubprojectNamesById = await Subproject.get(multichain, token, projectId).then(
-      items =>
-        items.filter(x => subprojects.has(x.data.id)).map(x => [x.data.id, x.data.displayName]),
-    );
-    projectSubprojectNamesById.forEach(([id, displayName]) =>
-      displayNamesById.set(id, displayName),
-    );
-
-    for (const [subprojectId, _] of subprojects.entries()) {
-      const workflowitems = workflowitemsBySubproject.get(subprojectId)!;
-      const subprojectWorkflowitemNamesById = await Workflowitem.get(
-        multichain,
-        token,
-        projectId,
-        subprojectId,
-      ).then(items =>
-        items.filter(x => workflowitems.has(x.data.id)).map(x => [x.data.id, x.data.displayName]),
-      );
-      subprojectWorkflowitemNamesById.forEach(([id, displayName]) =>
-        displayNamesById.set(id, displayName),
-      );
-    }
-  }
-  console.timeEnd("[C]");
 
   for (const [workflowitemId, subprojectId] of workflowitemParentLookup.entries()) {
     const projectId: string = subprojectParentLookup.get(subprojectId)!;
@@ -191,7 +130,7 @@ function getResourceId(
     .find(_ => true);
 }
 
-async function getProjectDisplayName(
+function getProjectDisplayName(
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string,
@@ -201,21 +140,18 @@ async function getProjectDisplayName(
   );
 }
 
-async function getSubprojectDisplayName(
+function getSubprojectDisplayName(
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string,
   subprojectId: string,
 ): Promise<string | undefined> {
-  console.log("[A]");
-  await Subproject.get(multichain, token, projectId, subprojectId).then(items =>
+  return Subproject.get(multichain, token, projectId, subprojectId).then(items =>
     items.map(x => x.data.displayName).find(_ => true),
   );
-  console.log("[B]");
-  return Subproject.getDisplayName(multichain, projectId, subprojectId);
 }
 
-async function getWorkflowitemDisplayName(
+function getWorkflowitemDisplayName(
   multichain: MultichainClient,
   token: AuthToken,
   projectId: string,
@@ -225,101 +161,4 @@ async function getWorkflowitemDisplayName(
   return Workflowitem.get(multichain, token, projectId, subprojectId, workflowitemId).then(items =>
     items.map(x => x.data.displayName).find(_ => true),
   );
-}
-
-// --
-
-async function augmentResourceList(
-  multichain: MultichainClient,
-  token: AuthToken,
-  notification: Notification.Notification,
-): Promise<ExtendedNotificationResourceDescription[]> {
-  const augmentedResourceDescriptions: ExtendedNotificationResourceDescription[] = [];
-  for (const resource of notification.resources) {
-    const augmentedResource = await augmentResource(multichain, token, notification, resource);
-    augmentedResourceDescriptions.push(augmentedResource);
-  }
-  return augmentedResourceDescriptions;
-}
-
-async function augmentResource(
-  multichain: MultichainClient,
-  token: AuthToken,
-  notification: Notification.Notification,
-  resource: Notification.NotificationResourceDescription,
-): Promise<ExtendedNotificationResourceDescription> {
-  if (resource.type === "project") {
-    const project = await Project.get(multichain, token, resource.id).then(
-      x => (x.length ? x[0] : undefined),
-    );
-    if (project === undefined) {
-      // most likely missing view permissions
-      return resource;
-    } else {
-      return { ...resource, displayName: project.data.displayName };
-    }
-  } else if (resource.type === "subproject") {
-    // The project should be given in resources as well:
-    const projectResource = notification.resources.find(r => r.type === "project");
-    if (projectResource === undefined) {
-      winston.error(
-        `Expected subproject-specific notifcation to include a project resource description!`,
-        notification,
-      );
-      return resource;
-    }
-
-    const subproject = await Subproject.get(
-      multichain,
-      token,
-      projectResource.id,
-      resource.id,
-    ).then(x => (x.length ? x[0] : undefined));
-    // Missing view permissions will cause fetching to fail:
-    if (subproject === undefined) return resource;
-
-    return {
-      ...resource,
-      displayName: subproject.data.displayName,
-    };
-  } else if (resource.type === "workflowitem") {
-    // Project and subproject should be given in resources as well:
-    const projectResource = notification.resources.find(r => r.type === "project");
-    if (projectResource === undefined) {
-      winston.error(
-        `Expected workflowitem-specific notifcation to include a project resource description!`,
-        notification,
-      );
-      return resource;
-    }
-
-    const subprojectResource = notification.resources.find(r => r.type === "subproject");
-    if (subprojectResource === undefined) {
-      winston.error(
-        `Expected workflowitem-specific notifcation to include a subproject resource description!`,
-        notification,
-      );
-      return resource;
-    }
-
-    const workflowitem = await Workflowitem.get(
-      multichain,
-      token,
-      projectResource.id,
-      subprojectResource.id,
-      resource.id,
-    ).then(x => (x.length ? x[0] : undefined));
-    if (!workflowitem || !workflowitem.data.displayName) {
-      // workflowitem not found or redacted due to missing view permissions
-      return resource;
-    }
-
-    return {
-      ...resource,
-      displayName: workflowitem.data.displayName,
-    };
-  } else {
-    winston.error(`Unknown resource type "${resource.type}" in notification`, notification);
-    return resource;
-  }
 }
