@@ -190,25 +190,38 @@ const renderActionButtons = (
   return (
     <div style={{ flex: 2 }}>
       <div style={styles.actions}>
-        <Tooltip disabled={true} id="tooltip-wedit" title={strings.common.edit}>
+        <Tooltip
+          id="tooltip-wedit"
+          title={strings.common.edit}
+          // Otherwise the tooltip is shacking
+          PopperProps={{ style: { pointerEvents: "none" } }}
+        >
           <div>
             <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
               <EditIcon />
             </IconButton>
           </div>
         </Tooltip>
-        <Tooltip disabled={true} id="tooltip-wpermissions" title={strings.common.show_permissions}>
-          <div>
-            <IconButton
-              disabled={!canListWorkflowPermissions}
-              onClick={showPerm}
-              style={canListWorkflowPermissions ? {} : hideStyle}
-            >
-              <PermissionIcon />
-            </IconButton>
-          </div>
+        <Tooltip
+          id="tooltip-wpermissions"
+          title={strings.common.show_permissions}
+          // Otherwise the tooltip is shacking
+          PopperProps={{ style: { pointerEvents: "none" } }}
+        >
+          <IconButton
+            disabled={!canListWorkflowPermissions}
+            onClick={showPerm}
+            style={canListWorkflowPermissions ? {} : hideStyle}
+          >
+            <PermissionIcon />
+          </IconButton>
         </Tooltip>
-        <Tooltip disabled={true} id="tooltip-wclose" title={strings.common.close}>
+        <Tooltip
+          id="tooltip-wclose"
+          title={strings.common.close}
+          // Otherwise the tooltip is shacking
+          PopperProps={{ style: { pointerEvents: "none" } }}
+        >
           <div>
             <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
               <DoneIcon />

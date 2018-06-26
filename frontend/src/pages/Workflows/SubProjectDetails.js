@@ -209,7 +209,7 @@ const SubProjectDetails = ({
             <div style={styles.statusContainer}>
               <ListItemText style={styles.statusText} primary={mappedStatus} secondary={strings.common.status} />
               {status !== "closed" ? (
-                <Tooltip disabled={true} id="tooltip-sclose" title={tooltipTitle}>
+                <Tooltip id="tooltip-sclose" title={tooltipTitle}>
                   <div>
                     <IconButton
                       color="primary"
