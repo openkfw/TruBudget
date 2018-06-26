@@ -24,13 +24,16 @@ function startMultichainDaemon() {
   })
 
   mc.on('close', async (code) => {
-    if (code === 1) {
+    if (code === 0) {
+      console.log('>>> Connect: Success!');
+    } else if (code === 1) {
       const retryIntervalMs = 10000;
       console.log(`>>> Connect: Failed to connect to Master. Retry in ${retryIntervalMs / 1000} Seconds...`);
       await relax(retryIntervalMs);
       startMultichainDaemon();
     } else {
-      console.log('>>> Connect: Success!');
+      console.log(`>>> multichaind died with exit code ${code}. Abort.`);
+      process.exit(code);
     }
   });
 }
