@@ -55,7 +55,8 @@ const mapStateToProps = state => {
     editDialogShown: state.getIn(["workflow", "editDialogShown"]),
     dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
-    currentStep: state.getIn(["workflow", "currentStep"])
+    currentStep: state.getIn(["workflow", "currentStep"]),
+    currency: state.getIn(["workflow", "currency"])
   };
 };
 
