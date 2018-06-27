@@ -19,7 +19,7 @@ import {
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import strings from "../../localizeStrings";
-import { fromAmountString, toAmountString } from "../../helper";
+import { fromAmountString } from "../../helper";
 import { HIDE_HISTORY } from "../Notifications/actions";
 
 const defaultState = fromJS({
@@ -104,7 +104,7 @@ export default function detailviewReducer(state = defaultState, action) {
           .getIn(["subprojectToAdd"])
           .set("id", action.id)
           .set("displayName", action.name)
-          .set("amount", toAmountString(action.amount))
+          .set("amount", action.amount)
           .set("description", action.description)
           .set("currency", action.currency),
         editDialogShown: true,

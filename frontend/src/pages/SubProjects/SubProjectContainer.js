@@ -4,18 +4,11 @@ import { connect } from "react-redux";
 import {
   fetchAllProjectDetails,
   showSubprojectDialog,
-  storeSubProjectCurrency,
-  createSubProject,
-  storeSubProjectName,
-  storeSubProjectAmount,
-  storeSubProjectComment,
   showProjectAssignees,
   fetchProjectHistory,
   showEditDialog,
-  editSubproject,
   closeProject,
-  showSubProjectPermissions,
-  hideSubprojectDialog
+  showSubProjectPermissions
 } from "./actions";
 
 import SubProjects from "./SubProjects";
@@ -29,6 +22,7 @@ import { fetchUser } from "../Login/actions";
 import ProjectHistoryContainer from "./ProjectHistoryContainer";
 import { canCreateSubProject, canAssignProject, canCloseProject } from "../../permissions";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
+import SubprojectDialogContainer from "./SubprojectDialogContainer";
 
 class SubProjectContainer extends Component {
   constructor(props) {
@@ -69,6 +63,7 @@ class SubProjectContainer extends Component {
             subProjects={this.props.subProjects}
             title={strings.subproject.subproject_permissions_title}
           />
+          <SubprojectDialogContainer location={this.props.location} />
         </div>
       </div>
     );
@@ -79,14 +74,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
-    hideSubprojectDialog: () => dispatch(hideSubprojectDialog()),
-    storeSubProjectName: name => dispatch(storeSubProjectName(name)),
-    createSubProject: (subprojectName, amount, description, currency, parentName) =>
-      dispatch(createSubProject(parentName, subprojectName, amount, description, currency)),
-    editSubproject: (pId, sId, changes) => dispatch(editSubproject(pId, sId, changes)),
-    storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
-    storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),
-    storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
     showSnackBar: () => dispatch(showSnackBar(true)),
     storeSnackBarMessage: message => dispatch(storeSnackBarMessage(message)),
     openHistory: projectId => {
@@ -116,16 +103,12 @@ const mapStateToProps = state => {
     projectAssignee: state.getIn(["detailview", "projectAssignee"]),
     projectTS: state.getIn(["detailview", "projectTS"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
-    creationDialogShown: state.getIn(["detailview", "creationDialogShown"]),
-    editDialogShown: state.getIn(["detailview", "editDialogShown"]),
     showProjectAssignees: state.getIn(["detailview", "showProjectAssignees"]),
-    subprojectToAdd: state.getIn(["detailview", "subprojectToAdd"]),
     showHistory: state.getIn(["notifications", "showHistory"]),
     loggedInUser: state.getIn(["login", "loggedInUser"]),
     roles: state.getIn(["login", "roles"]),
     user: state.getIn(["login", "user"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
-    dialogTitle: state.getIn(["detailview", "dialogTitle"]),
     thumbnail: state.getIn(["detailview", "thumbnail"])
   };
 };

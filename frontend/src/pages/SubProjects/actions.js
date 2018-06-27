@@ -177,7 +177,6 @@ export function storeSubProjectComment(description) {
 }
 
 export function showEditDialog(id, name, description, amount, currency) {
-  console.log(typeof amount);
   return {
     type: SHOW_SUBPROJECT_EDIT,
     id,

@@ -8,13 +8,13 @@ import DoneIcon from "@material-ui/icons/Check";
 import indigo from "@material-ui/core/colors/indigo";
 
 import _isEmpty from "lodash/isEmpty";
+import _cloneDeep from "lodash/cloneDeep";
 import _isUndefined from "lodash/isUndefined";
 import _isString from "lodash/isString";
 
 import accounting from "accounting";
 import strings from "./localizeStrings";
 import currencies from "./currency";
-
 const numberFormat = {
   decimal: ".",
   thousand: ",",
@@ -42,14 +42,26 @@ const getCurrencyFormat = currency => ({
   ...currencies[currency]
 });
 
-export const compareObjects = (obj1, obj2) => {
-  const changes = {};
-  for (const key of Object.keys(obj1)) {
-    if (obj2[key] !== obj1[key]) {
-      changes[key] = obj1[key];
+// TODO: come up with a better solution for the amount not requiring to parse every time
+export const compareObjects = (items, itemToAdd) => {
+  if (!_isEmpty(items)) {
+    const itemToAddClone = _cloneDeep(itemToAdd);
+    const originalItem = items.find(item => item.data.id === itemToAdd.id);
+    if (originalItem) {
+      originalItem.data.amount = toAmountString(originalItem.data.amount);
+      itemToAddClone.amount = toAmountString(itemToAddClone.amount);
+      const changes = {};
+      for (const key of Object.keys(itemToAddClone)) {
+        if (originalItem.data[key] !== itemToAddClone[key]) {
+          changes[key] = itemToAddClone[key];
+        }
+      }
+      return changes;
+    } else {
+      return itemToAdd;
     }
   }
-  return changes;
+  return {};
 };
 
 export const fromAmountString = (amount, currency) => {

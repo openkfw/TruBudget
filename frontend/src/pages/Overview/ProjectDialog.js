@@ -1,7 +1,6 @@
 import React from "react";
 
 import _isEmpty from "lodash/isEmpty";
-import _isNumber from "lodash/isNumber";
 
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
@@ -9,7 +8,7 @@ import ProjectDialogContent from "./ProjectDialogContent";
 import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
-  const { createProject, onDialogCancel, projectToAdd, showSnackBar, storeSnackBarMessage, location } = props;
+  const { createProject, onDialogCancel, projectToAdd, location } = props;
   const { displayName, amount, description, currency, thumbnail } = projectToAdd;
   createProject(
     displayName,
@@ -20,45 +19,49 @@ const handleCreate = props => {
     thumbnail
   );
   onDialogCancel();
-  storeSnackBarMessage(strings.common.added + " " + displayName);
-  showSnackBar();
+  // storeSnackBarMessage(strings.common.added + " " + displayName);
+  // showSnackBar();
 };
 
 const handleEdit = props => {
-  const { editProject, onDialogCancel, showSnackBar, storeSnackBarMessage, projectToAdd, projects } = props;
-  const { displayName, id } = projectToAdd;
-  const originalProject = projects.find(project => project.data.id === id);
-  const changes = compareObjects(projectToAdd, originalProject.data);
+  const { editProject, onDialogCancel, projectToAdd, projects } = props;
+
+  const changes = compareObjects(projects, projectToAdd);
+
   if (!_isEmpty(changes)) {
     if (changes.amount) {
       changes.amount = fromAmountString(changes.amount).toString();
     }
-    editProject(id, changes);
-    storeSnackBarMessage(strings.common.added + " " + displayName);
-    showSnackBar();
+    editProject(projectToAdd.id, changes);
+    // storeSnackBarMessage(strings.common.added + " " + displayName);
+    // showSnackBar();
   }
   onDialogCancel();
 };
 
 const ProjectDialog = props => {
-  const { displayName, description, amount } = props.projectToAdd;
-
+  const { projects, projectToAdd, editDialogShown, creationDialogShown } = props;
+  const { displayName, description, amount } = projectToAdd;
+  const changes = compareObjects(projects, projectToAdd);
   const specificProps = props.editDialogShown
     ? {
         handleSubmit: handleEdit,
-        dialogShown: props.editDialogShown
+        dialogShown: editDialogShown
       }
     : {
         handleSubmit: handleCreate,
-        dialogShown: props.creationDialogShown
+        dialogShown: creationDialogShown
       };
 
   const steps = [
     {
       title: strings.project.project_details,
       content: <ProjectDialogContent {...props} />,
-      nextDisabled:
-        _isEmpty(displayName) || _isEmpty(description) || (_isEmpty(amount) || !_isNumber(parseFloat(amount)))
+      nextDisabled: !(
+        _isEmpty(displayName) ||
+        _isEmpty(description) ||
+        ((_isEmpty(amount) && isNaN(parseFloat(amount))) || _isEmpty(changes))
+      )
     }
   ];
 

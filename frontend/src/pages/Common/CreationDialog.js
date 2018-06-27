@@ -48,7 +48,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
     <Button
       aria-label="submit"
       color="primary"
-      disabled={isLastStep && requiredInfoAdded}
+      disabled={!(isLastStep && requiredInfoAdded)}
       onClick={() => handleSubmit(props)}
     >
       {strings.common.submit}

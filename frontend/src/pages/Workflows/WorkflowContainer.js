@@ -5,15 +5,7 @@ import globalStyles from "../../styles";
 
 import {
   fetchWorkflowItems,
-  setCurrentStep,
   showCreateDialog,
-  storeWorkflowComment,
-  storeWorkflowCurrency,
-  storeWorkflowAmount,
-  storeWorkflowAmountType,
-  storeWorkflowName,
-  createWorkflowItem,
-  editWorkflowItem,
   showWorkflowDetails,
   updateWorkflowSortOnState,
   enableWorkflowSort,
@@ -24,7 +16,6 @@ import {
   postSubProjectEdit,
   isWorkflowApprovalRequired,
   fetchAllSubprojectDetails,
-  storeWorkflowStatus,
   showWorkflowItemPermissions,
   closeWorkflowItem,
   showWorkflowItemAssignee,
@@ -32,8 +23,8 @@ import {
   fetchSubprojectHistory,
   showEditDialog,
   closeSubproject,
-  hideWorkflowDialog,
-  hideWorkflowDetails
+  hideWorkflowDetails,
+  hideWorkflowDialog
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -146,6 +137,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     validateDocument: (payload, hash) => dispatch(validateDocument(payload, hash)),
     prefillDocuments: documents => dispatch(prefillDocuments(documents)),
     fetchUser: () => dispatch(fetchUser(true)),
+    hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
     showEditDialog: (id, displayName, amount, amountType, description, currency) =>
       dispatch(showEditDialog(id, displayName, amount, amountType, description, currency))
@@ -166,7 +158,6 @@ const mapStateToProps = state => {
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
-
     showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
     showDetailsItemId: state.getIn(["workflow", "showDetailsItemId"]),
     showHistory: state.getIn(["notifications", "showHistory"]),

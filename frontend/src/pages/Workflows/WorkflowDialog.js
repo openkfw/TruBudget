@@ -32,16 +32,14 @@ const handleCreate = props => {
 
 const handleEdit = props => {
   const { editWorkflowItem, onDialogCancel, workflowItems, workflowToAdd, location } = props;
-  const { id } = workflowToAdd;
-  const originalItem = workflowItems.find(workflowitem => workflowitem.data.id === id);
-  const changes = compareObjects(workflowToAdd, originalItem.data);
+  const changes = compareObjects(workflowItems, workflowToAdd);
   if (changes) {
     const projectId = location.pathname.split("/")[2];
     const subprojectId = location.pathname.split("/")[3];
     if (changes.amount) {
       changes.amount = fromAmountString(changes.amount).toString();
     }
-    editWorkflowItem(projectId, subprojectId, id, changes);
+    editWorkflowItem(projectId, subprojectId, workflowToAdd.id, changes);
   }
   onDialogCancel();
 };
@@ -75,17 +73,18 @@ const Content = props => {
   );
 };
 const WorkflowDialog = props => {
-  const specifcProps = props.editDialogShown
+  const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, addDocument, workflowDocuments } = props;
+  const specifcProps = editDialogShown
     ? {
         handleSubmit: handleEdit,
-        dialogShown: props.editDialogShown
+        dialogShown: editDialogShown
       }
     : {
         handleSubmit: handleCreate,
-        dialogShown: props.creationDialogShown
+        dialogShown: creationDialogShown
       };
-
-  const { displayName } = props.workflowToAdd;
+  const { displayName } = workflowToAdd;
+  const changes = compareObjects(workflowItems, workflowToAdd);
   const steps = [
     {
       title: strings.workflow.workflow_name,
@@ -99,8 +98,8 @@ const WorkflowDialog = props => {
 
     {
       title: strings.workflow.workflow_documents,
-      content: <DocumentUpload addDocument={props.addDocument} workflowDocuments={props.workflowDocuments} />,
-      nextDisabled: true
+      content: <DocumentUpload addDocument={addDocument} workflowDocuments={workflowDocuments} />,
+      nextDisabled: !_isEmpty(changes)
     }
   ];
   return (

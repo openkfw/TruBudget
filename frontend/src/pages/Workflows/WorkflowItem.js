@@ -145,7 +145,14 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
   // Otherwise we need to deal with undefined which causes errors in the editDialog
   const workflowitemAmount = amount ? amount : "";
   const workflowitemCurrency = currency ? currency : props.currency;
-  props.showEditDialog(id, displayName, workflowitemAmount, amountType, description, workflowitemCurrency);
+  props.showEditDialog(
+    id,
+    displayName,
+    toAmountString(workflowitemAmount),
+    amountType,
+    description,
+    workflowitemCurrency
+  );
 };
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {

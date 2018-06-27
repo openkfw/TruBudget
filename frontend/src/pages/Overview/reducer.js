@@ -18,7 +18,6 @@ import {
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import strings from "../../localizeStrings";
-import { toAmountString } from "../../helper";
 
 const defaultState = fromJS({
   projects: Set(),
@@ -57,7 +56,7 @@ export default function overviewReducer(state = defaultState, action) {
           .set("id", action.id)
           .set("currency", action.currency)
           .set("displayName", action.displayName)
-          .set("amount", toAmountString(action.amount))
+          .set("amount", action.amount)
           .set("description", action.description)
           .set("thumbnail", action.thumbnail),
         currentStep: action.currentStep,
