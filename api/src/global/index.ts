@@ -8,14 +8,20 @@ const globalstreamName = "global";
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
   await multichain.getOrCreateStream({
     kind: "global",
-    name: globalstreamName
+    name: globalstreamName,
   });
-  const emptyResource: Resource = { data: {}, log: [], permissions: {} };
-  await multichain.setValue(globalstreamName, ["self"], emptyResource);
+  // TODO this is racy -- Global needs to be event-source like the other streams!
+  const hasSelfItem = await multichain
+    .v2_readStreamItems("global", "self")
+    .then(items => items.length > 0);
+  if (!hasSelfItem) {
+    const emptyResource: Resource = { data: {}, log: [], permissions: {} };
+    await multichain.setValue(globalstreamName, ["self"], emptyResource);
+  }
 };
 
 export const getPermissions = async (
-  multichain: MultichainClient
+  multichain: MultichainClient,
 ): Promise<AllowedUserGroupsByIntent> => {
   try {
     const streamItem = await multichain.getValue(globalstreamName, "self");
@@ -33,7 +39,7 @@ export const getPermissions = async (
 export const grantPermission = async (
   multichain: MultichainClient,
   userId: string,
-  intent: Intent
+  intent: Intent,
 ): Promise<void> => {
   await ensureStreamExists(multichain);
   const streamItem = await multichain.getValue(globalstreamName, "self");
@@ -53,7 +59,7 @@ export const grantPermission = async (
 export const revokePermission = async (
   multichain: MultichainClient,
   userId: string,
-  intent: Intent
+  intent: Intent,
 ): Promise<void> => {
   let streamItem;
   try {

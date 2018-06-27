@@ -62,9 +62,11 @@ export const provisionUsers = async axios => {
       await grantDefaultPermission(axios, user.id);
       console.log(`~> added User ${user.displayName}`);
     }
-    // Special permissions for mstein
+    // Special permissions for mstein & jdoe
     await grantCreateProjectPermission(axios, "mstein");
     console.log("~> global Permissions granted for mstein");
+    await grantCreateProjectPermission(axios, "jdoe");
+    console.log("~> global Permissions granted for jdoe");
   } catch (err) {
     handleError(axios, err);
   }
