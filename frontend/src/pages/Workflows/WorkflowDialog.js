@@ -7,12 +7,26 @@ import strings from "../../localizeStrings";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
 import DocumentUpload from "../Documents/DocumentUpload";
 import Identifier from "../Common/Identifier";
-import { compareObjects } from "../../helper";
+import { compareObjects, fromAmountString } from "../../helper";
 import _isEmpty from "lodash/isEmpty";
 
+const styles = {
+  container: {
+    width: "100%"
+  }
+};
 const handleCreate = props => {
   const { createWorkflowItem, onDialogCancel, workflowToAdd, workflowDocuments } = props;
-  createWorkflowItem(workflowToAdd, workflowDocuments);
+  const { displayName, amount, amountType, currency, description, status } = workflowToAdd;
+  createWorkflowItem(
+    displayName,
+    fromAmountString(amount).toString(),
+    amountType,
+    currency,
+    description,
+    status,
+    workflowDocuments
+  );
   onDialogCancel();
 };
 
@@ -24,6 +38,9 @@ const handleEdit = props => {
   if (changes) {
     const projectId = location.pathname.split("/")[2];
     const subprojectId = location.pathname.split("/")[3];
+    if (changes.amount) {
+      changes.amount = fromAmountString(changes.amount).toString();
+    }
     editWorkflowItem(projectId, subprojectId, id, changes);
   }
   onDialogCancel();
@@ -31,8 +48,8 @@ const handleEdit = props => {
 
 const Content = props => {
   return (
-    <div style={{ width: "100%" }}>
-      <div style={{ width: "100%" }}>
+    <div style={styles.container}>
+      <div style={styles.container}>
         <Identifier
           nameLabel={strings.workflow.workflow_title}
           nameHintText={strings.workflow.workflow_title_description}

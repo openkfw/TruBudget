@@ -143,9 +143,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                       data-test="pe-button"
                       className={classes.editIcon}
                       disabled={editDisabled}
-                      onClick={() =>
-                        showEditDialog(id, displayName, parseFloat(amount), currency, description, thumbnail)
-                      }
+                      onClick={() => showEditDialog(id, displayName, amount, currency, description, thumbnail)}
                     >
                       <EditIcon />
                     </IconButton>

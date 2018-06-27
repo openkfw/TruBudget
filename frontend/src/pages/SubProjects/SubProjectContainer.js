@@ -125,6 +125,7 @@ const mapStateToProps = state => {
     roles: state.getIn(["login", "roles"]),
     user: state.getIn(["login", "user"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
+    dialogTitle: state.getIn(["detailview", "dialogTitle"]),
     thumbnail: state.getIn(["detailview", "thumbnail"])
   };
 };

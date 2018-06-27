@@ -115,11 +115,12 @@ const pt = {
     subproject_comment: "Comentário do subprojeto",
     subproject_currency: "Moeda do subprojeto",
     subproject_assigned_organization: "Organização responsável",
-    subproject_add: "Criar novo subprojeto",
+    subproject_add_title: "Criar novo subprojeto",
     subproject_select_button: "Selecionar",
     subproject_completion_string: "{0} de {1} finalizado",
     subproject_permissions_title: "Portuguese: Set permissions for subproject",
-    subproject_close_info: "Portuguese: Disabled as long as the Workflowitems aren't closed"
+    subproject_close_info: "Portuguese: Disabled as long as the Workflowitems aren't closed",
+    subproject_edit_title: "Portuguese: Edit Subproject"
   },
   workflow: {
     non_approval: "Aprovação desnecessária",

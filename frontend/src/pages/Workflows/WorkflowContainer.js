@@ -67,8 +67,18 @@ class WorkflowContainer extends Component {
     this.props.hideWorkflowDialog();
   }
 
-  createWorkflowItem = (workflow, documents) => {
-    this.props.createWorkflowItem(this.projectId, this.subProjectId, workflow, documents);
+  createWorkflowItem = (displayName, amount, amountType, currency, description, status, workflowDocuments) => {
+    this.props.createWorkflowItem(
+      this.projectId,
+      this.subProjectId,
+      displayName,
+      amount,
+      amountType,
+      currency,
+      description,
+      status,
+      workflowDocuments
+    );
   };
 
   closeSubproject = () => {
@@ -127,8 +137,30 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowAmountType: type => dispatch(storeWorkflowAmountType(type)),
     storeWorkflowName: name => dispatch(storeWorkflowName(name)),
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
-    createWorkflowItem: (pId, sId, workflowToAdd, documents) =>
-      dispatch(createWorkflowItem(pId, sId, workflowToAdd, documents)),
+    createWorkflowItem: (
+      projectId,
+      subprojectId,
+      displayName,
+      amount,
+      amountType,
+      currency,
+      description,
+      status,
+      documents
+    ) =>
+      dispatch(
+        createWorkflowItem(
+          projectId,
+          subprojectId,
+          displayName,
+          amount,
+          amountType,
+          currency,
+          description,
+          status,
+          documents
+        )
+      ),
 
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),

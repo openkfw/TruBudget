@@ -80,7 +80,6 @@ const handleNext = props => props.setCurrentStep(props.currentStep + 1);
 
 const CreationDialog = props => {
   const { dialogShown, title, handleSubmit, classes } = props;
-  console.log(classes.paperRoot);
   return (
     <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown}>
       <DialogTitle> {title}</DialogTitle>

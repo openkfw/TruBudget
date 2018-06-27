@@ -31,7 +31,7 @@ import {
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
-import { fromAmountString } from "../../helper";
+import { fromAmountString, toAmountString } from "../../helper";
 import { HIDE_HISTORY } from "../Notifications/actions";
 
 const defaultState = fromJS({
@@ -99,7 +99,7 @@ export default function detailviewReducer(state = defaultState, action) {
           .getIn(["workflowToAdd"])
           .set("id", action.id)
           .set("displayName", action.displayName)
-          .set("amount", action.amount)
+          .set("amount", toAmountString(action.amount))
           .set("amountType", action.amountType)
           .set("description", action.description)
           .set("currency", action.currency),

@@ -6,12 +6,19 @@ import _isNumber from "lodash/isNumber";
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
 import ProjectDialogContent from "./ProjectDialogContent";
-import { compareObjects } from "../../helper";
+import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
   const { createProject, onDialogCancel, projectToAdd, showSnackBar, storeSnackBarMessage, location } = props;
   const { displayName, amount, description, currency, thumbnail } = projectToAdd;
-  createProject(displayName, amount, description, currency, location.pathname.split("/")[2], thumbnail);
+  createProject(
+    displayName,
+    fromAmountString(amount).toString(),
+    description,
+    currency,
+    location.pathname.split("/")[2],
+    thumbnail
+  );
   onDialogCancel();
   storeSnackBarMessage(strings.common.added + " " + displayName);
   showSnackBar();
@@ -23,6 +30,9 @@ const handleEdit = props => {
   const originalProject = projects.find(project => project.data.id === id);
   const changes = compareObjects(projectToAdd, originalProject.data);
   if (!_isEmpty(changes)) {
+    if (changes.amount) {
+      changes.amount = fromAmountString(changes.amount).toString();
+    }
     editProject(id, changes);
     storeSnackBarMessage(strings.common.added + " " + displayName);
     showSnackBar();
@@ -47,7 +57,8 @@ const ProjectDialog = props => {
     {
       title: strings.project.project_details,
       content: <ProjectDialogContent {...props} />,
-      nextDisabled: _isEmpty(displayName) || _isEmpty(description) || !_isNumber(amount)
+      nextDisabled:
+        _isEmpty(displayName) || _isEmpty(description) || (_isEmpty(amount) || !_isNumber(parseFloat(amount)))
     }
   ];
 

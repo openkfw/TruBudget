@@ -348,7 +348,12 @@ export function storeWorkflowStatus(status) {
 export function createWorkflowItem(
   projectId,
   subprojectId,
-  { displayName, amount, amountType, currency, description, status },
+  displayName,
+  amount,
+  amountType,
+  currency,
+  description,
+  status,
   documents
 ) {
   return {

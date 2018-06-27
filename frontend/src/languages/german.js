@@ -82,11 +82,12 @@ const de = {
     subproject_budget_amount_description: "z_B_",
     subproject_comment: "Sub-project Comment",
     subproject_assigned_organization: "Assigned Organization",
-    subproject_add: "Add new Sub-project",
+    subproject_add_title: "Add new Subproject",
     subproject_select_button: "Select",
     subproject_completion_string: "{0} von {1} erledigt",
     subproject_permissions_title: "German: Set permissions for subproject",
-    subproject_close_info: "German: Disabled as long as the Workflowitems aren't closed"
+    subproject_close_info: "German: Disabled as long as the Workflowitems aren't closed",
+    subproject_edit_title: "German: Edit Subproject"
   },
   workflow: {
     workflow_title: "Workflow title",

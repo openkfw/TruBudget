@@ -6,12 +6,18 @@ import _isNumber from "lodash/isNumber";
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
 import SubprojectDialogContent from "./SubprojectDialogContent";
-import { compareObjects } from "../../helper";
+import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
   const { createSubProject, onDialogCancel, subprojectToAdd, showSnackBar, storeSnackBarMessage, location } = props;
   const { displayName, amount, description, currency } = subprojectToAdd;
-  createSubProject(displayName, amount, description, currency, location.pathname.split("/")[2]);
+  createSubProject(
+    displayName,
+    fromAmountString(amount).toString(),
+    description,
+    currency,
+    location.pathname.split("/")[2]
+  );
   onDialogCancel();
   storeSnackBarMessage(strings.common.added + " " + displayName);
   showSnackBar();
@@ -33,6 +39,9 @@ const handleEdit = props => {
   const changes = compareObjects(subprojectToAdd, originalSubproject.data);
   const projectId = location.pathname.split("/")[2];
   if (!_isEmpty(changes)) {
+    if (changes.amount) {
+      changes.amount = fromAmountString(changes.amount).toString();
+    }
     editSubproject(projectId, id, changes);
     storeSnackBarMessage(strings.common.added + " " + displayName);
     showSnackBar();
@@ -42,15 +51,22 @@ const handleEdit = props => {
 };
 
 const SubprojectDialog = props => {
-  const { subprojectToAdd } = props;
+  const {
+    subprojectToAdd,
+    dialogTitle,
+    createDialogShown,
+    hideSubprojectDialog,
+    editDialogShown,
+    creationDialogShown
+  } = props;
   const specifcProps = props.editDialogShown
     ? {
         handleSubmit: handleEdit,
-        dialogShown: props.editDialogShown
+        dialogShown: editDialogShown
       }
     : {
         handleSubmit: handleCreate,
-        dialogShown: props.creationDialogShown
+        dialogShown: creationDialogShown
       };
   const steps = [
     {
@@ -59,17 +75,17 @@ const SubprojectDialog = props => {
       nextDisabled:
         _isEmpty(subprojectToAdd.displayName) ||
         _isEmpty(subprojectToAdd.description) ||
-        !_isNumber(subprojectToAdd.amount)
+        (_isEmpty(subprojectToAdd.amount) || !_isNumber(parseFloat(subprojectToAdd.amount)))
     }
   ];
   return (
     <div>
       <CreationDialog
         steps={steps}
-        title={strings.subproject.subproject_add}
+        title={dialogTitle}
         numberOfSteps={steps.length}
-        dialogShown={props.createDialogShown}
-        onDialogCancel={props.hideSubprojectDialog}
+        dialogShown={createDialogShown}
+        onDialogCancel={hideSubprojectDialog}
         {...specifcProps}
         {...props}
       />

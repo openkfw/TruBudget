@@ -16,6 +16,7 @@ const TextInput = ({
   value,
   onChange,
   onBlur,
+  onFocus,
   pattern,
   multiline = false,
   type = "text",
@@ -23,6 +24,7 @@ const TextInput = ({
 }) => (
   <TextField
     label={label}
+    onFocus={onFocus}
     helperText={helperText}
     multiline={multiline}
     aria-label={ariaLabel}

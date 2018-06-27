@@ -58,10 +58,15 @@ export const fromAmountString = (amount, currency) => {
   if (_isString(amount) && amount.trim().length <= 0) {
     return "";
   }
-
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 };
 
+export const formatAmountString = (amount, currency) => {
+  if (_isString(amount) && amount.trim().length <= 0) {
+    return "";
+  }
+  return amount;
+};
 export const getCurrencies = parentCurrency => {
   return ["EUR", "USD", "BRL"].map(currency => {
     const disabled = !_isEmpty(parentCurrency) && !(parentCurrency === currency);

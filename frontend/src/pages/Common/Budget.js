@@ -6,7 +6,7 @@ import _isEmpty from "lodash/isEmpty";
 import DropwDown from "./NewDropdown";
 import TextInput from "./TextInput";
 
-import { getCurrencies, preselectCurrency, fromAmountString } from "../../helper";
+import { getCurrencies, preselectCurrency, fromAmountString, toAmountString } from "../../helper";
 import { withStyles } from "@material-ui/core";
 
 const styles = {
@@ -47,11 +47,9 @@ class Budget extends Component {
       budgetHintText,
       budget,
       storeBudget,
-      disabled,
-      classes
+      disabled
     } = this.props;
     const currencies = getCurrencies(parentCurrency);
-    console.log(classes);
     return (
       <div style={styles.inputDiv}>
         <DropwDown
@@ -70,7 +68,8 @@ class Budget extends Component {
           onChange={v => {
             if (/^[0-9,.-]*$/.test(v)) storeBudget(v);
           }}
-          onBlur={e => storeBudget(fromAmountString(e.target.value))}
+          onBlur={e => storeBudget(toAmountString(e.target.value))}
+          onFocus={() => storeBudget(fromAmountString(budget))}
           type="number"
           aria-label="amount"
           disabled={disabled}
