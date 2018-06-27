@@ -47,6 +47,7 @@ import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer
 import strings from "../../localizeStrings";
 import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
 import { fetchUser } from "../Login/actions";
+import WorkflowDialogContainer from "./WorkflowDialogContainer";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -66,20 +67,6 @@ class WorkflowContainer extends Component {
     this.props.hideWorkflowDetails();
     this.props.hideWorkflowDialog();
   }
-
-  createWorkflowItem = (displayName, amount, amountType, currency, description, status, workflowDocuments) => {
-    this.props.createWorkflowItem(
-      this.projectId,
-      this.subProjectId,
-      displayName,
-      amount,
-      amountType,
-      currency,
-      description,
-      status,
-      workflowDocuments
-    );
-  };
 
   closeSubproject = () => {
     const openWorkflowItems = this.props.workflowItems.find(wItem => wItem.data.status === "open");
@@ -116,9 +103,9 @@ class WorkflowContainer extends Component {
             {...this.props}
             projectId={this.projectId}
             subProjectId={this.subProjectId}
-            createWorkflowItem={this.createWorkflowItem}
             closeWorkflowItem={this.closeWorkflowItem}
           />
+          <WorkflowDialogContainer location={this.props.location} />
           <SubProjectHistoryContainer />
         </div>
       </div>
@@ -130,37 +117,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
     showCreateDialog: () => dispatch(showCreateDialog()),
-    hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
-    storeWorkflowComment: comment => dispatch(storeWorkflowComment(comment)),
-    storeWorkflowCurrency: currency => dispatch(storeWorkflowCurrency(currency)),
-    storeWorkflowAmount: amount => dispatch(storeWorkflowAmount(amount)),
-    storeWorkflowAmountType: type => dispatch(storeWorkflowAmountType(type)),
-    storeWorkflowName: name => dispatch(storeWorkflowName(name)),
-    storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
-    createWorkflowItem: (
-      projectId,
-      subprojectId,
-      displayName,
-      amount,
-      amountType,
-      currency,
-      description,
-      status,
-      documents
-    ) =>
-      dispatch(
-        createWorkflowItem(
-          projectId,
-          subprojectId,
-          displayName,
-          amount,
-          amountType,
-          currency,
-          description,
-          status,
-          documents
-        )
-      ),
 
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
@@ -174,9 +130,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
     showWorkflowItemAssignee: (workflowId, assignee) => dispatch(showWorkflowItemAssignee(workflowId, assignee)),
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
-    editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
-    setCurrentStep: step => dispatch(setCurrentStep(step)),
+
     updateWorkflowSortOnState: items => dispatch(updateWorkflowSortOnState(items)),
     enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
     postWorkflowSort: (streamName, workflowItems) => dispatch(postWorkflowSort(streamName, workflowItems)),
@@ -208,14 +163,10 @@ const mapStateToProps = state => {
     assignee: state.getIn(["workflow", "assignee"]),
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
-    dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
-    creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
-    editDialogShown: state.getIn(["workflow", "editDialogShown"]),
-    workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
-    currentStep: state.getIn(["workflow", "currentStep"]),
+
     showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
     showDetailsItemId: state.getIn(["workflow", "showDetailsItemId"]),
     showHistory: state.getIn(["notifications", "showHistory"]),
