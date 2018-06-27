@@ -91,6 +91,9 @@ export const getCurrencies = parentCurrency => {
 };
 
 export const toAmountString = (amount, currency) => {
+  if (_isString(amount) && amount.trim().length <= 0) {
+    return "";
+  }
   if (!currency) {
     return accounting.formatNumber(amount, numberFormat.precision, numberFormat.thousand, numberFormat.decimal);
   }
