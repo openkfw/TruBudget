@@ -116,7 +116,7 @@ function* handleError(error) {
   } else if (error.response) {
     yield put({
       type: SNACKBAR_MESSAGE,
-      message: error.response.data
+      message: error.response.data.error.message
     });
     yield put({
       type: SHOW_SNACKBAR,

@@ -43,7 +43,8 @@ const pt = {
     closed: "Portuguese: Closed",
     show_permissions: "Portuguese: Show Permissions",
     view: "Portuguese: View",
-    create: "Portuguese: Create"
+    create: "Portuguese: Create",
+    edited: "Portuguese: Edited"
   },
 
   adminDashboard: {

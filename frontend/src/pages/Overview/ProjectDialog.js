@@ -8,7 +8,7 @@ import ProjectDialogContent from "./ProjectDialogContent";
 import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
-  const { createProject, onDialogCancel, projectToAdd, location } = props;
+  const { createProject, onDialogCancel, projectToAdd, location, storeSnackbarMessage, showSnackbar } = props;
   const { displayName, amount, description, currency, thumbnail } = projectToAdd;
   createProject(
     displayName,
@@ -19,12 +19,12 @@ const handleCreate = props => {
     thumbnail
   );
   onDialogCancel();
-  // storeSnackBarMessage(strings.common.added + " " + displayName);
-  // showSnackBar();
+  storeSnackbarMessage(strings.common.added + " " + strings.common.project + " " + displayName);
+  showSnackbar();
 };
 
 const handleEdit = props => {
-  const { editProject, onDialogCancel, projectToAdd, projects } = props;
+  const { editProject, onDialogCancel, projectToAdd, projects, storeSnackbarMessage, showSnackbar } = props;
 
   const changes = compareObjects(projects, projectToAdd);
 
@@ -33,8 +33,8 @@ const handleEdit = props => {
       changes.amount = fromAmountString(changes.amount).toString();
     }
     editProject(projectToAdd.id, changes);
-    // storeSnackBarMessage(strings.common.added + " " + displayName);
-    // showSnackBar();
+    storeSnackbarMessage(strings.common.edited + " " + strings.common.project + " " + projectToAdd.displayName);
+    showSnackbar();
   }
   onDialogCancel();
 };

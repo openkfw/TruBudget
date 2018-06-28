@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { fetchAllProjects, showCreationDialog, showEditDialog, showProjectPermissions } from "./actions";
 
 import Overview from "./Overview";
-import { showSnackBar, storeSnackBarMessage } from "../Notifications/actions";
 import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 
@@ -34,9 +33,6 @@ const mapDispatchToProps = dispatch => {
     showCreationDialog: () => dispatch(showCreationDialog()),
     showEditDialog: (id, displayName, amount, currency, description, thumbnail) =>
       dispatch(showEditDialog(id, displayName, amount, currency, description, thumbnail)),
-
-    showSnackBar: () => dispatch(showSnackBar(true)),
-    storeSnackBarMessage: message => dispatch(storeSnackBarMessage(message)),
 
     fetchAllProjects: showLoading => dispatch(fetchAllProjects(showLoading)),
     showProjectPermissions: id => dispatch(showProjectPermissions(id))

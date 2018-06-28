@@ -14,9 +14,9 @@ const defaultState = fromJS({
   notifications: [],
   newNotifications: [],
   showHistory: false,
-  showSnackBar: false,
-  snackBarMessage: "New Project added",
-  snackBarMessageIsError: false,
+  showSnackbar: false,
+  snackbarMessage: "New Project added",
+  snackbarError: false,
   historyItems: []
 });
 
@@ -34,11 +34,11 @@ export default function navbarReducer(state = defaultState, action) {
       });
     case SHOW_SNACKBAR:
       return state.merge({
-        showSnackBar: action.show,
-        snackBarMessageIsError: action.isError
+        showSnackbar: action.show,
+        snackbarError: action.isError
       });
     case SNACKBAR_MESSAGE:
-      return state.set("snackBarMessage", action.message);
+      return state.set("snackbarMessage", action.message);
     case FETCH_HISTORY_SUCCESS:
       return state.set("historyItems", fromJS(action.historyItems));
     case OPEN_HISTORY:

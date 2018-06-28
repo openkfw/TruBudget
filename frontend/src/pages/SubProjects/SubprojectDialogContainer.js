@@ -12,6 +12,7 @@ import {
   storeSubProjectComment,
   storeSubProjectCurrency
 } from "./actions";
+import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 
 class SubprojectDialogContainer extends Component {
   render() {
@@ -39,7 +40,9 @@ const mapDispatchToProps = dispatch => {
     editSubproject: (pId, sId, changes) => dispatch(editSubproject(pId, sId, changes)),
     storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),
-    storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency))
+    storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
+    showSnackbar: () => dispatch(showSnackbar(true)),
+    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };
 

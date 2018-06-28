@@ -37,7 +37,8 @@ const fr = {
     closed: "French: Closed",
     show_permissions: "French: Show Permissions",
     view: "French: View",
-    create: "French: Create"
+    create: "French: Create",
+    edited: "French: Edited"
   },
 
   login: {

@@ -44,7 +44,8 @@ const en = {
     workflowItem: "WorkflowItem",
     show_permissions: "Show Permissions",
     view: "View",
-    create: "Create"
+    create: "Create",
+    edited: "Edited"
   },
 
   adminDashboard: {

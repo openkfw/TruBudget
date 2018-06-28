@@ -12,7 +12,7 @@ import {
 } from "./actions";
 
 import SubProjects from "./SubProjects";
-import { showSnackBar, storeSnackBarMessage, showHistory, hideHistory } from "../Notifications/actions";
+import { showHistory, hideHistory } from "../Notifications/actions";
 import { setSelectedView } from "../Navbar/actions";
 import ProjectDetails from "./ProjectDetails";
 import globalStyles from "../../styles";
@@ -74,8 +74,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
-    showSnackBar: () => dispatch(showSnackBar(true)),
-    storeSnackBarMessage: message => dispatch(storeSnackBarMessage(message)),
+
     openHistory: projectId => {
       dispatch(fetchProjectHistory(projectId, true));
       dispatch(showHistory());

@@ -37,7 +37,8 @@ const de = {
     closed: "German: Closed",
     show_permissions: "German: Show Permissions",
     view: "German: View",
-    create: "German: Create"
+    create: "German: Create",
+    edited: "German: Edited"
   },
 
   login: {

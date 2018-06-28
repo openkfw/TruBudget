@@ -15,6 +15,7 @@ import {
   setCurrentStep,
   storeProjectThumbnail
 } from "./actions";
+import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 
 class ProjectDialogContainer extends Component {
   render() {
@@ -45,7 +46,10 @@ const mapDispatchToProps = dispatch => {
     storeProjectComment: comment => dispatch(storeProjectComment(comment)),
     storeProjectCurrency: currency => dispatch(storeProjectCurrency(currency)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
-    storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail))
+    storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
+
+    showSnackbar: () => dispatch(showSnackbar(true)),
+    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };
 

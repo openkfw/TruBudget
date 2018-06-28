@@ -11,14 +11,15 @@ export const FETCH_NOTIFICATIONS_WITH_ID_SUCCESS = "FETCH_NOTIFICATIONS_WITH_ID_
 export const FETCH_ALL_NOTIFICATIONS = "FETCH_ALL_NOTIFICATIONS";
 export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS";
 
-export function showSnackBar(show, isError = false) {
+export function showSnackbar(show, isError = false) {
   return {
     type: SHOW_SNACKBAR,
     show: show,
     isError
   };
 }
-export function storeSnackBarMessage(message) {
+
+export function storeSnackbarMessage(message) {
   return {
     type: SNACKBAR_MESSAGE,
     message: message
