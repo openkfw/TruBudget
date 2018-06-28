@@ -61,7 +61,7 @@ export const compareObjects = (items, itemToAdd) => {
       return itemToAdd;
     }
   }
-  return {};
+  return itemToAdd;
 };
 
 export const fromAmountString = (amount, currency) => {
