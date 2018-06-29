@@ -61,11 +61,7 @@ const UserManagementDetails = () => (
         <OrgaIcon style={styles.icon} />
       </div>
       <div style={styles.cardHeader}>
-        <CardHeader
-          textStyle={styles.headerText}
-          titleStyle={styles.headerFont}
-          title={<Title count={38} text={"Organisation"} />}
-        />
+        <CardHeader title={<Title count={38} text={"Organisation"} />} />
       </div>
     </Card>
     <Card style={styles.card}>
@@ -73,11 +69,7 @@ const UserManagementDetails = () => (
         <GroupIcon style={styles.icon} />
       </div>
       <div style={styles.cardHeader}>
-        <CardHeader
-          textStyle={styles.headerText}
-          titleStyle={styles.headerFont}
-          title={<Title count={47} text={"Groups"} />}
-        />
+        <CardHeader title={<Title count={47} text={"Groups"} />} />
       </div>
     </Card>
     <Card style={styles.card}>
@@ -85,11 +77,7 @@ const UserManagementDetails = () => (
         <UsersIcon style={styles.icon} />
       </div>
       <div style={styles.cardHeader}>
-        <CardHeader
-          textStyle={styles.headerText}
-          titleStyle={styles.headerFont}
-          title={<Title count={94} text={"Users"} />}
-        />
+        <CardHeader title={<Title count={94} text={"Users"} />} />
       </div>
     </Card>
   </div>
