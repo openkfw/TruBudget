@@ -64,6 +64,7 @@ export const provisionUsers = async axios => {
     }
     // Special permissions for mstein & jdoe
     await grantCreateProjectPermission(axios, "mstein");
+    await grantUserCreatePermission(axios, "mstein");
     console.log("~> global Permissions granted for mstein");
     await grantCreateProjectPermission(axios, "jdoe");
     console.log("~> global Permissions granted for jdoe");
@@ -79,6 +80,10 @@ const grantDefaultPermission = async (axios, userId) => {
 
 const grantCreateProjectPermission = async (axios, userId) => {
   return grantGlobalPermissionToUser(axios, "global.createProject", userId);
+};
+
+const grantUserCreatePermission = async (axios, userId) => {
+  return grantGlobalPermissionToUser(axios, "global.createUser", userId);
 };
 
 const grantGlobalPermissionToUser = async (axios, intent, userId) => {
