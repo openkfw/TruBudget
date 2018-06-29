@@ -6,19 +6,28 @@ import { toJS } from "../../helper";
 import UserManagement from "./UserManagement";
 import NotFound from "../NotFound/NotFound";
 import { canViewUserManagement } from "../../permissions";
-import { switchTabs, setUsername, setPassword, setDisplayName, setOrganization, createUser } from "./actions";
+import {
+  switchTabs,
+  setUsername,
+  setPassword,
+  setDisplayName,
+  setOrganization,
+  createUser,
+  fetchNodes
+} from "./actions";
 import { fetchUser } from "../Login/actions";
+// import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 
 class UserManagementContainer extends Component {
   componentWillMount() {
     this.props.fetchUser();
+    this.props.fetchNodes();
   }
 
   render() {
     //TODO: Change the intents to a more fine grain list
     // const canView = canViewUserManagement(this.props.allowedIntents);
     // if (canView) {
-    console.log(this.props.userToAdd);
     return <UserManagement {...this.props} />;
     // } else {
     //   return <NotFound />;
@@ -39,12 +48,15 @@ const mapDispatchToProps = dispatch => {
   return {
     switchTabs: index => dispatch(switchTabs(index)),
     fetchUser: () => dispatch(fetchUser(true)),
+    fetchNodes: () => dispatch(fetchNodes(true)),
     setDisplayName: displayName => dispatch(setDisplayName(displayName)),
     setOrganization: organization => dispatch(setOrganization(organization)),
     setUsername: username => dispatch(setUsername(username)),
     setPassword: password => dispatch(setPassword(password)),
     createUser: (displayName, organization, username, password) =>
       dispatch(createUser(displayName, organization, username, password))
+    // showErrorSnackbar: () => dispatch(showSnackbar(true, true)),
+    // storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };
 

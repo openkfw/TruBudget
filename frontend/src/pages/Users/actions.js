@@ -8,10 +8,20 @@ export const SET_PASSWORD = "SET_PASSWORD";
 export const CREATE_USER = "CREATE_USER";
 export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
 
+export const FETCH_NODES = "FETCH_NODES";
+export const FETCH_NODES_SUCCESS = "FETCH_NODES_SUCCESS";
+
 export function switchTabs(index) {
   return {
     type: SWITCH_TABS,
     index
+  };
+}
+
+export function fetchNodes(showLoading = false) {
+  return {
+    type: FETCH_NODES,
+    showLoading
   };
 }
 

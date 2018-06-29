@@ -7,7 +7,6 @@ import TableBody from "@material-ui/core/TableBody";
 import blueGrey from "@material-ui/core/colors/blueGrey";
 
 const UsersTable = ({ users }) => {
-  console.log(users);
   return (
     <Table>
       <TableHead>

@@ -87,7 +87,7 @@ import {
 } from "./pages/Login/actions";
 
 import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from "./pages/Loading/actions.js";
-import { CREATE_USER_SUCCESS, CREATE_USER } from "./pages/Users/actions.js";
+import { CREATE_USER_SUCCESS, CREATE_USER, FETCH_NODES_SUCCESS, FETCH_NODES } from "./pages/Users/actions.js";
 
 const api = new Api();
 
@@ -362,6 +362,17 @@ export function* fetchUserSaga({ showLoading }) {
     yield put({
       type: FETCH_USER_SUCCESS,
       user: data.items
+    });
+  }, showLoading);
+}
+
+export function* fetchNodesSaga({ showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.listNodes);
+    console.log(data);
+    yield put({
+      type: FETCH_NODES_SUCCESS,
+      nodes: data.items
     });
   }, showLoading);
 }
@@ -727,6 +738,9 @@ export function* watchCreateUser() {
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserSaga);
 }
+export function* watchFetchNodes() {
+  yield takeEvery(FETCH_NODES, fetchNodesSaga);
+}
 
 export function* watchLogout() {
   yield takeEvery(LOGOUT, logoutSaga);
@@ -797,6 +811,7 @@ export default function* rootSaga() {
       watchLogout(),
       watchSetEnvironment(),
       watchGetEnvironment(),
+      watchFetchNodes(),
 
       // Project
       watchCreateProject(),

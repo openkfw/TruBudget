@@ -22,7 +22,7 @@ const styles = {
     justifyContent: "space-between"
   },
   card: {
-    width: "45%",
+    width: "55%",
     paddingBottom: "20px"
   },
   cardDiv: {
@@ -62,13 +62,31 @@ const styles = {
   }
 };
 
+const handleCreate = (
+  displayName,
+  organization,
+  password,
+  username,
+  createUser,
+  showErrorSnackbar,
+  storeSnackbarMessage
+) => {
+  if (displayName && organization && username && password) {
+    createUser(displayName, organization, username, password);
+  } else {
+    // storeSnackbarMessage("Enter required information");
+    // showErrorSnackbar();
+  }
+};
 const UserManagementDetails = ({
   userToAdd,
   setDisplayName,
   setOrganization,
   setUsername,
   setPassword,
-  createUser
+  createUser,
+  showErrorSnackbar,
+  storeSnackbarMessage
 }) => {
   const { displayName, organization, password, username } = userToAdd;
   return (
@@ -109,17 +127,22 @@ const UserManagementDetails = ({
           <Button
             variant="contained"
             color="primary"
-            onClick={() => createUser(displayName, organization, username, password)}
+            onClick={() =>
+              handleCreate(
+                displayName,
+                organization,
+                password,
+                username,
+                createUser,
+                showErrorSnackbar,
+                storeSnackbarMessage
+              )
+            }
           >
-            {strings.common.create}
+            {/* {strings.common.create} */}
+            {"Create "}
           </Button>
         </CardActions>
-      </Card>
-      <Card style={styles.card}>
-        <CardHeader title={strings.adminDashboard.new_user} />
-        <div style={styles.cardDiv}>
-          <OrgaIcon style={styles.icon} />
-        </div>
       </Card>
     </div>
   );
