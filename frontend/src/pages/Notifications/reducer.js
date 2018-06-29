@@ -6,7 +6,8 @@ import {
   OPEN_HISTORY,
   HIDE_HISTORY,
   FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
-  FETCH_ALL_NOTIFICATIONS_SUCCESS
+  FETCH_ALL_NOTIFICATIONS_SUCCESS,
+  HIDE_SNACKBAR
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -37,6 +38,8 @@ export default function navbarReducer(state = defaultState, action) {
         showSnackbar: action.show,
         snackbarError: action.isError
       });
+    case HIDE_SNACKBAR:
+      return state.set("showSnackbar", action.show);
     case SNACKBAR_MESSAGE:
       return state.set("snackbarMessage", action.message);
     case FETCH_HISTORY_SUCCESS:

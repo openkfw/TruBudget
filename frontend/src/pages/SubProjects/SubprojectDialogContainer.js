@@ -41,7 +41,7 @@ const mapDispatchToProps = dispatch => {
     storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),
     storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
-    showSnackbar: () => dispatch(showSnackbar(true)),
+    showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };

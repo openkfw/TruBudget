@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import LiveNotification from "./LiveNotification";
-import { fetchNotificationsWithId, fetchAllNotifications, showSnackbar } from "./actions.js";
+import {
+  fetchNotificationsWithId,
+  fetchAllNotifications,
+  showSnackbar,
+  HIDE_SNACKBAR,
+  hideSnackbar
+} from "./actions.js";
 import { toJS } from "../../helper";
 
 class LiveNotificationContainer extends Component {
@@ -41,7 +47,7 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchNotifications: (fromId, showLoading) => dispatch(fetchNotificationsWithId(fromId, showLoading)),
     fetchAllNotifications: () => dispatch(fetchAllNotifications(true)),
-    closeSnackbar: () => dispatch(showSnackbar(false, false))
+    closeSnackbar: () => dispatch(hideSnackbar())
   };
 };
 

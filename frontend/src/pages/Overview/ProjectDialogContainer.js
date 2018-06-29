@@ -48,7 +48,7 @@ const mapDispatchToProps = dispatch => {
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
 
-    showSnackbar: () => dispatch(showSnackbar(true)),
+    showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };
