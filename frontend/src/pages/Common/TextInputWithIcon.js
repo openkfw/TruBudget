@@ -1,0 +1,37 @@
+import React from "react";
+
+import TextField from "@material-ui/core/TextField";
+
+import strings from "../../localizeStrings";
+
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  icon: {
+    marginTop: "20px",
+    marginRight: "20px"
+  }
+};
+
+const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, ...props }) => {
+  return (
+    <div style={styles.container}>
+      <div style={styles.icon}>{icon}</div>
+      <TextField
+        label={label}
+        value={username}
+        margin="normal"
+        error={failed}
+        onChange={event => storeUsername(event.target.value)}
+        helperText={failed ? strings.common.incorrect_username : null}
+        {...props}
+      />
+    </div>
+  );
+};
+export default TextInputWithIcon;

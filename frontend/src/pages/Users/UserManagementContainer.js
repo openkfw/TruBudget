@@ -6,7 +6,7 @@ import { toJS } from "../../helper";
 import UserManagement from "./UserManagement";
 import NotFound from "../NotFound/NotFound";
 import { canViewUserManagement } from "../../permissions";
-import { switchTabs } from "./actions";
+import { switchTabs, setUsername, setPassword, setDisplayName, setOrganization, createUser } from "./actions";
 import { fetchUser } from "../Login/actions";
 
 class UserManagementContainer extends Component {
@@ -18,6 +18,7 @@ class UserManagementContainer extends Component {
     //TODO: Change the intents to a more fine grain list
     // const canView = canViewUserManagement(this.props.allowedIntents);
     // if (canView) {
+    console.log(this.props.userToAdd);
     return <UserManagement {...this.props} />;
     // } else {
     //   return <NotFound />;
@@ -27,8 +28,9 @@ class UserManagementContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    allowedIntents: state.getIn(["login", "allowedIntents"]),
     tabIndex: state.getIn(["users", "tabIndex"]),
+    userToAdd: state.getIn(["users", "userToAdd"]),
+    allowedIntents: state.getIn(["login", "allowedIntents"]),
     users: state.getIn(["login", "user"])
   };
 };
@@ -36,7 +38,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     switchTabs: index => dispatch(switchTabs(index)),
-    fetchUser: () => dispatch(fetchUser(true))
+    fetchUser: () => dispatch(fetchUser(true)),
+    setDisplayName: displayName => dispatch(setDisplayName(displayName)),
+    setOrganization: organization => dispatch(setOrganization(organization)),
+    setUsername: username => dispatch(setUsername(username)),
+    setPassword: password => dispatch(setPassword(password)),
+    createUser: (displayName, organization, username, password) =>
+      dispatch(createUser(displayName, organization, username, password))
   };
 };
 

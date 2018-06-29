@@ -87,6 +87,7 @@ import {
 } from "./pages/Login/actions";
 
 import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from "./pages/Loading/actions.js";
+import { CREATE_USER_SUCCESS, CREATE_USER } from "./pages/Users/actions.js";
 
 const api = new Api();
 
@@ -340,6 +341,19 @@ export function* loginSaga({ user }) {
     yield handleError(error);
   }
   yield execute(login, true, onLoginError);
+}
+
+export function* createUserSaga({ displayName, organization, username, password }) {
+  yield execute(function*() {
+    yield callApi(api.createUser, displayName, organization, username, password);
+    yield put({
+      type: CREATE_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_USER,
+      show: true
+    });
+  }, true);
 }
 
 export function* fetchUserSaga({ showLoading }) {
@@ -707,6 +721,9 @@ export function* watchLogin() {
   yield takeLatest(LOGIN, loginSaga);
 }
 
+export function* watchCreateUser() {
+  yield takeEvery(CREATE_USER, createUserSaga);
+}
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserSaga);
 }
@@ -775,6 +792,7 @@ export default function* rootSaga() {
     yield [
       // Global
       watchFetchUser(),
+      watchCreateUser(),
       watchLogin(),
       watchLogout(),
       watchSetEnvironment(),

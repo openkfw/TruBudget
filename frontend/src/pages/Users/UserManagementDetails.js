@@ -8,22 +8,25 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
+import NameIcon from "@material-ui/icons/AssignmentInd";
 
 import strings from "../../localizeStrings";
+import Username from "../Common/Username";
+import Password from "../Common/Password";
+import TextInputWithIcon from "../Common/TextInputWithIcon";
 const styles = {
   container: {
-    marginTop: 70,
+    marginTop: 40,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between"
   },
   card: {
     width: "45%",
-    height: 250
+    paddingBottom: "20px"
   },
   cardDiv: {
     width: "100%",
-    height: 150,
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
@@ -42,26 +45,83 @@ const styles = {
   },
   headerFont: {
     fontSize: "25px"
+  },
+  cardActions: {
+    display: "flex",
+    justifyContent: "center"
+  },
+  cardContent: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "space-around"
+  },
+  textInputContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around"
   }
 };
 
-const UserManagementDetails = () => (
-  <div style={styles.container}>
-    <Card style={styles.card}>
-      <CardHeader title={strings.adminDashboard.new_user} />
-      <CardContent />
-      <CardActions>
-        <Button variant="contained" color="primary">
-          {strings.common.create}
-        </Button>
-      </CardActions>
-    </Card>
-    <Card style={styles.card}>
-      <CardHeader title={strings.adminDashboard.new_user} />
-      <div style={styles.cardDiv}>
-        <OrgaIcon style={styles.icon} />
-      </div>
-    </Card>
-  </div>
-);
+const UserManagementDetails = ({
+  userToAdd,
+  setDisplayName,
+  setOrganization,
+  setUsername,
+  setPassword,
+  createUser
+}) => {
+  const { displayName, organization, password, username } = userToAdd;
+  return (
+    <div style={styles.container}>
+      <Card style={styles.card}>
+        <CardHeader title={strings.adminDashboard.new_user} />
+        <CardContent style={styles.cardContent}>
+          <div style={styles.textInputContainer}>
+            <TextInputWithIcon
+              style={{ width: "50%" }}
+              label={strings.adminDashboard.full_name}
+              value={displayName}
+              error={false}
+              icon={<NameIcon />}
+              onChange={event => setDisplayName(event.target.value)}
+            />
+            <TextInputWithIcon
+              style={{ width: "50%" }}
+              label={strings.adminDashboard.organization}
+              value={organization}
+              error={false}
+              icon={<OrgaIcon />}
+              onChange={event => setOrganization(event.target.value)}
+            />
+          </div>
+          <div style={styles.textInputContainer}>
+            <Username username={username} storeUsername={setUsername} failed={false} id="username" />
+            <Password
+              password={password}
+              storePassword={setPassword}
+              failed={false}
+              nextBestAction={() => console.log("NextBestAction")}
+              id="password"
+            />
+          </div>
+        </CardContent>
+        <CardActions style={styles.cardActions}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => createUser(displayName, organization, username, password)}
+          >
+            {strings.common.create}
+          </Button>
+        </CardActions>
+      </Card>
+      <Card style={styles.card}>
+        <CardHeader title={strings.adminDashboard.new_user} />
+        <div style={styles.cardDiv}>
+          <OrgaIcon style={styles.icon} />
+        </div>
+      </Card>
+    </div>
+  );
+};
 export default UserManagementDetails;
