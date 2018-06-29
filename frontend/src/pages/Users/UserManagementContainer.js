@@ -7,8 +7,13 @@ import UserManagement from "./UserManagement";
 import NotFound from "../NotFound/NotFound";
 import { canViewUserManagement } from "../../permissions";
 import { switchTabs } from "./actions";
+import { fetchUser } from "../Login/actions";
 
 class UserManagementContainer extends Component {
+  componentWillMount() {
+    this.props.fetchUser();
+  }
+
   render() {
     //TODO: Change the intents to a more fine grain list
     // const canView = canViewUserManagement(this.props.allowedIntents);
@@ -23,13 +28,15 @@ class UserManagementContainer extends Component {
 const mapStateToProps = state => {
   return {
     allowedIntents: state.getIn(["login", "allowedIntents"]),
-    tabIndex: state.getIn(["users", "tabIndex"])
+    tabIndex: state.getIn(["users", "tabIndex"]),
+    users: state.getIn(["login", "user"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    switchTabs: index => dispatch(switchTabs(index))
+    switchTabs: index => dispatch(switchTabs(index)),
+    fetchUser: () => dispatch(fetchUser(true))
   };
 };
 

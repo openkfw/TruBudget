@@ -2,12 +2,14 @@ import React from "react";
 
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import GroupIcon from "@material-ui/icons/Group";
+import CardActions from "@material-ui/core/CardActions";
+import IconButton from "@material-ui/core/IconButton";
+import CardContent from "@material-ui/core/CardContent";
+import Button from "@material-ui/core/Button";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
-import UsersIcon from "@material-ui/icons/Person";
 
-import CountUp from "react-countup";
-
+import strings from "../../localizeStrings";
 const styles = {
   container: {
     marginTop: 70,
@@ -16,8 +18,7 @@ const styles = {
     justifyContent: "space-between"
   },
   card: {
-    width: "30%",
-    maxWidth: "300px",
+    width: "45%",
     height: 250
   },
   cardDiv: {
@@ -44,40 +45,21 @@ const styles = {
   }
 };
 
-const Title = ({ count, text }) => {
-  const startValue = count - 100;
-  return (
-    <div>
-      <CountUp start={startValue > 0 ? startValue : 0} end={count} />
-      <span> {text} </span>
-    </div>
-  );
-};
-
 const UserManagementDetails = () => (
   <div style={styles.container}>
     <Card style={styles.card}>
+      <CardHeader title={strings.adminDashboard.new_user} />
+      <CardContent />
+      <CardActions>
+        <Button variant="contained" color="primary">
+          {strings.common.create}
+        </Button>
+      </CardActions>
+    </Card>
+    <Card style={styles.card}>
+      <CardHeader title={strings.adminDashboard.new_user} />
       <div style={styles.cardDiv}>
         <OrgaIcon style={styles.icon} />
-      </div>
-      <div style={styles.cardHeader}>
-        <CardHeader title={<Title count={38} text={"Organisation"} />} />
-      </div>
-    </Card>
-    <Card style={styles.card}>
-      <div style={styles.cardDiv}>
-        <GroupIcon style={styles.icon} />
-      </div>
-      <div style={styles.cardHeader}>
-        <CardHeader title={<Title count={47} text={"Groups"} />} />
-      </div>
-    </Card>
-    <Card style={styles.card}>
-      <div style={styles.cardDiv}>
-        <UsersIcon style={styles.icon} />
-      </div>
-      <div style={styles.cardHeader}>
-        <CardHeader title={<Title count={94} text={"Users"} />} />
       </div>
     </Card>
   </div>

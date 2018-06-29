@@ -25,7 +25,7 @@ function TabContainer(props) {
   );
 }
 
-const UserManagementTabs = ({ tabIndex, switchTabs }) => (
+const UserManagementTabs = ({ tabIndex, switchTabs, users, ...rest }) => (
   <div style={{ backgroundColor: "white" }}>
     <Tabs
       indicatorColor="primary"
@@ -34,13 +34,13 @@ const UserManagementTabs = ({ tabIndex, switchTabs }) => (
       value={tabIndex}
       onChange={(event, value) => switchTabs(value)}
     >
-      <Tab label="Organisation" />
+      {/* <Tab label="Organisation" /> */}
       <Tab label="Users" />
       <Tab label="Nodes" />
     </Tabs>
-    {tabIndex === 0 && <TabContainer>Item One</TabContainer>}
-    {tabIndex === 1 && <TabContainer>Item Two</TabContainer>}
-    {tabIndex === 2 && <TabContainer>Item Three</TabContainer>}
+    {/* {tabIndex === 0 && <TabContainer>Item One</TabContainer>} */}
+    {tabIndex === 0 && <UsersTable users={users} />}
+    {tabIndex === 1 && <TabContainer>Item Three</TabContainer>}
   </div>
 );
 
