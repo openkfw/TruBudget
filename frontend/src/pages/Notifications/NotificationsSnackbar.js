@@ -17,10 +17,10 @@ const variantIcon = {
 
 const styles = theme => ({
   success: {
-    backgroundColor: green[500]
+    backgroundColor: theme.palette.primary.main
   },
   error: {
-    backgroundColor: red[600]
+    backgroundColor: theme.palette.error.main
   },
 
   icon: {
