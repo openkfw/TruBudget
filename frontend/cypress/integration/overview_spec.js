@@ -11,9 +11,9 @@ describe("Overview Page", function() {
   });
 
   it("Show example project", function() {
-    cy.get("[data-test=projectcard]").should("have.length.above", 0);
+    cy.get("[data-test=projectcard-0]").should("have.length.above", 0);
     cy
-      .get("[data-test=projectcard]")
+      .get("[data-test=projectcard-0]")
       .eq(0)
       .then($card => {
         expect($card.find("[data-test=projectheader] span").eq(0)).to.have.text(this.data.displayName);

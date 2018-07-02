@@ -16,14 +16,14 @@ describe("Project Permissions", function() {
   });
 
   it("Show and project permissions correctly", function() {
-    cy.get("[data-test=pp-button]").click();
+    cy.get("[data-test=pp-button-0]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test=permission-close]").click();
     cy.get("[data-test=permission-container]").should("not.be.visible");
   });
 
   it("Grant and revoke permissions", function() {
-    cy.get("[data-test=pp-button]").click();
+    cy.get("[data-test=pp-button-0]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test='permission-select-project.intent.listPermissions']").click();
     cy

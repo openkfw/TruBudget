@@ -37,11 +37,10 @@ describe("Subproject Permissions", function() {
       .should("be.visible")
       .then($list => {
         const checkedItems = $list.find("input:checked");
-
         expect(checkedItems).to.have.lengthOf(
           this.data.subprojects[0].permissions["subproject.intent.grantPermission"]
-            ? this.data.subprojects[0].permissions["subproject.intent.grantPermission"].lenght + 1
-            : 1
+            ? this.data.subprojects[0].permissions["subproject.intent.grantPermission"].length + 1
+            : 2
         );
       })
       .then($list => {
