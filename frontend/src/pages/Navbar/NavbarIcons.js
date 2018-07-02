@@ -9,7 +9,7 @@ const NavbarIcons = ({ peers, unreadNotifications, history, logout }) => {
     <div>
       <NotificationIcon unreadNotifications={unreadNotifications} history={history} />
       {/* <PeerInfoIcon peers={peers} /> */}
-      <UsersIcon history={history} />
+      {/* <UsersIcon history={history} /> */}
       <LogoutIcon history={history} logout={logout} />
     </div>
   );

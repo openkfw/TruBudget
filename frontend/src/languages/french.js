@@ -149,7 +149,8 @@ const fr = {
     menu_item_notifications: "Notifications",
     menu_item_network: "Réseau",
     main_site: "Principal",
-    projects_site: "Projets"
+    projects_site: "Projets",
+    menu_item_users: "French: Users"
   },
   dashboard: {
     dashboard_title: "Le tableau de bord du réseau Blockchain",

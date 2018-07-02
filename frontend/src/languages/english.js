@@ -184,7 +184,8 @@ const en = {
     menu_item_notifications: "Notifications",
     menu_item_network: "Network",
     main_site: "Main",
-    projects_site: "Projects"
+    projects_site: "Projects",
+    menu_item_users: "Users"
   },
   dashboard: {
     dashboard_title: "The Blockchain network dashboard",

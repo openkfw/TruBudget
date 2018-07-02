@@ -3,9 +3,8 @@ import React from "react";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 
-import OrganisationsTable from "./OrgansationsTable";
 import UsersTable from "./UsersTable";
-import GroupsTable from "./GroupsTable";
+import NodesTable from "./NodesTable";
 import { Typography } from "@material-ui/core";
 import blueGrey from "@material-ui/core/colors/blueGrey";
 
@@ -25,7 +24,7 @@ function TabContainer(props) {
   );
 }
 
-const UserManagementTabs = ({ tabIndex, switchTabs, users, ...rest }) => (
+const UserManagementTabs = ({ tabIndex, switchTabs, users, nodes, ...rest }) => (
   <div style={{ backgroundColor: "white" }}>
     <Tabs
       indicatorColor="primary"
@@ -40,7 +39,7 @@ const UserManagementTabs = ({ tabIndex, switchTabs, users, ...rest }) => (
     </Tabs>
     {/* {tabIndex === 0 && <TabContainer>Item One</TabContainer>} */}
     {tabIndex === 0 && <UsersTable users={users} />}
-    {tabIndex === 1 && <TabContainer>Item Three</TabContainer>}
+    {tabIndex === 1 && <NodesTable nodes={nodes} />}
   </div>
 );
 

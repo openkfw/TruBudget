@@ -8,6 +8,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ProjectIcon from "@material-ui/icons/Business";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
+import UsersIcon from "@material-ui/icons/Group";
 import Subheader from "@material-ui/core/ListSubheader";
 
 import strings from "../../localizeStrings";
@@ -68,6 +69,12 @@ const SideNavCard = ({ avatarBackground, avatar, displayName, organization, hist
           <SocialNotificationIcon />
         </ListItemIcon>
         <ListItemText primary={strings.navigation.menu_item_notifications} />
+      </ListItem>
+      <ListItem button onClick={() => history.push("/users")}>
+        <ListItemIcon>
+          <UsersIcon />
+        </ListItemIcon>
+        <ListItemText primary={strings.navigation.menu_item_users} />
       </ListItem>
     </List>
     <Divider />

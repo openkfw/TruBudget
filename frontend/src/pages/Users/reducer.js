@@ -6,7 +6,8 @@ import {
   SET_PASSWORD,
   SET_ORGANIZATION,
   SET_DISPLAYNAME,
-  FETCH_NODES_SUCCESS
+  FETCH_NODES_SUCCESS,
+  CREATE_USER_SUCCESS
 } from "./actions";
 
 const defaultState = fromJS({
@@ -33,8 +34,9 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["userToAdd", "username"], action.username);
     case SET_PASSWORD:
       return state.setIn(["userToAdd", "password"], action.password);
+    case CREATE_USER_SUCCESS:
+      return state.set("userToAdd", defaultState.get("userToAdd"));
     case FETCH_NODES_SUCCESS:
-      console.log(action.nodes);
       return state.set("nodes", action.nodes);
     default:
       return state;

@@ -369,10 +369,9 @@ export function* fetchUserSaga({ showLoading }) {
 export function* fetchNodesSaga({ showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listNodes);
-    console.log(data);
     yield put({
       type: FETCH_NODES_SUCCESS,
-      nodes: data.items
+      nodes: data.nodes
     });
   }, showLoading);
 }

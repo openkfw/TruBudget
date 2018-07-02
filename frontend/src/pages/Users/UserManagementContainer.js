@@ -39,8 +39,10 @@ const mapStateToProps = state => {
   return {
     tabIndex: state.getIn(["users", "tabIndex"]),
     userToAdd: state.getIn(["users", "userToAdd"]),
+    nodes: state.getIn(["users", "nodes"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
-    users: state.getIn(["login", "user"])
+    users: state.getIn(["login", "user"]),
+    organization: state.getIn(["login", "organization"])
   };
 };
 

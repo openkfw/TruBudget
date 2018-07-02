@@ -6,9 +6,15 @@ import CardActions from "@material-ui/core/CardActions";
 import IconButton from "@material-ui/core/IconButton";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import ThumbUp from "@material-ui/icons/ThumbUp";
+import ThumbDown from "@material-ui/icons/ThumbDown";
 
 import strings from "../../localizeStrings";
 import Username from "../Common/Username";
@@ -20,6 +26,10 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between"
+  },
+  nodeCard: {
+    width: "40%",
+    paddingBottom: "20px"
   },
   card: {
     width: "55%",
@@ -86,9 +96,10 @@ const UserManagementDetails = ({
   setPassword,
   createUser,
   showErrorSnackbar,
-  storeSnackbarMessage
+  storeSnackbarMessage,
+  organization
 }) => {
-  const { displayName, organization, password, username } = userToAdd;
+  const { displayName, password, username } = userToAdd;
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -107,6 +118,7 @@ const UserManagementDetails = ({
               style={{ width: "50%" }}
               label={strings.adminDashboard.organization}
               value={organization}
+              disabled={true}
               error={false}
               icon={<OrgaIcon />}
               onChange={event => setOrganization(event.target.value)}
@@ -118,7 +130,7 @@ const UserManagementDetails = ({
               password={password}
               storePassword={setPassword}
               failed={false}
-              nextBestAction={() => console.log("NextBestAction")}
+              // nextBestAction={() => console.log("NextBestAction")}
               id="password"
             />
           </div>
@@ -143,6 +155,49 @@ const UserManagementDetails = ({
             {"Create "}
           </Button>
         </CardActions>
+      </Card>
+      <Card style={styles.nodeCard}>
+        <CardHeader title={"Open Votes"} />
+        <CardContent>
+          <List>
+            <ListItem>
+              <ListItemText
+                primary={
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <Typography variant="subheading"> ACMECorp</Typography>
+                    <Typography> Permission: admin </Typography>
+                  </div>
+                }
+                secondary="Votes: 1"
+              />
+              <IconButton>
+                <ThumbUp color="primary" />
+              </IconButton>
+              <IconButton>
+                <ThumbDown color="primary" />
+              </IconButton>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <ListItemText
+                primary={
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <Typography variant="subheading"> UmbrellaCorp</Typography>
+                    <Typography> Permission: base </Typography>
+                  </div>
+                }
+                secondary="Votes: 4"
+              />
+              <IconButton>
+                <ThumbUp color="primary" />
+              </IconButton>
+              <IconButton>
+                <ThumbDown color="primary" />
+              </IconButton>
+            </ListItem>
+            <Divider />
+          </List>
+        </CardContent>
       </Card>
     </div>
   );

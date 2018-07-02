@@ -184,7 +184,8 @@ const pt = {
     menu_item_notifications: "Notificações",
     menu_item_network: "Rede",
     main_site: "Principal",
-    projects_site: "Projetos"
+    projects_site: "Projetos",
+    menu_item_users: "Portuguese: Users"
   },
   dashboard: {
     dashboard_title: "Painel da rede blockchain",
