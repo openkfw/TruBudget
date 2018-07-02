@@ -371,7 +371,6 @@ export const closeProjectTest = {
   ],
 };
 
-
 export const schoolProject = {
   displayName: "Primary School Project",
   description: "Projects in 2018",
@@ -495,14 +494,14 @@ export const schoolProject = {
           assignee: "jdoe",
           amount: 500000,
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
         {
           displayName: "Payment interim installment",
           assignee: "jdoe",
           amount: 500000,
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
         {
           displayName: "Progress report",
@@ -514,7 +513,7 @@ export const schoolProject = {
           assignee: "jdoe",
           amount: 500000,
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
       ],
     },
@@ -554,20 +553,20 @@ export const schoolProject = {
           assignee: "jdoe",
           amount: 5000000,
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
         {
           displayName: "Progress report",
           assignee: "jdoe",
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
         {
           displayName: "Payment final installment",
           assignee: "jdoe",
           amount: 10000000,
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
         {
           displayName: "Completion subproject",
@@ -612,20 +611,20 @@ export const schoolProject = {
           assignee: "jdoe",
           amount: 3000000,
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
         {
           displayName: "Progress report",
           assignee: "jdoe",
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
         {
           displayName: "Payment final installment",
           assignee: "jdoe",
           amount: 5000000,
           currency: "EUR",
-          amountType: "assigned",
+          amountType: "allocated",
         },
       ],
     },
