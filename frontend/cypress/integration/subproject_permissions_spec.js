@@ -40,7 +40,7 @@ describe("Subproject Permissions", function() {
         expect(checkedItems).to.have.lengthOf(
           this.data.subprojects[0].permissions["subproject.intent.grantPermission"]
             ? this.data.subprojects[0].permissions["subproject.intent.grantPermission"].length + 1
-            : 2
+            : 1
         );
       })
       .then($list => {
