@@ -1,7 +1,7 @@
 const axios = require("axios");
 import { waitUntilReady } from "../lib/liveness";
 import { MultichainClient } from "../multichain";
-import { amazonasFundProject, closeProjectTest } from "./data";
+import { amazonasFundProject, closeProjectTest, schoolProject } from "./data";
 import { provisionUsers } from "./users";
 
 const DEFAULT_API_VERSION = "1.0";
@@ -69,6 +69,7 @@ export const provisionBlockchain = async (
   // const subprojectId = await provisionSubprojects(axios, projectId);
   // await provisionWorkflowitems(axios, projectId, subprojectId);
   await provisionFromData(amazonasFundProject);
+  await provisionFromData(schoolProject);
   await runIntegrationTests(rootSecret);
 };
 
