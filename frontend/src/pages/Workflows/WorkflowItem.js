@@ -3,14 +3,17 @@ import { SortableElement } from "react-sortable-hoc";
 
 import Card from "@material-ui/core/Card";
 import Chip from "@material-ui/core/Chip";
+import Tooltip from "@material-ui/core/Tooltip";
 import DoneIcon from "@material-ui/icons/Check";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/InfoOutline";
+import EditIcon from "@material-ui/icons/Edit";
 import OpenIcon from "@material-ui/icons/Remove";
 import Paper from "@material-ui/core/Paper";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
+import green from "@material-ui/core/colors/lightGreen";
 
 import { toAmountString, amountTypes } from "../../helper.js";
 import strings from "../../localizeStrings";
@@ -26,7 +29,6 @@ const styles = {
   text: {
     fontSize: "14px"
   },
-  open: {},
   dots: {
     height: 20,
     width: 20,
@@ -58,12 +60,7 @@ const styles = {
     left: "25px",
     bottom: "34px"
   },
-  editButtons: {
-    minWidth: "40px",
-    marginLeft: "5px",
-    marginRight: "5px",
-    backgroundColor: "white"
-  },
+
   infoButton: {
     minWidth: "40px",
     marginLeft: "5px",
@@ -97,6 +94,19 @@ const styles = {
   },
   workflowCell: {
     flex: 1
+  },
+  card: {
+    marginLeft: "50px",
+    marginRight: "10px",
+    marginTop: "15px",
+    marginBottom: "15px"
+  },
+  container: {
+    position: "relative"
+  },
+  icon: {
+    width: "14px",
+    height: "20px"
   }
 };
 
@@ -126,21 +136,23 @@ const StepDot = ({ status, selectable }) => {
   }
   return (
     <Paper style={styles.dots} elevation={2} disabled={selectable}>
-      <Icon style={{ width: "14px", height: "20px", opacity: selectable ? 1 : 0.3 }} />
+      <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
     </Paper>
   );
 };
 
 const editWorkflow = ({ id, displayName, amount, amountType, currency, description, status, documents }, props) => {
-  props.storeWorkflowName(displayName);
-  props.storeWorkflowAmount(amount);
-  props.storeWorkflowAmountType(amountType);
-  props.storeWorkflowCurrency(currency);
-  props.storeWorkflowComment(description);
-  props.storeWorkflowStatus(status);
-  props.storeWorkflowTxid(id);
-  props.openWorkflowDialog(true);
-  props.prefillDocuments(documents);
+  // Otherwise we need to deal with undefined which causes errors in the editDialog
+  const workflowitemAmount = amount ? amount : "";
+  const workflowitemCurrency = currency ? currency : props.currency;
+  props.showEditDialog(
+    id,
+    displayName,
+    toAmountString(workflowitemAmount),
+    amountType,
+    description,
+    workflowitemCurrency
+  );
 };
 
 const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
@@ -185,19 +197,44 @@ const renderActionButtons = (
   return (
     <div style={{ flex: 2 }}>
       <div style={styles.actions}>
-        {/* <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
-          <EditIcon />
-        </IconButton> */}
-        <IconButton
-          disabled={!canListWorkflowPermissions}
-          onClick={showPerm}
-          style={canListWorkflowPermissions ? {} : hideStyle}
+        <Tooltip
+          id="tooltip-wedit"
+          title={strings.common.edit}
+          // Otherwise the tooltip is shacking
+          PopperProps={{ style: { pointerEvents: "none" } }}
         >
-          <PermissionIcon />
-        </IconButton>
-        <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
-          <DoneIcon />
-        </IconButton>
+          <div>
+            <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        </Tooltip>
+        <Tooltip
+          id="tooltip-wpermissions"
+          title={strings.common.show_permissions}
+          // Otherwise the tooltip is shacking
+          PopperProps={{ style: { pointerEvents: "none" } }}
+        >
+          <IconButton
+            disabled={!canListWorkflowPermissions}
+            onClick={showPerm}
+            style={canListWorkflowPermissions ? {} : hideStyle}
+          >
+            <PermissionIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip
+          id="tooltip-wclose"
+          title={strings.common.close}
+          // Otherwise the tooltip is shacking
+          PopperProps={{ style: { pointerEvents: "none" } }}
+        >
+          <div>
+            <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
+              <DoneIcon />
+            </IconButton>
+          </div>
+        </Tooltip>
       </div>
     </div>
   );
@@ -233,18 +270,13 @@ export const WorkflowItem = SortableElement(
 
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
     return (
-      <div style={{ position: "relative" }}>
+      <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
         <Card
           elevation={workflowSelectable ? 1 : 0}
           key={mapIndex}
-          style={{
-            marginLeft: "50px",
-            marginRight: "10px",
-            marginTop: "15px",
-            marginBottom: "15px"
-          }}
+          style={(styles.card, status === "closed" ? { background: green[50], ...styles.card } : styles.card)}
         >
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>{infoButton}</div>
@@ -286,24 +318,16 @@ export const RedactedWorkflowItem = SortableElement(
   ({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
     const { status } = workflow.data;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
+
     const tableStyle = styles[status];
 
     const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
 
     return (
-      <div style={{ position: "relative" }}>
+      <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot status={status} selectable={workflowSelectable} />
-        <Card
-          elevation={workflowSelectable ? 1 : 0}
-          key={mapIndex}
-          style={{
-            marginLeft: "50px",
-            marginRight: "10px",
-            marginTop: "15px",
-            marginBottom: "15px"
-          }}
-        >
+        <Card elevation={workflowSelectable ? 1 : 0} key={mapIndex} style={styles.card}>
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>
               <IconButton style={styles.infoButton}>

@@ -1,4 +1,5 @@
 export const SHOW_SNACKBAR = "SHOW_SNACKBAR";
+export const HIDE_SNACKBAR = "HIDE_SNACKBAR";
 export const SNACKBAR_MESSAGE = "SNACKBAR_MESSAGE";
 export const MARK_NOTIFICATION_AS_READ = "MARK_NOTIFICATION_AS_READ";
 export const MARK_NOTIFICATION_AS_READ_SUCCESS = "MARK_NOTIFICATION_AS_READ_SUCCESS";
@@ -11,14 +12,22 @@ export const FETCH_NOTIFICATIONS_WITH_ID_SUCCESS = "FETCH_NOTIFICATIONS_WITH_ID_
 export const FETCH_ALL_NOTIFICATIONS = "FETCH_ALL_NOTIFICATIONS";
 export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS";
 
-export function showSnackBar(show, isError = false) {
+export function showSnackbar(isError = false) {
   return {
     type: SHOW_SNACKBAR,
-    show: show,
+    show: true,
     isError
   };
 }
-export function storeSnackBarMessage(message) {
+
+export function hideSnackbar() {
+  return {
+    type: HIDE_SNACKBAR,
+    show: false
+  };
+}
+
+export function storeSnackbarMessage(message) {
   return {
     type: SNACKBAR_MESSAGE,
     message: message

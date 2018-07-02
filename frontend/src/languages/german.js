@@ -19,8 +19,8 @@ const de = {
     disbursed_budget: "Disbursed Budget",
     budget_distribution: "Budget distribution",
     task_status: "Task status",
-    subprojects: "Sub-projects",
-    subproject: "Sub-project",
+    subprojects: "Subprojects",
+    subproject: "Subproject",
     history: "History",
     close: "Close",
     open: "Open",
@@ -30,7 +30,15 @@ const de = {
     assignees: "Assignee(s)",
     approver: "Approver",
     bank: "Bank",
-    assignee: "Assignee"
+    assignee: "Assignee",
+    edit: "German: Edit",
+    workflowItem: "German: WorkflowItem",
+    project: "German: Project",
+    closed: "German: Closed",
+    show_permissions: "German: Show Permissions",
+    view: "German: View",
+    create: "German: Create",
+    edited: "German: Edited"
   },
 
   login: {
@@ -64,7 +72,9 @@ const de = {
     project_disbursement_authority_role: "Select disbursement authority role",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_authority_organization_search: "Search organizations",
-    project_authority_role_search: "Search role"
+    project_authority_role_search: "Search role",
+    project_edit_title: "German: Edit Project",
+    project_close_info: "German: Disabled as long as the Subprojects aren't closed"
   },
   subproject: {
     subproject_title: "Sub-Project title",
@@ -73,9 +83,12 @@ const de = {
     subproject_budget_amount_description: "z_B_",
     subproject_comment: "Sub-project Comment",
     subproject_assigned_organization: "Assigned Organization",
-    subproject_add: "Add new Sub-project",
+    subproject_add_title: "Add new Subproject",
     subproject_select_button: "Select",
-    subproject_completion_string: "{0} von {1} erledigt"
+    subproject_completion_string: "{0} von {1} erledigt",
+    subproject_permissions_title: "German: Set permissions for subproject",
+    subproject_close_info: "German: Disabled as long as the Workflowitems aren't closed",
+    subproject_edit_title: "German: Edit Subproject"
   },
   workflow: {
     workflow_title: "Workflow title",
@@ -200,7 +213,9 @@ const de = {
     workflowitem_close: "German: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "German: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "German: {0} revoked permission {1} of {3} from {2}",
-    workflowitem_assign: "German: {0} assigned workflowitem {1} to {2}"
+    workflowitem_assign: "German: {0} assigned workflowitem {1} to {2}",
+    changed_by: "German: {0} changed by {1}: ",
+    to: "German: {0} to {1}"
   },
   permissions: {
     read_only: "German: Read-only permissions",
@@ -213,6 +228,7 @@ const de = {
     project_intent_revokePermission: "German: Revoke permissions",
     project_viewDetails: "German: View project details",
     project_viewSummary: "German: View project in overview",
+    project_close: "German: Close project",
     project_createSubproject: "German: Create subprojects",
     subproject_archive: "German: Archive subproject",
     subproject_assign: "German: Assign subproject",

@@ -6,7 +6,15 @@ import {
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
   FETCH_ALL_PROJECTS_SUCCESS,
-  FETCH_ALL_PROJECTS
+  FETCH_ALL_PROJECTS,
+  EDIT_PROJECT,
+  EDIT_PROJECT_SUCCESS,
+  FETCH_PROJECT_PERMISSIONS,
+  FETCH_PROJECT_PERMISSIONS_SUCCESS,
+  GRANT_PERMISSION,
+  GRANT_PERMISSION_SUCCESS,
+  REVOKE_PERMISSION_SUCCESS,
+  REVOKE_PERMISSION
 } from "./pages/Overview/actions";
 
 import {
@@ -14,16 +22,20 @@ import {
   CREATE_SUBPROJECT_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS,
-  FETCH_PROJECT_PERMISSIONS,
-  FETCH_PROJECT_PERMISSIONS_SUCCESS,
-  GRANT_PERMISSION,
-  GRANT_PERMISSION_SUCCESS,
   ASSIGN_PROJECT_SUCCESS,
   ASSIGN_PROJECT,
   FETCH_PROJECT_HISTORY_SUCCESS,
   FETCH_PROJECT_HISTORY,
-  REVOKE_PERMISSION_SUCCESS,
-  REVOKE_PERMISSION
+  EDIT_SUBPROJECT_SUCCESS,
+  EDIT_SUBPROJECT,
+  CLOSE_PROJECT,
+  CLOSE_PROJECT_SUCCESS,
+  REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
+  REVOKE_SUBPROJECT_PERMISSION,
+  GRANT_SUBPROJECT_PERMISSION,
+  GRANT_SUBPROJECT_PERMISSION_SUCCESS,
+  FETCH_SUBPROJECT_PERMISSIONS,
+  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS
 } from "./pages/SubProjects/actions";
 import {
   SHOW_SNACKBAR,
@@ -40,10 +52,6 @@ import {
   CREATE_WORKFLOW_SUCCESS,
   FETCH_ALL_SUBPROJECT_DETAILS,
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
-  FETCH_SUBPROJECT_PERMISSIONS,
-  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
-  GRANT_SUBPROJECT_PERMISSION,
-  GRANT_SUBPROJECT_PERMISSION_SUCCESS,
   FETCH_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
@@ -56,10 +64,12 @@ import {
   ASSIGN_SUBPROJECT,
   FETCH_SUBPROJECT_HISTORY,
   FETCH_SUBPROJECT_HISTORY_SUCCESS,
-  REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
-  REVOKE_SUBPROJECT_PERMISSION,
-  REVOKE_WORKFLOWITEM_PERMISSION
+  REVOKE_WORKFLOWITEM_PERMISSION,
+  EDIT_WORKFLOW_ITEM_SUCCESS,
+  EDIT_WORKFLOW_ITEM,
+  CLOSE_SUBPROJECT,
+  CLOSE_SUBPROJECT_SUCCESS
 } from "./pages/Workflows/actions";
 
 import {
@@ -106,7 +116,7 @@ function* handleError(error) {
   } else if (error.response) {
     yield put({
       type: SNACKBAR_MESSAGE,
-      message: error.response.data
+      message: error.response.data.error.message
     });
     yield put({
       type: SHOW_SNACKBAR,
@@ -142,7 +152,6 @@ function* callApi(func, ...args) {
   // TODO dont set the environment on each call
   const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
-
   const { data } = yield call(func, ...args);
   return data;
 }
@@ -180,9 +189,22 @@ export function* createProject(action) {
   }, true);
 }
 
-export function* createSubProjectSaga({ projectId, name, amount, comment, currency, showLoading }) {
+export function* editProjectSaga({ projectId, changes }) {
   yield execute(function*() {
-    yield callApi(api.createSubProject, projectId, name, `${amount}`, comment, currency);
+    yield callApi(api.editProject, projectId, changes);
+    yield put({
+      type: EDIT_PROJECT_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_PROJECTS,
+      showLoading: true
+    });
+  }, true);
+}
+
+export function* createSubProjectSaga({ projectId, name, amount, description, currency, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.createSubProject, projectId, name, `${amount}`, description, currency);
     yield put({
       type: CREATE_SUBPROJECT_SUCCESS
     });
@@ -192,6 +214,20 @@ export function* createSubProjectSaga({ projectId, name, amount, comment, curren
       showLoading
     });
   }, showLoading);
+}
+
+export function* editSubProjectSaga({ projectId, subprojectId, changes }) {
+  yield execute(function*() {
+    yield callApi(api.editSubProject, projectId, subprojectId, changes);
+    yield put({
+      type: EDIT_SUBPROJECT_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_PROJECT_DETAILS,
+      projectId,
+      showLoading: true
+    });
+  }, true);
 }
 
 export function* createWorkflowItemSaga({ type, ...rest }) {
@@ -208,6 +244,22 @@ export function* createWorkflowItemSaga({ type, ...rest }) {
       showLoading: true
     });
   });
+}
+
+export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId, changes }) {
+  yield execute(function*() {
+    yield callApi(api.editWorkflowItem, projectId, subprojectId, workflowitemId, changes);
+    yield put({
+      type: EDIT_WORKFLOW_ITEM_SUCCESS
+    });
+
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId: projectId,
+      subprojectId: subprojectId,
+      showLoading: true
+    });
+  }, true);
 }
 
 export function* setEnvironmentSaga(action) {
@@ -505,6 +557,33 @@ export function* revokeWorkflowItemPermissionsSaga({
   }, showLoading);
 }
 
+export function* closeProjectSaga({ projectId, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.closeProject, projectId);
+    yield put({ type: CLOSE_PROJECT_SUCCESS });
+
+    yield put({
+      type: FETCH_ALL_PROJECT_DETAILS,
+      projectId,
+      showLoading
+    });
+  }, showLoading);
+}
+
+export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.closeSubproject, projectId, subprojectId);
+    yield put({ type: CLOSE_SUBPROJECT_SUCCESS });
+
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId,
+      subprojectId,
+      showLoading
+    });
+  }, showLoading);
+}
+
 export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
   yield execute(function*() {
     yield callApi(api.closeWorkflowItem, projectId, subprojectId, workflowitemId);
@@ -592,12 +671,24 @@ export function* watchCreateSubProject() {
   yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga);
 }
 
+export function* watchEditSubProject() {
+  yield takeEvery(EDIT_SUBPROJECT, editSubProjectSaga);
+}
+
 export function* watchCreateWorkflowItem() {
   yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga);
 }
 
+export function* watchEditWorkflowItem() {
+  yield takeEvery(EDIT_WORKFLOW_ITEM, editWorkflowItemSaga);
+}
+
 export function* watchCreateProject() {
   yield takeEvery(CREATE_PROJECT, createProject);
+}
+
+export function* watchEditProject() {
+  yield takeEvery(EDIT_PROJECT, editProjectSaga);
 }
 
 export function* watchFetchAllNotifications() {
@@ -660,6 +751,12 @@ export function* watchGrantWorkflowitemPermissions() {
 export function* watchRevokeWorkflowitemPermissions() {
   yield takeEvery(REVOKE_WORKFLOWITEM_PERMISSION, revokeWorkflowItemPermissionsSaga);
 }
+export function* watchCloseProject() {
+  yield takeEvery(CLOSE_PROJECT, closeProjectSaga);
+}
+export function* watchCloseSubproject() {
+  yield takeEvery(CLOSE_SUBPROJECT, closeSubprojectSaga);
+}
 export function* watchCloseWorkflowItem() {
   yield takeEvery(CLOSE_WORKFLOWITEM, closeWorkflowItemSaga);
 }
@@ -692,18 +789,23 @@ export default function* rootSaga() {
       watchRevokePermissions(),
       watchAssignProject(),
       watchFetchProjectHistorySaga(),
+      watchEditProject(),
+      watchCloseProject(),
 
       // Subproject
       watchCreateSubProject(),
+      watchEditSubProject(),
       watchFetchAllSubprojectDetails(),
       watchFetchSubProjectPermissions(),
       watchGrantSubProjectPermissions(),
       watchRevokeSubProjectPermissions(),
       watchAssignSubproject(),
       watchFetchSubprojectHistory(),
+      watchCloseSubproject(),
 
       // Workflow
       watchCreateWorkflowItem(),
+      watchEditWorkflowItem(),
       watchFetchWorkflowItemPermissions(),
       watchGrantWorkflowitemPermissions(),
       watchRevokeWorkflowitemPermissions(),

@@ -6,11 +6,11 @@ import _isUndefined from "lodash/isUndefined";
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import DateIcon from "@material-ui/icons/DateRange";
 import Divider from "@material-ui/core/Divider";
+import Tooltip from "@material-ui/core/Tooltip";
 import DoneIcon from "@material-ui/icons/Check";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
@@ -19,16 +19,14 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import NotAssignedIcon from "@material-ui/icons/SpaceBar";
 import OpenIcon from "@material-ui/icons/Remove";
-import PermissionIcon from "@material-ui/icons/LockOpen";
 import SpentIcon from "@material-ui/icons/RemoveCircle";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
+
 import { Doughnut } from "react-chartjs-2";
 
 import {
   toAmountString,
-  fromAmountString,
   createTaskData,
   statusIconMapping,
   statusMapping,
@@ -57,7 +55,7 @@ const styles = {
   },
   permissionContainer: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "space-around"
   },
   text: {
     fontSize: "14px"
@@ -127,13 +125,16 @@ const styles = {
 
   assingeeIcon: {
     marginRight: "30px"
+  },
+  statusText: {
+    marginLeft: 15
+  },
+  statusContainer: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
   }
-};
-
-const enableEditMode = ({ storeSubProjectAmount, enableBudgetEdit }, amountString) => {
-  const amount = fromAmountString(amountString);
-  enableBudgetEdit();
-  storeSubProjectAmount(amount);
 };
 
 const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
@@ -144,41 +145,6 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
           <AmountIcon />
         </ListItemIcon>
         <ListItemText primary={amountString} secondary={strings.common.budget} />
-      </ListItem>
-    </div>
-  );
-};
-
-const disableEditMode = (
-  subProjectAmount,
-  storeSubProjectAmount,
-  { disableBudgetEdit, location, postSubProjectEdit }
-) => {
-  storeSubProjectAmount(0);
-  postSubProjectEdit(location.pathname.split("/")[2], location.pathname.split("/")[3], "open", subProjectAmount);
-  disableBudgetEdit();
-};
-
-const getEditableBudget = ({ storeSubProjectAmount, subProjectAmount, ...props }) => {
-  const label = strings.common.budget;
-  return (
-    <div style={styles.budget}>
-      <ListItem style={{ marginTop: "10px" }} disabled={false}>
-        <ListItemIcon>
-          <AmountIcon />
-        </ListItemIcon>
-
-        <TextField
-          label={label}
-          style={styles.textfield}
-          type="number"
-          value={subProjectAmount}
-          onChange={event => storeSubProjectAmount(event.target.value)}
-        />
-        <DoneIcon
-          style={styles.doneIcon}
-          onTouchTap={() => disableEditMode(subProjectAmount, storeSubProjectAmount, props)}
-        />
       </ListItem>
     </div>
   );
@@ -202,15 +168,18 @@ const SubProjectDetails = ({
   canAssignSubproject,
   parentProject,
   users,
-  showSubProjectPermissions,
+
   showSubProjectAssignee,
+  closeSubproject,
+  canCloseSubproject,
   ...props
 }) => {
   const amountString = toAmountString(amount, currency);
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = tsToString(created);
-
+  const openWorkflowItems = workflowItems.find(wItem => wItem.data.status === "open");
+  const closeDisabled = !(canCloseSubproject && _isUndefined(openWorkflowItems)) || status === "closed";
   const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(
     workflowItems
   );
@@ -226,6 +195,7 @@ const SubProjectDetails = ({
   const allocatedBudgetRatio = _isUndefined(amount) ? 0 : assignedBudget / amount;
   const consumptionBudgetRatio = _isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
   const currentDisbursementRatio = _isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
+  const tooltipTitle = closeDisabled ? strings.subproject.subproject_close_info : strings.common.close;
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -234,9 +204,25 @@ const SubProjectDetails = ({
           <Divider />
           {getNotEditableBudget(amountString, allowedToEdit, props)}
           <Divider />
-          <ListItem disabled={false}>
+          <ListItem>
             <ListItemIcon>{statusIcon}</ListItemIcon>
-            <ListItemText primary={mappedStatus} secondary={strings.common.status} />
+            <div style={styles.statusContainer}>
+              <ListItemText style={styles.statusText} primary={mappedStatus} secondary={strings.common.status} />
+              {status !== "closed" ? (
+                <Tooltip id="tooltip-sclose" title={tooltipTitle}>
+                  <div>
+                    <IconButton
+                      color="primary"
+                      data-test="spc-button"
+                      disabled={closeDisabled}
+                      onClick={closeSubproject}
+                    >
+                      <DoneIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
+            </div>
           </ListItem>
           <Divider />
           <ListItem disabled={false}>
@@ -257,19 +243,6 @@ const SubProjectDetails = ({
               disabled={!canAssignSubproject}
               assignee={assignee}
             />
-          </ListItem>
-          <Divider />
-          <ListItem style={styles.permissionContainer}>
-            <Button
-              data-test="spp-button"
-              disabled={!canViewPermissions}
-              onClick={showSubProjectPermissions}
-              icon={<PermissionIcon style={styles.icon} />}
-              variant="raised"
-              color="primary"
-            >
-              Permissions
-            </Button>
           </ListItem>
         </List>
       </Card>
@@ -326,13 +299,13 @@ const SubProjectDetails = ({
               <Typography variant="caption">{strings.common.open}</Typography>
             </div>
             <div style={styles.taskChartItem}>
-              <Typography>{statusDetails.done.toString()}</Typography>
+              <Typography>{statusDetails.closed.toString()}</Typography>
               <div>
                 <IconButton disabled>
                   <DoneIcon />
                 </IconButton>
               </div>
-              <Typography variant="caption">{strings.common.done}</Typography>
+              <Typography variant="caption">{strings.common.closed}</Typography>
             </div>
           </div>
         </ListItem>

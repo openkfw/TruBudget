@@ -1,11 +1,12 @@
 import React from "react";
 
 import { Doughnut } from "react-chartjs-2";
+import _isUndefined from "lodash/isUndefined";
 
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CompletionIcon from "@material-ui/icons/TrendingUp";
@@ -18,7 +19,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import OpenIcon from "@material-ui/icons/Remove";
-import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
 import UnspentIcon from "@material-ui/icons/AddCircle";
 import Red from "@material-ui/core/colors/red";
@@ -58,7 +58,7 @@ const styles = {
   },
   permissionContainer: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "space-around"
   },
   text: {
     fontSize: "14px"
@@ -110,6 +110,15 @@ const styles = {
   },
   assingeeIcon: {
     marginRight: "30px"
+  },
+  statusText: {
+    marginLeft: 15
+  },
+  statusContainer: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
   }
 };
 
@@ -143,6 +152,8 @@ const ProjectDetails = ({
   canViewPermissions,
   showProjectPermissions,
   showProjectAssignees,
+  closeProject,
+  canClose,
   ...rest
 }) => {
   const {
@@ -153,6 +164,10 @@ const ProjectDetails = ({
     statusDetails,
     allocatedRatio
   } = calculateMetrics(subProjects, projectAmount, projectCurrency);
+
+  const openSubprojects = subProjects.find(subproject => subproject.data.status === "open");
+  const closeDisabled = !(canClose && _isUndefined(openSubprojects)) || projectStatus === "closed";
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -171,7 +186,28 @@ const ProjectDetails = ({
           <Divider />
           <ListItem>
             <ListItemIcon>{statusIconMapping[projectStatus]}</ListItemIcon>
-            <ListItemText primary={statusMapping(projectStatus)} secondary={strings.common.status} />
+            <div style={styles.statusContainer}>
+              <ListItemText
+                style={styles.statusText}
+                primary={statusMapping(projectStatus)}
+                secondary={strings.common.status}
+              />
+              <div>
+                {projectStatus !== "closed" ? (
+                  <Tooltip
+                    disabled={true}
+                    id="tooltip-pclose"
+                    title={closeDisabled ? strings.project.project_close_info : strings.common.close}
+                  >
+                    <div>
+                      <IconButton color="primary" data-test="pc-button" disabled={closeDisabled} onClick={closeProject}>
+                        <DoneIcon />
+                      </IconButton>
+                    </div>
+                  </Tooltip>
+                ) : null}
+              </div>
+            </div>
           </ListItem>
           <Divider />
           <ListItem>
@@ -191,19 +227,6 @@ const ProjectDetails = ({
               disabled={!canAssignProject}
               assignee={projectAssignee}
             />
-          </ListItem>
-          <Divider />
-          <ListItem style={styles.permissionContainer}>
-            <Button
-              data-test="pp-button"
-              disabled={!canViewPermissions}
-              onClick={showProjectPermissions}
-              icon={<PermissionIcon style={styles.icon} />}
-              variant="raised"
-              color="primary"
-            >
-              Permissions
-            </Button>
           </ListItem>
         </List>
       </Card>
@@ -251,13 +274,13 @@ const ProjectDetails = ({
               <Typography variant="caption">{strings.common.open}</Typography>
             </div>
             <div style={styles.taskChartItem}>
-              <Typography>{statusDetails.done.toString()}</Typography>
+              <Typography>{statusDetails.closed.toString()}</Typography>
               <div>
                 <IconButton disabled>
                   <DoneIcon />
                 </IconButton>
               </div>
-              <Typography variant="caption">{strings.common.done}</Typography>
+              <Typography variant="caption">{strings.common.closed}</Typography>
             </div>
           </div>
         </ListItem>

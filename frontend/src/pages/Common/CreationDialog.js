@@ -7,14 +7,20 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 import strings from "../../localizeStrings";
 import CreationDialogStepper from "./CreationDialogStepper";
+import { withStyles } from "@material-ui/core";
+
+const styles = {
+  paperRoot: {
+    width: "100%"
+  }
+};
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
-  const { numberOfSteps, currentStep = 0, steps, editMode } = props;
+  const { numberOfSteps, currentStep = 0, steps } = props;
 
   const isLastStep = currentStep === numberOfSteps - 1;
   const isFirstStep = currentStep === 0;
   const requiredInfoAdded = steps[currentStep].nextDisabled;
-
   const cancelButton = (
     <Button aria-label="cancel" color="secondary" onClick={() => handleCancel(props)}>
       {strings.common.cancel}
@@ -41,7 +47,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
     <Button
       aria-label="submit"
       color="primary"
-      disabled={isLastStep ? requiredInfoAdded : !editMode}
+      disabled={isLastStep ? isLastStep && requiredInfoAdded : !isLastStep}
       onClick={() => handleSubmit(props)}
     >
       {strings.common.submit}
@@ -72,9 +78,9 @@ const handleBack = props => props.setCurrentStep(props.currentStep - 1);
 const handleNext = props => props.setCurrentStep(props.currentStep + 1);
 
 const CreationDialog = props => {
-  const { creationDialogShown, title, handleSubmit } = props;
+  const { dialogShown, title, handleSubmit, classes } = props;
   return (
-    <Dialog maxWidth="md" open={creationDialogShown}>
+    <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown}>
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
       <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>
@@ -82,4 +88,4 @@ const CreationDialog = props => {
   );
 };
 
-export default CreationDialog;
+export default withStyles(styles)(CreationDialog);

@@ -1,6 +1,5 @@
 import React from "react";
 
-import PeerInfoIcon from "./PeerInfoIcon";
 import NotificationIcon from "./NotificationIcon";
 import LogoutIcon from "./LogoutIcon";
 import UsersIcon from "./UsersIcon";

@@ -1,8 +1,10 @@
 export const FETCH_WORKFLOW_ITEMS = "FETCH_WORKFLOW_ITEMS";
 export const FETCH_WORKFLOW_ITEMS_SUCCESS = "FETCH_WORKFLOW_ITEMS_SUCCESS";
 
-export const SHOW_WORKFLOW_DIALOG = "SHOW_WORKFLOW_DIALOG";
-export const CANCEL_WORKFLOW_DIALOG = "CANCEL_WORKFLOW_DIALOG";
+export const SHOW_WORKFLOW_CREATE = "SHOW_WORKFLOW_CREATE";
+export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
+
+export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
 export const WORKFLOW_NAME = "WORKFLOW_NAME";
 export const WORKFLOW_TYPE = "WORKFLOW_TYPE";
@@ -16,11 +18,11 @@ export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_SUCCESS = "CREATE_WORKFLOW_SUCCESS";
-export const EDIT_WORKFLOW = "EDIT_WORKFLOW";
-export const EDIT_WORKFLOW_SUCCESS = "EDIT_WORKFLOW_SUCCESS";
+export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
+export const EDIT_WORKFLOW_ITEM_SUCCESS = "EDIT_WORKFLOW_ITEM_SUCCESS";
 export const WORKFLOW_EDIT = "WORKFLOW_EDIT";
-export const WORKFLOW_TXID = "WORKFLOW_TXID";
 export const SHOW_WORKFLOW_DETAILS = "SHOW_WORKFLOW_DETAILS";
+export const HIDE_WORKFLOW_DETAILS = "HIDE_WORKFLOW_DETAILS";
 
 export const UPDATE_WORKFLOW_SORT = "UPDATE_WORKFLOW_SORT";
 export const ENABLE_WORKFLOW_SORT = "ENABLE_WORKFLOW_SORT";
@@ -44,18 +46,6 @@ export const WORKFLOW_CREATION_STEP = "WORKFLOW_CREATION_STEP";
 export const FETCH_ALL_SUBPROJECT_DETAILS = "FETCH_ALL_SUBPROJECT_DETAILS";
 export const FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS = "FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS";
 
-export const SHOW_SUBPROJECT_PERMISSIONS = "SHOW_SUBPROJECT_PERMISSIONS";
-export const HIDE_SUBPROJECT_PERMISSIONS = "HIDE_SUBPROJECT_PERMISSIONS";
-
-export const FETCH_SUBPROJECT_PERMISSIONS = "FETCH_SUBPROJECT_PERMISSIONS";
-export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSIONS_SUCCESS";
-
-export const GRANT_SUBPROJECT_PERMISSION = "GRANT_SUBPROJECT_PERMISSION";
-export const GRANT_SUBPROJECT_PERMISSION_SUCCESS = "GRANT_SUBPROJECT_PERMISSION_SUCCESS";
-
-export const REVOKE_SUBPROJECT_PERMISSION = "REVOKE_SUBPROJECT_PERMISSION";
-export const REVOKE_SUBPROJECT_PERMISSION_SUCCESS = "REVOKE_SUBPROJECT_PERMISSION_SUCCESS";
-
 export const SHOW_WORKFLOWITEM_PERMISSIONS = "SHOW_WORKFLOWITEM_PERMISSIONS";
 export const HIDE_WORKFLOWITEM_PERMISSIONS = "HIDE_WORKFLOWITEM_PERMISSIONS";
 
@@ -76,6 +66,9 @@ export const ASSIGN_SUBPROJECT_SUCCESS = "ASSIGN_SUBPROJECT_SUCCESS";
 
 export const CLOSE_WORKFLOWITEM = "CLOSE_WORKFLOWITEM";
 export const CLOSE_WORKFLOWITEM_SUCCESS = "CLOSE_WORKFLOWITEM_SUCCESS";
+
+export const CLOSE_SUBPROJECT = "CLOSE_SUBPROJECT";
+export const CLOSE_SUBPROJECT_SUCCESS = "CLOSE_SUBPROJECT_SUCCESS";
 
 export const SHOW_WORKFLOW_ASSIGNEES = "SHOW_WORKFLOW_ASSIGNEES";
 export const HIDE_WORKFLOW_ASSIGNEES = "HIDE_WORKFLOW_ASSIGNEES";
@@ -122,23 +115,16 @@ export function setCurrentStep(step) {
   };
 }
 
-export function showWorkflowDetails(show, txid) {
+export function showWorkflowDetails(id) {
   return {
     type: SHOW_WORKFLOW_DETAILS,
-    show,
-    txid
+    id
   };
 }
 
-export function showSubProjectPermissions() {
+export function hideWorkflowDetails() {
   return {
-    type: SHOW_SUBPROJECT_PERMISSIONS
-  };
-}
-
-export function hideSubProjectPermissions() {
-  return {
-    type: HIDE_SUBPROJECT_PERMISSIONS
+    type: HIDE_WORKFLOW_DETAILS
   };
 }
 
@@ -152,37 +138,6 @@ export function showSubProjectAssignee(assignee) {
 export function hideSubProjectAssignee() {
   return {
     type: HIDE_SUBPROJECT_ASSIGNEES
-  };
-}
-
-export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
-  return {
-    type: FETCH_SUBPROJECT_PERMISSIONS,
-    projectId,
-    subprojectId,
-    showLoading
-  };
-}
-
-export function grantSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
-  return {
-    type: GRANT_SUBPROJECT_PERMISSION,
-    projectId,
-    subprojectId,
-    intent,
-    user,
-    showLoading
-  };
-}
-
-export function revokeSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
-  return {
-    type: REVOKE_SUBPROJECT_PERMISSION,
-    projectId,
-    subprojectId,
-    intent,
-    user,
-    showLoading
   };
 }
 
@@ -303,19 +258,27 @@ export function fetchWorkflowItems(streamName) {
   };
 }
 
-export function showWorkflowDialog(editMode = false) {
+export function showCreateDialog() {
   return {
-    type: SHOW_WORKFLOW_DIALOG,
-    show: true,
-    editMode
+    type: SHOW_WORKFLOW_CREATE
   };
 }
 
-export function onWorkflowDialogCancel(editMode) {
+export function hideWorkflowDialog() {
   return {
-    type: CANCEL_WORKFLOW_DIALOG,
-    show: false,
-    editMode
+    type: HIDE_WORKFLOW_DIALOG
+  };
+}
+
+export function showEditDialog(id, displayName, amount, amountType, description, currency) {
+  return {
+    type: SHOW_WORKFLOW_EDIT,
+    id,
+    displayName,
+    amount,
+    amountType,
+    description,
+    currency
   };
 }
 
@@ -368,10 +331,10 @@ export function storeWorkflowCurrency(currency) {
   };
 }
 
-export function storeWorkflowComment(comment) {
+export function storeWorkflowComment(description) {
   return {
     type: WORKFLOW_PURPOSE,
-    comment: comment
+    description
   };
 }
 
@@ -382,55 +345,38 @@ export function storeWorkflowStatus(status) {
   };
 }
 
-export function storeWorkflowTxid(txid) {
-  return {
-    type: WORKFLOW_TXID,
-    txid
-  };
-}
-
 export function createWorkflowItem(
   projectId,
   subprojectId,
-  { name, amount, amountType, currency, comment, status },
+  displayName,
+  amount,
+  amountType,
+  currency,
+  description,
+  status,
   documents
 ) {
   return {
     type: CREATE_WORKFLOW,
     projectId,
     subprojectId,
-    displayName: name,
+    displayName,
     amount: `${amount}`,
     amountType,
     currency,
-    description: comment,
+    description,
     documents,
     status
   };
 }
 
-export function editWorkflowItem(
-  stream,
-  key,
-  { name, amount, amountType, currency, comment, status, txid, type, approvalRequired },
-  documents,
-  previousState
-) {
+export function editWorkflowItem(projectId, subprojectId, workflowitemId, changes) {
   return {
-    type: EDIT_WORKFLOW,
-    stream: stream,
-    key: key,
-    workflowName: name,
-    amount: amount,
-    currency: currency,
-    comment: comment,
-    workflowType: type,
-    state: status,
-    amountType,
-    documents,
-    txid,
-    previousState,
-    approvalRequired
+    type: EDIT_WORKFLOW_ITEM,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    changes
   };
 }
 
@@ -444,6 +390,14 @@ export function postSubProjectEdit(parent, streamName, status, amount) {
   };
 }
 
+export function closeSubproject(projectId, subprojectId, showLoading = false) {
+  return {
+    type: CLOSE_SUBPROJECT,
+    projectId,
+    subprojectId,
+    showLoading
+  };
+}
 export function closeWorkflowItem(projectId, subprojectId, workflowitemId, showLoading = false) {
   return {
     type: CLOSE_WORKFLOWITEM,

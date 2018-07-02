@@ -1,13 +1,13 @@
-import { fromJS, toJS } from "immutable";
+import { fromJS } from "immutable";
 import {
   SHOW_SNACKBAR,
   SNACKBAR_MESSAGE,
-  FETCH_NOTIFICATIONS_SUCCESS,
   FETCH_HISTORY_SUCCESS,
   OPEN_HISTORY,
   HIDE_HISTORY,
   FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
-  FETCH_ALL_NOTIFICATIONS_SUCCESS
+  FETCH_ALL_NOTIFICATIONS_SUCCESS,
+  HIDE_SNACKBAR
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -15,9 +15,9 @@ const defaultState = fromJS({
   notifications: [],
   newNotifications: [],
   showHistory: false,
-  showSnackBar: false,
-  snackBarMessage: "New Project added",
-  snackBarMessageIsError: false,
+  showSnackbar: false,
+  snackbarMessage: "New Project added",
+  snackbarError: false,
   historyItems: []
 });
 
@@ -35,11 +35,13 @@ export default function navbarReducer(state = defaultState, action) {
       });
     case SHOW_SNACKBAR:
       return state.merge({
-        showSnackBar: action.show,
-        snackBarMessageIsError: action.isError
+        showSnackbar: action.show,
+        snackbarError: action.isError
       });
+    case HIDE_SNACKBAR:
+      return state.set("showSnackbar", action.show);
     case SNACKBAR_MESSAGE:
-      return state.set("snackBarMessage", action.message);
+      return state.set("snackbarMessage", action.message);
     case FETCH_HISTORY_SUCCESS:
       return state.set("historyItems", fromJS(action.historyItems));
     case OPEN_HISTORY:

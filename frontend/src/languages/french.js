@@ -19,8 +19,8 @@ const fr = {
     disbursed_budget: "Budget décaissé",
     budget_distribution: "Affectation budgétaire",
     task_status: "Etat de la tâche",
-    subprojects: "Sous-projets",
-    subproject: "Sous-projet",
+    subprojects: "Sousprojets",
+    subproject: "Sousprojet",
     history: "Historique",
     close: "Fermer",
     open: "Ouvert",
@@ -30,7 +30,15 @@ const fr = {
     assignees: "Cessionnaire(s)",
     approver: "Autorisé",
     bank: "Banque",
-    assignee: "Cessionnaire"
+    assignee: "Cessionnaire",
+    edit: "French: Edit",
+    workflowItem: "French: WorkflowItem",
+    project: "French: Project",
+    closed: "French: Closed",
+    show_permissions: "French: Show Permissions",
+    view: "French: View",
+    create: "French: Create",
+    edited: "French: Edited"
   },
 
   login: {
@@ -67,7 +75,9 @@ const fr = {
       "Les autorités ont autorisé l'approbation des transactions financières",
     project_authority_organization_search: "Rechercher organisations",
     project_authority_role_search: "Search role",
-    project_permissions_title: "French: Set permissions for project"
+    project_permissions_title: "French: Set permissions for project",
+    project_edit_title: "French: Edit Project",
+    project_close_info: "French: Disabled as long as the Subprojects aren't closed"
   },
   subproject: {
     subproject_title: "Sous-projet",
@@ -76,10 +86,12 @@ const fr = {
     subproject_budget_amount_description: "Budget for the sub-project",
     subproject_comment: "Commentaire du sous-projet",
     subproject_assigned_organization: "Organisation assignée",
-    subproject_add: "Ajouter un nouveau sous-projet",
+    subproject_add_title: "Ajouter un nouveau sous-projet",
     subproject_select_button: "Sélectionnez",
     subproject_completion_string: "{0} cal {1} van",
-    subproject_permissions_title: "French: Set permissions for subproject"
+    subproject_permissions_title: "French: Set permissions for subproject",
+    subproject_close_info: "French: Disabled as long as the Workflowitems aren't closed",
+    subproject_edit_title: "French: Edit Subproject"
   },
   workflow: {
     workflow_title: "Titre du workflow",
@@ -204,7 +216,9 @@ const fr = {
     workflowitem_close: "French: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "French: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "French: {0} revoked permission {1} of {3} from {2}",
-    workflowitem_assign: "French: {0} assigned workflowitem {1} to {2}"
+    workflowitem_assign: "French: {0} assigned workflowitem {1} to {2}",
+    changed_by: "French: {0} changed by {1}: ",
+    to: "French: {0} to {1}"
   },
   permissions: {
     read_only: "French: Read-only permissions",
@@ -217,6 +231,7 @@ const fr = {
     project_intent_revokePermission: "French: Revoke permissions",
     project_viewDetails: "French: View project details",
     project_viewSummary: "French: View project in overview",
+    project_close: "French: Close project",
     project_createSubproject: "French: Create subprojects",
     subproject_archive: "French: Archive subproject",
     subproject_assign: "French: Assign subproject",

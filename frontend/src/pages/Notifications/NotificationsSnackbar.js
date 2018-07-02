@@ -1,22 +1,75 @@
 import React from "react";
 import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
+import green from "@material-ui/core/colors/green";
+import red from "@material-ui/core/colors/red";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import ErrorIcon from "@material-ui/icons/Error";
+import classNames from "classnames";
+import { withStyles } from "@material-ui/core/styles";
+import { IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
-const NotificationsSnackbar = props => {
-  const snackbarStyle = props.snackBarMessageIsError
-    ? {
-        backgroundColor: "red",
-        color: "white"
-      }
-    : undefined;
+const variantIcon = {
+  success: CheckCircleIcon,
+  error: ErrorIcon
+};
 
+const styles = theme => ({
+  success: {
+    backgroundColor: theme.palette.primary.main
+  },
+  error: {
+    backgroundColor: theme.palette.error.main
+  },
+
+  icon: {
+    fontSize: 20
+  },
+  iconVariant: {
+    opacity: 0.9,
+    marginRight: theme.spacing.unit
+  },
+  message: {
+    display: "flex",
+    alignItems: "center"
+  }
+});
+
+const ContentWrapper = props => {
+  const { classes, className, message, variant, onClose } = props;
+  const Icon = variantIcon[variant];
   return (
-    <Snackbar
-      open={props.showSnackBar}
-      message={props.snackBarMessage}
-      autoHideDuration={4000}
-      onRequestClose={props.closeSnackBar}
-      bodyStyle={snackbarStyle}
+    <SnackbarContent
+      className={classNames(classes[variant], className)}
+      aria-describedby="client-snackbar"
+      message={
+        <span id="client-snackbar" className={classes.message}>
+          <Icon className={classNames(classes.icon, classes.iconVariant)} />
+          {message}
+        </span>
+      }
+      action={[
+        <IconButton key="close" aria-label="Close" color="inherit" className={classes.close} onClick={onClose}>
+          <CloseIcon className={classes.icon} />
+        </IconButton>
+      ]}
     />
   );
 };
-export default NotificationsSnackbar;
+
+const SnackbarContentWrapper = withStyles(styles)(ContentWrapper);
+
+const NotificationsSnackbar = props => {
+  console.log();
+  return (
+    <Snackbar open={props.showSnackbar} autoHideDuration={4000} onClose={props.closeSnackbar}>
+      <SnackbarContentWrapper
+        variant={props.snackbarError ? "error" : "success"}
+        message={props.snackbarMessage}
+        onClose={props.closeSnackbar}
+      />
+    </Snackbar>
+  );
+};
+export default withStyles(styles)(NotificationsSnackbar);

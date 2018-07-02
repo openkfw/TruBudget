@@ -11,7 +11,7 @@ const getStepContent = ({ currentStep = 0, steps, ...props }) => {
 
 const styles = {
   contentStyle: { margin: "0 16px" },
-  multiStep: { width: 600 }
+  multiStep: { width: "90%" }
 };
 
 const getSteps = (steps, editable, setCurrentStep) => {

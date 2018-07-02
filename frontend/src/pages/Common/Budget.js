@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 
 import MenuItem from "@material-ui/core/MenuItem";
+import _isEmpty from "lodash/isEmpty";
 
 import DropwDown from "./NewDropdown";
 import TextInput from "./TextInput";
 
-import { getCurrencies, preselectCurrency, fromAmountString } from "../../helper";
+import { getCurrencies, preselectCurrency, fromAmountString, toAmountString } from "../../helper";
+import { withStyles } from "@material-ui/core";
 
 const styles = {
   inputDiv: {
@@ -14,13 +16,16 @@ const styles = {
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "red"
   }
 };
-
 class Budget extends Component {
   componentWillMount() {
-    preselectCurrency(this.props.parentCurrency, this.props.storeCurrency);
+    if (_isEmpty(this.props.currency)) {
+      preselectCurrency(this.props.parentCurrency, this.props.storeCurrency);
+    }
   }
 
   getMenuItems(currencies) {
@@ -42,17 +47,17 @@ class Budget extends Component {
       budgetHintText,
       budget,
       storeBudget,
-      budgetDisabled
+      disabled
     } = this.props;
     const currencies = getCurrencies(parentCurrency);
     return (
       <div style={styles.inputDiv}>
         <DropwDown
-          style={{ minWidth: 120 }}
+          style={{ minWidth: 160 }}
           floatingLabel={currencyTitle}
           value={currency}
           onChange={storeCurrency}
-          disabled={budgetDisabled}
+          disabled={disabled}
         >
           {this.getMenuItems(currencies)}
         </DropwDown>
@@ -63,13 +68,14 @@ class Budget extends Component {
           onChange={v => {
             if (/^[0-9,.-]*$/.test(v)) storeBudget(v);
           }}
-          onBlur={e => storeBudget(fromAmountString(e.target.value))}
+          onBlur={e => storeBudget(toAmountString(e.target.value))}
+          onFocus={() => storeBudget(fromAmountString(budget))}
           type="number"
           aria-label="amount"
-          disabled={budgetDisabled}
+          disabled={disabled}
         />
       </div>
     );
   }
 }
-export default Budget;
+export default withStyles(styles)(Budget);

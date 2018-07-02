@@ -53,6 +53,12 @@ class Api {
       }
     });
 
+  editProject = (projectId, changes) =>
+    axios.post(`/project.update`, {
+      projectId,
+      ...changes
+    });
+
   viewProjectDetails = projectId => axios.get(`/project.viewDetails?projectId=${projectId}`);
   viewProjectHistory = projectId => axios.get(`/project.viewHistory?projectId=${projectId}`);
 
@@ -74,6 +80,9 @@ class Api {
         currency
       }
     });
+
+  editSubProject = (projectId, subprojectId, changes) =>
+    axios.post(`/subproject.update`, { projectId, subprojectId, ...changes });
 
   viewSubProjectDetails = (projectId, subprojectId) =>
     axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
@@ -97,6 +106,9 @@ class Api {
   revokeSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
     axios.post(`/subproject.intent.revokePermission`, { projectId, subprojectId, intent, userId });
 
+  editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) =>
+    axios.post(`/workflowitem.update`, { projectId, subprojectId, workflowitemId, ...changes });
+
   listWorkflowItemPermissions = (projectId, workflowitemId) =>
     axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
 
@@ -113,6 +125,10 @@ class Api {
     axios.post(`/subproject.assign`, { projectId, subprojectId, userId });
 
   assignProject = (projectId, userId) => axios.post(`/project.assign`, { projectId, userId });
+
+  closeProject = projectId => axios.post(`/project.close`, { projectId });
+
+  closeSubproject = (projectId, subprojectId) => axios.post(`subproject.close`, { projectId, subprojectId });
 
   closeWorkflowItem = (projectId, subprojectId, workflowitemId) =>
     axios.post(`/workflowitem.close`, { projectId, subprojectId, workflowitemId });

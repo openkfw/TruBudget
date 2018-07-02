@@ -29,7 +29,7 @@ const styles = {
   }
 };
 
-class WorkflowCreationAmount extends Component {
+class WorkflowDialogAmount extends Component {
   componentWillMount() {
     preselectCurrency(this.props.subProjectCurrency, this.props.storeWorkflowCurrency);
   }
@@ -47,7 +47,7 @@ class WorkflowCreationAmount extends Component {
 
     const floatingLabelText = strings.workflow.workflow_budget;
     const hintText = strings.workflow.workflow_budget_description;
-
+    const budgetDisabled = workflowAmountType === "N/A";
     return (
       <div style={styles.container}>
         <div>
@@ -74,28 +74,30 @@ class WorkflowCreationAmount extends Component {
             />
           </RadioGroup>
         </div>
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center"
-          }}
-        >
-          <Budget
-            currencyTitle={strings.project.project_currency}
-            currency={workflowCurrency}
-            storeCurrency={storeWorkflowCurrency}
-            parentCurrency={subProjectCurrency}
-            budgetLabel={floatingLabelText}
-            budgetHintText={hintText + " " + toAmountString(99999.99)}
-            budget={workflowAmount}
-            storeBudget={storeWorkflowAmount}
-            budgetDisabled={workflowAmountType === "N/A"}
-          />
-        </div>
+        {!budgetDisabled ? (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center"
+            }}
+          >
+            <Budget
+              currencyTitle={strings.project.project_currency}
+              currency={workflowCurrency}
+              storeCurrency={storeWorkflowCurrency}
+              parentCurrency={subProjectCurrency}
+              budgetLabel={floatingLabelText}
+              budgetHintText={hintText + " " + toAmountString(99999.99)}
+              budget={workflowAmount}
+              storeBudget={storeWorkflowAmount}
+              disabled={budgetDisabled}
+            />
+          </div>
+        ) : null}
       </div>
     );
   }
 }
-export default WorkflowCreationAmount;
+export default WorkflowDialogAmount;

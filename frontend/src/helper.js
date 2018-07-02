@@ -8,13 +8,13 @@ import DoneIcon from "@material-ui/icons/Check";
 import indigo from "@material-ui/core/colors/indigo";
 
 import _isEmpty from "lodash/isEmpty";
+import _cloneDeep from "lodash/cloneDeep";
 import _isUndefined from "lodash/isUndefined";
 import _isString from "lodash/isString";
 
 import accounting from "accounting";
 import strings from "./localizeStrings";
 import currencies from "./currency";
-
 const numberFormat = {
   decimal: ".",
   thousand: ",",
@@ -42,16 +42,43 @@ const getCurrencyFormat = currency => ({
   ...currencies[currency]
 });
 
+// TODO: come up with a better solution for the amount not requiring to parse every time
+export const compareObjects = (items, itemToAdd) => {
+  if (!_isEmpty(items)) {
+    const itemToAddClone = _cloneDeep(itemToAdd);
+    const originalItem = items.find(item => item.data.id === itemToAdd.id);
+    if (originalItem) {
+      originalItem.data.amount = toAmountString(originalItem.data.amount);
+      itemToAddClone.amount = toAmountString(itemToAddClone.amount);
+      const changes = {};
+      for (const key of Object.keys(itemToAddClone)) {
+        if (originalItem.data[key] !== itemToAddClone[key]) {
+          changes[key] = itemToAddClone[key];
+        }
+      }
+      return changes;
+    } else {
+      return itemToAdd;
+    }
+  }
+  return itemToAdd;
+};
+
 export const fromAmountString = (amount, currency) => {
   // Unformatting an empty string will result in an error
   // we use '' as default value for number fields to prevent users from an unerasable 0
   if (_isString(amount) && amount.trim().length <= 0) {
     return "";
   }
-
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 };
 
+export const formatAmountString = (amount, currency) => {
+  if (_isString(amount) && amount.trim().length <= 0) {
+    return "";
+  }
+  return amount;
+};
 export const getCurrencies = parentCurrency => {
   return ["EUR", "USD", "BRL"].map(currency => {
     const disabled = !_isEmpty(parentCurrency) && !(parentCurrency === currency);
@@ -64,6 +91,9 @@ export const getCurrencies = parentCurrency => {
 };
 
 export const toAmountString = (amount, currency) => {
+  if (_isString(amount) && amount.trim().length <= 0) {
+    return "";
+  }
   if (!currency) {
     return accounting.formatNumber(amount, numberFormat.precision, numberFormat.thousand, numberFormat.decimal);
   }
@@ -79,7 +109,7 @@ export const tsToString = ts => {
 export const statusMapping = status => {
   switch (status) {
     case "closed":
-      return strings.common.done;
+      return strings.common.closed;
     case "open":
       return strings.common.open;
     default:
@@ -155,6 +185,13 @@ export const formatString = (text, ...args) => {
   const x = strings.formatString(text, ...args).join(" ");
   return x;
 };
+export const formatUpdateString = (identifier, createdBy, data) => {
+  let string = strings.formatString(strings.history.changed_by, identifier, createdBy);
+  const changes = Object.keys(data)
+    .map(key => formatString(strings.history.to, key, data[key]))
+    .join(", ");
+  return string.concat(changes);
+};
 
 export const getAllocationRatio = (spentAmount, projectAmount) => {
   const allocationRatio = spentAmount / projectAmount * 100;
@@ -191,13 +228,13 @@ export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) =>
 export const getProgressInformation = items => {
   let startValue = {
     open: 0,
-    done: 0
+    closed: 0
   };
   const projectStatus = items.reduce((acc, item) => {
     const status = item.data.status;
     return {
       open: status === "open" ? acc.open + 1 : acc.open,
-      done: status === "closed" ? acc.done + 1 : acc.done
+      closed: status === "closed" ? acc.closed + 1 : acc.closed
     };
   }, startValue);
   return projectStatus;
@@ -210,5 +247,5 @@ export const preselectCurrency = (parentCurrency, setCurrency) => {
 
 export const createTaskData = (items, type) => {
   const projectStatus = getProgressInformation(items);
-  return createDoughnutData([strings.common.open, strings.common.done], [projectStatus.open, projectStatus.done]);
+  return createDoughnutData([strings.common.open, strings.common.closed], [projectStatus.open, projectStatus.closed]);
 };

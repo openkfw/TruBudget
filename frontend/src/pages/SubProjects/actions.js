@@ -1,24 +1,16 @@
 export const FETCH_PROJECT_DETAILS = "FETCH_PROJECT_DETAILS";
 export const FETCH_PROJECT_DETAILS_SUCCESS = "FETCH_PROJECT_DETAILS_SUCCESS";
 
-export const FETCH_PROJECT_PERMISSIONS = "FETCH_PROJECT_PERMISSIONS";
-export const FETCH_PROJECT_PERMISSIONS_SUCCESS = "FETCH_PROJECT_PERMISSIONS_SUCCESS";
+export const SHOW_SUBPROJECT_CREATE = "SHOW_SUBPROJECT_CREATE";
+export const HIDE_SUBPROJECT_DIALOG = "HIDE_SUBPROJECT_DIALOG";
 
-export const SHOW_SUBPROJECT_DIALOG = "SHOW_SUBPROJECT_DIALOG";
-export const CANCEL_SUBPROJECT_DIALOG = "CANCEL_SUBPROJECT_DIALOG";
-export const SHOW_SUBPROJECT_DIALOG_SUCCESS = "SHOW_SUBPROJECT_DIALOG_SUCCESS";
-
-export const SHOW_PROJECT_PERMISSIONS = "SHOW_PROJECT_PERMISSIONS";
-export const HIDE_PROJECT_PERMISSIONS = "HIDE_PROJECT_PERMISSIONS";
-
-export const GRANT_PERMISSION = "GRANT_PERMISSION";
-export const GRANT_PERMISSION_SUCCESS = "GRANT_PERMISSION_SUCCESS";
-
-export const REVOKE_PERMISSION = "REVOKE_PERMISSION";
-export const REVOKE_PERMISSION_SUCCESS = "REVOKE_PERMISSION_SUCCESS";
+export const SHOW_SUBPROJECT_EDIT = "SHOW_SUBPROJECT_EDIT";
 
 export const CREATE_SUBPROJECT = "CREATE_SUBPROJECT";
 export const CREATE_SUBPROJECT_SUCCESS = "CREATE_SUBPROJECT_SUCCESS";
+
+export const EDIT_SUBPROJECT = "EDIT_SUBPROJECT";
+export const EDIT_SUBPROJECT_SUCCESS = "EDIT_SUBPROJECT_SUCCESS";
 
 export const SUBPROJECT_NAME = "SUBPROJECT_NAME";
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
@@ -37,6 +29,51 @@ export const ASSIGN_PROJECT_SUCCESS = "ASSIGN_PROJECT_SUCCESS";
 export const FETCH_PROJECT_HISTORY = "FETCH_PROJECT_HISTORY";
 export const FETCH_PROJECT_HISTORY_SUCCESS = "FETCH_PROJECT_HISTORY_SUCCESS";
 
+export const CLOSE_PROJECT = "CLOSE_PROJECT";
+export const CLOSE_PROJECT_SUCCESS = "CLOSE_PROJECT_SUCCESS";
+export const SHOW_SUBPROJECT_PERMISSIONS = "SHOW_SUBPROJECT_PERMISSIONS";
+export const HIDE_SUBPROJECT_PERMISSIONS = "HIDE_SUBPROJECT_PERMISSIONS";
+
+export const GRANT_SUBPROJECT_PERMISSION = "GRANT_SUBPROJECT_PERMISSION";
+export const GRANT_SUBPROJECT_PERMISSION_SUCCESS = "GRANT_SUBPROJECT_PERMISSION_SUCCESS";
+
+export const REVOKE_SUBPROJECT_PERMISSION = "REVOKE_SUBPROJECT_PERMISSION";
+export const REVOKE_SUBPROJECT_PERMISSION_SUCCESS = "REVOKE_SUBPROJECT_PERMISSION_SUCCESS";
+
+export const FETCH_SUBPROJECT_PERMISSIONS = "FETCH_SUBPROJECT_PERMISSIONS";
+export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSIONS_SUCCESS";
+
+export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
+  return {
+    type: FETCH_SUBPROJECT_PERMISSIONS,
+    projectId,
+    subprojectId,
+    showLoading
+  };
+}
+
+export function grantSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
+  return {
+    type: GRANT_SUBPROJECT_PERMISSION,
+    projectId,
+    subprojectId,
+    intent,
+    user,
+    showLoading
+  };
+}
+
+export function revokeSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
+  return {
+    type: REVOKE_SUBPROJECT_PERMISSION,
+    projectId,
+    subprojectId,
+    intent,
+    user,
+    showLoading
+  };
+}
+
 export function fetchAllProjectDetails(projectId, showLoading = false) {
   return {
     type: FETCH_ALL_PROJECT_DETAILS,
@@ -52,23 +89,9 @@ export function fetchProjectHistory(projectId, showLoading = false) {
   };
 }
 
-export function showProjectAssignees() {
-  return {
-    type: SHOW_PROJECT_ASSIGNEES
-  };
-}
-
 export function hideProjectAssignees() {
   return {
     type: HIDE_PROJECT_ASSIGNEES
-  };
-}
-
-export function fetchProjectPermissions(projectId, showLoading = false) {
-  return {
-    type: FETCH_PROJECT_PERMISSIONS,
-    projectId,
-    showLoading
   };
 }
 
@@ -79,35 +102,9 @@ export function fetchProjectDetails(project) {
   };
 }
 
-export function showProjectPermissions() {
+export function showProjectAssignees() {
   return {
-    type: SHOW_PROJECT_PERMISSIONS
-  };
-}
-
-export function hideProjectPermissions() {
-  return {
-    type: HIDE_PROJECT_PERMISSIONS
-  };
-}
-
-export function grantPermission(projectId, intent, user, showLoading = false) {
-  return {
-    type: GRANT_PERMISSION,
-    projectId,
-    intent,
-    user,
-    showLoading
-  };
-}
-
-export function revokePermission(projectId, intent, user, showLoading = false) {
-  return {
-    type: REVOKE_PERMISSION,
-    projectId,
-    intent,
-    user,
-    showLoading
+    type: SHOW_PROJECT_ASSIGNEES
   };
 }
 
@@ -119,15 +116,23 @@ export function assignProject(projectId, assigneeId) {
   };
 }
 
-export function createSubProject(projectId, name, amount, comment, currency, showLoading = false) {
+export function createSubProject(projectId, name, amount, description, currency, showLoading = false) {
   return {
     type: CREATE_SUBPROJECT,
     projectId,
     name,
     amount,
-    comment,
+    description,
     currency,
     showLoading
+  };
+}
+export function editSubproject(projectId, subprojectId, changes) {
+  return {
+    type: EDIT_SUBPROJECT,
+    projectId,
+    subprojectId,
+    changes
   };
 }
 
@@ -140,13 +145,13 @@ export function storeSubProjectName(name) {
 
 export function showSubprojectDialog() {
   return {
-    type: SHOW_SUBPROJECT_DIALOG
+    type: SHOW_SUBPROJECT_CREATE
   };
 }
 
-export function onSubprojectDialogCancel() {
+export function hideSubprojectDialog() {
   return {
-    type: CANCEL_SUBPROJECT_DIALOG
+    type: HIDE_SUBPROJECT_DIALOG
   };
 }
 
@@ -164,9 +169,40 @@ export function storeSubProjectCurrency(currency) {
   };
 }
 
-export function storeSubProjectComment(comment) {
+export function storeSubProjectComment(description) {
   return {
     type: SUBPROJECT_COMMENT,
-    comment: comment
+    description
+  };
+}
+
+export function showEditDialog(id, name, description, amount, currency) {
+  return {
+    type: SHOW_SUBPROJECT_EDIT,
+    id,
+    name,
+    description,
+    amount,
+    currency
+  };
+}
+export function showSubProjectPermissions(id) {
+  return {
+    type: SHOW_SUBPROJECT_PERMISSIONS,
+    id
+  };
+}
+
+export function hideSubProjectPermissions() {
+  return {
+    type: HIDE_SUBPROJECT_PERMISSIONS
+  };
+}
+
+export function closeProject(projectId, showLoading = false) {
+  return {
+    type: CLOSE_PROJECT,
+    projectId,
+    showLoading
   };
 }

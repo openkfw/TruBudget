@@ -8,9 +8,11 @@ const en = {
     comment_description: "Add some comments",
     budget: "Budget",
     comment: "Comment",
+    edit: "Edit",
     created: "Created",
     status: "Status",
     actions: "Actions",
+    closed: "Closed",
     assigned: "Assigned",
     not_assigned: "Not assigned",
     not_assigned_budget: "Not Assigned Budget",
@@ -19,8 +21,9 @@ const en = {
     disbursed_budget: "Disbursed",
     budget_distribution: "Budget distribution",
     task_status: "Task status",
-    subprojects: "Sub-projects",
-    subproject: "Sub-project",
+    project: "Project",
+    subprojects: "Subprojects",
+    subproject: "Subproject",
     history: "History",
     close: "Close",
     open: "Open",
@@ -37,7 +40,12 @@ const en = {
     incorrect_username: "Incorrect username",
     incorrect_password: "Incorrect password",
     added: "Added",
-    search: "Search"
+    search: "Search",
+    workflowItem: "WorkflowItem",
+    show_permissions: "Show Permissions",
+    view: "View",
+    create: "Create",
+    edited: "Edited"
   },
 
   adminDashboard: {
@@ -96,7 +104,9 @@ const en = {
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_authority_organization_search: "Search organizations",
     project_authority_role_search: "Search role",
-    project_permissions_title: "Set permissions for project"
+    project_permissions_title: "Set permissions for project",
+    project_edit_title: "Edit Project",
+    project_close_info: "Disabled as long as the Subprojects aren't closed"
   },
   subproject: {
     subproject_title: "Sub-Project title",
@@ -106,10 +116,12 @@ const en = {
     subproject_comment: "Sub-project Comment",
     subproject_currency: "Sub-project Currency",
     subproject_assigned_organization: "Assigned Organization",
-    subproject_add: "Add new Sub-project",
+    subproject_add_title: "Add new Subproject",
+    subproject_edit_title: "Edit Subproject",
     subproject_select_button: "Select",
     subproject_completion_string: "{0} of {1} done",
-    subproject_permissions_title: "Set permissions for subproject"
+    subproject_permissions_title: "Set permissions for subproject",
+    subproject_close_info: "Disabled as long as the Workflowitems aren't closed"
   },
   workflow: {
     non_approval: "Non-Approval",
@@ -239,7 +251,9 @@ const en = {
     workflowitem_close: "{0} closed workflowitem {1}",
     workflowitem_grantPermission: "{0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "{0} revoked permission {1} of {3} from {2}",
-    workflowitem_assign: "{0} assigned workflowitem {1} to {2}"
+    workflowitem_assign: "{0} assigned workflowitem {1} to {2}",
+    changed_by: "{0} changed by {1}: ",
+    to: "{0} to {1}"
   },
 
   permissions: {
@@ -253,6 +267,7 @@ const en = {
     project_intent_revokePermission: "Revoke permissions",
     project_viewDetails: "View project details",
     project_viewSummary: "View project in overview",
+    project_close: "Close project",
     project_createSubproject: "Create subprojects",
     subproject_archive: "Archive subproject",
     subproject_assign: "Assign subproject",

@@ -8,18 +8,18 @@ import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import { toAmountString } from "../../helper";
 
-const ProjectCreationContent = props => {
+const ProjectDialogContent = props => {
   return (
     <div>
       <div>
         <Identifier
           nameLabel={strings.project.project_title}
           nameHintText={strings.project.project_title_description}
-          name={props.displayName}
+          name={props.projectToAdd.displayName}
           nameOnChange={props.storeProjectName}
           commentLabel={strings.project.project_comment}
           commentHintText={strings.common.comment_description}
-          comment={props.description}
+          comment={props.projectToAdd.description}
           commentOnChange={props.storeProjectComment}
         />
       </div>
@@ -27,18 +27,18 @@ const ProjectCreationContent = props => {
       <div>
         <Budget
           currencyTitle={strings.project.project_currency}
-          currency={props.currency}
+          currency={props.projectToAdd.currency}
           storeCurrency={props.storeProjectCurrency}
           budgetLabel={strings.project.project_budget_amount}
           budgetHintText={strings.project.project_budget_amount_description + " " + toAmountString(99999.99)}
-          budget={props.amount}
+          budget={props.projectToAdd.amount}
           storeBudget={props.storeProjectAmount}
         />
       </div>
       <Divider />
-      <ImageSelector onTouchTap={props.storeProjectThumbnail} selectedImage={props.thumbnail} />
+      <ImageSelector onTouchTap={props.storeProjectThumbnail} selectedImage={props.projectToAdd.thumbnail} />
     </div>
   );
 };
 
-export default ProjectCreationContent;
+export default ProjectDialogContent;

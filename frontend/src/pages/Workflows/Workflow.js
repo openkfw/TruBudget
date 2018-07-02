@@ -6,7 +6,6 @@ import ContentAdd from "@material-ui/icons/Add";
 import HistoryIcon from "@material-ui/icons/Reorder";
 
 import WorkflowTable from "./WorkflowTable";
-import WorkflowCreation from "./WorkflowCreation";
 import { canCreateWorkflowItems } from "../../permissions";
 
 const Workflow = props => {
@@ -20,9 +19,6 @@ const Workflow = props => {
     >
       <Card>
         <WorkflowTable {...props} />
-        <div>
-          <WorkflowCreation {...props} />
-        </div>
       </Card>
       <div
         style={{
@@ -39,7 +35,7 @@ const Workflow = props => {
         <Button
           disabled={props.workflowSortEnabled ? props.workflowSortEnabled : !allowedToCreateWorkflows}
           color="primary"
-          onClick={() => props.openWorkflowDialog(false)}
+          onClick={() => props.showCreateDialog()}
           variant="fab"
           style={{
             position: "relative"

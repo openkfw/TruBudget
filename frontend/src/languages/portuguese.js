@@ -36,7 +36,15 @@ const pt = {
     password: "Senha",
     incorrect_username: "Usuário incorreto",
     incorrect_password: "Senha incorreta",
-    added: "Adicionado"
+    added: "Adicionado",
+    edit: "Portuguese: Edit",
+    workflowItem: "Portuguese: WorkflowItem",
+    project: "Portuguese: Project",
+    closed: "Portuguese: Closed",
+    show_permissions: "Portuguese: Show Permissions",
+    view: "Portuguese: View",
+    create: "Portuguese: Create",
+    edited: "Portuguese: Edited"
   },
 
   adminDashboard: {
@@ -96,7 +104,9 @@ const pt = {
       "As autoridades competentes para aprovar as transações financeiras",
     project_authority_organization_search: "Pesquisar organizações",
     project_authority_role_search: "Pesquisar papéis",
-    project_permissions_title: "Portuguese: Set permissions for project"
+    project_permissions_title: "Portuguese: Set permissions for project",
+    project_edit_title: "Portuguese: Edit Project",
+    project_close_info: "Portuguese: Disabled as long as the Subprojects aren't closed"
   },
   subproject: {
     subproject_title: "Nome do subprojeto",
@@ -106,10 +116,12 @@ const pt = {
     subproject_comment: "Comentário do subprojeto",
     subproject_currency: "Moeda do subprojeto",
     subproject_assigned_organization: "Organização responsável",
-    subproject_add: "Criar novo subprojeto",
+    subproject_add_title: "Criar novo subprojeto",
     subproject_select_button: "Selecionar",
     subproject_completion_string: "{0} de {1} finalizado",
-    subproject_permissions_title: "Portuguese: Set permissions for subproject"
+    subproject_permissions_title: "Portuguese: Set permissions for subproject",
+    subproject_close_info: "Portuguese: Disabled as long as the Workflowitems aren't closed",
+    subproject_edit_title: "Portuguese: Edit Subproject"
   },
   workflow: {
     non_approval: "Aprovação desnecessária",
@@ -239,19 +251,22 @@ const pt = {
     workflowitem_close: "Portuguese: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "Portuguese: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "Portuguese: {0} revoked permission {1} of {3} from {2}",
-    workflowitem_assign: "Portuguese: {0} assigned workflowitem {1} to {2}"
+    workflowitem_assign: "Portuguese: {0} assigned workflowitem {1} to {2}",
+    changed_by: "Portuguese: {0} changed by {1}: ",
+    to: "Portuguese: {0} to {1}"
   },
   permissions: {
     read_only: "Portuguese: Read-only permissions",
     view: "Portuguese: View permissions",
     write: "Portuguese: Write permissions",
-    admin: "Pt :Admin permissions",
+    admin: "Portuguese: Admin permissions",
     project_assign: "Portuguese: Assign project to others",
     project_intent_grantPermission: "Portuguese: Grant permissions",
     project_intent_listPermissions: "Portuguese: View permissions",
     project_intent_revokePermission: "Portuguese: Revoke permissions",
     project_viewDetails: "Portuguese: View project details",
     project_viewSummary: "Portuguese: View project in overview",
+    project_close: "Portuguese: Close project",
     project_createSubproject: "Portuguese: Create subprojects",
     subproject_archive: "Portuguese: Archive subproject",
     subproject_assign: "Portuguese: Assign subproject",
