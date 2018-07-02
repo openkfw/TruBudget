@@ -558,6 +558,7 @@ export const schoolProject = {
         {
           displayName: "Progress report",
           assignee: "jdoe",
+          amount: 5000000,
           currency: "EUR",
           amountType: "allocated",
         },
@@ -617,6 +618,7 @@ export const schoolProject = {
           displayName: "Progress report",
           assignee: "jdoe",
           currency: "EUR",
+          amount: 3000000,
           amountType: "allocated",
         },
         {
