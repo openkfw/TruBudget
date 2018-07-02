@@ -76,7 +76,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
     const editDisabled = !(canEditProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     return (
-      <Card aria-label="project" key={index} className={classes.card} data-test="projectcard">
+      <Card aria-label="project" key={index} className={classes.card} data-test={`projectcard-${index}`}>
         <CardMedia className={classes.media} image={imagePath} />
         <CardActions
           style={{
@@ -126,7 +126,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                 <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
                   <div>
                     <IconButton
-                      data-test="pp-button"
+                      data-test={`pp-button-${index}`}
                       className={classes.editIcon}
                       disabled={!canViewPermissions}
                       onClick={() => showProjectPermissions(id)}
