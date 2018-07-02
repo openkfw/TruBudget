@@ -118,7 +118,10 @@ const WorkflowDialog = props => {
     {
       title: strings.workflow.workflow_documents,
       content: <DocumentUpload addDocument={addDocument} workflowDocuments={workflowDocuments} />,
-      nextDisabled: !_isEmpty(changes)
+      nextDisabled:
+        workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
+          ? Object.keys(changes).length === 2 && changes.hasOwnProperty("currency") && changes.hasOwnProperty("amount")
+          : _isEmpty(changes)
     }
   ];
   return (

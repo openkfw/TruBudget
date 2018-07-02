@@ -74,26 +74,28 @@ class WorkflowDialogAmount extends Component {
             />
           </RadioGroup>
         </div>
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center"
-          }}
-        >
-          <Budget
-            currencyTitle={strings.project.project_currency}
-            currency={workflowCurrency}
-            storeCurrency={storeWorkflowCurrency}
-            parentCurrency={subProjectCurrency}
-            budgetLabel={floatingLabelText}
-            budgetHintText={hintText + " " + toAmountString(99999.99)}
-            budget={workflowAmount}
-            storeBudget={storeWorkflowAmount}
-            disabled={budgetDisabled}
-          />
-        </div>
+        {!budgetDisabled ? (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center"
+            }}
+          >
+            <Budget
+              currencyTitle={strings.project.project_currency}
+              currency={workflowCurrency}
+              storeCurrency={storeWorkflowCurrency}
+              parentCurrency={subProjectCurrency}
+              budgetLabel={floatingLabelText}
+              budgetHintText={hintText + " " + toAmountString(99999.99)}
+              budget={workflowAmount}
+              storeBudget={storeWorkflowAmount}
+              disabled={budgetDisabled}
+            />
+          </div>
+        ) : null}
       </div>
     );
   }

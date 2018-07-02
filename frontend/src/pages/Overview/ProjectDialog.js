@@ -57,11 +57,10 @@ const ProjectDialog = props => {
     {
       title: strings.project.project_details,
       content: <ProjectDialogContent {...props} />,
-      nextDisabled: !(
+      nextDisabled:
         _isEmpty(displayName) ||
         _isEmpty(description) ||
         ((_isEmpty(amount) && isNaN(parseFloat(amount))) || _isEmpty(changes))
-      )
     }
   ];
 
