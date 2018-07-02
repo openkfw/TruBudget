@@ -49,7 +49,6 @@ export async function getNodeList(
   const myAddress = req.token.organizationAddress;
 
   const list: NodeInfoDto[] = nodes.map(info => dtoFromNodeInfo(info, myAddress));
-
   return [
     200,
     {
