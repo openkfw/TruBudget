@@ -38,7 +38,11 @@ const de = {
     show_permissions: "German: Show Permissions",
     view: "German: View",
     create: "German: Create",
-    edited: "German: Edited"
+    edited: "German: Edited",
+    username: "Username",
+    password: "Password",
+    incorrect_username: "Incorrect username",
+    incorrect_password: "Incorrect password"
   },
 
   login: {
@@ -46,10 +50,7 @@ const de = {
     environment: "Environment",
     test_env: "Test",
     production_env: "Prod",
-    username: "Username",
-    password: "Password",
-    incorrect_username: "Incorrect username",
-    incorrect_password: "Incorrect password",
+
     accenture_tag: "Developed by Emerging Technologies & Innovation @ Accenture",
     login_button_title: "Login"
   },
@@ -126,6 +127,17 @@ const de = {
     workflow_budget: "Workflow budget amount",
     workflow_budget_description: "z_B_",
     workflow_submit_for_review: "Submit for Review"
+  },
+
+  adminDashboard: {
+    users: "German: Users",
+    nodes: "German: Nodes",
+    full_name: "German: Full Name",
+    new_user: "German: New User",
+    organization: "German: Organization",
+    id: "German: Id",
+    name: "German: Name",
+    access: "German: Access"
   },
 
   navigation: {

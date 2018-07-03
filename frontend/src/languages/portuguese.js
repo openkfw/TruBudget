@@ -46,30 +46,15 @@ const pt = {
     create: "Portuguese: Create",
     edited: "Portuguese: Edited"
   },
-
   adminDashboard: {
-    role_name_error: "Nome do papel incorreto",
-    role_organization_error: "Organização incorreta",
-    roles: "Papéis",
-    role: "Papel",
-    new_role: "Novo papel",
     users: "Usuários",
     nodes: "Nós",
-    organization: "Organização",
-    id: "ID",
-    read: "Leitura",
-    write: "Escrita",
-    admin: "Admin",
-    name: "Nome",
     full_name: "Nome completo",
-    incorrect_full_name: "Nome completo incorreto",
-    role_not_exist_error: "Papel inexistente",
     new_user: "Novo usuário",
-    country: "País",
-    address: "Endereço",
-    admin_login: "Admin Login",
-    title: "Admin Dashboard",
-    user_not_authorized: "Você não está autorizado a executar esta ação"
+    organization: "Organização",
+    id: "Id",
+    name: "Nome",
+    access: "Portuguese: Access"
   },
 
   login: {
@@ -187,6 +172,7 @@ const pt = {
     projects_site: "Projetos",
     menu_item_users: "Portuguese: Users"
   },
+
   dashboard: {
     dashboard_title: "Painel da rede blockchain",
     dashboard_subtitle: "Nós conectados na rede blockchain",

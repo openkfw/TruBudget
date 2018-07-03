@@ -6,33 +6,49 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/InfoOutline";
+import { Icon } from "@material-ui/core";
+import strings from "../../localizeStrings";
 
-const OrganisationsTable = ({ nodes }) => {
-  console.log(nodes);
+const groupBy = nodes => {
+  return nodes.reduce((acc, node) => {
+    const key = node.address.organization;
+    const index = acc.findIndex(x => x.organization === key);
+    if (index === -1) {
+      acc.push({ organization: key, count: 1, permissions: node.currentAccess.accessType });
+    } else {
+      acc[index].count += 1;
+      acc[index].permissions = acc[index].permissions.concat(`, ${node.currentAccess.accessType}`);
+    }
+    return acc;
+  }, []);
+};
+
+const NodesTable = ({ nodes }) => {
+  const groupedNodes = groupBy(nodes);
   return (
     <Table>
       <TableHead>
         <TableRow>
-          {/* <TableCell /> */}
-          <TableCell>Organization</TableCell>
-          <TableCell>Address</TableCell>
-          <TableCell>Access</TableCell>
+          <TableCell>{strings.adminDashboard.organization}</TableCell>
+          <TableCell>{strings.adminDashboard.nodes}</TableCell>
+          <TableCell>{strings.adminDashboard.access}</TableCell>
+          <TableCell />
         </TableRow>
       </TableHead>
       <TableBody>
-        {nodes.map(node => {
+        {groupedNodes.map(nodeGroup => {
           return (
-            <TableRow key={node.address.address}>
-              {/* <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
-                <IconButton onClick={() => console.log("node clicked")}>
+            <TableRow key={nodeGroup.organization}>
+              <TableCell component="th" scope="row">
+                {nodeGroup.organization}
+              </TableCell>
+              <TableCell> {nodeGroup.count} </TableCell>
+              <TableCell> {nodeGroup.permissions}</TableCell>
+              <TableCell>
+                <IconButton onClick={() => console.log("jow")}>
                   <InfoIcon />
                 </IconButton>
-              </div> */}
-              <TableCell component="th" scope="row">
-                {node.address.organization}
               </TableCell>
-              <TableCell> {node.address.address} </TableCell>
-              <TableCell> {node.currentAccess.accessType}</TableCell>
             </TableRow>
           );
         })}
@@ -40,4 +56,4 @@ const OrganisationsTable = ({ nodes }) => {
     </Table>
   );
 };
-export default OrganisationsTable;
+export default NodesTable;

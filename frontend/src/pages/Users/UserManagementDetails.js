@@ -69,6 +69,9 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around"
+  },
+  textInput: {
+    width: "50%"
   }
 };
 
@@ -107,7 +110,7 @@ const UserManagementDetails = ({
         <CardContent style={styles.cardContent}>
           <div style={styles.textInputContainer}>
             <TextInputWithIcon
-              style={{ width: "50%" }}
+              style={styles.textInput}
               label={strings.adminDashboard.full_name}
               value={displayName}
               error={false}
@@ -115,7 +118,7 @@ const UserManagementDetails = ({
               onChange={event => setDisplayName(event.target.value)}
             />
             <TextInputWithIcon
-              style={{ width: "50%" }}
+              style={styles.textInput}
               label={strings.adminDashboard.organization}
               value={organization}
               disabled={true}
@@ -157,7 +160,7 @@ const UserManagementDetails = ({
         </CardActions>
       </Card>
       <Card style={styles.nodeCard}>
-        <CardHeader title={"Open Votes"} />
+        <CardHeader title={"Open Votes (Mock)"} />
         <CardContent>
           <List>
             <ListItem>

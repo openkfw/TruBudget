@@ -4,16 +4,16 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import blueGrey from "@material-ui/core/colors/blueGrey";
+import strings from "../../localizeStrings";
 
 const UsersTable = ({ users }) => {
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>Organization</TableCell>
-          <TableCell>Id</TableCell>
-          <TableCell>Display name</TableCell>
+          <TableCell>{strings.adminDashboard.organization}</TableCell>
+          <TableCell>{strings.adminDashboard.id}</TableCell>
+          <TableCell>{strings.adminDashboard.name}</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

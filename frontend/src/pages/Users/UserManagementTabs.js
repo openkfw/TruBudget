@@ -5,8 +5,9 @@ import Tabs from "@material-ui/core/Tabs";
 
 import UsersTable from "./UsersTable";
 import NodesTable from "./NodesTable";
-import { Typography } from "@material-ui/core";
 import blueGrey from "@material-ui/core/colors/blueGrey";
+import { withStyles } from "@material-ui/core";
+import strings from "../../localizeStrings";
 
 const styles = {
   tabs: {
@@ -14,33 +15,27 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     backgroundColor: blueGrey[50]
+  },
+  container: {
+    backgroundColor: "white"
   }
 };
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
-}
 
-const UserManagementTabs = ({ tabIndex, switchTabs, users, nodes, ...rest }) => (
-  <div style={{ backgroundColor: "white" }}>
+const UserManagementTabs = ({ tabIndex, switchTabs, users, nodes, classes, ...rest }) => (
+  <div className={classes.container}>
     <Tabs
       indicatorColor="primary"
       textColor="primary"
-      style={styles.tabs}
+      className={classes.tabs}
       value={tabIndex}
-      onChange={(event, value) => switchTabs(value)}
+      onChange={(_, value) => switchTabs(value)}
     >
-      {/* <Tab label="Organisation" /> */}
-      <Tab label="Users" />
-      <Tab label="Nodes" />
+      <Tab label={strings.adminDashboard.users} />
+      <Tab label={strings.adminDashboard.nodes} />
     </Tabs>
-    {/* {tabIndex === 0 && <TabContainer>Item One</TabContainer>} */}
     {tabIndex === 0 && <UsersTable users={users} />}
     {tabIndex === 1 && <NodesTable nodes={nodes} />}
   </div>
 );
 
-export default UserManagementTabs;
+export default withStyles(styles)(UserManagementTabs);
