@@ -1,6 +1,7 @@
 import { MultichainClient } from "../multichain/Client.h";
 import { Organization, WalletAddress } from "../network/model/Nodes";
 import { organizationStreamName, usersStreamName } from "./streamNames";
+import { getPrivKey, setPrivKey } from "./vault";
 
 interface GetaddressesItem {
   address: string;
@@ -24,13 +25,14 @@ interface VaultItem {
 export async function ensureOrganizationStreams(
   multichain: MultichainClient,
   organization: Organization,
+  organizationVaultSecret: string,
 ): Promise<void> {
   await multichain.getOrCreateStream({
     kind: "organization",
     name: organizationStreamName(organization),
   });
 
-  await ensureOrganizationAddress(multichain, organization);
+  await ensureOrganizationAddress(multichain, organization, organizationVaultSecret);
 
   await multichain.getOrCreateStream({
     kind: "users",
@@ -41,15 +43,22 @@ export async function ensureOrganizationStreams(
 async function ensureOrganizationAddress(
   multichain: MultichainClient,
   organization: Organization,
+  organizationVaultSecret: string,
 ): Promise<void> {
   const addressFromStream = await getOrganizationAddress(multichain, organization);
   if (addressFromStream) {
     // The organization already has its address set -> no need to use the local wallet
     // address.
     console.log(`Existing organization address found: ${addressFromStream}`);
-    // console.log(`Importing private key..`);
-    // await multichain.getRpcClient().invoke("importprivkey", addressFromStream.privkey);
-    // console.log(`${addressFromStream.address} is ready to be used in transactions.`);
+    console.log(`Importing private key..`);
+    const privkey = await getPrivKey(
+      multichain,
+      organization,
+      organizationVaultSecret,
+      addressFromStream,
+    );
+    await multichain.getRpcClient().invoke("importprivkey", privkey);
+    console.log(`${addressFromStream} is ready to be used in transactions.`);
   } else {
     // Find the local wallet address and use it as the organization address:
     const addressFromWallet = await multichain
@@ -65,6 +74,7 @@ async function ensureOrganizationAddress(
     if (!addressFromWallet) throw Error("Could not obtain wallet address!");
 
     const privkey = await multichain.getRpcClient().invoke("dumpprivkey", addressFromWallet);
+    await setPrivKey(multichain, organization, organizationVaultSecret, addressFromWallet, privkey);
 
     console.log(`Initializing organization address to local wallet address: ${addressFromWallet}`);
     const streamName = organizationStreamName(organization);

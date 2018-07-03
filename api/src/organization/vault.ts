@@ -70,7 +70,7 @@ async function writeVault(
   const dataHexString = vaultToHexString(organizationVaultSecret, vault);
 
   const streamName = organizationStreamName(organization);
-  await multichain.setValue(streamName, [streamVaultKey], dataHexString);
+  await multichain.getRpcClient().invoke("publish", streamName, streamVaultKey, dataHexString);
 }
 
 // only exported for testing

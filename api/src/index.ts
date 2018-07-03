@@ -33,6 +33,13 @@ if (!organization) {
   winston.error(`Please set ORGANIZATION to the organization this node belongs to.`);
   process.exit(1);
 }
+const organizationVaultSecret: string | undefined = process.env.ORGANIZATION_VAULT_SECRET;
+if (!organizationVaultSecret) {
+  winston.error(
+    `Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.`,
+  );
+  process.exit(1);
+}
 
 /*
  * Initialize the components:
@@ -72,7 +79,9 @@ app.listen(port, err => {
   console.log(`server is listening on ${port}`);
 
   waitUntilReady(port)
-    .then(() => ensureOrganizationStreams(multichainClient, organization!))
+    .then(() =>
+      ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!),
+    )
     .then(() => {
       winston.info("Starting deployment pipeline...");
       return provisionBlockchain(port, rootSecret, multichainClient)
