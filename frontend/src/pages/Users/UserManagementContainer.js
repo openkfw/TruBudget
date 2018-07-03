@@ -16,7 +16,7 @@ import {
   fetchNodes
 } from "./actions";
 import { fetchUser } from "../Login/actions";
-// import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
+import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 
 class UserManagementContainer extends Component {
   componentWillMount() {
@@ -56,9 +56,10 @@ const mapDispatchToProps = dispatch => {
     setUsername: username => dispatch(setUsername(username)),
     setPassword: password => dispatch(setPassword(password)),
     createUser: (displayName, organization, username, password) =>
-      dispatch(createUser(displayName, organization, username, password))
-    // showErrorSnackbar: () => dispatch(showSnackbar(true, true)),
-    // storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
+      dispatch(createUser(displayName, organization, username, password)),
+    showErrorSnackbar: () => dispatch(showSnackbar(true)),
+    showSnackbar: () => dispatch(showSnackbar()),
+    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };
 

@@ -15,6 +15,7 @@ const Username = ({ username, storeUsername, failed, ...props }) => {
       error={failed}
       icon={<UsernameIcon />}
       onChange={event => storeUsername(event.target.value)}
+      helperText={failed ? strings.common.incorrect_username : null}
       {...props}
     />
   );

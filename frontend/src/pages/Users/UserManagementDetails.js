@@ -81,14 +81,17 @@ const handleCreate = (
   password,
   username,
   createUser,
+  showSnackbar,
   showErrorSnackbar,
   storeSnackbarMessage
 ) => {
   if (displayName && organization && username && password) {
     createUser(displayName, organization, username, password);
+    storeSnackbarMessage("User successfully created...");
+    showSnackbar();
   } else {
-    // storeSnackbarMessage("Enter required information");
-    // showErrorSnackbar();
+    storeSnackbarMessage("Enter required information");
+    showErrorSnackbar();
   }
 };
 const UserManagementDetails = ({
@@ -100,7 +103,8 @@ const UserManagementDetails = ({
   createUser,
   showErrorSnackbar,
   storeSnackbarMessage,
-  organization
+  organization,
+  showSnackbar
 }) => {
   const { displayName, password, username } = userToAdd;
   return (
@@ -149,13 +153,13 @@ const UserManagementDetails = ({
                 password,
                 username,
                 createUser,
+                showSnackbar,
                 showErrorSnackbar,
                 storeSnackbarMessage
               )
             }
           >
-            {/* {strings.common.create} */}
-            {"Create "}
+            {strings.common.create}
           </Button>
         </CardActions>
       </Card>
