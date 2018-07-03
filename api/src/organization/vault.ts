@@ -3,6 +3,7 @@ import * as winston from "winston";
 import { MultichainClient } from "../multichain";
 import { WalletAddress } from "../network/model/Nodes";
 import { organizationStreamName } from "./streamNames";
+import logger from "../lib/logger";
 
 export type Vault = object;
 type PrivateKey = string;
@@ -57,6 +58,7 @@ async function readVault(
   if (vaultStreamItem === undefined) return {};
 
   const dataHexString = vaultStreamItem.data;
+  logger.trace("read hex string from chain: %s", dataHexString);
 
   return vaultFromHexString(organizationVaultSecret, dataHexString);
 }
@@ -71,6 +73,7 @@ async function writeVault(
 
   const streamName = organizationStreamName(organization);
   await multichain.getRpcClient().invoke("publish", streamName, streamVaultKey, dataHexString);
+  logger.trace("wrote hex string to chain: %s", dataHexString);
 }
 
 // only exported for testing
