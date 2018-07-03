@@ -39,6 +39,7 @@
     "express": "^4.16.3",
     "express-jwt": "^5.3.1",
     "jsonwebtoken": "^8.2.1",
+    "sodium-native": "^2.1.6",
     "uuid": "^3.2.1",
     "uuid4": "^1.0.0",
     "winston": "^3.0.0-rc5"

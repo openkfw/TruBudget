@@ -1,48 +1,128 @@
+import * as sodium from "sodium-native";
+import * as winston from "winston";
 import { MultichainClient } from "../multichain";
 import { WalletAddress } from "../network/model/Nodes";
 import { organizationStreamName } from "./streamNames";
 
-async function getPrivKey(
+export type Vault = object;
+type PrivateKey = string;
+
+const streamVaultKey = "vault";
+
+/*
+ * API
+ */
+
+export async function getPrivKey(
   multichain: MultichainClient,
   organization: string,
   organizationVaultSecret: string,
   address: WalletAddress,
-) {
-  const rpc = multichain.getRpcClient();
+): Promise<PrivateKey> {
+  const vault = await readVault(multichain, organization, organizationVaultSecret);
 
-  const stream = organizationStreamName(organization);
-  const vaultCiphertext = await multichain
-    .v2_readStreamItems(stream, "vault", 1)
-    .then(items => items.find(_ => true));
-  if (vaultCiphertext === undefined)
+  if (vault === undefined || !vault[address]) {
     throw Error(`privkey not found for ${organization}/${address}`);
+  }
 
-  const vault = decrypt(vaultCiphertext);
+  return vault[address];
 }
 
-// const sodium = require("sodium-native")
+export async function setPrivKey(
+  multichain: MultichainClient,
+  organization: string,
+  organizationVaultSecret: string,
+  address: WalletAddress,
+  privKey: PrivateKey,
+) {
+  const vault = (await readVault(multichain, organization, organizationVaultSecret)) || {};
+  vault[address] = privKey;
+  await writeVault(multichain, organization, organizationVaultSecret, vault);
+}
 
-// const secret = (process.env.SECRET || "").slice(0, sodium.crypto_secretbox_KEYBYTES)
-// console.log("KEYBYTES LEN", sodium.crypto_secretbox_KEYBYTES)
-// console.log("SECRET", secret)
+/*
+ * PRIVATE
+ */
 
-// const key = Buffer.alloc(sodium.crypto_secretbox_KEYBYTES)
-// key.write(secret)
+async function readVault(
+  multichain: MultichainClient,
+  organization: string,
+  organizationVaultSecret: string,
+): Promise<Vault> {
+  const streamName = organizationStreamName(organization);
+  const vaultStreamItem = await multichain
+    .v2_readStreamItems(streamName, streamVaultKey, 1)
+    .then(items => items.find(_ => true));
 
-// const nonce = Buffer.alloc(sodium.crypto_secretbox_NONCEBYTES)
-// sodium.randombytes_buf(nonce)
+  if (vaultStreamItem === undefined) return {};
 
-// const message = Buffer.from("Hello, World!")
+  const dataHexString = vaultStreamItem.data;
 
-// const cipher = Buffer.alloc(message.length + sodium.crypto_secretbox_MACBYTES)
-// sodium.crypto_secretbox_easy(cipher, message, nonce, key)
+  return vaultFromHexString(organizationVaultSecret, dataHexString);
+}
 
-// console.log("encrypted:", cipher)
+async function writeVault(
+  multichain: MultichainClient,
+  organization: string,
+  organizationVaultSecret: string,
+  vault: Vault,
+): Promise<void> {
+  const dataHexString = vaultToHexString(organizationVaultSecret, vault);
 
-// const plaintext = Buffer.alloc(cipher.length - sodium.crypto_secretbox_MACBYTES)
+  const streamName = organizationStreamName(organization);
+  await multichain.setValue(streamName, [streamVaultKey], dataHexString);
+}
 
-// if (!sodium.crypto_secretbox_open_easy(plaintext, cipher, nonce, key)) {
-//   console.log('Decryption failed!')
-// } else {
-//   console.log('Decrypted message:', plaintext, '(' + plaintext.toString() + ')')
-// }
+// only exported for testing
+export function vaultFromHexString(organizationVaultSecret: string, dataHexString: string): Vault {
+  // The nonce/salt is prepended to the actual ciphertext:
+  const dataBuffer = Buffer.from(dataHexString, "hex");
+  const nonceBuffer = dataBuffer.slice(0, sodium.crypto_secretbox_NONCEBYTES);
+  const cipherBuffer = dataBuffer.slice(sodium.crypto_secretbox_NONCEBYTES);
+
+  const keyBuffer = toKeyBuffer(organizationVaultSecret);
+
+  const plaintextBuffer = Buffer.alloc(cipherBuffer.length - sodium.crypto_secretbox_MACBYTES);
+  if (!sodium.crypto_secretbox_open_easy(plaintextBuffer, cipherBuffer, nonceBuffer, keyBuffer)) {
+    throw Error("Vault decryption failed!");
+  }
+
+  const vaultString = plaintextBuffer.toString();
+  const vault: Vault = JSON.parse(vaultString);
+  return vault;
+}
+
+// only exported for testing
+export function vaultToHexString(organizationVaultSecret: string, vault: Vault): string {
+  const vaultString = JSON.stringify(vault);
+  const plaintextBuffer = Buffer.from(vaultString);
+
+  // The nonce/salt will be prepended to the ciphertext:
+  const dataBuffer = Buffer.alloc(
+    sodium.crypto_secretbox_NONCEBYTES + sodium.crypto_secretbox_MACBYTES + vaultString.length,
+  );
+
+  // A new nonce/salt is used every time the vault is updated:
+  const nonceBuffer = dataBuffer.slice(0, sodium.crypto_secretbox_NONCEBYTES);
+  sodium.randombytes_buf(nonceBuffer);
+
+  const keyBuffer = toKeyBuffer(organizationVaultSecret);
+
+  const cipherBuffer = dataBuffer.slice(sodium.crypto_secretbox_NONCEBYTES);
+  sodium.crypto_secretbox_easy(cipherBuffer, plaintextBuffer, nonceBuffer, keyBuffer);
+
+  return dataBuffer.toString("hex");
+}
+
+function toKeyBuffer(secret: string): Buffer {
+  if (secret.length > sodium.crypto_secretbox_KEYBYTES) {
+    winston.warn(
+      `truncate secret with length ${secret.length} to length ${sodium.crypto_secretbox_KEYBYTES}`,
+    );
+  }
+
+  const key = Buffer.alloc(sodium.crypto_secretbox_KEYBYTES);
+  key.write(secret.slice(0, sodium.crypto_secretbox_KEYBYTES));
+
+  return key;
+}
