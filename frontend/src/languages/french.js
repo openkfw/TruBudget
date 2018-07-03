@@ -140,7 +140,8 @@ const fr = {
     organization: "French: Organization",
     id: "French: Id",
     name: "French: Name",
-    access: "French: Access"
+    access: "French: Access",
+    user_created: "French: User successfully created"
   },
   navigation: {
     unread_notifications: "Notifications non-lues",

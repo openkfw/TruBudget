@@ -4,9 +4,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/InfoOutline";
-import { Icon } from "@material-ui/core";
+// import IconButton from "@material-ui/core/IconButton";
+// import InfoIcon from "@material-ui/icons/InfoOutline";
+// import { Icon } from "@material-ui/core";
 import strings from "../../localizeStrings";
 
 const groupBy = nodes => {
@@ -32,7 +32,6 @@ const NodesTable = ({ nodes }) => {
           <TableCell>{strings.adminDashboard.organization}</TableCell>
           <TableCell>{strings.adminDashboard.nodes}</TableCell>
           <TableCell>{strings.adminDashboard.access}</TableCell>
-          <TableCell />
         </TableRow>
       </TableHead>
       <TableBody>
@@ -44,11 +43,6 @@ const NodesTable = ({ nodes }) => {
               </TableCell>
               <TableCell> {nodeGroup.count} </TableCell>
               <TableCell> {nodeGroup.permissions}</TableCell>
-              <TableCell>
-                <IconButton onClick={() => console.log("jow")}>
-                  <InfoIcon />
-                </IconButton>
-              </TableCell>
             </TableRow>
           );
         })}

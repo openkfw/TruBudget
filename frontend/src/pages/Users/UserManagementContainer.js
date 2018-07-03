@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import UserManagement from "./UserManagement";
-import NotFound from "../NotFound/NotFound";
+import NotAuthorized from "../Error/NotAuthorized";
 import { canViewUserManagement } from "../../permissions";
 import {
   switchTabs,
@@ -13,7 +13,8 @@ import {
   setDisplayName,
   setOrganization,
   createUser,
-  fetchNodes
+  fetchNodes,
+  resetUserToAdd
 } from "./actions";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
@@ -23,15 +24,16 @@ class UserManagementContainer extends Component {
     this.props.fetchUser();
     this.props.fetchNodes();
   }
-
+  componentWillUnmount() {
+    this.props.resetState();
+  }
   render() {
-    //TODO: Change the intents to a more fine grain list
-    // const canView = canViewUserManagement(this.props.allowedIntents);
-    // if (canView) {
-    return <UserManagement {...this.props} />;
-    // } else {
-    //   return <NotFound />;
-    // }
+    const canView = canViewUserManagement(this.props.allowedIntents);
+    if (canView) {
+      return <UserManagement {...this.props} />;
+    } else {
+      return <NotAuthorized />;
+    }
   }
 }
 
@@ -59,7 +61,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(createUser(displayName, organization, username, password)),
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
     showSnackbar: () => dispatch(showSnackbar()),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
+    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
+    resetState: () => dispatch(resetUserToAdd())
   };
 };
 

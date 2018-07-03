@@ -56,7 +56,8 @@ const en = {
     organization: "Organization",
     id: "Id",
     name: "Name",
-    access: "Access"
+    access: "Access",
+    user_created: "User successfully created"
   },
 
   login: {

@@ -11,6 +11,7 @@ export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
 export const FETCH_NODES = "FETCH_NODES";
 export const FETCH_NODES_SUCCESS = "FETCH_NODES_SUCCESS";
 
+export const RESET_USER = "RESET_USER";
 export function switchTabs(index) {
   return {
     type: SWITCH_TABS,
@@ -25,6 +26,11 @@ export function fetchNodes(showLoading = false) {
   };
 }
 
+export function resetUserToAdd() {
+  return {
+    type: RESET_USER
+  };
+}
 export function setDisplayName(displayName) {
   return {
     type: SET_DISPLAYNAME,

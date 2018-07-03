@@ -3,23 +3,27 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardActions from "@material-ui/core/CardActions";
-import IconButton from "@material-ui/core/IconButton";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
-import Typography from "@material-ui/core/Typography";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import ThumbUp from "@material-ui/icons/ThumbUp";
-import ThumbDown from "@material-ui/icons/ThumbDown";
+
+import isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
+
+// import IconButton from "@material-ui/core/IconButton";
+// import Typography from "@material-ui/core/Typography";
+// import List from "@material-ui/core/List";
+// import ListItem from "@material-ui/core/ListItem";
+// import ListItemText from "@material-ui/core/ListItemText";
+// import Divider from "@material-ui/core/Divider";
+// import ThumbUp from "@material-ui/icons/ThumbUp";
+// import ThumbDown from "@material-ui/icons/ThumbDown";
+
 const styles = {
   container: {
     marginTop: 40,
@@ -32,7 +36,7 @@ const styles = {
     paddingBottom: "20px"
   },
   card: {
-    width: "55%",
+    width: "100%",
     paddingBottom: "20px"
   },
   cardDiv: {
@@ -87,7 +91,7 @@ const handleCreate = (
 ) => {
   if (displayName && organization && username && password) {
     createUser(displayName, organization, username, password);
-    storeSnackbarMessage("User successfully created...");
+    storeSnackbarMessage(strings.adminDashboard.user_created);
     showSnackbar();
   } else {
     storeSnackbarMessage("Enter required information");
@@ -146,6 +150,7 @@ const UserManagementDetails = ({
           <Button
             variant="contained"
             color="primary"
+            disabled={isEmpty(displayName) || isEmpty(organization) || isEmpty(username) || isEmpty(password)}
             onClick={() =>
               handleCreate(
                 displayName,
@@ -163,7 +168,7 @@ const UserManagementDetails = ({
           </Button>
         </CardActions>
       </Card>
-      <Card style={styles.nodeCard}>
+      {/* <Card style={styles.nodeCard}>
         <CardHeader title={"Open Votes (Mock)"} />
         <CardContent>
           <List>
@@ -205,7 +210,7 @@ const UserManagementDetails = ({
             <Divider />
           </List>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };

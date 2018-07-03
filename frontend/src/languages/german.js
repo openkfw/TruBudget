@@ -137,7 +137,8 @@ const de = {
     organization: "German: Organization",
     id: "German: Id",
     name: "German: Name",
-    access: "German: Access"
+    access: "German: Access",
+    user_created: "German: User successfully created"
   },
 
   navigation: {

@@ -4,9 +4,15 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
+import _sortBy from "lodash/sortBy";
 import strings from "../../localizeStrings";
 
+const sortUsers = users => {
+  return _sortBy(users, user => user.organization && user.id);
+};
 const UsersTable = ({ users }) => {
+  const sortedUsers = sortUsers(users);
+
   return (
     <Table>
       <TableHead>
@@ -17,14 +23,14 @@ const UsersTable = ({ users }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {users.map(user => {
+        {sortedUsers.map(user => {
           return (
             <TableRow key={user.id}>
               <TableCell component="th" scope="row">
                 {user.organization}
               </TableCell>
-              <TableCell> {user.id} </TableCell>
-              <TableCell> {user.displayName}</TableCell>
+              <TableCell>{user.id} </TableCell>
+              <TableCell>{user.displayName}</TableCell>
             </TableRow>
           );
         })}

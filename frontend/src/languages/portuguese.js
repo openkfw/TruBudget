@@ -54,7 +54,8 @@ const pt = {
     organization: "Organização",
     id: "Id",
     name: "Nome",
-    access: "Portuguese: Access"
+    access: "Portuguese: Access",
+    user_created: "Portuguese: User successfully created"
   },
 
   login: {
