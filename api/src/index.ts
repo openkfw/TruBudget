@@ -60,7 +60,7 @@ console.log(
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
 const app = createBasicApp(jwtSecret, rootSecret);
-app.use("/api", createRouter(multichainClient, jwtSecret, rootSecret));
+app.use("/api", createRouter(multichainClient, jwtSecret, rootSecret, organizationVaultSecret!));
 
 /*
  * Run the app:

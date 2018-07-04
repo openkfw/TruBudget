@@ -12,6 +12,7 @@ export interface UserRecord {
   id: string;
   displayName: string;
   organization: string;
+  address: string;
   passwordDigest: string;
 }
 
@@ -19,6 +20,7 @@ export interface UserWithoutPassword {
   id: string;
   displayName: string;
   organization: string;
+  address: string;
 }
 
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
