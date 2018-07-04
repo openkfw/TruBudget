@@ -18,11 +18,12 @@ const styles = {
   }
 };
 
-const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, ...props }) => {
+const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, id, ...props }) => {
   return (
     <div style={styles.container}>
       <div style={styles.icon}>{icon}</div>
       <TextField
+        id={id}
         label={label}
         value={username}
         margin="normal"

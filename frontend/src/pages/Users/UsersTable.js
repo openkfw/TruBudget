@@ -22,15 +22,19 @@ const UsersTable = ({ users }) => {
           <TableCell>{strings.adminDashboard.name}</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody>
+      <TableBody id="usertablebody">
         {sortedUsers.map(user => {
           return (
-            <TableRow key={user.id}>
+            <TableRow id={`user-${user.id}`} key={user.id}>
               <TableCell component="th" scope="row">
-                {user.organization}
+                <span>{user.organization}</span>
               </TableCell>
-              <TableCell>{user.id} </TableCell>
-              <TableCell>{user.displayName}</TableCell>
+              <TableCell>
+                <span>{user.id}</span>
+              </TableCell>
+              <TableCell>
+                <span>{user.displayName}</span>
+              </TableCell>
             </TableRow>
           );
         })}

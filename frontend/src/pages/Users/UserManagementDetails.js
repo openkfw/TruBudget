@@ -123,12 +123,14 @@ const UserManagementDetails = ({
               value={displayName}
               error={false}
               icon={<NameIcon />}
+              id="fullname"
               onChange={event => setDisplayName(event.target.value)}
             />
             <TextInputWithIcon
               style={styles.textInput}
               label={strings.adminDashboard.organization}
               value={organization}
+              id="organization"
               disabled={true}
               error={false}
               icon={<OrgaIcon />}
@@ -150,6 +152,7 @@ const UserManagementDetails = ({
           <Button
             variant="contained"
             color="primary"
+            id="createuser"
             disabled={isEmpty(displayName) || isEmpty(organization) || isEmpty(username) || isEmpty(password)}
             onClick={() =>
               handleCreate(

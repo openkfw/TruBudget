@@ -25,7 +25,7 @@ const handleEnter = (e, action = () => {}) => {
   }
 };
 
-const Password = ({ password, storePassword, failed, nextBestAction, ...props }) => {
+const Password = ({ password, storePassword, failed, nextBestAction, id, ...props }) => {
   return (
     <div style={styles.container}>
       <PasswordIcon style={styles.icon} />
@@ -35,6 +35,7 @@ const Password = ({ password, storePassword, failed, nextBestAction, ...props })
         value={password}
         margin="normal"
         error={failed}
+        id={id}
         onChange={event => storePassword(event.target.value)}
         onKeyPress={e => handleEnter(e, nextBestAction)}
         type="password"

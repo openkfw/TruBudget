@@ -13,7 +13,7 @@ const styles = {
   }
 };
 const UserManagement = props => (
-  <div style={styles.container}>
+  <div id="userdashboard" style={styles.container}>
     <div style={styles.customWidth}>
       <UserManagementDetails {...props} />
       <UserManagementTabs {...props} />
