@@ -1,4 +1,6 @@
 import * as winston from "winston";
+import * as express from "express";
+
 import { createBasicApp } from "./httpd/app";
 import { createRouter } from "./httpd/router";
 import { waitUntilReady } from "./lib/liveness";
@@ -7,6 +9,7 @@ import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { ensureOrganizationStreams } from "./organization/organization";
 import { provisionBlockchain } from "./provisioning";
+import { registerNode } from "./network/controller/registerNode";
 
 /*
  * Init the logs
@@ -82,6 +85,28 @@ app.listen(port, err => {
     .then(() =>
       ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!),
     )
+    .then(() => {
+      multichainClient
+        .getRpcClient()
+        .invoke("listaddresses", "*", false, 1, 0)
+        .then(addressInfos =>
+          addressInfos
+            .filter(info => info.ismine)
+            .map(info => info.address)
+            .find(_ => true),
+        )
+        .then(address => {
+          const req = {
+            body: {
+              data: {
+                address,
+                organization,
+              },
+            },
+          };
+          registerNode(multichainClient, req as express.Request);
+        });
+    })
     .then(() => {
       winston.info("Starting deployment pipeline...");
       return provisionBlockchain(port, rootSecret, multichainClient)
