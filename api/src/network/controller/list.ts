@@ -54,7 +54,9 @@ export async function getNodeList(
     200,
     {
       apiVersion: "1.0",
-      data: list,
+      data: {
+        nodes: list,
+      },
     },
   ];
 }

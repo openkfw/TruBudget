@@ -4,11 +4,13 @@ import { getAllowedIntents, getUserAndGroups } from "../authz/index";
 import { globalIntents } from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import * as Global from "../global";
-import { getOrganizationAddress } from "../global/organization";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import { importprivkey } from "../multichain/importprivkey";
 import { WalletAddress } from "../network/model/Nodes";
+import { getOrganizationAddress } from "../organization/organization";
+import { getPrivKey } from "../organization/vault";
 import { hashPassword, isPasswordMatch } from "./password";
 
 export interface UserLoginResponse {
@@ -24,6 +26,7 @@ export const authenticateUser = async (
   req: AuthenticatedRequest,
   jwtSecret: string,
   rootSecret: string,
+  organizationVaultSecret: string,
 ): Promise<HttpResponse> => {
   const input = value("data.user", req.body.data.user, x => x !== undefined);
 
@@ -35,7 +38,14 @@ export const authenticateUser = async (
     {
       apiVersion: "1.0",
       data: {
-        user: await authenticate(multichain, jwtSecret, rootSecret, id, password),
+        user: await authenticate(
+          multichain,
+          jwtSecret,
+          rootSecret,
+          organizationVaultSecret,
+          id,
+          password,
+        ),
       },
     },
   ];
@@ -45,6 +55,7 @@ const authenticate = async (
   multichain: MultichainClient,
   jwtSecret: string,
   rootSecret: string,
+  organizationVaultSecret: string,
   id: string,
   password: string,
 ): Promise<UserLoginResponse> => {
@@ -61,7 +72,9 @@ const authenticate = async (
     // instead of simple string comparison:
     const rootSecretHash = await hashPassword(rootSecret);
     if (await isPasswordMatch(password, rootSecretHash)) {
-      return rootUserLoginResponse(createToken(jwtSecret, "root", "root", "root has no address"));
+      return rootUserLoginResponse(
+        createToken(jwtSecret, "root", "no user address", "root", "no organization address"),
+      );
     } else {
       throwError("wrong password");
     }
@@ -80,6 +93,17 @@ const authenticate = async (
     throwError("wrong password");
   }
 
+  // Every user has an address, with the private key stored in the vault. Importing the
+  // private key when authenticating a user allows users to roam freely between nodes of
+  // their organization.
+  await getPrivKey(
+    multichain,
+    storedUser.organization,
+    organizationVaultSecret,
+    storedUser.address,
+  ).then(privkey => importprivkey(multichain, privkey));
+
+  // The organizationAddress is used for querying network votes, for instance.
   const organizationAddress: WalletAddress = (await getOrganizationAddress(
     multichain,
     storedUser.organization,
@@ -87,10 +111,17 @@ const authenticate = async (
 
   const token: AuthToken = {
     userId: storedUser.id,
+    address: storedUser.address,
     organization: storedUser.organization,
     organizationAddress,
   };
-  const signedJwt = createToken(jwtSecret, id, storedUser.organization, organizationAddress);
+  const signedJwt = createToken(
+    jwtSecret,
+    id,
+    storedUser.address,
+    storedUser.organization,
+    organizationAddress,
+  );
   const globalPermissions = await Global.getPermissions(multichain);
   return {
     id,
@@ -103,18 +134,31 @@ const authenticate = async (
   };
 };
 
-const createToken = (
+function createToken(
   secret: string,
   userId: string,
+  address: string,
   organization: string,
   organizationAddress: string,
-): string =>
-  jsonwebtoken.sign({ userId, organization, organizationAddress }, secret, { expiresIn: "1h" });
+): string {
+  return jsonwebtoken.sign(
+    {
+      userId,
+      address,
+      organization,
+      organizationAddress,
+    },
+    secret,
+    { expiresIn: "1h" },
+  );
+}
 
-const rootUserLoginResponse = (token: string): UserLoginResponse => ({
-  id: "root",
-  displayName: "root",
-  organization: "root",
-  allowedIntents: globalIntents,
-  token,
-});
+function rootUserLoginResponse(token: string): UserLoginResponse {
+  return {
+    id: "root",
+    displayName: "root",
+    organization: "root",
+    allowedIntents: globalIntents,
+    token,
+  };
+}

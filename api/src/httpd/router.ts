@@ -154,6 +154,7 @@ export const createRouter = (
   multichainClient: MultichainClient,
   jwtSecret: string,
   rootSecret: string,
+  organizationVaultSecret: string,
 ) => {
   const router = express.Router();
 
@@ -195,7 +196,7 @@ export const createRouter = (
    * @apiDescription Create a new user.
    */
   router.post("/global.createUser", (req: AuthenticatedRequest, res) => {
-    createUser(multichainClient, req, jwtSecret, rootSecret)
+    createUser(multichainClient, req, jwtSecret, rootSecret, organizationVaultSecret)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
@@ -288,7 +289,7 @@ export const createRouter = (
    * endpoints.
    */
   router.post("/user.authenticate", (req: AuthenticatedRequest, res) => {
-    authenticateUser(multichainClient, req, jwtSecret, rootSecret)
+    authenticateUser(multichainClient, req, jwtSecret, rootSecret, organizationVaultSecret)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

@@ -7,6 +7,7 @@ services:
       RPC_PORT: ${RPC_PORT}
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
     links: 
       - master
@@ -27,6 +28,7 @@ services:
       RPC_PORT: ${RPC_PORT}
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
     links: 
       - testmaster
 

@@ -1,11 +1,11 @@
 import * as winston from "winston";
-import { ensureOrganizationStreams } from "./global/organization";
 import { createBasicApp } from "./httpd/app";
 import { createRouter } from "./httpd/router";
 import { waitUntilReady } from "./lib/liveness";
 import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
+import { ensureOrganizationStreams } from "./organization/organization";
 import { provisionBlockchain } from "./provisioning";
 
 /*
@@ -33,6 +33,13 @@ if (!organization) {
   winston.error(`Please set ORGANIZATION to the organization this node belongs to.`);
   process.exit(1);
 }
+const organizationVaultSecret: string | undefined = process.env.ORGANIZATION_VAULT_SECRET;
+if (!organizationVaultSecret) {
+  winston.error(
+    `Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.`,
+  );
+  process.exit(1);
+}
 
 /*
  * Initialize the components:
@@ -53,11 +60,17 @@ console.log(
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
 const app = createBasicApp(jwtSecret, rootSecret);
-app.use("/api", createRouter(multichainClient, jwtSecret, rootSecret));
+app.use("/api", createRouter(multichainClient, jwtSecret, rootSecret, organizationVaultSecret!));
 
 /*
  * Run the app:
  */
+
+// Enable useful traces of unhandled-promise warnings:
+process.on("unhandledRejection", err => {
+  console.error("UNHANDLED PROMISE REJECTION:", err);
+  process.exit(1);
+});
 
 app.listen(port, err => {
   if (err) {
@@ -66,7 +79,9 @@ app.listen(port, err => {
   console.log(`server is listening on ${port}`);
 
   waitUntilReady(port)
-    .then(() => ensureOrganizationStreams(multichainClient, organization!))
+    .then(() =>
+      ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!),
+    )
     .then(() => {
       winston.info("Starting deployment pipeline...");
       return provisionBlockchain(port, rootSecret, multichainClient)
