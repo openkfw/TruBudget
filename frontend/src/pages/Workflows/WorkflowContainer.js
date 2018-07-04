@@ -160,8 +160,6 @@ const mapStateToProps = state => {
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
     showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
     showDetailsItemId: state.getIn(["workflow", "showDetailsItemId"]),
-    showHistory: state.getIn(["notifications", "showHistory"]),
-    historyItems: state.getIn(["workflow", "historyItems"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"]),
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),
