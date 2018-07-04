@@ -36,7 +36,7 @@ export async function voteForNetworkPermission(
   return [200, { apiVersion: "1.0", data: "OK" }];
 }
 
-async function getCurrentVote(
+export async function getCurrentVote(
   multichain: MultichainClient,
   callerAddress: Nodes.WalletAddress,
   targetAddress: Nodes.WalletAddress,

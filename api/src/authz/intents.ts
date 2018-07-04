@@ -42,7 +42,9 @@ type Intent =
   | "notification.create"
   | "network.registerNode"
   | "network.list"
-  | "network.voteForPermission";
+  | "network.voteForPermission"
+  | "network.approveNewOrganization"
+  | "network.approveNewNodeForExistingOrganization";
 
 export const globalIntents: Intent[] = [
   "global.intent.listPermissions",

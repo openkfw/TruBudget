@@ -198,7 +198,7 @@ interface MultichainScopedPermissionsInfo extends MultichainPermissionsInfo {
 export async function getNetworkPermissions(
   multichain: MultichainClient,
   address: WalletAddress,
-  organizationsByAddress: Map<WalletAddress, Organization>,
+  organizationsByAddress?: Map<WalletAddress, Organization>,
 ): Promise<PermissionInfo[]> {
   const augment = addr => augmentAddress(addr, organizationsByAddress);
 
@@ -244,11 +244,11 @@ export async function getNetworkPermissions(
 
 function augmentAddress(
   address: WalletAddress,
-  organizationsByAddress: Map<WalletAddress, Organization>,
+  organizationsByAddress?: Map<WalletAddress, Organization>,
 ): AugmentedWalletAddress {
   return {
     address,
-    organization: organizationsByAddress.get(address),
+    organization: organizationsByAddress ? organizationsByAddress.get(address) : undefined,
   };
 }
 

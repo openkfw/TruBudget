@@ -5,6 +5,8 @@ import { grantGlobalPermission } from "../global/intent/grantPermission";
 import { getGlobalPermissions } from "../global/intent/listPermissions";
 import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { MultichainClient } from "../multichain";
+import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
+import { approveNewOrganization } from "../network/controller/approveNewOrganization";
 import { getNodeList } from "../network/controller/list";
 import { registerNode } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
@@ -1241,6 +1243,21 @@ export const createRouter = (
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
+
+  router.post("/network.approveNewOrganization", (req: AuthenticatedRequest, res) => {
+    approveNewOrganization(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  router.post(
+    "/network.approveNewNodeForExistingOrganization",
+    (req: AuthenticatedRequest, res) => {
+      approveNewNodeForExistingOrganization(multichainClient, req)
+        .then(response => send(res, response))
+        .catch(err => handleError(req, res, err));
+    },
+  );
 
   /* List all TruBudget nodes.
    *
