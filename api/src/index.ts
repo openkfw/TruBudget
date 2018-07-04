@@ -1,11 +1,11 @@
 import * as winston from "winston";
-import { ensureOrganizationStreams } from "./organization/organization";
 import { createBasicApp } from "./httpd/app";
 import { createRouter } from "./httpd/router";
 import { waitUntilReady } from "./lib/liveness";
 import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
+import { ensureOrganizationStreams } from "./organization/organization";
 import { provisionBlockchain } from "./provisioning";
 
 /*

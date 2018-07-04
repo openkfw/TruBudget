@@ -289,7 +289,7 @@ export const createRouter = (
    * endpoints.
    */
   router.post("/user.authenticate", (req: AuthenticatedRequest, res) => {
-    authenticateUser(multichainClient, req, jwtSecret, rootSecret)
+    authenticateUser(multichainClient, req, jwtSecret, rootSecret, organizationVaultSecret)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
