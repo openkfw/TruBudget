@@ -91,14 +91,14 @@ const handleCreate = (
 ) => {
   if (displayName && organization && username && password) {
     createUser(displayName, organization, username, password);
-    storeSnackbarMessage(strings.adminDashboard.user_created);
+    storeSnackbarMessage(strings.usersDashboard.user_created);
     showSnackbar();
   } else {
     storeSnackbarMessage("Enter required information");
     showErrorSnackbar();
   }
 };
-const UserManagementDetails = ({
+const UserCreate = ({
   userToAdd,
   setDisplayName,
   setOrganization,
@@ -114,12 +114,12 @@ const UserManagementDetails = ({
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <CardHeader title={strings.adminDashboard.new_user} />
+        <CardHeader title={strings.usersDashboard.new_user} />
         <CardContent style={styles.cardContent}>
           <div style={styles.textInputContainer}>
             <TextInputWithIcon
               style={styles.textInput}
-              label={strings.adminDashboard.full_name}
+              label={strings.usersDashboard.full_name}
               value={displayName}
               error={false}
               icon={<NameIcon />}
@@ -128,7 +128,7 @@ const UserManagementDetails = ({
             />
             <TextInputWithIcon
               style={styles.textInput}
-              label={strings.adminDashboard.organization}
+              label={strings.usersDashboard.organization}
               value={organization}
               id="organization"
               disabled={true}
@@ -217,4 +217,4 @@ const UserManagementDetails = ({
     </div>
   );
 };
-export default UserManagementDetails;
+export default UserCreate;

@@ -1,5 +1,5 @@
 const axios = require("axios");
-import { waitUntilReady } from "../lib/liveness";
+import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { amazonasFundProject, closeProjectTest, schoolProject } from "./data";
 import { provisionUsers } from "./users";
@@ -28,11 +28,11 @@ axios.defaults.transformRequest = [
 //       await axios.get("/health");
 //       isHealthEndpointReady = true;
 //     } catch (_err) {
-//       console.log(`The TruBudget API is not ready yet, trying again in ${delaySec}`);
+//       logger.info(`The TruBudget API is not ready yet, trying again in ${delaySec}`);
 //       await sleep(delaySec * 1000);
 //     }
 //   }
-//   console.log(`The TruBudget API is now ready.`);
+//   logger.info(`The TruBudget API is now ready.`);
 // };
 
 const authenticate = async (userId: string, password: string) => {
@@ -50,7 +50,7 @@ function timeout(ms) {
 
 async function impersonate(userId, password) {
   const token = await authenticate(userId, password);
-  console.log(`Now logged in as ${userId}`);
+  logger.debug(`Now logged in as ${userId}`);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
 
@@ -79,7 +79,7 @@ export const provisionFromData = async projectTemplate => {
     existingProject => existingProject !== undefined,
   );
   if (projectExists) {
-    console.log(`${projectTemplate.displayName} project already exists.`);
+    logger.warn(`${projectTemplate.displayName} project already exists.`);
     return;
   }
 
@@ -114,7 +114,7 @@ export const provisionFromData = async projectTemplate => {
     });
   }
 
-  console.log(`Project ${fmtList([project])} created.`);
+  logger.info(`Project ${fmtList([project])} created.`);
 };
 
 const findProject = async projectTemplate => {
@@ -160,7 +160,7 @@ const provisionSubproject = async (project, subprojectTemplate) => {
     });
   }
 
-  console.log(`Subproject ${fmtList([project, subproject])} created.`);
+  logger.info(`Subproject ${fmtList([project, subproject])} created.`);
 };
 
 const findSubproject = async (project, subprojectTemplate) => {
@@ -213,7 +213,7 @@ const provisionWorkflowitem = async (project, subproject, workflowitemTemplate) 
     });
   }
 
-  console.log(`Workflowitem ${fmtList([project, subproject, workflowitem])} created.`);
+  logger.info(`Workflowitem ${fmtList([project, subproject, workflowitem])} created.`);
 };
 
 const findWorkflowitem = async (project, subproject, workflowitemTemplate) => {
@@ -261,7 +261,7 @@ const fmtList = l =>
 async function runIntegrationTests(rootSecret: string) {
   await testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret);
   await testApiDocIsAvailable();
-  console.log(`Integration tests complete.`);
+  logger.info(`Integration tests complete.`);
 }
 
 async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: string) {
@@ -270,7 +270,7 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: st
 
   const project = await findProject(closeProjectTest);
   if (project.data.status === "closed") {
-    console.log("skipped: test project close only works if all subprojects are closed");
+    logger.info("skipped: test project close only works if all subprojects are closed");
     return;
   }
 
@@ -318,5 +318,5 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret: st
 }
 
 async function testApiDocIsAvailable() {
-  await axios.get("/doc").then(() => console.log("/api/doc OK"));
+  await axios.get("/doc").then(() => logger.info("/api/doc OK"));
 }

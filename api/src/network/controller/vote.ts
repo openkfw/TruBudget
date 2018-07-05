@@ -1,4 +1,6 @@
+import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
+import * as Global from "../../global";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
@@ -9,15 +11,14 @@ export async function voteForNetworkPermission(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
-  const input = value("data", req.body.data, x => x !== undefined);
+  // Permission check:
+  const userIntent: Intent = "network.voteForPermission";
+  await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
 
+  // Input validation:
+  const input = value("data", req.body.data, x => x !== undefined);
   const targetAddress: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
   const vote: AccessVote.t = value("vote", input.vote, AccessVote.isValid);
-
-  const userIntent: Intent = "network.voteForPermission";
-
-  // TODO: authorize this!
-  //// await throwIfUnauthorized(req.token, userIntent, ???);
 
   // Grant or revoke? We need to find out our current vote to know..
   const callerAddress = req.token.organizationAddress;
@@ -36,7 +37,7 @@ export async function voteForNetworkPermission(
   return [200, { apiVersion: "1.0", data: "OK" }];
 }
 
-async function getCurrentVote(
+export async function getCurrentVote(
   multichain: MultichainClient,
   callerAddress: Nodes.WalletAddress,
   targetAddress: Nodes.WalletAddress,

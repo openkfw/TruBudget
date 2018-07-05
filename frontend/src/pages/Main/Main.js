@@ -16,6 +16,7 @@ import Footer from "./Footer";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
 import LiveNotificationContainer from "../Notifications/LiveNotificationContainer";
+import NodesContainer from "../Nodes/NodesContainer";
 
 const Main = props => {
   return (
@@ -52,6 +53,7 @@ const Main = props => {
           <Route exact path="/network" component={DashboardContainer} />
           <Route exact path="/notifications" component={withInitialLoading(NotificationPageContainer)} />
           <Route exact path="/users" component={UserManagementContainer} />
+          <Route exact path="/nodes" component={NodesContainer} />
           <Route component={NotFound} />
         </Switch>
         <Route component={Footer} />

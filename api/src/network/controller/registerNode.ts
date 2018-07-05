@@ -25,7 +25,6 @@ export async function registerNode(
     data: { address, organization },
   };
   const nodes = await Nodes.get(multichain);
-
   const nodeExists = nodes.find(
     node => node.address.address === address && node.address.organization === organization,
   );
@@ -42,10 +41,6 @@ export async function registerNode(
     ];
   } else {
     await Nodes.publish(multichain, address, event);
-
-    // TODO: As soon as the node dashboard is ready, this should no longer be done automatically:
-    console.log(`GRANTing admin permissions to ${address} (${organization})`);
-    await multichain.getRpcClient().invoke("grant", address, adminPermissions.join(","));
 
     return [200, { apiVersion: "1.0", data: "OK" }];
   }

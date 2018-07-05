@@ -132,16 +132,24 @@ const fr = {
     workflow_submit_for_review: "Soumettre pour examen",
     workflow_permissions_title: "French: Set permissions for workflowitem"
   },
-  adminDashboard: {
+  usersDashboard: {
     users: "French: Users",
-    nodes: "French: Nodes",
     full_name: "French: Full Name",
     new_user: "French: New User",
     organization: "French: Organization",
     id: "French: Id",
     name: "French: Name",
-    access: "French: Access",
     user_created: "French: User successfully created"
+  },
+  nodesDashboard: {
+    nodes: "French: Nodes",
+    network: "French: Network",
+    access: "French: Access",
+    new_organization: "French: New Organizations",
+    additional_organization_node: "French: New nodes for existing organizations",
+    permissions: "French: Permissions",
+    approve: "French: Approve",
+    address: "French: Address"
   },
   navigation: {
     unread_notifications: "Notifications non-lues",

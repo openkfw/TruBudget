@@ -1,3 +1,6 @@
+import { throwIfUnauthorized } from "../../authz";
+import Intent from "../../authz/intents";
+import * as Global from "../../global";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { MultichainClient } from "../../multichain";
 import * as AccessVote from "../model/AccessVote";
@@ -30,7 +33,9 @@ export async function getNodeList(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
-  // TODO permission check
+  // Permission check:
+  const userIntent: Intent = "network.list";
+  await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
 
   // Get ALL the info:
   const nodes = await Nodes.get(multichain);

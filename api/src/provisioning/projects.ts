@@ -1,3 +1,4 @@
+import logger from "../lib/logger";
 const { sleep } = require("./lib");
 
 const futureProject = {
@@ -33,12 +34,12 @@ export const provisionProjects = async axios => {
       project.displayName === futureProject.displayName && project.amount === futureProject.amount,
   );
   if (existingProject !== undefined) {
-    console.log(`~> Project ${futureProject.displayName} already exists`);
+    logger.info(`~> Project ${futureProject.displayName} already exists`);
     return existingProject.id;
   }
 
   const resp = await axios.post("/global.createProject", { project: futureProject });
-  console.log(`~> Project ${futureProject.displayName} created`);
+  logger.info(`~> Project ${futureProject.displayName} created`);
   const projectListResult = await axios.get("/project.list");
   const createdProject = projectListResult.data.data.items.find(
     project =>
@@ -49,8 +50,8 @@ export const provisionProjects = async axios => {
       `Project creation failed. project.list result: ${JSON.stringify(projectListResult.data)}`,
     );
   await grantProjectPermissionsToUser(axios, createdProject.id, "mstein");
-  console.log("~> Project permissions granted for mstein");
+  logger.info("~> Project permissions granted for mstein");
   await grantProjectPermissionsToUser(axios, createdProject.id, "jxavier");
-  console.log("~> Project permissions granted for jxavier");
+  logger.info("~> Project permissions granted for jxavier");
   return createdProject.id;
 };

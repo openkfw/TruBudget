@@ -87,7 +87,15 @@ import {
 } from "./pages/Login/actions";
 
 import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from "./pages/Loading/actions.js";
-import { CREATE_USER_SUCCESS, CREATE_USER, FETCH_NODES_SUCCESS, FETCH_NODES } from "./pages/Users/actions.js";
+import { CREATE_USER_SUCCESS, CREATE_USER } from "./pages/Users/actions.js";
+import {
+  FETCH_NODES_SUCCESS,
+  FETCH_NODES,
+  APPROVE_ORGANIZATION,
+  APPROVE_ORGANIZATION_SUCCESS,
+  APPROVE_NEW_NODE_FOR_ORGANIZATION,
+  APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
+} from "./pages/Nodes/actions.js";
 
 const api = new Api();
 
@@ -372,6 +380,32 @@ export function* fetchNodesSaga({ showLoading }) {
     yield put({
       type: FETCH_NODES_SUCCESS,
       nodes: data.nodes
+    });
+  }, showLoading);
+}
+
+export function* approveNewOrganizationSaga({ organization, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.approveNewOrganization, organization);
+    yield put({
+      type: APPROVE_ORGANIZATION_SUCCESS
+    });
+    yield put({
+      type: FETCH_NODES,
+      show: true
+    });
+  }, showLoading);
+}
+
+export function* approveNewNodeForOrganizationSaga({ address, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.approveNewNodeForOrganization, address);
+    yield put({
+      type: APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
+    });
+    yield put({
+      type: FETCH_NODES,
+      show: true
     });
   }, showLoading);
 }
@@ -740,6 +774,13 @@ export function* watchFetchUser() {
 export function* watchFetchNodes() {
   yield takeEvery(FETCH_NODES, fetchNodesSaga);
 }
+export function* watchApproveNewOrganization() {
+  yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga);
+}
+
+export function* watchApproveNewNodeForOrganization() {
+  yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga);
+}
 
 export function* watchLogout() {
   yield takeEvery(LOGOUT, logoutSaga);
@@ -811,7 +852,8 @@ export default function* rootSaga() {
       watchSetEnvironment(),
       watchGetEnvironment(),
       watchFetchNodes(),
-
+      watchApproveNewOrganization(),
+      watchApproveNewNodeForOrganization(),
       // Project
       watchCreateProject(),
       watchFetchAllProjects(),

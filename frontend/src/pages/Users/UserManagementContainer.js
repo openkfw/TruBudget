@@ -3,34 +3,24 @@ import { connect } from "react-redux";
 
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
-import UserManagement from "./UserManagement";
+import Users from "./Users";
 import NotAuthorized from "../Error/NotAuthorized";
-import { canViewUserManagement } from "../../permissions";
-import {
-  switchTabs,
-  setUsername,
-  setPassword,
-  setDisplayName,
-  setOrganization,
-  createUser,
-  fetchNodes,
-  resetUserToAdd
-} from "./actions";
+import { canViewUserDashboard } from "../../permissions";
+import { setUsername, setPassword, setDisplayName, setOrganization, createUser, resetUserToAdd } from "./actions";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 
 class UserManagementContainer extends Component {
   componentWillMount() {
     this.props.fetchUser();
-    this.props.fetchNodes();
   }
   componentWillUnmount() {
     this.props.resetState();
   }
   render() {
-    const canView = canViewUserManagement(this.props.allowedIntents);
+    const canView = canViewUserDashboard(this.props.allowedIntents);
     if (canView) {
-      return <UserManagement {...this.props} />;
+      return <Users {...this.props} />;
     } else {
       return <NotAuthorized />;
     }
@@ -39,7 +29,6 @@ class UserManagementContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    tabIndex: state.getIn(["users", "tabIndex"]),
     userToAdd: state.getIn(["users", "userToAdd"]),
     nodes: state.getIn(["users", "nodes"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
@@ -50,9 +39,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    switchTabs: index => dispatch(switchTabs(index)),
     fetchUser: () => dispatch(fetchUser(true)),
-    fetchNodes: () => dispatch(fetchNodes(true)),
     setDisplayName: displayName => dispatch(setDisplayName(displayName)),
     setOrganization: organization => dispatch(setOrganization(organization)),
     setUsername: username => dispatch(setUsername(username)),

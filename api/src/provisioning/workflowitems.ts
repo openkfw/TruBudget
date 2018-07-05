@@ -1,4 +1,4 @@
-import Intent from "../authz/intents";
+import logger from "../lib/logger";
 
 const { sleep } = require("./lib");
 
@@ -29,7 +29,7 @@ const { sleep } = require("./lib");
 //   );
 // };
 export const provisionWorkflowitems = async (axios, projectId, subprojectId) => {
-  console.log("workflowitem provisioning to be implemented..");
+  logger.warn("workflowitem provisioning to be implemented..");
   // const response = await axios.get(`/subproject.list?projectId=${projectId}`);
   // const subprojects = response.data.data.items;
   // const existingSubproject = subprojects.find(
