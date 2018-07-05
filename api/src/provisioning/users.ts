@@ -66,10 +66,12 @@ export const provisionUsers = async axios => {
     // Special permissions for mstein & jdoe
     await grantCreateProjectPermission(axios, "mstein");
     await grantUserCreatePermission(axios, "mstein");
-    await grantNetworkPermissions(axios, "mstein");
+    await grantNetworkViewPermissions(axios, "mstein");
+    await grantNetworkVotePermissions(axios, "mstein");
+
     logger.info("~> global Permissions granted for mstein");
     await grantCreateProjectPermission(axios, "jdoe");
-    await grantNetworkPermissions(axios, "jdoe");
+    await grantNetworkViewPermissions(axios, "jdoe");
     logger.info("~> global Permissions granted for jdoe");
   } catch (err) {
     handleError(axios, err);
@@ -81,10 +83,12 @@ const grantDefaultPermission = async (axios, userId) => {
   return grantGlobalPermissionToUser(axios, "global.intent.listPermissions", userId);
 };
 
-const grantNetworkPermissions = async (axios, userId) => {
-  for (const intent of ["list", "voteForPermission"]) {
-    await grantGlobalPermissionToUser(axios, `network.${intent}`, userId);
-  }
+const grantNetworkViewPermissions = async (axios, userId) => {
+  await grantGlobalPermissionToUser(axios, `network.list`, userId);
+};
+
+const grantNetworkVotePermissions = async (axios, userId) => {
+  await grantGlobalPermissionToUser(axios, `network.voteForPermission`, userId);
 };
 
 const grantCreateProjectPermission = async (axios, userId) => {
