@@ -37,9 +37,10 @@ class Api {
   };
 
   login = (username, password) => axios.post(`/user.authenticate`, { user: { id: username, password } });
-
+  createUser = (displayName, organization, username, password) =>
+    axios.post(`/global.createUser`, { user: { displayName, organization, id: username, password } });
   listUser = () => axios.get(`/user.list`);
-
+  listNodes = () => axios.get(`/network.list`);
   listProjects = () => axios.get(`/project.list`);
 
   createProject = (displayName, amount, description, currency, thumbnail) =>

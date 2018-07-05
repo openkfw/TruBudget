@@ -8,11 +8,12 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ProjectIcon from "@material-ui/icons/Business";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
+import UsersIcon from "@material-ui/icons/Group";
 import Subheader from "@material-ui/core/ListSubheader";
 
 import strings from "../../localizeStrings";
 
-const SideNavCard = ({ avatarBackground, avatar, displayName, organization, history }) => (
+const SideNavCard = ({ avatarBackground, avatar, displayName, organization, userDashboardEnabled, history }) => (
   <div>
     <div
       style={{
@@ -69,6 +70,14 @@ const SideNavCard = ({ avatarBackground, avatar, displayName, organization, hist
         </ListItemIcon>
         <ListItemText primary={strings.navigation.menu_item_notifications} />
       </ListItem>
+      {userDashboardEnabled ? (
+        <ListItem button onClick={() => history.push("/users")}>
+          <ListItemIcon>
+            <UsersIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.navigation.menu_item_users} />
+        </ListItem>
+      ) : null}
     </List>
     <Divider />
   </div>

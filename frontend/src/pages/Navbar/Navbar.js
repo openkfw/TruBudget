@@ -32,6 +32,7 @@ const Navbar = ({
   avatarBackground,
   currentProject,
   currentSubProject,
+  allowedIntents,
   classes
 }) => (
   <div>
@@ -59,6 +60,7 @@ const Navbar = ({
       showSidebar={showSidebar}
       history={history}
       logout={logout}
+      allowedIntents={allowedIntents}
       displayName={displayName}
       organization={organization}
       avatar={avatar}

@@ -38,7 +38,11 @@ const fr = {
     show_permissions: "French: Show Permissions",
     view: "French: View",
     create: "French: Create",
-    edited: "French: Edited"
+    edited: "French: Edited",
+    username: "Nom d'utilisateur",
+    password: "Mot de passe",
+    incorrect_username: "Nom d'utilisateur incorrect",
+    incorrect_password: "Mot de passe incorrect"
   },
 
   login: {
@@ -47,10 +51,7 @@ const fr = {
     environment: "Environnement",
     test_env: "Teste",
     production_env: "Prod",
-    username: "Nom d'utilisateur",
-    password: "Mot de passe",
-    incorrect_username: "Nom d'utilisateur incorrect",
-    incorrect_password: "Mot de passe incorrect",
+
     accenture_tag: "Développé par Emerging Technologies and Innovation Accenture",
     login_button_title: "Login"
   },
@@ -131,7 +132,17 @@ const fr = {
     workflow_submit_for_review: "Soumettre pour examen",
     workflow_permissions_title: "French: Set permissions for workflowitem"
   },
-
+  adminDashboard: {
+    users: "French: Users",
+    nodes: "French: Nodes",
+    full_name: "French: Full Name",
+    new_user: "French: New User",
+    organization: "French: Organization",
+    id: "French: Id",
+    name: "French: Name",
+    access: "French: Access",
+    user_created: "French: User successfully created"
+  },
   navigation: {
     unread_notifications: "Notifications non-lues",
     peers: "Pairs",
@@ -149,7 +160,8 @@ const fr = {
     menu_item_notifications: "Notifications",
     menu_item_network: "Réseau",
     main_site: "Principal",
-    projects_site: "Projets"
+    projects_site: "Projets",
+    menu_item_users: "French: Users"
   },
   dashboard: {
     dashboard_title: "Le tableau de bord du réseau Blockchain",

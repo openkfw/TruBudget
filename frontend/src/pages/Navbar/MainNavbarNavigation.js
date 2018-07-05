@@ -33,6 +33,8 @@ const getStaticBreadcrumb = name => {
       return strings.navigation.menu_item_projects;
     case "notifications":
       return strings.navigation.menu_item_notifications;
+    case "users":
+      return strings.adminDashboard.users;
     case "network":
       return strings.navigation.menu_item_network;
     default:

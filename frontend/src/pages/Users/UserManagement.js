@@ -9,11 +9,11 @@ const styles = {
     justifyContent: "center"
   },
   customWidth: {
-    width: "85%"
+    width: "90%"
   }
 };
 const UserManagement = props => (
-  <div style={styles.container}>
+  <div id="userdashboard" style={styles.container}>
     <div style={styles.customWidth}>
       <UserManagementDetails {...props} />
       <UserManagementTabs {...props} />

@@ -49,28 +49,15 @@ const en = {
   },
 
   adminDashboard: {
-    role_name_error: "Incorrect role name",
-    role_organization_error: "Incorrect organization",
-    roles: "Roles",
-    role: "Role",
-    new_role: "New Role",
     users: "Users",
     nodes: "Nodes",
-    organization: "Organization",
-    id: "ID",
-    read: "Read",
-    write: "Write",
-    admin: "Admin",
-    name: "Name",
     full_name: "Full Name",
-    incorrect_full_name: "Incorrect full name",
-    role_not_exist_error: "Role does not exist",
     new_user: "New User",
-    country: "Country",
-    address: "Address",
-    admin_login: "Admin Login",
-    title: "Admin Dashboard",
-    user_not_authorized: "You are not authorized to perform this action"
+    organization: "Organization",
+    id: "Id",
+    name: "Name",
+    access: "Access",
+    user_created: "User successfully created"
   },
 
   login: {
@@ -184,7 +171,8 @@ const en = {
     menu_item_notifications: "Notifications",
     menu_item_network: "Network",
     main_site: "Main",
-    projects_site: "Projects"
+    projects_site: "Projects",
+    menu_item_users: "Users"
   },
   dashboard: {
     dashboard_title: "The Blockchain network dashboard",

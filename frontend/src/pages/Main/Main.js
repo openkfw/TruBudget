@@ -6,7 +6,7 @@ import NavbarContainer from "../Navbar/NavbarContainer";
 import UserManagementContainer from "../Users/UserManagementContainer";
 
 import OverviewContainer from "../Overview/OverviewContainer";
-import NotFound from "../NotFound/NotFound";
+import NotFound from "../Error/NotFound";
 import SubProjectContainer from "../SubProjects/SubProjectContainer";
 import DashboardContainer from "../Dashboard/DashboardContainer";
 import WorkflowContainer from "../Workflows/WorkflowContainer";

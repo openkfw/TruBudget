@@ -72,11 +72,11 @@ const LoginPage = ({
           </div>
         </div>
         <Divider />
-        <Username username={username} storeUsername={storeUsername} loginFailed={loginUnsuccessful} id="username" />
+        <Username username={username} storeUsername={storeUsername} failed={loginUnsuccessful} id="username" />
         <Password
           password={password}
           storePassword={storePassword}
-          loginFailed={loginUnsuccessful}
+          failed={loginUnsuccessful}
           nextBestAction={() => loginWithCredentails(username, password)}
           id="password"
         />

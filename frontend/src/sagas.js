@@ -87,6 +87,7 @@ import {
 } from "./pages/Login/actions";
 
 import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from "./pages/Loading/actions.js";
+import { CREATE_USER_SUCCESS, CREATE_USER, FETCH_NODES_SUCCESS, FETCH_NODES } from "./pages/Users/actions.js";
 
 const api = new Api();
 
@@ -342,12 +343,35 @@ export function* loginSaga({ user }) {
   yield execute(login, true, onLoginError);
 }
 
+export function* createUserSaga({ displayName, organization, username, password }) {
+  yield execute(function*() {
+    yield callApi(api.createUser, displayName, organization, username, password);
+    yield put({
+      type: CREATE_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_USER,
+      show: true
+    });
+  }, true);
+}
+
 export function* fetchUserSaga({ showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listUser);
     yield put({
       type: FETCH_USER_SUCCESS,
       user: data.items
+    });
+  }, showLoading);
+}
+
+export function* fetchNodesSaga({ showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.listNodes);
+    yield put({
+      type: FETCH_NODES_SUCCESS,
+      nodes: data.nodes
     });
   }, showLoading);
 }
@@ -707,8 +731,14 @@ export function* watchLogin() {
   yield takeLatest(LOGIN, loginSaga);
 }
 
+export function* watchCreateUser() {
+  yield takeEvery(CREATE_USER, createUserSaga);
+}
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserSaga);
+}
+export function* watchFetchNodes() {
+  yield takeEvery(FETCH_NODES, fetchNodesSaga);
 }
 
 export function* watchLogout() {
@@ -775,10 +805,12 @@ export default function* rootSaga() {
     yield [
       // Global
       watchFetchUser(),
+      watchCreateUser(),
       watchLogin(),
       watchLogout(),
       watchSetEnvironment(),
       watchGetEnvironment(),
+      watchFetchNodes(),
 
       // Project
       watchCreateProject(),

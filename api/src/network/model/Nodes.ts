@@ -99,7 +99,7 @@ export async function publish(
   });
 }
 
-export async function get(multichain: MultichainClient, token: AuthToken): Promise<NodeInfo[]> {
+export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
     .v2_readStreamItems(streamName, "*")
     .catch(err => {

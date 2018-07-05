@@ -25,20 +25,21 @@ const handleEnter = (e, action = () => {}) => {
   }
 };
 
-const Password = ({ password, storePassword, loginFailed, nextBestAction, ...props }) => {
+const Password = ({ password, storePassword, failed, nextBestAction, id, ...props }) => {
   return (
     <div style={styles.container}>
       <PasswordIcon style={styles.icon} />
       <TextField
-        style={{ width: "60%" }}
+        style={{ width: "50%" }}
         label={strings.common.password}
         value={password}
         margin="normal"
-        error={loginFailed}
+        error={failed}
+        id={id}
         onChange={event => storePassword(event.target.value)}
         onKeyPress={e => handleEnter(e, nextBestAction)}
         type="password"
-        helperText={loginFailed ? strings.common.incorrect_password : null}
+        helperText={failed ? strings.common.incorrect_password : null}
         {...props}
       />
     </div>

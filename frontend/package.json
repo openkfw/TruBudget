@@ -17,7 +17,6 @@
     "moment": "^2.18.1",
     "react": "^16.0.0",
     "react-chartjs-2": "^2.0.5",
-    "react-countup": "^3.0.3",
     "react-dom": "^16.0.0",
     "react-leaflet": "^1.1.6",
     "react-liquid-gauge": "^1.2.2",
