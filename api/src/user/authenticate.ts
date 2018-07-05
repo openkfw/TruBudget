@@ -5,6 +5,7 @@ import { globalIntents } from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import logger from "../lib/logger";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { importprivkey } from "../multichain/importprivkey";
@@ -88,6 +89,7 @@ const authenticate = async (
         throw err;
     }
   });
+  logger.debug(storedUser);
 
   if (!(await isPasswordMatch(password, storedUser.passwordDigest))) {
     throwError("wrong password");

@@ -53,6 +53,11 @@ export const globalIntents: Intent[] = [
   "global.createProject",
   "global.createUser",
   "user.authenticate",
+  "network.registerNode",
+  "network.list",
+  "network.voteForPermission",
+  "network.approveNewOrganization",
+  "network.approveNewNodeForExistingOrganization",
 ];
 
 export const userDefaultIntents: Intent[] = [
@@ -107,6 +112,8 @@ export const allIntents: Intent[] = [
   "network.registerNode",
   "network.list",
   "network.voteForPermission",
+  "network.approveNewOrganization",
+  "network.approveNewNodeForExistingOrganization",
 ];
 
 export default Intent;
