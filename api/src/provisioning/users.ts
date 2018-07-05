@@ -1,3 +1,4 @@
+import logger from "../lib/logger";
 const users = [
   {
     id: "thouse",
@@ -60,14 +61,14 @@ export const provisionUsers = async axios => {
     for (const user of users) {
       await createUser(axios, user);
       await grantDefaultPermission(axios, user.id);
-      console.log(`~> added User ${user.displayName}`);
+      logger.info(`~> added User ${user.displayName}`);
     }
     // Special permissions for mstein & jdoe
     await grantCreateProjectPermission(axios, "mstein");
     await grantUserCreatePermission(axios, "mstein");
-    console.log("~> global Permissions granted for mstein");
+    logger.info("~> global Permissions granted for mstein");
     await grantCreateProjectPermission(axios, "jdoe");
-    console.log("~> global Permissions granted for jdoe");
+    logger.info("~> global Permissions granted for jdoe");
   } catch (err) {
     handleError(axios, err);
   }
@@ -92,7 +93,7 @@ const grantGlobalPermissionToUser = async (axios, intent, userId) => {
 
 const handleError = (axios, err) => {
   if (err.response && err.response.status === 409) {
-    console.log("Seems like the users already exist");
+    logger.info("Seems like the users already exist");
   } else {
     throw err;
   }

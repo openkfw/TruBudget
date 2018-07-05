@@ -1,4 +1,5 @@
 import Intent from "../authz/intents";
+import logger from "../lib/logger";
 
 const { sleep } = require("./lib");
 
@@ -37,7 +38,7 @@ export const provisionSubprojects = async (axios, projectId) => {
       subproject.amount === futureSubproject.amount,
   );
   if (existingSubproject !== undefined) {
-    console.log(`~> Subproject ${futureSubproject.displayName} already exists`);
+    logger.info(`~> Subproject ${futureSubproject.displayName} already exists`);
     return existingSubproject.id;
   }
 
@@ -46,7 +47,7 @@ export const provisionSubprojects = async (axios, projectId) => {
     subproject: futureSubproject,
   });
   const subprojectListResult = await axios.get(`/subproject.list?projectId=${projectId}`);
-  console.log(`~> Subproject ${futureSubproject.displayName} created`);
+  logger.info(`~> Subproject ${futureSubproject.displayName} created`);
   const createdSubproject = subprojectListResult.data.data.items.find(
     subproject =>
       subproject.displayName === futureSubproject.displayName &&
@@ -60,8 +61,8 @@ export const provisionSubprojects = async (axios, projectId) => {
     );
   }
   await grantSubprojectPermissionsToUser(axios, projectId, createdSubproject.id, "mstein");
-  console.log("~> Subproject permissions granted for mstein");
+  logger.info("~> Subproject permissions granted for mstein");
   await grantSubprojectPermissionsToUser(axios, projectId, createdSubproject.id, "jxavier");
-  console.log("~> Subproject permissions granted for jxavier");
+  logger.info("~> Subproject permissions granted for jxavier");
   return createdSubproject.id;
 };
