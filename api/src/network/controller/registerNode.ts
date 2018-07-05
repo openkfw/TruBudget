@@ -27,8 +27,10 @@ export async function registerNode(
   const nodes = await Nodes.get(multichain, {
     userId: "",
     organization: "",
+    address: "",
     organizationAddress: "",
   });
+
   const nodeExists = nodes.find(
     node => node.address.address === address && node.address.organization === organization,
   );
