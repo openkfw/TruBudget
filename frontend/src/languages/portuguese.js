@@ -46,9 +46,8 @@ const pt = {
     create: "Portuguese: Create",
     edited: "Portuguese: Edited"
   },
-  adminDashboard: {
+  usersDashboard: {
     users: "Usuários",
-    nodes: "Nós",
     full_name: "Nome completo",
     new_user: "Novo usuário",
     organization: "Organização",
@@ -57,7 +56,9 @@ const pt = {
     access: "Portuguese: Access",
     user_created: "Portuguese: User successfully created"
   },
-
+  nodesDashboard: {
+    nodes: "Nós"
+  },
   login: {
     tru_budget_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias",
     environment: "Ambiente",

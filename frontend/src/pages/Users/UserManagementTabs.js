@@ -30,8 +30,8 @@ const UserManagementTabs = ({ tabIndex, switchTabs, users, nodes, classes, ...re
       value={tabIndex}
       onChange={(_, value) => switchTabs(value)}
     >
-      <Tab label={strings.adminDashboard.users} />
-      <Tab label={strings.adminDashboard.nodes} />
+      <Tab label={strings.usersDashboard.users} />
+      <Tab label={strings.usersDashboard.nodes} />
     </Tabs>
     {tabIndex === 0 && <UsersTable users={users} />}
     {tabIndex === 1 && <NodesTable nodes={nodes} />}

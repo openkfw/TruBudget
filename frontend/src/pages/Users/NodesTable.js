@@ -29,9 +29,9 @@ const NodesTable = ({ nodes }) => {
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>{strings.adminDashboard.organization}</TableCell>
-          <TableCell>{strings.adminDashboard.nodes}</TableCell>
-          <TableCell>{strings.adminDashboard.access}</TableCell>
+          <TableCell>{strings.usersDashboard.organization}</TableCell>
+          <TableCell>{strings.usersDashboard.nodes}</TableCell>
+          <TableCell>{strings.usersDashboard.access}</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

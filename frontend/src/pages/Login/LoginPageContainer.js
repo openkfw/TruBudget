@@ -1,7 +1,17 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { storePassword, storeUsername, loginWithCredentails, logout, showLoginError, storeEnvironment, setLanguage, getEnvironment, initLanguage } from './actions';
-import LoginPage from './LoginPage';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  storePassword,
+  storeUsername,
+  loginWithCredentails,
+  logout,
+  showLoginError,
+  storeEnvironment,
+  setLanguage,
+  getEnvironment,
+  initLanguage
+} from "./actions";
+import LoginPage from "./LoginPage";
 //import { fetchNodePermissions } from '../Admin/actions';
 //import { fetchUserWithToken } from '../Loading/actions';
 
@@ -21,44 +31,41 @@ class LoginPageContainer extends Component {
 
   checkIfRedirect() {
     const from = this.props.location && this.props.location.state && this.props.location.state.from;
-    const path = from ? this.props.location.state.from : '/';
+    const path = from ? this.props.location.state.from : "/";
 
     if (this.props.jwt) this.props.history.push(path);
   }
   render() {
-    return (
-      <LoginPage {...this.props} />
-    )
+    return <LoginPage {...this.props} />;
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     initLanguage: () => dispatch(initLanguage()),
-    storeUsername: (username) => dispatch(storeUsername(username)),
-    storePassword: (password) => dispatch(storePassword(password)),
+    storeUsername: username => dispatch(storeUsername(username)),
+    storePassword: password => dispatch(storePassword(password)),
     logout: () => dispatch(logout()),
     loginWithCredentails: (username, password) => dispatch(loginWithCredentails(username, password)),
     showLoginError: () => dispatch(showLoginError(true)),
     hideLoginError: () => dispatch(showLoginError(false)),
-    storeEnvironment: (environment) => dispatch(storeEnvironment(environment)),
+    storeEnvironment: environment => dispatch(storeEnvironment(environment)),
     getEnvironment: () => dispatch(getEnvironment()),
-    setLanguage: (language) => dispatch(setLanguage(language)),
+    setLanguage: language => dispatch(setLanguage(language))
     //fetchNodePermissions: () => dispatch(fetchNodePermissions()),
     //fetchUserWithToken: (showLoading) => dispatch(fetchUserWithToken(showLoading))
   };
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    username: state.getIn(['login', 'username']),
-    jwt: state.getIn(['login', 'jwt']),
-    password: state.getIn(['login', 'password']),
-    loginUnsuccessful: state.getIn(['login', 'loginUnsuccessful']),
-    environment: state.getIn(['login', 'environment']),
-    language: state.getIn(['login', 'language']),
-    //nodePermissions: state.getIn(['adminDashboard', 'nodePermissions']),
-  }
-}
+    username: state.getIn(["login", "username"]),
+    jwt: state.getIn(["login", "jwt"]),
+    password: state.getIn(["login", "password"]),
+    loginUnsuccessful: state.getIn(["login", "loginUnsuccessful"]),
+    environment: state.getIn(["login", "environment"]),
+    language: state.getIn(["login", "language"])
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPageContainer);

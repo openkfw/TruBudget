@@ -129,9 +129,8 @@ const de = {
     workflow_submit_for_review: "Submit for Review"
   },
 
-  adminDashboard: {
+  usersDashboard: {
     users: "German: Users",
-    nodes: "German: Nodes",
     full_name: "German: Full Name",
     new_user: "German: New User",
     organization: "German: Organization",
@@ -140,7 +139,9 @@ const de = {
     access: "German: Access",
     user_created: "German: User successfully created"
   },
-
+  nodesDashboard: {
+    nodes: "German: Nodes"
+  },
   navigation: {
     unread_notifications: "Unread Notifications",
     peers: "Peers",

@@ -47,10 +47,8 @@ const en = {
     create: "Create",
     edited: "Edited"
   },
-
-  adminDashboard: {
+  usersDashboard: {
     users: "Users",
-    nodes: "Nodes",
     full_name: "Full Name",
     new_user: "New User",
     organization: "Organization",
@@ -58,6 +56,10 @@ const en = {
     name: "Name",
     access: "Access",
     user_created: "User successfully created"
+  },
+
+  nodesDashboard: {
+    nodes: "Nodes"
   },
 
   login: {

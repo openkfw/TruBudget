@@ -17,9 +17,9 @@ const UsersTable = ({ users }) => {
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>{strings.adminDashboard.organization}</TableCell>
-          <TableCell>{strings.adminDashboard.id}</TableCell>
-          <TableCell>{strings.adminDashboard.name}</TableCell>
+          <TableCell>{strings.usersDashboard.organization}</TableCell>
+          <TableCell>{strings.usersDashboard.id}</TableCell>
+          <TableCell>{strings.usersDashboard.name}</TableCell>
         </TableRow>
       </TableHead>
       <TableBody id="usertablebody">
