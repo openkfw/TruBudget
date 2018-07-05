@@ -75,6 +75,29 @@ process.on("unhandledRejection", err => {
   process.exit(1);
 });
 
+function registerSelf() {
+  multichainClient
+    .getRpcClient()
+    .invoke("listaddresses", "*", false, 1, 0)
+    .then(addressInfos =>
+      addressInfos
+        .filter(info => info.ismine)
+        .map(info => info.address)
+        .find(_ => true),
+    )
+    .then(address => {
+      const req = {
+        body: {
+          data: {
+            address,
+            organization,
+          },
+        },
+      };
+      registerNode(multichainClient, req as express.Request);
+    });
+}
+
 app.listen(port, err => {
   if (err) {
     return console.log(err);
@@ -85,28 +108,7 @@ app.listen(port, err => {
     .then(() =>
       ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!),
     )
-    .then(() => {
-      multichainClient
-        .getRpcClient()
-        .invoke("listaddresses", "*", false, 1, 0)
-        .then(addressInfos =>
-          addressInfos
-            .filter(info => info.ismine)
-            .map(info => info.address)
-            .find(_ => true),
-        )
-        .then(address => {
-          const req = {
-            body: {
-              data: {
-                address,
-                organization,
-              },
-            },
-          };
-          registerNode(multichainClient, req as express.Request);
-        });
-    })
+    .then(() => registerSelf())
     .then(() => {
       winston.info("Starting deployment pipeline...");
       return provisionBlockchain(port, rootSecret, multichainClient)

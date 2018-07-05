@@ -33,7 +33,7 @@ export async function getNodeList(
   // TODO permission check
 
   // Get ALL the info:
-  const nodes = await Nodes.get(multichain, req.token);
+  const nodes = await Nodes.get(multichain);
 
   // The caller is not supposed to know anything about MultiChain's permission model, so
   // it's simplified to the following three levels here that refer to the organization's
