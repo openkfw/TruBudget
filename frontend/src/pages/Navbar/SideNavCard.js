@@ -14,7 +14,15 @@ import Subheader from "@material-ui/core/ListSubheader";
 
 import strings from "../../localizeStrings";
 
-const SideNavCard = ({ avatarBackground, avatar, displayName, organization, userDashboardEnabled, history }) => (
+const SideNavCard = ({
+  avatarBackground,
+  avatar,
+  displayName,
+  organization,
+  userDashboardEnabled,
+  nodeDashboardEnabled,
+  history
+}) => (
   <div>
     <div
       style={{
@@ -79,12 +87,14 @@ const SideNavCard = ({ avatarBackground, avatar, displayName, organization, user
           <ListItemText primary={strings.navigation.menu_item_users} />
         </ListItem>
       ) : null}
-      <ListItem button onClick={() => history.push("/nodes")}>
-        <ListItemIcon>
-          <NodesIcon />
-        </ListItemIcon>
-        <ListItemText primary={strings.nodesDashboard.nodes} />
-      </ListItem>
+      {nodeDashboardEnabled ? (
+        <ListItem button onClick={() => history.push("/nodes")}>
+          <ListItemIcon>
+            <NodesIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.nodesDashboard.nodes} />
+        </ListItem>
+      ) : null}
     </List>
     <Divider />
   </div>

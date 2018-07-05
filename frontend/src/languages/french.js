@@ -139,11 +139,17 @@ const fr = {
     organization: "French: Organization",
     id: "French: Id",
     name: "French: Name",
-    access: "French: Access",
     user_created: "French: User successfully created"
   },
   nodesDashboard: {
-    nodes: "French: Nodes"
+    nodes: "French: Nodes",
+    network: "French: Network",
+    access: "French: Access",
+    new_organization: "French: New Organizations",
+    additional_organization_node: "French: New nodes for existing organizations",
+    permissions: "French: Permissions",
+    approve: "French: Approve",
+    address: "French: Address"
   },
   navigation: {
     unread_notifications: "Notifications non-lues",

@@ -53,11 +53,17 @@ const pt = {
     organization: "Organização",
     id: "Id",
     name: "Nome",
-    access: "Portuguese: Access",
     user_created: "Portuguese: User successfully created"
   },
   nodesDashboard: {
-    nodes: "Nós"
+    nodes: "Nós",
+    network: "Network",
+    access: "Portuguese: Access",
+    new_organization: "Portuguese: New Organizations",
+    additional_organization_node: "Portuguese: New nodes for existing organizations",
+    permissions: "Portuguese: Permissions",
+    approve: "Portuguese: Approve",
+    address: "Portuguese: Address"
   },
   login: {
     tru_budget_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias",

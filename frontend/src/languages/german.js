@@ -136,12 +136,18 @@ const de = {
     organization: "German: Organization",
     id: "German: Id",
     name: "German: Name",
-    access: "German: Access",
     user_created: "German: User successfully created"
   },
   nodesDashboard: {
-    nodes: "German: Nodes"
+    nodes: "German: Nodes",
+    network: "German: Network",
+    address: "German: Access",
+    new_organization: "German: New Organizations",
+    additional_organization_node: "German: New nodes for existing organizations",
+    permissions: "German: Permissions",
+    approve: "German: Approve"
   },
+
   navigation: {
     unread_notifications: "Unread Notifications",
     peers: "Peers",

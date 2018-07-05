@@ -39,7 +39,6 @@ const en = {
     password: "Password",
     incorrect_username: "Incorrect username",
     incorrect_password: "Incorrect password",
-    added: "Added",
     search: "Search",
     workflowItem: "WorkflowItem",
     show_permissions: "Show Permissions",
@@ -54,12 +53,18 @@ const en = {
     organization: "Organization",
     id: "Id",
     name: "Name",
-    access: "Access",
     user_created: "User successfully created"
   },
 
   nodesDashboard: {
-    nodes: "Nodes"
+    nodes: "Nodes",
+    network: "Network",
+    access: "Access",
+    new_organization: "New Organizations",
+    additional_organization_node: "New nodes for existing organizations",
+    permissions: "Permissions",
+    approve: "Approve",
+    address: "Address"
   },
 
   login: {

@@ -41,6 +41,8 @@ class Api {
     axios.post(`/global.createUser`, { user: { displayName, organization, id: username, password } });
   listUser = () => axios.get(`/user.list`);
   listNodes = () => axios.get(`/network.list`);
+  approveNewOrganization = organization => axios.post(`/network.approveNewOrganization`, { organization });
+  approveNewNodeForOrganization = address => axios.post(`/network.approveNewNodeForExistingOrganization`, { address });
   listProjects = () => axios.get(`/project.list`);
 
   createProject = (displayName, amount, description, currency, thumbnail) =>

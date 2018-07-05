@@ -98,7 +98,7 @@ const handleCreate = (
     showErrorSnackbar();
   }
 };
-const UserManagementDetails = ({
+const UserCreate = ({
   userToAdd,
   setDisplayName,
   setOrganization,
@@ -217,4 +217,4 @@ const UserManagementDetails = ({
     </div>
   );
 };
-export default UserManagementDetails;
+export default UserCreate;
