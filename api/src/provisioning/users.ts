@@ -82,11 +82,7 @@ const grantDefaultPermission = async (axios, userId) => {
 };
 
 const grantNetworkPermissions = async (axios, userId) => {
-  for (const intent of [
-    "list",
-    "approveNewOrganization",
-    "approveNewNodeForExistingOrganization",
-  ]) {
+  for (const intent of ["list", "voteForPermission"]) {
     await grantGlobalPermissionToUser(axios, `network.${intent}`, userId);
   }
 };
