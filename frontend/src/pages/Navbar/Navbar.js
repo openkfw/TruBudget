@@ -33,6 +33,7 @@ const Navbar = ({
   currentProject,
   currentSubProject,
   allowedIntents,
+  environment,
   classes
 }) => (
   <div>
@@ -45,6 +46,7 @@ const Navbar = ({
           route={route}
           currentProject={currentProject}
           currentSubProject={currentSubProject}
+          environment={environment}
         />
         <RightNavbarNavigation
           organization={organization}
