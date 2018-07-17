@@ -53,6 +53,13 @@ const styles = {
   },
   editIcon: {
     color: "black"
+  },
+  cardTitle: {
+    textOverflow: "ellipsis",
+    width: "250px",
+    whiteSpace: "nowrap",
+    paddingTop: "10px",
+    overflow: "hidden"
   }
 };
 
@@ -105,7 +112,11 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
           <CardHeader
             data-test="projectheader"
             className={classes.cardHeader}
-            title={displayName}
+            title={
+              <div className={classes.cardTitle}>
+                <span>{displayName}</span>
+              </div>
+            }
             subheader={mappedStatus}
           />
           <List>
@@ -178,13 +189,14 @@ const OverviewTable = props => {
       }}
     >
       {tableEntries}
-      <Card data-test="projectcreation" style={{ margin: "35px", width: "25%", opacity: "0.7" }}>
+      <Card data-test="projectcreation" style={{ height: "510px", margin: "35px", width: "300px", opacity: "0.7" }}>
         <div
           style={{
             display: "flex",
-            height: "450px",
             backgroundColor: "lightgray",
             flexDirection: "row",
+            maxWidth: "350px",
+            height: "100%",
             alignItems: "center",
             justifyContent: "center"
           }}

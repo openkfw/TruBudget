@@ -8,24 +8,20 @@ describe("User Dashboard", function() {
     cy.get("#userdashboard").should("be.visible");
   });
   it("Create new user", function() {
-    cy
-      .get("#fullname")
+    cy.get("#fullname")
       .type("Test User")
       .should("have.value", "Test User");
-    cy
-      .get("#username")
+    cy.get("#username")
       .type("testuser")
       .should("have.value", "testuser");
-    cy
-      .get("#password")
+    cy.get("#password")
       .type("test")
       .should("have.value", "test");
     cy.get("#createuser").click();
   });
 
   it("Created user should be visible", function() {
-    cy
-      .get("#user-testuser")
+    cy.get("#user-testuser")
       .find("td")
       .then($td => {
         expect($td).to.have.length(2);

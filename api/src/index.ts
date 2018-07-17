@@ -8,7 +8,6 @@ import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { ensureOrganizationStreams } from "./organization/organization";
-import { provisionBlockchain } from "./provisioning";
 import { registerNode } from "./network/controller/registerNode";
 
 /*
@@ -108,11 +107,5 @@ app.listen(port, err => {
     .then(() =>
       ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!),
     )
-    .then(() => registerSelf())
-    .then(() => {
-      winston.info("Starting deployment pipeline...");
-      return provisionBlockchain(port, rootSecret, multichainClient)
-        .then(() => console.log("Chain provisioned."))
-        .catch(provisionError => console.log({ provisionError }));
-    });
+    .then(() => registerSelf());
 });
