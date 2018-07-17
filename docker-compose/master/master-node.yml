@@ -8,6 +8,7 @@ services:
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
+      ROOT_SECRET: ${ROOT_SECRET}
       # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
     links: 
       - master
@@ -29,6 +30,7 @@ services:
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
+      ROOT_SECRET: ${ROOT_SECRET}
     links: 
       - testmaster
 
@@ -53,3 +55,22 @@ services:
     links:
       - api
       - testapi
+
+  provision-prod:
+    image: index.docker.io/trubudget/v1/provisioning:${TAG}
+    command: ["npm", "start"]
+    environment:
+      API_HOST: api
+      ENVIRONMENT_TYPE: PROD
+      API_PORT: 8080
+      ROOT_SECRET: ${ROOT_SECRET}
+
+  provision-test:
+    image: index.docker.io/trubudget/v1/provisioning:${TAG}
+    command: ["npm", "start"]
+    environment:
+      API_HOST: testapi
+      ENVIRONMENT_TYPE: PROD
+      API_PORT: 8080
+      ROOT_SECRET: ${ROOT_SECRET}
+  

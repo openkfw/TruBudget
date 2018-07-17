@@ -5,12 +5,10 @@ describe("Login", function() {
 
   it("Log in and out", function() {
     cy.get("#loginpage").should("be.visible");
-    cy
-      .get("#username")
+    cy.get("#username")
       .type("mstein")
       .should("have.value", "mstein");
-    cy
-      .get("#password")
+    cy.get("#password")
       .type("test")
       .should("have.value", "test");
     cy.get("#loginbutton").click();
@@ -21,12 +19,10 @@ describe("Login", function() {
 
   it("Reject wrong inputs", function() {
     cy.get("#loginpage").should("be.visible");
-    cy
-      .get("#username")
+    cy.get("#username")
       .type("foo")
       .should("have.value", "foo");
-    cy
-      .get("#password")
+    cy.get("#password")
       .type("bar")
       .should("have.value", "bar");
     cy.get("#loginbutton").click();

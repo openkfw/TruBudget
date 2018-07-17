@@ -29,16 +29,7 @@ export async function registerNode(
     node => node.address.address === address && node.address.organization === organization,
   );
   if (nodeExists) {
-    return [
-      304,
-      {
-        apiVersion: "1.0",
-        error: {
-          code: 304,
-          message: "Node already registered",
-        },
-      },
-    ];
+    return [200, { apiVersion: "1.0", data: "Node already registered" }];
   } else {
     await Nodes.publish(multichain, address, event);
 
