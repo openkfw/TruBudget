@@ -1,6 +1,7 @@
 import * as express from "express";
 import { createProject } from "../global/createProject";
 import { createUser } from "../global/createUser";
+import { createGroup } from "../global/createGroup";
 import { grantGlobalPermission } from "../global/intent/grantPermission";
 import { getGlobalPermissions } from "../global/intent/listPermissions";
 import { revokeGlobalPermission } from "../global/intent/revokePermission";
@@ -32,6 +33,8 @@ import { getSubprojectList } from "../subproject/controller/list";
 import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
+import { getGroupList } from "../group/list";
+import { addUserToGroup } from "../group/addUser";
 import { authenticateUser } from "../user/authenticate";
 import { getUserList } from "../user/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
@@ -204,6 +207,20 @@ export const createRouter = (
   });
 
   /**
+   * @api {post} /global.createGroup Create group
+   * @apiVersion 1.0.0
+   * @apiName global.createGroup
+   * @apiGroup Global
+   * @apiPermission group
+   * @apiDescription Create a new user group.
+   */
+  router.post("/global.createGroup", (req: AuthenticatedRequest, res) => {
+    createGroup(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
    * @api {post} /global.createProject Create project
    * @apiVersion 1.0.0
    * @apiName global.createProject
@@ -262,6 +279,39 @@ export const createRouter = (
   });
 
   //#endregion global
+
+  //#region group
+  // ------------------------------------------------------------
+  //       group
+  // ------------------------------------------------------------
+
+  /**
+   * @api {get} /group.list List
+   * @apiVersion 1.0.0
+   * @apiName group.list
+   * @apiGroup Group
+   * @apiPermission group
+   * @apiDescription List all user groups.
+   */
+  router.get("/group.list", (req: AuthenticatedRequest, res) => {
+    getGroupList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /group.addUser Add
+   * @apiVersion 1.0.0
+   * @apiName group.addUser
+   * @apiGroup Group
+   * @apiPermission group
+   * @apiDescription Add user to a group
+   */
+  router.post("/group.addUser", (req: AuthenticatedRequest, res) => {
+    addUserToGroup(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
   //#region user
   // ------------------------------------------------------------
   //       user

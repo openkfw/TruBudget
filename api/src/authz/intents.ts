@@ -4,8 +4,10 @@ type Intent =
   | "global.intent.revokePermission"
   | "global.createProject"
   | "global.createUser"
+  | "global.createGroup"
   | "user.authenticate"
   | "user.view"
+  | "group.addUser"
   | "project.intent.listPermissions"
   | "project.intent.grantPermission"
   | "project.intent.revokePermission"
@@ -52,6 +54,7 @@ export const globalIntents: Intent[] = [
   "global.intent.revokePermission",
   "global.createProject",
   "global.createUser",
+  "global.createGroup",
   "user.authenticate",
   "network.registerNode",
   "network.list",
@@ -73,6 +76,7 @@ export const allIntents: Intent[] = [
   "global.intent.revokePermission",
   "global.createProject",
   "global.createUser",
+  "global.createGroup",
   "user.authenticate",
   "user.view",
   "project.intent.listPermissions",

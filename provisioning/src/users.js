@@ -10,6 +10,7 @@ const provisionUsers = async (axios, folder) => {
     }
     //Special permissions for mstein & jdoe
     await grantCreateProjectPermission(axios, "mstein");
+    await grantCreateGroupPermission(axios, "mstein");
     await grantUserCreatePermission(axios, "mstein");
     await grantNetworkViewPermissions(axios, "mstein");
     await grantNetworkVotePermissions(axios, "mstein");
@@ -21,6 +22,10 @@ const provisionUsers = async (axios, folder) => {
   } catch (err) {
     if (err.code && err.code === "MAX_RETRIES") {
       console.log("Failed to provision users, max retries exceeded");
+    } else {
+      console.log(
+        "The following error occured during user provisioning ${err.message}"
+      );
     }
   }
 };
@@ -44,6 +49,10 @@ const grantNetworkVotePermissions = async (axios, userId) => {
 
 const grantCreateProjectPermission = async (axios, userId) => {
   return grantGlobalPermissionToUser(axios, "global.createProject", userId);
+};
+
+const grantCreateGroupPermission = async (axios, userId) => {
+  return grantGlobalPermissionToUser(axios, "global.createGroup", userId);
 };
 
 const grantUserCreatePermission = async (axios, userId) => {
