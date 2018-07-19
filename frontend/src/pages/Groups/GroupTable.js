@@ -8,9 +8,9 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import _sortBy from "lodash/sortBy";
 import blueGrey from "@material-ui/core/colors/blueGrey";
-
+import EditIcon from "@material-ui/icons/Edit";
 import strings from "../../localizeStrings";
-import { withStyles } from "@material-ui/core";
+import { withStyles, IconButton } from "@material-ui/core";
 
 const styles = {
   paper: {
@@ -25,38 +25,44 @@ const styles = {
     backgroundColor: blueGrey[50]
   }
 };
-const sortUsers = users => {
-  return _sortBy(users, user => user.organization && user.id);
+const sortGroups = groups => {
+  return _sortBy(groups, group => group.id && group.displayName);
 };
-const UsersTable = ({ users, classes }) => {
-  const sortedUsers = sortUsers(users);
+const GroupsTable = ({ groups, showEditDialog, classes }) => {
+  const sortedGroups = sortGroups(groups);
   return (
     <Paper className={classes.paper}>
       <div className={classes.title}>
         <Typography variant="title" color="primary" id="tableTitle">
-          {strings.usersDashboard.users}
+          {strings.groupDashboard.groups}
         </Typography>
       </div>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>{strings.usersDashboard.organization}</TableCell>
             <TableCell>{strings.common.id}</TableCell>
             <TableCell>{strings.common.name}</TableCell>
+            <TableCell>{strings.usersDashboard.users}</TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody id="usertablebody">
-          {sortedUsers.map(user => {
+          {sortedGroups.map(group => {
             return (
-              <TableRow id={`user-${user.id}`} key={user.id}>
+              <TableRow id={`group-${group.groupId}`} key={group.groupId}>
                 <TableCell component="th" scope="row">
-                  <span>{user.organization}</span>
+                  <span>{group.groupId}</span>
                 </TableCell>
                 <TableCell>
-                  <span>{user.id}</span>
+                  <span>{group.displayName}</span>
                 </TableCell>
                 <TableCell>
-                  <span>{user.displayName}</span>
+                  <span>{group.users.length}</span>
+                </TableCell>
+                <TableCell>
+                  <IconButton onClick={() => showEditDialog(group.groupId)}>
+                    <EditIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             );
@@ -66,4 +72,4 @@ const UsersTable = ({ users, classes }) => {
     </Paper>
   );
 };
-export default withStyles(styles)(UsersTable);
+export default withStyles(styles)(GroupsTable);

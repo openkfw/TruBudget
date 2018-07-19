@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import NavbarContainer from "../Navbar/NavbarContainer";
 import UserManagementContainer from "../Users/UserManagementContainer";
+import GroupManagementContainer from "../Groups/GroupManagementContainer";
 
 import OverviewContainer from "../Overview/OverviewContainer";
 import NotFound from "../Error/NotFound";
@@ -52,6 +53,7 @@ const Main = props => {
           <Route exact path="/projects/:project" component={withInitialLoading(SubProjectContainer)} />
           <Route exact path="/network" component={DashboardContainer} />
           <Route exact path="/notifications" component={withInitialLoading(NotificationPageContainer)} />
+          <Route exact path="/groups" component={GroupManagementContainer} />
           <Route exact path="/users" component={UserManagementContainer} />
           <Route exact path="/nodes" component={NodesContainer} />
           <Route component={NotFound} />

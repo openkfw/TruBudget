@@ -40,6 +40,12 @@ class Api {
   createUser = (displayName, organization, username, password) =>
     axios.post(`/global.createUser`, { user: { displayName, organization, id: username, password } });
   listUser = () => axios.get(`/user.list`);
+
+  createGroup = (groupId, displayName, users) =>
+    axios.post(`/global.createGroup`, { group: { displayName, id: groupId, users } });
+  addUserToGroup = (groupId, userId) => axios.post(`/group.addUser`, { groupId, userId });
+  removeUserFromGroup = (groupId, userId) => axios.post(`/group.removeUser`, { groupId, userId });
+  listGroup = () => axios.get(`/group.list`);
   listNodes = () => axios.get(`/network.list`);
   approveNewOrganization = organization => axios.post(`/network.approveNewOrganization`, { organization });
   approveNewNodeForOrganization = address => axios.post(`/network.approveNewNodeForExistingOrganization`, { address });

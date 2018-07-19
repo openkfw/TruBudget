@@ -35,6 +35,7 @@ import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { getGroupList } from "../group/list";
 import { addUserToGroup } from "../group/addUser";
+import { removeUserFromGroup } from "../group/removeUser";
 import { authenticateUser } from "../user/authenticate";
 import { getUserList } from "../user/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
@@ -79,6 +80,15 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
       ]);
       break;
 
+    case "GroupAlreadyExists":
+      send(res, [
+        409,
+        {
+          apiVersion: "1.0",
+          error: { code: 409, message: `The group already exists.` },
+        },
+      ]);
+      break;
     case "ParseError": {
       let message;
       if (err.message !== undefined) {
@@ -312,6 +322,21 @@ export const createRouter = (
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
+
+  /**
+   * @api {post} /group.removeUser Remove
+   * @apiVersion 1.0.0
+   * @apiName group.removeUser
+   * @apiGroup Group
+   * @apiPermission group
+   * @apiDescription Remove user from a group
+   */
+  router.post("/group.removeUser", (req: AuthenticatedRequest, res) => {
+    removeUserFromGroup(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
   //#region user
   // ------------------------------------------------------------
   //       user

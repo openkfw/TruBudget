@@ -44,17 +44,23 @@ const pt = {
     show_permissions: "Portuguese: Show Permissions",
     view: "Portuguese: View",
     create: "Portuguese: Create",
-    edited: "Portuguese: Edited"
+    edited: "Portuguese: Edited",
+    id: "Portuguese: Id",
+    name: "Nome"
   },
   usersDashboard: {
     users: "Usuários",
     full_name: "Nome completo",
     new_user: "Novo usuário",
     organization: "Organização",
-    id: "Id",
-    name: "Nome",
     user_created: "Portuguese: User successfully created"
   },
+
+  groupDashboard: {
+    new_group: "Portuguese: New user group",
+    groups: "Portuguese: Groups"
+  },
+
   nodesDashboard: {
     nodes: "Nós",
     network: "Network",
@@ -178,7 +184,8 @@ const pt = {
     menu_item_network: "Rede",
     main_site: "Principal",
     projects_site: "Projetos",
-    menu_item_users: "Portuguese: Users"
+    menu_item_users: "Portuguese: Users",
+    menu_item_groups: "Portuguese: Groups"
   },
 
   dashboard: {

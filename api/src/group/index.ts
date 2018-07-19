@@ -8,8 +8,9 @@ import deepcopy from "../lib/deepcopy";
 const groupsStreamName = "groups";
 
 export interface GroupResource {
-  data: Object;
-  log: Array<Object>;
+  groupId: string;
+  displayName: string;
+  users: string[];
 }
 
 export interface GroupRecord {
@@ -27,8 +28,8 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
 
 export const groupExists = async (multichain, groupId) => {
   const existingGroups = await getAll(multichain);
-  const exists = existingGroups.find(existingGroup => existingGroup.data.groupId === groupId);
-  return exists;
+  const exists = existingGroups.find(existingGroup => existingGroup.groupId === groupId);
+  return exists ? true : false;
 };
 
 const handleCreate = (event: Event): { resource: GroupResource } | undefined => {
@@ -38,8 +39,7 @@ const handleCreate = (event: Event): { resource: GroupResource } | undefined => 
       const { group } = event.data;
       return {
         resource: {
-          data: deepcopy(group),
-          log: [], // event is added later
+          ...deepcopy(group),
         },
       };
     }
@@ -120,15 +120,15 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
       resourceMap.set(asMapKey(item.keys), resource);
     } else {
       if (event.intent === "group.addUser") {
-        resource.data.users.push(event.data.userId);
+        resource.users.push(event.data.userId);
+      } else if (event.intent === "group.removeUser") {
+        const index = resource.users.indexOf(event.data.userId);
+        if (index > -1) {
+          resource.users.splice(index, 1);
+        }
       }
-      // else if (event.intent === )
     }
   }
-  console.log(resourceMap);
   const groups = [...resourceMap.values()];
   return groups;
-  // const streamItems = await multichain.getLatestValues(groupsStreamName, "groups");
-  // console.log(streamItems);
-  // return streamItems.map(item => item.resource.data);
 };

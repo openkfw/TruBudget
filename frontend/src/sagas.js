@@ -96,6 +96,16 @@ import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
   APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
 } from "./pages/Nodes/actions.js";
+import {
+  FETCH_GROUPS_SUCCESS,
+  FETCH_GROUPS,
+  CREATE_GROUP_SUCCESS,
+  CREATE_GROUP,
+  ADD_USER,
+  ADD_USER_SUCCESS,
+  REMOVE_USER_SUCCESS,
+  REMOVE_USER
+} from "./pages/Groups/actions.js";
 
 const api = new Api();
 
@@ -372,6 +382,55 @@ export function* fetchUserSaga({ showLoading }) {
       user: data.items
     });
   }, showLoading);
+}
+
+export function* fetchGroupSaga({ showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.listGroup);
+    yield put({
+      type: FETCH_GROUPS_SUCCESS,
+      groups: data.groups
+    });
+  }, showLoading);
+}
+
+export function* createGroupSaga({ groupId, name, users }) {
+  yield execute(function*() {
+    yield callApi(api.createGroup, groupId, name, users);
+    yield put({
+      type: CREATE_GROUP_SUCCESS
+    });
+    yield put({
+      type: FETCH_GROUPS,
+      show: true
+    });
+  }, true);
+}
+
+export function* addUserToGroupSaga({ groupId, userId }) {
+  yield execute(function*() {
+    yield callApi(api.addUserToGroup, groupId, userId);
+    yield put({
+      type: ADD_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_GROUPS,
+      show: true
+    });
+  }, true);
+}
+
+export function* removeUserFromGroupSaga({ groupId, userId }) {
+  yield execute(function*() {
+    yield callApi(api.removeUserFromGroup, groupId, userId);
+    yield put({
+      type: REMOVE_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_GROUPS,
+      show: true
+    });
+  }, true);
 }
 
 export function* fetchNodesSaga({ showLoading }) {
@@ -771,6 +830,21 @@ export function* watchCreateUser() {
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserSaga);
 }
+export function* watchFetchGroups() {
+  yield takeEvery(FETCH_GROUPS, fetchGroupSaga);
+}
+
+export function* watchCreateGroup() {
+  yield takeEvery(CREATE_GROUP, createGroupSaga);
+}
+
+export function* watchAddUserToGroup() {
+  yield takeEvery(ADD_USER, addUserToGroupSaga);
+}
+export function* watchRemoveUserFromGroup() {
+  yield takeEvery(REMOVE_USER, removeUserFromGroupSaga);
+}
+
 export function* watchFetchNodes() {
   yield takeEvery(FETCH_NODES, fetchNodesSaga);
 }
@@ -854,6 +928,11 @@ export default function* rootSaga() {
       watchFetchNodes(),
       watchApproveNewOrganization(),
       watchApproveNewNodeForOrganization(),
+      watchFetchGroups(),
+      watchCreateGroup(),
+      watchAddUserToGroup(),
+      watchRemoveUserFromGroup(),
+
       // Project
       watchCreateProject(),
       watchFetchAllProjects(),

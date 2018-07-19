@@ -6,14 +6,14 @@ import { MultichainClient } from "../multichain";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import * as Group from "../group";
 
-export async function addUserToGroup(
+export async function removeUserFromGroup(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
   const groupId: string = value("groupId", input.groupId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);
-  const userIntent: Intent = "group.addUser";
+  const userIntent: Intent = "group.removeUser";
   const permissionIntent: Intent = "global.createGroup";
   await throwIfUnauthorized(req.token, permissionIntent, await Global.getPermissions(multichain));
 
@@ -39,7 +39,7 @@ export async function addUserToGroup(
     {
       apiVersion: "1.0",
       data: {
-        added: true,
+        deleted: true,
       },
     },
   ];

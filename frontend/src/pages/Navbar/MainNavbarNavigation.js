@@ -39,6 +39,8 @@ const getStaticBreadcrumb = name => {
       return strings.navigation.menu_item_network;
     case "nodes":
       return strings.nodesDashboard.nodes;
+    case "groups":
+      return strings.groupDashboard.groups;
     default:
       break;
   }

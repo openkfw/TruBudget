@@ -44,18 +44,22 @@ const en = {
     show_permissions: "Show Permissions",
     view: "View",
     create: "Create",
-    edited: "Edited"
+    edited: "Edited",
+    id: "Id",
+    name: "Name"
   },
   usersDashboard: {
     users: "Users",
     full_name: "Full Name",
     new_user: "New User",
     organization: "Organization",
-    id: "Id",
-    name: "Name",
     user_created: "User successfully created"
   },
 
+  groupDashboard: {
+    new_group: "New user group",
+    groups: "Groups"
+  },
   nodesDashboard: {
     nodes: "Nodes",
     network: "Network",
@@ -179,7 +183,8 @@ const en = {
     menu_item_network: "Network",
     main_site: "Main",
     projects_site: "Projects",
-    menu_item_users: "Users"
+    menu_item_users: "Users",
+    menu_item_groups: "Groups"
   },
   dashboard: {
     dashboard_title: "The Blockchain network dashboard",

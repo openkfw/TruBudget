@@ -42,7 +42,9 @@ const de = {
     username: "Username",
     password: "Password",
     incorrect_username: "Incorrect username",
-    incorrect_password: "Incorrect password"
+    incorrect_password: "Incorrect password",
+    id: "German: Id",
+    name: "German: Name"
   },
 
   login: {
@@ -134,10 +136,15 @@ const de = {
     full_name: "German: Full Name",
     new_user: "German: New User",
     organization: "German: Organization",
-    id: "German: Id",
-    name: "German: Name",
     user_created: "German: User successfully created"
   },
+
+  groupDashboard: {
+    new_group: "German: New user group",
+    groups: "German: Groups",
+    group_name: "Name"
+  },
+
   nodesDashboard: {
     nodes: "German: Nodes",
     network: "German: Network",
@@ -166,7 +173,8 @@ const de = {
     menu_item_network: "Network",
     main_site: "Main",
     projects_site: "Projects",
-    menu_item_users: "German: Users"
+    menu_item_users: "German: Users",
+    menu_item_groups: "German: Groups"
   },
   dashboard: {
     dashboard_title: "The Blockchain network dashboard",

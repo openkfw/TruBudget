@@ -22,6 +22,11 @@ export interface UserAlreadyExistsError {
   targetUserId: string;
 }
 
+export interface GroupAlreadyExistsError {
+  kind: "GroupAlreadyExists";
+  targetUserId: string;
+}
+
 export interface PreconditionError {
   kind: "PreconditionError";
   message: string;
@@ -31,6 +36,7 @@ export interface PreconditionError {
 export type TruBudgetError =
   | AuthenticationError
   | UserAlreadyExistsError
+  | GroupAlreadyExistsError
   | NotAuthorizedError
   | ParseError
   | NotFoundError;

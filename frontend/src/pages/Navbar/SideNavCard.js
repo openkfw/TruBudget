@@ -21,6 +21,7 @@ const SideNavCard = ({
   organization,
   userDashboardEnabled,
   nodeDashboardEnabled,
+  groupDashboardEnabled,
   history
 }) => (
   <div>
@@ -79,6 +80,14 @@ const SideNavCard = ({
         </ListItemIcon>
         <ListItemText primary={strings.navigation.menu_item_notifications} />
       </ListItem>
+      {groupDashboardEnabled ? (
+        <ListItem button onClick={() => history.push("/groups")}>
+          <ListItemIcon>
+            <UsersIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.navigation.menu_item_groups} />
+        </ListItem>
+      ) : null}
       {userDashboardEnabled ? (
         <ListItem button onClick={() => history.push("/users")}>
           <ListItemIcon>

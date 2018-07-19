@@ -42,7 +42,9 @@ const fr = {
     username: "Nom d'utilisateur",
     password: "Mot de passe",
     incorrect_username: "Nom d'utilisateur incorrect",
-    incorrect_password: "Mot de passe incorrect"
+    incorrect_password: "Mot de passe incorrect",
+    id: "French: Id",
+    name: "French: Name"
   },
 
   login: {
@@ -137,10 +139,14 @@ const fr = {
     full_name: "French: Full Name",
     new_user: "French: New User",
     organization: "French: Organization",
-    id: "French: Id",
-    name: "French: Name",
     user_created: "French: User successfully created"
   },
+
+  groupDashboard: {
+    new_group: "French: New user group",
+    groups: "French: Groups"
+  },
+
   nodesDashboard: {
     nodes: "French: Nodes",
     network: "French: Network",
@@ -169,7 +175,8 @@ const fr = {
     menu_item_network: "Réseau",
     main_site: "Principal",
     projects_site: "Projets",
-    menu_item_users: "French: Users"
+    menu_item_users: "French: Users",
+    menu_item_groups: "French: Groups"
   },
   dashboard: {
     dashboard_title: "Le tableau de bord du réseau Blockchain",

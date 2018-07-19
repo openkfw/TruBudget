@@ -22,7 +22,6 @@ import Warning from "@material-ui/icons/Warning";
 import Typography from "@material-ui/core/Typography";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../../localizeStrings";
-
 const PermissionsScreen = props => (
   <Dialog data-test="permission-container" open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>

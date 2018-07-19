@@ -36,6 +36,9 @@ export const createGroup = async (
       group,
     },
   };
+  if (await Group.groupExists(multichain, groupId)) {
+    throw { kind: "GroupAlreadyExists", targetUserId: req.token.userId };
+  }
 
   await Group.publish(multichain, groupId, event);
   logger.info(event, "Group created.");
