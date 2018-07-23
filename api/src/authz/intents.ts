@@ -45,6 +45,7 @@ type Intent =
   | "notification.create"
   | "network.registerNode"
   | "network.list"
+  | "network.listActive"
   | "network.voteForPermission"
   | "network.approveNewOrganization"
   | "network.approveNewNodeForExistingOrganization";
@@ -116,6 +117,7 @@ export const allIntents: Intent[] = [
   "notification.create",
   "network.registerNode",
   "network.list",
+  "network.listActive",
   "network.voteForPermission",
   "network.approveNewOrganization",
   "network.approveNewNodeForExistingOrganization",

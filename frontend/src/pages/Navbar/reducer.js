@@ -1,6 +1,6 @@
 import { fromJS } from "immutable";
 
-import { TOGGLE_SIDEBAR, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES_SUCCESS, SET_SELECTED_VIEW } from "./actions";
+import { TOGGLE_SIDEBAR, FETCH_PEERS_SUCCESS, FETCH_STREAM_NAMES_SUCCESS, SET_SELECTED_VIEW, FETCH_ACTIVE_PEERS_SUCCESS } from "./actions";
 import { FETCH_UPDATES_SUCCESS } from "../LiveUpdates/actions";
 import { LOGOUT } from "../Login/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
@@ -9,6 +9,7 @@ import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from "../Workflows/actions";
 const defaultState = fromJS({
   showSidebar: false,
   peers: [],
+  numberOfActivePeers: 0,
   unreadNotifications: 0,
   streamNames: {},
   selectedId: "",
@@ -28,8 +29,10 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set("showSidebar", !state.get("showSidebar"));
     case FETCH_PEERS_SUCCESS:
       return state.merge({
-        peers: action.peers
+        peers: action.peers,
       });
+    case FETCH_ACTIVE_PEERS_SUCCESS:
+      return state.set("numberOfActivePeers", action.activePeers);
     case FETCH_STREAM_NAMES_SUCCESS:
       return state.set("streamNames", fromJS(action.streamNames));
     case SET_SELECTED_VIEW:
@@ -41,6 +44,7 @@ export default function navbarReducer(state = defaultState, action) {
       return state.merge({
         peers: action.peers,
         unreadNotifications: countUnreadNotifications(action.notifications),
+
         streamNames: action.streamNames
       });
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:

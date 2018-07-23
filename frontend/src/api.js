@@ -47,6 +47,7 @@ class Api {
   removeUserFromGroup = (groupId, userId) => axios.post(`/group.removeUser`, { groupId, userId });
   listGroup = () => axios.get(`/group.list`);
   listNodes = () => axios.get(`/network.list`);
+  listActiveNodes = () => axios.get(`/network.listActive`);
   approveNewOrganization = organization => axios.post(`/network.approveNewOrganization`, { organization });
   approveNewNodeForOrganization = address => axios.post(`/network.approveNewNodeForExistingOrganization`, { address });
   listProjects = () => axios.get(`/project.list`);
