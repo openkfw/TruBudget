@@ -27,6 +27,7 @@ const provisionUsers = async (axios, folder) => {
 
 const grantDefaultPermission = async (axios, userId) => {
   await grantGlobalPermissionToUser(axios, "user.view", userId);
+  await grantGlobalPermissionToUser(axios, "network.listActive", userId);
   return grantGlobalPermissionToUser(
     axios,
     "global.intent.listPermissions",

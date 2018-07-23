@@ -8,6 +8,7 @@ import { MultichainClient } from "../multichain";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
 import { getNodeList } from "../network/controller/list";
+import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
 import { getNotificationList } from "../notification/controller/list";
@@ -1265,6 +1266,32 @@ export const createRouter = (
    */
   router.get("/network.list", (req: AuthenticatedRequest, res) => {
     getNodeList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+    * @api {get} /network.listActive active Peers
+    * @apiVersion 1.0.0
+    * @apiName network.listActive
+    * @apiGroup Network
+    * @apiPermission user
+    * @apiDescription Get the number of all peers in the blockchain network.
+    *
+    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+    * @apiParam {Object} data Request payload.
+    * @apiParam {String} data.peers The node (wallet address) to vote for.
+    * @apiParamExample {json} Request
+    *   {
+    *     "apiVersion": "1.0",
+    *     "data": {
+    *       "peers": "15",
+    *     }
+    *   }
+    *
+    */
+  router.get("/network.listActive", (req: AuthenticatedRequest, res) => {
+    getActiveNodes(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

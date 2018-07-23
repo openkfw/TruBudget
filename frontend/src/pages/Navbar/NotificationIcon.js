@@ -15,13 +15,23 @@ const styles = {
 };
 
 const NotificationIcon = ({ unreadNotifications, history, classes }) => {
-  return (
-    <Badge classes={classes} badgeContent={unreadNotifications} color="secondary">
+  if (typeof (unreadNotifications) === "number" && unreadNotifications > 0) {
+    return (
+      <Badge classes={classes} badgeContent={unreadNotifications} color="secondary">
+        <IconButton tooltip={strings.navigation.unread_notifications} onClick={() => history.push("/notifications")}>
+          <BubbleIcon color="primary" />
+        </IconButton>
+      </Badge>
+    );
+  }
+  else {
+    return (
       <IconButton tooltip={strings.navigation.unread_notifications} onClick={() => history.push("/notifications")}>
         <BubbleIcon color="primary" />
       </IconButton>
-    </Badge>
-  );
+    );
+  }
+
 };
 
 export default withStyles(styles)(NotificationIcon);

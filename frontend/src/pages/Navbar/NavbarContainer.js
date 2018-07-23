@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { toggleSidebar } from "./actions";
+import { toggleSidebar, fetchActivePeers } from "./actions";
 import { logout } from "../Login/actions";
 
 import FlyInNotifications from "../Notifications/FlyInNotifications";
@@ -10,6 +10,10 @@ import Navbar from "./Navbar";
 import { toJS } from "../../helper";
 
 class NavbarContainer extends Component {
+  componentDidMount() {
+    this.props.getPeers()
+  }
+
   render() {
     return (
       <div>
@@ -26,7 +30,8 @@ class NavbarContainer extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     onToggleSidebar: () => dispatch(toggleSidebar()),
-    logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
+    getPeers: () => dispatch(fetchActivePeers())
   };
 };
 
@@ -34,6 +39,7 @@ const mapStateToProps = state => {
   return {
     showSidebar: state.getIn(["navbar", "showSidebar"]),
     peers: state.getIn(["navbar", "peers"]),
+    numberOfActivePeers: state.getIn(["navbar", "numberOfActivePeers"]),
     notifications: state.getIn(["notifications", "notifications"]),
     newNotifications: state.getIn(["notifications", "newNotifications"]),
     route: state.getIn(["route", "locationBeforeTransitions"]),

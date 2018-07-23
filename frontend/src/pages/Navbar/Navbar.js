@@ -18,6 +18,7 @@ const styles = {
 
 const Navbar = ({
   onToggleSidebar,
+  numberOfActivePeers,
   peers,
   unreadNotifications,
   showSidebar,
@@ -36,39 +37,40 @@ const Navbar = ({
   environment,
   classes
 }) => (
-  <div>
-    <AppBar classes={classes} position="absolute">
-      <Toolbar>
-        <LeftNavbarNavigation onToggleSidebar={onToggleSidebar} />
-        <MainNavbarNavigation
-          productionActive={productionActive}
-          history={history}
-          route={route}
-          currentProject={currentProject}
-          currentSubProject={currentSubProject}
-          environment={environment}
-        />
-        <RightNavbarNavigation
-          organization={organization}
-          unreadNotifications={unreadNotifications}
-          peers={peers}
-          history={history}
-          logout={logout}
-        />
-      </Toolbar>
-    </AppBar>
-    <SideNav
-      onToggleSidebar={onToggleSidebar}
-      showSidebar={showSidebar}
-      history={history}
-      logout={logout}
-      allowedIntents={allowedIntents}
-      displayName={displayName}
-      organization={organization}
-      avatar={avatar}
-      avatarBackground={avatarBackground}
-    />
-  </div>
-);
+    <div>
+      <AppBar classes={classes} position="absolute">
+        <Toolbar>
+          <LeftNavbarNavigation onToggleSidebar={onToggleSidebar} />
+          <MainNavbarNavigation
+            productionActive={productionActive}
+            history={history}
+            route={route}
+            currentProject={currentProject}
+            currentSubProject={currentSubProject}
+            environment={environment}
+          />
+          <RightNavbarNavigation
+            organization={organization}
+            unreadNotifications={unreadNotifications}
+            numberOfActivePeers={numberOfActivePeers}
+            peers={peers}
+            history={history}
+            logout={logout}
+          />
+        </Toolbar>
+      </AppBar>
+      <SideNav
+        onToggleSidebar={onToggleSidebar}
+        showSidebar={showSidebar}
+        history={history}
+        logout={logout}
+        allowedIntents={allowedIntents}
+        displayName={displayName}
+        organization={organization}
+        avatar={avatar}
+        avatarBackground={avatarBackground}
+      />
+    </div>
+  );
 
 export default withStyles(styles)(Navbar);
