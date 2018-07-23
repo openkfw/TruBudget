@@ -124,6 +124,7 @@ export const asMapKey = (keys: String[]): string => keys.join();
 
 export const getAll = async (multichain: MultichainClient): Promise<GroupResource[]> => {
   const resourceMap = new Map<string, GroupResource>();
+  await ensureStreamExists(multichain);
   const streamItems = await fetchStreamItems(multichain);
   for (const item of streamItems) {
     const event = item.data.json as Event;

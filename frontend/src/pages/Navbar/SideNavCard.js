@@ -22,7 +22,8 @@ const SideNavCard = ({
   userDashboardEnabled,
   nodeDashboardEnabled,
   groupDashboardEnabled,
-  history
+  history,
+  groups
 }) => (
   <div>
     <div
@@ -106,6 +107,17 @@ const SideNavCard = ({
       ) : null}
     </List>
     <Divider />
+    <List>
+      <Subheader> {strings.groupDashboard.groups} </Subheader>
+      {groups.map(group => (
+        <div key={group.id}>
+          <ListItem>
+            <ListItemText primary={group.displayName} secondary={"Id: " + group.id} />
+          </ListItem>
+          <Divider />
+        </div>
+      ))}
+    </List>
   </div>
 );
 

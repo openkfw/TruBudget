@@ -112,22 +112,26 @@ const authenticate = async (
     multichain,
     storedUser.organization,
   ))!;
-
+  const userGroups = await Group.getGroupsForUser(multichain, storedUser.id);
+  const groupIds = userGroups.map(group => group.id);
   const token: AuthToken = {
     userId: storedUser.id,
     address: storedUser.address,
     organization: storedUser.organization,
     organizationAddress,
+    groups: groupIds,
   };
+
   const signedJwt = createToken(
     jwtSecret,
     id,
     storedUser.address,
     storedUser.organization,
     organizationAddress,
+    groupIds,
   );
   const globalPermissions = await Global.getPermissions(multichain);
-  const userGroups = await Group.getGroupsForUser(multichain, storedUser.id);
+
   return {
     id,
     displayName: storedUser.displayName,
@@ -146,6 +150,7 @@ function createToken(
   address: string,
   organization: string,
   organizationAddress: string,
+  groupIds: string[],
 ): string {
   return jsonwebtoken.sign(
     {
@@ -153,6 +158,7 @@ function createToken(
       address,
       organization,
       organizationAddress,
+      groups: groupIds,
     },
     secret,
     { expiresIn: "1h" },

@@ -126,13 +126,13 @@ function* execute(fn, showLoading = false, errorCallback = undefined) {
 }
 
 function* handleError(error) {
-  console.error("API-Error: ", error.response.data.error.message || "unknown");
+  console.error("API-Error: ", error.response || "unknown");
   console.error(error);
 
   // which status should we use?
   if (error.response.status === 401) {
     yield call(logoutSaga);
-  } else if (error.response) {
+  } else if (error.response && error.response.data) {
     yield put({
       type: SNACKBAR_MESSAGE,
       message: error.response.data.error.message

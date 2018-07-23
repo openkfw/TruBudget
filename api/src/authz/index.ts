@@ -1,6 +1,8 @@
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
 import { AllowedUserGroupsByIntent, GroupId, People } from "./types";
+import * as Group from "../group";
+import { MultichainClient } from "../multichain";
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
@@ -12,7 +14,8 @@ export const hasIntersection = (actualGroups, allowedGroups) =>
 
 export const getUserAndGroups = async (token: AuthToken): Promise<GroupId[]> => {
   // TODO (await) get user's groups
-  return [token.userId, token.organization];
+  console.log(token);
+  return [token.userId, token.organization, ...token.groups];
 };
 
 export const getAllowedIntents = (

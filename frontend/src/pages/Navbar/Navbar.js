@@ -34,6 +34,7 @@ const Navbar = ({
   currentSubProject,
   allowedIntents,
   environment,
+  groups,
   classes
 }) => (
   <div>
@@ -63,6 +64,7 @@ const Navbar = ({
       history={history}
       logout={logout}
       allowedIntents={allowedIntents}
+      groups={groups}
       displayName={displayName}
       organization={organization}
       avatar={avatar}
