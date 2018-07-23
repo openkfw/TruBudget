@@ -151,6 +151,11 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
   return [...nodeEventsByAddress.values()];
 }
 
+export async function active(multichain: MultichainClient): Promise<number> {
+  const networkInfo: MultichainNetworkInfo = await multichain.getRpcClient().invoke("getnetworkinfo");
+  return networkInfo.connections
+}
+
 function handleCreate(event: Event): NodeInfo | undefined {
   if (event.intent !== "network.registerNode") return undefined;
   switch (event.dataVersion) {
@@ -174,6 +179,31 @@ interface PermissionsPendingInfo {
   admins: WalletAddress[];
   // The number of admins left for the permission to become effective:
   required: number;
+}
+
+interface MultichainNetworkInfo {
+  version: number
+  subversion: string
+  protocolversion: number
+  localservices: string
+  timeoffset: number
+  relayfee: number
+  connections: number
+  networks: Network[]
+  localaddresses: Localaddress[]
+}
+
+interface Localaddress {
+  address: string
+  port: number
+  score: number
+}
+
+interface Network {
+  name: string
+  limited: boolean
+  reachable: boolean
+  proxy: string
 }
 
 interface MultichainPermissionsInfo {

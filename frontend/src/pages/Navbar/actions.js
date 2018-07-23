@@ -4,6 +4,8 @@ export const FETCH_PEERS_SUCCESS = 'FETCH_PEERS_SUCCESS';
 export const FETCH_STREAM_NAMES = 'FETCH_STREAM_NAMES';
 export const FETCH_STREAM_NAMES_SUCCESS = 'FETCH_STREAM_NAMES_SUCCESS';
 export const SET_SELECTED_VIEW = 'SET_SELECTED_VIEW';
+export const FETCH_ACTIVE_PEERS = 'FETCH_ACTIVE_PEERS';
+export const FETCH_ACTIVE_PEERS_SUCCESS = 'FETCH_ACTIVE_PEERS_SUCCESS';
 
 export function toggleSidebar() {
   return {
@@ -14,6 +16,12 @@ export function toggleSidebar() {
 export function fetchPeers() {
   return {
     type: FETCH_PEERS,
+  }
+}
+
+export function fetchActivePeers() {
+  return {
+    type: FETCH_ACTIVE_PEERS
   }
 }
 
