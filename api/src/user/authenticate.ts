@@ -1,5 +1,6 @@
 import * as jsonwebtoken from "jsonwebtoken";
 import * as User from ".";
+import * as Group from "../group";
 import { getAllowedIntents, getUserAndGroups } from "../authz/index";
 import { globalIntents } from "../authz/intents";
 import { AuthToken } from "../authz/token";
@@ -19,6 +20,7 @@ export interface UserLoginResponse {
   displayName: string;
   organization: string;
   allowedIntents: string[];
+  groups: Object[];
   token: string;
 }
 
@@ -125,6 +127,7 @@ const authenticate = async (
     organizationAddress,
   );
   const globalPermissions = await Global.getPermissions(multichain);
+  const userGroups = await Group.getGroupsForUser(multichain, storedUser.id);
   return {
     id,
     displayName: storedUser.displayName,
@@ -132,6 +135,7 @@ const authenticate = async (
     allowedIntents: await getUserAndGroups(token).then(async userAndGroups =>
       getAllowedIntents(userAndGroups, globalPermissions),
     ),
+    groups: userGroups,
     token: signedJwt,
   };
 };
@@ -161,6 +165,7 @@ function rootUserLoginResponse(token: string): UserLoginResponse {
     displayName: "root",
     organization: "root",
     allowedIntents: globalIntents,
+    groups: [],
     token,
   };
 }

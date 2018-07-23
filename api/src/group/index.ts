@@ -27,6 +27,7 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
 };
 
 export const groupExists = async (multichain, groupId) => {
+  await ensureStreamExists(multichain);
   const existingGroups = await getAll(multichain);
   const exists = existingGroups.find(existingGroup => existingGroup.groupId === groupId);
   return exists ? true : false;
@@ -99,6 +100,22 @@ export const publish = async (
 //   const streamItem = await multichain.getValue(groupsStreamName, groupId);
 //   return streamItem.resource.data;
 // };
+
+export const getGroupsForUser = async (multichain: MultichainClient, userId: string) => {
+  const groups = await getAll(multichain);
+  const acc: Object[] = [];
+
+  return groups.reduce((acc, group) => {
+    //   { groupId: 'xxxxxx',
+    // displayName: 'test',
+    // users: [ 'mstein', 'jxavier' ] }
+    const index = group.users.findIndex(user => user === userId);
+    if (index > -1) {
+      acc.push({ displayName: group.displayName, id: group.groupId });
+    }
+    return acc;
+  }, acc);
+};
 
 async function fetchStreamItems(multichain: MultichainClient): Promise<Liststreamkeyitems.Item[]> {
   return multichain.v2_readStreamItems("groups", "groups");
