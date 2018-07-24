@@ -27,7 +27,7 @@ export const getUserList = async (
     200,
     {
       apiVersion: "1.0",
-      data: { items: passwordlessUsers.concat(filteredGroups) },
+      data: { items: [...passwordlessUsers, ...filteredGroups] },
     },
   ];
 };

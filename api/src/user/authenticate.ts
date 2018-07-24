@@ -76,7 +76,7 @@ const authenticate = async (
     const rootSecretHash = await hashPassword(rootSecret);
     if (await isPasswordMatch(password, rootSecretHash)) {
       return rootUserLoginResponse(
-        createToken(jwtSecret, "root", "no user address", "root", "no organization address"),
+        createToken(jwtSecret, "root", "no user address", "root", "no organization address", []),
       );
     } else {
       throwError("wrong password");
@@ -113,7 +113,7 @@ const authenticate = async (
     storedUser.organization,
   ))!;
   const userGroups = await Group.getGroupsForUser(multichain, storedUser.id);
-  const groupIds = userGroups.map(group => group.id);
+  const groupIds = userGroups.map(group => group.groupId);
   const token: AuthToken = {
     userId: storedUser.id,
     address: storedUser.address,

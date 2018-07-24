@@ -13,12 +13,6 @@ export interface GroupResource {
   users: string[];
 }
 
-export interface GroupRecord {
-  groupId: string;
-  displayName: string;
-  users: Array<string>;
-}
-
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
   await multichain.getOrCreateStream({
     kind: "groups",
@@ -101,17 +95,17 @@ export const publish = async (
 //   return streamItem.resource.data;
 // };
 
-export const getGroupsForUser = async (multichain: MultichainClient, userId: string) => {
+export const getGroupsForUser = async (
+  multichain: MultichainClient,
+  userId: string,
+): Promise<GroupResource[]> => {
   const groups = await getAll(multichain);
-  const acc: Object[] = [];
+  const acc: GroupResource[] = [];
 
   return groups.reduce((acc, group) => {
-    //   { groupId: 'xxxxxx',
-    // displayName: 'test',
-    // users: [ 'mstein', 'jxavier' ] }
     const index = group.users.findIndex(user => user === userId);
     if (index > -1) {
-      acc.push({ displayName: group.displayName, id: group.groupId });
+      acc.push({ displayName: group.displayName, groupId: group.groupId, users: group.users });
     }
     return acc;
   }, acc);
