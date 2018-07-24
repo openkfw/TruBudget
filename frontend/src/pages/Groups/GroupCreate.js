@@ -23,7 +23,8 @@ const styles = {
   },
   card: {
     width: "100%",
-    paddingBottom: "20px"
+    paddingBottom: "20px",
+    overflow: "visible"
   },
   cardDiv: {
     width: "100%",

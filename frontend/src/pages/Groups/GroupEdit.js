@@ -1,4 +1,5 @@
 import React from "react";
+import { withStyles } from "@material-ui/core/styles";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -8,8 +9,17 @@ import strings from "../../localizeStrings";
 import Button from "@material-ui/core/Button";
 import AutoComplete from "../Common/AutoComplete";
 
+const styles = {
+  paper: {
+    overflowY: "visible"
+  },
+  content: {
+    width: 400,
+    overflowY: "visible"
+  }
+};
 const GroupEdit = props => {
-  const { groups, editId, addUser, hideEditDialog, show, users, removeUserFromGroup } = props;
+  const { groups, editId, addUser, hideEditDialog, show, users, removeUserFromGroup, classes } = props;
   const group = groups.find(group => group.groupId === editId);
   const addUserToGroup = userId => {
     addUser(group.groupId, userId);
@@ -19,9 +29,10 @@ const GroupEdit = props => {
   };
 
   return (
-    <Dialog open={show} onClose={hideEditDialog}>
+    <Dialog open={show} classes={{ paperScrollPaper: classes.paper }} onClose={hideEditDialog}>
       <DialogTitle>{"Add Users"}</DialogTitle>
-      <DialogContent styles={{ width: 300, maxWidth: "50" }}>
+      {/* width: 300, maxWidth: "50",  */}
+      <DialogContent className={classes.content}>
         <AutoComplete
           users={users}
           selectedItems={group ? group.users : []}
@@ -37,4 +48,5 @@ const GroupEdit = props => {
     </Dialog>
   );
 };
-export default GroupEdit;
+
+export default withStyles(styles)(GroupEdit);

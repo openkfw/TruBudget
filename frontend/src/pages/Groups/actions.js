@@ -16,8 +16,8 @@ export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 export const REMOVE_USER = "REMOVE_USER";
 export const REMOVE_USER_SUCCESS = "REMOVE_USER_SUCCESS";
 
-export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
-export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
+export const SHOW_EDIT_DIALOG = "SHOW_GROUP_EDIT_DIALOG";
+export const HIDE_EDIT_DIALOG = "HIDE_GROUP_EDIT_DIALOG";
 
 export function fetchGroups(showLoading = false) {
   return {
