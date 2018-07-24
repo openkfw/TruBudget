@@ -30,8 +30,7 @@ const GroupEdit = props => {
 
   return (
     <Dialog open={show} classes={{ paperScrollPaper: classes.paper }} onClose={hideEditDialog}>
-      <DialogTitle>{"Add Users"}</DialogTitle>
-      {/* width: 300, maxWidth: "50",  */}
+      <DialogTitle>{strings.groupDashboard.add_users}</DialogTitle>
       <DialogContent className={classes.content}>
         <AutoComplete
           users={users}

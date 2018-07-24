@@ -58,7 +58,8 @@ const en = {
 
   groupDashboard: {
     new_group: "New user group",
-    groups: "Groups"
+    groups: "Groups",
+    add_users: "Add Users"
   },
   nodesDashboard: {
     nodes: "Nodes",

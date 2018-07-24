@@ -58,7 +58,8 @@ const pt = {
 
   groupDashboard: {
     new_group: "Portuguese: New user group",
-    groups: "Portuguese: Groups"
+    groups: "Portuguese: Groups",
+    add_users: "Portuguese: Add Users"
   },
 
   nodesDashboard: {

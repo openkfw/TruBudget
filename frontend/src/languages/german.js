@@ -142,7 +142,8 @@ const de = {
   groupDashboard: {
     new_group: "German: New user group",
     groups: "German: Groups",
-    group_name: "Name"
+    group_name: "Name",
+    add_users: "German: Add Users"
   },
 
   nodesDashboard: {

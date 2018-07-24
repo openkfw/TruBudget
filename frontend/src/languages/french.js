@@ -144,7 +144,8 @@ const fr = {
 
   groupDashboard: {
     new_group: "French: New user group",
-    groups: "French: Groups"
+    groups: "French: Groups",
+    add_users: "French: Add Users"
   },
 
   nodesDashboard: {
