@@ -70,6 +70,7 @@ const Navbar = ({
         organization={organization}
         avatar={avatar}
         avatarBackground={avatarBackground}
+        groups={groups}
       />
     </div>
   );
