@@ -40,5 +40,41 @@
     "displayName": "Romina Checker",
     "password": "test",
     "organization": "ACMECorp"
+  },
+  {
+    "id": "rfinance",
+    "displayName": "Rose Finance",
+    "password": "test",
+    "organization": "ACMECorp"
+  },
+  {
+    "id": "atutelle",
+    "displayName": "Abbas Tutelle",
+    "password": "test",
+    "organization": "ACMECorp"
+  },
+  {
+    "id": "pbailleur",
+    "displayName": "Peter Bailleur",
+    "password": "test",
+    "organization": "ACMECorp"
+  },
+  {
+    "id": "stresor",
+    "displayName": "Simon Tresor",
+    "password": "test",
+    "organization": "ACMECorp"
+  },
+  {
+    "id": "faudit",
+    "displayName": "Fatime Audit",
+    "password": "test",
+    "organization": "ACMECorp"
+  },
+  {
+    "id": "pchantier",
+    "displayName": "Paul Chantier",
+    "password": "test",
+    "organization": "ACMECorp"
   }
 ]
