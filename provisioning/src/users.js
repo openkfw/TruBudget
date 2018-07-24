@@ -24,7 +24,7 @@ const provisionUsers = async (axios, folder) => {
       console.log("Failed to provision users, max retries exceeded");
     } else {
       console.log(
-        "The following error occured during user provisioning ${err.message}"
+        `The following error occured during user provisioning ${err.message}`
       );
     }
   }

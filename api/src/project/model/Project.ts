@@ -113,14 +113,14 @@ async function fetchStreamItems(
                 item.keys = [streamName, projectSelfKey];
                 return item;
               }),
-            )
+          )
             .catch(err => {
               console.log(
                 `Failed to fetch '${projectSelfKey}' stream item from project stream ${streamName}`,
               );
               return null;
             }),
-        ),
+      ),
     ).then(lists => lists.filter(isNotEmpty));
     // Remove failed attempts and flatten into a single list of stream items:
     return streamItemLists.reduce((acc, x) => acc.concat(x), []);
@@ -140,7 +140,7 @@ export async function get(
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
-
+    console.log(event.data);
     let resource = resourceMap.get(asMapKey(item));
     if (resource === undefined) {
       const result = handleCreate(event);
@@ -243,8 +243,8 @@ function applyAssign(event: Event, resource: ProjectResource): true | undefined 
   if (event.intent !== "project.assign") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId } = event.data;
-      resource.data.assignee = userId;
+      const { identity } = event.data;
+      resource.data.assignee = identity;
       return true;
     }
   }
@@ -266,13 +266,14 @@ function applyGrantPermission(
   event: Event,
   permissions: AllowedUserGroupsByIntent,
 ): true | undefined {
+  console.log(event.data);
   if (event.intent !== "project.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId, intent } = event.data;
+      const { identity, intent } = event.data;
       const permissionsForIntent: People = permissions[intent] || [];
-      if (!permissionsForIntent.includes(userId)) {
-        permissionsForIntent.push(userId);
+      if (!permissionsForIntent.includes(identity)) {
+        permissionsForIntent.push(identity);
       }
       permissions[intent] = permissionsForIntent;
       return true;
@@ -288,9 +289,9 @@ function applyRevokePermission(
   if (event.intent !== "project.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId, intent } = event.data;
+      const { identity, intent } = event.data;
       const permissionsForIntent: People = permissions[intent] || [];
-      const userIndex = permissionsForIntent.indexOf(userId);
+      const userIndex = permissionsForIntent.indexOf(identity);
       if (userIndex !== -1) {
         // Remove the user from the array:
         permissionsForIntent.splice(userIndex, 1);

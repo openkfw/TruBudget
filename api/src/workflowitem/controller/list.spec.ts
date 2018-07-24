@@ -69,7 +69,7 @@ describe("workflowitem.list", () => {
                   createdBy: "bob",
                   createdAt: "2018-05-08T11:30:00.385Z",
                   dataVersion: 1,
-                  data: { userId: "alice" },
+                  data: { identity: "alice" },
                 },
               },
             },
@@ -97,7 +97,7 @@ describe("workflowitem.list", () => {
                   createdAt: "2018-05-08T11:29:00.385Z",
                   dataVersion: 1,
                   data: {
-                    userId: "alice",
+                    identity: "alice",
                     intent: "workflowitem.archive",
                   },
                 },
@@ -143,7 +143,7 @@ describe("workflowitem.list", () => {
                   createdAt: "2018-05-08T12:28:00.385Z",
                   dataVersion: 1,
                   data: {
-                    userId: "alice",
+                    identity: "alice",
                     intent: "workflowitem.list.permissions",
                   },
                 },
@@ -190,7 +190,7 @@ describe("workflowitem.list", () => {
         subprojectId,
       },
       token: {
-        userId: "alice",
+        userId: "alice",//TODO
       },
     };
 

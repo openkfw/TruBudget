@@ -8,9 +8,9 @@ import { withStyles } from "@material-ui/core";
 const styles = {};
 
 class SubProjectAssigneeContainer extends Component {
-  assignSubproject = userId => {
+  assignSubproject = identity => {
     const { projectId, subprojectId } = this.props;
-    this.props.assignSubproject(projectId, subprojectId, userId);
+    this.props.assignSubproject(projectId, subprojectId, identity);
   };
 
   render() {
@@ -25,7 +25,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    assignSubproject: (projectId, subprojectId, userId) => dispatch(assignSubproject(projectId, subprojectId, userId))
+    assignSubproject: (projectId, subprojectId, identity) => dispatch(assignSubproject(projectId, subprojectId, identity))
   };
 };
 

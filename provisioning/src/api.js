@@ -20,7 +20,7 @@ const createUser = async (axios, user) => {
 };
 const grantGlobalPermissionToUser = async (axios, intent, userId) => {
   return await withRetry(() =>
-    axios.post("/global.intent.grantPermission", { intent, userId })
+    axios.post("/global.intent.grantPermission", { intent, identity: userId })
   );
 };
 
@@ -163,7 +163,7 @@ const findWorkflowitem = async (
     axios
       .get(
         `/workflowitem.list?projectId=${project.data.id}&subprojectId=${
-          subproject.data.id
+        subproject.data.id
         }`
       )
       .then(res => res.data.data.workflowitems)
@@ -204,7 +204,7 @@ const grantPermissions = async (
         axios.post(url, {
           ...body,
           intent,
-          userId
+          identity: userId
         })
       );
     }

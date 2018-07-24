@@ -11,7 +11,7 @@ export const grantGlobalPermission = async (
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
-  const userId: string = value("userId", input.userId, isNonemptyString);
+  const identity: string = value("identity", input.identity, isNonemptyString);
   const intent = value("intent", input.intent, x => allIntents.includes(x));
 
   // Is the user allowed to grant global permissions?
@@ -21,7 +21,7 @@ export const grantGlobalPermission = async (
     await Global.getPermissions(multichain),
   );
 
-  await Global.grantPermission(multichain, userId, intent);
+  await Global.grantPermission(multichain, identity, intent);
 
   return [
     200,

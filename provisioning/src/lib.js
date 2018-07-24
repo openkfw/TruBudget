@@ -19,14 +19,14 @@ async function withRetry(cb, maxTimes = 8, timeoutMs = 15000) {
     ) {
       console.log(
         `Internal Server Error (${err.message}), retry in ${timeoutMs /
-          1000} seconds`
+        1000} seconds`
       );
       await timeout(timeoutMs);
       return await withRetry(cb, --maxTimes);
     } else if (err.response && err.response.status === 409) {
       console.log("The item you tried to create already exists");
     } else {
-      // console.log(err);
+      console.log(err);
       throw new Error(`Something strange happend ${err.message}`);
     }
   }

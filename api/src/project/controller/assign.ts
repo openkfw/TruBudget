@@ -16,7 +16,7 @@ export async function assignProject(
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
+  const identity: string = value("identity", input.identity, isNonemptyString);
 
   const userIntent: Intent = "project.assign";
 
@@ -31,7 +31,7 @@ export async function assignProject(
     multichain,
     req.token,
     userIntent,
-    userId,
+    identity,
     projectId,
   );
 
@@ -61,7 +61,7 @@ async function sendEventToDatabase(
   multichain: MultichainClient,
   token: AuthToken,
   userIntent: Intent,
-  userId: string,
+  identity: string,
   projectId: string,
 ): Promise<Event> {
   const event = {
@@ -69,7 +69,7 @@ async function sendEventToDatabase(
     createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId },
+    data: { identity },
   };
   const publishedEvent = await Project.publish(multichain, projectId, event);
   return publishedEvent;

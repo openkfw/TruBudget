@@ -566,9 +566,9 @@ export function* fetchWorkflowItemPermissionsSaga({ projectId, workflowitemId, s
   }, showLoading);
 }
 
-export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) {
+export function* grantPermissionsSaga({ projectId, intent, identity, showLoading }) {
   yield execute(function* () {
-    yield callApi(api.grantProjectPermissions, projectId, intent, user);
+    yield callApi(api.grantProjectPermissions, projectId, intent, identity);
 
     yield put({
       type: GRANT_PERMISSION_SUCCESS
@@ -581,9 +581,9 @@ export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) 
   }, showLoading);
 }
 
-export function* revokePermissionsSaga({ projectId, intent, user, showLoading }) {
+export function* revokePermissionsSaga({ projectId, intent, identity, showLoading }) {
   yield execute(function* () {
-    yield callApi(api.revokeProjectPermissions, projectId, intent, user);
+    yield callApi(api.revokeProjectPermissions, projectId, intent, identity);
 
     yield put({
       type: REVOKE_PERMISSION_SUCCESS
@@ -596,9 +596,9 @@ export function* revokePermissionsSaga({ projectId, intent, user, showLoading })
   }, showLoading);
 }
 
-export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
+export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, identity, showLoading }) {
   yield execute(function* () {
-    yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, user);
+    yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, identity);
 
     yield put({
       type: GRANT_SUBPROJECT_PERMISSION_SUCCESS
@@ -613,9 +613,9 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
   }, showLoading);
 }
 
-export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
+export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, identity, showLoading }) {
   yield execute(function* () {
-    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, user);
+    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, identity);
 
     yield put({
       type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS
@@ -635,11 +635,11 @@ export function* grantWorkflowItemPermissionsSaga({
   subprojectId,
   workflowitemId,
   intent,
-  user,
+  identity,
   showLoading
 }) {
   yield execute(function* () {
-    yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
+    yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
 
     yield put({
       type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS
@@ -660,11 +660,11 @@ export function* revokeWorkflowItemPermissionsSaga({
   subprojectId,
   workflowitemId,
   intent,
-  user,
+  identity,
   showLoading
 }) {
   yield execute(function* () {
-    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
+    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
 
     yield put({
       type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS

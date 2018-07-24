@@ -64,8 +64,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onClose: () => dispatch(hideProjectPermissions()),
-    grant: (projectId, permission, user) => dispatch(grantPermission(projectId, permission, user, true)),
-    revoke: (projectId, permission, user) => dispatch(revokePermission(projectId, permission, user, true)),
+    grant: (projectId, permission, identity) => dispatch(grantPermission(projectId, permission, identity, true)),
+    revoke: (projectId, permission, identity) => dispatch(revokePermission(projectId, permission, identity, true)),
     fetchProjectPermissions: (projectId, showLoading) => dispatch(fetchProjectPermissions(projectId, showLoading)),
     fetchUser: showLoading => dispatch(fetchUser(showLoading))
   };

@@ -52,24 +52,24 @@ export function fetchSubProjectPermissions(projectId, subprojectId, showLoading 
   };
 }
 
-export function grantSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
+export function grantSubProjectPermission(projectId, subprojectId, intent, identity, showLoading = false) {
   return {
     type: GRANT_SUBPROJECT_PERMISSION,
     projectId,
     subprojectId,
     intent,
-    user,
+    identity,
     showLoading
   };
 }
 
-export function revokeSubProjectPermission(projectId, subprojectId, intent, user, showLoading = false) {
+export function revokeSubProjectPermission(projectId, subprojectId, intent, identity, showLoading = false) {
   return {
     type: REVOKE_SUBPROJECT_PERMISSION,
     projectId,
     subprojectId,
     intent,
-    user,
+    identity,
     showLoading
   };
 }

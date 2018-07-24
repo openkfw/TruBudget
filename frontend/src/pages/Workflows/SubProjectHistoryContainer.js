@@ -26,17 +26,17 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "subproject.createWorkflowitem":
       return formatString(strings.history.subproject_createWorkflowitem, createdBy, snapshot.displayName);
     case "subproject.assign":
-      return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.userId);
+      return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.identity);
     case "workflowitem.close":
       return formatString(strings.history.workflowitem_close, createdBy, snapshot.displayName);
     case "subproject.close":
       return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
     case "subproject.intent.grantPermission":
-      return formatString(strings.history.subproject_grantPermission, createdBy, formatPermission(data), data.userId);
+      return formatString(strings.history.subproject_grantPermission, createdBy, formatPermission(data), data.identity);
     case "workflowitem.intent.grantPermission":
-      return formatString(strings.history.workflowitem_grantPermission, createdBy, formatPermission(data), data.userId);
+      return formatString(strings.history.workflowitem_grantPermission, createdBy, formatPermission(data), data.identity);//TODO
     case "subproject.intent.revokePermission":
-      return formatString(strings.history.subproject_revokePermission, createdBy, formatPermission(data), data.userId);
+      return formatString(strings.history.subproject_revokePermission, createdBy, formatPermission(data), data.identity);
     case "workflowitem.update":
       return formatUpdateString(strings.common.workflowItem, createdBy, data);
     case "subproject.update":
@@ -46,11 +46,11 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
         strings.history.workflowitem_revokePermission,
         createdBy,
         formatPermission(data),
-        data.userId,
+        data.identity,
         snapshot.displayName
       );
     case "workflowitem.assign":
-      return formatString(strings.history.workflowitem_assign, createdBy, snapshot.displayName, data.userId);
+      return formatString(strings.history.workflowitem_assign, createdBy, snapshot.displayName, data.identity);
     default:
       console.log(intent);
       return "Intent not defined";

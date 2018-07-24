@@ -13,9 +13,9 @@ const styles = {
 };
 
 class WorkflowAssigneeContainer extends Component {
-  assignWorkflow = userId => {
+  assignWorkflow = identity => {
     const { projectId, subprojectId, workflowitemId } = this.props;
-    this.props.assignWorkflow(projectId, subprojectId, workflowitemId, userId);
+    this.props.assignWorkflow(projectId, subprojectId, workflowitemId, identity);
   };
 
   getWorkflowAssignee = (workflowItems, selectedId) => {
@@ -51,8 +51,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    assignWorkflow: (projectId, subProjectId, workflowId, userId) =>
-      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, userId))
+    assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
+      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity))
   };
 };
 
