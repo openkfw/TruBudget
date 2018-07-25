@@ -6,9 +6,29 @@ import { toJS } from "../../helper";
 import Users from "./Users";
 import NotAuthorized from "../Error/NotAuthorized";
 import { canViewUserDashboard } from "../../permissions";
-import { setUsername, setPassword, setDisplayName, setOrganization, createUser, resetUserToAdd } from "./actions";
+import {
+  setUsername,
+  setPassword,
+  setDisplayName,
+  setOrganization,
+  createUser,
+  resetUserToAdd,
+  setTabIndex
+} from "./actions";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
+import {
+  fetchGroups,
+  storeGroupName,
+  storeGroupId,
+  addInitialUserToGroup,
+  removeInitialUserFromGroup,
+  addUser,
+  removeUser,
+  createUserGroup,
+  showEditDialog,
+  hideEditDialog
+} from "../Groups/actions";
 
 class UserManagementContainer extends Component {
   componentWillMount() {
@@ -33,7 +53,13 @@ const mapStateToProps = state => {
     nodes: state.getIn(["users", "nodes"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     users: state.getIn(["login", "user"]),
-    organization: state.getIn(["login", "organization"])
+    organization: state.getIn(["login", "organization"]),
+    tabIndex: state.getIn(["users", "tabIndex"]),
+    groups: state.getIn(["groups", "groups"]),
+    groupToAdd: state.getIn(["groups", "groupToAdd"]),
+    editMode: state.getIn(["groups", "editMode"]),
+    editDialogShown: state.getIn(["groups", "editDialogShown"]),
+    editId: state.getIn(["groups", "editId"])
   };
 };
 
@@ -49,7 +75,18 @@ const mapDispatchToProps = dispatch => {
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    resetState: () => dispatch(resetUserToAdd())
+    resetState: () => dispatch(resetUserToAdd()),
+    setTabIndex: value => dispatch(setTabIndex(value)),
+    fetchGroups: () => dispatch(fetchGroups(true)),
+    storeGroupName: name => dispatch(storeGroupName(name)),
+    storeGroupId: groupId => dispatch(storeGroupId(groupId)),
+    addInitialUserToGroup: userId => dispatch(addInitialUserToGroup(userId)),
+    removeInitialUserFromGroup: userId => dispatch(removeInitialUserFromGroup(userId)),
+    addUser: (groupId, userId) => dispatch(addUser(groupId, userId)),
+    removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
+    createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
+    showEditDialog: groupId => dispatch(showEditDialog(groupId)),
+    hideEditDialog: () => dispatch(hideEditDialog())
   };
 };
 

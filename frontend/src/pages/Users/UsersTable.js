@@ -31,12 +31,7 @@ const sortUsers = users => {
 const UsersTable = ({ users, classes }) => {
   const sortedUsers = sortUsers(users);
   return (
-    <Paper className={classes.paper}>
-      <div className={classes.title}>
-        <Typography variant="title" color="primary" id="tableTitle">
-          {strings.usersDashboard.users}
-        </Typography>
-      </div>
+    <Paper>
       <Table>
         <TableHead>
           <TableRow>

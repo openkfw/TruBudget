@@ -6,11 +6,13 @@ import {
   SET_ORGANIZATION,
   SET_DISPLAYNAME,
   CREATE_USER_SUCCESS,
-  RESET_USER
+  RESET_USER,
+  TAB_INDEX
 } from "./actions";
 
 const defaultState = fromJS({
   nodes: [],
+  tabIndex: 0,
   userToAdd: {
     username: "",
     password: "",
@@ -32,6 +34,8 @@ export default function userDashboardReducer(state = defaultState, action) {
     case CREATE_USER_SUCCESS:
     case RESET_USER:
       return state.set("userToAdd", defaultState.get("userToAdd"));
+    case TAB_INDEX:
+      return state.set("tabIndex", action.value);
     default:
       return state;
   }

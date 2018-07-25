@@ -8,6 +8,8 @@ export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
 
 export const RESET_USER = "RESET_USER";
 
+export const TAB_INDEX = "TAB_INDEX";
+
 export function resetUserToAdd() {
   return {
     type: RESET_USER
@@ -37,6 +39,12 @@ export function setPassword(password) {
   return {
     type: SET_PASSWORD,
     password
+  };
+}
+export function setTabIndex(value) {
+  return {
+    type: TAB_INDEX,
+    value
   };
 }
 

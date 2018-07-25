@@ -4,7 +4,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import _sortBy from "lodash/sortBy";
 import blueGrey from "@material-ui/core/colors/blueGrey";
@@ -13,9 +12,6 @@ import strings from "../../localizeStrings";
 import { withStyles, IconButton } from "@material-ui/core";
 
 const styles = {
-  paper: {
-    marginTop: "40px"
-  },
   title: {
     width: "100%",
     display: "flex",
@@ -31,12 +27,7 @@ const sortGroups = groups => {
 const GroupsTable = ({ groups, showEditDialog, classes }) => {
   const sortedGroups = sortGroups(groups);
   return (
-    <Paper className={classes.paper}>
-      <div className={classes.title}>
-        <Typography variant="title" color="primary" id="tableTitle">
-          {strings.groupDashboard.groups}
-        </Typography>
-      </div>
+    <Paper>
       <Table>
         <TableHead>
           <TableRow>
