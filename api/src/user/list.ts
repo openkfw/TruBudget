@@ -21,6 +21,7 @@ export const getUserList = async (
   const filteredGroups = groups.map(group => ({
     id: group.groupId,
     displayName: group.displayName,
+    isGroup: true,
   }));
 
   return [
