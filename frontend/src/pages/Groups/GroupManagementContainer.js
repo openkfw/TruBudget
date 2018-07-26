@@ -26,7 +26,7 @@ class GroupManagementContainer extends Component {
     this.props.fetchGroups();
     this.props.fetchUser();
   }
-  componentWillUnmount() {}
+  componentWillUnmount() { }
   render() {
     const canView = canViewGroupDashboard(this.props.allowedIntents);
     if (canView) {
@@ -46,7 +46,7 @@ const mapStateToProps = state => {
     groupToAdd: state.getIn(["groups", "groupToAdd"]),
     editMode: state.getIn(["groups", "editMode"]),
     editDialogShown: state.getIn(["groups", "editDialogShown"]),
-    editId: state.getIn(["groups", "editId"])
+    // editId: state.getIn(["groups", "editId"])
   };
 };
 

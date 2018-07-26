@@ -73,6 +73,8 @@ const handleCreate = (cb, showSnackbar, storeSnackbarMessage) => {
   showSnackbar();
 };
 
+
+
 const GroupCreate = ({
   users,
   groupToAdd,
@@ -83,62 +85,67 @@ const GroupCreate = ({
   editMode,
   showSnackbar,
   storeSnackbarMessage,
-  removeInitialUserFromGroup
+  removeInitialUserFromGroup,
+  removeUserFromGroup,
+  addUser
 }) => {
-  const { groupId, name, groupUsers } = groupToAdd;
+  console.log(groupToAdd)
+  const { groupId, displayName, groupUsers } = groupToAdd;
+
+
+  const addUserToGroup = userId => {
+    addUser(groupId, userId);
+  };
+  const removeUser = userId => {
+    removeUserFromGroup(groupId, userId);
+  };
   return (
-    <div style={styles.container}>
-      <Card style={styles.card}>
-        <CardHeader title={strings.groupDashboard.new_group} />
-        <CardContent style={styles.cardContent}>
-          <div style={styles.textInputContainer}>
-            <TextInputWithIcon
-              style={styles.textInput}
-              label={strings.common.id}
-              value={groupId}
-              error={false}
-              disabled={editMode}
-              icon={<NameIcon />}
-              id="id"
-              onChange={event => storeGroupId(event.target.value)}
-            />
-            <TextInputWithIcon
-              style={styles.textInput}
-              label={strings.common.name}
-              value={name}
-              id="name"
-              error={false}
-              disabled={editMode}
-              icon={<OrgaIcon />}
-              onChange={event => storeGroupName(event.target.value)}
-            />
-          </div>
-          <div>
-            <AutoComplete
-              users={users}
-              addToSelection={addInitialUserToGroup}
-              selectedItems={groupUsers}
-              handleDelete={removeInitialUserFromGroup}
-            />
-          </div>
-        </CardContent>
-        {!editMode ? (
-          <CardActions style={styles.cardActions}>
-            <Button
-              variant="contained"
-              color="primary"
-              id="createuser"
-              disabled={isEmpty(name) || isEmpty(groupId) || isEmpty(groupUsers)}
-              onClick={() =>
-                handleCreate(() => createUserGroup(groupId, name, groupUsers), showSnackbar, storeSnackbarMessage)
-              }
-            >
-              {strings.common.create}
-            </Button>
-          </CardActions>
-        ) : null}
-      </Card>
+    <div>
+      <div style={styles.textInputContainer}>
+        <TextInputWithIcon
+          style={styles.textInput}
+          label={editMode ? groupId : strings.common.id}
+          error={false}
+          disabled={editMode}
+          icon={<NameIcon />}
+          id="id"
+          onChange={event => storeGroupId(event.target.value)}
+        />
+        <TextInputWithIcon
+          style={styles.textInput}
+          label={editMode ? displayName : strings.common.name}
+          id="name"
+          error={false}
+          disabled={editMode}
+          icon={<OrgaIcon />}
+          onChange={event => storeGroupName(event.target.value)}
+        />
+      </div>
+      <div>
+        <AutoComplete
+          users={users}
+          addToSelection={editMode ? addUserToGroup : addInitialUserToGroup}
+          selectedItems={groupUsers}
+          handleDelete={editMode ? removeUser : removeInitialUserFromGroup}
+        />
+      </div>
     </div>
+    // {!editMode ? (
+    //   <CardActions style={styles.cardActions}>
+    //     <Button
+    //       variant="contained"
+    //       color="primary"
+    //       id="createuser"
+    //       disabled={isEmpty(name) || isEmpty(groupId) || isEmpty(groupUsers)}
+    //       onClick={() =>
+    //         handleCreate(() => createUserGroup(groupId, name, groupUsers), showSnackbar, storeSnackbarMessage)
+    //       }
+    //     >
+    //       {strings.common.create}
+    //     </Button>
+    //   </CardActions>
+    // ) : null}
+
   );
 };
 

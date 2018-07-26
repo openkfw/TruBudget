@@ -20,9 +20,10 @@ const defaultState = fromJS({
     username: "",
     password: "",
     organization: "",
-    displayName: "",
-    content: ""
-  }
+    displayName: ""
+  },
+  editId: "",
+  dialogType: ""
 });
 
 export default function userDashboardReducer(state = defaultState, action) {
@@ -41,8 +42,7 @@ export default function userDashboardReducer(state = defaultState, action) {
     case TAB_INDEX:
       return state.set("tabIndex", action.value);
     case SHOW_DASHBOARD_DIALOG:
-      console.log("showDashboard " + action.content);
-      return state.merge({ "dashboardDialogShown": true, "content": action.content });
+      return state.merge({ "dashboardDialogShown": true, "dialogType": action.dialogType, "editId": action.editId });
     case HIDE_DASHBOARD_DIALOG:
       console.log("hideDashboard");
       return state.set("dashboardDialogShown", false);

@@ -111,6 +111,7 @@ class AutoComplete extends React.Component {
   render() {
     const { classes, users, addToSelection, selectedItems, handleDelete } = this.props;
     const { inputValue } = this.state;
+    console.log(selectedItems);
 
     return (
       <div style={{ marginTop: "30px" }}>
@@ -136,30 +137,30 @@ class AutoComplete extends React.Component {
               selectedItem: selectedItem2,
               highlightedIndex
             }) => (
-              <div className={classes.container}>
-                {renderInput({
-                  classes,
-                  InputProps: getInputProps({
-                    onChange: this.handleInputChange,
-                    placeholder: selectedItems.length + " Users selected",
-                    id: "downshift"
-                  })
-                })}
-                {isOpen ? (
-                  <Paper className={classes.paper} elevation={1} square>
-                    {getSuggestions(users, inputValue2).map((suggestion, index) =>
-                      renderSuggestion({
-                        suggestion,
-                        index,
-                        itemProps: getItemProps({ item: suggestion.id }),
-                        highlightedIndex,
-                        selectedItem: selectedItem2
-                      })
-                    )}
-                  </Paper>
-                ) : null}
-              </div>
-            )}
+                <div className={classes.container}>
+                  {renderInput({
+                    classes,
+                    InputProps: getInputProps({
+                      onChange: this.handleInputChange,
+                      placeholder: selectedItems.length + " Users selected",
+                      id: "downshift"
+                    })
+                  })}
+                  {isOpen ? (
+                    <Paper className={classes.paper} elevation={1} square>
+                      {getSuggestions(users, inputValue2).map((suggestion, index) =>
+                        renderSuggestion({
+                          suggestion,
+                          index,
+                          itemProps: getItemProps({ item: suggestion.id }),
+                          highlightedIndex,
+                          selectedItem: selectedItem2
+                        })
+                      )}
+                    </Paper>
+                  ) : null}
+                </div>
+              )}
           </Downshift>
         </div>
         <div className={classes.selection}>

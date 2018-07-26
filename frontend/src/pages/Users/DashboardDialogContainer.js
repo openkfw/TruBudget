@@ -33,7 +33,8 @@ const mapStateToProps = state => {
     dialogTitle: state.getIn(["overview", "dialogTitle"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     dashboardDialogShown: state.getIn(["users", "dashboardDialogShown"]),
-    content: state.getIn(["users", "content"])
+    dialogType: state.getIn(["users", "dialogType"]),
+    editId: state.getIn(["users", "editId"])
   };
 };
 

@@ -60,10 +60,11 @@ export function createUser(displayName, organization, username, password) {
   };
 }
 
-export function showDashboardDialog(content) {
+export function showDashboardDialog(dialogType, editId = null) {
   return {
     type: SHOW_DASHBOARD_DIALOG,
-    content
+    dialogType,
+    editId
   };
 }
 

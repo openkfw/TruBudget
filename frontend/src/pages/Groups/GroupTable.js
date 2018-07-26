@@ -26,6 +26,7 @@ const sortGroups = groups => {
 };
 const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
   const sortedGroups = sortGroups(groups);
+
   return (
     <Paper>
       <Table>
@@ -51,7 +52,7 @@ const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
                   <span>{group.users.length}</span>
                 </TableCell>
                 <TableCell>
-                  <IconButton onClick={() => showDashboardDialog("editGroup")}>
+                  <IconButton onClick={() => showDashboardDialog("editGroup", group.groupId)}>
                     <EditIcon />
                   </IconButton>
                 </TableCell>

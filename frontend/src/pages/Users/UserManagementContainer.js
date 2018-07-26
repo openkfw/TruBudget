@@ -61,7 +61,7 @@ const mapStateToProps = state => {
     groupToAdd: state.getIn(["groups", "groupToAdd"]),
     editMode: state.getIn(["groups", "editMode"]),
     editDialogShown: state.getIn(["groups", "editDialogShown"]),
-    editId: state.getIn(["groups", "editId"])
+    editId: state.getIn(["users", "editId"])
   };
 };
 
@@ -92,7 +92,7 @@ const mapDispatchToProps = dispatch => {
     hideEditDialog: () => dispatch(hideEditDialog()),
 
 
-    showDashboardDialog: (content) => dispatch(showDashboardDialog(content))
+    showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId))
   };
 };
 

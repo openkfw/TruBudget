@@ -4,8 +4,9 @@ import _isEmpty from "lodash/isEmpty";
 
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
-import DashboardDialogContent from "./DashboardDialogContent";
 import { compareObjects, fromAmountString } from "../../helper";
+import UserDialogContent from "./UserCreate";
+import GroupDialogContent from "../Groups/GroupCreate";
 
 const handleCreate = props => {
   const { createProject, onDialogCancel, projectToAdd, location, storeSnackbarMessage, showSnackbar } = props;
@@ -40,16 +41,19 @@ const handleEdit = props => {
 };
 
 const DashboardDialog = props => {
-  const { projects, projectToAdd, dashboardDialogShown, content } = props;
+  console.log(props);
+
+  const { projects, projectToAdd, dashboardDialogShown, dialogType, editId, groups } = props;
+
   const { displayName, description, amount } = projectToAdd;
   const changes = compareObjects(projects, projectToAdd);
   let steps;
-  switch (content) {
+  switch (dialogType) {
     case "addUser":
       steps = [
         {
           title: "Add User",
-          content: <DashboardDialogContent {...props} />,
+          content: <UserDialogContent {...props} />,
           nextDisabled:
             _isEmpty(displayName) ||
             _isEmpty(description) ||
@@ -60,7 +64,7 @@ const DashboardDialog = props => {
       steps = [
         {
           title: "Add Group",
-          content: <DashboardDialogContent {...props} />,
+          content: <GroupDialogContent {...props} />,
           nextDisabled:
             _isEmpty(displayName) ||
             _isEmpty(description) ||
@@ -68,10 +72,17 @@ const DashboardDialog = props => {
         }];
       break;
     case "editGroup":
+      const group = groups.find(group => group.groupId === editId)
+      const groupToEdit = {
+        groupId: group.groupId,
+        displayName: group.displayName,
+        groupUsers: group.users
+      }
+      console.log(groupToEdit)
       steps = [
         {
           title: "Edit Group",
-          content: <DashboardDialogContent {...props} />,
+          content: <GroupDialogContent  {...props} groupToAdd={groupToEdit} editMode={true} />,
           nextDisabled:
             _isEmpty(displayName) ||
             _isEmpty(description) ||
