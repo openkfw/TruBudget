@@ -37,6 +37,8 @@ export default function userDashboardReducer(state = defaultState, action) {
     case SET_PASSWORD:
       return state.setIn(["userToAdd", "password"], action.password);
     case CREATE_USER_SUCCESS:
+      console.log("CREATE_USER_SUCCESS");
+
     case RESET_USER:
       return state.set("userToAdd", defaultState.get("userToAdd"));
     case TAB_INDEX:
@@ -45,7 +47,7 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.merge({ "dashboardDialogShown": true, "dialogType": action.dialogType, "editId": action.editId });
     case HIDE_DASHBOARD_DIALOG:
       console.log("hideDashboard");
-      return state.set("dashboardDialogShown", false);
+      return state.merge({ "dashboardDialogShown": false, "userToAdd": defaultState.get("userToAdd") });
     default:
       return state;
   }

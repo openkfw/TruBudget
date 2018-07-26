@@ -70,25 +70,7 @@ const styles = {
   }
 };
 
-const handleCreate = (
-  displayName,
-  organization,
-  password,
-  username,
-  createUser,
-  showSnackbar,
-  showErrorSnackbar,
-  storeSnackbarMessage
-) => {
-  if (displayName && organization && username && password) {
-    createUser(displayName, organization, username, password);
-    storeSnackbarMessage(strings.usersDashboard.user_created);
-    showSnackbar();
-  } else {
-    storeSnackbarMessage("Enter required information");
-    showErrorSnackbar();
-  }
-};
+
 const UserCreate = ({
   userToAdd,
   setDisplayName,

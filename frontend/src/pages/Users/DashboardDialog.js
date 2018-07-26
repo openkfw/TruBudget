@@ -8,23 +8,29 @@ import { compareObjects, fromAmountString } from "../../helper";
 import UserDialogContent from "./UserCreate";
 import GroupDialogContent from "../Groups/GroupCreate";
 
-const handleCreate = props => {
-  const { createProject, onDialogCancel, projectToAdd, location, storeSnackbarMessage, showSnackbar } = props;
-  const { displayName, amount, description, currency, thumbnail } = projectToAdd;
-  createProject(
-    displayName,
-    fromAmountString(amount).toString(),
-    description,
-    currency,
-    location.pathname.split("/")[2],
-    thumbnail
-  );
-  onDialogCancel();
-  storeSnackbarMessage(strings.common.added + " " + strings.common.project + " " + displayName);
-  showSnackbar();
+const handleCreateUser = (displayName,
+  organization = "ACMECorp",
+  password,
+  username,
+  createUser,
+  showSnackbar,
+  showErrorSnackbar,
+  storeSnackbarMessage
+) => {
+
+
+
+  console.log(createUser + displayName + organization + password + username);
+  createUser(displayName, "ACMECorp", username, password);
+  //storeSnackbarMessage(strings.usersDashboard.user_created);//TODO
+  //showSnackbar();
+
+  // storeSnackbarMessage("Enter required information");
+  // showErrorSnackbar();
+
 };
 
-const handleEdit = props => {
+const handleEdit = (props) => {
   const { editProject, onDialogCancel, projectToAdd, projects, storeSnackbarMessage, showSnackbar } = props;
 
   const changes = compareObjects(projects, projectToAdd);
@@ -43,10 +49,13 @@ const handleEdit = props => {
 const DashboardDialog = props => {
   console.log(props);
 
-  const { projects, projectToAdd, dashboardDialogShown, dialogType, editId, groups } = props;
+  const { projects, projectToAdd, dashboardDialogShown, dialogType, editId, groups, userToAdd, groupToAdd } = props;
+  const { username, password, displayName, organization } = userToAdd
+  console.log(groupToAdd);
+  console.log(userToAdd);
 
-  const { displayName, description, amount } = projectToAdd;
-  const changes = compareObjects(projects, projectToAdd);
+  const { groupId, groupName, users } = groupToAdd
+
   let steps;
   switch (dialogType) {
     case "addUser":
@@ -55,9 +64,9 @@ const DashboardDialog = props => {
           title: "Add User",
           content: <UserDialogContent {...props} />,
           nextDisabled:
-            _isEmpty(displayName) ||
-            _isEmpty(description) ||
-            ((_isEmpty(amount) && isNaN(parseFloat(amount))) || _isEmpty(changes))
+            _isEmpty(username) ||
+            _isEmpty(password) ||
+            _isEmpty(displayName)
         }];
       break;
     case "addGroup":
@@ -66,9 +75,9 @@ const DashboardDialog = props => {
           title: "Add Group",
           content: <GroupDialogContent {...props} />,
           nextDisabled:
-            _isEmpty(displayName) ||
-            _isEmpty(description) ||
-            ((_isEmpty(amount) && isNaN(parseFloat(amount))) || _isEmpty(changes))
+            _isEmpty(username) ||
+            _isEmpty(username) ||
+            _isEmpty(username)
         }];
       break;
     case "editGroup":
@@ -85,8 +94,8 @@ const DashboardDialog = props => {
           content: <GroupDialogContent  {...props} groupToAdd={groupToEdit} editMode={true} />,
           nextDisabled:
             _isEmpty(displayName) ||
-            _isEmpty(description) ||
-            ((_isEmpty(amount) && isNaN(parseFloat(amount))) || _isEmpty(changes))
+            _isEmpty(username) ||
+            _isEmpty(username)
         }];
       break;
 
@@ -102,6 +111,7 @@ const DashboardDialog = props => {
       numberOfSteps={steps.length}
       onDialogCancel={props.hideDashboardDialog}
       dialogShown={dashboardDialogShown}
+      handleSubmit={() => handleCreateUser(username, password, organization, displayName, props.createUser, ...props)}
       {...props}
     />
   );

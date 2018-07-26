@@ -17,7 +17,7 @@ import {
 } from "../Overview/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import { hideEditDialog } from "../Groups/actions";
-import { hideDashboardDialog } from "./actions";
+import { hideDashboardDialog, createUser } from "./actions";
 
 class DashboardDialogContainer extends Component {
   render() {
@@ -53,6 +53,8 @@ const mapDispatchToProps = dispatch => {
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
 
+    createUser: (displayName, organization, username, password) =>
+      dispatch(createUser(displayName, organization, username, password)),
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
 

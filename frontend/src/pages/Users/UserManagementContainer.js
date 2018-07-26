@@ -73,8 +73,7 @@ const mapDispatchToProps = dispatch => {
     setOrganization: organization => dispatch(setOrganization(organization)),
     setUsername: username => dispatch(setUsername(username)),
     setPassword: password => dispatch(setPassword(password)),
-    createUser: (displayName, organization, username, password) =>
-      dispatch(createUser(displayName, organization, username, password)),
+
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),

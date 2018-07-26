@@ -21,6 +21,8 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   const isLastStep = currentStep === numberOfSteps - 1;
   const isFirstStep = currentStep === 0;
   const requiredInfoAdded = steps[currentStep].nextDisabled;
+  console.log(isLastStep + " - info");
+
   const cancelButton = (
     <Button aria-label="cancel" color="secondary" onClick={() => handleCancel(props)}>
       {strings.common.cancel}
