@@ -103,108 +103,38 @@ const UserCreate = ({
 }) => {
   const { displayName, password, username } = userToAdd;
   return (
-    <div style={styles.container}>
-      <Card style={styles.card}>
-        <CardHeader title={strings.usersDashboard.new_user} />
-        <CardContent style={styles.cardContent}>
-          <div style={styles.textInputContainer}>
-            <TextInputWithIcon
-              style={styles.textInput}
-              label={strings.usersDashboard.full_name}
-              value={displayName}
-              error={false}
-              icon={<NameIcon />}
-              id="fullname"
-              onChange={event => setDisplayName(event.target.value)}
-            />
-            <TextInputWithIcon
-              style={styles.textInput}
-              label={strings.usersDashboard.organization}
-              value={organization}
-              id="organization"
-              disabled={true}
-              error={false}
-              icon={<OrgaIcon />}
-              onChange={event => setOrganization(event.target.value)}
-            />
-          </div>
-          <div style={styles.textInputContainer}>
-            <Username username={username} storeUsername={setUsername} failed={false} id="username" />
-            <Password
-              password={password}
-              storePassword={setPassword}
-              failed={false}
-              // nextBestAction={() => console.log("NextBestAction")}
-              id="password"
-            />
-          </div>
-        </CardContent>
-        <CardActions style={styles.cardActions}>
-          <Button
-            variant="contained"
-            color="primary"
-            id="createuser"
-            disabled={isEmpty(displayName) || isEmpty(organization) || isEmpty(username) || isEmpty(password)}
-            onClick={() =>
-              handleCreate(
-                displayName,
-                organization,
-                password,
-                username,
-                createUser,
-                showSnackbar,
-                showErrorSnackbar,
-                storeSnackbarMessage
-              )
-            }
-          >
-            {strings.common.create}
-          </Button>
-        </CardActions>
-      </Card>
-      {/* <Card style={styles.nodeCard}>
-        <CardHeader title={"Open Votes (Mock)"} />
-        <CardContent>
-          <List>
-            <ListItem>
-              <ListItemText
-                primary={
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <Typography variant="subheading"> ACMECorp</Typography>
-                    <Typography> Permission: admin </Typography>
-                  </div>
-                }
-                secondary="Votes: 1"
-              />
-              <IconButton>
-                <ThumbUp color="primary" />
-              </IconButton>
-              <IconButton>
-                <ThumbDown color="primary" />
-              </IconButton>
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText
-                primary={
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <Typography variant="subheading"> UmbrellaCorp</Typography>
-                    <Typography> Permission: base </Typography>
-                  </div>
-                }
-                secondary="Votes: 4"
-              />
-              <IconButton>
-                <ThumbUp color="primary" />
-              </IconButton>
-              <IconButton>
-                <ThumbDown color="primary" />
-              </IconButton>
-            </ListItem>
-            <Divider />
-          </List>
-        </CardContent>
-      </Card> */}
+    <div>
+      <div style={styles.textInputContainer}>
+        <TextInputWithIcon
+          style={styles.textInput}
+          label={strings.usersDashboard.full_name}
+          value={displayName}
+          error={false}
+          icon={<NameIcon />}
+          id="fullname"
+          onChange={event => setDisplayName(event.target.value)}
+        />
+        <TextInputWithIcon
+          style={styles.textInput}
+          label={strings.usersDashboard.organization}
+          value={organization}
+          id="organization"
+          disabled={true}
+          error={false}
+          icon={<OrgaIcon />}
+          onChange={event => setOrganization(event.target.value)}
+        />
+      </div>
+      <div style={styles.textInputContainer}>
+        <Username username={username} storeUsername={setUsername} failed={false} id="username" />
+        <Password
+          password={password}
+          storePassword={setPassword}
+          failed={false}
+          // nextBestAction={() => console.log("NextBestAction")}
+          id="password"
+        />
+      </div>
     </div>
   );
 };

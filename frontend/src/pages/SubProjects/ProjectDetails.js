@@ -195,7 +195,7 @@ const ProjectDetails = ({
               <div>
                 {projectStatus !== "closed" ? (
                   <Tooltip
-                    disabled={true}
+                    disabled={false}
                     id="tooltip-pclose"
                     title={closeDisabled ? strings.project.project_close_info : strings.common.close}
                   >

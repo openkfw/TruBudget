@@ -9,6 +9,8 @@ export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
 export const RESET_USER = "RESET_USER";
 
 export const TAB_INDEX = "TAB_INDEX";
+export const SHOW_DASHBOARD_DIALOG = "SHOW_DASHBOARD_DIALOG";
+export const HIDE_DASHBOARD_DIALOG = "HIDE_DASHBOARD_DIALOG";
 
 export function resetUserToAdd() {
   return {
@@ -55,5 +57,18 @@ export function createUser(displayName, organization, username, password) {
     organization,
     username,
     password
+  };
+}
+
+export function showDashboardDialog(content) {
+  return {
+    type: SHOW_DASHBOARD_DIALOG,
+    content
+  };
+}
+
+export function hideDashboardDialog() {
+  return {
+    type: HIDE_DASHBOARD_DIALOG
   };
 }

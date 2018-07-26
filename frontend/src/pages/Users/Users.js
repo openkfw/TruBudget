@@ -8,6 +8,9 @@ import GroupTable from "../Groups/GroupTable";
 import Button from "@material-ui/core/Button";
 import NavigationIcon from "@material-ui/icons/Navigation";
 import Add from "@material-ui/icons/Add";
+import GroupEdit from "../Groups/GroupEdit";
+import DialogWrapper from "./DialogWrapper";
+import DashboardDialogContainer from "./DashboardDialogContainer";
 
 const styles = {
   container: {
@@ -21,7 +24,8 @@ const styles = {
   }
 };
 const Users = props => {
-  const { tabIndex, setTabIndex } = props;
+  console.log(props);
+  const { tabIndex, setTabIndex, showDashboardDialog } = props;
   return (
     <div id="userdashboard" style={styles.container}>
       <div style={styles.customWidth}>
@@ -49,18 +53,19 @@ const Users = props => {
           }}
         >
           <Button
+            onClick={() => { tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup") }}
             color="primary"
             style={{ position: "absolute", marginTop: -20 }}
-            variant="extendedFab"
-            aria-label="Delete"
+            variant="fab"
+            aria-label="Add"
           >
             <Add />
-            {tabIndex === 0 ? "Add User" : "Add Group"}
           </Button>
         </div>
         {tabIndex === 0 && <UsersTable {...props} />}
         {tabIndex === 1 && <GroupTable {...props} />}
       </div>
+      <DashboardDialogContainer {...props} />
     </div>
   );
 };

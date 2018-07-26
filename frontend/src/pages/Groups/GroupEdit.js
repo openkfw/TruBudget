@@ -8,6 +8,9 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import strings from "../../localizeStrings";
 import Button from "@material-ui/core/Button";
 import AutoComplete from "../Common/AutoComplete";
+import TextInputWithIcon from "../Common/TextInputWithIcon";
+import NameIcon from "@material-ui/icons/AssignmentInd";
+import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 
 const styles = {
   paper: {
@@ -19,7 +22,7 @@ const styles = {
   }
 };
 const GroupEdit = props => {
-  const { groups, editId, addUser, hideEditDialog, show, users, removeUserFromGroup, classes } = props;
+  const { groups, groupToAdd, storeGroupName, editMode, editId, addUser, hideEditDialog, editDialogShown, users, removeUserFromGroup, storeGroupId, classes } = props;
   const group = groups.find(group => group.groupId === editId);
   const addUserToGroup = userId => {
     addUser(group.groupId, userId);
@@ -27,24 +30,39 @@ const GroupEdit = props => {
   const removeUser = userId => {
     removeUserFromGroup(group.groupId, userId);
   };
-
+  const { groupId, name, groupUsers } = groupToAdd;
   return (
-    <Dialog open={show} classes={{ paperScrollPaper: classes.paper }} onClose={hideEditDialog}>
-      <DialogTitle>{strings.groupDashboard.add_users}</DialogTitle>
-      <DialogContent className={classes.content}>
-        <AutoComplete
-          users={users}
-          selectedItems={group ? group.users : []}
-          addToSelection={addUserToGroup}
-          handleDelete={removeUser}
+    <DialogContent className={classes.content}>
+      <div style={styles.textInputContainer}>
+        <TextInputWithIcon
+          style={styles.textInput}
+          label={strings.common.id}
+          value={groupId}
+          error={false}
+          disabled={editMode}
+          icon={<NameIcon />}
+          id="id"
+          onChange={event => storeGroupId(event.target.value)}
         />
-      </DialogContent>
-      <DialogActions>
-        <Button color="primary" onClick={hideEditDialog}>
-          {strings.common.close}
-        </Button>
-      </DialogActions>
-    </Dialog>
+        <TextInputWithIcon
+          style={styles.textInput}
+          label={strings.common.name}
+          value={name}
+          id="name"
+          error={false}
+          disabled={editMode}
+          icon={<OrgaIcon />}
+          onChange={event => storeGroupName(event.target.value)}
+        />
+      </div>
+      <AutoComplete
+        users={users}
+        selectedItems={group ? group.users : []}
+        addToSelection={addUserToGroup}
+        handleDelete={removeUser}
+      />
+
+    </DialogContent>
   );
 };
 

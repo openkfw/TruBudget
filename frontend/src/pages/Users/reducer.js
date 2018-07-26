@@ -7,17 +7,21 @@ import {
   SET_DISPLAYNAME,
   CREATE_USER_SUCCESS,
   RESET_USER,
-  TAB_INDEX
+  TAB_INDEX,
+  SHOW_DASHBOARD_DIALOG,
+  HIDE_DASHBOARD_DIALOG
 } from "./actions";
 
 const defaultState = fromJS({
   nodes: [],
   tabIndex: 0,
+  dashboardDialogShown: false,
   userToAdd: {
     username: "",
     password: "",
     organization: "",
-    displayName: ""
+    displayName: "",
+    content: ""
   }
 });
 
@@ -36,6 +40,12 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.set("userToAdd", defaultState.get("userToAdd"));
     case TAB_INDEX:
       return state.set("tabIndex", action.value);
+    case SHOW_DASHBOARD_DIALOG:
+      console.log("showDashboard " + action.content);
+      return state.merge({ "dashboardDialogShown": true, "content": action.content });
+    case HIDE_DASHBOARD_DIALOG:
+      console.log("hideDashboard");
+      return state.set("dashboardDialogShown", false);
     default:
       return state;
   }

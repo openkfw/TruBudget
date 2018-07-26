@@ -24,7 +24,7 @@ const styles = {
 const sortGroups = groups => {
   return _sortBy(groups, group => group.id && group.displayName);
 };
-const GroupsTable = ({ groups, showEditDialog, classes }) => {
+const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
   const sortedGroups = sortGroups(groups);
   return (
     <Paper>
@@ -51,7 +51,7 @@ const GroupsTable = ({ groups, showEditDialog, classes }) => {
                   <span>{group.users.length}</span>
                 </TableCell>
                 <TableCell>
-                  <IconButton onClick={() => showEditDialog(group.groupId)}>
+                  <IconButton onClick={() => showDashboardDialog("editGroup")}>
                     <EditIcon />
                   </IconButton>
                 </TableCell>

@@ -35,9 +35,9 @@ const UsersTable = ({ users, classes }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>{strings.usersDashboard.organization}</TableCell>
             <TableCell>{strings.common.id}</TableCell>
             <TableCell>{strings.common.name}</TableCell>
+            <TableCell>{strings.usersDashboard.organization}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody id="usertablebody">
@@ -45,13 +45,13 @@ const UsersTable = ({ users, classes }) => {
             return (
               <TableRow id={`user-${user.id}`} key={user.id}>
                 <TableCell component="th" scope="row">
-                  <span>{user.organization}</span>
-                </TableCell>
-                <TableCell>
                   <span>{user.id}</span>
                 </TableCell>
                 <TableCell>
                   <span>{user.displayName}</span>
+                </TableCell>
+                <TableCell >
+                  <span>{user.organization}</span>
                 </TableCell>
               </TableRow>
             );

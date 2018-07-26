@@ -13,7 +13,8 @@ import {
   setOrganization,
   createUser,
   resetUserToAdd,
-  setTabIndex
+  setTabIndex,
+  showDashboardDialog
 } from "./actions";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
@@ -33,6 +34,7 @@ import {
 class UserManagementContainer extends Component {
   componentWillMount() {
     this.props.fetchUser();
+    this.props.fetchGroups();
   }
   componentWillUnmount() {
     this.props.resetState();
@@ -65,6 +67,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    //copid from Project
     fetchUser: () => dispatch(fetchUser(true)),
     setDisplayName: displayName => dispatch(setDisplayName(displayName)),
     setOrganization: organization => dispatch(setOrganization(organization)),
@@ -86,7 +89,10 @@ const mapDispatchToProps = dispatch => {
     removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     showEditDialog: groupId => dispatch(showEditDialog(groupId)),
-    hideEditDialog: () => dispatch(hideEditDialog())
+    hideEditDialog: () => dispatch(hideEditDialog()),
+
+
+    showDashboardDialog: (content) => dispatch(showDashboardDialog(content))
   };
 };
 
