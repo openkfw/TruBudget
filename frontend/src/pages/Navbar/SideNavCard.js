@@ -82,14 +82,14 @@ const SideNavCard = ({
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_notifications} />
         </ListItem>
-        {groupDashboardEnabled ? (
+        {/* {groupDashboardEnabled ? (
           <ListItem button onClick={() => history.push("/groups")}>
             <ListItemIcon>
               <GroupsIcon />
             </ListItemIcon>
             <ListItemText primary={strings.navigation.menu_item_groups} />
           </ListItem>
-        ) : null}
+        ) : null} */}
         {userDashboardEnabled ? (
           <ListItem button onClick={() => history.push("/users")}>
             <ListItemIcon>

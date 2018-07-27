@@ -46,7 +46,6 @@ export default function userDashboardReducer(state = defaultState, action) {
     case SHOW_DASHBOARD_DIALOG:
       return state.merge({ "dashboardDialogShown": true, "dialogType": action.dialogType, "editId": action.editId });
     case HIDE_DASHBOARD_DIALOG:
-      console.log("hideDashboard");
       return state.merge({ "dashboardDialogShown": false, "userToAdd": defaultState.get("userToAdd") });
     default:
       return state;

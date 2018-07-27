@@ -24,7 +24,6 @@ const styles = {
   }
 };
 const Users = props => {
-  console.log(props);
   const { tabIndex, setTabIndex, showDashboardDialog } = props;
   return (
     <div id="userdashboard" style={styles.container}>

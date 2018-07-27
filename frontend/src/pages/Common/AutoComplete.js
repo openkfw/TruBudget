@@ -111,7 +111,6 @@ class AutoComplete extends React.Component {
   render() {
     const { classes, users, addToSelection, selectedItems, handleDelete } = this.props;
     const { inputValue } = this.state;
-    console.log(selectedItems);
 
     return (
       <div style={{ marginTop: "30px" }}>

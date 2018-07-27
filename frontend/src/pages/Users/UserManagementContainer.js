@@ -51,7 +51,6 @@ class UserManagementContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    userToAdd: state.getIn(["users", "userToAdd"]),
     nodes: state.getIn(["users", "nodes"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     users: state.getIn(["login", "user"]),

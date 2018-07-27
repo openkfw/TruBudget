@@ -81,7 +81,6 @@ const GroupCreate = ({
   storeGroupId,
   storeGroupName,
   addInitialUserToGroup,
-  createUserGroup,
   editMode,
   showSnackbar,
   storeSnackbarMessage,
@@ -89,7 +88,6 @@ const GroupCreate = ({
   removeUserFromGroup,
   addUser
 }) => {
-  console.log(groupToAdd)
   const { groupId, displayName, groupUsers } = groupToAdd;
 
 
