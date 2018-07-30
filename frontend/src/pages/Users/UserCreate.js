@@ -1,14 +1,7 @@
 import React from "react";
 
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
-
-import isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import Username from "../Common/Username";
@@ -16,12 +9,6 @@ import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
 
 const styles = {
-  container: {
-    marginTop: 40,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
   nodeCard: {
     width: "40%",
     paddingBottom: "20px"
@@ -67,25 +54,16 @@ const styles = {
   },
   textInput: {
     width: "50%"
+  },
+  container: {
+    marginBottom: "30px"
   }
 };
 
-
-const UserCreate = ({
-  userToAdd,
-  setDisplayName,
-  setOrganization,
-  setUsername,
-  setPassword,
-  createUser,
-  showErrorSnackbar,
-  storeSnackbarMessage,
-  organization,
-  showSnackbar
-}) => {
+const UserCreate = ({ userToAdd, setDisplayName, setOrganization, setUsername, setPassword, organization }) => {
   const { displayName, password, username } = userToAdd;
   return (
-    <div>
+    <div style={styles.container}>
       <div style={styles.textInputContainer}>
         <TextInputWithIcon
           style={styles.textInput}

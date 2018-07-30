@@ -1,25 +1,18 @@
 import React from "react";
 
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
-
-import isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
 import AutoComplete from "../Common/AutoComplete";
 
 const styles = {
-  container: {
-    marginTop: 40,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+  createContainer: {
+    marginBottom: "20px"
+  },
+  editContainer: {
+    marginBottom: "0px"
   },
   card: {
     width: "100%",
@@ -67,14 +60,6 @@ const styles = {
   }
 };
 
-const handleCreate = (cb, showSnackbar, storeSnackbarMessage) => {
-  cb();
-  storeSnackbarMessage("Group created.");
-  showSnackbar();
-};
-
-
-
 const GroupCreate = ({
   users,
   groupToAdd,
@@ -82,14 +67,11 @@ const GroupCreate = ({
   storeGroupName,
   addInitialUserToGroup,
   editMode,
-  showSnackbar,
-  storeSnackbarMessage,
   removeInitialUserFromGroup,
   removeUserFromGroup,
   addUser
 }) => {
   const { groupId, displayName, groupUsers } = groupToAdd;
-
 
   const addUserToGroup = userId => {
     addUser(groupId, userId);
@@ -97,8 +79,9 @@ const GroupCreate = ({
   const removeUser = userId => {
     removeUserFromGroup(groupId, userId);
   };
+  console.log(editMode);
   return (
-    <div>
+    <div style={editMode ? styles.editContainer : styles.createContainer}>
       <div style={styles.textInputContainer}>
         <TextInputWithIcon
           style={styles.textInput}
@@ -128,22 +111,6 @@ const GroupCreate = ({
         />
       </div>
     </div>
-    // {!editMode ? (
-    //   <CardActions style={styles.cardActions}>
-    //     <Button
-    //       variant="contained"
-    //       color="primary"
-    //       id="createuser"
-    //       disabled={isEmpty(name) || isEmpty(groupId) || isEmpty(groupUsers)}
-    //       onClick={() =>
-    //         handleCreate(() => createUserGroup(groupId, name, groupUsers), showSnackbar, storeSnackbarMessage)
-    //       }
-    //     >
-    //       {strings.common.create}
-    //     </Button>
-    //   </CardActions>
-    // ) : null}
-
   );
 };
 
