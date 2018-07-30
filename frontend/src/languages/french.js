@@ -213,7 +213,10 @@ const fr = {
     no_permissions: "French: (No permissions to see further details)",
     subproject_close: "French: Subproject {0} was closed",
     workflowitem_close: "French: Workflowitem {0} was closed",
-    project_close: "French: Project {0} was closed"
+    project_close: "French: Project {0} was closed",
+    workflowitem_update: "French: Workflowitem {0} was updated",
+    subproject_update: "French: Subproject {0} was updated",
+    project_update: "French: Project {0} was updated"
   },
 
   history: {
