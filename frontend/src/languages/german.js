@@ -77,7 +77,7 @@ const de = {
     project_authority_organization_search: "Search organizations",
     project_authority_role_search: "Search role",
     project_edit_title: "German: Edit Project",
-    project_close_info: "German: Disabled as long as the Subprojects aren't closed"
+    project_close_info: "German:  At least one workflow item has not been closed yet."
   },
   subproject: {
     subproject_title: "Sub-Project title",
@@ -90,7 +90,7 @@ const de = {
     subproject_select_button: "Select",
     subproject_completion_string: "{0} von {1} erledigt",
     subproject_permissions_title: "German: Set permissions for subproject",
-    subproject_close_info: "German: Disabled as long as the Workflowitems aren't closed",
+    subproject_close_info: "German: At least one workflow item has not been closed yet.",
     subproject_edit_title: "German: Edit Subproject"
   },
   workflow: {

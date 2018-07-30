@@ -107,7 +107,7 @@ const pt = {
     project_authority_role_search: "Pesquisar papéis",
     project_permissions_title: "Portuguese: Set permissions for project",
     project_edit_title: "Portuguese: Edit Project",
-    project_close_info: "Portuguese: Disabled as long as the Subprojects aren't closed"
+    project_close_info: "Portuguese: At least one subproject item has not been closed yet."
   },
   subproject: {
     subproject_title: "Nome do subprojeto",
@@ -121,7 +121,7 @@ const pt = {
     subproject_select_button: "Selecionar",
     subproject_completion_string: "{0} de {1} finalizado",
     subproject_permissions_title: "Portuguese: Set permissions for subproject",
-    subproject_close_info: "Portuguese: Disabled as long as the Workflowitems aren't closed",
+    subproject_close_info: "Portuguese: At least one workflow item has not been closed yet.",
     subproject_edit_title: "Portuguese: Edit Subproject"
   },
   workflow: {

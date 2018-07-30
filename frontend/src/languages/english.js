@@ -106,7 +106,7 @@ const en = {
     project_authority_role_search: "Search role",
     project_permissions_title: "Set permissions for project",
     project_edit_title: "Edit Project",
-    project_close_info: "Disabled as long as the Subprojects aren't closed"
+    project_close_info: "At least one subproject item has not been closed yet."
   },
   subproject: {
     subproject_title: "Sub-Project title",
@@ -121,7 +121,7 @@ const en = {
     subproject_select_button: "Select",
     subproject_completion_string: "{0} of {1} done",
     subproject_permissions_title: "Set permissions for subproject",
-    subproject_close_info: "Disabled as long as the Workflowitems aren't closed"
+    subproject_close_info: "At least one workflow item has not been closed yet."
   },
   workflow: {
     non_approval: "Non-Approval",
