@@ -11,7 +11,8 @@ import { withStyles } from "@material-ui/core";
 
 const styles = {
   paperRoot: {
-    width: "100%"
+    width: "100%",
+    overflow: "visible"
   }
 };
 

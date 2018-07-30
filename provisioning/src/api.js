@@ -163,7 +163,7 @@ const findWorkflowitem = async (
     axios
       .get(
         `/workflowitem.list?projectId=${project.data.id}&subprojectId=${
-        subproject.data.id
+          subproject.data.id
         }`
       )
       .then(res => res.data.data.workflowitems)
@@ -215,7 +215,7 @@ const revokeProjectPermission = async (axios, projectId, userId, intent) => {
   await withRetry(() =>
     axios.post("/project.intent.revokePermission", {
       projectId: projectId,
-      userId: userId,
+      identity: userId,
       intent: intent
     })
   );

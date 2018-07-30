@@ -4,50 +4,8 @@ import _isEmpty from "lodash/isEmpty";
 
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
-import { compareObjects, fromAmountString } from "../../helper";
 import UserDialogContent from "./UserCreate";
 import GroupDialogContent from "./GroupCreate";
-
-const handleCreateUser = (
-  username,
-  password,
-  organization,
-  displayName,
-  createUser,
-  createUserGroup,
-  showSnackbar,
-  showErrorSnackbar,
-  storeSnackbarMessage
-) => {
-  createUser(displayName, organization, username, password);
-  //storeSnackbarMessage(strings.usersDashboard.user_created);//TODO
-  //showSnackbar();
-
-  // storeSnackbarMessage("Enter required information");
-  // showErrorSnackbar();
-};
-
-const handleCreateUserGroup = cb => {
-  cb();
-  // storeSnackbarMessage("Group created.");
-  // showSnackbar();
-};
-
-const handleEdit = props => {
-  const { editProject, onDialogCancel, projectToAdd, projects, storeSnackbarMessage, showSnackbar } = props;
-
-  const changes = compareObjects(projects, projectToAdd);
-
-  if (!_isEmpty(changes)) {
-    if (changes.amount) {
-      changes.amount = fromAmountString(changes.amount).toString();
-    }
-    editProject(projectToAdd.id, changes);
-    storeSnackbarMessage(strings.common.edited + " " + strings.common.project + " " + projectToAdd.displayName);
-    showSnackbar();
-  }
-  onDialogCancel();
-};
 
 const DashboardDialog = props => {
   console.log(props);
@@ -63,7 +21,10 @@ const DashboardDialog = props => {
     groupToAdd,
     createUser,
     organization: userOrganization,
-    createUserGroup
+    hideDashboardDialog,
+    createUserGroup,
+    storeSnackbarMessage,
+    showSnackbar
   } = props;
   const { username, password, displayName, organization } = userToAdd;
 
@@ -81,7 +42,12 @@ const DashboardDialog = props => {
           nextDisabled: _isEmpty(username) || _isEmpty(password) || _isEmpty(displayName)
         }
       ];
-      handleSubmitFunc = () => handleCreateUser(username, password, userOrganization, displayName, createUser);
+      handleSubmitFunc = () => {
+        createUser(displayName, userOrganization, username, password);
+        hideDashboardDialog();
+        storeSnackbarMessage(strings.usersDashboard.user_created);
+        showSnackbar();
+      };
       break;
     case "addGroup":
       steps = [
@@ -91,7 +57,12 @@ const DashboardDialog = props => {
           nextDisabled: _isEmpty(groupId) || _isEmpty(groupName) || _isEmpty(groupUsers)
         }
       ];
-      handleSubmitFunc = () => handleCreateUserGroup(() => createUserGroup(groupId, groupName, groupUsers));
+      handleSubmitFunc = () => {
+        createUserGroup(groupId, groupName, groupUsers);
+        hideDashboardDialog();
+        storeSnackbarMessage(strings.groupDashboard.group_created);
+        showSnackbar();
+      };
       break;
     case "editGroup":
       const group = groups.find(group => group.groupId === editId);
