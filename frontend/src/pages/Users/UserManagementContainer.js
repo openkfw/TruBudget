@@ -11,14 +11,9 @@ import {
   setPassword,
   setDisplayName,
   setOrganization,
-  createUser,
   resetUserToAdd,
   setTabIndex,
-  showDashboardDialog
-} from "./actions";
-import { fetchUser } from "../Login/actions";
-import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
-import {
+  showDashboardDialog,
   fetchGroups,
   storeGroupName,
   storeGroupId,
@@ -29,7 +24,9 @@ import {
   createUserGroup,
   showEditDialog,
   hideEditDialog
-} from "../Groups/actions";
+} from "./actions";
+import { fetchUser } from "../Login/actions";
+import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 
 class UserManagementContainer extends Component {
   componentWillMount() {
@@ -41,6 +38,7 @@ class UserManagementContainer extends Component {
   }
   render() {
     const canView = canViewUserDashboard(this.props.allowedIntents);
+    console.log(this.props.users);
     if (canView) {
       return <Users {...this.props} />;
     } else {
@@ -56,10 +54,10 @@ const mapStateToProps = state => {
     users: state.getIn(["login", "user"]),
     organization: state.getIn(["login", "organization"]),
     tabIndex: state.getIn(["users", "tabIndex"]),
-    groups: state.getIn(["groups", "groups"]),
-    groupToAdd: state.getIn(["groups", "groupToAdd"]),
-    editMode: state.getIn(["groups", "editMode"]),
-    editDialogShown: state.getIn(["groups", "editDialogShown"]),
+    groups: state.getIn(["users", "groups"]),
+    groupToAdd: state.getIn(["users", "groupToAdd"]),
+    editMode: state.getIn(["users", "editMode"]),
+    editDialogShown: state.getIn(["users", "editDialogShown"]),
     editId: state.getIn(["users", "editId"])
   };
 };
@@ -88,7 +86,6 @@ const mapDispatchToProps = dispatch => {
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     showEditDialog: groupId => dispatch(showEditDialog(groupId)),
     hideEditDialog: () => dispatch(hideEditDialog()),
-
 
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId))
   };

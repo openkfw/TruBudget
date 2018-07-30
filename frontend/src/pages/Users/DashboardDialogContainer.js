@@ -35,21 +35,16 @@ class DashboardDialogContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    projects: state.getIn(["overview", "projects"]),
-    currentStep: state.getIn(["overview", "currentStep"]),
-    projectToAdd: state.getIn(["overview", "projectToAdd"]),
-    dialogTitle: state.getIn(["overview", "dialogTitle"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     dashboardDialogShown: state.getIn(["users", "dashboardDialogShown"]),
     dialogType: state.getIn(["users", "dialogType"]),
     editId: state.getIn(["users", "editId"]),
     userToAdd: state.getIn(["users", "userToAdd"]),
-
     users: state.getIn(["login", "user"]),
-    groups: state.getIn(["groups", "groups"]),
-    groupToAdd: state.getIn(["groups", "groupToAdd"]),
-    editMode: state.getIn(["groups", "editMode"]),
-    editDialogShown: state.getIn(["groups", "editDialogShown"])
+    groups: state.getIn(["users", "groups"]),
+    groupToAdd: state.getIn(["users", "groupToAdd"]),
+    editMode: state.getIn(["users", "editMode"]),
+    editDialogShown: state.getIn(["users", "editDialogShown"])
   };
 };
 
@@ -66,7 +61,6 @@ const mapDispatchToProps = dispatch => {
     removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
     showEditDialog: groupId => dispatch(showEditDialog(groupId)),
     hideEditDialog: () => dispatch(hideEditDialog()),
-
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     createUser: (displayName, organization, username, password) =>
       dispatch(createUser(displayName, organization, username, password)),

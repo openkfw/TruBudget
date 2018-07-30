@@ -5,7 +5,6 @@ import {
   SET_PASSWORD,
   SET_ORGANIZATION,
   SET_DISPLAYNAME,
-  CREATE_USER_SUCCESS,
   RESET_USER,
   TAB_INDEX,
   SHOW_DASHBOARD_DIALOG,
@@ -31,7 +30,14 @@ const defaultState = fromJS({
     displayName: ""
   },
   editId: "",
-  dialogType: ""
+  dialogType: "",
+  groups: [],
+  editDialogShown: false,
+  groupToAdd: {
+    groupId: "",
+    name: "",
+    groupUsers: []
+  }
 });
 
 export default function userDashboardReducer(state = defaultState, action) {
@@ -71,9 +77,6 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.setIn(["userToAdd", "username"], action.username);
     case SET_PASSWORD:
       return state.setIn(["userToAdd", "password"], action.password);
-    case CREATE_USER_SUCCESS:
-      console.log("CREATE_USER_SUCCESS");
-
     case RESET_USER:
       return state.set("userToAdd", defaultState.get("userToAdd"));
     case TAB_INDEX:

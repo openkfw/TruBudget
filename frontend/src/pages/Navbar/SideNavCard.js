@@ -10,7 +10,6 @@ import ProjectIcon from "@material-ui/icons/Business";
 import NodesIcon from "@material-ui/icons/DesktopWindows";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import UsersIcon from "@material-ui/icons/PeopleOutline";
-import GroupsIcon from "@material-ui/icons/People";
 import Subheader from "@material-ui/core/ListSubheader";
 
 import strings from "../../localizeStrings";
@@ -26,63 +25,63 @@ const SideNavCard = ({
   history,
   groups
 }) => (
-    <div>
+  <div>
+    <div
+      style={{
+        background: `url('${avatarBackground}') no-repeat`,
+        backgroundSize: "cover",
+        height: "100px",
+        position: "relative",
+        width: "300px"
+      }}
+    >
       <div
         style={{
-          background: `url('${avatarBackground}') no-repeat`,
-          backgroundSize: "cover",
-          height: "100px",
-          position: "relative",
-          width: "300px"
+          bottom: 0,
+          position: "absolute",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column"
         }}
       >
         <div
           style={{
-            bottom: 0,
-            position: "absolute",
-            width: "100%",
+            flex: 1,
             display: "flex",
-            flexDirection: "column"
+            flexDirection: "row",
+            justifyContent: "center"
           }}
         >
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center"
-            }}
-          >
-            <ListItem style={{ paddingTop: "16px" }}>
-              <ListItemIcon>
-                <Avatar
-                  size={60}
-                  src={avatar}
-                  style={{
-                    marginLeft: "16px"
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText primary={<span>{displayName}</span>} secondary={<span>{organization}</span>} />
-            </ListItem>
-          </div>
+          <ListItem style={{ paddingTop: "16px" }}>
+            <ListItemIcon>
+              <Avatar
+                size={60}
+                src={avatar}
+                style={{
+                  marginLeft: "16px"
+                }}
+              />
+            </ListItemIcon>
+            <ListItemText primary={<span>{displayName}</span>} secondary={<span>{organization}</span>} />
+          </ListItem>
         </div>
       </div>
-      <List>
-        <Subheader>{strings.navigation.selections}</Subheader>
-        <ListItem button onClick={() => history.push("/")}>
-          <ListItemIcon>
-            <ProjectIcon />
-          </ListItemIcon>
-          <ListItemText primary={strings.navigation.menu_item_projects} />
-        </ListItem>
-        <ListItem button onClick={() => history.push("/notifications")}>
-          <ListItemIcon>
-            <SocialNotificationIcon />
-          </ListItemIcon>
-          <ListItemText primary={strings.navigation.menu_item_notifications} />
-        </ListItem>
-        {/* {groupDashboardEnabled ? (
+    </div>
+    <List>
+      <Subheader>{strings.navigation.selections}</Subheader>
+      <ListItem button onClick={() => history.push("/")}>
+        <ListItemIcon>
+          <ProjectIcon />
+        </ListItemIcon>
+        <ListItemText primary={strings.navigation.menu_item_projects} />
+      </ListItem>
+      <ListItem button onClick={() => history.push("/notifications")}>
+        <ListItemIcon>
+          <SocialNotificationIcon />
+        </ListItemIcon>
+        <ListItemText primary={strings.navigation.menu_item_notifications} />
+      </ListItem>
+      {/* {groupDashboardEnabled ? (
           <ListItem button onClick={() => history.push("/groups")}>
             <ListItemIcon>
               <GroupsIcon />
@@ -90,36 +89,36 @@ const SideNavCard = ({
             <ListItemText primary={strings.navigation.menu_item_groups} />
           </ListItem>
         ) : null} */}
-        {userDashboardEnabled ? (
-          <ListItem button onClick={() => history.push("/users")}>
-            <ListItemIcon>
-              <UsersIcon />
-            </ListItemIcon>
-            <ListItemText primary={strings.navigation.menu_item_users} />
+      {userDashboardEnabled ? (
+        <ListItem button onClick={() => history.push("/users")}>
+          <ListItemIcon>
+            <UsersIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.navigation.menu_item_users} />
+        </ListItem>
+      ) : null}
+      {nodeDashboardEnabled ? (
+        <ListItem button onClick={() => history.push("/nodes")}>
+          <ListItemIcon>
+            <NodesIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.nodesDashboard.nodes} />
+        </ListItem>
+      ) : null}
+    </List>
+    <Divider />
+    <List>
+      <Subheader> {strings.groupDashboard.groups} </Subheader>
+      {groups.map(group => (
+        <div key={group.groupId}>
+          <ListItem>
+            <ListItemText primary={group.displayName} secondary={strings.common.id + ": " + group.groupId} />
           </ListItem>
-        ) : null}
-        {nodeDashboardEnabled ? (
-          <ListItem button onClick={() => history.push("/nodes")}>
-            <ListItemIcon>
-              <NodesIcon />
-            </ListItemIcon>
-            <ListItemText primary={strings.nodesDashboard.nodes} />
-          </ListItem>
-        ) : null}
-      </List>
-      <Divider />
-      <List>
-        <Subheader> {strings.groupDashboard.groups} </Subheader>
-        {groups.map(group => (
-          <div key={group.id}>
-            <ListItem>
-              <ListItemText primary={group.displayName} secondary={"Id: " + group.id} />
-            </ListItem>
-            <Divider />
-          </div>
-        ))}
-      </List>
-    </div>
-  );
+          <Divider />
+        </div>
+      ))}
+    </List>
+  </div>
+);
 
 export default SideNavCard;

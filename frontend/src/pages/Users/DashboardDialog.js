@@ -8,11 +8,7 @@ import UserDialogContent from "./UserCreate";
 import GroupDialogContent from "./GroupCreate";
 
 const DashboardDialog = props => {
-  console.log(props);
-
   const {
-    projects,
-    projectToAdd,
     dashboardDialogShown,
     dialogType,
     editId,
@@ -26,7 +22,7 @@ const DashboardDialog = props => {
     storeSnackbarMessage,
     showSnackbar
   } = props;
-  const { username, password, displayName, organization } = userToAdd;
+  const { username, password, displayName } = userToAdd;
 
   const { groupId, name: groupName, groupUsers } = groupToAdd;
 

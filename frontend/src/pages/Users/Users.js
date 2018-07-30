@@ -1,12 +1,10 @@
 import React from "react";
-import UserCreate from "./UserCreate";
 import UsersTable from "./UsersTable";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import GroupTable from "./GroupTable";
 import Button from "@material-ui/core/Button";
-import NavigationIcon from "@material-ui/icons/Navigation";
 import Add from "@material-ui/icons/Add";
 import DashboardDialogContainer from "./DashboardDialogContainer";
 

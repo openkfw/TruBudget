@@ -4,7 +4,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import _sortBy from "lodash/sortBy";
 import blueGrey from "@material-ui/core/colors/blueGrey";
@@ -28,8 +27,9 @@ const styles = {
 const sortUsers = users => {
   return _sortBy(users, user => user.organization && user.id);
 };
+
 const UsersTable = ({ users, classes }) => {
-  const sortedUsers = sortUsers(users);
+  const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true));
   return (
     <Paper>
       <Table>
@@ -50,7 +50,7 @@ const UsersTable = ({ users, classes }) => {
                 <TableCell>
                   <span>{user.displayName}</span>
                 </TableCell>
-                <TableCell >
+                <TableCell>
                   <span>{user.organization}</span>
                 </TableCell>
               </TableRow>

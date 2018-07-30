@@ -1,14 +1,7 @@
 import React from "react";
 
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
-
-import isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
@@ -67,14 +60,6 @@ const styles = {
   }
 };
 
-const handleCreate = (cb, showSnackbar, storeSnackbarMessage) => {
-  cb();
-  storeSnackbarMessage("Group created.");
-  showSnackbar();
-};
-
-
-
 const GroupCreate = ({
   users,
   groupToAdd,
@@ -89,7 +74,6 @@ const GroupCreate = ({
   addUser
 }) => {
   const { groupId, displayName, groupUsers } = groupToAdd;
-
 
   const addUserToGroup = userId => {
     addUser(groupId, userId);
@@ -127,7 +111,7 @@ const GroupCreate = ({
           handleDelete={editMode ? removeUser : removeInitialUserFromGroup}
         />
       </div>
-    </div >
+    </div>
     // {!editMode ? (
     //   <CardActions style={styles.cardActions}>
     //     <Button
@@ -143,7 +127,6 @@ const GroupCreate = ({
     //     </Button>
     //   </CardActions>
     // ) : null}
-
   );
 };
 
