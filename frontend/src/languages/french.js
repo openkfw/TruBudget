@@ -212,7 +212,8 @@ const fr = {
     workflowitem_assign: "French: Workflowitem {0} was assigned to you",
     no_permissions: "French: (No permissions to see further details)",
     subproject_close: "French: Subproject {0} was closed",
-    workflowitem_close: "French: Workflowitem {0} was closed"
+    workflowitem_close: "French: Workflowitem {0} was closed",
+    project_close: "French: Project {0} was closed"
   },
 
   history: {

@@ -20,6 +20,12 @@ export const intentMapping = ({ originalEvent, resources }) => {
       const text = formatString(strings.notification.project_assign, resourceName);
       return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
     }
+    case "project.close": {
+      const project = resources.find(resource => resource.type === "project");
+      const resourceName = project.displayName || "";
+      const text = formatString(strings.notification.project_close, resourceName);
+      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
+    }
     case "workflowitem.close": {
       const workflowitem = resources.find(resource => resource.type === "workflowitem");
       const resourceName = workflowitem.displayName || "";
@@ -27,12 +33,31 @@ export const intentMapping = ({ originalEvent, resources }) => {
       return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
     }
     case "subproject.close": {
-      const workflowitem = resources.find(resource => resource.type === "subproject");
-      const resourceName = workflowitem.displayName || "";
+      const subproject = resources.find(resource => resource.type === "subproject");
+      const resourceName = subproject.displayName || "";
       const text = formatString(strings.notification.subproject_close, resourceName);
       return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
     }
+    case "workflowitem.update": {
+      const workflowitem = resources.find(resource => resource.type === "workflowitem");
+      const resourceName = workflowitem.displayName || "";
+      const text = formatString(strings.notification.workflowitem_update, resourceName);
+      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
+    }
+    case "subproject.update": {
+      const subproject = resources.find(resource => resource.type === "subproject");
+      const resourceName = subproject.displayName || "";
+      const text = formatString(strings.notification.subproject_update, resourceName);
+      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
+    }
+    case "project.update": {
+      const project = resources.find(resource => resource.type === "project");
+      const resourceName = project.displayName || "";
+      const text = formatString(strings.notification.project_update, resourceName);
+      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
+    }
     default:
+      console.log(originalEvent.intent);
       return "Intent not found";
   }
 };

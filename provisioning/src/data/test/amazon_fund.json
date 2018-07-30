@@ -3,7 +3,7 @@
   "description": "Projects in 2017",
   "status": "open",
   "amount": "32000000",
-  "assignee": "jdoe",
+  "assignee": "jxavier",
   "currency": "BRL",
   "permissions": {
     "project.viewDetails": ["mstein", "jxavier"],
@@ -20,7 +20,7 @@
       "status": "closed",
       "amount": "500000",
       "currency": "BRL",
-      "assignee": "jdoe",
+      "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
@@ -29,64 +29,91 @@
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender publication",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender evaluation",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Contract signature",
           "status": "closed",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 500000,
           "currency": "BRL",
-          "amountType": "allocated"
+          "amountType": "allocated",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Execution monitoring",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment advance installment",
           "status": "closed",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 136000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment interim installment",
           "status": "closed",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 136000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment final installment",
           "status": "closed",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 118000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Completion subproject",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         }
       ]
     },
@@ -96,62 +123,93 @@
       "status": "open",
       "amount": "750000",
       "currency": "BRL",
-      "assignee": "jdoe",
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.viewSummary": ["jxavier"],
+        "subproject.viewDetails": ["jxavier"]
+      },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender publication",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender evaluation",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Contract signature",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 720000,
           "currency": "BRL",
-          "amountType": "allocated"
+          "amountType": "allocated",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Execution monitoring",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment advance installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 400000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment interim installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 172000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment final installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 148000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Completion subproject",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         }
       ]
     },
@@ -160,62 +218,93 @@
       "description": "No description.",
       "amount": "1750000",
       "currency": "BRL",
-      "assignee": "jdoe",
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.viewSummary": ["jxavier"],
+        "subproject.viewDetails": ["jxavier"]
+      },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender publication",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender evaluation",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Contract signature",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 1680000,
           "currency": "BRL",
-          "amountType": "allocated"
+          "amountType": "allocated",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Execution monitoring",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment advance installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 336000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment interim installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 1176000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment final installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 168000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Completion subproject",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         }
       ]
     },
@@ -224,36 +313,55 @@
       "description": "No description.",
       "amount": "2500000",
       "currency": "BRL",
-      "assignee": "jdoe",
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.viewSummary": ["jxavier"],
+        "subproject.viewDetails": ["jxavier"]
+      },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender publication",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender evaluation",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Contract signature",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 1680000,
           "currency": "BRL",
-          "amountType": "allocated"
+          "amountType": "allocated",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Execution monitoring",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         }
       ]
     },
@@ -262,62 +370,93 @@
       "description": "No description.",
       "amount": "500000",
       "currency": "BRL",
-      "assignee": "jdoe",
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.viewSummary": ["jxavier"],
+        "subproject.viewDetails": ["jxavier"]
+      },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender publication",
           "status": "closed",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Tender evaluation",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Contract signature",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 300000,
           "currency": "BRL",
-          "amountType": "allocated"
+          "amountType": "allocated",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Execution monitoring",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment advance installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 100000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment interim installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 100000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Payment final installment",
-          "assignee": "jdoe",
+          "assignee": "jxavier",
           "amount": 100000,
           "currency": "BRL",
-          "amountType": "disbursed"
+          "amountType": "disbursed",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         },
         {
           "displayName": "Completion subproject",
-          "assignee": "jdoe",
-          "amountType": "N/A"
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["jxavier"]
+          }
         }
       ]
     }

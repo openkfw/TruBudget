@@ -211,7 +211,11 @@ const de = {
     no_permissions: "German: (No permissions to see further details)",
     subproject_close: "German: Subproject {0} was closed",
 
-    workflowitem_close: "German: Workflowitem {0} was closed"
+    workflowitem_close: "German: Workflowitem {0} was closed",
+    project_close: "German: Project {0} was closed",
+    workflowitem_update: "German: Workflowitem {0} was updated",
+    subproject_update: "German: Subproject {0} was updated",
+    project_update: "German: Project {0} was updated"
   },
 
   history: {

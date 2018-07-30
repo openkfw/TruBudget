@@ -220,7 +220,11 @@ const en = {
     workflowitem_assign: "Workflowitem {0} was assigned to you",
     no_permissions: "(No permissions to see further details)",
     subproject_close: "Subproject {0} was closed",
-    workflowitem_close: "Workflowitem {0} was closed"
+    workflowitem_close: "Workflowitem {0} was closed",
+    project_close: "Project {0} was closed",
+    workflowitem_update: "Workflowitem {0} was updated",
+    subproject_update: "Subproject {0} was updated",
+    project_update: "Project {0} was updated"
   },
 
   history: {

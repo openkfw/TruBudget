@@ -822,15 +822,15 @@ export function* watchEditProject() {
 }
 
 export function* watchFetchAllNotifications() {
-  yield takeLatest(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
+  yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
 }
 
 export function* watchFetchNotificationsWithId() {
-  yield takeLatest(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
+  yield takeEvery(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
 }
 
 export function* watchMarkNotificationAsRead() {
-  yield takeLatest(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
+  yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
 }
 
 export function* watchLogin() {
