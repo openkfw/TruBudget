@@ -77,7 +77,7 @@ const de = {
     project_authority_organization_search: "Search organizations",
     project_authority_role_search: "Search role",
     project_edit_title: "German: Edit Project",
-    project_close_info: "German:  At least one workflow item has not been closed yet."
+    project_close_info: "German:  At least one subproject item has not been closed yet."
   },
   subproject: {
     subproject_title: "Sub-Project title",

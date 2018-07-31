@@ -74,7 +74,9 @@ const getPathName = (name, index, currentProject, currentSubProject) => {
 
 const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProject) => {
   let paths = pathname.trim().split("/");
-  if (paths.length < 2 || !paths[1]) return null;
+  if (paths.length < 2 || !paths[1]) {
+    return null;
+  }
 
   const accumulatedPath = paths.map((path, index, source) => {
     return index ? "/" + source.slice(1, index + 1).join("/") : "/";

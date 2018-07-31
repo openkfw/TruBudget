@@ -1,9 +1,8 @@
-import { AuthToken } from "../authz/token";
+import Intent from "../authz/intents";
+import deepcopy from "../lib/deepcopy";
 import { MultichainClient } from "../multichain";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
-import Intent from "../authz/intents";
 import * as Liststreamkeyitems from "../multichain/responses/liststreamkeyitems";
-import deepcopy from "../lib/deepcopy";
 
 const groupsStreamName = "groups";
 
@@ -49,7 +48,7 @@ export const publish = async (
     intent: Intent;
     createdBy: string;
     creationTimestamp: Date;
-    data: Object;
+    data: object;
     dataVersion: number; // integer
   },
 ) => {
@@ -100,21 +99,13 @@ export const getGroupsForUser = async (
   userId: string,
 ): Promise<GroupResource[]> => {
   const groups = await getAll(multichain);
-  const acc: GroupResource[] = [];
-
-  return groups.reduce((acc, group) => {
-    const index = group.users.findIndex(user => user === userId);
-    if (index > -1) {
-      acc.push({ displayName: group.displayName, groupId: group.groupId, users: group.users });
-    }
-    return acc;
-  }, acc);
+  return groups.filter(group => group.users.includes(userId));
 };
 
 async function fetchStreamItems(multichain: MultichainClient): Promise<Liststreamkeyitems.Item[]> {
   return multichain.v2_readStreamItems("groups", "groups");
 }
-export const asMapKey = (keys: String[]): string => keys.join();
+export const asMapKey = (keys: string[]): string => keys.join();
 
 export const getAll = async (multichain: MultichainClient): Promise<GroupResource[]> => {
   const resourceMap = new Map<string, GroupResource>();

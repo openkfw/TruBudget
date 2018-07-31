@@ -8,6 +8,8 @@ import UserDialogContent from "./UserCreate";
 import GroupDialogContent from "./GroupCreate";
 
 const DashboardDialog = props => {
+  console.log(props);
+
   const {
     dashboardDialogShown,
     dialogType,

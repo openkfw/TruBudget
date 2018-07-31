@@ -1,10 +1,14 @@
 import * as express from "express";
+
+import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
 import { createUser } from "../global/createUser";
-import { createGroup } from "../global/createGroup";
 import { grantGlobalPermission } from "../global/intent/grantPermission";
 import { getGlobalPermissions } from "../global/intent/listPermissions";
 import { revokeGlobalPermission } from "../global/intent/revokePermission";
+import { addUserToGroup } from "../group/addUser";
+import { getGroupList } from "../group/list";
+import { removeUserFromGroup } from "../group/removeUser";
 import { MultichainClient } from "../multichain";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
@@ -34,9 +38,6 @@ import { getSubprojectList } from "../subproject/controller/list";
 import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
-import { getGroupList } from "../group/list";
-import { addUserToGroup } from "../group/addUser";
-import { removeUserFromGroup } from "../group/removeUser";
 import { authenticateUser } from "../user/authenticate";
 import { getUserList } from "../user/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
@@ -1346,25 +1347,25 @@ export const createRouter = (
   });
 
   /**
-    * @api {get} /network.listActive active Peers
-    * @apiVersion 1.0.0
-    * @apiName network.listActive
-    * @apiGroup Network
-    * @apiPermission user
-    * @apiDescription Get the number of all peers in the blockchain network.
-    *
-    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-    * @apiParam {Object} data Request payload.
-    * @apiParam {String} data.peers The node (wallet address) to vote for.
-    * @apiParamExample {json} Request
-    *   {
-    *     "apiVersion": "1.0",
-    *     "data": {
-    *       "peers": "15",
-    *     }
-    *   }
-    *
-    */
+   * @api {get} /network.listActive active Peers
+   * @apiVersion 1.0.0
+   * @apiName network.listActive
+   * @apiGroup Network
+   * @apiPermission user
+   * @apiDescription Get the number of all peers in the blockchain network.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.peers The node (wallet address) to vote for.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "peers": "15",
+   *     }
+   *   }
+   *
+   */
   router.get("/network.listActive", (req: AuthenticatedRequest, res) => {
     getActiveNodes(multichainClient, req)
       .then(response => send(res, response))
