@@ -8,8 +8,6 @@ import UserDialogContent from "./UserCreate";
 import GroupDialogContent from "./GroupCreate";
 
 const DashboardDialog = props => {
-  console.log(props);
-
   const {
     dashboardDialogShown,
     dialogType,
@@ -29,7 +27,6 @@ const DashboardDialog = props => {
   const { groupId, name: groupName, groupUsers } = groupToAdd;
 
   let steps, handleSubmitFunc;
-  console.log();
 
   switch (dialogType) {
     case "addUser":
@@ -69,7 +66,6 @@ const DashboardDialog = props => {
         displayName: group.displayName,
         groupUsers: group.users
       };
-      console.log(groupToEdit);
       steps = [
         {
           title: "Edit Group",

@@ -81,6 +81,8 @@ export const allIntents: Intent[] = [
   "global.createGroup",
   "user.authenticate",
   "user.view",
+  "group.addUser",
+  "group.removeUser",
   "project.intent.listPermissions",
   "project.intent.grantPermission",
   "project.intent.revokePermission",

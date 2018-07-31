@@ -24,7 +24,7 @@ export interface UserAlreadyExistsError {
 
 export interface GroupAlreadyExistsError {
   kind: "GroupAlreadyExists";
-  targetUserId: string;
+  targetGroupId: string;
 }
 
 export interface PreconditionError {

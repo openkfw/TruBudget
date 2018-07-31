@@ -1,4 +1,4 @@
-simport React, { Component } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
@@ -29,7 +29,7 @@ class DashboardDialogContainer extends Component {
   }
 
   render() {
-    return <DashboardDialog {...this.props} />
+    return <DashboardDialog {...this.props} />;
   }
 }
 

@@ -1,22 +1,26 @@
 import * as Global from ".";
-import { throwIfUnauthorized } from "../authz/index";
+import { throwIfUnauthorized } from "../authz";
+import Intent from "../authz/intents";
+import * as Group from "../group";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
-import { isNonemptyString, value } from "../lib/validation";
+import { isNonemptyString, isObject, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
-import * as Group from "../group";
-import Intent from "../authz/intents";
 
 export const createGroup = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
-  const input = value("data.group", req.body.data.group, x => x !== undefined);
-
+  let input;
+  if (isObject(req.body.data && isObject(req.body.data.group))) {
+    input = value("data.group", req.body.data.group, x => x !== undefined);
+  }
   const groupId = value("id", input.id, isNonemptyString);
   const displayName = value("displayName", input.displayName, isNonemptyString);
-  const users = value("users", input.users, x => x !== undefined);
-
+  let users;
+  if (input.users.isArray) {
+    users = value("users", input.users, x => x !== undefined);
+  }
   const userIntent: Intent = "global.createGroup";
   // Is the user allowed to create new projects?
   await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));

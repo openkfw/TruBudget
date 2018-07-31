@@ -47,3 +47,7 @@ export async function asyncValue(name, val, isValid, defaultValue?) {
   if (!(await isValid(val).catch(_err => false))) throwParseError([name]);
   return val;
 }
+
+export function isObject(x) {
+  return x != null && typeof x === "object";
+}

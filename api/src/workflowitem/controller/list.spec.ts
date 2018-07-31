@@ -190,7 +190,7 @@ describe("workflowitem.list", () => {
         subprojectId,
       },
       token: {
-        userId: "alice",//TODO
+        userId: "alice",
       },
     };
 

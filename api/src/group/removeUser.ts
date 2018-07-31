@@ -1,16 +1,19 @@
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import * as Global from "../global";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import * as Group from "../group";
+import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { isNonemptyString, isObject, value } from "../lib/validation";
+import { MultichainClient } from "../multichain";
 
 export async function removeUserFromGroup(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
-  const input = value("data", req.body.data, x => x !== undefined);
+  let input;
+  if (isObject(req.body.data)) {
+    input = value("data", req.body.data, x => x !== undefined);
+  }
   const groupId: string = value("groupId", input.groupId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);
   const userIntent: Intent = "group.removeUser";
@@ -28,7 +31,6 @@ export async function removeUserFromGroup(
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: {
-      groupId,
       userId,
     },
   };

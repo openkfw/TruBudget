@@ -62,7 +62,7 @@ export const publish = async (
     data,
   };
 
-  const streamItemKey = ["groups", groupId];
+  const streamItemKey = groupId;
   const streamItem = { json: event };
 
   await ensureStreamExists(multichain);
@@ -89,11 +89,6 @@ export const publish = async (
   });
 };
 
-// export const get = async (multichain: MultichainClient, groupId: string): Promise<GroupRecord> => {
-//   const streamItem = await multichain.getValue(groupsStreamName, groupId);
-//   return streamItem.resource.data;
-// };
-
 export const getGroupsForUser = async (
   multichain: MultichainClient,
   userId: string,
@@ -103,7 +98,7 @@ export const getGroupsForUser = async (
 };
 
 async function fetchStreamItems(multichain: MultichainClient): Promise<Liststreamkeyitems.Item[]> {
-  return multichain.v2_readStreamItems("groups", "groups");
+  return multichain.v2_readStreamItems("groups", "*");
 }
 export const asMapKey = (keys: string[]): string => keys.join();
 
@@ -123,11 +118,21 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
       resourceMap.set(asMapKey(item.keys), resource);
     } else {
       if (event.intent === "group.addUser") {
-        resource.users.push(event.data.userId);
-      } else if (event.intent === "group.removeUser") {
-        const index = resource.users.indexOf(event.data.userId);
-        if (index > -1) {
-          resource.users.splice(index, 1);
+        switch (event.dataVersion) {
+          case 1: {
+            resource.users.push(event.data.userId);
+          }
+        }
+      } else {
+        if (event.intent === "group.removeUser") {
+          switch (event.dataVersion) {
+            case 1: {
+              const index = resource.users.indexOf(event.data.userId);
+              if (index > -1) {
+                resource.users.splice(index, 1);
+              }
+            }
+          }
         }
       }
     }
