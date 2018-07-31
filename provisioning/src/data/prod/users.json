@@ -1,5 +1,4 @@
-[
-  {
+[{
     "id": "thouse",
     "displayName": "Tom House",
     "password": "test"
@@ -62,6 +61,51 @@
   {
     "id": "pchantier",
     "displayName": "Paul Chantier",
+    "password": "test"
+  },
+  {
+    "id": "ftender",
+    "displayName": "Francis Tender",
+    "password": "test"
+  },
+  {
+    "id": "msiddiqui",
+    "displayName": "Moz Siddiqui",
+    "password": "test"
+  },
+  {
+    "id": "aproducer",
+    "displayName": "Anna Producer",
+    "password": "test"
+  },
+  {
+    "id": "kdeliverer",
+    "displayName": "Kevin Deliverer",
+    "password": "test"
+  },
+  {
+    "id": "ccustoms",
+    "displayName": "Carine Customs",
+    "password": "test"
+  },
+  {
+    "id": "sdistributor",
+    "displayName": "Salif Distributor",
+    "password": "test"
+  },
+  {
+    "id": "fhealth",
+    "displayName": "Flora Health",
+    "password": "test"
+  },
+  {
+    "id": "ihealth",
+    "displayName": "Ibrahim Health",
+    "password": "test"
+  },
+  {
+    "id": "ahealth",
+    "displayName": "Alice Health",
     "password": "test"
   }
 ]

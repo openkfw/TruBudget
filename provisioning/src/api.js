@@ -35,7 +35,8 @@ const createProject = async (axios, projectTemplate) => {
         description: "FAILED UPDATE?",
         amount: projectTemplate.amount,
         assignee: projectTemplate.assignee,
-        currency: projectTemplate.currency
+        currency: projectTemplate.currency,
+        thumbnail: projectTemplate.thumbnail
       }
     })
   );
