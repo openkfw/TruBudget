@@ -1,29 +1,60 @@
 import { MultichainClient } from "../multichain";
 import * as Workflowitem from "../workflowitem/model/Workflowitem";
-import { fetchWorkflowitemOrdering } from "./model/WorkflowitemOrdering";
 
-export const sortWorkflowitems = async (
-  multichain: MultichainClient,
-  projectId: string,
-  subprojectId: string,
+export function sortWorkflowitems(
   workflowitems: Workflowitem.WorkflowitemResource[],
-): Promise<Workflowitem.WorkflowitemResource[]> => {
-  const itemMap = new Map<string, Workflowitem.WorkflowitemResource>();
-  for (const resource of workflowitems) {
-    itemMap.set(resource.data.id, resource);
+  ordering: string[],
+): Workflowitem.WorkflowitemResource[] {
+  /**
+   * @returns 0 if equal, -1 if a before b, +1 if a after b
+   */
+  function byOrderingCriteria(
+    a: Workflowitem.WorkflowitemResource,
+    b: Workflowitem.WorkflowitemResource,
+  ): -1 | 1 {
+    if (isClosed(a) && isClosed(b)) {
+      // both are closed, so we order by their time of closing:
+      const closedAtA = closedAt(a);
+      const closedAtB = closedAt(b);
+      return closedAtA < closedAtB ? -1 : 1;
+    } else if (isClosed(a)) {
+      // a is closed, b is not, so a before b:
+      return -1;
+    } else if (isClosed(b)) {
+      // b is closed, a is not, so b before a:
+      return 1;
+    } else {
+      // both are not closed, so we sort according to the ordering:
+      const indexA = ordering.indexOf(a.data.id);
+      const indexB = ordering.indexOf(b.data.id);
+      if (indexA > -1 && indexB > -1) {
+        // both are mentioned in the ordering:
+        return indexA < indexB ? -1 : 1;
+      } else if (indexA !== -1) {
+        // a is mentioned in the ordering, b is not, so a before b:
+        return -1;
+      } else if (indexB !== -1) {
+        // b is mentioned in the ordering, a is not, so b before a:
+        return 1;
+      } else {
+        // both are not in the ordering, so we sort by ctime instead:
+        return byCreationTime(a, b);
+      }
+    }
   }
 
-  const ordering = await fetchWorkflowitemOrdering(multichain, projectId, subprojectId);
+  return workflowitems.sort(byOrderingCriteria);
+}
 
-  // Start with all items that occur in the ordering:
-  const orderedItems = ordering.map(id => pop(itemMap, id));
+function isClosed(item: Workflowitem.WorkflowitemResource): boolean {
+  return item.data.status === "closed";
+}
 
-  // Add remaining items sorted by their ctime:
-  const remainingItems = [...itemMap.values()];
-  remainingItems.sort(byCreationTime).forEach(item => orderedItems.push(item));
-
-  return orderedItems;
-};
+function closedAt(item: Workflowitem.WorkflowitemResource): string {
+  const event = item.log.find(e => e.intent === "workflowitem.close");
+  if (event === undefined) throw Error(`item is not closed: ${JSON.stringify(event)}`);
+  return event.createdAt;
+}
 
 const byCreationTime = (
   a: Workflowitem.WorkflowitemResource,
@@ -43,13 +74,4 @@ const byCreationTime = (
       return 1;
     }
   }
-};
-
-const pop = (
-  map: Map<string, Workflowitem.WorkflowitemResource>,
-  key: string,
-): Workflowitem.WorkflowitemResource => {
-  const val = map.get(key);
-  map.delete(key);
-  return val!;
 };

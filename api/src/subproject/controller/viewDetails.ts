@@ -6,6 +6,7 @@ import { MultichainClient } from "../../multichain";
 import * as Project from "../../project/model/Project";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
+import { fetchWorkflowitemOrdering } from "../model/WorkflowitemOrdering";
 import { sortWorkflowitems } from "../sortWorkflowitems";
 
 interface WorkflowitemDTO {
@@ -40,8 +41,10 @@ export async function getSubprojectDetails(
     result => result[0],
   );
 
+  const ordering = await fetchWorkflowitemOrdering(multichain, projectId, subprojectId);
+
   const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId)
-    .then(unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems))
+    .then(unsortedItems => sortWorkflowitems(unsortedItems, ordering))
     .then(sortedItems => sortedItems.map(removeEventLog));
 
   const parentProject = await Project.get(multichain, req.token, projectId).then(result => {

@@ -8,6 +8,7 @@ import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
 import * as Subproject from "../../subproject/model/Subproject";
+import { fetchWorkflowitemOrdering } from "../../subproject/model/WorkflowitemOrdering";
 import { sortWorkflowitems } from "../../subproject/sortWorkflowitems";
 import * as Workflowitem from "../model/Workflowitem";
 
@@ -104,8 +105,9 @@ async function ensureAllPreviousWorkflowitemsAreClosed(
   subprojectId: string,
   workflowitemId: string,
 ): Promise<Workflowitem.WorkflowitemResource[]> {
+  const ordering = await fetchWorkflowitemOrdering(multichain, projectId, subprojectId);
   const sortedItems = await Workflowitem.get(multichain, token, projectId, subprojectId).then(
-    unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems),
+    unsortedItems => sortWorkflowitems(unsortedItems, ordering),
   );
   for (const item of sortedItems) {
     if (item.data.id === workflowitemId) {

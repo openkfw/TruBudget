@@ -30,6 +30,7 @@ import { grantSubprojectPermission } from "../subproject/controller/intent.grant
 import { getSubprojectPermissions } from "../subproject/controller/intent.listPermissions";
 import { revokeSubprojectPermission } from "../subproject/controller/intent.revokePermission";
 import { getSubprojectList } from "../subproject/controller/list";
+import { reorderWorkflowitems } from "../subproject/controller/reorderWorkflowitems";
 import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
@@ -729,6 +730,22 @@ export const createRouter = (
   });
 
   /**
+   * @api {post} /subproject.reorderWorkflowitems Set workflowitem ordering
+   * @apiVersion 1.0.0
+   * @apiName subproject.reorderWorkflowitems
+   * @apiGroup Subproject
+   * @apiPermission user
+   * @apiDescription Set a new workflowitem ordering. Workflowitems not included in the
+   * list will be ordered by their creation time and placed after all explicitly ordered
+   * workflowitems.
+   */
+  router.post("/subproject.reorderWorkflowitems", (req: AuthenticatedRequest, res) => {
+    reorderWorkflowitems(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
    * @api {get} /subproject.viewHistory View history
    * @apiVersion 1.0.0
    * @apiName subproject.viewHistory
@@ -1271,25 +1288,25 @@ export const createRouter = (
   });
 
   /**
-    * @api {get} /network.listActive active Peers
-    * @apiVersion 1.0.0
-    * @apiName network.listActive
-    * @apiGroup Network
-    * @apiPermission user
-    * @apiDescription Get the number of all peers in the blockchain network.
-    *
-    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-    * @apiParam {Object} data Request payload.
-    * @apiParam {String} data.peers The node (wallet address) to vote for.
-    * @apiParamExample {json} Request
-    *   {
-    *     "apiVersion": "1.0",
-    *     "data": {
-    *       "peers": "15",
-    *     }
-    *   }
-    *
-    */
+   * @api {get} /network.listActive active Peers
+   * @apiVersion 1.0.0
+   * @apiName network.listActive
+   * @apiGroup Network
+   * @apiPermission user
+   * @apiDescription Get the number of all peers in the blockchain network.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.peers The node (wallet address) to vote for.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "peers": "15",
+   *     }
+   *   }
+   *
+   */
   router.get("/network.listActive", (req: AuthenticatedRequest, res) => {
     getActiveNodes(multichainClient, req)
       .then(response => send(res, response))

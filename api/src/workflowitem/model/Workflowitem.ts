@@ -37,8 +37,8 @@ export interface Data {
   id: string;
   creationUnixTs: string;
   displayName: string;
-  amount: string;
-  currency: string;
+  amount?: string;
+  currency?: string;
   amountType: "N/A" | "disbursed" | "allocated";
   description: string;
   status: "open" | "closed";

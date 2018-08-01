@@ -249,6 +249,7 @@ const fmtList = l =>
 async function runIntegrationTests(rootSecret, folder) {
   await testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret, folder);
   await testWorkflowitemUpdate(folder);
+  await testWorkflowitemReordering(folder);
   await testApiDocIsAvailable();
   console.log(`Integration tests complete.`);
 }
@@ -339,9 +340,9 @@ async function testWorkflowitemUpdate(folder) {
   });
 
   const updatedWorkflowitem = await findWorkflowitem(axios, project, subproject, workflowitemTemplate);
-  if (updatedWorkflowitem.data.amountType !== "N/A"
-      || updatedWorkflowitem.data.amount !== undefined
-      || updatedWorkflowitem.data.currency !== undefined
+  if (updatedWorkflowitem.data.amountType !== "N/A" ||
+    updatedWorkflowitem.data.amount !== undefined ||
+    updatedWorkflowitem.data.currency !== undefined
   ) {
     throw Error(`Setting amountType to N/A did not remove amount and currency fields!\n${JSON.stringify(updatedWorkflowitem, null, 2)}`);
   }
@@ -355,6 +356,86 @@ async function testWorkflowitemUpdate(folder) {
     amount,
     currency
   })
+}
+
+async function testWorkflowitemReordering(folder) {
+  await impersonate("mstein", "test");
+  const amazonFundProject = readJsonFile(folder + "amazon_fund.json");
+  await provisionFromData(amazonFundProject);
+
+  const project = await findProject(axios, amazonFundProject);
+  const projectId = project.data.id;
+
+  const subprojectTemplate = amazonFundProject.subprojects.find(x => x.displayName === "Furniture");
+  const subproject = await findSubproject(axios, project, subprojectTemplate);
+  const subprojectId = subproject.data.id;
+
+  // We choose two adjacent workflowitems:
+
+  const interimInstallmentTemplate = subprojectTemplate.workflows.find(x => x.displayName === "Payment interim installment")
+  const interimInstName = interimInstallmentTemplate.displayName;
+  const interimInstallment = await findWorkflowitem(axios, project, subproject, interimInstallmentTemplate);
+
+  const finalInstallmentTemplate = subprojectTemplate.workflows.find(x => x.displayName === "Payment final installment")
+  const finalInstName = finalInstallmentTemplate.displayName;
+  const finalInstallment = await findWorkflowitem(axios, project, subproject, finalInstallmentTemplate);
+
+  // We check that the ordering is as expected:
+  const getOrderingAsMap = () =>
+    axios
+    .get(`/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`)
+    .then(res => res.data.data.workflowitems)
+    .then(items =>
+      items
+      .map(x => x.data)
+        .reduce((acc, x, index) => {
+          acc[x.displayName] = index;
+          return acc;
+        }, {})
+    );
+
+  const originalOrdering = await getOrderingAsMap();
+  if (originalOrdering[interimInstName] >= originalOrdering[finalInstName]) {
+    throw Error(`unexpected test data: ${JSON.stringify(originalOrdering, null, 2)}`);
+  }
+
+  // Let's also check that at least one workflowitem of that subproject is closed:
+  if (!subprojectTemplate.workflows.some(x => x.status === "closed")) {
+    throw Error(`unexpected at least one *closed* workflowitem (subproject ${subprojectTemplate.displayName})`);
+  }
+
+  // If we explicitly order them differently, they should show up reversed right after the last closed workflowitem:
+  await axios.post(`/subproject.reorderWorkflowitems`, {
+    projectId,
+    subprojectId,
+    ordering: [finalInstallment.data.id, interimInstallment.data.id]
+  });
+  const changedOrdering = await getOrderingAsMap();
+  if (changedOrdering[finalInstName] === 0) {
+    throw Error("The ordering seems to affect closed items too, which shouldn't happen");
+  }
+  if (changedOrdering[finalInstName] >= originalOrdering[finalInstName]) {
+    throw Error("The final installment workflowitem should have moved to an earlier position." +
+      ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${changedOrdering[finalInstName]}`);
+  }
+  if (changedOrdering[finalInstName] >= changedOrdering[interimInstName]) {
+    throw Error("The final installment workflowitem should have move before the interim installment workflowitem." +
+      ` Instead, final installment has moved from ${originalOrdering[finalInstName]} to ${changedOrdering[finalInstName]},` +
+      ` while interim installment has moved from ${originalOrdering[interimInstName]} to ${changedOrdering[interimInstName]}`);
+  }
+
+  // Let's clear the ordering:
+  await axios.post(`/subproject.reorderWorkflowitems`, {
+    projectId,
+    subprojectId,
+    ordering: []
+  });
+
+  // Now the ordering should be restored:
+  const restoredOrdering = await getOrderingAsMap();
+  if (restoredOrdering[interimInstName] >= restoredOrdering[finalInstName]) {
+    throw Error(`Failed to restore original ordering`);
+  }
 }
 
 async function testApiDocIsAvailable() {
