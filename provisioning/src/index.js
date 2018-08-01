@@ -248,6 +248,7 @@ const fmtList = l =>
 
 async function runIntegrationTests(rootSecret, folder) {
   await testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret, folder);
+  await testWorkflowitemUpdate(folder);
   await testApiDocIsAvailable();
   console.log(`Integration tests complete.`);
 }
@@ -306,6 +307,54 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
     "mstein",
     "project.viewDetails"
   );
+}
+
+async function testWorkflowitemUpdate(folder) {
+  await impersonate("mstein", "test");
+  const amazonFundProject = readJsonFile(folder + "amazon_fund.json");
+  await provisionFromData(amazonFundProject);
+
+  const project = await findProject(axios, amazonFundProject);
+
+  const subprojectTemplate = amazonFundProject.subprojects.find(x => x.displayName === "Furniture");
+  const subproject = await findSubproject(axios, project, subprojectTemplate);
+
+  const workflowitemTemplate = subprojectTemplate.workflows.find(x => x.displayName === "Payment final installment")
+  const workflowitem = await findWorkflowitem(axios, project, subproject, workflowitemTemplate);
+
+  const { amountType, amount, currency } = workflowitem.data;
+  if (amountType === "N/A" || !amount || !currency) {
+    throw Error(`unexpected test data: ${JSON.stringify(workflowitem, null, 2)}`);
+  }
+
+  // Setting the amountType to N/A should remove the amount and currency fields from the
+  // response:
+  await axios.post("/workflowitem.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    workflowitemId: workflowitem.data.id,
+    amountType: "N/A",
+    amount: amount + 1,
+    currency,
+  });
+
+  const updatedWorkflowitem = await findWorkflowitem(axios, project, subproject, workflowitemTemplate);
+  if (updatedWorkflowitem.data.amountType !== "N/A"
+      || updatedWorkflowitem.data.amount !== undefined
+      || updatedWorkflowitem.data.currency !== undefined
+  ) {
+    throw Error(`Setting amountType to N/A did not remove amount and currency fields!\n${JSON.stringify(updatedWorkflowitem, null, 2)}`);
+  }
+
+  // Restoring the original (test) data:
+  await axios.post("/workflowitem.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    workflowitemId: workflowitem.data.id,
+    amountType,
+    amount,
+    currency
+  })
 }
 
 async function testApiDocIsAvailable() {
