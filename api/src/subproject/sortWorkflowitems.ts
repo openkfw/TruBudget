@@ -5,45 +5,46 @@ export function sortWorkflowitems(
   workflowitems: Workflowitem.WorkflowitemResource[],
   ordering: string[],
 ): Workflowitem.WorkflowitemResource[] {
-  /**
-   * @returns 0 if equal, -1 if a before b, +1 if a after b
-   */
-  function byOrderingCriteria(
-    a: Workflowitem.WorkflowitemResource,
-    b: Workflowitem.WorkflowitemResource,
-  ): -1 | 1 {
-    if (isClosed(a) && isClosed(b)) {
-      // both are closed, so we order by their time of closing:
-      const closedAtA = closedAt(a);
-      const closedAtB = closedAt(b);
-      return closedAtA < closedAtB ? -1 : 1;
-    } else if (isClosed(a)) {
-      // a is closed, b is not, so a before b:
+  return workflowitems.sort((a, b) => byOrderingCriteria(a, b, ordering));
+}
+
+/**
+ * @returns 0 if equal, -1 if a before b, +1 if a after b
+ */
+function byOrderingCriteria(
+  a: Workflowitem.WorkflowitemResource,
+  b: Workflowitem.WorkflowitemResource,
+  ordering: string[],
+): -1 | 1 {
+  if (isClosed(a) && isClosed(b)) {
+    // both are closed, so we order by their time of closing:
+    const closedAtA = closedAt(a);
+    const closedAtB = closedAt(b);
+    return closedAtA < closedAtB ? -1 : 1;
+  } else if (isClosed(a)) {
+    // a is closed, b is not, so a before b:
+    return -1;
+  } else if (isClosed(b)) {
+    // b is closed, a is not, so b before a:
+    return 1;
+  } else {
+    // both are not closed, so we sort according to the ordering:
+    const indexA = ordering.indexOf(a.data.id);
+    const indexB = ordering.indexOf(b.data.id);
+    if (indexA > -1 && indexB > -1) {
+      // both are mentioned in the ordering:
+      return indexA < indexB ? -1 : 1;
+    } else if (indexA !== -1) {
+      // a is mentioned in the ordering, b is not, so a before b:
       return -1;
-    } else if (isClosed(b)) {
-      // b is closed, a is not, so b before a:
+    } else if (indexB !== -1) {
+      // b is mentioned in the ordering, a is not, so b before a:
       return 1;
     } else {
-      // both are not closed, so we sort according to the ordering:
-      const indexA = ordering.indexOf(a.data.id);
-      const indexB = ordering.indexOf(b.data.id);
-      if (indexA > -1 && indexB > -1) {
-        // both are mentioned in the ordering:
-        return indexA < indexB ? -1 : 1;
-      } else if (indexA !== -1) {
-        // a is mentioned in the ordering, b is not, so a before b:
-        return -1;
-      } else if (indexB !== -1) {
-        // b is mentioned in the ordering, a is not, so b before a:
-        return 1;
-      } else {
-        // both are not in the ordering, so we sort by ctime instead:
-        return byCreationTime(a, b);
-      }
+      // both are not in the ordering, so we sort by ctime instead:
+      return byCreationTime(a, b);
     }
   }
-
-  return workflowitems.sort(byOrderingCriteria);
 }
 
 function isClosed(item: Workflowitem.WorkflowitemResource): boolean {
@@ -56,10 +57,10 @@ function closedAt(item: Workflowitem.WorkflowitemResource): string {
   return event.createdAt;
 }
 
-const byCreationTime = (
+function byCreationTime(
   a: Workflowitem.WorkflowitemResource,
   b: Workflowitem.WorkflowitemResource,
-): -1 | 1 => {
+): -1 | 1 {
   const ctimeA = a.data.creationUnixTs;
   const ctimeB = b.data.creationUnixTs;
   if (ctimeA < ctimeB) {
@@ -74,4 +75,4 @@ const byCreationTime = (
       return 1;
     }
   }
-};
+}
