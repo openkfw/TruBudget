@@ -10,8 +10,7 @@ export async function addUserToGroup(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
-  let input;
-  input = value("data", req.body.data, x => isObject(x));
+  const input = value("data", req.body.data, isObject);
   const groupId: string = value("groupId", input.groupId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);
   const userIntent: Intent = "group.addUser";

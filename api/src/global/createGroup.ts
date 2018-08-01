@@ -1,5 +1,3 @@
-import { isArray } from "util";
-
 import * as Global from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
@@ -13,14 +11,11 @@ export const createGroup = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
-  let input;
-  value("data", req.body.data, x => isObject(x));
-  input = value("data.group", req.body.data.group, x => isObject(x));
-  const groupId = value("id", input.id, isNonemptyString);
-  const displayName = value("displayName", input.displayName, isNonemptyString);
-  let users;
-  value("users", input.users, x => x !== undefined);
-  users = value("users", input.users, x => isArray(x));
+  const data = value("data", req.body.data, isObject);
+  const groupFromRequest = value("data.group", data.group, isObject);
+  const groupId = value("id", groupFromRequest.id, isNonemptyString);
+  const displayName = value("displayName", groupFromRequest.displayName, isNonemptyString);
+  const users = value("users", groupFromRequest.users, Array.isArray);
   const userIntent: Intent = "global.createGroup";
   // Is the user allowed to create new projects?
   await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
