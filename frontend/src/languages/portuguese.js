@@ -43,6 +43,7 @@ const pt = {
     subproject: "Subprojeto",
     subprojects: "Subprojetos",
     task_status: "Status da tarefa",
+    thumbnail: "Portuguese: Thumbnail",
     username: "Usuário",
     view: "Portuguese: View",
     workflowItem: "Portuguese: WorkflowItem",

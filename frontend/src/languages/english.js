@@ -43,6 +43,7 @@ const en = {
     subproject: "Subproject",
     subprojects: "Subprojects",
     task_status: "Task status",
+    thumbnail: "Thumbnail",
     username: "Username",
     view: "View",
     workflowItem: "WorkflowItem",

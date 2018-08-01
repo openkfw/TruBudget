@@ -43,6 +43,7 @@ const fr = {
     subproject: "Sousprojet",
     subprojects: "Sousprojets",
     task_status: "Etat de la tâche",
+    thumbnail: "French: Thumbnail",
     username: "Nom d'utilisateur",
     view: "French: View",
     workflowItem: "French: WorkflowItem",
