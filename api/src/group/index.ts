@@ -3,6 +3,7 @@ import deepcopy from "../lib/deepcopy";
 import { MultichainClient } from "../multichain";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
 import * as Liststreamkeyitems from "../multichain/responses/liststreamkeyitems";
+import { removeUserFromGroup } from "./removeUser";
 
 const groupsStreamName = "groups";
 
@@ -117,26 +118,37 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
       resource = result.resource;
       resourceMap.set(asMapKey(item.keys), resource);
     } else {
-      if (event.intent === "group.addUser") {
-        switch (event.dataVersion) {
-          case 1: {
-            resource.users.push(event.data.userId);
-          }
-        }
-      } else {
-        if (event.intent === "group.removeUser") {
-          switch (event.dataVersion) {
-            case 1: {
-              const index = resource.users.indexOf(event.data.userId);
-              if (index > -1) {
-                resource.users.splice(index, 1);
-              }
-            }
-          }
-        }
+      // Since we've a group now, we can add/remove Users
+      const hasProcessedEvent = addUser(event, resource) || removeUser(event, resource);
+      if (!hasProcessedEvent) {
+        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
       }
     }
   }
   const groups = [...resourceMap.values()];
   return groups;
 };
+
+function addUser(event: Event, resource: GroupResource): true | undefined {
+  if (event.intent !== "group.addUser") return;
+  switch (event.dataVersion) {
+    case 1: {
+      resource.users.push(event.data.userId);
+      return true;
+    }
+  }
+  throwUnsupportedEventVersion(event);
+}
+function removeUser(event: Event, resource: GroupResource): true | undefined {
+  if (event.intent !== "group.removeUser") return;
+  switch (event.dataVersion) {
+    case 1: {
+      const index = resource.users.indexOf(event.data.userId);
+      if (index > -1) {
+        resource.users.splice(index, 1);
+      }
+      return true;
+    }
+  }
+  throwUnsupportedEventVersion(event);
+}

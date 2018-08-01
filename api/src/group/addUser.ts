@@ -11,9 +11,7 @@ export async function addUserToGroup(
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
   let input;
-  if (isObject(req.body.data)) {
-    input = value("data", req.body.data, x => x !== undefined);
-  }
+  input = value("data", req.body.data, x => isObject(x));
   const groupId: string = value("groupId", input.groupId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);
   const userIntent: Intent = "group.addUser";

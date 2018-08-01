@@ -136,9 +136,7 @@ const authenticate = async (
     id,
     displayName: storedUser.displayName,
     organization: storedUser.organization,
-    allowedIntents: await getUserAndGroups(token).then(async userAndGroups =>
-      getAllowedIntents(userAndGroups, globalPermissions),
-    ),
+    allowedIntents: getAllowedIntents(getUserAndGroups(token), globalPermissions),
     groups: userGroups,
     token: signedJwt,
   };

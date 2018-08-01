@@ -1,3 +1,5 @@
+import { isArray } from "util";
+
 import * as Global from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
@@ -12,15 +14,13 @@ export const createGroup = async (
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   let input;
-  if (isObject(req.body.data && isObject(req.body.data.group))) {
-    input = value("data.group", req.body.data.group, x => x !== undefined);
-  }
+  value("data", req.body.data, x => isObject(x));
+  input = value("data.group", req.body.data.group, x => isObject(x));
   const groupId = value("id", input.id, isNonemptyString);
   const displayName = value("displayName", input.displayName, isNonemptyString);
   let users;
-  if (input.users.isArray) {
-    users = value("users", input.users, x => x !== undefined);
-  }
+  value("users", input.users, x => x !== undefined);
+  users = value("users", input.users, x => isArray(x));
   const userIntent: Intent = "global.createGroup";
   // Is the user allowed to create new projects?
   await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
