@@ -1,6 +1,7 @@
 const de = {
   common: {
     actions: "Actions",
+    added: "German: Added",
     approver: "Approver",
     assigned: "Assigned",
     assigned_budget: "Assigned Budget",
@@ -15,6 +16,7 @@ const de = {
     closed: "German: Closed",
     comment: "Comment",
     comment_description: "Add some comments",
+    completion: "German: Completion",
     create: "German: Create",
     created: "Created",
     disbursed_budget: "Disbursed Budget",
@@ -34,6 +36,7 @@ const de = {
     open: "Open",
     password: "Password",
     project: "German: Project",
+    search: "German: Search",
     show_permissions: "German: Show Permissions",
     status: "Status",
     submit: "Submit",
@@ -44,10 +47,10 @@ const de = {
     view: "German: View",
     workflowItem: "German: WorkflowItem",
   },
-
   login: {
     accenture_tag: "Developed by Emerging Technologies & Innovation @ Accenture",
     environment: "Environment",
+    loading: "German: Loading ...",
     login_button_title: "Login",
     production_env: "Prod",
     test_env: "Test",
@@ -65,13 +68,16 @@ const de = {
     project_close_info: "German: Disabled as long as the Subprojects aren't closed",
     project_comment: "Comment",
     project_currency: "Currency",
+    project_details: "German: Details",
     project_disbursement_authority_role: "Select disbursement authority role",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_edit_title: "German: Edit Project",
     project_implementing_authority_role: "Select implementation authority role",
     project_implementing_authority_role_description: "The authorities enabled to create and modify subprojects, define and execute workflow activities",
     project_name: "Name",
+    project_permissions_title: "German: Set permissions for project",
     project_roles: "Roles",
+    project_thumbnail: "German: Thumbnail",
     project_title: "Project title",
     project_title_description: "Name of the project",
   },
@@ -83,6 +89,7 @@ const de = {
     subproject_close_info: "German: Disabled as long as the Workflowitems aren't closed",
     subproject_comment: "Sub-project Comment",
     subproject_completion_string: "{0} von {1} erledigt",
+    subproject_currency: "German: Sub-project Currency",
     subproject_edit_title: "German: Edit Subproject",
     subproject_permissions_title: "German: Set permissions for subproject",
     subproject_select_button: "Select",
@@ -90,7 +97,10 @@ const de = {
     subproject_title_description: "Name of the sub-project",
   },
   workflow: {
-    worfkfow_disable_sort: "Save",
+    add_item: "German: Create Workflow item",
+    approval_required: "German: Approval Required",
+    edit_item: "German: Edit Workflow item",
+    non_approval: "German: Non-Approval",
     workflow_action_in_review: "Pending for review of",
     workflow_action_open_in_progress: "Pending on ",
     workflow_action_pending_approval: "Pending for approval of ",
@@ -105,6 +115,7 @@ const de = {
     workflow_budget_status_disbursed: "Disbursed",
     workflow_budget_status_na: "N/A",
     workflow_comment: "Workflow Comment",
+    workflow_disable_sort: "Save",
     workflow_document_changed: "Changed",
     workflow_document_description: "Add name of document",
     workflow_document_name: "Document Name",
@@ -117,6 +128,8 @@ const de = {
     workflow_no_actions: "No actions required",
     workflow_no_documents: "No documents",
     workflow_none: "None",
+    workflow_permissions_title: "German: Set permissions for workflowitem",
+    workflow_redacted: "German: redacted",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflow items",
     workflow_title: "Workflow title",
@@ -126,7 +139,6 @@ const de = {
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Upload",
   },
-
   usersDashboard: {
     full_name: "German: Full Name",
     id: "German: Id",
@@ -137,6 +149,7 @@ const de = {
     users: "German: Users",
   },
   nodesDashboard: {
+    access: "German: Access",
     additional_organization_node: "German: New nodes for existing organizations",
     address: "German: Access",
     approve: "German: Approve",
@@ -145,7 +158,6 @@ const de = {
     nodes: "German: Nodes",
     permissions: "German: Permissions",
   },
-
   navigation: {
     admin_permission: "Admin",
     connected_peers: "Connected Peers",
@@ -263,9 +275,10 @@ const de = {
     write: "German: Write permissions",
   },
   language: {
-    english: "English",
-    french: "Français",
-    german: "German",
+    english: "Englisch",
+    french: "Französisch",
+    german: "Deutsch",
+    portuguese: "Portugiesisch",
   }
 };
 export default de;

@@ -36,6 +36,7 @@ const pt = {
     open: "Abrir",
     password: "Senha",
     project: "Portuguese: Project",
+    search: "Portuguese: Search",
     show_permissions: "Portuguese: Show Permissions",
     status: "Status",
     submit: "Enviar",
@@ -119,7 +120,6 @@ const pt = {
     approval_required: "Aprovação necessária",
     edit_item: "Editar workflow",
     non_approval: "Aprovação desnecessária",
-    worfkfow_disable_sort: "Salvar",
     workflow_action_in_review: "Aguardando revisão de ",
     workflow_action_open_in_progress: "Aguardando ação de ",
     workflow_action_pending_approval: "Aguardando aprovação de ",
@@ -134,6 +134,7 @@ const pt = {
     workflow_budget_status_disbursed: "Desembolsado",
     workflow_budget_status_na: "N/A",
     workflow_comment: "Comentário do workflow",
+    workflow_disable_sort: "Salvar",
     workflow_document_changed: "Alterado",
     workflow_document_description: "Digite um nome para o documento",
     workflow_document_name: "Nome do documento",
@@ -274,9 +275,9 @@ const pt = {
     write: "Portuguese: Write permissions",
   },
   language: {
-    english: "English",
-    french: "Français",
-    german: "German",
+    english: "Portuguese: English",
+    french: "Portuguese: French",
+    german: "Portuguese: German",
     portuguese: "Português",
   }
 };

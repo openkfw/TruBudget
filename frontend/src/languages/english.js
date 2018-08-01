@@ -1,6 +1,7 @@
 const en = {
   common: {
     actions: "Actions",
+    added: "Added",
     approver: "Approver",
     assigned: "Assigned",
     assigned_budget: "Assigned",
@@ -119,7 +120,6 @@ const en = {
     approval_required: "Approval Required",
     edit_item: "Edit Workflow item",
     non_approval: "Non-Approval",
-    worfkfow_disable_sort: "Save",
     workflow_action_in_review: "Pending for review of",
     workflow_action_open_in_progress: "Pending on ",
     workflow_action_pending_approval: "Pending for approval of ",
@@ -134,6 +134,7 @@ const en = {
     workflow_budget_status_disbursed: "Disbursed",
     workflow_budget_status_na: "N/A",
     workflow_comment: "Workflow Comment",
+    workflow_disable_sort: "Save",
     workflow_document_changed: "Changed",
     workflow_document_description: "Add name of document",
     workflow_document_name: "Document Name",
@@ -275,7 +276,7 @@ const en = {
   },
   language: {
     english: "English",
-    french: "Français",
+    french: "French",
     german: "German",
     portuguese: "Portuguese",
   }
