@@ -27,8 +27,8 @@ export const HIDE_WORKFLOW_DETAILS = "HIDE_WORKFLOW_DETAILS";
 export const UPDATE_WORKFLOW_SORT = "UPDATE_WORKFLOW_SORT";
 export const ENABLE_WORKFLOW_SORT = "ENABLE_WORKFLOW_SORT";
 
-export const POST_WORKFLOW_SORT = "POST_WORKFLOW_SORT";
-export const POST_WORKFLOW_SORT_SUCCESS = "POST_WORKFLOW_SORT_SUCCESS";
+export const REORDER_WORKFLOW_ITEMS = "REORDER_WORKFLOW_ITEMS";
+export const REORDER_WORKFLOW_ITEMS_SUCCESS = "REORDER_WORKFLOW_ITEMS_SUCCESS";
 
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
 export const OPEN_HISTORY = "OPEN_HISTORY";
@@ -232,15 +232,16 @@ export function enableWorkflowSort(sortEnabled) {
     sortEnabled
   };
 }
-export function postWorkflowSort(streamName, workflowItems, sortEnabled = false) {
+export function reorderWorkflowItems(projectId, subprojectId, workflowItems) {
   // Just the keys are necessary to update the sort on the backend
-  const order = [];
-  workflowItems.map(item => order.push(item.key));
+  const ordering = [];
+  console.log(workflowItems);
+  workflowItems.map(item => ordering.push(item.data.id));
   return {
-    type: POST_WORKFLOW_SORT,
-    streamName,
-    order,
-    sortEnabled
+    type: REORDER_WORKFLOW_ITEMS,
+    projectId,
+    subprojectId,
+    ordering
   };
 }
 

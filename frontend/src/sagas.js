@@ -68,6 +68,8 @@ import {
   REVOKE_WORKFLOWITEM_PERMISSION,
   EDIT_WORKFLOW_ITEM_SUCCESS,
   EDIT_WORKFLOW_ITEM,
+  REORDER_WORKFLOW_ITEMS,
+  REORDER_WORKFLOW_ITEMS_SUCCESS,
   CLOSE_SUBPROJECT,
   CLOSE_SUBPROJECT_SUCCESS
 } from "./pages/Workflows/actions";
@@ -96,10 +98,7 @@ import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
   APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
 } from "./pages/Nodes/actions.js";
-import {
-  FETCH_ACTIVE_PEERS,
-  FETCH_ACTIVE_PEERS_SUCCESS
-} from "./pages/Navbar/actions.js";
+import { FETCH_ACTIVE_PEERS, FETCH_ACTIVE_PEERS_SUCCESS } from "./pages/Navbar/actions.js";
 
 const api = new Api();
 
@@ -183,14 +182,14 @@ function* handleLoading(showLoading) {
       }
     };
   } else {
-    return function* () { };
+    return function*() {};
   }
 }
 
 // SAGAS
 
 export function* createProject(action) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.createProject, action.name, action.amount, action.comment, action.currency, action.thumbnail);
     yield put({
       type: CREATE_PROJECT_SUCCESS
@@ -203,7 +202,7 @@ export function* createProject(action) {
 }
 
 export function* editProjectSaga({ projectId, changes }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.editProject, projectId, changes);
     yield put({
       type: EDIT_PROJECT_SUCCESS
@@ -216,7 +215,7 @@ export function* editProjectSaga({ projectId, changes }) {
 }
 
 export function* createSubProjectSaga({ projectId, name, amount, description, currency, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.createSubProject, projectId, name, `${amount}`, description, currency);
     yield put({
       type: CREATE_SUBPROJECT_SUCCESS
@@ -230,7 +229,7 @@ export function* createSubProjectSaga({ projectId, name, amount, description, cu
 }
 
 export function* editSubProjectSaga({ projectId, subprojectId, changes }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.editSubProject, projectId, subprojectId, changes);
     yield put({
       type: EDIT_SUBPROJECT_SUCCESS
@@ -244,7 +243,7 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes }) {
 }
 
 export function* createWorkflowItemSaga({ type, ...rest }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.createWorkflowItem, rest);
     yield put({
       type: CREATE_WORKFLOW_SUCCESS
@@ -260,7 +259,7 @@ export function* createWorkflowItemSaga({ type, ...rest }) {
 }
 
 export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId, changes }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.editWorkflowItem, projectId, subprojectId, workflowitemId, changes);
     yield put({
       type: EDIT_WORKFLOW_ITEM_SUCCESS
@@ -275,8 +274,17 @@ export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId,
   }, true);
 }
 
+export function* reorderWorkflowitemsSaga({ projectId, subprojectId, ordering }) {
+  yield execute(function*() {
+    yield callApi(api.reorderWorkflowitems, projectId, subprojectId, ordering);
+    yield put({
+      type: REORDER_WORKFLOW_ITEMS_SUCCESS
+    });
+  }, true);
+}
+
 export function* setEnvironmentSaga(action) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield put({
       type: STORE_ENVIRONMENT_SUCCESS,
       environment: action.environment,
@@ -289,7 +297,7 @@ export function* setEnvironmentSaga(action) {
 }
 
 export function* getEnvironmentSaga() {
-  yield execute(function* () {
+  yield execute(function*() {
     const env = yield select(getEnvironment);
     yield put({
       type: FETCH_ENVIRONMENT_SUCCESS,
@@ -300,7 +308,7 @@ export function* getEnvironmentSaga() {
 }
 
 export function* fetchAllNotificationsSaga({ showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.fetchNotifications);
     yield put({
       type: FETCH_ALL_NOTIFICATIONS_SUCCESS,
@@ -310,7 +318,7 @@ export function* fetchAllNotificationsSaga({ showLoading }) {
 }
 
 export function* fetchNotificationWithIdSaga({ fromId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.fetchNotifications, fromId);
     yield put({
       type: FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
@@ -320,7 +328,7 @@ export function* fetchNotificationWithIdSaga({ fromId, showLoading }) {
 }
 
 export function* markNotificationAsReadSaga({ notificationId }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.markNotificationAsRead, notificationId);
     yield put({
       type: MARK_NOTIFICATION_AS_READ_SUCCESS
@@ -356,7 +364,7 @@ export function* loginSaga({ user }) {
 }
 
 export function* createUserSaga({ displayName, organization, username, password }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.createUser, displayName, organization, username, password);
     yield put({
       type: CREATE_USER_SUCCESS
@@ -369,7 +377,7 @@ export function* createUserSaga({ displayName, organization, username, password 
 }
 
 export function* fetchUserSaga({ showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.listUser);
     yield put({
       type: FETCH_USER_SUCCESS,
@@ -379,7 +387,7 @@ export function* fetchUserSaga({ showLoading }) {
 }
 
 export function* fetchNodesSaga({ showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.listNodes);
     yield put({
       type: FETCH_NODES_SUCCESS,
@@ -389,7 +397,7 @@ export function* fetchNodesSaga({ showLoading }) {
 }
 
 export function* approveNewOrganizationSaga({ organization, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.approveNewOrganization, organization);
     yield put({
       type: APPROVE_ORGANIZATION_SUCCESS
@@ -402,7 +410,7 @@ export function* approveNewOrganizationSaga({ organization, showLoading }) {
 }
 
 export function* approveNewNodeForOrganizationSaga({ address, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.approveNewNodeForOrganization, address);
     yield put({
       type: APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
@@ -415,7 +423,7 @@ export function* approveNewNodeForOrganizationSaga({ address, showLoading }) {
 }
 
 export function* logoutSaga() {
-  yield execute(function* () {
+  yield execute(function*() {
     yield put({
       type: LOGOUT_SUCCESS
     });
@@ -423,7 +431,7 @@ export function* logoutSaga() {
 }
 
 export function* fetchAllProjectsSaga({ showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.listProjects);
 
     yield put({
@@ -434,7 +442,7 @@ export function* fetchAllProjectsSaga({ showLoading }) {
 }
 
 export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const projectDetails = yield callApi(api.viewProjectDetails, projectId);
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
@@ -444,7 +452,7 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
 }
 
 export function* fetchProjectHistorySaga({ projectId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.viewProjectHistory, projectId);
     yield put({
       type: FETCH_PROJECT_HISTORY_SUCCESS,
@@ -454,7 +462,7 @@ export function* fetchProjectHistorySaga({ projectId, showLoading }) {
 }
 
 export function* fetchAllSubprojectDetailsSaga({ projectId, subprojectId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.viewSubProjectDetails, projectId, subprojectId);
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
@@ -464,7 +472,7 @@ export function* fetchAllSubprojectDetailsSaga({ projectId, subprojectId, showLo
 }
 
 export function* fetchSubprojectHistorySaga({ projectId, subprojectId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId);
     yield put({
       type: FETCH_SUBPROJECT_HISTORY_SUCCESS,
@@ -474,7 +482,7 @@ export function* fetchSubprojectHistorySaga({ projectId, subprojectId, showLoadi
 }
 
 export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.listProjectIntents, projectId);
 
     yield put({
@@ -485,7 +493,7 @@ export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
 }
 
 export function* fetchSubProjectPermissionsSaga({ projectId, subprojectId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.listSubProjectPermissions, projectId, subprojectId);
 
     yield put({
@@ -496,7 +504,7 @@ export function* fetchSubProjectPermissionsSaga({ projectId, subprojectId, showL
 }
 
 export function* fetchWorkflowItemPermissionsSaga({ projectId, workflowitemId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, workflowitemId);
     yield put({
       type: FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
@@ -506,7 +514,7 @@ export function* fetchWorkflowItemPermissionsSaga({ projectId, workflowitemId, s
 }
 
 export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.grantProjectPermissions, projectId, intent, user);
 
     yield put({
@@ -521,7 +529,7 @@ export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) 
 }
 
 export function* revokePermissionsSaga({ projectId, intent, user, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.revokeProjectPermissions, projectId, intent, user);
 
     yield put({
@@ -536,7 +544,7 @@ export function* revokePermissionsSaga({ projectId, intent, user, showLoading })
 }
 
 export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, user);
 
     yield put({
@@ -553,7 +561,7 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
 }
 
 export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, user);
 
     yield put({
@@ -577,7 +585,7 @@ export function* grantWorkflowItemPermissionsSaga({
   user,
   showLoading
 }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
 
     yield put({
@@ -602,7 +610,7 @@ export function* revokeWorkflowItemPermissionsSaga({
   user,
   showLoading
 }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
 
     yield put({
@@ -620,7 +628,7 @@ export function* revokeWorkflowItemPermissionsSaga({
 }
 
 export function* closeProjectSaga({ projectId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.closeProject, projectId);
     yield put({ type: CLOSE_PROJECT_SUCCESS });
 
@@ -633,7 +641,7 @@ export function* closeProjectSaga({ projectId, showLoading }) {
 }
 
 export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.closeSubproject, projectId, subprojectId);
     yield put({ type: CLOSE_SUBPROJECT_SUCCESS });
 
@@ -647,7 +655,7 @@ export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
 }
 
 export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.closeWorkflowItem, projectId, subprojectId, workflowitemId);
 
     yield put({
@@ -664,7 +672,7 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
 }
 
 export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemId, assigneeId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
     yield put({
       type: ASSIGN_WORKFLOWITEM_SUCCESS
@@ -679,7 +687,7 @@ export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemI
 }
 
 export function* assignSubprojectSaga({ projectId, subprojectId, assigneeId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.assignSubproject, projectId, subprojectId, assigneeId);
     yield put({
       type: ASSIGN_SUBPROJECT_SUCCESS
@@ -695,7 +703,7 @@ export function* assignSubprojectSaga({ projectId, subprojectId, assigneeId, sho
 }
 
 export function* assignProjectSaga({ projectId, assigneeId, showLoading }) {
-  yield execute(function* () {
+  yield execute(function*() {
     yield callApi(api.assignProject, projectId, assigneeId);
     yield put({
       type: ASSIGN_PROJECT_SUCCESS
@@ -709,7 +717,7 @@ export function* assignProjectSaga({ projectId, assigneeId, showLoading }) {
 }
 
 export function* fetchActivePeersSaga({ showLoading = false }) {
-  yield execute(function* () {
+  yield execute(function*() {
     const { data } = yield callApi(api.listActiveNodes);
     yield put({
       type: FETCH_ACTIVE_PEERS_SUCCESS,
@@ -753,6 +761,10 @@ export function* watchCreateWorkflowItem() {
 
 export function* watchEditWorkflowItem() {
   yield takeEvery(EDIT_WORKFLOW_ITEM, editWorkflowItemSaga);
+}
+
+export function* watchReorderWorkflowItems() {
+  yield takeEvery(REORDER_WORKFLOW_ITEMS, reorderWorkflowitemsSaga);
 }
 
 export function* watchCreateProject() {
@@ -897,6 +909,7 @@ export default function* rootSaga() {
       // Workflow
       watchCreateWorkflowItem(),
       watchEditWorkflowItem(),
+      watchReorderWorkflowItems(),
       watchFetchWorkflowItemPermissions(),
       watchGrantWorkflowitemPermissions(),
       watchRevokeWorkflowitemPermissions(),

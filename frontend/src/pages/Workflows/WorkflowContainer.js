@@ -10,7 +10,7 @@ import {
   updateWorkflowSortOnState,
   enableWorkflowSort,
   storeWorkflowType,
-  postWorkflowSort,
+  reorderWorkflowItems,
   enableSubProjectBudgetEdit,
   storeSubProjectAmount,
   postSubProjectEdit,
@@ -57,6 +57,7 @@ class WorkflowContainer extends Component {
   componentWillUnmount() {
     this.props.hideWorkflowDetails();
     this.props.hideWorkflowDialog();
+    this.props.disableWorkflowSort();
   }
 
   closeSubproject = () => {
@@ -125,7 +126,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     updateWorkflowSortOnState: items => dispatch(updateWorkflowSortOnState(items)),
     enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
-    postWorkflowSort: (streamName, workflowItems) => dispatch(postWorkflowSort(streamName, workflowItems)),
+    disableWorkflowSort: () => dispatch(enableWorkflowSort(false)),
+    reorderWorkflowItems: (projectId, subProjectId, workflowItems) =>
+      dispatch(reorderWorkflowItems(projectId, subProjectId, workflowItems)),
     storeWorkflowType: value => dispatch(storeWorkflowType(value)),
     enableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(true)),
     disableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(false)),
