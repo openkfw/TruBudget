@@ -130,7 +130,7 @@ const de = {
     workflow_no_documents: "No documents",
     workflow_none: "None",
     workflow_permissions_title: "German: Set permissions for workflowitem",
-    workflow_redacted: "German: redacted",
+    workflow_redacted: "German: Redacted",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflow items",
     workflow_title: "Workflow title",

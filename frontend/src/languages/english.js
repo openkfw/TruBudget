@@ -149,7 +149,7 @@ const en = {
     workflow_no_documents: "No documents",
     workflow_none: "None",
     workflow_permissions_title: "Set permissions for workflowitem",
-    workflow_redacted: "redacted",
+    workflow_redacted: "Redacted",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflow items",
     workflow_title: "Workflow title",

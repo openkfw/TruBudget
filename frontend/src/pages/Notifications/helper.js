@@ -1,5 +1,6 @@
 import strings from "../../localizeStrings";
 import { formatString } from "../../helper";
+
 export const intentMapping = ({ originalEvent, resources }) => {
   switch (originalEvent.intent) {
     case "subproject.assign": {
@@ -50,7 +51,7 @@ export const parseURI = ({ resources }) => {
 export const fetchRessourceName = (res, type) => {
   const r = res.find(v => v.type === type);
   if (r !== undefined) {
-    return r.displayName || "Redacted";
+    return r.displayName || strings.workflow.workflow_redacted;
   } else {
     return "-";
   }

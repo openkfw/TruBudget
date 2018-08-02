@@ -149,7 +149,7 @@ const pt = {
     workflow_no_documents: "Não há documentos",
     workflow_none: "Nenhum",
     workflow_permissions_title: "Portuguese: Set permissions for workflowitem",
-    workflow_redacted: "Portuguese: redacted",
+    workflow_redacted: "Portuguese: Redacted",
     workflow_submit_for_review: "Enviar para revisão",
     workflow_table_title: "Lista de workflows",
     workflow_title: "Nome do workflow",

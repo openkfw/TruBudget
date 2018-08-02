@@ -130,7 +130,7 @@ const fr = {
     workflow_no_documents: "Pas de documents",
     workflow_none: "blub",
     workflow_permissions_title: "French: Set permissions for workflowitem",
-    workflow_redacted: "French: redacted",
+    workflow_redacted: "French: Redacted",
     workflow_submit_for_review: "Soumettre pour examen",
     workflow_table_title: "Titre de la table de travail",
     workflow_title: "Titre du workflow",
