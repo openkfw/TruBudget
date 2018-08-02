@@ -1,41 +1,25 @@
 import strings from "../../localizeStrings";
 import { formatString } from "../../helper";
 
+function findDisplayName(intent, resources) {
+  const resourceType = intent.substring(0, intent.indexOf("."));
+  if (!resourceType) throw Error(`Unknown resource type for intent ${intent}`);
+  const resource = resources.find(x => x.type === resourceType);
+  return resource.displayName || "";
+}
+
+function translate(intent) {
+  return strings.notification[intent.split(".").join("_")];
+}
+
 export const intentMapping = ({ originalEvent, resources }) => {
-  switch (originalEvent.intent) {
-    case "subproject.assign": {
-      const subproject = resources.find(resource => resource.type === "subproject");
-      const resourceName = subproject.displayName || "";
-      const text = formatString(strings.notification.subproject_assign, resourceName);
-      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
-    }
-    case "workflowitem.assign": {
-      const workflowitem = resources.find(resource => resource.type === "workflowitem");
-      const resourceName = workflowitem.displayName || "";
-      const text = formatString(strings.notification.workflowitem_assign, resourceName);
-      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
-    }
-    case "project.assign": {
-      const project = resources.find(resource => resource.type === "project");
-      const resourceName = project.displayName || "";
-      const text = formatString(strings.notification.project_assign, resourceName);
-      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
-    }
-    case "workflowitem.close": {
-      const workflowitem = resources.find(resource => resource.type === "workflowitem");
-      const resourceName = workflowitem.displayName || "";
-      const text = formatString(strings.notification.workflowitem_close, resourceName);
-      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
-    }
-    case "subproject.close": {
-      const workflowitem = resources.find(resource => resource.type === "subproject");
-      const resourceName = workflowitem.displayName || "";
-      const text = formatString(strings.notification.subproject_close, resourceName);
-      return `${text} ${resourceName ? "" : strings.notification.no_permissions}`;
-    }
-    default:
-      return "Intent not found";
-  }
+  const translation = translate(originalEvent.intent);
+  if (!translation) return `${originalEvent.intent} (missing intent translation)`;
+
+  const displayName = findDisplayName(originalEvent.intent, resources);
+
+  const text = formatString(translation, displayName);
+  return `${text} ${displayName ? "" : strings.notification.no_permissions}`;
 };
 
 export const parseURI = ({ resources }) => {
