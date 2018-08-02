@@ -76,6 +76,9 @@ export const HIDE_WORKFLOW_ASSIGNEES = "HIDE_WORKFLOW_ASSIGNEES";
 export const SHOW_SUBPROJECT_ASSIGNEES = "SHOW_SUBPROJECT_ASSIGNEES";
 export const HIDE_SUBPROJECT_ASSIGNEES = "HIDE_SUBPROJECT_ASSIGNEES";
 
+export const SAVE_WORKFLOW_ITEM_BEFORE_SORT = "SAVE_WORKFLOW_ITEM_BEFORE_SORT";
+export const HAVE_WORKFLOW_ITEM_CHANGED = "HAVE_WORKFLOW_ITEM_CHANGED";
+
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
@@ -232,10 +235,16 @@ export function enableWorkflowSort(sortEnabled) {
     sortEnabled
   };
 }
+export function saveWorkflowItemsBeforeSort(workflowItems) {
+  return {
+    type: SAVE_WORKFLOW_ITEM_BEFORE_SORT,
+    workflowItems
+  };
+}
+
 export function reorderWorkflowItems(projectId, subprojectId, workflowItems) {
   // Just the keys are necessary to update the sort on the backend
   const ordering = [];
-  console.log(workflowItems);
   workflowItems.map(item => ordering.push(item.data.id));
   return {
     type: REORDER_WORKFLOW_ITEMS,

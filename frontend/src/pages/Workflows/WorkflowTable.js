@@ -46,7 +46,7 @@ const createTableHeader = props => (
 
 const enableWorkflowSort = props => (
   <Button
-    onClick={() => props.enableWorkflowSort()}
+    onClick={() => handleEnableWorkflowSort(props)}
     style={{
       position: "relative",
       zIndex: 2
@@ -71,8 +71,31 @@ const submitSort = props => (
   </Button>
 );
 
+const handleEnableWorkflowSort = props => {
+  const workflowItemIds = [];
+  props.workflowItems.map(item => workflowItemIds.push(item.data.id));
+  props.saveWorkflowItemsBeforeSort(workflowItemIds);
+  props.enableWorkflowSort();
+};
+
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
 const handleSubmitSort = props => {
-  props.reorderWorkflowItems(props.projectId, props.subProjectId, props.workflowItems);
+  const currentWorkflowItemIds = [];
+  props.workflowItems.map(item => currentWorkflowItemIds.push(item.data.id));
+  !arraysEqual(currentWorkflowItemIds, props.workflowItemsBeforeSort)
+    ? props.reorderWorkflowItems(props.projectId, props.subProjectId, props.workflowItems)
+    : null;
+
   props.disableWorkflowSort();
 };
 

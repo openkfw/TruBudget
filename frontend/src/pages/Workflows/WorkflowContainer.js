@@ -24,7 +24,8 @@ import {
   showEditDialog,
   closeSubproject,
   hideWorkflowDetails,
-  hideWorkflowDialog
+  hideWorkflowDialog,
+  saveWorkflowItemsBeforeSort
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -143,7 +144,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
     showEditDialog: (id, displayName, amount, amountType, description, currency) =>
-      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency))
+      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency)),
+    saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems))
   };
 };
 
@@ -159,6 +161,7 @@ const mapStateToProps = state => {
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
+    workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
     parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
     showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
