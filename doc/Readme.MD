@@ -1,8 +1,8 @@
 Follow these steps for the Demo version:
 
-1. Burkina Faso Sample – Primary School Project
+# Burkina Faso Sample – Primary School Project
 
-Storyline
+## Storyline
 
 Use Abbas Tutelle (Line Ministry in our case Ministry of education) to login as the responsible entity for project implementation.
 
@@ -51,26 +51,26 @@ Use Paul Chantier (he is very fast in writting progress reports) to close it and
 Show the histogram to prove that all actions have been documented.
 
 
-Users and Roles
+## Users and Roles
 
-Rose Finance (ID: rfinance) – Ministry of Finance
+* Rose Finance (ID: rfinance) – Ministry of Finance
 
-Abbas Tutelle (ID: atutelle) – Line Ministry (PEA)
+* Abbas Tutelle (ID: atutelle) – Line Ministry (PEA)
 
-Peter Bailleur (ID: pbailleur) – ACMECorp (Donor)
+* Peter Bailleur (ID: pbailleur) – ACMECorp (Donor)
 
-Simon Tresor (ID: stresor) – Central Bank
+* Simon Tresor (ID: stresor) – Central Bank
 
-Fatime Audit (ID: faudit) – National Audit
+* Fatime Audit (ID: faudit) – National Audit
 
-Paul Chantier (ID: pchantier) – Service Provider
+* Paul Chantier (ID: pchantier) – Service Provider
 
-Francis Tender (ID: ftender) – Tender Agent
+* Francis Tender (ID: ftender) – Tender Agent
 
 
-2. Gavi Sample - Vaccination in Burkina Faso 2018 
+# Gavi Sample - Vaccination in Burkina Faso 2018 
 
-Storyline
+## Storyline
 
 Login as Moz Siddiqui (Gavi).
 
@@ -112,21 +112,21 @@ Assign the workflow to Novartis.
 Show that Novartis received a notification about the new order. 
 
 
-Users and Roles
+## Users and Roles
 
-Moz Siddiqui (ID: msiddiqui) – Gavi
+* Moz Siddiqui (ID: msiddiqui) – Gavi
 
-Anna Producer (ID: aproducer) – Novartis
+* Anna Producer (ID: aproducer) – Novartis
 
-Kevin Deliverer (ID: kdeliverer) – DHL
+* Kevin Deliverer (ID: kdeliverer) – DHL
 
-Carine Customs (ID: ccustoms) – Customs Burkina Faso
+* Carine Customs (ID: ccustoms) – Customs Burkina Faso
 
-Salif Distributor (ID: sdistributor) – UPS
+* Salif Distributor (ID: sdistributor) – UPS
 
-Flora Health (ID: fhealth) – Health Center Kaya 1
+* Flora Health (ID: fhealth) – Health Center Kaya 1
 
-Ibrahim Health (ID: ihealth) – Health Center Kaya 2
+* Ibrahim Health (ID: ihealth) – Health Center Kaya 2
 
-Alice Health (ID: ahealth) – Health Center Kaya 3
+* Alice Health (ID: ahealth) – Health Center Kaya 3
 
