@@ -23,7 +23,7 @@ const createTableHeader = props => (
     <CardContent style={style}>
       <div style={{ position: "relative" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div>{!props.workflowSortEnabled ? enableWorkflowSort(props) : submitSort(props)}</div>
+          <div>{!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}</div>
           <div style={{ flex: 1 }} />
 
           <div style={{ flex: 4 }}>
@@ -44,7 +44,7 @@ const createTableHeader = props => (
   </Card>
 );
 
-const enableWorkflowSort = props => (
+const renderSortButton = props => (
   <Button
     onClick={() => handleEnableWorkflowSort(props)}
     style={{
@@ -59,7 +59,7 @@ const enableWorkflowSort = props => (
   </Button>
 );
 
-const submitSort = props => (
+const renderSubmitSortButton = props => (
   <Button
     onClick={() => handleSubmitSort(props)}
     style={{
@@ -78,24 +78,14 @@ const handleEnableWorkflowSort = props => {
   props.enableWorkflowSort();
 };
 
-function arraysEqual(a, b) {
-  if (a === b) return true;
-  if (a == null || b == null) return false;
-  if (a.length != b.length) return false;
-
-  for (var i = 0; i < a.length; ++i) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
-
 const handleSubmitSort = props => {
   const currentWorkflowItemIds = [];
   props.workflowItems.map(item => currentWorkflowItemIds.push(item.data.id));
-  !arraysEqual(currentWorkflowItemIds, props.workflowItemsBeforeSort)
-    ? props.reorderWorkflowItems(props.projectId, props.subProjectId, props.workflowItems)
-    : null;
-
+  const hasChanged =
+    currentWorkflowItemIds.find((id, index) => props.workflowItemsBeforeSort[index] !== id) !== undefined;
+  if (hasChanged) {
+    props.reorderWorkflowItems(props.projectId, props.subProjectId, props.workflowItems);
+  }
   props.disableWorkflowSort();
 };
 

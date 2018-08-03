@@ -33,7 +33,7 @@ class WorkflowAssigneeContainer extends Component {
       <div className={classes.assigneeContainer}>
         <AssigneeSelection
           assigneeId={assignee}
-          disabled={workflowSortEnabled ? true : disabled}
+          disabled={disabled || workflowSortEnabled}
           users={users}
           title={title}
           assign={this.assignWorkflow}
