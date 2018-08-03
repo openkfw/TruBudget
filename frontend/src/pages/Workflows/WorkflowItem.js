@@ -155,14 +155,15 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
   );
 };
 
-const getInfoButton = ({ workflowSortEnabled, openWorkflowDetails }, workflow) => {
-  if (!workflowSortEnabled) {
-    return (
-      <IconButton style={styles.infoButton} onClick={() => openWorkflowDetails(workflow.id)}>
-        <InfoIcon />
-      </IconButton>
-    );
-  }
+const getInfoButton = ({ openWorkflowDetails }, workflowSortEnabled, workflow) => {
+  return (
+    <IconButton
+      style={workflowSortEnabled ? { ...styles.infoButton, opacity: 0 } : styles.infoButton}
+      onClick={() => openWorkflowDetails(workflow.id)}
+    >
+      <InfoIcon />
+    </IconButton>
+  );
 };
 const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, status) => {
   const workflowSortable = status === "open";
@@ -188,7 +189,8 @@ const renderActionButtons = (
   showPerm,
   canCloseWorkflow,
   close,
-  selectable
+  selectable,
+  workflowSortEnabled
 ) => {
   const hideStyle = {
     opacity: 0
@@ -203,11 +205,13 @@ const renderActionButtons = (
           // Otherwise the tooltip is shacking
           PopperProps={{ style: { pointerEvents: "none" } }}
         >
-          <div>
-            <IconButton disabled={!canEditWorkflow} onClick={edit} style={canEditWorkflow ? {} : hideStyle}>
-              <EditIcon />
-            </IconButton>
-          </div>
+          <IconButton
+            disabled={!canEditWorkflow || workflowSortEnabled}
+            onClick={edit}
+            style={canEditWorkflow && !workflowSortEnabled ? {} : hideStyle}
+          >
+            <EditIcon />
+          </IconButton>
         </Tooltip>
         <Tooltip
           id="tooltip-wpermissions"
@@ -216,9 +220,9 @@ const renderActionButtons = (
           PopperProps={{ style: { pointerEvents: "none" } }}
         >
           <IconButton
-            disabled={!canListWorkflowPermissions}
+            disabled={!canListWorkflowPermissions || workflowSortEnabled}
             onClick={showPerm}
-            style={canListWorkflowPermissions ? {} : hideStyle}
+            style={canListWorkflowPermissions && !workflowSortEnabled ? {} : hideStyle}
           >
             <PermissionIcon />
           </IconButton>
@@ -229,11 +233,13 @@ const renderActionButtons = (
           // Otherwise the tooltip is shacking
           PopperProps={{ style: { pointerEvents: "none" } }}
         >
-          <div>
-            <IconButton disabled={!canCloseWorkflow} onClick={close} style={canCloseWorkflow ? {} : hideStyle}>
-              <DoneIcon />
-            </IconButton>
-          </div>
+          <IconButton
+            disabled={!canCloseWorkflow || workflowSortEnabled}
+            onClick={close}
+            style={canCloseWorkflow && !workflowSortEnabled ? {} : hideStyle}
+          >
+            <DoneIcon />
+          </IconButton>
         </Tooltip>
       </div>
     </div>
@@ -266,7 +272,7 @@ export const WorkflowItem = SortableElement(
 
     const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
     const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
-    const infoButton = getInfoButton(props, workflow.data);
+    const infoButton = getInfoButton(props, workflowSortEnabled, workflow.data);
 
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
     return (
@@ -305,7 +311,8 @@ export const WorkflowItem = SortableElement(
               () => props.showWorkflowItemPermissions(id),
               showClose,
               () => props.closeWorkflowItem(id),
-              currentWorkflowSelectable
+              currentWorkflowSelectable,
+              workflowSortEnabled
             )}
           </div>
         </Card>
