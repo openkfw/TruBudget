@@ -68,7 +68,7 @@ Show the histogram to prove that all actions have been documented.
 * Francis Tender (ID: ftender) – Tender Agent
 
 
-# Gavi Sample - Vaccination in Burkina Faso 2018 
+# Gavi Sample - Vaccination in Senegal 2018 
 
 ## Storyline
 
@@ -80,26 +80,26 @@ Open the first sub-project (Shipment DTP 1/10) to show how a complete supply cha
 
 Go back and open the second sub-project (Shipment DTP 2/10) to show how a supply chain looks in progress. 
 
-Here the product (DTP Vaccine) is already in the storage facility of UPS in Burkina Faso. 
+Here the product (DTP Vaccine) is already in the storage facility of UPS in Senegal. 
 
 Login as Flora Health instead of Moz Siddiqui. 
 
 Also login as Salif Distributor (UPS). 
 
-As Salif Distributor (UPS) assign the current workflow (UPS to Health Center Kaya 1: Distribution) to Flora Health (to notify her that UPS request a confirmation of delivery).
+As Salif Distributor (UPS) assign the current workflow (UPS to Health Center Dakar 1: Distribution) to Flora Health (to notify her that UPS request a confirmation of delivery).
   
 Flora Health indeed received a shipment of DTP in her health center and confirms reception by closing the workflow.
 
 Show the histogram to prove that all actions have been documented.
 
 
-Lastly, open the third sub-project (Shipment DTP 3/10) to show how to issue a new order. 
+Lastly, create a third sub-project (Shipment DTP 3/10) to show how to issue a new order. 
 
 Logout as Flora Health and login as Moz Siddiqui (Gavi). 
 
 Logout as UPS and login as Anna Producer (Novartis).
 
-As Moz Siddiqui create a new workflow:
+As Moz Siddiqui create a the new sub-project and a first workflow:
 
 Name: Gavi to Novartis: Order
 
@@ -120,13 +120,13 @@ Show that Novartis received a notification about the new order.
 
 * Kevin Deliverer (ID: kdeliverer) – DHL
 
-* Carine Customs (ID: ccustoms) – Customs Burkina Faso
+* Carine Customs (ID: ccustoms) – Customs Senegal
 
 * Salif Distributor (ID: sdistributor) – UPS
 
-* Flora Health (ID: fhealth) – Health Center Kaya 1
+* Flora Health (ID: fhealth) – Health Center Dakar 1
 
-* Ibrahim Health (ID: ihealth) – Health Center Kaya 2
+* Ibrahim Health (ID: ihealth) – Health Center Dakar 2
 
-* Alice Health (ID: ahealth) – Health Center Kaya 3
+* Alice Health (ID: ahealth) – Health Center Dakar 3
 
