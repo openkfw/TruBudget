@@ -40,9 +40,10 @@ services:
     command: ["npm", "start"]
     environment:
       API_HOST: api
-      ENVIRONMENT_TYPE: TEST
       API_PORT: 8080
+      ENVIRONMENT_TYPE: TEST
       ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
 
   e2etest:
     build:

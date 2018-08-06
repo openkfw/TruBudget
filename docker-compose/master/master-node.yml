@@ -61,16 +61,18 @@ services:
     command: ["npm", "start"]
     environment:
       API_HOST: api
-      ENVIRONMENT_TYPE: PROD
       API_PORT: 8080
+      ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
 
   provision-test:
     image: index.docker.io/trubudget/v1/provisioning:${TAG}
     command: ["npm", "start"]
     environment:
       API_HOST: testapi
-      ENVIRONMENT_TYPE: PROD
       API_PORT: 8080
+      ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
   

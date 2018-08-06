@@ -59,15 +59,17 @@ services:
     links:
       - api
       - testapi
+
   provision-prod:
     build:
       context: ../../provisioning
     command: ["npm", "start"]
     environment:
       API_HOST: api
-      ENVIRONMENT_TYPE: PROD
       API_PORT: 8080
+      ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
 
   provision-test:
     build:
@@ -75,6 +77,7 @@ services:
     command: ["npm", "start"]
     environment:
       API_HOST: testapi
-      ENVIRONMENT_TYPE: PROD
       API_PORT: 8080
+      ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}

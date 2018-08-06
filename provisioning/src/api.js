@@ -11,10 +11,13 @@ const authenticate = async (axios, userId, password) => {
   return body.data.user.token;
 };
 
-const createUser = async (axios, user) => {
+const createUser = async (axios, user, organization) => {
   await withRetry(() =>
     axios.post("/global.createUser", {
-      user
+      user: {
+        ...user,
+        organization
+      }
     })
   );
 };

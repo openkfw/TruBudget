@@ -43,7 +43,7 @@ async function impersonate(userId, password) {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
 
-const provisionBlockchain = async (host, port, rootSecret) => {
+const provisionBlockchain = async (host, port, rootSecret, organization) => {
   try {
     const folder =
       process.env.ENVIRONMENT_TYPE === "PROD"
@@ -55,7 +55,7 @@ const provisionBlockchain = async (host, port, rootSecret) => {
 
     await impersonate("root", rootSecret);
     console.log("Start to provision users");
-    await provisionUsers(axios, folder);
+    await provisionUsers(axios, folder, organization);
 
     console.log("Starting to provision projects");
     await impersonate("mstein", "test");
@@ -364,5 +364,11 @@ async function testApiDocIsAvailable() {
 const port = process.env.API_PORT || 8080;
 const host = process.env.API_HOST || "localhost";
 const rootSecret = process.env.ROOT_SECRET || "asdf";
+const organization = process.env.ORGANIZATION;
 
-provisionBlockchain(host, port, rootSecret);
+if (!organization) {
+  console.log("ORGANIZATION not set");
+  process.exit(1);
+}
+
+provisionBlockchain(host, port, rootSecret, organization);
