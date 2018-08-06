@@ -112,21 +112,6 @@ const GroupCreate = ({
         />
       </div>
     </div>
-    // {!editMode ? (
-    //   <CardActions style={styles.cardActions}>
-    //     <Button
-    //       variant="contained"
-    //       color="primary"
-    //       id="createuser"
-    //       disabled={isEmpty(name) || isEmpty(groupId) || isEmpty(groupUsers)}
-    //       onClick={() =>
-    //         handleCreate(() => createUserGroup(groupId, name, groupUsers), showSnackbar, storeSnackbarMessage)
-    //       }
-    //     >
-    //       {strings.common.create}
-    //     </Button>
-    //   </CardActions>
-    // ) : null}
   );
 };
 

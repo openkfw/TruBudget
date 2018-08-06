@@ -79,7 +79,6 @@ export default function overviewReducer(state = defaultState, action) {
       });
 
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:
-      console.log(action.permissions);
       return state.set("permissions", fromJS(action.permissions));
     case PROJECT_NAME:
       return state.setIn(["projectToAdd", "displayName"], action.name);
