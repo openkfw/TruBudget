@@ -46,6 +46,7 @@ const createTableHeader = props => (
 
 const renderSortButton = props => (
   <Button
+    disabled={props.status === "closed"}
     onClick={() => handleEnableWorkflowSort(props)}
     style={{
       position: "relative",

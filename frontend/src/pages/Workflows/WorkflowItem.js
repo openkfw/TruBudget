@@ -158,7 +158,8 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
 const getInfoButton = ({ openWorkflowDetails }, workflowSortEnabled, workflow) => {
   return (
     <IconButton
-      style={workflowSortEnabled ? { ...styles.infoButton, opacity: 0 } : styles.infoButton}
+      disabled={workflowSortEnabled}
+      style={workflowSortEnabled ? { opacity: 0, cursor: "default", ...styles.infoButton } : styles.infoButton}
       onClick={() => openWorkflowDetails(workflow.id)}
     >
       <InfoIcon />
@@ -193,7 +194,8 @@ const renderActionButtons = (
   workflowSortEnabled
 ) => {
   const hideStyle = {
-    opacity: 0
+    opacity: 0,
+    cursor: "default"
   };
 
   return (
@@ -201,13 +203,15 @@ const renderActionButtons = (
       <div style={styles.actions}>
         <Tooltip
           id="tooltip-wedit"
-          title={strings.common.edit}
+          title={!canEditWorkflow || workflowSortEnabled ? "" : strings.common.edit}
           // Otherwise the tooltip is shacking
           PopperProps={{ style: { pointerEvents: "none" } }}
+          disableFocusListener={!canEditWorkflow || workflowSortEnabled}
+          disableHoverListener={!canEditWorkflow || workflowSortEnabled}
+          disableTouchListener={!canEditWorkflow || workflowSortEnabled}
         >
           <IconButton
-            disabled={!canEditWorkflow || workflowSortEnabled}
-            onClick={edit}
+            onClick={!canEditWorkflow || workflowSortEnabled ? undefined : edit}
             style={canEditWorkflow && !workflowSortEnabled ? {} : hideStyle}
           >
             <EditIcon />
@@ -215,13 +219,15 @@ const renderActionButtons = (
         </Tooltip>
         <Tooltip
           id="tooltip-wpermissions"
-          title={strings.common.show_permissions}
+          title={!canListWorkflowPermissions || workflowSortEnabled ? "" : strings.common.show_permissions}
           // Otherwise the tooltip is shacking
           PopperProps={{ style: { pointerEvents: "none" } }}
+          disableFocusListener={!canListWorkflowPermissions || workflowSortEnabled}
+          disableHoverListener={!canListWorkflowPermissions || workflowSortEnabled}
+          disableTouchListener={!canListWorkflowPermissions || workflowSortEnabled}
         >
           <IconButton
-            disabled={!canListWorkflowPermissions || workflowSortEnabled}
-            onClick={showPerm}
+            onClick={!canListWorkflowPermissions || workflowSortEnabled ? undefined : showPerm}
             style={canListWorkflowPermissions && !workflowSortEnabled ? {} : hideStyle}
           >
             <PermissionIcon />
@@ -229,13 +235,15 @@ const renderActionButtons = (
         </Tooltip>
         <Tooltip
           id="tooltip-wclose"
-          title={strings.common.close}
+          title={!canCloseWorkflow || workflowSortEnabled ? "" : strings.common.close}
           // Otherwise the tooltip is shacking
           PopperProps={{ style: { pointerEvents: "none" } }}
+          disableFocusListener={!canCloseWorkflow || workflowSortEnabled}
+          disableHoverListener={!canCloseWorkflow || workflowSortEnabled}
+          disableTouchListener={!canCloseWorkflow || workflowSortEnabled}
         >
           <IconButton
-            disabled={!canCloseWorkflow || workflowSortEnabled}
-            onClick={close}
+            onClick={!canCloseWorkflow || workflowSortEnabled ? undefined : close}
             style={canCloseWorkflow && !workflowSortEnabled ? {} : hideStyle}
           >
             <DoneIcon />
