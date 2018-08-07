@@ -345,6 +345,7 @@ export const WorkflowItem = SortableElement(
                 disabled={!canAssign}
                 users={users}
                 assignee={assignee}
+                status={status}
               />
             </div>
             {renderActionButtons(

@@ -28,7 +28,7 @@ class WorkflowAssigneeContainer extends Component {
   };
 
   render() {
-    const { workflowItems, workflowitemId, users, title, classes, disabled, workflowSortEnabled } = this.props;
+    const { workflowItems, workflowitemId, users, title, classes, disabled, workflowSortEnabled, status } = this.props;
     const assignee = this.getWorkflowAssignee(workflowItems, workflowitemId);
     return (
       <div className={classes.assigneeContainer}>
@@ -38,6 +38,8 @@ class WorkflowAssigneeContainer extends Component {
           users={users}
           title={title}
           assign={this.assignWorkflow}
+          workflowSortEnabled={workflowSortEnabled}
+          status={status}
         />
       </div>
     );

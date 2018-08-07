@@ -30,12 +30,11 @@ const styles = {
     justifyContent: "center"
   },
   select: {
-    cursor: "-webkit-grab"
+    "&$disabled": {
+      cursor: "-webkit-grab"
+    }
   },
-  disabled: {
-    color: "red",
-    backgroundColor: "red"
-  }
+  disabled: {}
 };
 
 class AssigneeSelection extends Component {
@@ -66,7 +65,7 @@ class AssigneeSelection extends Component {
   }
 
   render() {
-    const { assigneeId, users, disabled, classes } = this.props;
+    const { assigneeId, users, disabled, classes, workflowSortEnabled, status } = this.props;
 
     const selection = this.renderUsers(
       users.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
@@ -75,34 +74,45 @@ class AssigneeSelection extends Component {
     );
     const assignee = users.find(user => user.id === assigneeId);
 
+    const getSortClasses = () => {
+      if (workflowSortEnabled) {
+        if (status !== "closed") {
+          return {
+            select: classes.select,
+            disabled: classes.disabled
+          };
+        }
+      }
+      return;
+    };
+
     return (
       <FormControl data-test="assignee-container" disabled={disabled} className={classes.formControl}>
         <Select
           data-test="assignee-selection"
           classes={{
             selectMenu: classes.selectMenu,
-            select: classes.select,
-            disabled: classes.disabled
+            ...getSortClasses()
           }}
           value={this.renderTitle(assignee)}
-          // renderValue={s => (
-          //   <div style={{ ...styles.selectValue }}>
-          //     <Checkbox style={{ ...styles.checkbox }} disabled={disabled} checked={true} />
-          //     <Typography disabled={disabled} variant="body1">
-          //       {s}
-          //     </Typography>
-          //   </div>
-          // )}
+          renderValue={s => (
+            <div style={{ ...styles.selectValue }}>
+              <Checkbox style={{ ...styles.checkbox }} disabled={disabled} checked={true} />
+              <Typography disabled={disabled} variant="body1">
+                {s}
+              </Typography>
+            </div>
+          )}
           multiple
           onClose={() => this.setState({ searchTerm: "" })}
         >
-          {/* <div className="noFocus" style={styles.formControlContainer}>
+          <div className="noFocus" style={styles.formControlContainer}>
             <FormControl>
               <InputLabel>{strings.common.search}</InputLabel>
               <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
             </FormControl>
           </div>
-          <div data-test="assignee-list">{selection}</div> */}
+          <div data-test="assignee-list">{selection}</div>
         </Select>
       </FormControl>
     );
