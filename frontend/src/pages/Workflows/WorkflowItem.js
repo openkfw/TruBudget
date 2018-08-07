@@ -107,6 +107,12 @@ const styles = {
   icon: {
     width: "14px",
     height: "20px"
+  },
+  hide: {
+    opacity: 0
+  },
+  setGrabCursor: {
+    cursor: "-webkit-grab"
   }
 };
 
@@ -155,11 +161,11 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
   );
 };
 
-const getInfoButton = ({ openWorkflowDetails }, workflowSortEnabled, workflow) => {
+const getInfoButton = ({ openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
   return (
     <IconButton
       disabled={workflowSortEnabled}
-      style={workflowSortEnabled ? { opacity: 0, cursor: "default", ...styles.infoButton } : styles.infoButton}
+      style={{ ...getButtonStyle(workflowSortEnabled, status), ...styles.infoButton }}
       onClick={() => openWorkflowDetails(workflow.id)}
     >
       <InfoIcon />
@@ -183,6 +189,29 @@ const getAmountField = (amount, type) => {
   );
 };
 
+const getButtonStyle = (workflowSortEnabled, status) => {
+  if (workflowSortEnabled) {
+    if (status === "closed") {
+      return { ...styles.hide };
+    } else {
+      return { ...styles.hide, ...styles.setGrabCursor };
+    }
+  }
+  return {};
+};
+
+const getCardStyle = (workflowSortEnabled, status) => {
+  let style;
+  if (status === "closed") {
+    style = { background: green[50] };
+  } else {
+    if (workflowSortEnabled) {
+      style = { ...styles.setGrabCursor };
+    }
+  }
+  return style;
+};
+
 const renderActionButtons = (
   canEditWorkflow,
   edit,
@@ -191,13 +220,9 @@ const renderActionButtons = (
   canCloseWorkflow,
   close,
   selectable,
-  workflowSortEnabled
+  workflowSortEnabled,
+  status
 ) => {
-  const hideStyle = {
-    opacity: 0,
-    cursor: "default"
-  };
-
   return (
     <div style={{ flex: 2 }}>
       <div style={styles.actions}>
@@ -210,12 +235,15 @@ const renderActionButtons = (
           disableHoverListener={!canEditWorkflow || workflowSortEnabled}
           disableTouchListener={!canEditWorkflow || workflowSortEnabled}
         >
-          <IconButton
-            onClick={!canEditWorkflow || workflowSortEnabled ? undefined : edit}
-            style={canEditWorkflow && !workflowSortEnabled ? {} : hideStyle}
-          >
-            <EditIcon />
-          </IconButton>
+          <div>
+            <IconButton
+              onClick={!canEditWorkflow || workflowSortEnabled ? undefined : edit}
+              style={getButtonStyle(workflowSortEnabled, status)}
+              disabled={!canEditWorkflow || workflowSortEnabled}
+            >
+              <EditIcon />
+            </IconButton>
+          </div>
         </Tooltip>
         <Tooltip
           id="tooltip-wpermissions"
@@ -226,12 +254,15 @@ const renderActionButtons = (
           disableHoverListener={!canListWorkflowPermissions || workflowSortEnabled}
           disableTouchListener={!canListWorkflowPermissions || workflowSortEnabled}
         >
-          <IconButton
-            onClick={!canListWorkflowPermissions || workflowSortEnabled ? undefined : showPerm}
-            style={canListWorkflowPermissions && !workflowSortEnabled ? {} : hideStyle}
-          >
-            <PermissionIcon />
-          </IconButton>
+          <div>
+            <IconButton
+              onClick={!canListWorkflowPermissions || workflowSortEnabled ? undefined : showPerm}
+              style={getButtonStyle(workflowSortEnabled, status)}
+              disabled={!canListWorkflowPermissions || workflowSortEnabled}
+            >
+              <PermissionIcon />
+            </IconButton>
+          </div>
         </Tooltip>
         <Tooltip
           id="tooltip-wclose"
@@ -242,12 +273,15 @@ const renderActionButtons = (
           disableHoverListener={!canCloseWorkflow || workflowSortEnabled}
           disableTouchListener={!canCloseWorkflow || workflowSortEnabled}
         >
-          <IconButton
-            onClick={!canCloseWorkflow || workflowSortEnabled ? undefined : close}
-            style={canCloseWorkflow && !workflowSortEnabled ? {} : hideStyle}
-          >
-            <DoneIcon />
-          </IconButton>
+          <div>
+            <IconButton
+              onClick={!canCloseWorkflow || workflowSortEnabled ? undefined : close}
+              style={getButtonStyle(workflowSortEnabled, status)}
+              disabled={!canCloseWorkflow || workflowSortEnabled}
+            >
+              <DoneIcon />
+            </IconButton>
+          </div>
         </Tooltip>
       </div>
     </div>
@@ -280,9 +314,10 @@ export const WorkflowItem = SortableElement(
 
     const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
     const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
-    const infoButton = getInfoButton(props, workflowSortEnabled, workflow.data);
+    const infoButton = getInfoButton(props, status, workflowSortEnabled, workflow.data);
 
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
+
     return (
       <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
@@ -290,7 +325,7 @@ export const WorkflowItem = SortableElement(
         <Card
           elevation={workflowSelectable ? 1 : 0}
           key={mapIndex}
-          style={(styles.card, status === "closed" ? { background: green[50], ...styles.card } : styles.card)}
+          style={{ ...getCardStyle(workflowSortEnabled, status), ...styles.card }}
         >
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>{infoButton}</div>
@@ -320,7 +355,8 @@ export const WorkflowItem = SortableElement(
               showClose,
               () => props.closeWorkflowItem(id),
               currentWorkflowSelectable,
-              workflowSortEnabled
+              workflowSortEnabled,
+              status
             )}
           </div>
         </Card>

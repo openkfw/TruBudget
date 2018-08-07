@@ -28,6 +28,13 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
+  },
+  select: {
+    cursor: "-webkit-grab"
+  },
+  disabled: {
+    color: "red",
+    backgroundColor: "red"
   }
 };
 
@@ -72,26 +79,30 @@ class AssigneeSelection extends Component {
       <FormControl data-test="assignee-container" disabled={disabled} className={classes.formControl}>
         <Select
           data-test="assignee-selection"
-          classes={{ selectMenu: classes.selectMenu }}
+          classes={{
+            selectMenu: classes.selectMenu,
+            select: classes.select,
+            disabled: classes.disabled
+          }}
           value={this.renderTitle(assignee)}
-          renderValue={s => (
-            <div style={styles.selectValue}>
-              <Checkbox style={styles.checkbox} disabled={disabled} checked={true} />
-              <Typography disabled={disabled} variant="body1">
-                {s}
-              </Typography>
-            </div>
-          )}
+          // renderValue={s => (
+          //   <div style={{ ...styles.selectValue }}>
+          //     <Checkbox style={{ ...styles.checkbox }} disabled={disabled} checked={true} />
+          //     <Typography disabled={disabled} variant="body1">
+          //       {s}
+          //     </Typography>
+          //   </div>
+          // )}
           multiple
           onClose={() => this.setState({ searchTerm: "" })}
         >
-          <div className="noFocus" style={styles.formControlContainer}>
+          {/* <div className="noFocus" style={styles.formControlContainer}>
             <FormControl>
               <InputLabel>{strings.common.search}</InputLabel>
               <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
             </FormControl>
           </div>
-          <div data-test="assignee-list">{selection}</div>
+          <div data-test="assignee-list">{selection}</div> */}
         </Select>
       </FormControl>
     );

@@ -8,7 +8,8 @@ import { withStyles } from "@material-ui/core";
 
 const styles = {
   assigneeContainer: {
-    width: "80%"
+    width: "80%",
+    cursor: "-webkit-grab"
   }
 };
 
