@@ -157,6 +157,7 @@ export const createRouter = (
   multichainClient: MultichainClient,
   jwtSecret: string,
   rootSecret: string,
+  organization: string,
   organizationVaultSecret: string,
 ) => {
   const router = express.Router();
@@ -292,7 +293,14 @@ export const createRouter = (
    * endpoints.
    */
   router.post("/user.authenticate", (req: AuthenticatedRequest, res) => {
-    authenticateUser(multichainClient, req, jwtSecret, rootSecret, organizationVaultSecret)
+    authenticateUser(
+      multichainClient,
+      req,
+      jwtSecret,
+      rootSecret,
+      organization,
+      organizationVaultSecret,
+    )
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
@@ -1271,25 +1279,25 @@ export const createRouter = (
   });
 
   /**
-    * @api {get} /network.listActive active Peers
-    * @apiVersion 1.0.0
-    * @apiName network.listActive
-    * @apiGroup Network
-    * @apiPermission user
-    * @apiDescription Get the number of all peers in the blockchain network.
-    *
-    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-    * @apiParam {Object} data Request payload.
-    * @apiParam {String} data.peers The node (wallet address) to vote for.
-    * @apiParamExample {json} Request
-    *   {
-    *     "apiVersion": "1.0",
-    *     "data": {
-    *       "peers": "15",
-    *     }
-    *   }
-    *
-    */
+   * @api {get} /network.listActive active Peers
+   * @apiVersion 1.0.0
+   * @apiName network.listActive
+   * @apiGroup Network
+   * @apiPermission user
+   * @apiDescription Get the number of all peers in the blockchain network.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.peers The node (wallet address) to vote for.
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "peers": "15",
+   *     }
+   *   }
+   *
+   */
   router.get("/network.listActive", (req: AuthenticatedRequest, res) => {
     getActiveNodes(multichainClient, req)
       .then(response => send(res, response))

@@ -27,6 +27,7 @@ export const authenticateUser = async (
   req: AuthenticatedRequest,
   jwtSecret: string,
   rootSecret: string,
+  organization: string,
   organizationVaultSecret: string,
 ): Promise<HttpResponse> => {
   const input = value("data.user", req.body.data.user, x => x !== undefined);
@@ -43,6 +44,7 @@ export const authenticateUser = async (
           multichain,
           jwtSecret,
           rootSecret,
+          organization,
           organizationVaultSecret,
           id,
           password,
@@ -56,6 +58,7 @@ const authenticate = async (
   multichain: MultichainClient,
   jwtSecret: string,
   rootSecret: string,
+  organization: string,
   organizationVaultSecret: string,
   id: string,
   password: string,
@@ -73,9 +76,7 @@ const authenticate = async (
     // instead of simple string comparison:
     const rootSecretHash = await hashPassword(rootSecret);
     if (await isPasswordMatch(password, rootSecretHash)) {
-      return rootUserLoginResponse(
-        createToken(jwtSecret, "root", "no user address", "root", "no organization address"),
-      );
+      return rootUserLoginResponse(multichain, jwtSecret, organization);
     } else {
       throwError("wrong password");
     }
@@ -155,11 +156,20 @@ function createToken(
   );
 }
 
-function rootUserLoginResponse(token: string): UserLoginResponse {
+async function rootUserLoginResponse(
+  multichain: MultichainClient,
+  jwtSecret: string,
+  organization: string,
+): Promise<UserLoginResponse> {
+  const userId = "root";
+  const organizationAddress = await getOrganizationAddress(multichain, organization);
+  if (!organizationAddress) throw Error(`No organization address found for ${organization}`);
+  const userAddress = organizationAddress;
+  const token = createToken(jwtSecret, userId, userAddress, organization, organizationAddress);
   return {
-    id: "root",
+    id: userId,
     displayName: "root",
-    organization: "root",
+    organization,
     allowedIntents: globalIntents,
     token,
   };
