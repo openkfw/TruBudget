@@ -88,7 +88,8 @@ function getProjectDefaultPermissions(token: AuthToken): AllowedUserGroupsByInte
     "project.intent.revokePermission",
     "project.createSubproject",
     "project.viewHistory",
-    "project.close"
+    "project.close",
+    "network.listActive",
   ];
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [token.userId] }), {});
 }
