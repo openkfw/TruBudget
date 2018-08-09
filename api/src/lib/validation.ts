@@ -1,5 +1,5 @@
 import { throwParseError } from "../httpd/lib";
-import * as User from "../user";
+import * as User from "../user/model/user";
 
 export function isNonemptyString(x: any): boolean {
   return typeof x === "string" && x.length > 0;
