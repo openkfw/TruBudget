@@ -103,6 +103,7 @@ const en = {
     project_disbursement_authority_role: "Select disbursement authority role",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_edit_title: "Edit Project",
+    project_implementing_authority_role: "Select implementation authority role",
     project_implementing_authority_role_description: "The authorities enabled to create and modify subprojects, define and execute workflow activities",
     project_name: "Name",
     project_permissions_title: "Set permissions for project",
@@ -314,7 +315,7 @@ const en = {
     french: "French",
     german: "German",
     portuguese: "Portuguese",
-  }
+  },
 };
 
 export default en;

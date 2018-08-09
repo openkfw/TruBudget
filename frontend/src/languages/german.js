@@ -150,8 +150,6 @@ const de = {
   usersDashboard: {
     full_name: "German: Full Name",
     new_user: "German: New User",
-    id: "German: Id",
-    name: "German: Name",
     organization: "German: Organization",
     user_created: "German: User successfully created",
     users: "German: Users",
@@ -160,7 +158,6 @@ const de = {
   groupDashboard: {
     new_group: "German: New user group",
     groups: "German: Groups",
-    group_name: "Name",
     add_users: "German: Add Users",
     group_created: "German: Group successfully created"
   },
