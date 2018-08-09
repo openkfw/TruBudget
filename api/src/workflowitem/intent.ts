@@ -15,7 +15,7 @@ export async function changeWorkflowitemPermission(
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
   const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
+  const identity: string = value("identity", input.identity, isNonemptyString);
   const intent = value("intent", input.intent, x => allIntents.includes(x));
 
   // Is the user allowed to grant/revoke workflowitem permissions?
@@ -30,7 +30,7 @@ export async function changeWorkflowitemPermission(
     createdBy: req.token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId, intent },
+    data: { identity, intent },
   };
 
   await Workflowitem.publish(multichain, projectId, subprojectId, workflowitemId, event);

@@ -168,7 +168,7 @@ export function grantWorkflowItemPermission(
   subprojectId,
   workflowitemId,
   intent,
-  user,
+  identity,
   showLoading = false
 ) {
   return {
@@ -177,7 +177,7 @@ export function grantWorkflowItemPermission(
     subprojectId,
     workflowitemId,
     intent,
-    user,
+    identity,
     showLoading
   };
 }

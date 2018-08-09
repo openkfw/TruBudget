@@ -1,24 +1,26 @@
 import * as jsonwebtoken from "jsonwebtoken";
-import * as User from ".";
-import { getAllowedIntents, getUserAndGroups } from "../authz/index";
-import { globalIntents } from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import * as Global from "../global";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import logger from "../lib/logger";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { importprivkey } from "../multichain/importprivkey";
-import { WalletAddress } from "../network/model/Nodes";
-import { getOrganizationAddress } from "../organization/organization";
-import { getPrivKey } from "../organization/vault";
-import { hashPassword, isPasswordMatch } from "./password";
+import { getAllowedIntents, getUserAndGroups } from "../../authz";
+import { globalIntents } from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import * as Global from "../../global";
+import * as Group from "../../group";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { importprivkey } from "../../multichain/importprivkey";
+import { WalletAddress } from "../../network/model/Nodes";
+import { getOrganizationAddress } from "../../organization/organization";
+import { getPrivKey } from "../../organization/vault";
+import * as User from "../model/user";
+import { hashPassword, isPasswordMatch } from "../password";
 
 export interface UserLoginResponse {
   id: string;
   displayName: string;
   organization: string;
   allowedIntents: string[];
+  groups: object[];
   token: string;
 }
 
@@ -27,6 +29,7 @@ export const authenticateUser = async (
   req: AuthenticatedRequest,
   jwtSecret: string,
   rootSecret: string,
+  organization: string,
   organizationVaultSecret: string,
 ): Promise<HttpResponse> => {
   const input = value("data.user", req.body.data.user, x => x !== undefined);
@@ -43,6 +46,7 @@ export const authenticateUser = async (
           multichain,
           jwtSecret,
           rootSecret,
+          organization,
           organizationVaultSecret,
           id,
           password,
@@ -56,6 +60,7 @@ const authenticate = async (
   multichain: MultichainClient,
   jwtSecret: string,
   rootSecret: string,
+  organization: string,
   organizationVaultSecret: string,
   id: string,
   password: string,
@@ -73,9 +78,7 @@ const authenticate = async (
     // instead of simple string comparison:
     const rootSecretHash = await hashPassword(rootSecret);
     if (await isPasswordMatch(password, rootSecretHash)) {
-      return rootUserLoginResponse(
-        createToken(jwtSecret, "root", "no user address", "root", "no organization address"),
-      );
+      return rootUserLoginResponse(multichain, jwtSecret, organization);
     } else {
       throwError("wrong password");
     }
@@ -111,27 +114,33 @@ const authenticate = async (
     storedUser.organization,
   ))!;
 
+  const userGroups = await Group.getGroupsForUser(multichain, storedUser.id);
+  const groupIds = userGroups.map(group => group.groupId);
+
   const token: AuthToken = {
     userId: storedUser.id,
     address: storedUser.address,
     organization: storedUser.organization,
     organizationAddress,
+    groups: groupIds,
   };
+
   const signedJwt = createToken(
     jwtSecret,
     id,
     storedUser.address,
     storedUser.organization,
     organizationAddress,
+    groupIds,
   );
   const globalPermissions = await Global.getPermissions(multichain);
+
   return {
     id,
     displayName: storedUser.displayName,
     organization: storedUser.organization,
-    allowedIntents: await getUserAndGroups(token).then(async userAndGroups =>
-      getAllowedIntents(userAndGroups, globalPermissions),
-    ),
+    allowedIntents: getAllowedIntents(getUserAndGroups(token), globalPermissions),
+    groups: userGroups,
     token: signedJwt,
   };
 };
@@ -142,6 +151,7 @@ function createToken(
   address: string,
   organization: string,
   organizationAddress: string,
+  groupIds: string[],
 ): string {
   return jsonwebtoken.sign(
     {
@@ -149,18 +159,37 @@ function createToken(
       address,
       organization,
       organizationAddress,
+      groups: groupIds,
     },
     secret,
     { expiresIn: "1h" },
   );
 }
 
-function rootUserLoginResponse(token: string): UserLoginResponse {
+async function rootUserLoginResponse(
+  multichain: MultichainClient,
+  jwtSecret: string,
+  organization: string,
+): Promise<UserLoginResponse> {
+  const userId = "root";
+  const organizationAddress = await getOrganizationAddress(multichain, organization);
+  if (!organizationAddress) throw Error(`No organization address found for ${organization}`);
+  const userAddress = organizationAddress;
+  const [groups, groupIds] = [[], []];
+  const token = createToken(
+    jwtSecret,
+    userId,
+    userAddress,
+    organization,
+    organizationAddress,
+    groupIds,
+  );
   return {
-    id: "root",
+    id: userId,
     displayName: "root",
-    organization: "root",
+    organization,
     allowedIntents: globalIntents,
+    groups,
     token,
   };
 }

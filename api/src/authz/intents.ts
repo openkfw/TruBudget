@@ -1,11 +1,18 @@
 type Intent =
-  | "global.intent.listPermissions"
-  | "global.intent.grantPermission"
-  | "global.intent.revokePermission"
+  | "global.listPermissions"
+  | "global.grantPermission"
+  | "global.grantAllPermissions"
+  | "global.revokePermission"
   | "global.createProject"
   | "global.createUser"
+  | "global.createGroup"
   | "user.authenticate"
   | "user.view"
+  | "user.intent.listPermissions"
+  | "user.intent.grantPermission"
+  | "user.intent.revokePermission"
+  | "group.addUser"
+  | "group.removeUser"
   | "project.intent.listPermissions"
   | "project.intent.grantPermission"
   | "project.intent.revokePermission"
@@ -48,12 +55,17 @@ type Intent =
   | "network.approveNewNodeForExistingOrganization";
 
 export const globalIntents: Intent[] = [
-  "global.intent.listPermissions",
-  "global.intent.grantPermission",
-  "global.intent.revokePermission",
+  "global.listPermissions",
+  "global.grantPermission",
+  "global.grantAllPermissions",
+  "global.revokePermission",
   "global.createProject",
   "global.createUser",
+  "global.createGroup",
   "user.authenticate",
+  "user.intent.listPermissions",
+  "user.intent.grantPermission",
+  "user.intent.revokePermission",
   "network.registerNode",
   "network.list",
   "network.voteForPermission",
@@ -61,21 +73,48 @@ export const globalIntents: Intent[] = [
   "network.approveNewNodeForExistingOrganization",
 ];
 
-export const userDefaultIntents: Intent[] = [
-  "user.authenticate",
-  "user.view",
+export const userAssignableIntents: Intent[] = [
+  "global.listPermissions",
+  "global.grantPermission",
+  "global.grantAllPermissions",
+  "global.revokePermission",
+  "global.createProject",
+  "global.createUser",
+  "global.createGroup",
+  "user.intent.listPermissions",
+  "user.intent.grantPermission",
+  "user.intent.revokePermission",
+  "group.addUser",
+  "group.removeUser",
   "notification.list",
   "notification.markRead",
+  "network.listActive",
+  "network.voteForPermission",
+  "network.approveNewOrganization",
+  "network.approveNewNodeForExistingOrganization",
+];
+
+export const userDefaultIntents: Intent[] = [
+  "notification.list",
+  "notification.markRead",
+  "network.listActive",
 ];
 
 export const allIntents: Intent[] = [
-  "global.intent.listPermissions",
-  "global.intent.grantPermission",
-  "global.intent.revokePermission",
+  "global.listPermissions",
+  "global.grantPermission",
+  "global.grantAllPermissions",
+  "global.revokePermission",
   "global.createProject",
   "global.createUser",
+  "global.createGroup",
   "user.authenticate",
   "user.view",
+  "user.intent.listPermissions",
+  "user.intent.grantPermission",
+  "user.intent.revokePermission",
+  "group.addUser",
+  "group.removeUser",
   "project.intent.listPermissions",
   "project.intent.grantPermission",
   "project.intent.revokePermission",

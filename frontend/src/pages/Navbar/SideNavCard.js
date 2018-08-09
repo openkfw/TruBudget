@@ -9,7 +9,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ProjectIcon from "@material-ui/icons/Business";
 import NodesIcon from "@material-ui/icons/DesktopWindows";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
-import UsersIcon from "@material-ui/icons/Group";
+import UsersIcon from "@material-ui/icons/PeopleOutline";
 import Subheader from "@material-ui/core/ListSubheader";
 
 import strings from "../../localizeStrings";
@@ -21,7 +21,9 @@ const SideNavCard = ({
   organization,
   userDashboardEnabled,
   nodeDashboardEnabled,
-  history
+  groupDashboardEnabled,
+  history,
+  groups
 }) => (
   <div>
     <div
@@ -97,6 +99,17 @@ const SideNavCard = ({
       ) : null}
     </List>
     <Divider />
+    <List>
+      <Subheader> {strings.groupDashboard.groups} </Subheader>
+      {groups.map(group => (
+        <div key={group.groupId}>
+          <ListItem>
+            <ListItemText primary={group.displayName} secondary={strings.common.id + ": " + group.groupId} />
+          </ListItem>
+          <Divider />
+        </div>
+      ))}
+    </List>
   </div>
 );
 

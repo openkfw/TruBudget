@@ -1,12 +1,13 @@
 import * as Global from ".";
-import { throwIfUnauthorized } from "../authz/index";
+import { throwIfUnauthorized } from "../authz";
+import { userDefaultIntents } from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { createkeypairs } from "../multichain/createkeypairs";
 import { setPrivKey } from "../organization/vault";
-import * as User from "../user";
+import * as User from "../user/model/user";
 import { hashPassword } from "../user/password";
 
 export const createUser = async (
@@ -53,6 +54,8 @@ export const createUser = async (
   await User.create(multichain, req.token, newUser);
   logger.info(newUser, "User created.");
 
+  await grantInitialPermissions(multichain, newUser);
+
   return [
     200,
     {
@@ -68,3 +71,13 @@ export const createUser = async (
     },
   ];
 };
+
+async function grantInitialPermissions(
+  multichain: MultichainClient,
+  user: User.UserRecord,
+): Promise<void> {
+  for (const intent of userDefaultIntents) {
+    logger.trace({ userId: user.id, intent }, "granting default permission");
+    await Global.grantPermission(multichain, user.id, intent);
+  }
+}

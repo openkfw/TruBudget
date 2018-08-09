@@ -119,6 +119,17 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between"
+  },
+  assigneeContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: "100%"
+  },
+  assigneeText: {
+    marginLeft: "-13px",
+    paddingTop: "6px"
   }
 };
 
@@ -195,7 +206,6 @@ const ProjectDetails = ({
               <div>
                 {projectStatus !== "closed" ? (
                   <Tooltip
-                    disabled={true}
                     id="tooltip-pclose"
                     title={closeDisabled ? strings.project.project_close_info : strings.common.close}
                   >
@@ -221,12 +231,15 @@ const ProjectDetails = ({
             <ListItemIcon style={styles.assingeeIcon}>
               <AssigneeIcon />
             </ListItemIcon>
-            <ProjectAssigneeContainer
-              users={users}
-              projectId={projectId}
-              disabled={!canAssignProject}
-              assignee={projectAssignee}
-            />
+            <div style={styles.assigneeContainer}>
+              <ProjectAssigneeContainer
+                users={users}
+                projectId={projectId}
+                disabled={!canAssignProject}
+                assignee={projectAssignee}
+              />
+              <ListItemText style={styles.assigneeText} secondary={strings.common.assignee} />
+            </div>
           </ListItem>
         </List>
       </Card>

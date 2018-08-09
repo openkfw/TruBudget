@@ -4,45 +4,25 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import _sortBy from "lodash/sortBy";
-import blueGrey from "@material-ui/core/colors/blueGrey";
 
 import strings from "../../localizeStrings";
-import { withStyles } from "@material-ui/core";
 
-const styles = {
-  paper: {
-    marginTop: "40px"
-  },
-  title: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    height: "50px",
-    alignItems: "center",
-    backgroundColor: blueGrey[50]
-  }
-};
 const sortUsers = users => {
   return _sortBy(users, user => user.organization && user.id);
 };
-const UsersTable = ({ users, classes }) => {
-  const sortedUsers = sortUsers(users);
+
+const UsersTable = ({ users }) => {
+  const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true));
   return (
-    <Paper className={classes.paper}>
-      <div className={classes.title}>
-        <Typography variant="title" color="primary" id="tableTitle">
-          {strings.usersDashboard.users}
-        </Typography>
-      </div>
+    <Paper>
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell>{strings.common.id}</TableCell>
+            <TableCell>{strings.common.name}</TableCell>
             <TableCell>{strings.usersDashboard.organization}</TableCell>
-            <TableCell>{strings.usersDashboard.id}</TableCell>
-            <TableCell>{strings.usersDashboard.name}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody id="usertablebody">
@@ -50,14 +30,10 @@ const UsersTable = ({ users, classes }) => {
             return (
               <TableRow id={`user-${user.id}`} key={user.id}>
                 <TableCell component="th" scope="row">
-                  <span>{user.organization}</span>
+                  {user.id}
                 </TableCell>
-                <TableCell>
-                  <span>{user.id}</span>
-                </TableCell>
-                <TableCell>
-                  <span>{user.displayName}</span>
-                </TableCell>
+                <TableCell>{user.displayName}</TableCell>
+                <TableCell>{user.organization}</TableCell>
               </TableRow>
             );
           })}
@@ -66,4 +42,4 @@ const UsersTable = ({ users, classes }) => {
     </Paper>
   );
 };
-export default withStyles(styles)(UsersTable);
+export default UsersTable;

@@ -24,7 +24,7 @@ export async function getActiveNodes(
     {
       apiVersion: "1.0",
       data: {
-        peers: numberOfActiveNodes
+        peers: numberOfActiveNodes,
       },
     },
   ];

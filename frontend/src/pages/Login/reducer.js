@@ -26,6 +26,7 @@ export const defaultState = fromJS({
   displayName: "",
   organization: "",
   allowedIntents: [],
+  groups: [],
   avatarBackground: "/avatar_back.jpeg",
   avatar: "/lego_avatar_female2.jpg",
   environment: "Test",
@@ -64,7 +65,8 @@ export default function loginReducer(state = defaultState, action) {
         id: user.id,
         displayName: user.displayName,
         organization: user.organization,
-        allowedIntents: fromJS(user.allowedIntents)
+        allowedIntents: fromJS(user.allowedIntents),
+        groups: fromJS(user.groups)
       });
     case ADMIN_LOGIN_SUCCESS:
       return state.merge({

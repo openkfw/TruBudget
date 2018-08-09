@@ -4,8 +4,8 @@ import { Event } from "../multichain/event";
 import Intent from "./intents";
 
 const requiredPermissions = new Map<Intent, Intent[]>([
-  ["global.intent.grantPermission", ["global.intent.listPermissions"]],
-  ["global.intent.revokePermission", ["global.intent.listPermissions"]],
+  ["global.grantPermission", ["global.listPermissions"]],
+  ["global.revokePermission", ["global.listPermissions"]],
   ["global.createProject", ["project.viewSummary", "project.viewDetails"]],
   ["project.intent.grantPermission", ["project.intent.listPermissions"]],
   ["project.intent.revokePermission", ["project.intent.listPermissions"]],

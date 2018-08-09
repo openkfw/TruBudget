@@ -14,7 +14,7 @@ export async function changeSubprojectPermission(
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
+  const identity: string = value("identity", input.identity, isNonemptyString);
   const intent = value("intent", input.intent, x => allIntents.includes(x));
 
   // Is the user allowed to grant/revoke subproject permissions?
@@ -29,7 +29,7 @@ export async function changeSubprojectPermission(
     createdBy: req.token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId, intent },
+    data: { identity, intent },
   };
 
   await Subproject.publish(multichain, projectId, subprojectId, event);

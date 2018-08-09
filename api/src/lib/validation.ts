@@ -1,5 +1,5 @@
 import { throwParseError } from "../httpd/lib";
-import * as User from "../user";
+import * as User from "../user/model/user";
 
 export function isNonemptyString(x: any): boolean {
   return typeof x === "string" && x.length > 0;
@@ -46,4 +46,8 @@ export async function asyncValue(name, val, isValid, defaultValue?) {
   }
   if (!(await isValid(val).catch(_err => false))) throwParseError([name]);
   return val;
+}
+
+export function isObject(x) {
+  return x != null && typeof x === "object";
 }
