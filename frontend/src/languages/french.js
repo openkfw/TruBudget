@@ -148,51 +148,50 @@ const fr = {
   },
 
   usersDashboard: {
-    users: "French: Users",
     full_name: "French: Full Name",
     new_user: "French: New User",
     organization: "French: Organization",
-    user_created: "French: User successfully created"
+    user_created: "French: User successfully created",
+    users: "French: Users",
   },
 
   groupDashboard: {
-    new_group: "French: New user group",
-    groups: "French: Groups",
     add_users: "French: Add Users",
-    group_created: "French: Group successfully created"
+    group_created: "French: Group successfully created",
+    groups: "French: Groups",
+    new_group: "French: New user group",
   },
 
   nodesDashboard: {
-    nodes: "French: Nodes",
-    network: "French: Network",
     access: "French: Access",
-    new_organization: "French: New Organizations",
     additional_organization_node: "French: New nodes for existing organizations",
-    permissions: "French: Permissions",
+    address: "French: Address",
     approve: "French: Approve",
-    address: "French: Address"
+    network: "French: Network",
+    new_organization: "French: New Organizations",
+    nodes: "French: Nodes",
+    permissions: "French: Permissions",
   },
 
   navigation: {
-    unread_notifications: "Notifications non-lues",
-    peers: "Pairs",
-    connected_peers: "Les pairs connectés",
-    no_peers: "Pas de pairs",
-    logout: "Déconnexion",
-    read_permission: "Lire",
-    write_permission: "Écrire",
     admin_permission: "Admin",
-    selections: "Sélections",
-    options: "Options",
-    rtUpdates: "Mises à jour en temps réel",
-    other_trustees: "Autres fiduciaires",
-    menu_item_projects: "Projets",
-    menu_item_notifications: "Notifications",
-    menu_item_network: "Réseau",
+    connected_peers: "Les pairs connectés",
+    logout: "Déconnexion",
     main_site: "Principal",
-    projects_site: "Projets",
+    menu_item_network: "Réseau",
+    menu_item_notifications: "Notifications",
+    menu_item_projects: "Projets",
     menu_item_users: "French: Users",
-    menu_item_groups: "French: Groups"
+    no_peers: "Pas de pairs",
+    options: "Options",
+    other_trustees: "Autres fiduciaires",
+    peers: "Pairs",
+    projects_site: "Projets",
+    read_permission: "Lire",
+    rtUpdates: "Mises à jour en temps réel",
+    selections: "Sélections",
+    unread_notifications: "Notifications non-lues",
+    write_permission: "Écrire",
   },
 
   dashboard: {
