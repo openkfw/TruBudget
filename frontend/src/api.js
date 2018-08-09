@@ -39,6 +39,7 @@ class Api {
   login = (username, password) => axios.post(`/user.authenticate`, { user: { id: username, password } });
   createUser = (displayName, organization, username, password) =>
     axios.post(`/global.createUser`, { user: { displayName, organization, id: username, password } });
+  grantAllUserPermissions = userId => axios.post(`user.intent.grantAllPermissions`, { userId });
   listUser = () => axios.get(`/user.list`);
 
   createGroup = (groupId, displayName, users) =>

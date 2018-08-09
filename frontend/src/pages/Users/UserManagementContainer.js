@@ -23,7 +23,9 @@ import {
   removeUser,
   createUserGroup,
   showEditDialog,
-  hideEditDialog
+  hideEditDialog,
+  setAdminPermissions,
+  grantAllUserPermissions
 } from "./actions";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
@@ -38,7 +40,6 @@ class UserManagementContainer extends Component {
   }
   render() {
     const canView = canViewUserDashboard(this.props.allowedIntents);
-    console.log(this.props.users);
     if (canView) {
       return <Users {...this.props} />;
     } else {
@@ -86,6 +87,8 @@ const mapDispatchToProps = dispatch => {
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     showEditDialog: groupId => dispatch(showEditDialog(groupId)),
     hideEditDialog: () => dispatch(hideEditDialog()),
+    setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),
+    grantAllUserPermissions: userId => dispatch(grantAllUserPermissions(userId)),
 
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId))
   };

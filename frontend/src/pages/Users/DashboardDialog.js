@@ -20,9 +20,10 @@ const DashboardDialog = props => {
     hideDashboardDialog,
     createUserGroup,
     storeSnackbarMessage,
-    showSnackbar
+    showSnackbar,
+    grantAllUserPermissions
   } = props;
-  const { username, password, displayName } = userToAdd;
+  const { username, password, displayName, hasAdminPermissions } = userToAdd;
 
   const { groupId, name: groupName, groupUsers } = groupToAdd;
 
@@ -39,6 +40,9 @@ const DashboardDialog = props => {
       ];
       handleSubmitFunc = () => {
         createUser(displayName, userOrganization, username, password);
+        if (hasAdminPermissions) {
+          grantAllUserPermissions(username);
+        }
         hideDashboardDialog();
         storeSnackbarMessage(strings.usersDashboard.user_created);
         showSnackbar();

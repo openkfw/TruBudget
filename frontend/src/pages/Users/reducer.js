@@ -16,7 +16,8 @@ import {
   REMOVE_INITIAL_USER,
   CREATE_GROUP_SUCCESS,
   SHOW_EDIT_DIALOG,
-  HIDE_EDIT_DIALOG
+  HIDE_EDIT_DIALOG,
+  SET_ADMIN_PERMISSIONS
 } from "./actions";
 
 const defaultState = fromJS({
@@ -27,7 +28,8 @@ const defaultState = fromJS({
     username: "",
     password: "",
     organization: "",
-    displayName: ""
+    displayName: "",
+    hasAdminPermissions: false
   },
   editId: "",
   dialogType: "",
@@ -77,6 +79,8 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.setIn(["userToAdd", "username"], action.username);
     case SET_PASSWORD:
       return state.setIn(["userToAdd", "password"], action.password);
+    case SET_ADMIN_PERMISSIONS:
+      return state.setIn(["userToAdd", "hasAdminPermissions"], action.hasAdminPermissions);
     case RESET_USER:
       return state.set("userToAdd", defaultState.get("userToAdd"));
     case TAB_INDEX:

@@ -2,51 +2,16 @@ import React from "react";
 
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import strings from "../../localizeStrings";
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
+import { withStyles } from "../../../node_modules/@material-ui/core";
 
 const styles = {
-  nodeCard: {
-    width: "40%",
-    paddingBottom: "20px"
-  },
-  card: {
-    width: "100%",
-    paddingBottom: "20px"
-  },
-  cardDiv: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  cardHeader: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-  icon: {
-    width: 100,
-    height: 100
-  },
-  headerText: {
-    paddingRight: 0
-  },
-  headerFont: {
-    fontSize: "25px"
-  },
-  cardActions: {
-    display: "flex",
-    justifyContent: "center"
-  },
-  cardContent: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "space-around"
-  },
   textInputContainer: {
     display: "flex",
     flexDirection: "row",
@@ -56,17 +21,33 @@ const styles = {
     width: "50%"
   },
   container: {
-    marginBottom: "30px"
+    marginBottom: "20px"
+  },
+  checkboxContainer: {
+    display: "flex",
+    justifyContent: "center",
+    height: "30px",
+    marginTop: "25px",
+    alignItems: "center"
   }
 };
 
-const UserCreate = ({ userToAdd, setDisplayName, setOrganization, setUsername, setPassword, organization }) => {
-  const { displayName, password, username } = userToAdd;
+const UserCreate = ({
+  classes,
+  userToAdd,
+  setDisplayName,
+  setOrganization,
+  setUsername,
+  setPassword,
+  organization,
+  setAdminPermissions
+}) => {
+  const { displayName, password, username, hasAdminPermissions } = userToAdd;
   return (
-    <div style={styles.container}>
-      <div style={styles.textInputContainer}>
+    <div className={classes.container}>
+      <div className={classes.textInputContainer}>
         <TextInputWithIcon
-          style={styles.textInput}
+          className={classes.textInput}
           label={strings.usersDashboard.full_name}
           value={displayName}
           error={false}
@@ -75,7 +56,7 @@ const UserCreate = ({ userToAdd, setDisplayName, setOrganization, setUsername, s
           onChange={event => setDisplayName(event.target.value)}
         />
         <TextInputWithIcon
-          style={styles.textInput}
+          className={classes.textInput}
           label={strings.usersDashboard.organization}
           value={organization}
           id="organization"
@@ -85,7 +66,7 @@ const UserCreate = ({ userToAdd, setDisplayName, setOrganization, setUsername, s
           onChange={event => setOrganization(event.target.value)}
         />
       </div>
-      <div style={styles.textInputContainer}>
+      <div className={classes.textInputContainer}>
         <Username username={username} storeUsername={setUsername} failed={false} id="username" />
         <Password
           password={password}
@@ -95,7 +76,19 @@ const UserCreate = ({ userToAdd, setDisplayName, setOrganization, setUsername, s
           id="password"
         />
       </div>
+      <div className={classes.checkboxContainer}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={hasAdminPermissions}
+              onChange={event => setAdminPermissions(event.target.checked)}
+              color="primary"
+            />
+          }
+          label={strings.permissions.admin}
+        />
+      </div>
     </div>
   );
 };
-export default UserCreate;
+export default withStyles(styles)(UserCreate);

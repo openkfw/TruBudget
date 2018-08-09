@@ -97,7 +97,9 @@ import {
   ADD_USER,
   ADD_USER_SUCCESS,
   REMOVE_USER_SUCCESS,
-  REMOVE_USER
+  REMOVE_USER,
+  GRANT_ALL_USER_PERMISSIONS_SUCCESS,
+  GRANT_ALL_USER_PERMISSIONS
 } from "./pages/Users/actions.js";
 import {
   FETCH_NODES_SUCCESS,
@@ -375,6 +377,15 @@ export function* createUserSaga({ displayName, organization, username, password 
       show: true
     });
   }, true);
+}
+
+export function* grantAllUserPermissionsSaga({ userId }) {
+  yield execute(function*() {
+    yield callApi(api.grantAllUserPermissions, userId);
+    yield put({
+      type: GRANT_ALL_USER_PERMISSIONS_SUCCESS
+    });
+  }, false);
 }
 
 export function* fetchUserSaga({ showLoading }) {
@@ -840,6 +851,10 @@ export function* watchLogin() {
 export function* watchCreateUser() {
   yield takeEvery(CREATE_USER, createUserSaga);
 }
+
+export function* watchGrantAllUserPermissions() {
+  yield takeEvery(GRANT_ALL_USER_PERMISSIONS, grantAllUserPermissionsSaga);
+}
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserSaga);
 }
@@ -948,6 +963,7 @@ export default function* rootSaga() {
       watchCreateGroup(),
       watchAddUserToGroup(),
       watchRemoveUserFromGroup(),
+      watchGrantAllUserPermissions(),
 
       // Project
       watchCreateProject(),
