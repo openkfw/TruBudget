@@ -21,7 +21,9 @@ import {
   removeInitialUserFromGroup,
   addUser,
   removeUser,
-  createUserGroup
+  createUserGroup,
+  setAdminPermissions,
+  grantAllUserPermissions,
 } from "./actions";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
@@ -80,6 +82,8 @@ const mapDispatchToProps = dispatch => {
     addUser: (groupId, userId) => dispatch(addUser(groupId, userId)),
     removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
+    setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),
+    grantAllUserPermissions: userId => dispatch(grantAllUserPermissions(userId)),
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId))
   };
 };

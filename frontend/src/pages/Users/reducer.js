@@ -14,7 +14,8 @@ import {
   GROUP_NAME,
   ADD_INITIAL_USER,
   REMOVE_INITIAL_USER,
-  CREATE_GROUP_SUCCESS
+  CREATE_GROUP_SUCCESS,
+  SET_ADMIN_PERMISSIONS,
 } from "./actions";
 
 const defaultState = fromJS({
@@ -25,7 +26,8 @@ const defaultState = fromJS({
     username: "",
     password: "",
     organization: "",
-    displayName: ""
+    displayName: "",
+    hasAdminPermissions: false
   },
   editId: "",
   dialogType: "",
@@ -64,14 +66,23 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.setIn(["userToAdd", "username"], action.username);
     case SET_PASSWORD:
       return state.setIn(["userToAdd", "password"], action.password);
+    case SET_ADMIN_PERMISSIONS:
+      return state.setIn(["userToAdd", "hasAdminPermissions"], action.hasAdminPermissions);
     case RESET_USER:
       return state.set("userToAdd", defaultState.get("userToAdd"));
     case TAB_INDEX:
       return state.set("tabIndex", action.value);
     case SHOW_DASHBOARD_DIALOG:
-      return state.merge({ dashboardDialogShown: true, dialogType: action.dialogType, editId: action.editId });
+      return state.merge({
+        dashboardDialogShown: true,
+        dialogType: action.dialogType,
+        editId: action.editId
+      });
     case HIDE_DASHBOARD_DIALOG:
-      return state.merge({ dashboardDialogShown: false, userToAdd: defaultState.get("userToAdd") });
+      return state.merge({
+        dashboardDialogShown: false,
+        userToAdd: defaultState.get("userToAdd")
+      });
     default:
       return state;
   }

@@ -1,7 +1,7 @@
+import * as Group from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import * as Global from "../global";
-import * as Group from "../group";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, isObject, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";

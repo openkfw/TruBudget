@@ -1,6 +1,5 @@
-import { getAllowedIntents } from "../../authz";
+import { getAllowedIntents, getUserAndGroups } from "../../authz";
 import { onlyAllowedData } from "../../authz/history";
-import { getUserAndGroups } from "../../authz/index";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../../authz/types";

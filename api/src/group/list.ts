@@ -1,6 +1,6 @@
+import * as Group from ".";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { MultichainClient } from "../multichain";
-import * as Group from "./index";
 
 export const getGroupList = async (
   multichain: MultichainClient,

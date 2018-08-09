@@ -1,9 +1,14 @@
-const { withRetry } = require("./lib");
+const {
+  withRetry
+} = require("./lib");
 
 const authenticate = async (axios, userId, password) => {
   const response = await withRetry(() =>
     axios.post("/user.authenticate", {
-      user: { id: userId, password }
+      user: {
+        id: userId,
+        password
+      }
     })
   );
   const body = response.data;
@@ -21,9 +26,21 @@ const createUser = async (axios, user, organization) => {
     })
   );
 };
+
 const grantGlobalPermissionToUser = async (axios, intent, userId) => {
   return await withRetry(() =>
-    axios.post("/global.intent.grantPermission", { intent, identity: userId })
+    axios.post("/global.grantPermission", {
+      intent,
+      identity: userId
+    })
+  );
+};
+
+const grantAllPermissionsToUser = async (axios, userId) => {
+  return await withRetry(() =>
+    axios.post("/global.grantAllPermissions", {
+      identity: userId
+    })
   );
 };
 
@@ -136,24 +153,24 @@ const closeWorkflowitem = async (
 const findProject = async (axios, projectTemplate) => {
   return await withRetry(() =>
     axios
-      .get("/project.list")
-      .then(res => res.data.data.items)
-      .then(projects =>
-        projects.find(p => p.data.displayName === projectTemplate.displayName)
-      )
+    .get("/project.list")
+    .then(res => res.data.data.items)
+    .then(projects =>
+      projects.find(p => p.data.displayName === projectTemplate.displayName)
+    )
   );
 };
 
 const findSubproject = async (axios, project, subprojectTemplate) => {
   return await withRetry(() =>
     axios
-      .get(`/subproject.list?projectId=${project.data.id}`)
-      .then(res => res.data.data.items)
-      .then(subprojects =>
-        subprojects.find(
-          x => x.data.displayName === subprojectTemplate.displayName
-        )
+    .get(`/subproject.list?projectId=${project.data.id}`)
+    .then(res => res.data.data.items)
+    .then(subprojects =>
+      subprojects.find(
+        x => x.data.displayName === subprojectTemplate.displayName
       )
+    )
   );
 };
 
@@ -165,17 +182,17 @@ const findWorkflowitem = async (
 ) => {
   return await withRetry(() =>
     axios
-      .get(
-        `/workflowitem.list?projectId=${project.data.id}&subprojectId=${
+    .get(
+      `/workflowitem.list?projectId=${project.data.id}&subprojectId=${
           subproject.data.id
         }`
+    )
+    .then(res => res.data.data.workflowitems)
+    .then(items =>
+      items.find(
+        item => item.data.displayName === workflowitemTemplate.displayName
       )
-      .then(res => res.data.data.workflowitems)
-      .then(items =>
-        items.find(
-          item => item.data.displayName === workflowitemTemplate.displayName
-        )
-      )
+    )
   );
 };
 const grantPermissions = async (
@@ -191,13 +208,22 @@ const grantPermissions = async (
   let body;
   if (workflowitemId !== undefined) {
     url = "/workflowitem.intent.grantPermission";
-    body = { projectId, subprojectId, workflowitemId };
+    body = {
+      projectId,
+      subprojectId,
+      workflowitemId
+    };
   } else if (subprojectId !== undefined) {
     url = "/subproject.intent.grantPermission";
-    body = { projectId, subprojectId };
+    body = {
+      projectId,
+      subprojectId
+    };
   } else if (projectId !== undefined) {
     url = "/project.intent.grantPermission";
-    body = { projectId };
+    body = {
+      projectId
+    };
   } else {
     throw Error("not even projectId is given..");
   }
@@ -232,6 +258,7 @@ module.exports = {
   authenticate,
   createUser,
   grantGlobalPermissionToUser,
+  grantAllPermissionsToUser,
   createProject,
   closeProject,
   createSubproject,

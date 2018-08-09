@@ -3,6 +3,8 @@ export const SET_ORGANIZATION = "SET_ORGANIZATION";
 export const SET_USERNAME = "SET_USERNAME";
 export const SET_PASSWORD = "SET_PASSWORD";
 
+export const SET_ADMIN_PERMISSIONS = "SET_ADMIN_PERMISSIONS";
+
 export const CREATE_USER = "CREATE_USER";
 export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
 
@@ -29,6 +31,9 @@ export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 
 export const REMOVE_USER = "REMOVE_USER";
 export const REMOVE_USER_SUCCESS = "REMOVE_USER_SUCCESS";
+
+export const GRANT_ALL_USER_PERMISSIONS = "GRANT_ALL_USER_PERMISSIONS";
+export const GRANT_ALL_USER_PERMISSIONS_SUCCESS = "GRANT_ALL_USER_PERMISSIONS_SUCCESS";
 
 export function fetchGroups(showLoading = false) {
   return {
@@ -95,6 +100,7 @@ export function resetUserToAdd() {
     type: RESET_USER
   };
 }
+
 export function setDisplayName(displayName) {
   return {
     type: SET_DISPLAYNAME,
@@ -121,10 +127,25 @@ export function setPassword(password) {
     password
   };
 }
+
+export function setAdminPermissions(hasAdminPermissions) {
+  return {
+    type: SET_ADMIN_PERMISSIONS,
+    hasAdminPermissions
+  };
+}
+
 export function setTabIndex(value) {
   return {
     type: TAB_INDEX,
     value
+  };
+}
+
+export function grantAllUserPermissions(userId) {
+  return {
+    type: GRANT_ALL_USER_PERMISSIONS,
+    userId
   };
 }
 
