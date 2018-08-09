@@ -89,7 +89,20 @@ import {
 } from "./pages/Login/actions";
 
 import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from "./pages/Loading/actions.js";
-import { CREATE_USER_SUCCESS, CREATE_USER } from "./pages/Users/actions.js";
+import {
+  CREATE_USER_SUCCESS,
+  CREATE_USER,
+  FETCH_GROUPS_SUCCESS,
+  FETCH_GROUPS,
+  CREATE_GROUP_SUCCESS,
+  CREATE_GROUP,
+  ADD_USER,
+  ADD_USER_SUCCESS,
+  REMOVE_USER_SUCCESS,
+  REMOVE_USER,
+  GRANT_ALL_USER_PERMISSIONS_SUCCESS,
+  GRANT_ALL_USER_PERMISSIONS
+} from "./pages/Users/actions.js";
 import {
   FETCH_NODES_SUCCESS,
   FETCH_NODES,
@@ -119,13 +132,13 @@ function* execute(fn, showLoading = false, errorCallback = undefined) {
 }
 
 function* handleError(error) {
-  console.error("API-Error: ", error.response.data.error.message || "unknown");
+  console.error("API-Error: ", error.response || "unknown");
   console.error(error);
 
   // which status should we use?
   if (error.response.status === 401) {
     yield call(logoutSaga);
-  } else if (error.response) {
+  } else if (error.response && error.response.data) {
     yield put({
       type: SNACKBAR_MESSAGE,
       message: error.response.data.error.message
@@ -376,6 +389,15 @@ export function* createUserSaga({ displayName, organization, username, password 
   }, true);
 }
 
+export function* grantAllUserPermissionsSaga({ userId }) {
+  yield execute(function*() {
+    yield callApi(api.grantAllUserPermissions, userId);
+    yield put({
+      type: GRANT_ALL_USER_PERMISSIONS_SUCCESS
+    });
+  }, false);
+}
+
 export function* fetchUserSaga({ showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listUser);
@@ -384,6 +406,55 @@ export function* fetchUserSaga({ showLoading }) {
       user: data.items
     });
   }, showLoading);
+}
+
+export function* fetchGroupSaga({ showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.listGroup);
+    yield put({
+      type: FETCH_GROUPS_SUCCESS,
+      groups: data.groups
+    });
+  }, showLoading);
+}
+
+export function* createGroupSaga({ groupId, name, users }) {
+  yield execute(function*() {
+    yield callApi(api.createGroup, groupId, name, users);
+    yield put({
+      type: CREATE_GROUP_SUCCESS
+    });
+    yield put({
+      type: FETCH_GROUPS,
+      show: true
+    });
+  }, true);
+}
+
+export function* addUserToGroupSaga({ groupId, userId }) {
+  yield execute(function*() {
+    yield callApi(api.addUserToGroup, groupId, userId);
+    yield put({
+      type: ADD_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_GROUPS,
+      show: true
+    });
+  }, true);
+}
+
+export function* removeUserFromGroupSaga({ groupId, userId }) {
+  yield execute(function*() {
+    yield callApi(api.removeUserFromGroup, groupId, userId);
+    yield put({
+      type: REMOVE_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_GROUPS,
+      show: true
+    });
+  }, true);
 }
 
 export function* fetchNodesSaga({ showLoading }) {
@@ -513,9 +584,9 @@ export function* fetchWorkflowItemPermissionsSaga({ projectId, workflowitemId, s
   }, showLoading);
 }
 
-export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) {
+export function* grantPermissionsSaga({ projectId, intent, identity, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.grantProjectPermissions, projectId, intent, user);
+    yield callApi(api.grantProjectPermissions, projectId, intent, identity);
 
     yield put({
       type: GRANT_PERMISSION_SUCCESS
@@ -528,9 +599,9 @@ export function* grantPermissionsSaga({ projectId, intent, user, showLoading }) 
   }, showLoading);
 }
 
-export function* revokePermissionsSaga({ projectId, intent, user, showLoading }) {
+export function* revokePermissionsSaga({ projectId, intent, identity, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.revokeProjectPermissions, projectId, intent, user);
+    yield callApi(api.revokeProjectPermissions, projectId, intent, identity);
 
     yield put({
       type: REVOKE_PERMISSION_SUCCESS
@@ -543,9 +614,9 @@ export function* revokePermissionsSaga({ projectId, intent, user, showLoading })
   }, showLoading);
 }
 
-export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
+export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, identity, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, user);
+    yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, identity);
 
     yield put({
       type: GRANT_SUBPROJECT_PERMISSION_SUCCESS
@@ -560,9 +631,9 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
   }, showLoading);
 }
 
-export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, user, showLoading }) {
+export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, identity, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, user);
+    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, identity);
 
     yield put({
       type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS
@@ -582,11 +653,11 @@ export function* grantWorkflowItemPermissionsSaga({
   subprojectId,
   workflowitemId,
   intent,
-  user,
+  identity,
   showLoading
 }) {
   yield execute(function*() {
-    yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
+    yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
 
     yield put({
       type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS
@@ -607,11 +678,11 @@ export function* revokeWorkflowItemPermissionsSaga({
   subprojectId,
   workflowitemId,
   intent,
-  user,
+  identity,
   showLoading
 }) {
   yield execute(function*() {
-    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, user);
+    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
 
     yield put({
       type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
@@ -776,15 +847,15 @@ export function* watchEditProject() {
 }
 
 export function* watchFetchAllNotifications() {
-  yield takeLatest(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
+  yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
 }
 
 export function* watchFetchNotificationsWithId() {
-  yield takeLatest(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
+  yield takeEvery(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
 }
 
 export function* watchMarkNotificationAsRead() {
-  yield takeLatest(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
+  yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
 }
 
 export function* watchLogin() {
@@ -794,9 +865,28 @@ export function* watchLogin() {
 export function* watchCreateUser() {
   yield takeEvery(CREATE_USER, createUserSaga);
 }
+
+export function* watchGrantAllUserPermissions() {
+  yield takeEvery(GRANT_ALL_USER_PERMISSIONS, grantAllUserPermissionsSaga);
+}
 export function* watchFetchUser() {
   yield takeEvery(FETCH_USER, fetchUserSaga);
 }
+export function* watchFetchGroups() {
+  yield takeEvery(FETCH_GROUPS, fetchGroupSaga);
+}
+
+export function* watchCreateGroup() {
+  yield takeEvery(CREATE_GROUP, createGroupSaga);
+}
+
+export function* watchAddUserToGroup() {
+  yield takeEvery(ADD_USER, addUserToGroupSaga);
+}
+export function* watchRemoveUserFromGroup() {
+  yield takeEvery(REMOVE_USER, removeUserFromGroupSaga);
+}
+
 export function* watchFetchNodes() {
   yield takeEvery(FETCH_NODES, fetchNodesSaga);
 }
@@ -883,6 +973,12 @@ export default function* rootSaga() {
       watchFetchNodes(),
       watchApproveNewOrganization(),
       watchApproveNewNodeForOrganization(),
+      watchFetchGroups(),
+      watchCreateGroup(),
+      watchAddUserToGroup(),
+      watchRemoveUserFromGroup(),
+      watchGrantAllUserPermissions(),
+
       // Project
       watchCreateProject(),
       watchFetchAllProjects(),

@@ -17,7 +17,7 @@ export const assignSubproject = async (
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
+  const identity: string = value("identity", input.identity, isNonemptyString);
 
   const userIntent: Intent = "subproject.assign";
 
@@ -32,7 +32,7 @@ export const assignSubproject = async (
     multichain,
     req.token,
     userIntent,
-    userId,
+    identity,
     projectId,
     subprojectId,
   );
@@ -67,7 +67,7 @@ async function sendEventToDatabase(
   multichain: MultichainClient,
   token: AuthToken,
   userIntent: Intent,
-  userId: string,
+  identity: string,
   projectId: string,
   subprojectId: string,
 ): Promise<Event> {
@@ -76,7 +76,7 @@ async function sendEventToDatabase(
     createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId },
+    data: { identity },
   };
   const publishedEvent = await Subproject.publish(multichain, projectId, subprojectId, event);
   return publishedEvent;

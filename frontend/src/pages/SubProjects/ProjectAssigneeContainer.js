@@ -6,8 +6,8 @@ import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 
 class ProjectAssigneeContainer extends Component {
-  assignProject = userId => {
-    this.props.assignProject(this.props.projectId, userId);
+  assignProject = identity => {
+    this.props.assignProject(this.props.projectId, identity);
   };
 
   render() {
@@ -29,7 +29,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    assignProject: (projectId, userId) => dispatch(assignProject(projectId, userId))
+    assignProject: (projectId, identity) => dispatch(assignProject(projectId, identity))
   };
 };
 

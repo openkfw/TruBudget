@@ -1,4 +1,4 @@
-import { throwIfUnauthorized } from "../../authz/index";
+import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent } from "../../authz/types";

@@ -18,7 +18,7 @@ export async function assignWorkflowitem(
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
   const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
+  const identity: string = value("identity", input.identity, isNonemptyString);
 
   const userIntent: Intent = "workflowitem.assign";
 
@@ -33,7 +33,7 @@ export async function assignWorkflowitem(
     multichain,
     req.token,
     userIntent,
-    userId,
+    identity,
     projectId,
     subprojectId,
     workflowitemId,
@@ -71,7 +71,7 @@ async function sendEventToDatabase(
   multichain: MultichainClient,
   token: AuthToken,
   userIntent: Intent,
-  userId: string,
+  identity: string,
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
@@ -81,7 +81,7 @@ async function sendEventToDatabase(
     createdBy: token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId },
+    data: { identity },
   };
   const publishedEvent = await Workflowitem.publish(
     multichain,

@@ -1,9 +1,14 @@
 import * as express from "express";
+import { grantAllPermissions } from "../global/controller/grantAllPermissions";
+import { grantGlobalPermission } from "../global/controller/grantPermission";
+import { getGlobalPermissions } from "../global/controller/listPermissions";
+import { revokeGlobalPermission } from "../global/controller/revokePermission";
+import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
 import { createUser } from "../global/createUser";
-import { grantGlobalPermission } from "../global/intent/grantPermission";
-import { getGlobalPermissions } from "../global/intent/listPermissions";
-import { revokeGlobalPermission } from "../global/intent/revokePermission";
+import { addUserToGroup } from "../group/addUser";
+import { getGroupList } from "../group/list";
+import { removeUserFromGroup } from "../group/removeUser";
 import { MultichainClient } from "../multichain";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
@@ -34,8 +39,8 @@ import { reorderWorkflowitems } from "../subproject/controller/reorderWorkflowit
 import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
-import { authenticateUser } from "../user/authenticate";
-import { getUserList } from "../user/list";
+import { authenticateUser } from "../user/controller/authenticate";
+import { getUserList } from "../user/controller/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
 import { closeWorkflowitem } from "../workflowitem/controller/close";
 import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
@@ -78,6 +83,15 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
       ]);
       break;
 
+    case "GroupAlreadyExists":
+      send(res, [
+        409,
+        {
+          apiVersion: "1.0",
+          error: { code: 409, message: `The group already exists.` },
+        },
+      ]);
+      break;
     case "ParseError": {
       let message;
       if (err.message !== undefined) {
@@ -158,6 +172,7 @@ export const createRouter = (
   multichainClient: MultichainClient,
   jwtSecret: string,
   rootSecret: string,
+  organization: string,
   organizationVaultSecret: string,
 ) => {
   const router = express.Router();
@@ -206,6 +221,20 @@ export const createRouter = (
   });
 
   /**
+   * @api {post} /global.createGroup Create group
+   * @apiVersion 1.0.0
+   * @apiName global.createGroup
+   * @apiGroup Global
+   * @apiPermission group
+   * @apiDescription Create a new user group.
+   */
+  router.post("/global.createGroup", (req: AuthenticatedRequest, res) => {
+    createGroup(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
    * @api {post} /global.createProject Create project
    * @apiVersion 1.0.0
    * @apiName global.createProject
@@ -220,50 +249,113 @@ export const createRouter = (
   });
 
   /**
-   * @api {get} /global.intent.listPermissions List permissions
+   * @api {get} /global.listPermissions List permissions
    * @apiVersion 1.0.0
-   * @apiName global.intent.listPermissions
+   * @apiName global.listPermissions
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription See the current global permissions.
    */
-  router.get("/global.intent.listPermissions", (req: AuthenticatedRequest, res) => {
+  router.get("/global.listPermissions", (req: AuthenticatedRequest, res) => {
     getGlobalPermissions(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
 
   /**
-   * @api {post} /global.intent.grantPermission Grant permission
+   * @api {post} /global.grantPermission Grant permission
    * @apiVersion 1.0.0
-   * @apiName global.intent.grantPermission
+   * @apiName global.grantPermission
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription Grant the right to execute a specific intent on the Global scope to
    * a given user.
    */
-  router.post("/global.intent.grantPermission", (req: AuthenticatedRequest, res) => {
+  router.post("/global.grantPermission", (req: AuthenticatedRequest, res) => {
     grantGlobalPermission(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
 
   /**
-   * @api {post} /global.intent.revokePermission Revoke permission
+   * @api {post} /global.grantAllPermissions Grant all permissions
    * @apiVersion 1.0.0
-   * @apiName global.intent.revokePermission
+   * @apiName global.grantAllPermissions
+   * @apiGroup Global
+   * @apiPermission user
+   * @apiDescription Grant all available permissions to a user. Useful as a shorthand
+   * for creating admin users.
+   */
+  router.post("/global.grantAllPermissions", (req: AuthenticatedRequest, res) => {
+    grantAllPermissions(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /global.revokePermission Revoke permission
+   * @apiVersion 1.0.0
+   * @apiName global.revokePermission
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription Revoke the right to execute a specific intent on the Global scope
    * to a given user.
    */
-  router.post("/global.intent.revokePermission", (req: AuthenticatedRequest, res) => {
+  router.post("/global.revokePermission", (req: AuthenticatedRequest, res) => {
     revokeGlobalPermission(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
 
   //#endregion global
+
+  //#region group
+  // ------------------------------------------------------------
+  //       group
+  // ------------------------------------------------------------
+
+  /**
+   * @api {get} /group.list List
+   * @apiVersion 1.0.0
+   * @apiName group.list
+   * @apiGroup Group
+   * @apiPermission group
+   * @apiDescription List all user groups.
+   */
+  router.get("/group.list", (req: AuthenticatedRequest, res) => {
+    getGroupList(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /group.addUser Add
+   * @apiVersion 1.0.0
+   * @apiName group.addUser
+   * @apiGroup Group
+   * @apiPermission group
+   * @apiDescription Add user to a group
+   */
+  router.post("/group.addUser", (req: AuthenticatedRequest, res) => {
+    addUserToGroup(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /group.removeUser Remove
+   * @apiVersion 1.0.0
+   * @apiName group.removeUser
+   * @apiGroup Group
+   * @apiPermission group
+   * @apiDescription Remove user from a group
+   */
+  router.post("/group.removeUser", (req: AuthenticatedRequest, res) => {
+    removeUserFromGroup(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
   //#region user
   // ------------------------------------------------------------
   //       user
@@ -293,7 +385,14 @@ export const createRouter = (
    * endpoints.
    */
   router.post("/user.authenticate", (req: AuthenticatedRequest, res) => {
-    authenticateUser(multichainClient, req, jwtSecret, rootSecret, organizationVaultSecret)
+    authenticateUser(
+      multichainClient,
+      req,
+      jwtSecret,
+      rootSecret,
+      organization,
+      organizationVaultSecret,
+    )
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

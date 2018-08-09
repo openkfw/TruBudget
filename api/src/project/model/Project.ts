@@ -1,5 +1,5 @@
+import { getAllowedIntents, getUserAndGroups } from "../../authz";
 import { onlyAllowedData } from "../../authz/history";
-import { getAllowedIntents, getUserAndGroups } from "../../authz/index";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent, People } from "../../authz/types";
@@ -140,7 +140,6 @@ export async function get(
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
-
     let resource = resourceMap.get(asMapKey(item));
     if (resource === undefined) {
       const result = handleCreate(event);
@@ -243,8 +242,8 @@ function applyAssign(event: Event, resource: ProjectResource): true | undefined 
   if (event.intent !== "project.assign") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId } = event.data;
-      resource.data.assignee = userId;
+      const { identity } = event.data;
+      resource.data.assignee = identity;
       return true;
     }
   }
@@ -269,10 +268,10 @@ function applyGrantPermission(
   if (event.intent !== "project.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId, intent } = event.data;
+      const { identity, intent } = event.data;
       const permissionsForIntent: People = permissions[intent] || [];
-      if (!permissionsForIntent.includes(userId)) {
-        permissionsForIntent.push(userId);
+      if (!permissionsForIntent.includes(identity)) {
+        permissionsForIntent.push(identity);
       }
       permissions[intent] = permissionsForIntent;
       return true;
@@ -288,9 +287,9 @@ function applyRevokePermission(
   if (event.intent !== "project.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId, intent } = event.data;
+      const { identity, intent } = event.data;
       const permissionsForIntent: People = permissions[intent] || [];
-      const userIndex = permissionsForIntent.indexOf(userId);
+      const userIndex = permissionsForIntent.indexOf(identity);
       if (userIndex !== -1) {
         // Remove the user from the array:
         permissionsForIntent.splice(userIndex, 1);

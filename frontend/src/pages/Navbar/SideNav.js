@@ -9,7 +9,6 @@ const SideNav = props => {
   const { showSidebar, onToggleSidebar, allowedIntents, ...rest } = props;
   const userDashboardEnabled = canViewUserDashboard(allowedIntents);
   const nodeDashboardEnabled = canViewNodesDashboard(allowedIntents);
-
   return (
     <Drawer anchor="left" open={showSidebar} onClose={onToggleSidebar}>
       <SideNavCard nodeDashboardEnabled={nodeDashboardEnabled} userDashboardEnabled={userDashboardEnabled} {...rest} />

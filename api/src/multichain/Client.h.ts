@@ -10,7 +10,8 @@ export type StreamKind =
   | "project"
   | "subproject"
   | "notifications"
-  | "nodes";
+  | "nodes"
+  | "groups";
 
 // The "stream details" are read-only, so they're only used to define the stream's nature:
 interface StreamDetails {

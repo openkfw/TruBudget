@@ -24,13 +24,13 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "global.createProject":
       return formatString(strings.history.project_create, createdBy, snapshot.displayName);
     case "project.intent.grantPermission":
-      return formatString(strings.history.project_grantPermission, createdBy, formatPermission(data), data.userId);
+      return formatString(strings.history.project_grantPermission, createdBy, formatPermission(data), data.identity);
     case "project.intent.revokePermission":
-      return formatString(strings.history.project_revokePermission, createdBy, formatPermission(data), data.userId);
+      return formatString(strings.history.project_revokePermission, createdBy, formatPermission(data), data.identity);
     case "project.createSubproject":
       return formatString(strings.history.project_createSubproject, createdBy, snapshot.displayName);
     case "subproject.assign":
-      return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.userId);
+      return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.identity);
     case "subproject.close":
       return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
     case "subproject.intent.grantPermission":
@@ -38,7 +38,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
         strings.history.subproject_grantPermission_details,
         createdBy,
         formatPermission(data),
-        data.userId,
+        data.identity,
         snapshot.displayName
       );
     case "project.update":
@@ -50,7 +50,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
         strings.history.subproject_revokePermission_details,
         createdBy,
         formatPermission(data),
-        data.userId,
+        data.identity,
         snapshot.displayName
       );
     default:

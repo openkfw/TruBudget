@@ -9,8 +9,10 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
 import strings from "../../localizeStrings";
+
 const styles = {
   formControl: {
     width: "100%"
@@ -45,7 +47,7 @@ class AssigneeSelection extends Component {
     };
   }
 
-  renderUsers(users, assigneeId, disabled) {
+  renderSelection(users, assigneeId, disabled) {
     return users.map(u => {
       const { id, displayName } = u;
       return (
@@ -64,14 +66,50 @@ class AssigneeSelection extends Component {
     return [assignee.displayName];
   }
 
-  render() {
-    const { assigneeId, users, disabled, classes, workflowSortEnabled, status } = this.props;
-
-    const selection = this.renderUsers(
-      users.filter(u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())),
+  renderUserSelection = (users, assigneeId, disabled) => {
+    const selection = this.renderSelection(
+      users.filter(
+        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
+      ),
       assigneeId,
       disabled
     );
+    if (selection.length > 0) {
+      return (
+        <div>
+          <ListSubheader> {strings.usersDashboard.users} </ListSubheader>
+          {selection}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  renderGroupSelection = (users, assigneeId, disabled) => {
+    const selection = this.renderSelection(
+      users.filter(
+        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
+      ),
+      assigneeId,
+      disabled
+    );
+    if (selection.length > 0) {
+      return (
+        <div>
+          <ListSubheader> {strings.groupDashboard.groups} </ListSubheader>
+          {selection}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  render() {
+    const { assigneeId, users, disabled, classes, workflowSortEnabled, status } = this.props;
+    const suggestedUsers = this.renderUserSelection(users, assigneeId, disabled);
+    const suggestedGroups = this.renderGroupSelection(users, assigneeId, disabled);
     const assignee = users.find(user => user.id === assigneeId);
 
     const getSortClasses = () => {
@@ -112,7 +150,10 @@ class AssigneeSelection extends Component {
               <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
             </FormControl>
           </div>
-          <div data-test="assignee-list">{selection}</div>
+          <div data-test="assignee-list">
+            {suggestedUsers}
+            {suggestedGroups}
+          </div>
         </Select>
       </FormControl>
     );

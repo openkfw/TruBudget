@@ -14,7 +14,7 @@ export async function changeProjectPermission(
   console.log(`changing project perms`, JSON.stringify(input));
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
-  const userId: string = value("userId", input.userId, isNonemptyString);
+  const identity: string = value("identity", input.identity, isNonemptyString);
   const intent = value("intent", input.intent, x => allIntents.includes(x));
 
   // Is the user allowed to grant/revoke project permissions?
@@ -29,7 +29,7 @@ export async function changeProjectPermission(
     createdBy: req.token.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
-    data: { userId, intent },
+    data: { identity, intent },
   };
 
   await Project.publish(multichain, projectId, event);
