@@ -26,10 +26,12 @@ const fr = {
     edited: "French: Edited",
     finish: "Finir",
     history: "Historique",
+    id: "French: Id",
     in_progress: "En cours d'exécution",
     in_review: "En cours d'examen",
     incorrect_password: "Mot de passe incorrect",
     incorrect_username: "Nom d'utilisateur incorrect",
+    name: "French: Name",
     next: "Suivant",
     not_assigned: "Non-alloué",
     not_assigned_budget: "Budget non-alloué",
@@ -48,6 +50,7 @@ const fr = {
     view: "French: View",
     workflowItem: "French: WorkflowItem",
   },
+
   login: {
     accenture_tag: "Développé par Emerging Technologies and Innovation Accenture",
     environment: "Environnement",
@@ -57,6 +60,7 @@ const fr = {
     test_env: "Teste",
     tru_budget_description: "Une solution basée sur la technologie de stockage et de transmission d'informations (blockchain), pour les dépenses budgétaires",
   },
+
   project: {
     add_new_project: "Ajouter un nouveau projet",
     project_authority_organization_search: "Rechercher organisations",
@@ -66,7 +70,7 @@ const fr = {
     project_budget_amount_description: "Description du montant budget du projet",
     project_budget_authority_role: "Rôle de l'autorité chargée du budget",
     project_budget_authority_role_description: "L'autorité a permis de modifier la ligne budgétaire du projet",
-    project_close_info: "French: Disabled as long as the Subprojects aren't closed",
+    project_close_info: "French: At least one subproject item has not been closed yet.",
     project_comment: "Commentaire du projet",
     project_currency: "Devise du projet",
     project_details: "French: Details",
@@ -82,12 +86,13 @@ const fr = {
     project_title: "Titre de projet",
     project_title_description: "Description du titre du projet",
   },
+
   subproject: {
     subproject_add_title: "Ajouter un nouveau sous-projet",
     subproject_assigned_organization: "Organisation assignée",
     subproject_budget_amount: "Montant du budget du sous-projet",
     subproject_budget_amount_description: "Budget for the sub-project",
-    subproject_close_info: "French: Disabled as long as the Workflowitems aren't closed",
+    subproject_close_info: "French: At least one workflow item has not been closed yet.",
     subproject_comment: "Commentaire du sous-projet",
     subproject_completion_string: "{0} cal {1} van",
     subproject_currency: "French: Sub-project Currency",
@@ -97,6 +102,7 @@ const fr = {
     subproject_title: "Sous-projet",
     subproject_title_description: "Titre du sous-projet",
   },
+
   workflow: {
     add_item: "French: Create Workflow item",
     approval_required: "French: Approval Required",
@@ -140,51 +146,60 @@ const fr = {
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Télécharger",
   },
+
   usersDashboard: {
-    users: "French: Users",
     full_name: "French: Full Name",
     new_user: "French: New User",
     organization: "French: Organization",
-    id: "French: Id",
-    name: "French: Name",
-    user_created: "French: User successfully created"
+    user_created: "French: User successfully created",
+    users: "French: Users",
   },
+
+  groupDashboard: {
+    add_users: "French: Add Users",
+    group_created: "French: Group successfully created",
+    groups: "French: Groups",
+    new_group: "French: New user group",
+  },
+
   nodesDashboard: {
-    nodes: "French: Nodes",
-    network: "French: Network",
     access: "French: Access",
-    new_organization: "French: New Organizations",
     additional_organization_node: "French: New nodes for existing organizations",
-    permissions: "French: Permissions",
+    address: "French: Address",
     approve: "French: Approve",
-    address: "French: Address"
+    network: "French: Network",
+    new_organization: "French: New Organizations",
+    nodes: "French: Nodes",
+    permissions: "French: Permissions",
   },
+
   navigation: {
-    unread_notifications: "Notifications non-lues",
-    peers: "Pairs",
-    connected_peers: "Les pairs connectés",
-    no_peers: "Pas de pairs",
-    logout: "Déconnexion",
-    read_permission: "Lire",
-    write_permission: "Écrire",
     admin_permission: "Admin",
-    selections: "Sélections",
-    options: "Options",
-    rtUpdates: "Mises à jour en temps réel",
-    other_trustees: "Autres fiduciaires",
-    menu_item_projects: "Projets",
-    menu_item_notifications: "Notifications",
-    menu_item_network: "Réseau",
+    connected_peers: "Les pairs connectés",
+    logout: "Déconnexion",
     main_site: "Principal",
+    menu_item_network: "Réseau",
+    menu_item_notifications: "Notifications",
+    menu_item_projects: "Projets",
+    menu_item_users: "French: Users",
+    no_peers: "Pas de pairs",
+    options: "Options",
+    other_trustees: "Autres fiduciaires",
+    peers: "Pairs",
     projects_site: "Projets",
-    menu_item_users: "French: Users"
+    read_permission: "Lire",
+    rtUpdates: "Mises à jour en temps réel",
+    selections: "Sélections",
+    unread_notifications: "Notifications non-lues",
+    write_permission: "Écrire",
   },
+
   dashboard: {
     dashboard_title: "Le tableau de bord du réseau Blockchain",
     dashboard_subtitle: "Les noeuds connectés dans le réseau de Blockchain",
-    dashboard_card_text:
-      "Les noeuds connectés sont affichés dans la carte ci-dessous_ Vous pouvez cliquer sur les marqueurs pour obtenir l'emplacement exact_"
+    dashboard_card_text: "Les noeuds connectés sont affichés dans la carte ci-dessous_ Vous pouvez cliquer sur les marqueurs pour obtenir l'emplacement exact_"
   },
+
   notification: {
     create_transaction: "Transaction {0} créé ",
     create_workflow: "Flux de travail {0} créé",
@@ -261,6 +276,7 @@ const fr = {
     workflowitem_grantPermission: "French: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "French: {0} revoked permission {1} of {3} from {2}",
   },
+
   permissions: {
     admin: "French: Admin permissions",
     project_assign: "French: Assign project to others",
@@ -293,6 +309,7 @@ const fr = {
     workflowitem_view: "French: View workflowitem",
     write: "French: Write permissions",
   },
+
   language: {
     english: "Anglais",
     french: "Français",
@@ -300,4 +317,5 @@ const fr = {
     portuguese: "Portugues",
   }
 };
+
 export default fr;

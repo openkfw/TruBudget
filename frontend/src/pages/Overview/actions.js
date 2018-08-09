@@ -146,22 +146,22 @@ export function setCurrentStep(step) {
   };
 }
 
-export function grantPermission(projectId, intent, user, showLoading = false) {
+export function grantPermission(projectId, intent, identity, showLoading = false) {
   return {
     type: GRANT_PERMISSION,
     projectId,
     intent,
-    user,
+    identity,
     showLoading
   };
 }
 
-export function revokePermission(projectId, intent, user, showLoading = false) {
+export function revokePermission(projectId, intent, identity, showLoading = false) {
   return {
     type: REVOKE_PERMISSION,
     projectId,
     intent,
-    user,
+    identity,
     showLoading
   };
 }

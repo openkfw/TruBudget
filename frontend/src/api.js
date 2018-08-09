@@ -40,6 +40,12 @@ class Api {
   createUser = (displayName, organization, username, password) =>
     axios.post(`/global.createUser`, { user: { displayName, organization, id: username, password } });
   listUser = () => axios.get(`/user.list`);
+
+  createGroup = (groupId, displayName, users) =>
+    axios.post(`/global.createGroup`, { group: { displayName, id: groupId, users } });
+  addUserToGroup = (groupId, userId) => axios.post(`/group.addUser`, { groupId, userId });
+  removeUserFromGroup = (groupId, userId) => axios.post(`/group.removeUser`, { groupId, userId });
+  listGroup = () => axios.get(`/group.list`);
   listNodes = () => axios.get(`/network.list`);
   listActiveNodes = () => axios.get(`/network.listActive`);
   approveNewOrganization = organization => axios.post(`/network.approveNewOrganization`, { organization });
@@ -68,11 +74,11 @@ class Api {
 
   listProjectIntents = projectId => axios.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
-  grantProjectPermissions = (projectId, intent, userId) =>
-    axios.post(`/project.intent.grantPermission`, { projectId, intent, userId });
+  grantProjectPermissions = (projectId, intent, identity) =>
+    axios.post(`/project.intent.grantPermission`, { projectId, intent, identity });
 
-  revokeProjectPermissions = (projectId, intent, userId) =>
-    axios.post(`/project.intent.revokePermission`, { projectId, intent, userId });
+  revokeProjectPermissions = (projectId, intent, identity) =>
+    axios.post(`/project.intent.revokePermission`, { projectId, intent, identity });
 
   createSubProject = (projectId, name, amount, description, currency) =>
     axios.post(`/project.createSubproject`, {
@@ -104,11 +110,11 @@ class Api {
   listSubProjectPermissions = (projectId, subprojectId) =>
     axios.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`);
 
-  grantSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
-    axios.post(`/subproject.intent.grantPermission`, { projectId, subprojectId, intent, userId });
+  grantSubProjectPermissions = (projectId, subprojectId, intent, identity) =>
+    axios.post(`/subproject.intent.grantPermission`, { projectId, subprojectId, intent, identity });
 
-  revokeSubProjectPermissions = (projectId, subprojectId, intent, userId) =>
-    axios.post(`/subproject.intent.revokePermission`, { projectId, subprojectId, intent, userId });
+  revokeSubProjectPermissions = (projectId, subprojectId, intent, identity) =>
+    axios.post(`/subproject.intent.revokePermission`, { projectId, subprojectId, intent, identity });
 
   editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) =>
     axios.post(`/workflowitem.update`, { projectId, subprojectId, workflowitemId, ...changes });
@@ -116,19 +122,19 @@ class Api {
   listWorkflowItemPermissions = (projectId, workflowitemId) =>
     axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
 
-  grantWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, userId) =>
-    axios.post(`/workflowitem.intent.grantPermission`, { projectId, subprojectId, workflowitemId, intent, userId });
+  grantWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, identity) =>
+    axios.post(`/workflowitem.intent.grantPermission`, { projectId, subprojectId, workflowitemId, intent, identity });
 
-  revokeWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, userId) =>
-    axios.post(`/workflowitem.intent.revokePermission`, { projectId, subprojectId, workflowitemId, intent, userId });
+  revokeWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, identity) =>
+    axios.post(`/workflowitem.intent.revokePermission`, { projectId, subprojectId, workflowitemId, intent, identity });
 
-  assignWorkflowItem = (projectId, subprojectId, workflowitemId, userId) =>
-    axios.post(`/workflowitem.assign`, { projectId, subprojectId, workflowitemId, userId });
+  assignWorkflowItem = (projectId, subprojectId, workflowitemId, identity) =>
+    axios.post(`/workflowitem.assign`, { projectId, subprojectId, workflowitemId, identity });
 
-  assignSubproject = (projectId, subprojectId, userId) =>
-    axios.post(`/subproject.assign`, { projectId, subprojectId, userId });
+  assignSubproject = (projectId, subprojectId, identity) =>
+    axios.post(`/subproject.assign`, { projectId, subprojectId, identity });
 
-  assignProject = (projectId, userId) => axios.post(`/project.assign`, { projectId, userId });
+  assignProject = (projectId, identity) => axios.post(`/project.assign`, { projectId, identity });
 
   closeProject = projectId => axios.post(`/project.close`, { projectId });
 

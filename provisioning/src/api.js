@@ -23,7 +23,7 @@ const createUser = async (axios, user, organization) => {
 };
 const grantGlobalPermissionToUser = async (axios, intent, userId) => {
   return await withRetry(() =>
-    axios.post("/global.intent.grantPermission", { intent, userId })
+    axios.post("/global.intent.grantPermission", { intent, identity: userId })
   );
 };
 
@@ -208,7 +208,7 @@ const grantPermissions = async (
         axios.post(url, {
           ...body,
           intent,
-          userId
+          identity: userId
         })
       );
     }
@@ -219,7 +219,7 @@ const revokeProjectPermission = async (axios, projectId, userId, intent) => {
   await withRetry(() =>
     axios.post("/project.intent.revokePermission", {
       projectId: projectId,
-      userId: userId,
+      identity: userId,
       intent: intent
     })
   );

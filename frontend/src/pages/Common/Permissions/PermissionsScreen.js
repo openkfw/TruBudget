@@ -22,7 +22,6 @@ import Warning from "@material-ui/icons/Warning";
 import Typography from "@material-ui/core/Typography";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../../localizeStrings";
-
 const PermissionsScreen = props => (
   <Dialog data-test="permission-container" open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>
@@ -50,8 +49,59 @@ class PermissionSelection extends Component {
     return permissions.map(id => user.find(u => u.id === id)).map(u => u.displayName);
   };
 
+  renderUserSelection = () => {
+    const selection = renderSelection(
+      this.props.userList.filter(
+        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
+      ),
+      this.props.permissions[this.props.name],
+      this.props.name,
+      this.props.grant,
+      this.props.revoke,
+      this.props.myself,
+      this.props.disabled
+    );
+    if (selection.length > 0) {
+      return (
+        <div>
+          <ListSubheader> {strings.usersDashboard.users} </ListSubheader>
+          {selection}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  renderGroupSelection = () => {
+    const selection = renderSelection(
+      this.props.userList.filter(
+        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
+      ),
+      this.props.permissions[this.props.name],
+      this.props.name,
+      this.props.grant,
+      this.props.revoke,
+      this.props.myself,
+      this.props.disabled
+    );
+    if (selection.length > 0) {
+      return (
+        <div>
+          <ListSubheader> {strings.groupDashboard.groups} </ListSubheader>
+          {selection}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
   render() {
     const selections = this.resolveSelections(this.props.userList, this.props.permissions[this.props.name]);
+    const selectedUsers = this.renderUserSelection();
+
+    const selectedGroups = this.renderGroupSelection();
+
     return (
       <FormControl data-test={`permission-select-${this.props.name}`} key={this.props.name + "form"}>
         <Select
@@ -80,17 +130,8 @@ class PermissionSelection extends Component {
             </FormControl>
           </ListItem>
           <div data-test="permission-list" className="noFocus">
-            {renderUserSelection(
-              this.props.userList.filter(u =>
-                u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase())
-              ),
-              this.props.permissions[this.props.name],
-              this.props.name,
-              this.props.grant,
-              this.props.revoke,
-              this.props.myself,
-              this.props.disabled
-            )}
+            {selectedUsers}
+            {selectedGroups}
           </div>
         </Select>
       </FormControl>
@@ -98,7 +139,7 @@ class PermissionSelection extends Component {
   }
 }
 
-const renderUserSelection = (user, permissionedUser, permissionName, grant, revoke, myself, disabled) =>
+const renderSelection = (user, permissionedUser, permissionName, grant, revoke, myself, disabled) =>
   user.map(u => {
     const checked = permissionedUser.indexOf(u.id) > -1;
     return (

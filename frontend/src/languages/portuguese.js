@@ -26,10 +26,12 @@ const pt = {
     edited: "Portuguese: Edited",
     finish: "Finalizar",
     history: "Histórico",
+    id: "Portuguese: Id",
     in_progress: "Em andamento",
     in_review: "Em revisão",
     incorrect_password: "Senha incorreta",
     incorrect_username: "Usuário incorreto",
+    name: "Nome",
     next: "Próximo",
     not_assigned: "Não atribuído",
     not_assigned_budget: "Orçamento não atribuído",
@@ -48,15 +50,22 @@ const pt = {
     view: "Portuguese: View",
     workflowItem: "Portuguese: WorkflowItem",
   },
+
   usersDashboard: {
     full_name: "Nome completo",
-    id: "Id",
-    name: "Nome",
     new_user: "Novo usuário",
     organization: "Organização",
     user_created: "Portuguese: User successfully created",
     users: "Usuários",
   },
+
+  groupDashboard: {
+    add_users: "Portuguese: Add Users",
+    group_created: "Portuguese: Group successfully created",
+    groups: "Portuguese: Groups",
+    new_group: "Portuguese: New user group",
+  },
+
   nodesDashboard: {
     access: "Portuguese: Access",
     additional_organization_node: "Portuguese: New nodes for existing organizations",
@@ -67,6 +76,7 @@ const pt = {
     nodes: "Nós",
     permissions: "Portuguese: Permissions",
   },
+
   login: {
     accenture_tag: "Developed by Emerging Technologies & Innovation @ Accenture",
     environment: "Ambiente",
@@ -76,6 +86,7 @@ const pt = {
     test_env: "Teste",
     tru_budget_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias",
   },
+
   project: {
     add_new_project: "Criar novo projeto",
     project_authority_organization_search: "Pesquisar organizações",
@@ -85,7 +96,7 @@ const pt = {
     project_budget_amount_description: "Descrição do orçamento do projeto",
     project_budget_authority_role: "Selecione o papel da autoridade orçamentária",
     project_budget_authority_role_description: "A autoridade competente para modificar o valor de orçamento do projeto",
-    project_close_info: "Portuguese: Disabled as long as the Subprojects aren't closed",
+    project_close_info: "Portuguese: At least one subproject item has not been closed yet.",
     project_comment: "Comentário",
     project_currency: "Moeda",
     project_details: "Detalhes",
@@ -101,12 +112,13 @@ const pt = {
     project_title: "Nome do projeto",
     project_title_description: "Descrição do projeto",
   },
+
   subproject: {
     subproject_add_title: "Criar novo subprojeto",
     subproject_assigned_organization: "Organização responsável",
     subproject_budget_amount: "Valor do orçamento do subprojeto",
     subproject_budget_amount_description: "Descrição do orçamento para o subprojeto",
-    subproject_close_info: "Portuguese: Disabled as long as the Workflowitems aren't closed",
+    subproject_close_info: "Portuguese: At least one workflow item has not been closed yet.",
     subproject_comment: "Comentário do subprojeto",
     subproject_completion_string: "{0} de {1} finalizado",
     subproject_currency: "Moeda do subprojeto",
@@ -116,6 +128,7 @@ const pt = {
     subproject_title: "Nome do subprojeto",
     subproject_title_description: "Descrição do subprojeto",
   },
+
   workflow: {
     add_item: "Criar workflow",
     approval_required: "Aprovação necessária",
@@ -159,6 +172,7 @@ const pt = {
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Autenticar",
   },
+
   navigation: {
     admin_permission: "Admin",
     connected_peers: "Nós conectados",
@@ -179,11 +193,13 @@ const pt = {
     unread_notifications: "Notificações não lidas",
     write_permission: "Escrita",
   },
+
   dashboard: {
     dashboard_card_text: " Os nós conectados na blockchain são mostrados no mapa abaixo. Para obter a localização exata, clique nos respectivos marcadores.",
     dashboard_subtitle: "Nós conectados na rede blockchain",
     dashboard_title: "Painel da rede blockchain",
   },
+
   notification: {
     create_transaction: "Transação {0} criada ",
     create_workflow: "Workflow {0} criado ",
@@ -214,18 +230,19 @@ const pt = {
     subproject_archive: "Portuguese: Subproject {0} was archived",
     subproject_assign: "Portuguese: Subproject {0} was assigned to you",
     subproject_close: "Portuguese: Subproject {0} was closed",
+    workflowitem_close: "Portuguese: Workflowitem {0} was closed",
+    workflowitem_update: "Portuguese: Workflowitem {0} was updated",
+    subproject_update: "Portuguese: Subproject {0} was updated",
     subproject_createWorkflowitem: "Portuguese: A new workflowitem was created for subproject {0}",
     subproject_intent_grantPermission: "Portuguese: The permissions for subproject {0} changed",
     subproject_intent_revokePermission: "Portuguese: The permissions for subproject {0} changed",
     subproject_reorderWorkflowitems: "Portuguese: The workflowitems of subproject {0} were reordered",
-    subproject_update: "Portuguese: Subproject {0} was updated",
     workflowitem_archive: "Portuguese: Workflowitem {0} was archived",
     workflowitem_assign: "Portuguese: Workflowitem {0} was assigned to you",
-    workflowitem_close: "Portuguese: Workflowitem {0} was closed",
     workflowitem_intent_grantPermission: "Portuguese: The permissions for workflowitem {0} changed",
     workflowitem_intent_revokePermission: "Portuguese: The permissions for workflowitem {0} changed",
-    workflowitem_update: "Portuguese: Workflowitem {0} was updated",
   },
+
   history: {
     changed_by: "Portuguese: {0} changed by {1}: ",
     created_project: "Projeto criado ",
@@ -259,6 +276,7 @@ const pt = {
     workflowitem_grantPermission: "Portuguese: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "Portuguese: {0} revoked permission {1} of {3} from {2}",
   },
+
   permissions: {
     admin: "Portuguese: Admin permissions",
     project_assign: "Portuguese: Assign project to others",
@@ -291,6 +309,7 @@ const pt = {
     workflowitem_view: "Portuguese: View workflowitem",
     write: "Portuguese: Write permissions",
   },
+
   language: {
     english: "Portuguese: English",
     french: "Portuguese: French",
@@ -298,4 +317,5 @@ const pt = {
     portuguese: "Português",
   }
 };
+
 export default pt;

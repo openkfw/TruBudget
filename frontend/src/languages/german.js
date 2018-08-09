@@ -28,13 +28,13 @@ const de = {
     history: "History",
     in_progress: "In Progress",
     in_review: "In Review",
-    incorrect_password: "Incorrect password",
-    incorrect_username: "Incorrect username",
+    incorrect_password: "Falsches Passwort",
+    incorrect_username: "Unbekannter Benutzername",
     next: "Next",
     not_assigned: "Not assigned",
     not_assigned_budget: "Not Assigned Budget",
     open: "Open",
-    password: "Password",
+    password: "Passwort",
     project: "German: Project",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
@@ -45,9 +45,12 @@ const de = {
     task_status: "Task status",
     thumbnail: "German: Thumbnail",
     username: "Username",
+    id: "German: Id",
+    name: "German: Name",
     view: "German: View",
     workflowItem: "German: WorkflowItem",
   },
+
   login: {
     accenture_tag: "Developed by Emerging Technologies & Innovation @ Accenture",
     environment: "Environment",
@@ -57,6 +60,7 @@ const de = {
     test_env: "Test",
     tru_budget_description: "A blockchain-based solution for budget expenditure",
   },
+
   project: {
     add_new_project: "Add new project",
     project_authority_organization_search: "Search organizations",
@@ -66,13 +70,13 @@ const de = {
     project_budget_amount_description: "z_B_",
     project_budget_authority_role: "Select budget authority role",
     project_budget_authority_role_description: "The authority enabled to modify the budget line of the project",
-    project_close_info: "German: Disabled as long as the Subprojects aren't closed",
     project_comment: "Comment",
     project_currency: "Currency",
     project_details: "German: Details",
     project_disbursement_authority_role: "Select disbursement authority role",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_edit_title: "German: Edit Project",
+    project_close_info: "German: At least one subproject item has not been closed yet.",
     project_implementing_authority_role: "Select implementation authority role",
     project_implementing_authority_role_description: "The authorities enabled to create and modify subprojects, define and execute workflow activities",
     project_name: "Name",
@@ -82,21 +86,23 @@ const de = {
     project_title: "Project title",
     project_title_description: "Name of the project",
   },
+
   subproject: {
     subproject_add_title: "Add new Subproject",
     subproject_assigned_organization: "Assigned Organization",
     subproject_budget_amount: "Sub-project  budget amount",
     subproject_budget_amount_description: "z_B_",
-    subproject_close_info: "German: Disabled as long as the Workflowitems aren't closed",
     subproject_comment: "Sub-project Comment",
     subproject_completion_string: "{0} von {1} erledigt",
     subproject_currency: "German: Sub-project Currency",
-    subproject_edit_title: "German: Edit Subproject",
     subproject_permissions_title: "German: Set permissions for subproject",
+    subproject_close_info: "German: At least one workflow item has not been closed yet.",
+    subproject_edit_title: "German: Edit Subproject",
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",
     subproject_title_description: "Name of the sub-project",
   },
+
   workflow: {
     add_item: "German: Create Workflow item",
     approval_required: "German: Approval Required",
@@ -140,15 +146,22 @@ const de = {
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Upload",
   },
+
   usersDashboard: {
     full_name: "German: Full Name",
-    id: "German: Id",
-    name: "German: Name",
     new_user: "German: New User",
     organization: "German: Organization",
     user_created: "German: User successfully created",
     users: "German: Users",
   },
+
+  groupDashboard: {
+    new_group: "German: New user group",
+    groups: "German: Groups",
+    add_users: "German: Add Users",
+    group_created: "German: Group successfully created"
+  },
+
   nodesDashboard: {
     access: "German: Access",
     additional_organization_node: "German: New nodes for existing organizations",
@@ -159,6 +172,7 @@ const de = {
     nodes: "German: Nodes",
     permissions: "German: Permissions",
   },
+
   navigation: {
     admin_permission: "Admin",
     connected_peers: "Connected Peers",
@@ -167,23 +181,25 @@ const de = {
     menu_item_network: "Network",
     menu_item_notifications: "Notifications",
     menu_item_projects: "Projects",
-    menu_item_users: "German: Users",
     no_peers: "No peers",
     options: "Options",
     other_trustees: "Other Trustees",
     peers: "Peers",
     projects_site: "Projects",
+    menu_item_users: "German: Users",
     read_permission: "Read",
     rtUpdates: "Real-Time Updates",
     selections: "Selections",
     unread_notifications: "Unread Notifications",
     write_permission: "Write",
   },
+
   dashboard: {
     dashboard_card_text: " The connected blockchain nodes are shown in the map below_ You can click on the respective markers to obtain the exact location_",
     dashboard_subtitle: "Connected peers in the blockchain network",
     dashboard_title: "The Blockchain network dashboard",
   },
+
   notification: {
     create_transaction: "German: Transaction {0} created ",
     create_workflow: "German: Workflow {0} created ",
@@ -214,18 +230,19 @@ const de = {
     subproject_archive: "German: Subproject {0} was archived",
     subproject_assign: "German: Subproject {0} was assigned to you",
     subproject_close: "German: Subproject {0} was closed",
+    workflowitem_close: "German: Workflowitem {0} was closed",
+    workflowitem_update: "German: Workflowitem {0} was updated",
+    subproject_update: "German: Subproject {0} was updated",
     subproject_createWorkflowitem: "German: A new workflowitem was created for subproject {0}",
     subproject_intent_grantPermission: "German: The permissions for subproject {0} changed",
     subproject_intent_revokePermission: "German: The permissions for subproject {0} changed",
     subproject_reorderWorkflowitems: "German: The workflowitems of subproject {0} were reordered",
-    subproject_update: "German: Subproject {0} was updated",
     workflowitem_archive: "German: Workflowitem {0} was archived",
     workflowitem_assign: "German: Workflowitem {0} was assigned to you",
-    workflowitem_close: "German: Workflowitem {0} was closed",
     workflowitem_intent_grantPermission: "German: The permissions for workflowitem {0} changed",
     workflowitem_intent_revokePermission: "German: The permissions for workflowitem {0} changed",
-    workflowitem_update: "German: Workflowitem {0} was updated",
   },
+
   history: {
     changed_by: "German: {0} changed by {1}: ",
     created_project: "Project created ",
@@ -259,6 +276,7 @@ const de = {
     workflowitem_grantPermission: "German: {0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "German: {0} revoked permission {1} of {3} from {2}",
   },
+
   permissions: {
     admin: "German: Admin permissions",
     project_assign: "German: Assign project to others",
@@ -291,6 +309,7 @@ const de = {
     workflowitem_view: "German: View workflowitem",
     write: "German: Write permissions",
   },
+
   language: {
     english: "Englisch",
     french: "Französisch",
@@ -298,4 +317,5 @@ const de = {
     portuguese: "Portugiesisch",
   }
 };
+
 export default de;

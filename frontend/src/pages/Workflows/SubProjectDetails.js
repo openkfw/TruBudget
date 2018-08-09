@@ -134,6 +134,17 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between"
+  },
+  assigneeContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: "100%"
+  },
+  assigneeText: {
+    marginLeft: "-13px",
+    paddingTop: "6px"
   }
 };
 
@@ -236,13 +247,16 @@ const SubProjectDetails = ({
             <ListItemIcon style={styles.assingeeIcon}>
               <AssigneeIcon />
             </ListItemIcon>
-            <SubProjectAssigneeContainer
-              projectId={parentProject ? parentProject.id : ""}
-              subprojectId={id}
-              users={users}
-              disabled={!canAssignSubproject}
-              assignee={assignee}
-            />
+            <div style={styles.assigneeContainer}>
+              <SubProjectAssigneeContainer
+                projectId={parentProject ? parentProject.id : ""}
+                subprojectId={id}
+                users={users}
+                disabled={!canAssignSubproject}
+                assignee={assignee}
+              />
+              <ListItemText style={styles.assigneeText} secondary={strings.common.assignee} />
+            </div>
           </ListItem>
         </List>
       </Card>

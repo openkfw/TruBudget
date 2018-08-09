@@ -38,7 +38,7 @@ export const getPermissions = async (
 
 export const grantPermission = async (
   multichain: MultichainClient,
-  userId: string,
+  identity: string,
   intent: Intent,
 ): Promise<void> => {
   await ensureStreamExists(multichain);
@@ -46,11 +46,11 @@ export const grantPermission = async (
   const globalResource = streamItem.resource;
   const permissionsForIntent: People = globalResource.permissions[intent] || [];
 
-  if (permissionsForIntent.includes(userId)) {
+  if (permissionsForIntent.includes(identity)) {
     // The given user is already permitted to execute the given intent.
     return;
   }
-  permissionsForIntent.push(userId);
+  permissionsForIntent.push(identity);
 
   globalResource.permissions[intent] = permissionsForIntent;
   await multichain.setValue(globalstreamName, streamItem.key, globalResource);
@@ -58,7 +58,7 @@ export const grantPermission = async (
 
 export const revokePermission = async (
   multichain: MultichainClient,
-  userId: string,
+  identity: string,
   intent: Intent,
 ): Promise<void> => {
   let streamItem;
@@ -75,7 +75,7 @@ export const revokePermission = async (
   const globalResource = streamItem.resource;
   const permissionsForIntent: People = globalResource.permissions[intent] || [];
 
-  const userIndex = permissionsForIntent.indexOf(userId);
+  const userIndex = permissionsForIntent.indexOf(identity);
   if (userIndex === -1) {
     // The given user has no permissions to execute the given intent.
     // Note: a user could still belong to a group that has access rights!

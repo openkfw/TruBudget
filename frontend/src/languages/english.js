@@ -26,10 +26,12 @@ const en = {
     edited: "Edited",
     finish: "Finish",
     history: "History",
+    id: "Id",
     in_progress: "In Progress",
     in_review: "In Review",
     incorrect_password: "Incorrect password",
     incorrect_username: "Incorrect username",
+    name: "Name",
     next: "Next",
     not_assigned: "Not assigned",
     not_assigned_budget: "Not Assigned Budget",
@@ -48,15 +50,22 @@ const en = {
     view: "View",
     workflowItem: "WorkflowItem",
   },
+
   usersDashboard: {
     full_name: "Full Name",
-    id: "Id",
-    name: "Name",
     new_user: "New User",
     organization: "Organization",
     user_created: "User successfully created",
     users: "Users",
   },
+
+  groupDashboard: {
+    add_users: "Add Users",
+    group_created: "Group successfully created",
+    groups: "Groups",
+    new_group: "New user group",
+  },
+
   nodesDashboard: {
     access: "Access",
     additional_organization_node: "New nodes for existing organizations",
@@ -67,6 +76,7 @@ const en = {
     nodes: "Nodes",
     permissions: "Permissions",
   },
+
   login: {
     accenture_tag: "Developed by Emerging Technologies & Innovation @ Accenture",
     environment: "Environment",
@@ -76,6 +86,7 @@ const en = {
     test_env: "Test",
     tru_budget_description: "A blockchain-based solution for budget expenditure",
   },
+
   project: {
     add_new_project: "Add new project",
     project_authority_organization_search: "Search organizations",
@@ -85,7 +96,7 @@ const en = {
     project_budget_amount_description: "e.g.",
     project_budget_authority_role: "Select budget authority role",
     project_budget_authority_role_description: "The authority enabled to modify the budget line of the project",
-    project_close_info: "Disabled as long as the Subprojects aren't closed",
+    project_close_info: "At least one subproject item has not been closed yet.",
     project_comment: "Comment",
     project_currency: "Currency",
     project_details: "Details",
@@ -101,12 +112,13 @@ const en = {
     project_title: "Project title",
     project_title_description: "Name of the project",
   },
+
   subproject: {
     subproject_add_title: "Add new Subproject",
     subproject_assigned_organization: "Assigned Organization",
     subproject_budget_amount: "Sub-project  budget amount",
     subproject_budget_amount_description: "e.g.",
-    subproject_close_info: "Disabled as long as the Workflowitems aren't closed",
+    subproject_close_info: "At least one workflow item has not been closed yet.",
     subproject_comment: "Sub-project Comment",
     subproject_completion_string: "{0} of {1} done",
     subproject_currency: "Sub-project Currency",
@@ -116,6 +128,7 @@ const en = {
     subproject_title: "Sub-Project title",
     subproject_title_description: "Name of the sub-project",
   },
+
   workflow: {
     add_item: "Create Workflow item",
     approval_required: "Approval Required",
@@ -159,6 +172,7 @@ const en = {
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Upload",
   },
+
   navigation: {
     admin_permission: "Admin",
     connected_peers: "Connected Peers",
@@ -179,11 +193,13 @@ const en = {
     unread_notifications: "Unread Notifications",
     write_permission: "Write",
   },
+
   dashboard: {
     dashboard_card_text: " The connected blockchain nodes are shown in the map below. You can click on the respective markers to obtain the exact location.",
     dashboard_subtitle: "Connected peers in the blockchain network",
     dashboard_title: "The Blockchain network dashboard",
   },
+
   notification: {
     create_transaction: "Transaction {0} created ",
     create_workflow: "Workflow {0} created ",
@@ -226,6 +242,7 @@ const en = {
     workflowitem_intent_revokePermission: "The permissions for workflowitem {0} changed",
     workflowitem_update: "Workflowitem {0} was updated",
   },
+
   history: {
     changed_by: "{0} changed by {1}: ",
     created_project: "Project created ",
@@ -259,6 +276,7 @@ const en = {
     workflowitem_grantPermission: "{0} granted permission {1} to {2} on {3}",
     workflowitem_revokePermission: "{0} revoked permission {1} of {3} from {2}",
   },
+
   permissions: {
     admin: "Admin permissions",
     project_assign: "Assign project to others",
@@ -291,11 +309,13 @@ const en = {
     workflowitem_view: "View workflowitem",
     write: "Write permissions",
   },
+
   language: {
     english: "English",
     french: "French",
     german: "German",
     portuguese: "Portuguese",
-  }
+  },
 };
+
 export default en;

@@ -217,8 +217,8 @@ function applyAssign(event: Event, resource: SubprojectResource): true | undefin
   if (event.intent !== "subproject.assign") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId } = event.data;
-      resource.data.assignee = userId;
+      const { identity } = event.data;
+      resource.data.assignee = identity;
       return true;
     }
   }
@@ -243,10 +243,10 @@ function applyGrantPermission(
   if (event.intent !== "subproject.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId, intent } = event.data;
+      const { identity, intent } = event.data;
       const permissionsForIntent: People = permissions[intent] || [];
-      if (!permissionsForIntent.includes(userId)) {
-        permissionsForIntent.push(userId);
+      if (!permissionsForIntent.includes(identity)) {
+        permissionsForIntent.push(identity);
       }
       permissions[intent] = permissionsForIntent;
       return true;
@@ -262,9 +262,9 @@ function applyRevokePermission(
   if (event.intent !== "subproject.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {
-      const { userId, intent } = event.data;
+      const { identity, intent } = event.data;
       const permissionsForIntent: People = permissions[intent] || [];
-      const userIndex = permissionsForIntent.indexOf(userId);
+      const userIndex = permissionsForIntent.indexOf(identity);
       if (userIndex !== -1) {
         // Remove the user from the array:
         permissionsForIntent.splice(userIndex, 1);

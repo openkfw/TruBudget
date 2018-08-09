@@ -1,5 +1,6 @@
 import * as jsonwebtoken from "jsonwebtoken";
 import * as User from ".";
+import * as Group from "../group";
 import { getAllowedIntents, getUserAndGroups } from "../authz/index";
 import { globalIntents } from "../authz/intents";
 import { AuthToken } from "../authz/token";
@@ -19,6 +20,7 @@ export interface UserLoginResponse {
   displayName: string;
   organization: string;
   allowedIntents: string[];
+  groups: Object[];
   token: string;
 }
 
@@ -111,28 +113,32 @@ const authenticate = async (
     multichain,
     storedUser.organization,
   ))!;
-
+  const userGroups = await Group.getGroupsForUser(multichain, storedUser.id);
+  const groupIds = userGroups.map(group => group.groupId);
   const token: AuthToken = {
     userId: storedUser.id,
     address: storedUser.address,
     organization: storedUser.organization,
     organizationAddress,
+    groups: groupIds,
   };
+
   const signedJwt = createToken(
     jwtSecret,
     id,
     storedUser.address,
     storedUser.organization,
     organizationAddress,
+    groupIds,
   );
   const globalPermissions = await Global.getPermissions(multichain);
+
   return {
     id,
     displayName: storedUser.displayName,
     organization: storedUser.organization,
-    allowedIntents: await getUserAndGroups(token).then(async userAndGroups =>
-      getAllowedIntents(userAndGroups, globalPermissions),
-    ),
+    allowedIntents: getAllowedIntents(getUserAndGroups(token), globalPermissions),
+    groups: userGroups,
     token: signedJwt,
   };
 };
@@ -143,6 +149,7 @@ function createToken(
   address: string,
   organization: string,
   organizationAddress: string,
+  groupIds: string[],
 ): string {
   return jsonwebtoken.sign(
     {
@@ -150,6 +157,7 @@ function createToken(
       address,
       organization,
       organizationAddress,
+      groups: groupIds,
     },
     secret,
     { expiresIn: "1h" },
@@ -165,12 +173,21 @@ async function rootUserLoginResponse(
   const organizationAddress = await getOrganizationAddress(multichain, organization);
   if (!organizationAddress) throw Error(`No organization address found for ${organization}`);
   const userAddress = organizationAddress;
-  const token = createToken(jwtSecret, userId, userAddress, organization, organizationAddress);
+  const [groups, groupIds] = [[], []];
+  const token = createToken(
+    jwtSecret,
+    userId,
+    userAddress,
+    organization,
+    organizationAddress,
+    groupIds,
+  );
   return {
     id: userId,
     displayName: "root",
     organization,
     allowedIntents: globalIntents,
+    groups,
     token,
   };
 }

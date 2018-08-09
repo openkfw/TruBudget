@@ -11,7 +11,7 @@ export const revokeGlobalPermission = async (
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
-  const userId: string = value("userId", input.userId, isNonemptyString);
+  const identity: string = value("identity", input.identity, isNonemptyString);
   const intent = value("intent", input.intent, x => allIntents.includes(x));
 
   // Is the user allowed to revoke global permissions?
@@ -21,7 +21,7 @@ export const revokeGlobalPermission = async (
     await Global.getPermissions(multichain),
   );
 
-  await Global.revokePermission(multichain, userId, intent);
+  await Global.revokePermission(multichain, identity, intent);
 
   return [
     200,

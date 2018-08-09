@@ -1,5 +1,7 @@
 import strings from "../../localizeStrings";
-import { formatString } from "../../helper";
+import {
+  formatString
+} from "../../helper";
 
 function findDisplayName(intent, resources) {
   const resourceType = intent.substring(0, intent.indexOf("."));
@@ -12,7 +14,10 @@ function translate(intent) {
   return strings.notification[intent.split(".").join("_")];
 }
 
-export const intentMapping = ({ originalEvent, resources }) => {
+export const intentMapping = ({
+  originalEvent,
+  resources
+}) => {
   const translation = translate(originalEvent.intent);
   if (!translation) return `${originalEvent.intent} (missing intent translation)`;
 
@@ -22,7 +27,9 @@ export const intentMapping = ({ originalEvent, resources }) => {
   return `${text} ${displayName ? "" : strings.notification.no_permissions}`;
 };
 
-export const parseURI = ({ resources }) => {
+export const parseURI = ({
+  resources
+}) => {
   const project = resources.find(resource => resource.type === "project");
   const subproject = resources.find(resource => resource.type === "subproject");
   if (subproject) {
