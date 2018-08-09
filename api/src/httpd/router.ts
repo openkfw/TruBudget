@@ -185,12 +185,23 @@ export const createRouter = (
    * @apiDescription Returns "200 OK" if the API is up and the Multichain service is
    * reachable; "503 Service unavailable." otherwise.
    */
-  router.get("/readiness", (req, res) =>
-    multichainClient
-      .getInfo()
+  router.get("/readiness", (req, res) => {
+    const rpcClient = multichainClient.getRpcClient();
+    return rpcClient
+      .invoke("listaddresses")
+      .then(addressList =>
+        addressList
+          .filter(x => x.ismine)
+          .map(x => x.address)
+          .join(","),
+      )
+      .then(addressCsv => rpcClient.invoke("listpermissions", "send", addressCsv))
+      .then(result => {
+        if (!result.length) throw Error("Waiting for permissions..");
+      })
       .then(() => res.status(200).send("OK"))
-      .catch(() => res.status(503).send("Service unavailable.")),
-  );
+      .catch(() => res.status(503).send("Service unavailable."));
+  });
 
   /**
    * @api {get} /liveness Liveness

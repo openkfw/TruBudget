@@ -89,6 +89,7 @@ export const userAssignableIntents: Intent[] = [
   "notification.list",
   "notification.markRead",
   "network.listActive",
+  "network.list",
   "network.voteForPermission",
   "network.approveNewOrganization",
   "network.approveNewNodeForExistingOrganization",
