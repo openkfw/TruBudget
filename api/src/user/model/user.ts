@@ -1,6 +1,6 @@
-import { AuthToken } from "../authz/token";
-import { MultichainClient } from "../multichain";
-import { Resource } from "../multichain/Client.h";
+import { AuthToken } from "../../authz/token";
+import { MultichainClient } from "../../multichain";
+import { Resource } from "../../multichain/Client.h";
 
 const usersStreamName = "users";
 

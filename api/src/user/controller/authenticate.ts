@@ -1,26 +1,26 @@
 import * as jsonwebtoken from "jsonwebtoken";
-import * as User from ".";
-import * as Group from "../group";
-import { getAllowedIntents, getUserAndGroups } from "../authz/index";
-import { globalIntents } from "../authz/intents";
-import { AuthToken } from "../authz/token";
-import * as Global from "../global";
-import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import logger from "../lib/logger";
-import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
-import { importprivkey } from "../multichain/importprivkey";
-import { WalletAddress } from "../network/model/Nodes";
-import { getOrganizationAddress } from "../organization/organization";
-import { getPrivKey } from "../organization/vault";
-import { hashPassword, isPasswordMatch } from "./password";
+import { getAllowedIntents, getUserAndGroups } from "../../authz";
+import { globalIntents } from "../../authz/intents";
+import { AuthToken } from "../../authz/token";
+import * as Global from "../../global";
+import * as Group from "../../group";
+import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
+import { isNonemptyString, value } from "../../lib/validation";
+import { MultichainClient } from "../../multichain";
+import { importprivkey } from "../../multichain/importprivkey";
+import { WalletAddress } from "../../network/model/Nodes";
+import { getOrganizationAddress } from "../../organization/organization";
+import { getPrivKey } from "../../organization/vault";
+import * as User from "../model/user";
+import { hashPassword, isPasswordMatch } from "../password";
 
 export interface UserLoginResponse {
   id: string;
   displayName: string;
   organization: string;
   allowedIntents: string[];
-  groups: Object[];
+  groups: object[];
   token: string;
 }
 
@@ -113,8 +113,10 @@ const authenticate = async (
     multichain,
     storedUser.organization,
   ))!;
+
   const userGroups = await Group.getGroupsForUser(multichain, storedUser.id);
   const groupIds = userGroups.map(group => group.groupId);
+
   const token: AuthToken = {
     userId: storedUser.id,
     address: storedUser.address,

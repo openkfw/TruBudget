@@ -1,8 +1,8 @@
-import { throwIfUnauthorized } from "../authz/index";
+import * as Global from ".";
+import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import * as Global from "../global";
 import {
   AuthenticatedRequest,
   HttpResponse,
@@ -89,7 +89,6 @@ function getProjectDefaultPermissions(token: AuthToken): AllowedUserGroupsByInte
     "project.createSubproject",
     "project.viewHistory",
     "project.close",
-    "network.listActive",
   ];
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [token.userId] }), {});
 }
