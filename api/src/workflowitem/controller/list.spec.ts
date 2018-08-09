@@ -203,9 +203,16 @@ describe("workflowitem.list", () => {
     const workflowitems = (response as any).data.workflowitems;
     expect(workflowitems.length).to.eql(3);
 
-    const indexOfOne = 1;
-    expect(workflowitems[indexOfOne].data.id).to.eql("one");
-    const one = workflowitems[indexOfOne];
+    // Here we check that the ordering is okay, expecting [one, three, two]:
+    const [indexOfOne, indexOfTwo, indexOfThree] = [0, 2, 1];
+    const [one, two, three] = [
+      workflowitems[indexOfOne],
+      workflowitems[indexOfTwo],
+      workflowitems[indexOfThree],
+    ];
+    expect(one.data.id).to.eql("one");
+    expect(two.data.id).to.eql("two");
+    expect(three.data.id).to.eql("three");
 
     // TODO: also call the history endpoint here!
     // expect(one.log.length).to.eql(3);
@@ -234,12 +241,8 @@ describe("workflowitem.list", () => {
     //   `there should be no grantPermission event in ${JSON.stringify(one.log, null, 2)}`,
     // ).to.equal(true);
 
-    const indexOfTwo = 2;
-    expect(workflowitems[indexOfTwo].data.id).to.eql("two");
     // expect(workflowitems[indexOfTwo].log[0].key, "key = workflowitem ID").to.eql("two");
 
-    const indexOfThree = 0; // comes first because of the workflowitem_ordering
-    expect(workflowitems[indexOfThree].data.id).to.eql("three");
     // expect(workflowitems[indexOfThree].log[0].key, "key = workflowitem ID").to.eql("three");
   });
 });

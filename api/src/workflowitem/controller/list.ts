@@ -2,6 +2,7 @@ import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
+import { fetchWorkflowitemOrdering } from "../../subproject/model/WorkflowitemOrdering";
 import { sortWorkflowitems } from "../../subproject/sortWorkflowitems";
 import * as Workflowitem from "../model/Workflowitem";
 
@@ -24,13 +25,14 @@ export async function getWorkflowitemList(
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
+  const ordering = await fetchWorkflowitemOrdering(multichain, projectId, subprojectId);
   const workflowitems: WorkflowitemDTO[] = await Workflowitem.get(
     multichain,
     req.token,
     projectId,
     subprojectId,
   )
-    .then(unsortedItems => sortWorkflowitems(multichain, projectId, subprojectId, unsortedItems))
+    .then(unsortedItems => sortWorkflowitems(unsortedItems, ordering))
     .then(sortedItems => sortedItems.map(removeEventLog));
 
   return [

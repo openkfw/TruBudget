@@ -35,6 +35,7 @@ import { grantSubprojectPermission } from "../subproject/controller/intent.grant
 import { getSubprojectPermissions } from "../subproject/controller/intent.listPermissions";
 import { revokeSubprojectPermission } from "../subproject/controller/intent.revokePermission";
 import { getSubprojectList } from "../subproject/controller/list";
+import { reorderWorkflowitems } from "../subproject/controller/reorderWorkflowitems";
 import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
@@ -184,12 +185,23 @@ export const createRouter = (
    * @apiDescription Returns "200 OK" if the API is up and the Multichain service is
    * reachable; "503 Service unavailable." otherwise.
    */
-  router.get("/readiness", (req, res) =>
-    multichainClient
-      .getInfo()
+  router.get("/readiness", (req, res) => {
+    const rpcClient = multichainClient.getRpcClient();
+    return rpcClient
+      .invoke("listaddresses")
+      .then(addressList =>
+        addressList
+          .filter(x => x.ismine)
+          .map(x => x.address)
+          .join(","),
+      )
+      .then(addressCsv => rpcClient.invoke("listpermissions", "send", addressCsv))
+      .then(result => {
+        if (!result.length) throw Error("Waiting for permissions..");
+      })
       .then(() => res.status(200).send("OK"))
-      .catch(() => res.status(503).send("Service unavailable.")),
-  );
+      .catch(() => res.status(503).send("Service unavailable."));
+  });
 
   /**
    * @api {get} /liveness Liveness
@@ -823,6 +835,22 @@ export const createRouter = (
    */
   router.post("/subproject.createWorkflowitem", (req: AuthenticatedRequest, res) => {
     createWorkflowitem(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /subproject.reorderWorkflowitems Set workflowitem ordering
+   * @apiVersion 1.0.0
+   * @apiName subproject.reorderWorkflowitems
+   * @apiGroup Subproject
+   * @apiPermission user
+   * @apiDescription Set a new workflowitem ordering. Workflowitems not included in the
+   * list will be ordered by their creation time and placed after all explicitly ordered
+   * workflowitems.
+   */
+  router.post("/subproject.reorderWorkflowitems", (req: AuthenticatedRequest, res) => {
+    reorderWorkflowitems(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
