@@ -1,14 +1,14 @@
-describe("User Dashboard", function() {
+describe("User/Groups Dashboard", function() {
   before(() => {
     cy.login();
     cy.visit("/users");
   });
-  it("Show group dashboard", function() {
+  it("Show group table", function() {
     cy.location("pathname").should("eq", "/users");
+    cy.get("[aria-label=groupsTab]").click();
     cy.get("#userdashboard").should("be.visible");
   });
   it("Create new group", function() {
-    cy.get("[aria-label=changeTab]").click();
     cy.get("[data-test=create]").click();
     cy.get("#id")
       .type("TestGroup")
@@ -34,7 +34,6 @@ describe("User Dashboard", function() {
   });
 
   it("Created group should be visible", function() {
-    cy.get("[aria-label=changeTab]").click();
     cy.get("#group-TestGroup")
       .find("th")
       .then($th => {

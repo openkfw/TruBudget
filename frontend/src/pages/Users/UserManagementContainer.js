@@ -21,9 +21,7 @@ import {
   removeInitialUserFromGroup,
   addUser,
   removeUser,
-  createUserGroup,
-  showEditDialog,
-  hideEditDialog
+  createUserGroup
 } from "./actions";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
@@ -38,7 +36,6 @@ class UserManagementContainer extends Component {
   }
   render() {
     const canView = canViewUserDashboard(this.props.allowedIntents);
-    console.log(this.props.users);
     if (canView) {
       return <Users {...this.props} />;
     } else {
@@ -70,7 +67,6 @@ const mapDispatchToProps = dispatch => {
     setOrganization: organization => dispatch(setOrganization(organization)),
     setUsername: username => dispatch(setUsername(username)),
     setPassword: password => dispatch(setPassword(password)),
-
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
@@ -84,9 +80,6 @@ const mapDispatchToProps = dispatch => {
     addUser: (groupId, userId) => dispatch(addUser(groupId, userId)),
     removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
-    showEditDialog: groupId => dispatch(showEditDialog(groupId)),
-    hideEditDialog: () => dispatch(hideEditDialog()),
-
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId))
   };
 };

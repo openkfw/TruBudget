@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
-
+import isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import CreationDialogStepper from "./CreationDialogStepper";
 import { withStyles } from "@material-ui/core";
@@ -22,12 +22,14 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   const isLastStep = currentStep === numberOfSteps - 1;
   const isFirstStep = currentStep === 0;
   const requiredInfoAdded = steps[currentStep].nextDisabled;
+  const hideCancel = steps[currentStep].hideCancel;
+  const submitButtonText = steps[currentStep].submitButtonText;
 
-  const cancelButton = (
+  const cancelButton = !hideCancel ? (
     <Button aria-label="cancel" color="secondary" onClick={() => handleCancel(props)}>
       {strings.common.cancel}
     </Button>
-  );
+  ) : null;
   const backButton =
     numberOfSteps > 1 ? (
       <Button aria-label="back" color="primary" disabled={isFirstStep} onClick={() => handleBack(props)}>
@@ -45,16 +47,16 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
         {strings.common.next}
       </Button>
     ) : null;
-  const submitButton = !steps[currentStep].hideSubmitButton ? (
+  const submitButton = (
     <Button
       aria-label="submit"
       color="primary"
       disabled={isLastStep ? isLastStep && requiredInfoAdded : !isLastStep}
       onClick={() => handleSubmit(props)}
     >
-      {strings.common.submit}
+      {!isEmpty(submitButtonText) ? submitButtonText : strings.common.submit}
     </Button>
-  ) : null;
+  );
 
   const leftActions = (
     <div key="leftactions">

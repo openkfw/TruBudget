@@ -3,17 +3,13 @@ import { connect } from "react-redux";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 
-import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import {
-  fetchGroups,
   storeGroupName,
   storeGroupId,
   addInitialUserToGroup,
   createUserGroup,
   addUser,
-  showEditDialog,
-  hideEditDialog,
   removeUser,
   removeInitialUserFromGroup,
   hideDashboardDialog,
@@ -23,11 +19,6 @@ import {
 import DashboardDialog from "./DashboardDialog";
 
 class DashboardDialogContainer extends Component {
-  componentWillMount() {
-    this.props.fetchGroups();
-    this.props.fetchUser();
-  }
-
   render() {
     return <DashboardDialog {...this.props} />;
   }
@@ -35,7 +26,6 @@ class DashboardDialogContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    allowedIntents: state.getIn(["login", "allowedIntents"]),
     dashboardDialogShown: state.getIn(["users", "dashboardDialogShown"]),
     dialogType: state.getIn(["users", "dialogType"]),
     editId: state.getIn(["users", "editId"]),
@@ -50,23 +40,18 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchUser: () => dispatch(fetchUser(true)),
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
-    fetchGroups: () => dispatch(fetchGroups(true)),
     storeGroupName: name => dispatch(storeGroupName(name)),
     storeGroupId: groupId => dispatch(storeGroupId(groupId)),
     addInitialUserToGroup: userId => dispatch(addInitialUserToGroup(userId)),
     removeInitialUserFromGroup: userId => dispatch(removeInitialUserFromGroup(userId)),
     addUser: (groupId, userId) => dispatch(addUser(groupId, userId)),
     removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
-    showEditDialog: groupId => dispatch(showEditDialog(groupId)),
-    hideEditDialog: () => dispatch(hideEditDialog()),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     createUser: (displayName, organization, username, password) =>
       dispatch(createUser(displayName, organization, username, password)),
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-
     hideDashboardDialog: () => dispatch(hideDashboardDialog())
   };
 };

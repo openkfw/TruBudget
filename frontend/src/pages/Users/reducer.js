@@ -14,9 +14,7 @@ import {
   GROUP_NAME,
   ADD_INITIAL_USER,
   REMOVE_INITIAL_USER,
-  CREATE_GROUP_SUCCESS,
-  SHOW_EDIT_DIALOG,
-  HIDE_EDIT_DIALOG
+  CREATE_GROUP_SUCCESS
 } from "./actions";
 
 const defaultState = fromJS({
@@ -58,17 +56,6 @@ export default function userDashboardReducer(state = defaultState, action) {
       ]);
     case CREATE_GROUP_SUCCESS:
       return state.set("groupToAdd", defaultState.get("groupToAdd"));
-
-    case SHOW_EDIT_DIALOG:
-      return state.merge({
-        editId: action.groupId,
-        editDialogShown: true
-      });
-    case HIDE_EDIT_DIALOG:
-      return state.merge({
-        editId: defaultState.get("editId"),
-        editDialogShown: false
-      });
     case SET_ORGANIZATION:
       return state.setIn(["userToAdd", "organization"], action.organization);
     case SET_DISPLAYNAME:

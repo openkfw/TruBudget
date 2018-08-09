@@ -2,54 +2,13 @@ import React from "react";
 
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
+import { withStyles } from "@material-ui/core";
 
 import strings from "../../localizeStrings";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
 import AutoComplete from "../Common/AutoComplete";
 
 const styles = {
-  container: {
-    marginTop: 40,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  card: {
-    width: "100%",
-    paddingBottom: "20px",
-    overflow: "visible"
-  },
-  cardDiv: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  cardHeader: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-  icon: {
-    width: 100,
-    height: 100
-  },
-  headerText: {
-    paddingRight: 0
-  },
-  headerFont: {
-    fontSize: "25px"
-  },
-  cardActions: {
-    marginTop: 20,
-    display: "flex",
-    justifyContent: "center"
-  },
-  cardContent: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "space-around"
-  },
   textInputContainer: {
     display: "flex",
     flexDirection: "row",
@@ -67,11 +26,10 @@ const GroupCreate = ({
   storeGroupName,
   addInitialUserToGroup,
   editMode,
-  showSnackbar,
-  storeSnackbarMessage,
   removeInitialUserFromGroup,
   removeUserFromGroup,
-  addUser
+  addUser,
+  classes
 }) => {
   const { groupId, displayName, groupUsers } = groupToAdd;
 
@@ -83,9 +41,9 @@ const GroupCreate = ({
   };
   return (
     <div>
-      <div style={styles.textInputContainer}>
+      <div className={classes.textInputContainer}>
         <TextInputWithIcon
-          style={styles.textInput}
+          className={classes.textInput}
           label={editMode ? groupId : strings.common.id}
           error={false}
           disabled={editMode}
@@ -94,7 +52,7 @@ const GroupCreate = ({
           onChange={event => storeGroupId(event.target.value)}
         />
         <TextInputWithIcon
-          style={styles.textInput}
+          className={classes.textInput}
           label={editMode ? displayName : strings.common.name}
           id="name"
           error={false}
@@ -105,7 +63,7 @@ const GroupCreate = ({
       </div>
       <div>
         <AutoComplete
-          users={users}
+          users={users.filter(user => user.isGroup !== true)}
           addToSelection={editMode ? addUserToGroup : addInitialUserToGroup}
           selectedItems={groupUsers}
           handleDelete={editMode ? removeUser : removeInitialUserFromGroup}
@@ -115,4 +73,4 @@ const GroupCreate = ({
   );
 };
 
-export default GroupCreate;
+export default withStyles(styles)(GroupCreate);

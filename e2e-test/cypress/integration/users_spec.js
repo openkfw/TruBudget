@@ -1,4 +1,4 @@
-describe("User Dashboard", function() {
+describe("Users/Groups Dashboard", function() {
   before(() => {
     cy.login();
     cy.visit("/users");

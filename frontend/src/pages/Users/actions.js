@@ -30,9 +30,6 @@ export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 export const REMOVE_USER = "REMOVE_USER";
 export const REMOVE_USER_SUCCESS = "REMOVE_USER_SUCCESS";
 
-export const SHOW_EDIT_DIALOG = "SHOW_GROUP_EDIT_DIALOG";
-export const HIDE_EDIT_DIALOG = "HIDE_GROUP_EDIT_DIALOG";
-
 export function fetchGroups(showLoading = false) {
   return {
     type: FETCH_GROUPS,
@@ -90,19 +87,6 @@ export function removeUser(groupId, userId) {
     type: REMOVE_USER,
     groupId,
     userId
-  };
-}
-
-export function showEditDialog(groupId) {
-  return {
-    type: SHOW_EDIT_DIALOG,
-    groupId
-  };
-}
-
-export function hideEditDialog() {
-  return {
-    type: HIDE_EDIT_DIALOG
   };
 }
 

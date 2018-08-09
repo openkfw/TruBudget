@@ -4,23 +4,12 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
+import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import _sortBy from "lodash/sortBy";
-import blueGrey from "@material-ui/core/colors/blueGrey";
 import EditIcon from "@material-ui/icons/Edit";
 import strings from "../../localizeStrings";
-import { withStyles, IconButton } from "@material-ui/core";
 
-const styles = {
-  title: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    height: "50px",
-    alignItems: "center",
-    backgroundColor: blueGrey[50]
-  }
-};
 const sortGroups = groups => {
   return _sortBy(groups, group => group.id && group.displayName);
 };
@@ -43,14 +32,10 @@ const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
             return (
               <TableRow id={`group-${group.groupId}`} key={group.groupId}>
                 <TableCell component="th" scope="row">
-                  <span>{group.groupId}</span>
+                  {group.groupId}
                 </TableCell>
-                <TableCell>
-                  <span>{group.displayName}</span>
-                </TableCell>
-                <TableCell>
-                  <span>{group.users.length}</span>
-                </TableCell>
+                <TableCell>{group.displayName}</TableCell>
+                <TableCell>{group.users.length}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => showDashboardDialog("editGroup", group.groupId)}>
                     <EditIcon />
@@ -64,4 +49,4 @@ const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
     </Paper>
   );
 };
-export default withStyles(styles)(GroupsTable);
+export default GroupsTable;
