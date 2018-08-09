@@ -74,10 +74,15 @@ const DashboardDialog = props => {
         {
           title: "Edit Group",
           content: <GroupDialogContent {...props} groupToAdd={groupToEdit} editMode={true} />,
-          nextDisabled: true,
-          hideSubmitButton: true
+          nextDisabled: false,
+          hideCancel: true,
+          submitButtonText: strings.common.done
         }
       ];
+      handleSubmitFunc = () => {
+        hideDashboardDialog();
+      };
+
       break;
 
     default:

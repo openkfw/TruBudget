@@ -7,6 +7,7 @@ import GroupTable from "./GroupTable";
 import Button from "@material-ui/core/Button";
 import Add from "@material-ui/icons/Add";
 import DashboardDialogContainer from "./DashboardDialogContainer";
+import strings from "../../localizeStrings";
 
 const styles = {
   container: {
@@ -17,6 +18,20 @@ const styles = {
   customWidth: {
     width: "90%",
     marginTop: "40px"
+  },
+  createButtonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    position: "absolute",
+    alignItems: "center",
+    top: "80px",
+    right: "-20px",
+    width: "30%",
+    height: 20
+  },
+  createButton: {
+    position: "absolute",
+    marginTop: -20
   }
 };
 const Users = props => {
@@ -31,28 +46,18 @@ const Users = props => {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab label="Users" />
-            <Tab label="Groups" />
+            <Tab label={strings.usersDashboard.users} aria-label="usersTab" />
+            <Tab label={strings.groupDashboard.groups} aria-label="groupsTab" />
           </Tabs>
         </AppBar>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            position: "absolute",
-            alignItems: "center",
-            top: "80px",
-            right: "-20px",
-            width: "30%",
-            height: 20
-          }}
-        >
+        <div style={styles.createButtonContainer}>
           <Button
+            data-test="create"
             onClick={() => {
               tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup");
             }}
             color="primary"
-            style={{ position: "absolute", marginTop: -20 }}
+            style={styles.createButton}
             variant="fab"
             aria-label="Add"
           >

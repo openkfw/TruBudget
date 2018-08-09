@@ -127,6 +127,7 @@ class AutoComplete extends React.Component {
             inputValue={inputValue}
             onChange={item => this.handleChange(item, selectedItems, users, addToSelection)}
             selectedItem={selectedItems}
+            id="autoComplete"
           >
             {({
               getInputProps,

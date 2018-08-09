@@ -6,29 +6,14 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Paper from "@material-ui/core/Paper";
 import _sortBy from "lodash/sortBy";
-import blueGrey from "@material-ui/core/colors/blueGrey";
 
 import strings from "../../localizeStrings";
-import { withStyles } from "@material-ui/core";
 
-const styles = {
-  paper: {
-    marginTop: "40px"
-  },
-  title: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    height: "50px",
-    alignItems: "center",
-    backgroundColor: blueGrey[50]
-  }
-};
 const sortUsers = users => {
   return _sortBy(users, user => user.organization && user.id);
 };
 
-const UsersTable = ({ users, classes }) => {
+const UsersTable = ({ users }) => {
   const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true));
   return (
     <Paper>
@@ -45,14 +30,10 @@ const UsersTable = ({ users, classes }) => {
             return (
               <TableRow id={`user-${user.id}`} key={user.id}>
                 <TableCell component="th" scope="row">
-                  <span>{user.id}</span>
+                  {user.id}
                 </TableCell>
-                <TableCell>
-                  <span>{user.displayName}</span>
-                </TableCell>
-                <TableCell>
-                  <span>{user.organization}</span>
-                </TableCell>
+                <TableCell>{user.displayName}</TableCell>
+                <TableCell>{user.organization}</TableCell>
               </TableRow>
             );
           })}
@@ -61,4 +42,4 @@ const UsersTable = ({ users, classes }) => {
     </Paper>
   );
 };
-export default withStyles(styles)(UsersTable);
+export default UsersTable;

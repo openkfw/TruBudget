@@ -15,9 +15,7 @@ import {
   ADD_INITIAL_USER,
   REMOVE_INITIAL_USER,
   CREATE_GROUP_SUCCESS,
-  SHOW_EDIT_DIALOG,
-  HIDE_EDIT_DIALOG,
-  SET_ADMIN_PERMISSIONS
+  SET_ADMIN_PERMISSIONS,
 } from "./actions";
 
 const defaultState = fromJS({
@@ -60,17 +58,6 @@ export default function userDashboardReducer(state = defaultState, action) {
       ]);
     case CREATE_GROUP_SUCCESS:
       return state.set("groupToAdd", defaultState.get("groupToAdd"));
-
-    case SHOW_EDIT_DIALOG:
-      return state.merge({
-        editId: action.groupId,
-        editDialogShown: true
-      });
-    case HIDE_EDIT_DIALOG:
-      return state.merge({
-        editId: defaultState.get("editId"),
-        editDialogShown: false
-      });
     case SET_ORGANIZATION:
       return state.setIn(["userToAdd", "organization"], action.organization);
     case SET_DISPLAYNAME:
@@ -86,9 +73,16 @@ export default function userDashboardReducer(state = defaultState, action) {
     case TAB_INDEX:
       return state.set("tabIndex", action.value);
     case SHOW_DASHBOARD_DIALOG:
-      return state.merge({ dashboardDialogShown: true, dialogType: action.dialogType, editId: action.editId });
+      return state.merge({
+        dashboardDialogShown: true,
+        dialogType: action.dialogType,
+        editId: action.editId
+      });
     case HIDE_DASHBOARD_DIALOG:
-      return state.merge({ dashboardDialogShown: false, userToAdd: defaultState.get("userToAdd") });
+      return state.merge({
+        dashboardDialogShown: false,
+        userToAdd: defaultState.get("userToAdd")
+      });
     default:
       return state;
   }
