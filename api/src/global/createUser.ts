@@ -1,11 +1,13 @@
 import * as Global from ".";
 import { throwIfUnauthorized } from "../authz";
+import { userDefaultIntents } from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { createkeypairs } from "../multichain/createkeypairs";
 import { setPrivKey } from "../organization/vault";
+import { grantUserPermission } from "../user/controller/intent.grantPermission";
 import * as User from "../user/model/user";
 import { hashPassword } from "../user/password";
 
@@ -53,7 +55,7 @@ export const createUser = async (
   await User.create(multichain, req.token, newUser);
   logger.info(newUser, "User created.");
 
-  await grantInitialPermissions(multichain, newUser);
+  await grantInitialPermissions(multichain, req, newUser);
 
   return [
     200,
@@ -73,5 +75,22 @@ export const createUser = async (
 
 async function grantInitialPermissions(
   multichain: MultichainClient,
+  req: AuthenticatedRequest,
   user: User.UserRecord,
-): Promise<void> {}
+): Promise<void> {
+  const fakeRequest = {
+    token: req.token,
+    body: {
+      data: {
+        identity: user.id,
+        intent: "",
+      },
+    },
+  };
+
+  for (const intent of userDefaultIntents) {
+    logger.trace({ userId: user.id, intent }, "Granting default permission.");
+    fakeRequest.body.data.intent = intent;
+    await grantUserPermission(multichain, fakeRequest as AuthenticatedRequest);
+  }
+}

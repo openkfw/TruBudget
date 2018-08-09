@@ -1,4 +1,6 @@
+import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
+import * as Global from "../../global";
 import { MultichainClient } from "../../multichain";
 import { Resource } from "../../multichain/Client.h";
 
@@ -59,3 +61,37 @@ export const getAll = async (multichain: MultichainClient): Promise<UserRecord[]
   const streamItems = await multichain.getLatestValues(usersStreamName, "users");
   return streamItems.map(item => item.resource.data);
 };
+
+export async function publish(
+  multichain: MultichainClient,
+  identity: string,
+  args: {
+    intent: "user.intent.grantPermission" | "user.intent.revokePermission";
+    createdBy: string;
+    creationTimestamp: Date;
+    dataVersion: number; // integer
+    data: object;
+  },
+): Promise<void> {
+  // TODO(kevin): As long as we're not using event sourcing for users, we're relying on
+  // the Global permissions objects here. But this is clearly not ideal and should be
+  // handled similar to how it's done in the project/subproject/workflowitem models
+  // instead.
+  if (args.dataVersion !== 1) throw Error(`cannot handle data version ${args.dataVersion}`);
+  const eventData = args.data as { identity: string; intent: Intent };
+  if (args.intent === "user.intent.grantPermission") {
+    await Global.grantPermission(multichain, eventData.identity, eventData.intent);
+  } else if (args.intent === "user.intent.revokePermission") {
+    await Global.revokePermission(multichain, eventData.identity, eventData.intent);
+  } else {
+    throw Error(`illegal intent: ${args.intent}`);
+  }
+}
+
+export async function getPermissions(multichain: MultichainClient, _userId: string) {
+  // TODO(kevin): As long as we're not using event sourcing for users, we're relying on
+  // the Global permissions objects here. But this is clearly not ideal and should be
+  // handled similar to how it's done in the project/subproject/workflowitem models
+  // instead.
+  return Global.getPermissions(multichain);
+}
