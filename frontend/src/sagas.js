@@ -68,6 +68,8 @@ import {
   REVOKE_WORKFLOWITEM_PERMISSION,
   EDIT_WORKFLOW_ITEM_SUCCESS,
   EDIT_WORKFLOW_ITEM,
+  REORDER_WORKFLOW_ITEMS,
+  REORDER_WORKFLOW_ITEMS_SUCCESS,
   CLOSE_SUBPROJECT,
   CLOSE_SUBPROJECT_SUCCESS
 } from "./pages/Workflows/actions";
@@ -109,7 +111,6 @@ import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
   APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
 } from "./pages/Nodes/actions.js";
-
 import { FETCH_ACTIVE_PEERS, FETCH_ACTIVE_PEERS_SUCCESS } from "./pages/Navbar/actions.js";
 
 const api = new Api();
@@ -282,6 +283,15 @@ export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId,
       projectId: projectId,
       subprojectId: subprojectId,
       showLoading: true
+    });
+  }, true);
+}
+
+export function* reorderWorkflowitemsSaga({ projectId, subprojectId, ordering }) {
+  yield execute(function*() {
+    yield callApi(api.reorderWorkflowitems, projectId, subprojectId, ordering);
+    yield put({
+      type: REORDER_WORKFLOW_ITEMS_SUCCESS
     });
   }, true);
 }
@@ -824,6 +834,10 @@ export function* watchEditWorkflowItem() {
   yield takeEvery(EDIT_WORKFLOW_ITEM, editWorkflowItemSaga);
 }
 
+export function* watchReorderWorkflowItems() {
+  yield takeEvery(REORDER_WORKFLOW_ITEMS, reorderWorkflowitemsSaga);
+}
+
 export function* watchCreateProject() {
   yield takeEvery(CREATE_PROJECT, createProject);
 }
@@ -991,6 +1005,7 @@ export default function* rootSaga() {
       // Workflow
       watchCreateWorkflowItem(),
       watchEditWorkflowItem(),
+      watchReorderWorkflowItems(),
       watchFetchWorkflowItemPermissions(),
       watchGrantWorkflowitemPermissions(),
       watchRevokeWorkflowitemPermissions(),

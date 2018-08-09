@@ -8,7 +8,8 @@ import { withStyles } from "@material-ui/core";
 
 const styles = {
   assigneeContainer: {
-    width: "80%"
+    width: "80%",
+    cursor: "-webkit-grab"
   }
 };
 
@@ -27,16 +28,18 @@ class WorkflowAssigneeContainer extends Component {
   };
 
   render() {
-    const { workflowItems, workflowitemId, users, title, classes, disabled } = this.props;
+    const { workflowItems, workflowitemId, users, title, classes, disabled, workflowSortEnabled, status } = this.props;
     const assignee = this.getWorkflowAssignee(workflowItems, workflowitemId);
     return (
       <div className={classes.assigneeContainer}>
         <AssigneeSelection
           assigneeId={assignee}
-          disabled={disabled}
+          disabled={disabled || workflowSortEnabled}
           users={users}
           title={title}
           assign={this.assignWorkflow}
+          workflowSortEnabled={workflowSortEnabled}
+          status={status}
         />
       </div>
     );
@@ -45,7 +48,8 @@ class WorkflowAssigneeContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    workflowItems: state.getIn(["workflow", "workflowItems"])
+    workflowItems: state.getIn(["workflow", "workflowItems"]),
+    workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"])
   };
 };
 

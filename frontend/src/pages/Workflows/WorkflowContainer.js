@@ -10,7 +10,7 @@ import {
   updateWorkflowSortOnState,
   enableWorkflowSort,
   storeWorkflowType,
-  postWorkflowSort,
+  reorderWorkflowItems,
   enableSubProjectBudgetEdit,
   storeSubProjectAmount,
   postSubProjectEdit,
@@ -24,7 +24,8 @@ import {
   showEditDialog,
   closeSubproject,
   hideWorkflowDetails,
-  hideWorkflowDialog
+  hideWorkflowDialog,
+  saveWorkflowItemsBeforeSort
 } from "./actions";
 
 import { setSelectedView } from "../Navbar/actions";
@@ -57,6 +58,7 @@ class WorkflowContainer extends Component {
   componentWillUnmount() {
     this.props.hideWorkflowDetails();
     this.props.hideWorkflowDialog();
+    this.props.disableWorkflowSort();
   }
 
   closeSubproject = () => {
@@ -125,7 +127,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     updateWorkflowSortOnState: items => dispatch(updateWorkflowSortOnState(items)),
     enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
-    postWorkflowSort: (streamName, workflowItems) => dispatch(postWorkflowSort(streamName, workflowItems)),
+    disableWorkflowSort: () => dispatch(enableWorkflowSort(false)),
+    reorderWorkflowItems: (projectId, subProjectId, workflowItems) =>
+      dispatch(reorderWorkflowItems(projectId, subProjectId, workflowItems)),
     storeWorkflowType: value => dispatch(storeWorkflowType(value)),
     enableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(true)),
     disableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(false)),
@@ -140,7 +144,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
     showEditDialog: (id, displayName, amount, amountType, description, currency) =>
-      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency))
+      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency)),
+    saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems))
   };
 };
 
@@ -156,6 +161,7 @@ const mapStateToProps = state => {
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
+    workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
     parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
     showWorkflowDetails: state.getIn(["workflow", "showDetails"]),

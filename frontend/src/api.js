@@ -178,6 +178,9 @@ class Api {
       ...changes
     });
 
+  reorderWorkflowitems = (projectId, subprojectId, ordering) =>
+    axios.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
+
   listWorkflowItemPermissions = (projectId, workflowitemId) =>
     axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
 

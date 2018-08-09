@@ -30,7 +30,13 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
-  }
+  },
+  select: {
+    "&$disabled": {
+      cursor: "-webkit-grab"
+    }
+  },
+  disabled: {}
 };
 
 class AssigneeSelection extends Component {
@@ -101,20 +107,35 @@ class AssigneeSelection extends Component {
   };
 
   render() {
-    const { assigneeId, users, disabled, classes } = this.props;
+    const { assigneeId, users, disabled, classes, workflowSortEnabled, status } = this.props;
     const suggestedUsers = this.renderUserSelection(users, assigneeId, disabled);
     const suggestedGroups = this.renderGroupSelection(users, assigneeId, disabled);
     const assignee = users.find(user => user.id === assigneeId);
+
+    const getSortClasses = () => {
+      if (workflowSortEnabled) {
+        if (status !== "closed") {
+          return {
+            select: classes.select,
+            disabled: classes.disabled
+          };
+        }
+      }
+      return;
+    };
 
     return (
       <FormControl data-test="assignee-container" disabled={disabled} className={classes.formControl}>
         <Select
           data-test="assignee-selection"
-          classes={{ selectMenu: classes.selectMenu }}
+          classes={{
+            selectMenu: classes.selectMenu,
+            ...getSortClasses()
+          }}
           value={this.renderTitle(assignee)}
           renderValue={s => (
-            <div style={styles.selectValue}>
-              <Checkbox style={styles.checkbox} disabled={disabled} checked={true} />
+            <div style={{ ...styles.selectValue }}>
+              <Checkbox style={{ ...styles.checkbox }} disabled={disabled} checked={true} />
               <Typography disabled={disabled} variant="body1">
                 {s}
               </Typography>

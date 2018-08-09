@@ -27,7 +27,8 @@ import {
   HIDE_WORKFLOW_DIALOG,
   SHOW_WORKFLOW_EDIT,
   SHOW_WORKFLOW_CREATE,
-  HIDE_WORKFLOW_DETAILS
+  HIDE_WORKFLOW_DETAILS,
+  SAVE_WORKFLOW_ITEM_BEFORE_SORT
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -44,6 +45,7 @@ const defaultState = fromJS({
   created: 0,
   allowedIntents: [],
   workflowItems: [],
+  workflowItemsBeforeSort: [],
   parentProject: {},
   workflowToAdd: {
     id: "",
@@ -151,6 +153,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         workflowToAdd: defaultState.getIn(["workflowToAdd"])
       });
+    case SAVE_WORKFLOW_ITEM_BEFORE_SORT:
+      return state.set("workflowItemsBeforeSort", action.workflowItems);
     case SHOW_WORKFLOW_DETAILS:
       return state.merge({
         showDetails: true,
