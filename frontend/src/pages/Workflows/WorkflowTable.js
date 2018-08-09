@@ -5,7 +5,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Typography from "@material-ui/core/Typography";
-import SortIcon from "@material-ui/icons/Sort";
+import SortIcon from "@material-ui/icons/LowPriority";
 import DoneIcon from "@material-ui/icons/Check";
 import Button from "@material-ui/core/Button";
 
