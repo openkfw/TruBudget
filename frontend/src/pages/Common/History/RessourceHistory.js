@@ -11,6 +11,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Avatar from "@material-ui/core/Avatar";
 import NotificationsActive from "@material-ui/icons/NotificationsActive";
 
+import strings from "../../../localizeStrings";
+
 const styles = {
   empty: {
     display: "flex",
@@ -31,7 +33,7 @@ export default ({ show, close, ressourceHistory, mapIntent }) => {
   return (
     <Drawer open={show} onClose={close} anchor="right">
       {ressourceHistory.length > 0 ? (
-        <List subheader={<ListSubheader disableSticky>History</ListSubheader>} style={styles.list}>
+        <List subheader={<ListSubheader disableSticky>{strings.common.history}</ListSubheader>} style={styles.list}>
           {ressourceHistory.map(i => (
             <ListItem key={i.key + i.createdAt}>
               <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />

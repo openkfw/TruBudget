@@ -1,44 +1,111 @@
-[
-  {
+[{
     "id": "thouse",
     "displayName": "Tom House",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "pkleffmann",
     "displayName": "Piet Kleffmann",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "mstein",
     "displayName": "Mauro Stein",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "jdoe",
     "displayName": "John Doe",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "jxavier",
     "displayName": "Jane Xavier",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "dviolin",
     "displayName": "Dana Violin",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "auditUser",
     "displayName": "Romina Checker",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
+  },
+  {
+    "id": "rfinance",
+    "displayName": "Rose Finance",
+    "password": "test"
+  },
+  {
+    "id": "atutelle",
+    "displayName": "Abbas Tutelle",
+    "password": "test"
+  },
+  {
+    "id": "pbailleur",
+    "displayName": "Peter Bailleur",
+    "password": "test"
+  },
+  {
+    "id": "stresor",
+    "displayName": "Simon Tresor",
+    "password": "test"
+  },
+  {
+    "id": "faudit",
+    "displayName": "Fatime Audit",
+    "password": "test"
+  },
+  {
+    "id": "pchantier",
+    "displayName": "Paul Chantier",
+    "password": "test"
+  },
+  {
+    "id": "ftender",
+    "displayName": "Francis Tender",
+    "password": "test"
+  },
+  {
+    "id": "msiddiqui",
+    "displayName": "Moz Siddiqui",
+    "password": "test"
+  },
+  {
+    "id": "aproducer",
+    "displayName": "Anna Producer",
+    "password": "test"
+  },
+  {
+    "id": "kdeliverer",
+    "displayName": "Kevin Deliverer",
+    "password": "test"
+  },
+  {
+    "id": "ccustoms",
+    "displayName": "Carine Customs",
+    "password": "test"
+  },
+  {
+    "id": "sdistributor",
+    "displayName": "Salif Distributor",
+    "password": "test"
+  },
+  {
+    "id": "fhealth",
+    "displayName": "Flora Health",
+    "password": "test"
+  },
+  {
+    "id": "ihealth",
+    "displayName": "Ibrahim Health",
+    "password": "test"
+  },
+  {
+    "id": "ahealth",
+    "displayName": "Alice Health",
+    "password": "test"
   }
 ]

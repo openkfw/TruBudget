@@ -21,8 +21,22 @@ function startMultichainDaemon() {
   const args = process.argv.slice(2);
   console.log(`>>> Connecting to ${args[args.length - 1]}`);
   console.log(`>>> args=${args.map(x => x.startsWith("-rpcpassword=") ? "-rpcpassword=..." : x)}`);
-  logFileContent("/root/.multichain/multichain.conf");
-  logFileContent(`/root/.multichain/${process.env.CHAINNAME}/multichain.conf`);
+
+  const serverConfigPath = "/root/.multichain/multichain.conf";
+  logFileContent(serverConfigPath);
+
+  const chainPath = `/root/.multichain/${process.env.CHAINNAME}`;
+  const chainConfigPath = `${chainPath}/multichain.conf`;
+  if (fs.existsSync(chainConfigPath)) {
+    logFileContent(chainConfigPath);
+  } else {
+    console.log(`Warning: chain config not found at ${chainConfigPath}, restoring from ${serverConfigPath}. Is the master node reachable from this node?`);
+    if (!fs.existsSync(chainPath)) {
+      fs.mkdirSync(chainPath);
+    }
+    fs.copyFileSync(serverConfigPath, chainConfigPath);
+  }
+
   const mc = spawn(prog, args);
 
   mc.stdout.on('data', (data) => {

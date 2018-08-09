@@ -11,10 +11,13 @@ const authenticate = async (axios, userId, password) => {
   return body.data.user.token;
 };
 
-const createUser = async (axios, user) => {
+const createUser = async (axios, user, organization) => {
   await withRetry(() =>
     axios.post("/global.createUser", {
-      user
+      user: {
+        ...user,
+        organization
+      }
     })
   );
 };
@@ -32,7 +35,8 @@ const createProject = async (axios, projectTemplate) => {
         description: "FAILED UPDATE?",
         amount: projectTemplate.amount,
         assignee: projectTemplate.assignee,
-        currency: projectTemplate.currency
+        currency: projectTemplate.currency,
+        thumbnail: projectTemplate.thumbnail
       }
     })
   );

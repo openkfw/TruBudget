@@ -33,6 +33,8 @@
     "redux-saga": "^0.14.4"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "prettier": "1.12.1",
@@ -41,8 +43,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --env=jsdom && npm run check-translations",
+    "eject": "react-scripts eject",
+    "check-translations": "node scripts/check-translations.js"
   },
   "proxy": "http://localhost:8080"
 }

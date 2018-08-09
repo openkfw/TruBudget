@@ -233,6 +233,14 @@ function applyUpdate(event: Event, resource: WorkflowitemResource): true | undef
     case 1: {
       const update: Update = event.data;
       inheritDefinedProperties(resource.data, update);
+
+      // In case the update has set the amountType to N/A, we don't want to retain the
+      // amount and currency fields:
+      if (resource.data.amountType === "N/A") {
+        delete resource.data.amount;
+        delete resource.data.currency;
+      }
+
       return true;
     }
   }

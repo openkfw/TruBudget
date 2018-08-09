@@ -9,6 +9,7 @@ import NotFilledStar from "@material-ui/icons/StarBorder";
 import Subheader from "@material-ui/core/ListSubheader";
 import { withStyles } from "@material-ui/core/styles";
 
+import strings from "../../localizeStrings";
 import { images } from "./images";
 
 const styles = {
@@ -42,7 +43,7 @@ const styles = {
 const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
   return (
     <div style={styles.root}>
-      <Subheader style={styles.subHeader}>Thumbnail</Subheader>
+      <Subheader style={styles.subHeader}>{strings.common.thumbnail}</Subheader>
       <GridList cellHeight={150} style={styles.gridList}>
         {images.map(image => (
           <GridListTile onClick={() => onTouchTap(image.src)} key={image.src}>

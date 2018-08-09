@@ -1,11 +1,11 @@
 const { readJsonFile } = require("./files");
 const { createUser, grantGlobalPermissionToUser } = require("./api");
-const provisionUsers = async (axios, folder) => {
+const provisionUsers = async (axios, folder, organization) => {
   try {
     const users = readJsonFile(folder + "users.json");
     for (const user of users) {
       console.log(`~> Adding user ${user.displayName}`);
-      await createUser(axios, user);
+      await createUser(axios, user, organization);
       await grantDefaultPermission(axios, user.id);
     }
     //Special permissions for mstein & jdoe

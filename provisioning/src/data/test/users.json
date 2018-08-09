@@ -2,43 +2,36 @@
   {
     "id": "thouse",
     "displayName": "Tom House",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "pkleffmann",
     "displayName": "Piet Kleffmann",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "mstein",
     "displayName": "Mauro Stein",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "jdoe",
     "displayName": "John Doe",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "jxavier",
     "displayName": "Jane Xavier",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "dviolin",
     "displayName": "Dana Violin",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   },
   {
     "id": "auditUser",
     "displayName": "Romina Checker",
-    "password": "test",
-    "organization": "ACMECorp"
+    "password": "test"
   }
 ]

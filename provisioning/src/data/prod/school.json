@@ -1,17 +1,20 @@
 {
-  "displayName": "Primary School Project",
-  "description": "Projects in 2018",
+  "displayName": "Primary School",
+  "description": "Projects in Burkina Faso 2018",
+  "thumbnail": "/Thumbnail_0017.jpg",
   "status": "open",
   "amount": "30000000",
-  "assignee": "jxavier",
+  "assignee": "atutelle",
   "currency": "EUR",
   "permissions": {
-    "project.viewDetails": ["mstein", "jxavier"],
-    "project.viewSummary": ["mstein", "jxavier"],
-    "project.assign": ["mstein", "jxavier"],
-    "project.intent.listPermissions": ["mstein", "jxavier"],
-    "project.intent.grantPermission": ["mstein", "jxavier"],
-    "project.intent.revokePermission": ["mstein", "jxavier"]
+    "project.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier", "ftender"],
+    "project.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier", "ftender"],
+    "project.close": ["rfinance"],
+    "project.assign": ["atutelle"],
+    "project.createSubproject": ["atutelle"],
+    "project.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+    "project.intent.grantPermission": ["rfinance", "atutelle"],
+    "project.intent.revokePermission": ["rfinance", "atutelle"]
   },
   "subprojects": [
     {
@@ -20,91 +23,147 @@
       "status": "closed",
       "amount": "500000",
       "currency": "EUR",
-      "assignee": "jxavier",
+      "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.close": ["atutelle"],
+        "subproject.update": ["atutelle"],
+        "subproject.createWorkflowitem":["atutelle"],
+        "subproject.reorderWorkflowitems": ["atutelle"],
+        "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+        "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+        "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+        "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
-          "displayName": "Tender publication",
+          "displayName": "Tender documents",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "ftender",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Tender evaluation",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "ftender",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Contract signature",
           "status": "closed",
-          "assignee": "jxavier",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 500000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "allocated"
         },
         {
-          "displayName": "First installment",
+          "displayName": "Payment first installment",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "rfinance",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Progress report",
           "status": "closed",
-          "assignee": "jxavier",
+          "assignee": "pchantier",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["pchantier"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 100000,
           "currency": "EUR",
-          "amountType": "disbursed",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         },
         {
           "displayName": "Payment interim installment",
           "status": "closed",
-          "assignee": "jxavier",
+          "assignee": "rfinance",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 100000,
           "currency": "EUR",
-          "amountType": "disbursed",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         },
         {
           "displayName": "Payment final installment",
           "status": "closed",
-          "assignee": "jxavier",
-          "amount": 300000,
-          "currency": "EUR",
-          "amountType": "disbursed",
+          "assignee": "rfinance",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amount": 250000,
+          "currency": "EUR",
+          "amountType": "disbursed"
         }
       ]
     },
@@ -112,174 +171,289 @@
       "displayName": "Consultancy supervision",
       "description": "No description",
       "status": "open",
-      "amount": "1500000",
+      "amount": "1600000",
       "currency": "EUR",
-      "assignee": "jxavier",
+      "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+      "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+      "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+      "subproject.close": ["atutelle"],
+      "subproject.update": ["atutelle"],
+      "subproject.createWorkflowitem":["atutelle"],
+      "subproject.reorderWorkflowitems": ["atutelle"],
+      "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+      "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+      "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+      "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
-          "displayName": "Tender publication",
+          "displayName": "Tender documents",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "ftender",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Tender evaluation",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "status": "closed",
+          "assignee": "ftender",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Contract signature",
-          "assignee": "jxavier",
+          "status": "closed",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 1500000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "allocated"
         },
         {
-          "displayName": "First installment",
-          "assignee": "jxavier",
+          "displayName": "Payment first installment",
+          "status": "closed",
+          "assignee": "rfinance",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 500000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         },
         {
           "displayName": "Payment interim installment",
-          "assignee": "jxavier",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 500000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         },
         {
           "displayName": "Progress report",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["pchantier"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Payment final installment",
-          "assignee": "jxavier",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 500000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         }
       ]
     },
     {
       "displayName": "Construction lot 1",
       "description": "No description",
-      "amount": "15000000",
+      "amount": "13000000",
       "currency": "EUR",
-      "assignee": "jxavier",
+      "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+      "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+      "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+      "subproject.close": ["atutelle"],
+      "subproject.update": ["atutelle"],
+      "subproject.createWorkflowitem":["atutelle"],
+      "subproject.reorderWorkflowitems": ["atutelle"],
+      "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+      "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+      "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+      "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
-          "displayName": "Tender publication",
+          "displayName": "Tender documents",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "ftender",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Tender evaluation",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Contract signature",
-          "assignee": "jxavier",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 15000000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "allocated"
         },
         {
-          "displayName": "First installment",
-          "assignee": "jxavier",
+          "displayName": "Payment first installment",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 5000000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         },
         {
           "displayName": "Progress report",
-          "assignee": "jxavier",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["pchantier"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 5000000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         },
         {
           "displayName": "Payment final installment",
-          "assignee": "jxavier",
-          "amount": 10000000,
-          "currency": "EUR",
-          "amountType": "allocated",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amount": 5000000,
+          "currency": "EUR",
+          "amountType": "disbursed"
         },
         {
           "displayName": "Completion subproject",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         }
       ]
     },
@@ -288,77 +462,127 @@
       "description": "No description",
       "amount": "8000000",
       "currency": "EUR",
-      "assignee": "jxavier",
+      "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+      "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+      "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+      "subproject.close": ["atutelle"],
+      "subproject.update": ["atutelle"],
+      "subproject.createWorkflowitem":["atutelle"],
+      "subproject.reorderWorkflowitems": ["atutelle"],
+      "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+      "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+      "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+      "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
-          "displayName": "Tender publication",
+          "displayName": "Tender documents",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "ftender",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Tender evaluation",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Contract signature",
-          "assignee": "jxavier",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 8000000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "allocated"
         },
         {
-          "displayName": "First installment",
-          "assignee": "jxavier",
+          "displayName": "Payment first installment",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 3000000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         },
         {
           "displayName": "Progress report",
-          "assignee": "jxavier",
-          "currency": "EUR",
-          "amount": 3000000,
-          "amountType": "allocated",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["pchantier"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "currency": "EUR",
+          "amount": 2000000,
+          "amountType": "disbursed"
         },
         {
           "displayName": "Payment final installment",
-          "assignee": "jxavier",
-          "amount": 5000000,
-          "currency": "EUR",
-          "amountType": "allocated",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amount": 3000000,
+          "currency": "EUR",
+          "amountType": "disbursed"
         }
       ]
     },
@@ -367,73 +591,125 @@
       "description": "No description",
       "amount": "3000000",
       "currency": "EUR",
-      "assignee": "jxavier",
+      "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+      "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+      "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+      "subproject.close": ["atutelle"],
+      "subproject.update": ["atutelle"],
+      "subproject.createWorkflowitem":["atutelle"],
+      "subproject.reorderWorkflowitems": ["atutelle"],
+      "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+      "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+      "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+      "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
       "workflows": [
         {
           "displayName": "Budget allocation",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
-          "displayName": "Tender publication",
+          "displayName": "Tender documents",
           "status": "closed",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "ftender",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Tender evaluation",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle","ftender"],
+          "workflowitem.update": ["atutelle", "ftender"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Contract signature",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["atutelle"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amount": 3000000,
+          "currency": "EUR",
+          "amountType": "allocated"
         },
         {
-          "displayName": "First installment",
-          "assignee": "jxavier",
+          "displayName": "Payment first installment",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 1500000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         },
         {
           "displayName": "Progress report",
-          "assignee": "jxavier",
-          "amountType": "N/A",
+          "assignee": "atutelle",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["pchantier"],
+          "workflowitem.update": ["atutelle"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
+          "amountType": "N/A"
         },
         {
           "displayName": "Payment final installment",
-          "assignee": "jxavier",
+          "assignee": "atutelle",
+          "permissions": {
+          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+          "workflowitem.assign": ["atutelle"],
+          "workflowitem.close": ["rfinance"],
+          "workflowitem.update": ["atutelle", "rfinance"],
+          "workflowitem.intent.listPermissions": ["atutelle"],
+          "workflowitem.intent.grantPermission": ["atutelle"],
+          "workflowitem.intent.revokePermission": ["atutelle"]
+      },
           "amount": 1500000,
           "currency": "EUR",
-          "amountType": "allocated",
-          "permissions": {
-            "workflowitem.view": ["jxavier"]
-          }
+          "amountType": "disbursed"
         }
       ]
     }
