@@ -8,7 +8,6 @@ import Button from "@material-ui/core/Button";
 import Add from "@material-ui/icons/Add";
 import DashboardDialogContainer from "./DashboardDialogContainer";
 import strings from "../../localizeStrings";
-import { withStyles } from "../../../node_modules/@material-ui/core";
 
 const styles = {
   container: {
@@ -36,10 +35,10 @@ const styles = {
   }
 };
 const Users = props => {
-  const { tabIndex, setTabIndex, showDashboardDialog, classes } = props;
+  const { tabIndex, setTabIndex, showDashboardDialog } = props;
   return (
-    <div id="userdashboard" className={classes.container}>
-      <div className={classes.customWidth}>
+    <div id="userdashboard" style={styles.container}>
+      <div style={styles.customWidth}>
         <AppBar position="static" color="default">
           <Tabs
             value={tabIndex}
@@ -51,14 +50,14 @@ const Users = props => {
             <Tab label={strings.groupDashboard.groups} aria-label="groupsTab" />
           </Tabs>
         </AppBar>
-        <div className={classes.createButtonContainer}>
+        <div style={styles.createButtonContainer}>
           <Button
             data-test="create"
             onClick={() => {
               tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup");
             }}
             color="primary"
-            className={classes.createButton}
+            style={styles.createButton}
             variant="fab"
             aria-label="Add"
           >
@@ -73,4 +72,4 @@ const Users = props => {
   );
 };
 
-export default withStyles(styles)(Users);
+export default Users;
