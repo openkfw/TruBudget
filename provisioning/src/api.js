@@ -29,7 +29,7 @@ const createUser = async (axios, user, organization) => {
 
 const grantGlobalPermissionToUser = async (axios, intent, userId) => {
   return await withRetry(() =>
-    axios.post("/global.intent.grantPermission", {
+    axios.post("/global.grantPermission", {
       intent,
       identity: userId
     })
@@ -38,7 +38,7 @@ const grantGlobalPermissionToUser = async (axios, intent, userId) => {
 
 const grantAllPermissionsToUser = async (axios, userId) => {
   return await withRetry(() =>
-    axios.post("/user.intent.grantAllPermissions", {
+    axios.post("/global.grantAllPermissions", {
       identity: userId
     })
   );

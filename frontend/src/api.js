@@ -52,7 +52,7 @@ class Api {
         password
       }
     });
-  grantAllUserPermissions = userId => axios.post(`user.intent.grantAllPermissions`, {
+  grantAllUserPermissions = userId => axios.post(`global.grantAllPermissions`, {
     identity: userId
   });
   listUser = () => axios.get(`/user.list`);

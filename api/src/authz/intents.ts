@@ -1,7 +1,8 @@
 type Intent =
-  | "global.intent.listPermissions"
-  | "global.intent.grantPermission"
-  | "global.intent.revokePermission"
+  | "global.listPermissions"
+  | "global.grantPermission"
+  | "global.grantAllPermissions"
+  | "global.revokePermission"
   | "global.createProject"
   | "global.createUser"
   | "global.createGroup"
@@ -54,9 +55,10 @@ type Intent =
   | "network.approveNewNodeForExistingOrganization";
 
 export const globalIntents: Intent[] = [
-  "global.intent.listPermissions",
-  "global.intent.grantPermission",
-  "global.intent.revokePermission",
+  "global.listPermissions",
+  "global.grantPermission",
+  "global.grantAllPermissions",
+  "global.revokePermission",
   "global.createProject",
   "global.createUser",
   "global.createGroup",
@@ -72,9 +74,10 @@ export const globalIntents: Intent[] = [
 ];
 
 export const userAssignableIntents: Intent[] = [
-  "global.intent.listPermissions",
-  "global.intent.grantPermission",
-  "global.intent.revokePermission",
+  "global.listPermissions",
+  "global.grantPermission",
+  "global.grantAllPermissions",
+  "global.revokePermission",
   "global.createProject",
   "global.createUser",
   "global.createGroup",
@@ -98,9 +101,10 @@ export const userDefaultIntents: Intent[] = [
 ];
 
 export const allIntents: Intent[] = [
-  "global.intent.listPermissions",
-  "global.intent.grantPermission",
-  "global.intent.revokePermission",
+  "global.listPermissions",
+  "global.grantPermission",
+  "global.grantAllPermissions",
+  "global.revokePermission",
   "global.createProject",
   "global.createUser",
   "global.createGroup",

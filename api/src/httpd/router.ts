@@ -1,10 +1,11 @@
 import * as express from "express";
+import { grantAllPermissions } from "../global/controller/grantAllPermissions";
+import { grantGlobalPermission } from "../global/controller/grantPermission";
+import { getGlobalPermissions } from "../global/controller/listPermissions";
+import { revokeGlobalPermission } from "../global/controller/revokePermission";
 import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
 import { createUser } from "../global/createUser";
-import { grantGlobalPermission } from "../global/intent/grantPermission";
-import { getGlobalPermissions } from "../global/intent/listPermissions";
-import { revokeGlobalPermission } from "../global/intent/revokePermission";
 import { addUserToGroup } from "../group/addUser";
 import { getGroupList } from "../group/list";
 import { removeUserFromGroup } from "../group/removeUser";
@@ -38,10 +39,6 @@ import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { authenticateUser } from "../user/controller/authenticate";
-import { grantAllUserPermissions } from "../user/controller/intent.grantAllPermissions";
-import { grantUserPermission } from "../user/controller/intent.grantPermission";
-import { getUserPermissions } from "../user/controller/intent.listPermissions";
-import { revokeUserPermission } from "../user/controller/intent.revokePermission";
 import { getUserList } from "../user/controller/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
 import { closeWorkflowitem } from "../workflowitem/controller/close";
@@ -251,44 +248,59 @@ export const createRouter = (
   });
 
   /**
-   * @api {get} /global.intent.listPermissions List permissions
+   * @api {get} /global.listPermissions List permissions
    * @apiVersion 1.0.0
-   * @apiName global.intent.listPermissions
+   * @apiName global.listPermissions
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription See the current global permissions.
    */
-  router.get("/global.intent.listPermissions", (req: AuthenticatedRequest, res) => {
+  router.get("/global.listPermissions", (req: AuthenticatedRequest, res) => {
     getGlobalPermissions(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
 
   /**
-   * @api {post} /global.intent.grantPermission Grant permission
+   * @api {post} /global.grantPermission Grant permission
    * @apiVersion 1.0.0
-   * @apiName global.intent.grantPermission
+   * @apiName global.grantPermission
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription Grant the right to execute a specific intent on the Global scope to
    * a given user.
    */
-  router.post("/global.intent.grantPermission", (req: AuthenticatedRequest, res) => {
+  router.post("/global.grantPermission", (req: AuthenticatedRequest, res) => {
     grantGlobalPermission(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
 
   /**
-   * @api {post} /global.intent.revokePermission Revoke permission
+   * @api {post} /global.grantAllPermissions Grant all permissions
    * @apiVersion 1.0.0
-   * @apiName global.intent.revokePermission
+   * @apiName global.grantAllPermissions
+   * @apiGroup Global
+   * @apiPermission user
+   * @apiDescription Grant all available permissions to a user. Useful as a shorthand
+   * for creating admin users.
+   */
+  router.post("/global.grantAllPermissions", (req: AuthenticatedRequest, res) => {
+    grantAllPermissions(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /global.revokePermission Revoke permission
+   * @apiVersion 1.0.0
+   * @apiName global.revokePermission
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription Revoke the right to execute a specific intent on the Global scope
    * to a given user.
    */
-  router.post("/global.intent.revokePermission", (req: AuthenticatedRequest, res) => {
+  router.post("/global.revokePermission", (req: AuthenticatedRequest, res) => {
     revokeGlobalPermission(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
@@ -380,100 +392,6 @@ export const createRouter = (
       organization,
       organizationVaultSecret,
     )
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {get} /user.intent.listPermissions List permissions
-   * @apiVersion 1.0.0
-   * @apiName user.intent.listPermissions
-   * @apiGroup User
-   * @apiPermission user
-   * @apiDescription See the permissions for a given user.
-   */
-  router.get("/user.intent.listPermissions", (req: AuthenticatedRequest, res) => {
-    getUserPermissions(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /user.intent.grantPermission Grant permission
-   * @apiVersion 1.0.0
-   * @apiName user.intent.grantPermission
-   * @apiGroup User
-   * @apiPermission user
-   * @apiDescription Grant a permission to a user or group. After this call has
-   * returned, the user or group will be allowed to execute the given intent.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The user or group the permission should be granted to.
-   * @apiParam {String} data.intent The intent the user should get permissions for.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "intent": "user.assign"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/user.intent.grantPermission", (req: AuthenticatedRequest, res) => {
-    grantUserPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  router.post("/user.intent.grantAllPermissions", (req: AuthenticatedRequest, res) => {
-    grantAllUserPermissions(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /user.intent.revokePermission Revoke permission
-   * @apiVersion 1.0.0
-   * @apiName user.intent.revokePermission
-   * @apiGroup User
-   * @apiPermission user
-   * @apiDescription Revoke a permission from a user or group. After this call has
-   * returned, the user or group will no longer be able to execute the given intent.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The user the permission should be revoked from.
-   * @apiParam {String} data.intent What the user should no longer be allowed to do.
-   * @apiParam {String} data.userId The user the permissions are effective on.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "userId": "alice",
-   *       "intent": "user.close"
-   *       "userId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/user.intent.revokePermission", (req: AuthenticatedRequest, res) => {
-    revokeUserPermission(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
