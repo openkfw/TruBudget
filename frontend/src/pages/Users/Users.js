@@ -32,7 +32,7 @@ const Users = props => {
             textColor="primary"
           >
             <Tab label="Users" />
-            <Tab label="Groups" />
+            <Tab label="Groups" aria-label="changeTab" />
           </Tabs>
         </AppBar>
         <div
@@ -48,6 +48,7 @@ const Users = props => {
           }}
         >
           <Button
+            data-test="create"
             onClick={() => {
               tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup");
             }}

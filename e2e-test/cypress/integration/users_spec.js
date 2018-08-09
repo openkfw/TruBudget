@@ -8,6 +8,7 @@ describe("User Dashboard", function() {
     cy.get("#userdashboard").should("be.visible");
   });
   it("Create new user", function() {
+    cy.get("[data-test=create]").click();
     cy.get("#fullname")
       .type("Test User")
       .should("have.value", "Test User");
@@ -17,15 +18,15 @@ describe("User Dashboard", function() {
     cy.get("#password")
       .type("test")
       .should("have.value", "test");
-    cy.get("#createuser").click();
+    cy.get("[aria-label=submit]").click();
   });
 
   it("Created user should be visible", function() {
     cy.get("#user-testuser")
-      .find("td")
-      .then($td => {
-        expect($td).to.have.length(2);
-        expect($td.first()).to.have.text("testuser");
+      .find("th")
+      .then($th => {
+        expect($th).to.have.length(1);
+        expect($th.first()).to.have.text("testuser");
       });
   });
 });

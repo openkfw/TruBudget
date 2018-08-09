@@ -38,7 +38,7 @@ const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
             <TableCell />
           </TableRow>
         </TableHead>
-        <TableBody id="usertablebody">
+        <TableBody id="grouptablebody">
           {sortedGroups.map(group => {
             return (
               <TableRow id={`group-${group.groupId}`} key={group.groupId}>
