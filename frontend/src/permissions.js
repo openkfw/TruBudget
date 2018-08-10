@@ -45,7 +45,7 @@ export const subProjectIntentOrder = [
   },
   {
     name: "write",
-    intents: ["subproject.createWorkflowitem", "subproject.update", "subproject.assign", "subproject.close"]
+    intents: ["subproject.createWorkflowitem", "subproject.update", "subproject.assign", "subproject.close","subproject.reorderWorkflowitems"]
   },
   {
     name: "admin",
