@@ -2,14 +2,12 @@ import React from "react";
 import moment from "moment";
 
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Avatar from "@material-ui/core/Avatar";
-import NotificationsActive from "@material-ui/icons/NotificationsActive";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import strings from "../../../localizeStrings";
