@@ -1,14 +1,13 @@
-import * as winston from "winston";
 import * as express from "express";
-
+import * as winston from "winston";
 import { createBasicApp } from "./httpd/app";
 import { createRouter } from "./httpd/router";
-import { waitUntilReady } from "./lib/liveness";
+import { waitUntilReady } from "./lib/readiness";
 import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
-import { ensureOrganizationStreams } from "./organization/organization";
 import { registerNode } from "./network/controller/registerNode";
+import { ensureOrganizationStreams } from "./organization/organization";
 
 /*
  * Init the logs
@@ -106,7 +105,7 @@ app.listen(port, err => {
   }
   console.log(`server is listening on ${port}`);
 
-  waitUntilReady(port)
+  waitUntilReady(multichainClient)
     .then(() =>
       ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!),
     )

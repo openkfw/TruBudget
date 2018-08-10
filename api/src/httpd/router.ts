@@ -9,6 +9,7 @@ import { createUser } from "../global/createUser";
 import { addUserToGroup } from "../group/addUser";
 import { getGroupList } from "../group/list";
 import { removeUserFromGroup } from "../group/removeUser";
+import { isReady } from "../lib/readiness";
 import { MultichainClient } from "../multichain";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
@@ -185,22 +186,12 @@ export const createRouter = (
    * @apiDescription Returns "200 OK" if the API is up and the Multichain service is
    * reachable; "503 Service unavailable." otherwise.
    */
-  router.get("/readiness", (req, res) => {
-    const rpcClient = multichainClient.getRpcClient();
-    return rpcClient
-      .invoke("listaddresses")
-      .then(addressList =>
-        addressList
-          .filter(x => x.ismine)
-          .map(x => x.address)
-          .join(","),
-      )
-      .then(addressCsv => rpcClient.invoke("listpermissions", "send", addressCsv))
-      .then(result => {
-        if (!result.length) throw Error("Waiting for permissions..");
-      })
-      .then(() => res.status(200).send("OK"))
-      .catch(() => res.status(503).send("Service unavailable."));
+  router.get("/readiness", async (req, res) => {
+    if (await isReady(multichainClient)) {
+      res.status(200).send("OK");
+    } else {
+      res.status(503).send("Service unavailable.");
+    }
   });
 
   /**
