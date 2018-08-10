@@ -1,5 +1,11 @@
 import { MultichainClient } from ".";
 
-export function importprivkey(multichain: MultichainClient, privkey: string): Promise<void> {
-  return multichain.getRpcClient().invoke("importprivkey", privkey);
+export function importprivkey(
+  multichain: MultichainClient,
+  privkey: string,
+  userId: string,
+): Promise<void> {
+  const label = userId;
+  const doRescan = false;
+  return multichain.getRpcClient().invoke("importprivkey", privkey, label, doRescan);
 }

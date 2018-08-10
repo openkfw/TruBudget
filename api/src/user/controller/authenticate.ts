@@ -106,7 +106,7 @@ const authenticate = async (
     storedUser.organization,
     organizationVaultSecret,
     storedUser.address,
-  ).then(privkey => importprivkey(multichain, privkey));
+  ).then(privkey => importprivkey(multichain, privkey, storedUser.id));
 
   // The organizationAddress is used for querying network votes, for instance.
   const organizationAddress: WalletAddress = (await getOrganizationAddress(
