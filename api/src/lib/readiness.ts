@@ -1,12 +1,5 @@
-import axios from "axios";
 import { MultichainClient } from "../multichain/Client.h";
 import logger from "./logger";
-
-const retryIntervalMs = 5000;
-
-function timeout(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 export async function isReady(multichain: MultichainClient): Promise<boolean> {
   try {
@@ -28,12 +21,5 @@ export async function isReady(multichain: MultichainClient): Promise<boolean> {
   } catch (err) {
     logger.warn(err, "readiness: MultiChain connection failed");
     return false;
-  }
-}
-
-export async function waitUntilReady(multichain: MultichainClient): Promise<void> {
-  while (!(await isReady(multichain))) {
-    logger.info(`API not ready yet - retry in ${retryIntervalMs} ms.`);
-    await timeout(retryIntervalMs);
   }
 }

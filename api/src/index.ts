@@ -2,7 +2,9 @@ import * as express from "express";
 import * as winston from "winston";
 import { createBasicApp } from "./httpd/app";
 import { createRouter } from "./httpd/router";
-import { waitUntilReady } from "./lib/readiness";
+import logger from "./lib/logger";
+import { isReady } from "./lib/readiness";
+import timeout from "./lib/timeout";
 import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
@@ -53,11 +55,7 @@ const rpcSettings: ConnectionSettings = {
   username: process.env.RPC_USER || "multichainrpc",
   password: process.env.RPC_PASSWORD || "this-is-insecure-change-it",
 };
-console.log(
-  `Connecting to MultiChain node at ${rpcSettings.protocol}://${rpcSettings.host}:${
-    rpcSettings.port
-  }`,
-);
+logger.info(rpcSettings, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
 const app = createBasicApp(jwtSecret, rootSecret);
@@ -72,12 +70,12 @@ app.use(
 
 // Enable useful traces of unhandled-promise warnings:
 process.on("unhandledRejection", err => {
-  console.error("UNHANDLED PROMISE REJECTION:", err);
+  logger.fatal({ err }, "UNHANDLED PROMISE REJECTION");
   process.exit(1);
 });
 
-function registerSelf() {
-  multichainClient
+function registerSelf(): Promise<boolean> {
+  return multichainClient
     .getRpcClient()
     .invoke("listaddresses", "*", false, 1, 0)
     .then(addressInfos =>
@@ -96,18 +94,39 @@ function registerSelf() {
         },
       };
       registerNode(multichainClient, req as express.Request);
-    });
+    })
+    .then(() => true)
+    .catch(() => false);
 }
 
-app.listen(port, err => {
+app.listen(port, async err => {
   if (err) {
-    return console.log(err);
+    logger.fatal(err);
+    process.exit(1);
   }
-  console.log(`server is listening on ${port}`);
+  logger.info(`server is listening on ${port}`);
 
-  waitUntilReady(multichainClient)
-    .then(() =>
-      ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!),
-    )
-    .then(() => registerSelf());
+  const retryIntervalMs = 5000;
+
+  while (!(await isReady(multichainClient))) {
+    logger.error("MultiChain connection/permissions not ready yet");
+    await timeout(retryIntervalMs);
+  }
+  logger.info("MultiChain connection established");
+
+  while (
+    !(await ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!)
+      .then(() => true)
+      .catch(() => false))
+  ) {
+    logger.error("failed to create organization stream");
+    await timeout(retryIntervalMs);
+  }
+  logger.info("organization stream present");
+
+  while (!(await registerSelf())) {
+    logger.error("failed to register node");
+    await timeout(retryIntervalMs);
+  }
+  logger.info("node registered in nodes stream");
 });

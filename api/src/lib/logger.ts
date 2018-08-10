@@ -9,6 +9,7 @@ const logger = pino({
   },
   level: "trace",
   prettyPrint: process.env.NODE_ENV !== "production",
+  // redact: ["password"],
 });
 
 export default logger;
