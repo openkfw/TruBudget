@@ -1,6 +1,6 @@
-import { MultichainClient } from "../multichain";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import Intent from "../authz/intents";
+import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import { MultichainClient } from "../multichain";
 import { Resource } from "../multichain/Client.h";
 
 const globalstreamName = "global";
@@ -12,7 +12,7 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
   });
   // TODO this is racy -- Global needs to be event-source like the other streams!
   const hasSelfItem = await multichain
-    .v2_readStreamItems("global", "self")
+    .v2_readStreamItems("global", "self", 1)
     .then(items => items.length > 0);
   if (!hasSelfItem) {
     const emptyResource: Resource = { data: {}, log: [], permissions: {} };
@@ -45,13 +45,11 @@ export const grantPermission = async (
   const streamItem = await multichain.getValue(globalstreamName, "self");
   const globalResource = streamItem.resource;
   const permissionsForIntent: People = globalResource.permissions[intent] || [];
-
   if (permissionsForIntent.includes(identity)) {
     // The given user is already permitted to execute the given intent.
     return;
   }
   permissionsForIntent.push(identity);
-
   globalResource.permissions[intent] = permissionsForIntent;
   await multichain.setValue(globalstreamName, streamItem.key, globalResource);
 };

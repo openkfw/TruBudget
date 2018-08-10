@@ -1,3 +1,4 @@
+import logger from "../lib/logger";
 import {
   CreateStreamOptions,
   MultichainClient,
@@ -58,7 +59,7 @@ export class RpcMultichainClient implements MultichainClient {
     const txId: StreamTxId = await this.rpcClient
       .invoke("create", "stream", streamName, isPublic, customFields)
       .then(() =>
-        console.log(`Created stream ${streamName} with options ${JSON.stringify(options)}`),
+        logger.debug(`Created stream ${streamName} with options ${JSON.stringify(options)}`),
       )
       .catch(err => {
         if (options.name && err && err.code === -705) {
@@ -218,7 +219,6 @@ export class RpcMultichainClient implements MultichainClient {
     nValues: number = maxItemCount,
   ): Promise<Liststreamkeyitems.Item[]> {
     if (nValues <= 0) throw Error(`expected nValues > 0, got ${nValues}`);
-
     return this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch(err => {
