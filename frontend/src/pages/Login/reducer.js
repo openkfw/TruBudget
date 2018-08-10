@@ -1,5 +1,8 @@
 import { fromJS } from "immutable";
 import moment from "moment";
+import "moment/locale/de";
+import "moment/locale/fr";
+import "moment/locale/pt";
 import strings from "../../localizeStrings";
 
 import {
@@ -38,7 +41,7 @@ export const defaultState = fromJS({
   user: []
 });
 
-export const setLanguage = state => {
+export const changeLanguage = state => {
   const language = state.get("language");
   moment.locale(language);
   strings.setLanguage(language);
@@ -83,11 +86,11 @@ export default function loginReducer(state = defaultState, action) {
         productionActive: action.productionActive
       });
     case INIT_LANGUAGE:
-      setLanguage(state);
+      changeLanguage(state);
       return state;
     case SET_LANGUAGE:
       const newState = state.set("language", action.language);
-      setLanguage(newState);
+      changeLanguage(newState);
       return newState;
     case ADMIN_LOGOUT_SUCCESS:
     case LOGOUT_SUCCESS:

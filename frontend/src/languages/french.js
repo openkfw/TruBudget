@@ -91,7 +91,7 @@ const fr = {
     subproject_add_title: "Ajouter un nouveau sous-projet",
     subproject_assigned_organization: "Organisation assignée",
     subproject_budget_amount: "Montant du budget du sous-projet",
-    subproject_budget_amount_description: "Budget for the sub-project",
+    subproject_budget_amount_description: "French: Budget for the sub-project",
     subproject_close_info: "French: At least one workflow item has not been closed yet.",
     subproject_comment: "Commentaire du sous-projet",
     subproject_completion_string: "{0} cal {1} van",
