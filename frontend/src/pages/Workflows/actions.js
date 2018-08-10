@@ -189,7 +189,7 @@ export function revokeWorkflowItemPermission(
   subprojectId,
   workflowitemId,
   intent,
-  user,
+  identity,
   showLoading = false
 ) {
   return {
@@ -198,7 +198,7 @@ export function revokeWorkflowItemPermission(
     subprojectId,
     workflowitemId,
     intent,
-    user,
+    identity,
     showLoading
   };
 }

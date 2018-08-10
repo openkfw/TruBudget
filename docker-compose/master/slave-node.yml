@@ -15,7 +15,7 @@ services:
       - bc-slave
 
   bc-slave:
-    image: bc:local
+    image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
       CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
@@ -44,7 +44,7 @@ services:
       - test-bc-slave
 
   test-bc-slave:
-    image: bc:local
+    image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
       CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
