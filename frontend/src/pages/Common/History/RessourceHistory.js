@@ -10,6 +10,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Avatar from "@material-ui/core/Avatar";
 import NotificationsActive from "@material-ui/icons/NotificationsActive";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import strings from "../../../localizeStrings";
 
@@ -47,11 +48,11 @@ export default ({ show, close, ressourceHistory, mapIntent }) => {
       ) : (
         <div style={{ ...styles.empty, ...styles.list }}>
           <Card elevation={0}>
-            <CardHeader
-              avatar={<NotificationsActive style={styles.icon} />}
-              title="Nothing to display yet"
-              subheader=" "
-            />
+          <div style={styles.container}>
+              <div style={styles.refreshContainer}>
+                <CircularProgress size={50} left={0} top={0} percentage={50} color="primary" style={styles.refresh} />
+              </div>
+            </div>
           </Card>
         </div>
       )}
