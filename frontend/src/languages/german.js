@@ -295,6 +295,7 @@ const de = {
     subproject_intent_grantPermission: "German: Grant subproject permissions",
     subproject_intent_listPermissions: "German: View subproject permissions",
     subproject_intent_revokePermission: "German: Revoke subproject permissions",
+    subproject_reorderWorkflowitems: "German: Reorder workflow items",
     subproject_update: "German: Update subproject",
     subproject_viewDetails: "German: View subproject details",
     subproject_viewSummary: "German: View subproject overview",
