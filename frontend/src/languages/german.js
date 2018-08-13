@@ -292,6 +292,7 @@ const de = {
     subproject_assign: "German: Assign subproject",
     subproject_close: "German: Close subproject",
     subproject_createWorkflowitem: "German: Create workflow items",
+    subproject_reorderWorkflowitems: "German: Reorder Workflowitems",
     subproject_intent_grantPermission: "German: Grant subproject permissions",
     subproject_intent_listPermissions: "German: View subproject permissions",
     subproject_intent_revokePermission: "German: Revoke subproject permissions",

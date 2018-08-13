@@ -292,6 +292,7 @@ const pt = {
     subproject_assign: "Portuguese: Assign subproject",
     subproject_close: "Portuguese: Close subproject",
     subproject_createWorkflowitem: "Portuguese: Create workflow items",
+    subproject_reorderWorkflowitems: "Portuguese: Reorder Workflowitems",
     subproject_intent_grantPermission: "Portuguese: Grant subproject permissions",
     subproject_intent_listPermissions: "Portuguese: View subproject permissions",
     subproject_intent_revokePermission: "Portuguese: Revoke subproject permissions",

@@ -292,6 +292,7 @@ const en = {
     subproject_assign: "Assign subproject",
     subproject_close: "Close subproject",
     subproject_createWorkflowitem: "Create workflow items",
+    subproject_reorderWorkflowitems: "Reorder Workflowitems",
     subproject_intent_grantPermission: "Grant subproject permissions",
     subproject_intent_listPermissions: "View subproject permissions",
     subproject_intent_revokePermission: "Revoke subproject permissions",

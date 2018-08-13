@@ -12,6 +12,9 @@ import Button from "@material-ui/core/Button";
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
 import strings from "../../localizeStrings";
+import {
+ canReorderWorkflowItems
+} from "../../permissions.js";
 
 const style = {
   paddingLeft: "0px"
@@ -46,7 +49,7 @@ const createTableHeader = props => (
 
 const renderSortButton = props => (
   <Button
-    disabled={props.status === "closed"}
+    disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
     onClick={() => handleEnableWorkflowSort(props)}
     style={{
       position: "relative",
