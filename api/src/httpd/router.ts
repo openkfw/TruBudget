@@ -9,6 +9,7 @@ import { createUser } from "../global/createUser";
 import { addUserToGroup } from "../group/addUser";
 import { getGroupList } from "../group/list";
 import { removeUserFromGroup } from "../group/removeUser";
+import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
 import { MultichainClient } from "../multichain";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
@@ -57,11 +58,10 @@ const send = (res: express.Response, httpResponse: HttpResponse) => {
 };
 
 const handleError = (req: AuthenticatedRequest, res: express.Response, err: any) => {
-  console.log(err);
+  logger.debug(err);
 
   switch (err.kind) {
     case "NotAuthorized":
-      console.log(req.token);
       send(res, [
         403,
         {
@@ -93,6 +93,7 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
         },
       ]);
       break;
+
     case "ParseError": {
       let message;
       if (err.message !== undefined) {
@@ -141,6 +142,7 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
           },
         ]);
       } else {
+        logger.error(err);
         send(res, [
           500,
           {
