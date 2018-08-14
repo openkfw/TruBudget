@@ -54,8 +54,8 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
         snapshot.displayName
       );
     default:
-      console.log(intent);
-      return "Intent not defined";
+      console.log("WARN: Intent not defined:", intent);
+      return intent;
   }
 };
 

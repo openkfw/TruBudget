@@ -37,6 +37,18 @@ export async function publishWorkflowitemOrderingUpdate(
     });
 }
 
+export async function fetchOrderingEvents(
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+): Promise<Event[]> {
+  const stream = projectId;
+  const streamItemKey = workflowitemOrderingKey(subprojectId);
+  const streamItems = await multichain.v2_readStreamItems(stream, streamItemKey);
+  const events: Event[] = streamItems.map(x => x.data.json);
+  return events;
+}
+
 export async function fetchWorkflowitemOrdering(
   multichain: MultichainClient,
   projectId: string,

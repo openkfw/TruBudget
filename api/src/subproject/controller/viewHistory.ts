@@ -1,11 +1,11 @@
-import { throwIfUnauthorized } from "../../authz";
-import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import flatten from "../../lib/flatMap";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
+import * as WorkflowitemOrdering from "../model/WorkflowitemOrdering";
 
 export async function getSubprojectHistory(
   multichain: MultichainClient,
@@ -20,10 +20,20 @@ export async function getSubprojectHistory(
     resources => resources[0],
   );
 
-  // Add workflowitems' logs to the subproject log and sort by creation time:
   const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId);
-  const events = workflowitems
-    .reduce((eventsAcc, workflowitem) => eventsAcc.concat(workflowitem.log), subproject.log)
+
+  const reorderingEvents = await WorkflowitemOrdering.fetchOrderingEvents(
+    multichain,
+    projectId,
+    subprojectId,
+  );
+
+  const events = (subproject.log as Array<Event | Subproject.AugmentedEvent>)
+    // Add workflowitems' logs to the subproject log:
+    .concat(flatten(workflowitems.map(x => x.log)))
+    // Add workflowitem reordering events:
+    .concat(reorderingEvents)
+    // Sort events by creation time:
     .sort(compareEvents);
 
   return [
