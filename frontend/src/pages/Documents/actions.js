@@ -12,12 +12,11 @@ export function validateDocument(hash, payload) {
     hash
   }
 }
-export function addDocument(payload, name, id) {
+export function addDocument(payload, filename) {
   return {
     type: ADD_DOCUMENT,
     payload,
-    name,
-    id
+    filename
   }
 }
 

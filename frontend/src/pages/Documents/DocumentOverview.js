@@ -88,17 +88,18 @@ class DocumentOverview extends Component {
   generateDocumentList = (documents, validationActive = true, validatedDocuments = {}) =>
     documents.map((document, index) => {
       let validated = undefined;
-      const { name, hash } = document;
+      const { displayName, payload } = document;
 
-      if (validationActive) validated = validatedDocuments[hash];
-
+      //if (validationActive) validated = validatedDocuments[hash];
+      //{hash ? this.generateHashIcon(hash) : <CircularProgress size={20} />}
+      //{validationActive ? <TableCell>{this.generateUploadIcon(hash, validated)}</TableCell> : null}
       return (
         <TableRow key={index + "document"}>
           <TableCell style={{ textAlign: "center" }}>
-            {hash ? this.generateHashIcon(hash) : <CircularProgress size={20} />}
+
           </TableCell>
-          <TableCell>{name}</TableCell>
-          {validationActive ? <TableCell>{this.generateUploadIcon(hash, validated)}</TableCell> : null}
+          <TableCell>{displayName}</TableCell>
+
         </TableRow>
       );
     });
@@ -111,6 +112,7 @@ class DocumentOverview extends Component {
 
   render = () => {
     const { documents, validationActive, validatedDocuments } = this.props;
+    console.log(this.props);
     return (
       <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
         <TableBody>

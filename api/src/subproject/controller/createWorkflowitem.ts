@@ -1,3 +1,4 @@
+import * as crypto from "crypto";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
@@ -12,9 +13,15 @@ import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../../li
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
+import { Document } from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
 
 const isUndefinedOrNull = x => x === undefined || x === null;
+
+interface DocumentDto {
+  displayName: string;
+  payload: string;
+}
 
 export async function createWorkflowitem(
   multichain: MultichainClient,
@@ -85,6 +92,35 @@ export async function createWorkflowitem(
   );
 
   const ctime = new Date();
+  const hashedDocuments = await Promise.all<Document>(
+    data.documents.map((document: DocumentDto) => {
+      return {
+        description: document.displayName,
+        hash: crypto.createHash("sha256").update(Buffer.from(document.payload, "base64")),
+      };
+    }),
+  );
+
+  // tried to do with promises
+  // const hashedDocuments = await Promise.all<Document>(
+  //   data.documents.map(
+  //     (document: DocumentDto): Promise<Document> => {
+  //       const p = new Promise(resolve => {
+  //         resolve(
+  //           crypto
+  //             .createHash("sha256")
+  //             .update(Buffer.from(document.payload, "base64"))
+  //             .toString(),
+  //         );
+  //       });
+
+  //       return p.then(hashValue => ({
+  //         description: document.displayName,
+  //         hash: hashValue,
+  //       }));
+  //     },
+  //   ),
+  // );
 
   const workflowitem: Workflowitem.Data = {
     id: workflowitemId,
@@ -96,7 +132,7 @@ export async function createWorkflowitem(
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
     assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
-    documents: data.documents, // not checked right now
+    documents: hashedDocuments, // not checked right now
   };
 
   const event = {

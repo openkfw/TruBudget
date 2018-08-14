@@ -51,7 +51,7 @@ const logging = (req: express.Request, res, next) => {
 
 export const createBasicApp = (jwtSecret: string, rootSecret: string) => {
   const app = express();
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: "50mb" }));
   app.use("/api/doc", express.static("doc"));
   addTokenHandling(app, jwtSecret);
   app.use(logging);

@@ -22,12 +22,12 @@ export default function documentsReducer(state = defaultState, action) {
     case ADD_DOCUMENT:
       return state.set(
         "tempDocuments",
-        state.get("tempDocuments").concat([fromJS({ id: action.id, name: action.name })])
+        state.get("tempDocuments").concat([fromJS({ payload: action.payload, name: action.name })])
       );
     case ADD_DOCUMENT_SUCCESS:
       const tempDocs = state.get("tempDocuments").update(
         state.get("tempDocuments").findIndex(document => {
-          return document.get("id") === action.id;
+          return document.get("name") === action.name;
         }),
         document => {
           return document.set("hash", action.hash);

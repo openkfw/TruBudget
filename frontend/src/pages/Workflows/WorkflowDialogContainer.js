@@ -14,7 +14,8 @@ import {
   storeWorkflowName,
   storeWorkflowStatus,
   hideWorkflowDialog,
-  setCurrentStep
+  setCurrentStep,
+  storeWorkflowDocument
 } from "./actions";
 import { storeSnackbarMessage, showSnackbar } from "../Notifications/actions";
 
@@ -39,6 +40,7 @@ class WorkflowDialogContainer extends Component {
   };
 
   render() {
+    console.log(this.props);
     return (
       <WorkflowDialog
         createWorkflowItem={this.createWorkflowItem}
@@ -57,7 +59,7 @@ const mapStateToProps = state => {
     dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     currentStep: state.getIn(["workflow", "currentStep"]),
-    currency: state.getIn(["workflow", "currency"])
+    currency: state.getIn(["workflow", "currency"]),
   };
 };
 
@@ -87,7 +89,8 @@ const mapDispatchToProps = dispatch => {
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     showSnackbar: () => dispatch(showSnackbar()),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
+    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
+    storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name))
   };
 };
 

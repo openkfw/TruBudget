@@ -33,10 +33,12 @@ export default class DocumentUpload extends Component {
   }
 
   render = () => {
+
+    const { storeWorkflowDocument, workflowDocuments } = this.props;
     return (
       <div>
         <div>
-          <DocumentOverview documents={this.props.workflowDocuments} validationActive={false} />
+          <DocumentOverview documents={workflowDocuments} validationActive={false} />
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
           <TextField
@@ -55,8 +57,17 @@ export default class DocumentUpload extends Component {
                 style={styles.uploadInput}
                 onChange={() => {
                   const file = this.input.files[0];
-                  this.props.addDocument(file, this.state.name, Date.now());
-                  this.setState({ name: "" });
+                  const reader = new FileReader();
+                  reader.onloadend = (e) => {
+                    if(e.target.result !== undefined){//TODO check if necessary
+                      const dataUrl = e.target.result.split("base64,")[1];
+                      storeWorkflowDocument(this.state.name,dataUrl);
+                    }
+
+                    this.setState({ name: "" });
+                  }
+                  reader.readAsDataURL(file);
+
                 }}
               />
             )}

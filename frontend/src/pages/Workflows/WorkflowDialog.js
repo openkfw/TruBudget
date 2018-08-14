@@ -20,11 +20,10 @@ const handleCreate = props => {
     createWorkflowItem,
     onDialogCancel,
     workflowToAdd,
-    workflowDocuments,
     storeSnackbarMessage,
     showSnackbar
   } = props;
-  const { displayName, amount, amountType, currency, description, status } = workflowToAdd;
+  const { displayName, amount, amountType, currency, description, status, documents } = workflowToAdd;
   createWorkflowItem(
     displayName,
     fromAmountString(amount).toString(),
@@ -32,7 +31,7 @@ const handleCreate = props => {
     currency,
     description,
     status,
-    workflowDocuments
+    documents
   );
   storeSnackbarMessage(strings.common.created + " " + strings.common.workflowItem + " " + displayName);
   showSnackbar();
@@ -92,7 +91,8 @@ const Content = props => {
   );
 };
 const WorkflowDialog = props => {
-  const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, addDocument, workflowDocuments } = props;
+  const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, storeWorkflowDocument} = props;
+  console.log(workflowToAdd.documents);
   const specifcProps = editDialogShown
     ? {
         handleSubmit: handleEdit,
@@ -117,7 +117,7 @@ const WorkflowDialog = props => {
 
     {
       title: strings.workflow.workflow_documents,
-      content: <DocumentUpload addDocument={addDocument} workflowDocuments={workflowDocuments} />,
+      content: <DocumentUpload storeWorkflowDocument={storeWorkflowDocument} workflowDocuments={workflowToAdd.documents} />,
       nextDisabled:
         workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
           ? Object.keys(changes).length === 2 && changes.hasOwnProperty("currency") && changes.hasOwnProperty("amount")

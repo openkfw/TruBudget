@@ -147,6 +147,7 @@ class Api {
   createWorkflowItem = payload =>
     axios.post(`/subproject.createWorkflowitem`, {
       ...payload,
+      documents: payload.documents,
       currency: payload.amountType === "N/A" ? null : payload.currency,
       amount: payload.amountType === "N/A" ? null : payload.amount
     });
