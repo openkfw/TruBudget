@@ -268,6 +268,7 @@ const en = {
     subproject_createWorkflowitem: "{0} created workflowitem {1}",
     subproject_grantPermission: "{0} granted permission {1} to {2}",
     subproject_grantPermission_details: "{0} granted permission {1} to {2} on {3}",
+    subproject_reorderWorkflowitems: "{0} changed the workflowitem ordering",
     subproject_revokePermission: "{0} revoked permission {1} from {2}",
     subproject_revokePermission_details: "{0} revoked permission {1} of {3} from {2}",
     to: "{0} to {1}",
