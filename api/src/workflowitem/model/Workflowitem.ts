@@ -64,6 +64,7 @@ export interface Update {
   currency?: string;
   amountType?: "N/A" | "disbursed" | "allocated";
   description?: string;
+  documents?: Document[];
 }
 
 export interface Document {

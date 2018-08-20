@@ -28,6 +28,7 @@ export async function updateWorkflowitem(
     "amount",
     "currency",
     "amountType",
+    "documents",
   ]);
 
   if (isEmpty(theUpdate)) {

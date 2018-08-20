@@ -23,6 +23,28 @@ interface DocumentDto {
   payload: string;
 }
 
+const hashedDocuments = async (docs): Promise<Document[]> => {
+  console.log(docs);
+  return await Promise.all<Document>(
+    docs.map(
+      (document: DocumentDto): Promise<Document> => {
+        const p = new Promise<string>(resolve => {
+          const hash = crypto.createHash("sha256");
+          hash.update(Buffer.from(document.payload, "base64"));
+          resolve(hash.digest("hex"));
+        });
+
+        return p.then(hashValue => ({
+          description: document.displayName,
+          hash: hashValue,
+        }));
+      },
+    ),
+  );
+};
+
+export { hashedDocuments };
+
 export async function createWorkflowitem(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
@@ -92,35 +114,6 @@ export async function createWorkflowitem(
   );
 
   const ctime = new Date();
-  const hashedDocuments = await Promise.all<Document>(
-    data.documents.map((document: DocumentDto) => {
-      return {
-        description: document.displayName,
-        hash: crypto.createHash("sha256").update(Buffer.from(document.payload, "base64")),
-      };
-    }),
-  );
-
-  // tried to do with promises
-  // const hashedDocuments = await Promise.all<Document>(
-  //   data.documents.map(
-  //     (document: DocumentDto): Promise<Document> => {
-  //       const p = new Promise(resolve => {
-  //         resolve(
-  //           crypto
-  //             .createHash("sha256")
-  //             .update(Buffer.from(document.payload, "base64"))
-  //             .toString(),
-  //         );
-  //       });
-
-  //       return p.then(hashValue => ({
-  //         description: document.displayName,
-  //         hash: hashValue,
-  //       }));
-  //     },
-  //   ),
-  // );
 
   const workflowitem: Workflowitem.Data = {
     id: workflowitemId,
@@ -132,7 +125,7 @@ export async function createWorkflowitem(
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
     assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
-    documents: hashedDocuments, // not checked right now
+    documents: await hashedDocuments(data.documents), // not checked right now
   };
 
   const event = {
