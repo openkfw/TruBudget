@@ -92,7 +92,6 @@ const Content = props => {
 };
 const WorkflowDialog = props => {
   const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, storeWorkflowDocument} = props;
-  console.log(workflowToAdd.documents);
   const specifcProps = editDialogShown
     ? {
         handleSubmit: handleEdit,

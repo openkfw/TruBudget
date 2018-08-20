@@ -42,7 +42,7 @@ export interface Data {
   description: string;
   status: "open" | "closed";
   assignee?: string;
-  documents: Document[];
+  documents?: Document[];
 }
 
 export interface RedactedData {

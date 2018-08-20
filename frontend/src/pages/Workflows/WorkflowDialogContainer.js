@@ -40,7 +40,6 @@ class WorkflowDialogContainer extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <WorkflowDialog
         createWorkflowItem={this.createWorkflowItem}
@@ -59,7 +58,7 @@ const mapStateToProps = state => {
     dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     currentStep: state.getIn(["workflow", "currentStep"]),
-    currency: state.getIn(["workflow", "currency"]),
+    currency: state.getIn(["workflow", "currency"])
   };
 };
 

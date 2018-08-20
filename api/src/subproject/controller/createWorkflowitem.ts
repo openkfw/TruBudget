@@ -23,8 +23,7 @@ interface DocumentDto {
   payload: string;
 }
 
-const hashedDocuments = async (docs): Promise<Document[]> => {
-  console.log(docs);
+const hashDocuments = async (docs): Promise<Document[]> => {
   return await Promise.all<Document>(
     docs.map(
       (document: DocumentDto): Promise<Document> => {
@@ -43,7 +42,7 @@ const hashedDocuments = async (docs): Promise<Document[]> => {
   );
 };
 
-export { hashedDocuments };
+export { hashDocuments };
 
 export async function createWorkflowitem(
   multichain: MultichainClient,
@@ -125,7 +124,7 @@ export async function createWorkflowitem(
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
     assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
-    documents: await hashedDocuments(data.documents), // not checked right now
+    documents: await hashDocuments(data.documents),
   };
 
   const event = {

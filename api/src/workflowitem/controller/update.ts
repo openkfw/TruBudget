@@ -9,6 +9,7 @@ import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
+import { hashDocuments } from "../../subproject/controller/createWorkflowitem";
 import * as Workflowitem from "../model/Workflowitem";
 
 export async function updateWorkflowitem(
@@ -28,7 +29,6 @@ export async function updateWorkflowitem(
     "amount",
     "currency",
     "amountType",
-    "documents",
   ]);
 
   if (isEmpty(theUpdate)) {
@@ -48,11 +48,18 @@ export async function updateWorkflowitem(
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
+  const getTheUpdate = async (): Promise<Workflowitem.Update> => {
+    if (!isEmpty(input.documents)) {
+      theUpdate.documents = await hashDocuments(input.documents);
+    }
+    return theUpdate;
+  };
+
   const publishedEvent = await sendEventToDatabase(
     multichain,
     req.token,
     userIntent,
-    theUpdate,
+    await getTheUpdate(),
     projectId,
     subprojectId,
     workflowitemId,

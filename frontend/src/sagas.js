@@ -284,7 +284,7 @@ export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId,
       subprojectId: subprojectId,
       showLoading: true
     });
-  }, true);
+  });
 }
 
 export function* reorderWorkflowitemsSaga({ projectId, subprojectId, ordering }) {
