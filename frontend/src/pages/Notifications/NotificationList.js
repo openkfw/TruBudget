@@ -14,7 +14,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 
 import moment from "moment";
 
-import { intentMapping, parseURI, fetchRessourceName, hasAccess } from "./helper";
+import { intentMapping, parseURI, fetchResourceName, hasAccess } from "./helper";
 
 const styles = {
   root: {
@@ -56,8 +56,8 @@ const getListItems = ({ notifications, history, markNotificationAsRead }) =>
           <ListItemText
             style={{ flex: 3 }}
             component="div"
-            primary={fetchRessourceName(resources, "project")}
-            secondary={fetchRessourceName(resources, "subproject")}
+            primary={fetchResourceName(resources, "project")}
+            secondary={fetchResourceName(resources, "subproject")}
           />
 
           <ListItemText style={{ flex: 5 }} component="div" primary={message} />

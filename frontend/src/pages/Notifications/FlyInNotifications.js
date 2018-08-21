@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 
 import _isEmpty from "lodash/isEmpty";
 
-import { intentMapping, parseURI, fetchRessourceName, hasAccess } from "./helper";
+import { intentMapping, parseURI, fetchResourceName, hasAccess } from "./helper";
 
 const styles = {
   notification: {
@@ -76,8 +76,8 @@ export default class FlyInNotification extends Component {
                 <LaunchIcon />
               </IconButton>
             }
-            title={fetchRessourceName(resources, "project")}
-            subheader={fetchRessourceName(resources, "subproject")}
+            title={fetchResourceName(resources, "project")}
+            subheader={fetchResourceName(resources, "subproject")}
           />
           <CardContent>
             <Typography component="p">{message}</Typography>
