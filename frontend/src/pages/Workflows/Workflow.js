@@ -9,7 +9,9 @@ import WorkflowTable from "./WorkflowTable";
 import { canCreateWorkflowItems } from "../../permissions";
 
 const Workflow = props => {
+  const subprojectStatus = props.status
   const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents);
+  const createDisabled = props.workflowSortEnabled ? props.workflowSortEnabled : !allowedToCreateWorkflows || subprojectStatus === "closed"
   return (
     <div
       style={{
@@ -33,7 +35,7 @@ const Workflow = props => {
       >
         {/* Button is disabled either if the user is not allowed to edit or the user is in "sort" mode */}
         <Button
-          disabled={props.workflowSortEnabled ? props.workflowSortEnabled : !allowedToCreateWorkflows}
+          disabled={createDisabled}
           color="primary"
           onClick={() => props.showCreateDialog()}
           variant="fab"

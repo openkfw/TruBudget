@@ -30,7 +30,7 @@ const SubProjects = props => {
         }}
       >
         <Button
-          disabled={!props.canCreateSubProject}
+          disabled={!props.canCreateSubProject || props.projectStatus === "closed"}
           onClick={props.showSubprojectDialog}
           variant="fab"
           color="primary"
