@@ -28,12 +28,12 @@ const styles = {
     fontSize: "40px"
   }
 };
-export default ({ show, close, ressourceHistory, mapIntent }) => {
+export default ({ show, close, resourceHistory, mapIntent }) => {
   return (
     <Drawer open={show} onClose={close} anchor="right">
-      {ressourceHistory.length > 0 ? (
+      {resourceHistory.length > 0 ? (
         <List subheader={<ListSubheader disableSticky>{strings.common.history}</ListSubheader>} style={styles.list}>
-          {ressourceHistory.map(i => (
+          {resourceHistory.map(i => (
             <ListItem key={i.key + i.createdAt}>
               <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
               <ListItemText

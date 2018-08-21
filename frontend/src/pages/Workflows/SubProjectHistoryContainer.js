@@ -4,7 +4,7 @@ import { fromJS } from "immutable";
 
 import sortBy from "lodash/sortBy";
 
-import RessourceHistory from "../Common/History/RessourceHistory";
+import ResourceHistory from "../Common/History/ResourceHistory";
 import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
 import { toJS, formatString, formatUpdateString } from "../../helper";
@@ -73,7 +73,7 @@ class SubProjectHistoryContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ressourceHistory: fromJS([]),
+      resourceHistory: fromJS([]),
       items: fromJS([])
     };
   }
@@ -81,10 +81,10 @@ class SubProjectHistoryContainer extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     // only calculate if history is shown and workflow state changed
     if (nextProps.show && nextProps.items !== prevState.items) {
-      const ressourceHistory = calculateHistory(nextProps.items);
+      const resourceHistory = calculateHistory(nextProps.items);
       return {
         items: nextProps.items,
-        ressourceHistory
+        resourceHistory
       };
     } else {
       return {
@@ -94,7 +94,7 @@ class SubProjectHistoryContainer extends Component {
   }
 
   render() {
-    return <RessourceHistory ressourceHistory={this.state.ressourceHistory} mapIntent={mapIntent} {...this.props} />;
+    return <ResourceHistory resourceHistory={this.state.resourceHistory} mapIntent={mapIntent} {...this.props} />;
   }
 }
 
