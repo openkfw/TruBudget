@@ -2,28 +2,29 @@ import React from "react";
 
 import Badge from "@material-ui/core/Badge";
 import BubbleIcon from "@material-ui/icons/DeviceHub";
-import IconButton from "@material-ui/core/IconButton";
 import { withStyles } from "@material-ui/core/styles";
 
 import strings from "../../localizeStrings";
 import Tooltip from "@material-ui/core/Tooltip";
 
-const styles = {
+const styles = theme =>({
   badge: {
     top: "-2px",
-    right: "-2px"
-  }
-};
+    right: "-2px",
+    margin: theme.spacing.unit * 2,
+  },
+  margin: {
+    margin: theme.spacing.unit * 2,
+  },
+});
 
 const NumberOfPeersIcon = ({ numberOfActivePeers, classes }) => {
   return (
-    <Badge classes={{ badge: classes.badge }} badgeContent={numberOfActivePeers} color="primary">
-      <Tooltip title={strings.navigation.connected_peers}>
-        <IconButton tooltip={strings.navigation.connected_peers}>
-          <BubbleIcon color="primary" />
-        </IconButton>
-      </Tooltip>
-    </Badge>
+    <Badge className={classes.margin} badgeContent={numberOfActivePeers} color="primary">
+     <Tooltip title={strings.navigation.connected_peers}>
+        <BubbleIcon color="primary" />
+    </Tooltip>
+  </Badge>
   );
 };
 
