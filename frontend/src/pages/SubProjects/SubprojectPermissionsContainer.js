@@ -38,8 +38,10 @@ class SubProjectPermissionsContainer extends Component {
   getAllowedIntents = () => {
     const { subProjects, subprojectId } = this.props;
     if (subProjects && !_isEmpty(subprojectId)) {
-      const { allowedIntents } = subProjects.find(subproject => subproject.data.id === subprojectId);
-      return allowedIntents;
+      const subproject =  subProjects.find(subproject => subproject.data.id === subprojectId);
+      if (subproject){
+        return subproject.allowedIntents;
+      }
     }
     return [];
   };
