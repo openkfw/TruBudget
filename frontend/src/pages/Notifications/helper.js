@@ -39,7 +39,7 @@ export const parseURI = ({
   }
 };
 
-export const fetchRessourceName = (res, type) => {
+export const fetchResourceName = (res, type) => {
   const r = res.find(v => v.type === type);
   if (r !== undefined) {
     return r.displayName || strings.workflow.workflow_redacted;
