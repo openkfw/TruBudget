@@ -50,6 +50,7 @@ import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.li
 import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
+import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
@@ -1196,6 +1197,15 @@ export const createRouter = (
    */
   router.post("/workflowitem.intent.revokePermission", (req: AuthenticatedRequest, res) => {
     revokeWorkflowitemPermission(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /workflowitem.intent.revokePermission Revoke permission
+   */
+  router.post("/workflowitem.validateDocument", (req: AuthenticatedRequest, res) => {
+    validateDocument(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

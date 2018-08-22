@@ -23,18 +23,21 @@ interface DocumentDto {
   payload: string;
 }
 
+const hashBase64String = (base64String: string): Promise<string> => {
+  return new Promise<string>(resolve => {
+    const hash = crypto.createHash("sha256");
+    hash.update(Buffer.from(base64String, "base64"));
+    resolve(hash.digest("hex"));
+  });
+};
+
 const hashDocuments = async (docs): Promise<Document[]> => {
   return await Promise.all<Document>(
     docs.map(
       (document: DocumentDto): Promise<Document> => {
-        const p = new Promise<string>(resolve => {
-          const hash = crypto.createHash("sha256");
-          hash.update(Buffer.from(document.payload, "base64"));
-          resolve(hash.digest("hex"));
-        });
-
+        const p = hashBase64String(document.payload);
         return p.then(hashValue => ({
-          description: document.displayName,
+          displayName: document.displayName,
           hash: hashValue,
         }));
       },
@@ -42,7 +45,7 @@ const hashDocuments = async (docs): Promise<Document[]> => {
   );
 };
 
-export { hashDocuments };
+export { hashDocuments, hashBase64String };
 
 export async function createWorkflowitem(
   multichain: MultichainClient,
@@ -124,7 +127,7 @@ export async function createWorkflowitem(
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
     assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
-    documents: await hashDocuments(data.documents),
+    documents: data.documents !== undefined ? await hashDocuments(data.documents) : [],
   };
 
   const event = {

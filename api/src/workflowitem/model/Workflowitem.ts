@@ -68,7 +68,7 @@ export interface Update {
 }
 
 export interface Document {
-  description: string;
+  displayName: string;
   hash: string;
 }
 
