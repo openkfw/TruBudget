@@ -26,7 +26,6 @@ describe("Login", function() {
       .type("bar")
       .should("have.value", "bar");
     cy.get("#loginbutton").click();
-    cy.get("#username-helper-text").should("be.visible");
     cy.get("#password-helper-text").should("be.visible");
   });
 });

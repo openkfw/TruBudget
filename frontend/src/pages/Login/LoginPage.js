@@ -74,7 +74,7 @@ const LoginPage = ({
           </div>
         </div>
         <Divider />
-        <Username username={username} storeUsername={storeUsername} failed={loginUnsuccessful} id="username" />
+        <Username username={username} storeUsername={storeUsername}  id="username" />
         <Password
           password={password}
           storePassword={storePassword}
