@@ -17,6 +17,7 @@ import {
   REVOKE_PERMISSION
 } from "./pages/Overview/actions";
 
+import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS } from "./pages/Documents/actions";
 import {
   CREATE_SUBPROJECT,
   CREATE_SUBPROJECT_SUCCESS,
@@ -292,6 +293,16 @@ export function* reorderWorkflowitemsSaga({ projectId, subprojectId, ordering })
     yield callApi(api.reorderWorkflowitems, projectId, subprojectId, ordering);
     yield put({
       type: REORDER_WORKFLOW_ITEMS_SUCCESS
+    });
+  }, true);
+}
+
+export function* validateDocumentSaga({ base64String, hash }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.validateDocument, base64String, hash);
+    yield put({
+      type: VALIDATE_DOCUMENT_SUCCESS,
+      isIdentical: data.isIdentical
     });
   }, true);
 }
@@ -959,6 +970,9 @@ export function* watchAssignProject() {
 export function* watchFetchAcitvePeers() {
   yield takeLatest(FETCH_ACTIVE_PEERS, fetchActivePeersSaga);
 }
+export function* watchValidateDocument() {
+  yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga);
+}
 
 export default function* rootSaga() {
   try {
@@ -1011,6 +1025,7 @@ export default function* rootSaga() {
       watchRevokeWorkflowitemPermissions(),
       watchCloseWorkflowItem(),
       watchAssignWorkflowItem(),
+      watchValidateDocument(),
 
       // Notifications
       watchFetchAllNotifications(),

@@ -16,6 +16,12 @@ const styles = {
   uploadButton: {
     verticalAlign: "middle"
   },
+  uploadButtonValidated: {
+    color: "secondary"
+  },
+  uploadButtonChanged: {
+    color: "secondary"
+  },
   uploadInput: {
     cursor: "pointer",
     position: "absolute",
@@ -42,16 +48,18 @@ class DocumentOverview extends Component {
 
     if (_isUndefined(validated)) {
       label = strings.workflow.workflow_document_validate;
-      style = styles.uploadButton;
+      style = { ...styles.uploadButton };
     } else if (validated === true) {
+      console.log("validated");
       label = strings.workflow.workflow_document_validated + "!";
       style = {
-        ...styles.uploadButton
+        ...styles.uploadButtonValidated
       };
     } else {
+      console.log("not validated");
       label = strings.workflow.workflow_document_changed + "!";
       style = {
-        ...styles.uploadButton
+        ...styles.uploadButtonChanged
       };
     }
 
@@ -59,7 +67,8 @@ class DocumentOverview extends Component {
   };
 
   generateUploadIcon = (hash, validated) => (
-    <Button labelPosition="before" containerElement="label" {...this.getPropsForUploadButton(validated)}>
+    <Button {...this.getPropsForUploadButton(validated)}>
+      Validate
       <input
         id="docvalidation"
         type="file"
@@ -67,39 +76,39 @@ class DocumentOverview extends Component {
         style={styles.uploadInput}
         onChange={() => {
           const file = this.input[hash].files[0];
-          this.props.validateDocument(hash, file);
+          const reader = new FileReader();
+          reader.onloadend = e => {
+            if (e.target.result !== undefined) {
+              //TODO: make own function to convert file into base64String
+              const dataUrl = e.target.result.split("base64,")[1];
+              this.props.validateDocument(hash, dataUrl);
+            }
+          };
+          reader.readAsDataURL(file);
         }}
       />
     </Button>
   );
 
   generateHashIcon = hash => (
-    <Button
-      labelPosition="after"
-      style={styles.hashButton}
-      disableTouchRipple={true}
-      hoverColor="none"
-      icon={<FingerPrint />}
-    >
+    <Button style={styles.hashButton} disableTouchRipple={true} icon={<FingerPrint />}>
       {`${hash.slice(0, 6)}...`}
     </Button>
   );
 
-  generateDocumentList = (documents, validationActive = true, validatedDocuments = {}) =>
+  generateDocumentList = (documents, validationActive = false, validatedDocuments = {}) =>
     documents.map((document, index) => {
       let validated = undefined;
-      const { displayName, payload } = document;
-
-      //if (validationActive) validated = validatedDocuments[hash];
-      //{hash ? this.generateHashIcon(hash) : <CircularProgress size={20} />}
-      //{validationActive ? <TableCell>{this.generateUploadIcon(hash, validated)}</TableCell> : null}
+      const { displayName, hash } = document;
+      if (validationActive) {
+        validated = validatedDocuments[hash];
+      }
       return (
         <TableRow key={index + "document"}>
-          <TableCell style={{ textAlign: "center" }}>
-
-          </TableCell>
+          <TableCell style={{ textAlign: "center" }} />
           <TableCell>{displayName}</TableCell>
-
+          {validationActive ? <TableCell>{this.generateHashIcon(hash)}</TableCell> : null}
+          {validationActive ? <TableCell>{this.generateUploadIcon(hash, validated)}</TableCell> : null}
         </TableRow>
       );
     });
@@ -116,6 +125,7 @@ class DocumentOverview extends Component {
     return (
       <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
         <TableBody>
+          {console.log(documents)}
           {_isEmpty(documents)
             ? this.generateEmptyList()
             : this.generateDocumentList(documents, validationActive, validatedDocuments)}

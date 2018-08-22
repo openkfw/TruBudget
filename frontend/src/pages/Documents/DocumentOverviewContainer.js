@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import DocumentOverview from './DocumentOverview';
-import { validateDocument } from './actions';
+import DocumentOverview from "./DocumentOverview";
+import { validateDocument } from "./actions";
 
 class DocumentOverviewContainer extends Component {
   render() {
@@ -10,16 +10,16 @@ class DocumentOverviewContainer extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    validateDocument: (hash, payload) => dispatch(validateDocument(hash, payload))
+    validateDocument: (hash, base64String) => dispatch(validateDocument(hash, base64String))
   };
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    documents: state.getIn(['documents', 'hashedDocuments']).toJS()
-  }
-}
+    validatedDocuments: state.getIn(["documents", "validatedDocuments"]).toJS()
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DocumentOverviewContainer);

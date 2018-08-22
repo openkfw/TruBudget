@@ -16,7 +16,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import _isEmpty from "lodash/isEmpty";
 
 import { toAmountString, statusMapping, statusIconMapping } from "../../helper";
-import DocumentOverview from "../Documents/DocumentOverview";
+import DocumentOverviewContainer from "../Documents/DocumentOverviewContainer";
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -81,7 +81,7 @@ const WorkflowDetails = ({
   validatedDocuments
 }) => {
   const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-  const { displayName, description, amountType, status, assignee, amount, currency } = workflowItem.data;
+  const { displayName, description, amountType, status, assignee, amount, currency, documents } = workflowItem.data;
   const trimmedComment = removeNewLines(description);
   const assignedUser = users.find(user => user.id === assignee);
   return (
@@ -114,11 +114,12 @@ const WorkflowDetails = ({
           </ListItem>
           <Divider />
           <ListItem>
-            <DocumentOverview
+            <DocumentOverviewContainer
               id={strings.workflow.workflow_documents}
-              documents={workflowItem.documents}
+              documents={documents}
               validateDocument={validateDocument}
               validatedDocuments={validatedDocuments}
+              validationActive={showWorkflowDetails}
             />
           </ListItem>
         </List>

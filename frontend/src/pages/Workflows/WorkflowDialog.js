@@ -16,13 +16,7 @@ const styles = {
   }
 };
 const handleCreate = props => {
-  const {
-    createWorkflowItem,
-    onDialogCancel,
-    workflowToAdd,
-    storeSnackbarMessage,
-    showSnackbar
-  } = props;
+  const { createWorkflowItem, onDialogCancel, workflowToAdd, storeSnackbarMessage, showSnackbar } = props;
   const { displayName, amount, amountType, currency, description, status, documents } = workflowToAdd;
   createWorkflowItem(
     displayName,
@@ -48,7 +42,10 @@ const handleEdit = props => {
     showSnackbar,
     storeSnackbarMessage
   } = props;
+  console.log(workflowItems);
+  console.log(workflowToAdd);
   const changes = compareObjects(workflowItems, workflowToAdd);
+  console.log(changes);
   if (changes) {
     const projectId = location.pathname.split("/")[2];
     const subprojectId = location.pathname.split("/")[3];
@@ -91,7 +88,7 @@ const Content = props => {
   );
 };
 const WorkflowDialog = props => {
-  const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, storeWorkflowDocument} = props;
+  const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, storeWorkflowDocument } = props;
   const specifcProps = editDialogShown
     ? {
         handleSubmit: handleEdit,
@@ -116,7 +113,9 @@ const WorkflowDialog = props => {
 
     {
       title: strings.workflow.workflow_documents,
-      content: <DocumentUpload storeWorkflowDocument={storeWorkflowDocument} workflowDocuments={workflowToAdd.documents} />,
+      content: (
+        <DocumentUpload storeWorkflowDocument={storeWorkflowDocument} workflowDocuments={workflowToAdd.documents} />
+      ),
       nextDisabled:
         workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
           ? Object.keys(changes).length === 2 && changes.hasOwnProperty("currency") && changes.hasOwnProperty("amount")

@@ -2,6 +2,7 @@ import { fromJS } from "immutable";
 
 import { LOGOUT } from "../Login/actions";
 import {
+  VALIDATE_DOCUMENT,
   VALIDATE_DOCUMENT_SUCCESS,
   ADD_DOCUMENT,
   ADD_DOCUMENT_SUCCESS,
@@ -12,13 +13,16 @@ import { CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_ITEM_SUCCESS } from "../Workflow
 
 const defaultState = fromJS({
   validatedDocuments: {},
-  tempDocuments: []
+  hashToValidate: ""
 });
 
 export default function documentsReducer(state = defaultState, action) {
   switch (action.type) {
+    case VALIDATE_DOCUMENT:
+      return state.set("hashToValidate", action.hash);
     case VALIDATE_DOCUMENT_SUCCESS:
-      return state.setIn(["validatedDocuments", action.hash], action.validates);
+      console.log(action.isIdentical);
+      return state.setIn(["validatedDocuments", state.get("hashToValidate")], action.isIdentical);
     case ADD_DOCUMENT:
       return state.set(
         "tempDocuments",
