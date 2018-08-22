@@ -48,18 +48,19 @@ export async function updateWorkflowitem(
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
-  const getTheUpdate = async (): Promise<Workflowitem.Update> => {
+  const prepareDocuments = async (): Promise<void> => {
     if (!isEmpty(input.documents)) {
       theUpdate.documents = await hashDocuments(input.documents);
     }
-    return theUpdate;
   };
+
+  await prepareDocuments();
 
   const publishedEvent = await sendEventToDatabase(
     multichain,
     req.token,
     userIntent,
-    await getTheUpdate(),
+    theUpdate,
     projectId,
     subprojectId,
     workflowitemId,

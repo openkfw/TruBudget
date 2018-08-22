@@ -23,29 +23,26 @@ interface DocumentDto {
   payload: string;
 }
 
-const hashBase64String = (base64String: string): Promise<string> => {
+export async function hashBase64String(base64String: string): Promise<string> {
   return new Promise<string>(resolve => {
     const hash = crypto.createHash("sha256");
     hash.update(Buffer.from(base64String, "base64"));
     resolve(hash.digest("hex"));
   });
-};
+}
 
-const hashDocuments = async (docs): Promise<Document[]> => {
+export async function hashDocuments(docs): Promise<Document[]> {
   return await Promise.all<Document>(
     docs.map(
       (document: DocumentDto): Promise<Document> => {
-        const p = hashBase64String(document.payload);
-        return p.then(hashValue => ({
+        return hashBase64String(document.payload).then(hashValue => ({
           displayName: document.displayName,
           hash: hashValue,
         }));
       },
     ),
   );
-};
-
-export { hashDocuments, hashBase64String };
+}
 
 export async function createWorkflowitem(
   multichain: MultichainClient,
