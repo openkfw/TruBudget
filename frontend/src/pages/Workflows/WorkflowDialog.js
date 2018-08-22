@@ -42,10 +42,7 @@ const handleEdit = props => {
     showSnackbar,
     storeSnackbarMessage
   } = props;
-  console.log(workflowItems);
-  console.log(workflowToAdd);
   const changes = compareObjects(workflowItems, workflowToAdd);
-  console.log(changes);
   if (changes) {
     const projectId = location.pathname.split("/")[2];
     const subprojectId = location.pathname.split("/")[3];

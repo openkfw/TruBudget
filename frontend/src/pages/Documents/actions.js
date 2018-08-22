@@ -2,7 +2,7 @@ export const VALIDATE_DOCUMENT = "VALIDATE_DOCUMENT";
 export const VALIDATE_DOCUMENT_SUCCESS = "VALIDATE_DOCUMENT_SUCCESS";
 export const ADD_DOCUMENT = "ADD_DOCUMENT";
 export const ADD_DOCUMENT_SUCCESS = "ADD_DOCUMENT_SUCCESS";
-export const CLEAR_DOCUMENTS = "CLEAR_DOCUMENTS";
+export const CLEAR_DOCUMENT = "CLEAR_DOCUMENT";
 export const PREFILL_DOCUMENTS = "PREFILL_DOCUMENTS";
 
 export function validateDocument(hash, base64String) {
@@ -20,9 +20,10 @@ export function addDocument(payload, filename) {
   };
 }
 
-export function clearDocuments() {
+export function clearDocument(hash) {
   return {
-    type: CLEAR_DOCUMENTS
+    type: CLEAR_DOCUMENT,
+    document: hash
   };
 }
 

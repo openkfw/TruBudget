@@ -1,3 +1,4 @@
+import { delay } from "redux-saga";
 import { put, takeEvery, takeLatest, call, select } from "redux-saga/effects";
 
 import Api from "./api.js";
@@ -17,7 +18,7 @@ import {
   REVOKE_PERMISSION
 } from "./pages/Overview/actions";
 
-import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS } from "./pages/Documents/actions";
+import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, CLEAR_DOCUMENT } from "./pages/Documents/actions";
 import {
   CREATE_SUBPROJECT,
   CREATE_SUBPROJECT_SUCCESS,
@@ -182,7 +183,7 @@ function* callApi(func, ...args) {
   return data;
 }
 
-var loadingCounter = 0;
+let loadingCounter = 0;
 
 function* handleLoading(showLoading) {
   if (showLoading) {
@@ -304,7 +305,12 @@ export function* validateDocumentSaga({ base64String, hash }) {
       type: VALIDATE_DOCUMENT_SUCCESS,
       isIdentical: data.isIdentical
     });
-  }, true);
+    yield call(delay, 5000);
+    yield put({
+      type: CLEAR_DOCUMENT,
+      document: hash
+    });
+  });
 }
 
 export function* setEnvironmentSaga(action) {

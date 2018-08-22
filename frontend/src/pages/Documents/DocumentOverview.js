@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import FingerPrint from "@material-ui/icons/Fingerprint";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -17,10 +16,10 @@ const styles = {
     verticalAlign: "middle"
   },
   uploadButtonValidated: {
-    color: "secondary"
+    "background-color": "green"
   },
   uploadButtonChanged: {
-    color: "secondary"
+    "background-color": "red"
   },
   uploadInput: {
     cursor: "pointer",
@@ -50,13 +49,11 @@ class DocumentOverview extends Component {
       label = strings.workflow.workflow_document_validate;
       style = { ...styles.uploadButton };
     } else if (validated === true) {
-      console.log("validated");
       label = strings.workflow.workflow_document_validated + "!";
       style = {
         ...styles.uploadButtonValidated
       };
     } else {
-      console.log("not validated");
       label = strings.workflow.workflow_document_changed + "!";
       style = {
         ...styles.uploadButtonChanged
@@ -121,11 +118,9 @@ class DocumentOverview extends Component {
 
   render = () => {
     const { documents, validationActive, validatedDocuments } = this.props;
-    console.log(this.props);
     return (
       <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
         <TableBody>
-          {console.log(documents)}
           {_isEmpty(documents)
             ? this.generateEmptyList()
             : this.generateDocumentList(documents, validationActive, validatedDocuments)}

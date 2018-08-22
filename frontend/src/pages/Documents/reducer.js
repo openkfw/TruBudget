@@ -6,7 +6,7 @@ import {
   VALIDATE_DOCUMENT_SUCCESS,
   ADD_DOCUMENT,
   ADD_DOCUMENT_SUCCESS,
-  CLEAR_DOCUMENTS,
+  CLEAR_DOCUMENT,
   PREFILL_DOCUMENTS
 } from "./actions";
 import { CREATE_WORKFLOW_SUCCESS, EDIT_WORKFLOW_ITEM_SUCCESS } from "../Workflows/actions";
@@ -21,7 +21,6 @@ export default function documentsReducer(state = defaultState, action) {
     case VALIDATE_DOCUMENT:
       return state.set("hashToValidate", action.hash);
     case VALIDATE_DOCUMENT_SUCCESS:
-      console.log(action.isIdentical);
       return state.setIn(["validatedDocuments", state.get("hashToValidate")], action.isIdentical);
     case ADD_DOCUMENT:
       return state.set(
@@ -40,8 +39,8 @@ export default function documentsReducer(state = defaultState, action) {
       return state.set("tempDocuments", tempDocs);
     case CREATE_WORKFLOW_SUCCESS:
     case EDIT_WORKFLOW_ITEM_SUCCESS:
-    case CLEAR_DOCUMENTS:
-      return state.set("tempDocuments", defaultState.get("tempDocuments"));
+    case CLEAR_DOCUMENT:
+      return state.removeIn(["validatedDocuments", action.document]);
     case PREFILL_DOCUMENTS:
       return state.set("tempDocuments", fromJS(action.documents));
     case LOGOUT:
