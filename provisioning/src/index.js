@@ -347,7 +347,49 @@ async function testWorkflowitemUpdate(folder) {
     throw Error(`Setting amountType to N/A did not remove amount and currency fields!\n${JSON.stringify(updatedWorkflowitem, null, 2)}`);
   }
 
-  // Restoring the original (test) data:
+  // Adding a document:
+  const now = new Date().toISOString();
+  const documentId1 = `${now} first contract`;
+  const documentId2 = `${now} second contract`;
+  await axios.post("/workflowitem.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    workflowitemId: workflowitem.data.id,
+    documents: [{
+        id: documentId1,
+        base64: "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4="
+      },
+      {
+        id: documentId2,
+        base64: "VGhhdCdzIG91ciBzZWNvbmQgY29udHJhY3Qu"
+      },
+    ]
+  });
+
+  const itemWithDocuments = await findWorkflowitem(axios, project, subproject, workflowitemTemplate);
+  if (!Array.isArray(itemWithDocuments.documents) || itemWithDocuments.documents.length !== 2) {
+    throw Error(`Adding documents to a workflowitem failed :(`);
+  }
+
+  // Updating an existing document shouldn't be allowed:
+  try {
+    await axios.post("/workflowitem.update", {
+      projectId: project.data.id,
+      subprojectId: subproject.data.id,
+      workflowitemId: workflowitem.data.id,
+      documents: [{
+        id: documentId1,
+        base64: "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4gSnVzdCBraWRkaW5nLCBJJ3ZlIGNoYW5nZWQgaXQhIG11YWhhaGE="
+      }, ]
+    });
+    throw Error(`Updated an existing document, but that isn't supposed to work :(`);
+  } catch (_err) {}
+  const stillTheItemWithDocuments = await findWorkflowitem(axios, project, subproject, workflowitemTemplate);
+  if (stillItemWithDocuments.documents[0].base64 !== "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4=") {
+    throw Error(`The document has changed but shouldn't (or the ordering was not preserved) :(`);
+  }
+
+  // Restoring the original (test) data (except documents, which cannot be removed):
   await axios.post("/workflowitem.update", {
     projectId: project.data.id,
     subprojectId: subproject.data.id,
