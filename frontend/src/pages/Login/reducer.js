@@ -69,7 +69,9 @@ export default function loginReducer(state = defaultState, action) {
         displayName: user.displayName,
         organization: user.organization,
         allowedIntents: fromJS(user.allowedIntents),
-        groups: fromJS(user.groups)
+        groups: fromJS(user.groups),
+        username: defaultState.get("username"),
+        password: defaultState.get("password")
       });
     case ADMIN_LOGIN_SUCCESS:
       return state.merge({
@@ -95,7 +97,6 @@ export default function loginReducer(state = defaultState, action) {
     case ADMIN_LOGOUT_SUCCESS:
     case LOGOUT_SUCCESS:
       return state.merge({
-        username: defaultState.get("username"),
         password: defaultState.get("password"),
         jwt: defaultState.get("jwt")
       });
