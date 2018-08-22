@@ -41,7 +41,11 @@ const styles = {
   },
   actions: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
+    width: "100%"
+  },
+  actionButton:{
+    width: "33%"
   },
   line: {
     position: "absolute",
@@ -226,6 +230,8 @@ const renderActionButtons = (
   return (
     <div style={{ flex: 2 }}>
       <div style={styles.actions}>
+      <div style={styles.actionButton}>
+      {status !== "closed" ?
         <Tooltip
           id="tooltip-wedit"
           title={!canEditWorkflow || workflowSortEnabled ? "" : strings.common.edit}
@@ -245,6 +251,10 @@ const renderActionButtons = (
             </IconButton>
           </div>
         </Tooltip>
+        : null
+      }
+        </div>
+        <div style={styles.actionButton}>
         <Tooltip
           id="tooltip-wpermissions"
           title={!canListWorkflowPermissions || workflowSortEnabled ? "" : strings.common.show_permissions}
@@ -264,6 +274,9 @@ const renderActionButtons = (
             </IconButton>
           </div>
         </Tooltip>
+        </div>
+        <div style={styles.actionButton}>
+        {status !== "closed" ?
         <Tooltip
           id="tooltip-wclose"
           title={!canCloseWorkflow || workflowSortEnabled ? "" : strings.common.close}
@@ -283,6 +296,9 @@ const renderActionButtons = (
             </IconButton>
           </div>
         </Tooltip>
+        : null
+        }
+        </div>
       </div>
     </div>
   );
