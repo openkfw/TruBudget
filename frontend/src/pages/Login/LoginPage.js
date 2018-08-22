@@ -58,8 +58,10 @@ const LoginPage = ({
             justifyContent: "center"
           }}
         >
+        <div style={{width: "70%"}}>
           <CardHeader title="TruBudget" subheader={strings.login.tru_budget_description} />
-          <div style={{ width: "40%", marginRight: "8px" }}>
+          </div>
+          <div style={{ width: "30%", marginRight: "8px" }}>
             <Dropdown
               onChange={storeEnvironment}
               floatingLabel={strings.login.environment}
