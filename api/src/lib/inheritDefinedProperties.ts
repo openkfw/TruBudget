@@ -1,4 +1,3 @@
-import * as crypto from "crypto";
 import deepcopy from "./deepcopy";
 import { isEmpty } from "./emptyChecks";
 

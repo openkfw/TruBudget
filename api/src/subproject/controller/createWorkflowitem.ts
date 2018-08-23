@@ -34,7 +34,7 @@ export async function hashBase64String(base64String: string): Promise<string> {
 export async function hashDocuments(docs): Promise<Document[]> {
   return await Promise.all<Document>(
     docs.map(
-      (document: DocumentDto): Promise<Document> => {
+      (document): Promise<Document> => {
         return hashBase64String(document.payload).then(hashValue => ({
           displayName: document.displayName,
           hash: hashValue,

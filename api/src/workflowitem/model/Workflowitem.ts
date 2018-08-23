@@ -231,7 +231,13 @@ function applyUpdate(event: Event, resource: WorkflowitemResource): true | undef
   if (event.intent !== "workflowitem.update") return;
   switch (event.dataVersion) {
     case 1: {
+      // const mergeDocuments = (data1, data2) => {
+      //   data1.push(data2.documents);
+      //   return data1;
+      // };
       const update: Update = event.data;
+
+      console.log(update);
       inheritDefinedProperties(resource.data, update);
 
       // In case the update has set the amountType to N/A, we don't want to retain the

@@ -16,10 +16,10 @@ const styles = {
     verticalAlign: "middle"
   },
   uploadButtonValidated: {
-    "background-color": "green"
+    backgroundColor: "green"
   },
   uploadButtonChanged: {
-    "background-color": "red"
+    backgroundColor: "red"
   },
   uploadInput: {
     cursor: "pointer",

@@ -31,6 +31,9 @@ export async function updateWorkflowitem(
     "amountType",
   ]);
 
+  if (!isEmpty(input.documents)) {
+    theUpdate.documents = await hashDocuments(input.documents);
+  }
   if (isEmpty(theUpdate)) {
     return ok();
   }
@@ -48,14 +51,7 @@ export async function updateWorkflowitem(
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
-  const prepareDocuments = async (): Promise<void> => {
-    if (!isEmpty(input.documents)) {
-      theUpdate.documents = await hashDocuments(input.documents);
-    }
-  };
-
-  await prepareDocuments();
-
+  console.log(theUpdate);
   const publishedEvent = await sendEventToDatabase(
     multichain,
     req.token,
