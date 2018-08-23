@@ -102,12 +102,12 @@ const WorkflowDialog = props => {
         handleSubmit: handleCreate,
         dialogShown: creationDialogShown
       };
-  const { displayName } = workflowToAdd;
+  const { displayName, amountType, amount } = workflowToAdd;
   const changes = compareObjects(workflowItems, workflowToAdd);
   const steps = [
     {
       title: strings.workflow.workflow_name,
-      nextDisabled: _isEmpty(displayName),
+      nextDisabled: _isEmpty(displayName) || (amountType !== "N/A" && amount === ""),
       content: (
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Content {...props} />
