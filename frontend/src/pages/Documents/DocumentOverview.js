@@ -96,14 +96,14 @@ class DocumentOverview extends Component {
   generateDocumentList = (documents, validationActive = false, validatedDocuments = {}) =>
     documents.map((document, index) => {
       let validated = undefined;
-      const { displayName, hash } = document;
+      const { id, hash } = document;
       if (validationActive) {
         validated = validatedDocuments[hash];
       }
       return (
         <TableRow key={index + "document"}>
           <TableCell style={{ textAlign: "center" }} />
-          <TableCell>{displayName}</TableCell>
+          <TableCell>{id}</TableCell>
           {validationActive ? <TableCell>{this.generateHashIcon(hash)}</TableCell> : null}
           {validationActive ? <TableCell>{this.generateUploadIcon(hash, validated)}</TableCell> : null}
         </TableRow>

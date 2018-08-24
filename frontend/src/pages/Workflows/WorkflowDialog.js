@@ -43,10 +43,7 @@ const handleEdit = props => {
     showSnackbar,
     storeSnackbarMessage
   } = props;
-  console.log(props);
   const originalWorkflowItem = workflowItems.find(workflowItem => workflowItem.data.id === workflowToAdd.id).data;
-  console.log(originalWorkflowItem);
-  console.log(workflowToAdd);
   if (workflowToAdd.amountType === "N/A") {
     if (workflowToAdd.amountType === originalWorkflowItem.amountType) {
       delete workflowToAdd.amount;
@@ -57,9 +54,6 @@ const handleEdit = props => {
     }
   }
   const changes = compareWorkflowItems(originalWorkflowItem, workflowToAdd);
-  console.log(changes);
-  console.log(originalWorkflowItem);
-  console.log(workflowToAdd);
   if (changes) {
     const projectId = location.pathname.split("/")[2];
     const subprojectId = location.pathname.split("/")[3];

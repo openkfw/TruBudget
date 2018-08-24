@@ -68,7 +68,7 @@ export interface Update {
 }
 
 export interface Document {
-  displayName: string;
+  id: string;
   hash: string;
 }
 
@@ -231,15 +231,20 @@ function applyUpdate(event: Event, resource: WorkflowitemResource): true | undef
   if (event.intent !== "workflowitem.update") return;
   switch (event.dataVersion) {
     case 1: {
-      // const mergeDocuments = (data1, data2) => {
-      //   data1.push(data2.documents);
-      //   return data1;
-      // };
+      if (event.data.documents) {
+        const currentDocs = resource.data.documents || [];
+        const currentIds = currentDocs.map(doc => doc.id);
+        const newDocs = event.data.documents.filter(doc => !currentIds.includes(doc.id));
+        if (resource.data.documents) {
+          resource.data.documents.push(...newDocs);
+        } else {
+          resource.data.documents = newDocs;
+        }
+        delete event.data.documents;
+      }
       const update: Update = event.data;
 
-      console.log(update);
       inheritDefinedProperties(resource.data, update);
-
       // In case the update has set the amountType to N/A, we don't want to retain the
       // amount and currency fields:
       if (resource.data.amountType === "N/A") {

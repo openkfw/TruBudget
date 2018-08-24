@@ -149,9 +149,11 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "currency"], action.currency);
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);
-      case WORKFLOW_DOCUMENT:
-      return state.updateIn(["workflowToAdd","documents"],
-        documents => [...documents,{displayName: action.displayname, payload: action.payload}]);
+    case WORKFLOW_DOCUMENT:
+      return state.updateIn(["workflowToAdd", "documents"], documents => [
+        ...documents,
+        { id: action.id, base64: action.base64 }
+      ]);
     case SUBPROJECT_AMOUNT:
       return state.set("subProjectAmount", action.amount);
     case CREATE_WORKFLOW_SUCCESS:

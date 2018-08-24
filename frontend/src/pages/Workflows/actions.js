@@ -315,12 +315,12 @@ export function storeWorkflowType(workflowType) {
   };
 }
 
-export function storeWorkflowDocument(displayname, payload){
-    return {
-      type: WORKFLOW_DOCUMENT,
-      displayname: displayname,
-      payload: payload
-    }
+export function storeWorkflowDocument(id, base64) {
+  return {
+    type: WORKFLOW_DOCUMENT,
+    id: id,
+    base64: base64
+  };
 }
 
 export function isWorkflowApprovalRequired(approvalRequired) {
