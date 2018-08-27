@@ -33,7 +33,6 @@ export default class DocumentUpload extends Component {
   }
 
   render = () => {
-
     const { storeWorkflowDocument, workflowDocuments } = this.props;
     return (
       <div>
@@ -47,7 +46,12 @@ export default class DocumentUpload extends Component {
             value={this.state.name}
             onChange={event => this.setState({ name: event.target.value })}
           />
-          <Button style={styles.uploadButton} disabled={_isEmpty(this.state.name)}>
+          <Button
+            style={styles.uploadButton}
+            disabled={
+              _isEmpty(this.state.name) || workflowDocuments.filter(doc => doc.id === this.state.name).length > 0
+            }
+          >
             {strings.workflow.workflow_upload_document}
             {_isEmpty(this.state.name) ? null : (
               <input
@@ -58,16 +62,16 @@ export default class DocumentUpload extends Component {
                 onChange={() => {
                   const file = this.input.files[0];
                   const reader = new FileReader();
-                  reader.onloadend = (e) => {
-                    if(e.target.result !== undefined){//TODO check if necessary
+                  reader.onloadend = e => {
+                    if (e.target.result !== undefined) {
+                      //TODO check if necessary
                       const dataUrl = e.target.result.split("base64,")[1];
-                      storeWorkflowDocument(this.state.name,dataUrl);
+                      storeWorkflowDocument(this.state.name, dataUrl);
                     }
 
                     this.setState({ name: "" });
-                  }
+                  };
                   reader.readAsDataURL(file);
-
                 }}
               />
             )}
