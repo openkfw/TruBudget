@@ -63,9 +63,19 @@ class DocumentOverview extends Component {
     return { style, label };
   };
 
+  getValidationText = validated => {
+    if (_isUndefined(validated)) {
+      return "Validate";
+    } else if (validated === true) {
+      return "OK";
+    } else {
+      return "NOK";
+    }
+  };
+
   generateUploadIcon = (hash, validated) => (
     <Button {...this.getPropsForUploadButton(validated)}>
-      Validate
+      {this.getValidationText(validated)}
       <input
         id="docvalidation"
         type="file"

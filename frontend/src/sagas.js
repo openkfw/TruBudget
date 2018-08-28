@@ -305,11 +305,6 @@ export function* validateDocumentSaga({ base64String, hash }) {
       type: VALIDATE_DOCUMENT_SUCCESS,
       isIdentical: data.isIdentical
     });
-    yield call(delay, 4000);
-    yield put({
-      type: CLEAR_DOCUMENT,
-      document: hash
-    });
   });
 }
 
