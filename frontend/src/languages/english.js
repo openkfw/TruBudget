@@ -48,7 +48,7 @@ const en = {
     thumbnail: "Thumbnail",
     username: "Username",
     view: "View",
-    workflowItem: "WorkflowItem",
+    workflowItem: "WorkflowItem"
   },
 
   usersDashboard: {
@@ -56,14 +56,14 @@ const en = {
     new_user: "New User",
     organization: "Organization",
     user_created: "User successfully created",
-    users: "Users",
+    users: "Users"
   },
 
   groupDashboard: {
     add_users: "Add Users",
     group_created: "Group successfully created",
     groups: "Groups",
-    new_group: "New user group",
+    new_group: "New user group"
   },
 
   nodesDashboard: {
@@ -74,7 +74,7 @@ const en = {
     network: "Network",
     new_organization: "New Organizations",
     nodes: "Nodes",
-    permissions: "Permissions",
+    permissions: "Permissions"
   },
 
   login: {
@@ -84,7 +84,7 @@ const en = {
     login_button_title: "Login",
     production_env: "Prod",
     test_env: "Test",
-    tru_budget_description: "A blockchain-based solution for budget expenditure",
+    tru_budget_description: "A blockchain-based solution for budget expenditure"
   },
 
   project: {
@@ -104,13 +104,14 @@ const en = {
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_edit_title: "Edit Project",
     project_implementing_authority_role: "Select implementation authority role",
-    project_implementing_authority_role_description: "The authorities enabled to create and modify subprojects, define and execute workflow activities",
+    project_implementing_authority_role_description:
+      "The authorities enabled to create and modify subprojects, define and execute workflow activities",
     project_name: "Name",
     project_permissions_title: "Set permissions for project",
     project_roles: "Roles",
     project_thumbnail: "Thumbnail",
     project_title: "Project title",
-    project_title_description: "Name of the project",
+    project_title_description: "Name of the project"
   },
 
   subproject: {
@@ -126,7 +127,7 @@ const en = {
     subproject_permissions_title: "Set permissions for subproject",
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",
-    subproject_title_description: "Name of the sub-project",
+    subproject_title_description: "Name of the sub-project"
   },
 
   workflow: {
@@ -156,6 +157,7 @@ const en = {
     workflow_document_validated: "Validated",
     workflow_documents: "Documents",
     workflow_enable_sort: "Sort",
+    workflow_fingerprint: "Fingerprint",
     workflow_name: "Name",
     workflow_next_step: "Next step",
     workflow_no_actions: "No actions required",
@@ -170,7 +172,7 @@ const en = {
     workflow_type: "Type",
     workflow_type_transaction: "Transaction",
     workflow_type_workflow: "Workflow",
-    workflow_upload_document: "Upload",
+    workflow_upload_document: "Upload"
   },
 
   navigation: {
@@ -191,13 +193,14 @@ const en = {
     rtUpdates: "Real-Time Updates",
     selections: "Selections",
     unread_notifications: "Unread Notifications",
-    write_permission: "Write",
+    write_permission: "Write"
   },
 
   dashboard: {
-    dashboard_card_text: " The connected blockchain nodes are shown in the map below. You can click on the respective markers to obtain the exact location.",
+    dashboard_card_text:
+      " The connected blockchain nodes are shown in the map below. You can click on the respective markers to obtain the exact location.",
     dashboard_subtitle: "Connected peers in the blockchain network",
-    dashboard_title: "The Blockchain network dashboard",
+    dashboard_title: "The Blockchain network dashboard"
   },
 
   notification: {
@@ -208,7 +211,8 @@ const en = {
     edit_transaction: "Transaction {0} got adapted",
     edit_workflow: "Workflow item {0} got adapted",
     no_permissions: "(No permissions to see further details)",
-    notification_card_text: "Please find your current notifications below. These display action items or information items to be dealt with.",
+    notification_card_text:
+      "Please find your current notifications below. These display action items or information items to be dealt with.",
     notification_subtitle: "Unread",
     notification_table_all_read: "all read",
     notification_table_by: "By",
@@ -240,7 +244,7 @@ const en = {
     workflowitem_close: "Workflowitem {0} was closed",
     workflowitem_intent_grantPermission: "The permissions for workflowitem {0} changed",
     workflowitem_intent_revokePermission: "The permissions for workflowitem {0} changed",
-    workflowitem_update: "Workflowitem {0} was updated",
+    workflowitem_update: "Workflowitem {0} was updated"
   },
 
   history: {
@@ -275,7 +279,7 @@ const en = {
     workflowitem_assign: "{0} assigned workflowitem {1} to {2}",
     workflowitem_close: "{0} closed workflowitem {1}",
     workflowitem_grantPermission: "{0} granted permission {1} to {2} on {3}",
-    workflowitem_revokePermission: "{0} revoked permission {1} of {3} from {2}",
+    workflowitem_revokePermission: "{0} revoked permission {1} of {3} from {2}"
   },
 
   permissions: {
@@ -309,15 +313,15 @@ const en = {
     workflowitem_intent_revokePermission: "Revoke workflowitem permission",
     workflowitem_update: "Update workflowitem",
     workflowitem_view: "View workflowitem",
-    write: "Write permissions",
+    write: "Write permissions"
   },
 
   language: {
     english: "English",
     french: "French",
     german: "German",
-    portuguese: "Portuguese",
-  },
+    portuguese: "Portuguese"
+  }
 };
 
 export default en;

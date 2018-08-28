@@ -7,10 +7,11 @@ const styles = {
     display: "flex",
     flex: 1,
     flexDirection: "column",
-    position: "absolute",
+    position: "fixed",
+    left: 0,
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: "40vh",
+    top: "40%",
     width: "100%",
     height: "100%",
     zIndex: 2000
@@ -20,7 +21,8 @@ const styles = {
     flexDirection: "row",
     width: "100%",
     alignItems: "top",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginRight: "50px"
   },
   refresh: {
     display: "inline-block",

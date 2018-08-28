@@ -12,7 +12,7 @@ class DocumentOverviewContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    validateDocument: (hash, base64String) => dispatch(validateDocument(hash, base64String))
+    validateDocument: (hash, base64String, id) => dispatch(validateDocument(hash, base64String, id))
   };
 };
 

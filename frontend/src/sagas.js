@@ -18,7 +18,7 @@ import {
   REVOKE_PERMISSION
 } from "./pages/Overview/actions";
 
-import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, CLEAR_DOCUMENT } from "./pages/Documents/actions";
+import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, CLEAR_DOCUMENTS } from "./pages/Documents/actions";
 import {
   CREATE_SUBPROJECT,
   CREATE_SUBPROJECT_SUCCESS,
@@ -73,7 +73,8 @@ import {
   REORDER_WORKFLOW_ITEMS,
   REORDER_WORKFLOW_ITEMS_SUCCESS,
   CLOSE_SUBPROJECT,
-  CLOSE_SUBPROJECT_SUCCESS
+  CLOSE_SUBPROJECT_SUCCESS,
+  HIDE_WORKFLOW_DETAILS
 } from "./pages/Workflows/actions";
 
 import {
@@ -305,7 +306,7 @@ export function* validateDocumentSaga({ base64String, hash }) {
       type: VALIDATE_DOCUMENT_SUCCESS,
       isIdentical: data.isIdentical
     });
-  });
+  }, true);
 }
 
 export function* setEnvironmentSaga(action) {
@@ -808,6 +809,14 @@ export function* fetchActivePeersSaga({ showLoading = false }) {
     });
   }, showLoading);
 }
+export function* hideWorkflowDetailsSaga() {
+  console.log("saga");
+  yield execute(function*() {
+    yield put({
+      type: CLEAR_DOCUMENTS
+    });
+  });
+}
 
 // WATCHERS
 
@@ -974,6 +983,9 @@ export function* watchFetchAcitvePeers() {
 export function* watchValidateDocument() {
   yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga);
 }
+export function* watchhideWorkflowDetails() {
+  yield takeEvery(HIDE_WORKFLOW_DETAILS, hideWorkflowDetailsSaga);
+}
 
 export default function* rootSaga() {
   try {
@@ -1027,6 +1039,7 @@ export default function* rootSaga() {
       watchCloseWorkflowItem(),
       watchAssignWorkflowItem(),
       watchValidateDocument(),
+      watchhideWorkflowDetails(),
 
       // Notifications
       watchFetchAllNotifications(),
