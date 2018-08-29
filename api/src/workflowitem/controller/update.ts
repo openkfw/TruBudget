@@ -51,7 +51,6 @@ export async function updateWorkflowitem(
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
-  console.log(theUpdate);
   const publishedEvent = await sendEventToDatabase(
     multichain,
     req.token,

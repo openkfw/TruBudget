@@ -57,22 +57,20 @@ export default class DocumentUpload extends Component {
               <input
                 id="docupload"
                 type="file"
-                ref={input => (this.input = input)}
                 style={styles.uploadInput}
-                onChange={() => {
-                  const file = this.input.files[0];
-                  const reader = new FileReader();
-                  reader.onloadend = e => {
-                    if (e.target.result !== undefined) {
-                      //TODO check if necessary
-
-                      const dataUrl = e.target.result.split("base64,")[1];
-                      storeWorkflowDocument(this.state.name, dataUrl);
-                    }
-
-                    this.setState({ name: "" });
-                  };
-                  reader.readAsDataURL(file);
+                onChange={(event) => {
+                  if (event.target.files) {
+                    const file = event.target.files[0];
+                    const reader = new FileReader();
+                    reader.onloadend = e => {
+                      if (e.target.result !== undefined) {
+                        const dataUrl = e.target.result.split(";base64,")[1];
+                        storeWorkflowDocument(this.state.name, dataUrl);
+                      }
+                      this.setState({ name: "" });
+                    };
+                    reader.readAsDataURL(file);
+                  }
                 }}
               />
             )}

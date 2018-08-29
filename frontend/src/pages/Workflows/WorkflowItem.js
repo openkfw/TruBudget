@@ -155,7 +155,6 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
   // Otherwise we need to deal with undefined which causes errors in the editDialog
   const workflowitemAmount = amount ? amount : "";
   const workflowitemCurrency = currency ? currency : props.currency;
-  // const mappedDocuments = (documents !== undefined) ? documents.map(document => ({displayName : document.displayName, payload :document.hash})):[]
   props.showEditDialog(
     id,
     displayName,

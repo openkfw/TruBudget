@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import Button from "@material-ui/core/Button";
 import FingerPrint from "@material-ui/icons/Fingerprint";
+import Input from "@material-ui/core/Input";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -14,19 +15,10 @@ import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import withInitialLoading from "../Loading/withInitialLoading";
 const styles = {
-  uploadButton: {
-    cursor: "pointer",
-    verticalAlign: "middle"
-  },
-  uploadButtonValidated: {
-    cursor: "pointer"
-  },
   uploadButtonNotValidated: {
-    cursor: "pointer",
     whiteSpace: "nowrap"
   },
   uploadInput: {
-    cursor: "pointer",
     position: "absolute",
     top: 0,
     bottom: 0,
@@ -51,12 +43,8 @@ class DocumentOverview extends Component {
     let color = null;
     if (_isUndefined(validated)) {
       label = strings.workflow.workflow_document_validate;
-      style = { ...styles.uploadButton };
     } else if (validated === true) {
       label = strings.workflow.workflow_document_validated + "!";
-      style = {
-        ...styles.uploadButtonValidated
-      };
       color = "primary";
     } else {
       label = strings.workflow.workflow_document_changed + "!";
@@ -82,7 +70,7 @@ class DocumentOverview extends Component {
   generateUploadIcon = (hash, validated, id) => (
     <Button {...this.getPropsForUploadButton(validated)}>
       {this.getValidationText(validated)}
-      <input
+      <Input
         id="docvalidation"
         type="file"
         style={styles.uploadInput}
@@ -92,7 +80,7 @@ class DocumentOverview extends Component {
             const reader = new FileReader();
             reader.onloadend = e => {
               if (e.target.result !== undefined) {
-                const dataUrl = e.target.result.split("base64,")[1];
+                const dataUrl = e.target.result.split(";base64,")[1];
                 this.props.validateDocument(hash, dataUrl, id);
               }
             };
@@ -119,10 +107,12 @@ class DocumentOverview extends Component {
       }
       return (
         <TableRow key={index + "document"}>
-          <TableCell>
-            <FingerPrint />
-          </TableCell>
-          <TableCell>{id}</TableCell>
+          {validationActive ? (
+            <TableCell style={{ paddingRight: "0px", paddingLeft: "0px" }}>
+              <FingerPrint />
+            </TableCell>
+          ) : null}
+          <TableCell style={{ paddingRight: "0px", paddingLeft: "0px" }}>{id}</TableCell>
           {validationActive ? <TableCell>{this.generateHashIcon(hash)}</TableCell> : null}
           {validationActive ? (
             <TableCell style={{ textAlign: "center", paddingLeft: "0px" }}>
@@ -143,7 +133,7 @@ class DocumentOverview extends Component {
   generateDocumentListHeader = validationActive => {
     return (
       <TableRow key={"documentlistheader"} style={styles.documentListHeader}>
-        <TableCell />
+        {validationActive ? <TableCell /> : null}
         <TableCell>
           <Typography variant="body2">{strings.common.name}</Typography>
         </TableCell>
