@@ -35,6 +35,7 @@ const en = {
     next: "Next",
     not_assigned: "Not assigned",
     not_assigned_budget: "Not Assigned Budget",
+    not_ok: "Not OK",
     open: "Open",
     password: "Password",
     project: "Project",

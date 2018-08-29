@@ -1,4 +1,3 @@
-import { delay } from "redux-saga";
 import { put, takeEvery, takeLatest, call, select } from "redux-saga/effects";
 
 import Api from "./api.js";
@@ -810,7 +809,6 @@ export function* fetchActivePeersSaga({ showLoading = false }) {
   }, showLoading);
 }
 export function* hideWorkflowDetailsSaga() {
-  console.log("saga");
   yield execute(function*() {
     yield put({
       type: CLEAR_DOCUMENTS

@@ -71,7 +71,7 @@ class DocumentOverview extends Component {
 
   getValidationText = validated => {
     if (_isUndefined(validated)) {
-      return "Validate";
+      return strings.workflow.workflow_document_validate;
     } else if (validated === true) {
       return "OK";
     } else {
@@ -87,17 +87,17 @@ class DocumentOverview extends Component {
         type="file"
         style={styles.uploadInput}
         onChange={event => {
-          const file = event.target.files[0];
-          const reader = new FileReader();
-          reader.onloadend = e => {
-            if (e.target.result !== undefined) {
-              //TODO: make own function to convert file into base64String
-              const dataUrl = e.target.result.split("base64,")[1];
-              this.props.validateDocument(hash, dataUrl, id);
-            }
-          };
-          console.log(file);
-          reader.readAsDataURL(file);
+          if (event.target.files[0]) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = e => {
+              if (e.target.result !== undefined) {
+                const dataUrl = e.target.result.split("base64,")[1];
+                this.props.validateDocument(hash, dataUrl, id);
+              }
+            };
+            reader.readAsDataURL(file);
+          }
         }}
       />
     </Button>
@@ -133,10 +133,10 @@ class DocumentOverview extends Component {
       );
     });
     return (
-      <div>
+      <TableBody>
         {header}
         {rows}
-      </div>
+      </TableBody>
     );
   };
 
@@ -164,20 +164,20 @@ class DocumentOverview extends Component {
   };
 
   generateEmptyList = () => (
-    <TableRow>
-      <TableCell>{strings.workflow.workflow_no_documents}</TableCell>
-    </TableRow>
+    <TableBody>
+      <TableRow>
+        <TableCell>{strings.workflow.workflow_no_documents}</TableCell>
+      </TableRow>
+    </TableBody>
   );
 
   render = () => {
     const { documents, validationActive, validatedDocuments, loadingVisible } = this.props;
     return (
       <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-        <TableBody>
-          {_isEmpty(documents)
-            ? this.generateEmptyList()
-            : this.generateDocumentList(documents, validationActive, validatedDocuments, loadingVisible)}
-        </TableBody>
+        {_isEmpty(documents)
+          ? this.generateEmptyList()
+          : this.generateDocumentList(documents, validationActive, validatedDocuments, loadingVisible)}
       </Table>
     );
   };
