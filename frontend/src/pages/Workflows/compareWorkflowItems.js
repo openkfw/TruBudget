@@ -1,18 +1,18 @@
 export const compareWorkflowItems = (originalItem, itemToCompare) => {
-  const changes = {};
-  for (const key of Object.keys(itemToCompare)) {
-    if (originalItem[key] !== itemToCompare[key]) {
-      if (key === "documents") {
-        changes[key] = [];
-        for (const index of Object.keys(itemToCompare[key])) {
-          if (itemToCompare[key][index].hasOwnProperty("base64")) {
-            changes[key].push(itemToCompare[key][index]);
-          }
-        }
-      } else {
-        changes[key] = itemToCompare[key];
-      }
-    }
+  function isNewDocument(doc) {
+    return doc.hasOwnProperty("base64");
   }
-  return changes;
+
+  const changesExceptDocuments = Object.keys(itemToCompare)
+    .filter(key => key !== "documents")
+    .filter(key => originalItem[key] !== itemToCompare[key])
+    .reduce((acc, key) => {
+      acc[key] = itemToCompare[key];
+      return acc;
+    }, {});
+
+  const addedDocuments = Object.keys(itemToCompare.documents || {})
+    .map(docId => itemToCompare.documents[docId])
+    .filter(isNewDocument);
+  return { ...changesExceptDocuments, documents: addedDocuments };
 };
