@@ -28,12 +28,18 @@ describe("Add workflowitem with document", function() {
   it("Create workflowItem", function() {
     cy.get("#createWorkflowItem").click({ force: true });
     cy.get("#creationDialog").should("be.visible");
-    cy.get(".MuiInput-root-201 > .MuiInput-input-209").type("E2E-WorkflowItem").should("have.value", "E2E-WorkflowItem");;
-    cy.get(".Textarea-root-303 > .MuiInput-input-209").type("E2E Comment").should("have.value", "E2E Comment");;
+    cy.get(".MuiInput-root-201 > .MuiInput-input-209")
+      .type("E2E-WorkflowItem")
+      .should("have.value", "E2E-WorkflowItem");
+    cy.get(".Textarea-root-303 > .MuiInput-input-209")
+      .type("E2E Comment")
+      .should("have.value", "E2E Comment");
     cy.get(".MuiDialogActions-root-316 > :nth-child(2) > [tabindex='0']").click(
       { force: true }
     );
-    cy.get(".MuiInput-root-201 > .MuiInput-input-209").type("E2E Test File").should("have.value", "E2E Test File");;
+    cy.get(".MuiInput-root-201 > .MuiInput-input-209")
+      .type("E2E Test File")
+      .should("have.value", "E2E Test File");
 
     const testDocument = [{ id: "E2E Test File", base64: "c29tZXRoaW5ns" }];
     cy.createWorkflowItem(
