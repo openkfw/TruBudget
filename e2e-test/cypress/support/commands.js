@@ -74,8 +74,29 @@ Cypress.Commands.add("fetchSubprojects", projectId => {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      }      
     })
     .its("body")
     .then(body => Promise.resolve(body.data.subprojects));
+});
+
+Cypress.Commands.add("createWorkflowItem",(projectId,subprojectId,displayName, amount, currency, amountType, description, status, documents)  => {
+  cy
+    .request({
+      url: `${baseUrl}/api/subproject.createWorkflowitem`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: { apiVersion: "1.0", data: { 
+        projectId: projectId,
+        subprojectId: subprojectId,
+        displayName: displayName,
+        amount: amount,
+        currency: currency,
+        amountType: amountType,
+        description: description,
+        status: status,
+        documents: documents } }
+    })
 });

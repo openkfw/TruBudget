@@ -86,12 +86,12 @@ const WorkflowDetails = ({
   const assignedUser = users.find(user => user.id === assignee);
   return (
     <Dialog open={showWorkflowDetails} style={styles.dialog} onClose={hideWorkflowDetails}>
-      <DialogTitle>{"Workflow details"}</DialogTitle>
+      <DialogTitle data-test="workflowInfoDialog">{"Workflow details"}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
         <List>
           <ListItem>
             <Avatar>{displayName ? displayName[0] : "?"}</Avatar>
-            <ListItemText primary={displayName} secondary={trimmedComment} />
+            <ListItemText data-test="workflowitemInfoDisplayName" primary={displayName} secondary={trimmedComment} />
           </ListItem>
           <ListItem>
             <Avatar>

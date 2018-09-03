@@ -112,7 +112,7 @@ class DocumentOverview extends Component {
               <FingerPrint />
             </TableCell>
           ) : null}
-          <TableCell style={{ paddingRight: "0px", paddingLeft: "0px" }}>{id}</TableCell>
+          <TableCell data-test="workflowitemDocumentId" style={{ paddingRight: "0px", paddingLeft: "0px" }}>{id}</TableCell>
           {validationActive ? <TableCell>{this.generateHashIcon(hash)}</TableCell> : null}
           {validationActive ? (
             <TableCell style={{ textAlign: "center", paddingLeft: "0px" }}>

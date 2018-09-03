@@ -169,6 +169,7 @@ const editWorkflow = ({ id, displayName, amount, amountType, currency, descripti
 const getInfoButton = ({ openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
   return (
     <IconButton
+      data-test="workflowitemInfoButton"
       disabled={workflowSortEnabled}
       style={{ ...getButtonStyle(workflowSortEnabled, status), ...styles.infoButton }}
       onClick={() => openWorkflowDetails(workflow.id)}
