@@ -99,4 +99,6 @@ Cypress.Commands.add("createWorkflowItem",(projectId,subprojectId,displayName, a
         status: status,
         documents: documents } }
     })
+    .its("body")
+    .then(body => Promise.resolve(body.data.created));
 });
