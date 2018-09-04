@@ -10,7 +10,6 @@ const styles = {
 };
 
 const TextInput = ({
-  ariaLabel,
   label,
   helperText,
   value,
@@ -20,17 +19,18 @@ const TextInput = ({
   pattern,
   multiline = false,
   type = "text",
-  disabled = false
+  disabled = false,
+  id
 }) => (
   <TextField
     label={label}
     onFocus={onFocus}
     helperText={helperText}
     multiline={multiline}
-    aria-label={ariaLabel}
     style={styles.textField}
     disabled={disabled}
     value={value}
+    id={id}
     onChange={event => onChange(event.target.value)}
     onBlur={onBlur}
     pattern={pattern}

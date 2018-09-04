@@ -44,6 +44,7 @@ export default class DocumentUpload extends Component {
             helperText={strings.workflow.workflow_document_description}
             label={strings.workflow.workflow_document_name}
             value={this.state.name}
+            id="documentnameinput"
             onChange={event => this.setState({ name: event.target.value })}
           />
           <Button
