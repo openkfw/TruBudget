@@ -181,6 +181,11 @@ export const createRouter = (
 ) => {
   const router = express.Router();
 
+  //#region liveness and readiness
+  // ------------------------------------------------------------
+  //       liveness and readiness
+  // ------------------------------------------------------------
+
   /**
    * @api {get} /readiness Readiness
    * @apiVersion 1.0.0
@@ -218,6 +223,45 @@ export const createRouter = (
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription Create a new user.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.user Wrapper for user information
+   * @apiParam {String} data.user.id The user's id
+   * @apiParam {String} data.user.displayName  The user's displayname
+   * @apiParam {String} data.user.organization  The user's organization
+   * @apiParam {String} data.user.password  The user's password
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "user": {
+   *        "id": "asmith",
+   *        "displayName": "Alice Smith",
+   *        "organization": "myorga",
+   *        "password": "mysafepassword"
+   *        }
+   *     }
+   *   }
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {String} data.user Wrapper for user information
+   * @apiSuccess {String} data.user.id The user's id
+   * @apiSuccess {String} data.user.displayName  The user's displayname
+   * @apiSuccess {String} data.user.organization  The user's organization
+   * @apiSuccess {String} data.user.address  The address of the user's blockchain wallet
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "user": {
+   *        "id": "asmith",
+   *        "displayName": "Alice Smith",
+   *        "organization": "myorga",
+   *        "address": "1Z8NUT8K6SM6h..."
+   *        }
+   *     }
+   *   }
    */
   router.post("/global.createUser", (req: AuthenticatedRequest, res) => {
     createUser(multichainClient, req, jwtSecret, rootSecret, organizationVaultSecret)
@@ -232,6 +276,34 @@ export const createRouter = (
    * @apiGroup Global
    * @apiPermission group
    * @apiDescription Create a new user group.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.group Wrapper for group information
+   * @apiParam {String} data.group.id The group's id
+   * @apiParam {String} data.group.displayName  The group's displayname
+   * @apiParam {Array} data.group.users  An array of userIds which shoulb be added to the new group
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "group": {
+   *        "id": "devs",
+   *        "displayName": "Developer",
+   *        "users": ["asmith","jjohnson"]
+   *        }
+   *     }
+   *   }
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {String} data.created true if group was successfully created
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "created": true
+   *     }
+   *   }
    */
   router.post("/global.createGroup", (req: AuthenticatedRequest, res) => {
     createGroup(multichainClient, req)
@@ -246,6 +318,43 @@ export const createRouter = (
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription Create a new project.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.id The project's id
+   * @apiParam {String} data.status Possible values are "open" and "closed" showing the project's status
+   * @apiParam {String} data.displayName The project's displayname
+   * @apiParam {String} data.description The project's description
+   * @apiParam {String} data.amount The amount of money which should be assigned to the project
+   * @apiParam {String} data.assignee The project's assignee
+   * @apiParam {String} data.currency The currency of the amount assigned to the project
+   * @apiParam {String} data.thumbnail The thumbnail representing the project in the trubudget frontend
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "project":{
+   *         "id": "myproject",
+   *         "status": "open",
+   *         "displayName": "Mr. Fox1",
+   *         "description": "some description for your project",
+   *         "amount": "500",
+   *         "assignee": "asmith",
+   *         "currency": "EUR",
+   *         "thumbnail": "thumbnail"
+   *       }
+   *     }
+   *   }
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {String} data.created true if project was successfully created
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "created": true
+   *     }
+   *   }
    */
   router.post("/global.createProject", (req: AuthenticatedRequest, res) => {
     createProject(multichainClient, req)
@@ -260,6 +369,54 @@ export const createRouter = (
    * @apiGroup Global
    * @apiPermission user
    * @apiDescription See the current global permissions.
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Array} data.notification.list Lists all userids for the endpoint
+   * @apiSuccess {Array} data.notification.markRead Lists all userids for the endpoint
+   * @apiSuccess {Array} data.global.listPermissions Lists all userids for the endpoint
+   * @apiSuccess {Array} data.global.grantPermission Lists all userids for the endpoint
+   * @apiSuccess {Array} data.global.grantAllPermissions Lists all userids for the endpoint
+   * @apiSuccess {Array} data.global.revokePermission Lists all userids for the endpoint
+   * @apiSuccess {Array} data.global.createProject Lists all userids for the endpoint
+   * @apiSuccess {Array} data.global.createUser Lists all userids for the endpoint
+   * @apiSuccess {Array} data.global.createGroup Lists all userids for the endpoint
+   * @apiSuccess {Array} data.user.intent.listPermissions Lists all userids for the endpoint
+   * @apiSuccess {Array} data.user.intent.grantPermission Lists all userids for the endpoint
+   * @apiSuccess {Array} data.user.intent.revokePermission Lists all userids for the endpoint
+   * @apiSuccess {Array} data.group.addUser Lists all userids for the endpoint
+   * @apiSuccess {Array} data.group.removeUser" Lists all userids for the endpoint
+   * @apiSuccess {Array} data.network.list Lists all userids for the endpoint
+   * @apiSuccess {Array} data.network.voteForPermission Lists all userids for the endpoint
+   * @apiSuccess {Array} data.network.approveNewOrganization Lists all userids for the endpoint
+   * @apiSuccess {Array} data.network.approveNewNodeForExistingOrganization Lists all userids for the endpoint
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "notification.list": [
+   *            "asmith",
+   *            "jjohnson"],
+   *     "notification.markRead": [],
+   *     "network.listActive": [],
+   *     "global.listPermissions": [],
+   *     "global.grantPermission": [],
+   *     "global.grantAllPermissions": [],
+   *     "global.revokePermission": [],
+   *     "global.createProject": [],
+   *     "global.createUser": [],
+   *     "global.createGroup": [],
+   *     "user.intent.listPermissions": [],
+   *     "user.intent.grantPermission": [],
+   *     "user.intent.revokePermission": [],
+   *     "group.addUser": [],
+   *     "group.removeUser": [],
+   *     "network.list": [],
+   *     "network.voteForPermission": [],
+   *     "network.approveNewOrganization": [],
+   *     "network.approveNewNodeForExistingOrganization": []
+   *     }
+   *   }
    */
   router.get("/global.listPermissions", (req: AuthenticatedRequest, res) => {
     getGlobalPermissions(multichainClient, req)
