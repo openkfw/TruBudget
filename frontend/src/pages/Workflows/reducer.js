@@ -4,6 +4,7 @@ import {
   WORKFLOW_NAME,
   WORKFLOW_AMOUNT,
   WORKFLOW_AMOUNT_TYPE,
+  WORKFLOW_DOCUMENT,
   WORKFLOW_PURPOSE,
   WORKFLOW_CURRENCY,
   CREATE_WORKFLOW_SUCCESS,
@@ -54,7 +55,8 @@ const defaultState = fromJS({
     amountType: "N/A",
     currency: "",
     description: "",
-    status: "open"
+    status: "open",
+    documents: []
   },
 
   showWorkflowPermissions: false,
@@ -104,7 +106,8 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("amount", action.amount)
           .set("amountType", action.amountType)
           .set("description", action.description)
-          .set("currency", action.currency),
+          .set("currency", action.currency)
+          .set("documents", action.documents),
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
       });
@@ -146,6 +149,11 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "currency"], action.currency);
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);
+    case WORKFLOW_DOCUMENT:
+      return state.updateIn(["workflowToAdd", "documents"], documents => [
+        ...documents,
+        { id: action.id, base64: action.base64 }
+      ]);
     case SUBPROJECT_AMOUNT:
       return state.set("subProjectAmount", action.amount);
     case CREATE_WORKFLOW_SUCCESS:

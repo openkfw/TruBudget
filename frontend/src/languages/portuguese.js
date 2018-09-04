@@ -35,6 +35,7 @@ const pt = {
     next: "Próximo",
     not_assigned: "Não atribuído",
     not_assigned_budget: "Orçamento não atribuído",
+    not_ok: "Não OK",
     open: "Abrir",
     password: "Senha",
     project: "Portuguese: Project",
@@ -48,7 +49,7 @@ const pt = {
     thumbnail: "Portuguese: Thumbnail",
     username: "Usuário",
     view: "Portuguese: View",
-    workflowItem: "Portuguese: WorkflowItem",
+    workflowItem: "Portuguese: WorkflowItem"
   },
 
   usersDashboard: {
@@ -56,14 +57,14 @@ const pt = {
     new_user: "Novo usuário",
     organization: "Organização",
     user_created: "Portuguese: User successfully created",
-    users: "Usuários",
+    users: "Usuários"
   },
 
   groupDashboard: {
     add_users: "Portuguese: Add Users",
     group_created: "Portuguese: Group successfully created",
     groups: "Portuguese: Groups",
-    new_group: "Portuguese: New user group",
+    new_group: "Portuguese: New user group"
   },
 
   nodesDashboard: {
@@ -74,7 +75,7 @@ const pt = {
     network: "Network",
     new_organization: "Portuguese: New Organizations",
     nodes: "Nós",
-    permissions: "Portuguese: Permissions",
+    permissions: "Portuguese: Permissions"
   },
 
   login: {
@@ -84,7 +85,7 @@ const pt = {
     login_button_title: "Login",
     production_env: "Produção",
     test_env: "Teste",
-    tru_budget_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias",
+    tru_budget_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias"
   },
 
   project: {
@@ -101,16 +102,18 @@ const pt = {
     project_currency: "Moeda",
     project_details: "Detalhes",
     project_disbursement_authority_role: "Selecione o papel da autoridade de desembolso",
-    project_disbursement_authority_role_description: "As autoridades competentes para aprovar as transações financeiras",
+    project_disbursement_authority_role_description:
+      "As autoridades competentes para aprovar as transações financeiras",
     project_edit_title: "Portuguese: Edit Project",
     project_implementing_authority_role: "Selecione o papel das autoridades implementadoras",
-    project_implementing_authority_role_description: "As autoridades competentes para criar e modificar subprojetos e definir e executar os fluxos de trabalho",
+    project_implementing_authority_role_description:
+      "As autoridades competentes para criar e modificar subprojetos e definir e executar os fluxos de trabalho",
     project_name: "Nome",
     project_permissions_title: "Portuguese: Set permissions for project",
     project_roles: "´Papéis",
     project_thumbnail: "Miniatura",
     project_title: "Nome do projeto",
-    project_title_description: "Descrição do projeto",
+    project_title_description: "Descrição do projeto"
   },
 
   subproject: {
@@ -126,7 +129,7 @@ const pt = {
     subproject_permissions_title: "Portuguese: Set permissions for subproject",
     subproject_select_button: "Selecionar",
     subproject_title: "Nome do subprojeto",
-    subproject_title_description: "Descrição do subprojeto",
+    subproject_title_description: "Descrição do subprojeto"
   },
 
   workflow: {
@@ -156,6 +159,7 @@ const pt = {
     workflow_document_validated: "Validado",
     workflow_documents: "Documentos",
     workflow_enable_sort: "Ordenar",
+    workflow_fingerprint: "Portuguese: Fingerprint",
     workflow_name: "Nome",
     workflow_next_step: "Próxima etapa",
     workflow_no_actions: "Nenhuma ação necessária",
@@ -170,7 +174,7 @@ const pt = {
     workflow_type: "Categoria",
     workflow_type_transaction: "Transação",
     workflow_type_workflow: "Workflow",
-    workflow_upload_document: "Autenticar",
+    workflow_upload_document: "Autenticar"
   },
 
   navigation: {
@@ -191,13 +195,14 @@ const pt = {
     rtUpdates: "Atualizações em tempo real",
     selections: "Seleções",
     unread_notifications: "Notificações não lidas",
-    write_permission: "Escrita",
+    write_permission: "Escrita"
   },
 
   dashboard: {
-    dashboard_card_text: " Os nós conectados na blockchain são mostrados no mapa abaixo. Para obter a localização exata, clique nos respectivos marcadores.",
+    dashboard_card_text:
+      " Os nós conectados na blockchain são mostrados no mapa abaixo. Para obter a localização exata, clique nos respectivos marcadores.",
     dashboard_subtitle: "Nós conectados na rede blockchain",
-    dashboard_title: "Painel da rede blockchain",
+    dashboard_title: "Painel da rede blockchain"
   },
 
   notification: {
@@ -208,7 +213,8 @@ const pt = {
     edit_transaction: "Transação {0} foi adaptada ",
     edit_workflow: "Workflow {0} foi adaptado ",
     no_permissions: "Portuguese: (No permissions to see further details)",
-    notification_card_text: "Por favor, verifique suas notificações abaixo. Elas contêm informações ou ações a serem tratadas.",
+    notification_card_text:
+      "Por favor, verifique suas notificações abaixo. Elas contêm informações ou ações a serem tratadas.",
     notification_subtitle: "Não lidas",
     notification_table_all_read: "Tudo lido",
     notification_table_by: "Por",
@@ -240,7 +246,7 @@ const pt = {
     workflowitem_archive: "Portuguese: Workflowitem {0} was archived",
     workflowitem_assign: "Portuguese: Workflowitem {0} was assigned to you",
     workflowitem_intent_grantPermission: "Portuguese: The permissions for workflowitem {0} changed",
-    workflowitem_intent_revokePermission: "Portuguese: The permissions for workflowitem {0} changed",
+    workflowitem_intent_revokePermission: "Portuguese: The permissions for workflowitem {0} changed"
   },
 
   history: {
@@ -275,7 +281,7 @@ const pt = {
     workflowitem_assign: "Portuguese: {0} assigned workflowitem {1} to {2}",
     workflowitem_close: "Portuguese: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "Portuguese: {0} granted permission {1} to {2} on {3}",
-    workflowitem_revokePermission: "Portuguese: {0} revoked permission {1} of {3} from {2}",
+    workflowitem_revokePermission: "Portuguese: {0} revoked permission {1} of {3} from {2}"
   },
 
   permissions: {
@@ -309,14 +315,14 @@ const pt = {
     workflowitem_intent_revokePermission: "Portuguese: Revoke workflowitem permission",
     workflowitem_update: "Portuguese: Update workflowitem",
     workflowitem_view: "Portuguese: View workflowitem",
-    write: "Portuguese: Write permissions",
+    write: "Portuguese: Write permissions"
   },
 
   language: {
     english: "Portuguese: English",
     french: "Portuguese: French",
     german: "Portuguese: German",
-    portuguese: "Português",
+    portuguese: "Português"
   }
 };
 

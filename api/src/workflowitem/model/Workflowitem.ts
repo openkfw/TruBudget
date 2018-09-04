@@ -42,7 +42,7 @@ export interface Data {
   description: string;
   status: "open" | "closed";
   assignee?: string;
-  documents: Document[];
+  documents?: Document[];
 }
 
 export interface RedactedData {
@@ -64,10 +64,11 @@ export interface Update {
   currency?: string;
   amountType?: "N/A" | "disbursed" | "allocated";
   description?: string;
+  documents?: Document[];
 }
 
 export interface Document {
-  description: string;
+  id: string;
   hash: string;
 }
 
@@ -230,9 +231,20 @@ function applyUpdate(event: Event, resource: WorkflowitemResource): true | undef
   if (event.intent !== "workflowitem.update") return;
   switch (event.dataVersion) {
     case 1: {
+      if (event.data.documents) {
+        const currentDocs = resource.data.documents || [];
+        const currentIds = currentDocs.map(doc => doc.id);
+        const newDocs = event.data.documents.filter(doc => !currentIds.includes(doc.id));
+        if (resource.data.documents) {
+          resource.data.documents.push(...newDocs);
+        } else {
+          resource.data.documents = newDocs;
+        }
+        delete event.data.documents;
+      }
       const update: Update = event.data;
-      inheritDefinedProperties(resource.data, update);
 
+      inheritDefinedProperties(resource.data, update);
       // In case the update has set the amountType to N/A, we don't want to retain the
       // amount and currency fields:
       if (resource.data.amountType === "N/A") {

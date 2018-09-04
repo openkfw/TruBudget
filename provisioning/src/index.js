@@ -317,15 +317,26 @@ async function testWorkflowitemUpdate(folder) {
 
   const project = await findProject(axios, amazonFundProject);
 
-  const subprojectTemplate = amazonFundProject.subprojects.find(x => x.displayName === "Furniture");
+  const subprojectTemplate = amazonFundProject.subprojects.find(
+    x => x.displayName === "Furniture"
+  );
   const subproject = await findSubproject(axios, project, subprojectTemplate);
 
-  const workflowitemTemplate = subprojectTemplate.workflows.find(x => x.displayName === "Payment final installment")
-  const workflowitem = await findWorkflowitem(axios, project, subproject, workflowitemTemplate);
+  const workflowitemTemplate = subprojectTemplate.workflows.find(
+    x => x.displayName === "Payment final installment"
+  );
+  const workflowitem = await findWorkflowitem(
+    axios,
+    project,
+    subproject,
+    workflowitemTemplate
+  );
 
   const { amountType, amount, currency } = workflowitem.data;
   if (amountType === "N/A" || !amount || !currency) {
-    throw Error(`unexpected test data: ${JSON.stringify(workflowitem, null, 2)}`);
+    throw Error(
+      `unexpected test data: ${JSON.stringify(workflowitem, null, 2)}`
+    );
   }
 
   // Setting the amountType to N/A should remove the amount and currency fields from the
@@ -336,18 +347,96 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemId: workflowitem.data.id,
     amountType: "N/A",
     amount: amount + 1,
-    currency,
+    currency
   });
 
-  const updatedWorkflowitem = await findWorkflowitem(axios, project, subproject, workflowitemTemplate);
-  if (updatedWorkflowitem.data.amountType !== "N/A" ||
+  const updatedWorkflowitem = await findWorkflowitem(
+    axios,
+    project,
+    subproject,
+    workflowitemTemplate
+  );
+  if (
+    updatedWorkflowitem.data.amountType !== "N/A" ||
     updatedWorkflowitem.data.amount !== undefined ||
     updatedWorkflowitem.data.currency !== undefined
   ) {
-    throw Error(`Setting amountType to N/A did not remove amount and currency fields!\n${JSON.stringify(updatedWorkflowitem, null, 2)}`);
+    throw Error(
+      `Setting amountType to N/A did not remove amount and currency fields!\n${JSON.stringify(
+        updatedWorkflowitem,
+        null,
+        2
+      )}`
+    );
   }
 
-  // Restoring the original (test) data:
+  // Adding a document:
+  const now = new Date().toISOString();
+  const documentId1 = `${now} first contract`;
+  const documentId2 = `${now} second contract`;
+  await axios.post("/workflowitem.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    workflowitemId: workflowitem.data.id,
+    documents: [
+      {
+        id: documentId1,
+        base64: "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4="
+      },
+      {
+        id: documentId2,
+        base64: "VGhhdCdzIG91ciBzZWNvbmQgY29udHJhY3Qu"
+      }
+    ]
+  });
+
+  const itemWithDocuments = await findWorkflowitem(
+    axios,
+    project,
+    subproject,
+    workflowitemTemplate
+  );
+  if (
+    !Array.isArray(itemWithDocuments.data.documents) ||
+    itemWithDocuments.data.documents.length !== 2
+  ) {
+    throw Error(`Adding documents to a workflowitem failed :(`);
+  }
+
+  // Updating an existing document shouldn't be allowed:
+  try {
+    await axios.post("/workflowitem.update", {
+      projectId: project.data.id,
+      subprojectId: subproject.data.id,
+      workflowitemId: workflowitem.data.id,
+      documents: [
+        {
+          id: documentId1,
+          base64:
+            "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4gSnVzdCBraWRkaW5nLCBJJ3ZlIGNoYW5nZWQgaXQhIG11YWhhaGE="
+        }
+      ]
+    });
+    throw Error(
+      `Updated an existing document, but that isn't supposed to work :(`
+    );
+  } catch (_err) {}
+  const stillTheItemWithDocuments = await findWorkflowitem(
+    axios,
+    project,
+    subproject,
+    workflowitemTemplate
+  );
+  if (
+    stillTheItemWithDocuments.data.documents[0].hash !==
+    "657fa2f1a088db531144752b5b3a6c1de5edd5aa823cab99884143361f5d0470"
+  ) {
+    throw Error(
+      `The document has changed but shouldn't (or the ordering was not preserved) :(`
+    );
+  }
+
+  // Restoring the original (test) data (except documents, which cannot be removed):
   await axios.post("/workflowitem.update", {
     projectId: project.data.id,
     subprojectId: subproject.data.id,
@@ -355,7 +444,7 @@ async function testWorkflowitemUpdate(folder) {
     amountType,
     amount,
     currency
-  })
+  });
 }
 
 async function testWorkflowitemReordering(folder) {
@@ -366,42 +455,64 @@ async function testWorkflowitemReordering(folder) {
   const project = await findProject(axios, amazonFundProject);
   const projectId = project.data.id;
 
-  const subprojectTemplate = amazonFundProject.subprojects.find(x => x.displayName === "Furniture");
+  const subprojectTemplate = amazonFundProject.subprojects.find(
+    x => x.displayName === "Furniture"
+  );
   const subproject = await findSubproject(axios, project, subprojectTemplate);
   const subprojectId = subproject.data.id;
 
   // We choose two adjacent workflowitems:
 
-  const interimInstallmentTemplate = subprojectTemplate.workflows.find(x => x.displayName === "Payment interim installment")
+  const interimInstallmentTemplate = subprojectTemplate.workflows.find(
+    x => x.displayName === "Payment interim installment"
+  );
   const interimInstName = interimInstallmentTemplate.displayName;
-  const interimInstallment = await findWorkflowitem(axios, project, subproject, interimInstallmentTemplate);
+  const interimInstallment = await findWorkflowitem(
+    axios,
+    project,
+    subproject,
+    interimInstallmentTemplate
+  );
 
-  const finalInstallmentTemplate = subprojectTemplate.workflows.find(x => x.displayName === "Payment final installment")
+  const finalInstallmentTemplate = subprojectTemplate.workflows.find(
+    x => x.displayName === "Payment final installment"
+  );
   const finalInstName = finalInstallmentTemplate.displayName;
-  const finalInstallment = await findWorkflowitem(axios, project, subproject, finalInstallmentTemplate);
+  const finalInstallment = await findWorkflowitem(
+    axios,
+    project,
+    subproject,
+    finalInstallmentTemplate
+  );
 
   // We check that the ordering is as expected:
   const getOrderingAsMap = () =>
     axios
-    .get(`/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`)
-    .then(res => res.data.data.workflowitems)
-    .then(items =>
-      items
-      .map(x => x.data)
-        .reduce((acc, x, index) => {
+      .get(
+        `/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`
+      )
+      .then(res => res.data.data.workflowitems)
+      .then(items =>
+        items.map(x => x.data).reduce((acc, x, index) => {
           acc[x.displayName] = index;
           return acc;
         }, {})
-    );
+      );
 
   const originalOrdering = await getOrderingAsMap();
   if (originalOrdering[interimInstName] >= originalOrdering[finalInstName]) {
-    throw Error(`unexpected test data: ${JSON.stringify(originalOrdering, null, 2)}`);
+    throw Error(
+      `unexpected test data: ${JSON.stringify(originalOrdering, null, 2)}`
+    );
   }
 
   // Let's also check that at least one workflowitem of that subproject is closed:
   if (!subprojectTemplate.workflows.some(x => x.status === "closed")) {
-    throw Error(`unexpected at least one *closed* workflowitem (subproject ${subprojectTemplate.displayName})`);
+    throw Error(
+      `unexpected at least one *closed* workflowitem (subproject ${
+        subprojectTemplate.displayName
+      })`
+    );
   }
 
   // If we explicitly order them differently, they should show up reversed right after the last closed workflowitem:
@@ -412,16 +523,28 @@ async function testWorkflowitemReordering(folder) {
   });
   const changedOrdering = await getOrderingAsMap();
   if (changedOrdering[finalInstName] === 0) {
-    throw Error("The ordering seems to affect closed items too, which shouldn't happen");
+    throw Error(
+      "The ordering seems to affect closed items too, which shouldn't happen"
+    );
   }
   if (changedOrdering[finalInstName] >= originalOrdering[finalInstName]) {
-    throw Error("The final installment workflowitem should have moved to an earlier position." +
-      ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${changedOrdering[finalInstName]}`);
+    throw Error(
+      "The final installment workflowitem should have moved to an earlier position." +
+        ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${
+          changedOrdering[finalInstName]
+        }`
+    );
   }
   if (changedOrdering[finalInstName] >= changedOrdering[interimInstName]) {
-    throw Error("The final installment workflowitem should have move before the interim installment workflowitem." +
-      ` Instead, final installment has moved from ${originalOrdering[finalInstName]} to ${changedOrdering[finalInstName]},` +
-      ` while interim installment has moved from ${originalOrdering[interimInstName]} to ${changedOrdering[interimInstName]}`);
+    throw Error(
+      "The final installment workflowitem should have move before the interim installment workflowitem." +
+        ` Instead, final installment has moved from ${
+          originalOrdering[finalInstName]
+        } to ${changedOrdering[finalInstName]},` +
+        ` while interim installment has moved from ${
+          originalOrdering[interimInstName]
+        } to ${changedOrdering[interimInstName]}`
+    );
   }
 
   // Let's clear the ordering:

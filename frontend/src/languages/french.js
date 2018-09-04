@@ -35,6 +35,7 @@ const fr = {
     next: "Suivant",
     not_assigned: "Non-alloué",
     not_assigned_budget: "Budget non-alloué",
+    not_ok: "Non OK",
     open: "Ouvert",
     password: "Mot de passe",
     project: "French: Project",
@@ -48,7 +49,7 @@ const fr = {
     thumbnail: "French: Thumbnail",
     username: "Nom d'utilisateur",
     view: "French: View",
-    workflowItem: "French: WorkflowItem",
+    workflowItem: "French: WorkflowItem"
   },
 
   login: {
@@ -58,7 +59,8 @@ const fr = {
     login_button_title: "Login",
     production_env: "Prod",
     test_env: "Teste",
-    tru_budget_description: "Une solution basée sur la technologie de stockage et de transmission d'informations (blockchain), pour les dépenses budgétaires",
+    tru_budget_description:
+      "Une solution basée sur la technologie de stockage et de transmission d'informations (blockchain), pour les dépenses budgétaires"
   },
 
   project: {
@@ -75,16 +77,18 @@ const fr = {
     project_currency: "Devise du projet",
     project_details: "French: Details",
     project_disbursement_authority_role: "Sélectionnez le rôle d'autorité de décaissement",
-    project_disbursement_authority_role_description: "Les autorités ont autorisé l'approbation des transactions financières",
+    project_disbursement_authority_role_description:
+      "Les autorités ont autorisé l'approbation des transactions financières",
     project_edit_title: "French: Edit Project",
     project_implementing_authority_role: "Rôle de l'autorité chargée de la mise en œuvre",
-    project_implementing_authority_role_description: "Les autorités ont permis de créer et de modifier des sous-projets, de définir et d'exécuter des activités de workflow",
+    project_implementing_authority_role_description:
+      "Les autorités ont permis de créer et de modifier des sous-projets, de définir et d'exécuter des activités de workflow",
     project_name: "Nom du projet",
     project_permissions_title: "French: Set permissions for project",
     project_roles: "Rôles danse le projet",
     project_thumbnail: "French: Thumbnail",
     project_title: "Titre de projet",
-    project_title_description: "Description du titre du projet",
+    project_title_description: "Description du titre du projet"
   },
 
   subproject: {
@@ -100,7 +104,7 @@ const fr = {
     subproject_permissions_title: "French: Set permissions for subproject",
     subproject_select_button: "Sélectionnez",
     subproject_title: "Sous-projet",
-    subproject_title_description: "Titre du sous-projet",
+    subproject_title_description: "Titre du sous-projet"
   },
 
   workflow: {
@@ -130,6 +134,7 @@ const fr = {
     workflow_document_validated: "Validé",
     workflow_documents: "Documents de workflow",
     workflow_enable_sort: "Trier",
+    workflow_fingerprint: "French: Fingerprint",
     workflow_name: "Nom du flux de travail",
     workflow_next_step: "Prochaine étape",
     workflow_no_actions: "asdfd",
@@ -144,7 +149,7 @@ const fr = {
     workflow_type: "Type de flux de travail",
     workflow_type_transaction: "Transaction",
     workflow_type_workflow: "Workflow",
-    workflow_upload_document: "Télécharger",
+    workflow_upload_document: "Télécharger"
   },
 
   usersDashboard: {
@@ -152,14 +157,14 @@ const fr = {
     new_user: "French: New User",
     organization: "French: Organization",
     user_created: "French: User successfully created",
-    users: "French: Users",
+    users: "French: Users"
   },
 
   groupDashboard: {
     add_users: "French: Add Users",
     group_created: "French: Group successfully created",
     groups: "French: Groups",
-    new_group: "French: New user group",
+    new_group: "French: New user group"
   },
 
   nodesDashboard: {
@@ -170,7 +175,7 @@ const fr = {
     network: "French: Network",
     new_organization: "French: New Organizations",
     nodes: "French: Nodes",
-    permissions: "French: Permissions",
+    permissions: "French: Permissions"
   },
 
   navigation: {
@@ -191,13 +196,14 @@ const fr = {
     rtUpdates: "Mises à jour en temps réel",
     selections: "Sélections",
     unread_notifications: "Notifications non-lues",
-    write_permission: "Écrire",
+    write_permission: "Écrire"
   },
 
   dashboard: {
     dashboard_title: "Le tableau de bord du réseau Blockchain",
     dashboard_subtitle: "Les noeuds connectés dans le réseau de Blockchain",
-    dashboard_card_text: "Les noeuds connectés sont affichés dans la carte ci-dessous_ Vous pouvez cliquer sur les marqueurs pour obtenir l'emplacement exact_"
+    dashboard_card_text:
+      "Les noeuds connectés sont affichés dans la carte ci-dessous_ Vous pouvez cliquer sur les marqueurs pour obtenir l'emplacement exact_"
   },
 
   notification: {
@@ -208,7 +214,8 @@ const fr = {
     edit_transaction: "Transaction {0} got adapté",
     edit_workflow: "Flux de travail {0} got adapté",
     no_permissions: "French: (No permissions to see further details)",
-    notification_card_text: "Veuillez trouver vos notifications actuelles ci-dessous_ Ces éléments d'action s'affichent ou des éléments d'information à traiter_",
+    notification_card_text:
+      "Veuillez trouver vos notifications actuelles ci-dessous_ Ces éléments d'action s'affichent ou des éléments d'information à traiter_",
     notification_subtitle: "Non lus",
     notification_table_all_read: "Tout lire",
     notification_table_by: "Par",
@@ -240,7 +247,7 @@ const fr = {
     workflowitem_close: "French: Workflowitem {0} was closed",
     workflowitem_intent_grantPermission: "French: The permissions for workflowitem {0} changed",
     workflowitem_intent_revokePermission: "French: The permissions for workflowitem {0} changed",
-    workflowitem_update: "French: Workflowitem {0} was updated",
+    workflowitem_update: "French: Workflowitem {0} was updated"
   },
 
   history: {
@@ -275,7 +282,7 @@ const fr = {
     workflowitem_assign: "French: {0} assigned workflowitem {1} to {2}",
     workflowitem_close: "French: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "French: {0} granted permission {1} to {2} on {3}",
-    workflowitem_revokePermission: "French: {0} revoked permission {1} of {3} from {2}",
+    workflowitem_revokePermission: "French: {0} revoked permission {1} of {3} from {2}"
   },
 
   permissions: {
@@ -309,14 +316,14 @@ const fr = {
     workflowitem_intent_revokePermission: "French: Revoke workflowitem permission",
     workflowitem_update: "French: Update workflowitem",
     workflowitem_view: "French: View workflowitem",
-    write: "French: Write permissions",
+    write: "French: Write permissions"
   },
 
   language: {
     english: "Anglais",
     french: "Français",
     german: "Allemande",
-    portuguese: "Portugues",
+    portuguese: "Portugues"
   }
 };
 

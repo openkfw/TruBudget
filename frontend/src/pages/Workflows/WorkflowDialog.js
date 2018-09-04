@@ -2,6 +2,7 @@ import React from "react";
 
 import Divider from "@material-ui/core/Divider";
 
+import { compareWorkflowItems } from "./compareWorkflowItems";
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
@@ -16,15 +17,8 @@ const styles = {
   }
 };
 const handleCreate = props => {
-  const {
-    createWorkflowItem,
-    onDialogCancel,
-    workflowToAdd,
-    workflowDocuments,
-    storeSnackbarMessage,
-    showSnackbar
-  } = props;
-  const { displayName, amount, amountType, currency, description, status } = workflowToAdd;
+  const { createWorkflowItem, onDialogCancel, workflowToAdd, storeSnackbarMessage, showSnackbar } = props;
+  const { displayName, amount, amountType, currency, description, status, documents } = workflowToAdd;
   createWorkflowItem(
     displayName,
     fromAmountString(amount).toString(),
@@ -32,7 +26,7 @@ const handleCreate = props => {
     currency,
     description,
     status,
-    workflowDocuments
+    documents
   );
   storeSnackbarMessage(strings.common.created + " " + strings.common.workflowItem + " " + displayName);
   showSnackbar();
@@ -49,7 +43,17 @@ const handleEdit = props => {
     showSnackbar,
     storeSnackbarMessage
   } = props;
-  const changes = compareObjects(workflowItems, workflowToAdd);
+  const originalWorkflowItem = workflowItems.find(workflowItem => workflowItem.data.id === workflowToAdd.id).data;
+  if (workflowToAdd.amountType === "N/A") {
+    if (workflowToAdd.amountType === originalWorkflowItem.amountType) {
+      delete workflowToAdd.amount;
+      delete workflowToAdd.currency;
+    } else {
+      workflowToAdd.amount = "";
+      workflowToAdd.currency = "";
+    }
+  }
+  const changes = compareWorkflowItems(originalWorkflowItem, workflowToAdd);
   if (changes) {
     const projectId = location.pathname.split("/")[2];
     const subprojectId = location.pathname.split("/")[3];
@@ -92,7 +96,7 @@ const Content = props => {
   );
 };
 const WorkflowDialog = props => {
-  const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, addDocument, workflowDocuments } = props;
+  const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, storeWorkflowDocument } = props;
   const specifcProps = editDialogShown
     ? {
         handleSubmit: handleEdit,
@@ -117,7 +121,9 @@ const WorkflowDialog = props => {
 
     {
       title: strings.workflow.workflow_documents,
-      content: <DocumentUpload addDocument={addDocument} workflowDocuments={workflowDocuments} />,
+      content: (
+        <DocumentUpload storeWorkflowDocument={storeWorkflowDocument} workflowDocuments={workflowToAdd.documents} />
+      ),
       nextDisabled:
         workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
           ? Object.keys(changes).length === 2 && changes.hasOwnProperty("currency") && changes.hasOwnProperty("amount")

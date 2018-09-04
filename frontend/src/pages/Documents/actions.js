@@ -1,35 +1,28 @@
-export const VALIDATE_DOCUMENT = 'VALIDATE_DOCUMENT';
-export const VALIDATE_DOCUMENT_SUCCESS = 'VALIDATE_DOCUMENT_SUCCESS';
-export const ADD_DOCUMENT = 'ADD_DOCUMENT';
-export const ADD_DOCUMENT_SUCCESS = 'ADD_DOCUMENT_SUCCESS';
-export const CLEAR_DOCUMENTS = 'CLEAR_DOCUMENTS';
-export const PREFILL_DOCUMENTS = 'PREFILL_DOCUMENTS';
+export const VALIDATE_DOCUMENT = "VALIDATE_DOCUMENT";
+export const VALIDATE_DOCUMENT_SUCCESS = "VALIDATE_DOCUMENT_SUCCESS";
+export const ADD_DOCUMENT = "ADD_DOCUMENT";
+export const ADD_DOCUMENT_SUCCESS = "ADD_DOCUMENT_SUCCESS";
+export const CLEAR_DOCUMENTS = "CLEAR_DOCUMENTS";
 
-export function validateDocument(hash, payload) {
+export function validateDocument(hash, base64String, id) {
   return {
     type: VALIDATE_DOCUMENT,
-    payload,
-    hash
-  }
+    base64String: base64String,
+    hash: hash,
+    id: id
+  };
 }
-export function addDocument(payload, name, id) {
+export function addDocument(payload, filename) {
   return {
     type: ADD_DOCUMENT,
     payload,
-    name,
-    id
-  }
+    filename
+  };
 }
 
-export function clearDocuments() {
+export function clearDocuments(hash) {
   return {
     type: CLEAR_DOCUMENTS,
-  }
-}
-
-export function prefillDocuments(documents = []) {
-  return {
-    type: PREFILL_DOCUMENTS,
-    documents
-  }
+    document: hash
+  };
 }

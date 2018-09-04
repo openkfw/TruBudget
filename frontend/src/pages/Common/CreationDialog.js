@@ -26,13 +26,13 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   const submitButtonText = steps[currentStep].submitButtonText;
 
   const cancelButton = !hideCancel ? (
-    <Button aria-label="cancel" color="secondary" onClick={() => handleCancel(props)}>
+    <Button aria-label="cancel" data-test="cancel" color="secondary" onClick={() => handleCancel(props)}>
       {strings.common.cancel}
     </Button>
   ) : null;
   const backButton =
     numberOfSteps > 1 ? (
-      <Button aria-label="back" color="primary" disabled={isFirstStep} onClick={() => handleBack(props)}>
+      <Button aria-label="back" data-test="back" color="primary" disabled={isFirstStep} onClick={() => handleBack(props)}>
         {strings.common.back}
       </Button>
     ) : null;
@@ -40,6 +40,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
     numberOfSteps > 1 ? (
       <Button
         aria-label="next"
+        data-test="next"
         color="primary"
         disabled={isLastStep ? isLastStep : requiredInfoAdded}
         onClick={() => handleNext(props)}
@@ -50,6 +51,7 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   const submitButton = (
     <Button
       aria-label="submit"
+      data-test="submit"
       color="primary"
       disabled={isLastStep ? isLastStep && requiredInfoAdded : !isLastStep}
       onClick={() => handleSubmit(props)}

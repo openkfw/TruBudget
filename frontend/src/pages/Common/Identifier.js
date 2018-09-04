@@ -21,7 +21,7 @@ class Identifier extends Component {
           helperText={this.props.nameHintText}
           value={this.props.name}
           onChange={this.props.nameOnChange}
-          aria-label="nameinput"
+          id="nameinput"
         />
 
         <TextInput
@@ -30,7 +30,7 @@ class Identifier extends Component {
           value={this.props.comment}
           onChange={this.props.commentOnChange}
           multiline={true}
-          aria-label="commentinput"
+          id="commentinput"
         />
       </div>
     );

@@ -1,23 +1,24 @@
 import React, { Component } from "react";
 
 import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import FingerPrint from "@material-ui/icons/Fingerprint";
+import Input from "@material-ui/core/Input";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 
 import _isUndefined from "lodash/isUndefined";
 import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
+import withInitialLoading from "../Loading/withInitialLoading";
 const styles = {
-  uploadButton: {
-    verticalAlign: "middle"
+  uploadButtonNotValidated: {
+    whiteSpace: "nowrap"
   },
   uploadInput: {
-    cursor: "pointer",
     position: "absolute",
     top: 0,
     bottom: 0,
@@ -27,7 +28,7 @@ const styles = {
     opacity: 0
   },
   hashButton: {
-    cursor: "default"
+    display: "flex"
   }
 };
 
@@ -39,88 +40,137 @@ class DocumentOverview extends Component {
   getPropsForUploadButton = validated => {
     let style = null;
     let label = null;
-
+    let color = null;
     if (_isUndefined(validated)) {
       label = strings.workflow.workflow_document_validate;
-      style = styles.uploadButton;
     } else if (validated === true) {
       label = strings.workflow.workflow_document_validated + "!";
-      style = {
-        ...styles.uploadButton
-      };
+      color = "primary";
     } else {
       label = strings.workflow.workflow_document_changed + "!";
       style = {
-        ...styles.uploadButton
+        ...styles.uploadButtonNotValidated
       };
+      color = "secondary";
     }
 
-    return { style, label };
+    return { style, label, color };
   };
 
-  generateUploadIcon = (hash, validated) => (
-    <Button labelPosition="before" containerElement="label" {...this.getPropsForUploadButton(validated)}>
-      <input
+  getValidationText = validated => {
+    if (_isUndefined(validated)) {
+      return strings.workflow.workflow_document_validate;
+    } else if (validated === true) {
+      return "OK";
+    } else {
+      return "Not OK";
+    }
+  };
+
+  generateUploadIcon = (hash, validated, id) => (
+    <Button {...this.getPropsForUploadButton(validated)}>
+      {this.getValidationText(validated)}
+      <Input
         id="docvalidation"
         type="file"
-        ref={input => (this.input[hash] = input)}
         style={styles.uploadInput}
-        onChange={() => {
-          const file = this.input[hash].files[0];
-          this.props.validateDocument(hash, file);
+        onChange={event => {
+          if (event.target.files[0]) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = e => {
+              if (e.target.result !== undefined) {
+                const dataUrl = e.target.result.split(";base64,")[1];
+                this.props.validateDocument(hash, dataUrl, id);
+              }
+            };
+            reader.readAsDataURL(file);
+          }
         }}
       />
     </Button>
   );
 
   generateHashIcon = hash => (
-    <Button
-      labelPosition="after"
-      style={styles.hashButton}
-      disableTouchRipple={true}
-      hoverColor="none"
-      icon={<FingerPrint />}
-    >
-      {`${hash.slice(0, 6)}...`}
-    </Button>
+    <div style={styles.hashButton}>
+      <Typography>{`${hash.slice(0, 6)}...`}</Typography>
+    </div>
   );
 
-  generateDocumentList = (documents, validationActive = true, validatedDocuments = {}) =>
-    documents.map((document, index) => {
+  generateDocumentList = (documents, validationActive = false, validatedDocuments = {}) => {
+    const header = this.generateDocumentListHeader(validationActive);
+    const rows = documents.map((document, index) => {
       let validated = undefined;
-      const { name, hash } = document;
-
-      if (validationActive) validated = validatedDocuments[hash];
-
+      const { id, hash } = document;
+      if (validationActive) {
+        validated = validatedDocuments[id];
+      }
       return (
         <TableRow key={index + "document"}>
-          <TableCell style={{ textAlign: "center" }}>
-            {hash ? this.generateHashIcon(hash) : <CircularProgress size={20} />}
-          </TableCell>
-          <TableCell>{name}</TableCell>
-          {validationActive ? <TableCell>{this.generateUploadIcon(hash, validated)}</TableCell> : null}
+          {validationActive ? (
+            <TableCell style={{ paddingRight: "0px", paddingLeft: "0px" }}>
+              <FingerPrint />
+            </TableCell>
+          ) : null}
+          <TableCell data-test="workflowitemDocumentId" style={{ paddingRight: "0px", paddingLeft: "0px" }}>{id}</TableCell>
+          {validationActive ? <TableCell>{this.generateHashIcon(hash)}</TableCell> : null}
+          {validationActive ? (
+            <TableCell style={{ textAlign: "center", paddingLeft: "0px" }}>
+              {this.generateUploadIcon(hash, validated, id)}
+            </TableCell>
+          ) : null}
         </TableRow>
       );
     });
+    return (
+      <TableBody>
+        {header}
+        {rows}
+      </TableBody>
+    );
+  };
+
+  generateDocumentListHeader = validationActive => {
+    return (
+      <TableRow key={"documentlistheader"} style={styles.documentListHeader}>
+        {validationActive ? <TableCell /> : null}
+        <TableCell>
+          <Typography variant="body2">{strings.common.name}</Typography>
+        </TableCell>
+        {validationActive ? (
+          <TableCell>
+            <Typography variant="body2">{strings.workflow.workflow_fingerprint}</Typography>
+          </TableCell>
+        ) : null}
+        {validationActive ? (
+          <TableCell>
+            <Typography style={{ paddingLeft: "0px" }} variant="body2">
+              {strings.common.actions}
+            </Typography>
+          </TableCell>
+        ) : null}
+      </TableRow>
+    );
+  };
 
   generateEmptyList = () => (
-    <TableRow>
-      <TableCell>{strings.workflow.workflow_no_documents}</TableCell>
-    </TableRow>
+    <TableBody>
+      <TableRow>
+        <TableCell>{strings.workflow.workflow_no_documents}</TableCell>
+      </TableRow>
+    </TableBody>
   );
 
   render = () => {
-    const { documents, validationActive, validatedDocuments } = this.props;
+    const { documents, validationActive, validatedDocuments, loadingVisible } = this.props;
     return (
       <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-        <TableBody>
-          {_isEmpty(documents)
-            ? this.generateEmptyList()
-            : this.generateDocumentList(documents, validationActive, validatedDocuments)}
-        </TableBody>
+        {_isEmpty(documents)
+          ? this.generateEmptyList()
+          : this.generateDocumentList(documents, validationActive, validatedDocuments, loadingVisible)}
       </Table>
     );
   };
 }
 
-export default DocumentOverview;
+export default withInitialLoading(DocumentOverview);

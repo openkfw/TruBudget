@@ -14,7 +14,8 @@ class Api {
         if (typeof data === "object") {
           return {
             apiVersion: API_VERSION,
-            data: { ...data
+            data: {
+              ...data
             }
           };
         } else {
@@ -37,12 +38,13 @@ class Api {
     }
   };
 
-  login = (username, password) => axios.post(`/user.authenticate`, {
-    user: {
-      id: username,
-      password
-    }
-  });
+  login = (username, password) =>
+    axios.post(`/user.authenticate`, {
+      user: {
+        id: username,
+        password
+      }
+    });
   createUser = (displayName, organization, username, password) =>
     axios.post(`/global.createUser`, {
       user: {
@@ -52,9 +54,10 @@ class Api {
         password
       }
     });
-  grantAllUserPermissions = userId => axios.post(`global.grantAllPermissions`, {
-    identity: userId
-  });
+  grantAllUserPermissions = userId =>
+    axios.post(`global.grantAllPermissions`, {
+      identity: userId
+    });
   listUser = () => axios.get(`/user.list`);
 
   createGroup = (groupId, displayName, users) =>
@@ -65,23 +68,27 @@ class Api {
         users
       }
     });
-  addUserToGroup = (groupId, userId) => axios.post(`/group.addUser`, {
-    groupId,
-    userId
-  });
-  removeUserFromGroup = (groupId, userId) => axios.post(`/group.removeUser`, {
-    groupId,
-    userId
-  });
+  addUserToGroup = (groupId, userId) =>
+    axios.post(`/group.addUser`, {
+      groupId,
+      userId
+    });
+  removeUserFromGroup = (groupId, userId) =>
+    axios.post(`/group.removeUser`, {
+      groupId,
+      userId
+    });
   listGroup = () => axios.get(`/group.list`);
   listNodes = () => axios.get(`/network.list`);
   listActiveNodes = () => axios.get(`/network.listActive`);
-  approveNewOrganization = organization => axios.post(`/network.approveNewOrganization`, {
-    organization
-  });
-  approveNewNodeForOrganization = address => axios.post(`/network.approveNewNodeForExistingOrganization`, {
-    address
-  });
+  approveNewOrganization = organization =>
+    axios.post(`/network.approveNewOrganization`, {
+      organization
+    });
+  approveNewNodeForOrganization = address =>
+    axios.post(`/network.approveNewNodeForExistingOrganization`, {
+      address
+    });
   listProjects = () => axios.get(`/project.list`);
 
   createProject = (displayName, amount, description, currency, thumbnail) =>
@@ -147,6 +154,7 @@ class Api {
   createWorkflowItem = payload =>
     axios.post(`/subproject.createWorkflowitem`, {
       ...payload,
+      documents: payload.documents,
       currency: payload.amountType === "N/A" ? null : payload.currency,
       amount: payload.amountType === "N/A" ? null : payload.amount
     });
@@ -180,6 +188,8 @@ class Api {
 
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
     axios.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
+
+  validateDocument = (base64String, hash) => axios.post(`/workflowitem.validateDocument`, { base64String, hash });
 
   listWorkflowItemPermissions = (projectId, workflowitemId) =>
     axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
@@ -217,19 +227,22 @@ class Api {
       identity
     });
 
-  assignProject = (projectId, identity) => axios.post(`/project.assign`, {
-    projectId,
-    identity
-  });
+  assignProject = (projectId, identity) =>
+    axios.post(`/project.assign`, {
+      projectId,
+      identity
+    });
 
-  closeProject = projectId => axios.post(`/project.close`, {
-    projectId
-  });
+  closeProject = projectId =>
+    axios.post(`/project.close`, {
+      projectId
+    });
 
-  closeSubproject = (projectId, subprojectId) => axios.post(`subproject.close`, {
-    projectId,
-    subprojectId
-  });
+  closeSubproject = (projectId, subprojectId) =>
+    axios.post(`subproject.close`, {
+      projectId,
+      subprojectId
+    });
 
   closeWorkflowItem = (projectId, subprojectId, workflowitemId) =>
     axios.post(`/workflowitem.close`, {
@@ -242,9 +255,10 @@ class Api {
     return axios.get(`/notification.list?sinceId=${fromId}`);
   };
 
-  markNotificationAsRead = notificationId => axios.post(`/notification.markRead`, {
-    notificationId
-  });
+  markNotificationAsRead = notificationId =>
+    axios.post(`/notification.markRead`, {
+      notificationId
+    });
 }
 
 export default Api;

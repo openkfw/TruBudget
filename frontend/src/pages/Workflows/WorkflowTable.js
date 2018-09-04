@@ -55,7 +55,7 @@ const renderSortButton = props => (
       position: "relative",
       zIndex: 2
     }}
-    labelStyle={{
+    labelstyle={{
       fontWeight: "200"
     }}
   >

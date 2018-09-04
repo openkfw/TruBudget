@@ -28,9 +28,10 @@ import {
   saveWorkflowItemsBeforeSort
 } from "./actions";
 
+import {addDocument} from "../Documents/actions";
+
 import { setSelectedView } from "../Navbar/actions";
 import { showHistory } from "../Notifications/actions";
-import { addDocument, clearDocuments, prefillDocuments, validateDocument } from "../Documents/actions";
 import Workflow from "./Workflow";
 import SubProjectDetails from "./SubProjectDetails";
 import { canViewSubProjectPermissions, canAssignSubProject, canCloseSubProject } from "../../permissions";
@@ -136,16 +137,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     postSubProjectEdit: (parent, streamName, status, amount) =>
       dispatch(postSubProjectEdit(parent, streamName, status, amount)),
-    addDocument: (payload, name, id) => dispatch(addDocument(payload, name, id)),
-    clearDocuments: () => dispatch(clearDocuments()),
-    validateDocument: (payload, hash) => dispatch(validateDocument(payload, hash)),
-    prefillDocuments: documents => dispatch(prefillDocuments(documents)),
     fetchUser: () => dispatch(fetchUser(true)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
-    showEditDialog: (id, displayName, amount, amountType, description, currency) =>
-      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency)),
-    saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems))
+    showEditDialog: (id, displayName, amount, amountType, description, currency, documents) =>
+      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency, documents)),
+    saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
+
+    addDocument: (payload, name) => dispatch(addDocument(payload, name))
   };
 };
 

@@ -1,3 +1,4 @@
+import * as crypto from "crypto";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
@@ -12,9 +13,36 @@ import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../../li
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
+import { Document } from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
 
 const isUndefinedOrNull = x => x === undefined || x === null;
+
+interface DocumentDto {
+  id: string;
+  base64: string;
+}
+
+export async function hashBase64String(base64String: string): Promise<string> {
+  return new Promise<string>(resolve => {
+    const hash = crypto.createHash("sha256");
+    hash.update(Buffer.from(base64String, "base64"));
+    resolve(hash.digest("hex"));
+  });
+}
+
+export async function hashDocuments(docs): Promise<Document[]> {
+  return await Promise.all<Document>(
+    docs.map(
+      (document): Promise<Document> => {
+        return hashBase64String(document.base64).then(hashValue => ({
+          id: document.id,
+          hash: hashValue,
+        }));
+      },
+    ),
+  );
+}
 
 export async function createWorkflowitem(
   multichain: MultichainClient,
@@ -96,7 +124,7 @@ export async function createWorkflowitem(
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
     assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
-    documents: data.documents, // not checked right now
+    documents: data.documents !== undefined ? await hashDocuments(data.documents) : [],
   };
 
   const event = {

@@ -50,6 +50,7 @@ import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.li
 import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
+import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
@@ -1196,6 +1197,43 @@ export const createRouter = (
    */
   router.post("/workflowitem.intent.revokePermission", (req: AuthenticatedRequest, res) => {
     revokeWorkflowitemPermission(multichainClient, req)
+      .then(response => send(res, response))
+      .catch(err => handleError(req, res, err));
+  });
+
+  /**
+   * @api {post} /workflowitem.validateDocument Validate Document
+   * @apiVersion 1.0.0
+   * @apiName workflowitem.validateDocument
+   * @apiGroup Workflowitem
+   * @apiPermission user
+   * @apiDescription Validates if the hashed base64 string equals the hash sent by the user.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.base64String base64-string which will be hashed and compared to the other hash value.
+   * @apiParam {String} data.hash hash value which shall be compared with the hashed base64-string.
+   * @apiParamExample {json} Request
+   *   {
+   *   "apiVersion": "1.0",
+   *   "data": {
+   *     "base64String": "c29tZWh0aW5n",
+   *     "hash": "3FC9B689459D738F8C88A3A48AA9E33542016B7A4052E001AAA536FCA74813CB"
+   *   }
+   *  }
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiSuccess {boolean} data.isIdentical true if the hash equals the hashed base64-string
+   * @apiSuccessExample {json} Success-Response
+   *  {
+   *  "apiVersion": "1.0",
+   *     "data": {
+   *       "isIdentical": false
+   *     }
+   *   }
+   */
+  router.post("/workflowitem.validateDocument", (req: AuthenticatedRequest, res) => {
+    validateDocument(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });

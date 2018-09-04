@@ -9,6 +9,7 @@ import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
+import { hashDocuments } from "../../subproject/controller/createWorkflowitem";
 import * as Workflowitem from "../model/Workflowitem";
 
 export async function updateWorkflowitem(
@@ -30,6 +31,9 @@ export async function updateWorkflowitem(
     "amountType",
   ]);
 
+  if (!isEmpty(input.documents)) {
+    theUpdate.documents = await hashDocuments(input.documents);
+  }
   if (isEmpty(theUpdate)) {
     return ok();
   }

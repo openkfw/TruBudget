@@ -16,6 +16,7 @@ export const WORKFLOW_ADDITIONAL_DATA = "WORKFLOW_ADDITIONAL_DATA";
 export const WORKFLOW_CURRENCY = "WORKFLOW_CURRENCY";
 export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
+export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_SUCCESS = "CREATE_WORKFLOW_SUCCESS";
 export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
@@ -280,7 +281,7 @@ export function hideWorkflowDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, amount, amountType, description, currency) {
+export function showEditDialog(id, displayName, amount, amountType, description, currency, documents) {
   return {
     type: SHOW_WORKFLOW_EDIT,
     id,
@@ -288,7 +289,8 @@ export function showEditDialog(id, displayName, amount, amountType, description,
     amount,
     amountType,
     description,
-    currency
+    currency,
+    documents
   };
 }
 
@@ -310,6 +312,14 @@ export function storeWorkflowType(workflowType) {
   return {
     type: WORKFLOW_TYPE,
     workflowType
+  };
+}
+
+export function storeWorkflowDocument(id, base64) {
+  return {
+    type: WORKFLOW_DOCUMENT,
+    id: id,
+    base64: base64
   };
 }
 
