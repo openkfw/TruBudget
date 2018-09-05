@@ -236,7 +236,7 @@ export const createRouter = (
    *     "apiVersion": "1.0",
    *     "data": {
    *       "user": {
-   *        "id": "asmith",
+   *        "id": "alice",
    *        "displayName": "Alice Smith",
    *        "organization": "myorga",
    *        "password": "mysafepassword"
@@ -255,7 +255,7 @@ export const createRouter = (
    *     "apiVersion": "1.0",
    *     "data": {
    *       "user": {
-   *        "id": "asmith",
+   *        "id": "alice",
    *        "displayName": "Alice Smith",
    *        "organization": "myorga",
    *        "address": "1Z8NUT8K6SM6h..."
@@ -282,7 +282,7 @@ export const createRouter = (
    * @apiParam {String} data.group Wrapper for group information
    * @apiParam {String} data.group.id The group's id
    * @apiParam {String} data.group.displayName  The group's displayname
-   * @apiParam {Array} data.group.users  An array of userIds which shoulb be added to the new group
+   * @apiParam {String[]} data.group.users  An String[] of userIds which should be added to the new group
    * @apiParamExample {json} Request
    *   {
    *     "apiVersion": "1.0",
@@ -290,7 +290,7 @@ export const createRouter = (
    *       "group": {
    *        "id": "devs",
    *        "displayName": "Developer",
-   *        "users": ["asmith","jjohnson"]
+   *        "users": ["alice","john"]
    *        }
    *     }
    *   }
@@ -339,7 +339,7 @@ export const createRouter = (
    *         "displayName": "Mr. Fox1",
    *         "description": "some description for your project",
    *         "amount": "500",
-   *         "assignee": "asmith",
+   *         "assignee": "alice",
    *         "currency": "EUR",
    *         "thumbnail": "thumbnail"
    *       }
@@ -372,31 +372,31 @@ export const createRouter = (
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiSuccess {Object} data Request payload.
-   * @apiSuccess {Array} data.notification.list Lists all userids for the endpoint
-   * @apiSuccess {Array} data.notification.markRead Lists all userids for the endpoint
-   * @apiSuccess {Array} data.global.listPermissions Lists all userids for the endpoint
-   * @apiSuccess {Array} data.global.grantPermission Lists all userids for the endpoint
-   * @apiSuccess {Array} data.global.grantAllPermissions Lists all userids for the endpoint
-   * @apiSuccess {Array} data.global.revokePermission Lists all userids for the endpoint
-   * @apiSuccess {Array} data.global.createProject Lists all userids for the endpoint
-   * @apiSuccess {Array} data.global.createUser Lists all userids for the endpoint
-   * @apiSuccess {Array} data.global.createGroup Lists all userids for the endpoint
-   * @apiSuccess {Array} data.user.intent.listPermissions Lists all userids for the endpoint
-   * @apiSuccess {Array} data.user.intent.grantPermission Lists all userids for the endpoint
-   * @apiSuccess {Array} data.user.intent.revokePermission Lists all userids for the endpoint
-   * @apiSuccess {Array} data.group.addUser Lists all userids for the endpoint
-   * @apiSuccess {Array} data.group.removeUser" Lists all userids for the endpoint
-   * @apiSuccess {Array} data.network.list Lists all userids for the endpoint
-   * @apiSuccess {Array} data.network.voteForPermission Lists all userids for the endpoint
-   * @apiSuccess {Array} data.network.approveNewOrganization Lists all userids for the endpoint
-   * @apiSuccess {Array} data.network.approveNewNodeForExistingOrganization Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.notification.list Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.notification.markRead Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.global.listPermissions Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.global.grantPermission Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.global.grantAllPermissions Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.global.revokePermission Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.global.createProject Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.global.createUser Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.global.createGroup Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.user.intent.listPermissions Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.user.intent.grantPermission Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.user.intent.revokePermission Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.group.addUser Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.group.removeUser" Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.network.list Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.network.voteForPermission Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.network.approveNewOrganization Lists all userids for the endpoint
+   * @apiSuccess {String[]} data.network.approveNewNodeForExistingOrganization Lists all userids for the endpoint
    * @apiSuccessExample {json} Success-Response
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
    *       "notification.list": [
-   *            "asmith",
-   *            "jjohnson"],
+   *            "alice",
+   *            "john"],
    *     "notification.markRead": [],
    *     "network.listActive": [],
    *     "global.listPermissions": [],
@@ -432,6 +432,46 @@ export const createRouter = (
    * @apiPermission user
    * @apiDescription Grant the right to execute a specific intent on the Global scope to
    * a given user.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.identity The userid or groupid which should get the permission
+   * @apiParam {String} data.intent The permission which should be granted.<br/>
+   * Possible values:<br/>
+   * "global.listPermissions"<br/>
+   * "global.grantPermission"<br/>
+   * "global.grantAllPermissions"<br/>
+   * "global.revokePermission"<br/>
+   * "global.createProject"<br/>
+   * "global.createUser"<br/>
+   * "global.createGroup"<br/>
+   * "user.intent.listPermissions"<br/>
+   * "user.intent.grantPermission"<br/>
+   * "user.intent.revokePermission"<br/>
+   * "group.addUser"<br/>
+   * "group.removeUser"<br/>
+   * "notification.list"<br/>
+   * "notification.markRead"<br/>
+   * "network.listActive"<br/>
+   * "network.list"<br/>
+   * "network.voteForPermission"<br/>
+   * "network.approveNewOrganization"<br/>
+   * "network.approveNewNodeForExistingOrganization"<br/>
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "identity": "alice",
+   *       "intent": "global.createProject"
+   *     }
+   *   }
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
    */
   router.post("/global.grantPermission", (req: AuthenticatedRequest, res) => {
     grantGlobalPermission(multichainClient, req)
@@ -447,6 +487,24 @@ export const createRouter = (
    * @apiPermission user
    * @apiDescription Grant all available permissions to a user. Useful as a shorthand
    * for creating admin users.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.identity The userid or groupid which should get all permissions
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "identity": "alice",
+   *     }
+   *   }
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
    */
   router.post("/global.grantAllPermissions", (req: AuthenticatedRequest, res) => {
     grantAllPermissions(multichainClient, req)
@@ -462,6 +520,46 @@ export const createRouter = (
    * @apiPermission user
    * @apiDescription Revoke the right to execute a specific intent on the Global scope
    * to a given user.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.identity The userid or groupid which should loose the permission
+   * @apiParam {String} data.intent The permission which should be revoked.<br/>
+   * Possible values:<br/>
+   * "global.listPermissions"<br/>
+   * "global.grantPermission"<br/>
+   * "global.grantAllPermissions"<br/>
+   * "global.revokePermission"<br/>
+   * "global.createProject"<br/>
+   * "global.createUser"<br/>
+   * "global.createGroup"<br/>
+   * "user.intent.listPermissions"<br/>
+   * "user.intent.grantPermission"<br/>
+   * "user.intent.revokePermission"<br/>
+   * "group.addUser"<br/>
+   * "group.removeUser"<br/>
+   * "notification.list"<br/>
+   * "notification.markRead"<br/>
+   * "network.listActive"<br/>
+   * "network.list"<br/>
+   * "network.voteForPermission"<br/>
+   * "network.approveNewOrganization"<br/>
+   * "network.approveNewNodeForExistingOrganization"<br/>
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "identity": "alice",
+   *       "intent": "global.createProject"
+   *     }
+   *   }
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
    */
   router.post("/global.revokePermission", (req: AuthenticatedRequest, res) => {
     revokeGlobalPermission(multichainClient, req)
@@ -483,6 +581,29 @@ export const createRouter = (
    * @apiGroup Group
    * @apiPermission group
    * @apiDescription List all user groups.
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Response payload.
+   * @apiSuccess {Object[]} data.groups Wrapper for all groups existing
+   * @apiSuccess {String} data.groups.groupId GroupId
+   * @apiSuccess {String} data.groups.displayName DisplayName of the group
+   * @apiSuccess {String[]} data.groups.users Wrapper for all users of the group
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "groups": [
+   *           {
+   *             "groupId": "devs",
+   *             "displayName": "Developer",
+   *             "users": [
+   *                "alice",
+   *                "john"
+   *              ]
+   *           }
+   *        ]
+   *      }
+   *   }
    */
   router.get("/group.list", (req: AuthenticatedRequest, res) => {
     getGroupList(multichainClient, req)
@@ -497,6 +618,26 @@ export const createRouter = (
    * @apiGroup Group
    * @apiPermission group
    * @apiDescription Add user to a group
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.groupId groupid which the user should be added to
+   * @apiParam {String} data.userId userid which should be added
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "groupId": "devs",
+   *       "userId": "alice"
+   *     }
+   *   }
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
    */
   router.post("/group.addUser", (req: AuthenticatedRequest, res) => {
     addUserToGroup(multichainClient, req)
@@ -511,6 +652,26 @@ export const createRouter = (
    * @apiGroup Group
    * @apiPermission group
    * @apiDescription Remove user from a group
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.groupId groupid which the user should be removed from
+   * @apiParam {String} data.userId userid which should be removed
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "groupId": "devs",
+   *       "userId": "alice"
+   *     }
+   *   }
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
    */
   router.post("/group.removeUser", (req: AuthenticatedRequest, res) => {
     removeUserFromGroup(multichainClient, req)
@@ -530,6 +691,25 @@ export const createRouter = (
    * @apiGroup User
    * @apiPermission user
    * @apiDescription List all registered users.
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object[]} data.items Wrapper for all users existing
+   * @apiSuccess {String} data.items.id User's id
+   * @apiSuccess {String} data.items.displayName User's name
+   * @apiSuccess {String} data.items.organization User's organization
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "items": [
+   *          {
+   *            "id": "alice",
+   *            "displayName": "Alice Smith"
+   *            "organization": "myorga"
+   *          }
+   *        ]
+   *   }
    */
   router.get("/user.list", (req: AuthenticatedRequest, res) => {
     getUserList(multichainClient, req)
@@ -545,6 +725,21 @@ export const createRouter = (
    * @apiDescription Authenticate and retrieve a token in return. This token can then be
    * supplied in the HTTP Authorization header, which is expected by most of the other
    * endpoints.
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data.user Wrapper for user information
+   * @apiSuccess {String} data.user.id User's id
+   * @apiSuccess {String} data.user.password User's password
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "user": {
+   *            "id": "alice",
+   *            "password": "AliceSecretPassword"
+   *        }
+   *      }
+   *   }
    */
   router.post("/user.authenticate", (req: AuthenticatedRequest, res) => {
     authenticateUser(
@@ -572,6 +767,74 @@ export const createRouter = (
    * @apiGroup Project
    * @apiPermission user
    * @apiDescription Retrieve all projects the user is allowed to see.
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object[]} data.items Lists all existing projects
+   * @apiSuccess {String} data.items.data Wrapper for the project's information
+   * @apiSuccess {String} data.items.data.id The project's id
+   * @apiSuccess {String} data.items.data.creationUnixTs A unix timestamp when the project was created
+   * @apiSuccess {String} data.items.data.status Shows if project is open or closed
+   * @apiSuccess {String} data.items.data.displayName The project's displayname
+   * @apiSuccess {String} data.items.data.description The project's description
+   * @apiSuccess {String} data.items.data.amount The amount of money which should be assigned to the project
+   * @apiSuccess {String} data.items.data.assignee The project's assignee
+   * @apiSuccess {String} data.items.data.currency The currency of the amount assigned to the project
+   * @apiSuccess {String} data.items.data.thumbnail The thumbnail representing the project in the trubudget frontend
+   * @apiSuccess {Object[]} data.items.log Holds information about the history of the project
+   * @apiSuccess {String[]} data.items.allowedIntents Lists all available endpoints
+   *
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "items":[{
+   *          "data": {
+   *                 "id": "6de80cb1ca780434a58b0752f3470301",
+   *                 "creationUnixTs": "1536154645775",
+   *                 "status": "open",
+   *                 "displayName": "myFirstProject",
+   *                 "description": "mydescription",
+   *                 "amount": "500",
+   *                 "assignee": "alice",
+   *                 "currency": "EUR",
+   *                 "thumbnail": "/Thumbnail_0001.jpg"
+   *             },
+   *           "log": [{
+   *                 "key": "6de80cb1ca780434a58b0752f3470301",
+   *                 "intent": "global.createProject",
+   *                     "createdBy": "root",
+   *                     "createdAt": "2018-09-05T13:37:25.775Z",
+   *                     "dataVersion": 1,
+   *                     "data": {
+   *                         "project": {
+   *                             "id": "6de80cb1ca780434a58b0752f3470301",
+   *                             "creationUnixTs": "1536154645775",
+   *                             "status": "open",
+   *                             "displayName": "myFirstProject",
+   *                             "description": "mydescription",
+   *                             "amount": "500",
+   *                             "assignee": "alice",
+   *                             "currency": "EUR",
+   *                             "thumbnail": "/Thumbnail_0001.jpg"
+   *                         },
+   *                         "permissions": {}
+   *                     },
+   *                     "snapshot": {
+   *                         "displayName": "myFirstProject"
+   *                     }
+   *                 }
+   *             ],
+   *           "allowedIntents": [
+   *                 "global.listPermissions",
+   *                 "global.grantPermission",
+   *                 "global.grantAllPermissions",
+   *                 "global.revokePermission",
+   *                 "..."
+   *             ]
+   *         }
+   *   }
+   *
    */
   router.get("/project.list", (req: AuthenticatedRequest, res) => {
     getProjectList(multichainClient, req)
@@ -580,12 +843,82 @@ export const createRouter = (
   });
 
   /**
-   * @api {get} /project.viewDetails View details
+   * @api {get} /project.viewDetails?projectId={projectId} View details
    * @apiVersion 1.0.0
    * @apiName project.viewDetails
    * @apiGroup Project
    * @apiPermission user
    * @apiDescription Retrieve details about a specific project.
+   *
+   * @apiParam {String} projectId The project's id from which the details should be shown
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data.project Wrapper for the specific project
+   * @apiSuccess {String} data.project.data Wrapper for the project's information
+   * @apiSuccess {String} data.project.data.id The project's id
+   * @apiSuccess {String} data.project.data.creationUnixTs A unix timestamp when the project was created
+   * @apiSuccess {String} data.project.data.status Shows if project is open or closed
+   * @apiSuccess {String} data.project.data.displayName The project's displayname
+   * @apiSuccess {String} data.project.data.description The project's description
+   * @apiSuccess {String} data.project.data.amount The amount of money which should be assigned to the project
+   * @apiSuccess {String} data.project.data.assignee The project's assignee
+   * @apiSuccess {String} data.project.data.currency The currency of the amount assigned to the project
+   * @apiSuccess {String} data.project.data.thumbnail The thumbnail representing the project in the trubudget frontend
+   * @apiSuccess {Object[]} data.project.log Holds information about the history of the project
+   * @apiSuccess {String[]} data.project.allowedIntents Lists all available endpoints
+   *
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "items":[{
+   *          "data": {
+   *                 "id": "6de80cb1ca780434a58b0752f3470301",
+   *                 "creationUnixTs": "1536154645775",
+   *                 "status": "open",
+   *                 "displayName": "myFirstProject",
+   *                 "description": "mydescription",
+   *                 "amount": "500",
+   *                 "assignee": "alice",
+   *                 "currency": "EUR",
+   *                 "thumbnail": "/Thumbnail_0001.jpg"
+   *             },
+   *           "log": [{
+   *                 "key": "6de80cb1ca780434a58b0752f3470301",
+   *                 "intent": "global.createProject",
+   *                     "createdBy": "alice",
+   *                     "createdAt": "2018-09-05T13:37:25.775Z",
+   *                     "dataVersion": 1,
+   *                     "data": {
+   *                         "project": {
+   *                             "id": "6de80cb1ca780434a58b0752f3470301",
+   *                             "creationUnixTs": "1536154645775",
+   *                             "status": "open",
+   *                             "displayName": "myFirstProject",
+   *                             "description": "mydescription",
+   *                             "amount": "500",
+   *                             "assignee": "alice",
+   *                             "currency": "EUR",
+   *                             "thumbnail": "/Thumbnail_0001.jpg"
+   *                         },
+   *                         "permissions": {}
+   *                     },
+   *                     "snapshot": {
+   *                         "displayName": "myFirstProject"
+   *                     }
+   *                 }
+   *             ],
+   *           "allowedIntents": [
+   *                 "global.listPermissions",
+   *                 "global.grantPermission",
+   *                 "global.grantAllPermissions",
+   *                 "global.revokePermission",
+   *                 "..."
+   *             ]
+   *         }
+   *   }
+   *
    */
   router.get("/project.viewDetails", (req: AuthenticatedRequest, res) => {
     getProjectDetails(multichainClient, req)
@@ -604,13 +937,13 @@ export const createRouter = (
    *
    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The future assignee.
+   * @apiParam {String} data.identity The future assignee (userId or groupId).
    * @apiParam {String} data.projectId The project to be re-assigned.
    * @apiParamExample {json} Request
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
-   *       "userId": "alice",
+   *       "identity": "alice",
    *       "projectId": "6de80cb1ca780434a58b0752f3470301"
    *     }
    *   }
@@ -712,6 +1045,45 @@ export const createRouter = (
    * @apiGroup Project
    * @apiPermission user
    * @apiDescription Create a subproject and associate it to the given project.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.projectId The project where the subproject should be created.
+   * @apiParam {String} data.subproject The Wrapper for the subproject information
+   * @apiParam {String} data.subproject.id The subproject's id
+   * @apiParam {String} data.subproject.status Possible values are "open" and "closed" showing the subproject's status
+   * @apiParam {String} data.subproject.displayName The subproject's displayname
+   * @apiParam {String} data.subproject.description The subproject's description
+   * @apiParam {String} data.subproject.amount The amount of money which should be assigned to the subproject
+   * @apiParam {String} data.subproject.assignee The subproject's assignee
+   * @apiParam {String} data.subproject.currency The currency of the amount assigned to the subproject
+   * @apiParamExample {json} Request
+   * {
+   *   "apiVersion": "1.0",
+   *   "data": {
+   *     "projectId": "6de80cb1ca780434a58b0752f3470301",
+   *     "subproject": {
+   *       "id": "4re30cb1ca780434a58b0752f3470301",
+   *       "status": "open",
+   *       "displayName": "mySubProject",
+   *       "description": "mydescription",
+   *       "amount": "500",
+   *       "assignee": "alice",
+   *       "currency": "EUR"
+   *     }
+   *   }
+   * }
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {String} data.created true if subproject was successfully created
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "created": true
+   *     }
+   *   }
    */
   router.post("/project.createSubproject", (req: AuthenticatedRequest, res) => {
     createSubproject(multichainClient, req)
@@ -720,13 +1092,50 @@ export const createRouter = (
   });
 
   /**
-   * @api {get} /project.viewHistory View history
+   * @api {get} /project.viewHistory?projectId={projectId} View history
    * @apiVersion 1.0.0
    * @apiName project.viewHistory
    * @apiGroup Project
    * @apiPermission user
    * @apiDescription View the history of a given project (filtered by what the user is
    * allowed to see).
+   *
+   * @apiParam {String} projectId The project's id from which the history should be shown
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object[]} data.events Holds information about the history of the project
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *  "apiVersion": "1.0",
+   *  "data": {
+   *     "events": [{
+   *         "key": "6de80cb1ca780434a58b0752f3470301",
+   *         "intent": "global.createProject",
+   *             "createdBy": "alice",
+   *             "createdAt": "2018-09-05T13:37:25.775Z",
+   *             "dataVersion": 1,
+   *             "data": {
+   *                 "project": {
+   *                     "id": "6de80cb1ca780434a58b0752f3470301",
+   *                     "creationUnixTs": "1536154645775",
+   *                     "status": "open",
+   *                     "displayName": "myFirstProject",
+   *                     "description": "mydescription",
+   *                     "amount": "500",
+   *                     "assignee": "alice",
+   *                     "currency": "EUR",
+   *                     "thumbnail": "/Thumbnail_0001.jpg"
+   *                 },
+   *                 "permissions": {}
+   *             },
+   *             "snapshot": {
+   *                 "displayName": "myFirstProject"
+   *             }
+   *         }
+   *     ]
+   *   }
+   * }
    */
   router.get("/project.viewHistory", (req: AuthenticatedRequest, res) => {
     getProjectHistory(multichainClient, req)
@@ -741,6 +1150,27 @@ export const createRouter = (
    * @apiGroup Project
    * @apiPermission user
    * @apiDescription See the permissions for a given project.
+   *
+   * @apiParam {String} projectId The project's id from which the permissions should be listed
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Includes every intent where at least one user has permission for
+   * @apiSuccess {String[]} data.project.viewSummary Lists all users with certain permission
+   * @apiSuccess {String[]} data.project.viewDetails Lists all users with certain permission
+   * @apiSuccessExample {json} Success-Response
+   *  {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "project.viewSummary":[
+   *          "alice",
+   *          "john"
+   *        ],
+   *       "project.viewDetails":[
+   *          "alice"
+   *       ],
+   *        ...
+   *     }
+   *   }
    */
   router.get("/project.intent.listPermissions", (req: AuthenticatedRequest, res) => {
     getProjectPermissions(multichainClient, req)
@@ -831,13 +1261,87 @@ export const createRouter = (
   // ------------------------------------------------------------
 
   /**
-   * @api {get} /subproject.list List
+   * @api {get} /subproject.list?projectId={projectId} List
    * @apiVersion 1.0.0
    * @apiName subproject.list
    * @apiGroup Subproject
    * @apiPermission user
    * @apiDescription Retrieve all subprojects for a given project. Note that any
    * subprojects the user is not allowed to see are left out of the response.
+   *
+   * @apiParam {String} projectId The project's id
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object[]} data.items Lists all existing projects
+   * @apiSuccess {String} data.items.data Wrapper for the subproject's information
+   * @apiSuccess {String} data.items.data.id The subproject's id
+   * @apiSuccess {String} data.items.data.creationUnixTs A unix timestamp when the subproject was created
+   * @apiSuccess {String} data.items.data.status Shows if subproject is open or closed
+   * @apiSuccess {String} data.items.data.displayName The subproject's displayname
+   * @apiSuccess {String} data.items.data.description The subproject's description
+   * @apiSuccess {String} data.items.data.amount The amount of money which should be assigned to the subproject
+   * @apiSuccess {String} data.items.data.assignee The subproject's assignee
+   * @apiSuccess {String} data.items.data.currency The currency of the amount assigned to the subproject
+   * @apiSuccess {Object[]} data.items.log Holds information about the history of the subproject
+   * @apiSuccess {String[]} data.items.allowedIntents Lists all available endpoints
+   *
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "items":[{
+   *          "data": {
+   *                 "id": "6de80cb1ca780434a58b0752f3470301",
+   *                 "creationUnixTs": "1536154645775",
+   *                 "status": "open",
+   *                 "displayName": "myFirstSubproject",
+   *                 "description": "mydescription",
+   *                 "amount": "500",
+   *                 "assignee": "alice",
+   *                 "currency": "EUR"
+   *             },
+   *           "log": [{
+   *                 "key": "6de80cb1ca780434a58b0752f3470301",
+   *                 "intent": "global.createProject",
+   *                     "createdBy": "root",
+   *                     "createdAt": "2018-09-05T13:37:25.775Z",
+   *                     "dataVersion": 1,
+   *                     "data": {
+   *                         "subproject": {
+   *                             "id": "6de80cb1ca780434a58b0752f3470301",
+   *                             "creationUnixTs": "1536154645775",
+   *                             "status": "open",
+   *                             "displayName": "myFirstProject",
+   *                             "description": "mydescription",
+   *                             "amount": "500",
+   *                             "assignee": "alice",
+   *                             "currency": "EUR"
+   *                          },
+   *                         "permissions": {
+   *                            "subproject.intent.listPermissions": [
+   *                                 "mstein"
+   *                             ],
+   *                             "subproject.intent.grantPermission": [
+   *                                 "mstein"
+   *                             ],
+   *                             ...
+   *                          }
+   *                     },
+   *                     "snapshot": {
+   *                         "displayName": "myFirstSubproject"
+   *                     }
+   *                 }
+   *             ],
+   *           "allowedIntents": [
+   *                 "global.listPermissions",
+   *                 "global.grantPermission",
+   *                 "global.grantAllPermissions",
+   *                 "global.revokePermission",
+   *                 "..."
+   *             ]
+   *         }
+   *   }
    */
   router.get("/subproject.list", (req: AuthenticatedRequest, res) => {
     getSubprojectList(multichainClient, req)
@@ -852,6 +1356,80 @@ export const createRouter = (
    * @apiGroup Subproject
    * @apiPermission user
    * @apiDescription Retrieve details about a specific subproject.
+   *
+   * @apiParam {String} projectId The project's id
+   * @apiParam {String} subprojectId The subproject's id from which the details should be shown
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data.subproject Lists all existing projects
+   * @apiSuccess {String} data.subproject.data Wrapper for the subproject's information
+   * @apiSuccess {String} data.subproject.data.id The subproject's id
+   * @apiSuccess {String} data.subproject.data.creationUnixTs A unix timestamp when the subproject was created
+   * @apiSuccess {String} data.subproject.data.status Shows if subproject is open or closed
+   * @apiSuccess {String} data.subproject.data.displayName The subproject's displayname
+   * @apiSuccess {String} data.subproject.data.description The subproject's description
+   * @apiSuccess {String} data.subproject.data.amount The amount of money which should be assigned to the subproject
+   * @apiSuccess {String} data.subproject.data.assignee The subproject's assignee
+   * @apiSuccess {String} data.subproject.data.currency The currency of the amount assigned to the subproject
+   * @apiSuccess {Object[]} data.subproject.log Holds information about the history of the subproject
+   * @apiSuccess {String[]} data.subproject.allowedIntents Lists all available endpoints
+   *
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "subproject":{
+   *          "data": {
+   *                 "id": "6de80cb1ca780434a58b0752f3470301",
+   *                 "creationUnixTs": "1536154645775",
+   *                 "status": "open",
+   *                 "displayName": "myFirstSubproject",
+   *                 "description": "mydescription",
+   *                 "amount": "500",
+   *                 "assignee": "alice",
+   *                 "currency": "EUR"
+   *             },
+   *           "log": [{
+   *                 "key": "6de80cb1ca780434a58b0752f3470301",
+   *                 "intent": "global.createProject",
+   *                     "createdBy": "root",
+   *                     "createdAt": "2018-09-05T13:37:25.775Z",
+   *                     "dataVersion": 1,
+   *                     "data": {
+   *                         "subproject": {
+   *                             "id": "6de80cb1ca780434a58b0752f3470301",
+   *                             "creationUnixTs": "1536154645775",
+   *                             "status": "open",
+   *                             "displayName": "myFirstProject",
+   *                             "description": "mydescription",
+   *                             "amount": "500",
+   *                             "assignee": "alice",
+   *                             "currency": "EUR"
+   *                          },
+   *                         "permissions": {
+   *                            "subproject.intent.listPermissions": [
+   *                                 "mstein"
+   *                             ],
+   *                             "subproject.intent.grantPermission": [
+   *                                 "mstein"
+   *                             ],
+   *                             ...
+   *                          }
+   *                     },
+   *                     "snapshot": {
+   *                         "displayName": "myFirstSubproject"
+   *                     }
+   *                 }
+   *             ],
+   *           "allowedIntents": [
+   *                 "global.listPermissions",
+   *                 "global.grantPermission",
+   *                 "global.grantAllPermissions",
+   *                 "global.revokePermission",
+   *                 "..."
+   *         }
+   *   }
    */
   router.get("/subproject.viewDetails", (req: AuthenticatedRequest, res) => {
     getSubprojectDetails(multichainClient, req)
@@ -870,14 +1448,14 @@ export const createRouter = (
    *
    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The future assignee.
+   * @apiParam {String} data.identity The future assignee.
    * @apiParam {String} data.subprojectId The subproject to be re-assigned.
    * @apiParam {String} data.projectId The project the subproject belongs to.
    * @apiParamExample {json} Request
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
-   *       "userId": "alice",
+   *       "identity": "alice",
    *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
    *       "projectId": "6de80cb1ca780434a58b0752f3470301"
    *     }
@@ -983,6 +1561,55 @@ export const createRouter = (
    * @apiGroup Subproject
    * @apiPermission user
    * @apiDescription Create a workflowitem and associate it to the given subproject.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.projectId The project's id.
+   * @apiParam {String} data.subprojectId The subproject's id
+   * @apiParam {String} data.id The workflowitem's id
+   * @apiParam {String} data.status Possible values are "open" and "closed" showing the workflowitem's status
+   * @apiParam {String} data.displayName The workflowitem's displayname
+   * @apiParam {String} data.description The workflowitem's description
+   * @apiParam {String} data.amount The amount of money which should be assigned to the workflowitem
+   * @apiParam {String} data.assignee The workflowitem's assignee
+   * @apiParam {String} data.currency The currency of the amount assigned to the workflowitem
+   * @apiParam {String} data.amountType The amountType could be either "N/A" or "allocated" or "disbursed"
+   * @apiParam {Object} data.documents The documents attached to the workflowitem
+   * @apiParam {String} data.documents.id The unique name of the document
+   * @apiParam {String} data.documents.base64 The document as base64 String
+   * @apiParamExample {json} Request
+   * {
+   *   "apiVersion": "1.0",
+   *   "data": {
+   *     "projectId": "6de80cb1ca780434a58b0752f3470301",
+   *     "subproject": "45thz3efrfca780434a58b0752f3470301"
+   *     "status": "open",
+   *     "displayName": "myWorkflowitem",
+   *     "description": "mydescription",
+   *     "amount": "500",
+   *     "assignee": "alice",
+   *     "currency": "EUR",
+   *     "amountType": "disbursed"
+   *     "documents": [
+   *        {
+   *        "id": "Doc1",
+   *        "base64": "c29tZXRoaW5ns"
+   *        },
+   *        ...
+   *      ]
+   *   }
+   * }
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {String} data.created true if workflowitem was successfully created
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "created": true
+   *     }
+   *   }
    */
   router.post("/subproject.createWorkflowitem", (req: AuthenticatedRequest, res) => {
     createWorkflowitem(multichainClient, req)
@@ -991,7 +1618,7 @@ export const createRouter = (
   });
 
   /**
-   * @api {post} /subproject.reorderWorkflowitems Set workflowitem ordering
+   * @api {post} /subproject.reorderWorkflowitems Reorder Workflowitems
    * @apiVersion 1.0.0
    * @apiName subproject.reorderWorkflowitems
    * @apiGroup Subproject
@@ -999,6 +1626,31 @@ export const createRouter = (
    * @apiDescription Set a new workflowitem ordering. Workflowitems not included in the
    * list will be ordered by their creation time and placed after all explicitly ordered
    * workflowitems.
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.subprojectId The subproject to be closed.
+   * @apiParam {String} data.projectId The project the subproject belongs to.
+   * @apiParam {String[]} data.ordering Contains all workflowitem which should be ordered
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
+   *       "projectId": "6de80cb1ca780434a58b0752f3470301",
+   *       "ordering": [
+   *          "56z9ki1ca780434a58b0752f3470301",
+   *          "454zjukca780434a58b0752f3470301"
+   *     }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String=OK} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
    */
   router.post("/subproject.reorderWorkflowitems", (req: AuthenticatedRequest, res) => {
     reorderWorkflowitems(multichainClient, req)
@@ -1007,14 +1659,45 @@ export const createRouter = (
   });
 
   /**
-   * @api {get} /subproject.viewHistory View history
+   * @api {get} /subproject.viewHistory?projectId={projectId}&subprojectId={subprojectId} View history
    * @apiVersion 1.0.0
    * @apiName subproject.viewHistory
    * @apiGroup Subproject
    * @apiPermission user
    * @apiDescription View the history of a given subproject (filtered by what the user
    * is allowed to see).
+   *
+   * @apiParam {String} projectId The project's id
+   * @apiParam {String} subprojectId The subproject's id from which the history should be shown
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object[]} data.events Holds information about the history of the subproject
+   * @apiSuccessExample {json} Success-Response
+   *  {
+   *  "apiVersion": "1.0",
+   *  "data": {
+   *     "events": [{
+   *         "key": "6de80cb1ca780434a58b0752f3470301",
+   *         "intent": "global.createProject",
+   *         "createdBy": "alice",
+   *         "createdAt": "2018-09-05T13:37:25.775Z",
+   *         "dataVersion": 1,
+   *         "data": [
+   *             "89or46ztg9180434a58b0752f3470301",
+   *             "ef567t78780434a58b075872f3470301"
+   *             ],
+   *         "permissions": {}
+   *         "snapshot": {
+   *           "displayName": "myFirstWorkflowitem"
+   *          }
+   *      },
+   *      ...
+   * ]
+   *   }
+   * }
    */
+
   router.get("/subproject.viewHistory", (req: AuthenticatedRequest, res) => {
     getSubprojectHistory(multichainClient, req)
       .then(response => send(res, response))
@@ -1022,12 +1705,34 @@ export const createRouter = (
   });
 
   /**
-   * @api {get} /subproject.intent.listPermissions List permissions
+   * @api {get} /subproject.intent.listPermissions?projectId={projectId}&subprojectId={subprojectId} List permissions
    * @apiVersion 1.0.0
    * @apiName subproject.intent.listPermissions
    * @apiGroup Subproject
    * @apiPermission user
    * @apiDescription See the permissions for a given subproject.
+   *
+   * @apiParam {String} projectId The project's id
+   * @apiParam {String} subprojectId The subproject's id
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Includes every intent where at least one user has permission for
+   * @apiSuccess {String[]} data.subproject.assign Lists all users with certain permission
+   * @apiSuccess {String[]} data.subproject.update Lists all users with certain permission
+   * @apiSuccessExample {json} Success-Response
+   *  {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "subproject.assign":[
+   *          "alice",
+   *          "john"
+   *        ],
+   *       "subproject.update":[
+   *          "alice"
+   *       ],
+   *        ...
+   *     }
+   *   }
    */
   router.get("/subproject.intent.listPermissions", (req: AuthenticatedRequest, res) => {
     getSubprojectPermissions(multichainClient, req)
@@ -1046,7 +1751,7 @@ export const createRouter = (
    *
    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The user the permission should be granted to.
+   * @apiParam {String} data.identity The user the permission should be granted to.
    * @apiParam {String} data.intent The intent the user should get permissions for.
    * @apiParam {String} data.subprojectId The subproject the permissions are effective on.
    * @apiParam {String} data.projectId The project the subproject belongs to.
@@ -1054,7 +1759,7 @@ export const createRouter = (
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
-   *       "userId": "alice",
+   *       "identity": "alice",
    *       "intent": "subproject.close"
    *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
    *       "projectId": "6de80cb1ca780434a58b0752f3470301"
@@ -1086,7 +1791,7 @@ export const createRouter = (
    *
    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The user the permission should be revoked from.
+   * @apiParam {String} data.identity The user the permission should be revoked from.
    * @apiParam {String} data.intent What the user should no longer be allowed to do.
    * @apiParam {String} data.subprojectId The subproject the permissions are effective on.
    * @apiParam {String} data.projectId The project the subproject belongs to.
@@ -1094,7 +1799,7 @@ export const createRouter = (
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
-   *       "userId": "alice",
+   *       "identity": "alice",
    *       "intent": "subproject.close"
    *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
    *       "projectId": "6de80cb1ca780434a58b0752f3470301"
