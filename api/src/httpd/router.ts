@@ -244,7 +244,7 @@ export const createRouter = (
    *     }
    *   }
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {String} data.user Wrapper for user information
    * @apiSuccess {String} data.user.id The user's id
    * @apiSuccess {String} data.user.displayName  The user's displayname
@@ -295,7 +295,7 @@ export const createRouter = (
    *     }
    *   }
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {String} data.created true if group was successfully created
    * @apiSuccessExample {json} Success-Response
    *   {
@@ -346,7 +346,7 @@ export const createRouter = (
    *     }
    *   }
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {String} data.created true if project was successfully created
    * @apiSuccessExample {json} Success-Response
    *   {
@@ -371,7 +371,7 @@ export const createRouter = (
    * @apiDescription See the current global permissions.
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {String[]} data.notification.list Lists all userids for the endpoint
    * @apiSuccess {String[]} data.notification.markRead Lists all userids for the endpoint
    * @apiSuccess {String[]} data.global.listPermissions Lists all userids for the endpoint
@@ -693,7 +693,7 @@ export const createRouter = (
    * @apiDescription List all registered users.
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {Object[]} data.items Wrapper for all users existing
    * @apiSuccess {String} data.items.id User's id
    * @apiSuccess {String} data.items.displayName User's name
@@ -726,7 +726,7 @@ export const createRouter = (
    * supplied in the HTTP Authorization header, which is expected by most of the other
    * endpoints.
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {Object} data.user Wrapper for user information
    * @apiSuccess {String} data.user.id User's id
    * @apiSuccess {String} data.user.password User's password
@@ -769,7 +769,7 @@ export const createRouter = (
    * @apiDescription Retrieve all projects the user is allowed to see.
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {Object[]} data.items Lists all existing projects
    * @apiSuccess {String} data.items.data Wrapper for the project's information
    * @apiSuccess {String} data.items.data.id The project's id
@@ -853,7 +853,7 @@ export const createRouter = (
    * @apiParam {String} projectId The project's id from which the details should be shown
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {Object} data.project Wrapper for the specific project
    * @apiSuccess {String} data.project.data Wrapper for the project's information
    * @apiSuccess {String} data.project.data.id The project's id
@@ -1075,7 +1075,7 @@ export const createRouter = (
    * }
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {String} data.created true if subproject was successfully created
    * @apiSuccessExample {json} Success-Response
    *   {
@@ -1103,7 +1103,7 @@ export const createRouter = (
    * @apiParam {String} projectId The project's id from which the history should be shown
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {Object[]} data.events Holds information about the history of the project
    * @apiSuccessExample {json} Success-Response
    *   {
@@ -1272,7 +1272,7 @@ export const createRouter = (
    * @apiParam {String} projectId The project's id
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {Object[]} data.items Lists all existing projects
    * @apiSuccess {String} data.items.data Wrapper for the subproject's information
    * @apiSuccess {String} data.items.data.id The subproject's id
@@ -1361,7 +1361,7 @@ export const createRouter = (
    * @apiParam {String} subprojectId The subproject's id from which the details should be shown
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {Object} data.subproject Lists all existing projects
    * @apiSuccess {String} data.subproject.data Wrapper for the subproject's information
    * @apiSuccess {String} data.subproject.data.id The subproject's id
@@ -1601,7 +1601,7 @@ export const createRouter = (
    * }
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {String} data.created true if workflowitem was successfully created
    * @apiSuccessExample {json} Success-Response
    *   {
@@ -1671,7 +1671,7 @@ export const createRouter = (
    * @apiParam {String} subprojectId The subproject's id from which the history should be shown
    *
    * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Request payload.
+   * @apiSuccess {Object} data Response payload.
    * @apiSuccess {Object[]} data.events Holds information about the history of the subproject
    * @apiSuccessExample {json} Success-Response
    *  {
@@ -1827,7 +1827,7 @@ export const createRouter = (
   // ------------------------------------------------------------
 
   /**
-   * @api {get} /workflowitem.list List
+   * @api {get} /workflowitem.list?projectId={projectId}&subprojectId={subprojectId} List
    * @apiVersion 1.0.0
    * @apiName workflowitem.list
    * @apiGroup Workflowitem
@@ -1835,6 +1835,57 @@ export const createRouter = (
    * @apiDescription Retrieve all workflowitems of a given subproject. Those items the
    * user is not allowed to see will be redacted, that is, most of their values will be
    * set to null.
+   *
+   * @apiParam {String} projectId The project's id
+   * @apiParam {String} subprojectId The subproject's id
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Response payload.
+   * @apiSuccess {Object[]} data.items Lists all existing projects
+   * @apiSuccess {String} data.items.data Wrapper for the subproject's information
+   * @apiSuccess {String} data.items.data.id The subproject's id
+   * @apiSuccess {String} data.items.data.creationUnixTs A unix timestamp when the subproject was created
+   * @apiSuccess {String} data.items.data.status Shows if subproject is open or closed
+   * @apiSuccess {String} data.items.data.displayName The subproject's displayname
+   * @apiSuccess {String} data.items.data.description The subproject's description
+   * @apiSuccess {String} data.items.data.amount The amount of money which should be assigned to the subproject
+   * @apiSuccess {String} data.items.data.assignee The subproject's assignee
+   * @apiSuccess {String} data.items.data.currency The currency of the amount assigned to the subproject
+   * @apiSuccess {Object[]} data.items.data.documents The documents attached to the workflowitem
+   * @apiSuccess {String} data.items.datadocuments.id The unique name of the document
+   * @apiSuccess {String} data.items.datadocuments.hash The document's hash
+   * @apiSuccess {String[]} data.items.allowedIntents Lists all available endpoints
+   *
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "items":[{
+   *          "data": {
+   *                 "id": "6de80cb1ca780434a58b0752f3470301",
+   *                 "creationUnixTs": "1536154645775",
+   *                 "status": "open",
+   *                 "displayName": "myFirstWorkflowitem",
+   *                 "description": "mydescription",
+   *                 "amount": "500",
+   *                 "assignee": "alice",
+   *                 "currency": "EUR",
+   *                 "documents": [
+   *                    {
+   *                    "id": "Doc1",
+   *                    "hash": "3fc9b689459d738f8c88a3a48aa9e33542016b7a4052e001aaa536fca74813cb"
+   *                    }
+   *                  ]
+   *             },
+   *           "allowedIntents": [
+   *                 "global.listPermissions",
+   *                 "global.grantPermission",
+   *                 "global.grantAllPermissions",
+   *                 "global.revokePermission",
+   *                 "..."
+   *             ]
+   *         }
+   *   }
    */
   router.get("/workflowitem.list", (req: AuthenticatedRequest, res) => {
     getWorkflowitemList(multichainClient, req)
@@ -1853,7 +1904,7 @@ export const createRouter = (
    *
    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The future assignee.
+   * @apiParam {String} data.identity The future assignee.
    * @apiParam {String} data.workflowitemId The workflowitem to be re-assigned.
    * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
    * @apiParam {String} data.projectId The project the workflowitem belongs to.
@@ -1861,7 +1912,7 @@ export const createRouter = (
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
-   *       "userId": "alice",
+   *       "identity": "alice",
    *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
    *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
    *       "projectId": "6de80cb1ca780434a58b0752f3470301"
@@ -1965,13 +2016,36 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
-  /**
-   * @api {get} /workflowitem.intent.listPermissions List permissions
+  // tslint:disable-next-line:max-line-length
+  /** @api {get} /workflowitem.intent.listPermissions?projectId={projectId}&subprojectId={subprojectId}&workflowitemId={workflowitemId} List permissions
    * @apiVersion 1.0.0
    * @apiName workflowitem.intent.listPermissions
    * @apiGroup Workflowitem
    * @apiPermission user
    * @apiDescription See the permissions for a given workflowitem.
+   *
+   * @apiParam {String} projectId The project's id
+   * @apiParam {String} subprojectId The subproject's id
+   * @apiParam {String} workflowitemId The workflowitem's id from which the permissions should be listed
+   *
+   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiSuccess {Object} data Includes every intent where at least one user has permission for
+   * @apiSuccess {String[]} data.workflowitem.assign Lists all users with certain permission
+   * @apiSuccess {String[]} data.workflowitem.update Lists all users with certain permission
+   * @apiSuccessExample {json} Success-Response
+   *  {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "workflowitem.assign":[
+   *          "alice",
+   *          "john"
+   *        ],
+   *       "workflowitem.update":[
+   *          "alice"
+   *       ],
+   *        ...
+   *     }
+   *   }
    */
   router.get("/workflowitem.intent.listPermissions", (req: AuthenticatedRequest, res) => {
     getWorkflowitemPermissions(multichainClient, req)
@@ -1990,7 +2064,7 @@ export const createRouter = (
    *
    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The user the permission should be granted to.
+   * @apiParam {String} data.identity The user the permission should be granted to.
    * @apiParam {String} data.intent The intent the user should get permissions for.
    * @apiParam {String} data.workflowitemId The workflowitem the permissions are effective on.
    * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
@@ -1999,7 +2073,7 @@ export const createRouter = (
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
-   *       "userId": "alice",
+   *       "identity": "alice",
    *       "intent": "workflowitem.close"
    *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
    *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
@@ -2032,7 +2106,7 @@ export const createRouter = (
    *
    * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
    * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The user the permission should be revoked from.
+   * @apiParam {String} data.identity The user the permission should be revoked from.
    * @apiParam {String} data.intent What the user should no longer be allowed to do.
    * @apiParam {String} data.workflowitemId The workflowitem the permissions are effective on.
    * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
@@ -2041,7 +2115,7 @@ export const createRouter = (
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
-   *       "userId": "alice",
+   *       "identity": "alice",
    *       "intent": "workflowitem.close"
    *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
    *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
@@ -2219,9 +2293,34 @@ export const createRouter = (
   //       network
   // ------------------------------------------------------------
 
-  /* Used by non-master MultiChain nodes to register their wallet address.
+  /**
+   * @api {post} /network.registerNode Register node
+   * @apiVersion 1.0.0
+   * @apiName network.registerNode
+   * @apiGroup Network
+   * @apiPermission user
+   * @apiDescription Used by non-master MultiChain nodes to register their wallet address.
    *
-   * (undocumented)
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.address The address of the blockchain wallet which should be registered
+   * @apiParam {String} data.organization The organization of the node
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "address": "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+   *       "organization": "MyOrganization"
+   *     }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String="OK","Node already registered"} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
    */
   router.post("/network.registerNode", (req: AuthenticatedRequest, res) => {
     registerNode(multichainClient, req)
@@ -2265,12 +2364,80 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
+  /**
+   * @api {get} /network.approveNewOrganization Approve new orgnization
+   * @apiVersion 1.0.0
+   * @apiName network.approveNewOrganization
+   * @apiGroup Network
+   * @apiPermission user
+   * @apiDescription coming soon
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.organization The organization to approve
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "organization": "MyNewOrganization"
+   *     }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String="OK"} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
   router.post("/network.approveNewOrganization", (req: AuthenticatedRequest, res) => {
     approveNewOrganization(multichainClient, req)
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
 
+  /**
+   * @api {get} /network.approveNewNodeForExistingOrganization Approve new node
+   * @apiVersion 1.0.0
+   * @apiName network.approveNewNodeForExistingOrganization
+   * @apiGroup Network
+   * @apiPermission user
+   * @apiDescription coming soon
+   *
+   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
+   * @apiParam {Object} data Request payload.
+   * @apiParam {String} data.address The address of the user's blockchain wallet
+   * @apiParamExample {json} Request
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *       "address": "13ePdKiZeSd787D6styeaSugyJjpM3SdLBibJy"
+   *     }
+   *   }
+   *
+   * @apiError {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiError {Object} error
+   * @apiError {String="409"} error.code
+   * @apiError {String="409"} error.message Tells either your organization has already voted
+   * or the permissions are already assigned
+   * @apiErrorExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "error": {
+   *        "code": "409",
+   *        "message": "Conflict: your organization has already voted for assigning {permissions} to {address}"
+   *      }
+   *   }
+   *
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {String="OK"} data
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": "OK"
+   *   }
+   */
   router.post(
     "/network.approveNewNodeForExistingOrganization",
     (req: AuthenticatedRequest, res) => {
@@ -2280,9 +2447,50 @@ export const createRouter = (
     },
   );
 
-  /* List all TruBudget nodes.
+  /**
+   * @api {get} /network.list List
+   * @apiVersion 1.0.0
+   * @apiName network.list
+   * @apiGroup Network
+   * @apiPermission user
+   * @apiDescription Get all nodes
    *
-   * (undocumented)
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {Object} data Response payload
+   * @apiSuccess {Object[]} data.nodes
+   * @apiSuccess {Object} data.nodes.address
+   * @apiSuccess {String} data.nodes.address.address
+   * @apiSuccess {String} data.nodes.address.organization
+   * @apiSuccess {String} data.nodes.myVote
+   * @apiSuccess {Object} data.nodes.currentAccess
+   * @apiSuccess {String} data.nodes.currentAccess.accessType
+   * @apiSuccess {Object[]} data.nodes.currentAccess.approvers
+   * @apiSuccess {String} data.nodes.currentAccess.approvers.address
+   * @apiSuccess {String} data.nodes.currentAccess.approvers.organization
+   * @apiSuccessExample {json} Success-Response
+   *   {
+   *     "apiVersion": "1.0",
+   *     "data": {
+   *         "nodes": [
+   *             {
+   *                 "address": {
+   *                     "address": "1TGS8j5BJjrYeyGPK5yDDAXqhTFsGMrFahhQMJ",
+   *                     "organization": "ACMECorp"
+   *                 },
+   *                 "myVote": "admin",
+   *                 "currentAccess": {
+   *                     "accessType": "admin",
+   *                     "approvers": [
+   *                         {
+   *                             "address": "1TGS8j5BJjrYeyGPK5yDDAXqhTFsGMrFahhQMJ",
+   *                             "organization": "ACMECorp"
+   *                         }
+   *                     ]
+   *                 }
+   *             }
+   *         ]
+   *     }
+   * }
    */
   router.get("/network.list", (req: AuthenticatedRequest, res) => {
     getNodeList(multichainClient, req)
@@ -2291,17 +2499,17 @@ export const createRouter = (
   });
 
   /**
-   * @api {get} /network.listActive active Peers
+   * @api {get} /network.listActive Active Peers
    * @apiVersion 1.0.0
    * @apiName network.listActive
    * @apiGroup Network
    * @apiPermission user
    * @apiDescription Get the number of all peers in the blockchain network.
    *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.peers The node (wallet address) to vote for.
-   * @apiParamExample {json} Request
+   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
+   * @apiSuccess {Object} data Response payload
+   * @apiSuccess {String} data.peers Number of peers in the current network
+   * @apiSuccessExample {json} Success-Response
    *   {
    *     "apiVersion": "1.0",
    *     "data": {
