@@ -51,6 +51,7 @@ import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
+import { createBackup } from "../system/createBackup";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
@@ -1453,6 +1454,19 @@ export const createRouter = (
       .then(response => send(res, response))
       .catch(err => handleError(req, res, err));
   });
+
+
+
+  router.get("/system.createBackup", (req: AuthenticatedRequest, res) => {
+    createBackup(req)
+      .then(response => {
+        res.setHeader("Content-Type", "application/gzip")
+        res.setHeader("Content-Disposition", ` attachment; filename="test.gz"`)
+        res.send(response)
+      })
+
+      .catch(err => handleError(req, res, err));
+  })
 
   return router;
 };

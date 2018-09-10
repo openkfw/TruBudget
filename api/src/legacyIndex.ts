@@ -1,8 +1,7 @@
 import * as express from "express";
-import * as fastify from 'fastify'
-
-import { createBasicApp } from "./httpd/server";
-import { registerRoutes } from "./httpd/fastifyServer";
+import * as winston from "winston";
+import { createBasicApp } from "./httpd/app";
+import { createRouter } from "./httpd/router";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
@@ -12,7 +11,11 @@ import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStreams } from "./organization/organization";
 
-
+/*
+ * Init the logs
+ */
+const winstonConsole = new winston.transports.Console();
+winston.add(winstonConsole);
 
 /*
  * Deal with the environment:
@@ -30,10 +33,14 @@ if (!process.env.ROOT_SECRET) {
 }
 const organization: string | undefined = process.env.ORGANIZATION;
 if (!organization) {
+  winston.error(`Please set ORGANIZATION to the organization this node belongs to.`);
   process.exit(1);
 }
 const organizationVaultSecret: string | undefined = process.env.ORGANIZATION_VAULT_SECRET;
 if (!organizationVaultSecret) {
+  winston.error(
+    `Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.`,
+  );
   process.exit(1);
 }
 
@@ -51,17 +58,15 @@ const rpcSettings: ConnectionSettings = {
 logger.info(rpcSettings, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
-const server = createBasicApp(jwtSecret);
-
-// app.use(
-//   "/api",
-//   createRouter(multichainClient, jwtSecret, rootSecret, organization!, organizationVaultSecret!),
-// );
+const app = createBasicApp(jwtSecret, rootSecret);
+app.use(
+  "/api",
+  createRouter(multichainClient, jwtSecret, rootSecret, organization!, organizationVaultSecret!),
+);
 
 /*
  * Run the app:
  */
-// server.register(require('./'), { prefix: '/api' })
 
 // Enable useful traces of unhandled-promise warnings:
 process.on("unhandledRejection", err => {
@@ -94,11 +99,7 @@ function registerSelf(): Promise<boolean> {
     .catch(() => false);
 }
 
-registerRoutes(server, multichainClient, jwtSecret, rootSecret, organization!, organizationVaultSecret!)
-
-console.log('Register fastify endpoint')
-
-server.listen(port, async err => {
+app.listen(port, async err => {
   if (err) {
     logger.fatal(err);
     process.exit(1);
