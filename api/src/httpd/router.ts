@@ -41,6 +41,7 @@ import { reorderWorkflowitems } from "../subproject/controller/reorderWorkflowit
 import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
+import { createBackup } from "../system/createBackup";
 import { authenticateUser } from "../user/controller/authenticate";
 import { getUserList } from "../user/controller/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
@@ -51,7 +52,6 @@ import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
-import { createBackup } from "../system/createBackup";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 
 const send = (res: express.Response, httpResponse: HttpResponse) => {
@@ -1455,18 +1455,16 @@ export const createRouter = (
       .catch(err => handleError(req, res, err));
   });
 
-
-
   router.get("/system.createBackup", (req: AuthenticatedRequest, res) => {
     createBackup(req)
       .then(response => {
-        res.setHeader("Content-Type", "application/gzip")
-        res.setHeader("Content-Disposition", ` attachment; filename="test.gz"`)
-        res.send(response)
+        res.setHeader("Content-Type", "application/gzip");
+        res.setHeader("Content-Disposition", ` attachment; filename="test.gz"`);
+        res.send(response);
       })
 
       .catch(err => handleError(req, res, err));
-  })
+  });
 
   return router;
 };

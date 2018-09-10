@@ -26,7 +26,7 @@ export interface UserLoginResponse {
 
 export const authenticateUser = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
   jwtSecret: string,
   rootSecret: string,
   organization: string,
@@ -36,7 +36,7 @@ export const authenticateUser = async (
 
   const id: string = value("id", input.id, isNonemptyString);
   const password: string = value("password", input.password, isNonemptyString);
-
+  console.log(id, password);
   return [
     200,
     {

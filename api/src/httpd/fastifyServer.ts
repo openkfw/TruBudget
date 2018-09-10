@@ -1,10 +1,10 @@
-import * as fastify from 'fastify'
+import { FastifyInstance } from "fastify";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
 import { MultichainClient } from "../multichain";
+import { authenticateUser } from "../user/controller/authenticate";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
-import { FastifyInstance } from "fastify";
-import {Schema} from './schema';
+import { Schema } from "./schema";
 
 // const send = (res: express.Response, httpResponse: HttpResponse) => {
 //   const [code, body] = httpResponse;
@@ -125,6 +125,11 @@ import {Schema} from './schema';
  * `dataVersion`.
  */
 
+const send = (res, httpResponse: HttpResponse) => {
+  const [code, body] = httpResponse;
+  res.status(code).send(body);
+};
+
 export const registerRoutes = (
   server: FastifyInstance,
   multichainClient: MultichainClient,
@@ -133,19 +138,11 @@ export const registerRoutes = (
   organization: string,
   organizationVaultSecret: string,
 ) => {
-
-  /**
-   * @api {get} /readiness Readiness
-   * @apiVersion 1.0.0
-   * @apiName readiness
-   * @apiGroup Liveness and Readiness
-   * @apiDescription Returns "200 OK" if the API is up and the Multichain service is
-   * reachable; "503 Service unavailable." otherwise.
-   */
-
-  server.get("/readiness",
+  server.get(
+    "/readiness",
     {
-      beforeHandler: [server.authenticate]
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
       schema: {
         description: "Returns '200 OK' if the API is up and the Multichain service is",
         tags: ["system"],
@@ -153,24 +150,87 @@ export const registerRoutes = (
         response: {
           200: {
             description: "Succesful response",
-            type: "string"
+            type: "string",
           },
           503: {
             description: "Blockchain not ready",
-            type: "string"
-          }
-        }
-      }
+            type: "string",
+          },
+        },
+      },
     } as Schema,
     async (request, reply) => {
-      console.log(request)
+      console.log(request);
       if (await isReady(multichainClient)) {
         reply.status(200).send("OK");
       } else {
         reply.status(503).send("Service unavailable.");
       }
-  });
+    },
+  );
 
+  server.post(
+    "/user.authenticate",
+    {
+      schema: {
+        description:
+          "Authenticate and retrieve a token in return. This token can then be supplied in the " +
+          +"HTTP Authorization header, which is expected by most of the other",
+        tags: ["user"],
+        summary: "authenticate",
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string" },
+            data: {
+              type: "object",
+              properties: {
+                user: {
+                  type: "object",
+                  properties: { id: { type: "string" }, password: { type: "string" } },
+                },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              apiVersion: { type: "string" },
+              data: {
+                type: "object",
+                properties: {
+                  user: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string" },
+                      dispalyName: { type: "string" },
+                      organization: { type: "string" },
+                      allowedIntents: { type: "array", items: { type: "string" } },
+                      token: { type: "string" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      authenticateUser(
+        multichainClient,
+        request,
+        jwtSecret,
+        rootSecret,
+        organization,
+        organizationVaultSecret,
+      )
+        .then(response => send(reply, response))
+        .catch(err => console.log(err));
+    },
+  );
 
   return server;
 };

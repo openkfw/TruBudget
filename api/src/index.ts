@@ -1,8 +1,8 @@
 import * as express from "express";
-import * as fastify from 'fastify'
+import * as fastify from "fastify";
 
-import { createBasicApp } from "./httpd/server";
 import { registerRoutes } from "./httpd/fastifyServer";
+import { createBasicApp } from "./httpd/server";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
@@ -11,8 +11,6 @@ import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStreams } from "./organization/organization";
-
-
 
 /*
  * Deal with the environment:
@@ -94,9 +92,16 @@ function registerSelf(): Promise<boolean> {
     .catch(() => false);
 }
 
-registerRoutes(server, multichainClient, jwtSecret, rootSecret, organization!, organizationVaultSecret!)
+registerRoutes(
+  server,
+  multichainClient,
+  jwtSecret,
+  rootSecret,
+  organization!,
+  organizationVaultSecret!,
+);
 
-console.log('Register fastify endpoint')
+console.log("Register fastify endpoint");
 
 server.listen(port, async err => {
   if (err) {
