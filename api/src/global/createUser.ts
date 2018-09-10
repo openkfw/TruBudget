@@ -27,8 +27,9 @@ export const createUser = async (
   if (userId === "root") throw { kind: "UserAlreadyExists", targetUserId: "root" };
 
   // Is the user allowed to create new users?
+  console.log(req)
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     "global.createUser",
     await Global.getPermissions(multichain),
   );
@@ -51,7 +52,7 @@ export const createUser = async (
     passwordDigest,
   };
 
-  await User.create(multichain, req.token, newUser);
+  await User.create(multichain, req.user, newUser);
   logger.info(newUser, "User created.");
 
   await grantInitialPermissions(multichain, newUser);
