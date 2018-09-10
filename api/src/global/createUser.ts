@@ -12,7 +12,7 @@ import { hashPassword } from "../user/password";
 
 export const createUser = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
   jwtSecret: string,
   rootSecret: string,
   organizationVaultSecret: string,
