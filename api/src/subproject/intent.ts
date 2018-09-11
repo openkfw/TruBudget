@@ -7,7 +7,7 @@ import * as Subproject from "./model/Subproject";
 
 export async function changeSubprojectPermission(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
   userIntent: "subproject.intent.grantPermission" | "subproject.intent.revokePermission",
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
@@ -19,14 +19,14 @@ export async function changeSubprojectPermission(
 
   // Is the user allowed to grant/revoke subproject permissions?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: { identity, intent },

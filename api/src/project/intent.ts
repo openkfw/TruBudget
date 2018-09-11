@@ -7,7 +7,7 @@ import * as Project from "./model/Project";
 
 export async function changeProjectPermission(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
   userIntent: "project.intent.grantPermission" | "project.intent.revokePermission",
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
@@ -19,14 +19,14 @@ export async function changeProjectPermission(
 
   // Is the user allowed to grant/revoke project permissions?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Project.getPermissions(multichain, projectId),
   );
 
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: { identity, intent },

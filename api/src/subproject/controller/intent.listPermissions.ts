@@ -6,7 +6,7 @@ import * as Subproject from "../model/Subproject";
 
 export async function getSubprojectPermissions(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = req.query;
 
@@ -20,7 +20,7 @@ export async function getSubprojectPermissions(
   );
 
   // Is the user allowed to list subproject permissions?
-  await throwIfUnauthorized(req.token, "subproject.intent.listPermissions", subprojectPermissions);
+  await throwIfUnauthorized(req.user, "subproject.intent.listPermissions", subprojectPermissions);
 
   return [
     200,

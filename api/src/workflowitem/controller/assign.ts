@@ -9,10 +9,7 @@ import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
 import * as Workflowitem from "../model/Workflowitem";
 
-export async function assignWorkflowitem(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function assignWorkflowitem(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -24,14 +21,14 @@ export async function assignWorkflowitem(
 
   // Is the user allowed to (re-)assign a workflowitem?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
   const publishedEvent = await sendEventToDatabase(
     multichain,
-    req.token,
+    req.user,
     userIntent,
     identity,
     projectId,
@@ -46,15 +43,15 @@ export async function assignWorkflowitem(
     { id: subprojectId, type: "subproject" },
     { id: projectId, type: "project" },
   ];
-  const createdBy = req.token.userId;
-  const skipNotificationsFor = [req.token.userId];
+  const createdBy = req.user.userId;
+  const skipNotificationsFor = [req.user.userId];
   await notifyAssignee(
     multichain,
     resourceDescriptions,
     createdBy,
     await Workflowitem.get(
       multichain,
-      req.token,
+      req.user,
       projectId,
       subprojectId,
       workflowitemId,

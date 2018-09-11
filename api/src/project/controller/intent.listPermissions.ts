@@ -6,7 +6,7 @@ import * as Project from "../model/Project";
 
 export async function getProjectPermissions(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = req.query;
 
@@ -15,7 +15,7 @@ export async function getProjectPermissions(
   const projectPermissions = await Project.getPermissions(multichain, projectId);
 
   // Is the user allowed to list project permissions?
-  await throwIfUnauthorized(req.token, "project.intent.listPermissions", projectPermissions);
+  await throwIfUnauthorized(req.user, "project.intent.listPermissions", projectPermissions);
 
   return [
     200,

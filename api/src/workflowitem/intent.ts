@@ -7,7 +7,7 @@ import * as Workflowitem from "./model/Workflowitem";
 
 export async function changeWorkflowitemPermission(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
   userIntent: "workflowitem.intent.grantPermission" | "workflowitem.intent.revokePermission",
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
@@ -20,14 +20,14 @@ export async function changeWorkflowitemPermission(
 
   // Is the user allowed to grant/revoke workflowitem permissions?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: { identity, intent },

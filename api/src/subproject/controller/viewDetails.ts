@@ -21,7 +21,7 @@ function removeEventLog(workflowitem: Workflowitem.WorkflowitemResource): Workfl
 
 export async function getSubprojectDetails(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = req.query;
 
@@ -32,22 +32,22 @@ export async function getSubprojectDetails(
 
   // Is the user allowed to view subproject details?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
-  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
+  const subproject = await Subproject.get(multichain, req.user, projectId, subprojectId).then(
     result => result[0],
   );
 
   const ordering = await fetchWorkflowitemOrdering(multichain, projectId, subprojectId);
 
-  const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId)
+  const workflowitems = await Workflowitem.get(multichain, req.user, projectId, subprojectId)
     .then(unsortedItems => sortWorkflowitems(unsortedItems, ordering))
     .then(sortedItems => sortedItems.map(removeEventLog));
 
-  const parentProject = await Project.get(multichain, req.token, projectId).then(result => {
+  const parentProject = await Project.get(multichain, req.user, projectId).then(result => {
     if (result.length) {
       const { id, displayName } = result[0].data;
       return { id, displayName };

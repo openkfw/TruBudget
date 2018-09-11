@@ -3,10 +3,7 @@ import { value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { hashBase64String } from "../../subproject/controller/createWorkflowitem";
 
-export async function validateDocument(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function validateDocument(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const tempHash = await hashBase64String(input.base64String);

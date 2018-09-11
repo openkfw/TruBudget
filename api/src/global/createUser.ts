@@ -27,12 +27,7 @@ export const createUser = async (
   if (userId === "root") throw { kind: "UserAlreadyExists", targetUserId: "root" };
 
   // Is the user allowed to create new users?
-  console.log(req)
-  await throwIfUnauthorized(
-    req.user,
-    "global.createUser",
-    await Global.getPermissions(multichain),
-  );
+  await throwIfUnauthorized(req.user, "global.createUser", await Global.getPermissions(multichain));
 
   // Every user gets her own address:
   const keyPair = await createkeypairs(multichain);
