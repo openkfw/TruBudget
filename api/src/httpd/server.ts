@@ -29,7 +29,9 @@ const registerSwagger = (server: fastify.FastifyInstance) => {
       info: {
         title: "TruBudget API documentation",
         description:
-          "The documentation contains all endpoints used for TruBudget blockchain communication",
+          "The documentation contains all endpoints used for TruBudget blockchain communication." +
+          "\nStart at the 'user.authenticate' endpoint to receive a token which is needed for authentication " +
+          "at almost every endpoint",
         version: "0.1.0",
       },
       host: "localhost:8086",

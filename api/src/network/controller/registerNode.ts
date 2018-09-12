@@ -6,10 +6,7 @@ import { MultichainClient } from "../../multichain";
 import { adminPermissions } from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
 
-export async function registerNode(
-  multichain: MultichainClient,
-  req: express.Request,
-): Promise<HttpResponse> {
+export async function registerNode(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const address: Nodes.WalletAddress = value("address", input.address, isNonemptyString);

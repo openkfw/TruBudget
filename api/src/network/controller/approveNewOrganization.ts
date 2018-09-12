@@ -6,7 +6,7 @@ import { voteHelper } from "../voteHelper";
 
 export async function approveNewOrganization(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
   const organization: string = value("organization", input.organization, isNonemptyString);
@@ -22,5 +22,5 @@ export async function approveNewOrganization(
     throw Error(`no node registered for organization "${organization}"`);
   }
 
-  return voteHelper(multichain, req.token, futureOrganizationAddress, "admin");
+  return voteHelper(multichain, req.user, futureOrganizationAddress, "admin");
 }

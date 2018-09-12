@@ -1,10 +1,4 @@
 import { FastifyInstance } from "fastify";
-import logger from "../lib/logger";
-import { isReady } from "../lib/readiness";
-import { MultichainClient } from "../multichain";
-import { authenticateUser } from "../user/controller/authenticate";
-import { AuthenticatedRequest, HttpResponse } from "./lib";
-import { Schema } from "./schema";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
@@ -15,6 +9,9 @@ import { createUser } from "../global/createUser";
 import { addUserToGroup } from "../group/addUser";
 import { getGroupList } from "../group/list";
 import { removeUserFromGroup } from "../group/removeUser";
+import logger from "../lib/logger";
+import { isReady } from "../lib/readiness";
+import { MultichainClient } from "../multichain";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
 import { getNodeList } from "../network/controller/list";
@@ -45,6 +42,7 @@ import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { createBackup } from "../system/createBackup";
+import { authenticateUser } from "../user/controller/authenticate";
 import { getUserList } from "../user/controller/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
 import { closeWorkflowitem } from "../workflowitem/controller/close";
@@ -54,7 +52,8 @@ import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
-import { GroupId } from "../authz/types";
+import { HttpResponse } from "./lib";
+import { Schema } from "./schema";
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -158,6 +157,23 @@ const handleError = (req, res, err: any) => {
   }
 };
 
+function getAuthErrorSchema() {
+  return {
+    description: "Unauthorized request",
+    type: "object",
+    properties: {
+      apiVersion: { type: "string" },
+      error: {
+        type: "object",
+        properties: {
+          code: { type: "string" },
+          message: { type: "string" },
+        },
+      },
+    },
+  };
+}
+
 export const registerRoutes = (
   server: FastifyInstance,
   multichainClient: MultichainClient,
@@ -176,20 +192,17 @@ export const registerRoutes = (
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
       schema: {
-        description: "Returns '200 OK' if the API is up and the Multichain service is",
+        description:
+          "Returns '200 OK' if the API is up and the Multichain service is reachable. " +
+          "'503 Service unavailable.' otherwise.",
         tags: ["system"],
-        summary: "readiness",
-        headers: {
-          type: "object",
-          properties: {
-            Authorization: { type: "string" },
-          },
-        },
+        summary: "Check if the Multichain is reachable",
         response: {
           200: {
             description: "Succesful response",
             type: "string",
           },
+          401: getAuthErrorSchema(),
           503: {
             description: "Blockchain not ready",
             type: "string",
@@ -212,7 +225,7 @@ export const registerRoutes = (
       schema: {
         description: "Returns '200 OK' if the API is up.",
         tags: ["system"],
-        summary: "liveness",
+        summary: "Check if the API is up",
         response: {
           200: {
             description: "Succesful response",
@@ -238,7 +251,7 @@ export const registerRoutes = (
           "Authenticate and retrieve a token in return. This token can then be supplied in the " +
           +"HTTP Authorization header, which is expected by most of the other",
         tags: ["user"],
-        summary: "authenticate",
+        summary: "Authenticate with user and password",
         body: {
           type: "object",
           properties: {
@@ -277,6 +290,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -302,13 +316,7 @@ export const registerRoutes = (
       schema: {
         description: "List all registered users.",
         tags: ["user"],
-        summary: "list users",
-        headers: {
-          type: "object",
-          properties: {
-            Authorization: { type: "string" },
-          },
-        },
+        summary: "List all registered users",
         response: {
           200: {
             description: "Succesful response",
@@ -333,6 +341,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -354,7 +363,7 @@ export const registerRoutes = (
       schema: {
         description: "Create a new user.",
         tags: ["global"],
-        summary: "createUser",
+        summary: "Create a user",
         body: {
           type: "object",
           properties: {
@@ -397,6 +406,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
           409: {
             description: "User already exists",
             type: "object",
@@ -430,7 +440,7 @@ export const registerRoutes = (
       schema: {
         description: "Create a new group.",
         tags: ["global"],
-        summary: "createGroup",
+        summary: "Create a new group",
         body: {
           type: "object",
           properties: {
@@ -464,6 +474,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
           409: {
             description: "Group already exists",
             type: "object",
@@ -496,7 +507,7 @@ export const registerRoutes = (
       schema: {
         description: "Create a new project.",
         tags: ["global"],
-        summary: "createProject",
+        summary: "Create a new project",
         body: {
           type: "object",
           properties: {
@@ -535,6 +546,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -553,7 +565,15 @@ export const registerRoutes = (
       schema: {
         description: "See the current global permissions.",
         tags: ["global"],
-        summary: "listPermissions",
+        summary: "List all existing permissions",
+        params: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
         response: {
           200: {
             description: "Succesful response",
@@ -566,6 +586,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -577,7 +598,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/global.grantPermission",
+    "/global.grant permission",
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -585,7 +606,7 @@ export const registerRoutes = (
         description:
           "Grant the right to execute a specific intent on the Global scope to a given user.",
         tags: ["global"],
-        summary: "grantPermission",
+        summary: "Grant a permission to a group or user",
         body: {
           type: "object",
           properties: {
@@ -610,6 +631,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -629,7 +651,7 @@ export const registerRoutes = (
         description:
           "Grant all available permissions to a user. Useful as a shorthand for creating admin users.",
         tags: ["global"],
-        summary: "grantAllPermissions",
+        summary: "Grant all permission to a group or user",
         body: {
           type: "object",
           properties: {
@@ -653,6 +675,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -672,7 +695,7 @@ export const registerRoutes = (
         description:
           "Revoke the right to execute a specific intent on the Global scope to a given user.",
         tags: ["global"],
-        summary: "revokePermission",
+        summary: "Revoke a permission from a group or user",
         body: {
           type: "object",
           properties: {
@@ -697,6 +720,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -719,13 +743,7 @@ export const registerRoutes = (
       schema: {
         description: "List all user groups.",
         tags: ["group"],
-        summary: "list groups",
-        headers: {
-          type: "object",
-          properties: {
-            Authorization: { type: "string" },
-          },
-        },
+        summary: "List all existing groups",
         response: {
           200: {
             description: "Succesful response",
@@ -753,6 +771,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -771,7 +790,7 @@ export const registerRoutes = (
       schema: {
         description: "Add user to a group",
         tags: ["group"],
-        summary: "addUser",
+        summary: "Add a user to a group",
         body: {
           type: "object",
           properties: {
@@ -799,6 +818,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -817,7 +837,7 @@ export const registerRoutes = (
       schema: {
         description: "Remove user from a group",
         tags: ["group"],
-        summary: "removeUser",
+        summary: "Remove a user from a group",
         body: {
           type: "object",
           properties: {
@@ -845,6 +865,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -867,13 +888,7 @@ export const registerRoutes = (
       schema: {
         description: "Retrieve all projects the user is allowed to see.",
         tags: ["project"],
-        summary: "list projects",
-        headers: {
-          type: "object",
-          properties: {
-            Authorization: { type: "string" },
-          },
-        },
+        summary: "List all projects",
         response: {
           200: {
             description: "Succesful response",
@@ -949,6 +964,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -967,11 +983,13 @@ export const registerRoutes = (
       schema: {
         description: "Retrieve details about a specific project.",
         tags: ["project"],
-        summary: "view Details",
-        headers: {
+        summary: "View details",
+        params: {
           type: "object",
           properties: {
-            Authorization: { type: "string" },
+            projectId: {
+              type: "string",
+            },
           },
         },
         response: {
@@ -1046,6 +1064,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1065,7 +1084,7 @@ export const registerRoutes = (
         description:
           "Assign a project to a given user. The assigned user will be notified about the change.",
         tags: ["project"],
-        summary: "assign Project",
+        summary: "Assign a user or group to a project",
         body: {
           type: "object",
           properties: {
@@ -1090,6 +1109,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1110,7 +1130,7 @@ export const registerRoutes = (
           "Partially update a project. Only properties mentioned in the request body are touched, " +
           "others are not affected. The assigned user will be notified about the change.",
         tags: ["project"],
-        summary: "update Project",
+        summary: "Update a project",
         body: {
           type: "object",
           properties: {
@@ -1136,6 +1156,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1156,7 +1177,7 @@ export const registerRoutes = (
           "Set a project's status to 'closed' if, and only if, all associated " +
           "subprojects are already set to 'closed'.",
         tags: ["project"],
-        summary: "close Project",
+        summary: "Close a project",
         body: {
           type: "object",
           properties: {
@@ -1180,6 +1201,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1198,7 +1220,7 @@ export const registerRoutes = (
       schema: {
         description: "Create a subproject and associate it to the given project.",
         tags: ["project"],
-        summary: "create Subproject",
+        summary: "Create a subproject",
         body: {
           type: "object",
           properties: {
@@ -1237,6 +1259,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1256,7 +1279,15 @@ export const registerRoutes = (
         description:
           "View the history of a given project (filtered by what the user is allowed to see).",
         tags: ["project"],
-        summary: "view History",
+        summary: "View history",
+        params: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
         response: {
           200: {
             description: "Succesful response",
@@ -1296,6 +1327,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1314,7 +1346,15 @@ export const registerRoutes = (
       schema: {
         description: "See the permissions for a given project.",
         tags: ["project"],
-        summary: "list permissions",
+        summary: "List all permissions",
+        params: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
         response: {
           200: {
             description: "Succesful response",
@@ -1327,6 +1367,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1347,7 +1388,7 @@ export const registerRoutes = (
           "Grant a permission to a user. After this call has returned, the " +
           "user will be allowed to execute the given intent.",
         tags: ["project"],
-        summary: "grant permission",
+        summary: "Grant a permission to a user or group",
         body: {
           type: "object",
           properties: {
@@ -1373,6 +1414,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1393,7 +1435,7 @@ export const registerRoutes = (
           "Revoke a permission from a user. After this call has returned, the " +
           "user will no longer be able to execute the given intent.",
         tags: ["project"],
-        summary: "revoke permission",
+        summary: "Revoke a permission from a user or group",
         body: {
           type: "object",
           properties: {
@@ -1419,6 +1461,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1443,7 +1486,15 @@ export const registerRoutes = (
           "Retrieve all subprojects for a given project. Note that any " +
           "subprojects the user is not allowed to see are left out of the response.",
         tags: ["subproject"],
-        summary: "list subprojects",
+        summary: "List all subprojects of a given project",
+        params: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
         response: {
           200: {
             description: "Succesful response",
@@ -1519,6 +1570,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1537,7 +1589,18 @@ export const registerRoutes = (
       schema: {
         description: "Retrieve details about a specific subproject.",
         tags: ["subproject"],
-        summary: "view Details",
+        summary: "View details",
+        params: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+            subprojectId: {
+              type: "string",
+            },
+          },
+        },
         response: {
           200: {
             description: "Succesful response",
@@ -1610,6 +1673,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1629,7 +1693,7 @@ export const registerRoutes = (
         description:
           "Assign a subproject to a given user. The assigned user will be notified about the change.",
         tags: ["subproject"],
-        summary: "assign subproject",
+        summary: "Assign a user or group to a subproject",
         body: {
           type: "object",
           properties: {
@@ -1655,6 +1719,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1675,7 +1740,7 @@ export const registerRoutes = (
           "Partially update a subproject. Only properties mentioned in the request body are touched, " +
           "others are not affected. The assigned user will be notified about the change.",
         tags: ["subproject"],
-        summary: "update subproject",
+        summary: "Update a subproject",
         body: {
           type: "object",
           properties: {
@@ -1702,6 +1767,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1722,7 +1788,7 @@ export const registerRoutes = (
           "Set a subproject's status to 'closed' if, and only if, all " +
           "associated workflowitems are already set to 'closed'.",
         tags: ["subproject"],
-        summary: "close subproject",
+        summary: "Close a subproject",
         body: {
           type: "object",
           properties: {
@@ -1747,6 +1813,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1767,7 +1834,7 @@ export const registerRoutes = (
           "Set a new workflowitem ordering. Workflowitems not included in the list " +
           "will be ordered by their creation time and placed after all explicitly ordered workflowitems.",
         tags: ["subproject"],
-        summary: "reorder workflowitems",
+        summary: "Reorder the workflowitems of the given subproject",
         body: {
           type: "object",
           properties: {
@@ -1798,6 +1865,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1816,7 +1884,7 @@ export const registerRoutes = (
       schema: {
         description: "Create a workflowitem and associate it to the given subproject.",
         tags: ["subproject"],
-        summary: "create workflowitem",
+        summary: "Create a workflowitem",
         body: {
           type: "object",
           properties: {
@@ -1862,6 +1930,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1881,7 +1950,18 @@ export const registerRoutes = (
         description:
           "View the history of a given subproject (filtered by what the user is allowed to see).",
         tags: ["subproject"],
-        summary: "view History",
+        summary: "View history",
+        params: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+            subprojectId: {
+              type: "string",
+            },
+          },
+        },
         response: {
           200: {
             description: "Succesful response",
@@ -1921,6 +2001,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1939,7 +2020,18 @@ export const registerRoutes = (
       schema: {
         description: "See the permissions for a given subproject.",
         tags: ["subproject"],
-        summary: "list permissions",
+        summary: "List all permissions",
+        params: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+            subprojectId: {
+              type: "string",
+            },
+          },
+        },
         response: {
           200: {
             description: "Succesful response",
@@ -1952,6 +2044,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -1972,7 +2065,7 @@ export const registerRoutes = (
           "Grant a permission to a user. After this call has returned, the " +
           "user will be allowed to execute the given intent.",
         tags: ["subproject"],
-        summary: "grant permission",
+        summary: "Grant a permission to a user or group",
         body: {
           type: "object",
           properties: {
@@ -1999,6 +2092,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2019,7 +2113,7 @@ export const registerRoutes = (
           "Revoke a permission from a user. After this call has returned, the " +
           "user will no longer be able to execute the given intent.",
         tags: ["subproject"],
-        summary: "revoke permission",
+        summary: "Revoke a permission to a user or group",
         body: {
           type: "object",
           properties: {
@@ -2046,6 +2140,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2071,7 +2166,7 @@ export const registerRoutes = (
           "user is not allowed to see will be redacted, that is, most of their values will be " +
           "set to null.",
         tags: ["workflowitem"],
-        summary: "list workflowitems",
+        summary: "List all workflowitems of a given subproject",
         params: {
           type: "object",
           properties: {
@@ -2128,6 +2223,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2147,7 +2243,7 @@ export const registerRoutes = (
         description:
           "Assign a workflowitem to a given user. The assigned user will be notified about the change.",
         tags: ["workflowitem"],
-        summary: "assign workflowitem",
+        summary: "Assign a user or group to a workflowitem",
         body: {
           type: "object",
           properties: {
@@ -2174,6 +2270,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2194,7 +2291,7 @@ export const registerRoutes = (
           "Partially update a workflowitem. Only properties mentioned in the request body are touched, " +
           "others are not affected. The assigned user will be notified about the change.",
         tags: ["workflowitem"],
-        summary: "update workflowitem",
+        summary: "Update a workflowitem",
         body: {
           type: "object",
           properties: {
@@ -2222,6 +2319,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2240,7 +2338,7 @@ export const registerRoutes = (
       schema: {
         description: "Set a workflowitem's status to 'closed'.",
         tags: ["workflowitem"],
-        summary: "close workflowitem",
+        summary: "Close a workflowitem",
         body: {
           type: "object",
           properties: {
@@ -2266,6 +2364,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2284,7 +2383,7 @@ export const registerRoutes = (
       schema: {
         description: "See the permissions for a given workflowitem.",
         tags: ["workflowitem"],
-        summary: "list permissions",
+        summary: "List all permissions",
         params: {
           type: "object",
           properties: {
@@ -2311,6 +2410,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2331,7 +2431,7 @@ export const registerRoutes = (
           "Grant a permission to a user. After this call has returned, the " +
           "user will be allowed to execute the given intent.",
         tags: ["workflowitem"],
-        summary: "grant permission",
+        summary: "Grant a permission to a user or group",
         body: {
           type: "object",
           properties: {
@@ -2359,6 +2459,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2379,7 +2480,7 @@ export const registerRoutes = (
           "Revoke a permission from a user. After this call has returned, the " +
           "user will no longer be able to execute the given intent.",
         tags: ["workflowitem"],
-        summary: "revoke permission",
+        summary: "Revoke a permission from a user or group",
         body: {
           type: "object",
           properties: {
@@ -2407,6 +2508,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2425,7 +2527,7 @@ export const registerRoutes = (
       schema: {
         description: "Validates if the hashed base64 string equals the hash sent by the user.",
         tags: ["workflowitem"],
-        summary: "validateDocument",
+        summary: "Validate a document",
         body: {
           type: "object",
           properties: {
@@ -2453,6 +2555,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2478,7 +2581,7 @@ export const registerRoutes = (
           "request's `Authorization` header. By default, the response includes _all_ notifications, " +
           "but the `sinceId` parameter may be used to truncate the output.",
         tags: ["notification"],
-        summary: "list permissions",
+        summary: "List all notification of the authorized user",
         response: {
           200: {
             description: "Succesful response",
@@ -2526,6 +2629,7 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
@@ -2546,7 +2650,7 @@ export const registerRoutes = (
           "Allows a user to mark any of his/her notifications as read, which " +
           "is then reflected by the `isRead` flag carried in the `notification.list` response.",
         tags: ["notification"],
-        summary: "mark read",
+        summary: "Mark all notification as read",
         body: {
           type: "object",
           properties: {
@@ -2570,11 +2674,308 @@ export const registerRoutes = (
               },
             },
           },
+          401: getAuthErrorSchema(),
         },
       },
     } as Schema,
     async (request, reply) => {
       markNotificationRead(multichainClient, request)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  // ------------------------------------------------------------
+  //       network
+  // ------------------------------------------------------------
+
+  server.post(
+    "/network.registerNode",
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Used by non-master MultiChain nodes to register their wallet address.",
+        tags: ["network"],
+        summary: "Register a node",
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string" },
+            data: {
+              type: "object",
+              properties: {
+                address: { type: "string" },
+                organization: { type: "string" },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "Succesful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      registerNode(multichainClient, request)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    "/network.voteForPermission",
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Votes for granting/revoking network-level permissions to/from a " +
+          "registered node (identified by its wallet addresses). After this call, the voted " +
+          "access level may or may not be in effect, depending on the consensus parameters of " +
+          "the underlying blockchain.",
+        tags: ["network"],
+        summary: "Vote for permission",
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string" },
+            data: {
+              type: "object",
+              properties: {
+                address: { type: "string" },
+                vote: { type: "string" },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "Succesful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      voteForNetworkPermission(multichainClient, request)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    "/network.approveNewOrganization",
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "coming soon",
+        tags: ["network"],
+        summary: "Approve a new organization",
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string" },
+            data: {
+              type: "object",
+              properties: {
+                organization: { type: "string" },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "Succesful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      approveNewOrganization(multichainClient, request)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    "/network.approveNewNodeForExistingOrganization",
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "coming soon",
+        tags: ["network"],
+        summary: "Approve a new node",
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string" },
+            data: {
+              type: "object",
+              properties: {
+                address: { type: "string" },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "Succesful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+          409: {
+            description:
+              "Tells either your organization has already voted or the permissions are already assigned",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string" },
+              error: {
+                type: "object",
+                properties: {
+                  code: { type: "string" },
+                  message: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      approveNewNodeForExistingOrganization(multichainClient, request)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.get(
+    "/network.list",
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "List all nodes.",
+        tags: ["network"],
+        summary: "List all nodes",
+        response: {
+          200: {
+            description: "Succesful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string" },
+              data: {
+                type: "object",
+                properties: {
+                  nodes: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        address: {
+                          type: "object",
+                          properties: {
+                            address: { type: "string" },
+                            organization: { type: "string" },
+                          },
+                        },
+                        myVote: { type: "string" },
+                        currentAccess: {
+                          type: "object",
+                          properties: {
+                            accessType: { type: "string" },
+                            approvers: {
+                              type: "array",
+                              items: {
+                                type: "object",
+                                properties: {
+                                  address: { type: "string" },
+                                  organization: { type: "string" },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getNodeList(multichainClient, request)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.get(
+    "/network.listActive",
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Get the number of all peers in the blockchain network.",
+        tags: ["network"],
+        summary: "List all active peers",
+        response: {
+          200: {
+            description: "Succesful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string" },
+              data: {
+                type: "object",
+                properties: {
+                  peers: { type: "string" },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getActiveNodes(multichainClient, request)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
