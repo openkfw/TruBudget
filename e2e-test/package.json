@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "devDependencies": {
-    "cypress": "^3.0.0"
+    "cypress": "^3.1.0"
   },
   "scripts": {
     "cypress": "cypress open",
