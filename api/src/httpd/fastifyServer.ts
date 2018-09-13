@@ -55,6 +55,8 @@ import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { HttpResponse } from "./lib";
 import { Schema } from "./schema";
 
+const URL_PREFIX = "/api";
+
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
   res.status(code).send(body);
@@ -162,12 +164,15 @@ function getAuthErrorSchema() {
     description: "Unauthorized request",
     type: "object",
     properties: {
-      apiVersion: { type: "string" },
+      apiVersion: { type: "string", example: "1.0" },
       error: {
         type: "object",
         properties: {
-          code: { type: "string" },
-          message: { type: "string" },
+          code: { type: "string", example: "401" },
+          message: {
+            type: "string",
+            example: "A valid JWT auth bearer token is required for this route.",
+          },
         },
       },
     },
@@ -187,7 +192,7 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.get(
-    "/readiness",
+    `${URL_PREFIX}/readiness`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -197,15 +202,27 @@ export const registerRoutes = (
           "'503 Service unavailable.' otherwise.",
         tags: ["system"],
         summary: "Check if the Multichain is reachable",
+        headers: {
+          type: "object",
+          properties: {
+            authorization: {
+              type: "string",
+              description: "API token",
+            },
+          },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "string",
+            example: "OK",
           },
           401: getAuthErrorSchema(),
           503: {
             description: "Blockchain not ready",
             type: "string",
+            example: "Service unavailable.",
           },
         },
       },
@@ -220,7 +237,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/liveness",
+    `${URL_PREFIX}/liveness`,
     {
       schema: {
         description: "Returns '200 OK' if the API is up.",
@@ -228,8 +245,9 @@ export const registerRoutes = (
         summary: "Check if the API is up",
         response: {
           200: {
-            description: "Succesful response",
+            description: "Successful response",
             type: "string",
+            example: "OK",
           },
         },
       },
@@ -244,24 +262,32 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.post(
-    "/user.authenticate",
+    `${URL_PREFIX}/user.authenticate`,
     {
       schema: {
         description:
           "Authenticate and retrieve a token in return. This token can then be supplied in the " +
-          +"HTTP Authorization header, which is expected by most of the other",
+          "HTTP Authorization header, which is expected by most of the other. " +
+          "\nIf a token is required write 'Bearer' into the 'API Token' field of an endpoint " +
+          "you want to test and copy the token afterwards like in the following example:\n " +
+          ".\n" +
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
         tags: ["user"],
         summary: "Authenticate with user and password",
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
                 user: {
                   type: "object",
-                  properties: { id: { type: "string" }, password: { type: "string" } },
+                  properties: {
+                    id: { type: "string", example: "myId" },
+                    password: { type: "string", example: "mypassword" },
+                  },
+                  required: ["id", "password"],
                 },
               },
             },
@@ -269,21 +295,29 @@ export const registerRoutes = (
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
                   user: {
                     type: "object",
                     properties: {
-                      id: { type: "string" },
-                      dispalyName: { type: "string" },
-                      organization: { type: "string" },
+                      id: { type: "string", example: "myId" },
+                      displayName: { type: "string", example: "myDisplayName" },
+                      organization: { type: "string", example: "myorganization" },
                       allowedIntents: { type: "array", items: { type: "string" } },
-                      token: { type: "string" },
+                      token: {
+                        type: "string",
+                        example:
+                          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJyb290IiwiYWRkcm" +
+                          "VzcyI6IjFIVXF2dHE5WU1QaXlMZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwib3JnYW" +
+                          "5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFIVXF2dHE5WU1QaXl" +
+                          "MZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwiZ3JvdXBzIjpbXSwiaWF0IjoxNTM2ODI2M" +
+                          "TkyLCJleHAiOjE1MzY4Mjk3OTJ9.PZbjTpsgnIHjNaDHos9LVwwrckYhpWjv1DDiojskylI",
+                      },
                     },
                   },
                 },
@@ -309,7 +343,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/user.list",
+    `${URL_PREFIX}/user.list`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -317,12 +351,17 @@ export const registerRoutes = (
         description: "List all registered users.",
         tags: ["user"],
         summary: "List all registered users",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -331,9 +370,9 @@ export const registerRoutes = (
                     items: {
                       type: "object",
                       properties: {
-                        id: { type: "string" },
-                        displayName: { type: "string" },
-                        organization: { type: "string" },
+                        id: { type: "string", example: "myId" },
+                        displayName: { type: "string", example: "myDisplayName" },
+                        organization: { type: "string", example: "myorganization" },
                       },
                     },
                   },
@@ -356,7 +395,7 @@ export const registerRoutes = (
   //       global
   // ------------------------------------------------------------
   server.post(
-    "/global.createUser",
+    `${URL_PREFIX}/global.createUser`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -364,21 +403,27 @@ export const registerRoutes = (
         description: "Create a new user.",
         tags: ["global"],
         summary: "Create a user",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
                 user: {
                   type: "object",
                   properties: {
-                    id: { type: "string" },
-                    dispalyName: { type: "string" },
-                    organization: { type: "string" },
-                    password: { type: "string" },
+                    id: { type: "string", example: "myId" },
+                    displayName: { type: "string", example: "myDisplayName" },
+                    organization: { type: "string", example: "myorganization" },
+                    password: { type: "string", example: "mypassword" },
                   },
+                  required: ["id", "displayName", "organization", "password"],
                 },
               },
             },
@@ -386,20 +431,23 @@ export const registerRoutes = (
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
                   user: {
                     type: "object",
                     properties: {
-                      id: { type: "string" },
-                      dispalyName: { type: "string" },
-                      organization: { type: "string" },
-                      address: { type: "string" },
+                      id: { type: "string", example: "myId" },
+                      displayName: { type: "string", example: "myDisplayName" },
+                      organization: { type: "string", example: "myorganization" },
+                      address: {
+                        type: "string",
+                        example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+                      },
                     },
                   },
                 },
@@ -411,12 +459,12 @@ export const registerRoutes = (
             description: "User already exists",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               error: {
                 type: "object",
                 properties: {
-                  code: { type: "string" },
-                  message: { type: "string" },
+                  code: { type: "string", example: "409" },
+                  message: { type: "string", example: "User already exists." },
                 },
               },
             },
@@ -425,7 +473,6 @@ export const registerRoutes = (
       },
     } as Schema,
     async (request, reply) => {
-      console.log(request);
       createUser(multichainClient, request, jwtSecret, rootSecret, organizationVaultSecret)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
@@ -433,7 +480,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/global.createGroup",
+    `${URL_PREFIX}/global.createGroup`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -441,20 +488,26 @@ export const registerRoutes = (
         description: "Create a new group.",
         tags: ["global"],
         summary: "Create a new group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
                 group: {
                   type: "object",
                   properties: {
-                    id: { type: "string" },
-                    dispalyName: { type: "string" },
+                    id: { type: "string", example: "myId" },
+                    displayName: { type: "string", example: "myDisplayName" },
                     users: { type: "array", items: { type: "string" } },
                   },
+                  required: ["id", "displayName", "users"],
                 },
               },
             },
@@ -462,14 +515,14 @@ export const registerRoutes = (
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
-                  created: { type: "string" },
+                  created: { type: "boolean", example: "true" },
                 },
               },
             },
@@ -479,12 +532,12 @@ export const registerRoutes = (
             description: "Group already exists",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               error: {
                 type: "object",
                 properties: {
-                  code: { type: "string" },
-                  message: { type: "string" },
+                  code: { type: "string", example: "409" },
+                  message: { type: "string", example: "User already exists." },
                 },
               },
             },
@@ -500,33 +553,49 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/global.createProject",
+    `${URL_PREFIX}/global.createProject`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
       schema: {
-        description: "Create a new project.",
+        description:
+          "Create a new project.\n.\n" +
+          "Note that the only possible values for 'status' are: 'open' and 'closed'",
         tags: ["global"],
         summary: "Create a new project",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
                 project: {
                   type: "object",
                   properties: {
-                    id: { type: "string" },
-                    status: { type: "string" },
-                    displayName: { type: "string" },
-                    description: { type: "string" },
-                    iamountd: { type: "string" },
-                    assignee: { type: "string" },
-                    currency: { type: "string" },
-                    thumbnail: { type: "string" },
+                    id: { type: "string", example: "myId" },
+                    status: { type: "string", example: "open" },
+                    displayName: { type: "string", example: "myDisplayName" },
+                    description: { type: "string", example: "myDescription" },
+                    amount: { type: "string", example: "500" },
+                    assignee: { type: "string", example: "assigneeName" },
+                    currency: { type: "string", example: "EUR" },
+                    thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                   },
+                  required: [
+                    "id",
+                    "status",
+                    "displayName",
+                    "description",
+                    "amount",
+                    "assignee",
+                    "currency",
+                  ],
                 },
               },
             },
@@ -534,14 +603,14 @@ export const registerRoutes = (
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
-                  created: { type: "string" },
+                  created: { type: "boolean", example: "true" },
                 },
               },
             },
@@ -558,7 +627,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/global.listPermissions",
+    `${URL_PREFIX}/global.listPermissions`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -566,7 +635,7 @@ export const registerRoutes = (
         description: "See the current global permissions.",
         tags: ["global"],
         summary: "List all existing permissions",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -574,15 +643,21 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 additionalProperties: true,
+                example: { "notification.list": ["szd"], "notification.markRead": ["szd"] },
               },
             },
           },
@@ -598,7 +673,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/global.grant permission",
+    `${URL_PREFIX}/global.grant permission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -607,25 +682,31 @@ export const registerRoutes = (
           "Grant the right to execute a specific intent on the Global scope to a given user.",
         tags: ["global"],
         summary: "Grant a permission to a group or user",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                intent: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                intent: { type: "string", example: "global.createProject" },
               },
+              required: ["identity", "intent"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -643,7 +724,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/global.grantAllPermissions",
+    `${URL_PREFIX}/global.grantAllPermissions`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -652,26 +733,33 @@ export const registerRoutes = (
           "Grant all available permissions to a user. Useful as a shorthand for creating admin users.",
         tags: ["global"],
         summary: "Grant all permission to a group or user",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
+                identity: { type: "string", example: "alice" },
               },
+              required: ["identity"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
+                example: "OK",
               },
             },
           },
@@ -687,7 +775,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/global.revokePermission",
+    `${URL_PREFIX}/global.revokePermission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -696,25 +784,31 @@ export const registerRoutes = (
           "Revoke the right to execute a specific intent on the Global scope to a given user.",
         tags: ["global"],
         summary: "Revoke a permission from a group or user",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                intent: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                intent: { type: "string", example: "global.createProject" },
               },
+              required: ["identity", "intent"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -736,7 +830,7 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.get(
-    "/group.list",
+    `${URL_PREFIX}/group.list`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -744,12 +838,17 @@ export const registerRoutes = (
         description: "List all user groups.",
         tags: ["group"],
         summary: "List all existing groups",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -758,8 +857,8 @@ export const registerRoutes = (
                     items: {
                       type: "object",
                       properties: {
-                        groupId: { type: "string" },
-                        displayName: { type: "string" },
+                        groupId: { type: "string", example: "myGroupId" },
+                        displayName: { type: "string", example: "myDisplayName" },
                         users: {
                           type: "array",
                           items: { type: "string" },
@@ -783,7 +882,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/group.addUser",
+    `${URL_PREFIX}/group.addUser`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -791,29 +890,35 @@ export const registerRoutes = (
         description: "Add user to a group",
         tags: ["group"],
         summary: "Add a user to a group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                groupId: { type: "string" },
-                userId: { type: "string" },
+                groupId: { type: "string", example: "myGroupId" },
+                userId: { type: "string", example: "myUserId" },
               },
+              required: ["groupId", "userId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
-                  added: { type: "boolean" },
+                  added: { type: "boolean", example: "true" },
                 },
               },
             },
@@ -830,7 +935,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/group.removeUser",
+    `${URL_PREFIX}/group.removeUser`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -838,29 +943,35 @@ export const registerRoutes = (
         description: "Remove user from a group",
         tags: ["group"],
         summary: "Remove a user from a group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                groupId: { type: "string" },
-                userId: { type: "string" },
+                groupId: { type: "string", example: "myGroupId" },
+                userId: { type: "string", example: "myUserId" },
               },
+              required: ["groupId", "userId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
-                  deleted: { type: "boolean" },
+                  deleted: { type: "boolean", example: "true" },
                 },
               },
             },
@@ -881,7 +992,7 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.get(
-    "/project.list",
+    `${URL_PREFIX}/project.list`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -889,12 +1000,17 @@ export const registerRoutes = (
         description: "Retrieve all projects the user is allowed to see.",
         tags: ["project"],
         summary: "List all projects",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -906,15 +1022,15 @@ export const registerRoutes = (
                         data: {
                           type: "object",
                           properties: {
-                            id: { type: "string" },
-                            creationUnixTs: { type: "string" },
-                            status: { type: "string" },
-                            displayName: { type: "string" },
-                            description: { type: "string" },
-                            amount: { type: "string" },
-                            assignee: { type: "string" },
-                            currency: { type: "string" },
-                            thumbnail: { type: "string" },
+                            id: { type: "string", example: "myId" },
+                            creationUnixTs: { type: "string", example: "1536154645775" },
+                            status: { type: "string", example: "open" },
+                            displayName: { type: "string", example: "myDisplayName" },
+                            description: { type: "string", example: "myDescription" },
+                            amount: { type: "string", example: "500" },
+                            assignee: { type: "string", example: "assigneeName" },
+                            currency: { type: "string", example: "EUR" },
+                            thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                           },
                         },
                         log: {
@@ -923,33 +1039,39 @@ export const registerRoutes = (
                             type: "object",
                             properties: {
                               key: { type: "string" },
-                              intent: { type: "string" },
-                              createdBy: { type: "string" },
-                              createdAt: { type: "string" },
-                              dataVersion: { type: "string" },
+                              intent: { type: "string", example: "global.createProject" },
+                              createdBy: { type: "string", example: "alice" },
+                              createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                              dataVersion: { type: "string", example: "1" },
                               data: {
                                 type: "object",
                                 properties: {
                                   project: {
                                     type: "object",
                                     properties: {
-                                      id: { type: "string" },
-                                      creationUnixTs: { type: "string" },
-                                      status: { type: "string" },
-                                      displayName: { type: "string" },
-                                      description: { type: "string" },
-                                      amount: { type: "string" },
-                                      assignee: { type: "string" },
-                                      currency: { type: "string" },
-                                      thumbnail: { type: "string" },
+                                      id: { type: "string", example: "myId" },
+                                      creationUnixTs: { type: "string", example: "1536154645775" },
+                                      status: { type: "string", example: "open" },
+                                      displayName: { type: "string", example: "myDisplayName" },
+                                      description: { type: "string", example: "myDescription" },
+                                      amount: { type: "string", example: "500" },
+                                      assignee: { type: "string", example: "assigneeName" },
+                                      currency: { type: "string", example: "EUR" },
+                                      thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                     },
                                   },
-                                  permissions: { type: "object", additionalProperties: true },
+                                  permissions: {
+                                    type: "object",
+                                    additionalProperties: true,
+                                    example: {
+                                      "subproject.intent.listPermissions": ["alice", "john"],
+                                    },
+                                  },
                                 },
                                 snapshot: {
                                   type: "object",
                                   properties: {
-                                    displayName: { type: "string" },
+                                    displayName: { type: "string", example: "myDisplayName" },
                                   },
                                 },
                               },
@@ -976,7 +1098,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/project.viewDetails",
+    `${URL_PREFIX}/project.viewDetails`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -984,7 +1106,7 @@ export const registerRoutes = (
         description: "Retrieve details about a specific project.",
         tags: ["project"],
         summary: "View details",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -992,12 +1114,17 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -1007,15 +1134,15 @@ export const registerRoutes = (
                       data: {
                         type: "object",
                         properties: {
-                          id: { type: "string" },
-                          creationUnixTs: { type: "string" },
-                          status: { type: "string" },
-                          displayName: { type: "string" },
-                          description: { type: "string" },
-                          amount: { type: "string" },
-                          assignee: { type: "string" },
-                          currency: { type: "string" },
-                          thumbnail: { type: "string" },
+                          id: { type: "string", example: "myId" },
+                          creationUnixTs: { type: "string", example: "1536154645775" },
+                          status: { type: "string", example: "open" },
+                          displayName: { type: "string", example: "myDisplayName" },
+                          description: { type: "string", example: "myDescription" },
+                          amount: { type: "string", example: "500" },
+                          assignee: { type: "string", example: "assigneeName" },
+                          currency: { type: "string", example: "EUR" },
+                          thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                         },
                       },
                       log: {
@@ -1024,33 +1151,39 @@ export const registerRoutes = (
                           type: "object",
                           properties: {
                             key: { type: "string" },
-                            intent: { type: "string" },
-                            createdBy: { type: "string" },
-                            createdAt: { type: "string" },
-                            dataVersion: { type: "string" },
+                            intent: { type: "string", example: "global.createProject" },
+                            createdBy: { type: "string", example: "alice" },
+                            createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                            dataVersion: { type: "string", example: "1" },
                             data: {
                               type: "object",
                               properties: {
                                 project: {
                                   type: "object",
                                   properties: {
-                                    id: { type: "string" },
-                                    creationUnixTs: { type: "string" },
-                                    status: { type: "string" },
-                                    displayName: { type: "string" },
-                                    description: { type: "string" },
-                                    amount: { type: "string" },
-                                    assignee: { type: "string" },
-                                    currency: { type: "string" },
-                                    thumbnail: { type: "string" },
+                                    id: { type: "string", example: "myId" },
+                                    creationUnixTs: { type: "string", example: "1536154645775" },
+                                    status: { type: "string", example: "open" },
+                                    displayName: { type: "string", example: "myDisplayName" },
+                                    description: { type: "string", example: "myDescription" },
+                                    amount: { type: "string", example: "500" },
+                                    assignee: { type: "string", example: "assigneeName" },
+                                    currency: { type: "string", example: "EUR" },
+                                    thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                   },
                                 },
-                                permissions: { type: "object", additionalProperties: true },
+                                permissions: {
+                                  type: "object",
+                                  additionalProperties: true,
+                                  example: {
+                                    "subproject.intent.listPermissions": ["alice", "john"],
+                                  },
+                                },
                               },
                               snapshot: {
                                 type: "object",
                                 properties: {
-                                  displayName: { type: "string" },
+                                  displayName: { type: "string", example: "myDisplayName" },
                                 },
                               },
                             },
@@ -1076,7 +1209,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/project.assign",
+    `${URL_PREFIX}/project.assign`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1085,25 +1218,31 @@ export const registerRoutes = (
           "Assign a project to a given user. The assigned user will be notified about the change.",
         tags: ["project"],
         summary: "Assign a user or group to a project",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                projectId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                projectId: { type: "string", example: "projectId" },
               },
+              required: ["identity", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1121,7 +1260,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/project.update",
+    `${URL_PREFIX}/project.update`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1131,26 +1270,32 @@ export const registerRoutes = (
           "others are not affected. The assigned user will be notified about the change.",
         tags: ["project"],
         summary: "Update a project",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                displayName: { type: "string" },
-                description: { type: "string" },
-                projectId: { type: "string" },
+                displayName: { type: "string", example: "myDisplayName" },
+                description: { type: "string", example: "myDescription" },
+                projectId: { type: "string", example: "projectId" },
               },
+              required: ["projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1168,7 +1313,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/project.close",
+    `${URL_PREFIX}/project.close`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1178,24 +1323,30 @@ export const registerRoutes = (
           "subprojects are already set to 'closed'.",
         tags: ["project"],
         summary: "Close a project",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                projectId: { type: "string" },
+                projectId: { type: "string", example: "projectId" },
               },
+              required: ["projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1213,33 +1364,49 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/project.createSubproject",
+    `${URL_PREFIX}/project.createSubproject`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
       schema: {
-        description: "Create a subproject and associate it to the given project.",
+        description:
+          "Create a subproject and associate it to the given project.\n.\n" +
+          "Note that the only possible values for 'status' are: 'open' and 'closed'",
         tags: ["project"],
         summary: "Create a subproject",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                projectId: { type: "string" },
+                projectId: { type: "string", example: "projectId" },
                 subproject: {
                   type: "object",
                   properties: {
-                    id: { type: "string" },
-                    status: { type: "string" },
-                    displayName: { type: "string" },
-                    description: { type: "string" },
-                    amount: { type: "string" },
-                    assignee: { type: "string" },
-                    currency: { type: "string" },
+                    id: { type: "string", example: "myId" },
+                    status: { type: "string", example: "open" },
+                    displayName: { type: "string", example: "myDisplayName" },
+                    description: { type: "string", example: "myDescription" },
+                    amount: { type: "string", example: "500" },
+                    assignee: { type: "string", example: "assigneeName" },
+                    currency: { type: "string", example: "EUR" },
                   },
+                  required: [
+                    "id",
+                    "status",
+                    "displayName",
+                    "description",
+                    "amount",
+                    "assignee",
+                    "currency",
+                  ],
                 },
               },
             },
@@ -1247,14 +1414,14 @@ export const registerRoutes = (
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
-                  created: { type: "string" },
+                  created: { type: "boolean", example: "true" },
                 },
               },
             },
@@ -1271,7 +1438,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/project.viewHistory",
+    `${URL_PREFIX}/project.viewHistory`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1280,7 +1447,7 @@ export const registerRoutes = (
           "View the history of a given project (filtered by what the user is allowed to see).",
         tags: ["project"],
         summary: "View history",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -1288,12 +1455,17 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -1303,20 +1475,24 @@ export const registerRoutes = (
                       type: "object",
                       properties: {
                         key: { type: "string" },
-                        intent: { type: "string" },
-                        createdBy: { type: "string" },
-                        createdAt: { type: "string" },
-                        dataVersion: { type: "string" },
+                        intent: { type: "string", example: "global.createProject" },
+                        createdBy: { type: "string", example: "alice" },
+                        createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                        dataVersion: { type: "string", example: "1" },
                         data: {
                           type: "object",
                           additionalProperties: true,
                           properties: {
-                            permissions: { type: "object", additionalProperties: true },
+                            permissions: {
+                              type: "object",
+                              additionalProperties: true,
+                              example: { "subproject.intent.listPermissions": ["alice", "john"] },
+                            },
                           },
                           snapshot: {
                             type: "object",
                             properties: {
-                              displayName: { type: "string" },
+                              displayName: { type: "string", example: "myDisplayName" },
                             },
                           },
                         },
@@ -1339,7 +1515,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/project.intent.listPermissions",
+    `${URL_PREFIX}/project.intent.listPermissions`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1347,7 +1523,7 @@ export const registerRoutes = (
         description: "See the permissions for a given project.",
         tags: ["project"],
         summary: "List all permissions",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -1355,15 +1531,23 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 additionalProperties: true,
+                example: {
+                  "project.viewDetails": ["alice", "john"],
+                },
               },
             },
           },
@@ -1379,7 +1563,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/project.intent.grantPermission",
+    `${URL_PREFIX}/project.intent.grantPermission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1389,26 +1573,32 @@ export const registerRoutes = (
           "user will be allowed to execute the given intent.",
         tags: ["project"],
         summary: "Grant a permission to a user or group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                intent: { type: "string" },
-                projectId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "projectId" },
               },
+              required: ["identity", "intent", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1426,7 +1616,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/project.intent.revokePermission",
+    `${URL_PREFIX}/project.intent.revokePermission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1436,26 +1626,32 @@ export const registerRoutes = (
           "user will no longer be able to execute the given intent.",
         tags: ["project"],
         summary: "Revoke a permission from a user or group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                intent: { type: "string" },
-                projectId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "projectId" },
               },
+              required: ["identity", "intent", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1477,7 +1673,7 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.get(
-    "/subproject.list",
+    `${URL_PREFIX}/subproject.list`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1487,7 +1683,7 @@ export const registerRoutes = (
           "subprojects the user is not allowed to see are left out of the response.",
         tags: ["subproject"],
         summary: "List all subprojects of a given project",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -1495,12 +1691,17 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -1512,15 +1713,15 @@ export const registerRoutes = (
                         data: {
                           type: "object",
                           properties: {
-                            id: { type: "string" },
-                            creationUnixTs: { type: "string" },
-                            status: { type: "string" },
-                            displayName: { type: "string" },
-                            description: { type: "string" },
-                            amount: { type: "string" },
-                            assignee: { type: "string" },
-                            currency: { type: "string" },
-                            thumbnail: { type: "string" },
+                            id: { type: "string", example: "myId" },
+                            creationUnixTs: { type: "string", example: "1536154645775" },
+                            status: { type: "string", example: "open" },
+                            displayName: { type: "string", example: "myDisplayName" },
+                            description: { type: "string", example: "myDescription" },
+                            amount: { type: "string", example: "500" },
+                            assignee: { type: "string", example: "assigneeName" },
+                            currency: { type: "string", example: "EUR" },
+                            thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                           },
                         },
                         log: {
@@ -1529,33 +1730,39 @@ export const registerRoutes = (
                             type: "object",
                             properties: {
                               key: { type: "string" },
-                              intent: { type: "string" },
-                              createdBy: { type: "string" },
-                              createdAt: { type: "string" },
-                              dataVersion: { type: "string" },
+                              intent: { type: "string", example: "global.createProject" },
+                              createdBy: { type: "string", example: "alice" },
+                              createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                              dataVersion: { type: "string", example: "1" },
                               data: {
                                 type: "object",
                                 properties: {
                                   subproject: {
                                     type: "object",
                                     properties: {
-                                      id: { type: "string" },
-                                      creationUnixTs: { type: "string" },
-                                      status: { type: "string" },
-                                      displayName: { type: "string" },
-                                      description: { type: "string" },
-                                      amount: { type: "string" },
-                                      assignee: { type: "string" },
-                                      currency: { type: "string" },
-                                      thumbnail: { type: "string" },
+                                      id: { type: "string", example: "myId" },
+                                      creationUnixTs: { type: "string", example: "1536154645775" },
+                                      status: { type: "string", example: "open" },
+                                      displayName: { type: "string", example: "myDisplayName" },
+                                      description: { type: "string", example: "myDescription" },
+                                      amount: { type: "string", example: "500" },
+                                      assignee: { type: "string", example: "assigneeName" },
+                                      currency: { type: "string", example: "EUR" },
+                                      thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                     },
                                   },
-                                  permissions: { type: "object", additionalProperties: true },
+                                  permissions: {
+                                    type: "object",
+                                    additionalProperties: true,
+                                    example: {
+                                      "subproject.intent.listPermissions": ["alice", "john"],
+                                    },
+                                  },
                                 },
                                 snapshot: {
                                   type: "object",
                                   properties: {
-                                    displayName: { type: "string" },
+                                    displayName: { type: "string", example: "myDisplayName" },
                                   },
                                 },
                               },
@@ -1582,7 +1789,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/subproject.viewDetails",
+    `${URL_PREFIX}/subproject.viewDetails`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1590,7 +1797,7 @@ export const registerRoutes = (
         description: "Retrieve details about a specific subproject.",
         tags: ["subproject"],
         summary: "View details",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -1601,12 +1808,17 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -1616,15 +1828,15 @@ export const registerRoutes = (
                       data: {
                         type: "object",
                         properties: {
-                          id: { type: "string" },
-                          creationUnixTs: { type: "string" },
-                          status: { type: "string" },
-                          displayName: { type: "string" },
-                          description: { type: "string" },
-                          amount: { type: "string" },
-                          assignee: { type: "string" },
-                          currency: { type: "string" },
-                          thumbnail: { type: "string" },
+                          id: { type: "string", example: "myId" },
+                          creationUnixTs: { type: "string", example: "1536154645775" },
+                          status: { type: "string", example: "open" },
+                          displayName: { type: "string", example: "myDisplayName" },
+                          description: { type: "string", example: "myDescription" },
+                          amount: { type: "string", example: "500" },
+                          assignee: { type: "string", example: "assigneeName" },
+                          currency: { type: "string", example: "EUR" },
+                          thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                         },
                       },
                       log: {
@@ -1633,33 +1845,39 @@ export const registerRoutes = (
                           type: "object",
                           properties: {
                             key: { type: "string" },
-                            intent: { type: "string" },
-                            createdBy: { type: "string" },
-                            createdAt: { type: "string" },
-                            dataVersion: { type: "string" },
+                            intent: { type: "string", example: "global.createProject" },
+                            createdBy: { type: "string", example: "alice" },
+                            createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                            dataVersion: { type: "string", example: "1" },
                             data: {
                               type: "object",
                               properties: {
                                 subproject: {
                                   type: "object",
                                   properties: {
-                                    id: { type: "string" },
-                                    creationUnixTs: { type: "string" },
-                                    status: { type: "string" },
-                                    displayName: { type: "string" },
-                                    description: { type: "string" },
-                                    amount: { type: "string" },
-                                    assignee: { type: "string" },
-                                    currency: { type: "string" },
-                                    thumbnail: { type: "string" },
+                                    id: { type: "string", example: "myId" },
+                                    creationUnixTs: { type: "string", example: "1536154645775" },
+                                    status: { type: "string", example: "open" },
+                                    displayName: { type: "string", example: "myDisplayName" },
+                                    description: { type: "string", example: "myDescription" },
+                                    amount: { type: "string", example: "500" },
+                                    assignee: { type: "string", example: "assigneeName" },
+                                    currency: { type: "string", example: "EUR" },
+                                    thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                   },
                                 },
-                                permissions: { type: "object", additionalProperties: true },
+                                permissions: {
+                                  type: "object",
+                                  additionalProperties: true,
+                                  example: {
+                                    "subproject.intent.listPermissions": ["alice", "john"],
+                                  },
+                                },
                               },
                               snapshot: {
                                 type: "object",
                                 properties: {
-                                  displayName: { type: "string" },
+                                  displayName: { type: "string", example: "myDisplayName" },
                                 },
                               },
                             },
@@ -1685,7 +1903,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/subproject.assign",
+    `${URL_PREFIX}/subproject.assign`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1694,26 +1912,32 @@ export const registerRoutes = (
           "Assign a subproject to a given user. The assigned user will be notified about the change.",
         tags: ["subproject"],
         summary: "Assign a user or group to a subproject",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
               },
+              required: ["identity", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1731,7 +1955,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/subproject.update",
+    `${URL_PREFIX}/subproject.update`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1741,27 +1965,33 @@ export const registerRoutes = (
           "others are not affected. The assigned user will be notified about the change.",
         tags: ["subproject"],
         summary: "Update a subproject",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                displayName: { type: "string" },
-                description: { type: "string" },
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
+                displayName: { type: "string", example: "myDisplayName" },
+                description: { type: "string", example: "myDescription" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
               },
+              required: ["subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1779,7 +2009,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/subproject.close",
+    `${URL_PREFIX}/subproject.close`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1789,25 +2019,31 @@ export const registerRoutes = (
           "associated workflowitems are already set to 'closed'.",
         tags: ["subproject"],
         summary: "Close a subproject",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
               },
+              required: ["subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1825,7 +2061,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/subproject.reorderWorkflowitems",
+    `${URL_PREFIX}/subproject.reorderWorkflowitems`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1835,31 +2071,38 @@ export const registerRoutes = (
           "will be ordered by their creation time and placed after all explicitly ordered workflowitems.",
         tags: ["subproject"],
         summary: "Reorder the workflowitems of the given subproject",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
                 ordering: {
                   type: "array",
                   items: {
                     type: "string",
+                    example: "56z9ki1ca780434a58b0752f3470301",
                   },
                 },
               },
+              required: ["ordering", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -1877,55 +2120,64 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/subproject.createWorkflowitem",
+    `${URL_PREFIX}/subproject.createWorkflowitem`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
       schema: {
-        description: "Create a workflowitem and associate it to the given subproject.",
+        description:
+          "Create a workflowitem and associate it to the given subproject.\n.\n" +
+          "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
+          "The only possible values for 'status' are: 'open' and 'closed'",
         tags: ["subproject"],
         summary: "Create a workflowitem",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                projectId: { type: "string" },
-                subproject: { type: "string" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "subprojectId" },
 
-                status: { type: "string" },
-                displayName: { type: "string" },
-                description: { type: "string" },
-                amount: { type: "string" },
-                assignee: { type: "string" },
-                currency: { type: "string" },
-                amountType: { type: "string" },
+                status: { type: "string", example: "open" },
+                displayName: { type: "string", example: "myDisplayName" },
+                description: { type: "string", example: "myDescription" },
+                amount: { type: "string", example: "500" },
+                assignee: { type: "string", example: "assigneeName" },
+                currency: { type: "string", example: "EUR" },
+                amountType: { type: "string", example: "disbursed" },
                 documents: {
                   type: "array",
                   items: {
                     type: "object",
                     properties: {
-                      id: { type: "string" },
-                      base64: { type: "string" },
+                      id: { type: "string", example: "myId" },
+                      base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
                     },
                   },
                 },
               },
+              required: ["amountType", "status", "displayName", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
-                  created: { type: "string" },
+                  created: { type: "boolean", example: "true" },
                 },
               },
             },
@@ -1942,7 +2194,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/subproject.viewHistory",
+    `${URL_PREFIX}/subproject.viewHistory`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -1951,7 +2203,7 @@ export const registerRoutes = (
           "View the history of a given subproject (filtered by what the user is allowed to see).",
         tags: ["subproject"],
         summary: "View history",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -1962,12 +2214,17 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -1977,20 +2234,36 @@ export const registerRoutes = (
                       type: "object",
                       properties: {
                         key: { type: "string" },
-                        intent: { type: "string" },
-                        createdBy: { type: "string" },
-                        createdAt: { type: "string" },
-                        dataVersion: { type: "string" },
+                        intent: { type: "string", example: "global.createProject" },
+                        createdBy: { type: "string", example: "alice" },
+                        createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                        dataVersion: { type: "string", example: "1" },
                         data: {
                           type: "object",
                           additionalProperties: true,
+                          example: {
+                            subproject: {
+                              id: "mysubId45",
+                              creationUnixTs: "1536834568552",
+                              status: "open",
+                              displayName: "myDisplayName",
+                              description: "myDescription",
+                              amount: "500",
+                              currency: "EUR",
+                              assignee: "assigneeName",
+                            },
+                          },
                           properties: {
-                            permissions: { type: "object", additionalProperties: true },
+                            permissions: {
+                              type: "object",
+                              additionalProperties: true,
+                              example: { "subproject.intent.listPermissions": ["alice", "john"] },
+                            },
                           },
                           snapshot: {
                             type: "object",
                             properties: {
-                              displayName: { type: "string" },
+                              displayName: { type: "string", example: "myDisplayName" },
                             },
                           },
                         },
@@ -2013,7 +2286,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/subproject.intent.listPermissions",
+    `${URL_PREFIX}/subproject.intent.listPermissions`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2021,7 +2294,7 @@ export const registerRoutes = (
         description: "See the permissions for a given subproject.",
         tags: ["subproject"],
         summary: "List all permissions",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -2032,15 +2305,23 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 additionalProperties: true,
+                example: {
+                  "project.viewDetails": ["alice", "john"],
+                },
               },
             },
           },
@@ -2056,7 +2337,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/subproject.intent.grantPermission",
+    `${URL_PREFIX}/subproject.intent.grantPermission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2066,27 +2347,33 @@ export const registerRoutes = (
           "user will be allowed to execute the given intent.",
         tags: ["subproject"],
         summary: "Grant a permission to a user or group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                intent: { type: "string" },
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
               },
+              required: ["identity", "intent", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2104,7 +2391,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/subproject.intent.revokePermission",
+    `${URL_PREFIX}/subproject.intent.revokePermission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2114,27 +2401,33 @@ export const registerRoutes = (
           "user will no longer be able to execute the given intent.",
         tags: ["subproject"],
         summary: "Revoke a permission to a user or group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                intent: { type: "string" },
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
               },
+              required: ["identity", "intent", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2156,7 +2449,7 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.get(
-    "/workflowitem.list",
+    `${URL_PREFIX}/workflowitem.list`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2167,7 +2460,7 @@ export const registerRoutes = (
           "set to null.",
         tags: ["workflowitem"],
         summary: "List all workflowitems of a given subproject",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -2178,12 +2471,17 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -2195,20 +2493,20 @@ export const registerRoutes = (
                         data: {
                           type: "object",
                           properties: {
-                            id: { type: "string" },
-                            creationUnixTs: { type: "string" },
-                            status: { type: "string" },
-                            displayName: { type: "string" },
-                            description: { type: "string" },
-                            amount: { type: "string" },
-                            assignee: { type: "string" },
-                            currency: { type: "string" },
+                            id: { type: "string", example: "myId" },
+                            creationUnixTs: { type: "string", example: "1536154645775" },
+                            status: { type: "string", example: "open" },
+                            displayName: { type: "string", example: "myDisplayName" },
+                            description: { type: "string", example: "myDescription" },
+                            amount: { type: "string", example: "500" },
+                            assignee: { type: "string", example: "assigneeName" },
+                            currency: { type: "string", example: "EUR" },
                             documents: {
                               type: "array",
                               items: {
                                 type: "object",
                                 properties: {
-                                  id: { type: "string" },
+                                  id: { type: "string", example: "myId" },
                                   hash: { type: "string" },
                                 },
                               },
@@ -2235,7 +2533,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/workflowitem.assign",
+    `${URL_PREFIX}/workflowitem.assign`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2244,27 +2542,33 @@ export const registerRoutes = (
           "Assign a workflowitem to a given user. The assigned user will be notified about the change.",
         tags: ["workflowitem"],
         summary: "Assign a user or group to a workflowitem",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
-                workflowitemId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
+                workflowitemId: { type: "string", example: "workflowitemId" },
               },
+              required: ["identity", "workflowitemId", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2282,7 +2586,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/workflowitem.update",
+    `${URL_PREFIX}/workflowitem.update`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2292,28 +2596,34 @@ export const registerRoutes = (
           "others are not affected. The assigned user will be notified about the change.",
         tags: ["workflowitem"],
         summary: "Update a workflowitem",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                displayName: { type: "string" },
-                description: { type: "string" },
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
-                workflowitemId: { type: "string" },
+                displayName: { type: "string", example: "myDisplayName" },
+                description: { type: "string", example: "myDescription" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
+                workflowitemId: { type: "string", example: "workflowitemId" },
               },
+              required: ["workflowitemId", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2331,7 +2641,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/workflowitem.close",
+    `${URL_PREFIX}/workflowitem.close`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2339,26 +2649,32 @@ export const registerRoutes = (
         description: "Set a workflowitem's status to 'closed'.",
         tags: ["workflowitem"],
         summary: "Close a workflowitem",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
-                workflowitemId: { type: "string" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
+                workflowitemId: { type: "string", example: "workflowitemId" },
               },
+              required: ["workflowitemId", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2376,7 +2692,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/workflowitem.intent.listPermissions",
+    `${URL_PREFIX}/workflowitem.intent.listPermissions`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2384,7 +2700,7 @@ export const registerRoutes = (
         description: "See the permissions for a given workflowitem.",
         tags: ["workflowitem"],
         summary: "List all permissions",
-        params: {
+        querystring: {
           type: "object",
           properties: {
             projectId: {
@@ -2398,15 +2714,23 @@ export const registerRoutes = (
             },
           },
         },
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 additionalProperties: true,
+                example: {
+                  "project.viewDetails": ["alice", "john"],
+                },
               },
             },
           },
@@ -2422,7 +2746,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/workflowitem.intent.grantPermission",
+    `${URL_PREFIX}/workflowitem.intent.grantPermission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2432,28 +2756,34 @@ export const registerRoutes = (
           "user will be allowed to execute the given intent.",
         tags: ["workflowitem"],
         summary: "Grant a permission to a user or group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                intent: { type: "string" },
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
-                workflowitemId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
+                workflowitemId: { type: "string", example: "workflowitemId" },
               },
+              required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2471,7 +2801,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/workflowitem.intent.revokePermission",
+    `${URL_PREFIX}/workflowitem.intent.revokePermission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2481,28 +2811,34 @@ export const registerRoutes = (
           "user will no longer be able to execute the given intent.",
         tags: ["workflowitem"],
         summary: "Revoke a permission from a user or group",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                identity: { type: "string" },
-                intent: { type: "string" },
-                projectId: { type: "string" },
-                subprojectId: { type: "string" },
-                workflowitemId: { type: "string" },
+                identity: { type: "string", example: "alice" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "projectId" },
+                subprojectId: { type: "string", example: "projectId" },
+                workflowitemId: { type: "string", example: "workflowitemId" },
               },
+              required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2520,7 +2856,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/workflowitem.validateDocument",
+    `${URL_PREFIX}/workflowitem.validateDocument`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2528,25 +2864,31 @@ export const registerRoutes = (
         description: "Validates if the hashed base64 string equals the hash sent by the user.",
         tags: ["workflowitem"],
         summary: "Validate a document",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
                 base64String: { type: "string" },
                 hash: { type: "string" },
               },
+              required: ["base64String", "hash"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -2571,7 +2913,7 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.get(
-    "/notification.list",
+    `${URL_PREFIX}/notification.list`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2582,12 +2924,17 @@ export const registerRoutes = (
           "but the `sinceId` parameter may be used to truncate the output.",
         tags: ["notification"],
         summary: "List all notification of the authorized user",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -2602,7 +2949,7 @@ export const registerRoutes = (
                           items: {
                             type: "object",
                             properties: {
-                              id: { type: "string" },
+                              id: { type: "string", example: "myId" },
                               type: { type: "string" },
                             },
                           },
@@ -2612,13 +2959,26 @@ export const registerRoutes = (
                           type: "object",
                           properties: {
                             key: { type: "string" },
-                            intent: { type: "string" },
-                            createdBy: { type: "string" },
+                            intent: { type: "string", example: "global.createProject" },
+                            createdBy: { type: "string", example: "alice" },
                             isRcreatedAtead: { type: "string" },
-                            dataVersion: { type: "string" },
+                            dataVersion: { type: "string", example: "1" },
                             data: {
                               type: "object",
                               additionalProperties: true,
+                              example: {
+                                project: {
+                                  id: "myId45",
+                                  creationUnixTs: "1536834480274",
+                                  status: "open",
+                                  displayName: "myDisplayName",
+                                  description: "myDescription",
+                                  amount: "500",
+                                  assignee: "Stefan",
+                                  currency: "EUR",
+                                  thumbnail: "/Thumbnail_0001.jpg",
+                                },
+                              },
                             },
                           },
                         },
@@ -2641,7 +3001,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/notification.markRead",
+    `${URL_PREFIX}/notification.markRead`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2651,24 +3011,30 @@ export const registerRoutes = (
           "is then reflected by the `isRead` flag carried in the `notification.list` response.",
         tags: ["notification"],
         summary: "Mark all notification as read",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
                 notificationId: { type: "string" },
               },
+              required: ["notificationId"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2690,10 +3056,8 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.post(
-    "/network.registerNode",
+    `${URL_PREFIX}/network.registerNode`,
     {
-      // @ts-ignore: Unreachable code error
-      beforeHandler: [server.authenticate],
       schema: {
         description: "Used by non-master MultiChain nodes to register their wallet address.",
         tags: ["network"],
@@ -2701,22 +3065,23 @@ export const registerRoutes = (
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                address: { type: "string" },
-                organization: { type: "string" },
+                address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
+                organization: { type: "string", example: "myorganization" },
               },
+              required: ["address", "organization"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2734,7 +3099,7 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/network.voteForPermission",
+    `${URL_PREFIX}/network.voteForPermission`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2746,25 +3111,31 @@ export const registerRoutes = (
           "the underlying blockchain.",
         tags: ["network"],
         summary: "Vote for permission",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                address: { type: "string" },
-                vote: { type: "string" },
+                address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
+                vote: { type: "string", example: "admin" },
               },
+              required: ["address", "vote"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2782,32 +3153,38 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/network.approveNewOrganization",
+    `${URL_PREFIX}/network.approveNewOrganization`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
       schema: {
-        description: "coming soon",
+        description: "Approves a new organization if there are enough votes.",
         tags: ["network"],
         summary: "Approve a new organization",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                organization: { type: "string" },
+                organization: { type: "string", example: "myorganization" },
               },
+              required: ["organization"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2825,32 +3202,40 @@ export const registerRoutes = (
   );
 
   server.post(
-    "/network.approveNewNodeForExistingOrganization",
+    `${URL_PREFIX}/network.approveNewNodeForExistingOrganization`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
       schema: {
-        description: "coming soon",
+        description:
+          "Approves a new node for an existing organization." +
+          " This organization doesn't have to go throught the voting system again",
         tags: ["network"],
         summary: "Approve a new node",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         body: {
           type: "object",
           properties: {
-            apiVersion: { type: "string" },
+            apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
-                address: { type: "string" },
+                address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
               },
+              required: ["address"],
             },
           },
         },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "string",
               },
@@ -2862,12 +3247,12 @@ export const registerRoutes = (
               "Tells either your organization has already voted or the permissions are already assigned",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               error: {
                 type: "object",
                 properties: {
-                  code: { type: "string" },
-                  message: { type: "string" },
+                  code: { type: "string", example: "409" },
+                  message: { type: "string", example: "User already exists." },
                 },
               },
             },
@@ -2883,7 +3268,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/network.list",
+    `${URL_PREFIX}/network.list`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2891,12 +3276,17 @@ export const registerRoutes = (
         description: "List all nodes.",
         tags: ["network"],
         summary: "List all nodes",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
@@ -2908,22 +3298,28 @@ export const registerRoutes = (
                         address: {
                           type: "object",
                           properties: {
-                            address: { type: "string" },
-                            organization: { type: "string" },
+                            address: {
+                              type: "string",
+                              example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+                            },
+                            organization: { type: "string", example: "myorganization" },
                           },
                         },
-                        myVote: { type: "string" },
+                        myVote: { type: "string", example: "admin" },
                         currentAccess: {
                           type: "object",
                           properties: {
-                            accessType: { type: "string" },
+                            accessType: { type: "string", example: "admin" },
                             approvers: {
                               type: "array",
                               items: {
                                 type: "object",
                                 properties: {
-                                  address: { type: "string" },
-                                  organization: { type: "string" },
+                                  address: {
+                                    type: "string",
+                                    example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+                                  },
+                                  organization: { type: "string", example: "myorganization" },
                                 },
                               },
                             },
@@ -2948,7 +3344,7 @@ export const registerRoutes = (
   );
 
   server.get(
-    "/network.listActive",
+    `${URL_PREFIX}/network.listActive`,
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -2956,16 +3352,21 @@ export const registerRoutes = (
         description: "Get the number of all peers in the blockchain network.",
         tags: ["network"],
         summary: "List all active peers",
+        headers: {
+          type: "object",
+          properties: { authorization: { type: "string", description: "API token" } },
+          required: ["authorization"],
+        },
         response: {
           200: {
-            description: "Succesful response",
+            description: "successful response",
             type: "object",
             properties: {
-              apiVersion: { type: "string" },
+              apiVersion: { type: "string", example: "1.0" },
               data: {
                 type: "object",
                 properties: {
-                  peers: { type: "string" },
+                  peers: { type: "string", example: "56" },
                 },
               },
             },
