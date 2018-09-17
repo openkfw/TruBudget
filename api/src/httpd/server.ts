@@ -31,13 +31,23 @@ const registerSwagger = (server: fastify.FastifyInstance) => {
         description:
           "The documentation contains all endpoints used for TruBudget blockchain communication." +
           "\nStart at the 'user.authenticate' endpoint to receive a token which is needed for authentication " +
-          "at almost every endpoint",
+          "at almost every endpoint.\nTo use the token click on the 'Authorize' Button at the top right",
         version: "0.1.0",
       },
       host: "localhost:8086",
       schemes: ["http"],
       consumes: ["application/json"],
       produces: ["application/json"],
+      securityDefinitions: {
+        bearerToken: {
+          type: "apiKey",
+          description:
+            "Authenticate yourself using the user.authenticate endpoint.\n" +
+            "Afterwards put in the token with a 'Bearer ' prefix and click 'Authorize'\n",
+          name: "Authorization",
+          in: "header",
+        },
+      },
     },
     exposeRoute: true,
   });

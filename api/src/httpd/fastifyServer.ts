@@ -351,11 +351,6 @@ export const registerRoutes = (
         description: "List all registered users.",
         tags: ["user"],
         summary: "List all registered users",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
         response: {
           200: {
             description: "successful response",
@@ -382,9 +377,15 @@ export const registerRoutes = (
           },
           401: getAuthErrorSchema(),
         },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
       },
     } as Schema,
     async (request, reply) => {
+      console.log(request);
       getUserList(multichainClient, request)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
@@ -1067,11 +1068,11 @@ export const registerRoutes = (
                                       "subproject.intent.listPermissions": ["alice", "john"],
                                     },
                                   },
-                                },
-                                snapshot: {
-                                  type: "object",
-                                  properties: {
-                                    displayName: { type: "string", example: "myDisplayName" },
+                                  snapshot: {
+                                    type: "object",
+                                    properties: {
+                                      displayName: { type: "string", example: "myDisplayName" },
+                                    },
                                   },
                                 },
                               },
@@ -1179,11 +1180,11 @@ export const registerRoutes = (
                                     "subproject.intent.listPermissions": ["alice", "john"],
                                   },
                                 },
-                              },
-                              snapshot: {
-                                type: "object",
-                                properties: {
-                                  displayName: { type: "string", example: "myDisplayName" },
+                                snapshot: {
+                                  type: "object",
+                                  properties: {
+                                    displayName: { type: "string", example: "myDisplayName" },
+                                  },
                                 },
                               },
                             },
@@ -1488,13 +1489,13 @@ export const registerRoutes = (
                               additionalProperties: true,
                               example: { "subproject.intent.listPermissions": ["alice", "john"] },
                             },
-                          },
                           snapshot: {
                             type: "object",
                             properties: {
                               displayName: { type: "string", example: "myDisplayName" },
                             },
                           },
+                        },
                         },
                       },
                     },
@@ -1758,11 +1759,11 @@ export const registerRoutes = (
                                       "subproject.intent.listPermissions": ["alice", "john"],
                                     },
                                   },
-                                },
-                                snapshot: {
-                                  type: "object",
-                                  properties: {
-                                    displayName: { type: "string", example: "myDisplayName" },
+                                  snapshot: {
+                                    type: "object",
+                                    properties: {
+                                      displayName: { type: "string", example: "myDisplayName" },
+                                    },
                                   },
                                 },
                               },
@@ -1873,11 +1874,11 @@ export const registerRoutes = (
                                     "subproject.intent.listPermissions": ["alice", "john"],
                                   },
                                 },
-                              },
-                              snapshot: {
-                                type: "object",
-                                properties: {
-                                  displayName: { type: "string", example: "myDisplayName" },
+                                snapshot: {
+                                  type: "object",
+                                  properties: {
+                                    displayName: { type: "string", example: "myDisplayName" },
+                                  },
                                 },
                               },
                             },
@@ -2259,11 +2260,11 @@ export const registerRoutes = (
                               additionalProperties: true,
                               example: { "subproject.intent.listPermissions": ["alice", "john"] },
                             },
-                          },
-                          snapshot: {
-                            type: "object",
-                            properties: {
-                              displayName: { type: "string", example: "myDisplayName" },
+                            snapshot: {
+                              type: "object",
+                              properties: {
+                                displayName: { type: "string", example: "myDisplayName" },
+                              },
                             },
                           },
                         },
