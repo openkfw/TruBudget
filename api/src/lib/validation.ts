@@ -40,11 +40,11 @@ export function value(name, val, isValid, defaultValue?) {
   return val;
 }
 
-export async function asyncValue(name, val, isValid, defaultValue?) {
+export async function asyncValue(multichain, name, val, isValid, defaultValue?) {
   if (val === undefined) {
     val = defaultValue; // might be undefined
   }
-  if (!(await isValid(val).catch(_err => false))) throwParseError([name]);
+  if (!(await isValid(multichain, val).catch(_err => false))) throwParseError([name]);
   return val;
 }
 

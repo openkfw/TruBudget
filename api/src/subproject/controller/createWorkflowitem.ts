@@ -123,7 +123,13 @@ export async function createWorkflowitem(
     amountType,
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
-    assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
+    assignee: await asyncValue(
+      multichain,
+      "assignee",
+      data.assignee,
+      isUserOrUndefined,
+      req.token.userId,
+    ),
     documents: data.documents !== undefined ? await hashDocuments(data.documents) : [],
   };
 
