@@ -16,7 +16,7 @@ function byOrderingCriteria(
   b: Workflowitem.WorkflowitemResource,
   ordering: string[],
 ): -1 | 1 {
-  if (isClosed(a) && isClosed(b)) {
+  if (isClosed(a) && isClosed(b) && !isRedacted(a) && !isRedacted(b)) {
     // both are closed, so we order by their time of closing:
     const closedAtA = closedAt(a);
     const closedAtB = closedAt(b);
@@ -51,10 +51,15 @@ function isClosed(item: Workflowitem.WorkflowitemResource): boolean {
   return item.data.status === "closed";
 }
 
+function isRedacted(item: Workflowitem.WorkflowitemResource): boolean {
+  console.log("DisplayName: " + item.data.displayName);
+  return item.data.displayName === null;
+}
+
 function closedAt(item: Workflowitem.WorkflowitemResource): string {
   const event = item.log.find(e => e.intent === "workflowitem.close");
   if (event === undefined) throw Error(`item is not closed: ${JSON.stringify(event)}`);
-  return event.createdAt;
+  return event.createdAt; // if redacted not allowed to see the value of createdAt
 }
 
 function byCreationTime(
