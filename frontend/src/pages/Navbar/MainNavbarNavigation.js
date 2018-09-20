@@ -71,6 +71,10 @@ const getPathName = (name, index, currentProject, currentSubProject) => {
 };
 
 const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProject) => {
+  //if currentProject or currentSubProject are null the user has no permission to see the displayName
+  //null will be displayed as an empty string
+  if (!currentProject) currentProject = "";
+  if (!currentSubProject) currentSubProject = "";
   let paths = pathname.trim().split("/");
   if (paths.length < 2 || !paths[1]) return null;
 

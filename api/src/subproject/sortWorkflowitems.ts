@@ -52,14 +52,13 @@ function isClosed(item: Workflowitem.WorkflowitemResource): boolean {
 }
 
 function isRedacted(item: Workflowitem.WorkflowitemResource): boolean {
-  console.log("DisplayName: " + item.data.displayName);
   return item.data.displayName === null;
 }
 
 function closedAt(item: Workflowitem.WorkflowitemResource): string {
   const event = item.log.find(e => e.intent === "workflowitem.close");
   if (event === undefined) throw Error(`item is not closed: ${JSON.stringify(event)}`);
-  return event.createdAt; // if redacted not allowed to see the value of createdAt
+  return event.createdAt;
 }
 
 function byCreationTime(
