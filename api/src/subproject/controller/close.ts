@@ -11,10 +11,7 @@ import * as Project from "../../project/model/Project";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
 
-export const closeSubproject = async (
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+export const closeSubproject = async (multichain: MultichainClient, req): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -24,7 +21,7 @@ export const closeSubproject = async (
 
   // Is the user allowed to close a subproject?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
@@ -40,7 +37,7 @@ export const closeSubproject = async (
 
   const publishedEvent = await sendEventToDatabase(
     multichain,
-    req.token,
+    req.user,
     userIntent,
     projectId,
     subprojectId,
@@ -50,7 +47,7 @@ export const closeSubproject = async (
     { id: subprojectId, type: "subproject" },
     { id: projectId, type: "project" },
   ];
-  const createdBy = req.token.userId;
+  const createdBy = req.user.userId;
 
   // If the subproject is assigned to someone else, that person is notified about the
   // change:
@@ -60,19 +57,19 @@ export const closeSubproject = async (
     createdBy,
     await Subproject.get(
       multichain,
-      req.token,
+      req.user,
       projectId,
       subprojectId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
     ),
     publishedEvent,
-    [req.token.userId], // skipNotificationsFor
+    [req.user.userId], // skipNotificationsFor
   );
 
   // If the parent project is (1) not assigned to the token user and (2) not assigned to
   // the same guy the subproject is assigned to, that person is notified about the change
   // too.
-  const skipNotificationsFor = [req.token.userId].concat(
+  const skipNotificationsFor = [req.user.userId].concat(
     subprojectAssignee ? [subprojectAssignee] : [],
   );
   await notifyAssignee(
@@ -81,7 +78,7 @@ export const closeSubproject = async (
     createdBy,
     await Project.get(
       multichain,
-      req.token,
+      req.user,
       projectId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
     ),

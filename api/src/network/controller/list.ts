@@ -29,13 +29,10 @@ interface NodeInfoDto {
   pendingAccess?: PendingAccess;
 }
 
-export async function getNodeList(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function getNodeList(multichain: MultichainClient, req): Promise<HttpResponse> {
   // Permission check:
   const userIntent: Intent = "network.list";
-  await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   // Get ALL the info:
   const nodes = await Nodes.get(multichain);
@@ -51,7 +48,7 @@ export async function getNodeList(
   // - ADMIN ACCESS: the organization has admin permission and, by extension, permissions
   // to do anything with the network (while respecting the settings for admin consensus).
 
-  const myAddress = req.token.organizationAddress;
+  const myAddress = req.user.organizationAddress;
 
   const list: NodeInfoDto[] = nodes.map(info => dtoFromNodeInfo(info, myAddress));
   return [

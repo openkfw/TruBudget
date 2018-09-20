@@ -26,15 +26,15 @@ interface NotificationDto {
 
 export const getNotificationList = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> => {
   const sinceId: string | undefined = req.query.sinceId;
 
-  const rawNotifications = await Notification.get(multichain, req.token, sinceId);
+  const rawNotifications = await Notification.get(multichain, req.user, sinceId);
 
   const displayNamesById: Map<string, string | undefined> = await buildDisplayNameMap(
     multichain,
-    req.token,
+    req.user,
     rawNotifications,
   );
 

@@ -10,10 +10,7 @@ import * as Notification from "../../notification/model/Notification";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
 
-export async function closeProject(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function closeProject(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -22,7 +19,7 @@ export async function closeProject(
 
   // Is the user allowed to close a project?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Project.getPermissions(multichain, projectId),
   );
@@ -35,20 +32,20 @@ export async function closeProject(
     };
   }
 
-  const publishedEvent = await sendEventToDatabase(multichain, req.token, userIntent, projectId);
+  const publishedEvent = await sendEventToDatabase(multichain, req.user, userIntent, projectId);
 
   const resourceDescriptions: Notification.NotificationResourceDescription[] = [
     { id: projectId, type: "project" },
   ];
-  const createdBy = req.token.userId;
-  const skipNotificationsFor = [req.token.userId];
+  const createdBy = req.user.userId;
+  const skipNotificationsFor = [req.user.userId];
   await notifyAssignee(
     multichain,
     resourceDescriptions,
     createdBy,
     await Project.get(
       multichain,
-      req.token,
+      req.user,
       projectId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
     ),

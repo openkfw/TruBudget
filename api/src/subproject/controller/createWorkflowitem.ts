@@ -44,10 +44,7 @@ export async function hashDocuments(docs): Promise<Document[]> {
   );
 }
 
-export async function createWorkflowitem(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function createWorkflowitem(multichain: MultichainClient, req): Promise<HttpResponse> {
   const body = req.body;
 
   if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
@@ -61,7 +58,7 @@ export async function createWorkflowitem(
 
   // Is the user allowed to create workflowitems?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
@@ -123,18 +120,18 @@ export async function createWorkflowitem(
     amountType,
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
-    assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.token.userId),
+    assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.user.userId),
     documents: data.documents !== undefined ? await hashDocuments(data.documents) : [],
   };
 
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: ctime,
     dataVersion: 1,
     data: {
       workflowitem,
-      permissions: getWorkflowitemDefaultPermissions(req.token),
+      permissions: getWorkflowitemDefaultPermissions(req.user),
     },
   };
 

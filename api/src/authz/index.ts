@@ -33,6 +33,7 @@ const can = async (
   intent: Intent,
   resourcePermissions: AllowedUserGroupsByIntent,
 ): Promise<boolean> => {
+  console.log(token)
   if (token.userId === "root") {
     // root can do everything
     return true;

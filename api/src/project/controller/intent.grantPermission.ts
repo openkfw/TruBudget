@@ -4,7 +4,7 @@ import { changeProjectPermission } from "../intent";
 
 export async function grantProjectPermission(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   return changeProjectPermission(multichain, req, "project.intent.grantPermission");
 }

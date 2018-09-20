@@ -7,10 +7,7 @@ import logger from "../lib/logger";
 import { isNonemptyString, isObject, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 
-export const createGroup = async (
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+export const createGroup = async (multichain: MultichainClient, req): Promise<HttpResponse> => {
   const data = value("data", req.body.data, isObject);
   const groupFromRequest = value("data.group", data.group, isObject);
   const groupId = value("id", groupFromRequest.id, isNonemptyString);
@@ -18,7 +15,7 @@ export const createGroup = async (
   const users = value("users", groupFromRequest.users, Array.isArray);
   const userIntent: Intent = "global.createGroup";
   // Is the user allowed to create new projects?
-  await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
   const ctime = new Date();
   const group: Group.GroupResource = {
     groupId,
@@ -28,7 +25,7 @@ export const createGroup = async (
 
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: ctime,
     dataVersion: 1,
     data: {
@@ -36,7 +33,7 @@ export const createGroup = async (
     },
   };
   if (await Group.groupExists(multichain, groupId)) {
-    throw { kind: "GroupAlreadyExists", targetUserId: req.token.userId };
+    throw { kind: "GroupAlreadyExists", targetUserId: req.user.userId };
   }
 
   await Group.publish(multichain, groupId, event);

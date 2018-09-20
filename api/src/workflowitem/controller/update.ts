@@ -12,10 +12,7 @@ import * as Notification from "../../notification/model/Notification";
 import { hashDocuments } from "../../subproject/controller/createWorkflowitem";
 import * as Workflowitem from "../model/Workflowitem";
 
-export async function updateWorkflowitem(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function updateWorkflowitem(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -46,14 +43,14 @@ export async function updateWorkflowitem(
 
   // Is the user allowed to update a workflowitem's basic data?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
 
   const publishedEvent = await sendEventToDatabase(
     multichain,
-    req.token,
+    req.user,
     userIntent,
     theUpdate,
     projectId,
@@ -68,15 +65,15 @@ export async function updateWorkflowitem(
     { id: subprojectId, type: "subproject" },
     { id: projectId, type: "project" },
   ];
-  const createdBy = req.token.userId;
-  const skipNotificationsFor = [req.token.userId];
+  const createdBy = req.user.userId;
+  const skipNotificationsFor = [req.user.userId];
   await notifyAssignee(
     multichain,
     resourceDescriptions,
     createdBy,
     await Workflowitem.get(
       multichain,
-      req.token,
+      req.user,
       projectId,
       subprojectId,
       workflowitemId,

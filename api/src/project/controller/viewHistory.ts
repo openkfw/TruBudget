@@ -7,20 +7,17 @@ import { Event } from "../../multichain/event";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
 
-export async function getProjectHistory(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function getProjectHistory(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
 
-  const project = await Project.get(multichain, req.token, projectId).then(
+  const project = await Project.get(multichain, req.user, projectId).then(
     resources => resources[0],
   );
 
   // Add subprojects' logs to the project log and sort by creation time:
-  const subprojects = await Subproject.get(multichain, req.token, projectId);
+  const subprojects = await Subproject.get(multichain, req.user, projectId);
   const events = subprojects
     .reduce((eventsAcc, subproject) => eventsAcc.concat(subproject.log), project.log)
     .sort(compareEvents);

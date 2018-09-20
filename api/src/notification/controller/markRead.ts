@@ -6,7 +6,7 @@ import * as Notification from "../model/Notification";
 
 export const markNotificationRead = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -16,13 +16,13 @@ export const markNotificationRead = async (
 
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: { notificationId },
   };
 
-  await Notification.publish(multichain, req.token.userId, event);
+  await Notification.publish(multichain, req.user.userId, event);
 
   return [
     200,

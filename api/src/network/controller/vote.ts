@@ -9,11 +9,11 @@ import * as Nodes from "../model/Nodes";
 
 export async function voteForNetworkPermission(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   // Permission check:
   const userIntent: Intent = "network.voteForPermission";
-  await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   // Input validation:
   const input = value("data", req.body.data, x => x !== undefined);
@@ -21,7 +21,7 @@ export async function voteForNetworkPermission(
   const vote: AccessVote.t = value("vote", input.vote, AccessVote.isValid);
 
   // Grant or revoke? We need to find out our current vote to know..
-  const callerAddress = req.token.organizationAddress;
+  const callerAddress = req.user.organizationAddress;
   const currentVote = await getCurrentVote(multichain, callerAddress, targetAddress);
 
   const [operation, permissions] = computeWhatToDo(currentVote, vote);
