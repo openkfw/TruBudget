@@ -18,7 +18,7 @@ function removeEventLog(workflowitem: Workflowitem.WorkflowitemResource): Workfl
 
 export async function getWorkflowitemList(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = req.query;
 
@@ -28,7 +28,7 @@ export async function getWorkflowitemList(
   const ordering = await fetchWorkflowitemOrdering(multichain, projectId, subprojectId);
   const workflowitems: WorkflowitemDTO[] = await Workflowitem.get(
     multichain,
-    req.token,
+    req.user,
     projectId,
     subprojectId,
   )

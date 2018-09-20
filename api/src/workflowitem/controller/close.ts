@@ -12,10 +12,7 @@ import { fetchWorkflowitemOrdering } from "../../subproject/model/WorkflowitemOr
 import { sortWorkflowitems } from "../../subproject/sortWorkflowitems";
 import * as Workflowitem from "../model/Workflowitem";
 
-export async function closeWorkflowitem(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function closeWorkflowitem(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -26,7 +23,7 @@ export async function closeWorkflowitem(
 
   // Is the user allowed to close a workflowitem?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
   );
@@ -34,7 +31,7 @@ export async function closeWorkflowitem(
   // We need to make sure that all previous (wrt. ordering) workflowitems are already closed:
   const sortedItems = await ensureAllPreviousWorkflowitemsAreClosed(
     multichain,
-    req.token,
+    req.user,
     projectId,
     subprojectId,
     workflowitemId,
@@ -42,7 +39,7 @@ export async function closeWorkflowitem(
 
   const publishedEvent = await sendEventToDatabase(
     multichain,
-    req.token,
+    req.user,
     userIntent,
     projectId,
     subprojectId,
@@ -54,7 +51,7 @@ export async function closeWorkflowitem(
     { id: subprojectId, type: "subproject" },
     { id: projectId, type: "project" },
   ];
-  const createdBy = req.token.userId;
+  const createdBy = req.user.userId;
 
   // If the workflowitem is assigned to someone else, that person is notified about the
   // change:
@@ -64,20 +61,20 @@ export async function closeWorkflowitem(
     createdBy,
     await Workflowitem.get(
       multichain,
-      req.token,
+      req.user,
       projectId,
       subprojectId,
       workflowitemId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
     ),
     publishedEvent,
-    [req.token.userId], // skipNotificationsFor
+    [req.user.userId], // skipNotificationsFor
   );
 
   // If the parent subproject is (1) not assigned to the token user and (2) not assigned
   // to the same guy the workflowitem is assigned to, that person is notified about the
   // change too.
-  const skipNotificationsFor = [req.token.userId].concat(
+  const skipNotificationsFor = [req.user.userId].concat(
     workflowitemAssignee ? [workflowitemAssignee] : [],
   );
   await notifyAssignee(
@@ -86,7 +83,7 @@ export async function closeWorkflowitem(
     createdBy,
     await Subproject.get(
       multichain,
-      req.token,
+      req.user,
       projectId,
       subprojectId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",

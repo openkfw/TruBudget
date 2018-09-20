@@ -8,7 +8,7 @@ import { publishWorkflowitemOrderingUpdate } from "../model/WorkflowitemOrdering
 
 export async function reorderWorkflowitems(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -22,13 +22,13 @@ export async function reorderWorkflowitems(
 
   const userIntent: Intent = "subproject.reorderWorkflowitems";
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
   publishWorkflowitemOrderingUpdate(multichain, projectId, subprojectId, {
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: new Date(),
     ordering,
   });

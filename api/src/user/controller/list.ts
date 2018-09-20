@@ -3,10 +3,7 @@ import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { MultichainClient } from "../../multichain";
 import * as User from "../model/user";
 
-export const getUserList = async (
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> => {
+export const getUserList = async (multichain: MultichainClient, req): Promise<HttpResponse> => {
   const users = await User.getAll(multichain);
   const groups = await Group.getAll(multichain);
 

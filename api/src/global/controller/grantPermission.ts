@@ -7,7 +7,7 @@ import { MultichainClient } from "../../multichain";
 
 export const grantGlobalPermission = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -15,7 +15,7 @@ export const grantGlobalPermission = async (
   const intent = value("intent", input.intent, x => userAssignableIntents.includes(x));
 
   const userIntent: Intent = "global.grantPermission";
-  await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   await Global.grantPermission(multichain, identity, intent);
 

@@ -11,7 +11,7 @@ import * as Subproject from "../model/Subproject";
 
 export const assignSubproject = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 
@@ -23,14 +23,14 @@ export const assignSubproject = async (
 
   // Is the user allowed to (re-)assign a subproject?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Subproject.getPermissions(multichain, projectId, subprojectId),
   );
 
   const publishedEvent = await sendEventToDatabase(
     multichain,
-    req.token,
+    req.user,
     userIntent,
     identity,
     projectId,
@@ -43,15 +43,15 @@ export const assignSubproject = async (
     { id: subprojectId, type: "subproject" },
     { id: projectId, type: "project" },
   ];
-  const createdBy = req.token.userId;
-  const skipNotificationsFor = [req.token.userId];
+  const createdBy = req.user.userId;
+  const skipNotificationsFor = [req.user.userId];
   await notifyAssignee(
     multichain,
     resourceDescriptions,
     createdBy,
     await Subproject.get(
       multichain,
-      req.token,
+      req.user,
       projectId,
       subprojectId,
       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",

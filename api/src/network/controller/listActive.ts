@@ -7,13 +7,10 @@ import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
 import { AugmentedWalletAddress, WalletAddress } from "../model/Nodes";
 
-export async function getActiveNodes(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function getActiveNodes(multichain: MultichainClient, req): Promise<HttpResponse> {
   // Permission check:
   const userIntent: Intent = "network.listActive";
-  await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   // Get ALL the info:
   const numberOfConnections = await Nodes.active(multichain);

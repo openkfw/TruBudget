@@ -14,10 +14,7 @@ import { randomString } from "../../multichain/hash";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
 
-export async function createSubproject(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function createSubproject(multichain: MultichainClient, req): Promise<HttpResponse> {
   const body = req.body;
 
   if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
@@ -30,7 +27,7 @@ export async function createSubproject(
 
   // Is the user allowed to create subprojects?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Project.getPermissions(multichain, projectId),
   );
@@ -58,17 +55,17 @@ export async function createSubproject(
     description: value("description", subprojectArgs.description, isNonemptyString),
     amount: value("amount", subprojectArgs.amount, isNonemptyString),
     currency: value("currency", subprojectArgs.currency, isNonemptyString).toUpperCase(),
-    assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.token.userId),
+    assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.user.userId),
   };
 
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: ctime,
     dataVersion: 1,
     data: {
       subproject,
-      permissions: getSubprojectDefaultPermissions(req.token),
+      permissions: getSubprojectDefaultPermissions(req.user),
     },
   };
 
