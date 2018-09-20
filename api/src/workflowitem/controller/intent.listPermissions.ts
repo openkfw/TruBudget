@@ -6,7 +6,7 @@ import * as Workflowitem from "../model/Workflowitem";
 
 export async function getWorkflowitemPermissions(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = req.query;
 
@@ -21,7 +21,7 @@ export async function getWorkflowitemPermissions(
 
   // Is the user allowed to list workflowitem permissions?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     "workflowitem.intent.listPermissions",
     workflowitemPermissions,
   );

@@ -16,10 +16,7 @@ function removeEventLog(subproject: Subproject.SubprojectResource): SubprojectDT
   return subproject;
 }
 
-export async function getProjectDetails(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function getProjectDetails(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -28,14 +25,14 @@ export async function getProjectDetails(
 
   // Is the user allowed to view project details?
   await throwIfUnauthorized(
-    req.token,
+    req.user,
     userIntent,
     await Project.getPermissions(multichain, projectId),
   );
 
-  const project = await Project.get(multichain, req.token, projectId).then(result => result[0]);
+  const project = await Project.get(multichain, req.user, projectId).then(result => result[0]);
 
-  const subprojects = await Subproject.get(multichain, req.token, projectId).then(items =>
+  const subprojects = await Subproject.get(multichain, req.user, projectId).then(items =>
     items.map(removeEventLog),
   );
 

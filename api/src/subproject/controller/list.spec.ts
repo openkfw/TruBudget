@@ -81,6 +81,7 @@ describe("subproject.list", () => {
       },
       token: {
         userId: "alice",
+        groups: [] as string[],
       },
     };
 

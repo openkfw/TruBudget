@@ -4,7 +4,7 @@ import { changeWorkflowitemPermission } from "../intent";
 
 export async function grantWorkflowitemPermission(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   return changeWorkflowitemPermission(multichain, req, "workflowitem.intent.grantPermission");
 }

@@ -12,7 +12,7 @@ import { hashPassword } from "../user/password";
 
 export const createUser = async (
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
   jwtSecret: string,
   rootSecret: string,
   organizationVaultSecret: string,
@@ -27,11 +27,7 @@ export const createUser = async (
   if (userId === "root") throw { kind: "UserAlreadyExists", targetUserId: "root" };
 
   // Is the user allowed to create new users?
-  await throwIfUnauthorized(
-    req.token,
-    "global.createUser",
-    await Global.getPermissions(multichain),
-  );
+  await throwIfUnauthorized(req.user, "global.createUser", await Global.getPermissions(multichain));
 
   // Every user gets her own address:
   const keyPair = await createkeypairs(multichain);
@@ -51,7 +47,7 @@ export const createUser = async (
     passwordDigest,
   };
 
-  await User.create(multichain, req.token, newUser);
+  await User.create(multichain, req.user, newUser);
   logger.info(newUser, "User created.");
 
   await grantInitialPermissions(multichain, newUser);

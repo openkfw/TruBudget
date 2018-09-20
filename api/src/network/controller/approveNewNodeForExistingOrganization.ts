@@ -6,10 +6,10 @@ import { voteHelper } from "../voteHelper";
 
 export async function approveNewNodeForExistingOrganization(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
   const targetAddress: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
 
-  return voteHelper(multichain, req.token, targetAddress, "basic");
+  return voteHelper(multichain, req.user, targetAddress, "basic");
 }

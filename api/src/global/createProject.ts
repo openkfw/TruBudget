@@ -14,10 +14,7 @@ import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";
 
-export async function createProject(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function createProject(multichain: MultichainClient, req): Promise<HttpResponse> {
   const body = req.body;
 
   if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
@@ -27,7 +24,7 @@ export async function createProject(
   const userIntent: Intent = "global.createProject";
 
   // Is the user allowed to create new projects?
-  await throwIfUnauthorized(req.token, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   const projectId = value("id", input.id || randomString(), isNonemptyString);
 
@@ -40,19 +37,19 @@ export async function createProject(
     displayName: value("displayName", input.displayName, isNonemptyString),
     description: value("description", input.description, isNonemptyString),
     amount: value("amount", input.amount, isNonemptyString),
-    assignee: value("assignee", input.assignee, isUserOrUndefined, req.token.userId),
+    assignee: value("assignee", input.assignee, isUserOrUndefined, req.user.userId),
     currency: value("currency", input.currency, isNonemptyString).toUpperCase(),
     thumbnail: value("thumbnail", input.thumbnail, x => typeof x === "string", ""),
   };
 
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: ctime,
     dataVersion: 1,
     data: {
       project,
-      permissions: getProjectDefaultPermissions(req.token),
+      permissions: getProjectDefaultPermissions(req.user),
     },
   };
 

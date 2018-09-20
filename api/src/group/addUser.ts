@@ -6,16 +6,13 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, isObject, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 
-export async function addUserToGroup(
-  multichain: MultichainClient,
-  req: AuthenticatedRequest,
-): Promise<HttpResponse> {
+export async function addUserToGroup(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, isObject);
   const groupId: string = value("groupId", input.groupId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);
   const userIntent: Intent = "group.addUser";
   const permissionIntent: Intent = "global.createGroup";
-  await throwIfUnauthorized(req.token, permissionIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, permissionIntent, await Global.getPermissions(multichain));
 
   const groupExists = await Group.groupExists(multichain, groupId);
 
@@ -24,7 +21,7 @@ export async function addUserToGroup(
   }
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: {

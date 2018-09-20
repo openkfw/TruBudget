@@ -9,18 +9,18 @@ import * as WorkflowitemOrdering from "../model/WorkflowitemOrdering";
 
 export async function getSubprojectHistory(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
-  const subproject = await Subproject.get(multichain, req.token, projectId, subprojectId).then(
+  const subproject = await Subproject.get(multichain, req.user, projectId, subprojectId).then(
     resources => resources[0],
   );
 
-  const workflowitems = await Workflowitem.get(multichain, req.token, projectId, subprojectId);
+  const workflowitems = await Workflowitem.get(multichain, req.user, projectId, subprojectId);
 
   const reorderingEvents = await WorkflowitemOrdering.fetchOrderingEvents(
     multichain,

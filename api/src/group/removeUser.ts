@@ -8,14 +8,14 @@ import { MultichainClient } from "../multichain";
 
 export async function removeUserFromGroup(
   multichain: MultichainClient,
-  req: AuthenticatedRequest,
+  req,
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, isObject);
   const groupId: string = value("groupId", input.groupId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);
   const userIntent: Intent = "group.removeUser";
   const permissionIntent: Intent = "global.createGroup";
-  await throwIfUnauthorized(req.token, permissionIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, permissionIntent, await Global.getPermissions(multichain));
 
   const groupExists = await Group.groupExists(multichain, groupId);
 
@@ -24,7 +24,7 @@ export async function removeUserFromGroup(
   }
   const event = {
     intent: userIntent,
-    createdBy: req.token.userId,
+    createdBy: req.user.userId,
     creationTimestamp: new Date(),
     dataVersion: 1,
     data: {
