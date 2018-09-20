@@ -210,7 +210,11 @@ const SubProjectDetails = ({
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <CardHeader title={displayName} subheader={description} avatar={<Avatar>{displayName[0]}</Avatar>} />
+        <CardHeader
+          title={displayName}
+          subheader={description}
+          avatar={displayName ? <Avatar>{displayName[0]}</Avatar> : null}
+        />
         <List>
           <Divider />
           {getNotEditableBudget(amountString, allowedToEdit, props)}

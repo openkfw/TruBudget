@@ -16,7 +16,7 @@ function byOrderingCriteria(
   b: Workflowitem.WorkflowitemResource,
   ordering: string[],
 ): -1 | 1 {
-  if (isClosed(a) && isClosed(b)) {
+  if (isClosed(a) && isClosed(b) && !isRedacted(a) && !isRedacted(b)) {
     // both are closed, so we order by their time of closing:
     const closedAtA = closedAt(a);
     const closedAtB = closedAt(b);
@@ -49,6 +49,10 @@ function byOrderingCriteria(
 
 function isClosed(item: Workflowitem.WorkflowitemResource): boolean {
   return item.data.status === "closed";
+}
+
+function isRedacted(item: Workflowitem.WorkflowitemResource): boolean {
+  return item.data.displayName === null;
 }
 
 function closedAt(item: Workflowitem.WorkflowitemResource): string {
