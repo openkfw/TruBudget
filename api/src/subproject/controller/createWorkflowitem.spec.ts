@@ -20,6 +20,26 @@ describe("subproject.createWorkflowitem", () => {
           expect(event.intent).to.eql("subproject.createWorkflowitem");
         },
       }),
+      getValue: async (streamName, key) => {
+        return {
+          resource: {
+            data: {
+              id: "alice",
+              displayName: "Alice",
+              organization: "ACMECorp",
+              address: "1Zh7UWdKKaPMFWLgoKdUkRcGaGSW6TNSii41ee",
+              passwordDigest: "$2a$08$yppae7E8SE1VZoMHmhwScud0SldE8n7MNBtVeFpR3gxGSJz6JLHGS",
+            },
+            log: [
+              {
+                issuer: "root",
+                action: "user_created",
+              },
+            ],
+            permissions: {},
+          },
+        };
+      },
       v2_readStreamItems: async (streamName, key, nValues) => {
         expect(streamName).to.eql(projectId);
         let events;
@@ -71,13 +91,14 @@ describe("subproject.createWorkflowitem", () => {
           currency: "EUR",
           description: "A nice item.",
           displayName: "My Workflow-Item",
-          assignee: "alice", // TODO: alice is not recognized by the multichain-mock, need to add the event
+          assignee: "alice",
           documents: [],
           status: "open",
         },
       },
       token: {
         userId: "alice",
+        groups: [] as string[],
       },
     };
 
@@ -92,7 +113,7 @@ describe("subproject.createWorkflowitem", () => {
     });
   });
 
-  it("should not create a Workflowitem with assignee who does not exist", async () => {
+  it("should not create a Workflowitem with assignee who does not exist", done => {
     const projectId = "my-project";
     const subprojectId = "my-subproject";
     const workflowitemId = "my-workflowitem";
@@ -108,6 +129,11 @@ describe("subproject.createWorkflowitem", () => {
           expect(event.intent).to.eql("subproject.createWorkflowitem");
         },
       }),
+      getValue: async (streamName, key) => {
+        return {
+          resource: {},
+        };
+      },
       v2_readStreamItems: async (streamName, key, nValues) => {
         expect(streamName).to.eql(projectId);
         let events;
@@ -166,20 +192,14 @@ describe("subproject.createWorkflowitem", () => {
       },
       token: {
         userId: "alice",
+        groups: [] as string[],
       },
     };
-
-    const [status, response] = await createWorkflowitem(
-      multichain as MultichainClient,
-      req as AuthenticatedRequest,
-    );
-    expect(status).to.eql(400);
-    expect(response).to.eql({
-      apiVersion: "1.0",
-      error: {
-        code: 400,
-        message: "Missing keys: assignee",
-      },
-    });
+    createWorkflowitem(multichain as MultichainClient, req as AuthenticatedRequest)
+      .then(() => expect(true).to.be.false)
+      .catch(err => {
+        expect(err.kind).to.be.a("string", "ParseError");
+        done();
+      });
   });
 });

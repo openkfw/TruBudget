@@ -191,6 +191,7 @@ describe("workflowitem.list", () => {
       },
       token: {
         userId: "alice",
+        groups: [] as string[],
       },
     };
 
