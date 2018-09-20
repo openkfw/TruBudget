@@ -120,7 +120,6 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
     amountType,
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
-<<<<<<< HEAD
     assignee: await asyncValue(
       multichain,
       "assignee",
@@ -128,9 +127,6 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
       isUserOrUndefined,
       req.token.userId,
     ),
-=======
-    assignee: await asyncValue("assignee", data.assignee, isUserOrUndefined, req.user.userId),
->>>>>>> origin/master
     documents: data.documents !== undefined ? await hashDocuments(data.documents) : [],
   };
 
