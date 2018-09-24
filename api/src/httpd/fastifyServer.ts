@@ -324,6 +324,7 @@ export const registerRoutes = (
                       displayName: { type: "string", example: "myDisplayName" },
                       organization: { type: "string", example: "myorganization" },
                       allowedIntents: { type: "array", items: { type: "string" } },
+                      groups: { type: "array", items: { type: "string" } },
                       token: {
                         type: "string",
                         example:
@@ -1417,7 +1418,7 @@ export const registerRoutes = (
                     assignee: { type: "string", example: "assigneeName" },
                     currency: { type: "string", example: "EUR" },
                   },
-                  required: ["displayName", "description", "amount", "assignee", "currency"],
+                  required: ["displayName", "description", "amount", "currency"],
                 },
               },
             },
@@ -1835,8 +1836,10 @@ export const registerRoutes = (
                 properties: {
                   parentProject: {
                     type: "object",
-                    id: { type: "string", example: "parentId" },
-                    displayName: { type: "string", example: "parentDisplayName" },
+                    properties: {
+                      id: { type: "string", example: "parentId" },
+                      displayName: { type: "string", example: "parentDisplayName" },
+                    },
                   },
                   subproject: {
                     type: "object",
@@ -2167,7 +2170,8 @@ export const registerRoutes = (
             apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
-              properties: {
+              additionalProperties: true,
+              example: {
                 projectId: { type: "string", example: "projectId" },
                 subprojectId: { type: "string", example: "subprojectId" },
 
