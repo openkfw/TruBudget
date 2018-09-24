@@ -2,7 +2,10 @@ import * as Group from ".";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { MultichainClient } from "../multichain";
 
-export const getGroupList = async (multichain: MultichainClient, req): Promise<HttpResponse> => {
+export const getGroupList = async (
+  multichain: MultichainClient,
+  req: AuthenticatedRequest,
+): Promise<HttpResponse> => {
   const groups = await Group.getAll(multichain);
 
   return [

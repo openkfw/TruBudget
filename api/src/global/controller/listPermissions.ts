@@ -6,7 +6,7 @@ import { MultichainClient } from "../../multichain";
 
 export const getGlobalPermissions = async (
   multichain: MultichainClient,
-  req,
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const permissions = await Global.getPermissions(multichain);
 

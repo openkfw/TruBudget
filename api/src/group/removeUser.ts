@@ -8,7 +8,7 @@ import { MultichainClient } from "../multichain";
 
 export async function removeUserFromGroup(
   multichain: MultichainClient,
-  req,
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, isObject);
   const groupId: string = value("groupId", input.groupId, isNonemptyString);

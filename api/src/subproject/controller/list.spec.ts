@@ -85,10 +85,7 @@ describe("subproject.list", () => {
       },
     };
 
-    const [status, response] = await getSubprojectList(
-      multichain as MultichainClient,
-      req as AuthenticatedRequest,
-    );
+    const [status, response] = await getSubprojectList(multichain as MultichainClient, req);
     expect(status).to.eql(200);
     const subprojects = (response as any).data.items;
     expect(subprojects.length).to.eql(2);
@@ -123,7 +120,7 @@ describe("subproject.list", () => {
       },
     };
 
-    getSubprojectList(multichain as MultichainClient, req as AuthenticatedRequest)
+    getSubprojectList(multichain as MultichainClient, req)
       .then(response => {
         throw Error(`Expected no response, got: ${JSON.stringify(response)}`);
       })

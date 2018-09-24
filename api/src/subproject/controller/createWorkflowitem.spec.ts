@@ -96,16 +96,13 @@ describe("subproject.createWorkflowitem", () => {
           status: "open",
         },
       },
-      token: {
+      user: {
         userId: "alice",
         groups: [] as string[],
       },
     };
 
-    const [status, response] = await createWorkflowitem(
-      multichain as MultichainClient,
-      req as AuthenticatedRequest,
-    );
+    const [status, response] = await createWorkflowitem(multichain as MultichainClient, req);
     expect(status).to.eql(201);
     expect(response).to.eql({
       apiVersion: "1.0",
@@ -190,12 +187,12 @@ describe("subproject.createWorkflowitem", () => {
           status: "open",
         },
       },
-      token: {
+      user: {
         userId: "alice",
         groups: [] as string[],
       },
     };
-    createWorkflowitem(multichain as MultichainClient, req as AuthenticatedRequest)
+    createWorkflowitem(multichain as MultichainClient, req)
       .then(() => expect(true).to.be.false)
       .catch(err => {
         expect(err.kind).to.be.a("string", "ParseError");

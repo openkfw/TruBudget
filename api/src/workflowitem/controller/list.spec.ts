@@ -189,16 +189,14 @@ describe("workflowitem.list", () => {
         projectId,
         subprojectId,
       },
-      token: {
+      params: [],
+      user: {
         userId: "alice",
         groups: [] as string[],
       },
     };
 
-    const [status, response] = await getWorkflowitemList(
-      multichain as MultichainClient,
-      req as AuthenticatedRequest,
-    );
+    const [status, response] = await getWorkflowitemList(multichain as MultichainClient, req);
 
     expect(status).to.eql(200);
     const workflowitems = (response as any).data.workflowitems;

@@ -9,18 +9,18 @@ import { WalletAddress } from "./model/Nodes";
 
 export async function voteHelper(
   multichain: MultichainClient,
-  token: AuthToken,
+  user: AuthToken,
   targetAddress: WalletAddress,
   vote: AccessVote.t,
 ): Promise<HttpResponse> {
-  const callerAddress = token.organizationAddress;
+  const callerAddress = user.organizationAddress;
   const currentVote = await getCurrentVote(multichain, callerAddress, targetAddress);
   const currentAccess = await getCurrentAccess(multichain, targetAddress);
   logger.debug({ callerAddress, targetAddress, currentVote, currentAccess });
 
   if (currentVote !== "none") {
     const message =
-      `Conflict: your organization ${token.organization} (${callerAddress}) has ` +
+      `Conflict: your organization ${user.organization} (${callerAddress}) has ` +
       `already voted for assigning ${currentVote} permissions to ${targetAddress}.`;
     return [409, { apiVersion: "1.0", error: { code: 409, message } }];
   }
@@ -32,7 +32,7 @@ export async function voteHelper(
   }
 
   const fakeReq = {
-    token,
+    user,
     body: {
       apiVersion: "1.0",
       data: {

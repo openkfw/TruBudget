@@ -1,10 +1,21 @@
 import * as bodyParser from "body-parser";
 import * as fastify from "fastify";
+import * as Ajv from "ajv";
 import * as jsonwebtoken from "jsonwebtoken";
 import { AuthToken } from "../authz/token";
 
 import { IncomingMessage, Server, ServerResponse } from "http";
 const DEFAULT_API_VERSION = "1.0";
+const URL_PREFIX = "/api";
+
+const ajv = new Ajv({
+  // the fastify defaults (if needed)
+  removeAdditional: true,
+  useDefaults: true,
+  coerceTypes: true,
+  // any other options
+  // ...
+});
 
 const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) => {
   server.register(require("fastify-jwt"), {
@@ -23,9 +34,10 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
   });
 };
 
-const registerSwagger = (server: fastify.FastifyInstance) => {
+const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string) => {
   server.register(require("fastify-swagger"), {
-    routePrefix: "/api/documentation",
+    // logLevel: "info",
+    routePrefix: `${urlPrefix}/documentation`,
     swagger: {
       info: {
         title: "TruBudget API documentation",
@@ -54,9 +66,14 @@ const registerSwagger = (server: fastify.FastifyInstance) => {
   });
 };
 
-export const createBasicApp = (jwtSecret: string) => {
-  const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({});
-  registerSwagger(server);
+export const createBasicApp = (jwtSecret: string, urlPrefix: string) => {
+  const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
+    // logger: true,
+  });
+  server.setSchemaCompiler(schema => {
+    return ajv.compile(schema);
+  });
+  registerSwagger(server, urlPrefix);
   addTokenHandling(server, jwtSecret);
 
   // app.use(logging);

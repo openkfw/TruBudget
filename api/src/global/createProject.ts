@@ -16,7 +16,10 @@ import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";
 
-export async function createProject(multichain: MultichainClient, req): Promise<HttpResponse> {
+export async function createProject(
+  multichain: MultichainClient,
+  req: AuthenticatedRequest,
+): Promise<HttpResponse> {
   const body = req.body;
 
   if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);

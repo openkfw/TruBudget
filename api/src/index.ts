@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as fastify from "fastify";
 
-import { registerRoutes } from "./httpd/fastifyServer";
+import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -11,6 +11,8 @@ import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStreams } from "./organization/organization";
+
+const URL_PREFIX = "/api";
 
 /*
  * Deal with the environment:
@@ -49,7 +51,7 @@ const rpcSettings: ConnectionSettings = {
 logger.info(rpcSettings, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
-const server = createBasicApp(jwtSecret);
+const server = createBasicApp(jwtSecret, URL_PREFIX);
 
 // app.use(
 //   "/api",
@@ -99,6 +101,7 @@ registerRoutes(
   rootSecret,
   organization!,
   organizationVaultSecret!,
+  URL_PREFIX,
 );
 
 console.log("Register fastify endpoint");

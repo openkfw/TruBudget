@@ -141,10 +141,7 @@ describe("subproject.viewDetails", () => {
       },
     };
 
-    const [status, response] = await getSubprojectDetails(
-      multichain as MultichainClient,
-      req as AuthenticatedRequest,
-    );
+    const [status, response] = await getSubprojectDetails(multichain as MultichainClient, req);
     expect(status).to.eql(200);
     const { subproject, workflowitems, parentProject } = (response as any).data;
 
