@@ -25,6 +25,7 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
 
 const registerSwagger = (server: fastify.FastifyInstance) => {
   server.register(require("fastify-swagger"), {
+    routePrefix: "/api/documentation",
     swagger: {
       info: {
         title: "TruBudget API documentation",
@@ -34,7 +35,7 @@ const registerSwagger = (server: fastify.FastifyInstance) => {
           "at almost every endpoint.\nTo use the token click on the 'Authorize' Button at the top right",
         version: "0.1.0",
       },
-      host: "localhost:8086",
+      host: "localhost:8080",
       schemes: ["http"],
       consumes: ["application/json"],
       produces: ["application/json"],

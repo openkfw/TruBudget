@@ -222,16 +222,11 @@ export const registerRoutes = (
           "'503 Service unavailable.' otherwise.",
         tags: ["system"],
         summary: "Check if the Multichain is reachable",
-        headers: {
-          type: "object",
-          properties: {
-            authorization: {
-              type: "string",
-              description: "API token",
-            },
+        security: [
+          {
+            bearerToken: [],
           },
-          required: ["authorization"],
-        },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -371,6 +366,11 @@ export const registerRoutes = (
         description: "List all registered users.",
         tags: ["user"],
         summary: "List all registered users",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -397,11 +397,6 @@ export const registerRoutes = (
           },
           401: getAuthErrorSchema(),
         },
-        security: [
-          {
-            bearerToken: [],
-          },
-        ],
       },
     } as Schema,
     async (request, reply) => {
@@ -424,11 +419,11 @@ export const registerRoutes = (
         description: "Create a new user.",
         tags: ["global"],
         summary: "Create a user",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -494,6 +489,7 @@ export const registerRoutes = (
       },
     } as Schema,
     async (request, reply) => {
+      console.log(request);
       createUser(multichainClient, request, jwtSecret, rootSecret, organizationVaultSecret)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
@@ -509,11 +505,11 @@ export const registerRoutes = (
         description: "Create a new group.",
         tags: ["global"],
         summary: "Create a new group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -584,11 +580,11 @@ export const registerRoutes = (
           "Note that the only possible values for 'status' are: 'open' and 'closed'",
         tags: ["global"],
         summary: "Create a new project",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -608,15 +604,6 @@ export const registerRoutes = (
                     currency: { type: "string", example: "EUR" },
                     thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                   },
-                  required: [
-                    "id",
-                    "status",
-                    "displayName",
-                    "description",
-                    "amount",
-                    "assignee",
-                    "currency",
-                  ],
                 },
               },
             },
@@ -664,11 +651,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -703,11 +690,11 @@ export const registerRoutes = (
           "Grant the right to execute a specific intent on the Global scope to a given user.",
         tags: ["global"],
         summary: "Grant a permission to a group or user",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -754,11 +741,11 @@ export const registerRoutes = (
           "Grant all available permissions to a user. Useful as a shorthand for creating admin users.",
         tags: ["global"],
         summary: "Grant all permission to a group or user",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -805,11 +792,11 @@ export const registerRoutes = (
           "Revoke the right to execute a specific intent on the Global scope to a given user.",
         tags: ["global"],
         summary: "Revoke a permission from a group or user",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -859,11 +846,11 @@ export const registerRoutes = (
         description: "List all user groups.",
         tags: ["group"],
         summary: "List all existing groups",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -911,11 +898,11 @@ export const registerRoutes = (
         description: "Add user to a group",
         tags: ["group"],
         summary: "Add a user to a group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -964,11 +951,11 @@ export const registerRoutes = (
         description: "Remove user from a group",
         tags: ["group"],
         summary: "Remove a user from a group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -1021,11 +1008,11 @@ export const registerRoutes = (
         description: "Retrieve all projects the user is allowed to see.",
         tags: ["project"],
         summary: "List all projects",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -1135,11 +1122,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -1214,6 +1201,14 @@ export const registerRoutes = (
                       allowedIntents: { type: "array", items: { type: "string" } },
                     },
                   },
+                  subprojects: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      additionalProperties: true,
+                      example: { mySubproject: {} },
+                    },
+                  },
                 },
               },
             },
@@ -1239,11 +1234,11 @@ export const registerRoutes = (
           "Assign a project to a given user. The assigned user will be notified about the change.",
         tags: ["project"],
         summary: "Assign a user or group to a project",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -1291,11 +1286,11 @@ export const registerRoutes = (
           "others are not affected. The assigned user will be notified about the change.",
         tags: ["project"],
         summary: "Update a project",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -1305,6 +1300,9 @@ export const registerRoutes = (
               properties: {
                 displayName: { type: "string", example: "myDisplayName" },
                 description: { type: "string", example: "myDescription" },
+                amount: { type: "string", example: "500" },
+                assignee: { type: "string", example: "assigneeName" },
+                currency: { type: "string", example: "EUR" },
                 projectId: { type: "string", example: "projectId" },
               },
               required: ["projectId"],
@@ -1344,11 +1342,11 @@ export const registerRoutes = (
           "subprojects are already set to 'closed'.",
         tags: ["project"],
         summary: "Close a project",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -1395,11 +1393,11 @@ export const registerRoutes = (
           "Note that the only possible values for 'status' are: 'open' and 'closed'",
         tags: ["project"],
         summary: "Create a subproject",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -1419,15 +1417,7 @@ export const registerRoutes = (
                     assignee: { type: "string", example: "assigneeName" },
                     currency: { type: "string", example: "EUR" },
                   },
-                  required: [
-                    "id",
-                    "status",
-                    "displayName",
-                    "description",
-                    "amount",
-                    "assignee",
-                    "currency",
-                  ],
+                  required: ["displayName", "description", "amount", "assignee", "currency"],
                 },
               },
             },
@@ -1476,11 +1466,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -1552,11 +1542,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -1594,11 +1584,11 @@ export const registerRoutes = (
           "user will be allowed to execute the given intent.",
         tags: ["project"],
         summary: "Grant a permission to a user or group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -1647,11 +1637,11 @@ export const registerRoutes = (
           "user will no longer be able to execute the given intent.",
         tags: ["project"],
         summary: "Revoke a permission from a user or group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -1712,11 +1702,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -1829,11 +1819,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -1843,6 +1833,11 @@ export const registerRoutes = (
               data: {
                 type: "object",
                 properties: {
+                  parentProject: {
+                    type: "object",
+                    id: { type: "string", example: "parentId" },
+                    displayName: { type: "string", example: "parentDisplayName" },
+                  },
                   subproject: {
                     type: "object",
                     properties: {
@@ -1908,6 +1903,14 @@ export const registerRoutes = (
                       allowedIntents: { type: "array", items: { type: "string" } },
                     },
                   },
+                  workflowitems: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      additionalProperties: true,
+                      example: { myWorkflowItems: {} },
+                    },
+                  },
                 },
               },
             },
@@ -1933,11 +1936,11 @@ export const registerRoutes = (
           "Assign a subproject to a given user. The assigned user will be notified about the change.",
         tags: ["subproject"],
         summary: "Assign a user or group to a subproject",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -1986,11 +1989,11 @@ export const registerRoutes = (
           "others are not affected. The assigned user will be notified about the change.",
         tags: ["subproject"],
         summary: "Update a subproject",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2000,6 +2003,9 @@ export const registerRoutes = (
               properties: {
                 displayName: { type: "string", example: "myDisplayName" },
                 description: { type: "string", example: "myDescription" },
+                amount: { type: "string", example: "500" },
+                assignee: { type: "string", example: "assigneeName" },
+                currency: { type: "string", example: "EUR" },
                 projectId: { type: "string", example: "projectId" },
                 subprojectId: { type: "string", example: "projectId" },
               },
@@ -2040,11 +2046,11 @@ export const registerRoutes = (
           "associated workflowitems are already set to 'closed'.",
         tags: ["subproject"],
         summary: "Close a subproject",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2055,7 +2061,6 @@ export const registerRoutes = (
                 projectId: { type: "string", example: "projectId" },
                 subprojectId: { type: "string", example: "projectId" },
               },
-              required: ["subprojectId", "projectId"],
             },
           },
         },
@@ -2092,11 +2097,11 @@ export const registerRoutes = (
           "will be ordered by their creation time and placed after all explicitly ordered workflowitems.",
         tags: ["subproject"],
         summary: "Reorder the workflowitems of the given subproject",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2114,7 +2119,6 @@ export const registerRoutes = (
                   },
                 },
               },
-              required: ["ordering", "subprojectId", "projectId"],
             },
           },
         },
@@ -2152,11 +2156,11 @@ export const registerRoutes = (
           "The only possible values for 'status' are: 'open' and 'closed'",
         tags: ["subproject"],
         summary: "Create a workflowitem",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2185,7 +2189,6 @@ export const registerRoutes = (
                   },
                 },
               },
-              required: ["amountType", "status", "displayName", "subprojectId", "projectId"],
             },
           },
         },
@@ -2235,11 +2238,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -2326,11 +2329,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -2368,11 +2371,11 @@ export const registerRoutes = (
           "user will be allowed to execute the given intent.",
         tags: ["subproject"],
         summary: "Grant a permission to a user or group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2385,7 +2388,6 @@ export const registerRoutes = (
                 projectId: { type: "string", example: "projectId" },
                 subprojectId: { type: "string", example: "projectId" },
               },
-              required: ["identity", "intent", "subprojectId", "projectId"],
             },
           },
         },
@@ -2422,11 +2424,11 @@ export const registerRoutes = (
           "user will no longer be able to execute the given intent.",
         tags: ["subproject"],
         summary: "Revoke a permission to a user or group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2439,7 +2441,6 @@ export const registerRoutes = (
                 projectId: { type: "string", example: "projectId" },
                 subprojectId: { type: "string", example: "projectId" },
               },
-              required: ["identity", "intent", "subprojectId", "projectId"],
             },
           },
         },
@@ -2492,11 +2493,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -2517,6 +2518,7 @@ export const registerRoutes = (
                             id: { type: "string", example: "myId" },
                             creationUnixTs: { type: "string", example: "1536154645775" },
                             status: { type: "string", example: "open" },
+                            amountType: { type: "string", example: "disbursed" },
                             displayName: { type: "string", example: "myDisplayName" },
                             description: { type: "string", example: "myDescription" },
                             amount: { type: "string", example: "500" },
@@ -2563,11 +2565,11 @@ export const registerRoutes = (
           "Assign a workflowitem to a given user. The assigned user will be notified about the change.",
         tags: ["workflowitem"],
         summary: "Assign a user or group to a workflowitem",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2614,14 +2616,16 @@ export const registerRoutes = (
       schema: {
         description:
           "Partially update a workflowitem. Only properties mentioned in the request body are touched, " +
-          "others are not affected. The assigned user will be notified about the change.",
+          "others are not affected. The assigned user will be notified about the change.\n" +
+          "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
+          "The only possible values for 'status' are: 'open' and 'closed'",
         tags: ["workflowitem"],
         summary: "Update a workflowitem",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2631,6 +2635,10 @@ export const registerRoutes = (
               properties: {
                 displayName: { type: "string", example: "myDisplayName" },
                 description: { type: "string", example: "myDescription" },
+                amountType: { type: "string", example: "disbursed" },
+                amount: { type: "string", example: "500" },
+                assignee: { type: "string", example: "assigneeName" },
+                currency: { type: "string", example: "EUR" },
                 projectId: { type: "string", example: "projectId" },
                 subprojectId: { type: "string", example: "projectId" },
                 workflowitemId: { type: "string", example: "workflowitemId" },
@@ -2670,11 +2678,11 @@ export const registerRoutes = (
         description: "Set a workflowitem's status to 'closed'.",
         tags: ["workflowitem"],
         summary: "Close a workflowitem",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2735,11 +2743,11 @@ export const registerRoutes = (
             },
           },
         },
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -2777,11 +2785,11 @@ export const registerRoutes = (
           "user will be allowed to execute the given intent.",
         tags: ["workflowitem"],
         summary: "Grant a permission to a user or group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2832,11 +2840,11 @@ export const registerRoutes = (
           "user will no longer be able to execute the given intent.",
         tags: ["workflowitem"],
         summary: "Revoke a permission from a user or group",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2885,11 +2893,11 @@ export const registerRoutes = (
         description: "Validates if the hashed base64 string equals the hash sent by the user.",
         tags: ["workflowitem"],
         summary: "Validate a document",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -2945,11 +2953,11 @@ export const registerRoutes = (
           "but the `sinceId` parameter may be used to truncate the output.",
         tags: ["notification"],
         summary: "List all notification of the authorized user",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -3032,11 +3040,11 @@ export const registerRoutes = (
           "is then reflected by the `isRead` flag carried in the `notification.list` response.",
         tags: ["notification"],
         summary: "Mark all notification as read",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -3132,11 +3140,11 @@ export const registerRoutes = (
           "the underlying blockchain.",
         tags: ["network"],
         summary: "Vote for permission",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -3182,11 +3190,11 @@ export const registerRoutes = (
         description: "Approves a new organization if there are enough votes.",
         tags: ["network"],
         summary: "Approve a new organization",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -3233,11 +3241,11 @@ export const registerRoutes = (
           " This organization doesn't have to go throught the voting system again",
         tags: ["network"],
         summary: "Approve a new node",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         body: {
           type: "object",
           properties: {
@@ -3297,11 +3305,11 @@ export const registerRoutes = (
         description: "List all nodes.",
         tags: ["network"],
         summary: "List all nodes",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
@@ -3373,11 +3381,11 @@ export const registerRoutes = (
         description: "Get the number of all peers in the blockchain network.",
         tags: ["network"],
         summary: "List all active peers",
-        headers: {
-          type: "object",
-          properties: { authorization: { type: "string", description: "API token" } },
-          required: ["authorization"],
-        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
         response: {
           200: {
             description: "successful response",
