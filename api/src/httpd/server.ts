@@ -1,8 +1,4 @@
-import * as bodyParser from "body-parser";
 import * as fastify from "fastify";
-import * as Ajv from "ajv";
-import * as jsonwebtoken from "jsonwebtoken";
-import { AuthToken } from "../authz/token";
 
 import { IncomingMessage, Server, ServerResponse } from "http";
 const DEFAULT_API_VERSION = "1.0";
@@ -70,8 +66,27 @@ export const createBasicApp = (jwtSecret: string, urlPrefix: string) => {
   const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     // logger: true,
   });
+
   server.setSchemaCompiler(schema => {
-    return ajv.compile(schema);
+    const validator = ajv.compile(schema);
+    return data => {
+      let valid;
+      console.log(process.env);
+      if (process.env.NODE_ENV === "prod") {
+        const d1 = JSON.stringify(data, null, 2);
+        valid = validator(data);
+        const d2 = JSON.stringify(data, null, 2);
+
+        if (d1 !== d2) {
+          console.log("ALERT!: Redacted additional payload paramters!");
+          console.log("Original Payload: \n", d1);
+          console.log("Redacted Payload: \n", d2);
+        }
+      } else {
+        valid = validator(data);
+      }
+      return valid;
+    };
   });
   registerSwagger(server, urlPrefix);
   addTokenHandling(server, jwtSecret);

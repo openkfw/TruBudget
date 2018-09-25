@@ -300,6 +300,7 @@ export const registerRoutes = (
               properties: {
                 user: {
                   type: "object",
+                  additionalProperties: false,
                   properties: {
                     id: { type: "string", example: "aSmith" },
                     password: { type: "string", example: "mySecretPassword" },
