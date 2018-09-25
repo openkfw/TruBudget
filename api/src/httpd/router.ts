@@ -1360,6 +1360,7 @@ export const registerRoutes = (
                 assignee: { type: "string", example: "aSmith" },
                 currency: { type: "string", example: "EUR" },
                 projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
               },
               required: ["projectId"],
             },
