@@ -301,8 +301,8 @@ export const registerRoutes = (
                 user: {
                   type: "object",
                   properties: {
-                    id: { type: "string", example: "myId" },
-                    password: { type: "string", example: "mypassword" },
+                    id: { type: "string", example: "aSmith" },
+                    password: { type: "string", example: "mySecretPassword" },
                   },
                   required: ["id", "password"],
                 },
@@ -322,17 +322,17 @@ export const registerRoutes = (
                   user: {
                     type: "object",
                     properties: {
-                      id: { type: "string", example: "myId" },
-                      displayName: { type: "string", example: "myDisplayName" },
-                      organization: { type: "string", example: "myorganization" },
+                      id: { type: "string", example: "aSmith" },
+                      displayName: { type: "string", example: "Alice Smith" },
+                      organization: { type: "string", example: "Alice's Solutions & Co" },
                       allowedIntents: { type: "array", items: { type: "string" } },
                       groups: {
                         type: "array",
                         items: {
                           type: "object",
                           properties: {
-                            groupId: { type: "string", example: "myGroupId" },
-                            displayName: { type: "string", example: "myGroup" },
+                            groupId: { type: "string", example: "Manager" },
+                            displayName: { type: "string", example: "All Manager Group" },
                           },
                         },
                       },
@@ -375,7 +375,10 @@ export const registerRoutes = (
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
       schema: {
-        description: "List all registered users.",
+        description:
+          "List all registered users and groups.\n" +
+          "In case of a user the 'organization' property exists" +
+          "In case of a group the 'isGroup' property exists with value 'true",
         tags: ["user"],
         summary: "List all registered users",
         security: [
@@ -397,9 +400,10 @@ export const registerRoutes = (
                     items: {
                       type: "object",
                       properties: {
-                        id: { type: "string", example: "myId" },
-                        displayName: { type: "string", example: "myDisplayName" },
-                        organization: { type: "string", example: "myorganization" },
+                        id: { type: "string", example: "aSmith" },
+                        displayName: { type: "string", example: "Alice Smith" },
+                        organization: { type: "string", example: "Alice's Solutions & Co" },
+                        isGroup: { type: "boolean", example: true },
                       },
                     },
                   },
@@ -447,10 +451,10 @@ export const registerRoutes = (
                   type: "object",
                   properties: {
                     additionalProperties: false,
-                    id: { type: "string", example: "myId" },
-                    displayName: { type: "string", example: "myDisplayName" },
-                    organization: { type: "string", example: "myorganization" },
-                    password: { type: "string", example: "mypassword" },
+                    id: { type: "string", example: "aSmith" },
+                    displayName: { type: "string", example: "Alice Smith" },
+                    organization: { type: "string", example: "Alice's Solutions & Co" },
+                    password: { type: "string", example: "mySecretPassword" },
                   },
                   required: ["id", "displayName", "organization", "password"],
                 },
@@ -471,8 +475,8 @@ export const registerRoutes = (
                     type: "object",
                     properties: {
                       id: { type: "string", example: "myId" },
-                      displayName: { type: "string", example: "myDisplayName" },
-                      organization: { type: "string", example: "myorganization" },
+                      displayName: { type: "string", example: "Alice Smith" },
+                      organization: { type: "string", example: "Alice's Solutions & Co" },
                       address: {
                         type: "string",
                         example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
@@ -540,8 +544,8 @@ export const registerRoutes = (
                   type: "object",
                   properties: {
                     additionalProperties: false,
-                    id: { type: "string", example: "myId" },
-                    displayName: { type: "string", example: "myDisplayName" },
+                    id: { type: "string", example: "Manager" },
+                    displayName: { type: "string", example: "All Manager Group" },
                     users: { type: "array", items: { type: "string" } },
                   },
                   required: ["id", "displayName", "users"],
@@ -616,12 +620,12 @@ export const registerRoutes = (
                   type: "object",
                   additionalProperties: false,
                   properties: {
-                    id: { type: "string", example: "myId" },
+                    id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                     status: { type: "string", example: "open" },
-                    displayName: { type: "string", example: "myDisplayName" },
-                    description: { type: "string", example: "myDescription" },
-                    amount: { type: "string", example: "500" },
-                    assignee: { type: "string", example: "assigneeName" },
+                    displayName: { type: "string", example: "Build a town-project" },
+                    description: { type: "string", example: "A town should be built" },
+                    amount: { type: "string", example: "10000" },
+                    assignee: { type: "string", example: "aSmith" },
                     currency: { type: "string", example: "EUR" },
                     thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                   },
@@ -686,7 +690,7 @@ export const registerRoutes = (
               data: {
                 type: "object",
                 additionalProperties: true,
-                example: { "notification.list": ["szd"], "notification.markRead": ["szd"] },
+                example: { "notification.list": ["aSmith"], "notification.markRead": ["aSmith"] },
               },
             },
           },
@@ -724,7 +728,7 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
                 intent: { type: "string", example: "global.createProject" },
               },
               required: ["identity", "intent"],
@@ -776,7 +780,7 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
               },
               required: ["identity"],
             },
@@ -828,7 +832,7 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
                 intent: { type: "string", example: "global.createProject" },
               },
               required: ["identity", "intent"],
@@ -889,11 +893,11 @@ export const registerRoutes = (
                     items: {
                       type: "object",
                       properties: {
-                        groupId: { type: "string", example: "myGroupId" },
-                        displayName: { type: "string", example: "myDisplayName" },
+                        groupId: { type: "string", example: "Manager" },
+                        displayName: { type: "string", example: "All Manager Group" },
                         users: {
                           type: "array",
-                          items: { type: "string" },
+                          items: { type: "string", example: "aSmith" },
                         },
                       },
                     },
@@ -935,8 +939,8 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                groupId: { type: "string", example: "myGroupId" },
-                userId: { type: "string", example: "myUserId" },
+                groupId: { type: "string", example: "Manager" },
+                userId: { type: "string", example: "aSmith" },
               },
               required: ["groupId", "userId"],
             },
@@ -989,8 +993,8 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                groupId: { type: "string", example: "myGroupId" },
-                userId: { type: "string", example: "myUserId" },
+                groupId: { type: "string", example: "Manager" },
+                userId: { type: "string", example: "aSmith" },
               },
               required: ["groupId", "userId"],
             },
@@ -1056,13 +1060,13 @@ export const registerRoutes = (
                         data: {
                           type: "object",
                           properties: {
-                            id: { type: "string", example: "myId" },
+                            id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                             creationUnixTs: { type: "string", example: "1536154645775" },
                             status: { type: "string", example: "open" },
-                            displayName: { type: "string", example: "myDisplayName" },
-                            description: { type: "string", example: "myDescription" },
-                            amount: { type: "string", example: "500" },
-                            assignee: { type: "string", example: "assigneeName" },
+                            displayName: { type: "string", example: "Build a town-project" },
+                            description: { type: "string", example: "A town should be built" },
+                            amount: { type: "string", example: "10000" },
+                            assignee: { type: "string", example: "aSmith" },
                             currency: { type: "string", example: "EUR" },
                             thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                           },
@@ -1074,7 +1078,7 @@ export const registerRoutes = (
                             properties: {
                               key: { type: "string" },
                               intent: { type: "string", example: "global.createProject" },
-                              createdBy: { type: "string", example: "alice" },
+                              createdBy: { type: "string", example: "aSmith" },
                               createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
                               dataVersion: { type: "string", example: "1" },
                               data: {
@@ -1083,13 +1087,22 @@ export const registerRoutes = (
                                   project: {
                                     type: "object",
                                     properties: {
-                                      id: { type: "string", example: "myId" },
+                                      id: {
+                                        type: "string",
+                                        example: "d0e8c69eg298c87e3899119e025eff1f",
+                                      },
                                       creationUnixTs: { type: "string", example: "1536154645775" },
                                       status: { type: "string", example: "open" },
-                                      displayName: { type: "string", example: "myDisplayName" },
-                                      description: { type: "string", example: "myDescription" },
-                                      amount: { type: "string", example: "500" },
-                                      assignee: { type: "string", example: "assigneeName" },
+                                      displayName: {
+                                        type: "string",
+                                        example: "Build a town-project",
+                                      },
+                                      description: {
+                                        type: "string",
+                                        example: "A town should be built",
+                                      },
+                                      amount: { type: "string", example: "10000" },
+                                      assignee: { type: "string", example: "aSmith" },
                                       currency: { type: "string", example: "EUR" },
                                       thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                     },
@@ -1098,13 +1111,16 @@ export const registerRoutes = (
                                     type: "object",
                                     additionalProperties: true,
                                     example: {
-                                      "subproject.intent.listPermissions": ["alice", "john"],
+                                      "subproject.intent.listPermissions": ["aSmith", "jDoe"],
                                     },
                                   },
                                   snapshot: {
                                     type: "object",
                                     properties: {
-                                      displayName: { type: "string", example: "myDisplayName" },
+                                      displayName: {
+                                        type: "string",
+                                        example: "Build a town-project",
+                                      },
                                     },
                                   },
                                 },
@@ -1168,13 +1184,13 @@ export const registerRoutes = (
                       data: {
                         type: "object",
                         properties: {
-                          id: { type: "string", example: "myId" },
+                          id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                           creationUnixTs: { type: "string", example: "1536154645775" },
                           status: { type: "string", example: "open" },
-                          displayName: { type: "string", example: "myDisplayName" },
-                          description: { type: "string", example: "myDescription" },
-                          amount: { type: "string", example: "500" },
-                          assignee: { type: "string", example: "assigneeName" },
+                          displayName: { type: "string", example: "Build a town-project" },
+                          description: { type: "string", example: "A town should be built" },
+                          amount: { type: "string", example: "10000" },
+                          assignee: { type: "string", example: "aSmith" },
                           currency: { type: "string", example: "EUR" },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                         },
@@ -1186,7 +1202,7 @@ export const registerRoutes = (
                           properties: {
                             key: { type: "string" },
                             intent: { type: "string", example: "global.createProject" },
-                            createdBy: { type: "string", example: "alice" },
+                            createdBy: { type: "string", example: "aSmith" },
                             createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
                             dataVersion: { type: "string", example: "1" },
                             data: {
@@ -1195,13 +1211,22 @@ export const registerRoutes = (
                                 project: {
                                   type: "object",
                                   properties: {
-                                    id: { type: "string", example: "myId" },
+                                    id: {
+                                      type: "string",
+                                      example: "d0e8c69eg298c87e3899119e025eff1f",
+                                    },
                                     creationUnixTs: { type: "string", example: "1536154645775" },
                                     status: { type: "string", example: "open" },
-                                    displayName: { type: "string", example: "myDisplayName" },
-                                    description: { type: "string", example: "myDescription" },
-                                    amount: { type: "string", example: "500" },
-                                    assignee: { type: "string", example: "assigneeName" },
+                                    displayName: {
+                                      type: "string",
+                                      example: "Build a town-project",
+                                    },
+                                    description: {
+                                      type: "string",
+                                      example: "A town should be built",
+                                    },
+                                    amount: { type: "string", example: "10000" },
+                                    assignee: { type: "string", example: "aSmith" },
                                     currency: { type: "string", example: "EUR" },
                                     thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                   },
@@ -1210,13 +1235,16 @@ export const registerRoutes = (
                                   type: "object",
                                   additionalProperties: true,
                                   example: {
-                                    "subproject.intent.listPermissions": ["alice", "john"],
+                                    "subproject.intent.listPermissions": ["aSmith", "jDoe"],
                                   },
                                 },
                                 snapshot: {
                                   type: "object",
                                   properties: {
-                                    displayName: { type: "string", example: "myDisplayName" },
+                                    displayName: {
+                                      type: "string",
+                                      example: "townproject",
+                                    },
                                   },
                                 },
                               },
@@ -1273,8 +1301,8 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
-                projectId: { type: "string", example: "projectId" },
+                identity: { type: "string", example: "aSmith" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               },
               required: ["identity", "projectId"],
             },
@@ -1326,12 +1354,12 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                displayName: { type: "string", example: "myDisplayName" },
-                description: { type: "string", example: "myDescription" },
-                amount: { type: "string", example: "500" },
-                assignee: { type: "string", example: "assigneeName" },
+                displayName: { type: "string", example: "townproject" },
+                description: { type: "string", example: "A town should be built" },
+                amount: { type: "string", example: "10000" },
+                assignee: { type: "string", example: "aSmith" },
                 currency: { type: "string", example: "EUR" },
-                projectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               },
               required: ["projectId"],
             },
@@ -1383,7 +1411,7 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                projectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               },
               required: ["projectId"],
             },
@@ -1434,17 +1462,17 @@ export const registerRoutes = (
             data: {
               type: "object",
               properties: {
-                projectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                 subproject: {
                   type: "object",
                   additionalProperties: false,
                   properties: {
-                    id: { type: "string", example: "myId" },
+                    id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                     status: { type: "string", example: "open" },
-                    displayName: { type: "string", example: "myDisplayName" },
-                    description: { type: "string", example: "myDescription" },
-                    amount: { type: "string", example: "500" },
-                    assignee: { type: "string", example: "assigneeName" },
+                    displayName: { type: "string", example: "townproject" },
+                    description: { type: "string", example: "A town should be built" },
+                    amount: { type: "string", example: "10000" },
+                    assignee: { type: "string", example: "aSmith" },
                     currency: { type: "string", example: "EUR" },
                   },
                   required: ["displayName", "description", "amount", "currency"],
@@ -1517,25 +1545,25 @@ export const registerRoutes = (
                       properties: {
                         key: { type: "string" },
                         intent: { type: "string", example: "global.createProject" },
-                        createdBy: { type: "string", example: "alice" },
+                        createdBy: { type: "string", example: "aSmith" },
                         createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
                         dataVersion: { type: "string", example: "1" },
                         data: {
                           type: "object",
                           additionalProperties: true,
+                          example: { identity: "aSmith", intent: "subproject.viewDetails" },
                           properties: {
                             permissions: {
                               type: "object",
                               additionalProperties: true,
-                              example: { "subproject.intent.listPermissions": ["alice", "john"] },
+                              example: { "subproject.intent.listPermissions": ["aSmith", "jDoe"] },
                             },
                           },
                         },
                         snapshot: {
                           type: "object",
-                          additionalProperties: true,
                           properties: {
-                            displayName: { type: "string", example: "myDisplayName" },
+                            displayName: { type: "string", example: "townproject" },
                           },
                         },
                       },
@@ -1588,7 +1616,7 @@ export const registerRoutes = (
                 type: "object",
                 additionalProperties: true,
                 example: {
-                  "project.viewDetails": ["alice", "john"],
+                  "project.viewDetails": ["aSmith", "jDoe"],
                 },
               },
             },
@@ -1628,9 +1656,9 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
                 intent: { type: "string", example: "global.createProject" },
-                projectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               },
               required: ["identity", "intent", "projectId"],
             },
@@ -1682,9 +1710,9 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
                 intent: { type: "string", example: "global.createProject" },
-                projectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               },
               required: ["identity", "intent", "projectId"],
             },
@@ -1757,13 +1785,13 @@ export const registerRoutes = (
                         data: {
                           type: "object",
                           properties: {
-                            id: { type: "string", example: "myId" },
+                            id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                             creationUnixTs: { type: "string", example: "1536154645775" },
                             status: { type: "string", example: "open" },
-                            displayName: { type: "string", example: "myDisplayName" },
-                            description: { type: "string", example: "myDescription" },
-                            amount: { type: "string", example: "500" },
-                            assignee: { type: "string", example: "assigneeName" },
+                            displayName: { type: "string", example: "school" },
+                            description: { type: "string", example: "school should be built" },
+                            amount: { type: "string", example: "3000" },
+                            assignee: { type: "string", example: "aSmith" },
                             currency: { type: "string", example: "EUR" },
                             thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                           },
@@ -1775,7 +1803,7 @@ export const registerRoutes = (
                             properties: {
                               key: { type: "string" },
                               intent: { type: "string", example: "global.createProject" },
-                              createdBy: { type: "string", example: "alice" },
+                              createdBy: { type: "string", example: "aSmith" },
                               createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
                               dataVersion: { type: "string", example: "1" },
                               data: {
@@ -1784,13 +1812,19 @@ export const registerRoutes = (
                                   subproject: {
                                     type: "object",
                                     properties: {
-                                      id: { type: "string", example: "myId" },
+                                      id: {
+                                        type: "string",
+                                        example: "d0e8c69eg298c87e3899119e025eff1f",
+                                      },
                                       creationUnixTs: { type: "string", example: "1536154645775" },
                                       status: { type: "string", example: "open" },
-                                      displayName: { type: "string", example: "myDisplayName" },
-                                      description: { type: "string", example: "myDescription" },
-                                      amount: { type: "string", example: "500" },
-                                      assignee: { type: "string", example: "assigneeName" },
+                                      displayName: { type: "string", example: "school" },
+                                      description: {
+                                        type: "string",
+                                        example: "school should be built",
+                                      },
+                                      amount: { type: "string", example: "3000" },
+                                      assignee: { type: "string", example: "aSmith" },
                                       currency: { type: "string", example: "EUR" },
                                       thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                     },
@@ -1799,13 +1833,13 @@ export const registerRoutes = (
                                     type: "object",
                                     additionalProperties: true,
                                     example: {
-                                      "subproject.intent.listPermissions": ["alice", "john"],
+                                      "subproject.intent.listPermissions": ["aSmith", "jDoe"],
                                     },
                                   },
                                   snapshot: {
                                     type: "object",
                                     properties: {
-                                      displayName: { type: "string", example: "myDisplayName" },
+                                      displayName: { type: "string", example: "school" },
                                     },
                                   },
                                 },
@@ -1846,9 +1880,11 @@ export const registerRoutes = (
           properties: {
             projectId: {
               type: "string",
+              example: "d0e8c69eg298c87e3899119e025eff1f",
             },
             subprojectId: {
               type: "string",
+              example: "rfe8er9eg298c87e3899119e025eff1f",
             },
           },
         },
@@ -1869,8 +1905,8 @@ export const registerRoutes = (
                   parentProject: {
                     type: "object",
                     properties: {
-                      id: { type: "string", example: "parentId" },
-                      displayName: { type: "string", example: "parentDisplayName" },
+                      id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                      displayName: { type: "string", example: "townproject" },
                     },
                   },
                   subproject: {
@@ -1879,13 +1915,13 @@ export const registerRoutes = (
                       data: {
                         type: "object",
                         properties: {
-                          id: { type: "string", example: "myId" },
+                          id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                           creationUnixTs: { type: "string", example: "1536154645775" },
                           status: { type: "string", example: "open" },
-                          displayName: { type: "string", example: "myDisplayName" },
-                          description: { type: "string", example: "myDescription" },
-                          amount: { type: "string", example: "500" },
-                          assignee: { type: "string", example: "assigneeName" },
+                          displayName: { type: "string", example: "school" },
+                          description: { type: "string", example: "school should be built" },
+                          amount: { type: "string", example: "3000" },
+                          assignee: { type: "string", example: "aSmith" },
                           currency: { type: "string", example: "EUR" },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                         },
@@ -1897,7 +1933,7 @@ export const registerRoutes = (
                           properties: {
                             key: { type: "string" },
                             intent: { type: "string", example: "global.createProject" },
-                            createdBy: { type: "string", example: "alice" },
+                            createdBy: { type: "string", example: "aSmith" },
                             createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
                             dataVersion: { type: "string", example: "1" },
                             data: {
@@ -1906,13 +1942,19 @@ export const registerRoutes = (
                                 subproject: {
                                   type: "object",
                                   properties: {
-                                    id: { type: "string", example: "myId" },
+                                    id: {
+                                      type: "string",
+                                      example: "d0e8c69eg298c87e3899119e025eff1f",
+                                    },
                                     creationUnixTs: { type: "string", example: "1536154645775" },
                                     status: { type: "string", example: "open" },
-                                    displayName: { type: "string", example: "myDisplayName" },
-                                    description: { type: "string", example: "myDescription" },
-                                    amount: { type: "string", example: "500" },
-                                    assignee: { type: "string", example: "assigneeName" },
+                                    displayName: { type: "string", example: "school" },
+                                    description: {
+                                      type: "string",
+                                      example: "school should be built",
+                                    },
+                                    amount: { type: "string", example: "3000" },
+                                    assignee: { type: "string", example: "aSmith" },
                                     currency: { type: "string", example: "EUR" },
                                     thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                   },
@@ -1921,13 +1963,13 @@ export const registerRoutes = (
                                   type: "object",
                                   additionalProperties: true,
                                   example: {
-                                    "subproject.intent.listPermissions": ["alice", "john"],
+                                    "subproject.intent.listPermissions": ["aSmith", "jDoe"],
                                   },
                                 },
                                 snapshot: {
                                   type: "object",
                                   properties: {
-                                    displayName: { type: "string", example: "myDisplayName" },
+                                    displayName: { type: "string", example: "school" },
                                   },
                                 },
                               },
@@ -1984,9 +2026,9 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
+                identity: { type: "string", example: "aSmith" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
               },
               required: ["identity", "subprojectId", "projectId"],
             },
@@ -2038,13 +2080,13 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                displayName: { type: "string", example: "myDisplayName" },
-                description: { type: "string", example: "myDescription" },
-                amount: { type: "string", example: "500" },
-                assignee: { type: "string", example: "assigneeName" },
+                displayName: { type: "string", example: "school" },
+                description: { type: "string", example: "school should be built" },
+                amount: { type: "string", example: "3000" },
+                assignee: { type: "string", example: "aSmith" },
                 currency: { type: "string", example: "EUR" },
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
               },
               required: ["subprojectId", "projectId"],
             },
@@ -2096,8 +2138,8 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
               },
             },
           },
@@ -2148,8 +2190,8 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
                 ordering: {
                   type: "array",
                   items: {
@@ -2208,14 +2250,14 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "subprojectId" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
 
                 status: { type: "string", example: "open" },
-                displayName: { type: "string", example: "myDisplayName" },
-                description: { type: "string", example: "myDescription" },
+                displayName: { type: "string", example: "classroom" },
+                description: { type: "string", example: "build classroom" },
                 amount: { type: "string", example: "500" },
-                assignee: { type: "string", example: "assigneeName" },
+                assignee: { type: "string", example: "aSmith" },
                 currency: { type: "string", example: "EUR" },
                 amountType: { type: "string", example: "disbursed" },
                 documents: {
@@ -2223,7 +2265,7 @@ export const registerRoutes = (
                   items: {
                     type: "object",
                     properties: {
-                      id: { type: "string", example: "myId" },
+                      id: { type: "string", example: "classroom-contract" },
                       base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
                     },
                   },
@@ -2299,7 +2341,7 @@ export const registerRoutes = (
                       properties: {
                         key: { type: "string" },
                         intent: { type: "string", example: "global.createProject" },
-                        createdBy: { type: "string", example: "alice" },
+                        createdBy: { type: "string", example: "aSmith" },
                         createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
                         dataVersion: { type: "string", example: "1" },
                         data: {
@@ -2307,28 +2349,31 @@ export const registerRoutes = (
                           additionalProperties: true,
                           example: {
                             subproject: {
-                              id: "mysubId45",
+                              id: "er58c69eg298c87e3899119e025eff1f",
                               creationUnixTs: "1536834568552",
                               status: "open",
-                              displayName: "myDisplayName",
-                              description: "myDescription",
+                              displayName: "school",
+                              description: "school should be built",
                               amount: "500",
                               currency: "EUR",
-                              assignee: "assigneeName",
+                              assignee: "aSmith",
                             },
                           },
                           properties: {
                             permissions: {
                               type: "object",
                               additionalProperties: true,
-                              example: { "subproject.intent.listPermissions": ["alice", "john"] },
+                              example: { "subproject.intent.listPermissions": ["aSmith", "jDoe"] },
                             },
                           },
                         },
                         snapshot: {
                           type: "object",
                           properties: {
-                            displayName: { type: "string", example: "myDisplayName" },
+                            displayName: { type: "string", example: "classroom" },
+                            amountType: { type: "string", example: "disbursed" },
+                            amount: { type: "string", example: "500" },
+                            currency: { type: "string", example: "EUR" },
                           },
                         },
                       },
@@ -2363,9 +2408,11 @@ export const registerRoutes = (
           properties: {
             projectId: {
               type: "string",
+              example: "er58c69eg298c87e3899119e025eff1f",
             },
             subprojectId: {
               type: "string",
+              example: "4j28c69eg298c87e3899119e025eff1f",
             },
           },
         },
@@ -2384,7 +2431,7 @@ export const registerRoutes = (
                 type: "object",
                 additionalProperties: true,
                 example: {
-                  "project.viewDetails": ["alice", "john"],
+                  "project.viewDetails": ["aSmith", "jDoe"],
                 },
               },
             },
@@ -2424,10 +2471,10 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
                 intent: { type: "string", example: "global.createProject" },
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
               },
             },
           },
@@ -2478,10 +2525,10 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
                 intent: { type: "string", example: "global.createProject" },
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "t628c69eg298c87e3899119e025eff1f" },
               },
             },
           },
@@ -2557,22 +2604,26 @@ export const registerRoutes = (
                         data: {
                           type: "object",
                           properties: {
-                            id: { type: "string", example: "myId" },
+                            id: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
                             creationUnixTs: { type: "string", example: "1536154645775" },
                             status: { type: "string", example: "open" },
                             amountType: { type: "string", example: "disbursed" },
-                            displayName: { type: "string", example: "myDisplayName" },
-                            description: { type: "string", example: "myDescription" },
+                            displayName: { type: "string", example: "classroom" },
+                            description: { type: "string", example: "build a classroom" },
                             amount: { type: "string", example: "500" },
-                            assignee: { type: "string", example: "assigneeName" },
+                            assignee: { type: "string", example: "aSmith" },
                             currency: { type: "string", example: "EUR" },
                             documents: {
                               type: "array",
                               items: {
                                 type: "object",
                                 properties: {
-                                  id: { type: "string", example: "myId" },
-                                  hash: { type: "string" },
+                                  id: { type: "string", example: "classroom-contract" },
+                                  hash: {
+                                    type: "string",
+                                    example:
+                                      "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
+                                  },
                                 },
                               },
                             },
@@ -2620,10 +2671,10 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
-                workflowitemId: { type: "string", example: "workflowitemId" },
+                identity: { type: "string", example: "aSmith" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "e528c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "9w88c69eg298c87e3899119e025eff1f" },
               },
               required: ["identity", "workflowitemId", "subprojectId", "projectId"],
             },
@@ -2677,15 +2728,28 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                displayName: { type: "string", example: "myDisplayName" },
-                description: { type: "string", example: "myDescription" },
+                displayName: { type: "string", example: "classroom" },
+                description: { type: "string", example: "build a classroom" },
                 amountType: { type: "string", example: "disbursed" },
                 amount: { type: "string", example: "500" },
-                assignee: { type: "string", example: "assigneeName" },
+                assignee: { type: "string", example: "aSmith" },
                 currency: { type: "string", example: "EUR" },
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
-                workflowitemId: { type: "string", example: "workflowitemId" },
+                projectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                documents: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "myId" },
+                      base64: {
+                        type: "string",
+                        example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
+                      },
+                    },
+                  },
+                },
               },
               required: ["workflowitemId", "subprojectId", "projectId"],
             },
@@ -2735,9 +2799,9 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
-                workflowitemId: { type: "string", example: "workflowitemId" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er28c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "5z28c69eg298c87e3899119e025eff1f" },
               },
               required: ["workflowitemId", "subprojectId", "projectId"],
             },
@@ -2779,12 +2843,15 @@ export const registerRoutes = (
           properties: {
             projectId: {
               type: "string",
+              example: "4j28c69eg298c87e3899119e025eff1f",
             },
             subprojectId: {
               type: "string",
+              example: "5t28c69eg298c87e3899119e025eff1f",
             },
             workflowitemId: {
               type: "string",
+              example: "6z28c69eg298c87e3899119e025eff1f",
             },
           },
         },
@@ -2803,7 +2870,7 @@ export const registerRoutes = (
                 type: "object",
                 additionalProperties: true,
                 example: {
-                  "project.viewDetails": ["alice", "john"],
+                  "project.viewDetails": ["aSmith", "jDoe"],
                 },
               },
             },
@@ -2843,11 +2910,11 @@ export const registerRoutes = (
             data: {
               type: "object",
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
                 intent: { type: "string", example: "global.createProject" },
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
-                workflowitemId: { type: "string", example: "workflowitemId" },
+                projectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "6z28c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
               },
               required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
             },
@@ -2899,11 +2966,11 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                identity: { type: "string", example: "alice" },
+                identity: { type: "string", example: "aSmith" },
                 intent: { type: "string", example: "global.createProject" },
-                projectId: { type: "string", example: "projectId" },
-                subprojectId: { type: "string", example: "projectId" },
-                workflowitemId: { type: "string", example: "workflowitemId" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "6z28c69eg298c87e3899119e025eff1f" },
               },
               required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
             },
@@ -2956,8 +3023,14 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                base64String: { type: "string" },
-                hash: { type: "string" },
+                base64String: {
+                  type: "string",
+                  example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
+                },
+                hash: {
+                  type: "string",
+                  example: "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
+                },
               },
               required: ["base64String", "hash"],
             },
@@ -2972,7 +3045,7 @@ export const registerRoutes = (
               data: {
                 type: "object",
                 properties: {
-                  isIdentical: { type: "boolean" },
+                  isIdentical: { type: "boolean", example: true },
                 },
               },
             },
@@ -3037,8 +3110,9 @@ export const registerRoutes = (
                           items: {
                             type: "object",
                             properties: {
-                              id: { type: "string", example: "myId" },
-                              type: { type: "string" },
+                              id: { type: "string", example: "fe9c2b24ade9a92360b3a898665678ac" },
+                              type: { type: "string", example: "workflowitem" },
+                              displayName: { type: "string", example: "classroom" },
                             },
                           },
                         },
@@ -3048,21 +3122,21 @@ export const registerRoutes = (
                           properties: {
                             key: { type: "string" },
                             intent: { type: "string", example: "global.createProject" },
-                            createdBy: { type: "string", example: "alice" },
-                            isRcreatedAtead: { type: "string" },
+                            createdBy: { type: "string", example: "aSmith" },
+                            createdAt: { type: "string", example: "2018-09-24T12:02:58.763Z" },
                             dataVersion: { type: "string", example: "1" },
                             data: {
                               type: "object",
                               additionalProperties: true,
                               example: {
                                 project: {
-                                  id: "myId45",
+                                  id: "fe9c2b24ade9a92360b3a898665678ac",
                                   creationUnixTs: "1536834480274",
                                   status: "open",
-                                  displayName: "myDisplayName",
-                                  description: "myDescription",
-                                  amount: "500",
-                                  assignee: "Stefan",
+                                  displayName: "town-project",
+                                  description: "a town should be built",
+                                  amount: "10000",
+                                  assignee: "aSmith",
                                   currency: "EUR",
                                   thumbnail: "/Thumbnail_0001.jpg",
                                 },
@@ -3112,7 +3186,7 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                notificationId: { type: "string" },
+                notificationId: { type: "string", example: "c9a6d74d-9508-4960-b39e-72f90f292b74" },
               },
               required: ["notificationId"],
             },
@@ -3160,7 +3234,7 @@ export const registerRoutes = (
               additionalProperties: false,
               properties: {
                 address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
-                organization: { type: "string", example: "myorganization" },
+                organization: { type: "string", example: "Alice's Solutions & Co" },
               },
               required: ["address", "organization"],
             },
@@ -3265,7 +3339,7 @@ export const registerRoutes = (
               type: "object",
               additionalProperties: false,
               properties: {
-                organization: { type: "string", example: "myorganization" },
+                organization: { type: "string", example: "Alice's Solutions & Co" },
               },
               required: ["organization"],
             },
@@ -3395,7 +3469,7 @@ export const registerRoutes = (
                               type: "string",
                               example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
                             },
-                            organization: { type: "string", example: "myorganization" },
+                            organization: { type: "string", example: "Alice's Solutions & Co" },
                           },
                         },
                         myVote: { type: "string", example: "admin" },
@@ -3412,7 +3486,10 @@ export const registerRoutes = (
                                     type: "string",
                                     example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
                                   },
-                                  organization: { type: "string", example: "myorganization" },
+                                  organization: {
+                                    type: "string",
+                                    example: "Alice's Solutions & Co",
+                                  },
                                 },
                               },
                             },
