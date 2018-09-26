@@ -16,7 +16,6 @@ services:
   master:
     image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
-      CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
     volumes:
@@ -37,7 +36,6 @@ services:
   testmaster:
     image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
-      CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
     volumes:

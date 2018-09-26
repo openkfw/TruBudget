@@ -1,5 +1,6 @@
 import * as Ajv from "ajv";
 import * as fastify from "fastify";
+const rawBody = require('raw-body')
 
 import { IncomingMessage, Server, ServerResponse } from "http";
 const DEFAULT_API_VERSION = "1.0";
@@ -29,6 +30,8 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
     }
   });
 };
+
+
 
 const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, apiPort: Number) => {
   server.register(require("fastify-swagger"), {
@@ -89,6 +92,18 @@ export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Nu
   });
   registerSwagger(server, urlPrefix, apiPort);
   addTokenHandling(server, jwtSecret);
+
+
+
+  server.addContentTypeParser('application/gzip', (req, done) => {
+    rawBody(req, {
+      length: req.headers['content-length'],
+      limit: '1024mb',
+    }, (err, body) => {
+      if (err) return done(err)
+      done(null, body)
+    })
+  })
 
   // app.use(logging);
   return server;

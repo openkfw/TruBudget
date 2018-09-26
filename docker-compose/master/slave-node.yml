@@ -17,7 +17,6 @@ services:
   bc-slave:
     image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
-      CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
@@ -46,7 +45,6 @@ services:
   test-bc-slave:
     image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
-      CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j

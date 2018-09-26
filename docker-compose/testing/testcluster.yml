@@ -18,7 +18,6 @@ services:
   master:
     image: index.docker.io/trubudget/v1/blockchain:${TAG}
     environment:
-      CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}

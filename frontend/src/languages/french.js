@@ -196,7 +196,10 @@ const fr = {
     rtUpdates: "Mises à jour en temps réel",
     selections: "Sélections",
     unread_notifications: "Notifications non-lues",
-    write_permission: "Écrire"
+    write_permission: "Écrire",
+    restore: "French: Restore",
+    download: "French: Download",
+    backup: "French: Backup",
   },
 
   dashboard: {

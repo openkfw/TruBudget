@@ -194,7 +194,10 @@ const en = {
     rtUpdates: "Real-Time Updates",
     selections: "Selections",
     unread_notifications: "Unread Notifications",
-    write_permission: "Write"
+    write_permission: "Write",
+    restore: "Restore",
+    download: "Download",
+    backup: "Backup",
   },
 
   dashboard: {

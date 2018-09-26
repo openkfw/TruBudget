@@ -15,7 +15,7 @@ const defaultState = fromJS({
   selectedId: "",
   selectedSection: "",
   currentProject: " ",
-  currentSubProject: " "
+  currentSubProject: " ",
 });
 
 const countUnreadNotifications = notifications =>
@@ -44,7 +44,6 @@ export default function navbarReducer(state = defaultState, action) {
       return state.merge({
         peers: action.peers,
         unreadNotifications: countUnreadNotifications(action.notifications),
-
         streamNames: action.streamNames
       });
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:

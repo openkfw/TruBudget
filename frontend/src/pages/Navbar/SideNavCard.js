@@ -11,7 +11,8 @@ import NodesIcon from "@material-ui/icons/DesktopWindows";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import UsersIcon from "@material-ui/icons/PeopleOutline";
 import Subheader from "@material-ui/core/ListSubheader";
-
+import RestoreBackupButton from './RestoreBackupButton';
+import DownloadBackupButton from './DownloadBackupButton';
 import strings from "../../localizeStrings";
 
 const SideNavCard = ({
@@ -21,9 +22,11 @@ const SideNavCard = ({
   organization,
   userDashboardEnabled,
   nodeDashboardEnabled,
-  groupDashboardEnabled,
   history,
-  groups
+  groups,
+  userId,
+  createBackup,
+  restoreBackup
 }) => (
   <div>
     <div
@@ -32,7 +35,8 @@ const SideNavCard = ({
         backgroundSize: "cover",
         height: "100px",
         position: "relative",
-        width: "300px"
+        width: "100%",
+        minWidth: "300px"
       }}
     >
       <div
@@ -99,6 +103,16 @@ const SideNavCard = ({
       ) : null}
     </List>
     <Divider />
+    {userId === "root" ? (
+      <List>
+        <Subheader> {strings.navigation.backup} </Subheader>
+        <ListItem >
+            <DownloadBackupButton createBackup={createBackup}/>
+            <RestoreBackupButton restoreBackup={restoreBackup}/>
+        </ListItem>
+        <Divider />
+      </List>
+    ) : null}
     <List>
       <Subheader> {strings.groupDashboard.groups} </Subheader>
       {groups.map(group => (

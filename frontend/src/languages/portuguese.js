@@ -195,7 +195,10 @@ const pt = {
     rtUpdates: "Atualizações em tempo real",
     selections: "Seleções",
     unread_notifications: "Notificações não lidas",
-    write_permission: "Escrita"
+    write_permission: "Escrita",
+    restore: "Portuguese: Restore",
+    download: "Portuguese: Download",
+    backup: "Portuguese: Backup",
   },
 
   dashboard: {

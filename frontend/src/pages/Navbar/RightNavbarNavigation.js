@@ -17,13 +17,13 @@ const styles = {
   }
 };
 
-const RightNavbarNavigations = ({ peers, numberOfActivePeers, unreadNotifications, history, logout, organization }) => {
+const RightNavbarNavigations = ({  peers, numberOfActivePeers, unreadNotifications, history, logout, organization }) => {
   return (
     <div style={styles.container}>
       <Typography variant="button" color="primary" style={styles.organization}>
         {organization}
       </Typography>
-      <NavbarIcons unreadNotifications={unreadNotifications} numberOfActivePeers={numberOfActivePeers} peers={peers} history={history} logout={logout} />
+      <NavbarIcons  unreadNotifications={unreadNotifications} numberOfActivePeers={numberOfActivePeers} peers={peers} history={history} logout={logout} />
     </div>
   );
 };

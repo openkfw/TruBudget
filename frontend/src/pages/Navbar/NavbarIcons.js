@@ -4,13 +4,14 @@ import NotificationIcon from "./NotificationIcon";
 import LogoutIcon from "./LogoutIcon";
 import NumberOfPeersIcon from "./NumberOfPeersIcon";
 
-const NavbarIcons = ({ peers, numberOfActivePeers, unreadNotifications, history, logout }) => {
+const NavbarIcons = ({numberOfActivePeers, unreadNotifications, history, logout }) => {
   return (
     <div>
       <NotificationIcon unreadNotifications={unreadNotifications} history={history} />
       {/* <PeerInfoIcon peers={peers} /> */}
       <NumberOfPeersIcon numberOfActivePeers={numberOfActivePeers} />
       <LogoutIcon history={history} logout={logout} />
+
     </div>
   );
 };

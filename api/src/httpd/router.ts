@@ -44,6 +44,7 @@ import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { createBackup } from "../system/createBackup";
+import { restoreBackup } from "../system/restoreBackup";
 import { authenticateUser } from "../user/controller/authenticate";
 import { getUserList } from "../user/controller/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
@@ -155,7 +156,15 @@ const handleError = (req, res, err: any) => {
         },
       ]);
       break;
-
+    case "CorruptFileError":
+    send(res, [
+      400,
+      {
+        apiVersion: "1.0",
+        error: { code: 400, message: "File corrupt." },
+      },
+    ]);
+    break;
     default:
       // handle RPC errors, too:
       if (err.code === -708) {
@@ -207,6 +216,8 @@ export const registerRoutes = (
   organization: string,
   organizationVaultSecret: string,
   urlPrefix: string,
+  multichainHost: string,
+  backupApiPort: string,
 ) => {
   // ------------------------------------------------------------
   //       system
@@ -3546,6 +3557,33 @@ export const registerRoutes = (
         .catch(err => handleError(request, reply, err));
     },
   );
+
+
+
+  server.get(`${urlPrefix}/system.createBackup`, {
+    // @ts-ignore: Unreachable code error
+    beforeHandler: [server.authenticate],
+  } ,
+   async (req: AuthenticatedRequest, reply) => {
+    createBackup(multichainHost, backupApiPort, req)
+      .then(data => {
+        reply.header("Content-Type", "application/gzip");
+        reply.header("Content-Disposition", `attachment; filename="backup.gz"`);
+        reply.send(data);
+      })
+      .catch(err => handleError(req, reply, err));
+  });
+
+
+
+  server.post(`${urlPrefix}/system.restoreBackup`,  {
+    // @ts-ignore: Unreachable code error
+    beforeHandler: [server.authenticate],
+  } ,async (req: AuthenticatedRequest, reply) => {
+    restoreBackup(multichainHost,backupApiPort, req)
+      .then(response => send(reply, response))
+      .catch(err => handleError(req, reply, err));
+  });
 
   return server;
 };
