@@ -3,7 +3,7 @@ import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import { ProjectAlreadyExistsError } from "../error";
+import { ProjectIdAlreadyExistsError } from "../error";
 import {
   AuthenticatedRequest,
   HttpResponse,
@@ -33,7 +33,7 @@ export async function createProject(multichain: MultichainClient, req): Promise<
   // check if projectId already exists
   const projects = await Project.get(multichain, req.user);
   if (!isEmpty(projects.filter(p => p.data.id === projectId))) {
-    throw { kind: "ProjectIdAlreadyExists", projectId } as ProjectAlreadyExistsError;
+    throw { kind: "ProjectIdAlreadyExists", projectId } as ProjectIdAlreadyExistsError;
   }
 
   const ctime = new Date();

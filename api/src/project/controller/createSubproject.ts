@@ -2,7 +2,7 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent } from "../../authz/types";
-import { SubprojectAlreadyExistsError } from "../../error";
+import { SubprojectIdAlreadyExistsError } from "../../error";
 import {
   AuthenticatedRequest,
   HttpResponse,
@@ -50,7 +50,7 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
   // check if subprojectId already exists
   const subprojects = await Subproject.get(multichain, req.user, projectId);
   if (!isEmpty(subprojects.filter(s => s.data.id === subprojectId))) {
-    throw { kind: "SubprojectIdAlreadyExists", subprojectId } as SubprojectAlreadyExistsError;
+    throw { kind: "SubprojectIdAlreadyExists", subprojectId } as SubprojectIdAlreadyExistsError;
   }
 
   const ctime = new Date();
