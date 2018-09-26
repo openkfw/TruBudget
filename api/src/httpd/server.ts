@@ -71,7 +71,7 @@ export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Nu
     const validator = ajv.compile(schema);
     return data => {
       let valid;
-      if (process.env.NODE_ENV === "prod") {
+      if (process.env.NODE_ENV !== "prod") {
         const d1 = JSON.stringify(data, null, 2);
         valid = validator(data);
         const d2 = JSON.stringify(data, null, 2);

@@ -215,19 +215,12 @@ export const registerRoutes = (
   server.get(
     `${urlPrefix}/readiness`,
     {
-      // @ts-ignore: Unreachable code error
-      beforeHandler: [server.authenticate],
       schema: {
         description:
           "Returns '200 OK' if the API is up and the Multichain service is reachable. " +
           "'503 Service unavailable.' otherwise.",
         tags: ["system"],
         summary: "Check if the Multichain is reachable",
-        security: [
-          {
-            bearerToken: [],
-          },
-        ],
         response: {
           200: {
             description: "successful response",

@@ -70,6 +70,8 @@ services:
       ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+    links: 
+      - api
 
   provision-test:
     build:
@@ -81,3 +83,5 @@ services:
       ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+    links:
+      - testapi

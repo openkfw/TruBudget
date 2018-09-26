@@ -65,6 +65,8 @@ services:
       ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+    links: 
+      - api
 
   provision-test:
     image: index.docker.io/trubudget/v1/provisioning:${TAG}
@@ -75,4 +77,6 @@ services:
       ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+    links: 
+      - api
   
