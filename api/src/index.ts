@@ -1,4 +1,3 @@
-import * as express from "express";
 import * as fastify from "fastify";
 
 import { registerRoutes } from "./httpd/router";
@@ -92,7 +91,7 @@ function registerSelf(): Promise<boolean> {
           },
         },
       };
-      registerNode(multichainClient, req as express.Request);
+      registerNode(multichainClient, req);
     })
     .then(() => true)
     .catch(() => false);

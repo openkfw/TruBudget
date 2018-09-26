@@ -37,7 +37,6 @@
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
-    "express": "^4.16.3",
     "express-jwt": "^5.3.1",
     "f": "^1.4.0",
     "fastify": "^1.11.2",
