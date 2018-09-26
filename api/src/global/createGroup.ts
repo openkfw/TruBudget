@@ -8,7 +8,10 @@ import logger from "../lib/logger";
 import { isNonemptyString, isObject, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 
-export const createGroup = async (multichain: MultichainClient, req): Promise<HttpResponse> => {
+export const createGroup = async (
+  multichain: MultichainClient,
+  req: AuthenticatedRequest,
+): Promise<HttpResponse> => {
   const data = value("data", req.body.data, isObject);
   const groupFromRequest = value("data.group", data.group, isObject);
   const groupId = value("id", groupFromRequest.id, isNonemptyString);

@@ -1,10 +1,10 @@
-import * as express from "express";
+import * as fastify from "fastify";
+import * as http from "http";
 import { AuthToken } from "../authz/token";
 
-export interface AuthenticatedRequest extends express.Request {
-  token: AuthToken;
+export interface AuthenticatedRequest extends fastify.FastifyRequest<http.IncomingMessage> {
+  user: AuthToken;
 }
-
 export interface SuccessResponse {
   apiVersion: string;
   data: any;

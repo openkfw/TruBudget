@@ -1,4 +1,3 @@
-import * as express from "express";
 import Intent from "../../authz/intents";
 import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";

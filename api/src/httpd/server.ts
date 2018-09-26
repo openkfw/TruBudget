@@ -1,10 +1,17 @@
-import * as bodyParser from "body-parser";
+import * as Ajv from "ajv";
 import * as fastify from "fastify";
-import * as jsonwebtoken from "jsonwebtoken";
-import { AuthToken } from "../authz/token";
 
 import { IncomingMessage, Server, ServerResponse } from "http";
 const DEFAULT_API_VERSION = "1.0";
+
+const ajv = new Ajv({
+  // the fastify defaults (if needed)
+  removeAdditional: true,
+  useDefaults: true,
+  coerceTypes: true,
+  // any other options
+  // ...
+});
 
 const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) => {
   server.register(require("fastify-jwt"), {
@@ -23,8 +30,10 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
   });
 };
 
-const registerSwagger = (server: fastify.FastifyInstance) => {
+const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, apiPort: Number) => {
   server.register(require("fastify-swagger"), {
+    // logLevel: "info",
+    routePrefix: `${urlPrefix}/documentation`,
     swagger: {
       info: {
         title: "TruBudget API documentation",
@@ -34,7 +43,7 @@ const registerSwagger = (server: fastify.FastifyInstance) => {
           "at almost every endpoint.\nTo use the token click on the 'Authorize' Button at the top right",
         version: "0.1.0",
       },
-      host: "localhost:8086",
+      host: `localhost:${apiPort.toString()}`,
       schemes: ["http"],
       consumes: ["application/json"],
       produces: ["application/json"],
@@ -53,9 +62,32 @@ const registerSwagger = (server: fastify.FastifyInstance) => {
   });
 };
 
-export const createBasicApp = (jwtSecret: string) => {
-  const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({});
-  registerSwagger(server);
+export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Number) => {
+  const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
+    // logger: true,
+  });
+
+  server.setSchemaCompiler(schema => {
+    const validator = ajv.compile(schema);
+    return data => {
+      let valid;
+      if (process.env.NODE_ENV !== "prod") {
+        const d1 = JSON.stringify(data, null, 2);
+        valid = validator(data);
+        const d2 = JSON.stringify(data, null, 2);
+
+        if (d1 !== d2) {
+          console.log("ALERT!: Redacted additional payload paramters!");
+          console.log("Original Payload: \n", d1);
+          console.log("Redacted Payload: \n", d2);
+        }
+      } else {
+        valid = validator(data);
+      }
+      return valid;
+    };
+  });
+  registerSwagger(server, urlPrefix, apiPort);
   addTokenHandling(server, jwtSecret);
 
   // app.use(logging);

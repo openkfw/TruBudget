@@ -1,7 +1,6 @@
-import * as express from "express";
 import * as fastify from "fastify";
 
-import { registerRoutes } from "./httpd/fastifyServer";
+import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -11,6 +10,8 @@ import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStreams } from "./organization/organization";
+
+const URL_PREFIX = "/api";
 
 /*
  * Deal with the environment:
@@ -28,10 +29,14 @@ if (!process.env.ROOT_SECRET) {
 }
 const organization: string | undefined = process.env.ORGANIZATION;
 if (!organization) {
+  console.log(`Please set ORGANIZATION to the organization this node belongs to.`);
   process.exit(1);
 }
 const organizationVaultSecret: string | undefined = process.env.ORGANIZATION_VAULT_SECRET;
 if (!organizationVaultSecret) {
+  console.log(
+    `Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.`,
+  );
   process.exit(1);
 }
 
@@ -49,7 +54,7 @@ const rpcSettings: ConnectionSettings = {
 logger.info(rpcSettings, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
-const server = createBasicApp(jwtSecret);
+const server = createBasicApp(jwtSecret, URL_PREFIX, port);
 
 // app.use(
 //   "/api",
@@ -86,7 +91,7 @@ function registerSelf(): Promise<boolean> {
           },
         },
       };
-      registerNode(multichainClient, req as express.Request);
+      registerNode(multichainClient, req);
     })
     .then(() => true)
     .catch(() => false);
@@ -99,11 +104,12 @@ registerRoutes(
   rootSecret,
   organization!,
   organizationVaultSecret!,
+  URL_PREFIX,
 );
 
 console.log("Register fastify endpoint");
 
-server.listen(port, async err => {
+server.listen(port, "0.0.0.0", async err => {
   if (err) {
     logger.fatal(err);
     process.exit(1);

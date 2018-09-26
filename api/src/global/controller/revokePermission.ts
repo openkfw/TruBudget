@@ -7,7 +7,7 @@ import { MultichainClient } from "../../multichain";
 
 export const revokeGlobalPermission = async (
   multichain: MultichainClient,
-  req,
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
 

@@ -36,7 +36,6 @@ export const authenticateUser = async (
 
   const id: string = value("id", input.id, isNonemptyString);
   const password: string = value("password", input.password, isNonemptyString);
-  console.log(id, password);
   return [
     200,
     {

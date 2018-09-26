@@ -1,4 +1,6 @@
-import * as express from "express";
+import { FastifyInstance } from "fastify";
+import { AuthenticatedRequest, HttpResponse } from "./lib";
+
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
@@ -52,14 +54,15 @@ import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
-import { AuthenticatedRequest, HttpResponse } from "./lib";
 
-const send = (res: express.Response, httpResponse: HttpResponse) => {
+import { Schema } from "./schema";
+
+const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
-  res.status(code).json(body);
+  res.status(code).send(body);
 };
 
-const handleError = (req: AuthenticatedRequest, res: express.Response, err: any) => {
+const handleError = (req, res, err: any) => {
   logger.debug(err);
 
   switch (err.kind) {
@@ -176,2385 +179,3373 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
   }
 };
 
-/**
- * @apiDefine user The JWT returned by `user.authenticate` is expected in the request's Authorization header.
- */
-/**
- * @api {OBJECT} #Event Event
- * @apiGroup Custom Types
- * @apiParam {String} key The resource ID (same for all events that relate to the same
- * resource).
- * @apiParam {String} intent The intent underlying the event, or in other words: a
- * short string that gives a hint on what happened.
- * @apiParam {String} createdBy The user that has created this event.
- * @apiParam {String} createdAt The (ISO) timestamp marking the event's creation time.
- * @apiParam {Integer} dataVersion The protocol version of the `data` field.
- * @apiParam {Object} data The event payload. The format depends on `intent` and
- * `dataVersion`.
- */
+function getAuthErrorSchema() {
+  return {
+    description: "Unauthorized request",
+    type: "object",
+    properties: {
+      apiVersion: { type: "string", example: "1.0" },
+      error: {
+        type: "object",
+        properties: {
+          code: { type: "string", example: "401" },
+          message: {
+            type: "string",
+            example: "A valid JWT auth bearer token is required for this route.",
+          },
+        },
+      },
+    },
+  };
+}
 
-export const createRouter = (
+export const registerRoutes = (
+  server: FastifyInstance,
   multichainClient: MultichainClient,
   jwtSecret: string,
   rootSecret: string,
   organization: string,
   organizationVaultSecret: string,
+  urlPrefix: string,
 ) => {
-  const router = express.Router();
-
-  //#region liveness and readiness
   // ------------------------------------------------------------
-  //       liveness and readiness
+  //       system
   // ------------------------------------------------------------
 
-  /**
-   * @api {get} /readiness Readiness
-   * @apiVersion 1.0.0
-   * @apiName readiness
-   * @apiGroup Liveness and Readiness
-   * @apiDescription Returns "200 OK" if the API is up and the Multichain service is
-   * reachable; "503 Service unavailable." otherwise.
-   */
-  router.get("/readiness", async (req, res) => {
-    if (await isReady(multichainClient)) {
-      res.status(200).send("OK");
-    } else {
-      res.status(503).send("Service unavailable.");
-    }
-  });
+  server.get(
+    `${urlPrefix}/readiness`,
+    {
+      schema: {
+        description:
+          "Returns '200 OK' if the API is up and the Multichain service is reachable. " +
+          "'503 Service unavailable.' otherwise.",
+        tags: ["system"],
+        summary: "Check if the Multichain is reachable",
+        response: {
+          200: {
+            description: "successful response",
+            type: "string",
+            example: "OK",
+          },
+          401: getAuthErrorSchema(),
+          503: {
+            description: "Blockchain not ready",
+            type: "string",
+            example: "Service unavailable.",
+          },
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      if (await isReady(multichainClient)) {
+        reply.status(200).send("OK");
+      } else {
+        reply.status(503).send("Service unavailable.");
+      }
+    },
+  );
 
-  /**
-   * @api {get} /liveness Liveness
-   * @apiVersion 1.0.0
-   * @apiName liveness
-   * @apiGroup Liveness and Readiness
-   * @apiDescription Returns "200 OK" if the API is up.
-   */
-  router.get("/liveness", (req, res) => res.status(200).send("OK"));
+  server.get(
+    `${urlPrefix}/liveness`,
+    {
+      schema: {
+        description: "Returns '200 OK' if the API is up.",
+        tags: ["system"],
+        summary: "Check if the API is up",
+        response: {
+          200: {
+            description: "Successful response",
+            type: "string",
+            example: "OK",
+          },
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      reply.status(200).send("OK");
+    },
+  );
 
-  //#region global
-  // ------------------------------------------------------------
-  //       global
-  // ------------------------------------------------------------
-
-  /**
-   * @api {post} /global.createUser Create user
-   * @apiVersion 1.0.0
-   * @apiName global.createUser
-   * @apiGroup Global
-   * @apiPermission user
-   * @apiDescription Create a new user.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.user Wrapper for user information
-   * @apiParam {String} data.user.id The user's id
-   * @apiParam {String} data.user.displayName  The user's displayname
-   * @apiParam {String} data.user.organization  The user's organization
-   * @apiParam {String} data.user.password  The user's password
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "user": {
-   *        "id": "alice",
-   *        "displayName": "Alice Smith",
-   *        "organization": "myorga",
-   *        "password": "mysafepassword"
-   *        }
-   *     }
-   *   }
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {String} data.user Wrapper for user information
-   * @apiSuccess {String} data.user.id The user's id
-   * @apiSuccess {String} data.user.displayName  The user's displayname
-   * @apiSuccess {String} data.user.organization  The user's organization
-   * @apiSuccess {String} data.user.address  The address of the user's blockchain wallet
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "user": {
-   *        "id": "alice",
-   *        "displayName": "Alice Smith",
-   *        "organization": "myorga",
-   *        "address": "1Z8NUT8K6SM6h..."
-   *        }
-   *     }
-   *   }
-   */
-  router.post("/global.createUser", (req: AuthenticatedRequest, res) => {
-    createUser(multichainClient, req, jwtSecret, rootSecret, organizationVaultSecret)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /global.createGroup Create group
-   * @apiVersion 1.0.0
-   * @apiName global.createGroup
-   * @apiGroup Global
-   * @apiPermission group
-   * @apiDescription Create a new user group.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.group Wrapper for group information
-   * @apiParam {String} data.group.id The group's id
-   * @apiParam {String} data.group.displayName  The group's displayname
-   * @apiParam {String[]} data.group.users  An String[] of userIds which should be added to the new group
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "group": {
-   *        "id": "devs",
-   *        "displayName": "Developer",
-   *        "users": ["alice","john"]
-   *        }
-   *     }
-   *   }
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {String} data.created true if group was successfully created
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "created": true
-   *     }
-   *   }
-   */
-  router.post("/global.createGroup", (req: AuthenticatedRequest, res) => {
-    createGroup(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /global.createProject Create project
-   * @apiVersion 1.0.0
-   * @apiName global.createProject
-   * @apiGroup Global
-   * @apiPermission user
-   * @apiDescription Create a new project.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.id The project's id
-   * @apiParam {String} data.status Possible values are "open" and "closed" showing the project's status
-   * @apiParam {String} data.displayName The project's displayname
-   * @apiParam {String} data.description The project's description
-   * @apiParam {String} data.amount The amount of money which should be assigned to the project
-   * @apiParam {String} data.assignee The project's assignee
-   * @apiParam {String} data.currency The currency of the amount assigned to the project
-   * @apiParam {String} data.thumbnail The thumbnail representing the project in the trubudget frontend
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "project":{
-   *         "id": "myproject",
-   *         "status": "open",
-   *         "displayName": "Mr. Fox1",
-   *         "description": "some description for your project",
-   *         "amount": "500",
-   *         "assignee": "alice",
-   *         "currency": "EUR",
-   *         "thumbnail": "thumbnail"
-   *       }
-   *     }
-   *   }
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {String} data.created true if project was successfully created
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "created": true
-   *     }
-   *   }
-   */
-  router.post("/global.createProject", (req: AuthenticatedRequest, res) => {
-    createProject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {get} /global.listPermissions List permissions
-   * @apiVersion 1.0.0
-   * @apiName global.listPermissions
-   * @apiGroup Global
-   * @apiPermission user
-   * @apiDescription See the current global permissions.
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {String[]} data.notification.list Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.notification.markRead Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.global.listPermissions Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.global.grantPermission Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.global.grantAllPermissions Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.global.revokePermission Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.global.createProject Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.global.createUser Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.global.createGroup Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.user.intent.listPermissions Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.user.intent.grantPermission Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.user.intent.revokePermission Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.group.addUser Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.group.removeUser" Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.network.list Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.network.voteForPermission Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.network.approveNewOrganization Lists all userids for the endpoint
-   * @apiSuccess {String[]} data.network.approveNewNodeForExistingOrganization Lists all userids for the endpoint
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "notification.list": [
-   *            "alice",
-   *            "john"],
-   *     "notification.markRead": [],
-   *     "network.listActive": [],
-   *     "global.listPermissions": [],
-   *     "global.grantPermission": [],
-   *     "global.grantAllPermissions": [],
-   *     "global.revokePermission": [],
-   *     "global.createProject": [],
-   *     "global.createUser": [],
-   *     "global.createGroup": [],
-   *     "user.intent.listPermissions": [],
-   *     "user.intent.grantPermission": [],
-   *     "user.intent.revokePermission": [],
-   *     "group.addUser": [],
-   *     "group.removeUser": [],
-   *     "network.list": [],
-   *     "network.voteForPermission": [],
-   *     "network.approveNewOrganization": [],
-   *     "network.approveNewNodeForExistingOrganization": []
-   *     }
-   *   }
-   */
-  router.get("/global.listPermissions", (req: AuthenticatedRequest, res) => {
-    getGlobalPermissions(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /global.grantPermission Grant permission
-   * @apiVersion 1.0.0
-   * @apiName global.grantPermission
-   * @apiGroup Global
-   * @apiPermission user
-   * @apiDescription Grant the right to execute a specific intent on the Global scope to
-   * a given user.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The userid or groupid which should get the permission
-   * @apiParam {String} data.intent The permission which should be granted.<br/>
-   * Possible values:<br/>
-   * "global.listPermissions"<br/>
-   * "global.grantPermission"<br/>
-   * "global.grantAllPermissions"<br/>
-   * "global.revokePermission"<br/>
-   * "global.createProject"<br/>
-   * "global.createUser"<br/>
-   * "global.createGroup"<br/>
-   * "user.intent.listPermissions"<br/>
-   * "user.intent.grantPermission"<br/>
-   * "user.intent.revokePermission"<br/>
-   * "group.addUser"<br/>
-   * "group.removeUser"<br/>
-   * "notification.list"<br/>
-   * "notification.markRead"<br/>
-   * "network.listActive"<br/>
-   * "network.list"<br/>
-   * "network.voteForPermission"<br/>
-   * "network.approveNewOrganization"<br/>
-   * "network.approveNewNodeForExistingOrganization"<br/>
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "intent": "global.createProject"
-   *     }
-   *   }
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/global.grantPermission", (req: AuthenticatedRequest, res) => {
-    grantGlobalPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /global.grantAllPermissions Grant all permissions
-   * @apiVersion 1.0.0
-   * @apiName global.grantAllPermissions
-   * @apiGroup Global
-   * @apiPermission user
-   * @apiDescription Grant all available permissions to a user. Useful as a shorthand
-   * for creating admin users.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The userid or groupid which should get all permissions
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *     }
-   *   }
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/global.grantAllPermissions", (req: AuthenticatedRequest, res) => {
-    grantAllPermissions(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /global.revokePermission Revoke permission
-   * @apiVersion 1.0.0
-   * @apiName global.revokePermission
-   * @apiGroup Global
-   * @apiPermission user
-   * @apiDescription Revoke the right to execute a specific intent on the Global scope
-   * to a given user.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The userid or groupid which should loose the permission
-   * @apiParam {String} data.intent The permission which should be revoked.<br/>
-   * Possible values:<br/>
-   * "global.listPermissions"<br/>
-   * "global.grantPermission"<br/>
-   * "global.grantAllPermissions"<br/>
-   * "global.revokePermission"<br/>
-   * "global.createProject"<br/>
-   * "global.createUser"<br/>
-   * "global.createGroup"<br/>
-   * "user.intent.listPermissions"<br/>
-   * "user.intent.grantPermission"<br/>
-   * "user.intent.revokePermission"<br/>
-   * "group.addUser"<br/>
-   * "group.removeUser"<br/>
-   * "notification.list"<br/>
-   * "notification.markRead"<br/>
-   * "network.listActive"<br/>
-   * "network.list"<br/>
-   * "network.voteForPermission"<br/>
-   * "network.approveNewOrganization"<br/>
-   * "network.approveNewNodeForExistingOrganization"<br/>
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "intent": "global.createProject"
-   *     }
-   *   }
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/global.revokePermission", (req: AuthenticatedRequest, res) => {
-    revokeGlobalPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  //#endregion global
-
-  //#region group
-  // ------------------------------------------------------------
-  //       group
-  // ------------------------------------------------------------
-
-  /**
-   * @api {get} /group.list List
-   * @apiVersion 1.0.0
-   * @apiName group.list
-   * @apiGroup Group
-   * @apiPermission group
-   * @apiDescription List all user groups.
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object[]} data.groups Wrapper for all groups existing
-   * @apiSuccess {String} data.groups.groupId GroupId
-   * @apiSuccess {String} data.groups.displayName DisplayName of the group
-   * @apiSuccess {String[]} data.groups.users Wrapper for all users of the group
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "groups": [
-   *           {
-   *             "groupId": "devs",
-   *             "displayName": "Developer",
-   *             "users": [
-   *                "alice",
-   *                "john"
-   *              ]
-   *           }
-   *        ]
-   *      }
-   *   }
-   */
-  router.get("/group.list", (req: AuthenticatedRequest, res) => {
-    getGroupList(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /group.addUser Add
-   * @apiVersion 1.0.0
-   * @apiName group.addUser
-   * @apiGroup Group
-   * @apiPermission group
-   * @apiDescription Add user to a group
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.groupId groupid which the user should be added to
-   * @apiParam {String} data.userId userid which should be added
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "groupId": "devs",
-   *       "userId": "alice"
-   *     }
-   *   }
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/group.addUser", (req: AuthenticatedRequest, res) => {
-    addUserToGroup(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /group.removeUser Remove
-   * @apiVersion 1.0.0
-   * @apiName group.removeUser
-   * @apiGroup Group
-   * @apiPermission group
-   * @apiDescription Remove user from a group
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.groupId groupid which the user should be removed from
-   * @apiParam {String} data.userId userid which should be removed
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "groupId": "devs",
-   *       "userId": "alice"
-   *     }
-   *   }
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/group.removeUser", (req: AuthenticatedRequest, res) => {
-    removeUserFromGroup(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  //#region user
   // ------------------------------------------------------------
   //       user
   // ------------------------------------------------------------
 
-  /**
-   * @api {get} /user.list List
-   * @apiVersion 1.0.0
-   * @apiName user.list
-   * @apiGroup User
-   * @apiPermission user
-   * @apiDescription List all registered users.
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object[]} data.items Wrapper for all users existing
-   * @apiSuccess {String} data.items.id User's id
-   * @apiSuccess {String} data.items.displayName User's name
-   * @apiSuccess {String} data.items.organization User's organization
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "items": [
-   *          {
-   *            "id": "alice",
-   *            "displayName": "Alice Smith"
-   *            "organization": "myorga"
-   *          }
-   *        ]
-   *   }
-   */
-  router.get("/user.list", (req: AuthenticatedRequest, res) => {
-    getUserList(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/user.authenticate`,
+    {
+      schema: {
+        description:
+          "Authenticate and retrieve a token in return. This token can then be supplied in the " +
+          "HTTP Authorization header, which is expected by most of the other. " +
+          "\nIf a token is required write 'Bearer' into the 'API Token' field of an endpoint " +
+          "you want to test and copy the token afterwards like in the following example:\n " +
+          ".\n" +
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        tags: ["user"],
+        summary: "Authenticate with user and password",
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                user: {
+                  type: "object",
+                  additionalProperties: false,
+                  properties: {
+                    id: { type: "string", example: "aSmith" },
+                    password: { type: "string", example: "mySecretPassword" },
+                  },
+                  required: ["id", "password"],
+                },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  user: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "aSmith" },
+                      displayName: { type: "string", example: "Alice Smith" },
+                      organization: { type: "string", example: "Alice's Solutions & Co" },
+                      allowedIntents: { type: "array", items: { type: "string" } },
+                      groups: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            groupId: { type: "string", example: "Manager" },
+                            displayName: { type: "string", example: "All Manager Group" },
+                          },
+                        },
+                      },
+                      token: {
+                        type: "string",
+                        example:
+                          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJyb290IiwiYWRkcm" +
+                          "VzcyI6IjFIVXF2dHE5WU1QaXlMZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwib3JnYW" +
+                          "5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFIVXF2dHE5WU1QaXl" +
+                          "MZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwiZ3JvdXBzIjpbXSwiaWF0IjoxNTM2ODI2M" +
+                          "TkyLCJleHAiOjE1MzY4Mjk3OTJ9.PZbjTpsgnIHjNaDHos9LVwwrckYhpWjv1DDiojskylI",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      authenticateUser(
+        multichainClient,
+        request,
+        jwtSecret,
+        rootSecret,
+        organization,
+        organizationVaultSecret,
+      )
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /user.authenticate Authenticate
-   * @apiVersion 1.0.0
-   * @apiName user.authenticate
-   * @apiGroup User
-   * @apiDescription Authenticate and retrieve a token in return. This token can then be
-   * supplied in the HTTP Authorization header, which is expected by most of the other
-   * endpoints.
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object} data.user Wrapper for user information
-   * @apiSuccess {String} data.user.id User's id
-   * @apiSuccess {String} data.user.password User's password
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "user": {
-   *            "id": "alice",
-   *            "password": "AliceSecretPassword"
-   *        }
-   *      }
-   *   }
-   */
-  router.post("/user.authenticate", (req: AuthenticatedRequest, res) => {
-    authenticateUser(
-      multichainClient,
-      req,
-      jwtSecret,
-      rootSecret,
-      organization,
-      organizationVaultSecret,
-    )
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/user.list`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "List all registered users and groups.\n" +
+          "In case of a user the 'organization' property exists" +
+          "In case of a group the 'isGroup' property exists with value 'true",
+        tags: ["user"],
+        summary: "List all registered users",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  items: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", example: "aSmith" },
+                        displayName: { type: "string", example: "Alice Smith" },
+                        organization: { type: "string", example: "Alice's Solutions & Co" },
+                        isGroup: { type: "boolean", example: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getUserList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  //#endregion user
-  //#region project
+  // ------------------------------------------------------------
+  //       global
+  // ------------------------------------------------------------
+  server.post(
+    `${urlPrefix}/global.createUser`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Create a new user.",
+        tags: ["global"],
+        summary: "Create a user",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                user: {
+                  type: "object",
+                  properties: {
+                    additionalProperties: false,
+                    id: { type: "string", example: "aSmith" },
+                    displayName: { type: "string", example: "Alice Smith" },
+                    organization: { type: "string", example: "Alice's Solutions & Co" },
+                    password: { type: "string", example: "mySecretPassword" },
+                  },
+                  required: ["id", "displayName", "organization", "password"],
+                },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  user: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "myId" },
+                      displayName: { type: "string", example: "Alice Smith" },
+                      organization: { type: "string", example: "Alice's Solutions & Co" },
+                      address: {
+                        type: "string",
+                        example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+          409: {
+            description: "User already exists",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              error: {
+                type: "object",
+                properties: {
+                  code: { type: "string", example: "409" },
+                  message: { type: "string", example: "User already exists." },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      createUser(
+        multichainClient,
+        request as AuthenticatedRequest,
+        jwtSecret,
+        rootSecret,
+        organizationVaultSecret,
+      )
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/global.createGroup`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Create a new group.",
+        tags: ["global"],
+        summary: "Create a new group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                group: {
+                  type: "object",
+                  properties: {
+                    additionalProperties: false,
+                    id: { type: "string", example: "Manager" },
+                    displayName: { type: "string", example: "All Manager Group" },
+                    users: { type: "array", items: { type: "string" } },
+                  },
+                  required: ["id", "displayName", "users"],
+                },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  created: { type: "boolean", example: "true" },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+          409: {
+            description: "Group already exists",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              error: {
+                type: "object",
+                properties: {
+                  code: { type: "string", example: "409" },
+                  message: { type: "string", example: "User already exists." },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      createGroup(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/global.createProject`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Create a new project.\n.\n" +
+          "Note that the only possible values for 'status' are: 'open' and 'closed'",
+        tags: ["global"],
+        summary: "Create a new project",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                project: {
+                  type: "object",
+                  additionalProperties: false,
+                  properties: {
+                    id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                    status: { type: "string", example: "open" },
+                    displayName: { type: "string", example: "Build a town-project" },
+                    description: { type: "string", example: "A town should be built" },
+                    amount: { type: "string", example: "10000" },
+                    assignee: { type: "string", example: "aSmith" },
+                    currency: { type: "string", example: "EUR" },
+                    thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  created: { type: "boolean", example: "true" },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      createProject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.get(
+    `${urlPrefix}/global.listPermissions`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "See the current global permissions.",
+        tags: ["global"],
+        summary: "List all existing permissions",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                additionalProperties: true,
+                example: { "notification.list": ["aSmith"], "notification.markRead": ["aSmith"] },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getGlobalPermissions(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/global.grant permission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Grant the right to execute a specific intent on the Global scope to a given user.",
+        tags: ["global"],
+        summary: "Grant a permission to a group or user",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+              },
+              required: ["identity", "intent"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      grantGlobalPermission(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/global.grantAllPermissions`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Grant all available permissions to a user. Useful as a shorthand for creating admin users.",
+        tags: ["global"],
+        summary: "Grant all permission to a group or user",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+              },
+              required: ["identity"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+                example: "OK",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      grantAllPermissions(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/global.revokePermission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Revoke the right to execute a specific intent on the Global scope to a given user.",
+        tags: ["global"],
+        summary: "Revoke a permission from a group or user",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+              },
+              required: ["identity", "intent"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      revokeGlobalPermission(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  // ------------------------------------------------------------
+  //       group
+  // ------------------------------------------------------------
+
+  server.get(
+    `${urlPrefix}/group.list`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "List all user groups.",
+        tags: ["group"],
+        summary: "List all existing groups",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  groups: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        groupId: { type: "string", example: "Manager" },
+                        displayName: { type: "string", example: "All Manager Group" },
+                        users: {
+                          type: "array",
+                          items: { type: "string", example: "aSmith" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getGroupList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/group.addUser`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Add user to a group",
+        tags: ["group"],
+        summary: "Add a user to a group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                groupId: { type: "string", example: "Manager" },
+                userId: { type: "string", example: "aSmith" },
+              },
+              required: ["groupId", "userId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  added: { type: "boolean", example: "true" },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      addUserToGroup(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/group.removeUser`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Remove user from a group",
+        tags: ["group"],
+        summary: "Remove a user from a group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                groupId: { type: "string", example: "Manager" },
+                userId: { type: "string", example: "aSmith" },
+              },
+              required: ["groupId", "userId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  deleted: { type: "boolean", example: "true" },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      removeUserFromGroup(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
   // ------------------------------------------------------------
   //       project
   // ------------------------------------------------------------
 
-  /**
-   * @api {get} /project.list List
-   * @apiVersion 1.0.0
-   * @apiName project.list
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription Retrieve all projects the user is allowed to see.
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object[]} data.items Lists all existing projects
-   * @apiSuccess {String} data.items.data Wrapper for the project's information
-   * @apiSuccess {String} data.items.data.id The project's id
-   * @apiSuccess {String} data.items.data.creationUnixTs A unix timestamp when the project was created
-   * @apiSuccess {String} data.items.data.status Shows if project is open or closed
-   * @apiSuccess {String} data.items.data.displayName The project's displayname
-   * @apiSuccess {String} data.items.data.description The project's description
-   * @apiSuccess {String} data.items.data.amount The amount of money which should be assigned to the project
-   * @apiSuccess {String} data.items.data.assignee The project's assignee
-   * @apiSuccess {String} data.items.data.currency The currency of the amount assigned to the project
-   * @apiSuccess {String} data.items.data.thumbnail The thumbnail representing the project in the trubudget frontend
-   * @apiSuccess {Object[]} data.items.log Holds information about the history of the project
-   * @apiSuccess {String[]} data.items.allowedIntents Lists all available endpoints
-   *
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "items":[{
-   *          "data": {
-   *                 "id": "6de80cb1ca780434a58b0752f3470301",
-   *                 "creationUnixTs": "1536154645775",
-   *                 "status": "open",
-   *                 "displayName": "myFirstProject",
-   *                 "description": "mydescription",
-   *                 "amount": "500",
-   *                 "assignee": "alice",
-   *                 "currency": "EUR",
-   *                 "thumbnail": "/Thumbnail_0001.jpg"
-   *             },
-   *           "log": [{
-   *                 "key": "6de80cb1ca780434a58b0752f3470301",
-   *                 "intent": "global.createProject",
-   *                     "createdBy": "root",
-   *                     "createdAt": "2018-09-05T13:37:25.775Z",
-   *                     "dataVersion": 1,
-   *                     "data": {
-   *                         "project": {
-   *                             "id": "6de80cb1ca780434a58b0752f3470301",
-   *                             "creationUnixTs": "1536154645775",
-   *                             "status": "open",
-   *                             "displayName": "myFirstProject",
-   *                             "description": "mydescription",
-   *                             "amount": "500",
-   *                             "assignee": "alice",
-   *                             "currency": "EUR",
-   *                             "thumbnail": "/Thumbnail_0001.jpg"
-   *                         },
-   *                         "permissions": {}
-   *                     },
-   *                     "snapshot": {
-   *                         "displayName": "myFirstProject"
-   *                     }
-   *                 }
-   *             ],
-   *           "allowedIntents": [
-   *                 "global.listPermissions",
-   *                 "global.grantPermission",
-   *                 "global.grantAllPermissions",
-   *                 "global.revokePermission",
-   *                 "..."
-   *             ]
-   *         }
-   *   }
-   *
-   */
-  router.get("/project.list", (req: AuthenticatedRequest, res) => {
-    getProjectList(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/project.list`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Retrieve all projects the user is allowed to see.",
+        tags: ["project"],
+        summary: "List all projects",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  items: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        data: {
+                          type: "object",
+                          properties: {
+                            id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                            creationUnixTs: { type: "string", example: "1536154645775" },
+                            status: { type: "string", example: "open" },
+                            displayName: { type: "string", example: "Build a town-project" },
+                            description: { type: "string", example: "A town should be built" },
+                            amount: { type: "string", example: "10000" },
+                            assignee: { type: "string", example: "aSmith" },
+                            currency: { type: "string", example: "EUR" },
+                            thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                          },
+                        },
+                        log: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              key: { type: "string" },
+                              intent: { type: "string", example: "global.createProject" },
+                              createdBy: { type: "string", example: "aSmith" },
+                              createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                              dataVersion: { type: "string", example: "1" },
+                              data: {
+                                type: "object",
+                                properties: {
+                                  project: {
+                                    type: "object",
+                                    properties: {
+                                      id: {
+                                        type: "string",
+                                        example: "d0e8c69eg298c87e3899119e025eff1f",
+                                      },
+                                      creationUnixTs: { type: "string", example: "1536154645775" },
+                                      status: { type: "string", example: "open" },
+                                      displayName: {
+                                        type: "string",
+                                        example: "Build a town-project",
+                                      },
+                                      description: {
+                                        type: "string",
+                                        example: "A town should be built",
+                                      },
+                                      amount: { type: "string", example: "10000" },
+                                      assignee: { type: "string", example: "aSmith" },
+                                      currency: { type: "string", example: "EUR" },
+                                      thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                                    },
+                                  },
+                                  permissions: {
+                                    type: "object",
+                                    additionalProperties: true,
+                                    example: {
+                                      "subproject.intent.listPermissions": ["aSmith", "jDoe"],
+                                    },
+                                  },
+                                  snapshot: {
+                                    type: "object",
+                                    properties: {
+                                      displayName: {
+                                        type: "string",
+                                        example: "Build a town-project",
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                        allowedIntents: { type: "array", items: { type: "string" } },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getProjectList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {get} /project.viewDetails?projectId={projectId} View details
-   * @apiVersion 1.0.0
-   * @apiName project.viewDetails
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription Retrieve details about a specific project.
-   *
-   * @apiParam {String} projectId The project's id from which the details should be shown
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object} data.project Wrapper for the specific project
-   * @apiSuccess {String} data.project.data Wrapper for the project's information
-   * @apiSuccess {String} data.project.data.id The project's id
-   * @apiSuccess {String} data.project.data.creationUnixTs A unix timestamp when the project was created
-   * @apiSuccess {String} data.project.data.status Shows if project is open or closed
-   * @apiSuccess {String} data.project.data.displayName The project's displayname
-   * @apiSuccess {String} data.project.data.description The project's description
-   * @apiSuccess {String} data.project.data.amount The amount of money which should be assigned to the project
-   * @apiSuccess {String} data.project.data.assignee The project's assignee
-   * @apiSuccess {String} data.project.data.currency The currency of the amount assigned to the project
-   * @apiSuccess {String} data.project.data.thumbnail The thumbnail representing the project in the trubudget frontend
-   * @apiSuccess {Object[]} data.project.log Holds information about the history of the project
-   * @apiSuccess {String[]} data.project.allowedIntents Lists all available endpoints
-   *
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "items":[{
-   *          "data": {
-   *                 "id": "6de80cb1ca780434a58b0752f3470301",
-   *                 "creationUnixTs": "1536154645775",
-   *                 "status": "open",
-   *                 "displayName": "myFirstProject",
-   *                 "description": "mydescription",
-   *                 "amount": "500",
-   *                 "assignee": "alice",
-   *                 "currency": "EUR",
-   *                 "thumbnail": "/Thumbnail_0001.jpg"
-   *             },
-   *           "log": [{
-   *                 "key": "6de80cb1ca780434a58b0752f3470301",
-   *                 "intent": "global.createProject",
-   *                     "createdBy": "alice",
-   *                     "createdAt": "2018-09-05T13:37:25.775Z",
-   *                     "dataVersion": 1,
-   *                     "data": {
-   *                         "project": {
-   *                             "id": "6de80cb1ca780434a58b0752f3470301",
-   *                             "creationUnixTs": "1536154645775",
-   *                             "status": "open",
-   *                             "displayName": "myFirstProject",
-   *                             "description": "mydescription",
-   *                             "amount": "500",
-   *                             "assignee": "alice",
-   *                             "currency": "EUR",
-   *                             "thumbnail": "/Thumbnail_0001.jpg"
-   *                         },
-   *                         "permissions": {}
-   *                     },
-   *                     "snapshot": {
-   *                         "displayName": "myFirstProject"
-   *                     }
-   *                 }
-   *             ],
-   *           "allowedIntents": [
-   *                 "global.listPermissions",
-   *                 "global.grantPermission",
-   *                 "global.grantAllPermissions",
-   *                 "global.revokePermission",
-   *                 "..."
-   *             ]
-   *         }
-   *   }
-   *
-   */
-  router.get("/project.viewDetails", (req: AuthenticatedRequest, res) => {
-    getProjectDetails(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/project.viewDetails`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Retrieve details about a specific project.",
+        tags: ["project"],
+        summary: "View details",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  project: {
+                    type: "object",
+                    properties: {
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                          creationUnixTs: { type: "string", example: "1536154645775" },
+                          status: { type: "string", example: "open" },
+                          displayName: { type: "string", example: "Build a town-project" },
+                          description: { type: "string", example: "A town should be built" },
+                          amount: { type: "string", example: "10000" },
+                          assignee: { type: "string", example: "aSmith" },
+                          currency: { type: "string", example: "EUR" },
+                          thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                        },
+                      },
+                      log: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            key: { type: "string" },
+                            intent: { type: "string", example: "global.createProject" },
+                            createdBy: { type: "string", example: "aSmith" },
+                            createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                            dataVersion: { type: "string", example: "1" },
+                            data: {
+                              type: "object",
+                              properties: {
+                                project: {
+                                  type: "object",
+                                  properties: {
+                                    id: {
+                                      type: "string",
+                                      example: "d0e8c69eg298c87e3899119e025eff1f",
+                                    },
+                                    creationUnixTs: { type: "string", example: "1536154645775" },
+                                    status: { type: "string", example: "open" },
+                                    displayName: {
+                                      type: "string",
+                                      example: "Build a town-project",
+                                    },
+                                    description: {
+                                      type: "string",
+                                      example: "A town should be built",
+                                    },
+                                    amount: { type: "string", example: "10000" },
+                                    assignee: { type: "string", example: "aSmith" },
+                                    currency: { type: "string", example: "EUR" },
+                                    thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                                  },
+                                },
+                                permissions: {
+                                  type: "object",
+                                  additionalProperties: true,
+                                  example: {
+                                    "subproject.intent.listPermissions": ["aSmith", "jDoe"],
+                                  },
+                                },
+                                snapshot: {
+                                  type: "object",
+                                  properties: {
+                                    displayName: {
+                                      type: "string",
+                                      example: "townproject",
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      allowedIntents: { type: "array", items: { type: "string" } },
+                    },
+                  },
+                  subprojects: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      additionalProperties: true,
+                      example: { mySubproject: {} },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getProjectDetails(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /project.assign Assign
-   * @apiVersion 1.0.0
-   * @apiName project.assign
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription Assign a project to a given user. The assigned user will be
-   * notified about the change.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The future assignee (userId or groupId).
-   * @apiParam {String} data.projectId The project to be re-assigned.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/project.assign", (req: AuthenticatedRequest, res) => {
-    assignProject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/project.assign`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Assign a project to a given user. The assigned user will be notified about the change.",
+        tags: ["project"],
+        summary: "Assign a user or group to a project",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["identity", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      assignProject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /project.update Update
-   * @apiVersion 1.0.0
-   * @apiName project.update
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription Partially update a project. Only properties mentioned in the
-   * request body are touched, others are not affected. The assigned user will be
-   * notified about the change.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} [data.displayName]
-   * @apiParam {String} [data.description]
-   * @apiParam {String} [data.amount]
-   * @apiParam {String} [data.currency]
-   * @apiParam {String} [data.thumbnail]
-   * @apiParam {String} data.projectId The project to be modified.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "displayName": "My Project",
-   *       "description": "",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/project.update", (req: AuthenticatedRequest, res) => {
-    updateProject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/project.update`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Partially update a project. Only properties mentioned in the request body are touched, " +
+          "others are not affected. The assigned user will be notified about the change.",
+        tags: ["project"],
+        summary: "Update a project",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                displayName: { type: "string", example: "townproject" },
+                description: { type: "string", example: "A town should be built" },
+                amount: { type: "string", example: "10000" },
+                assignee: { type: "string", example: "aSmith" },
+                currency: { type: "string", example: "EUR" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+              },
+              required: ["projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      updateProject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /project.close Close
-   * @apiVersion 1.0.0
-   * @apiName project.close
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription Set a project's status to "closed" if, and only if, all associated
-   * subprojects are already set to "closed".
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.projectId The project to be closed.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/project.close", (req: AuthenticatedRequest, res) => {
-    closeProject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/project.close`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Set a project's status to 'closed' if, and only if, all associated " +
+          "subprojects are already set to 'closed'.",
+        tags: ["project"],
+        summary: "Close a project",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      closeProject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /project.createSubproject Create subproject
-   * @apiVersion 1.0.0
-   * @apiName project.createSubproject
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription Create a subproject and associate it to the given project.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.projectId The project where the subproject should be created.
-   * @apiParam {String} data.subproject The Wrapper for the subproject information
-   * @apiParam {String} data.subproject.id The subproject's id
-   * @apiParam {String} data.subproject.status Possible values are "open" and "closed" showing the subproject's status
-   * @apiParam {String} data.subproject.displayName The subproject's displayname
-   * @apiParam {String} data.subproject.description The subproject's description
-   * @apiParam {String} data.subproject.amount The amount of money which should be assigned to the subproject
-   * @apiParam {String} data.subproject.assignee The subproject's assignee
-   * @apiParam {String} data.subproject.currency The currency of the amount assigned to the subproject
-   * @apiParamExample {json} Request
-   * {
-   *   "apiVersion": "1.0",
-   *   "data": {
-   *     "projectId": "6de80cb1ca780434a58b0752f3470301",
-   *     "subproject": {
-   *       "id": "4re30cb1ca780434a58b0752f3470301",
-   *       "status": "open",
-   *       "displayName": "mySubProject",
-   *       "description": "mydescription",
-   *       "amount": "500",
-   *       "assignee": "alice",
-   *       "currency": "EUR"
-   *     }
-   *   }
-   * }
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {String} data.created true if subproject was successfully created
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "created": true
-   *     }
-   *   }
-   */
-  router.post("/project.createSubproject", (req: AuthenticatedRequest, res) => {
-    createSubproject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/project.createSubproject`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Create a subproject and associate it to the given project.\n.\n" +
+          "Note that the only possible values for 'status' are: 'open' and 'closed'",
+        tags: ["project"],
+        summary: "Create a subproject",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subproject: {
+                  type: "object",
+                  additionalProperties: false,
+                  properties: {
+                    id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                    status: { type: "string", example: "open" },
+                    displayName: { type: "string", example: "townproject" },
+                    description: { type: "string", example: "A town should be built" },
+                    amount: { type: "string", example: "10000" },
+                    assignee: { type: "string", example: "aSmith" },
+                    currency: { type: "string", example: "EUR" },
+                  },
+                  required: ["displayName", "description", "amount", "currency"],
+                },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  created: { type: "boolean", example: "true" },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      createSubproject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {get} /project.viewHistory?projectId={projectId} View history
-   * @apiVersion 1.0.0
-   * @apiName project.viewHistory
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription View the history of a given project (filtered by what the user is
-   * allowed to see).
-   *
-   * @apiParam {String} projectId The project's id from which the history should be shown
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object[]} data.events Holds information about the history of the project
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *  "apiVersion": "1.0",
-   *  "data": {
-   *     "events": [{
-   *         "key": "6de80cb1ca780434a58b0752f3470301",
-   *         "intent": "global.createProject",
-   *             "createdBy": "alice",
-   *             "createdAt": "2018-09-05T13:37:25.775Z",
-   *             "dataVersion": 1,
-   *             "data": {
-   *                 "project": {
-   *                     "id": "6de80cb1ca780434a58b0752f3470301",
-   *                     "creationUnixTs": "1536154645775",
-   *                     "status": "open",
-   *                     "displayName": "myFirstProject",
-   *                     "description": "mydescription",
-   *                     "amount": "500",
-   *                     "assignee": "alice",
-   *                     "currency": "EUR",
-   *                     "thumbnail": "/Thumbnail_0001.jpg"
-   *                 },
-   *                 "permissions": {}
-   *             },
-   *             "snapshot": {
-   *                 "displayName": "myFirstProject"
-   *             }
-   *         }
-   *     ]
-   *   }
-   * }
-   */
-  router.get("/project.viewHistory", (req: AuthenticatedRequest, res) => {
-    getProjectHistory(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/project.viewHistory`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "View the history of a given project (filtered by what the user is allowed to see).",
+        tags: ["project"],
+        summary: "View history",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  events: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        key: { type: "string" },
+                        intent: { type: "string", example: "global.createProject" },
+                        createdBy: { type: "string", example: "aSmith" },
+                        createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                        dataVersion: { type: "string", example: "1" },
+                        data: {
+                          type: "object",
+                          additionalProperties: true,
+                          example: { identity: "aSmith", intent: "subproject.viewDetails" },
+                          properties: {
+                            permissions: {
+                              type: "object",
+                              additionalProperties: true,
+                              example: { "subproject.intent.listPermissions": ["aSmith", "jDoe"] },
+                            },
+                          },
+                        },
+                        snapshot: {
+                          type: "object",
+                          properties: {
+                            displayName: { type: "string", example: "townproject" },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getProjectHistory(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {get} /project.intent.listPermissions List permissions
-   * @apiVersion 1.0.0
-   * @apiName project.intent.listPermissions
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription See the permissions for a given project.
-   *
-   * @apiParam {String} projectId The project's id from which the permissions should be listed
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Includes every intent where at least one user has permission for
-   * @apiSuccess {String[]} data.project.viewSummary Lists all users with certain permission
-   * @apiSuccess {String[]} data.project.viewDetails Lists all users with certain permission
-   * @apiSuccessExample {json} Success-Response
-   *  {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "project.viewSummary":[
-   *          "alice",
-   *          "john"
-   *        ],
-   *       "project.viewDetails":[
-   *          "alice"
-   *       ],
-   *        ...
-   *     }
-   *   }
-   */
-  router.get("/project.intent.listPermissions", (req: AuthenticatedRequest, res) => {
-    getProjectPermissions(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/project.intent.listPermissions`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "See the permissions for a given project.",
+        tags: ["project"],
+        summary: "List all permissions",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                additionalProperties: true,
+                example: {
+                  "project.viewDetails": ["aSmith", "jDoe"],
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getProjectPermissions(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /project.intent.grantPermission Grant permission
-   * @apiVersion 1.0.0
-   * @apiName project.intent.grantPermission
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription Grant a permission to a user. After this call has returned, the
-   * user will be allowed to execute the given intent.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The user the permission should be granted to.
-   * @apiParam {String} data.intent The intent the user should get permissions for.
-   * @apiParam {String} data.projectId The project the permissions are effective on.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "userId": "alice",
-   *       "intent": "project.assign"
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/project.intent.grantPermission", (req: AuthenticatedRequest, res) => {
-    grantProjectPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/project.intent.grantPermission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Grant a permission to a user. After this call has returned, the " +
+          "user will be allowed to execute the given intent.",
+        tags: ["project"],
+        summary: "Grant a permission to a user or group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["identity", "intent", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      grantProjectPermission(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /project.intent.revokePermission Revoke permission
-   * @apiVersion 1.0.0
-   * @apiName project.intent.revokePermission
-   * @apiGroup Project
-   * @apiPermission user
-   * @apiDescription Revoke a permission from a user. After this call has returned, the
-   * user will no longer be able to execute the given intent.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.userId The user the permission should be revoked from.
-   * @apiParam {String} data.intent What the user should no longer be allowed to do.
-   * @apiParam {String} data.projectId The project the permissions are effective on.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "userId": "alice",
-   *       "intent": "project.close"
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/project.intent.revokePermission", (req: AuthenticatedRequest, res) => {
-    revokeProjectPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/project.intent.revokePermission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Revoke a permission from a user. After this call has returned, the " +
+          "user will no longer be able to execute the given intent.",
+        tags: ["project"],
+        summary: "Revoke a permission from a user or group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["identity", "intent", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      revokeProjectPermission(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  //#endregion project
-  //#region subproject
   // ------------------------------------------------------------
   //       subproject
   // ------------------------------------------------------------
 
-  /**
-   * @api {get} /subproject.list?projectId={projectId} List
-   * @apiVersion 1.0.0
-   * @apiName subproject.list
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Retrieve all subprojects for a given project. Note that any
-   * subprojects the user is not allowed to see are left out of the response.
-   *
-   * @apiParam {String} projectId The project's id
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object[]} data.items Lists all existing projects
-   * @apiSuccess {String} data.items.data Wrapper for the subproject's information
-   * @apiSuccess {String} data.items.data.id The subproject's id
-   * @apiSuccess {String} data.items.data.creationUnixTs A unix timestamp when the subproject was created
-   * @apiSuccess {String} data.items.data.status Shows if subproject is open or closed
-   * @apiSuccess {String} data.items.data.displayName The subproject's displayname
-   * @apiSuccess {String} data.items.data.description The subproject's description
-   * @apiSuccess {String} data.items.data.amount The amount of money which should be assigned to the subproject
-   * @apiSuccess {String} data.items.data.assignee The subproject's assignee
-   * @apiSuccess {String} data.items.data.currency The currency of the amount assigned to the subproject
-   * @apiSuccess {Object[]} data.items.log Holds information about the history of the subproject
-   * @apiSuccess {String[]} data.items.allowedIntents Lists all available endpoints
-   *
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "items":[{
-   *          "data": {
-   *                 "id": "6de80cb1ca780434a58b0752f3470301",
-   *                 "creationUnixTs": "1536154645775",
-   *                 "status": "open",
-   *                 "displayName": "myFirstSubproject",
-   *                 "description": "mydescription",
-   *                 "amount": "500",
-   *                 "assignee": "alice",
-   *                 "currency": "EUR"
-   *             },
-   *           "log": [{
-   *                 "key": "6de80cb1ca780434a58b0752f3470301",
-   *                 "intent": "global.createProject",
-   *                     "createdBy": "root",
-   *                     "createdAt": "2018-09-05T13:37:25.775Z",
-   *                     "dataVersion": 1,
-   *                     "data": {
-   *                         "subproject": {
-   *                             "id": "6de80cb1ca780434a58b0752f3470301",
-   *                             "creationUnixTs": "1536154645775",
-   *                             "status": "open",
-   *                             "displayName": "myFirstProject",
-   *                             "description": "mydescription",
-   *                             "amount": "500",
-   *                             "assignee": "alice",
-   *                             "currency": "EUR"
-   *                          },
-   *                         "permissions": {
-   *                            "subproject.intent.listPermissions": [
-   *                                 "mstein"
-   *                             ],
-   *                             "subproject.intent.grantPermission": [
-   *                                 "mstein"
-   *                             ],
-   *                             ...
-   *                          }
-   *                     },
-   *                     "snapshot": {
-   *                         "displayName": "myFirstSubproject"
-   *                     }
-   *                 }
-   *             ],
-   *           "allowedIntents": [
-   *                 "global.listPermissions",
-   *                 "global.grantPermission",
-   *                 "global.grantAllPermissions",
-   *                 "global.revokePermission",
-   *                 "..."
-   *             ]
-   *         }
-   *   }
-   */
-  router.get("/subproject.list", (req: AuthenticatedRequest, res) => {
-    getSubprojectList(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/subproject.list`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Retrieve all subprojects for a given project. Note that any " +
+          "subprojects the user is not allowed to see are left out of the response.",
+        tags: ["subproject"],
+        summary: "List all subprojects of a given project",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  items: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        data: {
+                          type: "object",
+                          properties: {
+                            id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                            creationUnixTs: { type: "string", example: "1536154645775" },
+                            status: { type: "string", example: "open" },
+                            displayName: { type: "string", example: "school" },
+                            description: { type: "string", example: "school should be built" },
+                            amount: { type: "string", example: "3000" },
+                            assignee: { type: "string", example: "aSmith" },
+                            currency: { type: "string", example: "EUR" },
+                            thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                          },
+                        },
+                        log: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              key: { type: "string" },
+                              intent: { type: "string", example: "global.createProject" },
+                              createdBy: { type: "string", example: "aSmith" },
+                              createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                              dataVersion: { type: "string", example: "1" },
+                              data: {
+                                type: "object",
+                                properties: {
+                                  subproject: {
+                                    type: "object",
+                                    properties: {
+                                      id: {
+                                        type: "string",
+                                        example: "d0e8c69eg298c87e3899119e025eff1f",
+                                      },
+                                      creationUnixTs: { type: "string", example: "1536154645775" },
+                                      status: { type: "string", example: "open" },
+                                      displayName: { type: "string", example: "school" },
+                                      description: {
+                                        type: "string",
+                                        example: "school should be built",
+                                      },
+                                      amount: { type: "string", example: "3000" },
+                                      assignee: { type: "string", example: "aSmith" },
+                                      currency: { type: "string", example: "EUR" },
+                                      thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                                    },
+                                  },
+                                  permissions: {
+                                    type: "object",
+                                    additionalProperties: true,
+                                    example: {
+                                      "subproject.intent.listPermissions": ["aSmith", "jDoe"],
+                                    },
+                                  },
+                                  snapshot: {
+                                    type: "object",
+                                    properties: {
+                                      displayName: { type: "string", example: "school" },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                        allowedIntents: { type: "array", items: { type: "string" } },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getSubprojectList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {get} /subproject.viewDetails View details
-   * @apiVersion 1.0.0
-   * @apiName subproject.viewDetails
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Retrieve details about a specific subproject.
-   *
-   * @apiParam {String} projectId The project's id
-   * @apiParam {String} subprojectId The subproject's id from which the details should be shown
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object} data.subproject Lists all existing projects
-   * @apiSuccess {String} data.subproject.data Wrapper for the subproject's information
-   * @apiSuccess {String} data.subproject.data.id The subproject's id
-   * @apiSuccess {String} data.subproject.data.creationUnixTs A unix timestamp when the subproject was created
-   * @apiSuccess {String} data.subproject.data.status Shows if subproject is open or closed
-   * @apiSuccess {String} data.subproject.data.displayName The subproject's displayname
-   * @apiSuccess {String} data.subproject.data.description The subproject's description
-   * @apiSuccess {String} data.subproject.data.amount The amount of money which should be assigned to the subproject
-   * @apiSuccess {String} data.subproject.data.assignee The subproject's assignee
-   * @apiSuccess {String} data.subproject.data.currency The currency of the amount assigned to the subproject
-   * @apiSuccess {Object[]} data.subproject.log Holds information about the history of the subproject
-   * @apiSuccess {String[]} data.subproject.allowedIntents Lists all available endpoints
-   *
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "subproject":{
-   *          "data": {
-   *                 "id": "6de80cb1ca780434a58b0752f3470301",
-   *                 "creationUnixTs": "1536154645775",
-   *                 "status": "open",
-   *                 "displayName": "myFirstSubproject",
-   *                 "description": "mydescription",
-   *                 "amount": "500",
-   *                 "assignee": "alice",
-   *                 "currency": "EUR"
-   *             },
-   *           "log": [{
-   *                 "key": "6de80cb1ca780434a58b0752f3470301",
-   *                 "intent": "global.createProject",
-   *                     "createdBy": "root",
-   *                     "createdAt": "2018-09-05T13:37:25.775Z",
-   *                     "dataVersion": 1,
-   *                     "data": {
-   *                         "subproject": {
-   *                             "id": "6de80cb1ca780434a58b0752f3470301",
-   *                             "creationUnixTs": "1536154645775",
-   *                             "status": "open",
-   *                             "displayName": "myFirstProject",
-   *                             "description": "mydescription",
-   *                             "amount": "500",
-   *                             "assignee": "alice",
-   *                             "currency": "EUR"
-   *                          },
-   *                         "permissions": {
-   *                            "subproject.intent.listPermissions": [
-   *                                 "mstein"
-   *                             ],
-   *                             "subproject.intent.grantPermission": [
-   *                                 "mstein"
-   *                             ],
-   *                             ...
-   *                          }
-   *                     },
-   *                     "snapshot": {
-   *                         "displayName": "myFirstSubproject"
-   *                     }
-   *                 }
-   *             ],
-   *           "allowedIntents": [
-   *                 "global.listPermissions",
-   *                 "global.grantPermission",
-   *                 "global.grantAllPermissions",
-   *                 "global.revokePermission",
-   *                 "..."
-   *         }
-   *   }
-   */
-  router.get("/subproject.viewDetails", (req: AuthenticatedRequest, res) => {
-    getSubprojectDetails(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/subproject.viewDetails`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Retrieve details about a specific subproject.",
+        tags: ["subproject"],
+        summary: "View details",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+              example: "d0e8c69eg298c87e3899119e025eff1f",
+            },
+            subprojectId: {
+              type: "string",
+              example: "rfe8er9eg298c87e3899119e025eff1f",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  parentProject: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                      displayName: { type: "string", example: "townproject" },
+                    },
+                  },
+                  subproject: {
+                    type: "object",
+                    properties: {
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                          creationUnixTs: { type: "string", example: "1536154645775" },
+                          status: { type: "string", example: "open" },
+                          displayName: { type: "string", example: "school" },
+                          description: { type: "string", example: "school should be built" },
+                          amount: { type: "string", example: "3000" },
+                          assignee: { type: "string", example: "aSmith" },
+                          currency: { type: "string", example: "EUR" },
+                          thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                        },
+                      },
+                      log: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            key: { type: "string" },
+                            intent: { type: "string", example: "global.createProject" },
+                            createdBy: { type: "string", example: "aSmith" },
+                            createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                            dataVersion: { type: "string", example: "1" },
+                            data: {
+                              type: "object",
+                              properties: {
+                                subproject: {
+                                  type: "object",
+                                  properties: {
+                                    id: {
+                                      type: "string",
+                                      example: "d0e8c69eg298c87e3899119e025eff1f",
+                                    },
+                                    creationUnixTs: { type: "string", example: "1536154645775" },
+                                    status: { type: "string", example: "open" },
+                                    displayName: { type: "string", example: "school" },
+                                    description: {
+                                      type: "string",
+                                      example: "school should be built",
+                                    },
+                                    amount: { type: "string", example: "3000" },
+                                    assignee: { type: "string", example: "aSmith" },
+                                    currency: { type: "string", example: "EUR" },
+                                    thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                                  },
+                                },
+                                permissions: {
+                                  type: "object",
+                                  additionalProperties: true,
+                                  example: {
+                                    "subproject.intent.listPermissions": ["aSmith", "jDoe"],
+                                  },
+                                },
+                                snapshot: {
+                                  type: "object",
+                                  properties: {
+                                    displayName: { type: "string", example: "school" },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      allowedIntents: { type: "array", items: { type: "string" } },
+                    },
+                  },
+                  workflowitems: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      additionalProperties: true,
+                      example: { myWorkflowItems: {} },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getSubprojectDetails(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /subproject.assign Assign
-   * @apiVersion 1.0.0
-   * @apiName subproject.assign
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Assign a subproject to a given user. The assigned user will be
-   * notified about the change.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The future assignee.
-   * @apiParam {String} data.subprojectId The subproject to be re-assigned.
-   * @apiParam {String} data.projectId The project the subproject belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/subproject.assign", (req: AuthenticatedRequest, res) => {
-    assignSubproject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/subproject.assign`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Assign a subproject to a given user. The assigned user will be notified about the change.",
+        tags: ["subproject"],
+        summary: "Assign a user or group to a subproject",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["identity", "subprojectId", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      assignSubproject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /subproject.update Update
-   * @apiVersion 1.0.0
-   * @apiName subproject.update
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Partially update a subproject. Only properties mentioned in the
-   * request body are touched, others are not affected. The assigned user will be
-   * notified about the change.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} [data.displayName]
-   * @apiParam {String} [data.description]
-   * @apiParam {String} [data.amount]
-   * @apiParam {String} [data.currency]
-   * @apiParam {String} data.subprojectId The subproject to be modified.
-   * @apiParam {String} data.projectId The project the subproject belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "displayName": "My Subproject",
-   *       "description": "",
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/subproject.update", (req: AuthenticatedRequest, res) => {
-    updateSubproject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/subproject.update`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Partially update a subproject. Only properties mentioned in the request body are touched, " +
+          "others are not affected. The assigned user will be notified about the change.",
+        tags: ["subproject"],
+        summary: "Update a subproject",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                displayName: { type: "string", example: "school" },
+                description: { type: "string", example: "school should be built" },
+                amount: { type: "string", example: "3000" },
+                assignee: { type: "string", example: "aSmith" },
+                currency: { type: "string", example: "EUR" },
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["subprojectId", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      updateSubproject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /subproject.close Close
-   * @apiVersion 1.0.0
-   * @apiName subproject.close
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Set a subproject's status to "closed" if, and only if, all
-   * associated workflowitems are already set to "closed".
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.subprojectId The subproject to be closed.
-   * @apiParam {String} data.projectId The project the subproject belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/subproject.close", (req: AuthenticatedRequest, res) => {
-    closeSubproject(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/subproject.close`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Set a subproject's status to 'closed' if, and only if, all " +
+          "associated workflowitems are already set to 'closed'.",
+        tags: ["subproject"],
+        summary: "Close a subproject",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      closeSubproject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /subproject.createWorkflowitem Create workflowitem
-   * @apiVersion 1.0.0
-   * @apiName subproject.createWorkflowitem
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Create a workflowitem and associate it to the given subproject.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.projectId The project's id.
-   * @apiParam {String} data.subprojectId The subproject's id
-   * @apiParam {String} data.id The workflowitem's id
-   * @apiParam {String} data.status Possible values are "open" and "closed" showing the workflowitem's status
-   * @apiParam {String} data.displayName The workflowitem's displayname
-   * @apiParam {String} data.description The workflowitem's description
-   * @apiParam {String} data.amount The amount of money which should be assigned to the workflowitem
-   * @apiParam {String} data.assignee The workflowitem's assignee
-   * @apiParam {String} data.currency The currency of the amount assigned to the workflowitem
-   * @apiParam {String} data.amountType The amountType could be either "N/A" or "allocated" or "disbursed"
-   * @apiParam {Object} data.documents The documents attached to the workflowitem
-   * @apiParam {String} data.documents.id The unique name of the document
-   * @apiParam {String} data.documents.base64 The document as base64 String
-   * @apiParamExample {json} Request
-   * {
-   *   "apiVersion": "1.0",
-   *   "data": {
-   *     "projectId": "6de80cb1ca780434a58b0752f3470301",
-   *     "subproject": "45thz3efrfca780434a58b0752f3470301"
-   *     "status": "open",
-   *     "displayName": "myWorkflowitem",
-   *     "description": "mydescription",
-   *     "amount": "500",
-   *     "assignee": "alice",
-   *     "currency": "EUR",
-   *     "amountType": "disbursed"
-   *     "documents": [
-   *        {
-   *        "id": "Doc1",
-   *        "base64": "c29tZXRoaW5ns"
-   *        },
-   *        ...
-   *      ]
-   *   }
-   * }
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {String} data.created true if workflowitem was successfully created
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "created": true
-   *     }
-   *   }
-   */
-  router.post("/subproject.createWorkflowitem", (req: AuthenticatedRequest, res) => {
-    createWorkflowitem(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/subproject.reorderWorkflowitems`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Set a new workflowitem ordering. Workflowitems not included in the list " +
+          "will be ordered by their creation time and placed after all explicitly ordered workflowitems.",
+        tags: ["subproject"],
+        summary: "Reorder the workflowitems of the given subproject",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
+                ordering: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                    example: "56z9ki1ca780434a58b0752f3470301",
+                  },
+                },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      reorderWorkflowitems(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /subproject.reorderWorkflowitems Reorder Workflowitems
-   * @apiVersion 1.0.0
-   * @apiName subproject.reorderWorkflowitems
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Set a new workflowitem ordering. Workflowitems not included in the
-   * list will be ordered by their creation time and placed after all explicitly ordered
-   * workflowitems.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.subprojectId The subproject to be closed.
-   * @apiParam {String} data.projectId The project the subproject belongs to.
-   * @apiParam {String[]} data.ordering Contains all workflowitem which should be ordered
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301",
-   *       "ordering": [
-   *          "56z9ki1ca780434a58b0752f3470301",
-   *          "454zjukca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/subproject.reorderWorkflowitems", (req: AuthenticatedRequest, res) => {
-    reorderWorkflowitems(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/subproject.createWorkflowitem`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Create a workflowitem and associate it to the given subproject.\n.\n" +
+          "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
+          "The only possible values for 'status' are: 'open' and 'closed'",
+        tags: ["subproject"],
+        summary: "Create a workflowitem",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
 
-  /**
-   * @api {get} /subproject.viewHistory?projectId={projectId}&subprojectId={subprojectId} View history
-   * @apiVersion 1.0.0
-   * @apiName subproject.viewHistory
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription View the history of a given subproject (filtered by what the user
-   * is allowed to see).
-   *
-   * @apiParam {String} projectId The project's id
-   * @apiParam {String} subprojectId The subproject's id from which the history should be shown
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object[]} data.events Holds information about the history of the subproject
-   * @apiSuccessExample {json} Success-Response
-   *  {
-   *  "apiVersion": "1.0",
-   *  "data": {
-   *     "events": [{
-   *         "key": "6de80cb1ca780434a58b0752f3470301",
-   *         "intent": "global.createProject",
-   *         "createdBy": "alice",
-   *         "createdAt": "2018-09-05T13:37:25.775Z",
-   *         "dataVersion": 1,
-   *         "data": [
-   *             "89or46ztg9180434a58b0752f3470301",
-   *             "ef567t78780434a58b075872f3470301"
-   *             ],
-   *         "permissions": {}
-   *         "snapshot": {
-   *           "displayName": "myFirstWorkflowitem"
-   *          }
-   *      },
-   *      ...
-   * ]
-   *   }
-   * }
-   */
+                status: { type: "string", example: "open" },
+                displayName: { type: "string", example: "classroom" },
+                description: { type: "string", example: "build classroom" },
+                amount: { type: "string", example: "500" },
+                assignee: { type: "string", example: "aSmith" },
+                currency: { type: "string", example: "EUR" },
+                amountType: { type: "string", example: "disbursed" },
+                documents: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "classroom-contract" },
+                      base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  created: { type: "boolean", example: "true" },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      createWorkflowitem(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  router.get("/subproject.viewHistory", (req: AuthenticatedRequest, res) => {
-    getSubprojectHistory(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/subproject.viewHistory`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "View the history of a given subproject (filtered by what the user is allowed to see).",
+        tags: ["subproject"],
+        summary: "View history",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+            subprojectId: {
+              type: "string",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  events: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        key: { type: "string" },
+                        intent: { type: "string", example: "global.createProject" },
+                        createdBy: { type: "string", example: "aSmith" },
+                        createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                        dataVersion: { type: "string", example: "1" },
+                        data: {
+                          type: "object",
+                          additionalProperties: true,
+                          example: {
+                            subproject: {
+                              id: "er58c69eg298c87e3899119e025eff1f",
+                              creationUnixTs: "1536834568552",
+                              status: "open",
+                              displayName: "school",
+                              description: "school should be built",
+                              amount: "500",
+                              currency: "EUR",
+                              assignee: "aSmith",
+                            },
+                          },
+                          properties: {
+                            permissions: {
+                              type: "object",
+                              additionalProperties: true,
+                              example: { "subproject.intent.listPermissions": ["aSmith", "jDoe"] },
+                            },
+                          },
+                        },
+                        snapshot: {
+                          type: "object",
+                          properties: {
+                            displayName: { type: "string", example: "classroom" },
+                            amountType: { type: "string", example: "disbursed" },
+                            amount: { type: "string", example: "500" },
+                            currency: { type: "string", example: "EUR" },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getSubprojectHistory(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {get} /subproject.intent.listPermissions?projectId={projectId}&subprojectId={subprojectId} List permissions
-   * @apiVersion 1.0.0
-   * @apiName subproject.intent.listPermissions
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription See the permissions for a given subproject.
-   *
-   * @apiParam {String} projectId The project's id
-   * @apiParam {String} subprojectId The subproject's id
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Includes every intent where at least one user has permission for
-   * @apiSuccess {String[]} data.subproject.assign Lists all users with certain permission
-   * @apiSuccess {String[]} data.subproject.update Lists all users with certain permission
-   * @apiSuccessExample {json} Success-Response
-   *  {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "subproject.assign":[
-   *          "alice",
-   *          "john"
-   *        ],
-   *       "subproject.update":[
-   *          "alice"
-   *       ],
-   *        ...
-   *     }
-   *   }
-   */
-  router.get("/subproject.intent.listPermissions", (req: AuthenticatedRequest, res) => {
-    getSubprojectPermissions(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/subproject.intent.listPermissions`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "See the permissions for a given subproject.",
+        tags: ["subproject"],
+        summary: "List all permissions",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+              example: "er58c69eg298c87e3899119e025eff1f",
+            },
+            subprojectId: {
+              type: "string",
+              example: "4j28c69eg298c87e3899119e025eff1f",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                additionalProperties: true,
+                example: {
+                  "project.viewDetails": ["aSmith", "jDoe"],
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getSubprojectPermissions(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /subproject.intent.grantPermission Grant permission
-   * @apiVersion 1.0.0
-   * @apiName subproject.intent.grantPermission
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Grant a permission to a user. After this call has returned, the
-   * user will be allowed to execute the given intent.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The user the permission should be granted to.
-   * @apiParam {String} data.intent The intent the user should get permissions for.
-   * @apiParam {String} data.subprojectId The subproject the permissions are effective on.
-   * @apiParam {String} data.projectId The project the subproject belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "intent": "subproject.close"
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/subproject.intent.grantPermission", (req: AuthenticatedRequest, res) => {
-    grantSubprojectPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/subproject.intent.grantPermission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Grant a permission to a user. After this call has returned, the " +
+          "user will be allowed to execute the given intent.",
+        tags: ["subproject"],
+        summary: "Grant a permission to a user or group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      grantSubprojectPermission(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {post} /subproject.intent.revokePermission Revoke permission
-   * @apiVersion 1.0.0
-   * @apiName subproject.intent.revokePermission
-   * @apiGroup Subproject
-   * @apiPermission user
-   * @apiDescription Revoke a permission from a user. After this call has returned, the
-   * user will no longer be able to execute the given intent.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The user the permission should be revoked from.
-   * @apiParam {String} data.intent What the user should no longer be allowed to do.
-   * @apiParam {String} data.subprojectId The subproject the permissions are effective on.
-   * @apiParam {String} data.projectId The project the subproject belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "intent": "subproject.close"
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/subproject.intent.revokePermission", (req: AuthenticatedRequest, res) => {
-    revokeSubprojectPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/subproject.intent.revokePermission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Revoke a permission from a user. After this call has returned, the " +
+          "user will no longer be able to execute the given intent.",
+        tags: ["subproject"],
+        summary: "Revoke a permission to a user or group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "t628c69eg298c87e3899119e025eff1f" },
+              },
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      revokeSubprojectPermission(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  //#endregion subproject
-  //#region workflowitem
   // ------------------------------------------------------------
-  //      workflowitem
-  // ------------------------------------------------------------
-
-  /**
-   * @api {get} /workflowitem.list?projectId={projectId}&subprojectId={subprojectId} List
-   * @apiVersion 1.0.0
-   * @apiName workflowitem.list
-   * @apiGroup Workflowitem
-   * @apiPermission user
-   * @apiDescription Retrieve all workflowitems of a given subproject. Those items the
-   * user is not allowed to see will be redacted, that is, most of their values will be
-   * set to null.
-   *
-   * @apiParam {String} projectId The project's id
-   * @apiParam {String} subprojectId The subproject's id
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload.
-   * @apiSuccess {Object[]} data.items Lists all existing projects
-   * @apiSuccess {String} data.items.data Wrapper for the subproject's information
-   * @apiSuccess {String} data.items.data.id The subproject's id
-   * @apiSuccess {String} data.items.data.creationUnixTs A unix timestamp when the subproject was created
-   * @apiSuccess {String} data.items.data.status Shows if subproject is open or closed
-   * @apiSuccess {String} data.items.data.displayName The subproject's displayname
-   * @apiSuccess {String} data.items.data.description The subproject's description
-   * @apiSuccess {String} data.items.data.amount The amount of money which should be assigned to the subproject
-   * @apiSuccess {String} data.items.data.assignee The subproject's assignee
-   * @apiSuccess {String} data.items.data.currency The currency of the amount assigned to the subproject
-   * @apiSuccess {Object[]} data.items.data.documents The documents attached to the workflowitem
-   * @apiSuccess {String} data.items.datadocuments.id The unique name of the document
-   * @apiSuccess {String} data.items.datadocuments.hash The document's hash
-   * @apiSuccess {String[]} data.items.allowedIntents Lists all available endpoints
-   *
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "items":[{
-   *          "data": {
-   *                 "id": "6de80cb1ca780434a58b0752f3470301",
-   *                 "creationUnixTs": "1536154645775",
-   *                 "status": "open",
-   *                 "displayName": "myFirstWorkflowitem",
-   *                 "description": "mydescription",
-   *                 "amount": "500",
-   *                 "assignee": "alice",
-   *                 "currency": "EUR",
-   *                 "documents": [
-   *                    {
-   *                    "id": "Doc1",
-   *                    "hash": "3fc9b689459d738f8c88a3a48aa9e33542016b7a4052e001aaa536fca74813cb"
-   *                    }
-   *                  ]
-   *             },
-   *           "allowedIntents": [
-   *                 "global.listPermissions",
-   *                 "global.grantPermission",
-   *                 "global.grantAllPermissions",
-   *                 "global.revokePermission",
-   *                 "..."
-   *             ]
-   *         }
-   *   }
-   */
-  router.get("/workflowitem.list", (req: AuthenticatedRequest, res) => {
-    getWorkflowitemList(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /workflowitem.assign Assign
-   * @apiVersion 1.0.0
-   * @apiName workflowitem.assign
-   * @apiGroup Workflowitem
-   * @apiPermission user
-   * @apiDescription Assign a workflowitem to a given user. The assigned user will be
-   * notified about the change.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The future assignee.
-   * @apiParam {String} data.workflowitemId The workflowitem to be re-assigned.
-   * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
-   * @apiParam {String} data.projectId The project the workflowitem belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/workflowitem.assign", (req: AuthenticatedRequest, res) => {
-    assignWorkflowitem(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /workflowitem.update Update
-   * @apiVersion 1.0.0
-   * @apiName workflowitem.update
-   * @apiGroup Workflowitem
-   * @apiPermission user
-   * @apiDescription Partially update a workflowitem. Only properties mentioned in the
-   * request body are touched, others are not affected. The assigned user will be
-   * notified about the change.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} [data.displayName]
-   * @apiParam {String} [data.amount]
-   * @apiParam {String} [data.currency]
-   * @apiParam {String} [data.amountType]
-   * @apiParam {String} [data.description]
-   * @apiParam {String} data.workflowitemId The workflowitem to be modified.
-   * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
-   * @apiParam {String} data.projectId The project the workflowitem belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "displayName": "My Workflowitem",
-   *       "description": "",
-   *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/workflowitem.update", (req: AuthenticatedRequest, res) => {
-    updateWorkflowitem(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /workflowitem.close Close
-   * @apiVersion 1.0.0
-   * @apiName workflowitem.close
-   * @apiGroup Workflowitem
-   * @apiPermission user
-   * @apiDescription Set a workflowitem's status to "closed".
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.workflowitemId The workflowitem to be closed.
-   * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
-   * @apiParam {String} data.projectId The project the workflowitem belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/workflowitem.close", (req: AuthenticatedRequest, res) => {
-    closeWorkflowitem(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  // tslint:disable-next-line:max-line-length
-  /** @api {get} /workflowitem.intent.listPermissions?projectId={projectId}&subprojectId={subprojectId}&workflowitemId={workflowitemId} List permissions
-   * @apiVersion 1.0.0
-   * @apiName workflowitem.intent.listPermissions
-   * @apiGroup Workflowitem
-   * @apiPermission user
-   * @apiDescription See the permissions for a given workflowitem.
-   *
-   * @apiParam {String} projectId The project's id
-   * @apiParam {String} subprojectId The subproject's id
-   * @apiParam {String} workflowitemId The workflowitem's id from which the permissions should be listed
-   *
-   * @apiSuccess {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiSuccess {Object} data Includes every intent where at least one user has permission for
-   * @apiSuccess {String[]} data.workflowitem.assign Lists all users with certain permission
-   * @apiSuccess {String[]} data.workflowitem.update Lists all users with certain permission
-   * @apiSuccessExample {json} Success-Response
-   *  {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "workflowitem.assign":[
-   *          "alice",
-   *          "john"
-   *        ],
-   *       "workflowitem.update":[
-   *          "alice"
-   *       ],
-   *        ...
-   *     }
-   *   }
-   */
-  router.get("/workflowitem.intent.listPermissions", (req: AuthenticatedRequest, res) => {
-    getWorkflowitemPermissions(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /workflowitem.intent.grantPermission Grant permission
-   * @apiVersion 1.0.0
-   * @apiName workflowitem.intent.grantPermission
-   * @apiGroup Workflowitem
-   * @apiPermission user
-   * @apiDescription Grant a permission to a user. After this call has returned, the
-   * user will be allowed to execute the given intent.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The user the permission should be granted to.
-   * @apiParam {String} data.intent The intent the user should get permissions for.
-   * @apiParam {String} data.workflowitemId The workflowitem the permissions are effective on.
-   * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
-   * @apiParam {String} data.projectId The project the workflowitem belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "intent": "workflowitem.close"
-   *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/workflowitem.intent.grantPermission", (req: AuthenticatedRequest, res) => {
-    grantWorkflowitemPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /workflowitem.intent.revokePermission Revoke permission
-   * @apiVersion 1.0.0
-   * @apiName workflowitem.intent.revokePermission
-   * @apiGroup Workflowitem
-   * @apiPermission user
-   * @apiDescription Revoke a permission from a user. After this call has returned, the
-   * user will no longer be able to execute the given intent.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.identity The user the permission should be revoked from.
-   * @apiParam {String} data.intent What the user should no longer be allowed to do.
-   * @apiParam {String} data.workflowitemId The workflowitem the permissions are effective on.
-   * @apiParam {String} data.subprojectId The subproject the workflowitem belongs to.
-   * @apiParam {String} data.projectId The project the workflowitem belongs to.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "identity": "alice",
-   *       "intent": "workflowitem.close"
-   *       "workflowitemId": "e5011a1009f28dcca6ab0e3b9b229d57",
-   *       "subprojectId": "0f3967d2eeddd14fb2a7c250e59d630a",
-   *       "projectId": "6de80cb1ca780434a58b0752f3470301"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/workflowitem.intent.revokePermission", (req: AuthenticatedRequest, res) => {
-    revokeWorkflowitemPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {post} /workflowitem.validateDocument Validate Document
-   * @apiVersion 1.0.0
-   * @apiName workflowitem.validateDocument
-   * @apiGroup Workflowitem
-   * @apiPermission user
-   * @apiDescription Validates if the hashed base64 string equals the hash sent by the user.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.base64String base64-string which will be hashed and compared to the other hash value.
-   * @apiParam {String} data.hash hash value which shall be compared with the hashed base64-string.
-   * @apiParamExample {json} Request
-   *   {
-   *   "apiVersion": "1.0",
-   *   "data": {
-   *     "base64String": "c29tZWh0aW5n",
-   *     "hash": "3FC9B689459D738F8C88A3A48AA9E33542016B7A4052E001AAA536FCA74813CB"
-   *   }
-   *  }
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiSuccess {boolean} data.isIdentical true if the hash equals the hashed base64-string
-   * @apiSuccessExample {json} Success-Response
-   *  {
-   *  "apiVersion": "1.0",
-   *     "data": {
-   *       "isIdentical": false
-   *     }
-   *   }
-   */
-  router.post("/workflowitem.validateDocument", (req: AuthenticatedRequest, res) => {
-    validateDocument(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  //#endregion workflowitem
-  //#region notification
-  // ------------------------------------------------------------
-  //      notification
+  //       workflowitem
   // ------------------------------------------------------------
 
-  /**
-   * @api {get} /notification.list List for user
-   * @apiVersion 1.0.0
-   * @apiName notification.list
-   * @apiGroup Notification
-   * @apiPermission user
-   * @apiDescription List notifications for the user, given by the token in the
-   * request's `Authorization` header. By default, the response includes _all_
-   * notifications, but the `sinceId` parameter may be used to truncate the output.
-   *
-   * @apiParam {String} [sinceId] If specified, only newer notifications are returned. If
-   * the given ID is invalid or cannot be found, the parameter is ignored and all
-   * notifications are returned.
-   *
-   * @apiSuccess {String} apiVersion
-   * Version of the response layout (e.g., "1.0").
-   * @apiSuccess {Object} data
-   * Response payload.
-   * @apiSuccess {Object[]} data.notifications
-   * The list of notifications.
-   * @apiSuccess {String} data.notifications.notificationId
-   * Each notification has a unique ID, which can also be used with this call's `query` parameter.
-   * @apiSuccess {Boolean}  data.notifications.isRead
-   * Set to `true` if notification is marked as read, and to `false` otherwise.
-   * @apiSuccess {[Event](#api-Custom_Types-ObjectEvent)} data.notifications.originalEvent
-   * The event that triggered the notification.
-   * @apiSuccess {Object[]} data.notifications.resources
-   * A list of related resources, started with the one the event is directly related to.
-   * @apiSuccess {String} data.notifications.resources.id
-   * The ID of the related resource.
-   * @apiSuccess {String=project,subproject,workflowitem} data.notifications.resources.type
-   * The type of the related resource.
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "notifications": [
-   *         {
-   *           "notificationId": "b6455e52-36fd-4951-bdc8-e90956036b14",
-   *           "resources": [
-   *               {
-   *                   "id": "9a06006d5df285e0f861a82c560aaf37",
-   *                   "type": "workflowitem"
-   *               },
-   *               {
-   *                   "id": "d8217571d95ca63a229605d50f729674",
-   *                   "type": "subproject"
-   *               },
-   *               {
-   *                   "id": "9c4ac328d8da59871c8a4da34ddfaf17",
-   *                   "type": "project"
-   *               }
-   *           ],
-   *           "isRead": false,
-   *           "originalEvent": {
-   *               "key": "9a06006d5df285e0f861a82c560aaf37",
-   *               "intent": "workflowitem.close",
-   *               "createdBy": "alice",
-   *               "createdAt": "2018-05-28T13:08:45.487Z",
-   *               "dataVersion": 1,
-   *               "data": {}
-   *           }
-   *         }
-   *       ]
-   *     }
-   *   }
-   */
-  router.get("/notification.list", (req: AuthenticatedRequest, res) => {
-    getNotificationList(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/workflowitem.list`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Retrieve all workflowitems of a given subproject. Those items the " +
+          "user is not allowed to see will be redacted, that is, most of their values will be " +
+          "set to null.",
+        tags: ["workflowitem"],
+        summary: "List all workflowitems of a given subproject",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+            },
+            subprojectId: {
+              type: "string",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  workflowitems: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        data: {
+                          type: "object",
+                          properties: {
+                            id: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                            creationUnixTs: { type: "string", example: "1536154645775" },
+                            status: { type: "string", example: "open" },
+                            amountType: { type: "string", example: "disbursed" },
+                            displayName: { type: "string", example: "classroom" },
+                            description: { type: "string", example: "build a classroom" },
+                            amount: { type: "string", example: "500" },
+                            assignee: { type: "string", example: "aSmith" },
+                            currency: { type: "string", example: "EUR" },
+                            documents: {
+                              type: "array",
+                              items: {
+                                type: "object",
+                                properties: {
+                                  id: { type: "string", example: "classroom-contract" },
+                                  hash: {
+                                    type: "string",
+                                    example:
+                                      "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                        allowedIntents: { type: "array", items: { type: "string" } },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getWorkflowitemList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {get} /notification.markRead Mark read
-   * @apiVersion 1.0.0
-   * @apiName notification.markRead
-   * @apiGroup Notification
-   * @apiPermission user
-   * @apiDescription Allows a user to mark any of his/her notifications as read, which
-   * is then reflected by the `isRead` flag carried in the `notification.list` response.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.notificationId The notification to be marked as read.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "notificationId": "b6455e52-36fd-4951-bdc8-e90956036b14"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String=OK} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/notification.markRead", (req: AuthenticatedRequest, res) => {
-    markNotificationRead(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/workflowitem.assign`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Assign a workflowitem to a given user. The assigned user will be notified about the change.",
+        tags: ["workflowitem"],
+        summary: "Assign a user or group to a workflowitem",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "e528c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "9w88c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["identity", "workflowitemId", "subprojectId", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      assignWorkflowitem(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  //#endregion notification
-  //#region network
+  server.post(
+    `${urlPrefix}/workflowitem.update`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Partially update a workflowitem. Only properties mentioned in the request body are touched, " +
+          "others are not affected. The assigned user will be notified about the change.\n" +
+          "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
+          "The only possible values for 'status' are: 'open' and 'closed'",
+        tags: ["workflowitem"],
+        summary: "Update a workflowitem",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                displayName: { type: "string", example: "classroom" },
+                description: { type: "string", example: "build a classroom" },
+                amountType: { type: "string", example: "disbursed" },
+                amount: { type: "string", example: "500" },
+                assignee: { type: "string", example: "aSmith" },
+                currency: { type: "string", example: "EUR" },
+                projectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                documents: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "myId" },
+                      base64: {
+                        type: "string",
+                        example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
+                      },
+                    },
+                  },
+                },
+              },
+              required: ["workflowitemId", "subprojectId", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      updateWorkflowitem(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/workflowitem.close`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Set a workflowitem's status to 'closed'.",
+        tags: ["workflowitem"],
+        summary: "Close a workflowitem",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "er28c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "5z28c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["workflowitemId", "subprojectId", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      closeWorkflowitem(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.get(
+    `${urlPrefix}/workflowitem.intent.listPermissions`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "See the permissions for a given workflowitem.",
+        tags: ["workflowitem"],
+        summary: "List all permissions",
+        querystring: {
+          type: "object",
+          properties: {
+            projectId: {
+              type: "string",
+              example: "4j28c69eg298c87e3899119e025eff1f",
+            },
+            subprojectId: {
+              type: "string",
+              example: "5t28c69eg298c87e3899119e025eff1f",
+            },
+            workflowitemId: {
+              type: "string",
+              example: "6z28c69eg298c87e3899119e025eff1f",
+            },
+          },
+        },
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                additionalProperties: true,
+                example: {
+                  "project.viewDetails": ["aSmith", "jDoe"],
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getWorkflowitemPermissions(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/workflowitem.intent.grantPermission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Grant a permission to a user. After this call has returned, the " +
+          "user will be allowed to execute the given intent.",
+        tags: ["workflowitem"],
+        summary: "Grant a permission to a user or group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "6z28c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      grantWorkflowitemPermission(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/workflowitem.intent.revokePermission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Revoke a permission from a user. After this call has returned, the " +
+          "user will no longer be able to execute the given intent.",
+        tags: ["workflowitem"],
+        summary: "Revoke a permission from a user or group",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+                projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
+                workflowitemId: { type: "string", example: "6z28c69eg298c87e3899119e025eff1f" },
+              },
+              required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      revokeWorkflowitemPermission(
+        multichainClient,
+        (request as AuthenticatedRequest) as AuthenticatedRequest,
+      )
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/workflowitem.validateDocument`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Validates if the hashed base64 string equals the hash sent by the user.",
+        tags: ["workflowitem"],
+        summary: "Validate a document",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                base64String: {
+                  type: "string",
+                  example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
+                },
+                hash: {
+                  type: "string",
+                  example: "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
+                },
+              },
+              required: ["base64String", "hash"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  isIdentical: { type: "boolean", example: true },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      validateDocument(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  // ------------------------------------------------------------
+  //       notification
+  // ------------------------------------------------------------
+
+  server.get(
+    `${urlPrefix}/notification.list`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "List notifications for the user, given by the token in the " +
+          "request's `Authorization` header. By default, the response includes _all_ notifications, " +
+          "but the `sinceId` parameter may be used to truncate the output.",
+        tags: ["notification"],
+        summary: "List all notification of the authorized user",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        querystring: {
+          type: "object",
+          properties: {
+            sinceId: {
+              type: "string",
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  notifications: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        notificationId: { type: "string" },
+                        resources: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              id: { type: "string", example: "fe9c2b24ade9a92360b3a898665678ac" },
+                              type: { type: "string", example: "workflowitem" },
+                              displayName: { type: "string", example: "classroom" },
+                            },
+                          },
+                        },
+                        isRead: { type: "boolean" },
+                        originalEvent: {
+                          type: "object",
+                          properties: {
+                            key: { type: "string" },
+                            intent: { type: "string", example: "global.createProject" },
+                            createdBy: { type: "string", example: "aSmith" },
+                            createdAt: { type: "string", example: "2018-09-24T12:02:58.763Z" },
+                            dataVersion: { type: "string", example: "1" },
+                            data: {
+                              type: "object",
+                              additionalProperties: true,
+                              example: {
+                                project: {
+                                  id: "fe9c2b24ade9a92360b3a898665678ac",
+                                  creationUnixTs: "1536834480274",
+                                  status: "open",
+                                  displayName: "town-project",
+                                  description: "a town should be built",
+                                  amount: "10000",
+                                  assignee: "aSmith",
+                                  currency: "EUR",
+                                  thumbnail: "/Thumbnail_0001.jpg",
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getNotificationList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/notification.markRead`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Allows a user to mark any of his/her notifications as read, which " +
+          "is then reflected by the `isRead` flag carried in the `notification.list` response.",
+        tags: ["notification"],
+        summary: "Mark all notification as read",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                notificationId: { type: "string", example: "c9a6d74d-9508-4960-b39e-72f90f292b74" },
+              },
+              required: ["notificationId"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      markNotificationRead(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
   // ------------------------------------------------------------
   //       network
   // ------------------------------------------------------------
 
-  /**
-   * @api {post} /network.registerNode Register node
-   * @apiVersion 1.0.0
-   * @apiName network.registerNode
-   * @apiGroup Network
-   * @apiPermission user
-   * @apiDescription Used by non-master MultiChain nodes to register their wallet address.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.address The address of the blockchain wallet which should be registered
-   * @apiParam {String} data.organization The organization of the node
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "address": "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
-   *       "organization": "MyOrganization"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String="OK","Node already registered"} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/network.registerNode", (req: AuthenticatedRequest, res) => {
-    registerNode(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {get} /network.voteForPermission Grant/revoke permissions
-   * @apiVersion 1.0.0
-   * @apiName network.voteForPermission
-   * @apiGroup Network
-   * @apiPermission user
-   * @apiDescription Votes for granting/revoking network-level permissions to/from a
-   * registered node (identified by its wallet addresses). After this call, the voted
-   * access level may or may not be in effect, depending on the consensus parameters of
-   * the underlying blockchain.
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.address The node (wallet address) to vote for.
-   * @apiParam {String="none","basic","admin"} data.vote The access type voted for. "none"
-   * means no access at all. "basic" means that the node should be able to join the
-   * network, but not run privileged operations, like creating a new organization.
-   * Choose this access type for any additional nodes of an existing organization.
-   * Finally, a node with "admin" permissions can do (almost) everything, which is why
-   * this access type should only be applied to fully trusted nodes.
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "address": "13ePdKiZeSd787D6styeaSugyJjpM3SdLBibJy",
-   *       "vote": "admin"
-   *     }
-   *   }
-   *
-   */
-  router.post("/network.voteForPermission", (req: AuthenticatedRequest, res) => {
-    voteForNetworkPermission(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {get} /network.approveNewOrganization Approve new orgnization
-   * @apiVersion 1.0.0
-   * @apiName network.approveNewOrganization
-   * @apiGroup Network
-   * @apiPermission user
-   * @apiDescription coming soon
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.organization The organization to approve
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "organization": "MyNewOrganization"
-   *     }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String="OK"} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post("/network.approveNewOrganization", (req: AuthenticatedRequest, res) => {
-    approveNewOrganization(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
-
-  /**
-   * @api {get} /network.approveNewNodeForExistingOrganization Approve new node
-   * @apiVersion 1.0.0
-   * @apiName network.approveNewNodeForExistingOrganization
-   * @apiGroup Network
-   * @apiPermission user
-   * @apiDescription coming soon
-   *
-   * @apiParam {String} apiVersion Version of the request layout (e.g., "1.0").
-   * @apiParam {Object} data Request payload.
-   * @apiParam {String} data.address The address of the user's blockchain wallet
-   * @apiParamExample {json} Request
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "address": "13ePdKiZeSd787D6styeaSugyJjpM3SdLBibJy"
-   *     }
-   *   }
-   *
-   * @apiError {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiError {Object} error
-   * @apiError {String="409"} error.code
-   * @apiError {String="409"} error.message Tells either your organization has already voted
-   * or the permissions are already assigned
-   * @apiErrorExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "error": {
-   *        "code": "409",
-   *        "message": "Conflict: your organization has already voted for assigning {permissions} to {address}"
-   *      }
-   *   }
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {String="OK"} data
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": "OK"
-   *   }
-   */
-  router.post(
-    "/network.approveNewNodeForExistingOrganization",
-    (req: AuthenticatedRequest, res) => {
-      approveNewNodeForExistingOrganization(multichainClient, req)
-        .then(response => send(res, response))
-        .catch(err => handleError(req, res, err));
+  server.post(
+    `${urlPrefix}/network.registerNode`,
+    {
+      schema: {
+        description: "Used by non-master MultiChain nodes to register their wallet address.",
+        tags: ["network"],
+        summary: "Register a node",
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
+                organization: { type: "string", example: "Alice's Solutions & Co" },
+              },
+              required: ["address", "organization"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      registerNode(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
     },
   );
 
-  /**
-   * @api {get} /network.list List
-   * @apiVersion 1.0.0
-   * @apiName network.list
-   * @apiGroup Network
-   * @apiPermission user
-   * @apiDescription Get all nodes
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload
-   * @apiSuccess {Object[]} data.nodes
-   * @apiSuccess {Object} data.nodes.address
-   * @apiSuccess {String} data.nodes.address.address
-   * @apiSuccess {String} data.nodes.address.organization
-   * @apiSuccess {String} data.nodes.myVote
-   * @apiSuccess {Object} data.nodes.currentAccess
-   * @apiSuccess {String} data.nodes.currentAccess.accessType
-   * @apiSuccess {Object[]} data.nodes.currentAccess.approvers
-   * @apiSuccess {String} data.nodes.currentAccess.approvers.address
-   * @apiSuccess {String} data.nodes.currentAccess.approvers.organization
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *         "nodes": [
-   *             {
-   *                 "address": {
-   *                     "address": "1TGS8j5BJjrYeyGPK5yDDAXqhTFsGMrFahhQMJ",
-   *                     "organization": "ACMECorp"
-   *                 },
-   *                 "myVote": "admin",
-   *                 "currentAccess": {
-   *                     "accessType": "admin",
-   *                     "approvers": [
-   *                         {
-   *                             "address": "1TGS8j5BJjrYeyGPK5yDDAXqhTFsGMrFahhQMJ",
-   *                             "organization": "ACMECorp"
-   *                         }
-   *                     ]
-   *                 }
-   *             }
-   *         ]
-   *     }
-   * }
-   */
-  router.get("/network.list", (req: AuthenticatedRequest, res) => {
-    getNodeList(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/network.voteForPermission`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Votes for granting/revoking network-level permissions to/from a " +
+          "registered node (identified by its wallet addresses). After this call, the voted " +
+          "access level may or may not be in effect, depending on the consensus parameters of " +
+          "the underlying blockchain.",
+        tags: ["network"],
+        summary: "Vote for permission",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
+                vote: { type: "string", example: "admin" },
+              },
+              required: ["address", "vote"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      voteForNetworkPermission(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  /**
-   * @api {get} /network.listActive Active Peers
-   * @apiVersion 1.0.0
-   * @apiName network.listActive
-   * @apiGroup Network
-   * @apiPermission user
-   * @apiDescription Get the number of all peers in the blockchain network.
-   *
-   * @apiSuccess {String} apiVersion Version of the response layout (e.g., "1.0").
-   * @apiSuccess {Object} data Response payload
-   * @apiSuccess {String} data.peers Number of peers in the current network
-   * @apiSuccessExample {json} Success-Response
-   *   {
-   *     "apiVersion": "1.0",
-   *     "data": {
-   *       "peers": "15",
-   *     }
-   *   }
-   *
-   */
-  router.get("/network.listActive", (req: AuthenticatedRequest, res) => {
-    getActiveNodes(multichainClient, req)
-      .then(response => send(res, response))
-      .catch(err => handleError(req, res, err));
-  });
+  server.post(
+    `${urlPrefix}/network.approveNewOrganization`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Approves a new organization if there are enough votes.",
+        tags: ["network"],
+        summary: "Approve a new organization",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                organization: { type: "string", example: "Alice's Solutions & Co" },
+              },
+              required: ["organization"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      approveNewOrganization(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  router.get("/system.createBackup", (req: AuthenticatedRequest, res) => {
-    createBackup(req)
-      .then(response => {
-        res.setHeader("Content-Type", "application/gzip");
-        res.setHeader("Content-Disposition", ` attachment; filename="test.gz"`);
-        res.send(response);
-      })
+  server.post(
+    `${urlPrefix}/network.approveNewNodeForExistingOrganization`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Approves a new node for an existing organization." +
+          " This organization doesn't have to go throught the voting system again",
+        tags: ["network"],
+        summary: "Approve a new node",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
+              },
+              required: ["address"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+          409: {
+            description:
+              "Tells either your organization has already voted or the permissions are already assigned",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              error: {
+                type: "object",
+                properties: {
+                  code: { type: "string", example: "409" },
+                  message: { type: "string", example: "User already exists." },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      approveNewNodeForExistingOrganization(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-      .catch(err => handleError(req, res, err));
-  });
+  server.get(
+    `${urlPrefix}/network.list`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "List all nodes.",
+        tags: ["network"],
+        summary: "List all nodes",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  nodes: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        address: {
+                          type: "object",
+                          properties: {
+                            address: {
+                              type: "string",
+                              example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+                            },
+                            organization: { type: "string", example: "Alice's Solutions & Co" },
+                          },
+                        },
+                        myVote: { type: "string", example: "admin" },
+                        currentAccess: {
+                          type: "object",
+                          properties: {
+                            accessType: { type: "string", example: "admin" },
+                            approvers: {
+                              type: "array",
+                              items: {
+                                type: "object",
+                                properties: {
+                                  address: {
+                                    type: "string",
+                                    example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+                                  },
+                                  organization: {
+                                    type: "string",
+                                    example: "Alice's Solutions & Co",
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getNodeList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  return router;
+  server.get(
+    `${urlPrefix}/network.listActive`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description: "Get the number of all peers in the blockchain network.",
+        tags: ["network"],
+        summary: "List all active peers",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "object",
+                properties: {
+                  peers: { type: "string", example: "56" },
+                },
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+    async (request, reply) => {
+      getActiveNodes(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  return server;
 };

@@ -125,7 +125,7 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
       "assignee",
       data.assignee,
       isUserOrUndefined,
-      req.token.userId,
+      req.user.userId,
     ),
     documents: data.documents !== undefined ? await hashDocuments(data.documents) : [],
   };

@@ -6,7 +6,10 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { isNonemptyString, isObject, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 
-export async function addUserToGroup(multichain: MultichainClient, req): Promise<HttpResponse> {
+export async function addUserToGroup(
+  multichain: MultichainClient,
+  req: AuthenticatedRequest,
+): Promise<HttpResponse> {
   const input = value("data", req.body.data, isObject);
   const groupId: string = value("groupId", input.groupId, isNonemptyString);
   const userId: string = value("userId", input.userId, isNonemptyString);

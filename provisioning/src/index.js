@@ -562,7 +562,7 @@ async function testWorkflowitemReordering(folder) {
 }
 
 async function testApiDocIsAvailable() {
-  queryApiDoc(axios).then(() => console.log("/api/doc OK"));
+  queryApiDoc(axios).then(() => console.log("api/documentation OK"));
 }
 
 const port = process.env.API_PORT || 8080;
