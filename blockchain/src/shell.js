@@ -31,20 +31,15 @@ const removeFile = path => {
   shell.rm(path);
 };
 
-
-
-const moveBackup = async (
-  multichainDir,
-  extractPath,
-  chainName,
-) => {
+const moveBackup = async (multichainDir, extractPath, chainName) => {
   const targetDir = `${multichainDir}/${chainName}`;
   const currentChainBackupDir = "/root/bcBackup";
-
   createCurrentChainBackupDir(currentChainBackupDir);
   if (fs.existsSync(targetDir)) {
-    shell.mv(`${targetDir}/*`, currentChainBackupDir);
-    shell.mv(`${extractPath}/*`, targetDir);
+    shell.cp("-R", `${targetDir}/*`, currentChainBackupDir);
+    shell.rm('-rf', `${targetDir}`);
+    shell.mkdir(targetDir)
+    shell.cp("-R", `${extractPath}/*`, `${targetDir}/`);
   }
   shell.rm("-rf", `${extractPath}`);
 };
