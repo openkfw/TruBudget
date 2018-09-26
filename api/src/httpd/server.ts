@@ -30,7 +30,7 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
   });
 };
 
-const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string) => {
+const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, apiPort: Number) => {
   server.register(require("fastify-swagger"), {
     // logLevel: "info",
     routePrefix: `${urlPrefix}/documentation`,
@@ -43,7 +43,7 @@ const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string) => 
           "at almost every endpoint.\nTo use the token click on the 'Authorize' Button at the top right",
         version: "0.1.0",
       },
-      host: "localhost:8080",
+      host: `localhost:${apiPort.toString()}`,
       schemes: ["http"],
       consumes: ["application/json"],
       produces: ["application/json"],
@@ -62,7 +62,7 @@ const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string) => 
   });
 };
 
-export const createBasicApp = (jwtSecret: string, urlPrefix: string) => {
+export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Number) => {
   const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     // logger: true,
   });
@@ -71,7 +71,6 @@ export const createBasicApp = (jwtSecret: string, urlPrefix: string) => {
     const validator = ajv.compile(schema);
     return data => {
       let valid;
-      console.log(process.env);
       if (process.env.NODE_ENV === "prod") {
         const d1 = JSON.stringify(data, null, 2);
         valid = validator(data);
@@ -88,7 +87,7 @@ export const createBasicApp = (jwtSecret: string, urlPrefix: string) => {
       return valid;
     };
   });
-  registerSwagger(server, urlPrefix);
+  registerSwagger(server, urlPrefix, apiPort);
   addTokenHandling(server, jwtSecret);
 
   // app.use(logging);
