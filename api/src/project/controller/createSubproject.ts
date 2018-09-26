@@ -2,12 +2,14 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent } from "../../authz/types";
+import { SubprojectAlreadyExistsError } from "../../error";
 import {
   AuthenticatedRequest,
   HttpResponse,
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../../httpd/lib";
+import { isEmpty } from "../../lib/emptyChecks";
 import { isNonemptyString, isUserOrUndefined, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
@@ -44,6 +46,12 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
   const subprojectArgs = data.subproject;
 
   const subprojectId = value("id", subprojectArgs.id, isNonemptyString, randomString());
+
+  // check if subprojectId already exists
+  const subprojects = await Subproject.get(multichain, req.user, projectId);
+  if (!isEmpty(subprojects.filter(s => s.data.id === subprojectId))) {
+    throw { kind: "SubprojectIdAlreadyExists", subprojectId } as SubprojectAlreadyExistsError;
+  }
 
   const ctime = new Date();
 

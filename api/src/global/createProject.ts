@@ -3,12 +3,14 @@ import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { AllowedUserGroupsByIntent } from "../authz/types";
+import { ProjectAlreadyExistsError } from "../error";
 import {
   AuthenticatedRequest,
   HttpResponse,
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
+import { isEmpty } from "../lib/emptyChecks";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
@@ -27,6 +29,12 @@ export async function createProject(multichain: MultichainClient, req): Promise<
   await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   const projectId = value("id", input.id || randomString(), isNonemptyString);
+
+  // check if projectId already exists
+  const projects = await Project.get(multichain, req.user);
+  if (!isEmpty(projects.filter(p => p.data.id === projectId))) {
+    throw { kind: "ProjectIdAlreadyExists", projectId } as ProjectAlreadyExistsError;
+  }
 
   const ctime = new Date();
 

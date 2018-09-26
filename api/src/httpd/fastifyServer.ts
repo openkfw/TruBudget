@@ -99,6 +99,26 @@ const handleError = (req, res, err: any) => {
       ]);
       break;
 
+    case "ProjectIdAlreadyExists":
+      send(res, [
+        409,
+        {
+          apiVersion: "1.0",
+          error: { code: 409, message: `The project's id already exists.` },
+        },
+      ]);
+      break;
+
+    case "SubprojectIdAlreadyExists":
+      send(res, [
+        409,
+        {
+          apiVersion: "1.0",
+          error: { code: 409, message: `The subproject's id already exists.` },
+        },
+      ]);
+      break;
+
     case "ParseError": {
       let message;
       if (err.message !== undefined) {
@@ -1489,13 +1509,13 @@ export const registerRoutes = (
                               additionalProperties: true,
                               example: { "subproject.intent.listPermissions": ["alice", "john"] },
                             },
-                          snapshot: {
-                            type: "object",
-                            properties: {
-                              displayName: { type: "string", example: "myDisplayName" },
+                            snapshot: {
+                              type: "object",
+                              properties: {
+                                displayName: { type: "string", example: "myDisplayName" },
+                              },
                             },
                           },
-                        },
                         },
                       },
                     },
