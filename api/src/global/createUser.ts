@@ -1,6 +1,7 @@
 import * as Global from ".";
 import { throwIfUnauthorized } from "../authz";
 import { userDefaultIntents } from "../authz/intents";
+import { UserAlreadyExistsError } from "../error";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 import { isNonemptyString, value } from "../lib/validation";
@@ -24,7 +25,9 @@ export const createUser = async (
   const passwordDigest = await hashPassword(value("password", input.password, isNonemptyString));
 
   // Make sure nobody creates the special "root" user:
-  if (userId === "root") throw { kind: "UserAlreadyExists", targetUserId: "root" };
+  if (userId === "root") {
+    throw { kind: "UserAlreadyExists", targetUserId: "root" } as UserAlreadyExistsError;
+  }
 
   // Is the user allowed to create new users?
   await throwIfUnauthorized(req.user, "global.createUser", await Global.getPermissions(multichain));

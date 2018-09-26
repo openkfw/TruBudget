@@ -27,6 +27,16 @@ export interface GroupAlreadyExistsError {
   targetGroupId: string;
 }
 
+export interface SubprojectIdAlreadyExistsError {
+  kind: "SubprojectIdAlreadyExists";
+  subprojectId: string;
+}
+
+export interface ProjectIdAlreadyExistsError {
+  kind: "ProjectIdAlreadyExists";
+  projectId: string;
+}
+
 export interface PreconditionError {
   kind: "PreconditionError";
   message: string;
@@ -37,6 +47,8 @@ export type TruBudgetError =
   | AuthenticationError
   | UserAlreadyExistsError
   | GroupAlreadyExistsError
+  | ProjectIdAlreadyExistsError
+  | SubprojectIdAlreadyExistsError
   | NotAuthorizedError
   | ParseError
   | NotFoundError;

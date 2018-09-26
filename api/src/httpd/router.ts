@@ -96,6 +96,26 @@ const handleError = (req: AuthenticatedRequest, res: express.Response, err: any)
       ]);
       break;
 
+    case "ProjectIdAlreadyExists":
+      send(res, [
+        409,
+        {
+          apiVersion: "1.0",
+          error: { code: 409, message: `The project's id already exists.` },
+        },
+      ]);
+      break;
+
+    case "SubprojectIdAlreadyExists":
+      send(res, [
+        409,
+        {
+          apiVersion: "1.0",
+          error: { code: 409, message: `The project's id already exists.` },
+        },
+      ]);
+      break;
+
     case "ParseError": {
       let message;
       if (err.message !== undefined) {
