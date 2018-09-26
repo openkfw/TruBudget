@@ -1,8 +1,8 @@
+import * as Ajv from "ajv";
 import * as fastify from "fastify";
 
 import { IncomingMessage, Server, ServerResponse } from "http";
 const DEFAULT_API_VERSION = "1.0";
-const URL_PREFIX = "/api";
 
 const ajv = new Ajv({
   // the fastify defaults (if needed)
