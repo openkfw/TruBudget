@@ -82,13 +82,16 @@ const authenticate = async (
       throwError("wrong password");
     }
   }
-
   const storedUser = await User.get(multichain, id).catch(err => {
-    switch (err.kind) {
-      case "NotFound":
-        throwError("user not found");
-      default:
-        throw err;
+    if (err) {
+      switch (err.kind) {
+        case "NotFound":
+          throwError("user not found");
+        default:
+          throw err;
+      }
+    } else {
+      throw err;
     }
   });
   logger.debug(storedUser);
@@ -96,7 +99,6 @@ const authenticate = async (
   if (!(await isPasswordMatch(password, storedUser.passwordDigest))) {
     throwError("wrong password");
   }
-
   // Every user has an address, with the private key stored in the vault. Importing the
   // private key when authenticating a user allows users to roam freely between nodes of
   // their organization.
@@ -170,25 +172,25 @@ async function rootUserLoginResponse(
   jwtSecret: string,
   organization: string,
 ): Promise<UserLoginResponse> {
-  const userId = "root";
-  const organizationAddress = await getOrganizationAddress(multichain, organization);
-  if (!organizationAddress) throw Error(`No organization address found for ${organization}`);
-  const userAddress = organizationAddress;
-  const [groups, groupIds] = [[], []];
-  const token = createToken(
-    jwtSecret,
-    userId,
-    userAddress,
-    organization,
-    organizationAddress,
-    groupIds,
-  );
-  return {
-    id: userId,
-    displayName: "root",
-    organization,
-    allowedIntents: globalIntents,
-    groups,
-    token,
-  };
+    const userId = "root";
+    const organizationAddress = await getOrganizationAddress(multichain, organization);
+    if (!organizationAddress) throw Error(`No organization address found for ${organization}`);
+    const userAddress = organizationAddress;
+    const [groups, groupIds] = [[], []];
+    const token = createToken(
+      jwtSecret,
+      userId,
+      userAddress,
+      organization,
+      organizationAddress,
+      groupIds,
+    );
+    return {
+      id: userId,
+      displayName: "root",
+      organization,
+      allowedIntents: globalIntents,
+      groups,
+      token,
+    };
 }

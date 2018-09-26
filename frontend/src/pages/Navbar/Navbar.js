@@ -36,6 +36,9 @@ const Navbar = ({
   allowedIntents,
   environment,
   groups,
+  userId,
+  createBackup,
+  restoreBackup,
   classes
 }) => (
   <div>
@@ -71,6 +74,9 @@ const Navbar = ({
       avatar={avatar}
       avatarBackground={avatarBackground}
       groups={groups}
+      userId={userId}
+      createBackup={createBackup}
+      restoreBackup={restoreBackup}
     />
   </div>
 );

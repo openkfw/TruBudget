@@ -2,6 +2,7 @@ import axios from "axios";
 
 const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
+const instance = axios.create();
 
 console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`);
 
@@ -9,9 +10,10 @@ class Api {
   constructor() {
     // Set API Version header for POST / PUT / DELETE
     // Move all parameters into data object
-    axios.defaults.transformRequest = [
+    instance.defaults.transformRequest = [
       (data, headers) => {
         if (typeof data === "object") {
+
           return {
             apiVersion: API_VERSION,
             data: {
@@ -22,31 +24,31 @@ class Api {
           return data;
         }
       },
-      ...axios.defaults.transformRequest
+      ...instance.defaults.transformRequest
     ];
   }
 
   setAuthorizationHeader = token => {
-    axios.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
+    instance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
   };
 
   setBaseUrl = url => {
     if (!devMode) {
-      axios.defaults.baseURL = `${url}/api`;
+      instance.defaults.baseURL = `${url}/api`;
     } else {
-      axios.defaults.baseURL = `/api`;
+      instance.defaults.baseURL = `/api`;
     }
   };
 
   login = (username, password) =>
-    axios.post(`/user.authenticate`, {
+    instance.post(`/user.authenticate`, {
       user: {
         id: username,
         password
       }
     });
   createUser = (displayName, organization, username, password) =>
-    axios.post(`/global.createUser`, {
+    instance.post(`/global.createUser`, {
       user: {
         displayName,
         organization,
@@ -55,13 +57,13 @@ class Api {
       }
     });
   grantAllUserPermissions = userId =>
-    axios.post(`global.grantAllPermissions`, {
+    instance.post(`global.grantAllPermissions`, {
       identity: userId
     });
-  listUser = () => axios.get(`/user.list`);
+  listUser = () => instance.get(`/user.list`);
 
   createGroup = (groupId, displayName, users) =>
-    axios.post(`/global.createGroup`, {
+    instance.post(`/global.createGroup`, {
       group: {
         displayName,
         id: groupId,
@@ -69,30 +71,30 @@ class Api {
       }
     });
   addUserToGroup = (groupId, userId) =>
-    axios.post(`/group.addUser`, {
+    instance.post(`/group.addUser`, {
       groupId,
       userId
     });
   removeUserFromGroup = (groupId, userId) =>
-    axios.post(`/group.removeUser`, {
+    instance.post(`/group.removeUser`, {
       groupId,
       userId
     });
-  listGroup = () => axios.get(`/group.list`);
-  listNodes = () => axios.get(`/network.list`);
-  listActiveNodes = () => axios.get(`/network.listActive`);
+  listGroup = () => instance.get(`/group.list`);
+  listNodes = () => instance.get(`/network.list`);
+  listActiveNodes = () => instance.get(`/network.listActive`);
   approveNewOrganization = organization =>
-    axios.post(`/network.approveNewOrganization`, {
+    instance.post(`/network.approveNewOrganization`, {
       organization
     });
   approveNewNodeForOrganization = address =>
-    axios.post(`/network.approveNewNodeForExistingOrganization`, {
+    instance.post(`/network.approveNewNodeForExistingOrganization`, {
       address
     });
-  listProjects = () => axios.get(`/project.list`);
+  listProjects = () => instance.get(`/project.list`);
 
   createProject = (displayName, amount, description, currency, thumbnail) =>
-    axios.post(`/global.createProject`, {
+    instance.post(`/global.createProject`, {
       project: {
         displayName,
         amount: `${amount}`,
@@ -103,32 +105,32 @@ class Api {
     });
 
   editProject = (projectId, changes) =>
-    axios.post(`/project.update`, {
+    instance.post(`/project.update`, {
       projectId,
       ...changes
     });
 
-  viewProjectDetails = projectId => axios.get(`/project.viewDetails?projectId=${projectId}`);
-  viewProjectHistory = projectId => axios.get(`/project.viewHistory?projectId=${projectId}`);
+  viewProjectDetails = projectId => instance.get(`/project.viewDetails?projectId=${projectId}`);
+  viewProjectHistory = projectId => instance.get(`/project.viewHistory?projectId=${projectId}`);
 
-  listProjectIntents = projectId => axios.get(`/project.intent.listPermissions?projectId=${projectId}`);
+  listProjectIntents = projectId => instance.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
   grantProjectPermissions = (projectId, intent, identity) =>
-    axios.post(`/project.intent.grantPermission`, {
+    instance.post(`/project.intent.grantPermission`, {
       projectId,
       intent,
       identity
     });
 
   revokeProjectPermissions = (projectId, intent, identity) =>
-    axios.post(`/project.intent.revokePermission`, {
+    instance.post(`/project.intent.revokePermission`, {
       projectId,
       intent,
       identity
     });
 
   createSubProject = (projectId, name, amount, description, currency) =>
-    axios.post(`/project.createSubproject`, {
+    instance.post(`/project.createSubproject`, {
       projectId,
       subproject: {
         displayName: name,
@@ -139,20 +141,20 @@ class Api {
     });
 
   editSubProject = (projectId, subprojectId, changes) =>
-    axios.post(`/subproject.update`, {
+    instance.post(`/subproject.update`, {
       projectId,
       subprojectId,
       ...changes
     });
 
   viewSubProjectDetails = (projectId, subprojectId) =>
-    axios.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
+    instance.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
 
   viewSubProjectHistory = (projectId, subprojectId) =>
-    axios.get(`/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}`);
+    instance.get(`/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}`);
 
   createWorkflowItem = payload =>
-    axios.post(`/subproject.createWorkflowitem`, {
+    instance.post(`/subproject.createWorkflowitem`, {
       ...payload,
       documents: payload.documents,
       currency: payload.amountType === "N/A" ? null : payload.currency,
@@ -160,10 +162,10 @@ class Api {
     });
 
   listSubProjectPermissions = (projectId, subprojectId) =>
-    axios.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`);
+    instance.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`);
 
   grantSubProjectPermissions = (projectId, subprojectId, intent, identity) =>
-    axios.post(`/subproject.intent.grantPermission`, {
+    instance.post(`/subproject.intent.grantPermission`, {
       projectId,
       subprojectId,
       intent,
@@ -171,7 +173,7 @@ class Api {
     });
 
   revokeSubProjectPermissions = (projectId, subprojectId, intent, identity) =>
-    axios.post(`/subproject.intent.revokePermission`, {
+    instance.post(`/subproject.intent.revokePermission`, {
       projectId,
       subprojectId,
       intent,
@@ -179,7 +181,7 @@ class Api {
     });
 
   editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) =>
-    axios.post(`/workflowitem.update`, {
+    instance.post(`/workflowitem.update`, {
       projectId,
       subprojectId,
       workflowitemId,
@@ -187,15 +189,15 @@ class Api {
     });
 
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
-    axios.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
+    instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
 
-  validateDocument = (base64String, hash) => axios.post(`/workflowitem.validateDocument`, { base64String, hash });
+  validateDocument = (base64String, hash) => instance.post(`/workflowitem.validateDocument`, { base64String, hash });
 
   listWorkflowItemPermissions = (projectId, workflowitemId) =>
-    axios.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
+    instance.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
 
   grantWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, identity) =>
-    axios.post(`/workflowitem.intent.grantPermission`, {
+    instance.post(`/workflowitem.intent.grantPermission`, {
       projectId,
       subprojectId,
       workflowitemId,
@@ -204,7 +206,7 @@ class Api {
     });
 
   revokeWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, identity) =>
-    axios.post(`/workflowitem.intent.revokePermission`, {
+    instance.post(`/workflowitem.intent.revokePermission`, {
       projectId,
       subprojectId,
       workflowitemId,
@@ -213,7 +215,7 @@ class Api {
     });
 
   assignWorkflowItem = (projectId, subprojectId, workflowitemId, identity) =>
-    axios.post(`/workflowitem.assign`, {
+    instance.post(`/workflowitem.assign`, {
       projectId,
       subprojectId,
       workflowitemId,
@@ -221,44 +223,58 @@ class Api {
     });
 
   assignSubproject = (projectId, subprojectId, identity) =>
-    axios.post(`/subproject.assign`, {
+    instance.post(`/subproject.assign`, {
       projectId,
       subprojectId,
       identity
     });
 
   assignProject = (projectId, identity) =>
-    axios.post(`/project.assign`, {
+    instance.post(`/project.assign`, {
       projectId,
       identity
     });
 
   closeProject = projectId =>
-    axios.post(`/project.close`, {
+    instance.post(`/project.close`, {
       projectId
     });
 
   closeSubproject = (projectId, subprojectId) =>
-    axios.post(`subproject.close`, {
+    instance.post(`subproject.close`, {
       projectId,
       subprojectId
     });
 
   closeWorkflowItem = (projectId, subprojectId, workflowitemId) =>
-    axios.post(`/workflowitem.close`, {
+    instance.post(`/workflowitem.close`, {
       projectId,
       subprojectId,
       workflowitemId
     });
 
   fetchNotifications = (fromId = "") => {
-    return axios.get(`/notification.list?sinceId=${fromId}`);
+    return instance.get(`/notification.list?sinceId=${fromId}`);
   };
 
   markNotificationAsRead = notificationId =>
-    axios.post(`/notification.markRead`, {
+    instance.post(`/notification.markRead`, {
       notificationId
     });
+
+  createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
+  restoreFromBackup = (envPrefix, token, data) => {
+    let apiPrefix = "/api"
+    if (!devMode) {
+      apiPrefix = `${envPrefix}${apiPrefix}`
+    }
+    const binaryInstance = axios.create();
+    binaryInstance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
+    const response = binaryInstance.post(`${apiPrefix}/system.restoreBackup`, data, {
+      headers: { "Content-Type": "application/gzip" }
+    });
+    return response;
+  };
 }
 
 export default Api;

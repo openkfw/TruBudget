@@ -17,7 +17,6 @@ services:
     build:
       context: ../../blockchain
     environment:
-      CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
     volumes:
@@ -40,7 +39,6 @@ services:
     build:
       context: ../../blockchain
     environment:
-      CHAINNAME: ${CHAINNAME}
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
     volumes:

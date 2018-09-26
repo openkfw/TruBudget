@@ -61,7 +61,6 @@ const ContentWrapper = props => {
 const SnackbarContentWrapper = withStyles(styles)(ContentWrapper);
 
 const NotificationsSnackbar = props => {
-  console.log();
   return (
     <Snackbar open={props.showSnackbar} autoHideDuration={4000} onClose={props.closeSnackbar}>
       <SnackbarContentWrapper

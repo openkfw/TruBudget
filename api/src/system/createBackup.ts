@@ -1,14 +1,17 @@
 import {
   AuthenticatedRequest,
-  HttpResponse,
 } from "../httpd/lib";
-import axios, { AxiosInstance, AxiosError } from "axios";
+import axios from "axios";
 
-
-export const createBackup = async (
-  req: AuthenticatedRequest,
-) => {
-  const mcHost = process.env.RPC_HOST
-  const response = await axios.get(`http://${mcHost}:8085/chain`)
-  return response.data;
+export const createBackup = async (multichainHost: string, backupApiPort: string, req: AuthenticatedRequest) => {
+  const { userId } = req.user;
+  if (userId === "root") {
+    const response = await axios({
+      url: `http://${multichainHost}:${backupApiPort}/chain`,
+      responseType: "stream",
+    });
+    return response.data;
+  } else {
+    throw { kind: "AuthenticationError", userId };
+  }
 };

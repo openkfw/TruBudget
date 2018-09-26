@@ -44,22 +44,23 @@ if (!organizationVaultSecret) {
  * Initialize the components:
  */
 
+const multichainHost = process.env.RPC_HOST || "localhost";
+const backupApiPort = process.env.BACKUP_API_PORT || "8085";
+
 const rpcSettings: ConnectionSettings = {
   protocol: "http",
-  host: process.env.RPC_HOST || "localhost",
+  host: multichainHost,
   port: parseInt(process.env.RPC_PORT || "8000", 10),
   username: process.env.RPC_USER || "multichainrpc",
-  password: process.env.RPC_PASSWORD || "this-is-insecure-change-it",
+  password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
 };
 logger.info(rpcSettings, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
+
 const server = createBasicApp(jwtSecret, URL_PREFIX, port);
 
-// app.use(
-//   "/api",
-//   createRouter(multichainClient, jwtSecret, rootSecret, organization!, organizationVaultSecret!),
-// );
+
 
 /*
  * Run the app:
@@ -105,7 +106,11 @@ registerRoutes(
   organization!,
   organizationVaultSecret!,
   URL_PREFIX,
+  multichainHost,
+  backupApiPort
 );
+
+
 
 console.log("Register fastify endpoint");
 

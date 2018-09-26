@@ -7,6 +7,12 @@ export const SET_SELECTED_VIEW = 'SET_SELECTED_VIEW';
 export const FETCH_ACTIVE_PEERS = 'FETCH_ACTIVE_PEERS';
 export const FETCH_ACTIVE_PEERS_SUCCESS = 'FETCH_ACTIVE_PEERS_SUCCESS';
 
+export const CREATE_BACKUP = "CREATE_BACKUP";
+export const CREATE_BACKUP_SUCCESS = "CREATE_BACKUP_SUCCESS";
+
+export const RESTORE_BACKUP = "RESTORE_BACKUP";
+export const RESTORE_BACKUP_SUCCESS = "RESTORE_BACKUP_SUCCESS";
+
 export function toggleSidebar() {
   return {
     type: TOGGLE_SIDEBAR,
@@ -36,5 +42,17 @@ export function setSelectedView(id, section) {
     type: SET_SELECTED_VIEW,
     id,
     section
+  }
+}
+
+export function restoreBackup (file) {
+  return {
+    type: RESTORE_BACKUP,
+    file
+  }
+}
+export function createBackup () {
+  return {
+    type: CREATE_BACKUP
   }
 }

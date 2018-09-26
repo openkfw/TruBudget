@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { toggleSidebar, fetchActivePeers } from "./actions";
+import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup } from "./actions";
 import { logout } from "../Login/actions";
 
 import FlyInNotifications from "../Notifications/FlyInNotifications";
@@ -31,7 +31,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onToggleSidebar: () => dispatch(toggleSidebar()),
     logout: () => dispatch(logout()),
-    getPeers: () => dispatch(fetchActivePeers())
+    getPeers: () => dispatch(fetchActivePeers()),
+    createBackup: () => dispatch(createBackup()),
+    restoreBackup: (file) => dispatch(restoreBackup(file))
   };
 };
 
@@ -45,6 +47,7 @@ const mapStateToProps = state => {
     route: state.getIn(["route", "locationBeforeTransitions"]),
     streamNames: state.getIn(["navbar", "streamNames"]),
     displayName: state.getIn(["login", "displayName"]),
+    userId: state.getIn(["login", "id"]),
     organization: state.getIn(["login", "organization"]),
     avatar: state.getIn(["login", "avatar"]),
     environment: state.getIn(["login", "environment"]),

@@ -1,7 +1,6 @@
 import { put, takeEvery, takeLatest, call, select } from "redux-saga/effects";
-
+import { saveAs } from 'file-saver/FileSaver';
 import Api from "./api.js";
-
 import {
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
@@ -113,7 +112,7 @@ import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
   APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
 } from "./pages/Nodes/actions.js";
-import { FETCH_ACTIVE_PEERS, FETCH_ACTIVE_PEERS_SUCCESS } from "./pages/Navbar/actions.js";
+import { FETCH_ACTIVE_PEERS, FETCH_ACTIVE_PEERS_SUCCESS, CREATE_BACKUP_SUCCESS, CREATE_BACKUP , RESTORE_BACKUP_SUCCESS, RESTORE_BACKUP} from "./pages/Navbar/actions.js";
 
 const api = new Api();
 
@@ -179,7 +178,7 @@ function* callApi(func, ...args) {
   // TODO dont set the environment on each call
   const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
-  const { data } = yield call(func, ...args);
+  const {data} = yield call(func, ...args);
   return data;
 }
 
@@ -816,6 +815,32 @@ export function* hideWorkflowDetailsSaga() {
   });
 }
 
+export function* createBackupSaga({showLoading = true}){
+  yield execute(function*() {
+    const data = yield callApi(api.createBackup);
+    saveAs(data, "backup.gz");
+    yield put({
+      type: CREATE_BACKUP_SUCCESS,
+    });
+  }, showLoading);
+}
+
+export function* restoreBackupSaga({file, showLoading = true}){
+  yield execute(function*() {
+    const env = yield select(getEnvironment);
+    const token = yield select(getJwt);
+    const prefix = env === "Test" ? "/test" : "/prod";
+    yield call(api.restoreFromBackup, prefix, token, file);
+    yield put({
+      type: RESTORE_BACKUP_SUCCESS,
+    });
+    yield put({
+      type: LOGOUT,
+    });
+  }, showLoading);
+}
+
+
 // WATCHERS
 
 export function* watchFetchAllSubprojectDetails() {
@@ -984,6 +1009,12 @@ export function* watchValidateDocument() {
 export function* watchhideWorkflowDetails() {
   yield takeEvery(HIDE_WORKFLOW_DETAILS, hideWorkflowDetailsSaga);
 }
+export function* watchCreateBackup() {
+  yield takeLatest(CREATE_BACKUP, createBackupSaga);
+}
+export function* watchRestoreBackup() {
+  yield takeLatest(RESTORE_BACKUP, restoreBackupSaga);
+}
 
 export default function* rootSaga() {
   try {
@@ -1045,7 +1076,11 @@ export default function* rootSaga() {
       watchMarkNotificationAsRead(),
 
       // Peers
-      watchFetchAcitvePeers()
+      watchFetchAcitvePeers(),
+
+      // System
+      watchCreateBackup(),
+      watchRestoreBackup()
     ];
   } catch (error) {
     console.log(error);
