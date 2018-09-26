@@ -34,9 +34,9 @@ const EXTERNAL_IP = process.env.EXTERNAL_IP;
 const P2P_HOST = process.env.P2P_HOST;
 const P2P_PORT = process.env.P2P_PORT || 7447;
 
-const API_PROTO = process.env.API_PROTO;
-const API_HOST = process.env.API_HOST;
-const API_PORT = process.env.API_PORT;
+const API_PROTO = process.env.API_PROTO || "http";
+const API_HOST = process.env.API_HOST || "localhost";
+const API_PORT = process.env.API_PORT || "8080";
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
