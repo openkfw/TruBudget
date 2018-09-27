@@ -36,6 +36,7 @@ const moveBackup = async (multichainDir, extractPath, chainName) => {
   const currentChainBackupDir = "/root/bcBackup";
   createCurrentChainBackupDir(currentChainBackupDir);
   if (fs.existsSync(targetDir)) {
+    // just mv is not workin on kube
     shell.cp("-R", `${targetDir}/*`, currentChainBackupDir);
     shell.rm('-rf', `${targetDir}`);
     shell.mkdir(targetDir)

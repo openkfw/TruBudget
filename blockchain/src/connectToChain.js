@@ -92,7 +92,9 @@ function askMasterForPermissions(address, organization, proto, host, port) {
 async function registerNodeAtMaster(organization, proto, host, port) {
   const retryIntervalMs = 10000;
   try {
-    while (!address) await relax(5000);
+    while (!address){
+     await relax(5000);
+    }
     console.log(`>>> Registering ${organization} node address ${address}`);
     await askMasterForPermissions(address, organization, proto, host, port);
     console.log(">>> Node address registered successfully (approval pending).");
