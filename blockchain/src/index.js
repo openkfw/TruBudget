@@ -24,7 +24,7 @@ const ORGANIZATION = process.env.ORGANIZATION || "MyOrga";
 const CHAINNAME = "TrubudgetChain";
 const RPC_PORT = process.env.RPC_PORT || 8000;
 const RPC_USER = process.env.RPC_USER || "multichainrpc";
-const RPC_PASSWORD = process.env.RPC_PASSWORD || "this-is-insecure-change-it";
+const RPC_PASSWORD = process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
 const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 
 let autostart = true;

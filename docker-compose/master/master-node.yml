@@ -76,5 +76,5 @@ services:
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
     links: 
-      - api
+      - testapi
   
