@@ -5,6 +5,7 @@ import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import { isValid } from "./AccessVote";
 
 const streamName = "nodes";
 
@@ -121,39 +122,43 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
       throw Error(`Unexpected item key in "nodes" stream: ${JSON.stringify(item.keys)}`);
     }
     const address = item.keys[0];
-
-    let nodeInfo = nodeEventsByAddress.get(address);
-    if (nodeInfo === undefined) {
-      nodeInfo = handleCreate(event);
-    }
-
-    if (nodeInfo === undefined) {
-      throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
-    } else {
-      nodeEventsByAddress.set(address, nodeInfo);
-      const { organization } = nodeInfo.address;
-      if (organization) organizationsByAddress.set(address, organization);
+    const isValidAddress = await multichain.isValidAddress(address);
+    if (isValidAddress) {
+      let nodeInfo = nodeEventsByAddress.get(address);
+      if (nodeInfo === undefined) {
+        nodeInfo = handleCreate(event);
+      }
+      if (nodeInfo === undefined) {
+        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+      } else {
+        nodeEventsByAddress.set(address, nodeInfo);
+        const { organization } = nodeInfo.address;
+        if (organization) organizationsByAddress.set(address, organization);
+      }
     }
   }
 
   for (const [address, info] of nodeEventsByAddress.entries()) {
-    const networkPermissions = await getNetworkPermissions(
-      multichain,
-      address,
-      organizationsByAddress,
-    );
-    nodeEventsByAddress.set(address, {
-      ...info,
-      networkPermissions,
-    });
+      const networkPermissions = await getNetworkPermissions(
+        multichain,
+        address,
+        organizationsByAddress,
+      );
+      nodeEventsByAddress.set(address, {
+        ...info,
+        networkPermissions,
+      });
+
   }
 
   return [...nodeEventsByAddress.values()];
 }
 
 export async function active(multichain: MultichainClient): Promise<number> {
-  const networkInfo: MultichainNetworkInfo = await multichain.getRpcClient().invoke("getnetworkinfo");
-  return networkInfo.connections
+  const networkInfo: MultichainNetworkInfo = await multichain
+    .getRpcClient()
+    .invoke("getnetworkinfo");
+  return networkInfo.connections;
 }
 
 function handleCreate(event: Event): NodeInfo | undefined {
@@ -182,28 +187,28 @@ interface PermissionsPendingInfo {
 }
 
 interface MultichainNetworkInfo {
-  version: number
-  subversion: string
-  protocolversion: number
-  localservices: string
-  timeoffset: number
-  relayfee: number
-  connections: number
-  networks: Network[]
-  localaddresses: Localaddress[]
+  version: number;
+  subversion: string;
+  protocolversion: number;
+  localservices: string;
+  timeoffset: number;
+  relayfee: number;
+  connections: number;
+  networks: Network[];
+  localaddresses: Localaddress[];
 }
 
 interface Localaddress {
-  address: string
-  port: number
-  score: number
+  address: string;
+  port: number;
+  score: number;
 }
 
 interface Network {
-  name: string
-  limited: boolean
-  reachable: boolean
-  proxy: string
+  name: string;
+  limited: boolean;
+  reachable: boolean;
+  proxy: string;
 }
 
 interface MultichainPermissionsInfo {

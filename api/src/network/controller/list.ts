@@ -49,7 +49,6 @@ export async function getNodeList(multichain: MultichainClient, req): Promise<Ht
   // to do anything with the network (while respecting the settings for admin consensus).
 
   const myAddress = req.user.organizationAddress;
-
   const list: NodeInfoDto[] = nodes.map(info => dtoFromNodeInfo(info, myAddress));
   return [
     200,
