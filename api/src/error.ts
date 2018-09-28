@@ -17,6 +17,11 @@ export interface AuthenticationError {
   userId: string;
 }
 
+export interface AddressIsInvalidError {
+  kind: "AddressIsInvalid";
+  address: string;
+}
+
 export interface UserAlreadyExistsError {
   kind: "UserAlreadyExists";
   targetUserId: string;

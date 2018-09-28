@@ -81,7 +81,7 @@ export interface MultichainClient {
   // TODO add return types...although they seem rather flexible
   getInfo(): any;
 
-  isValidAddress(address: string) : Promise<any>
+  isValidAddress(address: string): Promise<any>;
 
   // Return the most recent values for a specific key
   latestValuesForKey(

@@ -80,6 +80,16 @@ const handleError = (req, res, err: any) => {
       ]);
       break;
 
+    case "AddressIsInvalid":
+      send(res, [
+        409,
+        {
+          apiVersion: "1.0",
+          error: { code: 409, message: `The address is invalid.` },
+        },
+      ]);
+      break;
+
     case "UserAlreadyExists":
       send(res, [
         409,
@@ -157,14 +167,14 @@ const handleError = (req, res, err: any) => {
       ]);
       break;
     case "CorruptFileError":
-    send(res, [
-      400,
-      {
-        apiVersion: "1.0",
-        error: { code: 400, message: "File corrupt." },
-      },
-    ]);
-    break;
+      send(res, [
+        400,
+        {
+          apiVersion: "1.0",
+          error: { code: 400, message: "File corrupt." },
+        },
+      ]);
+      break;
     default:
       // handle RPC errors, too:
       if (err.code === -708) {
@@ -3558,32 +3568,35 @@ export const registerRoutes = (
     },
   );
 
+  server.get(
+    `${urlPrefix}/system.createBackup`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+    },
+    async (req: AuthenticatedRequest, reply) => {
+      createBackup(multichainHost, backupApiPort, req)
+        .then(data => {
+          reply.header("Content-Type", "application/gzip");
+          reply.header("Content-Disposition", `attachment; filename="backup.gz"`);
+          reply.send(data);
+        })
+        .catch(err => handleError(req, reply, err));
+    },
+  );
 
-
-  server.get(`${urlPrefix}/system.createBackup`, {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
-  } ,
-   async (req: AuthenticatedRequest, reply) => {
-    createBackup(multichainHost, backupApiPort, req)
-      .then(data => {
-        reply.header("Content-Type", "application/gzip");
-        reply.header("Content-Disposition", `attachment; filename="backup.gz"`);
-        reply.send(data);
-      })
-      .catch(err => handleError(req, reply, err));
-  });
-
-
-
-  server.post(`${urlPrefix}/system.restoreBackup`,  {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
-  } ,async (req: AuthenticatedRequest, reply) => {
-    restoreBackup(multichainHost,backupApiPort, req)
-      .then(response => send(reply, response))
-      .catch(err => handleError(req, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/system.restoreBackup`,
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+    },
+    async (req: AuthenticatedRequest, reply) => {
+      restoreBackup(multichainHost, backupApiPort, req)
+        .then(response => send(reply, response))
+        .catch(err => handleError(req, reply, err));
+    },
+  );
 
   return server;
 };
