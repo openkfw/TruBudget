@@ -17,7 +17,7 @@ const styles = {
   }
 };
 const handleCreate = props => {
-  const { createWorkflowItem, onDialogCancel, workflowToAdd, storeSnackbarMessage, showSnackbar } = props;
+  const { createWorkflowItem, onDialogCancel, workflowToAdd, storeSnackbarMessage } = props;
   const { displayName, amount, amountType, currency, description, status, documents } = workflowToAdd;
   createWorkflowItem(
     displayName,
@@ -29,7 +29,6 @@ const handleCreate = props => {
     documents
   );
   storeSnackbarMessage(strings.common.created + " " + strings.common.workflowItem + " " + displayName);
-  showSnackbar();
   onDialogCancel();
 };
 
@@ -40,7 +39,6 @@ const handleEdit = props => {
     workflowItems,
     workflowToAdd,
     location,
-    showSnackbar,
     storeSnackbarMessage
   } = props;
   const originalWorkflowItem = workflowItems.find(workflowItem => workflowItem.data.id === workflowToAdd.id).data;
@@ -63,7 +61,6 @@ const handleEdit = props => {
     editWorkflowItem(projectId, subprojectId, workflowToAdd.id, changes);
   }
   storeSnackbarMessage(strings.common.edited + " " + strings.common.workflowItem + " " + workflowToAdd.displayName);
-  showSnackbar();
   onDialogCancel();
 };
 

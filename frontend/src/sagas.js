@@ -132,6 +132,14 @@ function* execute(fn, showLoading = false, errorCallback = undefined) {
   }
 }
 
+function* showSnackbarSuccess() {
+  yield put({
+    type: SHOW_SNACKBAR,
+    show: true,
+    isError: false
+  });
+}
+
 function* handleError(error) {
   console.error("API-Error: ", error.response || "unknown");
   console.error(error);
@@ -202,9 +210,10 @@ function* handleLoading(showLoading) {
 
 // SAGAS
 
-export function* createProject(action) {
+export function* createProjectSaga(action) {
   yield execute(function*() {
     yield callApi(api.createProject, action.name, action.amount, action.comment, action.currency, action.thumbnail);
+    yield showSnackbarSuccess();
     yield put({
       type: CREATE_PROJECT_SUCCESS
     });
@@ -218,6 +227,7 @@ export function* createProject(action) {
 export function* editProjectSaga({ projectId, changes }) {
   yield execute(function*() {
     yield callApi(api.editProject, projectId, changes);
+    yield showSnackbarSuccess();
     yield put({
       type: EDIT_PROJECT_SUCCESS
     });
@@ -231,6 +241,7 @@ export function* editProjectSaga({ projectId, changes }) {
 export function* createSubProjectSaga({ projectId, name, amount, description, currency, showLoading }) {
   yield execute(function*() {
     yield callApi(api.createSubProject, projectId, name, `${amount}`, description, currency);
+    yield showSnackbarSuccess();
     yield put({
       type: CREATE_SUBPROJECT_SUCCESS
     });
@@ -245,6 +256,7 @@ export function* createSubProjectSaga({ projectId, name, amount, description, cu
 export function* editSubProjectSaga({ projectId, subprojectId, changes }) {
   yield execute(function*() {
     yield callApi(api.editSubProject, projectId, subprojectId, changes);
+    yield showSnackbarSuccess();
     yield put({
       type: EDIT_SUBPROJECT_SUCCESS
     });
@@ -259,6 +271,7 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes }) {
 export function* createWorkflowItemSaga({ type, ...rest }) {
   yield execute(function*() {
     yield callApi(api.createWorkflowItem, rest);
+    yield showSnackbarSuccess();
     yield put({
       type: CREATE_WORKFLOW_SUCCESS
     });
@@ -275,6 +288,7 @@ export function* createWorkflowItemSaga({ type, ...rest }) {
 export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId, changes }) {
   yield execute(function*() {
     yield callApi(api.editWorkflowItem, projectId, subprojectId, workflowitemId, changes);
+    yield showSnackbarSuccess();
     yield put({
       type: EDIT_WORKFLOW_ITEM_SUCCESS
     });
@@ -883,7 +897,7 @@ export function* watchReorderWorkflowItems() {
 }
 
 export function* watchCreateProject() {
-  yield takeEvery(CREATE_PROJECT, createProject);
+  yield takeEvery(CREATE_PROJECT, createProjectSaga);
 }
 
 export function* watchEditProject() {
