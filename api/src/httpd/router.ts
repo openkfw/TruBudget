@@ -2258,13 +2258,11 @@ export const registerRoutes = (
               properties: {
                 projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                 subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-
                 status: { type: "string", example: "open" },
                 displayName: { type: "string", example: "classroom" },
                 description: { type: "string", example: "build classroom" },
-                amount: { type: "string", example: "500" },
-                assignee: { type: "string", example: "aSmith" },
-                currency: { type: "string", example: "EUR" },
+                currency: { type: ['string','null'], example: "EUR" },
+                amount: { type: ['string','null'], example: "500" },
                 amountType: { type: "string", example: "disbursed" },
                 documents: {
                   type: "array",
