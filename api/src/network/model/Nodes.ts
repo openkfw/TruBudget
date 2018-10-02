@@ -112,6 +112,8 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
         throw err;
       }
     });
+  console.log("getting the streamkeyitems took");
+
   const nodeEventsByAddress = new Map<WalletAddress, NodeInfo>();
   const organizationsByAddress = new Map<WalletAddress, Organization>();
 
@@ -122,23 +124,21 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
       throw Error(`Unexpected item key in "nodes" stream: ${JSON.stringify(item.keys)}`);
     }
     const address = item.keys[0];
-    const isValidAddress = await multichain.isValidAddress(address);
-    if (isValidAddress) {
-      let nodeInfo = nodeEventsByAddress.get(address);
-      if (nodeInfo === undefined) {
-        nodeInfo = handleCreate(event);
-      }
-      if (nodeInfo === undefined) {
-        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
-      } else {
-        nodeEventsByAddress.set(address, nodeInfo);
-        const { organization } = nodeInfo.address;
-        if (organization) organizationsByAddress.set(address, organization);
-      }
+    let nodeInfo = nodeEventsByAddress.get(address);
+
+    if (nodeInfo === undefined) {
+      nodeInfo = handleCreate(event);
+    }
+    if (nodeInfo === undefined) {
+      throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+    } else {
+      nodeEventsByAddress.set(address, nodeInfo);
+      const { organization } = nodeInfo.address;
+      if (organization) organizationsByAddress.set(address, organization);
     }
   }
-
   for (const [address, info] of nodeEventsByAddress.entries()) {
+    if (await multichain.isValidAddress(address)) {
       const networkPermissions = await getNetworkPermissions(
         multichain,
         address,
@@ -148,9 +148,10 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
         ...info,
         networkPermissions,
       });
-
+    } else {
+      nodeEventsByAddress.delete(address);
+    }
   }
-
   return [...nodeEventsByAddress.values()];
 }
 

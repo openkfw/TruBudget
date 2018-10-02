@@ -18,7 +18,7 @@ export class RpcClient {
     this.instance = axios.create({
       baseURL: `${protocol}://${host}:${port}/`,
       method: "POST",
-      timeout: 2000,
+      timeout: 10000,
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
       auth: {
@@ -65,7 +65,8 @@ export class RpcClient {
             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
             // http.ClientRequest in node.js
             // console.error(error.request);
-            response = new RpcError(500, "No Response", {}, "");
+            console.log(error)
+            response = new RpcError(500, "No Response", {}, error.message);
           } else {
             // Something happened in setting up the request that triggered an Error
             console.error("Error", error.message);

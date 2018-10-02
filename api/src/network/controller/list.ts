@@ -36,7 +36,6 @@ export async function getNodeList(multichain: MultichainClient, req): Promise<Ht
 
   // Get ALL the info:
   const nodes = await Nodes.get(multichain);
-
   // The caller is not supposed to know anything about MultiChain's permission model, so
   // it's simplified to the following three levels here that refer to the organization's
   // (main) wallet address:
