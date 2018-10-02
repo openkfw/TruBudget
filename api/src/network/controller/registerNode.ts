@@ -1,14 +1,19 @@
 import Intent from "../../authz/intents";
+import { AddressIsInvalidError } from "../../error";
 import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
-import { adminPermissions } from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
 
 export async function registerNode(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
 
   const address: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
+
+  if (!(await multichain.isValidAddress(address))) {
+    throw { kind: "AddressIsInvalid", address: input.address } as AddressIsInvalidError;
+  }
+
   const organization: string = value("organization", input.organization, isNonemptyString);
 
   const userIntent: Intent = "network.registerNode";

@@ -113,8 +113,8 @@ export class RpcMultichainClient implements MultichainClient {
     return await this.rpcClient.invoke("publish", streamId, key, data);
   }
 
-  async isValidAddress(address: string) : Promise<any>{
-    const result =  await this.rpcClient.invoke("validateaddress", address);
+  async isValidAddress(address: string): Promise<boolean> {
+    const result = await this.rpcClient.invoke("validateaddress", address);
     return result.isvalid;
   }
 
