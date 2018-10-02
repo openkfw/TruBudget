@@ -8,7 +8,7 @@ import SubprojectDialogContent from "./SubprojectDialogContent";
 import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
-  const { createSubProject, onDialogCancel, subprojectToAdd, location, storeSnackbarMessage, showSnackbar } = props;
+  const { createSubProject, onDialogCancel, subprojectToAdd, location, storeSnackbarMessage } = props;
   const { displayName, amount, description, currency } = subprojectToAdd;
   createSubProject(
     displayName,
@@ -19,7 +19,6 @@ const handleCreate = props => {
   );
   onDialogCancel();
   storeSnackbarMessage(strings.common.added + " " + strings.common.subproject + " " + displayName);
-  showSnackbar();
 };
 
 const handleEdit = props => {
@@ -30,7 +29,6 @@ const handleEdit = props => {
     subprojectToAdd,
     location,
     storeSnackbarMessage,
-    showSnackbar
   } = props;
 
   const changes = compareObjects(subProjects, subprojectToAdd);
@@ -41,7 +39,6 @@ const handleEdit = props => {
     }
     editSubproject(projectId, subprojectToAdd.id, changes);
     storeSnackbarMessage(strings.common.edited + " " + strings.common.subproject + " " + subprojectToAdd.displayName);
-    showSnackbar();
   }
 
   onDialogCancel();

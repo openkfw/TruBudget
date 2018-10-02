@@ -15,7 +15,7 @@ import {
   setCurrentStep,
   storeProjectThumbnail
 } from "./actions";
-import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
+import { storeSnackbarMessage } from "../Notifications/actions";
 
 class ProjectDialogContainer extends Component {
   render() {
@@ -48,7 +48,6 @@ const mapDispatchToProps = dispatch => {
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
 
-    showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };

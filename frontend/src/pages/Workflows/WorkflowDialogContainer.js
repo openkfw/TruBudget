@@ -17,7 +17,7 @@ import {
   setCurrentStep,
   storeWorkflowDocument
 } from "./actions";
-import { storeSnackbarMessage, showSnackbar } from "../Notifications/actions";
+import { storeSnackbarMessage } from "../Notifications/actions";
 
 const styles = {};
 
@@ -87,7 +87,6 @@ const mapDispatchToProps = dispatch => {
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
-    showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name))
   };
