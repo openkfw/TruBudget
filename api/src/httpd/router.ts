@@ -82,10 +82,10 @@ const handleError = (req, res, err: any) => {
 
     case "AddressIsInvalid":
       send(res, [
-        409,
+        400,
         {
           apiVersion: "1.0",
-          error: { code: 409, message: `The address is invalid.` },
+          error: { code: 400, message: `The address is invalid.` },
         },
       ]);
       break;
@@ -2272,9 +2272,9 @@ export const registerRoutes = (
                 status: { type: "string", example: "open" },
                 displayName: { type: "string", example: "classroom" },
                 description: { type: "string", example: "build classroom" },
-                amount: { type: "string", example: "500" },
+                amount: { type: ["string", "null"], example: "500" },
                 assignee: { type: "string", example: "aSmith" },
-                currency: { type: "string", example: "EUR" },
+                currency: { type: ["string", "null"],  example: "EUR" },
                 amountType: { type: "string", example: "disbursed" },
                 documents: {
                   type: "array",

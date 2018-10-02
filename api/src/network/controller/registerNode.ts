@@ -10,7 +10,7 @@ export async function registerNode(multichain: MultichainClient, req): Promise<H
 
   const address: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
 
-  if (!(await multichain.isValidAddress(input.address))) {
+  if (!(await multichain.isValidAddress(address))) {
     throw { kind: "AddressIsInvalid", address: input.address } as AddressIsInvalidError;
   }
 
