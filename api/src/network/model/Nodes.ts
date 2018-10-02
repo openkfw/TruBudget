@@ -112,7 +112,6 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
         throw err;
       }
     });
-  console.log("getting the streamkeyitems took");
 
   const nodeEventsByAddress = new Map<WalletAddress, NodeInfo>();
   const organizationsByAddress = new Map<WalletAddress, Organization>();
