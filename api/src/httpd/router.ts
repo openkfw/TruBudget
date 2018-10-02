@@ -2268,7 +2268,6 @@ export const registerRoutes = (
               properties: {
                 projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                 subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-
                 status: { type: "string", example: "open" },
                 displayName: { type: "string", example: "classroom" },
                 description: { type: "string", example: "build classroom" },
