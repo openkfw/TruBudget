@@ -32,5 +32,7 @@ sed -i -e "/# pathToApi/i\\
 sed -i -e "/# pathToTestApi/i\\
   proxy_pass http://$test_host:$test_port/;" /etc/nginx/conf.d/default.conf
 
+sed -i -e "s/^\(\s*include \/etc\/nginx\/sites-enabled\)/#&/" /etc/nginx/nginx.conf
+
 nginx -g "daemon off;"
 
