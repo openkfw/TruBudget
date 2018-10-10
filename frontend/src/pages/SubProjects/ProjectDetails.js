@@ -60,9 +60,6 @@ const styles = {
     display: "flex",
     justifyContent: "space-around"
   },
-  text: {
-    fontSize: "14px"
-  },
   tasksChart: {
     width: "100%",
     height: "100%",
@@ -106,7 +103,10 @@ const styles = {
     alignItems: "center",
     marginTop: "10px",
     marginBottom: "10px",
-    marginRight: "10px"
+    marginRight: "10px",
+    width: "100%",
+    whiteSpace: "nowrap",
+    flexWrap: "wrap"
   },
   assingeeIcon: {
     marginRight: "30px"
@@ -130,6 +130,20 @@ const styles = {
   assigneeText: {
     marginLeft: "-13px",
     paddingTop: "6px"
+  },
+  listItem: {
+    minWidth: "65%"
+  },
+  budgetDistListItem: {
+    paddingRight: "0px",
+    fontSize: "14px"
+  },
+  chart: {
+    marginRight: 20,
+    maxWidth: "55%",
+    display: "flex",
+    justifyContent: "center",
+    paddingLeft: "12px"
   }
 };
 
@@ -248,24 +262,40 @@ const ProjectDetails = ({
         <CardHeader title={strings.common.budget_distribution} />
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text}>
-            <ListItemIcon>
-              <UnspentIcon color="primary" />
-            </ListItemIcon>
-            <ListItemText primary={spentAmountString} secondary={strings.common.assigned_budget} />
-          </ListItem>
-          <GaugeChart size={0.2} responsive={false} value={allocatedRatio} />
+          <div style={styles.listItem}>
+            <ListItem style={styles.budgetDistListItem}>
+              <ListItemIcon>
+                <UnspentIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText
+                primary={spentAmountString}
+                secondary={strings.common.assigned_budget}
+                style={styles.budgetDistListItem}
+              />
+            </ListItem>
+          </div>
+          <div style={styles.chart}>
+            <GaugeChart size={0.2} responsive={false} value={allocatedRatio} />
+          </div>
         </div>
 
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text}>
-            <ListItemIcon>
-              <CompletionIcon color="primary" />
-            </ListItemIcon>
-            <ListItemText primary={completionString} secondary={strings.common.completion} />
-          </ListItem>
-          <GaugeChart size={0.2} responsive={false} value={completionRatio} />
+          <div style={styles.listItem}>
+            <ListItem style={styles.budgetDistListItem}>
+              <ListItemIcon>
+                <CompletionIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText
+                primary={completionString}
+                secondary={strings.common.completion}
+                style={styles.budgetDistListItem}
+              />
+            </ListItem>
+          </div>
+          <div style={styles.chart}>
+            <GaugeChart size={0.2} responsive={false} value={completionRatio} />
+          </div>
         </div>
         <Divider />
       </Card>

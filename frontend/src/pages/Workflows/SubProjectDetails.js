@@ -120,7 +120,10 @@ const styles = {
     alignItems: "center",
     marginTop: "10px",
     marginBottom: "10px",
-    marginRight: "10px"
+    marginRight: "10px",
+    width: "100%",
+    whiteSpace: "nowrap",
+    flexWrap: "wrap"
   },
 
   assingeeIcon: {
@@ -145,6 +148,20 @@ const styles = {
   assigneeText: {
     marginLeft: "-13px",
     paddingTop: "6px"
+  },
+  listItem: {
+    minWidth: "65%"
+  },
+  budgetDistListItem: {
+    paddingRight: "0px",
+    fontSize: "14px"
+  },
+  chart: {
+    marginRight: 20,
+    maxWidth: "55%",
+    display: "flex",
+    justifyContent: "center",
+    paddingLeft: "12px"
   }
 };
 
@@ -268,33 +285,57 @@ const SubProjectDetails = ({
         <CardHeader title={strings.common.budget_distribution} />
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text}>
-            <ListItemIcon>
-              <UnspentIcon color="primary" />
-            </ListItemIcon>
-            <ListItemText primary={unSpendBudgetString} secondary={strings.common.assigned_budget} />
-          </ListItem>
-          <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
+          <div style={styles.listItem}>
+            <ListItem style={styles.budgetDistListItem}>
+              <ListItemIcon>
+                <UnspentIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText
+                primary={unSpendBudgetString}
+                secondary={strings.common.assigned_budget}
+                style={styles.budgetDistListItem}
+              />
+            </ListItem>
+          </div>
+          <div style={styles.chart}>
+            <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
+          </div>
         </div>
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text}>
-            <ListItemIcon>
-              <SpentIcon color="primary" />
-            </ListItemIcon>
-            <ListItemText primary={spendBudgetString} secondary={strings.common.disbursed_budget} />
-          </ListItem>
-          <GaugeChart size={0.2} responsive={false} value={createRatio(consumptionBudgetRatio)} />
+          <div style={styles.listItem}>
+            <ListItem style={styles.budgetDistListItem}>
+              <ListItemIcon>
+                <SpentIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText
+                primary={spendBudgetString}
+                secondary={strings.common.disbursed_budget}
+                style={styles.budgetDistListItem}
+              />
+            </ListItem>
+          </div>
+          <div style={styles.chart}>
+            <GaugeChart size={0.2} responsive={false} value={createRatio(consumptionBudgetRatio)} />
+          </div>
         </div>
         <Divider />
         <div style={styles.charts}>
-          <ListItem style={styles.text}>
-            <ListItemIcon>
-              <NotAssignedIcon color="primary" />
-            </ListItemIcon>
-            <ListItemText primary={disbursedBudgetString} secondary={strings.common.disbursement} />
-          </ListItem>
-          <GaugeChart size={0.2} responsive={false} value={createRatio(currentDisbursementRatio)} />
+          <div style={styles.listItem}>
+            <ListItem style={styles.budgetDistListItem}>
+              <ListItemIcon>
+                <NotAssignedIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText
+                primary={disbursedBudgetString}
+                secondary={strings.common.disbursement}
+                style={styles.budgetDistListItem}
+              />
+            </ListItem>
+          </div>
+          <div style={styles.chart}>
+            <GaugeChart size={0.2} responsive={false} value={createRatio(currentDisbursementRatio)} />
+          </div>
         </div>
         <Divider />
       </Card>

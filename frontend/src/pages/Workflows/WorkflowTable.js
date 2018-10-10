@@ -12,9 +12,7 @@ import Button from "@material-ui/core/Button";
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
 import strings from "../../localizeStrings";
-import {
- canReorderWorkflowItems
-} from "../../permissions.js";
+import { canReorderWorkflowItems } from "../../permissions.js";
 
 const style = {
   paddingLeft: "0px"
@@ -54,9 +52,6 @@ const renderSortButton = props => (
     style={{
       position: "relative",
       zIndex: 2
-    }}
-    labelstyle={{
-      fontWeight: "200"
     }}
   >
     <SortIcon />
