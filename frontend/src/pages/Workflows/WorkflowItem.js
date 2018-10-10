@@ -7,7 +7,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import DoneIcon from "@material-ui/icons/Check";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/InfoOutline";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import OpenIcon from "@material-ui/icons/Remove";
 import Paper from "@material-ui/core/Paper";

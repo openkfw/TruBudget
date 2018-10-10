@@ -25,7 +25,10 @@ const muiTheme = createMuiTheme({
   palette: {
     primary: blue,
     secondary: red
-  }
+  },
+  typography: {
+    useNextVariants: true,
+  },
 });
 
 class Root extends Component {
