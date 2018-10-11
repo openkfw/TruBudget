@@ -54,6 +54,11 @@ const ContentWrapper = props => {
           <CloseIcon className={classes.icon} />
         </IconButton>
       ]}
+      //workarround-fix: can be removed if material.ui fixed their issue (https://github.com/mui-org/material-ui/issues/13144)
+      headlineMapping={{
+        body1: "div",
+        body2: "div"
+      }}
     />
   );
 };
