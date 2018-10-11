@@ -94,7 +94,7 @@ const getListEntries = (newNodesForExistingOrga, canApprove, classes, cb) => {
           <ListItemText
             primary={
               <div className={classes.listItem}>
-                <Typography variant="subheading"> {node.address.organization}</Typography>
+                <Typography variant="subtitle1"> {node.address.organization}</Typography>
               </div>
             }
             secondary={`${strings.nodesDashboard.address}: ${node.address.address}`}

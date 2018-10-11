@@ -348,10 +348,10 @@ export const WorkflowItem = SortableElement(
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>{infoButton}</div>
             <div style={{ ...itemStyle, ...styles.text, flex: 4 }}>
-              <Typography variant="body1">{displayName}</Typography>
+              <Typography variant="body2">{displayName}</Typography>
             </div>
             <div style={{ ...itemStyle, ...styles.listText, flex: 4 }}>
-              <Typography variant="body1" component="div">
+              <Typography variant="body2" component="div">
                 {getAmountField(amount, amountType)}
               </Typography>
             </div>
@@ -405,7 +405,7 @@ export const RedactedWorkflowItem = SortableElement(
               </IconButton>
             </div>
             <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
-              <Typography variant="body1">{strings.workflow.workflow_redacted}</Typography>
+              <Typography variant="body2">{strings.workflow.workflow_redacted}</Typography>
             </div>
             <div style={{ ...itemStyle, ...styles.listText, flex: 5 }}>{null}</div>
             <div style={{ ...styles.listText, ...styles.chipRow, flex: 2 }}>{null}</div>

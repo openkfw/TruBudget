@@ -48,7 +48,7 @@ const NodesTable = ({ nodes, classes }) => {
   return (
     <Paper className={classes.paper}>
       <div className={classes.title}>
-        <Typography variant="title" color="primary" id="tableTitle">
+        <Typography variant="h6" color="primary" id="tableTitle">
           {strings.nodesDashboard.network}
         </Typography>
       </div>
