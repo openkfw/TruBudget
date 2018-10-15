@@ -1,6 +1,6 @@
 import * as Ajv from "ajv";
 import * as fastify from "fastify";
-const rawBody = require('raw-body')
+const rawBody = require("raw-body");
 
 import { IncomingMessage, Server, ServerResponse } from "http";
 const DEFAULT_API_VERSION = "1.0";
@@ -31,8 +31,6 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
   });
 };
 
-
-
 const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, apiPort: Number) => {
   server.register(require("fastify-swagger"), {
     // logLevel: "info",
@@ -46,7 +44,6 @@ const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, api
           "at almost every endpoint.\nTo use the token click on the 'Authorize' Button at the top right",
         version: "0.1.0",
       },
-      host: `localhost:${apiPort.toString()}`,
       schemes: ["http"],
       consumes: ["application/json"],
       produces: ["application/json"],
@@ -93,17 +90,19 @@ export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Nu
   registerSwagger(server, urlPrefix, apiPort);
   addTokenHandling(server, jwtSecret);
 
-
-
-  server.addContentTypeParser('application/gzip', (req, done) => {
-    rawBody(req, {
-      length: req.headers['content-length'],
-      limit: '1024mb',
-    }, (err, body) => {
-      if (err) return done(err)
-      done(null, body)
-    })
-  })
+  server.addContentTypeParser("application/gzip", (req, done) => {
+    rawBody(
+      req,
+      {
+        length: req.headers["content-length"],
+        limit: "1024mb",
+      },
+      (err, body) => {
+        if (err) return done(err);
+        done(null, body);
+      },
+    );
+  });
 
   // app.use(logging);
   return server;
