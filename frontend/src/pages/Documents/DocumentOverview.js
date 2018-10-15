@@ -135,11 +135,11 @@ class DocumentOverview extends Component {
       <TableRow key={"documentlistheader"} style={styles.documentListHeader}>
         {validationActive ? <TableCell /> : null}
         <TableCell>
-          <Typography variant="body2">{strings.common.name}</Typography>
+          <Typography variant="body1">{strings.common.name}</Typography>
         </TableCell>
         {validationActive ? (
           <TableCell>
-            <Typography variant="body2">{strings.workflow.workflow_fingerprint}</Typography>
+            <Typography variant="body1">{strings.workflow.workflow_fingerprint}</Typography>
           </TableCell>
         ) : null}
         {validationActive ? (

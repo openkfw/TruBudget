@@ -103,7 +103,7 @@ const LoginPage = ({
             aria-label="loginbutton"
             style={{ marginRight: 20, marginTop: 5 }}
             onClick={() => loginWithCredentails(username, password)}
-            variant="raised"
+            variant="contained"
             id="loginbutton"
           >
             {strings.login.login_button_title}

@@ -203,16 +203,18 @@ const OverviewTable = props => {
         >
           <CardActions>
             <Tooltip id="tooltip-pcreate" title={strings.common.create}>
-              <Button
-                className={props.classes.button}
-                aria-label="create"
-                disabled={!canCreateProject(props.allowedIntents)}
-                onClick={() => props.showCreationDialog()}
-                variant="fab"
-                color="primary"
-              >
-                <ContentAdd />
-              </Button>
+              <div>
+                <Button
+                  className={props.classes.button}
+                  aria-label="create"
+                  disabled={!canCreateProject(props.allowedIntents)}
+                  onClick={() => props.showCreationDialog()}
+                  variant="fab"
+                  color="primary"
+                >
+                  <ContentAdd />
+                </Button>
+              </div>
             </Tooltip>
           </CardActions>
         </div>

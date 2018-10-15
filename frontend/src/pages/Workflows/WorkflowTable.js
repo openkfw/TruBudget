@@ -28,16 +28,16 @@ const createTableHeader = props => (
           <div style={{ flex: 1 }} />
 
           <div style={{ flex: 4 }}>
-            <Typography variant="body2">{strings.workflow.workflow_type_workflow}</Typography>
+            <Typography variant="body1">{strings.workflow.workflow_type_workflow}</Typography>
           </div>
           <div style={{ flex: 4 }}>
-            <Typography variant="body2">{strings.common.budget}</Typography>
+            <Typography variant="body1">{strings.common.budget}</Typography>
           </div>
           <div style={{ flex: 4 }}>
-            <Typography variant="body2">{strings.common.assignee}</Typography>
+            <Typography variant="body1">{strings.common.assignee}</Typography>
           </div>
           <div style={{ flex: 2 }}>
-            <Typography variant="body2">{strings.common.actions}</Typography>
+            <Typography variant="body1">{strings.common.actions}</Typography>
           </div>
         </div>
       </div>
