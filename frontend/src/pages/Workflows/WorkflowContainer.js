@@ -78,13 +78,17 @@ class WorkflowContainer extends Component {
     this.props.fetchAllSubprojectDetails(this.projectId, this.subProjectId, false);
   };
 
+  addUpdates = () => {
+    return <LiveUpdates updateFunc={this.update} />;
+  };
+
   render() {
     const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
     const canCloseSubproject = canCloseSubProject(this.props.allowedIntents);
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
     return (
       <div>
-        <LiveUpdates updateFunc={this.update} />
+        {!this.props.workflowSortEnabled ? this.addUpdates() : null}
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails
             {...this.props}
