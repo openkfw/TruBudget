@@ -23,6 +23,7 @@ import ProjectHistoryContainer from "./ProjectHistoryContainer";
 import { canCreateSubProject, canAssignProject, canCloseProject } from "../../permissions";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import SubprojectDialogContainer from "./SubprojectDialogContainer";
+import LiveUpdates from "../LiveUpdates/LiveUpdates";
 
 class SubProjectContainer extends Component {
   constructor(props) {
@@ -43,12 +44,17 @@ class SubProjectContainer extends Component {
     }
   };
 
+  update = () => {
+    this.props.fetchAllProjectDetails(this.projectId, false);
+  };
+
   render() {
     const canCreateSubproject = canCreateSubProject(this.props.allowedIntents);
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = canCloseProject(this.props.allowedIntents);
     return (
       <div>
+        <LiveUpdates updateFunc={this.update} />
         <div style={globalStyles.innerContainer}>
           <ProjectDetails
             {...this.props}
