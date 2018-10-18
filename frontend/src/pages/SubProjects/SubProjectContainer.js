@@ -54,7 +54,7 @@ class SubProjectContainer extends Component {
     const canClose = canCloseProject(this.props.allowedIntents);
     return (
       <div>
-        <LiveUpdates updateFunc={this.update} />
+        <LiveUpdates update={this.update} />
         <div style={globalStyles.innerContainer}>
           <ProjectDetails
             {...this.props}

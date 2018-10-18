@@ -17,7 +17,7 @@ class LiveUpdates extends Component {
 
   startLiveUpdates() {
     if (this.timer === undefined) {
-      this.timer = setInterval(() => this.update(), 5000);
+      this.timer = setInterval(() => this.props.update(), 5000);
     }
   }
 
@@ -26,10 +26,6 @@ class LiveUpdates extends Component {
       clearInterval(this.timer);
       this.timer = undefined;
     }
-  }
-
-  update() {
-    this.props.updateFunc();
   }
 
   render() {
