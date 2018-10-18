@@ -28,7 +28,7 @@ import {
   saveWorkflowItemsBeforeSort
 } from "./actions";
 
-import {addDocument} from "../Documents/actions";
+import { addDocument } from "../Documents/actions";
 
 import { setSelectedView } from "../Navbar/actions";
 import { showHistory } from "../Notifications/actions";
@@ -41,6 +41,7 @@ import strings from "../../localizeStrings";
 import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
 import { fetchUser } from "../Login/actions";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
+import LiveUpdates from "../LiveUpdates/LiveUpdates";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -73,12 +74,21 @@ class WorkflowContainer extends Component {
 
   closeSubproject = () => this.props.closeSubproject(this.projectId, this.subProjectId, true);
 
+  update = () => {
+    this.props.fetchAllSubprojectDetails(this.projectId, this.subProjectId, false);
+  };
+
+  addLiveUpdates = () => {
+    return <LiveUpdates update={this.update} />;
+  };
+
   render() {
     const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
     const canCloseSubproject = canCloseSubProject(this.props.allowedIntents);
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
     return (
       <div>
+        {!this.props.workflowSortEnabled ? this.addLiveUpdates() : null}
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails
             {...this.props}
