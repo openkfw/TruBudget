@@ -1,5 +1,6 @@
 import * as Ajv from "ajv";
 import * as fastify from "fastify";
+import * as metricsPlugin from "fastify-metrics";
 const rawBody = require("raw-body");
 
 import { IncomingMessage, Server, ServerResponse } from "http";
@@ -87,6 +88,9 @@ export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Nu
       return valid;
     };
   });
+
+  server.register(metricsPlugin, {endpoint: '/metrics'});
+
   registerSwagger(server, urlPrefix, apiPort);
   addTokenHandling(server, jwtSecret);
 
