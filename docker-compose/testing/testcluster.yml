@@ -10,6 +10,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
+      SWAGGER_BASEPATH: /test
     ports:
       - "8080:8080" # Mapping the nginx port
     links:

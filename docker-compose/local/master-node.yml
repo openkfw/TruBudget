@@ -10,6 +10,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
+      SWAGGER_BASEPATH: /prod
     links: 
       - master
 
@@ -32,6 +33,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
+      SWAGGER_BASEPATH: /test
     links: 
       - testmaster
 
