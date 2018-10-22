@@ -40,6 +40,8 @@ if (!organizationVaultSecret) {
   process.exit(1);
 }
 
+const SWAGGER_BASEPATH = process.env.SWAGGER_BASEPATH || "/";
+
 /*
  * Initialize the components:
  */
@@ -57,10 +59,7 @@ const rpcSettings: ConnectionSettings = {
 logger.info(rpcSettings, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
-
-const server = createBasicApp(jwtSecret, URL_PREFIX, port);
-
-
+const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH);
 
 /*
  * Run the app:
@@ -107,10 +106,8 @@ registerRoutes(
   organizationVaultSecret!,
   URL_PREFIX,
   multichainHost,
-  backupApiPort
+  backupApiPort,
 );
-
-
 
 console.log("Register fastify endpoint");
 

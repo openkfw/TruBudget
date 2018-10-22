@@ -31,7 +31,12 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
   });
 };
 
-const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, apiPort: Number) => {
+const registerSwagger = (
+  server: fastify.FastifyInstance,
+  urlPrefix: string,
+  apiPort: Number,
+  swaggerBasePath: String,
+) => {
   server.register(require("fastify-swagger"), {
     // logLevel: "info",
     routePrefix: `${urlPrefix}/documentation`,
@@ -44,7 +49,7 @@ const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, api
           "at almost every endpoint.\nTo use the token click on the 'Authorize' Button at the top right",
         version: "0.1.0",
       },
-      schemes: ["http"],
+      basePath: `${swaggerBasePath}`,
       consumes: ["application/json"],
       produces: ["application/json"],
       securityDefinitions: {
@@ -62,7 +67,12 @@ const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, api
   });
 };
 
-export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Number) => {
+export const createBasicApp = (
+  jwtSecret: string,
+  urlPrefix: string,
+  apiPort: Number,
+  swaggerBasePath: string,
+) => {
   const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     // logger: true,
   });
@@ -87,7 +97,7 @@ export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Nu
       return valid;
     };
   });
-  registerSwagger(server, urlPrefix, apiPort);
+  registerSwagger(server, urlPrefix, apiPort, swaggerBasePath);
   addTokenHandling(server, jwtSecret);
 
   server.addContentTypeParser("application/gzip", (req, done) => {

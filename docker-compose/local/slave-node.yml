@@ -11,6 +11,7 @@ services:
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      SWAGGER_BASEPATH: /prod
       # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
     links: 
       - bc-slave
@@ -41,6 +42,7 @@ services:
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      SWAGGER_BASEPATH: /test
       # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
     links: 
       - test-bc-slave
