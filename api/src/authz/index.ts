@@ -1,6 +1,7 @@
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
 import { AllowedUserGroupsByIntent, People } from "./types";
+import logger from "../lib/logger";
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
@@ -50,7 +51,7 @@ const loggedCan = async (
   resourcePermissions: AllowedUserGroupsByIntent,
 ): Promise<boolean> => {
   const canDo = await can(token, intent, resourcePermissions);
-  console.log(
+  logger.info(
     `${canDo ? "ALLOWED" : "DENIED"} user ${token.userId} access with intent "${intent}"${
       resourcePermissions ? ` to ${JSON.stringify(resourcePermissions)}` : ""
     }`,

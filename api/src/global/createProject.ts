@@ -15,6 +15,7 @@ import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";
+import logger from "../lib/logger";
 
 export async function createProject(
   multichain: MultichainClient,
@@ -66,7 +67,7 @@ export async function createProject(
 
   await Project.publish(multichain, projectId, event);
 
-  console.log(
+  logger.info(
     `Project ${input.displayName} created with default permissions: ${JSON.stringify(
       event.data.permissions,
     )}`,

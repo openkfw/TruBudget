@@ -2,6 +2,7 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as expressJwt from "express-jwt";
 import { AuthToken } from "../authz/token";
+import logger from "../lib/logger";
 
 const addTokenHandling = (app, jwtSecret: string) => {
   app.use(
@@ -16,7 +17,7 @@ const addTokenHandling = (app, jwtSecret: string) => {
     }),
   );
   app.use(function customAuthTokenErrorHandler(err, req, res, next) {
-    console.log(err);
+    logger.error(err);
     if (err.name === "UnauthorizedError") {
       res.status(401).send({
         apiVersion: req.body.apiVersion,
@@ -55,9 +56,11 @@ export const createBasicApp = (jwtSecret: string, rootSecret: string) => {
   app.use("/api/doc", express.static("doc"));
   addTokenHandling(app, jwtSecret);
   app.use(logging);
-  app.use(bodyParser.raw({
-    type: 'application/gzip',
-    limit: '100mb'
-  }));
+  app.use(
+    bodyParser.raw({
+      type: "application/gzip",
+      limit: "100mb",
+    }),
+  );
   return app;
 };

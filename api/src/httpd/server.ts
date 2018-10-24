@@ -1,5 +1,6 @@
 import * as Ajv from "ajv";
 import * as fastify from "fastify";
+import logger from "../lib/logger";
 const rawBody = require("raw-body");
 
 import { IncomingMessage, Server, ServerResponse } from "http";
@@ -64,7 +65,7 @@ const registerSwagger = (server: fastify.FastifyInstance, urlPrefix: string, api
 
 export const createBasicApp = (jwtSecret: string, urlPrefix: string, apiPort: Number) => {
   const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
-    // logger: true,
+    logger,
   });
 
   server.setSchemaCompiler(schema => {
