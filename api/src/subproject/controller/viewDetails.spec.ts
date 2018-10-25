@@ -134,7 +134,7 @@ describe("subproject.viewDetails", () => {
         projectId: "the-sample-project",
         subprojectId: "the-sample-subproject",
       },
-      token: {
+      user: {
         userId: "alice",
         groups: [] as string[],
         organization: "Umbrella Corp.",

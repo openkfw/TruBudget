@@ -1,7 +1,7 @@
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-async function withRetry(cb, maxTimes = 8, timeoutMs = 15000) {
+async function withRetry(cb, maxTimes = 12, timeoutMs = 10000) {
   try {
     return await cb();
   } catch (err) {
@@ -27,7 +27,7 @@ async function withRetry(cb, maxTimes = 8, timeoutMs = 15000) {
       console.log("The item you tried to create already exists");
     } else {
       // console.log(err);
-      throw new Error(`Something strange happend ${err.message}`);
+      throw new Error(`Something strange happend ${err}`);
     }
   }
 }
