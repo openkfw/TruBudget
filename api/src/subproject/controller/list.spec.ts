@@ -79,7 +79,7 @@ describe("subproject.list", () => {
       query: {
         projectId: "the-sample-project",
       },
-      token: {
+      user: {
         userId: "alice",
         groups: [] as string[],
       },
@@ -115,7 +115,7 @@ describe("subproject.list", () => {
       query: {
         projectId: "the-sample-project",
       },
-      token: {
+      user: {
         userId: "alice",
       },
     };
