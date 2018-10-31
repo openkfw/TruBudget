@@ -21,7 +21,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch & nodemon dist",
-    "test": "tsc --watch & mocha --watch dist/*.spec.js dist/**/*.spec.js",
+    "test": "nyc mocha 'dist/*.spec.js' 'dist/**/*.spec.js'",
+    "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
     "tsc": "tsc"
@@ -66,6 +67,7 @@
     "eslint-plugin-promise": "^3.7.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.4",
+    "nyc": "^13.1.0",
     "supertest": "^3.1.0",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3",

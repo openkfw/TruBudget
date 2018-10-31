@@ -40,6 +40,8 @@ if (!organizationVaultSecret) {
   process.exit(1);
 }
 
+const SWAGGER_BASEPATH = process.env.SWAGGER_BASEPATH || "/";
+
 /*
  * Initialize the components:
  */
@@ -57,10 +59,7 @@ const rpcSettings: ConnectionSettings = {
 logger.info(rpcSettings, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
-
-const server = createBasicApp(jwtSecret, URL_PREFIX, port);
-
-
+const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH);
 
 /*
  * Run the app:
@@ -69,7 +68,7 @@ const server = createBasicApp(jwtSecret, URL_PREFIX, port);
 
 // Enable useful traces of unhandled-promise warnings:
 process.on("unhandledRejection", err => {
-  logger.fatal({ err }, "UNHANDLED PROMISE REJECTION");
+  logger.fatal(err, "UNHANDLED PROMISE REJECTION");
   process.exit(1);
 });
 
@@ -107,10 +106,8 @@ registerRoutes(
   organizationVaultSecret!,
   URL_PREFIX,
   multichainHost,
-  backupApiPort
+  backupApiPort,
 );
-
-
 
 console.log("Register fastify endpoint");
 

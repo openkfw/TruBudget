@@ -197,7 +197,6 @@ describe("workflowitem.list", () => {
     };
 
     const [status, response] = await getWorkflowitemList(multichain as MultichainClient, req);
-
     expect(status).to.eql(200);
     const workflowitems = (response as any).data.workflowitems;
     expect(workflowitems.length).to.eql(3);

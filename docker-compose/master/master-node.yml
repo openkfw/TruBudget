@@ -9,6 +9,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
+      SWAGGER_BASEPATH: /prod
       # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
     links: 
       - master
@@ -30,6 +31,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
+      SWAGGER_BASEPATH: /test
     links: 
       - testmaster
 

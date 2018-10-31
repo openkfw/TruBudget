@@ -42,6 +42,7 @@ const startMultichainDaemon = (
     `${chainName}`,
     `${externalIpArg}`,
     `${blockNotifyArg}`,
+    `-maxshowndata=100000`,
     `-port=${P2P_PORT}`,
     `-autosubscribe=streams`,
     `${connectArg}`,
@@ -55,8 +56,6 @@ const startMultichainDaemon = (
 
   return mcproc;
 };
-
-
 
 module.exports = {
   startMultichainDaemon,

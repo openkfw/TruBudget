@@ -74,7 +74,7 @@ const handleError = (req, res, err: any) => {
           apiVersion: "1.0",
           error: {
             code: 403,
-            message: `User ${req.token.userId} is not authorized.`,
+            message: `User ${err.token.userId} is not authorized.`,
           },
         },
       ]);
