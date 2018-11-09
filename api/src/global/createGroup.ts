@@ -7,6 +7,7 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 import { isNonemptyString, isObject, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
+import { GroupId } from "../authz/types";
 
 export const createGroup = async (
   multichain: MultichainClient,
@@ -41,7 +42,7 @@ export const createGroup = async (
   }
 
   await Group.publish(multichain, groupId, event);
-  logger.info(event, "Group created.");
+  logger.info({ event, groupId }, "Group created.");
 
   return [
     200,

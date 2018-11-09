@@ -68,9 +68,13 @@ export async function createProject(
   await Project.publish(multichain, projectId, event);
 
   logger.info(
-    `Project ${input.displayName} created with default permissions: ${JSON.stringify(
-      event.data.permissions,
-    )}`,
+    // `Project ${input.displayName} created with default permissions: ${JSON.stringify(
+    //   event.data.permissions,
+    // )}`,
+    // `Project ${input.displayName} created with default permissions`,
+    // { event.data.permissions, input.displayName }
+    "Project created with default permissions",
+    { permissions: event.data.permissions, projectName: input.displayName },
   );
 
   return [

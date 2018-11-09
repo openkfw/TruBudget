@@ -44,6 +44,7 @@
     "i": "^0.3.6",
     "jsonwebtoken": "^8.2.1",
     "pino": "^5.8.0",
+    "pino-pretty": "^2.2.2",
     "raw-body": "^2.3.3",
     "sodium-native": "^2.1.6",
     "uuid": "^3.2.1",
