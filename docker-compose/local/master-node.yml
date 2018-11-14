@@ -12,6 +12,8 @@ services:
       ROOT_SECRET: ${ROOT_SECRET}
     links: 
       - master
+    volumes:
+      - /tmp/bcMasterVolume/logs:/log/
 
   master:
     build:
@@ -21,6 +23,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
+
 
   testapi:
     build: 
@@ -34,6 +37,8 @@ services:
       ROOT_SECRET: ${ROOT_SECRET}
     links: 
       - testmaster
+    volumes:
+      - /tmp/bcTestMasterVolume/logs:/log/
 
   testmaster:
     build:

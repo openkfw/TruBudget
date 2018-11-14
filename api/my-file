@@ -1,0 +1,29 @@
+[1542117563519] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "Connecting to MultiChain node"
+    rpcSettings: {
+      "protocol": "http",
+      "host": "127.0.0.1",
+      "port": 8000,
+      "username": "multichainrpc",
+      "password": "[Redacted]"
+    }
+[1542117563700] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "Server listening at http://0.0.0.0:8080"
+[1542117563700] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "server is listening on 8080"
+[1542117563724] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "MultiChain connection established"
+[1542117563735] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "Organization address already set: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117563735] [34mDEBUG[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "Importing private key.."
+[1542117563739] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "read hex string from chain: 31470 bytes"
+[1542117563745] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL is ready to be used in transactions."
+[1542117563745] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "organization address: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117563749] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "organization stream present"
+[1542117563752] [32mINFO[39m (TruBudget/3978 on AMAC02X97R8JG5J): 
+    msg: "node registered in nodes stream"

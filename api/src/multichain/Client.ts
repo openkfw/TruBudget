@@ -59,7 +59,7 @@ export class RpcMultichainClient implements MultichainClient {
     const txId: StreamTxId = await this.rpcClient
       .invoke("create", "stream", streamName, isPublic, customFields)
       .then(() =>
-        logger.debug(`Created stream ${streamName} with options ${JSON.stringify(options)}`),
+        logger.debug({options}, `Created stream ${streamName} with options`),
       )
       .catch(err => {
         if (options.name && err && err.code === -705) {
