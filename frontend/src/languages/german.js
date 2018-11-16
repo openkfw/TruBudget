@@ -266,6 +266,7 @@ const de = {
     edit_subproject: "Amount of {0} increased to {1}",
     edit_workflowName: "Name of workflow item {0} changed to {1} ",
     first_sort: "Moved {0} to first position",
+    project_assign: "German: {0} assigned project {1} to {2}",
     project_create: "German: {0} created project {1}",
     project_createSubproject: "German: {0} created subproject {1}",
     project_grantPermission: "German: {0} granted permission {1} to {2}",

@@ -267,6 +267,7 @@ const pt = {
     edit_subproject: "Valor de {0} subiu para {1}",
     edit_workflowName: "Nome do workflow {0} mudou para {1} ",
     first_sort: "{0} foi movido para a primeira posição",
+    project_assign: "Portuguese: {0} assigned project {1} to {2}",
     project_create: "Portuguese: {0} created project {1}",
     project_createSubproject: "Portuguese: {0} created subproject {1}",
     project_grantPermission: "Portuguese: {0} granted permission {1} to {2}",

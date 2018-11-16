@@ -29,6 +29,8 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
       return formatString(strings.history.project_revokePermission, createdBy, formatPermission(data), data.identity);
     case "project.createSubproject":
       return formatString(strings.history.project_createSubproject, createdBy, snapshot.displayName);
+    case "project.assign":
+      return formatString(strings.history.project_assign, createdBy, snapshot.displayName, data.identity);
     case "subproject.assign":
       return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.identity);
     case "subproject.close":
