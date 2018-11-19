@@ -31,6 +31,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/ajv": "^1.0.0",
     "@types/pino": "^4.16.0",
     "apidoc": "^0.17.6",
     "axios": "^0.18.0",
@@ -38,7 +39,7 @@
     "body-parser": "^1.18.3",
     "express-jwt": "^5.3.1",
     "f": "^1.4.0",
-    "fastify": "^1.11.2",
+    "fastify": "^1.13.0",
     "fastify-jwt": "^0.3.0",
     "fastify-metrics": "^2.0.2",
     "fastify-swagger": "^0.15.0",

@@ -9,6 +9,10 @@ export const restoreBackup = async (
   const { userId } = req.user;
   if (userId === "root") {
     const data = req.body;
+    const contentType = req.headers["content-type"];
+    if (contentType !== "application/gzip") {
+      throw { kind: "UnsupportedMediaType",  contentType};
+    }
     const config = {
       headers: { "content-type": "application/gzip" },
       maxContentLength: 1074790400,

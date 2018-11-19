@@ -11,6 +11,7 @@ const ajv = new Ajv({
   removeAdditional: true,
   useDefaults: true,
   coerceTypes: true,
+  unknownFormats: "ignore",
   // any other options
   // ...
 });
@@ -102,7 +103,7 @@ export const createBasicApp = (
   server.register(metricsPlugin, {endpoint: '/metrics'});
 
   registerSwagger(server, urlPrefix, apiPort, swaggerBasePath);
-  
+
   addTokenHandling(server, jwtSecret);
 
   server.addContentTypeParser("application/gzip", (req, done) => {

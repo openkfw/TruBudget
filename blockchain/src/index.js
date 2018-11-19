@@ -37,10 +37,15 @@ const P2P_PORT = process.env.P2P_PORT || 7447;
 const API_PROTO = process.env.API_PROTO || "http";
 const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
+const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
-const multichainDir = "/root/.multichain";
+const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
+if(fs.existsSync(multichainDir)){
+  console.error("Error: Directory '" + multichainDir + "' already exists, please review config parameter 'MULTICHAIN_DIR'");
+  process.exit(1)
+}
 const isMaster = !P2P_HOST ? true : false;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
   ? `-blocknotify=${BLOCKNOTIFY_SCRIPT}`
@@ -90,7 +95,7 @@ configureChain(
 
 if (isMaster) {
   spawnProcess(() =>
-    startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT),
+    startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
   );
 } else {
   spawnProcess(() =>
@@ -141,6 +146,7 @@ app.get("/chain", async (req, res) => {
               externalIpArg,
               blockNotifyArg,
               P2P_PORT,
+              multichainDir
             ),
           );
           autostart = true;
@@ -186,6 +192,7 @@ app.post("/chain", async (req, res) => {
               externalIpArg,
               blockNotifyArg,
               P2P_PORT,
+              multichainDir
             ),
           );
           autostart = true;

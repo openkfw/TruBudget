@@ -10,14 +10,13 @@ const configureChain = (
   RPC_PASSWORD,
   RPC_ALLOW_IP,
 ) => {
+  shell.mkdir("-p", multichainDir);
   if (isMaster) {
     console.log("Provisioning mc ");
     shell.exec(
-      `multichain-util create ${chainName} -anyone-can-connect=false -anyone-can-send=false -anyone-can-receive=true -anyone-can-receive-empty=true -anyone-can-create=false -anyone-can-issue=false -anyone-can-admin=false -anyone-can-mine=false -anyone-can-activate=false-mining-diversity=0.3 -mine-empty-rounds=1 -protocol-version=20002 -admin-consensus-upgrade=.51 -admin-consensus-admin=.51 -admin-consensus-activate=.51 -admin-consensus-mine=.51 -admin-consensus-create=0 -admin-consensus-issue=0 -root-stream-open=false`,
+      `multichain-util create ${chainName} -datadir=${multichainDir} -anyone-can-connect=false -anyone-can-send=false -anyone-can-receive=true -anyone-can-receive-empty=true -anyone-can-create=false -anyone-can-issue=false -anyone-can-admin=false -anyone-can-mine=false -anyone-can-activate=false-mining-diversity=0.3 -mine-empty-rounds=1 -protocol-version=20002 -admin-consensus-upgrade=.51 -admin-consensus-admin=.51 -admin-consensus-activate=.51 -admin-consensus-mine=.51 -admin-consensus-create=0 -admin-consensus-issue=0 -root-stream-open=false`,
     );
   }
-  shell.mkdir("-p", multichainDir);
-
   shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
 rpcport=${RPC_PORT}
 rpcuser=${RPC_USER}
@@ -35,6 +34,7 @@ const startMultichainDaemon = (
   externalIpArg,
   blockNotifyArg,
   P2P_PORT,
+  multichainDir,
   connectArg = "",
 ) => {
   const mcproc = spawn("multichaind", [
@@ -46,6 +46,7 @@ const startMultichainDaemon = (
     `-port=${P2P_PORT}`,
     `-autosubscribe=streams`,
     `${connectArg}`,
+    `-datadir=${multichainDir}`
   ]);
   mcproc.stdout.on("data", data => {
     console.log(`stdout: ${data}`);

@@ -175,6 +175,15 @@ const handleError = (req, res, err: any) => {
         },
       ]);
       break;
+    case "UnsupportedMediaType":
+      send(res, [
+        415,
+        {
+          apiVersion: "1.0",
+          error: { code: 415, message: `Unsupported media type: ${err.contentType}.` },
+        },
+      ]);
+      break;
     default:
       // handle RPC errors, too:
       if (err.code === -708) {
@@ -2273,7 +2282,7 @@ export const registerRoutes = (
                 description: { type: "string", example: "build classroom" },
                 amount: { type: ["string", "null"], example: "500" },
                 assignee: { type: "string", example: "aSmith" },
-                currency: { type: ["string", "null"],  example: "EUR" },
+                currency: { type: ["string", "null"], example: "EUR" },
                 amountType: { type: "string", example: "disbursed" },
                 documents: {
                   type: "array",
@@ -3572,10 +3581,29 @@ export const registerRoutes = (
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
-    },
+      schema: {
+        description: "Create a backup",
+        tags: ["system"],
+        summary: "Create a Backup",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        response: {
+          200: {
+            description: "file download backup.gz",
+            type: "string",
+            format: "binary",
+            example: "backup.gz",
+          },
+        },
+      },
+    } as Schema,
     async (req: AuthenticatedRequest, reply) => {
       createBackup(multichainHost, backupApiPort, req)
         .then(data => {
+          console.log(reply.res);
           reply.header("Content-Type", "application/gzip");
           reply.header("Content-Disposition", `attachment; filename="backup.gz"`);
           reply.send(data);
@@ -3589,7 +3617,40 @@ export const registerRoutes = (
     {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
-    },
+      schema: {
+        description:
+          "To restore a backup send a valid backup.gz file as binary via an API-Testing-Tool like postman."
+          + "Use 'application/gzip' as content type header)",
+        tags: ["system"],
+        summary: "Restore a Backup",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        consumes: ["application/gzip"],
+        body: {
+          description: "binary gzip file",
+          type: "string",
+          format: "binary",
+          example: "backup.gz (send a backup-file as binary via an API-Testing-Tool like postman)",
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+                example: "OK",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
     async (req: AuthenticatedRequest, reply) => {
       restoreBackup(multichainHost, backupApiPort, req)
         .then(response => send(reply, response))
