@@ -15,13 +15,13 @@ const name = "TruBudget";
 const hostname = os.hostname();
 const pid = process.pid;
 const base = { pid, hostname };
-const prettyPrint = true; // process.env.NODE_ENV === "production" ? false : true;
+const prettyPrint = false; // process.env.NODE_ENV === "production" ? false : true;
 const level = "debug"; // process.env.NODE_ENV === "production" ? "info" : "debug";
 const redact = {
   paths: ["rpcSettings.password", "password", "*.passwordDigest", "passwordDigest"],
 };
 const crlf = true;
-const messageKey = "message";
+const messageKey = "PINOmessage";
 const useLevelLabels = true;
 
 const cwd = process.cwd();
@@ -35,35 +35,36 @@ if (!fs.existsSync(logDir)) {
 const streams = [
   { level: "debug", stream: process.stdout },
   { stream: fs.createWriteStream(logDir + "server.log") },
-  { level: "debug", stream: fs.createWriteStream(logDir + "debug.log") },
-  { level: "info", stream: fs.createWriteStream(logDir + "info.log") },
-  { level: "warn", stream: fs.createWriteStream(logDir + "warn.log") },
-  { level: "error", stream: fs.createWriteStream(logDir + "error.log") },
+  // { level: "debug", stream: fs.createWriteStream(logDir + "debug.log") },
+  // { level: "info", stream: fs.createWriteStream(logDir + "info.log") },
+  // { level: "warn", stream: fs.createWriteStream(logDir + "warn.log") },
+  // { level: "error", stream: fs.createWriteStream(logDir + "error.log") },
 ];
 
-const logger = pino({
-  name,
-  base,
-  level,
-  // prettyPrint,
-  // @ts-ignore
-  redact,
-  useLevelLabels,
-  crlf,
-  messageKey,
-  },
-);
-// const logger = pinoms({
+// const logger = pino({
 //   name,
 //   base,
 //   level,
+//   // prettyPrint,
 //   // @ts-ignore
 //   redact,
 //   useLevelLabels,
 //   crlf,
 //   messageKey,
-//   streams,
-// });
+//   },
+// );
+
+const logger = pinoms({
+  name,
+  base,
+  level,
+  // @ts-ignore
+  redact,
+  useLevelLabels,
+  crlf,
+  messageKey,
+  streams,
+});
 
 // const child = childProcess.spawn(process.execPath, [
 //   require.resolve('pino-tee'),
@@ -77,13 +78,13 @@ const logger = pino({
 // logThrough.pipe(process.stdout);
 // Transport for log rotation
 // This creates new log files each hour, keeps them 14 days and splits them into chunks of 20mb
-const transport = new transports.DailyRotateFile({
-  filename: logDir + "application-%DATE%.log",
-  datePattern: "YYYY-MM-DD-HH",
-  zippedArchive: false,
-  maxSize: "20m",
-  maxFiles: "14d",
-});
+// const transport = new transports.DailyRotateFile({
+//   filename: logDir + "application-%DATE%.log",
+//   datePattern: "YYYY-MM-DD-HH",
+//   zippedArchive: false,
+//   maxSize: "20m",
+//   maxFiles: "14d",
+// });
 
 // const pinoLevels = {
 //   levels: {
