@@ -14,11 +14,13 @@ async function withRetry(cb, maxTimes = 12, timeoutMs = 10000) {
     }
     if (
       (err.response && err.response.status === 500) ||
+      (err.response && err.response.status === 500) ||
+      (err.response && err.response.status === 404) ||
       (!err.response && err.code === "ECONNREFUSED") ||
       (!err.response && err.code === "ECONNABORTED")
     ) {
       console.log(
-        `Internal Server Error (${err.message}), retry in ${timeoutMs /
+        `Server Error (${err.message}), retry in ${timeoutMs /
           1000} seconds`
       );
       await timeout(timeoutMs);
