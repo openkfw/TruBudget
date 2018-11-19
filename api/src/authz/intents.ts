@@ -8,9 +8,6 @@ type Intent =
   | "global.createGroup"
   | "user.authenticate"
   | "user.view"
-  | "user.intent.listPermissions"
-  | "user.intent.grantPermission"
-  | "user.intent.revokePermission"
   | "group.addUser"
   | "group.removeUser"
   | "project.intent.listPermissions"
@@ -63,9 +60,6 @@ export const globalIntents: Intent[] = [
   "global.createUser",
   "global.createGroup",
   "user.authenticate",
-  "user.intent.listPermissions",
-  "user.intent.grantPermission",
-  "user.intent.revokePermission",
   "network.registerNode",
   "network.list",
   "network.voteForPermission",
@@ -81,9 +75,6 @@ export const userAssignableIntents: Intent[] = [
   "global.createProject",
   "global.createUser",
   "global.createGroup",
-  "user.intent.listPermissions",
-  "user.intent.grantPermission",
-  "user.intent.revokePermission",
   "group.addUser",
   "group.removeUser",
   "notification.list",
@@ -111,9 +102,6 @@ export const allIntents: Intent[] = [
   "global.createGroup",
   "user.authenticate",
   "user.view",
-  "user.intent.listPermissions",
-  "user.intent.grantPermission",
-  "user.intent.revokePermission",
   "group.addUser",
   "group.removeUser",
   "project.intent.listPermissions",
