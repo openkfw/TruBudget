@@ -2,6 +2,8 @@ import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import { MultichainClient } from "../multichain";
 import { Resource } from "../multichain/Client.h";
+import { stringify } from "querystring";
+import logger from "../lib/logger";
 
 const globalstreamName = "global";
 
@@ -31,6 +33,7 @@ export const getPermissions = async (
       // Happens at startup, no need to worry..
       return {};
     } else {
+      logger.error(JSON.stringify(err));
       throw err;
     }
   }
@@ -46,6 +49,7 @@ export const grantPermission = async (
   const globalResource = streamItem.resource;
   const permissionsForIntent: People = globalResource.permissions[intent] || [];
   if (permissionsForIntent.includes(identity)) {
+    logger.info("User is already permitted to execute given intent");
     // The given user is already permitted to execute the given intent.
     return;
   }
@@ -64,9 +68,11 @@ export const revokePermission = async (
     streamItem = await multichain.getValue(globalstreamName, "self");
   } catch (err) {
     if (err.kind === "NotFound") {
+      logger.info("No permission set");
       // No permissions set yet, so nothing to revoke.
       return;
     } else {
+      logger.error(err);
       throw err;
     }
   }

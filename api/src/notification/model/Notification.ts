@@ -5,6 +5,7 @@ import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import logger from "../../lib/logger"
 
 const streamName = "notifications";
 
@@ -51,7 +52,7 @@ export async function publish(
   };
 
   const publishEvent = () => {
-    console.log(`Publishing ${intent} to ${streamName}/${userId}`);
+    logger.info(`Publishing ${intent} to ${streamName}/${userId}`);
     return multichain.getRpcClient().invoke("publish", streamName, userId, {
       json: event,
     });

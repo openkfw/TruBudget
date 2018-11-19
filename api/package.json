@@ -42,14 +42,19 @@
     "fastify-jwt": "^0.3.0",
     "fastify-metrics": "^2.0.2",
     "fastify-swagger": "^0.15.0",
+    "fluent-logger": "^3.2.1",
     "i": "^0.3.6",
     "jsonwebtoken": "^8.2.1",
-    "pino": "^4.17.3",
+    "pino": "^5.8.0",
+    "pino-multi-stream": "^4.0.0",
+    "pino-pretty": "^2.2.3",
+    "pino-tee": "^0.2.2",
     "raw-body": "^2.3.3",
     "sodium-native": "^2.1.6",
     "uuid": "^3.2.1",
     "uuid4": "^1.0.0",
-    "winston": "^3.0.0-rc5"
+    "winston": "^3.0.0-rc5",
+    "winston-daily-rotate-file": "^3.5.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.1",

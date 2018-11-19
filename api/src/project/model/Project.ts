@@ -10,6 +10,7 @@ import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import logger from "../../lib/logger";
 
 export interface AugmentedEvent extends Event {
   snapshot: {
@@ -70,7 +71,7 @@ export async function publish(
   const streamItem = { json: event };
 
   const publishEvent = () => {
-    console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+    logger.info(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
     return multichain
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)

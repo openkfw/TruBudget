@@ -3,3 +3,4 @@ DOCKER_REGISTRY_PASSWORD
 .DS_Store
 .env
 *~
+*-audit.json

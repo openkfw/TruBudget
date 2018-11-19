@@ -6,6 +6,7 @@ import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
 import { isValid } from "./AccessVote";
+import logger from "../../lib/logger";
 
 const streamName = "nodes";
 
@@ -81,7 +82,7 @@ export async function publish(
   const streamItem = { json: event };
 
   const publishEvent = () => {
-    console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+    logger.info(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
     return multichain
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)

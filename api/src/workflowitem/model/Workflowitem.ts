@@ -9,6 +9,7 @@ import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
+import logger from "../../lib/logger";
 
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 
@@ -110,7 +111,7 @@ export async function publish(
   const streamName = projectId;
   const streamItemKey = workflowitemKey(subprojectId, workflowitemId);
   const streamItem = { json: event };
-  console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+  logger.info(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
   await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
   return event;
 }

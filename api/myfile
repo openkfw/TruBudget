@@ -1,0 +1,116 @@
+[1542117714532] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "Connecting to MultiChain node"
+    rpcSettings: {
+      "protocol": "http",
+      "host": "127.0.0.1",
+      "port": 8000,
+      "username": "multichainrpc",
+      "password": "[Redacted]"
+    }
+[1542117714727] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "Server listening at http://0.0.0.0:8080"
+[1542117714728] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "server is listening on 8080"
+[1542117714744] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "MultiChain connection established"
+[1542117714751] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "Organization address already set: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117714751] [34mDEBUG[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "Importing private key.."
+[1542117714756] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "read hex string from chain: 31470 bytes"
+[1542117714760] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL is ready to be used in transactions."
+[1542117714760] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "organization address: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117714763] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "organization stream present"
+[1542117714766] [32mINFO[39m (TruBudget/4145 on AMAC02X97R8JG5J): 
+    msg: "node registered in nodes stream"
+[1542117717321] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "Connecting to MultiChain node"
+    rpcSettings: {
+      "protocol": "http",
+      "host": "127.0.0.1",
+      "port": 8000,
+      "username": "multichainrpc",
+      "password": "[Redacted]"
+    }
+[1542117717499] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "Server listening at http://0.0.0.0:8080"
+[1542117717500] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "server is listening on 8080"
+[1542117717526] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "MultiChain connection established"
+[1542117717534] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "Organization address already set: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117717534] [34mDEBUG[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "Importing private key.."
+[1542117717538] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "read hex string from chain: 31470 bytes"
+[1542117717542] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL is ready to be used in transactions."
+[1542117717542] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "organization address: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117717545] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "organization stream present"
+[1542117717549] [32mINFO[39m (TruBudget/4157 on AMAC02X97R8JG5J): 
+    msg: "node registered in nodes stream"
+[1542117720824] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "Connecting to MultiChain node"
+    rpcSettings: {
+      "protocol": "http",
+      "host": "127.0.0.1",
+      "port": 8000,
+      "username": "multichainrpc",
+      "password": "[Redacted]"
+    }
+[1542117721008] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "Server listening at http://0.0.0.0:8080"
+[1542117721008] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "server is listening on 8080"
+[1542117721032] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "MultiChain connection established"
+[1542117721041] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "Organization address already set: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117721041] [34mDEBUG[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "Importing private key.."
+[1542117721046] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "read hex string from chain: 31470 bytes"
+[1542117721050] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL is ready to be used in transactions."
+[1542117721050] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "organization address: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117721054] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "organization stream present"
+[1542117721057] [32mINFO[39m (TruBudget/4162 on AMAC02X97R8JG5J): 
+    msg: "node registered in nodes stream"
+[1542117723352] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "Connecting to MultiChain node"
+    rpcSettings: {
+      "protocol": "http",
+      "host": "127.0.0.1",
+      "port": 8000,
+      "username": "multichainrpc",
+      "password": "[Redacted]"
+    }
+[1542117723532] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "Server listening at http://0.0.0.0:8080"
+[1542117723533] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "server is listening on 8080"
+[1542117723553] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "MultiChain connection established"
+[1542117723559] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "Organization address already set: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117723559] [34mDEBUG[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "Importing private key.."
+[1542117723563] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "read hex string from chain: 31470 bytes"
+[1542117723566] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL is ready to be used in transactions."
+[1542117723566] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "organization address: 1UiYzcUtyBXFaJmEvHaCgdCEneoBkNixLLaaQL"
+[1542117723569] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "organization stream present"
+[1542117723572] [32mINFO[39m (TruBudget/4180 on AMAC02X97R8JG5J): 
+    msg: "node registered in nodes stream"

@@ -15,6 +15,7 @@ import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";
+import logger from "../lib/logger";
 
 export async function createProject(
   multichain: MultichainClient,
@@ -36,6 +37,7 @@ export async function createProject(
   // check if projectId already exists
   const projects = await Project.get(multichain, req.user);
   if (!isEmpty(projects.filter(p => p.data.id === projectId))) {
+    logger.error("Project ID already exists", { projectId });
     throw { kind: "ProjectIdAlreadyExists", projectId } as ProjectIdAlreadyExistsError;
   }
 
@@ -66,10 +68,14 @@ export async function createProject(
 
   await Project.publish(multichain, projectId, event);
 
-  console.log(
-    `Project ${input.displayName} created with default permissions: ${JSON.stringify(
-      event.data.permissions,
-    )}`,
+  logger.info(
+    // `Project ${input.displayName} created with default permissions: ${JSON.stringify(
+    //   event.data.permissions,
+    // )}`,
+    // `Project ${input.displayName} created with default permissions`,
+    // { event.data.permissions, input.displayName }
+    { permissions: event.data.permissions, projectName: input.displayName },
+    "Project created with default permissions",
   );
 
   return [

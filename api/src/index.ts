@@ -56,7 +56,7 @@ const rpcSettings: ConnectionSettings = {
   username: process.env.RPC_USER || "multichainrpc",
   password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
 };
-logger.info(rpcSettings, "Connecting to MultiChain node");
+logger.info({ rpcSettings }, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
 const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH);

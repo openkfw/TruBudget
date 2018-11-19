@@ -67,7 +67,7 @@ const authenticate = async (
   // The client shouldn't be able to distinguish between a wrong id and a wrong password,
   // so we handle all errors alike:
   const throwError = err => {
-    console.log(`Authentication failed: ${err}`);
+    logger.error(`Authentication failed: ${err}`);
     throw { kind: "AuthenticationError", userId: id };
   };
 

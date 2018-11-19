@@ -1,6 +1,7 @@
 import * as Ajv from "ajv";
 import * as fastify from "fastify";
 import * as metricsPlugin from "fastify-metrics";
+import logger from "../lib/logger";
 const rawBody = require("raw-body");
 
 import { IncomingMessage, Server, ServerResponse } from "http";
@@ -75,7 +76,7 @@ export const createBasicApp = (
   swaggerBasePath: string,
 ) => {
   const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
-    // logger: true,
+    logger,
   });
 
   server.setSchemaCompiler(schema => {
@@ -102,7 +103,7 @@ export const createBasicApp = (
   server.register(metricsPlugin, {endpoint: '/metrics'});
 
   registerSwagger(server, urlPrefix, apiPort, swaggerBasePath);
-  
+
   addTokenHandling(server, jwtSecret);
 
   server.addContentTypeParser("application/gzip", (req, done) => {

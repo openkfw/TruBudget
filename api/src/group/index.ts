@@ -1,5 +1,6 @@
 import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
+import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
 import * as Liststreamkeyitems from "../multichain/responses/liststreamkeyitems";
@@ -69,7 +70,7 @@ export const publish = async (
   await ensureStreamExists(multichain);
 
   const publishEvent = () => {
-    console.log(
+    logger.info(
       `Publishing ${event.intent} to ${groupsStreamName}/${JSON.stringify(streamItemKey)}`,
     );
     return multichain
