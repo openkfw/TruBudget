@@ -28,10 +28,10 @@ function startSlave(
 ) {
   const prog = "multichaind";
 
-  const serverConfigPath = "/root/.multichain/multichain.conf";
+  const serverConfigPath = multichainDir + "/multichain.conf";
   logFileContent(serverConfigPath);
 
-  const chainPath = `/root/.multichain/${chainName}`;
+  const chainPath = multichainDir + `/${chainName}`;
   const chainConfigPath = `${chainPath}/multichain.conf`;
   console.log(
     chainName,
