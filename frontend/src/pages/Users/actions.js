@@ -35,6 +35,15 @@ export const REMOVE_USER_SUCCESS = "REMOVE_USER_SUCCESS";
 export const GRANT_ALL_USER_PERMISSIONS = "GRANT_ALL_USER_PERMISSIONS";
 export const GRANT_ALL_USER_PERMISSIONS_SUCCESS = "GRANT_ALL_USER_PERMISSIONS_SUCCESS";
 
+
+export const GRANT_GLOBAL_PERMISSION= "GRANT_GLOBAL_PERMISSION";
+export const GRANT_GLOBAL_PERMISSION_SUCCESS= "GRANT_GLOBAL_PERMISSION_SUCCESS";
+
+
+export const REVOKE_GLOBAL_PERMISSION= "REVOKE_GLOBAL_PERMISSION";
+export const REVOKE_GLOBAL_PERMISSION_SUCCESS= "REVOKE_GLOBAL_PERMISSION_SUCCESS";
+
+
 export function fetchGroups(showLoading = false) {
   return {
     type: FETCH_GROUPS,
@@ -171,4 +180,20 @@ export function hideDashboardDialog() {
   return {
     type: HIDE_DASHBOARD_DIALOG
   };
+}
+
+export function grantGlobalPermission(userId, intent){
+  return {
+    type: GRANT_GLOBAL_PERMISSION,
+    userId,
+    intent
+  }
+}
+
+export function revokeGlobalPermission(userId, intent){
+  return {
+    type: REVOKE_GLOBAL_PERMISSION,
+    userId,
+    intent
+  }
 }

@@ -9,7 +9,8 @@ import strings from "../../localizeStrings";
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
-import { withStyles } from "../../../node_modules/@material-ui/core";
+import { withStyles, Divider } from "../../../node_modules/@material-ui/core";
+import GlobalPermissions from "./GlobalPermissions";
 
 const styles = {
   textInputContainer: {
@@ -29,6 +30,10 @@ const styles = {
     height: "30px",
     marginTop: "25px",
     alignItems: "center"
+  },
+  divider: {
+    marginTop: 20,
+    marginBottom: 20
   }
 };
 
@@ -40,7 +45,9 @@ const UserCreate = ({
   setUsername,
   setPassword,
   organization,
-  setAdminPermissions
+  setAdminPermissions,
+  grantGlobalPermission,
+  revokeGlobalPermission
 }) => {
   const { displayName, password, username, hasAdminPermissions } = userToAdd;
   return (
@@ -76,7 +83,7 @@ const UserCreate = ({
           id="password"
         />
       </div>
-      <div className={classes.checkboxContainer}>
+      {/* <div className={classes.checkboxContainer}>
         <FormControlLabel
           control={
             <Checkbox
@@ -87,7 +94,13 @@ const UserCreate = ({
           }
           label={strings.permissions.admin}
         />
-      </div>
+      </div> */}
+      <Divider className={classes.divider} />
+      <GlobalPermissions
+        grantGlobalPermission={grantGlobalPermission}
+        revokeGlobalPermission={revokeGlobalPermission}
+        userToAdd={userToAdd}
+      />
     </div>
   );
 };

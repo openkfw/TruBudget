@@ -102,7 +102,11 @@ import {
   REMOVE_USER_SUCCESS,
   REMOVE_USER,
   GRANT_ALL_USER_PERMISSIONS_SUCCESS,
-  GRANT_ALL_USER_PERMISSIONS
+  GRANT_ALL_USER_PERMISSIONS,
+  GRANT_GLOBAL_PERMISSION,
+  GRANT_GLOBAL_PERMISSION_SUCCESS,
+  REVOKE_GLOBAL_PERMISSION,
+  REVOKE_GLOBAL_PERMISSION_SUCCESS
 } from "./pages/Users/actions.js";
 import {
   FETCH_NODES_SUCCESS,
@@ -422,6 +426,25 @@ export function* grantAllUserPermissionsSaga({ userId }) {
     });
   }, false);
 }
+
+export function* grantGlobalPermissionSaga({ userId, intent }) {
+  yield execute(function*() {
+    yield callApi(api.grantGlobalPermission, userId, intent);
+    yield put({
+      type: GRANT_ALL_USER_PERMISSIONS_SUCCESS
+    });
+  }, true);
+}
+
+export function* revokeGlobalPermissionSaga({ userId, intent }) {
+  yield execute(function*() {
+    yield callApi(api.revokeGlobalPermission, userId, intent);
+    yield put({
+      type: REVOKE_GLOBAL_PERMISSION_SUCCESS
+    });
+  }, true);
+}
+
 
 export function* fetchUserSaga({ showLoading }) {
   yield execute(function*() {
@@ -1030,6 +1053,14 @@ export function* watchRestoreBackup() {
   yield takeLatest(RESTORE_BACKUP, restoreBackupSaga);
 }
 
+export function* watchGrantGlobalPermission() {
+  yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga);
+}
+
+export function* watchRevokeGlobalPermission() {
+  yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga);
+}
+
 export default function* rootSaga() {
   try {
     yield [
@@ -1048,6 +1079,8 @@ export default function* rootSaga() {
       watchAddUserToGroup(),
       watchRemoveUserFromGroup(),
       watchGrantAllUserPermissions(),
+      watchGrantGlobalPermission(),
+      watchRevokeGlobalPermission(),
 
       // Project
       watchCreateProject(),
@@ -1095,6 +1128,8 @@ export default function* rootSaga() {
       // System
       watchCreateBackup(),
       watchRestoreBackup()
+
+
     ];
   } catch (error) {
     console.log(error);

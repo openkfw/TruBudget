@@ -318,7 +318,13 @@ const en = {
     workflowitem_intent_revokePermission: "Revoke workflowitem permission",
     workflowitem_update: "Update workflowitem",
     workflowitem_view: "View workflowitem",
-    write: "Write permissions"
+    write: "Write permissions",
+    global_createUser: "Create users",
+    global_createGroup: "Create groups",
+    global_createProject: "Create projects",
+    global_listPermissions: "List all global permissions",
+    global_grantPermission: "Grant global permissions for others",
+    global_revokePermission: "Revoke global permissions for others"
   },
 
   language: {

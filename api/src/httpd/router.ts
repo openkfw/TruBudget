@@ -301,7 +301,53 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/global.grantPermission`,
+<<<<<<< HEAD
     getSchema(server, "globalGrantPermission"),
+=======
+    {
+      // @ts-ignore: Unreachable code error
+      beforeHandler: [server.authenticate],
+      schema: {
+        description:
+          "Grant the right to execute a specific intent on the Global scope to a given user.",
+        tags: ["global"],
+        summary: "Grant a permission to a group or user",
+        security: [
+          {
+            bearerToken: [],
+          },
+        ],
+        body: {
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                identity: { type: "string", example: "aSmith" },
+                intent: { type: "string", example: "global.createProject" },
+              },
+              required: ["identity", "intent"],
+            },
+          },
+        },
+        response: {
+          200: {
+            description: "successful response",
+            type: "object",
+            properties: {
+              apiVersion: { type: "string", example: "1.0" },
+              data: {
+                type: "string",
+              },
+            },
+          },
+          401: getAuthErrorSchema(),
+        },
+      },
+    } as Schema,
+>>>>>>> 77d69a11... Add global permissions to user creation + implement grantGlobalPermission
     async (request, reply) => {
       grantGlobalPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))

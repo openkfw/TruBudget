@@ -13,7 +13,9 @@ import {
   removeUser,
   removeInitialUserFromGroup,
   hideDashboardDialog,
-  createUser
+  createUser,
+  grantGlobalPermission,
+  revokeGlobalPermission
 } from "./actions";
 
 import DashboardDialog from "./DashboardDialog";
@@ -52,7 +54,9 @@ const mapDispatchToProps = dispatch => {
       dispatch(createUser(displayName, organization, username, password)),
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    hideDashboardDialog: () => dispatch(hideDashboardDialog())
+    hideDashboardDialog: () => dispatch(hideDashboardDialog()),
+    grantGlobalPermission: (userId, intent) => dispatch(grantGlobalPermission(userId, intent)),
+    revokeGlobalPermission: (userId, intent) => dispatch(revokeGlobalPermission(userId, intent)),
   };
 };
 

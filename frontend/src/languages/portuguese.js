@@ -319,7 +319,13 @@ const pt = {
     workflowitem_intent_revokePermission: "Portuguese: Revoke workflowitem permission",
     workflowitem_update: "Portuguese: Update workflowitem",
     workflowitem_view: "Portuguese: View workflowitem",
-    write: "Portuguese: Write permissions"
+    write: "Portuguese: Write permissions",
+    global_createUser: "Portuguese: Create users",
+    global_createGroup: "Portuguese: Create groups",
+    global_createProject: "Portuguese: Create projects",
+    global_listPermissions: "Portuguese: List all global permissions",
+    global_grantPermission: "Portuguese: Grant global permissions for others",
+    global_revokePermission: "Portuguese: Revoke global permissions for others"
   },
 
   language: {
