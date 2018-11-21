@@ -654,50 +654,50 @@ export function getGroupListSchema(server): Schema {
 }
 export function getAddUserSchema(server): Schema {
   return {
-      // @ts-ignore: Unreachable code error
-      beforeHandler: [server.authenticate],
-      schema: {
-        description: "Add user to a group",
-        tags: ["group"],
-        summary: "Add a user to a group",
-        security: [
-          {
-            bearerToken: [],
+    // @ts-ignore: Unreachable code error
+    beforeHandler: [server.authenticate],
+    schema: {
+      description: "Add user to a group",
+      tags: ["group"],
+      summary: "Add a user to a group",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      body: {
+        type: "object",
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              groupId: { type: "string", example: "Manager" },
+              userId: { type: "string", example: "aSmith" },
+            },
+            required: ["groupId", "userId"],
           },
-        ],
-        body: {
+        },
+      },
+      response: {
+        200: {
+          description: "successful response",
           type: "object",
           properties: {
             apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
-              additionalProperties: false,
               properties: {
-                groupId: { type: "string", example: "Manager" },
-                userId: { type: "string", example: "aSmith" },
-              },
-              required: ["groupId", "userId"],
-            },
-          },
-        },
-        response: {
-          200: {
-            description: "successful response",
-            type: "object",
-            properties: {
-              apiVersion: { type: "string", example: "1.0" },
-              data: {
-                type: "object",
-                properties: {
-                  added: { type: "boolean", example: "true" },
-                },
+                added: { type: "boolean", example: "true" },
               },
             },
           },
-          401: getAuthErrorSchema(),
         },
+        401: getAuthErrorSchema(),
       },
-    };
+    },
+  };
 }
 
 export function getRemoveUserSchema(server): Schema {
@@ -2140,14 +2140,9 @@ export function getRevokePermissionSchema(server): Schema {
   };
 }
 
-// ------------------------------------------------------------
-//       workflowitem
-// ------------------------------------------------------------
 
-export function getWorkflowItemListSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+const schemas = {
+  workflowitemList:{
     schema: {
       description:
         "Retrieve all workflowitems of a given subproject. Those items the " +
@@ -2224,61 +2219,50 @@ export function getWorkflowItemListSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  } as Schema;
-}
-
-export function getWorkflowitemAssignSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
-    schema: {
-      description:
-        "Assign a workflowitem to a given user. The assigned user will be notified about the change.",
-      tags: ["workflowitem"],
-      summary: "Assign a user or group to a workflowitem",
-      security: [
-        {
-          bearerToken: [],
+  },
+  workflowitemAssign:
+  {    schema: {
+    description:
+      "Assign a workflowitem to a given user. The assigned user will be notified about the change.",
+    tags: ["workflowitem"],
+    summary: "Assign a user or group to a workflowitem",
+    security: [
+      {
+        bearerToken: [],
+      },
+    ],
+    body: {
+      type: "object",
+      properties: {
+        apiVersion: { type: "string", example: "1.0" },
+        data: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            identity: { type: "string", example: "aSmith" },
+            projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+            subprojectId: { type: "string", example: "e528c69eg298c87e3899119e025eff1f" },
+            workflowitemId: { type: "string", example: "9w88c69eg298c87e3899119e025eff1f" },
+          },
+          required: ["identity", "workflowitemId", "subprojectId", "projectId"],
         },
-      ],
-      body: {
+      },
+    },
+    response: {
+      200: {
+        description: "successful response",
         type: "object",
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "object",
-            additionalProperties: false,
-            properties: {
-              identity: { type: "string", example: "aSmith" },
-              projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
-              subprojectId: { type: "string", example: "e528c69eg298c87e3899119e025eff1f" },
-              workflowitemId: { type: "string", example: "9w88c69eg298c87e3899119e025eff1f" },
-            },
-            required: ["identity", "workflowitemId", "subprojectId", "projectId"],
+            type: "string",
           },
         },
       },
-      response: {
-        200: {
-          description: "successful response",
-          type: "object",
-          properties: {
-            apiVersion: { type: "string", example: "1.0" },
-            data: {
-              type: "string",
-            },
-          },
-        },
-        401: getAuthErrorSchema(),
-      },
+      401: getAuthErrorSchema(),
     },
-  };
-}
-
-export function getWorkflowitemUpdateSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },},
+  workflowitemUpdate:{
     schema: {
       description:
         "Partially update a workflowitem. Only properties mentioned in the request body are touched, " +
@@ -2341,13 +2325,8 @@ export function getWorkflowitemUpdateSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getWorkflowitemCloseSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  workflowitemClose:{
     schema: {
       description: "Set a workflowitem's status to 'closed'.",
       tags: ["workflowitem"],
@@ -2387,13 +2366,9 @@ export function getWorkflowitemCloseSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getWorkflowitemListPermissionsSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  workflowitemListPermissions: {
     schema: {
       description: "See the permissions for a given workflowitem.",
       tags: ["workflowitem"],
@@ -2438,13 +2413,8 @@ export function getWorkflowitemListPermissionsSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getWorkflowitemGrantPermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  workflowitemGrantPermissions: {
     schema: {
       description:
         "Grant a permission to a user. After this call has returned, the " +
@@ -2488,13 +2458,8 @@ export function getWorkflowitemGrantPermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getWorkflowitemRevokePermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  workflowitemRevokePermissions: {
     schema: {
       description:
         "Revoke a permission from a user. After this call has returned, the " +
@@ -2538,13 +2503,8 @@ export function getWorkflowitemRevokePermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getValidateDocumentSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  validateDocument: {
     schema: {
       description: "Validates if the hashed base64 string equals the hash sent by the user.",
       tags: ["workflowitem"],
@@ -2592,17 +2552,8 @@ export function getValidateDocumentSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-// ------------------------------------------------------------
-//       notification
-// ------------------------------------------------------------
-
-export function getNotficationListSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  notificationList: {
     schema: {
       description:
         "List notifications for the user, given by the token in the " +
@@ -2687,13 +2638,9 @@ export function getNotficationListSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getNotificationMarkReadSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  markRead: {
     schema: {
       description:
         "Allows a user to mark any of his/her notifications as read, which " +
@@ -2733,15 +2680,8 @@ export function getNotificationMarkReadSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-// ------------------------------------------------------------
-//       network
-// ------------------------------------------------------------
-
-export function getRegisterNodeSchema(): Schema {
-  return {
+  },
+  registerNode: {
     schema: {
       description: "Used by non-master MultiChain nodes to register their wallet address.",
       tags: ["network"],
@@ -2775,13 +2715,8 @@ export function getRegisterNodeSchema(): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getVoteForPermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  voteForPermission: {
     schema: {
       description:
         "Votes for granting/revoking network-level permissions to/from a " +
@@ -2824,13 +2759,8 @@ export function getVoteForPermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getapproveNewOrganizationSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  approveNewOrganization: {
     schema: {
       description: "Approves a new organization if there are enough votes.",
       tags: ["network"],
@@ -2868,13 +2798,8 @@ export function getapproveNewOrganizationSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getapproveNewNodeForExistingOrganizationSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  approveNewNodeForExistingOrganization: {
     schema: {
       description:
         "Approves a new node for an existing organization." +
@@ -2929,13 +2854,8 @@ export function getapproveNewNodeForExistingOrganizationSchema(server): Schema {
         },
       },
     },
-  };
-}
-
-export function getNetworkListSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  networkList: {
     schema: {
       description: "List all nodes.",
       tags: ["network"],
@@ -3002,13 +2922,8 @@ export function getNetworkListSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getListActiveSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  listActive: {
     schema: {
       description: "Get the number of all peers in the blockchain network.",
       tags: ["network"],
@@ -3035,13 +2950,8 @@ export function getListActiveSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-export function getCreateBackupSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  createBackup: {
     schema: {
       description: "Create a backup",
       tags: ["system"],
@@ -3060,12 +2970,9 @@ export function getCreateBackupSchema(server): Schema {
         },
       },
     },
-  };
-}
-export function getrestoreBackupSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  restoreBackup: {
     schema: {
       description:
         "To restore a backup send a valid backup.gz file as binary via an API-Testing-Tool like postman." +
@@ -3099,5 +3006,13 @@ export function getrestoreBackupSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
+  },
+};
+export function getSchema(server, id): Schema {
+  const schema = schemas[id];
+  return {
+    // @ts-ignore: Unreachable code error
+    beforeHandler: [server.authenticate],
+    ...schema,
   };
 }

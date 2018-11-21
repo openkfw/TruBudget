@@ -56,10 +56,8 @@ import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import {
   getAddUserSchema,
-  getapproveNewNodeForExistingOrganizationSchema,
-  getapproveNewOrganizationSchema,
   getAuthenticateSchema,
-  getCreateBackupSchema,
+  getSchema,
   getCreateGroupSchema,
   getCreateProjectSchema,
   getCreateSubprojectSchema,
@@ -70,11 +68,7 @@ import {
   getGlobalRevokePermissionSchema,
   getGrantAllPermissions,
   getGroupListSchema,
-  getListActiveSchema,
   getLivenessSchema,
-  getNetworkListSchema,
-  getNotficationListSchema,
-  getNotificationMarkReadSchema,
   getProjectAssignSchema,
   getProjectCloseSchema,
   getProjectGrantPermissionSchema,
@@ -85,10 +79,8 @@ import {
   getProjectViewDetailsSchema,
   getProjectViewHistorySchema,
   getReadinessSchema,
-  getRegisterNodeSchema,
   getRemoveUserSchema,
   getReorderWorkflowitemsSchema,
-  getrestoreBackupSchema,
   getRevokePermissionSchema,
   getSubprojectAssignSchema,
   getSubprojectCloseSchema,
@@ -99,15 +91,6 @@ import {
   getSubprojectViewDetailsSchema,
   getSubprojectViewHistorySchema,
   getUserListSchema,
-  getValidateDocumentSchema,
-  getVoteForPermissionSchema,
-  getWorkflowitemAssignSchema,
-  getWorkflowitemCloseSchema,
-  getWorkflowitemGrantPermissionSchema,
-  getWorkflowitemListPermissionsSchema,
-  getWorkflowItemListSchema,
-  getWorkflowitemRevokePermissionSchema,
-  getWorkflowitemUpdateSchema,
 } from "./schema";
 
 const send = (res, httpResponse: HttpResponse) => {
@@ -606,7 +589,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/workflowitem.list`,
-    getWorkflowItemListSchema(server),
+    getSchema(server, "workflowitemList"),
     async (request, reply) => {
       getWorkflowitemList(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -616,7 +599,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/workflowitem.assign`,
-    getWorkflowitemAssignSchema(server),
+    getSchema(server, "workflowitemAssign"),
     async (request, reply) => {
       assignWorkflowitem(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -626,7 +609,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/workflowitem.update`,
-    getWorkflowitemUpdateSchema(server),
+    getSchema(server, "workflowitemUpdate"),
     async (request, reply) => {
       updateWorkflowitem(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -636,7 +619,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/workflowitem.close`,
-    getWorkflowitemCloseSchema(server),
+    getSchema(server, "workflowitemClose"),
     async (request, reply) => {
       closeWorkflowitem(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -646,7 +629,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/workflowitem.intent.listPermissions`,
-    getWorkflowitemListPermissionsSchema(server),
+    getSchema(server, "workflowitemListPermissionsSchema"),
     async (request, reply) => {
       getWorkflowitemPermissions(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -656,7 +639,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/workflowitem.intent.grantPermission`,
-    getWorkflowitemGrantPermissionSchema(server),
+    getSchema(server, "workflowitemGrantPermissions"),
     async (request, reply) => {
       grantWorkflowitemPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -666,7 +649,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/workflowitem.intent.revokePermission`,
-    getWorkflowitemRevokePermissionSchema(server),
+    getSchema(server, "workflowitemRevokePermissions"),
     async (request, reply) => {
       revokeWorkflowitemPermission(
         multichainClient,
@@ -679,7 +662,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/workflowitem.validateDocument`,
-    getValidateDocumentSchema(server),
+    getSchema(server, "validateDocument"),
     async (request, reply) => {
       validateDocument(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -693,7 +676,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/notification.list`,
-    getNotficationListSchema(server),
+    getSchema(server, "notificationList"),
     async (request, reply) => {
       getNotificationList(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -703,7 +686,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/notification.markRead`,
-    getNotificationMarkReadSchema(server),
+    getSchema(server, "markRead"),
     async (request, reply) => {
       markNotificationRead(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -717,7 +700,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/network.registerNode`,
-    getRegisterNodeSchema(),
+    getSchema(server, "registerNode"),
     async (request, reply) => {
       registerNode(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -727,7 +710,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/network.voteForPermission`,
-    getVoteForPermissionSchema(server),
+    getSchema(server, "voteForPermission"),
     async (request, reply) => {
       voteForNetworkPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -737,7 +720,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/network.approveNewOrganization`,
-    getapproveNewOrganizationSchema(server),
+    getSchema(server, "approveNewOrganization"),
     async (request, reply) => {
       approveNewOrganization(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -747,7 +730,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/network.approveNewNodeForExistingOrganization`,
-    getapproveNewNodeForExistingOrganizationSchema(server),
+    getSchema(server, "approveNewNodeForExistingOrganization"),
     async (request, reply) => {
       approveNewNodeForExistingOrganization(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -755,13 +738,13 @@ export const registerRoutes = (
     },
   );
 
-  server.get(`${urlPrefix}/network.list`, getNetworkListSchema(server), async (request, reply) => {
+  server.get(`${urlPrefix}/network.list`, getSchema(server, "networkList"), async (request, reply) => {
     getNodeList(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
   });
 
-  server.get(`${urlPrefix}/network.listActive`, getListActiveSchema(server), async (request, reply) => {
+  server.get(`${urlPrefix}/network.listActive`, getSchema(server, "listActive"), async (request, reply) => {
     getActiveNodes(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
@@ -769,7 +752,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/system.createBackup`,
-    getCreateBackupSchema(server),
+    getSchema(server, "createBackup"),
     async (req: AuthenticatedRequest, reply) => {
       createBackup(multichainHost, backupApiPort, req)
         .then(data => {
@@ -784,7 +767,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/system.restoreBackup`,
-    getrestoreBackupSchema(server),
+    getSchema(server, "restoreBackup"),
     async (req: AuthenticatedRequest, reply) => {
       restoreBackup(multichainHost, backupApiPort, req)
         .then(response => send(reply, response))
