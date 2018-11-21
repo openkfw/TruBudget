@@ -42,10 +42,6 @@ const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
 const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
-if(fs.existsSync(multichainDir)){
-  console.error("Error: Directory '" + multichainDir + "' already exists, please review config parameter 'MULTICHAIN_DIR'");
-  process.exit(1)
-}
 const isMaster = !P2P_HOST ? true : false;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
   ? `-blocknotify=${BLOCKNOTIFY_SCRIPT}`
