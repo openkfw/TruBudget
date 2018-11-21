@@ -44,12 +44,11 @@ function getSuccessfulSchema() {
   };
 }
 
-// ------------------------------------------------------------
-//       system
-// ------------------------------------------------------------
-
-export function getReadinessSchema() {
-  return {
+const schemas = {
+  // ------------------------------------------------------------
+  //       system
+  // ------------------------------------------------------------
+  readiness: {
     schema: {
       description:
         "Returns '200 OK' if the API is up and the Multichain service is reachable. " +
@@ -66,11 +65,9 @@ export function getReadinessSchema() {
         },
       },
     },
-  };
-}
+  },
 
-export function getLivenessSchema(): Schema {
-  return {
+  liveness: {
     schema: {
       description: "Returns '200 OK' if the API is up.",
       tags: ["system"],
@@ -79,15 +76,12 @@ export function getLivenessSchema(): Schema {
         200: getSuccessfulSchema(),
       },
     },
-  };
-}
+  },
 
-// ------------------------------------------------------------
-//       user
-// ------------------------------------------------------------
-
-export function getAuthenticateSchema(): Schema {
-  return {
+  // ------------------------------------------------------------
+  //       user
+  // ------------------------------------------------------------
+  authenticate: {
     schema: {
       description:
         "Authenticate and retrieve a token in return. This token can then be supplied in the " +
@@ -163,13 +157,9 @@ export function getAuthenticateSchema(): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getUserListSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  userList: {
     schema: {
       description:
         "List all registered users and groups.\n" +
@@ -210,13 +200,12 @@ export function getUserListSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getCreateUserSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  // ------------------------------------------------------------
+  //       global
+  // ------------------------------------------------------------
+  createUser: {
     schema: {
       description: "Create a new user.",
       tags: ["global"],
@@ -291,13 +280,9 @@ export function getCreateUserSchema(server): Schema {
         },
       },
     },
-  };
-}
+  },
 
-export function getCreateGroupSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  createGroup: {
     schema: {
       description: "Create a new group.",
       tags: ["global"],
@@ -360,17 +345,9 @@ export function getCreateGroupSchema(server): Schema {
         },
       },
     },
-  };
-}
+  },
 
-// ------------------------------------------------------------
-//       global
-// ------------------------------------------------------------
-
-export function getCreateProjectSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  createProject: {
     schema: {
       description:
         "Create a new project.\n.\n" +
@@ -424,13 +401,9 @@ export function getCreateProjectSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getGlobalListPermissionsSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  globalListPermissions: {
     schema: {
       description: "See the current global permissions.",
       tags: ["global"],
@@ -464,13 +437,9 @@ export function getGlobalListPermissionsSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getGlobalGrantPermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  globalGrantPermission: {
     schema: {
       description:
         "Grant the right to execute a specific intent on the Global scope to a given user.",
@@ -510,12 +479,9 @@ export function getGlobalGrantPermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getGrantAllPermissions(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  globalGrantAllPermissions: {
     schema: {
       description:
         "Grant all available permissions to a user. Useful as a shorthand for creating admin users.",
@@ -555,12 +521,9 @@ export function getGrantAllPermissions(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getGlobalRevokePermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  globalRevokePermission: {
     schema: {
       description:
         "Revoke the right to execute a specific intent on the Global scope to a given user.",
@@ -600,17 +563,11 @@ export function getGlobalRevokePermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-
-// ------------------------------------------------------------
-//       group
-// ------------------------------------------------------------
-
-export function getGroupListSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+  // ------------------------------------------------------------
+  //       group
+  // ------------------------------------------------------------
+  groupList: {
     schema: {
       description: "List all user groups.",
       tags: ["group"],
@@ -650,12 +607,9 @@ export function getGroupListSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getAddUserSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  addUser: {
     schema: {
       description: "Add user to a group",
       tags: ["group"],
@@ -697,13 +651,9 @@ export function getAddUserSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getRemoveUserSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  removeUser: {
     schema: {
       description: "Remove user from a group",
       tags: ["group"],
@@ -745,17 +695,12 @@ export function getRemoveUserSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-// ------------------------------------------------------------
-//       project
-// ------------------------------------------------------------
-
-export function getProjectListSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  // ------------------------------------------------------------
+  //       project
+  // ------------------------------------------------------------
+  projectList: {
     schema: {
       description: "Retrieve all projects the user is allowed to see.",
       tags: ["project"],
@@ -861,12 +806,9 @@ export function getProjectListSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getProjectViewDetailsSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  projectViewDetails: {
     schema: {
       description: "Retrieve details about a specific project.",
       tags: ["project"],
@@ -985,12 +927,9 @@ export function getProjectViewDetailsSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getProjectAssignSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  projectAssign: {
     schema: {
       description:
         "Assign a project to a given user. The assigned user will be notified about the change.",
@@ -1030,12 +969,9 @@ export function getProjectAssignSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getProjectUpdateSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  projectUpdate: {
     schema: {
       description:
         "Partially update a project. Only properties mentioned in the request body are touched, " +
@@ -1081,12 +1017,9 @@ export function getProjectUpdateSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getProjectCloseSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  projectClose: {
     schema: {
       description:
         "Set a project's status to 'closed' if, and only if, all associated " +
@@ -1126,12 +1059,9 @@ export function getProjectCloseSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getCreateSubprojectSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  createSubproject: {
     schema: {
       description:
         "Create a subproject and associate it to the given project.\n.\n" +
@@ -1186,12 +1116,9 @@ export function getCreateSubprojectSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getProjectViewHistorySchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  projectViewHistory: {
     schema: {
       description:
         "View the history of a given project (filtered by what the user is allowed to see).",
@@ -1257,13 +1184,9 @@ export function getProjectViewHistorySchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getProjectListPermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  projectListPermissions: {
     schema: {
       description: "See the permissions for a given project.",
       tags: ["project"],
@@ -1299,12 +1222,9 @@ export function getProjectListPermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getProjectGrantPermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  projectGrantPermission: {
     schema: {
       description:
         "Grant a permission to a user. After this call has returned, the " +
@@ -1346,12 +1266,9 @@ export function getProjectGrantPermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getProjectRevokePermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  projectRevokePermission: {
     schema: {
       description:
         "Revoke a permission from a user. After this call has returned, the " +
@@ -1393,17 +1310,12 @@ export function getProjectRevokePermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-// ------------------------------------------------------------
-//       subproject
-// ------------------------------------------------------------
-
-export function getSubprojectListSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  // ------------------------------------------------------------
+  //       subproject
+  // ------------------------------------------------------------
+  subprojectList: {
     schema: {
       description:
         "Retrieve all subprojects for a given project. Note that any " +
@@ -1513,12 +1425,9 @@ export function getSubprojectListSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getSubprojectViewDetailsSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  subprojectViewDetails: {
     schema: {
       description: "Retrieve details about a specific subproject.",
       tags: ["subproject"],
@@ -1643,12 +1552,9 @@ export function getSubprojectViewDetailsSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getSubprojectAssignSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  subprojectAssign: {
     schema: {
       description:
         "Assign a subproject to a given user. The assigned user will be notified about the change.",
@@ -1689,12 +1595,9 @@ export function getSubprojectAssignSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getSubprojectUpdateSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  subprojectUpdate: {
     schema: {
       description:
         "Partially update a subproject. Only properties mentioned in the request body are touched, " +
@@ -1740,12 +1643,9 @@ export function getSubprojectUpdateSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
-export function getSubprojectCloseSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  },
+
+  subprojectClose: {
     schema: {
       description:
         "Set a subproject's status to 'closed' if, and only if, all " +
@@ -1785,13 +1685,9 @@ export function getSubprojectCloseSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getReorderWorkflowitemsSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  reorderWorkflowitems: {
     schema: {
       description:
         "Set a new workflowitem ordering. Workflowitems not included in the list " +
@@ -1838,13 +1734,9 @@ export function getReorderWorkflowitemsSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getCreateWorkflowitemSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  createWorkflowitem: {
     schema: {
       description:
         "Create a workflowitem and associate it to the given subproject.\n.\n" +
@@ -1905,13 +1797,9 @@ export function getCreateWorkflowitemSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getSubprojectViewHistorySchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  subprojectViewHistory: {
     schema: {
       description:
         "View the history of a given subproject (filtered by what the user is allowed to see).",
@@ -1994,13 +1882,9 @@ export function getSubprojectViewHistorySchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getSubprojectListPermissionsSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  subprojectListPermissions: {
     schema: {
       description: "See the permissions for a given subproject.",
       tags: ["subproject"],
@@ -2041,13 +1925,9 @@ export function getSubprojectListPermissionsSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getSubprojectGrantPermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  subprojectGrantPermission: {
     schema: {
       description:
         "Grant a permission to a user. After this call has returned, the " +
@@ -2089,13 +1969,9 @@ export function getSubprojectGrantPermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-export function getRevokePermissionSchema(server): Schema {
-  return {
-    // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+  subprojectRevokePermission: {
     schema: {
       description:
         "Revoke a permission from a user. After this call has returned, the " +
@@ -2137,12 +2013,9 @@ export function getRevokePermissionSchema(server): Schema {
         401: getAuthErrorSchema(),
       },
     },
-  };
-}
+  },
 
-
-const schemas = {
-  workflowitemList:{
+  workflowitemList: {
     schema: {
       description:
         "Retrieve all workflowitems of a given subproject. Those items the " +
@@ -2220,49 +2093,50 @@ const schemas = {
       },
     },
   },
-  workflowitemAssign:
-  {    schema: {
-    description:
-      "Assign a workflowitem to a given user. The assigned user will be notified about the change.",
-    tags: ["workflowitem"],
-    summary: "Assign a user or group to a workflowitem",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            identity: { type: "string", example: "aSmith" },
-            projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
-            subprojectId: { type: "string", example: "e528c69eg298c87e3899119e025eff1f" },
-            workflowitemId: { type: "string", example: "9w88c69eg298c87e3899119e025eff1f" },
-          },
-          required: ["identity", "workflowitemId", "subprojectId", "projectId"],
+  workflowitemAssign: {
+    schema: {
+      description:
+        "Assign a workflowitem to a given user. The assigned user will be notified about the change.",
+      tags: ["workflowitem"],
+      summary: "Assign a user or group to a workflowitem",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              identity: { type: "string", example: "aSmith" },
+              projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+              subprojectId: { type: "string", example: "e528c69eg298c87e3899119e025eff1f" },
+              workflowitemId: { type: "string", example: "9w88c69eg298c87e3899119e025eff1f" },
+            },
+            required: ["identity", "workflowitemId", "subprojectId", "projectId"],
           },
         },
       },
-      401: getAuthErrorSchema(),
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "string",
+            },
+          },
+        },
+        401: getAuthErrorSchema(),
+      },
     },
-  },},
-  workflowitemUpdate:{
+  },
+  workflowitemUpdate: {
     schema: {
       description:
         "Partially update a workflowitem. Only properties mentioned in the request body are touched, " +
@@ -2326,7 +2200,7 @@ const schemas = {
       },
     },
   },
-  workflowitemClose:{
+  workflowitemClose: {
     schema: {
       description: "Set a workflowitem's status to 'closed'.",
       tags: ["workflowitem"],
@@ -3013,6 +2887,12 @@ export function getSchema(server, id): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
+    ...schema,
+  };
+}
+export function getSchemaWithoutAuth(id): Schema {
+  const schema = schemas[id];
+  return {
     ...schema,
   };
 }

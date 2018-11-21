@@ -55,42 +55,8 @@ import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import {
-  getAddUserSchema,
-  getAuthenticateSchema,
   getSchema,
-  getCreateGroupSchema,
-  getCreateProjectSchema,
-  getCreateSubprojectSchema,
-  getCreateUserSchema,
-  getCreateWorkflowitemSchema,
-  getGlobalGrantPermissionSchema,
-  getGlobalListPermissionsSchema,
-  getGlobalRevokePermissionSchema,
-  getGrantAllPermissions,
-  getGroupListSchema,
-  getLivenessSchema,
-  getProjectAssignSchema,
-  getProjectCloseSchema,
-  getProjectGrantPermissionSchema,
-  getProjectListPermissionSchema,
-  getProjectListSchema,
-  getProjectRevokePermissionSchema,
-  getProjectUpdateSchema,
-  getProjectViewDetailsSchema,
-  getProjectViewHistorySchema,
-  getReadinessSchema,
-  getRemoveUserSchema,
-  getReorderWorkflowitemsSchema,
-  getRevokePermissionSchema,
-  getSubprojectAssignSchema,
-  getSubprojectCloseSchema,
-  getSubprojectGrantPermissionSchema,
-  getSubprojectListPermissionsSchema,
-  getSubprojectListSchema,
-  getSubprojectUpdateSchema,
-  getSubprojectViewDetailsSchema,
-  getSubprojectViewHistorySchema,
-  getUserListSchema,
+  getSchemaWithoutAuth,
 } from "./schema";
 
 const send = (res, httpResponse: HttpResponse) => {
@@ -257,7 +223,7 @@ export const registerRoutes = (
   //       system
   // ------------------------------------------------------------
 
-  server.get(`${urlPrefix}/readiness`, getReadinessSchema(), async (request, reply) => {
+  server.get(`${urlPrefix}/readiness`, getSchemaWithoutAuth("readiness"), async (request, reply) => {
     if (await isReady(multichainClient)) {
       reply.status(200).send("OK");
     } else {
@@ -265,7 +231,7 @@ export const registerRoutes = (
     }
   });
 
-  server.get(`${urlPrefix}/liveness`, getLivenessSchema(), async (request, reply) => {
+  server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), async (request, reply) => {
     reply.status(200).send("OK");
   });
 
@@ -273,7 +239,7 @@ export const registerRoutes = (
   //       user
   // ------------------------------------------------------------
 
-  server.post(`${urlPrefix}/user.authenticate`, getAuthenticateSchema(), async (request, reply) => {
+  server.post(`${urlPrefix}/user.authenticate`, getSchemaWithoutAuth("authenticate"), async (request, reply) => {
     authenticateUser(
       multichainClient,
       request,
@@ -286,7 +252,7 @@ export const registerRoutes = (
       .catch(err => handleError(request, reply, err));
   });
 
-  server.get(`${urlPrefix}/user.list`, getUserListSchema(server), async (request, reply) => {
+  server.get(`${urlPrefix}/user.list`, getSchema(server, "userList"), async (request, reply) => {
     getUserList(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
@@ -295,7 +261,7 @@ export const registerRoutes = (
   // ------------------------------------------------------------
   //       global
   // ------------------------------------------------------------
-  server.post(`${urlPrefix}/global.createUser`, getCreateUserSchema(server), async (request, reply) => {
+  server.post(`${urlPrefix}/global.createUser`, getSchema(server, "createUser"), async (request, reply) => {
     createUser(
       multichainClient,
       request as AuthenticatedRequest,
@@ -307,7 +273,7 @@ export const registerRoutes = (
       .catch(err => handleError(request, reply, err));
   });
 
-  server.post(`${urlPrefix}/global.createGroup`, getCreateGroupSchema(server), async (request, reply) => {
+  server.post(`${urlPrefix}/global.createGroup`, getSchema(server, "createGroup"), async (request, reply) => {
     createGroup(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
@@ -315,7 +281,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/global.createProject`,
-    getCreateProjectSchema(server),
+    getSchema(server, "createProject"),
     async (request, reply) => {
       createProject(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -325,7 +291,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/global.listPermissions`,
-    getGlobalListPermissionsSchema(server),
+    getSchema(server, "globalListPermissions"),
     async (request, reply) => {
       getGlobalPermissions(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -334,8 +300,8 @@ export const registerRoutes = (
   );
 
   server.post(
-    `${urlPrefix}/global.grantpermission`,
-    getGlobalGrantPermissionSchema(server),
+    `${urlPrefix}/global.grantPermission`,
+    getSchema(server, "globalGrantPermission"),
     async (request, reply) => {
       grantGlobalPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -345,7 +311,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/global.grantAllPermissions`,
-    getGrantAllPermissions(server),
+    getSchema(server, "globalGrantAllPermissions"),
     async (request, reply) => {
       grantAllPermissions(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -355,7 +321,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/global.revokePermission`,
-    getGlobalRevokePermissionSchema(server),
+    getSchema(server, "globalRevokePermission"),
     async (request, reply) => {
       revokeGlobalPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -367,19 +333,19 @@ export const registerRoutes = (
   //       group
   // ------------------------------------------------------------
 
-  server.get(`${urlPrefix}/group.list`, getGroupListSchema(server), async (request, reply) => {
+  server.get(`${urlPrefix}/group.list`, getSchema(server, "groupList"), async (request, reply) => {
     getGroupList(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
   });
 
-  server.post(`${urlPrefix}/group.addUser`, getAddUserSchema(server), async (request, reply) => {
+  server.post(`${urlPrefix}/group.addUser`, getSchema(server, "addUser"), async (request, reply) => {
     addUserToGroup(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
   });
 
-  server.post(`${urlPrefix}/group.removeUser`, getRemoveUserSchema(server), async (request, reply) => {
+  server.post(`${urlPrefix}/group.removeUser`, getSchema(server, "removeUser"), async (request, reply) => {
     removeUserFromGroup(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
@@ -389,7 +355,7 @@ export const registerRoutes = (
   //       project
   // ------------------------------------------------------------
 
-  server.get(`${urlPrefix}/project.list`, getProjectListSchema(server), async (request, reply) => {
+  server.get(`${urlPrefix}/project.list`, getSchema(server, "projectList"), async (request, reply) => {
     getProjectList(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
@@ -397,7 +363,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/project.viewDetails`,
-    getProjectViewDetailsSchema(server),
+    getSchema(server, "projectViewDetails"),
     async (request, reply) => {
       getProjectDetails(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -405,19 +371,19 @@ export const registerRoutes = (
     },
   );
 
-  server.post(`${urlPrefix}/project.assign`, getProjectAssignSchema(server), async (request, reply) => {
+  server.post(`${urlPrefix}/project.assign`, getSchema(server, "projectAssign"), async (request, reply) => {
     assignProject(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
   });
 
-  server.post(`${urlPrefix}/project.update`, getProjectUpdateSchema(server), async (request, reply) => {
+  server.post(`${urlPrefix}/project.update`, getSchema(server, "projectUpdate"), async (request, reply) => {
     updateProject(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
   });
 
-  server.post(`${urlPrefix}/project.close`, getProjectCloseSchema(server), async (request, reply) => {
+  server.post(`${urlPrefix}/project.close`, getSchema(server, "projectClose"), async (request, reply) => {
     closeProject(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
@@ -425,7 +391,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/project.createSubproject`,
-    getCreateSubprojectSchema(server),
+    getSchema(server, "createSubproject"),
     async (request, reply) => {
       createSubproject(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -435,7 +401,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/project.viewHistory`,
-    getProjectViewHistorySchema(server),
+    getSchema(server, "projectViewHistory"),
     async (request, reply) => {
       getProjectHistory(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -445,7 +411,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/project.intent.listPermissions`,
-    getProjectListPermissionSchema(server),
+    getSchema(server, "projectListPermissions"),
     async (request, reply) => {
       getProjectPermissions(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -455,7 +421,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/project.intent.grantPermission`,
-    getProjectGrantPermissionSchema(server),
+    getSchema(server, "projectGrantPermission"),
     async (request, reply) => {
       grantProjectPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -465,7 +431,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/project.intent.revokePermission`,
-    getProjectRevokePermissionSchema(server),
+    getSchema(server, "projectRevokePermission"),
     async (request, reply) => {
       revokeProjectPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -477,7 +443,7 @@ export const registerRoutes = (
   //       subproject
   // ------------------------------------------------------------
 
-  server.get(`${urlPrefix}/subproject.list`, getSubprojectListSchema(server), async (request, reply) => {
+  server.get(`${urlPrefix}/subproject.list`, getSchema(server, "subprojectList"), async (request, reply) => {
     getSubprojectList(multichainClient, request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
@@ -485,7 +451,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/subproject.viewDetails`,
-    getSubprojectViewDetailsSchema(server),
+    getSchema(server, "subprojectViewDetails"),
     async (request, reply) => {
       getSubprojectDetails(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -495,7 +461,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/subproject.assign`,
-    getSubprojectAssignSchema(server),
+    getSchema(server, "subprojectAssign"),
     async (request, reply) => {
       assignSubproject(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -505,7 +471,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/subproject.update`,
-    getSubprojectUpdateSchema(server),
+    getSchema(server, "subprojectUpdate"),
     async (request, reply) => {
       updateSubproject(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -515,7 +481,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/subproject.close`,
-    getSubprojectCloseSchema(server),
+    getSchema(server, "subprojectClose"),
     async (request, reply) => {
       closeSubproject(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -525,7 +491,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/subproject.reorderWorkflowitems`,
-    getReorderWorkflowitemsSchema(server),
+    getSchema(server, "reorderWorkflowitems"),
     async (request, reply) => {
       reorderWorkflowitems(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -535,7 +501,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/subproject.createWorkflowitem`,
-    getCreateWorkflowitemSchema(server),
+    getSchema(server, "createWorkflowitem"),
     async (request, reply) => {
       createWorkflowitem(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -545,7 +511,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/subproject.viewHistory`,
-    getSubprojectViewHistorySchema(server),
+    getSchema(server, "subprojectViewHistory"),
     async (request, reply) => {
       getSubprojectHistory(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -555,7 +521,7 @@ export const registerRoutes = (
 
   server.get(
     `${urlPrefix}/subproject.intent.listPermissions`,
-    getSubprojectListPermissionsSchema(server),
+    getSchema(server, "subprojectListPermissions"),
     async (request, reply) => {
       getSubprojectPermissions(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -565,7 +531,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/subproject.intent.grantPermission`,
-    getSubprojectGrantPermissionSchema(server),
+    getSchema(server, "subprojectGrantPermission"),
     async (request, reply) => {
       grantSubprojectPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -575,7 +541,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/subproject.intent.revokePermission`,
-    getRevokePermissionSchema(server),
+    getSchema(server, "subprojectRevokePermission"),
     async (request, reply) => {
       revokeSubprojectPermission(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
