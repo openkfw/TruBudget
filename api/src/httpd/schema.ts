@@ -166,7 +166,7 @@ export function getAuthenticateSchema(): Schema {
   };
 }
 
-export function getUserListSchema(): Schema {
+export function getUserListSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -213,7 +213,7 @@ export function getUserListSchema(): Schema {
   };
 }
 
-export function getCreateUserSchema(): Schema {
+export function getCreateUserSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -294,7 +294,7 @@ export function getCreateUserSchema(): Schema {
   };
 }
 
-export function getCreateGroupSchema(): Schema {
+export function getCreateGroupSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -367,7 +367,7 @@ export function getCreateGroupSchema(): Schema {
 //       global
 // ------------------------------------------------------------
 
-export function getCreateProjectSchema(): Schema {
+export function getCreateProjectSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -426,7 +426,8 @@ export function getCreateProjectSchema(): Schema {
     },
   };
 }
-export function getGlobalListPermissionsSchema(): Schema {
+
+export function getGlobalListPermissionsSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -466,7 +467,7 @@ export function getGlobalListPermissionsSchema(): Schema {
   };
 }
 
-export function getGlobalGrantPermissionSchema(): Schema {
+export function getGlobalGrantPermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -511,7 +512,7 @@ export function getGlobalGrantPermissionSchema(): Schema {
     },
   };
 }
-export function getGrantAllPermissions(): Schema {
+export function getGrantAllPermissions(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -556,7 +557,7 @@ export function getGrantAllPermissions(): Schema {
     },
   };
 }
-export function getGlobalRevokePermissionSchema(): Schema {
+export function getGlobalRevokePermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -606,7 +607,7 @@ export function getGlobalRevokePermissionSchema(): Schema {
 //       group
 // ------------------------------------------------------------
 
-export function getGroupListSchema(): Schema {
+export function getGroupListSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -651,7 +652,7 @@ export function getGroupListSchema(): Schema {
     },
   };
 }
-export function getAddUserSchema(): Schema {
+export function getAddUserSchema(server): Schema {
   return {
       // @ts-ignore: Unreachable code error
       beforeHandler: [server.authenticate],
@@ -699,7 +700,7 @@ export function getAddUserSchema(): Schema {
     };
 }
 
-export function getRemoveUserSchema(): Schema {
+export function getRemoveUserSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -751,7 +752,7 @@ export function getRemoveUserSchema(): Schema {
 //       project
 // ------------------------------------------------------------
 
-export function getProjectListSchema(): Schema {
+export function getProjectListSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -862,7 +863,7 @@ export function getProjectListSchema(): Schema {
     },
   };
 }
-export function getProjectViewDetailsSchema(): Schema {
+export function getProjectViewDetailsSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -986,7 +987,7 @@ export function getProjectViewDetailsSchema(): Schema {
     },
   };
 }
-export function getProjectAssignSchema(): Schema {
+export function getProjectAssignSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1031,7 +1032,7 @@ export function getProjectAssignSchema(): Schema {
     },
   };
 }
-export function getProjectUpdateSchema(): Schema {
+export function getProjectUpdateSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1082,7 +1083,7 @@ export function getProjectUpdateSchema(): Schema {
     },
   };
 }
-export function getProjectCloseSchema(): Schema {
+export function getProjectCloseSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1127,7 +1128,7 @@ export function getProjectCloseSchema(): Schema {
     },
   };
 }
-export function getCreateSubprojectSchema(): Schema {
+export function getCreateSubprojectSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1187,7 +1188,7 @@ export function getCreateSubprojectSchema(): Schema {
     },
   };
 }
-export function getProjectViewHistorySchema(): Schema {
+export function getProjectViewHistorySchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1259,7 +1260,7 @@ export function getProjectViewHistorySchema(): Schema {
   };
 }
 
-export function getProjectListPermissionSchema(): Schema {
+export function getProjectListPermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1300,7 +1301,7 @@ export function getProjectListPermissionSchema(): Schema {
     },
   };
 }
-export function getProjectGrantPermissionSchema(): Schema {
+export function getProjectGrantPermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1347,7 +1348,7 @@ export function getProjectGrantPermissionSchema(): Schema {
     },
   };
 }
-export function getProjectRevokePermissionSchema(): Schema {
+export function getProjectRevokePermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1399,7 +1400,7 @@ export function getProjectRevokePermissionSchema(): Schema {
 //       subproject
 // ------------------------------------------------------------
 
-export function getSubprojectListSchema(): Schema {
+export function getSubprojectListSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1514,7 +1515,7 @@ export function getSubprojectListSchema(): Schema {
     },
   };
 }
-export function getSubprojectViewDetailsSchema(): Schema {
+export function getSubprojectViewDetailsSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1644,7 +1645,7 @@ export function getSubprojectViewDetailsSchema(): Schema {
     },
   };
 }
-export function getSubprojectAssignSchema(): Schema {
+export function getSubprojectAssignSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1690,7 +1691,7 @@ export function getSubprojectAssignSchema(): Schema {
     },
   };
 }
-export function getSubprojectUpdateSchema(): Schema {
+export function getSubprojectUpdateSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1741,7 +1742,7 @@ export function getSubprojectUpdateSchema(): Schema {
     },
   };
 }
-export function getSubprojectCloseSchema(): Schema {
+export function getSubprojectCloseSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1787,7 +1788,7 @@ export function getSubprojectCloseSchema(): Schema {
   };
 }
 
-export function getReorderWorkflowitemsSchema(): Schema {
+export function getReorderWorkflowitemsSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1840,7 +1841,7 @@ export function getReorderWorkflowitemsSchema(): Schema {
   };
 }
 
-export function getCreateWorkflowitemSchema(): Schema {
+export function getCreateWorkflowitemSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1907,7 +1908,7 @@ export function getCreateWorkflowitemSchema(): Schema {
   };
 }
 
-export function getSubprojectViewHistorySchema(): Schema {
+export function getSubprojectViewHistorySchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -1996,7 +1997,7 @@ export function getSubprojectViewHistorySchema(): Schema {
   };
 }
 
-export function getSubprojectListPermissionsSchema(): Schema {
+export function getSubprojectListPermissionsSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2043,7 +2044,7 @@ export function getSubprojectListPermissionsSchema(): Schema {
   };
 }
 
-export function getSubprojectGrantPermissionSchema(): Schema {
+export function getSubprojectGrantPermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2091,7 +2092,7 @@ export function getSubprojectGrantPermissionSchema(): Schema {
   };
 }
 
-export function getRevokePermissionSchema(): Schema {
+export function getRevokePermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2143,7 +2144,7 @@ export function getRevokePermissionSchema(): Schema {
 //       workflowitem
 // ------------------------------------------------------------
 
-export function getWorkflowItemListSchema(): Schema {
+export function getWorkflowItemListSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2226,7 +2227,7 @@ export function getWorkflowItemListSchema(): Schema {
   } as Schema;
 }
 
-export function getWorkflowitemAssignSchema(): Schema {
+export function getWorkflowitemAssignSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2274,7 +2275,7 @@ export function getWorkflowitemAssignSchema(): Schema {
   };
 }
 
-export function getWorkflowitemUpdateSchema(): Schema {
+export function getWorkflowitemUpdateSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2343,7 +2344,7 @@ export function getWorkflowitemUpdateSchema(): Schema {
   };
 }
 
-export function getWorkflowitemCloseSchema(): Schema {
+export function getWorkflowitemCloseSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2389,7 +2390,7 @@ export function getWorkflowitemCloseSchema(): Schema {
   };
 }
 
-export function getWorkflowitemListPermissionsSchema(): Schema {
+export function getWorkflowitemListPermissionsSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2440,7 +2441,7 @@ export function getWorkflowitemListPermissionsSchema(): Schema {
   };
 }
 
-export function getWorkflowitemGrantPermissionSchema(): Schema {
+export function getWorkflowitemGrantPermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2490,7 +2491,7 @@ export function getWorkflowitemGrantPermissionSchema(): Schema {
   };
 }
 
-export function getWorkflowitemRevokePermissionSchema(): Schema {
+export function getWorkflowitemRevokePermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2540,7 +2541,7 @@ export function getWorkflowitemRevokePermissionSchema(): Schema {
   };
 }
 
-export function getValidateDocumentSchema(): Schema {
+export function getValidateDocumentSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2598,7 +2599,7 @@ export function getValidateDocumentSchema(): Schema {
 //       notification
 // ------------------------------------------------------------
 
-export function getNotficationListSchema(): Schema {
+export function getNotficationListSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2689,7 +2690,7 @@ export function getNotficationListSchema(): Schema {
   };
 }
 
-export function getNotificationMarkReadSchema(): Schema {
+export function getNotificationMarkReadSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2777,7 +2778,7 @@ export function getRegisterNodeSchema(): Schema {
   };
 }
 
-export function getVoteForPermissionSchema(): Schema {
+export function getVoteForPermissionSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2826,7 +2827,7 @@ export function getVoteForPermissionSchema(): Schema {
   };
 }
 
-export function getapproveNewOrganizationSchema(): Schema {
+export function getapproveNewOrganizationSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2870,7 +2871,7 @@ export function getapproveNewOrganizationSchema(): Schema {
   };
 }
 
-export function getapproveNewNodeForExistingOrganizationSchema(): Schema {
+export function getapproveNewNodeForExistingOrganizationSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -2931,7 +2932,7 @@ export function getapproveNewNodeForExistingOrganizationSchema(): Schema {
   };
 }
 
-export function getNetworkListSchema(): Schema {
+export function getNetworkListSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -3004,7 +3005,7 @@ export function getNetworkListSchema(): Schema {
   };
 }
 
-export function getListActiveSchema(): Schema {
+export function getListActiveSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -3037,7 +3038,7 @@ export function getListActiveSchema(): Schema {
   };
 }
 
-export function getCreateBackupSchema(): Schema {
+export function getCreateBackupSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
@@ -3061,7 +3062,7 @@ export function getCreateBackupSchema(): Schema {
     },
   };
 }
-export function getrestoreBackupSchema(): Schema {
+export function getrestoreBackupSchema(server): Schema {
   return {
     // @ts-ignore: Unreachable code error
     beforeHandler: [server.authenticate],
