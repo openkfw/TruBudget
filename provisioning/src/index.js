@@ -51,7 +51,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
         : "./src/data/test/";
 
     axios.defaults.baseURL = `http://${host}:${port}/api`;
-    axios.defaults.timeout = 5000;
+    axios.defaults.timeout = 10000;
 
     await impersonate("root", rootSecret);
     console.log("Start to provision users");

@@ -23,11 +23,6 @@ const defaultState = fromJS({
   currentSubProject: " "
 });
 
-const countUnreadNotifications = notifications =>
-  notifications.reduce((acc, notification) => {
-    return notification.isRead === false ? acc + 1 : acc;
-  }, 0);
-
 export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case TOGGLE_SIDEBAR:
