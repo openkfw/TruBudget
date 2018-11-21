@@ -183,7 +183,13 @@ const PermissionsTable = ({ permissions, user, grant, revoke, id, intentOrder, m
         <Card key={section.name + "section"} style={{ marginTop: "12px", marginBottom: "12px" }}>
           <CardHeader subheader={strings.permissions[section.name]} />
           <CardContent>
-
+          <List>
+              {section.intents
+                .filter(i => permissions[i] !== undefined)
+                .map(p =>
+                  renderPermission(p, user, permissions, myself, grant.bind(this, id), revoke.bind(this, id), disabled)
+                )}
+            </List>
           </CardContent>
         </Card>
       );

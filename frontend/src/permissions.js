@@ -34,10 +34,13 @@ export const globalIntentOrder = [
       "global.createProject",
       "global.listPermissions",
       "global.grantPermission",
-      "global.revokePermission"
+      "global.revokePermission",
+      "network.list",
+      "network.voteForPermission"
     ]
   }
 ]
+
 export const projectIntentOrder = [
   {
     name: "view",

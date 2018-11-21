@@ -19,7 +19,7 @@ const styles = {
   }
 };
 
-const GroupCreate = ({
+const GroupDialogContent = ({
   users,
   groupToAdd,
   storeGroupId,
@@ -73,4 +73,4 @@ const GroupCreate = ({
   );
 };
 
-export default withStyles(styles)(GroupCreate);
+export default withStyles(styles)(GroupDialogContent);

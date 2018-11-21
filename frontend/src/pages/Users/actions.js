@@ -43,6 +43,10 @@ export const GRANT_GLOBAL_PERMISSION_SUCCESS= "GRANT_GLOBAL_PERMISSION_SUCCESS";
 export const REVOKE_GLOBAL_PERMISSION= "REVOKE_GLOBAL_PERMISSION";
 export const REVOKE_GLOBAL_PERMISSION_SUCCESS= "REVOKE_GLOBAL_PERMISSION_SUCCESS";
 
+export const LIST_GLOBAL_PERMISSIONS = "LIST_GLOBAL_PERMISSIONS"
+export const LIST_GLOBAL_PERMISSIONS_SUCCESS = "LIST_GLOBAL_PERMISSIONS_SUCCESS"
+
+export const EXPAND_PERMISSION_PANEL = "EXPAND_PERMISSION_PANEL";
 
 export function fetchGroups(showLoading = false) {
   return {
@@ -195,5 +199,18 @@ export function revokeGlobalPermission(userId, intent){
     type: REVOKE_GLOBAL_PERMISSION,
     userId,
     intent
+  }
+}
+
+export function listPermissions(){
+  return {
+    type: LIST_GLOBAL_PERMISSIONS
+  }
+}
+
+export function expandPermissionsPanel(expanded){
+  return {
+    type: EXPAND_PERMISSION_PANEL,
+    expanded
   }
 }

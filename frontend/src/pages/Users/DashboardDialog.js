@@ -4,8 +4,8 @@ import _isEmpty from "lodash/isEmpty";
 
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
-import UserDialogContent from "./UserCreate";
-import GroupDialogContent from "./GroupCreate";
+import UserDialogContent from "./UserDialogContent";
+import GroupDialogContent from "./GroupDialogContent";
 
 const DashboardDialog = props => {
   const {
@@ -21,14 +21,16 @@ const DashboardDialog = props => {
     createUserGroup,
     storeSnackbarMessage,
     showSnackbar,
-    grantAllUserPermissions
+    grantAllUserPermissions,
+    users,
+    globalPermissions,
+    expandPermissionsPanel,
+    permissionsExpanded
   } = props;
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
 
   const { groupId, name: groupName, groupUsers } = groupToAdd;
-
   let steps, handleSubmitFunc;
-
   switch (dialogType) {
     case "addUser":
       steps = [
@@ -63,6 +65,29 @@ const DashboardDialog = props => {
         showSnackbar();
       };
       break;
+    case "editUser":
+    const user = users.find(user => user.id === editId);
+    const userToEdit = {
+      username: user.id,
+      organization: user.organization,
+      displayName: user.displayName
+    }
+    steps = [
+      {
+        title: "Edit Permissions",
+        content: <UserDialogContent {...props} userToAdd={userToEdit} editMode={true} globalPermissions={globalPermissions} expandPermissionsPanel = {expandPermissionsPanel}
+        permissionsExpanded={permissionsExpanded}/>,
+        nextDisabled: false,
+        hideCancel: true,
+        submitButtonText: strings.common.done
+      }
+    ];
+    handleSubmitFunc = () => {
+      expandPermissionsPanel(true)
+      hideDashboardDialog();
+    };
+
+    break;
     case "editGroup":
       const group = groups.find(group => group.groupId === editId);
       const groupToEdit = {

@@ -2,14 +2,12 @@ import React from "react";
 
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 
 import strings from "../../localizeStrings";
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
-import { withStyles, Divider } from "../../../node_modules/@material-ui/core";
+import { withStyles, Divider } from "@material-ui/core";
 import GlobalPermissions from "./GlobalPermissions";
 
 const styles = {
@@ -37,7 +35,7 @@ const styles = {
   }
 };
 
-const UserCreate = ({
+const UserDialogContent = ({
   classes,
   userToAdd,
   setDisplayName,
@@ -47,17 +45,23 @@ const UserCreate = ({
   organization,
   setAdminPermissions,
   grantGlobalPermission,
-  revokeGlobalPermission
+  revokeGlobalPermission,
+  globalPermissions,
+  editMode,
+  expandPermissionsPanel,
+  permissionsExpanded
 }) => {
-  const { displayName, password, username, hasAdminPermissions } = userToAdd;
+  const { displayName, password, username } = userToAdd;
+  const disabled= editMode ? true: false
   return (
-    <div className={classes.container}>
-      <div className={classes.textInputContainer}>
+    <div  className={classes.container}>
+      <div  className={classes.textInputContainer}>
         <TextInputWithIcon
           className={classes.textInput}
           label={strings.usersDashboard.full_name}
           value={displayName}
           error={false}
+          disabled={disabled}
           icon={<NameIcon />}
           id="fullname"
           onChange={event => setDisplayName(event.target.value)}
@@ -74,34 +78,29 @@ const UserCreate = ({
         />
       </div>
       <div className={classes.textInputContainer}>
-        <Username username={username} storeUsername={setUsername} failed={false} id="username" />
+        <Username username={username}   disabled={disabled} storeUsername={setUsername} failed={false} id="username" />
         <Password
           password={password}
           storePassword={setPassword}
           failed={false}
-          // nextBestAction={() => console.log("NextBestAction")}
+          disabled={disabled}
           id="password"
         />
       </div>
-      {/* <div className={classes.checkboxContainer}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={hasAdminPermissions}
-              onChange={event => setAdminPermissions(event.target.checked)}
-              color="primary"
-            />
-          }
-          label={strings.permissions.admin}
-        />
-      </div> */}
-      <Divider className={classes.divider} />
-      <GlobalPermissions
-        grantGlobalPermission={grantGlobalPermission}
-        revokeGlobalPermission={revokeGlobalPermission}
-        userToAdd={userToAdd}
-      />
+      {editMode ? (
+        <div >
+          <Divider className={classes.divider} />
+          <GlobalPermissions
+            grantGlobalPermission={grantGlobalPermission}
+            revokeGlobalPermission={revokeGlobalPermission}
+            userToAdd={userToAdd}
+            globalPermissions={globalPermissions}
+            expandPermissionsPanel = {expandPermissionsPanel}
+          permissionsExpanded ={permissionsExpanded}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };
-export default withStyles(styles)(UserCreate);
+export default withStyles(styles)(UserDialogContent);

@@ -106,7 +106,9 @@ import {
   GRANT_GLOBAL_PERMISSION,
   GRANT_GLOBAL_PERMISSION_SUCCESS,
   REVOKE_GLOBAL_PERMISSION,
-  REVOKE_GLOBAL_PERMISSION_SUCCESS
+  REVOKE_GLOBAL_PERMISSION_SUCCESS,
+  LIST_GLOBAL_PERMISSIONS_SUCCESS,
+  LIST_GLOBAL_PERMISSIONS
 } from "./pages/Users/actions.js";
 import {
   FETCH_NODES_SUCCESS,
@@ -431,8 +433,11 @@ export function* grantGlobalPermissionSaga({ userId, intent }) {
   yield execute(function*() {
     yield callApi(api.grantGlobalPermission, userId, intent);
     yield put({
-      type: GRANT_ALL_USER_PERMISSIONS_SUCCESS
+      type: GRANT_GLOBAL_PERMISSION_SUCCESS
     });
+    yield put({
+      type: LIST_GLOBAL_PERMISSIONS
+    })
   }, true);
 }
 
@@ -442,9 +447,21 @@ export function* revokeGlobalPermissionSaga({ userId, intent }) {
     yield put({
       type: REVOKE_GLOBAL_PERMISSION_SUCCESS
     });
+    yield put({
+      type: LIST_GLOBAL_PERMISSIONS
+    })
   }, true);
 }
 
+export function* listGlobalPermissionSaga() {
+  yield execute(function*() {
+    const { data }  = yield callApi(api.listGlobalPermissions);
+    yield put({
+      type: LIST_GLOBAL_PERMISSIONS_SUCCESS,
+      data
+    });
+  }, true);
+}
 
 export function* fetchUserSaga({ showLoading }) {
   yield execute(function*() {
@@ -1061,6 +1078,10 @@ export function* watchRevokeGlobalPermission() {
   yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga);
 }
 
+export function* watchListGlobalPermissions(){
+  yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga);
+}
+
 export default function* rootSaga() {
   try {
     yield [
@@ -1081,6 +1102,7 @@ export default function* rootSaga() {
       watchGrantAllUserPermissions(),
       watchGrantGlobalPermission(),
       watchRevokeGlobalPermission(),
+      watchListGlobalPermissions(),
 
       // Project
       watchCreateProject(),

@@ -324,7 +324,9 @@ const en = {
     global_createProject: "Create projects",
     global_listPermissions: "List all global permissions",
     global_grantPermission: "Grant global permissions for others",
-    global_revokePermission: "Revoke global permissions for others"
+    global_revokePermission: "Revoke global permissions for others",
+    network_list: "List all connected nodes",
+    network_voteForPermission: "Vote if a node should join the network"
   },
 
   language: {

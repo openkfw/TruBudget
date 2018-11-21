@@ -15,7 +15,8 @@ import {
   hideDashboardDialog,
   createUser,
   grantGlobalPermission,
-  revokeGlobalPermission
+  revokeGlobalPermission,
+  expandPermissionsPanel,
 } from "./actions";
 
 import DashboardDialog from "./DashboardDialog";
@@ -36,7 +37,9 @@ const mapStateToProps = state => {
     groups: state.getIn(["users", "groups"]),
     groupToAdd: state.getIn(["users", "groupToAdd"]),
     editMode: state.getIn(["users", "editMode"]),
-    editDialogShown: state.getIn(["users", "editDialogShown"])
+    editDialogShown: state.getIn(["users", "editDialogShown"]),
+    globalPermissions: state.getIn(["users", "globalPermissions"]),
+    permissionsExpanded: state.getIn(["users", "permissionsExpanded"])
   };
 };
 
@@ -57,6 +60,7 @@ const mapDispatchToProps = dispatch => {
     hideDashboardDialog: () => dispatch(hideDashboardDialog()),
     grantGlobalPermission: (userId, intent) => dispatch(grantGlobalPermission(userId, intent)),
     revokeGlobalPermission: (userId, intent) => dispatch(revokeGlobalPermission(userId, intent)),
+    expandPermissionsPanel: (expand) => dispatch(expandPermissionsPanel(expand))
   };
 };
 

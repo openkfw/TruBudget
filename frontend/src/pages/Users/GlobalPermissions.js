@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
@@ -7,14 +6,9 @@ import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { globalIntentOrder } from "../../permissions";
-import green from "@material-ui/core/colors/green";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
-import Favorite from "@material-ui/icons/Favorite";
-import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import strings from "../../localizeStrings";
 import _isEmpty from "lodash/isEmpty";
 
@@ -32,39 +26,47 @@ const styles = theme => ({
 });
 
 const GlobalPermissions = props => {
-  const { classes, userToAdd, grantGlobalPermission, revokeGlobalPermission } = props;
-  const { username, displayName, password } = userToAdd;
+  const { classes, userToAdd, grantGlobalPermission, revokeGlobalPermission, globalPermissions, expandPermissionsPanel, permissionsExpanded } = props;
+  const { username, displayName, organization } = userToAdd;
+
   return (
     <div className={classes.root}>
       <ExpansionPanel
-        disabled={_isEmpty(username) || _isEmpty(displayName) || _isEmpty(password)}
+        expanded={permissionsExpanded}
+        disabled={_isEmpty(username) || _isEmpty(displayName) || _isEmpty(organization)}
         className={classes.expansionPanel}
+        onChange = {(_, expanded) => expandPermissionsPanel(expanded)}
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Administrator Permissions</Typography>
         </ExpansionPanelSummary>/>
         <ExpansionPanelDetails>
-          {globalIntentOrder.map((item, index) => {
-            const intents = item.intents.map(intent => (
-              <FormControlLabel
-                key={intent}
-                control={
-                  <Checkbox
-                    style={{ padding: "5px" }}
-                    checked={false}
-                    onChange={() => grantGlobalPermission(username, intent)}
-                    value="checkedA"
-                  />
-                }
-                label={strings.permissions[intent.replace(/[.]/g, "_")] || "Intent not defined"}
-              />
-            ));
-            return (
-              <div key={index} style={{ display: "flex", width: "100%", justifyContent: "center" }}>
-                <FormGroup>{intents}</FormGroup>
-              </div>
-            );
-          })}
+          <div style={{width: "100%", height: 210, overflowY: "scroll",  }}>
+            {globalIntentOrder.map((item, index) => {
+              const intents = item.intents.map(intent => (
+                <FormControlLabel
+                  key={intent}
+                  control={
+                    <Checkbox
+                      style={{ padding: "5px" }}
+                      checked={globalPermissions[intent] ? globalPermissions[intent].includes(username) : false}
+                      onChange={() =>
+                        globalPermissions[intent] && globalPermissions[intent].includes(username)
+                          ? revokeGlobalPermission(username, intent)
+                          : grantGlobalPermission(username, intent)
+                      }
+                    />
+                  }
+                  label={strings.permissions[intent.replace(/[.]/g, "_")] || "Intent not defined"}
+                />
+              ));
+              return (
+                <div key={index} style={{ display: "flex", width: "100%", justifyContent: "center" }}>
+                  <FormGroup>{intents}</FormGroup>
+                </div>
+              );
+            })}
+          </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>
