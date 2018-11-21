@@ -104,6 +104,7 @@ if (isMaster) {
       connectArg,
       blockNotifyArg,
       externalIpArg,
+      multichainDir
     ),
   );
   setTimeout(

@@ -25,6 +25,7 @@ function startSlave(
   connectArgs,
   blockNotifyArg,
   externalIpArg,
+  multichainDir
 ) {
   const prog = "multichaind";
 
