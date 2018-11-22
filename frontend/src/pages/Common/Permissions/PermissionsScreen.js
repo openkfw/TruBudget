@@ -22,6 +22,8 @@ import Warning from "@material-ui/icons/Warning";
 import Typography from "@material-ui/core/Typography";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../../localizeStrings";
+
+
 const PermissionsScreen = props => (
   <Dialog data-test="permission-container" open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>
@@ -64,7 +66,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.usersDashboard.users} </ListSubheader>
+          <ListSubheader> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -88,7 +90,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.groupDashboard.groups} </ListSubheader>
+          <ListSubheader> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );
@@ -181,7 +183,7 @@ const PermissionsTable = ({ permissions, user, grant, revoke, id, intentOrder, m
         <Card key={section.name + "section"} style={{ marginTop: "12px", marginBottom: "12px" }}>
           <CardHeader subheader={strings.permissions[section.name]} />
           <CardContent>
-            <List>
+          <List>
               {section.intents
                 .filter(i => permissions[i] !== undefined)
                 .map(p =>

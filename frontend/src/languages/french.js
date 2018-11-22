@@ -152,19 +152,19 @@ const fr = {
     workflow_upload_document: "Télécharger"
   },
 
-  usersDashboard: {
+  users: {
     full_name: "French: Full Name",
     new_user: "French: New User",
     organization: "French: Organization",
     user_created: "French: User successfully created",
-    users: "French: Users"
-  },
-
-  groupDashboard: {
+    users: "French: Users",
     add_users: "French: Add Users",
     group_created: "French: Group successfully created",
     groups: "French: Groups",
-    new_group: "French: New user group"
+    new_group: "French: New user group",
+    add_group: "French: Add Group",
+    edit_group: "French: Edit Group",
+    edit_permissions_for: "French: Edit permissions for"
   },
 
   nodesDashboard: {
@@ -319,7 +319,15 @@ const fr = {
     workflowitem_intent_revokePermission: "French: Revoke workflowitem permission",
     workflowitem_update: "French: Update workflowitem",
     workflowitem_view: "French: View workflowitem",
-    write: "French: Write permissions"
+    write: "French: Write permissions",
+    global_createUser: "French: Create users",
+    global_createGroup: "French: Create groups",
+    global_createProject: "French: Create projects",
+    global_listPermissions: "French: List all global permissions",
+    global_grantPermission: "French: Grant global permissions for others",
+    global_revokePermission: "French: Revoke global permissions for others",
+    network_list: "French: List all connected nodes",
+    network_voteForPermission: "French: Vote if a node should join the network"
   },
 
   language: {

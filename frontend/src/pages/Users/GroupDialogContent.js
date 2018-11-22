@@ -16,10 +16,14 @@ const styles = {
   },
   textInput: {
     width: "50%"
+  },
+  divider: {
+    marginTop: 20,
+    marginBottom: 20
   }
 };
 
-const GroupCreate = ({
+const GroupDialogContent = ({
   users,
   groupToAdd,
   storeGroupId,
@@ -40,7 +44,7 @@ const GroupCreate = ({
     removeUserFromGroup(groupId, userId);
   };
   return (
-    <div>
+    <div >
       <div className={classes.textInputContainer}>
         <TextInputWithIcon
           className={classes.textInput}
@@ -69,8 +73,9 @@ const GroupCreate = ({
           handleDelete={editMode ? removeUser : removeInitialUserFromGroup}
         />
       </div>
+
     </div>
   );
 };
 
-export default withStyles(styles)(GroupCreate);
+export default withStyles(styles)(GroupDialogContent);

@@ -6,7 +6,7 @@ import Tab from "@material-ui/core/Tab";
 import GroupTable from "./GroupTable";
 import Button from "@material-ui/core/Button";
 import Add from "@material-ui/icons/Add";
-import DashboardDialogContainer from "./DashboardDialogContainer";
+import DialogContainer from "./DialogContainer";
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -46,8 +46,8 @@ const Users = props => {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab label={strings.usersDashboard.users} aria-label="usersTab" />
-            <Tab label={strings.groupDashboard.groups} aria-label="groupsTab" />
+            <Tab label={strings.users.users} aria-label="usersTab" />
+            <Tab label={strings.users.groups} aria-label="groupsTab" />
           </Tabs>
         </AppBar>
         <div style={styles.createButtonContainer}>
@@ -67,7 +67,7 @@ const Users = props => {
         {tabIndex === 0 && <UsersTable {...props} />}
         {tabIndex === 1 && <GroupTable {...props} />}
       </div>
-      <DashboardDialogContainer {...props} />
+      <DialogContainer {...props} />
     </div>
   );
 };
