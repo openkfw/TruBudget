@@ -67,7 +67,7 @@ const authenticate = async (
   // The client shouldn't be able to distinguish between a wrong id and a wrong password,
   // so we handle all errors alike:
   const throwError = err => {
-    logger.error(`Authentication failed: ${err}`);
+    logger.error({error: err}, `Authentication failed.`);
     throw { kind: "AuthenticationError", userId: id };
   };
 
@@ -79,6 +79,10 @@ const authenticate = async (
     if (await isPasswordMatch(password, rootSecretHash)) {
       return rootUserLoginResponse(multichain, jwtSecret, organization);
     } else {
+      logger.error(
+        { error: { multichain, organization, id } },
+        "An error occured while authenticating user",
+      );
       throwError("wrong password");
     }
   }
@@ -93,12 +97,14 @@ const authenticate = async (
           throw err;
       }
     } else {
+      logger.error({ error: err }, "An error occured while getting user");
       throw err;
     }
   });
   logger.debug(storedUser);
 
   if (!(await isPasswordMatch(password, storedUser.passwordDigest))) {
+    logger.error({ error: { multichain, storedUser } }, "Wrong password entered");
     throwError("wrong password");
   }
   // Every user has an address, with the private key stored in the vault. Importing the
@@ -176,7 +182,13 @@ async function rootUserLoginResponse(
 ): Promise<UserLoginResponse> {
   const userId = "root";
   const organizationAddress = await getOrganizationAddress(multichain, organization);
-  if (!organizationAddress) throw Error(`No organization address found for ${organization}`);
+  if (!organizationAddress) {
+    logger.error(
+      { error: { multichain, organization } },
+      `No organization address found for ${organization}`,
+    );
+    throw Error(`No organization address found for ${organization}`);
+  }
   const userAddress = organizationAddress;
   const [groups, groupIds] = [[], []];
   const token = createToken(

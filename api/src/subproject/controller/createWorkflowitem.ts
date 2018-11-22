@@ -105,6 +105,10 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
   const status = value("status", data.status, x => ["open", "closed"].includes(x), "open");
   if (status === "closed") {
     if (!(await Workflowitem.areAllClosed(multichain, projectId, subprojectId))) {
+      logger.error(
+        { error: { multichain, projectId, subprojectId } },
+        "Cannot add a closed workflowitem after a non-closed workflowitem.",
+      );
       throw {
         kind: "PreconditionError",
         message: "Cannot add a closed workflowitem after a non-closed workflowitem.",

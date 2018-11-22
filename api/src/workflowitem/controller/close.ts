@@ -11,6 +11,7 @@ import * as Subproject from "../../subproject/model/Subproject";
 import { fetchWorkflowitemOrdering } from "../../subproject/model/WorkflowitemOrdering";
 import { sortWorkflowitems } from "../../subproject/sortWorkflowitems";
 import * as Workflowitem from "../model/Workflowitem";
+import logger from "../../lib/logger";
 
 export async function closeWorkflowitem(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
@@ -110,6 +111,10 @@ async function ensureAllPreviousWorkflowitemsAreClosed(
     if (item.data.id === workflowitemId) {
       break;
     } else if (item.data.status !== "closed") {
+      logger.error(
+        { error: { workflowitemId, multichain, projectId, subprojectId } },
+        "Cannot close workflowitems if there are preceding non-closed workflowitems.",
+      );
       throw {
         kind: "PreconditionError",
         message: "Cannot close workflowitems if there are preceding non-closed workflowitems.",

@@ -2,6 +2,7 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";

@@ -1,5 +1,6 @@
 import { MultichainClient } from "../multichain";
 import * as Workflowitem from "../workflowitem/model/Workflowitem";
+import logger from "../lib/logger";
 
 export function sortWorkflowitems(
   workflowitems: Workflowitem.WorkflowitemResource[],
@@ -57,7 +58,10 @@ function isRedacted(item: Workflowitem.WorkflowitemResource): boolean {
 
 function closedAt(item: Workflowitem.WorkflowitemResource): string {
   const event = item.log.find(e => e.intent === "workflowitem.close");
-  if (event === undefined) throw Error(`item is not closed: ${JSON.stringify(event)}`);
+  if (event === undefined) {
+    logger.error({ error: { event } }, "Item is not closed.");
+    throw Error(`item is not closed: ${JSON.stringify(event)}`);
+  }
   return event.createdAt;
 }
 

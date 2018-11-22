@@ -43,6 +43,7 @@ export const create = async (
   // Don't overwrite existing users:
   const userExists = (await multichain.getValues(usersStreamName, user.id, 1)).length !== 0;
   if (userExists) {
+    logger.error({ error: { user, multichain } }, `User ${user.id} already exists`);
     throw { kind: "UserAlreadyExists", targetUserId: user.id } as UserAlreadyExistsError;
   }
 

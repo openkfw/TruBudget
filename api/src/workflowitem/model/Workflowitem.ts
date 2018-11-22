@@ -139,6 +139,7 @@ export async function get(
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
+        logger.error({ error: { event } }, "Failed to initialize resource");
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -153,6 +154,7 @@ export async function get(
         applyGrantPermission(event, permissions) ||
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
+        logger.error({ error: { event } }, "Unexpected event occured");
         throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
       }
     }
@@ -345,6 +347,10 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
+    logger.error(
+      { error: { workflowitemId, projectId, event } },
+      `Workflowitem ${workflowitemId} of project ${projectId} not found.`,
+    );
     throw { kind: "NotFound", what: `Workflowitem ${workflowitemId} of project ${projectId}.` };
   }
   return permissions;
