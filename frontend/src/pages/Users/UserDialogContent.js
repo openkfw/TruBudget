@@ -43,16 +43,8 @@ const UserDialogContent = ({
   setUsername,
   setPassword,
   organization,
-  grantGlobalPermission,
-  revokeGlobalPermission,
-  globalPermissions,
-  editMode,
-  permissionsExpanded,
-  allowedIntents
 }) => {
   const { displayName, password, username } = userToAdd;
-  const disabled = editMode ? true : false;
-  if (!editMode) {
     return (
       <div className={classes.container}>
         <div className={classes.textInputContainer}>
@@ -61,7 +53,6 @@ const UserDialogContent = ({
             label={strings.users.full_name}
             value={displayName}
             error={false}
-            disabled={disabled}
             icon={<NameIcon />}
             id="fullname"
             onChange={event => setDisplayName(event.target.value)}
@@ -78,23 +69,10 @@ const UserDialogContent = ({
           />
         </div>
         <div className={classes.textInputContainer}>
-          <Username username={username} disabled={disabled} storeUsername={setUsername} failed={false} id="username" />
-          <Password password={password} storePassword={setPassword} failed={false} disabled={disabled} id="password" />
+          <Username username={username}  storeUsername={setUsername} failed={false} id="username" />
+          <Password password={password} storePassword={setPassword} failed={false}  id="password" />
         </div>
       </div>
     );
   }
-  return (
-    <div>
-      <GlobalPermissions
-        grantGlobalPermission={grantGlobalPermission}
-        revokeGlobalPermission={revokeGlobalPermission}
-        resourceId={userToAdd.username}
-        globalPermissions={globalPermissions}
-        permissionsExpanded={permissionsExpanded}
-        allowedIntents={allowedIntents}
-      />
-    </div>
-  );
-};
 export default withStyles(styles)(UserDialogContent);

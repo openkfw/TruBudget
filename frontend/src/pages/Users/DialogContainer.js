@@ -58,8 +58,8 @@ const mapDispatchToProps = dispatch => {
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     hideDashboardDialog: () => dispatch(hideDashboardDialog()),
-    grantGlobalPermission: (userId, intent) => dispatch(grantGlobalPermission(userId, intent)),
-    revokeGlobalPermission: (userId, intent) => dispatch(revokeGlobalPermission(userId, intent)),
+    grantGlobalPermission: (identity, intent) => dispatch(grantGlobalPermission(identity, intent)),
+    revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent)),
   };
 };
 

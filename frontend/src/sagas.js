@@ -429,9 +429,9 @@ export function* grantAllUserPermissionsSaga({ userId }) {
   }, false);
 }
 
-export function* grantGlobalPermissionSaga({ userId, intent }) {
+export function* grantGlobalPermissionSaga({ identity, intent }) {
   yield execute(function*() {
-    yield callApi(api.grantGlobalPermission, userId, intent);
+    yield callApi(api.grantGlobalPermission, identity, intent);
     yield put({
       type: GRANT_GLOBAL_PERMISSION_SUCCESS
     });
@@ -441,9 +441,9 @@ export function* grantGlobalPermissionSaga({ userId, intent }) {
   }, true);
 }
 
-export function* revokeGlobalPermissionSaga({ userId, intent }) {
+export function* revokeGlobalPermissionSaga({ identity, intent }) {
   yield execute(function*() {
-    yield callApi(api.revokeGlobalPermission, userId, intent);
+    yield callApi(api.revokeGlobalPermission, identity, intent);
     yield put({
       type: REVOKE_GLOBAL_PERMISSION_SUCCESS
     });

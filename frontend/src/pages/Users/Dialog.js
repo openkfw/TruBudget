@@ -77,15 +77,15 @@ const Dialog = props => {
       };
       steps = [
         {
-          title: `${strings.users.edit_permissions_for} ${userToEdit.displayName}` ,
+          title: `${strings.users.edit_permissions_for} ${userToEdit.displayName}`,
           content: (
-            <UserDialogContent
-              {...props}
-              userToAdd={userToEdit}
-              editMode={true}
-              allowedIntents={allowedIntents}
+            <GlobalPermissions
+              grantGlobalPermission={grantGlobalPermission}
+              revokeGlobalPermission={revokeGlobalPermission}
+              resourceId={userToEdit.username}
               globalPermissions={globalPermissions}
               permissionsExpanded={permissionsExpanded}
+              allowedIntents={allowedIntents}
             />
           ),
           nextDisabled: false,
@@ -108,7 +108,7 @@ const Dialog = props => {
         };
         steps = [
           {
-            title: `${strings.users.edit_permissions_for} ${groupToEdit.displayName}` ,
+            title: `${strings.users.edit_permissions_for} ${groupToEdit.displayName}`,
             content: (
               <div>
                 <GlobalPermissions

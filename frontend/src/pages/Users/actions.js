@@ -182,18 +182,18 @@ export function hideDashboardDialog() {
   };
 }
 
-export function grantGlobalPermission(userId, intent){
+export function grantGlobalPermission(identity, intent){
   return {
     type: GRANT_GLOBAL_PERMISSION,
-    userId,
+    identity,
     intent
   }
 }
 
-export function revokeGlobalPermission(userId, intent){
+export function revokeGlobalPermission(identity, intent){
   return {
     type: REVOKE_GLOBAL_PERMISSION,
-    userId,
+    identity,
     intent
   }
 }
