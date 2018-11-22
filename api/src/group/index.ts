@@ -15,6 +15,7 @@ export interface GroupResource {
 }
 
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
+  logger.debug({ multichain }, "Checking if stream exists.");
   await multichain.getOrCreateStream({
     kind: "groups",
     name: groupsStreamName,
@@ -25,11 +26,15 @@ export const groupExists = async (multichain, groupId) => {
   await ensureStreamExists(multichain);
   const existingGroups = await getAll(multichain);
   const exists = existingGroups.find(existingGroup => existingGroup.groupId === groupId);
+  logger.debug(`Group ${groupId} ${exists ? "exists." : "does not exist."}`);
   return exists ? true : false;
 };
 
 const handleCreate = (event: Event): { resource: GroupResource } | undefined => {
-  if (event.intent !== "global.createGroup") return undefined;
+  if (event.intent !== "global.createGroup") {
+    logger.debug({ intent: event.intent }, "Event intent is not 'global.createGroup'.");
+    return undefined;
+  }
   switch (event.dataVersion) {
     case 1: {
       const { group } = event.data;
@@ -41,6 +46,10 @@ const handleCreate = (event: Event): { resource: GroupResource } | undefined => 
     }
   }
   throwUnsupportedEventVersion(event);
+  logger.error(
+    { event },
+    `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
+  );
 };
 
 export const publish = async (
@@ -71,7 +80,8 @@ export const publish = async (
 
   const publishEvent = () => {
     logger.info(
-      `Publishing ${event.intent} to ${groupsStreamName}/${JSON.stringify(streamItemKey)}`,
+      // `Publishing ${event.intent} to ${groupsStreamName}/${JSON.stringify(streamItemKey)}`,
+      `Publishing ${event.intent} to ${groupsStreamName}/${streamItemKey}`,
     );
     return multichain
       .getRpcClient()
@@ -82,10 +92,15 @@ export const publish = async (
   return publishEvent().catch(err => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
+      logger.info(
+        { error: err },
+        "The stream does not exist yet. Creating the stream and trying again.",
+      );
       return multichain
         .getOrCreateStream({ kind: "groups", name: groupsStreamName })
         .then(() => publishEvent());
     } else {
+      logger.error({ error: err }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -114,6 +129,7 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
+        logger.error({ event }, "Failed to initialize resource");
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -122,6 +138,7 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
       // Since we've a group now, we can add/remove Users
       const hasProcessedEvent = addUser(event, resource) || removeUser(event, resource);
       if (!hasProcessedEvent) {
+        logger.error({ event }, "Unexpected event.");
         throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
       }
     }
@@ -131,25 +148,41 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
 };
 
 function addUser(event: Event, resource: GroupResource): true | undefined {
-  if (event.intent !== "group.addUser") return;
+  if (event.intent !== "group.addUser") {
+    logger.debug({ intent: event.intent }, "Event intent is not 'group.addUser'.");
+    return;
+  }
   switch (event.dataVersion) {
     case 1: {
+      logger.debug(`Adding user ${event.data.userId} to group ${resource.displayName}.`);
       resource.users.push(event.data.userId);
       return true;
     }
   }
+  logger.error(
+    { event },
+    `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
+  );
   throwUnsupportedEventVersion(event);
 }
 function removeUser(event: Event, resource: GroupResource): true | undefined {
-  if (event.intent !== "group.removeUser") return;
+  if (event.intent !== "group.removeUser") {
+    logger.debug({ intent: event.intent }, "Event intent is not 'group.removeUser'.");
+    return;
+  }
   switch (event.dataVersion) {
     case 1: {
       const index = resource.users.indexOf(event.data.userId);
       if (index > -1) {
         resource.users.splice(index, 1);
       }
+      logger.debug(`Removing user ${event.data.userId} from group ${resource.displayName}.`);
       return true;
     }
   }
+  logger.error(
+    { event },
+    `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
+  );
   throwUnsupportedEventVersion(event);
 }

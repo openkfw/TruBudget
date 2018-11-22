@@ -86,8 +86,10 @@ const authenticate = async (
     if (err) {
       switch (err.kind) {
         case "NotFound":
+          logger.error({ error: err }, "User not found");
           throwError("user not found");
         default:
+          logger.error({ error: err }, "An error occured while getting user");
           throw err;
       }
     } else {
@@ -172,25 +174,25 @@ async function rootUserLoginResponse(
   jwtSecret: string,
   organization: string,
 ): Promise<UserLoginResponse> {
-    const userId = "root";
-    const organizationAddress = await getOrganizationAddress(multichain, organization);
-    if (!organizationAddress) throw Error(`No organization address found for ${organization}`);
-    const userAddress = organizationAddress;
-    const [groups, groupIds] = [[], []];
-    const token = createToken(
-      jwtSecret,
-      userId,
-      userAddress,
-      organization,
-      organizationAddress,
-      groupIds,
-    );
-    return {
-      id: userId,
-      displayName: "root",
-      organization,
-      allowedIntents: globalIntents,
-      groups,
-      token,
-    };
+  const userId = "root";
+  const organizationAddress = await getOrganizationAddress(multichain, organization);
+  if (!organizationAddress) throw Error(`No organization address found for ${organization}`);
+  const userAddress = organizationAddress;
+  const [groups, groupIds] = [[], []];
+  const token = createToken(
+    jwtSecret,
+    userId,
+    userAddress,
+    organization,
+    organizationAddress,
+    groupIds,
+  );
+  return {
+    id: userId,
+    displayName: "root",
+    organization,
+    allowedIntents: globalIntents,
+    groups,
+    token,
+  };
 }

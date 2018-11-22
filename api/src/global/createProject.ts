@@ -11,11 +11,11 @@ import {
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
 import { isEmpty } from "../lib/emptyChecks";
+import logger from "../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";
-import logger from "../lib/logger";
 
 export async function createProject(
   multichain: MultichainClient,
@@ -23,7 +23,12 @@ export async function createProject(
 ): Promise<HttpResponse> {
   const body = req.body;
 
-  if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
+  logger.debug(req.body);
+
+  if (body.apiVersion !== "1.0") {
+    logger.error(`Incorrect API Version. Expected '1.0', got ${body.apiVersion}`);
+    throwParseError(["apiVersion"]);
+  }
   throwParseErrorIfUndefined(body, ["data", "project"]);
   const input = body.data.project;
 
@@ -37,7 +42,7 @@ export async function createProject(
   // check if projectId already exists
   const projects = await Project.get(multichain, req.user);
   if (!isEmpty(projects.filter(p => p.data.id === projectId))) {
-    logger.error("Project ID already exists", { projectId });
+    logger.error({ projectId }, `Project ID ${projectId} already exists`);
     throw { kind: "ProjectIdAlreadyExists", projectId } as ProjectIdAlreadyExistsError;
   }
 

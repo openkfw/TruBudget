@@ -10,6 +10,7 @@ import * as Notification from "../../notification/model/Notification";
 import * as Project from "../../project/model/Project";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
+import logger from "../../lib/logger";
 
 export const closeSubproject = async (multichain: MultichainClient, req): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);
@@ -28,6 +29,10 @@ export const closeSubproject = async (multichain: MultichainClient, req): Promis
 
   // All assiciated workflowitems need to be closed:
   if (!(await Workflowitem.areAllClosed(multichain, projectId, subprojectId))) {
+    logger.error(
+      { error: { multichain, projectId, subprojectId } },
+      "Cannot close a subproject if at least one associated workflowitem is not yet closed.",
+    );
     throw {
       kind: "PreconditionError",
       message:

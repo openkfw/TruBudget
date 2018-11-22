@@ -71,7 +71,7 @@ export async function publish(
   const streamItem = { json: event };
 
   const publishEvent = () => {
-    logger.info(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+    logger.info(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
     return multichain
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)
@@ -80,11 +80,13 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
+      logger.warn("The stream does not exist yet. Creating the stream and trying again.");
       // The stream does not exist yet. Create the stream and try again:
       return multichain
         .getOrCreateStream({ kind: "project", name: streamName })
         .then(() => publishEvent());
     } else {
+      logger.error({ error: err }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -116,7 +118,8 @@ async function fetchStreamItems(
               }),
             )
             .catch(err => {
-              console.log(
+              logger.error(
+                { error: err },
                 `Failed to fetch '${projectSelfKey}' stream item from project stream ${streamName}`,
               );
               return null;
@@ -145,6 +148,7 @@ export async function get(
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
+        logger.error({ error: event }, "Failed to initialize resource");
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -159,6 +163,7 @@ export async function get(
         applyGrantPermission(event, permissions) ||
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
+        logger.error({ error: event }, "Unexpected event");
         throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
       }
     }
@@ -324,6 +329,7 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
+    logger.error({ error: { projectId, multichain } }, `Project ${projectId} not found.`);
     throw { kind: "NotFound", what: `Project ${projectId}.` };
   }
   return permissions;

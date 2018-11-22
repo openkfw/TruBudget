@@ -15,7 +15,13 @@ const name = "TruBudget";
 const hostname = os.hostname();
 const pid = process.pid;
 const base = { pid, hostname };
-const prettyPrint = false; // process.env.NODE_ENV === "production" ? false : true;
+const prettyPrint = {
+  colorize: "true",
+  levelFirst: false,
+  messageKey: "message",
+  translateTime: true,
+  crlf: true,
+}; // process.env.NODE_ENV === "production" ? false : true;
 const level = "debug"; // process.env.NODE_ENV === "production" ? "info" : "debug";
 const redact = {
   paths: ["rpcSettings.password", "password", "*.passwordDigest", "passwordDigest"],
@@ -23,6 +29,12 @@ const redact = {
 const crlf = true;
 const messageKey = "PINOmessage";
 const useLevelLabels = true;
+const serializers = {
+  // just to check if it is called or not
+  [Symbol.for("pino.*")]: () => {
+    console.log("Test");
+  },
+};
 
 const cwd = process.cwd();
 const { env } = process;
@@ -35,36 +47,36 @@ if (!fs.existsSync(logDir)) {
 const streams = [
   { level: "debug", stream: process.stdout },
   { stream: fs.createWriteStream(logDir + "server.log") },
-  // { level: "debug", stream: fs.createWriteStream(logDir + "debug.log") },
+  { level: "debug", stream: fs.createWriteStream(logDir + "debug.log") },
   // { level: "info", stream: fs.createWriteStream(logDir + "info.log") },
   // { level: "warn", stream: fs.createWriteStream(logDir + "warn.log") },
   // { level: "error", stream: fs.createWriteStream(logDir + "error.log") },
 ];
 
-// const logger = pino({
-//   name,
-//   base,
-//   level,
-//   // prettyPrint,
-//   // @ts-ignore
-//   redact,
-//   useLevelLabels,
-//   crlf,
-//   messageKey,
-//   },
-// );
-
-const logger = pinoms({
+const logger = pino({
   name,
   base,
   level,
+  prettyPrint,
+  // serializers,
   // @ts-ignore
   redact,
   useLevelLabels,
   crlf,
   messageKey,
-  streams,
 });
+
+// const logger = pinoms({
+//   name,
+//   base,
+//   level,
+//   // @ts-ignore
+//   redact,
+//   useLevelLabels,
+//   crlf,
+//   messageKey,
+//   streams,
+// });
 
 // const child = childProcess.spawn(process.execPath, [
 //   require.resolve('pino-tee'),

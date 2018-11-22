@@ -2,6 +2,7 @@ import * as Global from "..";
 import { throwIfUnauthorized } from "../../authz";
 import Intent, { userAssignableIntents } from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 
@@ -18,7 +19,7 @@ export const revokeGlobalPermission = async (
   await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   await Global.revokePermission(multichain, identity, intent);
-
+  logger.info({ intent }, "Revoking permission.");
   return [
     200,
     {

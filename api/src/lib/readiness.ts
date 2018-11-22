@@ -19,7 +19,7 @@ export async function isReady(multichain: MultichainClient): Promise<boolean> {
 
     return true;
   } catch (err) {
-    logger.warn(err, "readiness: MultiChain connection failed");
+    logger.error({ error: err }, "Readiness: MultiChain connection failed");
     return false;
   }
 }

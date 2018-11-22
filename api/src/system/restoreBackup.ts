@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import logger from "../lib/logger";
 
 export const restoreBackup = async (
   multichainHost: string,
@@ -17,8 +18,10 @@ export const restoreBackup = async (
       await axios.post(`http://${multichainHost}:${backupApiPort}/chain/`, data, config);
     } catch (err) {
       if (err.response.status === 400) {
+        logger.error({ error: err }, "File corrupt");
         throw { kind: "CorruptFileError" };
       } else {
+        logger.error({ error: err }, "An error occured while restoring the backup");
         throw new Error(err.message);
       }
     }

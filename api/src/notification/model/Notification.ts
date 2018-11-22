@@ -5,7 +5,7 @@ import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
-import logger from "../../lib/logger"
+import logger from "../../lib/logger";
 
 const streamName = "notifications";
 
@@ -60,11 +60,13 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
+      logger.warn("The stream does not exist yet. Creating the stream and trying again.");
       // The stream does not exist yet. Create the stream and try again:
       return multichain
         .getOrCreateStream({ kind: "notifications", name: streamName })
         .then(() => publishEvent());
     } else {
+      logger.error({ error: err }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -79,10 +81,12 @@ export async function get(
     .v2_readStreamItems(streamName, token.userId)
     .catch(err => {
       if (err.kind === "NotFound" && err.what === "stream notifications") {
+        logger.warn("The stream does not exist yet.");
         // The stream does not exist yet, which happens on (freshly installed) systems that
         // have not seen any notifications yet.
         return [];
       } else {
+        logger.error({ error: err }, `Getting stream failed.`);
         throw err;
       }
     });
@@ -114,6 +118,7 @@ export async function get(
       // We've already encountered this notification, so we can apply operations on it.
       const hasProcessedEvent = applyMarkRead(event, notification);
       if (!hasProcessedEvent) {
+        logger.error({ event }, "Unexpected event occured");
         throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
       }
     }

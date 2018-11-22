@@ -78,7 +78,10 @@ async function ensureOrganizationAddress(
           .map((info: GetaddressesItem) => info.address)
           .find(_ => true),
       );
-    if (!addressFromWallet) throw Error("Could not obtain wallet address!");
+    if (!addressFromWallet) {
+      logger.error({ error: { multichain, organization } }, "Could not obtain wallet address");
+      throw Error("Could not obtain wallet address!");
+    }
 
     const privkey = await multichain.getRpcClient().invoke("dumpprivkey", addressFromWallet);
     // logger.trace({ addressFromWallet, privkey });
@@ -92,7 +95,7 @@ async function ensureOrganizationAddress(
       address: addressFromWallet,
     };
     const streamItem = { json: orgaAddressItem };
-    logger.debug(`Publishing wallet address to ${streamName}/${JSON.stringify(streamItemKey)}`);
+    logger.debug(`Publishing wallet address to ${streamName}/${streamItemKey}`);
     await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
     return addressFromWallet;
   }

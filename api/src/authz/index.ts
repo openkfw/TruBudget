@@ -1,7 +1,7 @@
+import logger from "../lib/logger";
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
 import { AllowedUserGroupsByIntent, People } from "./types";
-import logger from "../lib/logger";
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
@@ -26,6 +26,7 @@ export const getAllowedIntents = (
   const allowedIntents = Object.keys(resourcePermissions as any).filter(intent =>
     hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
+  logger.debug({ userAndGroups, allowedIntents }, `Getting allowed intents for user ${userAndGroups[0]}`);
   return allowedIntents;
 };
 
@@ -36,27 +37,25 @@ const can = async (
 ): Promise<boolean> => {
   if (token.userId === "root") {
     // root can do everything
+    logger.debug("Root access. All intents granted.");
     return true;
   } else {
-    if (!resourcePermissions[intent]) return false;
+    if (!resourcePermissions[intent]) {
+      logger.info(
+        { resourcePermissions },
+        `Acces denied for user ${token.userId} with intent ${intent}`,
+      );
+      return false;
+    }
     const allowedUsersAndGroups = resourcePermissions[intent];
     const currentUserAndGroups = await getUserAndGroups(token);
-    return hasIntersection(currentUserAndGroups, allowedUsersAndGroups);
+    const userAllowed = hasIntersection(currentUserAndGroups, allowedUsersAndGroups);
+    logger.debug(
+      { resourcePermissions },
+      `${userAllowed ? "Allowed" : "Denied"} user ${token.userId} access with intent ${intent}`,
+    );
+    return userAllowed;
   }
-};
-
-const loggedCan = async (
-  token: AuthToken,
-  intent: Intent,
-  resourcePermissions: AllowedUserGroupsByIntent,
-): Promise<boolean> => {
-  const canDo = await can(token, intent, resourcePermissions);
-  logger.info(
-    `${canDo ? "ALLOWED" : "DENIED"} user ${token.userId} access with intent "${intent}"${
-      resourcePermissions ? ` to ${JSON.stringify(resourcePermissions)}` : ""
-    }`,
-  );
-  return canDo;
 };
 
 /*
@@ -70,8 +69,8 @@ export const authorized = (token: AuthToken, intent: Intent) => async (
 ): Promise<undefined> => {
   const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
   if (!canDo) {
-    logger.error("User not authorized", {token, intent, resourcePermissions});
-    throw {kind: "NotAuthorized", token, intent };
+    logger.error({ token, intent, resourcePermissions }, "User not authorized");
+    throw { kind: "NotAuthorized", token, intent };
   }
   return;
 };

@@ -23,6 +23,10 @@ export async function getPrivKey(
   const vault = await readVault(multichain, organization, organizationVaultSecret);
 
   if (vault === undefined || !vault[address]) {
+    logger.error(
+      { error: { multichain, organization } },
+      `Private key not found for ${organization}/${address}`,
+    );
     throw Error(`privkey not found for ${organization}/${address}`);
   }
 
@@ -89,6 +93,7 @@ export function vaultFromHexString(organizationVaultSecret: string, dataHexStrin
 
   const plaintextBuffer = Buffer.alloc(cipherBuffer.length - sodium.crypto_secretbox_MACBYTES);
   if (!sodium.crypto_secretbox_open_easy(plaintextBuffer, cipherBuffer, nonceBuffer, keyBuffer)) {
+    logger.error("Vault decryption failed");
     throw Error("Vault decryption failed!");
   }
 

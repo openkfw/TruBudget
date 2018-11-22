@@ -25,6 +25,7 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
     try {
       await request.jwtVerify();
     } catch (err) {
+      logger.error({ error: err }, "Authentication error");
       reply.status(401).send({
         apiVersion: DEFAULT_API_VERSION,
         error: { code: 401, message: "A valid JWT auth bearer token is required for this route." },
@@ -89,9 +90,9 @@ export const createBasicApp = (
         const d2 = JSON.stringify(data, null, 2);
 
         if (d1 !== d2) {
-          console.log("ALERT!: Redacted additional payload paramters!");
-          console.log("Original Payload: \n", d1);
-          console.log("Redacted Payload: \n", d2);
+          logger.warn("ALERT!: Redacted additional payload paramters!");
+          logger.warn("Original Payload: \n", d1);
+          logger.warn("Redacted Payload: \n", d2);
         }
       } else {
         valid = validator(data);
@@ -100,7 +101,7 @@ export const createBasicApp = (
     };
   });
 
-  server.register(metricsPlugin, {endpoint: '/metrics'});
+  server.register(metricsPlugin, { endpoint: "/metrics" });
 
   registerSwagger(server, urlPrefix, apiPort, swaggerBasePath);
 

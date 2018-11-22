@@ -1,12 +1,12 @@
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import deepcopy from "../../lib/deepcopy";
+import logger from "../../lib/logger";
 import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
 import { isValid } from "./AccessVote";
-import logger from "../../lib/logger";
 
 const streamName = "nodes";
 
@@ -82,7 +82,7 @@ export async function publish(
   const streamItem = { json: event };
 
   const publishEvent = () => {
-    logger.info(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+    logger.info(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
     return multichain
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)
@@ -92,10 +92,12 @@ export async function publish(
   return publishEvent().catch(err => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
+      logger.warn("The stream does not exist yet. Creating the stream and trying again.");
       return multichain
         .getOrCreateStream({ kind: "nodes", name: streamName })
         .then(() => publishEvent());
     } else {
+      logger.error({ error: err }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -108,8 +110,10 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
       if (err.kind === "NotFound" && err.what === "stream nodes") {
         // The stream does not exist yet, which happens on (freshly installed) systems that
         // have not seen any notifications yet.
+        logger.warn("The stream does not exist yet.");
         return [];
       } else {
+        logger.error({ error: err }, `Getting stream items failed.`);
         throw err;
       }
     });
@@ -121,6 +125,7 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
     const event = item.data.json as Event;
 
     if (item.keys.length !== 1) {
+      logger.error({ keys: item.keys }, "Unexpected item key in 'nodes' stream");
       throw Error(`Unexpected item key in "nodes" stream: ${JSON.stringify(item.keys)}`);
     }
     const address = item.keys[0];
@@ -130,11 +135,13 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
       nodeInfo = handleCreate(event);
     }
     if (nodeInfo === undefined) {
+      logger.error({ event, nodeInfo }, "Event cannot be handled");
       throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
     } else {
       nodeEventsByAddress.set(address, nodeInfo);
       const { organization } = nodeInfo.address;
       if (organization) organizationsByAddress.set(address, organization);
+      logger.debug({ organization }, "Setting organization.");
     }
   }
   for (const [address, info] of nodeEventsByAddress.entries()) {

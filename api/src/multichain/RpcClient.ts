@@ -1,10 +1,12 @@
+import axios, { AxiosError, AxiosInstance } from "axios";
 import * as http from "http";
 import * as https from "https";
+import logger from "../lib/logger";
 import { ConnectionSettings } from "./RpcClient.h";
-import RpcResponse from "./RpcResponse.h";
 import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
-import axios, { AxiosInstance, AxiosError } from "axios";
+import RpcResponse from "./RpcResponse.h";
+import * as bodyParser from "body-parser";
 
 export class RpcClient {
   call: (string, any) => any;
@@ -14,7 +16,7 @@ export class RpcClient {
     const protocol = `${settings.protocol || "http"}`;
     const host = settings.host || "localhost";
     const port = settings.port || 8570;
-
+    logger.debug({ params: { protocol, host, port, settings } }, "Creating Axios instance");
     this.instance = axios.create({
       baseURL: `${protocol}://${host}:${port}/`,
       method: "POST",
@@ -23,22 +25,23 @@ export class RpcClient {
       withCredentials: true,
       auth: {
         username: settings.username || "multichainrpc",
-        password: settings.password
-      }
+        password: settings.password,
+      },
     });
   }
 
   invoke(method: string, ...params: any[]): any {
+    logger.debug({ method, params }, `Invoking method ${method}`);
     const request: RpcRequest = {
       method,
-      params
+      params,
     };
-
-    return new Promise<RpcResponse>((resolve, reject) => {
+    return new Promise<RpcResponse>(async (resolve, reject) =>  {
       this.instance
         .post("/", JSON.stringify(request))
         .then(resp => {
           // this is only on Response code 2xx
+          logger.debug("Received valid response.");
           resolve(resp.data.result);
         })
         .catch((error: AxiosError) => {
@@ -49,27 +52,29 @@ export class RpcClient {
             // that falls out of the range of 2xx and WITH multichain errors:
             response = error.response.data.error;
             reject(response);
+            logger.error({ error: response }, `Error during invoke of ${method}. Multichain errors occured.`);
             return;
           }
 
           if (error.response) {
             // non 2xx answer but no multichain data
+            logger.error({ error: error.response }, `Error during invoke of ${method}. No multichain data.`);
             response = new RpcError(
               Number(error.response.status),
               String(error.response.statusText),
               error.response.headers,
-              error.response.data
+              error.response.data,
             );
           } else if (error.request) {
             // The request was made but no response was received
             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
             // http.ClientRequest in node.js
             // console.error(error.request);
-            console.log(error)
+            logger.error({ error }, "No response received.");
             response = new RpcError(500, "No Response", {}, error.message);
           } else {
             // Something happened in setting up the request that triggered an Error
-            console.error("Error", error.message);
+            logger.error({ error }, "Error ", error.message);
             response = new RpcError(500, "other error", {}, "");
           }
           reject(response);
@@ -79,6 +84,7 @@ export class RpcClient {
 }
 
 // DEPRECATED, we're testing the new implementation
+// TODO -- Remove this code block as it's not needed
 export class VanillaNodeJSRpcClient {
   call: (string, any) => any;
   constructor(settings: ConnectionSettings) {
@@ -88,13 +94,13 @@ export class VanillaNodeJSRpcClient {
       port: settings.port || 8570,
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      auth: `${settings.username || "multichainrpc"}:${settings.password}`
+      auth: `${settings.username || "multichainrpc"}:${settings.password}`,
     };
     const sendRequest = settings.protocol === "https" ? https.request : http.request;
     this.call = (method: string, params: any[]) => {
       const request: RpcRequest = {
         method,
-        params
+        params,
       };
 
       return new Promise<RpcResponse>((resolve, reject) => {
@@ -119,8 +125,8 @@ export class VanillaNodeJSRpcClient {
                 Number(message.statusCode),
                 String(message.statusMessage),
                 message.headers,
-                body
-              )
+                body,
+              ),
             );
             return;
           }

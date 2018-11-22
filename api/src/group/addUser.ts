@@ -3,9 +3,9 @@ import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import logger from "../lib/logger";
 import { isNonemptyString, isObject, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
-
 export async function addUserToGroup(
   multichain: MultichainClient,
   req: AuthenticatedRequest,
@@ -20,6 +20,7 @@ export async function addUserToGroup(
   const groupExists = await Group.groupExists(multichain, groupId);
 
   if (!groupExists) {
+    logger.error(`Group ${groupId} not found.`);
     throw { kind: "NotFound", targetUserId: groupId };
   }
   const event = {

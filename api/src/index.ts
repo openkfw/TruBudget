@@ -113,15 +113,17 @@ console.log("Register fastify endpoint");
 
 server.listen(port, "0.0.0.0", async err => {
   if (err) {
-    logger.fatal(err);
+    logger.fatal({ err }, "Connection could not be established. Aborting.");
     process.exit(1);
   }
-  logger.info(`server is listening on ${port}`);
+  logger.info({ port }, `Server is listening on ${port}`);
 
   const retryIntervalMs = 5000;
 
   while (!(await isReady(multichainClient))) {
-    logger.error("MultiChain connection/permissions not ready yet");
+    logger.error(
+      `MultiChain connection/permissions not ready yet. Trying again in ${retryIntervalMs / 1000}s`,
+    );
     await timeout(retryIntervalMs);
   }
   logger.info("MultiChain connection established");
@@ -131,14 +133,17 @@ server.listen(port, "0.0.0.0", async err => {
       .then(() => true)
       .catch(() => false))
   ) {
-    logger.error("failed to create organization stream");
+    logger.error({ multichainClient, organization }, "Failed to create organization stream.");
     await timeout(retryIntervalMs);
   }
-  logger.info("organization stream present");
+  logger.info({ multichainClient, organization }, "Organization stream present");
 
   while (!(await registerSelf())) {
-    logger.error("failed to register node");
+    logger.error(
+      { multichainClient, organization },
+      `Failed to register node. Trying again in ${retryIntervalMs / 1000}s`,
+    );
     await timeout(retryIntervalMs);
   }
-  logger.info("node registered in nodes stream");
+  logger.info({ multichainClient, organization }, "Node registered in nodes stream");
 });

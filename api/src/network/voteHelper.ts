@@ -16,15 +16,23 @@ export async function voteHelper(
   const callerAddress = user.organizationAddress;
   const currentVote = await getCurrentVote(multichain, callerAddress, targetAddress);
   const currentAccess = await getCurrentAccess(multichain, targetAddress);
-  logger.debug({ callerAddress, targetAddress, currentVote, currentAccess });
+  logger.debug({ callerAddress, targetAddress, currentVote, currentAccess }, "Preparing vote");
 
   if (currentVote !== "none") {
+    logger.error(
+      `Conflict: your organization ${user.organization} (${callerAddress}) has ` +
+        `already voted for assigning ${currentVote} permissions to ${targetAddress}.`,
+    );
     const message =
       `Conflict: your organization ${user.organization} (${callerAddress}) has ` +
       `already voted for assigning ${currentVote} permissions to ${targetAddress}.`;
     return [409, { apiVersion: "1.0", error: { code: 409, message } }];
   }
   if (currentAccess !== "none") {
+    logger.error(
+      `Conflict: the organization (${targetAddress}) has already ` +
+        `${currentAccess} permissions assigned.`,
+    );
     const message =
       `Conflict: the organization (${targetAddress}) has already ` +
       `${currentAccess} permissions assigned.`;
@@ -56,14 +64,21 @@ async function getCurrentAccess(
     .map(x => x.isEffective)
     .find(_ => true);
 
-  if (hasAdminPermissions) return "admin";
+  if (hasAdminPermissions) {
+    logger.debug("Node has admin permissions");
+    return "admin";
+  }
 
   const hasBasicPermissions = permissions
     .filter(x => x.permission === "connect")
     .map(x => x.isEffective)
     .find(_ => true);
 
-  if (hasBasicPermissions) return "basic";
+  if (hasBasicPermissions) {
+    logger.debug("Node has basic permissions");
+    return "basic";
+  }
 
+  logger.debug("Node has no permissions");
   return "none";
 }

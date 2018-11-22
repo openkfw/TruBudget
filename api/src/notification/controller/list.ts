@@ -8,6 +8,7 @@ import * as Project from "../../project/model/Project";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Notification from "../model/Notification";
+import logger from "../../lib/logger";
 
 type ResourceMetadataMap = object;
 
@@ -86,6 +87,7 @@ async function buildDisplayNameMap(
     const workflowitemId = getResourceId(notification.resources, "workflowitem");
 
     if (projectId === undefined) {
+      logger.error({error: notification.resources}, "Unexpected resource description");
       throw Error(`unexpected resource description: ${JSON.stringify(notification.resources)}`);
     }
 

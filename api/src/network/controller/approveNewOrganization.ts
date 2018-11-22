@@ -1,4 +1,5 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import * as Nodes from "../model/Nodes";
@@ -19,6 +20,7 @@ export async function approveNewOrganization(
   );
 
   if (!futureOrganizationAddress) {
+    logger.error(`No node registered for organization '${organization}'`);
     throw Error(`no node registered for organization "${organization}"`);
   }
 

@@ -9,6 +9,7 @@ import {
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
@@ -65,6 +66,10 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
 
   // Make sure the parent subproject is not already closed:
   if (await Subproject.isClosed(multichain, projectId, subprojectId)) {
+    logger.error(
+      { error: { multichain, projectId, subprojectId } },
+      "Cannot add a workflowitem to a closed subproject.",
+    );
     throw {
       kind: "PreconditionError",
       message: "Cannot add a workflowitem to a closed subproject.",
@@ -80,6 +85,11 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
   let currency;
   if (amountType === "N/A") {
     if (!isUndefinedOrNull(data.amount) || !isUndefinedOrNull(data.currency)) {
+      logger.error(
+        { error: { projectId, subprojectId, amountType } },
+        "If the amountType is 'N/A' " +
+          "(= not applicable), the fields 'amount' and 'currency' must not be present.",
+      );
       throwParseError(
         ["amountType", "amount", "currency"],
         'If the amountType is "N/A" (= not applicable), the fields "amount" and "currency" must not be present.',

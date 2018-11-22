@@ -1,6 +1,7 @@
 import Intent from "../../authz/intents";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
+import logger from "../../lib/logger";
 
 // Allows a custom ordering among workflowitems. Note that not all workflowitems need
 // to be included; those that aren't are simply ordered by their ctime and concatenated
@@ -67,8 +68,16 @@ export async function fetchWorkflowitemOrdering(
     })
     .catch(err => {
       if (err.kind === "NotFound") {
+        logger.error(
+          { error: { err, multichain, projectId, subprojectId } },
+          "Stream items not found",
+        );
         return [{ data: { json: { dataVersion: 1, data: [] } } }];
       } else {
+        logger.error(
+          { error: { err, multichain, projectId, subprojectId } },
+          "An error occured during while getting stream items.",
+        );
         throw err;
       }
     });

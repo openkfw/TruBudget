@@ -1,5 +1,5 @@
-import * as winston from "winston";
 import { hasIntersection } from ".";
+import logger from "../lib/logger";
 import { Event } from "../multichain/event";
 import Intent from "./intents";
 
@@ -35,11 +35,15 @@ export function onlyAllowedData(event: Event, userIntents: Intent[]): Event | nu
   if (requiredPermissions.has(observedIntent)) {
     const allowedIntents = requiredPermissions.get(observedIntent);
     const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
-    if (!isAllowedToSee) return null;
+    if (!isAllowedToSee) {
+      logger.info("User is not allowed to see the selected resource");
+      return null;
+    }
     return redactEvent(event, userIntents);
   } else if (userIntents.includes(observedIntent)) {
     // If not explicitly stated otherwise, always allow to see events related to
     // something the user is already entitled for
+    logger.debug("Permissions not restriced");
     return event;
   } else {
     return null;
@@ -59,7 +63,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
         delete event.data.permissions;
       }
     } else {
-      winston.warn(`Don't know how to handle this event:`, event);
+      logger.warn(`Don't know how to handle this event:`, event);
       // Since we don't know what data looks like, we remove it altogether:
       event.data = {};
     }
@@ -75,7 +79,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
         delete event.data.permissions;
       }
     } else {
-      winston.warn(`Don't know how to handle this event:`, event);
+      logger.warn(`Don't know how to handle this event:`, event);
       // Since we don't know what data looks like, we remove it altogether:
       event.data = {};
     }
@@ -91,7 +95,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
         delete event.data.permissions;
       }
     } else {
-      winston.warn(`Don't know how to handle this event:`, event);
+      logger.warn(`Don't know how to handle this event:`, event);
       // Since we don't know what data looks like, we remove it altogether:
       event.data = {};
     }
