@@ -1,16 +1,10 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { globalIntentOrder } from "../../permissions";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import strings from "../../localizeStrings";
-import _isEmpty from "lodash/isEmpty";
 
 const styles = theme => ({
   root: {
@@ -24,9 +18,7 @@ const styles = theme => ({
     fontWeight: theme.typography.fontWeightMedium
   },
   detailsDiv: {
-    width: "100%",
-    height: 210,
-    overflowY: "scroll"
+    width: "100%"
   },
   checkbox: {
     padding: "5px"
@@ -38,50 +30,67 @@ const styles = theme => ({
   }
 });
 
-const GlobalPermissions = props => {
-  const { classes, userToAdd, grantGlobalPermission, revokeGlobalPermission, globalPermissions, expandPermissionsPanel, permissionsExpanded } = props;
-  const { username, displayName, organization } = userToAdd;
+const renderPermissions = (
+  classes,
+  globalPermissions,
+  revokeGlobalPermission,
+  grantGlobalPermission,
+  resourceId,
+  allowedIntents
+) => {
+  return globalIntentOrder.map((item, index) => {
+    const intents = item.intents.map(intent => {
+      const checked = globalPermissions[intent] ? globalPermissions[intent].includes(resourceId) : false;
+      const disabled = checked
+        ? allowedIntents.includes("global.revokePermission")
+        : allowedIntents.includes("global.grantPermission");
+      return (
+        <FormControlLabel
+          key={intent}
+          control={
+            <Checkbox
+              className={classes.checkbox}
+              checked={checked}
+              disabled={!disabled}
+              onChange={() =>
+                globalPermissions[intent] && globalPermissions[intent].includes(resourceId)
+                  ? revokeGlobalPermission(resourceId, intent)
+                  : grantGlobalPermission(resourceId, intent)
+              }
+            />
+          }
+          label={strings.permissions[intent.replace(/[.]/g, "_")] || "Intent not defined"}
+        />
+      );
+    });
+    return (
+      <div key={index} className={classes.formGroupDiv}>
+        <FormGroup>{intents}</FormGroup>
+      </div>
+    );
+  });
+};
 
+const GlobalPermissions = props => {
+  const {
+    classes,
+    resourceId,
+    grantGlobalPermission,
+    revokeGlobalPermission,
+    globalPermissions,
+    allowedIntents
+  } = props;
+  const permissions = renderPermissions(
+    classes,
+    globalPermissions,
+    revokeGlobalPermission,
+    grantGlobalPermission,
+    resourceId,
+    allowedIntents
+  );
   return (
     <div className={classes.root}>
-      <ExpansionPanel
-        expanded={permissionsExpanded}
-        disabled={_isEmpty(username) || _isEmpty(displayName) || _isEmpty(organization)}
-        className={classes.expansionPanel}
-        onChange = {(_, expanded) => expandPermissionsPanel(expanded)}
-      >
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Administrator Permissions</Typography>
-        </ExpansionPanelSummary>/>
-        <ExpansionPanelDetails>
-          <div className={classes.detailsDiv}>
-            {globalIntentOrder.map((item, index) => {
-              const intents = item.intents.map(intent => (
-                <FormControlLabel
-                  key={intent}
-                  control={
-                    <Checkbox
-                      className={classes.checkbox}
-                      checked={globalPermissions[intent] ? globalPermissions[intent].includes(username) : false}
-                      onChange={() =>
-                        globalPermissions[intent] && globalPermissions[intent].includes(username)
-                          ? revokeGlobalPermission(username, intent)
-                          : grantGlobalPermission(username, intent)
-                      }
-                    />
-                  }
-                  label={strings.permissions[intent.replace(/[.]/g, "_")] || "Intent not defined"}
-                />
-              ));
-              return (
-                <div key={index} className={classes.formGroupDiv}>
-                  <FormGroup>{intents}</FormGroup>
-                </div>
-              );
-            })}
-          </div>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+      <div className={classes.detailsDiv}>{permissions}</div>
     </div>
   );
 };

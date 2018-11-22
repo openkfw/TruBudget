@@ -62,7 +62,7 @@ class Api {
   grantGlobalPermission = (userId, intent) => instance.post(`global.grantPermission`, { identity: userId, intent });
 
   revokeGlobalPermission = (userId, intent) => instance.post(`global.revokePermission`, { identity: userId, intent });
-  listGlobalPermissions = () => instance.get(`global.listPermissions`)
+  listGlobalPermissions = () => instance.get(`global.listPermissions`);
 
   listUser = () => instance.get(`/user.list`);
 

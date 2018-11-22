@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 
 import DocumentOverview from "./DocumentOverview";
 import strings from "../../localizeStrings";
+import { Typography } from "@material-ui/core";
 
 const styles = {
   uploadButton: {
@@ -41,10 +42,11 @@ export default class DocumentUpload extends Component {
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
           <TextField
-            helperText={strings.workflow.workflow_document_description}
+            helperText={<Typography> {strings.workflow.workflow_document_description} </Typography>}
             label={strings.workflow.workflow_document_name}
             value={this.state.name}
             id="documentnameinput"
+
             onChange={event => this.setState({ name: event.target.value })}
           />
           <Button
@@ -59,7 +61,7 @@ export default class DocumentUpload extends Component {
                 id="docupload"
                 type="file"
                 style={styles.uploadInput}
-                onChange={(event) => {
+                onChange={event => {
                   if (event.target.files) {
                     const file = event.target.files[0];
                     const reader = new FileReader();

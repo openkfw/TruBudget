@@ -30,7 +30,7 @@ const UsersTable = ({ classes, users, showDashboardDialog }) => {
           <TableRow>
             <TableCell>{strings.common.id}</TableCell>
             <TableCell>{strings.common.name}</TableCell>
-            <TableCell>{strings.usersDashboard.organization}</TableCell>
+            <TableCell>{strings.users.organization}</TableCell>
             <TableCell/>
           </TableRow>
         </TableHead>

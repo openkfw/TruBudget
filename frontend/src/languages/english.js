@@ -52,19 +52,18 @@ const en = {
     workflowItem: "WorkflowItem"
   },
 
-  usersDashboard: {
+  users: {
     full_name: "Full Name",
     new_user: "New User",
     organization: "Organization",
     user_created: "User successfully created",
-    users: "Users"
-  },
-
-  groupDashboard: {
-    add_users: "Add Users",
+    users: "Users",
+    add_user: "Add User",
     group_created: "Group successfully created",
     groups: "Groups",
-    new_group: "New user group"
+    add_group: "Add Group",
+    edit_group: "Edit Group",
+    edit_permissions_for: "Edit permissions for"
   },
 
   nodesDashboard: {

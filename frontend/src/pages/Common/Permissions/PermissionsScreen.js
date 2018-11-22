@@ -66,7 +66,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.usersDashboard.users} </ListSubheader>
+          <ListSubheader> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -90,7 +90,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.groupDashboard.groups} </ListSubheader>
+          <ListSubheader> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );

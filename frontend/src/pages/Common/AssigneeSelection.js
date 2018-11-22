@@ -77,7 +77,7 @@ class AssigneeSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.usersDashboard.users} </ListSubheader>
+          <ListSubheader> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -97,7 +97,7 @@ class AssigneeSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.groupDashboard.groups} </ListSubheader>
+          <ListSubheader> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );

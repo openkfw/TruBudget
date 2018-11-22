@@ -16,14 +16,13 @@ import {
   createUser,
   grantGlobalPermission,
   revokeGlobalPermission,
-  expandPermissionsPanel,
 } from "./actions";
 
-import DashboardDialog from "./DashboardDialog";
+import Dialog from "./Dialog";
 
-class DashboardDialogContainer extends Component {
+class DialogContainer extends Component {
   render() {
-    return <DashboardDialog {...this.props} />;
+    return <Dialog {...this.props} />;
   }
 }
 
@@ -39,7 +38,8 @@ const mapStateToProps = state => {
     editMode: state.getIn(["users", "editMode"]),
     editDialogShown: state.getIn(["users", "editDialogShown"]),
     globalPermissions: state.getIn(["users", "globalPermissions"]),
-    permissionsExpanded: state.getIn(["users", "permissionsExpanded"])
+    permissionsExpanded: state.getIn(["users", "permissionsExpanded"]),
+    allowedIntents: state.getIn(["login", "allowedIntents"])
   };
 };
 
@@ -60,8 +60,7 @@ const mapDispatchToProps = dispatch => {
     hideDashboardDialog: () => dispatch(hideDashboardDialog()),
     grantGlobalPermission: (userId, intent) => dispatch(grantGlobalPermission(userId, intent)),
     revokeGlobalPermission: (userId, intent) => dispatch(revokeGlobalPermission(userId, intent)),
-    expandPermissionsPanel: (expand) => dispatch(expandPermissionsPanel(expand))
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(DashboardDialogContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(DialogContainer)));

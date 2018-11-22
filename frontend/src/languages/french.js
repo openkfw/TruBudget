@@ -152,19 +152,19 @@ const fr = {
     workflow_upload_document: "Télécharger"
   },
 
-  usersDashboard: {
+  users: {
     full_name: "French: Full Name",
     new_user: "French: New User",
     organization: "French: Organization",
     user_created: "French: User successfully created",
-    users: "French: Users"
-  },
-
-  groupDashboard: {
+    users: "French: Users",
     add_users: "French: Add Users",
     group_created: "French: Group successfully created",
     groups: "French: Groups",
-    new_group: "French: New user group"
+    new_group: "French: New user group",
+    add_group: "French: Add Group",
+    edit_group: "French: Edit Group",
+    edit_permissions_for: "French: Edit permissions for"
   },
 
   nodesDashboard: {

@@ -150,19 +150,19 @@ const de = {
     workflow_upload_document: "Upload"
   },
 
-  usersDashboard: {
+  users: {
     full_name: "German: Full Name",
     new_user: "German: New User",
     organization: "German: Organization",
     user_created: "German: User successfully created",
-    users: "German: Users"
-  },
-
-  groupDashboard: {
+    users: "German: Users",
     new_group: "German: New user group",
     groups: "German: Groups",
     add_users: "German: Add Users",
-    group_created: "German: Group successfully created"
+    group_created: "German: Group successfully created",
+    add_group: "German: Add Group",
+    edit_group: "German: Edit Group",
+    edit_permissions_for: "German: Edit permissions for"
   },
 
   nodesDashboard: {

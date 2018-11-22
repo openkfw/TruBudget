@@ -2,12 +2,12 @@ import React from "react";
 
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
+import { withStyles } from "@material-ui/core";
 
 import strings from "../../localizeStrings";
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
-import { withStyles, Divider } from "@material-ui/core";
 import GlobalPermissions from "./GlobalPermissions";
 
 const styles = {
@@ -43,63 +43,57 @@ const UserDialogContent = ({
   setUsername,
   setPassword,
   organization,
-  setAdminPermissions,
   grantGlobalPermission,
   revokeGlobalPermission,
   globalPermissions,
   editMode,
-  expandPermissionsPanel,
-  permissionsExpanded
+  permissionsExpanded,
+  allowedIntents
 }) => {
   const { displayName, password, username } = userToAdd;
-  const disabled= editMode ? true: false
-  return (
-    <div  className={classes.container}>
-      <div  className={classes.textInputContainer}>
-        <TextInputWithIcon
-          className={classes.textInput}
-          label={strings.usersDashboard.full_name}
-          value={displayName}
-          error={false}
-          disabled={disabled}
-          icon={<NameIcon />}
-          id="fullname"
-          onChange={event => setDisplayName(event.target.value)}
-        />
-        <TextInputWithIcon
-          className={classes.textInput}
-          label={strings.usersDashboard.organization}
-          value={organization}
-          id="organization"
-          disabled={true}
-          error={false}
-          icon={<OrgaIcon />}
-          onChange={event => setOrganization(event.target.value)}
-        />
-      </div>
-      <div className={classes.textInputContainer}>
-        <Username username={username}   disabled={disabled} storeUsername={setUsername} failed={false} id="username" />
-        <Password
-          password={password}
-          storePassword={setPassword}
-          failed={false}
-          disabled={disabled}
-          id="password"
-        />
-      </div>
-      {editMode ? (
-        <div >
-          <Divider className={classes.divider} />
-          <GlobalPermissions
-            grantGlobalPermission={grantGlobalPermission}
-            revokeGlobalPermission={revokeGlobalPermission}
-            userToAdd={userToAdd}
-            globalPermissions={globalPermissions}
-            expandPermissionsPanel = {expandPermissionsPanel}
-          permissionsExpanded ={permissionsExpanded}
+  const disabled = editMode ? true : false;
+  if (!editMode) {
+    return (
+      <div className={classes.container}>
+        <div className={classes.textInputContainer}>
+          <TextInputWithIcon
+            className={classes.textInput}
+            label={strings.users.full_name}
+            value={displayName}
+            error={false}
+            disabled={disabled}
+            icon={<NameIcon />}
+            id="fullname"
+            onChange={event => setDisplayName(event.target.value)}
+          />
+          <TextInputWithIcon
+            className={classes.textInput}
+            label={strings.users.organization}
+            value={organization}
+            id="organization"
+            disabled={true}
+            error={false}
+            icon={<OrgaIcon />}
+            onChange={event => setOrganization(event.target.value)}
           />
         </div>
-      ) : null}
+        <div className={classes.textInputContainer}>
+          <Username username={username} disabled={disabled} storeUsername={setUsername} failed={false} id="username" />
+          <Password password={password} storePassword={setPassword} failed={false} disabled={disabled} id="password" />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <GlobalPermissions
+        grantGlobalPermission={grantGlobalPermission}
+        revokeGlobalPermission={revokeGlobalPermission}
+        resourceId={userToAdd.username}
+        globalPermissions={globalPermissions}
+        permissionsExpanded={permissionsExpanded}
+        allowedIntents={allowedIntents}
+      />
     </div>
   );
 };

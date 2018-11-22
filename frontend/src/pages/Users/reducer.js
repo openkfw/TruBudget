@@ -16,7 +16,6 @@ import {
   REMOVE_INITIAL_USER,
   CREATE_GROUP_SUCCESS,
   LIST_GLOBAL_PERMISSIONS_SUCCESS,
-  EXPAND_PERMISSION_PANEL
 } from "./actions";
 
 const defaultState = fromJS({
@@ -39,7 +38,6 @@ const defaultState = fromJS({
     name: "",
     groupUsers: []
   },
-  permissionsExpanded: true
 });
 
 export default function userDashboardReducer(state = defaultState, action) {
@@ -85,8 +83,6 @@ export default function userDashboardReducer(state = defaultState, action) {
       });
     case LIST_GLOBAL_PERMISSIONS_SUCCESS:
       return state.set("globalPermissions", action.data);
-    case EXPAND_PERMISSION_PANEL:
-      return state.set("permissionsExpanded", action.expanded);
     default:
       return state;
   }

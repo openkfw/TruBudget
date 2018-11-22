@@ -16,6 +16,10 @@ const styles = {
   },
   textInput: {
     width: "50%"
+  },
+  divider: {
+    marginTop: 20,
+    marginBottom: 20
   }
 };
 
@@ -40,7 +44,7 @@ const GroupDialogContent = ({
     removeUserFromGroup(groupId, userId);
   };
   return (
-    <div>
+    <div >
       <div className={classes.textInputContainer}>
         <TextInputWithIcon
           className={classes.textInput}
@@ -69,6 +73,7 @@ const GroupDialogContent = ({
           handleDelete={editMode ? removeUser : removeInitialUserFromGroup}
         />
       </div>
+
     </div>
   );
 };
