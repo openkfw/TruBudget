@@ -21,7 +21,7 @@ export async function removeUserFromGroup(
   const groupExists = await Group.groupExists(multichain, groupId);
 
   if (!groupExists) {
-    logger.error(`Group ${groupId} does not exist.`);
+    logger.error({ error: { groupId } }, `Group ${groupId} does not exist.`);
     throw { kind: "NotFound", targetUserId: groupId };
   }
   const event = {

@@ -36,7 +36,7 @@ export class RpcClient {
       method,
       params,
     };
-    return new Promise<RpcResponse>(async (resolve, reject) =>  {
+    return new Promise<RpcResponse>(async (resolve, reject) => {
       this.instance
         .post("/", JSON.stringify(request))
         .then(resp => {
@@ -52,13 +52,19 @@ export class RpcClient {
             // that falls out of the range of 2xx and WITH multichain errors:
             response = error.response.data.error;
             reject(response);
-            logger.error({ error: response }, `Error during invoke of ${method}. Multichain errors occured.`);
+            logger.error(
+              { error: { response } },
+              `Error during invoke of ${method}. Multichain errors occured.`,
+            );
             return;
           }
 
           if (error.response) {
             // non 2xx answer but no multichain data
-            logger.error({ error: error.response }, `Error during invoke of ${method}. No multichain data.`);
+            logger.error(
+              { error: error.response },
+              `Error during invoke of ${method}. No multichain data.`,
+            );
             response = new RpcError(
               Number(error.response.status),
               String(error.response.statusText),

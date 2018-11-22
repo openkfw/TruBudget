@@ -186,7 +186,7 @@ const handleError = (req, res, err: any) => {
           },
         ]);
       } else {
-        logger.error(err);
+        logger.error({error: {err}}, "Internal server error");
         send(res, [
           500,
           {

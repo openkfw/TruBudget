@@ -11,6 +11,6 @@ export interface Event {
 }
 
 export function throwUnsupportedEventVersion(event: Event): never {
-  logger.error({ error: event }, "Unsupported event version.");
+  logger.error({ error: {event} }, "Unsupported event version.");
   throw { kind: "UnsupportedEventVersion", event };
 }

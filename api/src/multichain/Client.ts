@@ -193,7 +193,10 @@ export class RpcMultichainClient implements MultichainClient {
   public async getValue(streamName: StreamName, key: string): Promise<StreamItemPair> {
     const result = await this.getValues(streamName, key, 1);
     if (result.length !== 1) {
-      logger.error({ streamName, key }, `Expected a single value, got: ${result || "nothing"}`);
+      logger.error(
+        { error: { streamName, key } },
+        `Expected a single value, got: ${result || "nothing"}`,
+      );
       throw {
         kind: "NotFound",
         what: { message: `Expected a single value, got: ${result}`, streamName, key },
@@ -231,7 +234,7 @@ export class RpcMultichainClient implements MultichainClient {
     nValues: number = maxItemCount,
   ): Promise<Liststreamkeyitems.Item[]> {
     if (nValues <= 0) {
-      logger.error({ error: {streamName, key} }, `Expected nValues > 0, got ${nValues}`);
+      logger.error({ error: { streamName, key } }, `Expected nValues > 0, got ${nValues}`);
       throw Error(`expected nValues > 0, got ${nValues}`);
     }
     return this.rpcClient

@@ -47,7 +47,7 @@ const handleCreate = (event: Event): { resource: GroupResource } | undefined => 
   }
   throwUnsupportedEventVersion(event);
   logger.error(
-    { event },
+    { error: { event } },
     `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
   );
 };
@@ -129,7 +129,7 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
-        logger.error({ event }, "Failed to initialize resource");
+        logger.error({ error: { event } }, "Failed to initialize resource");
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -138,7 +138,7 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
       // Since we've a group now, we can add/remove Users
       const hasProcessedEvent = addUser(event, resource) || removeUser(event, resource);
       if (!hasProcessedEvent) {
-        logger.error({ event }, "Unexpected event.");
+        logger.error({ error: { event } }, "Unexpected event.");
         throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
       }
     }
@@ -160,7 +160,7 @@ function addUser(event: Event, resource: GroupResource): true | undefined {
     }
   }
   logger.error(
-    { event },
+    { error: { event } },
     `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
   );
   throwUnsupportedEventVersion(event);
@@ -181,7 +181,7 @@ function removeUser(event: Event, resource: GroupResource): true | undefined {
     }
   }
   logger.error(
-    { event },
+    { error: { event } },
     `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
   );
   throwUnsupportedEventVersion(event);

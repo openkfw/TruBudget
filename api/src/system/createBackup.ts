@@ -15,7 +15,7 @@ export const createBackup = async (
     });
     return response.data;
   } else {
-    logger.error("Backups can only be created with the root user");
+    logger.error({ error: { userId } }, "Backups can only be created with the root user");
     throw { kind: "AuthenticationError", userId };
   }
 };

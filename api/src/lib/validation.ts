@@ -22,7 +22,7 @@ export async function isUserOrUndefined(multichain, input) {
       });
       return user !== undefined;
     } else {
-      logger.error("Did not receive proper input");
+      logger.error({ error: { input, multichain } }, "Did not receive proper input");
       return false;
     }
   }
@@ -49,7 +49,7 @@ export async function asyncValue(multichain, name, val, isValid, defaultValue?) 
     val = defaultValue; // might be undefined
   }
   if (!(await isValid(multichain, val).catch(_err => false))) {
-    logger.error({ multichain, val, name }, "Error while checking validity");
+    logger.error({ error: { multichain, val, name } }, "Error while checking validity");
     throwParseError([name]);
   }
   return val;

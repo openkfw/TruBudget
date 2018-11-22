@@ -123,7 +123,7 @@ describe("subproject.list", () => {
 
     getSubprojectList(multichain as MultichainClient, req)
       .then(response => {
-        logger.error({ error: response }, "Invalid response received.");
+        logger.error({ error: {response} }, "Invalid response received.");
         throw Error(`Expected no response, got: ${JSON.stringify(response)}`);
       })
       .catch(err => {

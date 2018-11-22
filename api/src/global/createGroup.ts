@@ -37,7 +37,7 @@ export const createGroup = async (
     },
   };
   if (await Group.groupExists(multichain, groupId)) {
-    logger.error("Group already exists", { multichain, groupId });
+    logger.error({ error: { multichain, groupId } }, "Group already exists");
     throw { kind: "GroupAlreadyExists", targetGroupId: req.user.userId } as GroupAlreadyExistsError;
   }
 

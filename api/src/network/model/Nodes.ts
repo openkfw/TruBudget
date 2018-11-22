@@ -125,7 +125,7 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
     const event = item.data.json as Event;
 
     if (item.keys.length !== 1) {
-      logger.error({ keys: item.keys }, "Unexpected item key in 'nodes' stream");
+      logger.error({ error: { keys: item.keys } }, "Unexpected item key in 'nodes' stream");
       throw Error(`Unexpected item key in "nodes" stream: ${JSON.stringify(item.keys)}`);
     }
     const address = item.keys[0];
@@ -135,7 +135,7 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
       nodeInfo = handleCreate(event);
     }
     if (nodeInfo === undefined) {
-      logger.error({ event, nodeInfo }, "Event cannot be handled");
+      logger.error({ error: { event, nodeInfo } }, "Event cannot be handled");
       throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
     } else {
       nodeEventsByAddress.set(address, nodeInfo);

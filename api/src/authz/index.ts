@@ -26,7 +26,10 @@ export const getAllowedIntents = (
   const allowedIntents = Object.keys(resourcePermissions as any).filter(intent =>
     hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
-  logger.debug({ userAndGroups, allowedIntents }, `Getting allowed intents for user ${userAndGroups[0]}`);
+  logger.debug(
+    { userAndGroups, allowedIntents },
+    `Getting allowed intents for user ${userAndGroups[0]}`,
+  );
   return allowedIntents;
 };
 
@@ -69,7 +72,7 @@ export const authorized = (token: AuthToken, intent: Intent) => async (
 ): Promise<undefined> => {
   const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
   if (!canDo) {
-    logger.error({ token, intent, resourcePermissions }, "User not authorized");
+    logger.error({ error: { token, intent, resourcePermissions } }, "User not authorized");
     throw { kind: "NotAuthorized", token, intent };
   }
   return;

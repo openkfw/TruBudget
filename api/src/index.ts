@@ -133,14 +133,17 @@ server.listen(port, "0.0.0.0", async err => {
       .then(() => true)
       .catch(() => false))
   ) {
-    logger.error({ multichainClient, organization }, "Failed to create organization stream.");
+    logger.error(
+      { error: { multichainClient, organization } },
+      "Failed to create organization stream.",
+    );
     await timeout(retryIntervalMs);
   }
   logger.info({ multichainClient, organization }, "Organization stream present");
 
   while (!(await registerSelf())) {
     logger.error(
-      { multichainClient, organization },
+      { error: { multichainClient, organization } },
       `Failed to register node. Trying again in ${retryIntervalMs / 1000}s`,
     );
     await timeout(retryIntervalMs);

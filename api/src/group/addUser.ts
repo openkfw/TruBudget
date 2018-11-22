@@ -20,7 +20,7 @@ export async function addUserToGroup(
   const groupExists = await Group.groupExists(multichain, groupId);
 
   if (!groupExists) {
-    logger.error(`Group ${groupId} not found.`);
+    logger.error({ error: { groupId } }, `Group ${groupId} not found.`);
     throw { kind: "NotFound", targetUserId: groupId };
   }
   const event = {

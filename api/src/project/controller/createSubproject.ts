@@ -21,7 +21,7 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
   const body = req.body;
 
   if (body.apiVersion !== "1.0") {
-    logger.error({ error: body.apiVersion }, "Unexpected API version");
+    logger.error({ error: { apiVersion: body.apiVersion } }, "Unexpected API version");
     throwParseError(["apiVersion"]);
   }
   throwParseErrorIfUndefined(body, ["data"]);
@@ -58,7 +58,7 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
   // check if subprojectId already exists
   const subprojects = await Subproject.get(multichain, req.user, projectId);
   if (!isEmpty(subprojects.filter(s => s.data.id === subprojectId))) {
-    logger.error({ error: subprojectId }, `Subproject ID ${subprojectId} already exists`);
+    logger.error({ error: { subprojectId } }, `Subproject ID ${subprojectId} already exists`);
     throw { kind: "SubprojectIdAlreadyExists", subprojectId } as SubprojectIdAlreadyExistsError;
   }
 

@@ -33,7 +33,7 @@ export const restoreBackup = async (
       },
     ];
   } else {
-    logger.error("An error occured while restoring backup");
+    logger.error({ error: { userId } }, "An error occured while restoring backup");
     throw { kind: "AuthenticationError", userId };
   }
 };
