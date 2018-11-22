@@ -20,7 +20,7 @@ const level = "debug"; // process.env.NODE_ENV === "production" ? "info" : "debu
 const redact = {
   paths: ["rpcSettings.password", "password", "*.passwordDigest", "passwordDigest"],
 };
-const crlf = false;
+const crlf = true;
 const messageKey = "PINOmessage";
 const useLevelLabels = true;
 
