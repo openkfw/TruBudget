@@ -22,6 +22,19 @@ const styles = theme => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightMedium
+  },
+  detailsDiv: {
+    width: "100%",
+    height: 210,
+    overflowY: "scroll"
+  },
+  checkbox: {
+    padding: "5px"
+  },
+  formGroupDiv: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "center"
   }
 });
 
@@ -41,14 +54,14 @@ const GlobalPermissions = props => {
           <Typography className={classes.heading}>Administrator Permissions</Typography>
         </ExpansionPanelSummary>/>
         <ExpansionPanelDetails>
-          <div style={{width: "100%", height: 210, overflowY: "scroll",  }}>
+          <div className={classes.detailsDiv}>
             {globalIntentOrder.map((item, index) => {
               const intents = item.intents.map(intent => (
                 <FormControlLabel
                   key={intent}
                   control={
                     <Checkbox
-                      style={{ padding: "5px" }}
+                      className={classes.checkbox}
                       checked={globalPermissions[intent] ? globalPermissions[intent].includes(username) : false}
                       onChange={() =>
                         globalPermissions[intent] && globalPermissions[intent].includes(username)
@@ -61,7 +74,7 @@ const GlobalPermissions = props => {
                 />
               ));
               return (
-                <div key={index} style={{ display: "flex", width: "100%", justifyContent: "center" }}>
+                <div key={index} className={classes.formGroupDiv}>
                   <FormGroup>{intents}</FormGroup>
                 </div>
               );

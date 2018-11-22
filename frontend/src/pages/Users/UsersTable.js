@@ -9,12 +9,19 @@ import _sortBy from "lodash/sortBy";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import IconButton from "@material-ui/core/IconButton";
 import strings from "../../localizeStrings";
+import { withStyles } from "@material-ui/core";
 
+
+const styles={
+  iconColor: {
+    color: "black"
+  }
+}
 const sortUsers = users => {
   return _sortBy(users, user => user.organization && user.id);
 };
 
-const UsersTable = ({ users, showDashboardDialog }) => {
+const UsersTable = ({ classes, users, showDashboardDialog }) => {
   const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true));
   return (
     <Paper>
@@ -38,7 +45,7 @@ const UsersTable = ({ users, showDashboardDialog }) => {
                 <TableCell>{user.organization}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => showDashboardDialog("editUser", user.id)}>
-                    <PermissionIcon style={{color: "black"}}/>
+                    <PermissionIcon className={classes.iconColor} />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -49,4 +56,4 @@ const UsersTable = ({ users, showDashboardDialog }) => {
     </Paper>
   );
 };
-export default UsersTable;
+export default withStyles(styles) (UsersTable);
