@@ -31,7 +31,6 @@ const logger = pino({
   base,
   level,
   prettyPrint,
-  timestamp,
   // @ts-ignore
   redact,
   useLevelLabels,
