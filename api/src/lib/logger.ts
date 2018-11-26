@@ -6,19 +6,22 @@ const name = "TruBudget";
 const hostname = os.hostname();
 const pid = process.pid;
 const base = { pid, hostname };
-const prettyPrint = {
-  colorize: "true",
-  levelFirst: false,
-  messageKey: "message",
-  translateTime: true,
-  crlf: true,
-}; // process.env.NODE_ENV === "production" ? false : true;
-const level = "debug"; // process.env.NODE_ENV === "production" ? "info" : "debug";
+const prettyPrint =
+  process.env.NODE_ENV === ("production" || "test")
+    ? false
+    : {
+        colorize: "true",
+        levelFirst: false,
+        messageKey: "message",
+        translateTime: true,
+        crlf: false,
+      };
+const level = process.env.NODE_ENV === "production" ? "info" : "debug";
 const redact = {
   paths: ["rpcSettings.password", "password", "*.passwordDigest", "passwordDigest"],
 };
 const crlf = false;
-const messageKey = "PINOmessage";
+const messageKey = "message";
 const useLevelLabels = true;
 
 const logger = pino({
@@ -32,17 +35,5 @@ const logger = pino({
   crlf,
   messageKey,
 });
-
-// const logger = pinoms({
-//   name,
-//   base,
-//   level,
-//   // @ts-ignore
-//   redact,
-//   useLevelLabels,
-//   crlf,
-//   messageKey,
-//   streams,
-// });
 
 export default logger;
