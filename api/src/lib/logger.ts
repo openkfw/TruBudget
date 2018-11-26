@@ -36,6 +36,4 @@ const logger = pino({
   messageKey,
 });
 
-logger.info(`process.NODE_ENV = ${process.env.NODE_ENV}`);
-
 export default logger;
