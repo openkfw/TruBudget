@@ -7,7 +7,7 @@ const hostname = os.hostname();
 const pid = process.pid;
 const base = { pid, hostname };
 const prettyPrint =
-  process.env.NODE_ENV === ("production" || "test")
+  (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test")
     ? false
     : {
         colorize: "true",
@@ -35,5 +35,7 @@ const logger = pino({
   crlf,
   messageKey,
 });
+
+logger.info(`process.NODE_ENV = ${process.env.NODE_ENV}`);
 
 export default logger;
