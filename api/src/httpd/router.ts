@@ -54,10 +54,7 @@ import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
-import {
-  getSchema,
-  getSchemaWithoutAuth,
-} from "./schema";
+import { getSchema, getSchemaWithoutAuth } from "./schema";
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -223,13 +220,17 @@ export const registerRoutes = (
   //       system
   // ------------------------------------------------------------
 
-  server.get(`${urlPrefix}/readiness`, getSchemaWithoutAuth("readiness"), async (request, reply) => {
-    if (await isReady(multichainClient)) {
-      reply.status(200).send("OK");
-    } else {
-      reply.status(503).send("Service unavailable.");
-    }
-  });
+  server.get(
+    `${urlPrefix}/readiness`,
+    getSchemaWithoutAuth("readiness"),
+    async (request, reply) => {
+      if (await isReady(multichainClient)) {
+        reply.status(200).send("OK");
+      } else {
+        reply.status(503).send("Service unavailable.");
+      }
+    },
+  );
 
   server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), async (request, reply) => {
     reply.status(200).send("OK");
@@ -239,18 +240,22 @@ export const registerRoutes = (
   //       user
   // ------------------------------------------------------------
 
-  server.post(`${urlPrefix}/user.authenticate`, getSchemaWithoutAuth("authenticate"), async (request, reply) => {
-    authenticateUser(
-      multichainClient,
-      request,
-      jwtSecret,
-      rootSecret,
-      organization,
-      organizationVaultSecret,
-    )
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/user.authenticate`,
+    getSchemaWithoutAuth("authenticate"),
+    async (request, reply) => {
+      authenticateUser(
+        multichainClient,
+        request,
+        jwtSecret,
+        rootSecret,
+        organization,
+        organizationVaultSecret,
+      )
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
   server.get(`${urlPrefix}/user.list`, getSchema(server, "userList"), async (request, reply) => {
     getUserList(multichainClient, request as AuthenticatedRequest)
@@ -261,23 +266,31 @@ export const registerRoutes = (
   // ------------------------------------------------------------
   //       global
   // ------------------------------------------------------------
-  server.post(`${urlPrefix}/global.createUser`, getSchema(server, "createUser"), async (request, reply) => {
-    createUser(
-      multichainClient,
-      request as AuthenticatedRequest,
-      jwtSecret,
-      rootSecret,
-      organizationVaultSecret,
-    )
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/global.createUser`,
+    getSchema(server, "createUser"),
+    async (request, reply) => {
+      createUser(
+        multichainClient,
+        request as AuthenticatedRequest,
+        jwtSecret,
+        rootSecret,
+        organizationVaultSecret,
+      )
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  server.post(`${urlPrefix}/global.createGroup`, getSchema(server, "createGroup"), async (request, reply) => {
-    createGroup(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/global.createGroup`,
+    getSchema(server, "createGroup"),
+    async (request, reply) => {
+      createGroup(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
   server.post(
     `${urlPrefix}/global.createProject`,
@@ -339,27 +352,39 @@ export const registerRoutes = (
       .catch(err => handleError(request, reply, err));
   });
 
-  server.post(`${urlPrefix}/group.addUser`, getSchema(server, "addUser"), async (request, reply) => {
-    addUserToGroup(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/group.addUser`,
+    getSchema(server, "addUser"),
+    async (request, reply) => {
+      addUserToGroup(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  server.post(`${urlPrefix}/group.removeUser`, getSchema(server, "removeUser"), async (request, reply) => {
-    removeUserFromGroup(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/group.removeUser`,
+    getSchema(server, "removeUser"),
+    async (request, reply) => {
+      removeUserFromGroup(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
   // ------------------------------------------------------------
   //       project
   // ------------------------------------------------------------
 
-  server.get(`${urlPrefix}/project.list`, getSchema(server, "projectList"), async (request, reply) => {
-    getProjectList(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.get(
+    `${urlPrefix}/project.list`,
+    getSchema(server, "projectList"),
+    async (request, reply) => {
+      getProjectList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
   server.get(
     `${urlPrefix}/project.viewDetails`,
@@ -371,23 +396,35 @@ export const registerRoutes = (
     },
   );
 
-  server.post(`${urlPrefix}/project.assign`, getSchema(server, "projectAssign"), async (request, reply) => {
-    assignProject(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/project.assign`,
+    getSchema(server, "projectAssign"),
+    async (request, reply) => {
+      assignProject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  server.post(`${urlPrefix}/project.update`, getSchema(server, "projectUpdate"), async (request, reply) => {
-    updateProject(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/project.update`,
+    getSchema(server, "projectUpdate"),
+    async (request, reply) => {
+      updateProject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  server.post(`${urlPrefix}/project.close`, getSchema(server, "projectClose"), async (request, reply) => {
-    closeProject(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.post(
+    `${urlPrefix}/project.close`,
+    getSchema(server, "projectClose"),
+    async (request, reply) => {
+      closeProject(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
   server.post(
     `${urlPrefix}/project.createSubproject`,
@@ -443,11 +480,15 @@ export const registerRoutes = (
   //       subproject
   // ------------------------------------------------------------
 
-  server.get(`${urlPrefix}/subproject.list`, getSchema(server, "subprojectList"), async (request, reply) => {
-    getSubprojectList(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.get(
+    `${urlPrefix}/subproject.list`,
+    getSchema(server, "subprojectList"),
+    async (request, reply) => {
+      getSubprojectList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
   server.get(
     `${urlPrefix}/subproject.viewDetails`,
@@ -501,74 +542,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/subproject.createWorkflowitem`,
-<<<<<<< HEAD
-    {
-      // @ts-ignore: Unreachable code error
-      beforeHandler: [server.authenticate],
-      schema: {
-        description:
-          "Create a workflowitem and associate it to the given subproject.\n.\n" +
-          "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
-          "The only possible values for 'status' are: 'open' and 'closed'",
-        tags: ["subproject"],
-        summary: "Create a workflowitem",
-        security: [
-          {
-            bearerToken: [],
-          },
-        ],
-        body: {
-          type: "object",
-          properties: {
-            apiVersion: { type: "string", example: "1.0" },
-            data: {
-              type: "object",
-              additionalProperties: false,
-              properties: {
-                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-                status: { type: "string", example: "open" },
-                displayName: { type: "string", example: "classroom" },
-                description: { type: "string", example: "build classroom" },
-                amount: { type: ["string", "null"], example: "500" },
-                assignee: { type: "string", example: "aSmith" },
-                currency: { type: ["string", "null"], example: "EUR" },
-                amountType: { type: "string", example: "disbursed" },
-                documents: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      id: { type: "string", example: "classroom-contract" },
-                      base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        response: {
-          200: {
-            description: "successful response",
-            type: "object",
-            properties: {
-              apiVersion: { type: "string", example: "1.0" },
-              data: {
-                type: "object",
-                properties: {
-                  created: { type: "boolean", example: "true" },
-                },
-              },
-            },
-          },
-          401: getAuthErrorSchema(),
-        },
-      },
-    } as Schema,
-=======
     getSchema(server, "createWorkflowitem"),
->>>>>>> master
     async (request, reply) => {
       createWorkflowitem(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
@@ -771,17 +745,25 @@ export const registerRoutes = (
     },
   );
 
-  server.get(`${urlPrefix}/network.list`, getSchema(server, "networkList"), async (request, reply) => {
-    getNodeList(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.get(
+    `${urlPrefix}/network.list`,
+    getSchema(server, "networkList"),
+    async (request, reply) => {
+      getNodeList(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
-  server.get(`${urlPrefix}/network.listActive`, getSchema(server, "listActive"), async (request, reply) => {
-    getActiveNodes(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
+  server.get(
+    `${urlPrefix}/network.listActive`,
+    getSchema(server, "listActive"),
+    async (request, reply) => {
+      getActiveNodes(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
 
   server.get(
     `${urlPrefix}/system.createBackup`,
