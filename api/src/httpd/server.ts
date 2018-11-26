@@ -12,6 +12,7 @@ const ajv = new Ajv({
   removeAdditional: true,
   useDefaults: true,
   coerceTypes: true,
+  unknownFormats: "ignore",
   // any other options
   // ...
 });

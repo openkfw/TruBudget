@@ -52,19 +52,18 @@ const en = {
     workflowItem: "WorkflowItem"
   },
 
-  usersDashboard: {
+  users: {
     full_name: "Full Name",
     new_user: "New User",
     organization: "Organization",
     user_created: "User successfully created",
-    users: "Users"
-  },
-
-  groupDashboard: {
-    add_users: "Add Users",
+    users: "Users",
+    add_user: "Add User",
     group_created: "Group successfully created",
     groups: "Groups",
-    new_group: "New user group"
+    add_group: "Add Group",
+    edit_group: "Edit Group",
+    edit_permissions_for: "Edit permissions for"
   },
 
   nodesDashboard: {
@@ -318,7 +317,15 @@ const en = {
     workflowitem_intent_revokePermission: "Revoke workflowitem permission",
     workflowitem_update: "Update workflowitem",
     workflowitem_view: "View workflowitem",
-    write: "Write permissions"
+    write: "Write permissions",
+    global_createUser: "Create users",
+    global_createGroup: "Create groups",
+    global_createProject: "Create projects",
+    global_listPermissions: "List all global permissions",
+    global_grantPermission: "Grant global permissions for others",
+    global_revokePermission: "Revoke global permissions for others",
+    network_list: "List all connected nodes",
+    network_voteForPermission: "Vote if a node should join the network"
   },
 
   language: {

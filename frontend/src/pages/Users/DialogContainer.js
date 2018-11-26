@@ -13,14 +13,16 @@ import {
   removeUser,
   removeInitialUserFromGroup,
   hideDashboardDialog,
-  createUser
+  createUser,
+  grantGlobalPermission,
+  revokeGlobalPermission,
 } from "./actions";
 
-import DashboardDialog from "./DashboardDialog";
+import Dialog from "./Dialog";
 
-class DashboardDialogContainer extends Component {
+class DialogContainer extends Component {
   render() {
-    return <DashboardDialog {...this.props} />;
+    return <Dialog {...this.props} />;
   }
 }
 
@@ -34,7 +36,10 @@ const mapStateToProps = state => {
     groups: state.getIn(["users", "groups"]),
     groupToAdd: state.getIn(["users", "groupToAdd"]),
     editMode: state.getIn(["users", "editMode"]),
-    editDialogShown: state.getIn(["users", "editDialogShown"])
+    editDialogShown: state.getIn(["users", "editDialogShown"]),
+    globalPermissions: state.getIn(["users", "globalPermissions"]),
+    permissionsExpanded: state.getIn(["users", "permissionsExpanded"]),
+    allowedIntents: state.getIn(["login", "allowedIntents"])
   };
 };
 
@@ -52,8 +57,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(createUser(displayName, organization, username, password)),
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    hideDashboardDialog: () => dispatch(hideDashboardDialog())
+    hideDashboardDialog: () => dispatch(hideDashboardDialog()),
+    grantGlobalPermission: (identity, intent) => dispatch(grantGlobalPermission(identity, intent)),
+    revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(DashboardDialogContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(DialogContainer)));

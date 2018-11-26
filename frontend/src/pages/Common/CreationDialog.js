@@ -89,7 +89,7 @@ const CreationDialog = props => {
     <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown}>
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
-      <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>
+      <DialogActions >{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>
     </Dialog>
   );
 };

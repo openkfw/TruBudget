@@ -114,7 +114,7 @@ const SideNavCard = ({
       </List>
     ) : null}
     <List>
-      <Subheader> {strings.groupDashboard.groups} </Subheader>
+      <Subheader> {strings.users.groups} </Subheader>
       {groups.map(group => (
         <div key={group.groupId}>
           <ListItem>

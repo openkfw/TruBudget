@@ -13,7 +13,6 @@ class Api {
     instance.defaults.transformRequest = [
       (data, headers) => {
         if (typeof data === "object") {
-
           return {
             apiVersion: API_VERSION,
             data: {
@@ -60,6 +59,11 @@ class Api {
     instance.post(`global.grantAllPermissions`, {
       identity: userId
     });
+  grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, { identity, intent });
+
+  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity , intent });
+  listGlobalPermissions = () => instance.get(`global.listPermissions`);
+
   listUser = () => instance.get(`/user.list`);
 
   createGroup = (groupId, displayName, users) =>
@@ -264,9 +268,9 @@ class Api {
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {
-    let apiPrefix = "/api"
+    let apiPrefix = "/api";
     if (!devMode) {
-      apiPrefix = `${envPrefix}${apiPrefix}`
+      apiPrefix = `${envPrefix}${apiPrefix}`;
     }
     const binaryInstance = axios.create();
     binaryInstance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";

@@ -24,6 +24,23 @@ export const canCreateSubProject = i => can("project.createSubproject", i);
 export const canAssignProject = i => can("project.assign", i);
 export const canCloseProject = i => can("project.close", i);
 
+
+export const globalIntentOrder = [
+  {
+    name: "admin",
+    intents:[
+      "global.createUser",
+      "global.createGroup",
+      "global.createProject",
+      "global.listPermissions",
+      "global.grantPermission",
+      "global.revokePermission",
+      "network.list",
+      "network.voteForPermission"
+    ]
+  }
+]
+
 export const projectIntentOrder = [
   {
     name: "view",
