@@ -32,7 +32,7 @@ export const groupExists = async (multichain, groupId) => {
 
 const handleCreate = (event: Event): { resource: GroupResource } | undefined => {
   if (event.intent !== "global.createGroup") {
-    logger.debug({ intent: event.intent }, "Event intent is not 'global.createGroup'.");
+    // logger.debug({ intent: event.intent }, "Event intent is not 'global.createGroup'.");
     return undefined;
   }
   switch (event.dataVersion) {
@@ -149,7 +149,7 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
 
 function addUser(event: Event, resource: GroupResource): true | undefined {
   if (event.intent !== "group.addUser") {
-    logger.debug({ intent: event.intent }, "Event intent is not 'group.addUser'.");
+    // logger.debug({ intent: event.intent }, "Event intent is not 'group.addUser'.");
     return;
   }
   switch (event.dataVersion) {
@@ -167,7 +167,7 @@ function addUser(event: Event, resource: GroupResource): true | undefined {
 }
 function removeUser(event: Event, resource: GroupResource): true | undefined {
   if (event.intent !== "group.removeUser") {
-    logger.debug({ intent: event.intent }, "Event intent is not 'group.removeUser'.");
+    // logger.debug({ intent: event.intent }, "Event intent is not 'group.removeUser'.");
     return;
   }
   switch (event.dataVersion) {

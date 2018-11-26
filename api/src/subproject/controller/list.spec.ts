@@ -3,7 +3,6 @@ import { TruBudgetError } from "../../error";
 import { AuthenticatedRequest } from "../../httpd/lib";
 import { MultichainClient } from "../../multichain/Client.h";
 import { getSubprojectList } from "./list";
-import logger from "../../lib/logger";
 
 describe("subproject.list", () => {
   it("works", async () => {
@@ -123,15 +122,12 @@ describe("subproject.list", () => {
 
     getSubprojectList(multichain as MultichainClient, req)
       .then(response => {
-        logger.error({ error: {response} }, "Invalid response received.");
         throw Error(`Expected no response, got: ${JSON.stringify(response)}`);
       })
       .catch(err => {
         if (err.kind === "NotFound") {
-          logger.error({ error: err }, "Getting subproject list failed.");
           done();
         } else {
-          logger.error({ error: err }, "An error has occured during 'getSubprojectList'.");
           throw err;
         }
       });

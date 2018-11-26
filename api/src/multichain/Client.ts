@@ -126,7 +126,7 @@ export class RpcMultichainClient implements MultichainClient {
       .then(this.retrieveItems)
       .catch(err => {
         if (err && err.code === -708) {
-          logger.error({ error: err }, `Stream ${streamName} not found.`);
+          logger.error({ error: err }, `Stream '${streamName}' not found.`);
           throw { kind: "NotFound", what: `stream ${streamName}` };
         } else {
           logger.error({ error: err }, "An error has occured while getting values.");

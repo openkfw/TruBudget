@@ -64,7 +64,7 @@ const send = (res, httpResponse: HttpResponse) => {
 };
 
 const handleError = (req, res, err: any) => {
-  logger.error({error: err}, "Handle Error: ", err.kind || "unknown");
+  logger.error({ error: err }, "Handle Error: ", err.kind || "unknown");
 
   switch (err.kind) {
     case "NotAuthorized":
@@ -186,7 +186,7 @@ const handleError = (req, res, err: any) => {
           },
         ]);
       } else {
-        logger.error({error: {err}}, "Internal server error");
+        logger.error({ error: { err } }, "Internal server error");
         send(res, [
           500,
           {
@@ -2273,7 +2273,7 @@ export const registerRoutes = (
                 description: { type: "string", example: "build classroom" },
                 amount: { type: ["string", "null"], example: "500" },
                 assignee: { type: "string", example: "aSmith" },
-                currency: { type: ["string", "null"],  example: "EUR" },
+                currency: { type: ["string", "null"], example: "EUR" },
                 amountType: { type: "string", example: "disbursed" },
                 documents: {
                   type: "array",

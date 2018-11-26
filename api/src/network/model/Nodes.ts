@@ -268,7 +268,10 @@ export async function getNetworkPermissions(
           approvedBy = item.admins.map(augment);
         } else {
           if (pending) approvedBy = pending.admins.map(augment);
-          else wtf(item);
+          else {
+            logger.debug("Unknown event.");
+            wtf(item);
+          }
         }
 
         const changeRequestApprovalsRemaining = pending ? pending.required : 0;

@@ -19,7 +19,7 @@ export const revokeGlobalPermission = async (
   await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   await Global.revokePermission(multichain, identity, intent);
-  logger.info({ intent }, "Revoking permission.");
+  logger.info({ intent, user: req.user }, "Revoking permission.");
   return [
     200,
     {
