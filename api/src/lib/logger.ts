@@ -7,7 +7,7 @@ const hostname = os.hostname();
 const pid = process.pid;
 const base = { pid, hostname };
 const prettyPrint =
-  (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test")
+  process.env.PRETTY_PRINT === "false"
     ? false
     : {
         colorize: "true",
@@ -16,6 +16,7 @@ const prettyPrint =
         translateTime: true,
         crlf: false,
       };
+
 const level = process.env.NODE_ENV === "production" ? "info" : "debug";
 const redact = {
   paths: ["rpcSettings.password", "password", "*.passwordDigest", "passwordDigest"],
@@ -23,12 +24,14 @@ const redact = {
 const crlf = false;
 const messageKey = "message";
 const useLevelLabels = true;
+const timestamp = false;
 
 const logger = pino({
   name,
   base,
   level,
   prettyPrint,
+  timestamp,
   // @ts-ignore
   redact,
   useLevelLabels,
@@ -36,4 +39,5 @@ const logger = pino({
   messageKey,
 });
 
+logger.debug(`PRETTY_PRINT variable: ${process.env.PRETTY_PRINT}`);
 export default logger;
