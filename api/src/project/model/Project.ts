@@ -71,7 +71,7 @@ export async function publish(
   const streamItem = { json: event };
 
   const publishEvent = () => {
-    logger.info(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+    logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
     return multichain
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)
@@ -80,7 +80,7 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
-      logger.warn("The stream does not exist yet. Creating the stream and trying again.");
+      logger.warn(`The stream ${streamName} does not exist yet. Creating the stream and trying again.`);
       // The stream does not exist yet. Create the stream and try again:
       return multichain
         .getOrCreateStream({ kind: "project", name: streamName })
@@ -148,8 +148,9 @@ export async function get(
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
-        logger.error({ error: { event } }, "Failed to initialize resource");
-        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
+        const message = "Failed to initialize resource";
+        logger.error({ error: { event } }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
       permissionsMap.set(asMapKey(item), result.permissions);

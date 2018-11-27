@@ -87,8 +87,9 @@ async function buildDisplayNameMap(
     const workflowitemId = getResourceId(notification.resources, "workflowitem");
 
     if (projectId === undefined) {
-      logger.error({error: notification.resources}, "Unexpected resource description");
-      throw Error(`unexpected resource description: ${JSON.stringify(notification.resources)}`);
+      const message= "Missing projectId";
+      logger.error({error: notification.resources}, message );
+      throw Error(`${message}: ${JSON.stringify(notification.resources)}`);
     }
 
     projectSet.add(projectId);

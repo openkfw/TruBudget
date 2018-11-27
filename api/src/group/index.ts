@@ -88,10 +88,7 @@ export const publish = async (
   return publishEvent().catch(err => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
-      logger.info(
-        { error: err },
-        "The stream does not exist yet. Creating the stream and trying again.",
-      );
+      logger.warn(`The stream ${groupsStreamName} does not exist yet. Creating the stream and trying again.`);
       return multichain
         .getOrCreateStream({ kind: "groups", name: groupsStreamName })
         .then(() => publishEvent());

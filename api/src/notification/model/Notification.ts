@@ -52,7 +52,7 @@ export async function publish(
   };
 
   const publishEvent = () => {
-    logger.info(`Publishing ${intent} to ${streamName}/${userId}`);
+    logger.debug(`Publishing ${intent} to ${streamName}/${userId}`);
     return multichain.getRpcClient().invoke("publish", streamName, userId, {
       json: event,
     });
@@ -60,7 +60,7 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
-      logger.warn("The stream does not exist yet. Creating the stream and trying again.");
+      logger.warn(`The stream ${streamName} does not exist yet. Creating the stream and trying again.`);
       // The stream does not exist yet. Create the stream and try again:
       return multichain
         .getOrCreateStream({ kind: "notifications", name: streamName })
@@ -81,12 +81,12 @@ export async function get(
     .v2_readStreamItems(streamName, token.userId)
     .catch(err => {
       if (err.kind === "NotFound" && err.what === "stream notifications") {
-        logger.warn("The stream does not exist yet.");
+        logger.warn(`The stream ${streamName} does not exist yet.`);
         // The stream does not exist yet, which happens on (freshly installed) systems that
         // have not seen any notifications yet.
         return [];
       } else {
-        logger.error({ error: err }, `Getting stream failed.`);
+        logger.error({ error: err }, `Getting stream ${streamName} failed.`);
         throw err;
       }
     });

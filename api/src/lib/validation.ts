@@ -49,7 +49,6 @@ export async function asyncValue(multichain, name, val, isValid, defaultValue?) 
     val = defaultValue; // might be undefined
   }
   if (!(await isValid(multichain, val).catch(_err => false))) {
-    logger.error({ error: { multichain, val, name } }, "Error while checking validity");
     throwParseError([name]);
   }
   return val;

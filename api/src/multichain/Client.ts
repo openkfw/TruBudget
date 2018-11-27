@@ -257,7 +257,6 @@ export class RpcMultichainClient implements MultichainClient {
     // if data size is bigger than the runtime variable "maxshowndata"
     // the data has to be accessed by calling gettxoutdata
     // Increase maxshowndata with command 'setruntimeparam maxshowndata <value>' in the multichain-cli
-    logger.debug("In retrieveItems");
     return Promise.all(
       items.map(async (item: Liststreamkeyitems.Item) => {
         if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {

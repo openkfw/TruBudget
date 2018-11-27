@@ -41,7 +41,7 @@ export class RpcClient {
         .post("/", JSON.stringify(request))
         .then(resp => {
           // this is only on Response code 2xx
-          logger.debug("Received valid response.");
+          logger.debug({data : resp.data}, "Received valid response.");
           resolve(resp.data.result);
         })
         .catch((error: AxiosError) => {
@@ -80,8 +80,8 @@ export class RpcClient {
             response = new RpcError(500, "No Response", {}, error.message);
           } else {
             // Something happened in setting up the request that triggered an Error
-            logger.error({ error }, "Error ", error.message);
-            response = new RpcError(500, "other error", {}, "");
+            logger.error({ error: error.message }, "Error ", error.message);
+            response = new RpcError(500, `other error: ${error.message}`, {}, "");
           }
           reject(response);
         });

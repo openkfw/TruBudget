@@ -79,13 +79,13 @@ async function ensureOrganizationAddress(
           .find(_ => true),
       );
     if (!addressFromWallet) {
-      logger.error({ error: { multichain, organization } }, "Could not obtain wallet address");
-      throw Error("Could not obtain wallet address!");
+      const message = "Could not obtain wallet address!"
+      logger.error({ error: { multichain, organization } }, message);
+      throw Error(message);
     }
 
     const privkey = await multichain.getRpcClient().invoke("dumpprivkey", addressFromWallet);
     // logger.trace({ addressFromWallet, privkey });
-    logger.info({ addressFromWallet, privkey });
     await setPrivKey(multichain, organization, organizationVaultSecret, addressFromWallet, privkey);
 
     logger.info(`Initializing organization address to local wallet address: ${addressFromWallet}`);

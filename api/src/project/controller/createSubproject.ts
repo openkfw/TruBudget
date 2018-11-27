@@ -40,13 +40,11 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
 
   // Make sure the parent project is not already closed:
   if (await Project.isClosed(multichain, projectId)) {
-    logger.error(
-      { error: { multichain, projectId } },
-      "Cannot add a subproject to a closed project.",
-    );
+    const message = "Cannot add a subproject to a closed project.";
+    logger.error({ error: { multichain, projectId } }, message);
     throw {
       kind: "PreconditionError",
-      message: "Cannot add a subproject to a closed project.",
+      message,
     };
   }
 

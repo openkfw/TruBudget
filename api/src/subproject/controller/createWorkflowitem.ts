@@ -85,11 +85,6 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
   let currency;
   if (amountType === "N/A") {
     if (!isUndefinedOrNull(data.amount) || !isUndefinedOrNull(data.currency)) {
-      logger.error(
-        { error: { projectId, subprojectId, amountType } },
-        "If the amountType is 'N/A' " +
-          "(= not applicable), the fields 'amount' and 'currency' must not be present.",
-      );
       throwParseError(
         ["amountType", "amount", "currency"],
         'If the amountType is "N/A" (= not applicable), the fields "amount" and "currency" must not be present.',

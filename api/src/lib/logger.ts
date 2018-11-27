@@ -4,8 +4,7 @@ import * as pino from "pino";
 // Log Parameters
 const name = "TruBudget";
 const hostname = os.hostname();
-const pid = process.pid;
-const base = { pid, hostname };
+const base = { hostname };
 const prettyPrint =
   process.env.PRETTY_PRINT === "false"
     ? false
@@ -24,7 +23,6 @@ const redact = {
 const crlf = false;
 const messageKey = "message";
 const useLevelLabels = true;
-const timestamp = false;
 
 const logger = pino({
   name,

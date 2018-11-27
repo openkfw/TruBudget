@@ -19,23 +19,21 @@ export async function voteHelper(
   logger.debug({ callerAddress, targetAddress, currentVote, currentAccess }, "Preparing vote");
 
   if (currentVote !== "none") {
-    logger.error(
-      `Conflict: your organization ${user.organization} (${callerAddress}) has ` +
-        `already voted for assigning ${currentVote} permissions to ${targetAddress}.`,
-    );
     const message =
-      `Conflict: your organization ${user.organization} (${callerAddress}) has ` +
-      `already voted for assigning ${currentVote} permissions to ${targetAddress}.`;
+    `Conflict: your organization ${user.organization} (${callerAddress}) has ` +
+    `already voted for assigning ${currentVote} permissions to ${targetAddress}.`;
+    logger.error(
+      message
+    );
     return [409, { apiVersion: "1.0", error: { code: 409, message } }];
   }
   if (currentAccess !== "none") {
-    logger.error(
-      `Conflict: the organization (${targetAddress}) has already ` +
-        `${currentAccess} permissions assigned.`,
-    );
     const message =
       `Conflict: the organization (${targetAddress}) has already ` +
       `${currentAccess} permissions assigned.`;
+    logger.error(
+      message
+    );
     return [409, { apiVersion: "1.0", error: { code: 409, message } }];
   }
 

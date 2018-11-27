@@ -111,7 +111,7 @@ export async function publish(
   const streamName = projectId;
   const streamItemKey = workflowitemKey(subprojectId, workflowitemId);
   const streamItem = { json: event };
-  logger.info(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
   await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
   return event;
 }

@@ -76,6 +76,7 @@ export const createBasicApp = (
   urlPrefix: string,
   apiPort: Number,
   swaggerBasePath: string,
+  env: string
 ) => {
   const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger,
@@ -85,7 +86,7 @@ export const createBasicApp = (
     const validator = ajv.compile(schema);
     return data => {
       let valid;
-      if (process.env.NODE_ENV !== "prod") {
+      if (env !== "production") {
         const d1 = JSON.stringify(data, null, 2);
         valid = validator(data);
         const d2 = JSON.stringify(data, null, 2);

@@ -36,7 +36,7 @@ export async function registerNode(multichain: MultichainClient, req): Promise<H
     return [200, { apiVersion: "1.0", data: "Node already registered" }];
   } else {
     await Nodes.publish(multichain, address, event);
-    logger.info("Node registered");
+    logger.info(`Node ${address} registered`);
     return [200, { apiVersion: "1.0", data: "OK" }];
   }
 }

@@ -62,7 +62,6 @@ async function readVault(
   if (vaultStreamItem === undefined) return {};
 
   const dataHexString = vaultStreamItem.data;
-  // logger.trace("read hex string from chain: %s bytes", dataHexString.length);
   logger.info("read hex string from chain: %s bytes", dataHexString.length);
 
   return vaultFromHexString(organizationVaultSecret, dataHexString);
@@ -75,10 +74,8 @@ async function writeVault(
   vault: Vault,
 ): Promise<void> {
   const dataHexString = vaultToHexString(organizationVaultSecret, vault);
-
   const streamName = organizationStreamName(organization);
   await multichain.getRpcClient().invoke("publish", streamName, streamVaultKey, dataHexString);
-  // logger.trace("wrote hex string to chain: %s bytes", dataHexString.length);
   logger.info("wrote hex string to chain: %s bytes", dataHexString.length);
 }
 
@@ -93,8 +90,9 @@ export function vaultFromHexString(organizationVaultSecret: string, dataHexStrin
 
   const plaintextBuffer = Buffer.alloc(cipherBuffer.length - sodium.crypto_secretbox_MACBYTES);
   if (!sodium.crypto_secretbox_open_easy(plaintextBuffer, cipherBuffer, nonceBuffer, keyBuffer)) {
-    logger.error("Vault decryption failed");
-    throw Error("Vault decryption failed!");
+    const message = "Vault decryption failed"
+    logger.error(message);
+    throw Error(message);
   }
 
   const vaultString = plaintextBuffer.toString();
