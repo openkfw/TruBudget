@@ -46,10 +46,6 @@ const handleCreate = (event: Event): { resource: GroupResource } | undefined => 
     }
   }
   throwUnsupportedEventVersion(event);
-  logger.error(
-    { error: { event } },
-    `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
-  );
 };
 
 export const publish = async (
@@ -100,7 +96,7 @@ export const publish = async (
         .getOrCreateStream({ kind: "groups", name: groupsStreamName })
         .then(() => publishEvent());
     } else {
-      logger.error({ error: err }, `Publishing ${intent} failed.`);
+      logger.error({ error: {err, groupsStreamName} }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -154,15 +150,11 @@ function addUser(event: Event, resource: GroupResource): true | undefined {
   }
   switch (event.dataVersion) {
     case 1: {
-      logger.debug(`Adding user ${event.data.userId} to group ${resource.displayName}.`);
+      logger.info(`Adding user ${event.data.userId} to group ${resource.displayName}.`);
       resource.users.push(event.data.userId);
       return true;
     }
   }
-  logger.error(
-    { error: { event } },
-    `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
-  );
   throwUnsupportedEventVersion(event);
 }
 function removeUser(event: Event, resource: GroupResource): true | undefined {
@@ -176,13 +168,9 @@ function removeUser(event: Event, resource: GroupResource): true | undefined {
       if (index > -1) {
         resource.users.splice(index, 1);
       }
-      logger.debug(`Removing user ${event.data.userId} from group ${resource.displayName}.`);
+      logger.info(`Removing user ${event.data.userId} from group ${resource.displayName}.`);
       return true;
     }
   }
-  logger.error(
-    { error: { event } },
-    `Unsupported event version used. Expected: 1, Used: ${event.dataVersion}`,
-  );
   throwUnsupportedEventVersion(event);
 }

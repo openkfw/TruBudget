@@ -63,7 +63,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
         delete event.data.permissions;
       }
     } else {
-      logger.warn(`Don't know how to handle this event:`, event);
+      logger.warn(`Unsupportet data version. Expected: 1, Have: ${event.dataVersion}`);
       // Since we don't know what data looks like, we remove it altogether:
       event.data = {};
     }
@@ -79,7 +79,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
         delete event.data.permissions;
       }
     } else {
-      logger.warn(`Don't know how to handle this event:`, event);
+      logger.warn(`Unsupportet data version. Expected: 1, Have: ${event.dataVersion}`);
       // Since we don't know what data looks like, we remove it altogether:
       event.data = {};
     }
@@ -95,12 +95,13 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
         delete event.data.permissions;
       }
     } else {
-      logger.warn(`Don't know how to handle this event:`, event);
+      logger.warn(`Unsupportet data version. Expected: 1, Have: ${event.dataVersion}`);
       // Since we don't know what data looks like, we remove it altogether:
       event.data = {};
     }
   } else {
     // No special handling needed
+    logger.debug({event}, `No special handling for event needed`);
   }
   return event;
 }

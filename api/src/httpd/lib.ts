@@ -32,11 +32,9 @@ export const throwParseErrorIfUndefined = (obj, path) => {
     const val = path.reduce((acc, x) => acc[x], obj);
     logger.debug({ parsedValues: { obj, path, val } }, "Checking parsed values");
     if (val === undefined) {
-      logger.error({ error: { obj, path, val } }, "value undefinded");
-      throw Error("catchme");
+      throwParseError(path[path.length - 1], "Value undefined");
     }
   } catch (_err) {
-    logger.error({ error: _err }, "An error occured");
-    throwParseError([path.join(".")]);
+    throwParseError([path.join(".")], _err.message );
   }
 };

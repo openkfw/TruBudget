@@ -62,7 +62,7 @@ const send = (res, httpResponse: HttpResponse) => {
 };
 
 const handleError = (req, res, err: any) => {
-  logger.error({ error: err }, "Handle Error: ", err.kind || "unknown");
+  logger.error({ error: err }, "Handle Error:", err.kind || "unknown");
 
   switch (err.kind) {
     case "NotAuthorized":

@@ -30,7 +30,7 @@ export const getPermissions = async (
   } catch (err) {
     if (err.kind === "NotFound") {
       // Happens at startup, no need to worry...
-      logger.debug("Global permissions not found. Happens at statup.");
+      logger.debug("Global permissions not found. Happens at startup.");
       return {};
     } else {
       logger.error({error: err}, "Global permissions not found");
@@ -83,7 +83,7 @@ export const revokePermission = async (
   if (userIndex === -1) {
     // The given user has no permissions to execute the given intent.
     // Note: a user could still belong to a group that has access rights!
-    logger.info(`User has no permissions to execute intent ${intent}`);
+    logger.warn(`User has no permissions to execute intent ${intent}`);
     return;
   }
   // Remove the user from the array:

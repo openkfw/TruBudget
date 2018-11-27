@@ -23,8 +23,6 @@ export async function createProject(
 ): Promise<HttpResponse> {
   const body = req.body;
 
-  logger.debug(req.body);
-
   if (body.apiVersion !== "1.0") {
     logger.error(
       { error: { apiVersion: body.apiVersion } },
@@ -82,7 +80,7 @@ export async function createProject(
     // )}`,
     // `Project ${input.displayName} created with default permissions`,
     // { event.data.permissions, input.displayName }
-    { permissions: event.data.permissions, projectName: input.displayName },
+    { permissions: event.data.permissions, project },
     "Project created with default permissions",
   );
 

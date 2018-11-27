@@ -33,6 +33,8 @@ export async function addUserToGroup(
     },
   };
 
+  logger.info(`Adding user '${userId}' to group '${groupId}'...`);
+
   await Group.publish(multichain, groupId, event);
   return [
     200,

@@ -52,7 +52,7 @@ export const createUser = async (
   };
 
   await User.create(multichain, req.user, newUser);
-  logger.info(newUser, `User ${newUser.displayName} created. Granting permissions.`);
+  logger.info(newUser, `User ${newUser.displayName} created. Granting permissions now...`);
 
   await grantInitialPermissions(multichain, newUser);
 

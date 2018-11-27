@@ -13,7 +13,7 @@ export const getGlobalPermissions = async (
 
   const userIntent: Intent = "global.listPermissions";
   await throwIfUnauthorized(req.user, userIntent, permissions);
-  logger.info({ permissions }, "Getting permissions.");
+  logger.debug({ permissions }, "Getting permissions.");
   return [
     200,
     {
