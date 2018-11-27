@@ -29,14 +29,12 @@ export const closeSubproject = async (multichain: MultichainClient, req): Promis
 
   // All assiciated workflowitems need to be closed:
   if (!(await Workflowitem.areAllClosed(multichain, projectId, subprojectId))) {
-    logger.error(
-      { error: { multichain, projectId, subprojectId } },
-      "Cannot close a subproject if at least one associated workflowitem is not yet closed.",
-    );
+    const message =
+      "Cannot close a subproject if at least one associated workflowitem is not yet closed.";
+    logger.error({ error: { multichain, projectId, subprojectId } }, message);
     throw {
       kind: "PreconditionError",
-      message:
-        "Cannot close a subproject if at least one associated workflowitem is not yet closed.",
+      message,
     };
   }
 

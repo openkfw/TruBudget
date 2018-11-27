@@ -66,13 +66,14 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
 
   // Make sure the parent subproject is not already closed:
   if (await Subproject.isClosed(multichain, projectId, subprojectId)) {
+    const message = "Cannot add a workflowitem to a closed subproject.";
     logger.error(
       { error: { multichain, projectId, subprojectId } },
-      "Cannot add a workflowitem to a closed subproject.",
+      message,
     );
     throw {
       kind: "PreconditionError",
-      message: "Cannot add a workflowitem to a closed subproject.",
+      message,
     };
   }
 
@@ -100,13 +101,14 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
   const status = value("status", data.status, x => ["open", "closed"].includes(x), "open");
   if (status === "closed") {
     if (!(await Workflowitem.areAllClosed(multichain, projectId, subprojectId))) {
+      const message = "Cannot add a closed workflowitem after a non-closed workflowitem.";
       logger.error(
         { error: { multichain, projectId, subprojectId } },
-        "Cannot add a closed workflowitem after a non-closed workflowitem.",
+        message,
       );
       throw {
         kind: "PreconditionError",
-        message: "Cannot add a closed workflowitem after a non-closed workflowitem.",
+        message,
       };
     }
   }

@@ -20,11 +20,12 @@ export async function approveNewOrganization(
   );
 
   if (!futureOrganizationAddress) {
+    const message = `No node registered for organization '${organization}'`;
     logger.error(
       { error: { organization, multichain, input } },
-      `No node registered for organization '${organization}'`,
+      message,
     );
-    throw Error(`no node registered for organization "${organization}"`);
+    throw Error(message);
   }
 
   return voteHelper(multichain, req.user, futureOrganizationAddress, "admin");

@@ -164,8 +164,9 @@ export async function get(
         applyGrantPermission(event, permissions) ||
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
-        logger.error({ error: { event } }, "Unexpected event");
-        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+        const message = "Unexpected event";
+        logger.error({ error: { event } }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
 

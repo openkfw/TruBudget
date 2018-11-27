@@ -67,7 +67,7 @@ const authenticate = async (
   // The client shouldn't be able to distinguish between a wrong id and a wrong password,
   // so we handle all errors alike:
   const throwError = err => {
-    logger.error({error: err}, `Authentication failed.`);
+    logger.error({ error: err }, `Authentication failed.`);
     throw { kind: "AuthenticationError", userId: id };
   };
 
@@ -87,25 +87,28 @@ const authenticate = async (
     }
   }
   const storedUser = await User.get(multichain, id).catch(err => {
+    const message = "An error occured while getting user";
     if (err) {
       switch (err.kind) {
         case "NotFound":
-          logger.error({ error: err }, "User not found");
-          throwError("user not found");
+          const notFoundMessage = "User not found";
+          logger.error({ error: err }, notFoundMessage);
+          throwError(notFoundMessage);
         default:
-          logger.error({ error: err }, "An error occured while getting user");
+          logger.error({ error: err }, message);
           throw err;
       }
     } else {
-      logger.error({ error: err }, "An error occured while getting user");
+      logger.error({ error: err }, message);
       throw err;
     }
   });
   logger.debug(storedUser);
 
   if (!(await isPasswordMatch(password, storedUser.passwordDigest))) {
-    logger.error({ error: { multichain, storedUser } }, "Wrong password entered");
-    throwError("wrong password");
+    const message = "Wrong password entered";
+    logger.error({ error: { multichain, storedUser } }, message);
+    throwError(message);
   }
   // Every user has an address, with the private key stored in the vault. Importing the
   // private key when authenticating a user allows users to roam freely between nodes of
@@ -183,11 +186,9 @@ async function rootUserLoginResponse(
   const userId = "root";
   const organizationAddress = await getOrganizationAddress(multichain, organization);
   if (!organizationAddress) {
-    logger.error(
-      { error: { multichain, organization } },
-      `No organization address found for ${organization}`,
-    );
-    throw Error(`No organization address found for ${organization}`);
+    const message = `No organization address found for ${organization}`;
+    logger.error({ error: { multichain, organization } }, message);
+    throw Error(message);
   }
   const userAddress = organizationAddress;
   const [groups, groupIds] = [[], []];

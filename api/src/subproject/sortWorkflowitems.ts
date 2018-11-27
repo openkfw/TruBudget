@@ -59,8 +59,9 @@ function isRedacted(item: Workflowitem.WorkflowitemResource): boolean {
 function closedAt(item: Workflowitem.WorkflowitemResource): string {
   const event = item.log.find(e => e.intent === "workflowitem.close");
   if (event === undefined) {
-    logger.error({ error: { event } }, "Item is not closed.");
-    throw Error(`item is not closed: ${JSON.stringify(event)}`);
+    const message = "Item is not closed.";
+    logger.error({ error: { event } }, message );
+    throw Error(`${message}: ${JSON.stringify(event)}`);
   }
   return event.createdAt;
 }

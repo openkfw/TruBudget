@@ -77,7 +77,6 @@ async function grantInitialPermissions(
   user: User.UserRecord,
 ): Promise<void> {
   for (const intent of userDefaultIntents) {
-    // logger.trace({ userId: user.id, intent }, "granting default permission");
     logger.info({ userId: user.id, intent }, `Granting default permissions to ${user.id}`);
     await Global.grantPermission(multichain, user.id, intent);
   }

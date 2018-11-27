@@ -118,8 +118,9 @@ export async function get(
       // We've already encountered this notification, so we can apply operations on it.
       const hasProcessedEvent = applyMarkRead(event, notification);
       if (!hasProcessedEvent) {
-        logger.error({ event }, "Unexpected event occured");
-        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+        const message = "Unexpected event occured";
+        logger.error({ event }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
 

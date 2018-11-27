@@ -771,7 +771,7 @@ export const registerRoutes = (
     async (req: AuthenticatedRequest, reply) => {
       createBackup(multichainHost, backupApiPort, req)
         .then(data => {
-          console.log(reply.res);
+          logger.info(reply.res);
           reply.header("Content-Type", "application/gzip");
           reply.header("Content-Disposition", `attachment; filename="backup.gz"`);
           reply.send(data);

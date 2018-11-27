@@ -16,7 +16,7 @@ export class RpcClient {
     const protocol = `${settings.protocol || "http"}`;
     const host = settings.host || "localhost";
     const port = settings.port || 8570;
-    logger.debug({ params: { protocol, host, port, settings } }, "Creating Axios instance");
+    logger.debug({ parameters: { protocol, host, port, settings } }, "Creating Axios instance");
     this.instance = axios.create({
       baseURL: `${protocol}://${host}:${port}/`,
       method: "POST",
@@ -31,7 +31,7 @@ export class RpcClient {
   }
 
   invoke(method: string, ...params: any[]): any {
-    logger.debug({ method, params }, `Invoking method ${method}`);
+    logger.debug({parameters: { method, params }}, `Invoking method ${method}`);
     const request: RpcRequest = {
       method,
       params,
@@ -146,7 +146,7 @@ export class VanillaNodeJSRpcClient {
         }
 
         const body = JSON.stringify(request);
-        console.log(body);
+        logger.info(body);
         sendRequest(requestOptions, handleMessage)
           .on("error", reject)
           .end(body);

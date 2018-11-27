@@ -13,9 +13,6 @@ import logger from "./lib/logger";
 
 const URL_PREFIX = "/api";
 
-// const logLevel = process.env.NODE_ENV === "production" ? "info" : "debug";
-// const isPrettyPrint = process.env.PRETTY_PRINT === "false" ? false : true;
-
 /*
  * Deal with the environment:
  */

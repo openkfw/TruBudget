@@ -11,7 +11,7 @@ export async function changeProjectPermission(
   userIntent: "project.intent.grantPermission" | "project.intent.revokePermission",
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
-  console.log(`changing project perms`, JSON.stringify(input));
+  logger.info(`changing project perms`, JSON.stringify(input));
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const identity: string = value("identity", input.identity, isNonemptyString);

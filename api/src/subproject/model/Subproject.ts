@@ -119,8 +119,9 @@ export async function get(
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
-        logger.error({ error: { event } }, "Failed to initialize resource");
-        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
+        const message = "Failed to initialize resource";
+        logger.error({ error: { event } }, message );
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
       permissionsMap.set(asMapKey(item), result.permissions);
@@ -134,8 +135,9 @@ export async function get(
         applyGrantPermission(event, permissions) ||
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
-        logger.error({ error: { event } }, "An error occured while processing event");
-        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+        const message = "An error occured while processing event";
+        logger.error({ error: { event } }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
 

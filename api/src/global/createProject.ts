@@ -24,10 +24,6 @@ export async function createProject(
   const body = req.body;
 
   if (body.apiVersion !== "1.0") {
-    logger.error(
-      { error: { apiVersion: body.apiVersion } },
-      `Incorrect API Version. Expected '1.0', got ${body.apiVersion}`,
-    );
     throwParseError(["apiVersion"]);
   }
   throwParseErrorIfUndefined(body, ["data", "project"]);
@@ -75,11 +71,6 @@ export async function createProject(
   await Project.publish(multichain, projectId, event);
 
   logger.info(
-    // `Project ${input.displayName} created with default permissions: ${JSON.stringify(
-    //   event.data.permissions,
-    // )}`,
-    // `Project ${input.displayName} created with default permissions`,
-    // { event.data.permissions, input.displayName }
     { permissions: event.data.permissions, project },
     "Project created with default permissions",
   );
