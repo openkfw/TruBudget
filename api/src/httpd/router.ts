@@ -707,7 +707,7 @@ export const registerRoutes = (
 
   server.post(
     `${urlPrefix}/network.registerNode`,
-    getSchema(server, "registerNode"),
+    getSchemaWithoutAuth("registerNode"),
     async (request, reply) => {
       registerNode(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))

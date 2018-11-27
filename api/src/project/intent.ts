@@ -1,6 +1,7 @@
 import { throwIfUnauthorized } from "../authz";
 import { allIntents } from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import logger from "../lib/logger";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import * as Project from "./model/Project";
