@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { AuthenticatedRequest } from "../../httpd/lib";
-import logger from "../../lib/logger";
 import { MultichainClient } from "../../multichain/Client.h";
 import { createWorkflowitem } from "./createWorkflowitem";
 
@@ -196,7 +195,6 @@ describe("subproject.createWorkflowitem", () => {
     createWorkflowitem(multichain as MultichainClient, req)
       .then(() => expect(true).to.be.false)
       .catch(err => {
-        logger.error({ error: err }, "Creating workflow item failed");
         expect(err.kind).to.be.a("string", "ParseError");
         done();
       });
