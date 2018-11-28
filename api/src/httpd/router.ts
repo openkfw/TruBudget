@@ -225,14 +225,14 @@ export const registerRoutes = (
     getSchemaWithoutAuth("readiness"),
     async (request, reply) => {
       if (await isReady(multichainClient)) {
-        reply.status(200).send("OK");
+        return reply.status(200).send("OK");
       } else {
-        reply.status(503).send("Service unavailable.");
+        return reply.status(503).send("Service unavailable.");
       }
     },
   );
 
-  server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), async (request, reply) => {
+  server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"),  (_, reply) => {
     reply.status(200).send("OK");
   });
 
@@ -449,9 +449,10 @@ export const registerRoutes = (
   server.get(
     `${urlPrefix}/project.intent.listPermissions`,
     getSchema(server, "projectListPermissions"),
-    async (request, reply) => {
+     (request, reply) => {
       getProjectPermissions(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
+        .then(response => {
+          return send(reply, response)})
         .catch(err => handleError(request, reply, err));
     },
   );
