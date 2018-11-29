@@ -38,7 +38,7 @@ export async function ensureOrganizationStreams(
     organization,
     organizationVaultSecret,
   );
-  logger.info(`organization address: ${organizationAddress}`);
+  logger.info(`Organization address: ${organizationAddress}`);
 
   await multichain.getOrCreateStream({
     kind: "users",
@@ -56,7 +56,7 @@ async function ensureOrganizationAddress(
     // The organization already has its address set -> no need to use the local wallet
     // address.
     logger.info(`Organization address already set: ${addressFromStream}`);
-    logger.debug(`Importing private key..`);
+    logger.debug(`Importing private key...`);
     const privkey = await getPrivKey(
       multichain,
       organization,

@@ -71,7 +71,7 @@ export async function createProject(
   await Project.publish(multichain, projectId, event);
 
   logger.info(
-    { permissions: event.data.permissions, project },
+    {params: { permissions: event.data.permissions, project }},
     "Project created with default permissions",
   );
 

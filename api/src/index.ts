@@ -57,9 +57,9 @@ const rpcSettings: ConnectionSettings = {
   password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
 };
 
-const env = process.env.NODE_ENV || "";
+const env = process.env.NODE_ENV || "";
 
-logger.info({ rpcSettings }, "Connecting to MultiChain node");
+logger.info({ params: { rpcSettings } }, "Connecting to MultiChain node");
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
 const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH, env);
@@ -119,7 +119,7 @@ server.listen(port, "0.0.0.0", async err => {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
     process.exit(1);
   }
-  logger.info({ port }, `Server is listening on ${port}`);
+  logger.info({ params: { port } }, `Server is listening on ${port}`);
 
   const retryIntervalMs = 5000;
 
@@ -142,7 +142,7 @@ server.listen(port, "0.0.0.0", async err => {
     );
     await timeout(retryIntervalMs);
   }
-  logger.info({ multichainClient, organization }, "Organization stream present");
+  logger.info({ params: { multichainClient, organization } }, "Organization stream present");
 
   while (!(await registerSelf())) {
     logger.error(
@@ -151,5 +151,5 @@ server.listen(port, "0.0.0.0", async err => {
     );
     await timeout(retryIntervalMs);
   }
-  logger.info({ multichainClient, organization }, "Node registered in nodes stream");
+  logger.info({ params: { multichainClient, organization } }, "Node registered in nodes stream");
 });

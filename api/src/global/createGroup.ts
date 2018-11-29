@@ -42,7 +42,7 @@ export const createGroup = async (
   }
 
   await Group.publish(multichain, groupId, event);
-  logger.info({ event }, `Group ${displayName} created.`);
+  logger.info({ params: { event } }, `Group ${displayName} created.`);
 
   return [
     200,

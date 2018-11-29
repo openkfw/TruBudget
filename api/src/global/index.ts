@@ -33,7 +33,7 @@ export const getPermissions = async (
       logger.debug("Global permissions not found. Happens at startup.");
       return {};
     } else {
-      logger.error({error: err}, "Global permissions not found");
+      logger.error({ error: err }, "Global permissions not found");
       throw err;
     }
   }
@@ -49,7 +49,7 @@ export const grantPermission = async (
   const globalResource = streamItem.resource;
   const permissionsForIntent: People = globalResource.permissions[intent] || [];
   if (permissionsForIntent.includes(identity)) {
-    logger.info({ intent }, "User is already permitted to execute given intent");
+    logger.info({ params: { intent } }, "User is already permitted to execute given intent");
     // The given user is already permitted to execute the given intent.
     return;
   }
@@ -72,7 +72,7 @@ export const revokePermission = async (
       // No permissions set yet, so nothing to revoke.
       return;
     } else {
-      logger.error({error: err}, "An error occured while revoking permissions");
+      logger.error({ error: err }, "An error occured while revoking permissions");
       throw err;
     }
   }

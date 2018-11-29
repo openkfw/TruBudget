@@ -52,7 +52,10 @@ export const createUser = async (
   };
 
   await User.create(multichain, req.user, newUser);
-  logger.info(newUser, `User ${newUser.displayName} created. Granting permissions now...`);
+  logger.info(
+    { params: { newUser } },
+    `User ${newUser.displayName} created. Granting permissions now...`,
+  );
 
   await grantInitialPermissions(multichain, newUser);
 
@@ -77,7 +80,10 @@ async function grantInitialPermissions(
   user: User.UserRecord,
 ): Promise<void> {
   for (const intent of userDefaultIntents) {
-    logger.info({ userId: user.id, intent }, `Granting default permissions to ${user.id}`);
+    logger.info(
+      { params: { userId: user.id, intent } },
+      `Granting default permissions to ${user.id}`,
+    );
     await Global.grantPermission(multichain, user.id, intent);
   }
 }

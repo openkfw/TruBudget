@@ -62,7 +62,7 @@ async function readVault(
   if (vaultStreamItem === undefined) return {};
 
   const dataHexString = vaultStreamItem.data;
-  logger.info("read hex string from chain: %s bytes", dataHexString.length);
+  logger.info("Read hex string from chain: %s bytes", dataHexString.length);
 
   return vaultFromHexString(organizationVaultSecret, dataHexString);
 }
@@ -76,7 +76,7 @@ async function writeVault(
   const dataHexString = vaultToHexString(organizationVaultSecret, vault);
   const streamName = organizationStreamName(organization);
   await multichain.getRpcClient().invoke("publish", streamName, streamVaultKey, dataHexString);
-  logger.info("wrote hex string to chain: %s bytes", dataHexString.length);
+  logger.info("Wrote hex string to chain: %s bytes", dataHexString.length);
 }
 
 // only exported for testing

@@ -36,7 +36,7 @@ export function onlyAllowedData(event: Event, userIntents: Intent[]): Event | nu
     const allowedIntents = requiredPermissions.get(observedIntent);
     const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
     if (!isAllowedToSee) {
-      logger.info("User is not allowed to see the selected resource");
+      logger.info({params: {event}}, "User is not allowed to see the selected resource");
       return null;
     }
     return redactEvent(event, userIntents);

@@ -45,7 +45,7 @@ const can = async (
   } else {
     if (!resourcePermissions[intent]) {
       logger.info(
-        { resourcePermissions },
+        { params: { resourcePermissions } },
         `Acces denied for user ${token.userId} with intent ${intent}`,
       );
       return false;
