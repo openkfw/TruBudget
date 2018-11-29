@@ -52,8 +52,8 @@ export class RpcClient {
             // that falls out of the range of 2xx and WITH multichain errors:
             response = error.response.data.error;
             reject(response);
-            logger.error(
-              { error: { response } },
+            logger.debug(
+              { params: { response } },
               `Error during invoke of ${method}. Multichain errors occured.`,
             );
             return;

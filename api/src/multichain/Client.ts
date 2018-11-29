@@ -56,8 +56,8 @@ export class RpcMultichainClient implements MultichainClient {
       .catch(err => {
         if (options.name && err && err.code === -705) {
           // Stream or asset with this name already exists
-          logger.error(
-            { error: { err, options } },
+          logger.debug(
+            { params: { err, options } },
             "Stream or asset with this name already exists",
           );
           return options.name;
