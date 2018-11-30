@@ -55,6 +55,7 @@ import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
+import { markNotificationAllRead } from '../notification/controller/markAllRead';
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -697,6 +698,16 @@ export const registerRoutes = (
     getSchema(server, "markRead"),
     (request, reply) => {
       markNotificationRead(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/notification.markAllRead`,
+    getSchema(server, "markAllRead"),
+    (request, reply) => {
+      markNotificationAllRead(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

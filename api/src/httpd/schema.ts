@@ -2555,6 +2555,50 @@ const schemas = {
       },
     },
   },
+  markAllRead: {
+    schema: {
+      description:
+        "Allows a user to mark all of his/her notifications as read, which " +
+        "is then reflected by the `isRead` flag carried in the `notification.list` response.",
+      tags: ["notification"],
+      summary: "Mark all notification as read",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      body: {
+        type: "object",
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              notificationIds: {
+                type: "array",
+                items: { type: "string", example: "c9a6d74d-9508-4960-b39e-72f90f292b74" },
+              },
+            },
+            required: ["notificationIds"],
+          },
+        },
+      },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "string",
+            },
+          },
+        },
+        401: getAuthErrorSchema(),
+      },
+    },
+  },
   registerNode: {
     schema: {
       description: "Used by non-master MultiChain nodes to register their wallet address.",
