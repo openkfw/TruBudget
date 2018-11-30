@@ -14,7 +14,7 @@ import NotificationList from "./NotificationList";
 //   }
 // };
 
-const NotificationPage = ({ notifications, streamNames, users, loggedInUser, markNotificationAsRead, history }) => {
+const NotificationPage = ({ notifications, streamNames, users, loggedInUser, markNotificationAsRead, history, markAllNotificationAsRead }) => {
   return (
     <div>
       {/* <Card style={{ width: "100%", marginBottom: "10px" }}>
@@ -30,6 +30,7 @@ const NotificationPage = ({ notifications, streamNames, users, loggedInUser, mar
         notifications={notifications}
         history={history}
         markNotificationAsRead={markNotificationAsRead}
+        markAllNotificationAsRead={markAllNotificationAsRead}
       />
     </div>
   );

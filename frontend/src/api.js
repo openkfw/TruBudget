@@ -61,7 +61,7 @@ class Api {
     });
   grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, { identity, intent });
 
-  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity , intent });
+  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity, intent });
   listGlobalPermissions = () => instance.get(`global.listPermissions`);
 
   listUser = () => instance.get(`/user.list`);
@@ -265,6 +265,7 @@ class Api {
     instance.post(`/notification.markRead`, {
       notificationId
     });
+  markAllNotificationsAsRead = notificationIds => instance.post(`/notification.markAllRead`, { notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {

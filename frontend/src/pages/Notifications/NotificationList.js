@@ -15,8 +15,10 @@ import CardHeader from "@material-ui/core/CardHeader";
 import moment from "moment";
 
 import { intentMapping, parseURI, fetchResourceName, hasAccess } from "./helper";
+import { withStyles } from "@material-ui/core";
+import strings from "../../localizeStrings";
 
-const styles = {
+const styles = theme => ({
   root: {
     width: "100%",
     backgroundColor: "white"
@@ -31,8 +33,13 @@ const styles = {
   row: {
     display: "flex",
     flex: 1
-  }
-};
+  },
+  button: {
+    marginTop: 20,
+    marginRight: 30
+  },
+
+});
 
 const getListItems = ({ notifications, history, markNotificationAsRead }) =>
   notifications.map((notification, index) => {
@@ -78,14 +85,35 @@ const getListItems = ({ notifications, history, markNotificationAsRead }) =>
     );
   });
 
+const handleClick = (markAllNotificationAsRead, notifications) => {
+  const notificationIds = notifications.map(notification => notification.notificationId);
+  markAllNotificationAsRead(notificationIds);
+};
+
 const NotificationsList = props => {
   const listItems = getListItems(props);
+  const { classes, markAllNotificationAsRead, notifications } = props;
+
+  const allNotificationsRead = notifications.some(notification => notification.isRead === false);
   return (
     <Card>
-      <CardHeader title="Notifications" />
+      <CardHeader
+        title="Notifications"
+        action={
+          <Button
+            variant="outlined"
+            onClick={() => handleClick(markAllNotificationAsRead, notifications)}
+            color="primary"
+            className={classes.button}
+            disabled={!allNotificationsRead}
+          >
+            {strings.notification.read_all}
+          </Button>
+        }
+      />
       <List component="div">{listItems}</List>
     </Card>
   );
 };
 
-export default NotificationsList;
+export default withStyles(styles)(NotificationsList);

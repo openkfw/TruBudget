@@ -45,7 +45,9 @@ import {
   FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
   FETCH_NOTIFICATIONS_WITH_ID,
   FETCH_ALL_NOTIFICATIONS,
-  FETCH_ALL_NOTIFICATIONS_SUCCESS
+  FETCH_ALL_NOTIFICATIONS_SUCCESS,
+  MARK_ALL_NOTIFICATION_AS_READ_SUCCESS,
+  MARK_ALL_NOTIFICATION_AS_READ
 } from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
@@ -383,6 +385,21 @@ export function* markNotificationAsReadSaga({ notificationId }) {
     });
   }, false);
 }
+
+export function* markAllNotificationsAsReadSaga({ notificationIds }) {
+  yield execute(function*() {
+    yield callApi(api.markAllNotificationsAsRead, notificationIds);
+    yield put({
+      type: MARK_ALL_NOTIFICATION_AS_READ_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_NOTIFICATIONS,
+      showLoading: false
+    });
+  }, false);
+}
+
+
 
 export function* loginSaga({ user }) {
   function* login() {
@@ -956,6 +973,10 @@ export function* watchMarkNotificationAsRead() {
   yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
 }
 
+export function* watchMarkAllNotificationsAsRead() {
+  yield takeEvery(MARK_ALL_NOTIFICATION_AS_READ, markAllNotificationsAsReadSaga);
+}
+
 export function* watchLogin() {
   yield takeLatest(LOGIN, loginSaga);
 }
@@ -1143,6 +1164,7 @@ export default function* rootSaga() {
       watchFetchAllNotifications(),
       watchFetchNotificationsWithId(),
       watchMarkNotificationAsRead(),
+      watchMarkAllNotificationsAsRead(),
 
       // Peers
       watchFetchAcitvePeers(),

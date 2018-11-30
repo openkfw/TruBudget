@@ -12,6 +12,9 @@ export const FETCH_NOTIFICATIONS_WITH_ID_SUCCESS = "FETCH_NOTIFICATIONS_WITH_ID_
 export const FETCH_ALL_NOTIFICATIONS = "FETCH_ALL_NOTIFICATIONS";
 export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS";
 
+export const MARK_ALL_NOTIFICATION_AS_READ = "MARK_ALL_NOTIFICATION_AS_READ";
+export const MARK_ALL_NOTIFICATION_AS_READ_SUCCESS = "MARK_ALL_NOTIFICATION_AS_READ_SUCCESS";
+
 export function showSnackbar(isError = false) {
   return {
     type: SHOW_SNACKBAR,
@@ -72,4 +75,11 @@ export function fetchHistoryItems(project) {
     type: FETCH_HISTORY,
     project
   };
+}
+
+export function markAllNotificationAsRead(notificationIds) {
+  return {
+    type: MARK_ALL_NOTIFICATION_AS_READ,
+    notificationIds
+  }
 }

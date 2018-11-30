@@ -251,7 +251,8 @@ const fr = {
     workflowitem_close: "Élément du Workflow {0} a été fermé",
     workflowitem_intent_grantPermission: "Les autorisations de l'élément du Workflow {0} ont changés",
     workflowitem_intent_revokePermission: "Les autorisations de l'élément du Workflow {0} ont changés",
-    workflowitem_update: "Élément du Workflow {0} a été actualisé"
+    workflowitem_update: "Élément du Workflow {0} a été actualisé",
+    read_all: "French: Read All"
   },
 
   history: {

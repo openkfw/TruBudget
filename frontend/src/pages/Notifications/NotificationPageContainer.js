@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { markNotificationAsRead, fetchAllNotifications } from "./actions";
+import { markNotificationAsRead, fetchAllNotifications, markAllNotificationAsRead } from "./actions";
 import NotificationPage from "./NotificationPage";
 
 import globalStyles from "../../styles";
@@ -24,7 +24,8 @@ class NotificationPageContainer extends Component {
 const mapDispatchToProps = (dispatch, props) => {
   return {
     fetchNotifications: id => dispatch(fetchAllNotifications(false)),
-    markNotificationAsRead: notificationId => dispatch(markNotificationAsRead(notificationId))
+    markNotificationAsRead: notificationId => dispatch(markNotificationAsRead(notificationId)),
+    markAllNotificationAsRead: notificationIds => dispatch(markAllNotificationAsRead(notificationIds))
   };
 };
 
