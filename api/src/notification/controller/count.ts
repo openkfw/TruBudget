@@ -7,12 +7,8 @@ export const getNotificationCount = async (
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const rawNotifications = await Notification.get(multichain, req.user);
-  const notificationCount = rawNotifications.reduce((acc, notification) => {
-    if (notification.isRead === false) {
-      acc = acc + 1;
-    }
-    return acc;
-  }, 0);
+  const notificationCount = rawNotifications.notificationCount;
+
   return [
     200,
     {

@@ -28,9 +28,11 @@ export const getNotificationList = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
-  const sinceId: string | undefined = req.query.sinceId;
-
-  const rawNotifications = await Notification.get(multichain, req.user, sinceId);
+  const size: string | undefined = req.query.size;
+  const fromId: string | undefined = req.query.fromId;
+  const notificationList = await Notification.get(multichain, req.user, size, fromId);
+  const rawNotifications = notificationList.notifications;
+  const notificationCount = notificationList.notificationCount;
 
   const displayNamesById: Map<string, string | undefined> = await buildDisplayNameMap(
     multichain,
@@ -51,12 +53,14 @@ export const getNotificationList = async (
     });
   }
 
+
   return [
     200,
     {
       apiVersion: "1.0",
       data: {
         notifications,
+        notificationCount,
       },
     },
   ];
@@ -86,8 +90,8 @@ async function buildDisplayNameMap(
     const workflowitemId = getResourceId(notification.resources, "workflowitem");
 
     if (projectId === undefined) {
-      const message= "Missing projectId";
-      logger.error({error: notification.resources}, message );
+      const message = "Missing projectId";
+      logger.error({ error: notification.resources }, message);
       throw Error(`${message}: ${JSON.stringify(notification.resources)}`);
     }
 

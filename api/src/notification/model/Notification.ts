@@ -30,6 +30,11 @@ export interface Notification {
   originalEvent: Event;
 }
 
+export interface NotificationList {
+  notificationCount: number;
+  notifications: Notification[];
+}
+
 export async function publish(
   multichain: MultichainClient,
   userId: string,
@@ -60,7 +65,9 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
-      logger.warn(`The stream ${streamName} does not exist yet. Creating the stream and trying again.`);
+      logger.warn(
+        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
+      );
       // The stream does not exist yet. Create the stream and try again:
       return multichain
         .getOrCreateStream({ kind: "notifications", name: streamName })
@@ -75,8 +82,9 @@ export async function publish(
 export async function get(
   multichain: MultichainClient,
   token: AuthToken,
-  sinceId?: string,
-): Promise<Notification[]> {
+  size?: string,
+  fromId?: string,
+): Promise<NotificationList> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
     .v2_readStreamItems(streamName, token.userId)
     .catch(err => {
@@ -92,22 +100,10 @@ export async function get(
     });
   const notificationsById = new Map<NotificationId, Notification>();
 
-  let fromIndex = 0;
-  if (sinceId) {
-    fromIndex = streamItems.findIndex(
-      item => getNotificationId(item.data.json as Event) === sinceId,
-    );
-    if (fromIndex === -1) fromIndex = 0;
-  }
-
-  for (let i = fromIndex; i < streamItems.length; ++i) {
-    const event = streamItems[i].data.json as Event;
+  for (const streamItem of streamItems) {
+    const event = streamItem.data.json as Event;
 
     const notificationId = getNotificationId(event);
-    if (sinceId === notificationId) {
-      // The "sinceId"-event is not included in the response
-      continue;
-    }
 
     let notification = notificationsById.get(notificationId);
     if (notification === undefined) {
@@ -131,7 +127,20 @@ export async function get(
 
   const unorderedNotifications = [...notificationsById.values()];
 
-  return unorderedNotifications.sort(compareNotifications);
+  const orderedNotifiactions = unorderedNotifications.sort(compareNotifications);
+
+  const fromIndex = orderedNotifiactions.findIndex(
+    (x: Notification) => x.notificationId === fromId,
+  );
+  const notifications = size
+    ? orderedNotifiactions.slice(fromIndex > -1 ? fromIndex : 0, fromIndex + parseInt(size, 10 ))
+    : orderedNotifiactions;
+  const count = orderedNotifiactions.length;
+
+  return {
+    notificationCount: count,
+    notifications,
+  };
 }
 
 function compareNotifications(a: Notification, b: Notification): number {

@@ -2430,9 +2430,9 @@ const schemas = {
   notificationList: {
     schema: {
       description:
-        "List notifications for the user, given by the token in the " +
-        "request's `Authorization` header. By default, the response includes _all_ notifications, " +
-        "but the `sinceId` parameter may be used to truncate the output.",
+        "List notifications for the selected page " +
+        "for the user, given by the token in the " +
+        "request's `Authorization` header. ",
       tags: ["notification"],
       summary: "List all notification of the authorized user",
       security: [
@@ -2443,8 +2443,13 @@ const schemas = {
       querystring: {
         type: "object",
         properties: {
-          sinceId: {
+          fromId: {
             type: "string",
+            example: "aadea0bb-9870-477f-b10c-82e8784a4fe3",
+          },
+          size: {
+            type: "number",
+            example: "10",
           },
         },
       },
@@ -2504,6 +2509,9 @@ const schemas = {
                       },
                     },
                   },
+                },
+                notificationCount: {
+                  type: "number",
                 },
               },
             },
