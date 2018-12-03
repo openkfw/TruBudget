@@ -2514,6 +2514,34 @@ const schemas = {
     },
   },
 
+  notificationCount: {
+    schema: {
+      description: "Get the number of unread notifications for the currently logged in user",
+      tags: ["notification"],
+      summary: "Get the number of unread notifications",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                notificationCount: { type: "integer", example: 0 },
+              },
+            },
+          },
+        },
+      },
+      401: getAuthErrorSchema(),
+    },
+  },
   markRead: {
     schema: {
       description:

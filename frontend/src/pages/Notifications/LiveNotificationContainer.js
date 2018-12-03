@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import LiveNotification from "./LiveNotification";
-import { fetchNotificationsWithId, fetchAllNotifications, hideSnackbar } from "./actions.js";
+import { fetchNotificationsWithId, fetchAllNotifications, hideSnackbar, fetchNotificationCount } from "./actions.js";
 import { toJS } from "../../helper";
 
 class LiveNotificationContainer extends Component {
   componentWillMount() {
-    this.props.fetchAllNotifications();
+    this.props.fetchNotificationCount();
     this.startUpdates();
   }
 
@@ -33,14 +33,14 @@ class LiveNotificationContainer extends Component {
 
   render() {
     return <LiveNotification {...this.props} />;
-    // return <div />;
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchNotifications: (fromId, showLoading) => dispatch(fetchNotificationsWithId(fromId, showLoading)),
-    fetchAllNotifications: () => dispatch(fetchAllNotifications(true)),
+    fetchAllNotifications: () => dispatch(fetchAllNotifications(false)),
+    fetchNotificationCount: () => dispatch(fetchNotificationCount()),
     closeSnackbar: () => dispatch(hideSnackbar())
   };
 };
@@ -50,7 +50,8 @@ const mapStateToProps = state => {
     notifications: state.getIn(["notifications", "notifications"]),
     showSnackbar: state.getIn(["notifications", "showSnackbar"]),
     snackbarMessage: state.getIn(["notifications", "snackbarMessage"]),
-    snackbarError: state.getIn(["notifications", "snackbarError"])
+    snackbarError: state.getIn(["notifications", "snackbarError"]),
+    notificationCount: state.getIn(["notifications", "notificationCount"])
   };
 };
 

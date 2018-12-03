@@ -47,7 +47,9 @@ import {
   FETCH_ALL_NOTIFICATIONS,
   FETCH_ALL_NOTIFICATIONS_SUCCESS,
   MARK_ALL_NOTIFICATION_AS_READ_SUCCESS,
-  MARK_ALL_NOTIFICATION_AS_READ
+  MARK_ALL_NOTIFICATION_AS_READ,
+  FETCH_NOTIFICATION_COUNT_SUCCESS,
+  FETCH_NOTIFICATION_COUNT
 } from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
@@ -360,8 +362,20 @@ export function* fetchAllNotificationsSaga({ showLoading }) {
       type: FETCH_ALL_NOTIFICATIONS_SUCCESS,
       notifications: data.notifications
     });
+
   }, showLoading);
 }
+
+export function* fetchNotificationCountSaga({ showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.fetchNotificationCount);
+    yield put({
+      type: FETCH_NOTIFICATION_COUNT_SUCCESS,
+      count: data.notificationCount
+    });
+  }, showLoading);
+}
+
 
 export function* fetchNotificationWithIdSaga({ fromId, showLoading }) {
   yield execute(function*() {
@@ -383,6 +397,9 @@ export function* markNotificationAsReadSaga({ notificationId }) {
       type: FETCH_ALL_NOTIFICATIONS,
       showLoading: false
     });
+    yield put({
+      type: FETCH_NOTIFICATION_COUNT
+    })
   }, false);
 }
 
@@ -396,6 +413,9 @@ export function* markAllNotificationsAsReadSaga({ notificationIds }) {
       type: FETCH_ALL_NOTIFICATIONS,
       showLoading: false
     });
+    yield put({
+      type: FETCH_NOTIFICATION_COUNT
+    })
   }, false);
 }
 
@@ -969,6 +989,11 @@ export function* watchFetchNotificationsWithId() {
   yield takeEvery(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
 }
 
+export function* watchFetchNotificationCount() {
+  yield takeEvery(FETCH_NOTIFICATION_COUNT, fetchNotificationCountSaga);
+}
+
+
 export function* watchMarkNotificationAsRead() {
   yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
 }
@@ -1165,6 +1190,7 @@ export default function* rootSaga() {
       watchFetchNotificationsWithId(),
       watchMarkNotificationAsRead(),
       watchMarkAllNotificationsAsRead(),
+      watchFetchNotificationCount(),
 
       // Peers
       watchFetchAcitvePeers(),

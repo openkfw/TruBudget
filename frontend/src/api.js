@@ -261,6 +261,10 @@ class Api {
     return instance.get(`/notification.list?sinceId=${fromId}`);
   };
 
+  fetchNotificationCount = () => {
+    return instance.get(`/notification.count`);
+  };
+
   markNotificationAsRead = notificationId =>
     instance.post(`/notification.markRead`, {
       notificationId

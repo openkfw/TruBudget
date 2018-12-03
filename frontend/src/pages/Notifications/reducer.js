@@ -7,7 +7,8 @@ import {
   HIDE_HISTORY,
   FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
   FETCH_ALL_NOTIFICATIONS_SUCCESS,
-  HIDE_SNACKBAR
+  HIDE_SNACKBAR,
+  FETCH_NOTIFICATION_COUNT_SUCCESS
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -18,7 +19,8 @@ const defaultState = fromJS({
   showSnackbar: false,
   snackbarMessage: "New Project added",
   snackbarError: false,
-  historyItems: []
+  historyItems: [],
+  notificationCount: 0,
 });
 
 export default function navbarReducer(state = defaultState, action) {
@@ -33,12 +35,13 @@ export default function navbarReducer(state = defaultState, action) {
         notifications: fromJS(action.notifications).concat(state.get("notifications")),
         newNotifications: fromJS(action.notifications)
       });
+    case FETCH_NOTIFICATION_COUNT_SUCCESS:
+      return state.set("notificationCount", action.count)
     case SHOW_SNACKBAR:
       return state.merge({
         showSnackbar: action.show,
         snackbarError: action.isError
-      });
-    case HIDE_SNACKBAR:
+      });    case HIDE_SNACKBAR:
       return state.set("showSnackbar", action.show);
     case SNACKBAR_MESSAGE:
       return state.set("snackbarMessage", action.message);

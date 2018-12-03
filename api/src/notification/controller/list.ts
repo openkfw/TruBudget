@@ -1,4 +1,3 @@
-import * as winston from "winston";
 import { AuthToken } from "../../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { ResourceType } from "../../lib/resourceTypes";
@@ -27,7 +26,7 @@ interface NotificationDto {
 
 export const getNotificationList = async (
   multichain: MultichainClient,
-  req,
+  req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const sinceId: string | undefined = req.query.sinceId;
 

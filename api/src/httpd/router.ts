@@ -19,6 +19,7 @@ import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
 import { getNotificationList } from "../notification/controller/list";
+import { getNotificationCount } from "../notification/controller/count";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { assignProject } from "../project/controller/assign";
 import { closeProject } from "../project/controller/close";
@@ -692,6 +693,17 @@ export const registerRoutes = (
         .catch(err => handleError(request, reply, err));
     },
   );
+  server.get(
+    `${urlPrefix}/notification.count`,
+    getSchema(server, "notificationCount"),
+    (request, reply) => {
+      getNotificationCount(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+
 
   server.post(
     `${urlPrefix}/notification.markRead`,

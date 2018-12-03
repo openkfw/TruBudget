@@ -15,6 +15,10 @@ export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS"
 export const MARK_ALL_NOTIFICATION_AS_READ = "MARK_ALL_NOTIFICATION_AS_READ";
 export const MARK_ALL_NOTIFICATION_AS_READ_SUCCESS = "MARK_ALL_NOTIFICATION_AS_READ_SUCCESS";
 
+
+export const FETCH_NOTIFICATION_COUNT = "FETCH_NOTIFICATION_COUNT";
+export const FETCH_NOTIFICATION_COUNT_SUCCESS = "FETCH_NOTIFICATION_COUNT_SUCCESS";
+
 export function showSnackbar(isError = false) {
   return {
     type: SHOW_SNACKBAR,
@@ -43,6 +47,15 @@ export function fetchAllNotifications(showLoading = false) {
     showLoading
   };
 }
+
+
+export function fetchNotificationCount(showLoading = false) {
+  return {
+    type: FETCH_NOTIFICATION_COUNT,
+    showLoading
+  };
+}
+
 
 export function fetchNotificationsWithId(fromId, showLoading = false) {
   return {
