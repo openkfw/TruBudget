@@ -11,11 +11,12 @@ import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
+import { withStyles } from "@material-ui/core/styles";
+import TablePagination from "@material-ui/core/TablePagination";
 
 import moment from "moment";
 
 import { intentMapping, parseURI, fetchResourceName, hasAccess } from "./helper";
-import { withStyles } from "@material-ui/core";
 import strings from "../../localizeStrings";
 
 const styles = theme => ({
@@ -37,11 +38,17 @@ const styles = theme => ({
   button: {
     marginTop: 20,
     marginRight: 30
-  },
-
+  }
 });
 
-const getListItems = ({ notifications, history, markNotificationAsRead }) =>
+const getListItems = (
+  notifications,
+  history,
+  markNotificationAsRead,
+  lastFetchedBeforeId,
+  lastFetchedAfterId,
+  notificationsPerPage
+) =>
   notifications.map((notification, index) => {
     const message = intentMapping(notification);
     const { originalEvent, notificationId, isRead, resources } = notification;
@@ -55,7 +62,12 @@ const getListItems = ({ notifications, history, markNotificationAsRead }) =>
           style={styles.row}
           key={index}
           button={isRead ? false : true}
-          onClick={isRead ? undefined : () => markNotificationAsRead(notificationId)}
+          onClick={
+            isRead
+              ? undefined
+              : () =>
+                  markNotificationAsRead(notificationId, lastFetchedBeforeId, lastFetchedAfterId, notificationsPerPage)
+          }
         >
           <div style={{ flex: 1, opacity: isRead ? 0.3 : 1 }}>
             <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
@@ -85,16 +97,45 @@ const getListItems = ({ notifications, history, markNotificationAsRead }) =>
     );
   });
 
-const handleClick = (markAllNotificationAsRead, notifications) => {
+const handleClick = (
+  markAllNotificationAsRead,
+  notifications,
+  lastFetchedBeforeId,
+  lastFetchedAfterId,
+  notificationsPerPage
+) => {
   const notificationIds = notifications.map(notification => notification.notificationId);
-  markAllNotificationAsRead(notificationIds);
+  markAllNotificationAsRead(notificationIds, lastFetchedBeforeId, lastFetchedAfterId, notificationsPerPage);
 };
 
 const NotificationsList = props => {
-  const listItems = getListItems(props);
-  const { classes, markAllNotificationAsRead, notifications } = props;
-
+  const {
+    classes,
+    markAllNotificationAsRead,
+    notifications,
+    setNotifcationsPerPage,
+    notificationsPerPage,
+    fetchNotifications,
+    notificationPage,
+    setNotificationPage,
+    notificationCount,
+    setLastFetchedBeforeId,
+    setLastFetchedAfterId,
+    lastFetchedBeforeId,
+    lastFetchedAfterId,
+    history,
+    markNotificationAsRead
+  } = props;
+  const listItems = getListItems(
+    notifications,
+    history,
+    markNotificationAsRead,
+    lastFetchedBeforeId,
+    lastFetchedAfterId,
+    notificationsPerPage
+  );
   const allNotificationsRead = notifications.some(notification => notification.isRead === false);
+  const rowsPerPageOptions = [5, 10, 20, 50];
   return (
     <Card>
       <CardHeader
@@ -102,7 +143,15 @@ const NotificationsList = props => {
         action={
           <Button
             variant="outlined"
-            onClick={() => handleClick(markAllNotificationAsRead, notifications)}
+            onClick={() =>
+              handleClick(
+                markAllNotificationAsRead,
+                notifications,
+                lastFetchedBeforeId,
+                lastFetchedAfterId,
+                notificationsPerPage
+              )
+            }
             color="primary"
             className={classes.button}
             disabled={!allNotificationsRead}
@@ -112,6 +161,31 @@ const NotificationsList = props => {
         }
       />
       <List component="div">{listItems}</List>
+      <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
+        <TablePagination
+          rowsPerPageOptions={rowsPerPageOptions}
+          rowsPerPage={notificationsPerPage}
+          onChangeRowsPerPage={event => {
+            setNotifcationsPerPage(event.target.value);
+            fetchNotifications("", "", "", event.target.value);
+          }}
+          count={notificationCount}
+          page={notificationPage}
+          onChangePage={(_, page) => {
+            if (page > notificationPage) {
+              const afterId = notifications[notifications.length - 1].notificationId;
+              setLastFetchedAfterId(afterId);
+              setNotificationPage(page);
+              fetchNotifications("", afterId, notificationsPerPage);
+            } else {
+              const beforeId = notifications[0].notificationId;
+              setLastFetchedBeforeId(beforeId);
+              setNotificationPage(page);
+              fetchNotifications(beforeId, "", notificationsPerPage);
+            }
+          }}
+        />
+      </div>
     </Card>
   );
 };

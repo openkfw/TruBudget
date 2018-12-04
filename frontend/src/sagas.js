@@ -1,5 +1,5 @@
 import { put, takeEvery, takeLatest, call, select } from "redux-saga/effects";
-import { saveAs } from 'file-saver/FileSaver';
+import { saveAs } from "file-saver/FileSaver";
 import Api from "./api.js";
 import {
   CREATE_PROJECT,
@@ -42,8 +42,6 @@ import {
   SNACKBAR_MESSAGE,
   MARK_NOTIFICATION_AS_READ_SUCCESS,
   MARK_NOTIFICATION_AS_READ,
-  FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
-  FETCH_NOTIFICATIONS_WITH_ID,
   FETCH_ALL_NOTIFICATIONS,
   FETCH_ALL_NOTIFICATIONS_SUCCESS,
   MARK_ALL_NOTIFICATION_AS_READ_SUCCESS,
@@ -122,7 +120,14 @@ import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
   APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
 } from "./pages/Nodes/actions.js";
-import { FETCH_ACTIVE_PEERS, FETCH_ACTIVE_PEERS_SUCCESS, CREATE_BACKUP_SUCCESS, CREATE_BACKUP , RESTORE_BACKUP_SUCCESS, RESTORE_BACKUP} from "./pages/Navbar/actions.js";
+import {
+  FETCH_ACTIVE_PEERS,
+  FETCH_ACTIVE_PEERS_SUCCESS,
+  CREATE_BACKUP_SUCCESS,
+  CREATE_BACKUP,
+  RESTORE_BACKUP_SUCCESS,
+  RESTORE_BACKUP
+} from "./pages/Navbar/actions.js";
 
 const api = new Api();
 
@@ -196,7 +201,7 @@ function* callApi(func, ...args) {
   // TODO dont set the environment on each call
   const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
-  const {data} = yield call(func, ...args);
+  const { data } = yield call(func, ...args);
   return data;
 }
 
@@ -355,14 +360,13 @@ export function* getEnvironmentSaga() {
   });
 }
 
-export function* fetchAllNotificationsSaga({ showLoading }) {
+export function* fetchNotificationsSaga({ showLoading, beforeId, afterId, limit }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications);
+    const { data } = yield callApi(api.fetchNotifications, beforeId, afterId, limit);
     yield put({
       type: FETCH_ALL_NOTIFICATIONS_SUCCESS,
       notifications: data.notifications
     });
-
   }, showLoading);
 }
 
@@ -377,17 +381,7 @@ export function* fetchNotificationCountSaga({ showLoading }) {
 }
 
 
-export function* fetchNotificationWithIdSaga({ fromId, showLoading }) {
-  yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications, fromId);
-    yield put({
-      type: FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
-      notifications: data.notifications
-    });
-  }, showLoading);
-}
-
-export function* markNotificationAsReadSaga({ notificationId }) {
+export function* markNotificationAsReadSaga({ notificationId, beforeId, afterId, limit }) {
   yield execute(function*() {
     yield callApi(api.markNotificationAsRead, notificationId);
     yield put({
@@ -395,15 +389,18 @@ export function* markNotificationAsReadSaga({ notificationId }) {
     });
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
-      showLoading: false
+      showLoading: false,
+      beforeId,
+      afterId,
+      limit
     });
     yield put({
       type: FETCH_NOTIFICATION_COUNT
-    })
+    });
   }, false);
 }
 
-export function* markAllNotificationsAsReadSaga({ notificationIds }) {
+export function* markAllNotificationsAsReadSaga({ notificationIds, beforeId, afterId, limit }) {
   yield execute(function*() {
     yield callApi(api.markAllNotificationsAsRead, notificationIds);
     yield put({
@@ -411,15 +408,16 @@ export function* markAllNotificationsAsReadSaga({ notificationIds }) {
     });
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
-      showLoading: false
+      showLoading: false,
+      beforeId,
+      afterId,
+      limit
     });
     yield put({
       type: FETCH_NOTIFICATION_COUNT
-    })
+    });
   }, false);
 }
-
-
 
 export function* loginSaga({ user }) {
   function* login() {
@@ -474,7 +472,7 @@ export function* grantGlobalPermissionSaga({ identity, intent }) {
     });
     yield put({
       type: LIST_GLOBAL_PERMISSIONS
-    })
+    });
   }, true);
 }
 
@@ -486,13 +484,13 @@ export function* revokeGlobalPermissionSaga({ identity, intent }) {
     });
     yield put({
       type: LIST_GLOBAL_PERMISSIONS
-    })
+    });
   }, true);
 }
 
 export function* listGlobalPermissionSaga() {
   yield execute(function*() {
-    const { data }  = yield callApi(api.listGlobalPermissions);
+    const { data } = yield callApi(api.listGlobalPermissions);
     yield put({
       type: LIST_GLOBAL_PERMISSIONS_SUCCESS,
       data
@@ -906,31 +904,30 @@ export function* hideWorkflowDetailsSaga() {
   });
 }
 
-export function* createBackupSaga({showLoading = true}){
+export function* createBackupSaga({ showLoading = true }) {
   yield execute(function*() {
     const data = yield callApi(api.createBackup);
     saveAs(data, "backup.gz");
     yield put({
-      type: CREATE_BACKUP_SUCCESS,
+      type: CREATE_BACKUP_SUCCESS
     });
   }, showLoading);
 }
 
-export function* restoreBackupSaga({file, showLoading = true}){
+export function* restoreBackupSaga({ file, showLoading = true }) {
   yield execute(function*() {
     const env = yield select(getEnvironment);
     const token = yield select(getJwt);
     const prefix = env === "Test" ? "/test" : "/prod";
     yield call(api.restoreFromBackup, prefix, token, file);
     yield put({
-      type: RESTORE_BACKUP_SUCCESS,
+      type: RESTORE_BACKUP_SUCCESS
     });
     yield put({
-      type: LOGOUT,
+      type: LOGOUT
     });
   }, showLoading);
 }
-
 
 // WATCHERS
 
@@ -981,18 +978,13 @@ export function* watchEditProject() {
   yield takeEvery(EDIT_PROJECT, editProjectSaga);
 }
 
-export function* watchFetchAllNotifications() {
-  yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
-}
-
-export function* watchFetchNotificationsWithId() {
-  yield takeEvery(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
+export function* watchFetchNotifications() {
+  yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga);
 }
 
 export function* watchFetchNotificationCount() {
   yield takeEvery(FETCH_NOTIFICATION_COUNT, fetchNotificationCountSaga);
 }
-
 
 export function* watchMarkNotificationAsRead() {
   yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
@@ -1124,7 +1116,7 @@ export function* watchRevokeGlobalPermission() {
   yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga);
 }
 
-export function* watchListGlobalPermissions(){
+export function* watchListGlobalPermissions() {
   yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga);
 }
 
@@ -1186,8 +1178,7 @@ export default function* rootSaga() {
       watchhideWorkflowDetails(),
 
       // Notifications
-      watchFetchAllNotifications(),
-      watchFetchNotificationsWithId(),
+      watchFetchNotifications(),
       watchMarkNotificationAsRead(),
       watchMarkAllNotificationsAsRead(),
       watchFetchNotificationCount(),
@@ -1198,8 +1189,6 @@ export default function* rootSaga() {
       // System
       watchCreateBackup(),
       watchRestoreBackup()
-
-
     ];
   } catch (error) {
     console.log(error);

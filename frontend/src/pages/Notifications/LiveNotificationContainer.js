@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import LiveNotification from "./LiveNotification";
-import { fetchNotificationsWithId, fetchAllNotifications, hideSnackbar, fetchNotificationCount } from "./actions.js";
+import { fetchNotifications, hideSnackbar, fetchNotificationCount } from "./actions.js";
 import { toJS } from "../../helper";
 
 class LiveNotificationContainer extends Component {
@@ -12,7 +12,7 @@ class LiveNotificationContainer extends Component {
   }
 
   componentWillUnmount() {
-    this.stopUpdates();
+    // this.stopUpdates();
   }
 
   startUpdates() {
@@ -22,9 +22,8 @@ class LiveNotificationContainer extends Component {
   }
 
   fetch() {
-    const { notifications, fetchNotifications } = this.props;
-    const fromId = notifications.length > 0 ? notifications[0].notificationId : "";
-    fetchNotifications(fromId, false);
+    const { fetchNotifications, notificationsPerPage } = this.props;
+    fetchNotifications(notificationsPerPage);
   }
 
   stopUpdates() {
@@ -38,8 +37,7 @@ class LiveNotificationContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchNotifications: (fromId, showLoading) => dispatch(fetchNotificationsWithId(fromId, showLoading)),
-    fetchAllNotifications: () => dispatch(fetchAllNotifications(false)),
+    fetchNotifications: (limit) => dispatch(fetchNotifications(false, "", "", limit)),
     fetchNotificationCount: () => dispatch(fetchNotificationCount()),
     closeSnackbar: () => dispatch(hideSnackbar())
   };
@@ -51,7 +49,8 @@ const mapStateToProps = state => {
     showSnackbar: state.getIn(["notifications", "showSnackbar"]),
     snackbarMessage: state.getIn(["notifications", "snackbarMessage"]),
     snackbarError: state.getIn(["notifications", "snackbarError"]),
-    notificationCount: state.getIn(["notifications", "notificationCount"])
+    notificationCount: state.getIn(["notifications", "notificationCount"]),
+    notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
   };
 };
 

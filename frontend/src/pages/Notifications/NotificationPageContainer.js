@@ -1,15 +1,29 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { markNotificationAsRead, fetchAllNotifications, markAllNotificationAsRead } from "./actions";
+import {
+  markNotificationAsRead,
+  fetchNotifications,
+  markAllNotificationAsRead,
+  setNotifcationsPerPage,
+  setNotificationPage,
+  setLastFetchedBeforeId,
+  setLastFetchedAfterId
+} from "./actions";
 import NotificationPage from "./NotificationPage";
 
 import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 
 class NotificationPageContainer extends Component {
-  componentDidMount() {
-    this.props.fetchNotifications();
+  componentWillMount() {
+    this.props.fetchNotifications("", "", this.props.notificationsPerPage);
+  }
+
+  componentWillUnmount(){
+    this.props.setLastFetchedAfterId("");
+    this.props.setLastFetchedBeforeId("");
+    this.props.setNotificationPage(0)
   }
 
   render() {
@@ -23,15 +37,26 @@ class NotificationPageContainer extends Component {
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    fetchNotifications: id => dispatch(fetchAllNotifications(true)),
-    markNotificationAsRead: notificationId => dispatch(markNotificationAsRead(notificationId)),
-    markAllNotificationAsRead: notificationIds => dispatch(markAllNotificationAsRead(notificationIds))
+    fetchNotifications: (beforeId, afterId, limit) => dispatch(fetchNotifications(true, beforeId, afterId, limit)),
+    markNotificationAsRead: (notificationId, beforeId, afterId, limit) =>
+      dispatch(markNotificationAsRead(notificationId, beforeId, afterId, limit)),
+    markAllNotificationAsRead: (notificationIds, beforeId, afterId, limit) =>
+      dispatch(markAllNotificationAsRead(notificationIds, beforeId, afterId, limit)),
+    setNotifcationsPerPage: limit => dispatch(setNotifcationsPerPage(limit)),
+    setNotificationPage: page => dispatch(setNotificationPage(page)),
+    setLastFetchedBeforeId: id => dispatch(setLastFetchedBeforeId(id)),
+    setLastFetchedAfterId: id => dispatch(setLastFetchedAfterId(id))
   };
 };
 
 const mapStateToProps = state => {
   return {
-    notifications: state.getIn(["notifications", "notifications"])
+    notifications: state.getIn(["notifications", "notifications"]),
+    notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
+    notificationPage: state.getIn(["notifications", "notificationPage"]),
+    notificationCount: state.getIn(["notifications", "notificationCount"]),
+    lastFetchedBeforeId: state.getIn(["notifications", "lastFetchedBeforeId"]),
+    lastFetchedAfterId: state.getIn(["notifications", "lastFetchedAfterId"])
   };
 };
 

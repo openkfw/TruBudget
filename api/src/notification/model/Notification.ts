@@ -6,6 +6,7 @@ import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
 import logger from "../../lib/logger";
+import { start } from "repl";
 
 const streamName = "notifications";
 
@@ -82,8 +83,9 @@ export async function publish(
 export async function get(
   multichain: MultichainClient,
   token: AuthToken,
-  size?: string,
-  fromId?: string,
+  beforeId?: string,
+  afterId?: string,
+  limit?: string,
 ): Promise<NotificationList> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
     .v2_readStreamItems(streamName, token.userId)
@@ -99,7 +101,6 @@ export async function get(
       }
     });
   const notificationsById = new Map<NotificationId, Notification>();
-
   for (const streamItem of streamItems) {
     const event = streamItem.data.json as Event;
 
@@ -129,19 +130,58 @@ export async function get(
 
   const orderedNotifiactions = unorderedNotifications.sort(compareNotifications);
 
-  const fromIndex = orderedNotifiactions.findIndex(
-    (x: Notification) => x.notificationId === fromId,
+  let afterIndex = orderedNotifiactions.findIndex(
+    (x: Notification) => x.notificationId === afterId,
   );
-  const notifications = size
-    ? orderedNotifiactions.slice(fromIndex > -1 ? fromIndex : 0, fromIndex + parseInt(size, 10 ))
-    : orderedNotifiactions;
+
+  let beforeIndex = orderedNotifiactions.findIndex(
+    (x: Notification) => x.notificationId === beforeId,
+  );
+
   const count = orderedNotifiactions.length;
+  const { startIndex, endIndex } = findIndices(beforeIndex, afterIndex, parseInt(limit, 10), count);
+  const notifications: Notification[] = orderedNotifiactions.slice(startIndex, endIndex);
 
   return {
     notificationCount: count,
     notifications,
   };
 }
+
+const findIndices = (
+  beforeIndex: number,
+  afterIndex: number,
+  limit: number,
+  notificationCount: number,
+) => {
+  let startIndex = 0;
+  let endIndex = 0;
+  if (beforeIndex > -1 && afterIndex > -1) {
+    startIndex = afterIndex + 1;
+    endIndex = beforeIndex;
+  } else if (beforeIndex > -1 && limit) {
+    const index = beforeIndex - limit;
+    startIndex = index > 0 ? index : 0;
+    endIndex = beforeIndex;
+  } else if (beforeIndex > -1) {
+    startIndex = 0;
+    endIndex = beforeIndex;
+  } else if (afterIndex > -1 && limit) {
+    startIndex = afterIndex + 1;
+    endIndex = afterIndex + 1 + limit;
+  } else if (afterIndex > -1) {
+    startIndex = afterIndex + 1;
+    endIndex = notificationCount - 1;
+  } else if (limit) {
+    startIndex = 0;
+    endIndex = limit;
+  } else {
+    startIndex = 0;
+    endIndex = notificationCount - 1;
+  }
+
+  return { startIndex, endIndex };
+};
 
 function compareNotifications(a: Notification, b: Notification): number {
   const tsA = new Date(a.originalEvent.createdAt);

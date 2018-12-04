@@ -28,9 +28,10 @@ export const getNotificationList = async (
   multichain: MultichainClient,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
-  const size: string | undefined = req.query.size;
-  const fromId: string | undefined = req.query.fromId;
-  const notificationList = await Notification.get(multichain, req.user, size, fromId);
+  const limit: string | undefined = req.query.limit;
+  const afterId: string | undefined = req.query.after;
+  const beforeId: string | undefined = req.query.before;
+  const notificationList = await Notification.get(multichain, req.user,beforeId,  afterId, limit);
   const rawNotifications = notificationList.notifications;
   const notificationCount = notificationList.notificationCount;
 
