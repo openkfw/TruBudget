@@ -1,12 +1,11 @@
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import deepcopy from "../../lib/deepcopy";
+import logger from "../../lib/logger";
 import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
-import logger from "../../lib/logger";
-import { start } from "repl";
 
 const streamName = "notifications";
 
@@ -130,16 +129,17 @@ export async function get(
 
   const orderedNotifiactions = unorderedNotifications.sort(compareNotifications);
 
-  let afterIndex = orderedNotifiactions.findIndex(
+  const afterIndex = orderedNotifiactions.findIndex(
     (x: Notification) => x.notificationId === afterId,
   );
 
-  let beforeIndex = orderedNotifiactions.findIndex(
+  const beforeIndex = orderedNotifiactions.findIndex(
     (x: Notification) => x.notificationId === beforeId,
   );
 
   const count = orderedNotifiactions.length;
-  const { startIndex, endIndex } = findIndices(beforeIndex, afterIndex, parseInt(limit, 10), count);
+  const parsedLimit = limit ? parseInt(limit, 10) : undefined;
+  const { startIndex, endIndex } = findIndices(beforeIndex, afterIndex, parsedLimit, count);
   const notifications: Notification[] = orderedNotifiactions.slice(startIndex, endIndex);
 
   return {
@@ -151,7 +151,7 @@ export async function get(
 const findIndices = (
   beforeIndex: number,
   afterIndex: number,
-  limit: number,
+  limit: number | undefined,
   notificationCount: number,
 ) => {
   let startIndex = 0;
