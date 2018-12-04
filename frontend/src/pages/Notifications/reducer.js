@@ -11,7 +11,9 @@ import {
   SET_NOTIFICATIONS_PER_PAGE,
   SET_NOTIFICATION_PAGE,
   SET_LAST_FETCHED_BEFORE_ID,
-  SET_LAST_FETCHED_AFTER_ID
+  SET_LAST_FETCHED_AFTER_ID,
+  FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
+  IS_NOTIFICATION_PAGE_SHOWN
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -27,27 +29,21 @@ const defaultState = fromJS({
   notificationsPerPage: 20,
   notificationPage: 0,
   lastFetchedBeforeId: "",
-  lastFetchedAfterId: ""
+  lastFetchedAfterId: "",
+  notificationPageShown: false
 });
 
 export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_NOTIFICATIONS_SUCCESS:
-      const oldNotifications = state.get("notifications").toJS();
-      let newNotifications = [];
-      if (oldNotifications.length > 0) {
-        newNotifications = action.notifications.filter(notification => {
-          const index = oldNotifications.findIndex(oldNotification => {
-            return oldNotification.notificationId === notification.notificationId;
-          });
-          if (index === -1) {
-            return notification;
-          }
-        });
-      }
       return state.merge({
         notifications: fromJS(action.notifications),
-        newNotifications: fromJS(newNotifications)
+        newNotifications: fromJS([])
+      });
+    case FETCH_FLYIN_NOTIFICATIONS_SUCCESS:
+      return state.merge({
+        newNotifications: fromJS(action.notifications),
+        notifications: fromJS(action.notifications).concat(state.get("notifications"))
       });
     case FETCH_NOTIFICATION_COUNT_SUCCESS:
       return state.set("notificationCount", action.count);
@@ -74,6 +70,8 @@ export default function navbarReducer(state = defaultState, action) {
       return state.merge({ lastFetchedBeforeId: action.id, lastFetchedAfterId: "" });
     case SET_LAST_FETCHED_AFTER_ID:
       return state.merge({ lastFetchedAfterId: action.id, lastFetchedBeforeId: "" });
+    case IS_NOTIFICATION_PAGE_SHOWN:
+      return state.set(("notificationPageShown", action.show));
     case LOGOUT:
       return defaultState;
     default:

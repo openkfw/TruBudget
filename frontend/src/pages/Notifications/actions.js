@@ -10,6 +10,9 @@ export const FETCH_HISTORY_SUCCESS = "FETCH_HISTORY_SUCCESS";
 export const FETCH_ALL_NOTIFICATIONS = "FETCH_ALL_NOTIFICATIONS";
 export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS";
 
+export const FETCH_FLYIN_NOTIFICATIONS = "FETCH_FLYIN_NOTIFICATIONS";
+export const FETCH_FLYIN_NOTIFICATIONS_SUCCESS = "FETCH_FLYIN_NOTIFICATIONS_SUCCESS";
+
 export const MARK_ALL_NOTIFICATION_AS_READ = "MARK_ALL_NOTIFICATION_AS_READ";
 export const MARK_ALL_NOTIFICATION_AS_READ_SUCCESS = "MARK_ALL_NOTIFICATION_AS_READ_SUCCESS";
 
@@ -22,6 +25,8 @@ export const SET_NOTIFICATION_PAGE = "SET_NOTIFICATION_PAGE";
 
 export const SET_LAST_FETCHED_BEFORE_ID = "SET_LAST_FETCHED_BEFORE_ID";
 export const SET_LAST_FETCHED_AFTER_ID = "SET_LAST_FETCHED_AFTER_ID";
+
+export const IS_NOTIFICATION_PAGE_SHOWN = "IS_NOTIFICATION_PAGE_SHOWN";
 
 export function showSnackbar(isError = false) {
   return {
@@ -45,6 +50,13 @@ export function storeSnackbarMessage(message) {
   };
 }
 
+export function fetchFlyInNotifications(showLoading = false, beforeId) {
+  return {
+    type: FETCH_FLYIN_NOTIFICATIONS,
+    beforeId,
+    showLoading
+  };
+}
 export function fetchNotifications(showLoading = false, beforeId, afterId, limit) {
   return {
     type: FETCH_ALL_NOTIFICATIONS,
@@ -125,5 +137,12 @@ export function setLastFetchedAfterId(id) {
   return {
     type: SET_LAST_FETCHED_AFTER_ID,
     id
+  };
+}
+
+export function isNotificationPageShown(show) {
+  return {
+    type: IS_NOTIFICATION_PAGE_SHOWN,
+    show
   };
 }

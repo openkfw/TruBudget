@@ -47,7 +47,9 @@ import {
   MARK_ALL_NOTIFICATION_AS_READ_SUCCESS,
   MARK_ALL_NOTIFICATION_AS_READ,
   FETCH_NOTIFICATION_COUNT_SUCCESS,
-  FETCH_NOTIFICATION_COUNT
+  FETCH_NOTIFICATION_COUNT,
+  FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
+  FETCH_FLYIN_NOTIFICATIONS
 } from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
@@ -369,6 +371,19 @@ export function* fetchNotificationsSaga({ showLoading, beforeId, afterId, limit 
     });
   }, showLoading);
 }
+
+
+export function* fetchFlyInNotificationsSaga({ showLoading, beforeId }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.fetchNotifications, beforeId,"", undefined);
+    yield put({
+      type: FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
+      notifications: data.notifications
+    });
+  }, showLoading);
+}
+
+
 
 export function* fetchNotificationCountSaga({ showLoading }) {
   yield execute(function*() {
@@ -982,6 +997,10 @@ export function* watchFetchNotifications() {
   yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga);
 }
 
+export function* watchFetchFlyInNotifications() {
+  yield takeLatest(FETCH_FLYIN_NOTIFICATIONS, fetchFlyInNotificationsSaga);
+}
+
 export function* watchFetchNotificationCount() {
   yield takeEvery(FETCH_NOTIFICATION_COUNT, fetchNotificationCountSaga);
 }
@@ -1182,6 +1201,7 @@ export default function* rootSaga() {
       watchMarkNotificationAsRead(),
       watchMarkAllNotificationsAsRead(),
       watchFetchNotificationCount(),
+      watchFetchFlyInNotifications(),
 
       // Peers
       watchFetchAcitvePeers(),

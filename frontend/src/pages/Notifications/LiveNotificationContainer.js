@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import LiveNotification from "./LiveNotification";
-import { fetchNotifications, hideSnackbar, fetchNotificationCount } from "./actions.js";
+import { hideSnackbar, fetchNotificationCount, fetchFlyInNotifications, fetchNotifications } from "./actions.js";
 import { toJS } from "../../helper";
 
 class LiveNotificationContainer extends Component {
   componentWillMount() {
     this.props.fetchNotificationCount();
+    this.props.fetchNotifications();
     this.startUpdates();
   }
 
@@ -22,8 +23,11 @@ class LiveNotificationContainer extends Component {
   }
 
   fetch() {
-    const { fetchNotifications, notificationsPerPage } = this.props;
-    fetchNotifications(notificationsPerPage);
+    const { fetchFlyInNotifications, notifications, notificationPageShown } = this.props;
+    if (notifications.length > 0 && !notificationPageShown) {
+      const beforeId = notifications[0].notificationId;
+      fetchFlyInNotifications(beforeId);
+    }
   }
 
   stopUpdates() {
@@ -37,7 +41,8 @@ class LiveNotificationContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchNotifications: (limit) => dispatch(fetchNotifications(false, "", "", limit)),
+    fetchFlyInNotifications: beforeId => dispatch(fetchFlyInNotifications(false, beforeId)),
+    fetchNotifications: beforeId => dispatch(fetchNotifications(false, "", "", 20)),
     fetchNotificationCount: () => dispatch(fetchNotificationCount()),
     closeSnackbar: () => dispatch(hideSnackbar())
   };
@@ -51,6 +56,7 @@ const mapStateToProps = state => {
     snackbarError: state.getIn(["notifications", "snackbarError"]),
     notificationCount: state.getIn(["notifications", "notificationCount"]),
     notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
+    notificationPageShown: state.getIn(["notifications", "notificationPageShown"])
   };
 };
 

@@ -8,7 +8,8 @@ import {
   setNotifcationsPerPage,
   setNotificationPage,
   setLastFetchedBeforeId,
-  setLastFetchedAfterId
+  setLastFetchedAfterId,
+  isNotificationPageShown
 } from "./actions";
 import NotificationPage from "./NotificationPage";
 
@@ -18,12 +19,14 @@ import { toJS } from "../../helper";
 class NotificationPageContainer extends Component {
   componentWillMount() {
     this.props.fetchNotifications("", "", this.props.notificationsPerPage);
+    this.props.isNotificationPageShown(true)
   }
 
   componentWillUnmount(){
     this.props.setLastFetchedAfterId("");
     this.props.setLastFetchedBeforeId("");
-    this.props.setNotificationPage(0)
+    this.props.setNotificationPage(0);
+    this.props.isNotificationPageShown(false)
   }
 
   render() {
@@ -45,7 +48,8 @@ const mapDispatchToProps = (dispatch, props) => {
     setNotifcationsPerPage: limit => dispatch(setNotifcationsPerPage(limit)),
     setNotificationPage: page => dispatch(setNotificationPage(page)),
     setLastFetchedBeforeId: id => dispatch(setLastFetchedBeforeId(id)),
-    setLastFetchedAfterId: id => dispatch(setLastFetchedAfterId(id))
+    setLastFetchedAfterId: id => dispatch(setLastFetchedAfterId(id)),
+    isNotificationPageShown: show => dispatch(isNotificationPageShown(show))
   };
 };
 
@@ -57,6 +61,7 @@ const mapStateToProps = state => {
     notificationCount: state.getIn(["notifications", "notificationCount"]),
     lastFetchedBeforeId: state.getIn(["notifications", "lastFetchedBeforeId"]),
     lastFetchedAfterId: state.getIn(["notifications", "lastFetchedAfterId"])
+
   };
 };
 
