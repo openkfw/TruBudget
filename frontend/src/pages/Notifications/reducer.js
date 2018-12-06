@@ -13,7 +13,8 @@ import {
   SET_LAST_FETCHED_BEFORE_ID,
   SET_LAST_FETCHED_AFTER_ID,
   FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
-  IS_NOTIFICATION_PAGE_SHOWN
+  IS_NOTIFICATION_PAGE_SHOWN,
+  SET_NOTIFICATION_OFFSET
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -30,16 +31,12 @@ const defaultState = fromJS({
   notificationPage: 0,
   lastFetchedBeforeId: "",
   lastFetchedAfterId: "",
-  notificationPageShown: false
+  notificationPageShown: false,
+  notificationOffset: 0
 });
 
 export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_ALL_NOTIFICATIONS_SUCCESS:
-      return state.merge({
-        notifications: fromJS(action.notifications),
-        newNotifications: fromJS([])
-      });
     case FETCH_FLYIN_NOTIFICATIONS_SUCCESS:
       return state.merge({
         newNotifications: fromJS(action.notifications),
@@ -71,7 +68,9 @@ export default function navbarReducer(state = defaultState, action) {
     case SET_LAST_FETCHED_AFTER_ID:
       return state.merge({ lastFetchedAfterId: action.id, lastFetchedBeforeId: "" });
     case IS_NOTIFICATION_PAGE_SHOWN:
-      return state.set(("notificationPageShown", action.show));
+      return state.set("notificationPageShown", action.show);
+    case SET_NOTIFICATION_OFFSET:
+      return state.set("notificationOffset", action.offset);
     case LOGOUT:
       return defaultState;
     default:

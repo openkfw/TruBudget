@@ -6,9 +6,9 @@ import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import { isEmpty } from "../../lib/emptyChecks";
 
 const streamName = "notifications";
-
 export type NotificationId = string;
 
 export interface NotificationResourceDescription {
@@ -21,12 +21,14 @@ export interface EventData {
   resources: NotificationResourceDescription[];
   isRead: boolean;
   originalEvent: Event;
+  index: number;
 }
 
 export interface Notification {
   notificationId: NotificationId;
   resources: NotificationResourceDescription[];
   isRead: boolean;
+  index: number;
   originalEvent: Event;
 }
 
@@ -82,8 +84,7 @@ export async function publish(
 export async function get(
   multichain: MultichainClient,
   token: AuthToken,
-  beforeId?: string,
-  afterId?: string,
+  offset?: string,
   limit?: string,
 ): Promise<NotificationList> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
@@ -102,7 +103,6 @@ export async function get(
   const notificationsById = new Map<NotificationId, Notification>();
   for (const streamItem of streamItems) {
     const event = streamItem.data.json as Event;
-
     const notificationId = getNotificationId(event);
 
     let notification = notificationsById.get(notificationId);
@@ -129,17 +129,11 @@ export async function get(
 
   const orderedNotifiactions = unorderedNotifications.sort(compareNotifications);
 
-  const afterIndex = orderedNotifiactions.findIndex(
-    (x: Notification) => x.notificationId === afterId,
-  );
-
-  const beforeIndex = orderedNotifiactions.findIndex(
-    (x: Notification) => x.notificationId === beforeId,
-  );
-
   const count = orderedNotifiactions.length;
   const parsedLimit = limit ? parseInt(limit, 10) : undefined;
-  const { startIndex, endIndex } = findIndices(beforeIndex, afterIndex, parsedLimit, count);
+  const parsedOffset = offset ? parseInt(offset, 10) : undefined;
+
+  const { startIndex, endIndex } = findIndices(parsedOffset, parsedLimit, count);
   const notifications: Notification[] = orderedNotifiactions.slice(startIndex, endIndex);
 
   return {
@@ -149,37 +143,24 @@ export async function get(
 }
 
 const findIndices = (
-  beforeIndex: number,
-  afterIndex: number,
+  offset: number | undefined,
   limit: number | undefined,
   notificationCount: number,
 ) => {
   let startIndex = 0;
   let endIndex = 0;
-  if (beforeIndex > -1 && afterIndex > -1) {
-    startIndex = afterIndex + 1;
-    endIndex = beforeIndex;
-  } else if (beforeIndex > -1 && limit) {
-    const index = beforeIndex - limit;
-    startIndex = index > 0 ? index : 0;
-    endIndex = beforeIndex;
-  } else if (beforeIndex > -1) {
-    startIndex = 0;
-    endIndex = beforeIndex;
-  } else if (afterIndex > -1 && limit) {
-    startIndex = afterIndex + 1;
-    endIndex = afterIndex + 1 + limit;
-  } else if (afterIndex > -1) {
-    startIndex = afterIndex + 1;
-    endIndex = notificationCount - 1;
-  } else if (limit) {
+  if (!isEmpty(offset) && !isEmpty(limit)) {
+    (startIndex = offset), (endIndex = offset + limit);
+  } else if (!isEmpty(offset)) {
+    startIndex = offset;
+    endIndex = notificationCount;
+  } else if (!isEmpty(limit)) {
     startIndex = 0;
     endIndex = limit;
   } else {
     startIndex = 0;
-    endIndex = notificationCount - 1;
+    endIndex = notificationCount;
   }
-
   return { startIndex, endIndex };
 };
 

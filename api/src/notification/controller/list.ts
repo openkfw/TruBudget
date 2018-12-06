@@ -22,6 +22,7 @@ interface NotificationDto {
   resources: ExtendedNotificationResourceDescription[];
   isRead: boolean;
   originalEvent: Event;
+  index: any;
 }
 
 export const getNotificationList = async (
@@ -29,9 +30,8 @@ export const getNotificationList = async (
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const limit: string | undefined = req.query.limit;
-  const afterId: string | undefined = req.query.after;
-  const beforeId: string | undefined = req.query.before;
-  const notificationList = await Notification.get(multichain, req.user,beforeId,  afterId, limit);
+  const offset: string | undefined = req.query.offset;
+  const notificationList = await Notification.get(multichain, req.user, offset, limit);
   const rawNotifications = notificationList.notifications;
   const notificationCount = notificationList.notificationCount;
 
@@ -49,12 +49,11 @@ export const getNotificationList = async (
         ...resourceDescription,
         displayName: displayNamesById.get(resourceDescription.id),
       })),
+      index: rawNotification.index,
       isRead: rawNotification.isRead,
       originalEvent: rawNotification.originalEvent,
     });
   }
-
-
   return [
     200,
     {

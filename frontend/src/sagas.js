@@ -362,9 +362,9 @@ export function* getEnvironmentSaga() {
   });
 }
 
-export function* fetchNotificationsSaga({ showLoading, beforeId, afterId, limit }) {
+export function* fetchNotificationsSaga({ showLoading, offset, limit }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications, beforeId, afterId, limit);
+    const { data } = yield callApi(api.fetchNotifications, offset, limit);
     yield put({
       type: FETCH_ALL_NOTIFICATIONS_SUCCESS,
       notifications: data.notifications
@@ -372,18 +372,15 @@ export function* fetchNotificationsSaga({ showLoading, beforeId, afterId, limit 
   }, showLoading);
 }
 
-
 export function* fetchFlyInNotificationsSaga({ showLoading, beforeId }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications, beforeId,"", undefined);
+    const { data } = yield callApi(api.fetchNotifications, beforeId, "", undefined);
     yield put({
       type: FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
       notifications: data.notifications
     });
   }, showLoading);
 }
-
-
 
 export function* fetchNotificationCountSaga({ showLoading }) {
   yield execute(function*() {
@@ -395,8 +392,7 @@ export function* fetchNotificationCountSaga({ showLoading }) {
   }, showLoading);
 }
 
-
-export function* markNotificationAsReadSaga({ notificationId, beforeId, afterId, limit }) {
+export function* markNotificationAsReadSaga({ notificationId, offset, limit }) {
   yield execute(function*() {
     yield callApi(api.markNotificationAsRead, notificationId);
     yield put({
@@ -405,8 +401,7 @@ export function* markNotificationAsReadSaga({ notificationId, beforeId, afterId,
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
       showLoading: false,
-      beforeId,
-      afterId,
+      offset,
       limit
     });
     yield put({
@@ -415,7 +410,7 @@ export function* markNotificationAsReadSaga({ notificationId, beforeId, afterId,
   }, false);
 }
 
-export function* markAllNotificationsAsReadSaga({ notificationIds, beforeId, afterId, limit }) {
+export function* markAllNotificationsAsReadSaga({ notificationIds, offset, limit }) {
   yield execute(function*() {
     yield callApi(api.markAllNotificationsAsRead, notificationIds);
     yield put({
@@ -424,8 +419,7 @@ export function* markAllNotificationsAsReadSaga({ notificationIds, beforeId, aft
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
       showLoading: false,
-      beforeId,
-      afterId,
+      offset,
       limit
     });
     yield put({

@@ -257,8 +257,8 @@ class Api {
       workflowitemId
     });
 
-  fetchNotifications = ( beforeId = "", afterId = "", limit) => {
-    return instance.get(`/notification.list?after=${afterId}&limit=${limit}&before=${beforeId}`);
+  fetchNotifications = ( offset, limit) => {
+    return instance.get(`/notification.list?offset=${offset}&limit=${limit}`);
   };
 
   fetchNotificationCount = () => {

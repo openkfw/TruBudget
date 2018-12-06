@@ -28,7 +28,9 @@ const NotificationPage = ({
   setLastFetchedBeforeId,
   setLastFetchedAfterId,
   lastFetchedBeforeId,
-  lastFetchedAfterId
+  lastFetchedAfterId,
+  notificationOffset,
+  setNotificationOffset
 }) => {
   return (
     <div>
@@ -47,6 +49,8 @@ const NotificationPage = ({
         setLastFetchedAfterId={setLastFetchedAfterId}
         lastFetchedBeforeId={lastFetchedBeforeId}
         lastFetchedAfterId={lastFetchedAfterId}
+        setNotificationOffset={setNotificationOffset}
+        notificationOffset={notificationOffset}
       />
     </div>
   );

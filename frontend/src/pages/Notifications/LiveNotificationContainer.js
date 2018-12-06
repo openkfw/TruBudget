@@ -8,8 +8,8 @@ import { toJS } from "../../helper";
 class LiveNotificationContainer extends Component {
   componentWillMount() {
     this.props.fetchNotificationCount();
-    this.props.fetchNotifications();
-    this.startUpdates();
+    // this.props.fetchNotifications();
+    // this.startUpdates();
   }
 
   componentWillUnmount() {
@@ -17,9 +17,9 @@ class LiveNotificationContainer extends Component {
   }
 
   startUpdates() {
-    this.timer = setInterval(() => {
-      this.fetch();
-    }, 15000);
+    // this.timer = setInterval(() => {
+    //   this.fetch();
+    // }, 15000);
   }
 
   fetch() {
@@ -31,7 +31,7 @@ class LiveNotificationContainer extends Component {
   }
 
   stopUpdates() {
-    clearInterval(this.timer);
+    // clearInterval(this.timer);
   }
 
   render() {

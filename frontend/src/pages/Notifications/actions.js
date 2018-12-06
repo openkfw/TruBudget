@@ -20,13 +20,14 @@ export const FETCH_NOTIFICATION_COUNT = "FETCH_NOTIFICATION_COUNT";
 export const FETCH_NOTIFICATION_COUNT_SUCCESS = "FETCH_NOTIFICATION_COUNT_SUCCESS";
 
 export const SET_NOTIFICATIONS_PER_PAGE = "SET_NOTIFICATIONS_PER_PAGE";
-
 export const SET_NOTIFICATION_PAGE = "SET_NOTIFICATION_PAGE";
+
+export const IS_NOTIFICATION_PAGE_SHOWN = "IS_NOTIFICATION_PAGE_SHOWN";
 
 export const SET_LAST_FETCHED_BEFORE_ID = "SET_LAST_FETCHED_BEFORE_ID";
 export const SET_LAST_FETCHED_AFTER_ID = "SET_LAST_FETCHED_AFTER_ID";
 
-export const IS_NOTIFICATION_PAGE_SHOWN = "IS_NOTIFICATION_PAGE_SHOWN";
+export const SET_NOTIFICATION_OFFSET = "SET_NOTIFICATION_OFFSET";
 
 export function showSnackbar(isError = false) {
   return {
@@ -57,12 +58,11 @@ export function fetchFlyInNotifications(showLoading = false, beforeId) {
     showLoading
   };
 }
-export function fetchNotifications(showLoading = false, beforeId, afterId, limit) {
+export function fetchNotifications(showLoading = false, offset, limit) {
   return {
     type: FETCH_ALL_NOTIFICATIONS,
     showLoading,
-    beforeId,
-    afterId,
+    offset,
     limit
   };
 }
@@ -74,12 +74,11 @@ export function fetchNotificationCount(showLoading = false) {
   };
 }
 
-export function markNotificationAsRead(notificationId, beforeId, afterId, limit) {
+export function markNotificationAsRead(notificationId, offset, limit) {
   return {
     type: MARK_NOTIFICATION_AS_READ,
     notificationId,
-    beforeId,
-    afterId,
+    offset,
     limit
   };
 }
@@ -102,12 +101,11 @@ export function fetchHistoryItems(project) {
   };
 }
 
-export function markAllNotificationAsRead(notificationIds, beforeId, afterId, limit) {
+export function markAllNotificationAsRead(notificationIds, offset, limit) {
   return {
     type: MARK_ALL_NOTIFICATION_AS_READ,
     notificationIds,
-    beforeId,
-    afterId,
+    offset,
     limit
   };
 }
@@ -123,6 +121,13 @@ export function setNotificationPage(page) {
   return {
     type: SET_NOTIFICATION_PAGE,
     page
+  };
+}
+
+export function setNotificationOffset(offset) {
+  return {
+    type: SET_NOTIFICATION_OFFSET,
+    offset
   };
 }
 

@@ -47,39 +47,32 @@ const getListItems = (
   markNotificationAsRead,
   lastFetchedBeforeId,
   lastFetchedAfterId,
-  notificationsPerPage
+  notificationsPerPage,
+  notificationOffset
 ) =>
-  notifications.map((notification, index) => {
+  notifications.map((notification, x) => {
     const message = intentMapping(notification);
-    const { originalEvent, notificationId, isRead, resources } = notification;
+    const { originalEvent, notificationId, isRead, resources, index } = notification;
     const createdAt = moment(originalEvent.createdAt).fromNow();
     const redirectUri = parseURI(notification);
     return (
-      <div key={index}>
+      <div key={x}>
         <Divider />
         <ListItem
           component="div"
           style={styles.row}
-          key={index}
+          key={x}
           button={isRead ? false : true}
           onClick={
-            isRead
-              ? undefined
-              : () =>
-                  markNotificationAsRead(notificationId, lastFetchedBeforeId, lastFetchedAfterId, notificationsPerPage)
+            isRead ? undefined : () => markNotificationAsRead(notificationId, notificationOffset, notificationsPerPage)
           }
         >
           <div style={{ flex: 1, opacity: isRead ? 0.3 : 1 }}>
             <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
           </div>
-          <ListItemText
-            style={{ flex: 3 }}
-            component="div"
-            primary={fetchResourceName(resources, "project")}
-            secondary={fetchResourceName(resources, "subproject")}
-          />
+          <ListItemText style={{ flex: 3 }} component="div" primary={index} secondary={index} />
 
-          <ListItemText style={{ flex: 5 }} component="div" primary={message} />
+          <ListItemText style={{ flex: 5 }} component="div" primary={index} />
           <ListItemText style={{ flex: 2 }} component="div" primary={originalEvent.createdBy} secondary={createdAt} />
           <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
             <Button
@@ -97,15 +90,9 @@ const getListItems = (
     );
   });
 
-const handleClick = (
-  markAllNotificationAsRead,
-  notifications,
-  lastFetchedBeforeId,
-  lastFetchedAfterId,
-  notificationsPerPage
-) => {
+const handleClick = (markAllNotificationAsRead, notifications, notificationOffset, notificationsPerPage) => {
   const notificationIds = notifications.map(notification => notification.notificationId);
-  markAllNotificationAsRead(notificationIds, lastFetchedBeforeId, lastFetchedAfterId, notificationsPerPage);
+  markAllNotificationAsRead(notificationIds, notificationOffset, notificationsPerPage);
 };
 
 const NotificationsList = props => {
@@ -116,15 +103,15 @@ const NotificationsList = props => {
     setNotifcationsPerPage,
     notificationsPerPage,
     fetchNotifications,
-    notificationPage,
-    setNotificationPage,
     notificationCount,
     setLastFetchedBeforeId,
     setLastFetchedAfterId,
     lastFetchedBeforeId,
     lastFetchedAfterId,
     history,
-    markNotificationAsRead
+    markNotificationAsRead,
+    notificationOffset,
+    setNotificationOffset
   } = props;
   const listItems = getListItems(
     notifications,
@@ -132,10 +119,12 @@ const NotificationsList = props => {
     markNotificationAsRead,
     lastFetchedBeforeId,
     lastFetchedAfterId,
-    notificationsPerPage
+    notificationsPerPage,
+    notificationOffset
   );
   const allNotificationsRead = notifications.some(notification => notification.isRead === false);
   const rowsPerPageOptions = [5, 10, 20, 50];
+  const currentPage = Math.floor(notificationOffset / notificationsPerPage);
   return (
     <Card>
       <CardHeader
@@ -144,13 +133,7 @@ const NotificationsList = props => {
           <Button
             variant="outlined"
             onClick={() =>
-              handleClick(
-                markAllNotificationAsRead,
-                notifications,
-                lastFetchedBeforeId,
-                lastFetchedAfterId,
-                notificationsPerPage
-              )
+              handleClick(markAllNotificationAsRead, notifications, notificationOffset, notificationsPerPage)
             }
             color="primary"
             className={classes.button}
@@ -163,25 +146,41 @@ const NotificationsList = props => {
       <List component="div">{listItems}</List>
       <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
         <TablePagination
+          component="div"
           rowsPerPageOptions={rowsPerPageOptions}
           rowsPerPage={notificationsPerPage}
           onChangeRowsPerPage={event => {
             setNotifcationsPerPage(event.target.value);
-            fetchNotifications("", "", "", event.target.value);
+            let offset = notificationOffset;
+            if (offset < event.target.value) {
+              offset = 0;
+            } else if (offset % event.target.value > 0) {
+              offset = offset - offset % event.target.value;
+            }
+            fetchNotifications(offset, event.target.value);
+            setNotificationOffset(offset);
           }}
           count={notificationCount}
-          page={notificationPage}
-          onChangePage={(_, page) => {
-            if (page > notificationPage) {
+          page={currentPage}
+          onChangePage={(_, nextPage) => {
+            if (nextPage > currentPage) {
+              let offset = 0;
+              if (nextPage > 0) {
+                offset = notificationOffset + notificationsPerPage;
+              }
               const afterId = notifications[notifications.length - 1].notificationId;
               setLastFetchedAfterId(afterId);
-              setNotificationPage(page);
-              fetchNotifications("", afterId, notificationsPerPage);
+              fetchNotifications(offset, notificationsPerPage);
+              setNotificationOffset(offset);
             } else {
+              let offset = 0;
+              if (nextPage > 0) {
+                offset = notificationOffset - notificationsPerPage;
+              }
               const beforeId = notifications[0].notificationId;
               setLastFetchedBeforeId(beforeId);
-              setNotificationPage(page);
-              fetchNotifications(beforeId, "", notificationsPerPage);
+              fetchNotifications(offset, notificationsPerPage);
+              setNotificationOffset(offset);
             }
           }}
         />

@@ -2443,13 +2443,13 @@ const schemas = {
       querystring: {
         type: "object",
         properties: {
-          fromId: {
+          limit: {
             type: "string",
-            example: "aadea0bb-9870-477f-b10c-82e8784a4fe3",
-          },
-          size: {
-            type: "number",
             example: "10",
+          },
+          offset: {
+            type: "string",
+            example: "0",
           },
         },
       },
@@ -2480,6 +2480,7 @@ const schemas = {
                         },
                       },
                       isRead: { type: "boolean" },
+                      index: { type: "number", example: 1 },
                       originalEvent: {
                         type: "object",
                         properties: {

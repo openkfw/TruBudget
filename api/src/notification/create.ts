@@ -9,6 +9,7 @@ import * as Subproject from "../subproject/model/Subproject";
 import * as Workflowitem from "../workflowitem/model/Workflowitem";
 import * as Notification from "./model/Notification";
 
+let counter = 0;
 export async function createNotification(
   multichain: MultichainClient,
   resources: Notification.NotificationResourceDescription[],
@@ -26,9 +27,10 @@ export async function createNotification(
     resources,
     isRead: false,
     originalEvent,
+    index: counter
   };
   const event = { intent, createdBy, creationTimestamp, dataVersion, data };
-
+  counter ++;
   return Notification.publish(multichain, createdFor, event);
 }
 
