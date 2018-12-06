@@ -1,4 +1,5 @@
 import { put, takeEvery, takeLatest, call, select } from "redux-saga/effects";
+import { delay } from "redux-saga";
 import { saveAs } from "file-saver/FileSaver";
 import Api from "./api.js";
 import {
@@ -49,7 +50,10 @@ import {
   FETCH_NOTIFICATION_COUNT_SUCCESS,
   FETCH_NOTIFICATION_COUNT,
   FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
-  FETCH_FLYIN_NOTIFICATIONS
+  FETCH_FLYIN_NOTIFICATIONS,
+  TIME_OUT_FLY_IN,
+  FETCH_LATEST_NOTIFICATION,
+  FETCH_LATEST_NOTIFICATION_SUCCESS
 } from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
@@ -363,10 +367,18 @@ export function* getEnvironmentSaga() {
 }
 
 export function* fetchNotificationsSaga({ showLoading, offset, limit }) {
+  yield commonfetchNotifications(showLoading, offset, limit, FETCH_ALL_NOTIFICATIONS_SUCCESS);
+}
+
+export function* fetchLatestNotificationSaga({ showLoading, }) {
+  yield commonfetchNotifications(showLoading, 0, 1, FETCH_LATEST_NOTIFICATION_SUCCESS);
+}
+
+export function* commonfetchNotifications(showLoading, offset, limit, type) {
   yield execute(function*() {
     const { data } = yield callApi(api.fetchNotifications, offset, limit);
     yield put({
-      type: FETCH_ALL_NOTIFICATIONS_SUCCESS,
+      type,
       notifications: data.notifications
     });
   }, showLoading);
@@ -374,10 +386,14 @@ export function* fetchNotificationsSaga({ showLoading, offset, limit }) {
 
 export function* fetchFlyInNotificationsSaga({ showLoading, beforeId }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications, beforeId, "", undefined);
+    const { data } = yield callApi(api.fetchNewestNotifications, beforeId);
     yield put({
       type: FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
-      notifications: data.notifications
+      newNotifications: data.notifications
+    });
+    yield delay(3000);
+    yield put({
+      type: TIME_OUT_FLY_IN
     });
   }, showLoading);
 }
@@ -991,6 +1007,11 @@ export function* watchFetchNotifications() {
   yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga);
 }
 
+export function* watchFetchLatestNotification() {
+  yield takeEvery(FETCH_LATEST_NOTIFICATION, fetchLatestNotificationSaga);
+}
+
+
 export function* watchFetchFlyInNotifications() {
   yield takeLatest(FETCH_FLYIN_NOTIFICATIONS, fetchFlyInNotificationsSaga);
 }
@@ -1196,6 +1217,7 @@ export default function* rootSaga() {
       watchMarkAllNotificationsAsRead(),
       watchFetchNotificationCount(),
       watchFetchFlyInNotifications(),
+      watchFetchLatestNotification(),
 
       // Peers
       watchFetchAcitvePeers(),

@@ -45,23 +45,21 @@ const getListItems = (
   notifications,
   history,
   markNotificationAsRead,
-  lastFetchedBeforeId,
-  lastFetchedAfterId,
   notificationsPerPage,
   notificationOffset
 ) =>
-  notifications.map((notification, x) => {
+  notifications.map((notification, index) => {
     const message = intentMapping(notification);
-    const { originalEvent, notificationId, isRead, resources, index } = notification;
+    const { originalEvent, notificationId, isRead, resources } = notification;
     const createdAt = moment(originalEvent.createdAt).fromNow();
     const redirectUri = parseURI(notification);
     return (
-      <div key={x}>
+      <div key={index}>
         <Divider />
         <ListItem
           component="div"
           style={styles.row}
-          key={x}
+          key={index}
           button={isRead ? false : true}
           onClick={
             isRead ? undefined : () => markNotificationAsRead(notificationId, notificationOffset, notificationsPerPage)
@@ -70,9 +68,14 @@ const getListItems = (
           <div style={{ flex: 1, opacity: isRead ? 0.3 : 1 }}>
             <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
           </div>
-          <ListItemText style={{ flex: 3 }} component="div" primary={index} secondary={index} />
+          <ListItemText
+            style={{ flex: 3 }}
+            component="div"
+            primary={fetchResourceName(resources, "project")}
+            secondary={fetchResourceName(resources, "subproject")}
+          />
 
-          <ListItemText style={{ flex: 5 }} component="div" primary={index} />
+          <ListItemText style={{ flex: 5 }} component="div" primary={message} />
           <ListItemText style={{ flex: 2 }} component="div" primary={originalEvent.createdBy} secondary={createdAt} />
           <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
             <Button
@@ -104,10 +107,6 @@ const NotificationsList = props => {
     notificationsPerPage,
     fetchNotifications,
     notificationCount,
-    setLastFetchedBeforeId,
-    setLastFetchedAfterId,
-    lastFetchedBeforeId,
-    lastFetchedAfterId,
     history,
     markNotificationAsRead,
     notificationOffset,
@@ -117,8 +116,6 @@ const NotificationsList = props => {
     notifications,
     history,
     markNotificationAsRead,
-    lastFetchedBeforeId,
-    lastFetchedAfterId,
     notificationsPerPage,
     notificationOffset
   );
@@ -168,8 +165,6 @@ const NotificationsList = props => {
               if (nextPage > 0) {
                 offset = notificationOffset + notificationsPerPage;
               }
-              const afterId = notifications[notifications.length - 1].notificationId;
-              setLastFetchedAfterId(afterId);
               fetchNotifications(offset, notificationsPerPage);
               setNotificationOffset(offset);
             } else {
@@ -177,8 +172,6 @@ const NotificationsList = props => {
               if (nextPage > 0) {
                 offset = notificationOffset - notificationsPerPage;
               }
-              const beforeId = notifications[0].notificationId;
-              setLastFetchedBeforeId(beforeId);
               fetchNotifications(offset, notificationsPerPage);
               setNotificationOffset(offset);
             }

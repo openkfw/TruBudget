@@ -20,14 +20,14 @@ export const FETCH_NOTIFICATION_COUNT = "FETCH_NOTIFICATION_COUNT";
 export const FETCH_NOTIFICATION_COUNT_SUCCESS = "FETCH_NOTIFICATION_COUNT_SUCCESS";
 
 export const SET_NOTIFICATIONS_PER_PAGE = "SET_NOTIFICATIONS_PER_PAGE";
-export const SET_NOTIFICATION_PAGE = "SET_NOTIFICATION_PAGE";
-
-export const IS_NOTIFICATION_PAGE_SHOWN = "IS_NOTIFICATION_PAGE_SHOWN";
-
-export const SET_LAST_FETCHED_BEFORE_ID = "SET_LAST_FETCHED_BEFORE_ID";
-export const SET_LAST_FETCHED_AFTER_ID = "SET_LAST_FETCHED_AFTER_ID";
 
 export const SET_NOTIFICATION_OFFSET = "SET_NOTIFICATION_OFFSET";
+
+export const TIME_OUT_FLY_IN = "TIME_OUT_FLY_IN";
+
+export const FETCH_LATEST_NOTIFICATION = "FETCH_LATEST_NOTIFICATION";
+
+export const FETCH_LATEST_NOTIFICATION_SUCCESS = "FETCH_LATEST_NOTIFICATION_SUCCESS";
 
 export function showSnackbar(isError = false) {
   return {
@@ -66,6 +66,14 @@ export function fetchNotifications(showLoading = false, offset, limit) {
     limit
   };
 }
+
+export function fetchLatestNotification(showLoading = false) {
+  return {
+    type: FETCH_LATEST_NOTIFICATION,
+    showLoading,
+  };
+}
+
 
 export function fetchNotificationCount(showLoading = false) {
   return {
@@ -117,12 +125,6 @@ export function setNotifcationsPerPage(limit) {
   };
 }
 
-export function setNotificationPage(page) {
-  return {
-    type: SET_NOTIFICATION_PAGE,
-    page
-  };
-}
 
 export function setNotificationOffset(offset) {
   return {
@@ -131,23 +133,5 @@ export function setNotificationOffset(offset) {
   };
 }
 
-export function setLastFetchedBeforeId(id) {
-  return {
-    type: SET_LAST_FETCHED_BEFORE_ID,
-    id
-  };
-}
 
-export function setLastFetchedAfterId(id) {
-  return {
-    type: SET_LAST_FETCHED_AFTER_ID,
-    id
-  };
-}
 
-export function isNotificationPageShown(show) {
-  return {
-    type: IS_NOTIFICATION_PAGE_SHOWN,
-    show
-  };
-}

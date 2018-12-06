@@ -10,11 +10,10 @@ import {
   FETCH_NOTIFICATION_COUNT_SUCCESS,
   SET_NOTIFICATIONS_PER_PAGE,
   SET_NOTIFICATION_PAGE,
-  SET_LAST_FETCHED_BEFORE_ID,
-  SET_LAST_FETCHED_AFTER_ID,
   FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
-  IS_NOTIFICATION_PAGE_SHOWN,
-  SET_NOTIFICATION_OFFSET
+  SET_NOTIFICATION_OFFSET,
+  TIME_OUT_FLY_IN,
+  FETCH_LATEST_NOTIFICATION_SUCCESS
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -28,20 +27,38 @@ const defaultState = fromJS({
   historyItems: [],
   notificationCount: 0,
   notificationsPerPage: 20,
-  notificationPage: 0,
-  lastFetchedBeforeId: "",
-  lastFetchedAfterId: "",
-  notificationPageShown: false,
-  notificationOffset: 0
+  notificationOffset: 0,
+  latestFlyInId: undefined
 });
 
 export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_FLYIN_NOTIFICATIONS_SUCCESS:
+    case FETCH_ALL_NOTIFICATIONS_SUCCESS:
       return state.merge({
-        newNotifications: fromJS(action.notifications),
-        notifications: fromJS(action.notifications).concat(state.get("notifications"))
+        notifications: fromJS(action.notifications)
       });
+    case FETCH_LATEST_NOTIFICATION_SUCCESS:{
+      const { notifications } = action;
+      const count = notifications.length;
+      const latestFlyInId = count > 0 ? notifications[count - 1].notificationId : undefined;
+      return state.merge({
+        latestFlyInId: latestFlyInId
+      });
+    }
+    case FETCH_FLYIN_NOTIFICATIONS_SUCCESS:{
+      const { newNotifications } = action;
+      const count = newNotifications.length;
+      const latestFlyInId = count > 0 ? newNotifications[count - 1].notificationId : state.get("latestFlyInId");
+      return state.merge({
+        newNotifications: fromJS(newNotifications),
+        latestFlyInId: latestFlyInId
+      });
+    }
+    case TIME_OUT_FLY_IN: {
+      return state.merge({
+        newNotifications: fromJS([])
+      });
+    }
     case FETCH_NOTIFICATION_COUNT_SUCCESS:
       return state.set("notificationCount", action.count);
     case SHOW_SNACKBAR:
@@ -61,14 +78,6 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set("showHistory", false);
     case SET_NOTIFICATIONS_PER_PAGE:
       return state.set("notificationsPerPage", action.limit);
-    case SET_NOTIFICATION_PAGE:
-      return state.set("notificationPage", action.page);
-    case SET_LAST_FETCHED_BEFORE_ID:
-      return state.merge({ lastFetchedBeforeId: action.id, lastFetchedAfterId: "" });
-    case SET_LAST_FETCHED_AFTER_ID:
-      return state.merge({ lastFetchedAfterId: action.id, lastFetchedBeforeId: "" });
-    case IS_NOTIFICATION_PAGE_SHOWN:
-      return state.set("notificationPageShown", action.show);
     case SET_NOTIFICATION_OFFSET:
       return state.set("notificationOffset", action.offset);
     case LOGOUT:

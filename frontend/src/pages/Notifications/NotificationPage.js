@@ -22,13 +22,7 @@ const NotificationPage = ({
   setNotifcationsPerPage,
   notificationsPerPage,
   fetchNotifications,
-  notificationPage,
-  setNotificationPage,
   notificationCount,
-  setLastFetchedBeforeId,
-  setLastFetchedAfterId,
-  lastFetchedBeforeId,
-  lastFetchedAfterId,
   notificationOffset,
   setNotificationOffset
 }) => {
@@ -42,13 +36,7 @@ const NotificationPage = ({
         setNotifcationsPerPage={setNotifcationsPerPage}
         notificationsPerPage={notificationsPerPage}
         fetchNotifications={fetchNotifications}
-        notificationPage={notificationPage}
-        setNotificationPage={setNotificationPage}
         notificationCount={notificationCount}
-        setLastFetchedBeforeId={setLastFetchedBeforeId}
-        setLastFetchedAfterId={setLastFetchedAfterId}
-        lastFetchedBeforeId={lastFetchedBeforeId}
-        lastFetchedAfterId={lastFetchedAfterId}
         setNotificationOffset={setNotificationOffset}
         notificationOffset={notificationOffset}
       />

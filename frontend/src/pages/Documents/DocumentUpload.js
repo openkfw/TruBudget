@@ -42,7 +42,7 @@ export default class DocumentUpload extends Component {
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
           <TextField
-            helperText={<Typography> {strings.workflow.workflow_document_description} </Typography>}
+            helperText={strings.workflow.workflow_document_description}
             label={strings.workflow.workflow_document_name}
             value={this.state.name}
             id="documentnameinput"

@@ -21,7 +21,7 @@ class NavbarContainer extends Component {
           {...this.props}
           unreadNotifications={this.props.notificationCount}
         />
-        <FlyInNotifications history={this.props.history} notifications={this.props.newNotifications} />
+        <FlyInNotifications history={this.props.history} notifications={this.props.newNotifications} latestFlyInId={this.props.latestFlyInId}/>
       </div>
     );
   }
@@ -57,6 +57,7 @@ const mapStateToProps = state => {
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     groups: state.getIn(["login", "groups"]),
     notificationCount: state.getIn(["notifications", "notificationCount"]),
+    latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
   };
 };
 
