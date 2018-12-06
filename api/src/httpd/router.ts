@@ -57,6 +57,7 @@ import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
 import { markNotificationAllRead } from '../notification/controller/markAllRead';
+import { getNewestNotifications } from "../notification/controller/listNewest";
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -693,6 +694,18 @@ export const registerRoutes = (
         .catch(err => handleError(request, reply, err));
     },
   );
+
+  server.get(
+    `${urlPrefix}/notification.listNewest`,
+    getSchema(server, "notificationListNewest"),
+    (request, reply) => {
+      getNewestNotifications(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+
   server.get(
     `${urlPrefix}/notification.count`,
     getSchema(server, "notificationCount"),

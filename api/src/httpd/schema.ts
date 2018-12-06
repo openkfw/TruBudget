@@ -2427,6 +2427,92 @@ const schemas = {
       },
     },
   },
+  notificationListNewest: {
+    schema: {
+      description:
+        "List all notifications that happened before the specified beforeId. If the beforeId parameter is not set, the request returns the last notification",
+      tags: ["notification"],
+      summary: "List all notifications that happened before the specified id",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      querystring: {
+        type: "object",
+        properties: {
+          beforeId: {
+            type: "string",
+            example: "9452eaa6-f28b-455c-bcb8-1ea0bc57946d",
+          },
+        },
+      },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                notifications: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      notificationId: { type: "string" },
+                      resources: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            id: { type: "string", example: "fe9c2b24ade9a92360b3a898665678ac" },
+                            type: { type: "string", example: "workflowitem" },
+                            displayName: { type: "string", example: "classroom" },
+                          },
+                        },
+                      },
+                      isRead: { type: "boolean" },
+                      originalEvent: {
+                        type: "object",
+                        properties: {
+                          key: { type: "string" },
+                          intent: { type: "string", example: "global.createProject" },
+                          createdBy: { type: "string", example: "aSmith" },
+                          createdAt: { type: "string", example: "2018-09-24T12:02:58.763Z" },
+                          dataVersion: { type: "string", example: "1" },
+                          data: {
+                            type: "object",
+                            additionalProperties: true,
+                            example: {
+                              project: {
+                                id: "fe9c2b24ade9a92360b3a898665678ac",
+                                creationUnixTs: "1536834480274",
+                                status: "open",
+                                displayName: "town-project",
+                                description: "a town should be built",
+                                amount: "10000",
+                                assignee: "aSmith",
+                                currency: "EUR",
+                                thumbnail: "/Thumbnail_0001.jpg",
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        401: getAuthErrorSchema(),
+      },
+    },
+  },
+
   notificationList: {
     schema: {
       description:
@@ -2480,7 +2566,6 @@ const schemas = {
                         },
                       },
                       isRead: { type: "boolean" },
-                      index: { type: "number", example: 1 },
                       originalEvent: {
                         type: "object",
                         properties: {

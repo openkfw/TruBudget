@@ -8,7 +8,6 @@ export interface Event {
   createdAt: string;
   dataVersion: number; // integer
   data: any;
-  index: number;
 }
 
 export function throwUnsupportedEventVersion(event: Event): never {

@@ -27,7 +27,6 @@ export async function createNotification(
     resources,
     isRead: false,
     originalEvent,
-    index: counter
   };
   const event = { intent, createdBy, creationTimestamp, dataVersion, data };
   counter ++;
