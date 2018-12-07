@@ -2427,10 +2427,10 @@ const schemas = {
       },
     },
   },
-  notificationListNewest: {
+  notificationPoll: {
     schema: {
       description:
-        "List all notifications that happened before the specified beforeId. If the beforeId parameter is not set, the request returns the last notification",
+        "Poll the newest notifications that happened before a certian id",
       tags: ["notification"],
       summary: "List all notifications that happened before the specified id",
       security: [

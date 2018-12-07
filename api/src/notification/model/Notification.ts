@@ -15,6 +15,20 @@ import { isEmpty } from "../../lib/emptyChecks";
 const streamName = "notifications";
 export type NotificationId = string;
 
+
+interface ExtendedNotificationResourceDescription {
+  id: string;
+  type: ResourceType;
+  displayName?: string;
+}
+
+export interface NotificationDto {
+  notificationId: NotificationId;
+  resources: ExtendedNotificationResourceDescription[];
+  isRead: boolean;
+  originalEvent: Event;
+}
+
 export interface NotificationResourceDescription {
   id: string;
   type: ResourceType;
