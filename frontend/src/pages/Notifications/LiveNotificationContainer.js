@@ -4,7 +4,7 @@ import _isEmpty from "lodash/isEmpty";
 
 
 import LiveNotification from "./LiveNotification";
-import { hideSnackbar, fetchNotificationCount, fetchFlyInNotifications, fetchLatestNotification } from "./actions.js";
+import { hideSnackbar, fetchNotificationCounts, fetchFlyInNotifications, fetchLatestNotification } from "./actions.js";
 import { toJS } from "../../helper";
 
 
@@ -13,7 +13,7 @@ import { toJS } from "../../helper";
 
 class LiveNotificationContainer extends Component {
   componentWillMount() {
-    this.props.fetchNotificationCount();
+    this.props.fetchNotificationCounts();
     this.props.fetchLatestNotification();
     this.startUpdates();
   }
@@ -47,7 +47,7 @@ class LiveNotificationContainer extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     fetchFlyInNotifications: beforeId => dispatch(fetchFlyInNotifications(false, beforeId)),
-    fetchNotificationCount: () => dispatch(fetchNotificationCount()),
+    fetchNotificationCounts: () => dispatch(fetchNotificationCounts()),
     fetchLatestNotification: () => dispatch(fetchLatestNotification()),
     closeSnackbar: () => dispatch(hideSnackbar())
   };
@@ -59,7 +59,7 @@ const mapStateToProps = state => {
     showSnackbar: state.getIn(["notifications", "showSnackbar"]),
     snackbarMessage: state.getIn(["notifications", "snackbarMessage"]),
     snackbarError: state.getIn(["notifications", "snackbarError"]),
-    notificationCount: state.getIn(["notifications", "notificationCount"]),
+    unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
     notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
     latestFlyInId: state.getIn(["notifications", "latestFlyInId"])
   };

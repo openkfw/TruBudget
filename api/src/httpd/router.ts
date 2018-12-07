@@ -19,7 +19,7 @@ import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
 import { getNotificationList } from "../notification/controller/list";
-import { getNotificationCount } from "../notification/controller/count";
+import { getNotificationCounts } from "../notification/controller/count";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { assignProject } from "../project/controller/assign";
 import { closeProject } from "../project/controller/close";
@@ -56,7 +56,7 @@ import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
-import { markNotificationAllRead } from '../notification/controller/markAllRead';
+import { markMultipleRead } from '../notification/controller/markMultipleRead';
 import { getNewestNotifications } from "../notification/controller/poll";
 
 const send = (res, httpResponse: HttpResponse) => {
@@ -707,10 +707,10 @@ export const registerRoutes = (
 
 
   server.get(
-    `${urlPrefix}/notification.count`,
+    `${urlPrefix}/notification.counts`,
     getSchema(server, "notificationCount"),
     (request, reply) => {
-      getNotificationCount(multichainClient, request as AuthenticatedRequest)
+      getNotificationCounts(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -729,10 +729,10 @@ export const registerRoutes = (
   );
 
   server.post(
-    `${urlPrefix}/notification.markAllRead`,
-    getSchema(server, "markAllRead"),
+    `${urlPrefix}/notification.markMultipleRead`,
+    getSchema(server, "markMultipleRead"),
     (request, reply) => {
-      markNotificationAllRead(multichainClient, request as AuthenticatedRequest)
+      markMultipleRead(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

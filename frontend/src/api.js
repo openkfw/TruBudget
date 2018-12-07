@@ -265,15 +265,15 @@ class Api {
     return instance.get(`/notification.list?offset=${offset}&limit=${limit}`);
   };
 
-  fetchNotificationCount = () => {
-    return instance.get(`/notification.count`);
+  fetchNotificationCounts = () => {
+    return instance.get(`/notification.counts`);
   };
 
   markNotificationAsRead = notificationId =>
     instance.post(`/notification.markRead`, {
       notificationId
     });
-  markAllNotificationsAsRead = notificationIds => instance.post(`/notification.markAllRead`, { notificationIds });
+  markMultipleNotificationsAsRead = notificationIds => instance.post(`/notification.markMultipleRead`, { notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {

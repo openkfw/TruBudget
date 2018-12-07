@@ -11,10 +11,10 @@ import * as Project from "../../project/model/Project";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import { isEmpty } from "../../lib/emptyChecks";
+import { access } from "fs";
 
 const streamName = "notifications";
 export type NotificationId = string;
-
 
 interface ExtendedNotificationResourceDescription {
   id: string;
@@ -49,6 +49,7 @@ export interface Notification {
 }
 
 export interface NotificationList {
+  unreadNotificationCount: number;
   notificationCount: number;
   notifications: Notification[];
 }
@@ -145,15 +146,23 @@ export async function get(
 
   const orderedNotifiactions = unorderedNotifications.sort(compareNotifications);
 
-  const count = orderedNotifiactions.length;
+  const notificationCount = orderedNotifiactions.length;
+  const unreadNotificationCount = orderedNotifiactions.reduce((acc, currentValue) => {
+    if (!currentValue.isRead) {
+      acc = acc + 1;
+    }
+    return acc;
+  }, 0);
+
   const parsedLimit = limit ? parseInt(limit, 10) : undefined;
   const parsedOffset = offset ? parseInt(offset, 10) : undefined;
+  const { startIndex, endIndex } = findIndices(parsedOffset, parsedLimit, notificationCount);
 
-  const { startIndex, endIndex } = findIndices(parsedOffset, parsedLimit, count);
   const notifications: Notification[] = orderedNotifiactions.slice(startIndex, endIndex);
 
   return {
-    notificationCount: count,
+    unreadNotificationCount,
+    notificationCount,
     notifications,
   };
 }

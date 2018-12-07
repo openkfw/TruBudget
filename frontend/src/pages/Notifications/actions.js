@@ -17,11 +17,11 @@ export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS"
 export const FETCH_FLYIN_NOTIFICATIONS = "FETCH_FLYIN_NOTIFICATIONS";
 export const FETCH_FLYIN_NOTIFICATIONS_SUCCESS = "FETCH_FLYIN_NOTIFICATIONS_SUCCESS";
 
-export const MARK_ALL_NOTIFICATION_AS_READ = "MARK_ALL_NOTIFICATION_AS_READ";
-export const MARK_ALL_NOTIFICATION_AS_READ_SUCCESS = "MARK_ALL_NOTIFICATION_AS_READ_SUCCESS";
+export const MARK_MULTIPLE_NOTIFICATION_AS_READ = "MARK_MULTIPLE_NOTIFICATION_AS_READ";
+export const MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS = "MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS";
 
-export const FETCH_NOTIFICATION_COUNT = "FETCH_NOTIFICATION_COUNT";
-export const FETCH_NOTIFICATION_COUNT_SUCCESS = "FETCH_NOTIFICATION_COUNT_SUCCESS";
+export const FETCH_NOTIFICATION_COUNTS = "FETCH_NOTIFICATION_COUNTS";
+export const FETCH_NOTIFICATION_COUNTS_SUCCESS = "FETCH_NOTIFICATION_COUNTS_SUCCESS";
 
 export const SET_NOTIFICATIONS_PER_PAGE = "SET_NOTIFICATIONS_PER_PAGE";
 export const SET_NOTIFICATION_OFFSET = "SET_NOTIFICATION_OFFSET";
@@ -77,9 +77,9 @@ export function fetchLatestNotification(showLoading = false) {
 }
 
 
-export function fetchNotificationCount(showLoading = false) {
+export function fetchNotificationCounts(showLoading = false) {
   return {
-    type: FETCH_NOTIFICATION_COUNT,
+    type: FETCH_NOTIFICATION_COUNTS,
     showLoading
   };
 }
@@ -111,9 +111,9 @@ export function fetchHistoryItems(project) {
   };
 }
 
-export function markAllNotificationAsRead(notificationIds, offset, limit) {
+export function markMultipleNotificationsAsRead(notificationIds, offset, limit) {
   return {
-    type: MARK_ALL_NOTIFICATION_AS_READ,
+    type: MARK_MULTIPLE_NOTIFICATION_AS_READ,
     notificationIds,
     offset,
     limit

@@ -2,23 +2,11 @@ import React from "react";
 
 import NotificationList from "./NotificationList";
 
-// const styles = {
-//   headline: {},
-//   card: {
-//     width: "100%",
-//     position: "relative",
-//     display: "flex",
-//     flexDirection: "column",
-//     alignItems: "center",
-//     zIndex: 1100
-//   }
-// };
-
 const NotificationPage = ({
   notifications,
   markNotificationAsRead,
   history,
-  markAllNotificationAsRead,
+  markMultipleNotificationsAsRead,
   setNotifcationsPerPage,
   notificationsPerPage,
   fetchNotifications,
@@ -32,7 +20,7 @@ const NotificationPage = ({
         notifications={notifications}
         history={history}
         markNotificationAsRead={markNotificationAsRead}
-        markAllNotificationAsRead={markAllNotificationAsRead}
+        markMultipleNotificationsAsRead={markMultipleNotificationsAsRead}
         setNotifcationsPerPage={setNotifcationsPerPage}
         notificationsPerPage={notificationsPerPage}
         fetchNotifications={fetchNotifications}

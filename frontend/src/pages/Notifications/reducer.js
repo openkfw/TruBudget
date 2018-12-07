@@ -7,7 +7,7 @@ import {
   HIDE_HISTORY,
   FETCH_ALL_NOTIFICATIONS_SUCCESS,
   HIDE_SNACKBAR,
-  FETCH_NOTIFICATION_COUNT_SUCCESS,
+  FETCH_NOTIFICATION_COUNTS_SUCCESS,
   SET_NOTIFICATIONS_PER_PAGE,
   FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
   SET_NOTIFICATION_OFFSET,
@@ -24,6 +24,7 @@ const defaultState = fromJS({
   snackbarMessage: "New Project added",
   snackbarError: false,
   historyItems: [],
+  unreadNotificationCount: 0,
   notificationCount: 0,
   notificationsPerPage: 20,
   notificationOffset: 0,
@@ -58,8 +59,8 @@ export default function navbarReducer(state = defaultState, action) {
         newNotifications: fromJS([])
       });
     }
-    case FETCH_NOTIFICATION_COUNT_SUCCESS:
-      return state.set("notificationCount", action.count);
+    case FETCH_NOTIFICATION_COUNTS_SUCCESS:
+      return state.merge({"unreadNotificationCount": action.unreadNotificationCount,notificationCount: action.notificationCount });
     case SHOW_SNACKBAR:
       return state.merge({
         showSnackbar: action.show,

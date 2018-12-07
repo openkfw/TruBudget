@@ -4,7 +4,7 @@ import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import * as Notification from "../model/Notification";
 
-export const markNotificationAllRead = async (
+export const markMultipleRead = async (
   multichain: MultichainClient,
   req,
 ): Promise<HttpResponse> => {

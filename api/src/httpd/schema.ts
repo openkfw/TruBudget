@@ -2430,9 +2430,9 @@ const schemas = {
   notificationPoll: {
     schema: {
       description:
-        "Poll the newest notifications that happened before a certian id",
+        "Poll the newest notifications that happened before a certain id",
       tags: ["notification"],
-      summary: "List all notifications that happened before the specified id",
+      summary: "Poll the newest notifications that happened before a certain id",
       security: [
         {
           bearerToken: [],
@@ -2467,9 +2467,9 @@ const schemas = {
                         items: {
                           type: "object",
                           properties: {
-                            id: { type: "string", example: "fe9c2b24ade9a92360b3a898665678ac" },
-                            type: { type: "string", example: "workflowitem" },
-                            displayName: { type: "string", example: "classroom" },
+                            id: { type: "string", example: "bd552d12c64539aa80293d315191490c" },
+                            type: { type: "string", example: "project" },
+                            displayName: { type: "string", example: "Amazonas Fund 53" },
                           },
                         },
                       },
@@ -2559,9 +2559,9 @@ const schemas = {
                         items: {
                           type: "object",
                           properties: {
-                            id: { type: "string", example: "fe9c2b24ade9a92360b3a898665678ac" },
-                            type: { type: "string", example: "workflowitem" },
-                            displayName: { type: "string", example: "classroom" },
+                            id: { type: "string", example: "bd552d12c64539aa80293d315191490c" },
+                            type: { type: "string", example: "project" },
+                            displayName: { type: "string", example: "Amazonas Fund 53" },
                           },
                         },
                       },
@@ -2596,7 +2596,7 @@ const schemas = {
                     },
                   },
                 },
-                notificationCount: {
+                unreadNotificationCount: {
                   type: "number",
                 },
               },
@@ -2610,9 +2610,9 @@ const schemas = {
 
   notificationCount: {
     schema: {
-      description: "Get the number of unread notifications for the currently logged in user",
+      description: "Get the unread and the total number of notifications for the currently logged in user",
       tags: ["notification"],
-      summary: "Get the number of unread notifications",
+      summary: "Get the unread and the total number of notifications",
       security: [
         {
           bearerToken: [],
@@ -2627,6 +2627,7 @@ const schemas = {
             data: {
               type: "object",
               properties: {
+                unreadNotificationCount: { type: "integer", example: 0 },
                 notificationCount: { type: "integer", example: 0 },
               },
             },
@@ -2677,13 +2678,13 @@ const schemas = {
       },
     },
   },
-  markAllRead: {
+  markMultipleRead: {
     schema: {
       description:
-        "Allows a user to mark all of his/her notifications as read, which " +
+        "Allows the user to mark multiple notifications as read, which " +
         "is then reflected by the `isRead` flag carried in the `notification.list` response.",
       tags: ["notification"],
-      summary: "Mark all notification as read",
+      summary: "Mark multiple notification as read",
       security: [
         {
           bearerToken: [],

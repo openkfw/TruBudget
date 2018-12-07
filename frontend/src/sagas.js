@@ -45,10 +45,10 @@ import {
   MARK_NOTIFICATION_AS_READ,
   FETCH_ALL_NOTIFICATIONS,
   FETCH_ALL_NOTIFICATIONS_SUCCESS,
-  MARK_ALL_NOTIFICATION_AS_READ_SUCCESS,
-  MARK_ALL_NOTIFICATION_AS_READ,
-  FETCH_NOTIFICATION_COUNT_SUCCESS,
-  FETCH_NOTIFICATION_COUNT,
+  MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS,
+  MARK_MULTIPLE_NOTIFICATION_AS_READ,
+  FETCH_NOTIFICATION_COUNTS_SUCCESS,
+  FETCH_NOTIFICATION_COUNTS,
   FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
   FETCH_FLYIN_NOTIFICATIONS,
   TIME_OUT_FLY_IN,
@@ -398,12 +398,13 @@ export function* fetchFlyInNotificationsSaga({ showLoading, beforeId }) {
   }, showLoading);
 }
 
-export function* fetchNotificationCountSaga({ showLoading }) {
+export function* fetchNotificationCountsSaga({ showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotificationCount);
+    const { data } = yield callApi(api.fetchNotificationCounts);
     yield put({
-      type: FETCH_NOTIFICATION_COUNT_SUCCESS,
-      count: data.notificationCount
+      type: FETCH_NOTIFICATION_COUNTS_SUCCESS,
+      unreadNotificationCount: data.unreadNotificationCount,
+      notificationCount: data.notificationCount
     });
   }, showLoading);
 }
@@ -421,16 +422,16 @@ export function* markNotificationAsReadSaga({ notificationId, offset, limit }) {
       limit
     });
     yield put({
-      type: FETCH_NOTIFICATION_COUNT
+      type: FETCH_NOTIFICATION_COUNTS
     });
   }, false);
 }
 
-export function* markAllNotificationsAsReadSaga({ notificationIds, offset, limit }) {
+export function* markMultipleNotificationsAsReadSaga({ notificationIds, offset, limit }) {
   yield execute(function*() {
-    yield callApi(api.markAllNotificationsAsRead, notificationIds);
+    yield callApi(api.markMultipleNotificationsAsRead, notificationIds);
     yield put({
-      type: MARK_ALL_NOTIFICATION_AS_READ_SUCCESS
+      type: MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS
     });
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
@@ -439,7 +440,7 @@ export function* markAllNotificationsAsReadSaga({ notificationIds, offset, limit
       limit
     });
     yield put({
-      type: FETCH_NOTIFICATION_COUNT
+      type: FETCH_NOTIFICATION_COUNTS
     });
   }, false);
 }
@@ -1016,16 +1017,16 @@ export function* watchFetchFlyInNotifications() {
   yield takeLatest(FETCH_FLYIN_NOTIFICATIONS, fetchFlyInNotificationsSaga);
 }
 
-export function* watchFetchNotificationCount() {
-  yield takeEvery(FETCH_NOTIFICATION_COUNT, fetchNotificationCountSaga);
+export function* watchFetchNotificationCounts() {
+  yield takeEvery(FETCH_NOTIFICATION_COUNTS, fetchNotificationCountsSaga);
 }
 
 export function* watchMarkNotificationAsRead() {
   yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
 }
 
-export function* watchMarkAllNotificationsAsRead() {
-  yield takeEvery(MARK_ALL_NOTIFICATION_AS_READ, markAllNotificationsAsReadSaga);
+export function* watchMarkMultipleNotificationsAsRead() {
+  yield takeEvery(MARK_MULTIPLE_NOTIFICATION_AS_READ, markMultipleNotificationsAsReadSaga);
 }
 
 export function* watchLogin() {
@@ -1214,8 +1215,8 @@ export default function* rootSaga() {
       // Notifications
       watchFetchNotifications(),
       watchMarkNotificationAsRead(),
-      watchMarkAllNotificationsAsRead(),
-      watchFetchNotificationCount(),
+      watchMarkMultipleNotificationsAsRead(),
+      watchFetchNotificationCounts(),
       watchFetchFlyInNotifications(),
       watchFetchLatestNotification(),
 

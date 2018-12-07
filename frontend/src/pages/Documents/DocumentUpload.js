@@ -7,7 +7,6 @@ import TextField from "@material-ui/core/TextField";
 
 import DocumentOverview from "./DocumentOverview";
 import strings from "../../localizeStrings";
-import { Typography } from "@material-ui/core";
 
 const styles = {
   uploadButton: {

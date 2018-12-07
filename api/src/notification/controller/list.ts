@@ -12,7 +12,7 @@ export const getNotificationList = async (
   const offset: string | undefined = req.query.offset;
   const notificationList = await Notification.get(multichain, req.user, offset, limit);
   const rawNotifications = notificationList.notifications;
-  const notificationCount = notificationList.notificationCount;
+  const unreadNotificationCount = notificationList.unreadNotificationCount;
 
   const displayNamesById: Map<string, string | undefined> = await Notification.buildDisplayNameMap(
     multichain,
@@ -38,7 +38,7 @@ export const getNotificationList = async (
       apiVersion: "1.0",
       data: {
         notifications,
-        notificationCount,
+        unreadNotificationCount,
       },
     },
   ];

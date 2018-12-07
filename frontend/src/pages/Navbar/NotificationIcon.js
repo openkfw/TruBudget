@@ -20,10 +20,10 @@ const styles = {
   }
 };
 
-const NotificationIcon = ({ unreadNotifications, history, classes }) => {
-  if (typeof unreadNotifications === "number" && unreadNotifications > 0) {
+const NotificationIcon = ({ unreadNotificationCount, history, classes }) => {
+  if (typeof unreadNotificationCount === "number" && unreadNotificationCount > 0) {
     const maxNotificationCount = 50;
-    const unread = unreadNotifications > maxNotificationCount ? `${maxNotificationCount}+` : unreadNotifications;
+    const unread = unreadNotificationCount > maxNotificationCount ? `${maxNotificationCount}+` : unreadNotificationCount;
     return (
       <Badge
         classes={{badge: classes.badge}}

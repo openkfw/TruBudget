@@ -22,9 +22,9 @@ const styles = {
   }
 };
 
-const readAll = (markAllNotificationAsRead, notifications, notificationOffset, notificationsPerPage) => {
+const markPageAsRead = (markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage) => {
   const notificationIds = notifications.map(notification => notification.notificationId);
-  markAllNotificationAsRead(notificationIds, notificationOffset, notificationsPerPage);
+  markMultipleNotificationsAsRead(notificationIds, notificationOffset, notificationsPerPage);
 };
 
 const onChangeRowsPerPage = (
@@ -75,7 +75,7 @@ const onChangePage = (
 const NotificationsList = props => {
   const {
     classes,
-    markAllNotificationAsRead,
+    markMultipleNotificationsAsRead,
     notifications,
     setNotifcationsPerPage,
     notificationsPerPage,
@@ -96,7 +96,7 @@ const NotificationsList = props => {
         action={
           <Button
             variant="outlined"
-            onClick={() => readAll(markAllNotificationAsRead, notifications, notificationOffset, notificationsPerPage)}
+            onClick={() => markPageAsRead(markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage)}
             color="primary"
             className={classes.button}
             disabled={!allNotificationsRead}
