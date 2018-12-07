@@ -99,13 +99,14 @@ const NotificationsList = props => {
             onClick={() => markPageAsRead(markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage)}
             color="primary"
             className={classes.button}
+            data-test="read-multiple-notifications"
             disabled={!allNotificationsRead}
           >
             {strings.notification.read_all}
           </Button>
         }
       />
-      <List component="div">
+      <List component="div" data-test="notification-list">
         <NotificationListItems
           notifications={notifications}
           history={history}

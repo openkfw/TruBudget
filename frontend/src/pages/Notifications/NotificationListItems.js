@@ -63,6 +63,8 @@ const NotificationListItems = ({
           className={classes.row}
           key={index}
           button={isRead ? false : true}
+          data-test-read={isRead}
+          data-test={`notification-${index}`}
           onClick={
             isRead ? undefined : () => markNotificationAsRead(notificationId, notificationOffset, notificationsPerPage)
           }

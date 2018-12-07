@@ -11,7 +11,6 @@ import * as Project from "../../project/model/Project";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import { isEmpty } from "../../lib/emptyChecks";
-import { access } from "fs";
 
 const streamName = "notifications";
 export type NotificationId = string;
@@ -147,12 +146,7 @@ export async function get(
   const orderedNotifiactions = unorderedNotifications.sort(compareNotifications);
 
   const notificationCount = orderedNotifiactions.length;
-  const unreadNotificationCount = orderedNotifiactions.reduce((acc, currentValue) => {
-    if (!currentValue.isRead) {
-      acc = acc + 1;
-    }
-    return acc;
-  }, 0);
+  const unreadNotificationCount = orderedNotifiactions.filter(x => !x.isRead).length;
 
   const parsedLimit = limit ? parseInt(limit, 10) : undefined;
   const parsedOffset = offset ? parseInt(offset, 10) : undefined;
