@@ -55,6 +55,7 @@ const NotificationListItems = ({
     const { originalEvent, notificationId, isRead, resources } = notification;
     const createdAt = moment(originalEvent.createdAt).fromNow();
     const redirectUri = parseURI(notification);
+    const testLabel = `notification-${isRead ? "read" : "unread"}-${index}`;
     return (
       <div key={index}>
         <Divider />
@@ -63,8 +64,7 @@ const NotificationListItems = ({
           className={classes.row}
           key={index}
           button={isRead ? false : true}
-          data-test-read={isRead}
-          data-test={`notification-${index}`}
+          data-test={testLabel}
           onClick={
             isRead ? undefined : () => markNotificationAsRead(notificationId, notificationOffset, notificationsPerPage)
           }
@@ -79,7 +79,12 @@ const NotificationListItems = ({
             secondary={fetchResourceName(resources, "subproject")}
           />
 
-          <ListItemText className={classes.title} component="div" primary={message} />
+          <ListItemText
+            data-test={`${testLabel}-message`}
+            className={classes.title}
+            component="div"
+            primary={message}
+          />
           <ListItemText
             className={classes.author}
             component="div"
