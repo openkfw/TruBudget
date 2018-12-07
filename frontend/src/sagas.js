@@ -386,7 +386,7 @@ export function* commonfetchNotifications(showLoading, offset, limit, type) {
 
 export function* fetchFlyInNotificationsSaga({ showLoading, beforeId }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNewestNotifications, beforeId);
+    const { data } = yield callApi(api.pollNewNotifications, beforeId);
     yield put({
       type: FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
       newNotifications: data.notifications

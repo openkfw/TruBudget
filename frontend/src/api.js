@@ -257,8 +257,8 @@ class Api {
       workflowitemId
     });
 
-  fetchNewestNotifications = beforeId => {
-    return instance.get(`/notification.listNewest?beforeId=${beforeId}`);
+  pollNewNotifications = beforeId => {
+    return instance.get(`/notification.poll?beforeId=${beforeId}`);
   };
 
   fetchNotifications = (offset, limit) => {
