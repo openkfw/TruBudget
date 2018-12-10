@@ -59,6 +59,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
       console.log("WARN: Intent not defined:", intent);
       return intent;
   }
+
 };
 
 class ProjectHistoryContainer extends Component {

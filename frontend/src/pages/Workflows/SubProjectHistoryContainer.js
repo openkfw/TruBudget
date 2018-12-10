@@ -32,20 +32,28 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "subproject.close":
       return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
     case "subproject.intent.grantPermission":
-      return formatString(strings.history.subproject_grantPermission, createdBy, formatPermission(data), data.identity);
+      return formatString(
+        strings.history.subproject_grantPermission,
+        createdBy,
+        formatPermission(data),
+        data.identity,
+        snapshot.displayName
+      );
     case "workflowitem.intent.grantPermission":
       return formatString(
         strings.history.workflowitem_grantPermission,
         createdBy,
         formatPermission(data),
-        data.identity
+        data.identity,
+        snapshot.displayName
       );
     case "subproject.intent.revokePermission":
       return formatString(
         strings.history.subproject_revokePermission,
         createdBy,
         formatPermission(data),
-        data.identity
+        data.identity,
+        snapshot.displayName
       );
     case "workflowitem.update":
       return formatUpdateString(strings.common.workflowItem, createdBy, data);
