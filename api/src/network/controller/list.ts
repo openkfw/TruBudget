@@ -2,6 +2,7 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import * as Global from "../../global";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { MultichainClient } from "../../multichain";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
@@ -50,6 +51,7 @@ export async function getNodeList(multichain: MultichainClient, req): Promise<Ht
 
   const myAddress = req.user.organizationAddress;
   const list: NodeInfoDto[] = nodes.map(info => dtoFromNodeInfo(info, myAddress));
+  logger.debug({ nodes, myAddress, list }, "List of nodes received");
   return [
     200,
     {
@@ -131,8 +133,8 @@ function dtoFromNodeInfo(info: Nodes.NodeInfo, callerAddress: WalletAddress): No
   const myVote: AccessVote.t = hasApprover(adminPermissionInfo, callerAddress)
     ? "admin"
     : hasApprover(basicPermissionInfo, callerAddress)
-      ? "basic"
-      : "none";
+    ? "basic"
+    : "none";
 
   const currentAccess = {
     accessType: currentAccessType,

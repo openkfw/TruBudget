@@ -9,9 +9,10 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      LOG_LEVEL: ${LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
       SWAGGER_BASEPATH: /prod
-      # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
     links: 
       - bc-slave
 
@@ -20,7 +21,7 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      RPC_PASSWORD: ${RPC_PASSWORD}
       P2P_HOST: ${P2P_PROD_HOST}
       P2P_PORT: ${P2P_PROD_PORT}
       API_PROTO: http
@@ -38,7 +39,9 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      LOG_LEVEL: ${LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
       SWAGGER_BASEPATH: /test
       # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
     links: 
@@ -49,7 +52,7 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      RPC_PASSWORD: ${RPC_PASSWORD}
       P2P_HOST: ${P2P_TEST_HOST}
       P2P_PORT: ${P2P_TEST_PORT}
       API_PROTO: http

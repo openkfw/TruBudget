@@ -6,6 +6,7 @@ import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
+import logger from "../../lib/logger";
 
 export async function voteForNetworkPermission(
   multichain: MultichainClient,
@@ -32,6 +33,7 @@ export async function voteForNetworkPermission(
     await Nodes.revoke(multichain, callerAddress, targetAddress, permissions);
   } else {
     // no action required
+    logger.debug("No action required.");
   }
 
   return [200, { apiVersion: "1.0", data: "OK" }];

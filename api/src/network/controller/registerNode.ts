@@ -1,6 +1,7 @@
 import Intent from "../../authz/intents";
 import { AddressIsInvalidError } from "../../error";
 import { HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import * as Nodes from "../model/Nodes";
@@ -11,6 +12,7 @@ export async function registerNode(multichain: MultichainClient, req): Promise<H
   const address: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
 
   if (!(await multichain.isValidAddress(address))) {
+    logger.error({ error: { multichain, address } }, "Address is invalid");
     throw { kind: "AddressIsInvalid", address: input.address } as AddressIsInvalidError;
   }
 
@@ -30,10 +32,12 @@ export async function registerNode(multichain: MultichainClient, req): Promise<H
     node => node.address.address === address && node.address.organization === organization,
   );
   if (nodeExists) {
-    return [200, { apiVersion: "1.0", data: "Node already registered" }];
+    const message = "Node already registered";
+    logger.info(message);
+    return [200, { apiVersion: "1.0", data: message }];
   } else {
     await Nodes.publish(multichain, address, event);
-
+    logger.info(`Node ${address} registered`);
     return [200, { apiVersion: "1.0", data: "OK" }];
   }
 }

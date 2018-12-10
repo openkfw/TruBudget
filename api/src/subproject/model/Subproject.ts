@@ -9,6 +9,7 @@ import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
+import logger from "../../lib/logger";
 
 export interface AugmentedEvent extends Event {
   snapshot: {
@@ -92,7 +93,7 @@ export async function publish(
   const streamName = projectId;
   const streamItemKey = subprojectKey(subprojectId);
   const streamItem = { json: event };
-  console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
   await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
   return event;
 }
@@ -118,7 +119,9 @@ export async function get(
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
-        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
+        const message = "Failed to initialize resource";
+        logger.error({ error: { event } }, message );
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
       permissionsMap.set(asMapKey(item), result.permissions);
@@ -132,7 +135,9 @@ export async function get(
         applyGrantPermission(event, permissions) ||
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
-        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+        const message = "An error occured while processing event";
+        logger.error({ error: { event } }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
 
@@ -299,6 +304,10 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
+    logger.error(
+      { error: { multichain, subprojectId, projectId } },
+      `Subproject ${subprojectId} of project ${projectId} not found.`,
+    );
     throw { kind: "NotFound", what: `Subproject ${subprojectId} of project ${projectId}.` };
   }
   return permissions;

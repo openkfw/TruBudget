@@ -26,6 +26,7 @@ export const createUser = async (
 
   // Make sure nobody creates the special "root" user:
   if (userId === "root") {
+    logger.error({ error: { userId } }, "Cannot create new root");
     throw { kind: "UserAlreadyExists", targetUserId: "root" } as UserAlreadyExistsError;
   }
 
@@ -51,7 +52,10 @@ export const createUser = async (
   };
 
   await User.create(multichain, req.user, newUser);
-  logger.info(newUser, "User created.");
+  logger.info(
+    { params: { newUser } },
+    `User ${newUser.displayName} created. Granting permissions now...`,
+  );
 
   await grantInitialPermissions(multichain, newUser);
 
@@ -76,7 +80,10 @@ async function grantInitialPermissions(
   user: User.UserRecord,
 ): Promise<void> {
   for (const intent of userDefaultIntents) {
-    logger.trace({ userId: user.id, intent }, "granting default permission");
+    logger.info(
+      { params: { userId: user.id, intent } },
+      `Granting default permissions to ${user.id}`,
+    );
     await Global.grantPermission(multichain, user.id, intent);
   }
 }

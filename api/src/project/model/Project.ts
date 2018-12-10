@@ -10,6 +10,7 @@ import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import logger from "../../lib/logger";
 
 export interface AugmentedEvent extends Event {
   snapshot: {
@@ -70,7 +71,7 @@ export async function publish(
   const streamItem = { json: event };
 
   const publishEvent = () => {
-    console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+    logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
     return multichain
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)
@@ -79,11 +80,13 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
+      logger.warn(`The stream ${streamName} does not exist yet. Creating the stream and trying again.`);
       // The stream does not exist yet. Create the stream and try again:
       return multichain
         .getOrCreateStream({ kind: "project", name: streamName })
         .then(() => publishEvent());
     } else {
+      logger.error({ error: err }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -115,7 +118,8 @@ async function fetchStreamItems(
               }),
             )
             .catch(err => {
-              console.log(
+              logger.error(
+                { error: err },
                 `Failed to fetch '${projectSelfKey}' stream item from project stream ${streamName}`,
               );
               return null;
@@ -144,7 +148,9 @@ export async function get(
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
-        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
+        const message = "Failed to initialize resource";
+        logger.error({ error: { event } }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
       permissionsMap.set(asMapKey(item), result.permissions);
@@ -158,7 +164,9 @@ export async function get(
         applyGrantPermission(event, permissions) ||
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
-        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+        const message = "Unexpected event";
+        logger.error({ error: { event } }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
 
@@ -323,6 +331,7 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
+    logger.error({ error: { projectId, multichain } }, `Project ${projectId} not found.`);
     throw { kind: "NotFound", what: `Project ${projectId}.` };
   }
   return permissions;

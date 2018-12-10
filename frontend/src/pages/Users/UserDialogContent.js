@@ -8,7 +8,6 @@ import strings from "../../localizeStrings";
 import Username from "../Common/Username";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
-import GlobalPermissions from "./GlobalPermissions";
 
 const styles = {
   textInputContainer: {

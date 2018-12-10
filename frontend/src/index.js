@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -27,8 +28,8 @@ const muiTheme = createMuiTheme({
     secondary: red
   },
   typography: {
-    useNextVariants: true,
-  },
+    useNextVariants: true
+  }
 });
 
 class Root extends Component {

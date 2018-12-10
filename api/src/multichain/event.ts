@@ -1,4 +1,5 @@
 import Intent from "../authz/intents";
+import logger from "../lib/logger";
 
 export interface Event {
   key: string; // the resource ID (same for all events that relate to the same resource)
@@ -10,5 +11,6 @@ export interface Event {
 }
 
 export function throwUnsupportedEventVersion(event: Event): never {
+  logger.error({ error: {event} }, "Unsupported event version.");
   throw { kind: "UnsupportedEventVersion", event };
 }

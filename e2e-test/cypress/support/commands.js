@@ -29,12 +29,14 @@ const baseUrl = Cypress.env("API_BASE_URL") || "/test";
 let token = undefined;
 
 Cypress.Commands.add("login", (username = "mstein", password = "test") => {
-  cy
-    .request({
-      url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
-      method: "POST",
-      body: { apiVersion: "1.0", data: { user: { id: username, password: password } } }
-    })
+  cy.request({
+    url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
+    method: "POST",
+    body: {
+      apiVersion: "1.0",
+      data: { user: { id: username, password: password } }
+    }
+  })
     .its("body")
     .then(body => {
       const state = {
@@ -55,50 +57,141 @@ Cypress.Commands.add("login", (username = "mstein", password = "test") => {
 });
 
 Cypress.Commands.add("fetchProjects", () => {
-  cy
-    .request({
-      url: `${baseUrl}/api/project.list`,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+  cy.request({
+    url: `${baseUrl}/api/project.list`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     .its("body")
     .then(body => Promise.resolve(body.data.items));
 });
 
 Cypress.Commands.add("fetchSubprojects", projectId => {
-  cy
-    .request({
-      url: `${baseUrl}/api/project.viewDetails?projectId=${projectId}`,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }      
-    })
+  cy.request({
+    url: `${baseUrl}/api/project.viewDetails?projectId=${projectId}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     .its("body")
     .then(body => Promise.resolve(body.data.subprojects));
 });
 
-Cypress.Commands.add("createWorkflowItem",(projectId,subprojectId,displayName, amount, currency, amountType, description, status, documents)  => {
-  cy
-    .request({
+Cypress.Commands.add(
+  "createWorkflowItem",
+  (
+    projectId,
+    subprojectId,
+    displayName,
+    amount,
+    currency,
+    amountType,
+    description,
+    status,
+    documents
+  ) => {
+    cy.request({
       url: `${baseUrl}/api/subproject.createWorkflowitem`,
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`
       },
-      body: { apiVersion: "1.0", data: { 
-        projectId: projectId,
-        subprojectId: subprojectId,
-        displayName: displayName,
-        amount: amount,
-        currency: currency,
-        amountType: amountType,
-        description: description,
-        status: status,
-        documents: documents } }
+      body: {
+        apiVersion: "1.0",
+        data: {
+          projectId: projectId,
+          subprojectId: subprojectId,
+          displayName: displayName,
+          amount: amount,
+          currency: currency,
+          amountType: amountType,
+          description: description,
+          status: status,
+          documents: documents
+        }
+      }
     })
+      .its("body")
+      .then(body => Promise.resolve(body.data.created));
+  }
+);
+
+Cypress.Commands.add(
+  "createProject",
+  (
+    displayName,
+    amount,
+    currency,
+    description,
+    thumbnail = "/Thumbnail_0001.jpg"
+  ) => {
+    console.log(displayName);
+    cy.request({
+      url: `${baseUrl}/api/global.createProject`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: {
+        apiVersion: "1.0",
+        data: {
+          project: {
+            displayName: displayName,
+            amount: amount,
+            currency: currency,
+            description: description,
+            thumbnail: thumbnail
+          }
+        }
+      }
+    })
+      .its("body")
+      .then(body => Promise.resolve(body.data.created));
+  }
+);
+
+Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/project.assign`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId: projectId,
+        identity: identity
+      }
+    }
+  })
     .its("body")
-    .then(body => Promise.resolve(body.data.created));
+    .then(body => Promise.resolve(body.data));
 });
+
+
+
+
+Cypress.Commands.add("updateProjectPermissions", (projectId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/project.intent.grantPermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId: projectId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
+

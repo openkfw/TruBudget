@@ -61,7 +61,7 @@ class Api {
     });
   grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, { identity, intent });
 
-  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity , intent });
+  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity, intent });
   listGlobalPermissions = () => instance.get(`global.listPermissions`);
 
   listUser = () => instance.get(`/user.list`);
@@ -257,14 +257,23 @@ class Api {
       workflowitemId
     });
 
-  fetchNotifications = (fromId = "") => {
-    return instance.get(`/notification.list?sinceId=${fromId}`);
+  pollNewNotifications = beforeId => {
+    return instance.get(`/notification.poll?beforeId=${beforeId}`);
+  };
+
+  fetchNotifications = (offset, limit) => {
+    return instance.get(`/notification.list?offset=${offset}&limit=${limit}`);
+  };
+
+  fetchNotificationCounts = () => {
+    return instance.get(`/notification.counts`);
   };
 
   markNotificationAsRead = notificationId =>
     instance.post(`/notification.markRead`, {
       notificationId
     });
+  markMultipleNotificationsAsRead = notificationIds => instance.post(`/notification.markMultipleRead`, { notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {

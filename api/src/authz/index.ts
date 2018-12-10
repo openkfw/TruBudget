@@ -1,3 +1,4 @@
+import logger from "../lib/logger";
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
 import { AllowedUserGroupsByIntent, People } from "./types";
@@ -25,6 +26,10 @@ export const getAllowedIntents = (
   const allowedIntents = Object.keys(resourcePermissions as any).filter(intent =>
     hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
+  logger.debug(
+    { userAndGroups, allowedIntents },
+    `Getting allowed intents for user ${userAndGroups[0]}`,
+  );
   return allowedIntents;
 };
 
@@ -35,27 +40,25 @@ const can = async (
 ): Promise<boolean> => {
   if (token.userId === "root") {
     // root can do everything
+    logger.debug("Root access. All intents granted.");
     return true;
   } else {
-    if (!resourcePermissions[intent]) return false;
+    if (!resourcePermissions[intent]) {
+      logger.info(
+        { params: { resourcePermissions } },
+        `Acces denied for user ${token.userId} with intent ${intent}`,
+      );
+      return false;
+    }
     const allowedUsersAndGroups = resourcePermissions[intent];
     const currentUserAndGroups = await getUserAndGroups(token);
-    return hasIntersection(currentUserAndGroups, allowedUsersAndGroups);
+    const userAllowed = hasIntersection(currentUserAndGroups, allowedUsersAndGroups);
+    logger.debug(
+      { resourcePermissions },
+      `${userAllowed ? "Allowed" : "Denied"} user ${token.userId} access with intent ${intent}`,
+    );
+    return userAllowed;
   }
-};
-
-const loggedCan = async (
-  token: AuthToken,
-  intent: Intent,
-  resourcePermissions: AllowedUserGroupsByIntent,
-): Promise<boolean> => {
-  const canDo = await can(token, intent, resourcePermissions);
-  console.log(
-    `${canDo ? "ALLOWED" : "DENIED"} user ${token.userId} access with intent "${intent}"${
-      resourcePermissions ? ` to ${JSON.stringify(resourcePermissions)}` : ""
-    }`,
-  );
-  return canDo;
 };
 
 /*
@@ -68,7 +71,10 @@ export const authorized = (token: AuthToken, intent: Intent) => async (
   resourcePermissions: AllowedUserGroupsByIntent,
 ): Promise<undefined> => {
   const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
-  if (!canDo) throw { kind: "NotAuthorized", token, intent };
+  if (!canDo) {
+    logger.error({ error: { token, intent, resourcePermissions } }, "User not authorized");
+    throw { kind: "NotAuthorized", token, intent };
+  }
   return;
 };
 

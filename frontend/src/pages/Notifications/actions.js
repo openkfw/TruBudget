@@ -1,16 +1,35 @@
 export const SHOW_SNACKBAR = "SHOW_SNACKBAR";
 export const HIDE_SNACKBAR = "HIDE_SNACKBAR";
 export const SNACKBAR_MESSAGE = "SNACKBAR_MESSAGE";
+
 export const MARK_NOTIFICATION_AS_READ = "MARK_NOTIFICATION_AS_READ";
 export const MARK_NOTIFICATION_AS_READ_SUCCESS = "MARK_NOTIFICATION_AS_READ_SUCCESS";
+
 export const OPEN_HISTORY = "OPEN_HISTORY";
 export const HIDE_HISTORY = "HIDE_HISTORY";
+
 export const FETCH_HISTORY = "FETCH_HISTORY";
 export const FETCH_HISTORY_SUCCESS = "FETCH_HISTORY_SUCCESS";
-export const FETCH_NOTIFICATIONS_WITH_ID = "FETCH_NOTIFICATIONS_WITH_ID";
-export const FETCH_NOTIFICATIONS_WITH_ID_SUCCESS = "FETCH_NOTIFICATIONS_WITH_ID_SUCCESS";
+
 export const FETCH_ALL_NOTIFICATIONS = "FETCH_ALL_NOTIFICATIONS";
 export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS";
+
+export const FETCH_FLYIN_NOTIFICATIONS = "FETCH_FLYIN_NOTIFICATIONS";
+export const FETCH_FLYIN_NOTIFICATIONS_SUCCESS = "FETCH_FLYIN_NOTIFICATIONS_SUCCESS";
+
+export const MARK_MULTIPLE_NOTIFICATION_AS_READ = "MARK_MULTIPLE_NOTIFICATION_AS_READ";
+export const MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS = "MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS";
+
+export const FETCH_NOTIFICATION_COUNTS = "FETCH_NOTIFICATION_COUNTS";
+export const FETCH_NOTIFICATION_COUNTS_SUCCESS = "FETCH_NOTIFICATION_COUNTS_SUCCESS";
+
+export const SET_NOTIFICATIONS_PER_PAGE = "SET_NOTIFICATIONS_PER_PAGE";
+export const SET_NOTIFICATION_OFFSET = "SET_NOTIFICATION_OFFSET";
+
+export const TIME_OUT_FLY_IN = "TIME_OUT_FLY_IN";
+
+export const FETCH_LATEST_NOTIFICATION = "FETCH_LATEST_NOTIFICATION";
+export const FETCH_LATEST_NOTIFICATION_SUCCESS = "FETCH_LATEST_NOTIFICATION_SUCCESS";
 
 export function showSnackbar(isError = false) {
   return {
@@ -34,25 +53,43 @@ export function storeSnackbarMessage(message) {
   };
 }
 
-export function fetchAllNotifications(showLoading = false) {
+export function fetchFlyInNotifications(showLoading = false, beforeId) {
+  return {
+    type: FETCH_FLYIN_NOTIFICATIONS,
+    beforeId,
+    showLoading
+  };
+}
+export function fetchNotifications(showLoading = false, offset, limit) {
   return {
     type: FETCH_ALL_NOTIFICATIONS,
-    showLoading
+    showLoading,
+    offset,
+    limit
   };
 }
 
-export function fetchNotificationsWithId(fromId, showLoading = false) {
+export function fetchLatestNotification(showLoading = false) {
   return {
-    type: FETCH_NOTIFICATIONS_WITH_ID,
-    fromId,
+    type: FETCH_LATEST_NOTIFICATION,
+    showLoading,
+  };
+}
+
+
+export function fetchNotificationCounts(showLoading = false) {
+  return {
+    type: FETCH_NOTIFICATION_COUNTS,
     showLoading
   };
 }
 
-export function markNotificationAsRead(notificationId) {
+export function markNotificationAsRead(notificationId, offset, limit) {
   return {
     type: MARK_NOTIFICATION_AS_READ,
-    notificationId
+    notificationId,
+    offset,
+    limit
   };
 }
 
@@ -73,3 +110,30 @@ export function fetchHistoryItems(project) {
     project
   };
 }
+
+export function markMultipleNotificationsAsRead(notificationIds, offset, limit) {
+  return {
+    type: MARK_MULTIPLE_NOTIFICATION_AS_READ,
+    notificationIds,
+    offset,
+    limit
+  };
+}
+
+export function setNotifcationsPerPage(limit) {
+  return {
+    type: SET_NOTIFICATIONS_PER_PAGE,
+    limit
+  };
+}
+
+
+export function setNotificationOffset(offset) {
+  return {
+    type: SET_NOTIFICATION_OFFSET,
+    offset
+  };
+}
+
+
+

@@ -2427,14 +2427,12 @@ const schemas = {
       },
     },
   },
-  notificationList: {
+  notificationPoll: {
     schema: {
       description:
-        "List notifications for the user, given by the token in the " +
-        "request's `Authorization` header. By default, the response includes _all_ notifications, " +
-        "but the `sinceId` parameter may be used to truncate the output.",
+        "Poll the newest notifications that happened before a certain id",
       tags: ["notification"],
-      summary: "List all notification of the authorized user",
+      summary: "Poll the newest notifications that happened before a certain id",
       security: [
         {
           bearerToken: [],
@@ -2443,8 +2441,9 @@ const schemas = {
       querystring: {
         type: "object",
         properties: {
-          sinceId: {
+          beforeId: {
             type: "string",
+            example: "9452eaa6-f28b-455c-bcb8-1ea0bc57946d",
           },
         },
       },
@@ -2468,9 +2467,9 @@ const schemas = {
                         items: {
                           type: "object",
                           properties: {
-                            id: { type: "string", example: "fe9c2b24ade9a92360b3a898665678ac" },
-                            type: { type: "string", example: "workflowitem" },
-                            displayName: { type: "string", example: "classroom" },
+                            id: { type: "string", example: "bd552d12c64539aa80293d315191490c" },
+                            type: { type: "string", example: "project" },
+                            displayName: { type: "string", example: "Amazonas Fund 53" },
                           },
                         },
                       },
@@ -2514,6 +2513,130 @@ const schemas = {
     },
   },
 
+  notificationList: {
+    schema: {
+      description:
+        "List notifications for the selected page " +
+        "for the user, given by the token in the " +
+        "request's `Authorization` header. ",
+      tags: ["notification"],
+      summary: "List all notification of the authorized user",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      querystring: {
+        type: "object",
+        properties: {
+          limit: {
+            type: "string",
+            example: "10",
+          },
+          offset: {
+            type: "string",
+            example: "0",
+          },
+        },
+      },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                notifications: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      notificationId: { type: "string" },
+                      resources: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            id: { type: "string", example: "bd552d12c64539aa80293d315191490c" },
+                            type: { type: "string", example: "project" },
+                            displayName: { type: "string", example: "Amazonas Fund 53" },
+                          },
+                        },
+                      },
+                      isRead: { type: "boolean" },
+                      originalEvent: {
+                        type: "object",
+                        properties: {
+                          key: { type: "string" },
+                          intent: { type: "string", example: "global.createProject" },
+                          createdBy: { type: "string", example: "aSmith" },
+                          createdAt: { type: "string", example: "2018-09-24T12:02:58.763Z" },
+                          dataVersion: { type: "string", example: "1" },
+                          data: {
+                            type: "object",
+                            additionalProperties: true,
+                            example: {
+                              project: {
+                                id: "fe9c2b24ade9a92360b3a898665678ac",
+                                creationUnixTs: "1536834480274",
+                                status: "open",
+                                displayName: "town-project",
+                                description: "a town should be built",
+                                amount: "10000",
+                                assignee: "aSmith",
+                                currency: "EUR",
+                                thumbnail: "/Thumbnail_0001.jpg",
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+                unreadNotificationCount: {
+                  type: "number",
+                },
+              },
+            },
+          },
+        },
+        401: getAuthErrorSchema(),
+      },
+    },
+  },
+
+  notificationCount: {
+    schema: {
+      description: "Get the unread and the total number of notifications for the currently logged in user",
+      tags: ["notification"],
+      summary: "Get the unread and the total number of notifications",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                unreadNotificationCount: { type: "integer", example: 0 },
+                notificationCount: { type: "integer", example: 0 },
+              },
+            },
+          },
+        },
+      },
+      401: getAuthErrorSchema(),
+    },
+  },
   markRead: {
     schema: {
       description:
@@ -2537,6 +2660,50 @@ const schemas = {
               notificationId: { type: "string", example: "c9a6d74d-9508-4960-b39e-72f90f292b74" },
             },
             required: ["notificationId"],
+          },
+        },
+      },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "string",
+            },
+          },
+        },
+        401: getAuthErrorSchema(),
+      },
+    },
+  },
+  markMultipleRead: {
+    schema: {
+      description:
+        "Allows the user to mark multiple notifications as read, which " +
+        "is then reflected by the `isRead` flag carried in the `notification.list` response.",
+      tags: ["notification"],
+      summary: "Mark multiple notification as read",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      body: {
+        type: "object",
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              notificationIds: {
+                type: "array",
+                items: { type: "string", example: "c9a6d74d-9508-4960-b39e-72f90f292b74" },
+              },
+            },
+            required: ["notificationIds"],
           },
         },
       },

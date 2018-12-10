@@ -27,34 +27,8 @@ const styles = {
 };
 
 export default class FlyInNotification extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      notifications: []
-    };
-  }
-
-  componentWillReceiveProps = props => {
-    if (!_isEmpty(props.notifications)) {
-      const ids = props.notifications.map(n => n.notificationId);
-      setTimeout(() => {
-        this.removeNotification(ids);
-      }, 7000);
-    }
-    this.setState({
-      notifications: props.notifications
-    });
-  };
-
-  removeNotification(ids) {
-    this.setState({
-      notifications: this.state.notifications.filter(n => ids.indexOf(n.notificationId) < 0)
-    });
-  }
-
   getMessages = history => {
-    return this.state.notifications.map(({ notificationId, originalEvent, resources }) => {
+    return this.props.notifications.map(({ notificationId, originalEvent, resources }) => {
       const { createdBy } = originalEvent;
       const message = intentMapping({ originalEvent, resources });
       return (
@@ -88,8 +62,7 @@ export default class FlyInNotification extends Component {
   };
 
   render() {
-    const show = !_isEmpty(this.props.notifications);
-
+    let show = !_isEmpty(this.props.notifications) && !_isEmpty(this.props.latestFlyInId);
     return (
       <div
         style={{
@@ -99,7 +72,7 @@ export default class FlyInNotification extends Component {
           zIndex: 2000
         }}
       >
-        <Transition in={show} timeout={500}>
+        <Transition in={show} timeout={{ enter: 500, exit: 500 }}>
           {state => (
             <div
               style={{

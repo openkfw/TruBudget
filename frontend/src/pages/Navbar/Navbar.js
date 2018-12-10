@@ -20,7 +20,7 @@ const Navbar = ({
   onToggleSidebar,
   numberOfActivePeers,
   peers,
-  unreadNotifications,
+  unreadNotificationCount,
   showSidebar,
   history,
   route,
@@ -55,7 +55,7 @@ const Navbar = ({
         />
         <RightNavbarNavigation
           organization={organization}
-          unreadNotifications={unreadNotifications}
+          unreadNotificationCount={unreadNotificationCount}
           numberOfActivePeers={numberOfActivePeers}
           peers={peers}
           history={history}

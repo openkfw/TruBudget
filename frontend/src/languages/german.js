@@ -248,7 +248,8 @@ const de = {
     workflowitem_archive: "German: Workflowitem {0} was archived",
     workflowitem_assign: "German: Workflowitem {0} was assigned to you",
     workflowitem_intent_grantPermission: "German: The permissions for workflowitem {0} changed",
-    workflowitem_intent_revokePermission: "German: The permissions for workflowitem {0} changed"
+    workflowitem_intent_revokePermission: "German: The permissions for workflowitem {0} changed",
+    read_all: "German: Read All"
   },
 
   history: {
