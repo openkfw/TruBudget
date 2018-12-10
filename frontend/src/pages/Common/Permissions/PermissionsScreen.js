@@ -23,7 +23,6 @@ import Typography from "@material-ui/core/Typography";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../../localizeStrings";
 
-
 const PermissionsScreen = props => (
   <Dialog data-test="permission-container" open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>
@@ -157,24 +156,26 @@ const renderSelection = (user, permissionedUser, permissionName, grant, revoke, 
     );
   });
 
-const renderPermission = (name, userList, permissions, myself, grant, revoke, disabled) => (
-  <ListItem key={name + "perm"}>
-    <ListItemText
-      primary={
-        <PermissionSelection
-          name={name}
-          userList={userList}
-          permissions={permissions}
-          grant={grant}
-          revoke={revoke}
-          myself={myself}
-          disabled={disabled}
-        />
-      }
-      secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
-    />
-  </ListItem>
-);
+const renderPermission = (name, userList, permissions, myself, grant, revoke, disabled) => {
+  return (
+    <ListItem key={name + "perm"}>
+      <ListItemText
+        primary={
+          <PermissionSelection
+            name={name}
+            userList={userList}
+            permissions={permissions}
+            grant={grant}
+            revoke={revoke}
+            myself={myself}
+            disabled={disabled}
+          />
+        }
+        secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
+      />
+    </ListItem>
+  );
+};
 
 const PermissionsTable = ({ permissions, user, grant, revoke, id, intentOrder, myself, disabled }) => (
   <div>
@@ -183,7 +184,7 @@ const PermissionsTable = ({ permissions, user, grant, revoke, id, intentOrder, m
         <Card key={section.name + "section"} style={{ marginTop: "12px", marginBottom: "12px" }}>
           <CardHeader subheader={strings.permissions[section.name]} />
           <CardContent>
-          <List>
+            <List>
               {section.intents
                 .filter(i => permissions[i] !== undefined)
                 .map(p =>

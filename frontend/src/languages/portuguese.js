@@ -198,7 +198,7 @@ const pt = {
     write_permission: "Escrita",
     restore: "Portuguese: Restore",
     download: "Portuguese: Download",
-    backup: "Portuguese: Backup",
+    backup: "Portuguese: Backup"
   },
 
   dashboard: {
@@ -328,7 +328,8 @@ const pt = {
     global_grantPermission: "Portuguese: Grant global permissions for others",
     global_revokePermission: "Portuguese: Revoke global permissions for others",
     network_list: "Portuguese: List all connected nodes",
-    network_voteForPermission: "Portuguese: Vote if a node should join the network"
+    network_voteForPermission: "Portuguese: Vote if a node should join the network",
+    project_update: "Portuguese: Update project"
   },
 
   language: {

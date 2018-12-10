@@ -24,11 +24,10 @@ export const canCreateSubProject = i => can("project.createSubproject", i);
 export const canAssignProject = i => can("project.assign", i);
 export const canCloseProject = i => can("project.close", i);
 
-
 export const globalIntentOrder = [
   {
     name: "admin",
-    intents:[
+    intents: [
       "global.createUser",
       "global.createGroup",
       "global.createProject",
@@ -39,7 +38,7 @@ export const globalIntentOrder = [
       "network.voteForPermission"
     ]
   }
-]
+];
 
 export const projectIntentOrder = [
   {
@@ -48,7 +47,7 @@ export const projectIntentOrder = [
   },
   {
     name: "write",
-    intents: ["project.createSubproject", "project.assign", "project.close"]
+    intents: ["project.createSubproject", "project.update", "project.assign", "project.close"]
   },
   {
     name: "admin",
@@ -63,7 +62,13 @@ export const subProjectIntentOrder = [
   },
   {
     name: "write",
-    intents: ["subproject.createWorkflowitem", "subproject.update", "subproject.assign", "subproject.close", "subproject.reorderWorkflowitems"]
+    intents: [
+      "subproject.createWorkflowitem",
+      "subproject.update",
+      "subproject.assign",
+      "subproject.close",
+      "subproject.reorderWorkflowitems"
+    ]
   },
   {
     name: "admin",

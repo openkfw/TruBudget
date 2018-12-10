@@ -165,7 +165,6 @@ const fr = {
     add_group: "Ajouter un groupe",
     edit_group: "Éditer und groupe",
     edit_permissions_for: "Éditer les autorisations pour"
-
   },
 
   nodesDashboard: {
@@ -200,7 +199,7 @@ const fr = {
     write_permission: "Écrire",
     restore: "Restaurer",
     download: "Télécharger",
-    backup: "Sauvegarder",
+    backup: "Sauvegarder"
   },
 
   dashboard: {
@@ -329,7 +328,8 @@ const fr = {
     global_grantPermission: "Attribuer des autorisations globales à autres",
     global_revokePermission: "Révoquer  des autorisations globales à autres",
     network_list: "Afficher tous les noeuds connectés",
-    network_voteForPermission: "Voter si un noeud peut joindre le réseau"
+    network_voteForPermission: "Voter si un noeud peut joindre le réseau",
+    project_update: "French: Modifier le projet"
   },
 
   language: {

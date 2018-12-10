@@ -196,7 +196,7 @@ const en = {
     write_permission: "Write",
     restore: "Restore",
     download: "Download",
-    backup: "Backup",
+    backup: "Backup"
   },
 
   dashboard: {
@@ -326,7 +326,8 @@ const en = {
     global_grantPermission: "Grant global permissions for others",
     global_revokePermission: "Revoke global permissions for others",
     network_list: "List all connected nodes",
-    network_voteForPermission: "Vote if a node should join the network"
+    network_voteForPermission: "Vote if a node should join the network",
+    project_update: "Update project"
   },
 
   language: {
