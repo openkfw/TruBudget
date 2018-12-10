@@ -249,7 +249,8 @@ const pt = {
     workflowitem_archive: "Portuguese: Workflowitem {0} was archived",
     workflowitem_assign: "Portuguese: Workflowitem {0} was assigned to you",
     workflowitem_intent_grantPermission: "Portuguese: The permissions for workflowitem {0} changed",
-    workflowitem_intent_revokePermission: "Portuguese: The permissions for workflowitem {0} changed"
+    workflowitem_intent_revokePermission: "Portuguese: The permissions for workflowitem {0} changed",
+    read_all: "Portuguese: Read All"
   },
 
   history: {

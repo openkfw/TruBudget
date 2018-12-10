@@ -1,13 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEmpty from "lodash/isEmpty";
+
 
 import LiveNotification from "./LiveNotification";
-import { fetchNotificationsWithId, fetchAllNotifications, hideSnackbar } from "./actions.js";
+import { hideSnackbar, fetchNotificationCounts, fetchFlyInNotifications, fetchLatestNotification } from "./actions.js";
 import { toJS } from "../../helper";
+
+
+// Currently when a fly in appears the notifications aren't reloaded, due to the latency of the call.
+// Once notifications are compacted/snapshoted we can refresh every time the fly in saga was called.
 
 class LiveNotificationContainer extends Component {
   componentWillMount() {
-    this.props.fetchAllNotifications();
+    this.props.fetchNotificationCounts();
+    this.props.fetchLatestNotification();
     this.startUpdates();
   }
 
@@ -22,9 +29,10 @@ class LiveNotificationContainer extends Component {
   }
 
   fetch() {
-    const { notifications, fetchNotifications } = this.props;
-    const fromId = notifications.length > 0 ? notifications[0].notificationId : "";
-    fetchNotifications(fromId, false);
+    const { fetchFlyInNotifications, latestFlyInId } = this.props;
+    if (!_isEmpty(latestFlyInId)) {
+      fetchFlyInNotifications(latestFlyInId);
+    }
   }
 
   stopUpdates() {
@@ -33,14 +41,14 @@ class LiveNotificationContainer extends Component {
 
   render() {
     return <LiveNotification {...this.props} />;
-    // return <div />;
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchNotifications: (fromId, showLoading) => dispatch(fetchNotificationsWithId(fromId, showLoading)),
-    fetchAllNotifications: () => dispatch(fetchAllNotifications(true)),
+    fetchFlyInNotifications: beforeId => dispatch(fetchFlyInNotifications(false, beforeId)),
+    fetchNotificationCounts: () => dispatch(fetchNotificationCounts()),
+    fetchLatestNotification: () => dispatch(fetchLatestNotification()),
     closeSnackbar: () => dispatch(hideSnackbar())
   };
 };
@@ -50,7 +58,10 @@ const mapStateToProps = state => {
     notifications: state.getIn(["notifications", "notifications"]),
     showSnackbar: state.getIn(["notifications", "showSnackbar"]),
     snackbarMessage: state.getIn(["notifications", "snackbarMessage"]),
-    snackbarError: state.getIn(["notifications", "snackbarError"])
+    snackbarError: state.getIn(["notifications", "snackbarError"]),
+    unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
+    notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
+    latestFlyInId: state.getIn(["notifications", "latestFlyInId"])
   };
 };
 

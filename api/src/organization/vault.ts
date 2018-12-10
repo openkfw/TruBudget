@@ -1,5 +1,4 @@
 import * as sodium from "sodium-native";
-import * as winston from "winston";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { WalletAddress } from "../network/model/Nodes";
@@ -124,7 +123,7 @@ export function vaultToHexString(organizationVaultSecret: string, vault: Vault):
 
 function toKeyBuffer(secret: string): Buffer {
   if (secret.length > sodium.crypto_secretbox_KEYBYTES) {
-    winston.warn(
+    logger.warn(
       `truncate secret with length ${secret.length} to length ${sodium.crypto_secretbox_KEYBYTES}`,
     );
   }

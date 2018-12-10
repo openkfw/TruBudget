@@ -1,15 +1,32 @@
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import deepcopy from "../../lib/deepcopy";
+import logger from "../../lib/logger";
 import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
-import logger from "../../lib/logger";
+
+import * as Project from "../../project/model/Project";
+import * as Subproject from "../../subproject/model/Subproject";
+import * as Workflowitem from "../../workflowitem/model/Workflowitem";
+import { isEmpty } from "../../lib/emptyChecks";
 
 const streamName = "notifications";
-
 export type NotificationId = string;
+
+interface ExtendedNotificationResourceDescription {
+  id: string;
+  type: ResourceType;
+  displayName?: string;
+}
+
+export interface NotificationDto {
+  notificationId: NotificationId;
+  resources: ExtendedNotificationResourceDescription[];
+  isRead: boolean;
+  originalEvent: Event;
+}
 
 export interface NotificationResourceDescription {
   id: string;
@@ -28,6 +45,12 @@ export interface Notification {
   resources: NotificationResourceDescription[];
   isRead: boolean;
   originalEvent: Event;
+}
+
+export interface NotificationList {
+  unreadNotificationCount: number;
+  notificationCount: number;
+  notifications: Notification[];
 }
 
 export async function publish(
@@ -60,7 +83,9 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
-      logger.warn(`The stream ${streamName} does not exist yet. Creating the stream and trying again.`);
+      logger.warn(
+        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
+      );
       // The stream does not exist yet. Create the stream and try again:
       return multichain
         .getOrCreateStream({ kind: "notifications", name: streamName })
@@ -75,8 +100,9 @@ export async function publish(
 export async function get(
   multichain: MultichainClient,
   token: AuthToken,
-  sinceId?: string,
-): Promise<Notification[]> {
+  offset?: string,
+  limit?: string,
+): Promise<NotificationList> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
     .v2_readStreamItems(streamName, token.userId)
     .catch(err => {
@@ -91,23 +117,9 @@ export async function get(
       }
     });
   const notificationsById = new Map<NotificationId, Notification>();
-
-  let fromIndex = 0;
-  if (sinceId) {
-    fromIndex = streamItems.findIndex(
-      item => getNotificationId(item.data.json as Event) === sinceId,
-    );
-    if (fromIndex === -1) fromIndex = 0;
-  }
-
-  for (let i = fromIndex; i < streamItems.length; ++i) {
-    const event = streamItems[i].data.json as Event;
-
+  for (const streamItem of streamItems) {
+    const event = streamItem.data.json as Event;
     const notificationId = getNotificationId(event);
-    if (sinceId === notificationId) {
-      // The "sinceId"-event is not included in the response
-      continue;
-    }
 
     let notification = notificationsById.get(notificationId);
     if (notification === undefined) {
@@ -131,8 +143,45 @@ export async function get(
 
   const unorderedNotifications = [...notificationsById.values()];
 
-  return unorderedNotifications.sort(compareNotifications);
+  const orderedNotifiactions = unorderedNotifications.sort(compareNotifications);
+
+  const notificationCount = orderedNotifiactions.length;
+  const unreadNotificationCount = orderedNotifiactions.filter(x => !x.isRead).length;
+
+  const parsedLimit = limit ? parseInt(limit, 10) : undefined;
+  const parsedOffset = offset ? parseInt(offset, 10) : undefined;
+  const { startIndex, endIndex } = findIndices(parsedOffset, parsedLimit, notificationCount);
+
+  const notifications: Notification[] = orderedNotifiactions.slice(startIndex, endIndex);
+
+  return {
+    unreadNotificationCount,
+    notificationCount,
+    notifications,
+  };
 }
+
+const findIndices = (
+  offset: number | undefined,
+  limit: number | undefined,
+  notificationCount: number,
+) => {
+  let startIndex = 0;
+  let endIndex = 0;
+  if (!isEmpty(offset) && !isEmpty(limit)) {
+    (startIndex = offset), (endIndex = offset + limit);
+  } else if (!isEmpty(offset)) {
+    startIndex = offset;
+    endIndex = notificationCount;
+  } else if (!isEmpty(limit)) {
+    startIndex = 0;
+    endIndex = limit;
+  } else {
+    startIndex = 0;
+    endIndex = notificationCount;
+  }
+  return { startIndex, endIndex };
+};
 
 function compareNotifications(a: Notification, b: Notification): number {
   const tsA = new Date(a.originalEvent.createdAt);
@@ -171,4 +220,107 @@ function applyMarkRead(event: Event, notification: Notification): true | undefin
     }
   }
   throwUnsupportedEventVersion(event);
+}
+
+export async function buildDisplayNameMap(
+  multichain: MultichainClient,
+  token: AuthToken,
+  rawNotifications: Notification[],
+): Promise<Map<string, string | undefined>> {
+  // The displayNames for all IDs found in the resource descriptions:
+  const displayNamesById: Map<string, string | undefined> = new Map();
+
+  // The set of related projects:
+  const projectSet: Set<string> = new Set();
+  // Lookup table telling us to which project a subproject belongs to:
+  type ProjectId = string;
+  type SubprojectId = string;
+  const subprojectParentLookup: Map<SubprojectId, ProjectId> = new Map();
+  // Lookup table telling us to which subproject a workflowitem belongs to:
+  type WorkflowitemId = string;
+  const workflowitemParentLookup: Map<WorkflowitemId, SubprojectId> = new Map();
+
+  for (const notification of rawNotifications) {
+    const projectId = getResourceId(notification.resources, "project");
+    const subprojectId = getResourceId(notification.resources, "subproject");
+    const workflowitemId = getResourceId(notification.resources, "workflowitem");
+
+    if (projectId === undefined) {
+      const message = "Missing projectId";
+      logger.error({ error: notification.resources }, message);
+      throw Error(`${message}: ${JSON.stringify(notification.resources)}`);
+    }
+
+    projectSet.add(projectId);
+    if (subprojectId) {
+      subprojectParentLookup.set(subprojectId, projectId);
+      if (workflowitemId) {
+        workflowitemParentLookup.set(workflowitemId, subprojectId);
+      }
+    }
+  }
+
+  for (const [projectId, _] of projectSet.entries()) {
+    displayNamesById.set(projectId, await getProjectDisplayName(multichain, token, projectId));
+  }
+
+  for (const [subprojectId, projectId] of subprojectParentLookup.entries()) {
+    displayNamesById.set(
+      subprojectId,
+      await getSubprojectDisplayName(multichain, token, projectId, subprojectId),
+    );
+  }
+
+  for (const [workflowitemId, subprojectId] of workflowitemParentLookup.entries()) {
+    const projectId: string = subprojectParentLookup.get(subprojectId)!;
+    displayNamesById.set(
+      workflowitemId,
+      await getWorkflowitemDisplayName(multichain, token, projectId, subprojectId, workflowitemId),
+    );
+  }
+
+  return displayNamesById;
+}
+
+function getResourceId(
+  resources: NotificationResourceDescription[],
+  resourceType: ResourceType,
+): string | undefined {
+  return resources
+    .filter(x => x.type === resourceType)
+    .map(x => x.id)
+    .find(_ => true);
+}
+
+function getProjectDisplayName(
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string,
+): Promise<string | undefined> {
+  return Project.get(multichain, token, projectId).then(items =>
+    items.map(x => x.data.displayName).find(_ => true),
+  );
+}
+
+function getSubprojectDisplayName(
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+): Promise<string | undefined> {
+  return Subproject.get(multichain, token, projectId, subprojectId).then(items =>
+    items.map(x => x.data.displayName).find(_ => true),
+  );
+}
+
+function getWorkflowitemDisplayName(
+  multichain: MultichainClient,
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+): Promise<string | undefined> {
+  return Workflowitem.get(multichain, token, projectId, subprojectId, workflowitemId).then(items =>
+    items.map(x => x.data.displayName).find(_ => true),
+  );
 }

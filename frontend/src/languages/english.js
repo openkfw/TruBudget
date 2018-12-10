@@ -247,7 +247,8 @@ const en = {
     workflowitem_close: "Workflowitem {0} was closed",
     workflowitem_intent_grantPermission: "The permissions for workflowitem {0} changed",
     workflowitem_intent_revokePermission: "The permissions for workflowitem {0} changed",
-    workflowitem_update: "Workflowitem {0} was updated"
+    workflowitem_update: "Workflowitem {0} was updated",
+    read_all: "Read All"
   },
 
   history: {

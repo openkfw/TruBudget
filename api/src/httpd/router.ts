@@ -19,6 +19,7 @@ import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
 import { getNotificationList } from "../notification/controller/list";
+import { getNotificationCounts } from "../notification/controller/count";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { assignProject } from "../project/controller/assign";
 import { closeProject } from "../project/controller/close";
@@ -55,6 +56,8 @@ import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
+import { markMultipleRead } from '../notification/controller/markMultipleRead';
+import { getNewestNotifications } from "../notification/controller/poll";
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -692,11 +695,44 @@ export const registerRoutes = (
     },
   );
 
+  server.get(
+    `${urlPrefix}/notification.poll`,
+    getSchema(server, "notificationPoll"),
+    (request, reply) => {
+      getNewestNotifications(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+
+  server.get(
+    `${urlPrefix}/notification.counts`,
+    getSchema(server, "notificationCount"),
+    (request, reply) => {
+      getNotificationCounts(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+
+
   server.post(
     `${urlPrefix}/notification.markRead`,
     getSchema(server, "markRead"),
     (request, reply) => {
       markNotificationRead(multichainClient, request as AuthenticatedRequest)
+        .then(response => send(reply, response))
+        .catch(err => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
+    `${urlPrefix}/notification.markMultipleRead`,
+    getSchema(server, "markMultipleRead"),
+    (request, reply) => {
+      markMultipleRead(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
