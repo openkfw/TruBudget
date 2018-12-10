@@ -7,6 +7,7 @@
     "@material-ui/icons": "^3.0.1",
     "accounting": "^0.4.1",
     "axios": "^0.16.0",
+    "babel-polyfill": "^6.26.0",
     "chart.js": "^2.7.2",
     "d3-color": "^1.0.3",
     "d3-interpolate": "^1.1.5",
