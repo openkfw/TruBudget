@@ -20,26 +20,6 @@ describe("subproject.createWorkflowitem", () => {
           expect(event.intent).to.eql("subproject.createWorkflowitem");
         },
       }),
-      getValue: async (streamName, key) => {
-        return {
-          resource: {
-            data: {
-              id: "alice",
-              displayName: "Alice",
-              organization: "ACMECorp",
-              address: "1Zh7UWdKKaPMFWLgoKdUkRcGaGSW6TNSii41ee",
-              passwordDigest: "$2a$08$yppae7E8SE1VZoMHmhwScud0SldE8n7MNBtVeFpR3gxGSJz6JLHGS",
-            },
-            log: [
-              {
-                issuer: "root",
-                action: "user_created",
-              },
-            ],
-            permissions: {},
-          },
-        };
-      },
       v2_readStreamItems: async (streamName, key, nValues) => {
         expect(streamName).to.eql(projectId);
         let events;
@@ -66,6 +46,29 @@ describe("subproject.createWorkflowitem", () => {
                     permissions: {
                       "subproject.createWorkflowitem": ["alice"],
                     },
+                  },
+                },
+              },
+            },
+          ];
+        } else if (streamName === "users") {
+          events = [
+            {
+              keys: ["alice"],
+              data: {
+                json: {
+                  key: "alice",
+                  intent: "global.createUser",
+                  createdBy: "root",
+                  createdAt: new Date().toISOString(),
+                  dataVersion: 1,
+                  data: {
+                    id: "alice",
+                    displayName: "Alice",
+                    organization: "Orga",
+                    address: "1Zh7UWdKKaPMFWLgoKdUkRcGaGSW6TNSii41ee",
+                    privkey: "theencryptedprivkey",
+                    passwordDigest: "$2a$08$yppae7E8SE1VZoMHmhwScud0SldE8n7MNBtVeFpR3gxGSJz6JLHGS",
                   },
                 },
               },
@@ -126,11 +129,6 @@ describe("subproject.createWorkflowitem", () => {
           expect(event.intent).to.eql("subproject.createWorkflowitem");
         },
       }),
-      getValue: async (streamName, key) => {
-        return {
-          resource: {},
-        };
-      },
       v2_readStreamItems: async (streamName, key, nValues) => {
         expect(streamName).to.eql(projectId);
         let events;
