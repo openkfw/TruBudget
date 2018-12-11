@@ -1,7 +1,8 @@
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import { MultichainClient } from "../multichain";
-import { Resource } from "../multichain/Client.h";
+import { Event } from "../multichain/event";
+import * as Permission from "./model/Permission";
 
 const globalstreamName = "global";
 
@@ -10,13 +11,19 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
     kind: "global",
     name: globalstreamName,
   });
-  // TODO this is racy -- Global needs to be event-source like the other streams!
   const hasSelfItem = await multichain
-    .v2_readStreamItems("global", "self", 1)
+    .v2_readStreamItems(globalstreamName, "self", 1)
     .then(items => items.length > 0);
   if (!hasSelfItem) {
-    const emptyResource: Resource = { data: {}, log: [], permissions: {} };
-    await multichain.setValue(globalstreamName, ["self"], emptyResource);
+    const permissions = {};
+    const args = {
+      intent: "global.grantPermission" as Intent,
+      createdBy: "root",
+      creationTimestamp: new Date(),
+      data: { permissions },
+      dataVersion: 1, // integer
+    };
+    await Permission.publish(multichain, globalstreamName, args);
   }
 };
 
@@ -24,8 +31,12 @@ export const getPermissions = async (
   multichain: MultichainClient,
 ): Promise<AllowedUserGroupsByIntent> => {
   try {
-    const streamItem = await multichain.getValue(globalstreamName, "self");
-    return streamItem.resource.permissions;
+    const streamItems = await multichain.v2_readStreamItems(globalstreamName, "self", 1);
+    if (streamItems.length < 1) {
+      return {};
+    }
+    const event: Event = streamItems[0].data.json;
+    return event.data.permissions;
   } catch (err) {
     if (err.kind === "NotFound") {
       // Happens at startup, no need to worry..
@@ -42,16 +53,22 @@ export const grantPermission = async (
   intent: Intent,
 ): Promise<void> => {
   await ensureStreamExists(multichain);
-  const streamItem = await multichain.getValue(globalstreamName, "self");
-  const globalResource = streamItem.resource;
-  const permissionsForIntent: People = globalResource.permissions[intent] || [];
+  const permissions = await getPermissions(multichain);
+  const permissionsForIntent: People = permissions[intent] || [];
   if (permissionsForIntent.includes(identity)) {
     // The given user is already permitted to execute the given intent.
     return;
   }
   permissionsForIntent.push(identity);
-  globalResource.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(globalstreamName, streamItem.key, globalResource);
+  permissions[intent] = permissionsForIntent;
+  const args = {
+    intent: "global.grantPermission" as Intent,
+    createdBy: identity,
+    creationTimestamp: new Date(),
+    data: { permissions },
+    dataVersion: 1, // integer
+  };
+  await Permission.publish(multichain, globalstreamName, args);
 };
 
 export const revokePermission = async (
@@ -59,9 +76,9 @@ export const revokePermission = async (
   identity: string,
   intent: Intent,
 ): Promise<void> => {
-  let streamItem;
+  let permissions;
   try {
-    streamItem = await multichain.getValue(globalstreamName, "self");
+    permissions = await getPermissions(multichain);
   } catch (err) {
     if (err.kind === "NotFound") {
       // No permissions set yet, so nothing to revoke.
@@ -70,8 +87,7 @@ export const revokePermission = async (
       throw err;
     }
   }
-  const globalResource = streamItem.resource;
-  const permissionsForIntent: People = globalResource.permissions[intent] || [];
+  const permissionsForIntent: People = permissions[intent] || [];
 
   const userIndex = permissionsForIntent.indexOf(identity);
   if (userIndex === -1) {
@@ -82,6 +98,13 @@ export const revokePermission = async (
   // Remove the user from the array:
   permissionsForIntent.splice(userIndex, 1);
 
-  globalResource.permissions[intent] = permissionsForIntent;
-  await multichain.setValue(globalstreamName, streamItem.key, globalResource);
+  permissions[intent] = permissionsForIntent;
+  const args = {
+    intent: "global.revokePermission" as Intent,
+    createdBy: identity,
+    creationTimestamp: new Date(),
+    data: { permissions },
+    dataVersion: 1, // integer
+  };
+  await Permission.publish(multichain, globalstreamName, args);
 };
