@@ -2,14 +2,14 @@ import * as fastify from "fastify";
 
 import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
+import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
 import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
-import { ensureOrganizationStreams } from "./organization/organization";
-import logger from "./lib/logger";
+import { ensureOrganizationStream } from "./organization/organization";
 
 const URL_PREFIX = "/api";
 
@@ -132,7 +132,7 @@ server.listen(port, "0.0.0.0", async err => {
   logger.info("MultiChain connection established");
 
   while (
-    !(await ensureOrganizationStreams(multichainClient, organization!, organizationVaultSecret!)
+    !(await ensureOrganizationStream(multichainClient, organization!, organizationVaultSecret!)
       .then(() => true)
       .catch(() => false))
   ) {

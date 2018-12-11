@@ -1,7 +1,7 @@
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain/Client.h";
 import { Organization, WalletAddress } from "../network/model/Nodes";
-import { organizationStreamName, usersStreamName } from "./streamNames";
+import { organizationStreamName } from "./streamNames";
 import { getPrivKey, setPrivKey } from "./vault";
 
 interface GetaddressesItem {
@@ -23,7 +23,7 @@ interface VaultItem {
   privkey: string;
 }
 
-export async function ensureOrganizationStreams(
+export async function ensureOrganizationStream(
   multichain: MultichainClient,
   organization: Organization,
   organizationVaultSecret: string,
@@ -39,11 +39,6 @@ export async function ensureOrganizationStreams(
     organizationVaultSecret,
   );
   logger.info(`Organization address: ${organizationAddress}`);
-
-  await multichain.getOrCreateStream({
-    kind: "users",
-    name: usersStreamName(organization),
-  });
 }
 
 async function ensureOrganizationAddress(
@@ -79,7 +74,7 @@ async function ensureOrganizationAddress(
           .find(_ => true),
       );
     if (!addressFromWallet) {
-      const message = "Could not obtain wallet address!"
+      const message = "Could not obtain wallet address!";
       logger.error({ error: { multichain, organization } }, message);
       throw Error(message);
     }
