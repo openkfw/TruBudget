@@ -194,10 +194,7 @@ export class RpcMultichainClient implements MultichainClient {
     const result = await this.getValues(streamName, key, 1);
     if (result.length !== 1) {
       const message = `Expected a single value, got: ${result || "nothing"}`;
-      logger.error(
-        { error: { streamName, key } },
-        message,
-      );
+      logger.error({ error: { streamName, key } }, message);
       throw {
         kind: "NotFound",
         what: { message, streamName, key },
