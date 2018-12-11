@@ -27,6 +27,7 @@ export const createGroup = async (
     users,
   };
 
+
   const event = {
     intent: userIntent,
     createdBy: req.user.userId,
