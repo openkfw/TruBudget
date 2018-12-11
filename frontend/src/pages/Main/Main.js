@@ -35,8 +35,12 @@ const Main = props => {
           backgroundImage: 'url("/navbar_back5edit.jpeg")',
           backgroundSize: "cover",
           position: "absolute",
-          height: "70vh",
+          height: "auto",
           width: "100%",
+          top: 0,
+          left: 0,
+          minWidth: "1024px",
+          minHeight: "100%",
           clipPath: "polygon(0 0,100% 0,100% 100%,0 70%)"
         }}
       />
