@@ -1,5 +1,6 @@
 import * as Group from ".";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 
 export const getGroupList = async (
@@ -7,6 +8,7 @@ export const getGroupList = async (
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const groups = await Group.getAll(multichain);
+  logger.debug({groups}, "List of groups received.");
 
   return [
     200,

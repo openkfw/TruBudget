@@ -10,9 +10,12 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
+      LOG_LEVEL: ${LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
       SWAGGER_BASEPATH: /prod
     links: 
       - master
+   
 
   master:
     build:
@@ -22,6 +25,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
+
 
   testapi:
     build: 
@@ -33,6 +37,8 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       ROOT_SECRET: ${ROOT_SECRET}
+      LOG_LEVEL: ${LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
       SWAGGER_BASEPATH: /test
     links: 
       - testmaster

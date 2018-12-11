@@ -22,6 +22,7 @@ import Warning from "@material-ui/icons/Warning";
 import Typography from "@material-ui/core/Typography";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../../localizeStrings";
+
 const PermissionsScreen = props => (
   <Dialog data-test="permission-container" open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>
@@ -64,7 +65,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.usersDashboard.users} </ListSubheader>
+          <ListSubheader> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -88,7 +89,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.groupDashboard.groups} </ListSubheader>
+          <ListSubheader> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );
@@ -155,24 +156,26 @@ const renderSelection = (user, permissionedUser, permissionName, grant, revoke, 
     );
   });
 
-const renderPermission = (name, userList, permissions, myself, grant, revoke, disabled) => (
-  <ListItem key={name + "perm"}>
-    <ListItemText
-      primary={
-        <PermissionSelection
-          name={name}
-          userList={userList}
-          permissions={permissions}
-          grant={grant}
-          revoke={revoke}
-          myself={myself}
-          disabled={disabled}
-        />
-      }
-      secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
-    />
-  </ListItem>
-);
+const renderPermission = (name, userList, permissions, myself, grant, revoke, disabled) => {
+  return (
+    <ListItem key={name + "perm"}>
+      <ListItemText
+        primary={
+          <PermissionSelection
+            name={name}
+            userList={userList}
+            permissions={permissions}
+            grant={grant}
+            revoke={revoke}
+            myself={myself}
+            disabled={disabled}
+          />
+        }
+        secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
+      />
+    </ListItem>
+  );
+};
 
 const PermissionsTable = ({ permissions, user, grant, revoke, id, intentOrder, myself, disabled }) => (
   <div>

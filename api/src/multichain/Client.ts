@@ -19,12 +19,6 @@ import { ConnectionSettings, RpcClient } from "./RpcClient.h";
 // Oddly enough, there is no way to tell Multichain to return _everything_..
 const maxItemCount: number = 0x7fffffff;
 
-const streamItemKeys: any = {
-  metadata: "_metadata",
-  log: "_log",
-  permissions: "permissions",
-};
-
 const randomStreamName = (): string => randomString(16);
 
 // Stream Item as returned by the API
@@ -58,14 +52,17 @@ export class RpcMultichainClient implements MultichainClient {
     const customFields = { kind: options.kind };
     const txId: StreamTxId = await this.rpcClient
       .invoke("create", "stream", streamName, isPublic, customFields)
-      .then(() =>
-        logger.debug(`Created stream ${streamName} with options ${JSON.stringify(options)}`),
-      )
+      .then(() => logger.debug({ options }, `Created stream ${streamName} with options`))
       .catch(err => {
         if (options.name && err && err.code === -705) {
           // Stream or asset with this name already exists
+          logger.debug(
+            { params: { err, options } },
+            "Stream or asset with this name already exists",
+          );
           return options.name;
         }
+        logger.error({ error: err }, "Stream could not be created.");
         throw err;
       });
 
@@ -111,6 +108,7 @@ export class RpcMultichainClient implements MultichainClient {
 
   public async isValidAddress(address: string): Promise<boolean> {
     const result = await this.rpcClient.invoke("validateaddress", address);
+    logger.debug({ result }, `Address is ${result.isvalid ? "valid" : "invalid"}`);
     return result.isvalid;
   }
 
@@ -127,8 +125,13 @@ export class RpcMultichainClient implements MultichainClient {
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .then(this.retrieveItems)
       .catch(err => {
-        if (err && err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
-        else throw err;
+        if (err && err.code === -708) {
+          logger.error({ error: err }, `Stream '${streamName}' not found.`);
+          throw { kind: "NotFound", what: `stream ${streamName}` };
+        } else {
+          logger.error({ error: err }, "An error has occured while getting values.");
+          throw err;
+        }
       });
     return items.map(x => ({
       key: x.keys,
@@ -145,8 +148,13 @@ export class RpcMultichainClient implements MultichainClient {
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .then(this.retrieveItems)
       .catch(err => {
-        if (err && err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
-        else throw err;
+        if (err && err.code === -708) {
+          logger.error({ error: err }, "Stream not found.");
+          throw { kind: "NotFound", what: `stream ${streamName}` };
+        } else {
+          logger.error({ error: err }, "An error has occured while getting latest values.");
+          throw err;
+        }
       });
     const allItemsLatestValues = Array.from(
       allItemsAllValues
@@ -185,9 +193,14 @@ export class RpcMultichainClient implements MultichainClient {
   public async getValue(streamName: StreamName, key: string): Promise<StreamItemPair> {
     const result = await this.getValues(streamName, key, 1);
     if (result.length !== 1) {
+      const message = `Expected a single value, got: ${result || "nothing"}`;
+      logger.error(
+        { error: { streamName, key } },
+        message,
+      );
       throw {
         kind: "NotFound",
-        what: { message: `Expected a single value, got: ${result}`, streamName, key },
+        what: { message, streamName, key },
       };
     }
     return result[0];
@@ -221,13 +234,22 @@ export class RpcMultichainClient implements MultichainClient {
     key: string,
     nValues: number = maxItemCount,
   ): Promise<Liststreamkeyitems.Item[]> {
-    if (nValues <= 0) throw Error(`expected nValues > 0, got ${nValues}`);
+    if (nValues <= 0) {
+      const message = `expected nValues > 0, got ${nValues}`;
+      logger.error({ error: { streamName, key } }, message);
+      throw Error(message);
+    }
     return this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .then(this.retrieveItems)
       .catch(err => {
-        if (err && err.code === -708) throw { kind: "NotFound", what: `stream ${streamName}` };
-        else throw err;
+        if (err && err.code === -708) {
+          logger.error({ error: err }, `Stream ${streamName} not found`);
+          throw { kind: "NotFound", what: `stream ${streamName}` };
+        } else {
+          logger.error({ error: err }, "An error occured.");
+          throw err;
+        }
       });
   }
 
@@ -245,6 +267,7 @@ export class RpcMultichainClient implements MultichainClient {
               "with command: 'setruntimeparam maxshowndata <value>'.",
           );
           item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
+          logger.debug({ item: item.data }, `Received items.`);
         }
         return item;
       }),

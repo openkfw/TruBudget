@@ -1,6 +1,7 @@
 import { throwIfUnauthorized } from "../authz";
 import { allIntents } from "../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import logger from "../lib/logger";
 import { isNonemptyString, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import * as Project from "./model/Project";
@@ -11,7 +12,7 @@ export async function changeProjectPermission(
   userIntent: "project.intent.grantPermission" | "project.intent.revokePermission",
 ): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
-  console.log(`changing project perms`, JSON.stringify(input));
+  logger.info(`Changing project permissions: ${JSON.stringify(input)}`);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const identity: string = value("identity", input.identity, isNonemptyString);

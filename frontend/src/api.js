@@ -13,7 +13,6 @@ class Api {
     instance.defaults.transformRequest = [
       (data, headers) => {
         if (typeof data === "object") {
-
           return {
             apiVersion: API_VERSION,
             data: {
@@ -60,6 +59,11 @@ class Api {
     instance.post(`global.grantAllPermissions`, {
       identity: userId
     });
+  grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, { identity, intent });
+
+  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity, intent });
+  listGlobalPermissions = () => instance.get(`global.listPermissions`);
+
   listUser = () => instance.get(`/user.list`);
 
   createGroup = (groupId, displayName, users) =>
@@ -253,20 +257,29 @@ class Api {
       workflowitemId
     });
 
-  fetchNotifications = (fromId = "") => {
-    return instance.get(`/notification.list?sinceId=${fromId}`);
+  pollNewNotifications = beforeId => {
+    return instance.get(`/notification.poll?beforeId=${beforeId}`);
+  };
+
+  fetchNotifications = (offset, limit) => {
+    return instance.get(`/notification.list?offset=${offset}&limit=${limit}`);
+  };
+
+  fetchNotificationCounts = () => {
+    return instance.get(`/notification.counts`);
   };
 
   markNotificationAsRead = notificationId =>
     instance.post(`/notification.markRead`, {
       notificationId
     });
+  markMultipleNotificationsAsRead = notificationIds => instance.post(`/notification.markMultipleRead`, { notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {
-    let apiPrefix = "/api"
+    let apiPrefix = "/api";
     if (!devMode) {
-      apiPrefix = `${envPrefix}${apiPrefix}`
+      apiPrefix = `${envPrefix}${apiPrefix}`;
     }
     const binaryInstance = axios.create();
     binaryInstance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";

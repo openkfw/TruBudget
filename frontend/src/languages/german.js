@@ -150,19 +150,19 @@ const de = {
     workflow_upload_document: "Upload"
   },
 
-  usersDashboard: {
+  users: {
     full_name: "German: Full Name",
     new_user: "German: New User",
     organization: "German: Organization",
     user_created: "German: User successfully created",
-    users: "German: Users"
-  },
-
-  groupDashboard: {
+    users: "German: Users",
     new_group: "German: New user group",
     groups: "German: Groups",
     add_users: "German: Add Users",
-    group_created: "German: Group successfully created"
+    group_created: "German: Group successfully created",
+    add_group: "German: Add Group",
+    edit_group: "German: Edit Group",
+    edit_permissions_for: "German: Edit permissions for"
   },
 
   nodesDashboard: {
@@ -197,7 +197,7 @@ const de = {
     write_permission: "Write",
     restore: "German: Restore",
     download: "German: Download",
-    backup: "German: Backup",
+    backup: "German: Backup"
   },
 
   dashboard: {
@@ -248,7 +248,8 @@ const de = {
     workflowitem_archive: "German: Workflowitem {0} was archived",
     workflowitem_assign: "German: Workflowitem {0} was assigned to you",
     workflowitem_intent_grantPermission: "German: The permissions for workflowitem {0} changed",
-    workflowitem_intent_revokePermission: "German: The permissions for workflowitem {0} changed"
+    workflowitem_intent_revokePermission: "German: The permissions for workflowitem {0} changed",
+    read_all: "German: Read All"
   },
 
   history: {
@@ -318,7 +319,16 @@ const de = {
     workflowitem_intent_revokePermission: "German: Revoke workflowitem permission",
     workflowitem_update: "German: Update workflowitem",
     workflowitem_view: "German: View workflowitem",
-    write: "German: Write permissions"
+    write: "German: Write permissions",
+    global_createUser: "German: Create users",
+    global_createGroup: "German: Create groups",
+    global_createProject: "German: Create projects",
+    global_listPermissions: "German: List all global permissions",
+    global_grantPermission: "German: Grant global permissions for others",
+    global_revokePermission: "German: Revoke global permissions for others",
+    network_list: "German: List all connected nodes",
+    network_voteForPermission: "German: Vote if a node should join the network",
+    project_update: "German: Update project"
   },
 
   language: {

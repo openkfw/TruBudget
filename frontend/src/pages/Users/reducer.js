@@ -15,7 +15,7 @@ import {
   ADD_INITIAL_USER,
   REMOVE_INITIAL_USER,
   CREATE_GROUP_SUCCESS,
-  SET_ADMIN_PERMISSIONS,
+  LIST_GLOBAL_PERMISSIONS_SUCCESS,
 } from "./actions";
 
 const defaultState = fromJS({
@@ -26,9 +26,9 @@ const defaultState = fromJS({
     username: "",
     password: "",
     organization: "",
-    displayName: "",
-    hasAdminPermissions: false
+    displayName: ""
   },
+  globalPermissions: {},
   editId: "",
   dialogType: "",
   groups: [],
@@ -37,7 +37,7 @@ const defaultState = fromJS({
     groupId: "",
     name: "",
     groupUsers: []
-  }
+  },
 });
 
 export default function userDashboardReducer(state = defaultState, action) {
@@ -66,8 +66,6 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.setIn(["userToAdd", "username"], action.username);
     case SET_PASSWORD:
       return state.setIn(["userToAdd", "password"], action.password);
-    case SET_ADMIN_PERMISSIONS:
-      return state.setIn(["userToAdd", "hasAdminPermissions"], action.hasAdminPermissions);
     case RESET_USER:
       return state.set("userToAdd", defaultState.get("userToAdd"));
     case TAB_INDEX:
@@ -83,6 +81,8 @@ export default function userDashboardReducer(state = defaultState, action) {
         dashboardDialogShown: false,
         userToAdd: defaultState.get("userToAdd")
       });
+    case LIST_GLOBAL_PERMISSIONS_SUCCESS:
+      return state.set("globalPermissions", action.data);
     default:
       return state;
   }

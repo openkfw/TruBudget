@@ -2,6 +2,7 @@ import * as Global from "..";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { MultichainClient } from "../../multichain";
 
 export const getGlobalPermissions = async (
@@ -12,7 +13,7 @@ export const getGlobalPermissions = async (
 
   const userIntent: Intent = "global.listPermissions";
   await throwIfUnauthorized(req.user, userIntent, permissions);
-
+  logger.debug({ permissions }, "Getting permissions.");
   return [
     200,
     {

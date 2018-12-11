@@ -52,19 +52,19 @@ const pt = {
     workflowItem: "Portuguese: WorkflowItem"
   },
 
-  usersDashboard: {
+  users: {
     full_name: "Nome completo",
     new_user: "Novo usuário",
     organization: "Organização",
     user_created: "Portuguese: User successfully created",
-    users: "Usuários"
-  },
-
-  groupDashboard: {
+    users: "Usuários",
     add_users: "Portuguese: Add Users",
     group_created: "Portuguese: Group successfully created",
     groups: "Portuguese: Groups",
-    new_group: "Portuguese: New user group"
+    new_group: "Portuguese: New user group",
+    add_group: "Portuguese: Add Group",
+    edit_group: "Portuguese: Edit Group",
+    edit_permissions_for: "Portuguese: Edit permissions for"
   },
 
   nodesDashboard: {
@@ -198,7 +198,7 @@ const pt = {
     write_permission: "Escrita",
     restore: "Portuguese: Restore",
     download: "Portuguese: Download",
-    backup: "Portuguese: Backup",
+    backup: "Portuguese: Backup"
   },
 
   dashboard: {
@@ -249,7 +249,8 @@ const pt = {
     workflowitem_archive: "Portuguese: Workflowitem {0} was archived",
     workflowitem_assign: "Portuguese: Workflowitem {0} was assigned to you",
     workflowitem_intent_grantPermission: "Portuguese: The permissions for workflowitem {0} changed",
-    workflowitem_intent_revokePermission: "Portuguese: The permissions for workflowitem {0} changed"
+    workflowitem_intent_revokePermission: "Portuguese: The permissions for workflowitem {0} changed",
+    read_all: "Portuguese: Read All"
   },
 
   history: {
@@ -319,7 +320,16 @@ const pt = {
     workflowitem_intent_revokePermission: "Portuguese: Revoke workflowitem permission",
     workflowitem_update: "Portuguese: Update workflowitem",
     workflowitem_view: "Portuguese: View workflowitem",
-    write: "Portuguese: Write permissions"
+    write: "Portuguese: Write permissions",
+    global_createUser: "Portuguese: Create users",
+    global_createGroup: "Portuguese: Create groups",
+    global_createProject: "Portuguese: Create projects",
+    global_listPermissions: "Portuguese: List all global permissions",
+    global_grantPermission: "Portuguese: Grant global permissions for others",
+    global_revokePermission: "Portuguese: Revoke global permissions for others",
+    network_list: "Portuguese: List all connected nodes",
+    network_voteForPermission: "Portuguese: Vote if a node should join the network",
+    project_update: "Portuguese: Update project"
   },
 
   language: {

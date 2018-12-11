@@ -1,5 +1,6 @@
 import { put, takeEvery, takeLatest, call, select } from "redux-saga/effects";
-import { saveAs } from 'file-saver/FileSaver';
+import { delay } from "redux-saga";
+import { saveAs } from "file-saver/FileSaver";
 import Api from "./api.js";
 import {
   CREATE_PROJECT,
@@ -42,10 +43,17 @@ import {
   SNACKBAR_MESSAGE,
   MARK_NOTIFICATION_AS_READ_SUCCESS,
   MARK_NOTIFICATION_AS_READ,
-  FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
-  FETCH_NOTIFICATIONS_WITH_ID,
   FETCH_ALL_NOTIFICATIONS,
-  FETCH_ALL_NOTIFICATIONS_SUCCESS
+  FETCH_ALL_NOTIFICATIONS_SUCCESS,
+  MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS,
+  MARK_MULTIPLE_NOTIFICATION_AS_READ,
+  FETCH_NOTIFICATION_COUNTS_SUCCESS,
+  FETCH_NOTIFICATION_COUNTS,
+  FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
+  FETCH_FLYIN_NOTIFICATIONS,
+  TIME_OUT_FLY_IN,
+  FETCH_LATEST_NOTIFICATION,
+  FETCH_LATEST_NOTIFICATION_SUCCESS
 } from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
@@ -102,7 +110,13 @@ import {
   REMOVE_USER_SUCCESS,
   REMOVE_USER,
   GRANT_ALL_USER_PERMISSIONS_SUCCESS,
-  GRANT_ALL_USER_PERMISSIONS
+  GRANT_ALL_USER_PERMISSIONS,
+  GRANT_GLOBAL_PERMISSION,
+  GRANT_GLOBAL_PERMISSION_SUCCESS,
+  REVOKE_GLOBAL_PERMISSION,
+  REVOKE_GLOBAL_PERMISSION_SUCCESS,
+  LIST_GLOBAL_PERMISSIONS_SUCCESS,
+  LIST_GLOBAL_PERMISSIONS
 } from "./pages/Users/actions.js";
 import {
   FETCH_NODES_SUCCESS,
@@ -112,7 +126,14 @@ import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
   APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
 } from "./pages/Nodes/actions.js";
-import { FETCH_ACTIVE_PEERS, FETCH_ACTIVE_PEERS_SUCCESS, CREATE_BACKUP_SUCCESS, CREATE_BACKUP , RESTORE_BACKUP_SUCCESS, RESTORE_BACKUP} from "./pages/Navbar/actions.js";
+import {
+  FETCH_ACTIVE_PEERS,
+  FETCH_ACTIVE_PEERS_SUCCESS,
+  CREATE_BACKUP_SUCCESS,
+  CREATE_BACKUP,
+  RESTORE_BACKUP_SUCCESS,
+  RESTORE_BACKUP
+} from "./pages/Navbar/actions.js";
 
 const api = new Api();
 
@@ -186,7 +207,7 @@ function* callApi(func, ...args) {
   // TODO dont set the environment on each call
   const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
-  const {data} = yield call(func, ...args);
+  const { data } = yield call(func, ...args);
   return data;
 }
 
@@ -345,27 +366,50 @@ export function* getEnvironmentSaga() {
   });
 }
 
-export function* fetchAllNotificationsSaga({ showLoading }) {
+export function* fetchNotificationsSaga({ showLoading, offset, limit }) {
+  yield commonfetchNotifications(showLoading, offset, limit, FETCH_ALL_NOTIFICATIONS_SUCCESS);
+}
+
+export function* fetchLatestNotificationSaga({ showLoading, }) {
+  yield commonfetchNotifications(showLoading, 0, 1, FETCH_LATEST_NOTIFICATION_SUCCESS);
+}
+
+export function* commonfetchNotifications(showLoading, offset, limit, type) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications);
+    const { data } = yield callApi(api.fetchNotifications, offset, limit);
     yield put({
-      type: FETCH_ALL_NOTIFICATIONS_SUCCESS,
+      type,
       notifications: data.notifications
     });
   }, showLoading);
 }
 
-export function* fetchNotificationWithIdSaga({ fromId, showLoading }) {
+export function* fetchFlyInNotificationsSaga({ showLoading, beforeId }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications, fromId);
+    const { data } = yield callApi(api.pollNewNotifications, beforeId);
     yield put({
-      type: FETCH_NOTIFICATIONS_WITH_ID_SUCCESS,
-      notifications: data.notifications
+      type: FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
+      newNotifications: data.notifications
+    });
+    yield delay(3000);
+    yield put({
+      type: TIME_OUT_FLY_IN
     });
   }, showLoading);
 }
 
-export function* markNotificationAsReadSaga({ notificationId }) {
+export function* fetchNotificationCountsSaga({ showLoading }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.fetchNotificationCounts);
+    yield put({
+      type: FETCH_NOTIFICATION_COUNTS_SUCCESS,
+      unreadNotificationCount: data.unreadNotificationCount,
+      notificationCount: data.notificationCount
+    });
+  }, showLoading);
+}
+
+export function* markNotificationAsReadSaga({ notificationId, offset, limit }) {
   yield execute(function*() {
     yield callApi(api.markNotificationAsRead, notificationId);
     yield put({
@@ -373,7 +417,30 @@ export function* markNotificationAsReadSaga({ notificationId }) {
     });
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
-      showLoading: false
+      showLoading: false,
+      offset,
+      limit
+    });
+    yield put({
+      type: FETCH_NOTIFICATION_COUNTS
+    });
+  }, false);
+}
+
+export function* markMultipleNotificationsAsReadSaga({ notificationIds, offset, limit }) {
+  yield execute(function*() {
+    yield callApi(api.markMultipleNotificationsAsRead, notificationIds);
+    yield put({
+      type: MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_NOTIFICATIONS,
+      showLoading: false,
+      offset,
+      limit
+    });
+    yield put({
+      type: FETCH_NOTIFICATION_COUNTS
     });
   }, false);
 }
@@ -421,6 +488,40 @@ export function* grantAllUserPermissionsSaga({ userId }) {
       type: GRANT_ALL_USER_PERMISSIONS_SUCCESS
     });
   }, false);
+}
+
+export function* grantGlobalPermissionSaga({ identity, intent }) {
+  yield execute(function*() {
+    yield callApi(api.grantGlobalPermission, identity, intent);
+    yield put({
+      type: GRANT_GLOBAL_PERMISSION_SUCCESS
+    });
+    yield put({
+      type: LIST_GLOBAL_PERMISSIONS
+    });
+  }, true);
+}
+
+export function* revokeGlobalPermissionSaga({ identity, intent }) {
+  yield execute(function*() {
+    yield callApi(api.revokeGlobalPermission, identity, intent);
+    yield put({
+      type: REVOKE_GLOBAL_PERMISSION_SUCCESS
+    });
+    yield put({
+      type: LIST_GLOBAL_PERMISSIONS
+    });
+  }, true);
+}
+
+export function* listGlobalPermissionSaga() {
+  yield execute(function*() {
+    const { data } = yield callApi(api.listGlobalPermissions);
+    yield put({
+      type: LIST_GLOBAL_PERMISSIONS_SUCCESS,
+      data
+    });
+  }, true);
 }
 
 export function* fetchUserSaga({ showLoading }) {
@@ -829,31 +930,30 @@ export function* hideWorkflowDetailsSaga() {
   });
 }
 
-export function* createBackupSaga({showLoading = true}){
+export function* createBackupSaga({ showLoading = true }) {
   yield execute(function*() {
     const data = yield callApi(api.createBackup);
     saveAs(data, "backup.gz");
     yield put({
-      type: CREATE_BACKUP_SUCCESS,
+      type: CREATE_BACKUP_SUCCESS
     });
   }, showLoading);
 }
 
-export function* restoreBackupSaga({file, showLoading = true}){
+export function* restoreBackupSaga({ file, showLoading = true }) {
   yield execute(function*() {
     const env = yield select(getEnvironment);
     const token = yield select(getJwt);
     const prefix = env === "Test" ? "/test" : "/prod";
     yield call(api.restoreFromBackup, prefix, token, file);
     yield put({
-      type: RESTORE_BACKUP_SUCCESS,
+      type: RESTORE_BACKUP_SUCCESS
     });
     yield put({
-      type: LOGOUT,
+      type: LOGOUT
     });
   }, showLoading);
 }
-
 
 // WATCHERS
 
@@ -904,16 +1004,29 @@ export function* watchEditProject() {
   yield takeEvery(EDIT_PROJECT, editProjectSaga);
 }
 
-export function* watchFetchAllNotifications() {
-  yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchAllNotificationsSaga);
+export function* watchFetchNotifications() {
+  yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga);
 }
 
-export function* watchFetchNotificationsWithId() {
-  yield takeEvery(FETCH_NOTIFICATIONS_WITH_ID, fetchNotificationWithIdSaga);
+export function* watchFetchLatestNotification() {
+  yield takeEvery(FETCH_LATEST_NOTIFICATION, fetchLatestNotificationSaga);
+}
+
+
+export function* watchFetchFlyInNotifications() {
+  yield takeLatest(FETCH_FLYIN_NOTIFICATIONS, fetchFlyInNotificationsSaga);
+}
+
+export function* watchFetchNotificationCounts() {
+  yield takeEvery(FETCH_NOTIFICATION_COUNTS, fetchNotificationCountsSaga);
 }
 
 export function* watchMarkNotificationAsRead() {
   yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
+}
+
+export function* watchMarkMultipleNotificationsAsRead() {
+  yield takeEvery(MARK_MULTIPLE_NOTIFICATION_AS_READ, markMultipleNotificationsAsReadSaga);
 }
 
 export function* watchLogin() {
@@ -1030,6 +1143,18 @@ export function* watchRestoreBackup() {
   yield takeLatest(RESTORE_BACKUP, restoreBackupSaga);
 }
 
+export function* watchGrantGlobalPermission() {
+  yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga);
+}
+
+export function* watchRevokeGlobalPermission() {
+  yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga);
+}
+
+export function* watchListGlobalPermissions() {
+  yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga);
+}
+
 export default function* rootSaga() {
   try {
     yield [
@@ -1048,6 +1173,9 @@ export default function* rootSaga() {
       watchAddUserToGroup(),
       watchRemoveUserFromGroup(),
       watchGrantAllUserPermissions(),
+      watchGrantGlobalPermission(),
+      watchRevokeGlobalPermission(),
+      watchListGlobalPermissions(),
 
       // Project
       watchCreateProject(),
@@ -1085,9 +1213,12 @@ export default function* rootSaga() {
       watchhideWorkflowDetails(),
 
       // Notifications
-      watchFetchAllNotifications(),
-      watchFetchNotificationsWithId(),
+      watchFetchNotifications(),
       watchMarkNotificationAsRead(),
+      watchMarkMultipleNotificationsAsRead(),
+      watchFetchNotificationCounts(),
+      watchFetchFlyInNotifications(),
+      watchFetchLatestNotification(),
 
       // Peers
       watchFetchAcitvePeers(),

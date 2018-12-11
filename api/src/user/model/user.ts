@@ -2,6 +2,7 @@ import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { UserAlreadyExistsError } from "../../error";
 import * as Global from "../../global";
+import logger from "../../lib/logger";
 import { MultichainClient } from "../../multichain";
 import { Resource } from "../../multichain/Client.h";
 
@@ -43,6 +44,7 @@ export const create = async (
   // Don't overwrite existing users:
   const userExists = (await multichain.getValues(usersStreamName, user.id, 1)).length !== 0;
   if (userExists) {
+    logger.error({ error: { user, multichain } }, `User ${user.id} already exists`);
     throw { kind: "UserAlreadyExists", targetUserId: user.id } as UserAlreadyExistsError;
   }
 

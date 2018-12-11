@@ -11,6 +11,7 @@ import {
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
 import { isEmpty } from "../lib/emptyChecks";
+import logger from "../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { MultichainClient } from "../multichain";
 import { randomString } from "../multichain/hash";
@@ -22,7 +23,9 @@ export async function createProject(
 ): Promise<HttpResponse> {
   const body = req.body;
 
-  if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
+  if (body.apiVersion !== "1.0") {
+    throwParseError(["apiVersion"]);
+  }
   throwParseErrorIfUndefined(body, ["data", "project"]);
   const input = body.data.project;
 
@@ -36,6 +39,7 @@ export async function createProject(
   // check if projectId already exists
   const projects = await Project.get(multichain, req.user);
   if (!isEmpty(projects.filter(p => p.data.id === projectId))) {
+    logger.error({ error: { projectId } }, `Project ID ${projectId} already exists`);
     throw { kind: "ProjectIdAlreadyExists", projectId } as ProjectIdAlreadyExistsError;
   }
 
@@ -66,10 +70,9 @@ export async function createProject(
 
   await Project.publish(multichain, projectId, event);
 
-  console.log(
-    `Project ${input.displayName} created with default permissions: ${JSON.stringify(
-      event.data.permissions,
-    )}`,
+  logger.info(
+    {params: { permissions: event.data.permissions, project }},
+    "Project created with default permissions",
   );
 
   return [

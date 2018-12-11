@@ -28,7 +28,6 @@ export async function createNotification(
     originalEvent,
   };
   const event = { intent, createdBy, creationTimestamp, dataVersion, data };
-
   return Notification.publish(multichain, createdFor, event);
 }
 

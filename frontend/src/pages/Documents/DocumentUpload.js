@@ -45,6 +45,7 @@ export default class DocumentUpload extends Component {
             label={strings.workflow.workflow_document_name}
             value={this.state.name}
             id="documentnameinput"
+
             onChange={event => this.setState({ name: event.target.value })}
           />
           <Button
@@ -59,7 +60,7 @@ export default class DocumentUpload extends Component {
                 id="docupload"
                 type="file"
                 style={styles.uploadInput}
-                onChange={(event) => {
+                onChange={event => {
                   if (event.target.files) {
                     const file = event.target.files[0];
                     const reader = new FileReader();

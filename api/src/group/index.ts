@@ -1,5 +1,6 @@
 import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
+import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
 import * as Liststreamkeyitems from "../multichain/responses/liststreamkeyitems";
@@ -14,6 +15,7 @@ export interface GroupResource {
 }
 
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
+  logger.debug({ multichain }, "Checking if stream exists.");
   await multichain.getOrCreateStream({
     kind: "groups",
     name: groupsStreamName,
@@ -24,11 +26,14 @@ export const groupExists = async (multichain, groupId) => {
   await ensureStreamExists(multichain);
   const existingGroups = await getAll(multichain);
   const exists = existingGroups.find(existingGroup => existingGroup.groupId === groupId);
+  logger.debug(`Group ${groupId} ${exists ? "exists." : "does not exist."}`);
   return exists ? true : false;
 };
 
 const handleCreate = (event: Event): { resource: GroupResource } | undefined => {
-  if (event.intent !== "global.createGroup") return undefined;
+  if (event.intent !== "global.createGroup") {
+    return undefined;
+  }
   switch (event.dataVersion) {
     case 1: {
       const { group } = event.data;
@@ -69,8 +74,8 @@ export const publish = async (
   await ensureStreamExists(multichain);
 
   const publishEvent = () => {
-    console.log(
-      `Publishing ${event.intent} to ${groupsStreamName}/${JSON.stringify(streamItemKey)}`,
+    logger.info(
+      `Publishing ${event.intent} to ${groupsStreamName}/${streamItemKey}`,
     );
     return multichain
       .getRpcClient()
@@ -81,10 +86,12 @@ export const publish = async (
   return publishEvent().catch(err => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
+      logger.warn(`The stream ${groupsStreamName} does not exist yet. Creating the stream and trying again.`);
       return multichain
         .getOrCreateStream({ kind: "groups", name: groupsStreamName })
         .then(() => publishEvent());
     } else {
+      logger.error({ error: {err, groupsStreamName} }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -113,6 +120,7 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
+        logger.error({ error: { event } }, "Failed to initialize resource");
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -121,6 +129,7 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
       // Since we've a group now, we can add/remove Users
       const hasProcessedEvent = addUser(event, resource) || removeUser(event, resource);
       if (!hasProcessedEvent) {
+        logger.error({ error: { event } }, "Unexpected event.");
         throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
       }
     }
@@ -130,9 +139,12 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
 };
 
 function addUser(event: Event, resource: GroupResource): true | undefined {
-  if (event.intent !== "group.addUser") return;
+  if (event.intent !== "group.addUser") {
+    return;
+  }
   switch (event.dataVersion) {
     case 1: {
+      logger.info(`Adding user ${event.data.userId} to group ${resource.displayName}.`);
       resource.users.push(event.data.userId);
       return true;
     }
@@ -140,13 +152,16 @@ function addUser(event: Event, resource: GroupResource): true | undefined {
   throwUnsupportedEventVersion(event);
 }
 function removeUser(event: Event, resource: GroupResource): true | undefined {
-  if (event.intent !== "group.removeUser") return;
+  if (event.intent !== "group.removeUser") {
+    return;
+  }
   switch (event.dataVersion) {
     case 1: {
       const index = resource.users.indexOf(event.data.userId);
       if (index > -1) {
         resource.users.splice(index, 1);
       }
+      logger.info(`Removing user ${event.data.userId} from group ${resource.displayName}.`);
       return true;
     }
   }

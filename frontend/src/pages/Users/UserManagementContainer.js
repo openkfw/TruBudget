@@ -24,6 +24,7 @@ import {
   createUserGroup,
   setAdminPermissions,
   grantAllUserPermissions,
+  listPermissions,
 } from "./actions";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
@@ -32,6 +33,7 @@ class UserManagementContainer extends Component {
   componentWillMount() {
     this.props.fetchUser();
     this.props.fetchGroups();
+    this.props.listGlobaPermissions()
   }
   componentWillUnmount() {
     this.props.resetState();
@@ -57,7 +59,8 @@ const mapStateToProps = state => {
     groupToAdd: state.getIn(["users", "groupToAdd"]),
     editMode: state.getIn(["users", "editMode"]),
     editDialogShown: state.getIn(["users", "editDialogShown"]),
-    editId: state.getIn(["users", "editId"])
+    editId: state.getIn(["users", "editId"]),
+
   };
 };
 
@@ -84,7 +87,8 @@ const mapDispatchToProps = dispatch => {
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),
     grantAllUserPermissions: userId => dispatch(grantAllUserPermissions(userId)),
-    showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId))
+    showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId)),
+    listGlobaPermissions: () => dispatch(listPermissions())
   };
 };
 

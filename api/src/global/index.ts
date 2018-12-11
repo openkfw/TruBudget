@@ -1,5 +1,6 @@
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
 import * as Permission from "./model/Permission";
@@ -39,9 +40,11 @@ export const getPermissions = async (
     return event.data.permissions;
   } catch (err) {
     if (err.kind === "NotFound") {
-      // Happens at startup, no need to worry..
+      // Happens at startup, no need to worry...
+      logger.debug("Global permissions not found. Happens at startup.");
       return {};
     } else {
+      logger.error({ error: err }, "Global permissions not found");
       throw err;
     }
   }
@@ -56,6 +59,7 @@ export const grantPermission = async (
   const permissions = await getPermissions(multichain);
   const permissionsForIntent: People = permissions[intent] || [];
   if (permissionsForIntent.includes(identity)) {
+    logger.info({ params: { intent } }, "User is already permitted to execute given intent");
     // The given user is already permitted to execute the given intent.
     return;
   }
@@ -81,9 +85,11 @@ export const revokePermission = async (
     permissions = await getPermissions(multichain);
   } catch (err) {
     if (err.kind === "NotFound") {
+      logger.info("No permission set, nothing to revoke");
       // No permissions set yet, so nothing to revoke.
       return;
     } else {
+      logger.error({ error: err }, "An error occured while revoking permissions");
       throw err;
     }
   }
@@ -93,9 +99,11 @@ export const revokePermission = async (
   if (userIndex === -1) {
     // The given user has no permissions to execute the given intent.
     // Note: a user could still belong to a group that has access rights!
+    logger.warn(`User has no permissions to execute intent ${intent}`);
     return;
   }
   // Remove the user from the array:
+  logger.info(`Revoking permissions for intent ${intent} of user ${identity}`);
   permissionsForIntent.splice(userIndex, 1);
 
   permissions[intent] = permissionsForIntent;

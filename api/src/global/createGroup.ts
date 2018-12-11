@@ -27,6 +27,7 @@ export const createGroup = async (
     users,
   };
 
+
   const event = {
     intent: userIntent,
     createdBy: req.user.userId,
@@ -37,11 +38,12 @@ export const createGroup = async (
     },
   };
   if (await Group.groupExists(multichain, groupId)) {
+    logger.error({ error: { multichain, groupId } }, "Group already exists");
     throw { kind: "GroupAlreadyExists", targetGroupId: req.user.userId } as GroupAlreadyExistsError;
   }
 
   await Group.publish(multichain, groupId, event);
-  logger.info(event, "Group created.");
+  logger.info({ params: { event } }, `Group ${displayName} created.`);
 
   return [
     200,

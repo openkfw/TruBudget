@@ -10,6 +10,7 @@ import {
   throwParseErrorIfUndefined,
 } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
+import logger from "../../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
@@ -19,7 +20,10 @@ import * as Project from "../model/Project";
 export async function createSubproject(multichain: MultichainClient, req): Promise<HttpResponse> {
   const body = req.body;
 
-  if (body.apiVersion !== "1.0") throwParseError(["apiVersion"]);
+  if (body.apiVersion !== "1.0") {
+    logger.error({ error: { apiVersion: body.apiVersion } }, "Unexpected API version");
+    throwParseError(["apiVersion"]);
+  }
   throwParseErrorIfUndefined(body, ["data"]);
   const data = body.data;
 
@@ -36,9 +40,11 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
 
   // Make sure the parent project is not already closed:
   if (await Project.isClosed(multichain, projectId)) {
+    const message = "Cannot add a subproject to a closed project.";
+    logger.error({ error: { multichain, projectId } }, message);
     throw {
       kind: "PreconditionError",
-      message: "Cannot add a subproject to a closed project.",
+      message,
     };
   }
 
@@ -50,6 +56,7 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
   // check if subprojectId already exists
   const subprojects = await Subproject.get(multichain, req.user, projectId);
   if (!isEmpty(subprojects.filter(s => s.data.id === subprojectId))) {
+    logger.error({ error: { subprojectId } }, `Subproject ID ${subprojectId} already exists`);
     throw { kind: "SubprojectIdAlreadyExists", subprojectId } as SubprojectIdAlreadyExistsError;
   }
 

@@ -9,6 +9,7 @@ import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
+import logger from "../../lib/logger";
 
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 
@@ -110,7 +111,7 @@ export async function publish(
   const streamName = projectId;
   const streamItemKey = workflowitemKey(subprojectId, workflowitemId);
   const streamItem = { json: event };
-  console.log(`Publishing ${intent} to ${streamName}/${JSON.stringify(streamItemKey)}`);
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
   await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
   return event;
 }
@@ -138,6 +139,7 @@ export async function get(
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
+        logger.error({ error: { event } }, "Failed to initialize resource");
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -152,7 +154,9 @@ export async function get(
         applyGrantPermission(event, permissions) ||
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
-        throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
+        const message = "Unexpected event occured";
+        logger.error({ error: { event } }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
 
@@ -344,6 +348,10 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
+    logger.error(
+      { error: { workflowitemId, projectId, event } },
+      `Workflowitem ${workflowitemId} of project ${projectId} not found.`,
+    );
     throw { kind: "NotFound", what: `Workflowitem ${workflowitemId} of project ${projectId}.` };
   }
   return permissions;

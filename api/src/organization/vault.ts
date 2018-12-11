@@ -1,5 +1,4 @@
 import * as sodium from "sodium-native";
-import * as winston from "winston";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { WalletAddress } from "../network/model/Nodes";
@@ -23,6 +22,10 @@ export async function getPrivKey(
   const vault = await readVault(multichain, organization, organizationVaultSecret);
 
   if (vault === undefined || !vault[address]) {
+    logger.error(
+      { error: { multichain, organization } },
+      `Private key not found for ${organization}/${address}`,
+    );
     throw Error(`privkey not found for ${organization}/${address}`);
   }
 
@@ -58,7 +61,7 @@ async function readVault(
   if (vaultStreamItem === undefined) return {};
 
   const dataHexString = vaultStreamItem.data;
-  logger.trace("read hex string from chain: %s bytes", dataHexString.length);
+  logger.info("Read hex string from chain: %s bytes", dataHexString.length);
 
   return vaultFromHexString(organizationVaultSecret, dataHexString);
 }
@@ -70,10 +73,9 @@ async function writeVault(
   vault: Vault,
 ): Promise<void> {
   const dataHexString = vaultToHexString(organizationVaultSecret, vault);
-
   const streamName = organizationStreamName(organization);
   await multichain.getRpcClient().invoke("publish", streamName, streamVaultKey, dataHexString);
-  logger.trace("wrote hex string to chain: %s bytes", dataHexString.length);
+  logger.info("Wrote hex string to chain: %s bytes", dataHexString.length);
 }
 
 // only exported for testing
@@ -87,7 +89,9 @@ export function vaultFromHexString(organizationVaultSecret: string, dataHexStrin
 
   const plaintextBuffer = Buffer.alloc(cipherBuffer.length - sodium.crypto_secretbox_MACBYTES);
   if (!sodium.crypto_secretbox_open_easy(plaintextBuffer, cipherBuffer, nonceBuffer, keyBuffer)) {
-    throw Error("Vault decryption failed!");
+    const message = "Vault decryption failed"
+    logger.error(message);
+    throw Error(message);
   }
 
   const vaultString = plaintextBuffer.toString();
@@ -119,7 +123,7 @@ export function vaultToHexString(organizationVaultSecret: string, vault: Vault):
 
 function toKeyBuffer(secret: string): Buffer {
   if (secret.length > sodium.crypto_secretbox_KEYBYTES) {
-    winston.warn(
+    logger.warn(
       `truncate secret with length ${secret.length} to length ${sodium.crypto_secretbox_KEYBYTES}`,
     );
   }
