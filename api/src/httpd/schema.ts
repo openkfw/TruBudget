@@ -849,6 +849,8 @@ const schemas = {
                         amount: { type: "string", example: "10000" },
                         assignee: { type: "string", example: "aSmith" },
                         currency: { type: "string", example: "EUR" },
+                        billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+                        exchangeRate: { type: "string", example: "1.0" },
                         thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                       },
                     },
@@ -882,6 +884,11 @@ const schemas = {
                                     type: "string",
                                     example: "A town should be built",
                                   },
+                                  billingDate: {
+                                    type: "string",
+                                    example: "2018-12-11T00:00:00.000Z",
+                                  },
+                                  exchangeRate: { type: "string", example: "1.0" },
                                   amount: { type: "string", example: "10000" },
                                   assignee: { type: "string", example: "aSmith" },
                                   currency: { type: "string", example: "EUR" },
@@ -1092,6 +1099,8 @@ const schemas = {
                   amount: { type: "string", example: "10000" },
                   assignee: { type: "string", example: "aSmith" },
                   currency: { type: "string", example: "EUR" },
+                  billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+                  exchangeRate: { type: "string", example: "1.0" },
                 },
                 required: ["displayName", "description", "amount", "currency"],
               },
@@ -1361,6 +1370,8 @@ const schemas = {
                           assignee: { type: "string", example: "aSmith" },
                           currency: { type: "string", example: "EUR" },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                          billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+                          exchangeRate: { type: "string", example: "1.0" },
                         },
                       },
                       log: {
@@ -1386,6 +1397,11 @@ const schemas = {
                                     creationUnixTs: { type: "string", example: "1536154645775" },
                                     status: { type: "string", example: "open" },
                                     displayName: { type: "string", example: "school" },
+                                    billingDate: {
+                                      type: "string",
+                                      example: "2018-12-11T00:00:00.000Z",
+                                    },
+                                    exchangeRate: { type: "string", example: "1.0" },
                                     description: {
                                       type: "string",
                                       example: "school should be built",
@@ -1479,6 +1495,8 @@ const schemas = {
                         description: { type: "string", example: "school should be built" },
                         amount: { type: "string", example: "3000" },
                         assignee: { type: "string", example: "aSmith" },
+                        billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+                        exchangeRate: { type: "string", example: "1.0" },
                         currency: { type: "string", example: "EUR" },
                         thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                       },
@@ -1510,6 +1528,11 @@ const schemas = {
                                     type: "string",
                                     example: "school should be built",
                                   },
+                                  billingDate: {
+                                    type: "string",
+                                    example: "2018-12-11T00:00:00.000Z",
+                                  },
+                                  exchangeRate: { type: "string", example: "1.0" },
                                   amount: { type: "string", example: "3000" },
                                   assignee: { type: "string", example: "aSmith" },
                                   currency: { type: "string", example: "EUR" },
@@ -1766,6 +1789,8 @@ const schemas = {
               assignee: { type: "string", example: "aSmith" },
               currency: { type: ["string", "null"], example: "EUR" },
               amountType: { type: "string", example: "disbursed" },
+              billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+              exchangeRate: { type: "string", example: "1.0" },
               documents: {
                 type: "array",
                 items: {
@@ -2065,6 +2090,8 @@ const schemas = {
                           amount: { type: "string", example: "500" },
                           assignee: { type: "string", example: "aSmith" },
                           currency: { type: "string", example: "EUR" },
+                          billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+                          exchangeRate: { type: "string", example: "1.0" },
                           documents: {
                             type: "array",
                             items: {
@@ -2429,8 +2456,7 @@ const schemas = {
   },
   notificationPoll: {
     schema: {
-      description:
-        "Poll the newest notifications that happened before a certain id",
+      description: "Poll the newest notifications that happened before a certain id",
       tags: ["notification"],
       summary: "Poll the newest notifications that happened before a certain id",
       security: [
@@ -2610,7 +2636,8 @@ const schemas = {
 
   notificationCount: {
     schema: {
-      description: "Get the unread and the total number of notifications for the currently logged in user",
+      description:
+        "Get the unread and the total number of notifications for the currently logged in user",
       tags: ["notification"],
       summary: "Get the unread and the total number of notifications",
       security: [
