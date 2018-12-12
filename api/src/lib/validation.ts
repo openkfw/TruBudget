@@ -35,6 +35,14 @@ export function findBadKeysInObject(
 ): string[] {
   return expectedKeys.filter(key => typeof candidate !== "object" || !isGood(candidate[key]));
 }
+export function isDate(date: string) {
+  // @ts-ignore
+  return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
+}
+
+export function isNumber(x: any) {
+  return !isNaN(x);
+}
 
 export function value(name, val, isValid, defaultValue?) {
   if (val === undefined) {

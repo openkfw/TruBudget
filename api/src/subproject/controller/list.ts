@@ -9,7 +9,6 @@ export async function getSubprojectList(multichain: MultichainClient, req): Prom
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
 
   const subprojects = await Subproject.get(multichain, req.user, projectId);
-
   return [
     200,
     {
