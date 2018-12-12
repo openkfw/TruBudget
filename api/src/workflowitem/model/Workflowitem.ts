@@ -37,6 +37,8 @@ export interface Data {
   id: string;
   creationUnixTs: string;
   displayName: string;
+  exchangeRate?: string;
+  billingDate?: string;
   amount?: string;
   currency?: string;
   amountType: "N/A" | "disbursed" | "allocated";
@@ -57,6 +59,8 @@ export interface RedactedData {
   status: "open" | "closed";
   assignee: null;
   documents: null;
+  exchangeRate: null;
+  billingDate: null;
 }
 
 export interface Update {
@@ -66,6 +70,9 @@ export interface Update {
   amountType?: "N/A" | "disbursed" | "allocated";
   description?: string;
   documents?: Document[];
+  exchangeRate?: string;
+  billingDate?: string;
+
 }
 
 export interface Document {
@@ -84,6 +91,8 @@ const redactWorkflowitemData = (workflowitem: Data): RedactedData => ({
   status: workflowitem.status,
   assignee: null,
   documents: null,
+  exchangeRate: null,
+  billingDate: null
 });
 
 export async function publish(
