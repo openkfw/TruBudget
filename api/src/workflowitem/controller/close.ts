@@ -112,10 +112,6 @@ async function ensureAllPreviousWorkflowitemsAreClosed(
       break;
     } else if (item.data.status !== "closed") {
       const message = "Cannot close workflowitems if there are preceding non-closed workflowitems.";
-      logger.error(
-        { error: { workflowitemId, multichain, projectId, subprojectId } },
-        message,
-      );
       throw {
         kind: "PreconditionError",
         message,

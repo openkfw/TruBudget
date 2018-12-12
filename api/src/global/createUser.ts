@@ -27,7 +27,6 @@ export const createUser = async (
 
   // Make sure nobody creates the special "root" user:
   if (userId === "root") {
-    logger.error({ error: { userId } }, "Cannot create new root");
     throw { kind: "UserAlreadyExists", targetUserId: "root" } as UserAlreadyExistsError;
   }
 

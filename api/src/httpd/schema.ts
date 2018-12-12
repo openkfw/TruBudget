@@ -3033,7 +3033,7 @@ const schemas = {
         200: {
           description: "file download backup.gz",
           type: "string",
-          format: "binary",
+          // format: "binary",
           example: "backup.gz",
         },
       },
@@ -3056,7 +3056,7 @@ const schemas = {
       body: {
         description: "binary gzip file",
         type: "string",
-        format: "binary",
+        // format: "binary",
         example: "backup.gz (send a backup-file as binary via an API-Testing-Tool like postman)",
       },
       response: {

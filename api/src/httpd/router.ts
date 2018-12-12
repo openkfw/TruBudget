@@ -56,7 +56,7 @@ import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
-import { markMultipleRead } from '../notification/controller/markMultipleRead';
+import { markMultipleRead } from "../notification/controller/markMultipleRead";
 import { getNewestNotifications } from "../notification/controller/poll";
 
 const send = (res, httpResponse: HttpResponse) => {
@@ -65,10 +65,9 @@ const send = (res, httpResponse: HttpResponse) => {
 };
 
 const handleError = (req, res, err: any) => {
-  logger.error({ error: err }, "Handle Error:", err.kind || "unknown");
-
   switch (err.kind) {
     case "NotAuthorized":
+      logger.debug({ error: err });
       send(res, [
         403,
         {
@@ -82,6 +81,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "AddressIsInvalid":
+      logger.error({ error: err });
       send(res, [
         400,
         {
@@ -92,6 +92,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "UserAlreadyExists":
+      logger.warn({ error: err });
       send(res, [
         409,
         {
@@ -102,6 +103,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "GroupAlreadyExists":
+      logger.warn({ error: err });
       send(res, [
         409,
         {
@@ -112,6 +114,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "ProjectIdAlreadyExists":
+      logger.warn({ error: err });
       send(res, [
         409,
         {
@@ -122,6 +125,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "SubprojectIdAlreadyExists":
+      logger.warn({ error: err });
       send(res, [
         409,
         {
@@ -132,6 +136,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "ParseError": {
+      logger.debug({ error: err });
       let message;
       if (err.message !== undefined) {
         message = `Error parsing fields ${err.badKeys.join(", ")}: ${err.message}`;
@@ -143,12 +148,14 @@ const handleError = (req, res, err: any) => {
     }
 
     case "PreconditionError": {
+      logger.warn({ error: err });
       const { message } = err;
       send(res, [412, { apiVersion: "1.0", error: { code: 412, message } }]);
       break;
     }
 
     case "AuthenticationError":
+      logger.debug({ error: err });
       send(res, [
         401,
         {
@@ -159,6 +166,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "NotFound":
+      logger.debug({ error: err });
       send(res, [
         404,
         {
@@ -167,7 +175,9 @@ const handleError = (req, res, err: any) => {
         },
       ]);
       break;
+
     case "CorruptFileError":
+      logger.error({ error: err });
       send(res, [
         400,
         {
@@ -176,7 +186,9 @@ const handleError = (req, res, err: any) => {
         },
       ]);
       break;
+
     case "UnsupportedMediaType":
+      logger.debug({ error: err });
       send(res, [
         415,
         {
@@ -185,9 +197,11 @@ const handleError = (req, res, err: any) => {
         },
       ]);
       break;
+
     default:
       // handle RPC errors, too:
       if (err.code === -708) {
+        logger.debug({ error: err });
         send(res, [
           404,
           {
@@ -196,7 +210,7 @@ const handleError = (req, res, err: any) => {
           },
         ]);
       } else {
-        logger.error({ error: { err } }, "Internal server error");
+        logger.error({ error: err });
         send(res, [
           500,
           {
@@ -235,7 +249,7 @@ export const registerRoutes = (
     },
   );
 
-  server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"),  (_, reply) => {
+  server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), (_, reply) => {
     reply.status(200).send("OK");
   });
 
@@ -355,15 +369,11 @@ export const registerRoutes = (
       .catch(err => handleError(request, reply, err));
   });
 
-  server.post(
-    `${urlPrefix}/group.addUser`,
-    getSchema(server, "addUser"),
-    (request, reply) => {
-      addUserToGroup(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
+  server.post(`${urlPrefix}/group.addUser`, getSchema(server, "addUser"), (request, reply) => {
+    addUserToGroup(multichainClient, request as AuthenticatedRequest)
+      .then(response => send(reply, response))
+      .catch(err => handleError(request, reply, err));
+  });
 
   server.post(
     `${urlPrefix}/group.removeUser`,
@@ -379,15 +389,11 @@ export const registerRoutes = (
   //       project
   // ------------------------------------------------------------
 
-  server.get(
-    `${urlPrefix}/project.list`,
-    getSchema(server, "projectList"),
-    (request, reply) => {
-      getProjectList(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
+  server.get(`${urlPrefix}/project.list`, getSchema(server, "projectList"), (request, reply) => {
+    getProjectList(multichainClient, request as AuthenticatedRequest)
+      .then(response => send(reply, response))
+      .catch(err => handleError(request, reply, err));
+  });
 
   server.get(
     `${urlPrefix}/project.viewDetails`,
@@ -419,15 +425,11 @@ export const registerRoutes = (
     },
   );
 
-  server.post(
-    `${urlPrefix}/project.close`,
-    getSchema(server, "projectClose"),
-    (request, reply) => {
-      closeProject(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
+  server.post(`${urlPrefix}/project.close`, getSchema(server, "projectClose"), (request, reply) => {
+    closeProject(multichainClient, request as AuthenticatedRequest)
+      .then(response => send(reply, response))
+      .catch(err => handleError(request, reply, err));
+  });
 
   server.post(
     `${urlPrefix}/project.createSubproject`,
@@ -452,10 +454,11 @@ export const registerRoutes = (
   server.get(
     `${urlPrefix}/project.intent.listPermissions`,
     getSchema(server, "projectListPermissions"),
-     (request, reply) => {
+    (request, reply) => {
       getProjectPermissions(multichainClient, request as AuthenticatedRequest)
         .then(response => {
-          return send(reply, response)})
+          return send(reply, response);
+        })
         .catch(err => handleError(request, reply, err));
     },
   );
@@ -705,7 +708,6 @@ export const registerRoutes = (
     },
   );
 
-
   server.get(
     `${urlPrefix}/notification.counts`,
     getSchema(server, "notificationCount"),
@@ -715,8 +717,6 @@ export const registerRoutes = (
         .catch(err => handleError(request, reply, err));
     },
   );
-
-
 
   server.post(
     `${urlPrefix}/notification.markRead`,
@@ -782,15 +782,11 @@ export const registerRoutes = (
     },
   );
 
-  server.get(
-    `${urlPrefix}/network.list`,
-    getSchema(server, "networkList"),
-    (request, reply) => {
-      getNodeList(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
+  server.get(`${urlPrefix}/network.list`, getSchema(server, "networkList"), (request, reply) => {
+    getNodeList(multichainClient, request as AuthenticatedRequest)
+      .then(response => send(reply, response))
+      .catch(err => handleError(request, reply, err));
+  });
 
   server.get(
     `${urlPrefix}/network.listActive`,

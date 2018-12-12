@@ -13,13 +13,12 @@ export async function isReady(multichain: MultichainClient): Promise<boolean> {
 
     const result = await rpcClient.invoke("listpermissions", "send", addressCsv);
     if (!result.length) {
-      logger.warn(`No "send" permissions for ${addressCsv}`);
+      logger.debug(`No "send" permissions for ${addressCsv}`);
       return false;
     }
 
     return true;
   } catch (err) {
-    logger.error({ error: err }, "Readiness: MultiChain connection failed");
     return false;
   }
 }

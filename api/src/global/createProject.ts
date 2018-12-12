@@ -39,7 +39,6 @@ export async function createProject(
   // check if projectId already exists
   const projects = await Project.get(multichain, req.user);
   if (!isEmpty(projects.filter(p => p.data.id === projectId))) {
-    logger.error({ error: { projectId } }, `Project ID ${projectId} already exists`);
     throw { kind: "ProjectIdAlreadyExists", projectId } as ProjectIdAlreadyExistsError;
   }
 
@@ -69,11 +68,6 @@ export async function createProject(
   };
 
   await Project.publish(multichain, projectId, event);
-
-  logger.info(
-    {params: { permissions: event.data.permissions, project }},
-    "Project created with default permissions",
-  );
 
   return [
     200,

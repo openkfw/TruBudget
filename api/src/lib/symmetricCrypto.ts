@@ -3,9 +3,6 @@ import logger from "./logger";
 
 /** Decrypts a hex-encoded ciphertext and returns the resulting string. */
 export function decrypt(organizationSecret: string, hexEncodedCiphertext: string): string {
-  console.log(`orga key:`, organizationSecret);
-  console.log(`ciphertext:`, hexEncodedCiphertext);
-
   // The nonce/salt is prepended to the actual ciphertext:
   const dataBuffer = Buffer.from(hexEncodedCiphertext, "hex");
   const nonceBuffer = dataBuffer.slice(0, sodium.crypto_secretbox_NONCEBYTES);

@@ -20,20 +20,14 @@ export async function voteHelper(
 
   if (currentVote !== "none") {
     const message =
-    `Conflict: your organization ${user.organization} (${callerAddress}) has ` +
-    `already voted for assigning ${currentVote} permissions to ${targetAddress}.`;
-    logger.error(
-      message
-    );
+      `Conflict: your organization ${user.organization} (${callerAddress}) has ` +
+      `already voted for assigning ${currentVote} permissions to ${targetAddress}.`;
     return [409, { apiVersion: "1.0", error: { code: 409, message } }];
   }
   if (currentAccess !== "none") {
     const message =
       `Conflict: the organization (${targetAddress}) has already ` +
       `${currentAccess} permissions assigned.`;
-    logger.error(
-      message
-    );
     return [409, { apiVersion: "1.0", error: { code: 409, message } }];
   }
 
