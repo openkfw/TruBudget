@@ -6,10 +6,6 @@ export function organizationStreamName(organization: Organization): string {
   return streamName(organization, "org");
 }
 
-export function usersStreamName(organization: Organization): string {
-  return streamName(organization, "users");
-}
-
 function streamName(organization: Organization, prefix: string): string {
   let name = `${prefix}:${organization}`.replace(/ /g, "_").substring(0, maxStreamNameBytes);
   while (Buffer.byteLength(name) > maxStreamNameBytes) {

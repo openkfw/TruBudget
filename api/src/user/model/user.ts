@@ -4,65 +4,143 @@ import { UserAlreadyExistsError } from "../../error";
 import * as Global from "../../global";
 import logger from "../../lib/logger";
 import { MultichainClient } from "../../multichain";
-import { Resource } from "../../multichain/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
+import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
 
 const usersStreamName = "users";
-
-export interface UserResource extends Resource {
-  data: UserRecord;
-}
 
 export interface UserRecord {
   id: string;
   displayName: string;
+  // The organization the user belongs to:
   organization: string;
+  // MultiChain wallet address:
   address: string;
+  // MultiChain private key:
+  privkey: string;
+  // The user's password, hashed:
   passwordDigest: string;
 }
 
-export interface UserWithoutPassword {
+export interface UserPublicRecord {
   id: string;
   displayName: string;
   organization: string;
   address: string;
 }
 
-const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
-  await multichain.getOrCreateStream({
-    kind: "users",
-    name: usersStreamName,
-  });
-};
+export function publicRecord(user: UserRecord): UserPublicRecord {
+  return {
+    id: user.id,
+    displayName: user.displayName,
+    organization: user.organization,
+    address: user.address,
+  };
+}
 
-export const create = async (
+export async function publish(
   multichain: MultichainClient,
-  token: AuthToken,
-  user: UserRecord,
-): Promise<void> => {
-  await ensureStreamExists(multichain);
+  userId: string,
+  args: {
+    intent: Intent;
+    createdBy: string;
+    creationTimestamp: Date;
+    dataVersion: number; // integer
+    data: object;
+  },
+): Promise<Event> {
+  const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
+  const event: Event = {
+    key: userId,
+    intent,
+    createdBy,
+    createdAt: creationTimestamp.toISOString(),
+    dataVersion,
+    data,
+  };
+  const streamName = usersStreamName;
+  const streamItemKey = userId;
+  const streamItem = { json: event };
 
-  // Don't overwrite existing users:
-  const userExists = (await multichain.getValues(usersStreamName, user.id, 1)).length !== 0;
-  if (userExists) {
-    logger.error({ error: { user, multichain } }, `User ${user.id} already exists`);
-    throw { kind: "UserAlreadyExists", targetUserId: user.id } as UserAlreadyExistsError;
-  }
-
-  const resource = {
-    data: user,
-    log: [{ issuer: token.userId, action: "user_created" }],
-    permissions: {},
+  const publishEvent = () => {
+    logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+    return multichain
+      .getRpcClient()
+      .invoke("publish", streamName, streamItemKey, streamItem)
+      .then(() => event);
   };
 
-  await multichain.setValue(usersStreamName, ["users", user.id], resource);
-};
+  return publishEvent().catch(err => {
+    if (err.code === -708) {
+      logger.warn(
+        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
+      );
+      // The stream does not exist yet. Create the stream and try again:
+      return multichain
+        .getOrCreateStream({ kind: "users", name: streamName })
+        .then(() => publishEvent());
+    } else {
+      logger.error({ error: err }, `Publishing ${intent} failed.`);
+      throw err;
+    }
+  });
+}
 
-export const get = async (multichain: MultichainClient, userId: string): Promise<UserRecord> => {
-  const streamItem = await multichain.getValue(usersStreamName, userId);
-  return streamItem.resource.data;
-};
+export async function get(multichain: MultichainClient, userId: string): Promise<UserRecord> {
+  const users = await multichain.v2_readStreamItems(usersStreamName, userId).then(sourceUsers);
+  if (users.length === 0) throw Error(`User ${userId} not found.`);
+  else if (users.length === 1) return users[0];
+  else throw Error(`Assertion Error: userId is not unique! id=${userId} result=${users}`);
+}
 
-export const getAll = async (multichain: MultichainClient): Promise<UserRecord[]> => {
-  const streamItems = await multichain.getLatestValues(usersStreamName, "users");
-  return streamItems.map(item => item.resource.data);
-};
+export async function getAll(multichain: MultichainClient): Promise<UserRecord[]> {
+  return multichain.v2_readStreamItems(usersStreamName, "*").then(sourceUsers);
+}
+
+function sourceUsers(streamItems: Liststreamkeyitems.Item[]): UserRecord[] {
+  const userMap = new Map<string, UserRecord>();
+
+  for (const item of streamItems) {
+    const event = item.data.json as Event;
+    const userId = event.key;
+
+    let user = userMap.get(userId);
+    if (user === undefined) {
+      user = handleCreate(event);
+      if (user === undefined) {
+        logger.error({ error: { event } }, "Failed to initialize user");
+        throw Error(`Failed to initialize user: ${JSON.stringify(event)}.`);
+      }
+      userMap.set(userId, user);
+    } else {
+      // additional events would be handled here..
+      const hasProcessedEvent = false;
+      if (!hasProcessedEvent) {
+        const message = "Unexpected event occured";
+        logger.error({ error: { event } }, message);
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
+      }
+    }
+  }
+
+  return [...userMap.values()];
+}
+
+function handleCreate(event: Event): UserRecord | undefined {
+  if (event.intent !== "global.createUser") return undefined;
+  const { data } = event;
+  switch (event.dataVersion) {
+    case 1: {
+      const user: UserRecord = {
+        id: data.id,
+        displayName: data.displayName,
+        organization: data.organization,
+        address: data.address,
+        privkey: data.privkey,
+        passwordDigest: data.passwordDigest,
+      };
+      return user;
+    }
+  }
+  throwUnsupportedEventVersion(event);
+}

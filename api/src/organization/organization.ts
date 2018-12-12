@@ -1,8 +1,8 @@
 import logger from "../lib/logger";
+import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { MultichainClient } from "../multichain/Client.h";
 import { Organization, WalletAddress } from "../network/model/Nodes";
-import { organizationStreamName, usersStreamName } from "./streamNames";
-import { getPrivKey, setPrivKey } from "./vault";
+import { organizationStreamName } from "./streamNames";
 
 interface GetaddressesItem {
   address: string;
@@ -17,13 +17,10 @@ interface GetaddressesItem {
 
 interface OrganizationAddressItem {
   address: WalletAddress;
-}
-
-interface VaultItem {
   privkey: string;
 }
 
-export async function ensureOrganizationStreams(
+export async function ensureOrganizationStream(
   multichain: MultichainClient,
   organization: Organization,
   organizationVaultSecret: string,
@@ -39,11 +36,6 @@ export async function ensureOrganizationStreams(
     organizationVaultSecret,
   );
   logger.info(`Organization address: ${organizationAddress}`);
-
-  await multichain.getOrCreateStream({
-    kind: "users",
-    name: usersStreamName(organization),
-  });
 }
 
 async function ensureOrganizationAddress(
@@ -51,21 +43,20 @@ async function ensureOrganizationAddress(
   organization: Organization,
   organizationVaultSecret: string,
 ): Promise<string> {
-  const addressFromStream = await getOrganizationAddress(multichain, organization);
+  const addressFromStream = await getOrganizationAddressItem(multichain, organization);
   if (addressFromStream) {
     // The organization already has its address set -> no need to use the local wallet
     // address.
-    logger.info(`Organization address already set: ${addressFromStream}`);
+    logger.info(`Organization address already set: ${addressFromStream.address}`);
     logger.debug(`Importing private key...`);
-    const privkey = await getPrivKey(
-      multichain,
-      organization,
-      organizationVaultSecret,
-      addressFromStream,
-    );
-    await multichain.getRpcClient().invoke("importprivkey", privkey);
-    logger.info(`${addressFromStream} is ready to be used in transactions.`);
-    return addressFromStream;
+    await multichain
+      .getRpcClient()
+      .invoke(
+        "importprivkey",
+        SymmetricCrypto.decrypt(organizationVaultSecret, addressFromStream.privkey),
+      );
+    logger.info(`${addressFromStream.address} is ready to be used in transactions.`);
+    return addressFromStream.address;
   } else {
     // Find the local wallet address and use it as the organization address:
     const addressFromWallet = await multichain
@@ -79,20 +70,22 @@ async function ensureOrganizationAddress(
           .find(_ => true),
       );
     if (!addressFromWallet) {
-      const message = "Could not obtain wallet address!"
+      const message = "Could not obtain wallet address!";
       logger.error({ error: { multichain, organization } }, message);
       throw Error(message);
     }
 
-    const privkey = await multichain.getRpcClient().invoke("dumpprivkey", addressFromWallet);
-    // logger.trace({ addressFromWallet, privkey });
-    await setPrivKey(multichain, organization, organizationVaultSecret, addressFromWallet, privkey);
+    const privkeyCiphertext = await multichain
+      .getRpcClient()
+      .invoke("dumpprivkey", addressFromWallet)
+      .then(plaintext => SymmetricCrypto.encrypt(organizationVaultSecret, plaintext));
 
     logger.info(`Initializing organization address to local wallet address: ${addressFromWallet}`);
     const streamName = organizationStreamName(organization);
     const streamItemKey = "address";
     const orgaAddressItem: OrganizationAddressItem = {
       address: addressFromWallet,
+      privkey: privkeyCiphertext,
     };
     const streamItem = { json: orgaAddressItem };
     logger.debug(`Publishing wallet address to ${streamName}/${streamItemKey}`);

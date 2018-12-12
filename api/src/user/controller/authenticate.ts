@@ -6,12 +6,12 @@ import * as Global from "../../global";
 import * as Group from "../../group";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import logger from "../../lib/logger";
+import * as SymmetricCrypto from "../../lib/symmetricCrypto";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { importprivkey } from "../../multichain/importprivkey";
 import { WalletAddress } from "../../network/model/Nodes";
 import { getOrganizationAddress } from "../../organization/organization";
-import { getPrivKey } from "../../organization/vault";
 import * as User from "../model/user";
 import { hashPassword, isPasswordMatch } from "../password";
 
@@ -110,15 +110,16 @@ const authenticate = async (
     logger.error({ error: { multichain, storedUser } }, message);
     throwError(message);
   }
-  // Every user has an address, with the private key stored in the vault. Importing the
-  // private key when authenticating a user allows users to roam freely between nodes of
-  // their organization.
-  await getPrivKey(
+  // Every user has an address and an associated private key. Importing the private key
+  // when authenticating a user allows users to roam freely between nodes of their
+  // organization.
+  console.log("AAAAAA");
+  await importprivkey(
     multichain,
-    storedUser.organization,
-    organizationVaultSecret,
-    storedUser.address,
-  ).then(privkey => importprivkey(multichain, privkey, storedUser.id));
+    SymmetricCrypto.decrypt(organizationVaultSecret, storedUser.privkey),
+    storedUser.id,
+  );
+  console.log("BBBBBB");
 
   // The organizationAddress is used for querying network votes, for instance.
   const organizationAddress: WalletAddress = (await getOrganizationAddress(
