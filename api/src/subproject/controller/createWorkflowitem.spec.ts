@@ -21,9 +21,8 @@ describe("subproject.createWorkflowitem", () => {
         },
       }),
       v2_readStreamItems: async (streamName, key, nValues) => {
-        expect(streamName).to.eql(projectId);
         let events;
-        if (key === subprojectId) {
+        if (streamName === projectId && key === subprojectId) {
           events = [
             {
               keys: ["subprojects", subprojectId],
