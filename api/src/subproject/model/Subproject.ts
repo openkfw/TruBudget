@@ -31,6 +31,8 @@ export interface Data {
   description: string;
   amount: string;
   currency: string;
+  exchangeRate: string;
+  billingDate: string;
   assignee?: string;
 }
 
@@ -43,6 +45,8 @@ export interface RedactedData {
   amount: null;
   currency: null;
   assignee: null;
+  exchangeRate: null;
+  billingDate: null;
 }
 
 export interface Update {
@@ -50,6 +54,8 @@ export interface Update {
   description?: string;
   amount?: string;
   currency?: string;
+  exchangeRate?: string;
+  billingDate?: string;
 }
 
 const subprojectsGroupKey = "subprojects";
@@ -67,6 +73,8 @@ const redactSubprojectData = (subproject: Data): RedactedData => ({
   amount: null,
   currency: null,
   assignee: null,
+  exchangeRate: null,
+  billingDate: null,
 });
 
 export async function publish(

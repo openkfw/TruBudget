@@ -6,7 +6,15 @@ export function sortWorkflowitems(
   workflowitems: Workflowitem.WorkflowitemResource[],
   ordering: string[],
 ): Workflowitem.WorkflowitemResource[] {
-  return workflowitems.sort((a, b) => byOrderingCriteria(a, b, ordering));
+  const indexedItems = workflowitems.map((item, index) => {
+    item["_index"] = index;
+    return item;
+  });
+  const sortedItems = indexedItems.sort((a, b) => byOrderingCriteria(a, b, ordering));
+  return sortedItems.map(item => {
+    delete item["_index"];
+    return item;
+  });
 }
 
 /**
@@ -43,7 +51,12 @@ function byOrderingCriteria(
       return 1;
     } else {
       // both are not in the ordering, so we sort by ctime instead:
-      return byCreationTime(a, b);
+      const cTimeComparison = byCreationTime(a, b);
+      // they are the same age we have the ordering unchanged
+      if (cTimeComparison === 0) {
+        return a["_index"] > b["_index"] ? 1 : -1;
+      }
+      return cTimeComparison;
     }
   }
 }
@@ -60,7 +73,7 @@ function closedAt(item: Workflowitem.WorkflowitemResource): string {
   const event = item.log.find(e => e.intent === "workflowitem.close");
   if (event === undefined) {
     const message = "Item is not closed.";
-    logger.error({ error: { event } }, message );
+    logger.error({ error: { event } }, message);
     throw Error(`${message}: ${JSON.stringify(event)}`);
   }
   return event.createdAt;
@@ -69,7 +82,7 @@ function closedAt(item: Workflowitem.WorkflowitemResource): string {
 function byCreationTime(
   a: Workflowitem.WorkflowitemResource,
   b: Workflowitem.WorkflowitemResource,
-): -1 | 1 {
+): -1 | 1 | 0 {
   const ctimeA = a.data.creationUnixTs;
   const ctimeB = b.data.creationUnixTs;
   if (ctimeA < ctimeB) {
@@ -77,11 +90,7 @@ function byCreationTime(
   } else if (ctimeA > ctimeB) {
     return 1; // = a is more recent, so b before a
   } else {
-    // Let's be deterministic here and sort by ID as the fallback:
-    if (a.data.id < b.data.id) {
-      return -1;
-    } else {
-      return 1;
-    }
+    // creation times are equal
+    return 0;
   }
 }

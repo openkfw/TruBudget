@@ -10,7 +10,14 @@ import {
   throwParseErrorIfUndefined,
 } from "../../httpd/lib";
 import logger from "../../lib/logger";
-import { asyncValue, isNonemptyString, isUserOrUndefined, value } from "../../lib/validation";
+import {
+  asyncValue,
+  isNonemptyString,
+  isUserOrUndefined,
+  value,
+  isNumber,
+  isDate,
+} from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
@@ -67,10 +74,7 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
   // Make sure the parent subproject is not already closed:
   if (await Subproject.isClosed(multichain, projectId, subprojectId)) {
     const message = "Cannot add a workflowitem to a closed subproject.";
-    logger.error(
-      { error: { multichain, projectId, subprojectId } },
-      message,
-    );
+    logger.error({ error: { multichain, projectId, subprojectId } }, message);
     throw {
       kind: "PreconditionError",
       message,
@@ -102,10 +106,7 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
   if (status === "closed") {
     if (!(await Workflowitem.areAllClosed(multichain, projectId, subprojectId))) {
       const message = "Cannot add a closed workflowitem after a non-closed workflowitem.";
-      logger.error(
-        { error: { multichain, projectId, subprojectId } },
-        message,
-      );
+      logger.error({ error: { multichain, projectId, subprojectId } }, message);
       throw {
         kind: "PreconditionError",
         message,
@@ -121,6 +122,13 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
   );
 
   const ctime = new Date();
+  const defaultBillingDate = new Date(ctime);
+  defaultBillingDate.setUTCHours(0);
+  defaultBillingDate.setUTCMinutes(0);
+  defaultBillingDate.setUTCSeconds(0);
+  defaultBillingDate.setUTCMilliseconds(0);
+
+
 
   const workflowitem: Workflowitem.Data = {
     id: workflowitemId,
@@ -131,6 +139,20 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
     amountType,
     description: value("description", data.description, x => typeof x === "string", ""),
     status,
+    exchangeRate: value(
+      "exchangeRate",
+      data.exchangeRate,
+      x => isNonemptyString(x) && isNumber(x),
+      "1.0",
+    ),
+
+    billingDate: value(
+      "billingDate",
+      data.billingDate,
+      x => isNonemptyString(x) && isDate(x),
+      defaultBillingDate.toISOString(),
+    ),
+
     assignee: await asyncValue(
       multichain,
       "assignee",

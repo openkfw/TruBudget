@@ -11,7 +11,7 @@ import {
 } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
 import logger from "../../lib/logger";
-import { isNonemptyString, isUserOrUndefined, value } from "../../lib/validation";
+import { isNonemptyString, isUserOrUndefined, value, isDate, isNumber } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
 import * as Subproject from "../../subproject/model/Subproject";
@@ -61,10 +61,29 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
   }
 
   const ctime = new Date();
+  const defaultBillingDate = new Date(ctime);
+  defaultBillingDate.setUTCHours(0);
+  defaultBillingDate.setUTCMinutes(0);
+  defaultBillingDate.setUTCSeconds(0);
+  defaultBillingDate.setUTCMilliseconds(0);
 
   const subproject: Subproject.Data = {
     id: subprojectId,
     creationUnixTs: ctime.getTime().toString(),
+    exchangeRate: value(
+      "exchangeRate",
+      subprojectArgs.exchangeRate,
+      x => isNonemptyString(x) && isNumber(x),
+      "1.0",
+    ),
+
+    billingDate: value(
+      "billingDate",
+      subprojectArgs.billingDate,
+      x => isNonemptyString(x) && isDate(x),
+      defaultBillingDate.toISOString(),
+    ),
+
     status: value("status", subprojectArgs.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", subprojectArgs.displayName, isNonemptyString),
     description: value("description", subprojectArgs.description, isNonemptyString),
