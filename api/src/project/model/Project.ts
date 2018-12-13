@@ -80,7 +80,9 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
-      logger.warn(`The stream ${streamName} does not exist yet. Creating the stream and trying again.`);
+      logger.debug(
+        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
+      );
       // The stream does not exist yet. Create the stream and try again:
       return multichain
         .getOrCreateStream({ kind: "project", name: streamName })
@@ -149,7 +151,6 @@ export async function get(
       const result = handleCreate(event);
       if (result === undefined) {
         const message = "Failed to initialize resource";
-        logger.error({ error: { event } }, message);
         throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -165,7 +166,6 @@ export async function get(
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
         const message = "Unexpected event";
-        logger.error({ error: { event } }, message);
         throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
@@ -331,7 +331,6 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
-    logger.error({ error: { projectId, multichain } }, `Project ${projectId} not found.`);
     throw { kind: "NotFound", what: `Project ${projectId}.` };
   }
   return permissions;

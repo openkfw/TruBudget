@@ -56,7 +56,7 @@ export class RpcMultichainClient implements MultichainClient {
       .catch(err => {
         if (options.name && err && err.code === -705) {
           // Stream or asset with this name already exists
-          logger.debug(
+          logger.trace(
             { params: { err, options } },
             "Stream or asset with this name already exists",
           );
@@ -108,7 +108,6 @@ export class RpcMultichainClient implements MultichainClient {
 
   public async isValidAddress(address: string): Promise<boolean> {
     const result = await this.rpcClient.invoke("validateaddress", address);
-    logger.debug({ result }, `Address is ${result.isvalid ? "valid" : "invalid"}`);
     return result.isvalid;
   }
 
@@ -126,10 +125,8 @@ export class RpcMultichainClient implements MultichainClient {
       .then(this.retrieveItems)
       .catch(err => {
         if (err && err.code === -708) {
-          logger.error({ error: err }, `Stream '${streamName}' not found.`);
           throw { kind: "NotFound", what: `stream ${streamName}` };
         } else {
-          logger.error({ error: err }, "An error has occured while getting values.");
           throw err;
         }
       });
@@ -149,10 +146,8 @@ export class RpcMultichainClient implements MultichainClient {
       .then(this.retrieveItems)
       .catch(err => {
         if (err && err.code === -708) {
-          logger.error({ error: err }, "Stream not found.");
           throw { kind: "NotFound", what: `stream ${streamName}` };
         } else {
-          logger.error({ error: err }, "An error has occured while getting latest values.");
           throw err;
         }
       });
@@ -194,7 +189,6 @@ export class RpcMultichainClient implements MultichainClient {
     const result = await this.getValues(streamName, key, 1);
     if (result.length !== 1) {
       const message = `Expected a single value, got: ${result || "nothing"}`;
-      logger.error({ error: { streamName, key } }, message);
       throw {
         kind: "NotFound",
         what: { message, streamName, key },
@@ -233,7 +227,6 @@ export class RpcMultichainClient implements MultichainClient {
   ): Promise<Liststreamkeyitems.Item[]> {
     if (nValues <= 0) {
       const message = `expected nValues > 0, got ${nValues}`;
-      logger.error({ error: { streamName, key } }, message);
       throw Error(message);
     }
     return this.rpcClient
@@ -241,10 +234,8 @@ export class RpcMultichainClient implements MultichainClient {
       .then(this.retrieveItems)
       .catch(err => {
         if (err && err.code === -708) {
-          logger.error({ error: err }, `Stream ${streamName} not found`);
           throw { kind: "NotFound", what: `stream ${streamName}` };
         } else {
-          logger.error({ error: err }, "An error occured.");
           throw err;
         }
       });

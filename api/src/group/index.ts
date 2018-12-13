@@ -74,9 +74,7 @@ export const publish = async (
   await ensureStreamExists(multichain);
 
   const publishEvent = () => {
-    logger.info(
-      `Publishing ${event.intent} to ${groupsStreamName}/${streamItemKey}`,
-    );
+    logger.info(`Publishing ${event.intent} to ${groupsStreamName}/${streamItemKey}`);
     return multichain
       .getRpcClient()
       .invoke("publish", groupsStreamName, streamItemKey, streamItem)
@@ -86,12 +84,14 @@ export const publish = async (
   return publishEvent().catch(err => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
-      logger.warn(`The stream ${groupsStreamName} does not exist yet. Creating the stream and trying again.`);
+      logger.debug(
+        `The stream ${groupsStreamName} does not exist yet. Creating the stream and trying again.`,
+      );
       return multichain
         .getOrCreateStream({ kind: "groups", name: groupsStreamName })
         .then(() => publishEvent());
     } else {
-      logger.error({ error: {err, groupsStreamName} }, `Publishing ${intent} failed.`);
+      logger.error({ error: { err, groupsStreamName } }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -120,7 +120,6 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
-        logger.error({ error: { event } }, "Failed to initialize resource");
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -129,7 +128,6 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
       // Since we've a group now, we can add/remove Users
       const hasProcessedEvent = addUser(event, resource) || removeUser(event, resource);
       if (!hasProcessedEvent) {
-        logger.error({ error: { event } }, "Unexpected event.");
         throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
       }
     }

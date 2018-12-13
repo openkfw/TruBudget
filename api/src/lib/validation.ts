@@ -13,16 +13,13 @@ export async function isUserOrUndefined(multichain, input) {
     if (isNonemptyString) {
       const user = await User.get(multichain, input).catch(err => {
         if (err.kind === "NotFound") {
-          logger.error({ error: err }, "User not found");
           return undefined;
         } else {
-          logger.error({ error: err }, "An error occured");
           throw err;
         }
       });
       return user !== undefined;
     } else {
-      logger.error({ error: { input, multichain } }, "Did not receive proper input");
       return false;
     }
   }

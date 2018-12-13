@@ -68,16 +68,8 @@ export async function fetchWorkflowitemOrdering(
     })
     .catch(err => {
       if (err.kind === "NotFound") {
-        logger.error(
-          { error: { err, multichain, projectId, subprojectId } },
-          "Stream items not found",
-        );
         return [{ data: { json: { dataVersion: 1, data: [] } } }];
       } else {
-        logger.error(
-          { error: { err, multichain, projectId, subprojectId } },
-          "An error occured during while getting stream items.",
-        );
         throw err;
       }
     });
