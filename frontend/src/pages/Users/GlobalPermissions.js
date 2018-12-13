@@ -42,9 +42,10 @@ const renderPermissions = (
   return globalIntentOrder.map((item, index) => {
     const intents = item.intents.map(intent => {
       const checked = globalPermissions[intent] ? globalPermissions[intent].includes(resourceId) : false;
+      const isLoggedInUser = resourceId === loggedInUserId;
       const disabled = checked
-        ? (allowedIntents.includes("global.revokePermission") && resourceId !== loggedInUserId)
-        : (allowedIntents.includes("global.grantPermission")  && resourceId !== loggedInUserId)
+        ? (allowedIntents.includes("global.revokePermission") && !isLoggedInUser)
+        : (allowedIntents.includes("global.grantPermission")  && !isLoggedInUser)
       return (
         <FormControlLabel
           key={intent}
