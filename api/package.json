@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch & nodemon dist",
-    "test": "nyc mocha 'dist/*.spec.js' 'dist/**/*.spec.js'",
+    "test": "nyc mocha \"dist/*.spec.js\" \"dist/**/*.spec.js\"",
     "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
