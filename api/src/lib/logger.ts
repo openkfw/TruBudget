@@ -6,8 +6,9 @@ const logLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
 const name = "TruBudget";
 const hostname = os.hostname();
 const base = { hostname };
+const prettyPrintInput = process.env.PRETTY_PRINT || "";
 const prettyPrint =
-  process.env.PRETTY_PRINT === "false"
+  prettyPrintInput.toLowerCase() in ["false", "off", "0", "no", "n"]
     ? false
     : {
         colorize: "true",

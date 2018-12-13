@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
@@ -18,9 +19,11 @@ import { getNodeList } from "../network/controller/list";
 import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
-import { getNotificationList } from "../notification/controller/list";
 import { getNotificationCounts } from "../notification/controller/count";
+import { getNotificationList } from "../notification/controller/list";
+import { markMultipleRead } from "../notification/controller/markMultipleRead";
 import { markNotificationRead } from "../notification/controller/markRead";
+import { getNewestNotifications } from "../notification/controller/poll";
 import { assignProject } from "../project/controller/assign";
 import { closeProject } from "../project/controller/close";
 import { createSubproject } from "../project/controller/createSubproject";
@@ -56,8 +59,6 @@ import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
-import { markMultipleRead } from "../notification/controller/markMultipleRead";
-import { getNewestNotifications } from "../notification/controller/poll";
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -66,74 +67,82 @@ const send = (res, httpResponse: HttpResponse) => {
 
 const handleError = (req, res, err: any) => {
   switch (err.kind) {
-    case "NotAuthorized":
-      logger.debug({ error: err }, `User ${err.token.userId} is not authorized.`);
+    case "NotAuthorized": {
+      const message = `User ${err.token.userId} is not authorized.`;
+      logger.debug({ error: err }, message);
       send(res, [
         403,
         {
           apiVersion: "1.0",
           error: {
             code: 403,
-            message: `User ${err.token.userId} is not authorized.`,
+            message,
           },
         },
       ]);
       break;
-
-    case "AddressIsInvalid":
-      logger.error({ error: err }, `The address is invalid.`);
+    }
+    case "AddressIsInvalid": {
+      const message = `The address is invalid.`;
+      logger.error({ error: err }, message);
       send(res, [
         400,
         {
           apiVersion: "1.0",
-          error: { code: 400, message: `The address is invalid.` },
+          error: { code: 400, message },
         },
       ]);
       break;
+    }
 
-    case "UserAlreadyExists":
-      logger.warn({ error: err }, `The user already exists.`);
+    case "UserAlreadyExists": {
+      const message = `The user already exists.`;
+      logger.warn({ error: err }, message);
       send(res, [
         409,
         {
           apiVersion: "1.0",
-          error: { code: 409, message: `The user already exists.` },
+          error: { code: 409, message },
         },
       ]);
       break;
-
-    case "GroupAlreadyExists":
-      logger.warn({ error: err }, `Group ${err.targetGroupId} already exists`);
+    }
+    case "GroupAlreadyExists": {
+      const message = `Group ${err.targetGroupId} already exists`;
+      logger.warn({ error: err }, message);
       send(res, [
         409,
         {
           apiVersion: "1.0",
-          error: { code: 409, message: `The group already exists.` },
+          error: { code: 409, message },
         },
       ]);
       break;
-
-    case "ProjectIdAlreadyExists":
-      logger.warn({ error: err }, `The project id ${err.projectId} already exists.`);
+    }
+    case "ProjectIdAlreadyExists": {
+      const message = `The project id ${err.projectId} already exists.`;
+      logger.warn({ error: err }, message);
       send(res, [
         409,
         {
           apiVersion: "1.0",
-          error: { code: 409, message: `The project's id already exists.` },
+          error: { code: 409, message },
         },
       ]);
       break;
-
-    case "SubprojectIdAlreadyExists":
-      logger.warn({ error: err }, `The subproject id ${err.subprojectId} already exists.`);
+    }
+    case "SubprojectIdAlreadyExists": {
+      const message = `The subproject id ${err.subprojectId} already exists.`;
+      logger.warn({ error: err }, message);
       send(res, [
         409,
         {
           apiVersion: "1.0",
-          error: { code: 409, message: `The subproject id already exists.` },
+          error: { code: 409, message },
         },
       ]);
       break;
+    }
 
     case "ParseError": {
       let message;
@@ -154,71 +163,82 @@ const handleError = (req, res, err: any) => {
       break;
     }
 
-    case "AuthenticationError":
-      logger.debug({ error: err }, "Authentication failed");
+    case "AuthenticationError": {
+      const message = "Authentication failed";
+      logger.debug({ error: err }, message);
       send(res, [
         401,
         {
           apiVersion: "1.0",
-          error: { code: 401, message: "Authentication failed" },
+          error: { code: 401, message },
         },
       ]);
       break;
+    }
 
-    case "NotFound":
-      logger.debug({ error: err }, "Not found.");
+    case "NotFound": {
+      const message = "Not found.";
+      logger.debug({ error: err }, message);
       send(res, [
         404,
         {
           apiVersion: "1.0",
-          error: { code: 404, message: "Not found." },
+          error: { code: 404, message },
         },
       ]);
       break;
+    }
 
-    case "CorruptFileError":
-      logger.error({ error: err }, "File corrupt." );
+    case "CorruptFileError": {
+      const message = "File corrupt.";
+      logger.error({ error: err }, message);
       send(res, [
         400,
         {
           apiVersion: "1.0",
-          error: { code: 400, message: "File corrupt." },
+          error: { code: 400, message },
         },
       ]);
       break;
+    }
 
-    case "UnsupportedMediaType":
-      logger.debug({ error: err }, `Unsupported media type: ${err.contentType}.`);
+    case "UnsupportedMediaType": {
+      const message = `Unsupported media type: ${err.contentType}.`;
+      logger.debug({ error: err }, message);
       send(res, [
         415,
         {
           apiVersion: "1.0",
-          error: { code: 415, message: `Unsupported media type: ${err.contentType}.` },
+          error: { code: 415, message },
         },
       ]);
       break;
+    }
 
-    default:
+    default: {
       // handle RPC errors, too:
       if (err.code === -708) {
-        logger.debug({ error: err }, "Not found.");
+        const message = "Not found.";
+        logger.debug({ error: err }, message);
         send(res, [
           404,
           {
             apiVersion: "1.0",
-            error: { code: 404, message: "Not found." },
+            error: { code: 404, message },
           },
         ]);
       } else {
-        logger.error({ error: err }, "INTERNAL SERVER ERROR");
+        const message = "INTERNAL SERVER ERROR";
+        logger.error({ error: err }, message);
         send(res, [
           500,
           {
             apiVersion: "1.0",
-            error: { code: 500, message: "INTERNAL SERVER ERROR" },
+            error: { code: 500, message },
           },
         ]);
       }
+    }
   }
 };
 
