@@ -21,8 +21,8 @@ const sortUsers = users => {
   return _sortBy(users, user => user.organization && user.id);
 };
 
-const UsersTable = ({ classes, users, showDashboardDialog }) => {
-  const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true));
+const UsersTable = ({ classes, users, showDashboardDialog, userId }) => {
+  const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true && u.id !== userId));
   return (
     <Paper>
       <Table>
