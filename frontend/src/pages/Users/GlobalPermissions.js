@@ -36,14 +36,15 @@ const renderPermissions = (
   revokeGlobalPermission,
   grantGlobalPermission,
   resourceId,
-  allowedIntents
+  allowedIntents,
+  loggedInUserId
 ) => {
   return globalIntentOrder.map((item, index) => {
     const intents = item.intents.map(intent => {
       const checked = globalPermissions[intent] ? globalPermissions[intent].includes(resourceId) : false;
       const disabled = checked
-        ? allowedIntents.includes("global.revokePermission")
-        : allowedIntents.includes("global.grantPermission");
+        ? (allowedIntents.includes("global.revokePermission") && resourceId !== loggedInUserId)
+        : (allowedIntents.includes("global.grantPermission")  && resourceId !== loggedInUserId)
       return (
         <FormControlLabel
           key={intent}
@@ -78,7 +79,8 @@ const GlobalPermissions = props => {
     grantGlobalPermission,
     revokeGlobalPermission,
     globalPermissions,
-    allowedIntents
+    allowedIntents,
+    loggedInUserId
   } = props;
   const permissions = renderPermissions(
     classes,
@@ -86,7 +88,8 @@ const GlobalPermissions = props => {
     revokeGlobalPermission,
     grantGlobalPermission,
     resourceId,
-    allowedIntents
+    allowedIntents,
+    loggedInUserId
   );
   return (
     <div className={classes.root}>

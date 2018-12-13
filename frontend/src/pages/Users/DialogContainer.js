@@ -33,6 +33,7 @@ const mapStateToProps = state => {
     editId: state.getIn(["users", "editId"]),
     userToAdd: state.getIn(["users", "userToAdd"]),
     users: state.getIn(["login", "user"]),
+    loggedInUserId: state.getIn(["login", "id"]),
     groups: state.getIn(["users", "groups"]),
     groupToAdd: state.getIn(["users", "groupToAdd"]),
     editMode: state.getIn(["users", "editMode"]),

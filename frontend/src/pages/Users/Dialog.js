@@ -24,6 +24,7 @@ const Dialog = props => {
     showSnackbar,
     grantAllUserPermissions,
     users,
+    loggedInUserId,
     globalPermissions,
     permissionsExpanded,
     allowedIntents,
@@ -86,6 +87,7 @@ const Dialog = props => {
               globalPermissions={globalPermissions}
               permissionsExpanded={permissionsExpanded}
               allowedIntents={allowedIntents}
+              loggedInUserId={loggedInUserId}
             />
           ),
           nextDisabled: false,

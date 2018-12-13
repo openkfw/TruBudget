@@ -22,7 +22,7 @@ const sortUsers = users => {
 };
 
 const UsersTable = ({ classes, users, showDashboardDialog, userId }) => {
-  const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true && u.id !== userId));
+  const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true)) //&& u.id !== userId));
   return (
     <Paper>
       <Table>
