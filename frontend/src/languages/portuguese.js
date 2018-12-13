@@ -58,7 +58,7 @@ const pt = {
     organization: "Organização",
     user_created: "Portuguese: User successfully created",
     users: "Usuários",
-    add_users: "Portuguese: Add Users",
+    add_user: "Portuguese: Add Users",
     group_created: "Portuguese: Group successfully created",
     groups: "Portuguese: Groups",
     new_group: "Portuguese: New user group",

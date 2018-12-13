@@ -158,7 +158,7 @@ const fr = {
     organization: "Organisation",
     user_created: "Utilisateur créé avec succès",
     users: "Utilisateurs",
-    add_users: "Ajouter des utilisateurs",
+    add_user: "Ajouter des utilisateurs",
     group_created: "Groupe crée avec succès",
     groups: "Groupes",
     new_group: "Nouveau groupe d'utilisateurs",

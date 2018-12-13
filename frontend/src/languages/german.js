@@ -158,7 +158,7 @@ const de = {
     users: "German: Users",
     new_group: "German: New user group",
     groups: "German: Groups",
-    add_users: "German: Add Users",
+    add_user: "German: Add Users",
     group_created: "German: Group successfully created",
     add_group: "German: Add Group",
     edit_group: "German: Edit Group",
