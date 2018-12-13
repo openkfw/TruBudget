@@ -72,7 +72,6 @@ export interface Update {
   documents?: Document[];
   exchangeRate?: string;
   billingDate?: string;
-
 }
 
 export interface Document {
@@ -92,7 +91,7 @@ const redactWorkflowitemData = (workflowitem: Data): RedactedData => ({
   assignee: null,
   documents: null,
   exchangeRate: null,
-  billingDate: null
+  billingDate: null,
 });
 
 export async function publish(
@@ -148,7 +147,6 @@ export async function get(
     if (resource === undefined) {
       const result = handleCreate(event);
       if (result === undefined) {
-        logger.error({ error: { event } }, "Failed to initialize resource");
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -164,7 +162,6 @@ export async function get(
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
         const message = "Unexpected event occured";
-        logger.error({ error: { event } }, message);
         throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
@@ -357,10 +354,6 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
-    logger.error(
-      { error: { workflowitemId, projectId, event } },
-      `Workflowitem ${workflowitemId} of project ${projectId} not found.`,
-    );
     throw { kind: "NotFound", what: `Workflowitem ${workflowitemId} of project ${projectId}.` };
   }
   return permissions;

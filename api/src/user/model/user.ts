@@ -72,7 +72,7 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
-      logger.warn(
+      logger.debug(
         `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
       );
       // The stream does not exist yet. Create the stream and try again:
@@ -108,7 +108,6 @@ function sourceUsers(streamItems: Liststreamkeyitems.Item[]): UserRecord[] {
     if (user === undefined) {
       user = handleCreate(event);
       if (user === undefined) {
-        logger.error({ error: { event } }, "Failed to initialize user");
         throw Error(`Failed to initialize user: ${JSON.stringify(event)}.`);
       }
       userMap.set(userId, user);
@@ -117,7 +116,6 @@ function sourceUsers(streamItems: Liststreamkeyitems.Item[]): UserRecord[] {
       const hasProcessedEvent = false;
       if (!hasProcessedEvent) {
         const message = "Unexpected event occured";
-        logger.error({ error: { event } }, message);
         throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }

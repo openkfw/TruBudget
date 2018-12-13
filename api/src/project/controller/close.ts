@@ -29,7 +29,6 @@ export async function closeProject(multichain: MultichainClient, req): Promise<H
   if (!(await Subproject.areAllClosed(multichain, projectId))) {
     const message =
       "Cannot close a project if at least one associated subproject is not yet closed.";
-    logger.error({ error: { multichain, projectId } }, message);
     throw {
       kind: "PreconditionError",
       message,

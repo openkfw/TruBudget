@@ -10,6 +10,7 @@ import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStream } from "./organization/organization";
+import deepcopy from "./lib/deepcopy";
 
 const URL_PREFIX = "/api";
 
@@ -29,12 +30,12 @@ if (!process.env.ROOT_SECRET) {
 }
 const organization: string | undefined = process.env.ORGANIZATION;
 if (!organization) {
-  logger.error(`Please set ORGANIZATION to the organization this node belongs to.`);
+  logger.fatal(`Please set ORGANIZATION to the organization this node belongs to.`);
   process.exit(1);
 }
 const organizationVaultSecret: string | undefined = process.env.ORGANIZATION_VAULT_SECRET;
 if (!organizationVaultSecret) {
-  logger.error(
+  logger.fatal(
     `Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.`,
   );
   process.exit(1);
@@ -59,7 +60,10 @@ const rpcSettings: ConnectionSettings = {
 
 const env = process.env.NODE_ENV || "";
 
-logger.info({ params: { rpcSettings } }, "Connecting to MultiChain node");
+logger.info(
+  { rpcSettings: rpcSettingsWithoutPassword(rpcSettings) },
+  "Connecting to MultiChain node",
+);
 const multichainClient = new RpcMultichainClient(rpcSettings);
 
 const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH, env);
@@ -112,44 +116,46 @@ registerRoutes(
   backupApiPort,
 );
 
-logger.info("Register fastify endpoint");
-
 server.listen(port, "0.0.0.0", async err => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
     process.exit(1);
   }
-  logger.info({ params: { port } }, `Server is listening on ${port}`);
 
   const retryIntervalMs = 5000;
 
   while (!(await isReady(multichainClient))) {
-    logger.error(
+    logger.info(
       `MultiChain connection/permissions not ready yet. Trying again in ${retryIntervalMs / 1000}s`,
     );
     await timeout(retryIntervalMs);
   }
-  logger.info("MultiChain connection established");
 
   while (
     !(await ensureOrganizationStream(multichainClient, organization!, organizationVaultSecret!)
       .then(() => true)
       .catch(() => false))
   ) {
-    logger.error(
-      { error: { multichainClient, organization } },
-      "Failed to create organization stream.",
+    logger.info(
+      { multichainClient, organization },
+      `Failed to create organization stream. Trying again in ${retryIntervalMs / 1000}s`,
     );
     await timeout(retryIntervalMs);
   }
-  logger.info({ params: { multichainClient, organization } }, "Organization stream present");
+  logger.debug({ multichainClient, organization }, "Organization stream present");
 
   while (!(await registerSelf())) {
-    logger.error(
-      { error: { multichainClient, organization } },
+    logger.info(
+      { multichainClient, organization },
       `Failed to register node. Trying again in ${retryIntervalMs / 1000}s`,
     );
     await timeout(retryIntervalMs);
   }
-  logger.info({ params: { multichainClient, organization } }, "Node registered in nodes stream");
+  logger.debug({ params: { multichainClient, organization } }, "Node registered in nodes stream");
 });
+
+function rpcSettingsWithoutPassword(settings) {
+  const tmp = deepcopy(settings);
+  delete tmp.password;
+  return tmp;
+}

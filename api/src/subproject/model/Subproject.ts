@@ -128,7 +128,6 @@ export async function get(
       const result = handleCreate(event);
       if (result === undefined) {
         const message = "Failed to initialize resource";
-        logger.error({ error: { event } }, message );
         throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
       resource = result.resource;
@@ -144,7 +143,6 @@ export async function get(
         applyRevokePermission(event, permissions);
       if (!hasProcessedEvent) {
         const message = "An error occured while processing event";
-        logger.error({ error: { event } }, message);
         throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
@@ -312,10 +310,6 @@ export async function getPermissions(
     }
   }
   if (permissions === undefined) {
-    logger.error(
-      { error: { multichain, subprojectId, projectId } },
-      `Subproject ${subprojectId} of project ${projectId} not found.`,
-    );
     throw { kind: "NotFound", what: `Subproject ${subprojectId} of project ${projectId}.` };
   }
   return permissions;

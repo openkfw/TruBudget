@@ -44,7 +44,7 @@ export const getPermissions = async (
       logger.debug("Global permissions not found. Happens at startup.");
       return {};
     } else {
-      logger.error({ error: err }, "Global permissions not found");
+      logger.error({ error: err }, "Error while retrieving global permissions");
       throw err;
     }
   }
@@ -59,8 +59,7 @@ export const grantPermission = async (
   const permissions = await getPermissions(multichain);
   const permissionsForIntent: People = permissions[intent] || [];
   if (permissionsForIntent.includes(identity)) {
-    logger.info({ params: { intent } }, "User is already permitted to execute given intent");
-    // The given user is already permitted to execute the given intent.
+    logger.debug({ params: { intent } }, "User is already permitted to execute given intent");
     return;
   }
   permissionsForIntent.push(identity);
@@ -85,7 +84,7 @@ export const revokePermission = async (
     permissions = await getPermissions(multichain);
   } catch (err) {
     if (err.kind === "NotFound") {
-      logger.info("No permission set, nothing to revoke");
+      logger.debug("No permission set, nothing to revoke");
       // No permissions set yet, so nothing to revoke.
       return;
     } else {

@@ -16,7 +16,6 @@ export class RpcClient {
     const protocol = `${settings.protocol || "http"}`;
     const host = settings.host || "localhost";
     const port = settings.port || 8570;
-    logger.debug({ parameters: { protocol, host, port, settings } }, "Creating Axios instance");
     this.instance = axios.create({
       baseURL: `${protocol}://${host}:${port}/`,
       method: "POST",
@@ -31,7 +30,7 @@ export class RpcClient {
   }
 
   invoke(method: string, ...params: any[]): any {
-    logger.debug({parameters: { method, params }}, `Invoking method ${method}`);
+    logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
     const request: RpcRequest = {
       method,
       params,
@@ -41,7 +40,7 @@ export class RpcClient {
         .post("/", JSON.stringify(request))
         .then(resp => {
           // this is only on Response code 2xx
-          logger.debug({data : resp.data}, "Received valid response.");
+          logger.trace({ data: resp.data }, "Received valid response.");
           resolve(resp.data.result);
         })
         .catch((error: AxiosError) => {
@@ -52,8 +51,8 @@ export class RpcClient {
             // that falls out of the range of 2xx and WITH multichain errors:
             response = error.response.data.error;
             reject(response);
-            logger.debug(
-              { params: { response } },
+            logger.trace(
+              { response },
               `Error during invoke of ${method}. Multichain errors occured.`,
             );
             return;

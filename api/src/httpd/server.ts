@@ -26,12 +26,32 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
     try {
       await request.jwtVerify();
     } catch (err) {
-      logger.error({ error: err }, "Authentication error");
+      logger.debug({ error: err }, "Authentication error");
       reply.status(401).send({
         apiVersion: DEFAULT_API_VERSION,
         error: { code: 401, message: "A valid JWT auth bearer token is required for this route." },
       });
     }
+  });
+};
+
+const addLogging = (server: fastify.FastifyInstance) => {
+  server.addHook("preHandler", (req, _reply, done) => {
+    logger.debug({
+      id: req.id,
+      url: req.req.url,
+      params: req.params,
+    });
+    done();
+  });
+  server.addHook("onSend", (req, reply, payload, done) => {
+    logger.debug({
+      id: req.id,
+      status: reply.res.statusCode,
+      message: reply.res.statusMessage,
+      payload,
+    });
+    done();
   });
 };
 
@@ -76,10 +96,10 @@ export const createBasicApp = (
   urlPrefix: string,
   apiPort: Number,
   swaggerBasePath: string,
-  env: string
+  env: string,
 ) => {
   const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
-    logger,
+    logger: false,
   });
 
   server.setSchemaCompiler(schema => {
@@ -108,6 +128,7 @@ export const createBasicApp = (
   registerSwagger(server, urlPrefix, apiPort, swaggerBasePath);
 
   addTokenHandling(server, jwtSecret);
+  addLogging(server);
 
   server.addContentTypeParser("application/gzip", (req, done) => {
     rawBody(

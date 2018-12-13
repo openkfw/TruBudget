@@ -92,7 +92,9 @@ export async function publish(
   return publishEvent().catch(err => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
-      logger.warn(`The stream ${streamName} does not exist yet. Creating the stream and trying again.`);
+      logger.debug(
+        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
+      );
       return multichain
         .getOrCreateStream({ kind: "nodes", name: streamName })
         .then(() => publishEvent());
@@ -110,7 +112,7 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
       if (err.kind === "NotFound" && err.what === "stream nodes") {
         // The stream does not exist yet, which happens on (freshly installed) systems that
         // have not seen any notifications yet.
-        logger.warn(`The stream ${streamName} does not exist yet.`);
+        logger.debug(`The stream ${streamName} does not exist yet.`);
         return [];
       } else {
         logger.error({ error: err }, `Getting stream items failed.`);
@@ -126,7 +128,6 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
 
     if (item.keys.length !== 1) {
       const message = "Unexpected item key in 'nodes' stream";
-      logger.error({ error: { keys: item.keys } }, "Unexpected item key in 'nodes' stream");
       throw Error(`${message}: ${JSON.stringify(item.keys)}`);
     }
     const address = item.keys[0];
@@ -136,13 +137,11 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
       nodeInfo = handleCreate(event);
     }
     if (nodeInfo === undefined) {
-      logger.error({ error: { event, nodeInfo } }, "Event cannot be handled");
       throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
     } else {
       nodeEventsByAddress.set(address, nodeInfo);
       const { organization } = nodeInfo.address;
       if (organization) organizationsByAddress.set(address, organization);
-      logger.debug({ organization }, "Setting organization.");
     }
   }
   for (const [address, info] of nodeEventsByAddress.entries()) {
