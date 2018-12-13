@@ -23,7 +23,6 @@ export type HttpStatusCode = number;
 export type HttpResponse = [HttpStatusCode, SuccessResponse | ErrorResponse];
 
 export const throwParseError = (badKeys, message?) => {
-  logger.error({ error: { badKeys, message } }, "Parsing error occured");
   throw { kind: "ParseError", badKeys, message };
 };
 
@@ -35,6 +34,6 @@ export const throwParseErrorIfUndefined = (obj, path) => {
       throwParseError(path[path.length - 1], "Value undefined");
     }
   } catch (_err) {
-    throwParseError([path.join(".")], _err.message );
+    throwParseError([path.join(".")], _err.message);
   }
 };

@@ -27,9 +27,6 @@ export const publish = async (
   const streamItem = { json: event };
 
   const publishEvent = () => {
-    console.log(
-      `Publishing ${event.intent} to ${globalstreamName}/${JSON.stringify(streamItemKey)}`,
-    );
     return multichain
       .getRpcClient()
       .invoke("publish", globalstreamName, streamItemKey, streamItem)

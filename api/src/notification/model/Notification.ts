@@ -83,7 +83,7 @@ export async function publish(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
-      logger.warn(
+      logger.debug(
         `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
       );
       // The stream does not exist yet. Create the stream and try again:
@@ -131,7 +131,6 @@ export async function get(
       const hasProcessedEvent = applyMarkRead(event, notification);
       if (!hasProcessedEvent) {
         const message = "Unexpected event occured";
-        logger.error({ event }, message);
         throw Error(`${message}: ${JSON.stringify(event)}.`);
       }
     }
@@ -247,7 +246,6 @@ export async function buildDisplayNameMap(
 
     if (projectId === undefined) {
       const message = "Missing projectId";
-      logger.error({ error: notification.resources }, message);
       throw Error(`${message}: ${JSON.stringify(notification.resources)}`);
     }
 

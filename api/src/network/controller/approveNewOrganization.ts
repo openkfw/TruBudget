@@ -21,10 +21,7 @@ export async function approveNewOrganization(
 
   if (!futureOrganizationAddress) {
     const message = `No node registered for organization '${organization}'`;
-    logger.error(
-      { error: { organization, multichain, input } },
-      message,
-    );
+    logger.debug({ error: { organization, multichain, input } }, message);
     throw Error(message);
   }
 
