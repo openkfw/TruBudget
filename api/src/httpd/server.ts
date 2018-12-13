@@ -100,6 +100,7 @@ export const createBasicApp = (
 ) => {
   const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger: false,
+    bodyLimit: 104857600,
   });
 
   server.setSchemaCompiler(schema => {
