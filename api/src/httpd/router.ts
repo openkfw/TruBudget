@@ -67,7 +67,7 @@ const send = (res, httpResponse: HttpResponse) => {
 const handleError = (req, res, err: any) => {
   switch (err.kind) {
     case "NotAuthorized":
-      logger.debug({ error: err });
+      logger.debug({ error: err }, `User ${err.token.userId} is not authorized.`);
       send(res, [
         403,
         {
@@ -81,7 +81,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "AddressIsInvalid":
-      logger.error({ error: err });
+      logger.error({ error: err }, `The address is invalid.`);
       send(res, [
         400,
         {
@@ -92,7 +92,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "UserAlreadyExists":
-      logger.warn({ error: err });
+      logger.warn({ error: err }, `The user already exists.`);
       send(res, [
         409,
         {
@@ -103,7 +103,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "GroupAlreadyExists":
-      logger.warn({ error: err });
+      logger.warn({ error: err }, `Group ${err.targetGroupId} already exists`);
       send(res, [
         409,
         {
@@ -114,7 +114,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "ProjectIdAlreadyExists":
-      logger.warn({ error: err });
+      logger.warn({ error: err }, `The project id ${err.projectId} already exists.`);
       send(res, [
         409,
         {
@@ -125,37 +125,37 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "SubprojectIdAlreadyExists":
-      logger.warn({ error: err });
+      logger.warn({ error: err }, `The subproject id ${err.subprojectId} already exists.`);
       send(res, [
         409,
         {
           apiVersion: "1.0",
-          error: { code: 409, message: `The project's id already exists.` },
+          error: { code: 409, message: `The subproject id already exists.` },
         },
       ]);
       break;
 
     case "ParseError": {
-      logger.debug({ error: err });
       let message;
       if (err.message !== undefined) {
         message = `Error parsing fields ${err.badKeys.join(", ")}: ${err.message}`;
       } else {
         message = `Missing keys: ${err.badKeys.join(", ")}`;
       }
+      logger.debug({ error: err }, message);
       send(res, [400, { apiVersion: "1.0", error: { code: 400, message } }]);
       break;
     }
 
     case "PreconditionError": {
-      logger.warn({ error: err });
       const { message } = err;
+      logger.warn({ error: err }, message);
       send(res, [412, { apiVersion: "1.0", error: { code: 412, message } }]);
       break;
     }
 
     case "AuthenticationError":
-      logger.debug({ error: err });
+      logger.debug({ error: err }, "Authentication failed");
       send(res, [
         401,
         {
@@ -166,7 +166,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "NotFound":
-      logger.debug({ error: err });
+      logger.debug({ error: err }, "Not found.");
       send(res, [
         404,
         {
@@ -177,7 +177,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "CorruptFileError":
-      logger.error({ error: err });
+      logger.error({ error: err }, "File corrupt." );
       send(res, [
         400,
         {
@@ -188,7 +188,7 @@ const handleError = (req, res, err: any) => {
       break;
 
     case "UnsupportedMediaType":
-      logger.debug({ error: err });
+      logger.debug({ error: err }, `Unsupported media type: ${err.contentType}.`);
       send(res, [
         415,
         {
@@ -201,7 +201,7 @@ const handleError = (req, res, err: any) => {
     default:
       // handle RPC errors, too:
       if (err.code === -708) {
-        logger.debug({ error: err });
+        logger.debug({ error: err }, "Not found.");
         send(res, [
           404,
           {
@@ -210,7 +210,7 @@ const handleError = (req, res, err: any) => {
           },
         ]);
       } else {
-        logger.error({ error: err });
+        logger.error({ error: err }, "INTERNAL SERVER ERROR");
         send(res, [
           500,
           {

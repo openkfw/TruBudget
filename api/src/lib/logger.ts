@@ -17,10 +17,9 @@ const prettyPrint =
         crlf: false,
       };
 
-// const level = process.env.NODE_ENV === "production" ? "info" : "debug";
 const levelInput = process.env.LOG_LEVEL || "info";
 const levelInputLowerCase = levelInput.toLowerCase();
-const level = logLevels.indexOf(levelInputLowerCase) > -1 ? levelInputLowerCase : "info";
+const level = logLevels.includes(levelInputLowerCase) ? levelInputLowerCase : "info";
 
 const redact = {
   paths: ["rpcSettings.password", "password", "*.passwordDigest", "passwordDigest"],
@@ -29,11 +28,16 @@ const crlf = false;
 const messageKey = "message";
 const useLevelLabels = true;
 
+const serializers = {
+  error: pino.stdSerializers.err,
+};
+
 const logger = pino({
   name,
   base,
   level,
   prettyPrint,
+  serializers,
   // @ts-ignore
   redact,
   useLevelLabels,
