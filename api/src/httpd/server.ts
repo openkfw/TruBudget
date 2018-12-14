@@ -58,8 +58,8 @@ const addLogging = (server: fastify.FastifyInstance) => {
 const registerSwagger = (
   server: fastify.FastifyInstance,
   urlPrefix: string,
-  apiPort: Number,
-  swaggerBasePath: String,
+  apiPort: number,
+  swaggerBasePath: string,
 ) => {
   server.register(require("fastify-swagger"), {
     // logLevel: "info",
@@ -74,6 +74,7 @@ const registerSwagger = (
         version: "0.1.0",
       },
       basePath: `${swaggerBasePath}`,
+      schemes: ["http"],
       consumes: ["application/json"],
       produces: ["application/json"],
       securityDefinitions: {
@@ -94,7 +95,7 @@ const registerSwagger = (
 export const createBasicApp = (
   jwtSecret: string,
   urlPrefix: string,
-  apiPort: Number,
+  apiPort: number,
   swaggerBasePath: string,
   env: string,
 ) => {
