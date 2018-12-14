@@ -3,12 +3,13 @@ import * as pino from "pino";
 
 // Log Parameters
 const logLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
+const prettyPrintOptions = ["false", "off", "0", "no", "n"];
 const name = "TruBudget";
 const hostname = os.hostname();
 const base = { hostname };
 const prettyPrintInput = process.env.PRETTY_PRINT || "";
 const prettyPrint =
-  prettyPrintInput.toLowerCase() in ["false", "off", "0", "no", "n"]
+  prettyPrintOptions.includes(prettyPrintInput.toLowerCase())
     ? false
     : {
         colorize: "true",
