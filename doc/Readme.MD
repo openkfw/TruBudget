@@ -1,132 +1,35 @@
-Follow these steps for the Demo version:
+# Trubudget-Wiki
 
-# Burkina Faso Sample – Primary School Project
+### [Installation Guide](./wiki/Installation-Guide/Installation-Guide.md)
 
-## Storyline
+This guide includes an introduction how to install and set up Trubudget.
 
-Use Abbas Tutelle (Line Ministry in our case Ministry of education) to login as the responsible entity for project implementation.
+### [User Guide](./wiki/User-Guide/README.md)
 
-Chose the Primary School Project.
+This guide describes how to use the application as a user.
 
-Open Design studies to show how it looks when all workflows of a sub-project are completed. 
+### [Contributer Guide](./wiki/Contributer-Guide/Contributer-Guide.md)
 
-Then go back and to Consultancy supervision.
+This guide includes an introduction for developers who want to contribute.
 
-Login as Rose Finance. 
+### [Onboarding](./wiki/Onboarding/Onboarding-Checklist.md)
 
-As Abbas Tutelle, assign the current workflow (Payment Interim Installment) to Rose Finance. 
+A checklist to enable the setup of TruBudget
 
-Switching to Rose Finance, show that she now received a notification. 
+### Architecture Decision Records
 
-The Finance Ministry can now pay the consultant the interim installment and then close the workflow as confirmation of the payment. 
-
-Do so: Close the workflow as Rose Finance.
-
-Go back to Abbas Tutelle to show that he is beeing notified that the workflow has been closed by Rose Finance. 
-
-
-To show how external service providers such as a tender agent can be directly included in the process, go to Construction Lot 2.
-
-Logout as Rose Finance. 
-
-Login as Francis Tender.
-
-As Abbas Tutelle, assign the current workflow (Tender evaluation) to Francis Tender. 
-
-Show that Francis Tender received the notification.
-
-He can now work on his task and once it is done, close the workflow item. 
-
-Thereby, Abbas Tutelle will immediately see that the tender evaluation has been completed. 
-
-
-To illustrate that also other service providers can be directly included, go to Construction Lot 1.
-
-Logout as Francis Tender and login as Paul Chantier. 
-
-As Abbas Tutelle assign the current workflow (Progress report) to Paul Chantier.
-
-Use Paul Chantier (he is very fast in writting progress reports) to close it and once again Abbas to show the immediate notification. 
-
-Show the histogram to prove that all actions have been documented.
-
-
-## Users and Roles
-
-* Rose Finance (ID: rfinance) – Ministry of Finance
-
-* Abbas Tutelle (ID: atutelle) – Line Ministry (PEA)
-
-* Peter Bailleur (ID: pbailleur) – ACMECorp (Donor)
-
-* Simon Tresor (ID: stresor) – Central Bank
-
-* Fatime Audit (ID: faudit) – National Audit
-
-* Paul Chantier (ID: pchantier) – Service Provider
-
-* Francis Tender (ID: ftender) – Tender Agent
-
-
-# Gavi Sample - Vaccination in Senegal 2018 
-
-## Storyline
-
-Login as Moz Siddiqui (Gavi).
-
-Open the first sub-project (Shipment DTP 1/10) to show how a complete supply chain looks like. 
-
-(Background info: DTP is a vaccine combination used for immunization against diphtheria, pertussis (whooping cough), and tetanus.)
-
-Go back and open the second sub-project (Shipment DTP 2/10) to show how a supply chain looks in progress. 
-
-Here the product (DTP Vaccine) is already in the storage facility of UPS in Senegal. 
-
-Login as Flora Health instead of Moz Siddiqui. 
-
-Also login as Salif Distributor (UPS). 
-
-As Salif Distributor (UPS) assign the current workflow (UPS to Health Center Dakar 1: Distribution) to Flora Health (to notify her that UPS request a confirmation of delivery).
-  
-Flora Health indeed received a shipment of DTP in her health center and confirms reception by closing the workflow.
-
-Show the histogram to prove that all actions have been documented.
-
-
-Lastly, create a third sub-project (Shipment DTP 3/10) to show how to issue a new order. 
-
-Logout as Flora Health and login as Moz Siddiqui (Gavi). 
-
-Logout as UPS and login as Anna Producer (Novartis).
-
-As Moz Siddiqui create a the new sub-project and a first workflow:
-
-Name: Gavi to Novartis: Order
-
-Budget: 1 000 000€
-
-Comment: Date; 10 000 units of DTP at 100€/unit
-
-Assign the workflow to Novartis.
-
-Show that Novartis received a notification about the new order. 
-
-
-## Users and Roles
-
-* Moz Siddiqui (ID: msiddiqui) – Gavi
-
-* Anna Producer (ID: aproducer) – Novartis
-
-* Kevin Deliverer (ID: kdeliverer) – DHL
-
-* Carine Customs (ID: ccustoms) – Customs Senegal
-
-* Salif Distributor (ID: sdistributor) – UPS
-
-* Flora Health (ID: fhealth) – Health Center Dakar 1
-
-* Ibrahim Health (ID: ihealth) – Health Center Dakar 2
-
-* Alice Health (ID: ahealth) – Health Center Dakar 3
-
+An architectural decision record (ADR) is a document that captures an important architectural decision made along with its context and consequences.
+For more information about what an ADR is visit the [architecture_decision_record-project](https://github.com/joelparkerhenderson/architecture_decision_record) on github.
+Following table shows a list of Trubudget's ADRs:
+| Title        | Link           | 
+|:------------- |:-------------| 
+| 0001-record-architecture-decisions   | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0001-record-architecture-decisions.md   | 
+| 0002-access-control-model            | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0002-access-control-model.md            | 
+| 0003-project-data-model              | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0003-project-data-model.md              | 
+| 0004-ressource-level-lifetime        | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0004-ressource-level-lifetime.md        | 
+| 0005-workflowitem-ordering           | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0005-workflowitem-ordering.md           | 
+| 0006-multi-node-setup                | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0006-multi-node-setup.md                | 
+| 0007-execution-architecture-overview | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0007-execution-architecture-overview.md | 
+| 0008-git-branching-model             | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0008-git-branching-model.md             | 
+| 0009-migration-model                 | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0009-migration-model.md                 | 
+| 0010-multi-node-setup                | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0010-multi-node-setup.md                | 
