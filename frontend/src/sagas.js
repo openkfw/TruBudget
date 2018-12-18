@@ -435,14 +435,14 @@ export function* markMultipleNotificationsAsReadSaga({ notificationIds, offset, 
     });
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
-      showLoading: false,
+      showLoading: true,
       offset,
       limit
     });
     yield put({
       type: FETCH_NOTIFICATION_COUNTS
     });
-  }, false);
+  }, true);
 }
 
 export function* loginSaga({ user }) {
