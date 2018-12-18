@@ -12,15 +12,12 @@ This guide describes how to use the application as a user.
 
 This guide includes an introduction for developers who want to contribute.
 
-### [Onboarding](./wiki/Onboarding/Onboarding-Checklist.md)
-
-A checklist to enable the setup of TruBudget
-
 ### Architecture Decision Records
 
 An architectural decision record (ADR) is a document that captures an important architectural decision made along with its context and consequences.
 For more information about what an ADR is visit the [architecture_decision_record-project](https://github.com/joelparkerhenderson/architecture_decision_record) on github.
 Following table shows a list of Trubudget's ADRs:
+
 | Title        | Link           | 
 |:------------- |:-------------| 
 | 0001-record-architecture-decisions   | https://github.com/openkfw/TruBudget/blob/master/doc/adr/0001-record-architecture-decisions.md   | 
