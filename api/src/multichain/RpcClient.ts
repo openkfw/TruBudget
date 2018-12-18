@@ -19,7 +19,7 @@ export class RpcClient {
     this.instance = axios.create({
       baseURL: `${protocol}://${host}:${port}/`,
       method: "POST",
-      timeout: 10000,
+      timeout: 90000,
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
       auth: {
