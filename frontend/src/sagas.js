@@ -417,14 +417,14 @@ export function* markNotificationAsReadSaga({ notificationId, offset, limit }) {
     });
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
-      showLoading: false,
+      showLoading: true,
       offset,
       limit
     });
     yield put({
-      type: FETCH_NOTIFICATION_COUNTS
+      type: FETCH_NOTIFICATION_COUNTS,
     });
-  }, false);
+  }, true);
 }
 
 export function* markMultipleNotificationsAsReadSaga({ notificationIds, offset, limit }) {
