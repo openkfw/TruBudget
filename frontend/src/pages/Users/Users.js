@@ -35,7 +35,11 @@ const styles = {
   }
 };
 const Users = props => {
-  const { tabIndex, setTabIndex, showDashboardDialog } = props;
+  const { tabIndex, setTabIndex, showDashboardDialog, allowedIntents } = props;
+  const isCreateButtonDisabled = tabIndex === 0 ?
+    ! allowedIntents.includes("global.createUser") :
+    ! allowedIntents.includes("global.createGroup");
+  const onClick = () => tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup");
   return (
     <div id="userdashboard" style={styles.container}>
       <div style={styles.customWidth}>
@@ -51,11 +55,9 @@ const Users = props => {
           </Tabs>
         </AppBar>
         <div style={styles.createButtonContainer}>
-          <Button
+          <Button disabled={isCreateButtonDisabled}
             data-test="create"
-            onClick={() => {
-              tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup");
-            }}
+            onClick={onClick}
             color="primary"
             style={styles.createButton}
             variant="fab"

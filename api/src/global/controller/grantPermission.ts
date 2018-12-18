@@ -19,7 +19,7 @@ export const grantGlobalPermission = async (
   await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   await Global.grantPermission(multichain, identity, intent);
-  logger.debug( { identity, intent }, "Granting permission.");
+  logger.debug({ identity, intent }, "Granting permission.");
   return [
     200,
     {
