@@ -105,6 +105,15 @@ export const getGroupsForUser = async (
   return groups.filter(group => group.users.includes(userId));
 };
 
+export const getUsersForGroup = async (
+  multichain: MultichainClient,
+  groupId: string,
+): Promise<string[]> => {
+  const groups = await getAll(multichain);
+  const selectedGroup = groups.filter(group => group.groupId === groupId);
+  return selectedGroup[0].users;
+};
+
 async function fetchStreamItems(multichain: MultichainClient): Promise<Liststreamkeyitems.Item[]> {
   return multichain.v2_readStreamItems("groups", "*");
 }

@@ -1,13 +1,15 @@
 import { v4 as uuid } from "uuid";
+
 import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
 import { UserId } from "../authz/types";
+import { getUsersForGroup, groupExists } from "../group";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
 import * as Project from "../project/model/Project";
 import * as Subproject from "../subproject/model/Subproject";
 import * as Workflowitem from "../workflowitem/model/Workflowitem";
 import * as Notification from "./model/Notification";
+import logger from "../lib/logger";
 
 export async function createNotification(
   multichain: MultichainClient,
@@ -53,15 +55,25 @@ export async function notifyAssignee(
   skipNotificationsFor: UserId[],
 ): Promise<string | undefined> {
   const resource = getResource(resourceOrResourceList);
-
   if (resource === undefined) return;
-  const assignee = resource.data.assignee;
 
+  const assignee = resource.data.assignee;
   if (assignee === undefined) return;
   if (skipNotificationsFor.includes(assignee)) return assignee;
 
-  await createNotification(multichain, resourceDescriptions, createdBy, assignee, publishedEvent);
+  const isAssigneeGroup = await groupExists(multichain, assignee);
+  if (isAssigneeGroup) {
+    const assignees = await getUsersForGroup(multichain, assignee);
+    logger.debug({groupid: assignee, users: assignees}, "Resource was assigned to group");
+    await Promise.all(
+      assignees.map(async groupMember => {
+        await createNotification(multichain, resourceDescriptions, createdBy, groupMember, publishedEvent);
+      }),
+    );
+    return assignee;
+  }
 
+  await createNotification(multichain, resourceDescriptions, createdBy, assignee, publishedEvent);
   return assignee;
 }
 
