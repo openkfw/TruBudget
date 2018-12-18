@@ -33,7 +33,9 @@ class UserManagementContainer extends Component {
   componentWillMount() {
     this.props.fetchUser();
     this.props.fetchGroups();
-    this.props.listGlobaPermissions()
+    if(this.props.allowedIntents.includes("global.listPermissions")) {
+      this.props.listGlobalPermissions()
+    }
   }
   componentWillUnmount() {
     this.props.resetState();
@@ -89,7 +91,7 @@ const mapDispatchToProps = dispatch => {
     setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),
     grantAllUserPermissions: userId => dispatch(grantAllUserPermissions(userId)),
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId)),
-    listGlobaPermissions: () => dispatch(listPermissions())
+    listGlobalPermissions: () => dispatch(listPermissions())
   };
 };
 

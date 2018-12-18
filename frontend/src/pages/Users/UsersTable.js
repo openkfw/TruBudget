@@ -21,8 +21,9 @@ const sortUsers = users => {
   return _sortBy(users, user => user.organization && user.id);
 };
 
-const UsersTable = ({ classes, users, showDashboardDialog, userId }) => {
+const UsersTable = ({ classes, users, showDashboardDialog, userId, allowedIntents }) => {
   const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true)) //&& u.id !== userId));
+  const arePermissionsDisplayed = allowedIntents.includes("global.listPermissions");
   return (
     <Paper>
       <Table>
@@ -44,9 +45,11 @@ const UsersTable = ({ classes, users, showDashboardDialog, userId }) => {
                 <TableCell>{user.displayName}</TableCell>
                 <TableCell>{user.organization}</TableCell>
                 <TableCell>
+                  { arePermissionsDisplayed ?
                   <IconButton onClick={() => showDashboardDialog("editUser", user.id)}>
                     <PermissionIcon className={classes.iconColor} />
-                  </IconButton>
+                  </IconButton> : null
+                  }
                 </TableCell>
               </TableRow>
             );
