@@ -21,6 +21,7 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
+#     EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
 
@@ -44,6 +45,7 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
+#      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcTestMasterVolume:/root/.multichain
 

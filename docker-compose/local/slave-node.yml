@@ -29,6 +29,7 @@ services:
       API_PROTO: http
       API_HOST: ${API_PROD_HOST}
       API_PORT: ${API_PROD_PORT}
+      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcSlaveVolume:/root/.multichain
 
@@ -61,6 +62,7 @@ services:
       API_PROTO: http
       API_HOST: ${API_TEST_HOST}
       API_PORT: ${API_TEST_PORT}
+      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcTestSlaveVolume:/root/.multichain
 
