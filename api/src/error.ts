@@ -21,15 +21,9 @@ export interface AddressIsInvalidError {
   kind: "AddressIsInvalid";
   address: string;
 }
-
-export interface UserAlreadyExistsError {
-  kind: "UserAlreadyExists";
-  targetUserId: string;
-}
-
-export interface GroupAlreadyExistsError {
-  kind: "GroupAlreadyExists";
-  targetGroupId: string;
+export interface IdentityAlreadyExistsError {
+  kind: "IdentityAlreadyExists";
+  targetId: string;
 }
 
 export interface SubprojectIdAlreadyExistsError {
@@ -50,8 +44,7 @@ export interface PreconditionError {
 // For documentation, all custom error types should go in here:
 export type TruBudgetError =
   | AuthenticationError
-  | UserAlreadyExistsError
-  | GroupAlreadyExistsError
+  | IdentityAlreadyExistsError
   | ProjectIdAlreadyExistsError
   | SubprojectIdAlreadyExistsError
   | NotAuthorizedError

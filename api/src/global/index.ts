@@ -1,8 +1,10 @@
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import * as Group from "../group";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
+import * as User from "../user/model/user";
 import * as Permission from "./model/Permission";
 
 const globalstreamName = "global";
@@ -114,4 +116,19 @@ export const revokePermission = async (
     dataVersion: 1, // integer
   };
   await Permission.publish(multichain, globalstreamName, args);
+};
+
+export const identityExists = async (multichain, groupOrUserId) => {
+  await ensureStreamExists(multichain);
+  const existingGroups = await Group.getGroup(multichain, groupOrUserId);
+  const groupIdExists = existingGroups ? true : false;
+  const userIdExists = await User.get(multichain, groupOrUserId)
+    .then(() => true)
+    .catch(() => false);
+
+  const exists = groupIdExists || userIdExists;
+
+  logger.debug(`ID ${groupOrUserId} ${exists ? "exists." : "does not exist."}`);
+
+  return exists ? true : false;
 };
