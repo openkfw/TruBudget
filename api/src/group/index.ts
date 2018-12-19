@@ -5,6 +5,7 @@ import { MultichainClient } from "../multichain";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
 import * as Liststreamkeyitems from "../multichain/responses/liststreamkeyitems";
 import { removeUserFromGroup } from "./removeUser";
+import { isEmpty } from "../lib/emptyChecks";
 
 const groupsStreamName = "groups";
 
@@ -105,15 +106,25 @@ export const getGroupsForUser = async (
   return groups.filter(group => group.users.includes(userId));
 };
 
+export const getUsersForGroup = async (
+  multichain: MultichainClient,
+  groupId: string,
+): Promise<string[]> => {
+  let users: string[] = [];
+  if (!isEmpty(groupId)) {
+    const group = await getGroup(multichain, groupId);
+    users = group.users;
+  }
+  return users;
+};
+
 async function fetchStreamItems(multichain: MultichainClient): Promise<Liststreamkeyitems.Item[]> {
   return multichain.v2_readStreamItems("groups", "*");
 }
 export const asMapKey = (keys: string[]): string => keys.join();
 
-export const getAll = async (multichain: MultichainClient): Promise<GroupResource[]> => {
+const mapItems = (streamItems: Liststreamkeyitems.Item[]): Map<string, GroupResource> => {
   const resourceMap = new Map<string, GroupResource>();
-  await ensureStreamExists(multichain);
-  const streamItems = await fetchStreamItems(multichain);
   for (const item of streamItems) {
     const event = item.data.json as Event;
     let resource = resourceMap.get(asMapKey(item.keys));
@@ -132,8 +143,21 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
       }
     }
   }
+  return resourceMap;
+};
+export const getAll = async (multichain: MultichainClient): Promise<GroupResource[]> => {
+  await ensureStreamExists(multichain);
+  const streamItems = await fetchStreamItems(multichain);
+  const resourceMap = mapItems(streamItems);
   const groups = [...resourceMap.values()];
   return groups;
+};
+
+const getGroup = async (multichain: MultichainClient, groupId: string) => {
+  await ensureStreamExists(multichain);
+  const groupEvents = await multichain.v2_readStreamItems("groups", groupId);
+  const resourceMap = mapItems(groupEvents);
+  return resourceMap.values().next().value;
 };
 
 function addUser(event: Event, resource: GroupResource): true | undefined {

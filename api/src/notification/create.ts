@@ -1,13 +1,15 @@
 import { v4 as uuid } from "uuid";
+
 import Intent from "../authz/intents";
-import { AuthToken } from "../authz/token";
 import { UserId } from "../authz/types";
+import { getUsersForGroup, groupExists } from "../group";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
 import * as Project from "../project/model/Project";
 import * as Subproject from "../subproject/model/Subproject";
 import * as Workflowitem from "../workflowitem/model/Workflowitem";
 import * as Notification from "./model/Notification";
+import logger from "../lib/logger";
 
 export async function createNotification(
   multichain: MultichainClient,
@@ -53,15 +55,30 @@ export async function notifyAssignee(
   skipNotificationsFor: UserId[],
 ): Promise<string | undefined> {
   const resource = getResource(resourceOrResourceList);
-
   if (resource === undefined) return;
+
   const assignee = resource.data.assignee;
-
   if (assignee === undefined) return;
-  if (skipNotificationsFor.includes(assignee)) return assignee;
+  const isAssigneeGroup = await groupExists(multichain, assignee);
 
-  await createNotification(multichain, resourceDescriptions, createdBy, assignee, publishedEvent);
-
+  /**
+   * When assignee is a group we need to fetch all users other we will just use the user that was assigned
+   */
+  const assignees = isAssigneeGroup ? await getUsersForGroup(multichain, assignee) : [assignee];
+  logger.debug({ groupid: assignee, users: assignees }, "Resource was assigned to group");
+  await Promise.all(
+    assignees.map(async groupMember => {
+      if (!skipNotificationsFor.includes(groupMember)) {
+        await createNotification(
+          multichain,
+          resourceDescriptions,
+          createdBy,
+          groupMember,
+          publishedEvent,
+        );
+      }
+    }),
+  );
   return assignee;
 }
 
