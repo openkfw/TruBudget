@@ -59,21 +59,26 @@ export async function notifyAssignee(
 
   const assignee = resource.data.assignee;
   if (assignee === undefined) return;
-  if (skipNotificationsFor.includes(assignee)) return assignee;
-
   const isAssigneeGroup = await groupExists(multichain, assignee);
-  if (isAssigneeGroup) {
-    const assignees = await getUsersForGroup(multichain, assignee);
-    logger.debug({groupid: assignee, users: assignees}, "Resource was assigned to group");
-    await Promise.all(
-      assignees.map(async groupMember => {
-        await createNotification(multichain, resourceDescriptions, createdBy, groupMember, publishedEvent);
-      }),
-    );
-    return assignee;
-  }
 
-  await createNotification(multichain, resourceDescriptions, createdBy, assignee, publishedEvent);
+  /**
+   * When assignee is a group we need to fetch all users other we will just use the user that was assigned
+   */
+  const assignees = isAssigneeGroup ? await getUsersForGroup(multichain, assignee) : [assignee];
+  logger.debug({ groupid: assignee, users: assignees }, "Resource was assigned to group");
+  await Promise.all(
+    assignees.map(async groupMember => {
+      if (!skipNotificationsFor.includes(groupMember)) {
+        await createNotification(
+          multichain,
+          resourceDescriptions,
+          createdBy,
+          groupMember,
+          publishedEvent,
+        );
+      }
+    }),
+  );
   return assignee;
 }
 
