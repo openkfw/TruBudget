@@ -13,15 +13,17 @@ import EditIcon from "@material-ui/icons/Edit";
 import strings from "../../localizeStrings";
 import { withStyles } from "@material-ui/core";
 
-const styles={
+const styles = {
   icon: {
     color: "black"
   }
-}
+};
 const sortGroups = groups => {
   return _sortBy(groups, group => group.id && group.displayName);
 };
-const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
+const GroupsTable = ({ groups, permissionIconDisplayed, showDashboardDialog, classes, allowedIntents }) => {
+  const editGroupDisplayed = allowedIntents.includes("global.createGroup");
+
   const sortedGroups = sortGroups(groups);
 
   return (
@@ -45,12 +47,16 @@ const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
                 <TableCell>{group.displayName}</TableCell>
                 <TableCell>{group.users.length}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => showDashboardDialog("editGroup", group.groupId)}>
-                    <EditIcon className={classes.icon} />
-                  </IconButton>
-                  <IconButton onClick={() => showDashboardDialog("editGroupPermissions", group.groupId)}>
-                    <PermissionIcon className={classes.icon} />
-                  </IconButton>
+                  {editGroupDisplayed ? (
+                    <IconButton onClick={() => showDashboardDialog("editGroup", group.groupId)}>
+                      <EditIcon className={classes.icon} />
+                    </IconButton>
+                  ) : null}
+                  {permissionIconDisplayed ? (
+                    <IconButton onClick={() => showDashboardDialog("editGroupPermissions", group.groupId)}>
+                      <PermissionIcon className={classes.icon} />
+                    </IconButton>
+                  ) : null}
                 </TableCell>
               </TableRow>
             );
@@ -60,4 +66,4 @@ const GroupsTable = ({ groups, showDashboardDialog, classes }) => {
     </Paper>
   );
 };
-export default withStyles(styles) (GroupsTable);
+export default withStyles(styles)(GroupsTable);

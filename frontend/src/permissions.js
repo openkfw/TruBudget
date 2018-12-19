@@ -11,7 +11,6 @@ export const canViewWorkflowItemPermissions = i => can("workflowitem.intent.list
 export const canUpdateWorkflowItem = i => can("workflowitem.update", i);
 export const canCloseWorkflowItem = i => can("workflowitem.close", i);
 export const canAssignWorkflowItem = i => can("workflowitem.assign", i);
-export const canViewUserDashboard = i => can("global.createUser", i);
 export const canViewNodesDashboard = i => can("network.list", i);
 export const canApproveNode = i => can("network.voteForPermission", i);
 
@@ -23,6 +22,10 @@ export const canViewProjectPermissions = i => can("project.intent.listPermission
 export const canCreateSubProject = i => can("project.createSubproject", i);
 export const canAssignProject = i => can("project.assign", i);
 export const canCloseProject = i => can("project.close", i);
+
+export const canViewUserDashboard = i => can("global.createUser", i) || can("global.createGroup", i) || can("global.listPermissions", i);
+
+
 
 export const globalIntentOrder = [
   {
