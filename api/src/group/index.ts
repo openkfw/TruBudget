@@ -153,7 +153,7 @@ export const getAll = async (multichain: MultichainClient): Promise<GroupResourc
   return groups;
 };
 
-const getGroup = async (multichain: MultichainClient, groupId: string) => {
+export const getGroup = async (multichain: MultichainClient, groupId: string) => {
   await ensureStreamExists(multichain);
   const groupEvents = await multichain.v2_readStreamItems("groups", groupId);
   const resourceMap = mapItems(groupEvents);
@@ -166,7 +166,9 @@ function addUser(event: Event, resource: GroupResource): true | undefined {
   }
   switch (event.dataVersion) {
     case 1: {
-      logger.info(`Adding user ${event.data.userId} to group ${resource.displayName}.`);
+      logger.debug(
+        `Building up group: Adding user ${event.data.userId} to group ${resource.displayName}.`,
+      );
       resource.users.push(event.data.userId);
       return true;
     }
@@ -183,7 +185,9 @@ function removeUser(event: Event, resource: GroupResource): true | undefined {
       if (index > -1) {
         resource.users.splice(index, 1);
       }
-      logger.info(`Removing user ${event.data.userId} from group ${resource.displayName}.`);
+      logger.debug(
+        `Building up group: Removing user ${event.data.userId} from group ${resource.displayName}.`,
+      );
       return true;
     }
   }

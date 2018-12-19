@@ -1,6 +1,5 @@
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
-import { UserAlreadyExistsError } from "../../error";
 import * as Global from "../../global";
 import logger from "../../lib/logger";
 import { MultichainClient } from "../../multichain";

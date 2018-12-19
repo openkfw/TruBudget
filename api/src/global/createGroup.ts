@@ -1,7 +1,7 @@
 import * as Global from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
-import { GroupAlreadyExistsError } from "../error";
+import { IdentityAlreadyExistsError } from "../error";
 import * as Group from "../group";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
@@ -36,8 +36,8 @@ export const createGroup = async (
       group,
     },
   };
-  if (await Group.groupExists(multichain, groupId)) {
-    throw { kind: "GroupAlreadyExists", targetGroupId: groupId } as GroupAlreadyExistsError;
+  if (await Global.identityExists(multichain, groupId)) {
+    throw { kind: "IdentityAlreadyExists", targetId: groupId } as IdentityAlreadyExistsError;
   }
 
   await Group.publish(multichain, groupId, event);
