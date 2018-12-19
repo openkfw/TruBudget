@@ -1,8 +1,7 @@
 import * as Global from ".";
 import { throwIfUnauthorized } from "../authz";
-import { userDefaultIntents } from "../authz/intents";
-import Intent from "../authz/intents";
-import { UserAlreadyExistsError } from "../error";
+import Intent, { userDefaultIntents } from "../authz/intents";
+import { IdentityAlreadyExistsError } from "../error";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 import { encrypt } from "../lib/symmetricCrypto";
@@ -27,21 +26,24 @@ export const createUser = async (
 
   // Make sure nobody creates the special "root" user:
   if (userId === "root") {
-    throw { kind: "UserAlreadyExists", targetUserId: "root" } as UserAlreadyExistsError;
+    throw { kind: "IdentityAlreadyExists", targetId: "root" } as IdentityAlreadyExistsError;
   }
 
   // Is the user allowed to create new users?
   const userIntent: Intent = "global.createUser";
   await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
-  // Quick check (= no guarantee) that the user doesn't exist already (in case there's a
-  // race and a user gets created more than once, only the first creation will actually
+  // Quick check (= no guarantee) that the given ID doesn't exist already as user or group ID (in case there's a
+  // race and a user/group ID gets created more than once, only the first creation will actually
   // be effective and all others will be ignored):
-  const userAlreadyExists = await User.get(multichain, userId)
-    .then(() => true)
-    .catch(() => false);
-  if (userAlreadyExists) {
-    throw { kind: "UserAlreadyExists", targetUserId: userId } as UserAlreadyExistsError;
+
+  // Check if the user ID was given to a group
+  const idAlreadyExists = await Global.identityExists(multichain, userId);
+  if (idAlreadyExists) {
+    throw {
+      kind: "IdentityAlreadyExists",
+      targetId: userId,
+    } as IdentityAlreadyExistsError;
   }
 
   // Every user gets her own address:

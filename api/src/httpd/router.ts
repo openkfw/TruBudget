@@ -95,21 +95,9 @@ const handleError = (req, res, err: any) => {
       break;
     }
 
-    case "UserAlreadyExists": {
-      const message = `The user already exists.`;
-      logger.warn({ error: err }, message);
-      send(res, [
-        409,
-        {
-          apiVersion: "1.0",
-          error: { code: 409, message },
-        },
-      ]);
-      break;
-    }
-    case "GroupAlreadyExists": {
-      const message = `Group ${err.targetGroupId} already exists`;
-      logger.warn({ error: err }, message);
+    case "IdentityAlreadyExists": {
+      const message = `ID ${err.targetId} already exists.`;
+      logger.error({ error: err }, message);
       send(res, [
         409,
         {
