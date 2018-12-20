@@ -1,6 +1,5 @@
 import Intent from "../../authz/intents";
-import { AuthToken } from "../../authz/token";
-import * as Global from "../../global";
+import { AuthenticationError } from "../../error";
 import logger from "../../lib/logger";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
@@ -87,7 +86,7 @@ export async function publish(
 
 export async function get(multichain: MultichainClient, userId: string): Promise<UserRecord> {
   const users = await multichain.v2_readStreamItems(usersStreamName, userId).then(sourceUsers);
-  if (users.length === 0) throw Error(`User ${userId} not found.`);
+  if (users.length === 0) throw { kind: "AuthenticationError", userId } as AuthenticationError;
   else if (users.length === 1) return users[0];
   else throw Error(`Assertion Error: userId is not unique! id=${userId} result=${users}`);
 }
