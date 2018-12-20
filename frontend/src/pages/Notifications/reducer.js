@@ -49,9 +49,11 @@ export default function navbarReducer(state = defaultState, action) {
       const { newNotifications } = action;
       const count = newNotifications.length;
       const latestFlyInId = count > 0 ? newNotifications[count - 1].notificationId : state.get("latestFlyInId");
+      const unreadNotificationCount = state.get("unreadNotificationCount") + count ;
       return state.merge({
         newNotifications: fromJS(newNotifications),
-        latestFlyInId: latestFlyInId
+        latestFlyInId: latestFlyInId,
+        unreadNotificationCount,
       });
     }
     case TIME_OUT_FLY_IN: {
