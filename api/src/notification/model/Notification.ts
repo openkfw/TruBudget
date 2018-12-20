@@ -1,16 +1,15 @@
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import deepcopy from "../../lib/deepcopy";
+import { isEmpty } from "../../lib/emptyChecks";
 import logger from "../../lib/logger";
 import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
-
 import * as Project from "../../project/model/Project";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
-import { isEmpty } from "../../lib/emptyChecks";
 
 const streamName = "notifications";
 export type NotificationId = string;

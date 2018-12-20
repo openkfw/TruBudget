@@ -260,7 +260,7 @@ export class RpcMultichainClient implements MultichainClient {
         return item;
       }),
     );
-  };
+  }
 }
 
 const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
