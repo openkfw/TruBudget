@@ -391,7 +391,7 @@ export function* fetchFlyInNotificationsSaga({ showLoading, beforeId }) {
       type: FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
       newNotifications: data.notifications
     });
-    yield delay(3000);
+    yield delay(5000);
     yield put({
       type: TIME_OUT_FLY_IN
     });
