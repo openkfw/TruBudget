@@ -5,7 +5,7 @@ import { fromJS } from "immutable";
 import sortBy from "lodash/sortBy";
 
 import ResourceHistory from "../Common/History/ResourceHistory";
-import { hideHistory } from "../Notifications/actions";
+import { hideHistory, fetchHistoryItems } from "../Notifications/actions";
 import strings from "../../localizeStrings";
 import { toJS, formatString, formatUpdateString } from "../../helper";
 import { formatPermission } from "../Common/History/helper";
@@ -98,7 +98,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    close: () => dispatch(hideHistory())
+    close: () => dispatch(hideHistory()),
+    fetchNextHistoryItems: (projectId, position, limit) => dispatch(fetchHistoryItems(projectId, 30, 30))
   };
 };
 

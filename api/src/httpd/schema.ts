@@ -1139,6 +1139,12 @@ const schemas = {
           projectId: {
             type: "string",
           },
+          offset: {
+            type: "string",
+          },
+          limit: {
+            type: "string",
+          },
         },
       },
       security: [

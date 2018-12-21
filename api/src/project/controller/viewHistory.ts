@@ -1,16 +1,21 @@
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value } from "../../lib/validation";
+import { isNonemptyString, value, isNumber } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
+import logger from "../../lib/logger";
 
 export async function getProjectHistory(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
+  const offset: number = value("offset", parseInt(input.offset, 10), isNumber);
+  const limit: number = value("limit", parseInt(input.limit, 10), isNumber);
+
+  logger.fatal({ projectId, offset, offsetType: typeof(offset), limit, limitType: typeof(limit) });
 
   const project = await Project.get(multichain, req.user, projectId).then(
     resources => resources[0],
@@ -27,7 +32,7 @@ export async function getProjectHistory(multichain: MultichainClient, req): Prom
     {
       apiVersion: "1.0",
       data: {
-        events,
+        events: events.slice(offset, offset + limit),
       },
     },
   ];

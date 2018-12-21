@@ -63,7 +63,7 @@ class SubProjectContainer extends Component {
             canClose={canClose}
           />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubproject} />
-          <ProjectHistoryContainer />
+          <ProjectHistoryContainer projectId={this.projectId} />
           <SubprojectPermissionsContainer
             projectId={this.projectId}
             subProjects={this.props.subProjects}
