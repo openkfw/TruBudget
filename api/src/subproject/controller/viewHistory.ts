@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import flatten from "../../lib/flatMap";
-import { isNonemptyString, value } from "../../lib/validation";
+import { isNonemptyString, value, isNumber } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
@@ -15,6 +15,10 @@ export async function getSubprojectHistory(
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
+  const offset: number = value("offset", parseInt(input.offset, 10), isNumber);
+  const limit: number = value("limit", parseInt(input.limit, 10), isNumber);
+
+  console.log(`Offset: ${offset}, Limit: ${limit}`);
 
   const subproject = await Subproject.get(multichain, req.user, projectId, subprojectId).then(
     resources => resources[0],
@@ -41,7 +45,8 @@ export async function getSubprojectHistory(
     {
       apiVersion: "1.0",
       data: {
-        events,
+        events: events.slice(offset, offset + limit),
+        historyItemsCount: events.length,
       },
     },
   ];

@@ -5,10 +5,11 @@ import { fromJS } from "immutable";
 import sortBy from "lodash/sortBy";
 
 import ResourceHistory from "../Common/History/ResourceHistory";
-import { hideHistory, fetchHistoryItems } from "../Notifications/actions";
+import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
 import { toJS, formatString, formatUpdateString } from "../../helper";
 import { formatPermission } from "../Common/History/helper";
+import { fetchProjectHistory, setProjectHistoryOffset } from "./actions";
 
 const calculateHistory = items => {
   return sortBy(
@@ -85,21 +86,29 @@ class ProjectHistoryContainer extends Component {
     }
   }
 
+  fetchNextHistoryItems = () => {
+    const newOffset = this.props.offset + this.props.limit;
+    this.props.fetchProjectHistory(this.props.projectId, newOffset, this.props.limit)
+    this.props.setProjectHistoryOffset(newOffset);
+  };
+
   render() {
-    return <ResourceHistory resourceHistory={this.state.resourceHistory} mapIntent={mapIntent} {...this.props} />;
+    return <ResourceHistory fetchNextHistoryItems={this.fetchNextHistoryItems} resourceHistory={this.state.resourceHistory} mapIntent={mapIntent} {...this.props} />;
   }
 }
 
 const mapStateToProps = state => {
   return {
     items: state.getIn(["detailview", "historyItems"]),
+    historyItemsCount: state.getIn(["detailview", "historyItemsCount"]),
     show: state.getIn(["notifications", "showHistory"])
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
     close: () => dispatch(hideHistory()),
-    fetchNextHistoryItems: (projectId, position, limit) => dispatch(fetchHistoryItems(projectId, 30, 30))
+    setProjectHistoryOffset: offset => dispatch(setProjectHistoryOffset(offset)),
+    fetchProjectHistory: (projectId, offset, limit) => dispatch(fetchProjectHistory(projectId, offset, limit, false))
   };
 };
 

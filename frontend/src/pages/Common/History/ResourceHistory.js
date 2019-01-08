@@ -31,37 +31,48 @@ const styles = {
   }
 };
 
-const loadFunc = page => {
-  console.log("loader!");
+const loadFunc = ( fetchNextHistoryItems) => {
+  fetchNextHistoryItems()
+
 };
 
-export default ({ projectId, show, close, resourceHistory, mapIntent }) => {
+export default ({
+  offset,
+  limit,
+  historyItemsCount,
+  setProjectHistoryOffset,
+  fetchNextHistoryItems,
+  show,
+  close,
+  resourceHistory,
+  mapIntent
+}) => {
   let items = [];
   resourceHistory.map((i, index) =>
     items.push(
-      <div key={index}>
-        <ListItem key={index}>
-          <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
-          <ListItemText
-            primary={mapIntent(i)}
-            secondary={i.createdAt ? moment(i.createdAt).fromNow() : "Processing ..."}
-          />
-        </ListItem>
-      </div>
+      <ListItem key={index}>
+        <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
+        <ListItemText
+          primary={mapIntent(i)}
+          secondary={i.createdAt ? moment(i.createdAt).fromNow() : "Processing ..."}
+        />
+      </ListItem>
     )
   );
-
+  const hasMore = offset + limit >= historyItemsCount ? false : true;
+  console.log(`hasMore: ${hasMore}, offset: ${offset}, limit: ${limit}, historyItemsCount: ${historyItemsCount}`);
   return (
     <Drawer open={show} onClose={close} anchor="right">
       {resourceHistory.length > 0 ? (
         <InfiniteScroll
           pageStart={0}
+          initialLoad={false}
           useWindow={false}
-          loadMore={page => loadFunc(page)}
-          hasMore={true}
+          loadMore={_ => loadFunc(fetchNextHistoryItems)}
+          hasMore={hasMore}
           loader={
             <div className="loader" key={0}>
-              Loading ...
+              TEST
             </div>
           }
         >

@@ -15,8 +15,6 @@ export async function getProjectHistory(multichain: MultichainClient, req): Prom
   const offset: number = value("offset", parseInt(input.offset, 10), isNumber);
   const limit: number = value("limit", parseInt(input.limit, 10), isNumber);
 
-  logger.fatal({ projectId, offset, offsetType: typeof(offset), limit, limitType: typeof(limit) });
-
   const project = await Project.get(multichain, req.user, projectId).then(
     resources => resources[0],
   );
@@ -33,6 +31,7 @@ export async function getProjectHistory(multichain: MultichainClient, req): Prom
       apiVersion: "1.0",
       data: {
         events: events.slice(offset, offset + limit),
+        historyItemsCount: events.length,
       },
     },
   ];

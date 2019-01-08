@@ -6,6 +6,8 @@ export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 
 export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
+export const SET_HISTORY_OFFSET = "SET_HISTORY_OFFSET";
+
 export const WORKFLOW_NAME = "WORKFLOW_NAME";
 export const WORKFLOW_TYPE = "WORKFLOW_TYPE";
 export const WORKFLOW_APPROVAL_REQUIRED = "WORKFLOW_APPROVAL_REQUIRED";
@@ -89,11 +91,20 @@ export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading =
   };
 }
 
-export function fetchSubprojectHistory(projectId, subprojectId, showLoading = false) {
+export function setSubProjectHistoryOffset(offset) {
+  return {
+    type: SET_HISTORY_OFFSET,
+    offset,
+  }
+}
+
+export function fetchSubprojectHistory(projectId, subprojectId, offset, limit, showLoading = false) {
   return {
     type: FETCH_SUBPROJECT_HISTORY,
     projectId,
     subprojectId,
+    offset,
+    limit,
     showLoading
   };
 }

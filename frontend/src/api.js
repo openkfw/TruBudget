@@ -115,7 +115,7 @@ class Api {
     });
 
   viewProjectDetails = projectId => instance.get(`/project.viewDetails?projectId=${projectId}`);
-  viewProjectHistory = projectId => instance.get(`/project.viewHistory?projectId=${projectId}&offset=0&limit=30`);
+  viewProjectHistory = (projectId, offset, limit) => instance.get(`/project.viewHistory?projectId=${projectId}&offset=${offset}&limit=${limit}`);
 
   listProjectIntents = projectId => instance.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
@@ -154,8 +154,8 @@ class Api {
   viewSubProjectDetails = (projectId, subprojectId) =>
     instance.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
 
-  viewSubProjectHistory = (projectId, subprojectId) =>
-    instance.get(`/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&offset=0&limit=30`);
+  viewSubProjectHistory = (projectId, subprojectId, offset, limit) =>
+    instance.get(`/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`);
 
   createWorkflowItem = payload =>
     instance.post(`/subproject.createWorkflowitem`, {
