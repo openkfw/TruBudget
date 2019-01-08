@@ -1,17 +1,14 @@
+/**
+ * DEPRECATED - see index.ts
+ */
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { AllowedUserGroupsByIntent } from "../../authz/types";
 import { SubprojectIdAlreadyExistsError } from "../../error";
-import {
-  AuthenticatedRequest,
-  HttpResponse,
-  throwParseError,
-  throwParseErrorIfUndefined,
-} from "../../httpd/lib";
+import { HttpResponse, throwParseError, throwParseErrorIfUndefined } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
-import logger from "../../lib/logger";
-import { isNonemptyString, isUserOrUndefined, value, isDate, isNumber } from "../../lib/validation";
+import { isDate, isNonemptyString, isNumber, isUserOrUndefined, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import { randomString } from "../../multichain/hash";
 import * as Subproject from "../../subproject/model/Subproject";

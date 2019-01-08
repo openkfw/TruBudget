@@ -1,6 +1,7 @@
-import { throwIfUnauthorized } from "../../authz";
-import Intent from "../../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+/**
+ * DEPRECATED - see index.ts
+ */
+import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";

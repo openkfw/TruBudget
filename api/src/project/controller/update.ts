@@ -1,7 +1,10 @@
+/**
+ * DEPRECATED - see index.ts
+ */
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { HttpResponse } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
 import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { isNonemptyString, value } from "../../lib/validation";
