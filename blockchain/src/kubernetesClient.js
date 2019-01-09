@@ -18,12 +18,12 @@ async function getService(name, namespace) {
 }
 
 async function getServiceIp(name, namespace) {
+  let externalIp = "";
   try {
     console.log(
       `Fetching current service state for service ${name} in ${namespace}`,
     );
     const service = await getService(name, namespace);
-    let externalIp = "";
     if (service.status.loadBalancer.ingress !== undefined) {
       console.log(`Service ${name} is running`);
       externalIp = service.status.loadBalancer.ingress[0].ip;
