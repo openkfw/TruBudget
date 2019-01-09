@@ -5,7 +5,7 @@ const rawTar = require("tar-stream");
 const fs = require("fs");
 const streamifier = require("streamifier");
 const yaml = require("js-yaml");
-const {getServiceIp} = require("./kubernetesClient");
+const { getServiceIp } = require("./kubernetesClient");
 
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
 
@@ -25,7 +25,8 @@ const ORGANIZATION = process.env.ORGANIZATION || "MyOrga";
 const CHAINNAME = "TrubudgetChain";
 const RPC_PORT = process.env.RPC_PORT || 8000;
 const RPC_USER = process.env.RPC_USER || "multichainrpc";
-const RPC_PASSWORD = process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
+const RPC_PASSWORD =
+  process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
 const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 
 let autostart = true;
@@ -35,7 +36,7 @@ const EXTERNAL_IP = process.env.EXTERNAL_IP;
 const P2P_HOST = process.env.P2P_HOST;
 const P2P_PORT = process.env.P2P_PORT || 7447;
 
-const API_PROTO = process.env.API_PROTO || "http";
+const API_PROTO = process.env.API_PROTO || "http";
 const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
@@ -50,7 +51,7 @@ const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
 
 const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
 const NAMESPACE = process.env.KUBE_NAMESPACE || "";
-const EXPOSE_MC = (process.env.EXPOSE_MC === "true") ? true : false;
+const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
 
 app.use(
   bodyParser.raw({
@@ -65,7 +66,7 @@ const spawnProcess = startProcess => {
   mcproc = startProcess();
   isRunning = true;
   mcproc.on("close", async code => {
-    isRunning = false
+    isRunning = false;
     if (!autostart) {
       console.log(
         `>>> multichaind stopped with exit code ${code} and autorestart is disabled`,
@@ -94,7 +95,13 @@ configureChain(
 function initMultichain() {
   if (isMaster) {
     spawnProcess(() =>
-      startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
+      startMultichainDaemon(
+        CHAINNAME,
+        externalIpArg,
+        blockNotifyArg,
+        P2P_PORT,
+        multichainDir,
+      ),
     );
   } else {
     spawnProcess(() =>
@@ -107,7 +114,7 @@ function initMultichain() {
         connectArg,
         blockNotifyArg,
         externalIpArg,
-        multichainDir
+        multichainDir,
       ),
     );
     setTimeout(
@@ -120,8 +127,8 @@ function initMultichain() {
 let externalIpArg = "";
 
 if (EXPOSE_MC) {
-  getServiceIp(SERVICE_NAME, NAMESPACE).then(
-    (response) => {
+  getServiceIp(SERVICE_NAME, NAMESPACE)
+    .then(response => {
       console.log(response);
       if (response) {
         externalIpArg = `-externalip=${response}`;
@@ -132,8 +139,21 @@ if (EXPOSE_MC) {
       }
       console.log(externalIpArg);
       initMultichain();
-    }
-  );
+    })
+    .catch(err => {
+      console.log(err.statusCode);
+      if (err.response && err.body && err.body.code === 403) {
+        console.err(
+          "It seems that the service account doesn't have the permissions to view services",
+        ); // outputs red underlined text
+        console.err(err.body);
+        console.err("Blockchain will start without an external IP...."); // outputs red underlined text
+      } else {
+        console.err(
+          `Failed to fetch the external IP of the service ${err.body}`,
+        );
+      }
+    });
 } else {
   initMultichain();
 }
@@ -168,7 +188,7 @@ app.get("/chain", async (req, res) => {
               externalIpArg,
               blockNotifyArg,
               P2P_PORT,
-              multichainDir
+              multichainDir,
             ),
           );
           autostart = true;
@@ -214,7 +234,7 @@ app.post("/chain", async (req, res) => {
               externalIpArg,
               blockNotifyArg,
               P2P_PORT,
-              multichainDir
+              multichainDir,
             ),
           );
           autostart = true;

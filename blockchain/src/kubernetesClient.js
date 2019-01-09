@@ -1,4 +1,4 @@
-const k8s = require('@kubernetes/client-node');
+const k8s = require("@kubernetes/client-node");
 const os = require("os");
 const fs = require("fs");
 
@@ -18,31 +18,28 @@ async function getService(name, namespace) {
 }
 
 async function getServiceIp(name, namespace) {
-  try {
-    console.log(`Fetching current service state for service ${name} in ${namespace}`);
-    const service = await getService(name, namespace);
-    let externalIp = "";
-    if (service.status.loadBalancer.ingress !== undefined) {
-      console.log(`Service ${name} is running`);
-      externalIp = service.status.loadBalancer.ingress[0].ip;
-    } else {
-      const retry = 15000;
-      console.log(`Service ${name} not ready, retry in ${retry / 1000} seconds `);
-      await sleep(retry);
-      await getServiceIp(name, namespace);
-      return;
-    }
-    return externalIp;
-  } catch (err) {
-    let errorMsg = err.body.message;
-    console.log(`Couldn't find service ${name} in the namespace ${namespace}. Error: ${errorMsg}`);
+  console.log(
+    `Fetching current service state for service ${name} in ${namespace}`,
+  );
+  const service = await getService(name, namespace);
+  let externalIp = "";
+  if (service.status.loadBalancer.ingress !== undefined) {
+    console.log(`Service ${name} is running`);
+    externalIp = service.status.loadBalancer.ingress[0].ip;
+  } else {
+    const retry = 15000;
+    console.log(`Service ${name} not ready, retry in ${retry / 1000} seconds `);
+    await sleep(retry);
+    await getServiceIp(name, namespace);
+    return;
   }
+  return externalIp;
 }
 
-function sleep(ms){
+function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports = {
-  getServiceIp
+  getServiceIp,
 };
