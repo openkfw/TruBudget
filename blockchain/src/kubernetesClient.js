@@ -39,13 +39,13 @@ async function getServiceIp(name, namespace) {
     return externalIp;
   } catch (err) {
     if (err.response && err.body && err.body.code === 403) {
-      console.err(
+      console.log(
         "It seems that the service account doesn't have the permissions to view services",
       ); // outputs red underlined text
-      console.err(err.body);
-      console.err("Blockchain will start without an external IP...."); // outputs red underlined text
+      console.log(err.body);
+      console.log("Blockchain will start without an external IP...."); // outputs red underlined text
     } else {
-      console.err(`Failed to fetch the external IP of the service ${err.body}`);
+      console.log(`Failed to fetch the external IP of the service ${err.body}`);
     }
     return externalIp;
   }
