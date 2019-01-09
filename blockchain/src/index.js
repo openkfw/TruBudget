@@ -5,6 +5,7 @@ const rawTar = require("tar-stream");
 const fs = require("fs");
 const streamifier = require("streamifier");
 const yaml = require("js-yaml");
+const {getServiceIp} = require("./kubernetesClient");
 
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
 
@@ -46,9 +47,10 @@ const isMaster = !P2P_HOST ? true : false;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
   ? `-blocknotify=${BLOCKNOTIFY_SCRIPT}`
   : "";
-const externalIpArg = process.env.EXTERNAL_IP
-  ? `-externalip=${EXTERNAL_IP}`
-  : "";
+
+const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
+const NAMESPACE = process.env.KUBE_NAMESPACE || "";
+const EXPOSE_MC = (process.env.EXPOSE_MC === "true") ? true : false;
 
 app.use(
   bodyParser.raw({
@@ -89,28 +91,51 @@ configureChain(
   RPC_ALLOW_IP,
 );
 
-if (isMaster) {
-  spawnProcess(() =>
-    startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
+function initMultichain() {
+  if (isMaster) {
+    spawnProcess(() =>
+      startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
+    );
+  } else {
+    spawnProcess(() =>
+      startSlave(
+        CHAINNAME,
+        API_PROTO,
+        API_HOST,
+        API_PORT,
+        P2P_PORT,
+        connectArg,
+        blockNotifyArg,
+        externalIpArg,
+        multichainDir
+      ),
+    );
+    setTimeout(
+      () => registerNodeAtMaster(ORGANIZATION, API_PROTO, API_HOST, API_PORT),
+      5000,
+    );
+  }
+}
+
+let externalIpArg = "";
+
+if (EXPOSE_MC) {
+  getServiceIp(SERVICE_NAME, NAMESPACE).then(
+    (response) => {
+      console.log(response);
+      if (response) {
+        externalIpArg = `-externalip=${response}`;
+      } else {
+        externalIpArg = process.env.EXTERNAL_IP
+          ? `-externalip=${EXTERNAL_IP}`
+          : "";
+      }
+      console.log(externalIpArg);
+      initMultichain();
+    }
   );
 } else {
-  spawnProcess(() =>
-    startSlave(
-      CHAINNAME,
-      API_PROTO,
-      API_HOST,
-      API_PORT,
-      P2P_PORT,
-      connectArg,
-      blockNotifyArg,
-      externalIpArg,
-      multichainDir
-    ),
-  );
-  setTimeout(
-    () => registerNodeAtMaster(ORGANIZATION, API_PROTO, API_HOST, API_PORT),
-    5000,
-  );
+  initMultichain();
 }
 
 const stopMultichain = async mcproc => {

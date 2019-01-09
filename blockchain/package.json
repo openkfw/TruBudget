@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@kubernetes/client-node": "^0.7.2",
     "async-each": "^1.0.1",
     "axios": "^0.17.1",
     "body-parser": "^1.18.3",
