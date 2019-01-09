@@ -24,9 +24,9 @@ async function getServiceIp(name, namespace) {
       `Fetching current service state for service ${name} in ${namespace}`,
     );
     const service = await getService(name, namespace);
-    if (service.status.loadBalancer.ingress !== undefined) {
+    if (service.status.loadBalancer.ingress !== undefined && service.status.loadBalancer.ingress[0].ip !== undefined) {
       console.log(`Service ${name} is running`);
-      console.log(service);
+      console.log(service.status.loadBalancer.ingress);
       externalIp = service.status.loadBalancer.ingress[0].ip;
     } else {
       const retry = 20000;
