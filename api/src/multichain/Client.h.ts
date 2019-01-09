@@ -31,6 +31,10 @@ export interface BlockInfo {
   miner: string;
 }
 
+export interface BlockListItem extends BlockInfo {
+  confirmations: number;
+}
+
 export interface Stream {
   name: StreamName;
   createtxid: StreamTxId;
@@ -76,8 +80,22 @@ export interface StreamItemPair {
 }
 
 export interface MultichainClient {
-  // getLastBlockInfo:
+  /**
+   * Get the latest block, possibly skipping a few.
+   *
+   * @param skip number of blocks to skip, default 0 (= latest block)
+   */
   getLastBlockInfo(skip?: number): Promise<BlockInfo>;
+
+  /**
+   * Retrieve all blocks metadata by block height range.
+   * You can retrieve the current maximum block height through calling getLastBlockInfo
+   *
+   * @param to highest block height to return (inclusive)
+   * @param from lowest block to return (inclusive), defaults to 0
+   * @param verbose verbose output, defaults to false
+   */
+  listBlocksByHeight(to: number, from?: number, verbose?: boolean): Promise<BlockListItem[]>;
 
   // Create a new stream. If name is set and the stream exists, nothing happens.
   getOrCreateStream(options: CreateStreamOptions);

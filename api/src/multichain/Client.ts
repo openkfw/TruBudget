@@ -1,6 +1,7 @@
 import logger from "../lib/logger";
 import {
   BlockInfo,
+  BlockListItem,
   CreateStreamOptions,
   MultichainClient,
   Resource,
@@ -224,6 +225,12 @@ export class RpcMultichainClient implements MultichainClient {
   public async getLastBlockInfo(skip: number = 0): Promise<BlockInfo> {
     return this.rpcClient
       .invoke("getlastblockinfo", skip);
+  }
+
+  public async listBlocksByHeight(to: number, from: number = 0, verbose: boolean = false,
+  ): Promise<BlockListItem[]> {
+    return this.rpcClient
+      .invoke("listblocks", `${from}-${to}`, verbose);
   }
 
   public async listStreamBlockItemsByHeight(
