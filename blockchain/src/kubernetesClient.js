@@ -18,22 +18,37 @@ async function getService(name, namespace) {
 }
 
 async function getServiceIp(name, namespace) {
-  console.log(
-    `Fetching current service state for service ${name} in ${namespace}`,
-  );
-  const service = await getService(name, namespace);
-  let externalIp = "";
-  if (service.status.loadBalancer.ingress !== undefined) {
-    console.log(`Service ${name} is running`);
-    externalIp = service.status.loadBalancer.ingress[0].ip;
-  } else {
-    const retry = 15000;
-    console.log(`Service ${name} not ready, retry in ${retry / 1000} seconds `);
-    await sleep(retry);
-    await getServiceIp(name, namespace);
-    return;
+  try {
+    console.log(
+      `Fetching current service state for service ${name} in ${namespace}`,
+    );
+    const service = await getService(name, namespace);
+    let externalIp = "";
+    if (service.status.loadBalancer.ingress !== undefined) {
+      console.log(`Service ${name} is running`);
+      externalIp = service.status.loadBalancer.ingress[0].ip;
+    } else {
+      const retry = 15000;
+      console.log(
+        `Service ${name} not ready, retry in ${retry / 1000} seconds `,
+      );
+      await sleep(retry);
+      await getServiceIp(name, namespace);
+      return;
+    }
+    return externalIp;
+  } catch (err) {
+    if (err.response && err.body && err.body.code === 403) {
+      console.err(
+        "It seems that the service account doesn't have the permissions to view services",
+      ); // outputs red underlined text
+      console.err(err.body);
+      console.err("Blockchain will start without an external IP...."); // outputs red underlined text
+    } else {
+      console.err(`Failed to fetch the external IP of the service ${err.body}`);
+    }
+    return externalIp;
   }
-  return externalIp;
 }
 
 function sleep(ms) {

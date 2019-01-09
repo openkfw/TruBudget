@@ -127,33 +127,18 @@ function initMultichain() {
 let externalIpArg = "";
 
 if (EXPOSE_MC) {
-  getServiceIp(SERVICE_NAME, NAMESPACE)
-    .then(response => {
-      console.log(response);
-      if (response) {
-        externalIpArg = `-externalip=${response}`;
-      } else {
-        externalIpArg = process.env.EXTERNAL_IP
-          ? `-externalip=${EXTERNAL_IP}`
-          : "";
-      }
-      console.log(externalIpArg);
-      initMultichain();
-    })
-    .catch(err => {
-      console.log(err.statusCode);
-      if (err.response && err.body && err.body.code === 403) {
-        console.err(
-          "It seems that the service account doesn't have the permissions to view services",
-        ); // outputs red underlined text
-        console.err(err.body);
-        console.err("Blockchain will start without an external IP...."); // outputs red underlined text
-      } else {
-        console.err(
-          `Failed to fetch the external IP of the service ${err.body}`,
-        );
-      }
-    });
+  getServiceIp(SERVICE_NAME, NAMESPACE).then(response => {
+    console.log(response);
+    if (response) {
+      externalIpArg = `-externalip=${response}`;
+    } else {
+      externalIpArg = process.env.EXTERNAL_IP
+        ? `-externalip=${EXTERNAL_IP}`
+        : "";
+    }
+    console.log(externalIpArg);
+    initMultichain();
+  });
 } else {
   initMultichain();
 }
