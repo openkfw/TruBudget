@@ -94,6 +94,7 @@ export async function get(multichain: MultichainClient, userId: string): Promise
 export async function getAll(multichain: MultichainClient): Promise<UserRecord[]> {
   return multichain
     .v2_readStreamItems(usersStreamName, "*")
+    .then(sourceUsers)
     .catch(err => {
       if (err.kind === "NotFound" && err.what === "stream users") {
         logger.warn(`The stream users does not exist yet.`);
@@ -101,8 +102,7 @@ export async function getAll(multichain: MultichainClient): Promise<UserRecord[]
       } else {
         throw err;
       }
-    })
-    .then(sourceUsers);
+    });
 }
 
 function sourceUsers(streamItems: Liststreamkeyitems.Item[]): UserRecord[] {
