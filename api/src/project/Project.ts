@@ -1,3 +1,5 @@
+import Joi = require("joi");
+
 import { getAllowedIntents } from "../authz";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
@@ -16,80 +18,36 @@ export interface Project {
   permissions: AllowedUserGroupsByIntent;
 }
 
-export function validateProject({
-  id,
-  creationUnixTs,
-  status,
-  displayName,
-  assignee,
-  description,
-  amount,
-  currency,
-  thumbnail,
-  permissions,
-}: any): Project {
-  if (!isNonemptyString(id)) {
-    throw Error(`Not a valid project ID: ${JSON.stringify(id)}`);
+const schema = Joi.object().keys({
+  id: Joi.string().required(),
+  creationUnixTs: Joi.date()
+    .timestamp("unix")
+    .required(),
+  status: Joi.string()
+    .valid("open", "closed")
+    .required(),
+  displayName: Joi.string().required(),
+  assignee: Joi.string(),
+  description: Joi.string()
+    .allow("")
+    .required(),
+  amount: Joi.string().required(),
+  currency: Joi.string().required(),
+  thumbnail: Joi.string()
+    .allow("")
+    .required(),
+  permissions: Joi.object()
+    .pattern(/.*/, Joi.array().items(Joi.string()))
+    .required(),
+});
+
+export function validateProject(input: any): Project {
+  const { error, value } = Joi.validate(input, schema);
+  if (error === null) {
+    return value as Project;
+  } else {
+    throw error;
   }
-
-  if (!isNonemptyString(creationUnixTs) || ((creationUnixTs as any) as number) < 0) {
-    throw Error(`Not a valid unix timestamp: ${JSON.stringify(creationUnixTs)}`);
-  }
-
-  if (!["open", "closed"].includes(status)) {
-    throw Error(`Not a valid status: ${JSON.stringify(status)}`);
-  }
-
-  if (!isNonemptyString(displayName)) {
-    throw Error(`Not a valid display name: ${JSON.stringify(displayName)}`);
-  }
-
-  if (assignee !== undefined && !isNonemptyString(assignee)) {
-    throw Error(`Not a valid assignee: ${JSON.stringify(assignee)}`);
-  }
-
-  if (!isString(description)) {
-    throw Error(`Not a valid description: ${JSON.stringify(description)}`);
-  }
-
-  if (!isNonemptyString(amount)) {
-    throw Error(`Not a valid amount: ${JSON.stringify(amount)}`);
-  }
-
-  if (!isNonemptyString(currency)) {
-    throw Error(`Not a valid currency: ${JSON.stringify(currency)}`);
-  }
-
-  if (!isString(thumbnail)) {
-    throw Error(`Not a valid thumbnail: ${JSON.stringify(thumbnail)}`);
-  }
-
-  // TODO validate permissions object
-
-  const project: Project = {
-    id,
-    creationUnixTs,
-    status,
-    displayName,
-    assignee,
-    description,
-    amount,
-    currency,
-    thumbnail,
-    permissions,
-  };
-
-  return project;
-}
-
-// tslint:disable-next-line:no-any
-function isString(x: any): boolean {
-  return typeof x === "string";
-}
-
-// tslint:disable-next-line:no-any
-function isNonemptyString(x: any): boolean {
-  return typeof x === "string" && x.length > 0;
 }
 
 export function grantProjectPermission(project: Project, identity: string, intent: Intent) {
