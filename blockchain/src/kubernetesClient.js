@@ -34,8 +34,7 @@ async function getServiceIp(name, namespace) {
         `Service ${name} not ready, retry in ${retry / 1000} seconds `,
       );
       await sleep(retry);
-      await getServiceIp(name, namespace);
-      return;
+      return await getServiceIp(name, namespace);
     }
     return externalIp;
   } catch (err) {

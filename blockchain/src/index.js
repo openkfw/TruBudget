@@ -128,7 +128,7 @@ let externalIpArg = "";
 
 if (EXPOSE_MC) {
   getServiceIp(SERVICE_NAME, NAMESPACE).then(response => {
-    console.log(response);
+    console.log(`externalIp: ${response}`);
     if (response) {
       externalIpArg = `-externalip=${response}`;
     } else {
