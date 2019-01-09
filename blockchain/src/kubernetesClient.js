@@ -26,9 +26,10 @@ async function getServiceIp(name, namespace) {
     const service = await getService(name, namespace);
     if (service.status.loadBalancer.ingress !== undefined) {
       console.log(`Service ${name} is running`);
+      console.log(service);
       externalIp = service.status.loadBalancer.ingress[0].ip;
     } else {
-      const retry = 15000;
+      const retry = 20000;
       console.log(
         `Service ${name} not ready, retry in ${retry / 1000} seconds `,
       );
