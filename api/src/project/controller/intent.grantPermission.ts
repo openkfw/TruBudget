@@ -1,4 +1,7 @@
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+/**
+ * DEPRECATED - see index.ts
+ */
+import { HttpResponse } from "../../httpd/lib";
 import { MultichainClient } from "../../multichain";
 import { changeProjectPermission } from "../intent";
 
