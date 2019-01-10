@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha \"src/*.spec.js\" \"src/**/*.spec.js\""
   },
   "repository": {
     "type": "git",
@@ -18,10 +18,13 @@
     "async-each": "^1.0.1",
     "axios": "^0.17.1",
     "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
     "express": "^4.16.3",
     "js-yaml": "^3.12.0",
     "md5-file": "^4.0.0",
+    "mocha": "^5.2.0",
     "shelljs": "^0.8.2",
+    "sinon": "^7.2.2",
     "streamifier": "^0.1.1",
     "tar-fs": "^1.16.3"
   },

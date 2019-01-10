@@ -5,7 +5,6 @@ const rawTar = require("tar-stream");
 const fs = require("fs");
 const streamifier = require("streamifier");
 const yaml = require("js-yaml");
-const { getServiceIp } = require("./kubernetesClient");
 
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
 
@@ -127,7 +126,26 @@ function initMultichain() {
 let externalIpArg = "";
 
 if (EXPOSE_MC) {
-  getServiceIp(SERVICE_NAME, NAMESPACE).then(response => {
+
+  console.log(EXPOSE_MC);
+
+  const k8s = require("@kubernetes/client-node");
+  const os = require("os");
+  const fs = require("fs");
+  const KubernetesClient = require("./kubernetesClient");
+
+  const kc = new k8s.KubeConfig();
+
+  if (fs.existsSync(os.homedir() + "/.kube/config") /* ? */) {
+    kc.loadFromDefault();
+  } else {
+    kc.loadFromCluster();
+  }
+
+  const k8sApi = kc.makeApiClient(k8s.Core_v1Api);
+  const kubernetesClient = new KubernetesClient(k8sApi);
+
+  kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then(response => {
     console.log(`externalIp: ${response}`);
     if (response) {
       externalIpArg = `-externalip=${response}`;
