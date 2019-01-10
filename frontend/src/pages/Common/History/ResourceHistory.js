@@ -28,19 +28,25 @@ const styles = {
   },
   icon: {
     fontSize: "40px"
+  },
+  loader: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: 400
+    // src: local('Roboto'), local('Roboto-Regular'), url(/oMMgfZMQthOryQo9n22dcuvvDin1pK8aKteLpeZ5c0A.woff2) format('woff2'),
+    // unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215,
   }
 };
 
-const loadFunc = ( fetchNextHistoryItems) => {
-  fetchNextHistoryItems()
-
+const loadFunc = (isLoading,fetchNextHistoryItems) => {
+  if(!isLoading) fetchNextHistoryItems();
 };
 
 export default ({
   offset,
   limit,
   historyItemsCount,
-  setProjectHistoryOffset,
+  isLoading,
   fetchNextHistoryItems,
   show,
   close,
@@ -59,8 +65,17 @@ export default ({
       </ListItem>
     )
   );
-  const hasMore = offset + limit >= historyItemsCount ? false : true;
-  console.log(`hasMore: ${hasMore}, offset: ${offset}, limit: ${limit}, historyItemsCount: ${historyItemsCount}`);
+  const hasMore = (offset + limit >= historyItemsCount) && (historyItemsCount !== 0) ? false : true;
+  if(!hasMore && !isLoading) {
+    items.push(
+      <ListItem key={historyItemsCount+1}>
+        <Avatar alt={""} src="" />
+        <ListItemText
+          primary=""
+          secondary="Last Element reached"/>
+      </ListItem>
+    )
+  }
   return (
     <Drawer open={show} onClose={close} anchor="right">
       {resourceHistory.length > 0 ? (
@@ -68,11 +83,11 @@ export default ({
           pageStart={0}
           initialLoad={false}
           useWindow={false}
-          loadMore={_ => loadFunc(fetchNextHistoryItems)}
+          loadMore={_ => loadFunc(isLoading,fetchNextHistoryItems)}
           hasMore={hasMore}
           loader={
-            <div className="loader" key={0}>
-              TEST
+            <div className="loader" key={0} style={styles.loader}>
+              {strings.login.loading}
             </div>
           }
         >

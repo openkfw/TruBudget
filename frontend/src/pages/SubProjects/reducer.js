@@ -10,13 +10,14 @@ import {
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   SHOW_PROJECT_ASSIGNEES,
   HIDE_PROJECT_ASSIGNEES,
+  FETCH_PROJECT_HISTORY,
   FETCH_PROJECT_HISTORY_SUCCESS,
   HIDE_SUBPROJECT_PERMISSIONS,
   SHOW_SUBPROJECT_PERMISSIONS,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   SHOW_SUBPROJECT_CREATE,
   SHOW_SUBPROJECT_EDIT,
-  SET_HISTORY_OFFSET
+  SET_HISTORY_OFFSET,
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import strings from "../../localizeStrings";
@@ -45,6 +46,7 @@ const defaultState = fromJS({
   roles: [],
   logs: [],
   historyItems: [],
+  isHistoryLoading: false,
   historyItemsCount: 0,
   offset: 0,
   limit: 30,
@@ -102,10 +104,13 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showProjectAssignees", false);
     case SET_HISTORY_OFFSET:
       return state.set("offset", action.offset);
+    case FETCH_PROJECT_HISTORY:
+      return state.set("isHistoryLoading", true);
     case FETCH_PROJECT_HISTORY_SUCCESS:
       return state.merge({
         historyItems: [...state.get("historyItems"), ...fromJS(action.events)],
         historyItemsCount: action.historyItemsCount,
+        isHistoryLoading: false
       });
     case SHOW_SUBPROJECT_EDIT: {
       return state.merge({

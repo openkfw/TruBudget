@@ -9,7 +9,7 @@ import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
 import { toJS, formatString, formatUpdateString } from "../../helper";
 import { formatPermission } from "../Common/History/helper";
-import { fetchProjectHistory, setProjectHistoryOffset } from "./actions";
+import { fetchProjectHistory, setProjectHistoryOffset, setProjectHistoryHasMoreItems } from "./actions";
 
 const calculateHistory = items => {
   return sortBy(
@@ -93,7 +93,7 @@ class ProjectHistoryContainer extends Component {
   };
 
   render() {
-    return <ResourceHistory fetchNextHistoryItems={this.fetchNextHistoryItems} resourceHistory={this.state.resourceHistory} mapIntent={mapIntent} {...this.props} />;
+    return <ResourceHistory fetchNextHistoryItems={this.fetchNextHistoryItems} isLoading={this.state.isLoading} resourceHistory={this.state.resourceHistory} mapIntent={mapIntent}  {...this.props} />;
   }
 }
 
@@ -101,14 +101,15 @@ const mapStateToProps = state => {
   return {
     items: state.getIn(["detailview", "historyItems"]),
     historyItemsCount: state.getIn(["detailview", "historyItemsCount"]),
-    show: state.getIn(["notifications", "showHistory"])
+    show: state.getIn(["notifications", "showHistory"]),
+    isLoading: state.getIn(["detailview", "isHistoryLoading"]),
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
     close: () => dispatch(hideHistory()),
     setProjectHistoryOffset: offset => dispatch(setProjectHistoryOffset(offset)),
-    fetchProjectHistory: (projectId, offset, limit) => dispatch(fetchProjectHistory(projectId, offset, limit, false))
+    fetchProjectHistory: (projectId, offset, limit) => dispatch(fetchProjectHistory(projectId, offset, limit, false)),
   };
 };
 

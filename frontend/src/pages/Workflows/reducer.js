@@ -24,6 +24,7 @@ import {
   HIDE_WORKFLOW_ASSIGNEES,
   SHOW_SUBPROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_ASSIGNEES,
+  FETCH_SUBPROJECT_HISTORY,
   FETCH_SUBPROJECT_HISTORY_SUCCESS,
   HIDE_WORKFLOW_DIALOG,
   SHOW_WORKFLOW_EDIT,
@@ -76,6 +77,7 @@ const defaultState = fromJS({
   subProjectBudgetEditEnabled: false,
   roles: [],
   historyItems: [],
+  isHistoryLoading: false,
   showWorkflowAssignee: false,
   workflowAssignee: "",
   showSubProjectAssignee: false,
@@ -202,10 +204,13 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showSubProjectAssignee", false);
     case SET_HISTORY_OFFSET:
       return state.set("offset", action.offset);
+    case FETCH_SUBPROJECT_HISTORY:
+      return state.set("isHistoryLoading", true);
     case FETCH_SUBPROJECT_HISTORY_SUCCESS:
       return state.merge({
         historyItems: [...state.get("historyItems"), ...fromJS(action.events)],
-        historyItemsCount: action.historyItemsCount
+        historyItemsCount: action.historyItemsCount,
+        isHistoryLoading: false,
       });
     case HIDE_HISTORY:
       return state.merge({
