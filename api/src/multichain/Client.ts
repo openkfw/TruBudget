@@ -1,5 +1,7 @@
 import logger from "../lib/logger";
 import {
+  BlockInfo,
+  BlockListItem,
   CreateStreamOptions,
   MultichainClient,
   Resource,
@@ -220,6 +222,35 @@ export class RpcMultichainClient implements MultichainClient {
     }
   }
 
+  public async getLastBlockInfo(skip: number = 0): Promise<BlockInfo> {
+    return this.rpcClient
+      .invoke("getlastblockinfo", skip);
+  }
+
+  public async listBlocksByHeight(to: number, from: number = 0, verbose: boolean = false,
+  ): Promise<BlockListItem[]> {
+    return this.rpcClient
+      .invoke("listblocks", `${from}-${to}`, verbose);
+  }
+
+  public async listStreamBlockItemsByHeight(
+    streamName: StreamName,
+    to: number,
+    from: number = 0,
+    verbose: boolean = false,
+  ): Promise<Liststreamkeyitems.Item[]> {
+    return this.rpcClient
+      .invoke("liststreamblockitems", streamName, `${from}-${to}`, verbose)
+      .then(this.retrieveItems)
+      .catch(err => {
+        if (err && err.code === -708) {
+          throw { kind: "NotFound", what: `stream ${streamName}` };
+        } else {
+          throw err;
+        }
+      });
+  }
+
   public async v2_readStreamItems(
     streamName: StreamName,
     key: string,
@@ -252,7 +283,7 @@ export class RpcMultichainClient implements MultichainClient {
         if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
           logger.warn(
             "Reached max data size. Maybe you should increase the runtime variable 'maxshowndata' of the multichain" +
-              "with command: 'setruntimeparam maxshowndata <value>'.",
+            "with command: 'setruntimeparam maxshowndata <value>'.",
           );
           item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
           logger.debug({ item: item.data }, `Received items.`);

@@ -20,8 +20,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "start": "node dist/",
     "dev": "tsc --watch & nodemon dist",
-    "test": "nyc mocha \"dist/*.spec.js\" \"dist/**/*.spec.js\"",
+    "test": "npm run build && nyc mocha \"dist/*.spec.js\" \"dist/**/*.spec.js\"",
     "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
@@ -32,6 +33,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/ajv": "^1.0.0",
+    "@types/joi": "^14.0.1",
     "@types/pino": "^4.16.0",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
@@ -43,6 +45,7 @@
     "fastify-swagger": "^0.15.0",
     "fluent-logger": "^3.2.1",
     "i": "^0.3.6",
+    "joi": "^14.3.1",
     "jsonwebtoken": "^8.2.1",
     "pino": "^5.8.0",
     "pino-multi-stream": "^4.0.0",

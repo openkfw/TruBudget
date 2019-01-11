@@ -1,16 +1,16 @@
-import * as fastify from "fastify";
-
 import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
+import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
 import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
+import { MultichainReader } from "./MultichainReader";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStream } from "./organization/organization";
-import deepcopy from "./lib/deepcopy";
+import { ProjectService } from "./project";
 
 const URL_PREFIX = "/api";
 
@@ -104,6 +104,9 @@ function registerSelf(): Promise<boolean> {
     .catch(() => false);
 }
 
+const reader = new MultichainReader(multichainClient);
+const projectAPI = new ProjectService(reader);
+
 registerRoutes(
   server,
   multichainClient,
@@ -114,6 +117,7 @@ registerRoutes(
   URL_PREFIX,
   multichainHost,
   backupApiPort,
+  projectAPI,
 );
 
 server.listen(port, "0.0.0.0", async err => {

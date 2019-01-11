@@ -1,7 +1,10 @@
+/**
+ * DEPRECATED - see index.ts
+ */
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";

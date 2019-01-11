@@ -23,6 +23,18 @@ export type TxId = string;
 export type StreamName = string;
 export type StreamTxId = TxId;
 
+export interface BlockInfo {
+  hash: string;
+  height: number;
+  time: number;
+  txcount: number;
+  miner: string;
+}
+
+export interface BlockListItem extends BlockInfo {
+  confirmations: number;
+}
+
 export interface Stream {
   name: StreamName;
   createtxid: StreamTxId;
@@ -68,6 +80,23 @@ export interface StreamItemPair {
 }
 
 export interface MultichainClient {
+  /**
+   * Get the latest block, possibly skipping a few.
+   *
+   * @param skip number of blocks to skip, default 0 (= latest block)
+   */
+  getLastBlockInfo(skip?: number): Promise<BlockInfo>;
+
+  /**
+   * Retrieve all blocks metadata by block height range.
+   * You can retrieve the current maximum block height through calling getLastBlockInfo
+   *
+   * @param to highest block height to return (inclusive)
+   * @param from lowest block to return (inclusive), defaults to 0
+   * @param verbose verbose output, defaults to false
+   */
+  listBlocksByHeight(to: number, from?: number, verbose?: boolean): Promise<BlockListItem[]>;
+
   // Create a new stream. If name is set and the stream exists, nothing happens.
   getOrCreateStream(options: CreateStreamOptions);
 
@@ -121,5 +150,20 @@ export interface MultichainClient {
     streamName: StreamName,
     key: string,
     nValues?: number,
+  ): Promise<Liststreamkeyitems.Item[]>;
+
+  /**
+   * Retrieve all items within a stream by block height range.
+   *
+   * @param streamName Stream Name to Read
+   * @param to Highest block height to retrieve (inclusive)
+   * @param from Lowest block height to retrieve (inclusive), defaults to 0
+   * @param verbose Get verbose data (not typed!)
+   */
+  listStreamBlockItemsByHeight(
+    streamName: StreamName,
+    to: number,
+    from?: number,
+    verbose?: boolean,
   ): Promise<Liststreamkeyitems.Item[]>;
 }
