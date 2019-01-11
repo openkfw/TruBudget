@@ -1,15 +1,14 @@
+import { fromJS } from "immutable";
+import sortBy from "lodash/sortBy";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fromJS } from "immutable";
 
-import sortBy from "lodash/sortBy";
-
+import { formatString, formatUpdateString, toJS } from "../../helper";
+import strings from "../../localizeStrings";
+import { formatPermission } from "../Common/History/helper";
 import ResourceHistory from "../Common/History/ResourceHistory";
 import { hideHistory } from "../Notifications/actions";
-import strings from "../../localizeStrings";
-import { toJS, formatString, formatUpdateString } from "../../helper";
-import { formatPermission } from "../Common/History/helper";
-import { fetchProjectHistory, setProjectHistoryOffset, setProjectHistoryHasMoreItems } from "./actions";
+import { fetchProjectHistory, setProjectHistoryOffset } from "./actions";
 
 const calculateHistory = items => {
   return sortBy(
@@ -88,11 +87,19 @@ class ProjectHistoryContainer extends Component {
 
   fetchNextHistoryItems = () => {
     const newOffset = this.props.offset + this.props.limit;
-    this.props.fetchProjectHistory(this.props.projectId, newOffset, this.props.limit)
+    this.props.fetchProjectHistory(this.props.projectId, newOffset, this.props.limit);
   };
 
   render() {
-    return <ResourceHistory fetchNextHistoryItems={this.fetchNextHistoryItems} isLoading={this.state.isLoading} resourceHistory={this.state.resourceHistory} mapIntent={mapIntent}  {...this.props} />;
+    return (
+      <ResourceHistory
+        fetchNextHistoryItems={this.fetchNextHistoryItems}
+        isLoading={this.state.isLoading}
+        resourceHistory={this.state.resourceHistory}
+        mapIntent={mapIntent}
+        {...this.props}
+      />
+    );
   }
 }
 
@@ -101,14 +108,14 @@ const mapStateToProps = state => {
     items: state.getIn(["detailview", "historyItems"]),
     historyItemsCount: state.getIn(["detailview", "historyItemsCount"]),
     show: state.getIn(["notifications", "showHistory"]),
-    isLoading: state.getIn(["detailview", "isHistoryLoading"]),
+    isLoading: state.getIn(["detailview", "isHistoryLoading"])
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
     close: () => dispatch(hideHistory()),
     setProjectHistoryOffset: offset => dispatch(setProjectHistoryOffset(offset)),
-    fetchProjectHistory: (projectId, offset, limit) => dispatch(fetchProjectHistory(projectId, offset, limit, false)),
+    fetchProjectHistory: (projectId, offset, limit) => dispatch(fetchProjectHistory(projectId, offset, limit, false))
   };
 };
 
