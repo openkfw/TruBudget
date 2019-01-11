@@ -110,7 +110,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         historyItems: [...state.get("historyItems"), ...fromJS(action.events)],
         historyItemsCount: action.historyItemsCount,
-        isHistoryLoading: false
+        isHistoryLoading: false,
+        offset: action.offset
       });
     case SHOW_SUBPROJECT_EDIT: {
       return state.merge({
