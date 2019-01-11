@@ -5,6 +5,9 @@ const rawTar = require("tar-stream");
 const fs = require("fs");
 const streamifier = require("streamifier");
 const yaml = require("js-yaml");
+const k8s = require("@kubernetes/client-node");
+const os = require("os");
+const KubernetesClient = require("./kubernetesClient");
 
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
 
@@ -126,14 +129,6 @@ function initMultichain() {
 let externalIpArg = "";
 
 if (EXPOSE_MC) {
-
-  console.log(EXPOSE_MC);
-
-  const k8s = require("@kubernetes/client-node");
-  const os = require("os");
-  const fs = require("fs");
-  const KubernetesClient = require("./kubernetesClient");
-
   const kc = new k8s.KubeConfig();
 
   if (fs.existsSync(os.homedir() + "/.kube/config") /* ? */) {
@@ -154,7 +149,6 @@ if (EXPOSE_MC) {
         ? `-externalip=${EXTERNAL_IP}`
         : "";
     }
-    console.log(externalIpArg);
     initMultichain();
   });
 } else {
