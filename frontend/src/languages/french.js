@@ -273,6 +273,7 @@ const fr = {
     project_createSubproject: "{0} a crée subproject {1}",
     project_grantPermission: "{0} a accordé l'autorisation {1} à {2}",
     project_revokePermission: "{0} a révoquer l'autorisation {1} de {2}",
+    project_assign: "{0} a assigné le projet {1} à {2}",
     sort: "Déplacé {0} après {1}",
     subproject_assign: "{0} a assigné le projet {1} à {2}",
     subproject_close: "{0} a terminé le sous-project {1}",

@@ -26,6 +26,6 @@
   },
   "devDependencies": {
     "eslint": "^4.19.1",
-    "jshint": "^2.9.5"
+    "jshint": "^2.9.7"
   }
 }
