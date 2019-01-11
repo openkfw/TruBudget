@@ -1,3 +1,7 @@
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 class KubernetesClient {
 
   constructor(k8sApi) {
@@ -24,7 +28,7 @@ class KubernetesClient {
         console.log(
           `Service ${name} not ready, retry in ${retry / 1000} seconds `,
         );
-        await this.sleep(retry);
+        await sleep(retry);
         return await this.getServiceIp(name, namespace);
       }
       return externalIp;
@@ -40,10 +44,6 @@ class KubernetesClient {
       }
       return externalIp;
     }
-  }
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
 }
