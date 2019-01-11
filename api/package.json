@@ -20,8 +20,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "start": "node dist/",
     "dev": "tsc --watch & nodemon dist",
-    "test": "nyc mocha \"dist/*.spec.js\" \"dist/**/*.spec.js\"",
+    "test": "npm run build && nyc mocha \"dist/*.spec.js\" \"dist/**/*.spec.js\"",
     "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
