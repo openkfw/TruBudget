@@ -51,7 +51,7 @@ let noRBACServiceTest = {
 
 describe('KubernetesClient', function() {
   describe('#getServiceIp()', function() {
-    it('should return a string in the form of an ip adress, when service exists and has an ip', function(done) {
+    it('should return a string in the form of an ip adress, when service exists and has an loadbalancer ip', function(done) {
       let k8sApi = { readNamespacedService: async function () {return Promise.resolve(validTest)} };
       sinon.mock(k8sApi);
 
@@ -70,7 +70,7 @@ describe('KubernetesClient', function() {
 
 describe('KubernetesClient', function() {
   describe('#getServiceIp()', function() {
-    it('should retry to return a string in the form of an ip adress, when service exists and has not an ip', function(done) {
+    it('should retry to retrieve an ip and return a string in the form of an ip adress, when service exists but assignment of ip is delayed', function(done) {
 
       let stub = sinon.stub();
       stub.onFirstCall().returns(retryTest);

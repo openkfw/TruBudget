@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "mocha \"src/*.spec.js\" \"src/**/*.spec.js\""
+    "test": "nyc --all mocha \"src/*.spec.js\" \"src/**/*.spec.js\""
+  },
+  "nyc" : {
+    "exclude": ["src/**.spec.js"]
   },
   "repository": {
     "type": "git",
@@ -30,6 +33,7 @@
   },
   "devDependencies": {
     "eslint": "^4.19.1",
-    "jshint": "^2.9.5"
+    "jshint": "^2.9.5",
+    "nyc": "^13.1.0"
   }
 }
