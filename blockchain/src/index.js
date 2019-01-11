@@ -5,6 +5,9 @@ const rawTar = require("tar-stream");
 const fs = require("fs");
 const streamifier = require("streamifier");
 const yaml = require("js-yaml");
+const k8s = require("@kubernetes/client-node");
+const os = require("os");
+const KubernetesClient = require("./kubernetesClient");
 
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
 
@@ -24,7 +27,8 @@ const ORGANIZATION = process.env.ORGANIZATION || "MyOrga";
 const CHAINNAME = "TrubudgetChain";
 const RPC_PORT = process.env.RPC_PORT || 8000;
 const RPC_USER = process.env.RPC_USER || "multichainrpc";
-const RPC_PASSWORD = process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
+const RPC_PASSWORD =
+  process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
 const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 
 let autostart = true;
@@ -34,7 +38,7 @@ const EXTERNAL_IP = process.env.EXTERNAL_IP;
 const P2P_HOST = process.env.P2P_HOST;
 const P2P_PORT = process.env.P2P_PORT || 7447;
 
-const API_PROTO = process.env.API_PROTO || "http";
+const API_PROTO = process.env.API_PROTO || "http";
 const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
@@ -46,9 +50,10 @@ const isMaster = !P2P_HOST ? true : false;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
   ? `-blocknotify=${BLOCKNOTIFY_SCRIPT}`
   : "";
-const externalIpArg = process.env.EXTERNAL_IP
-  ? `-externalip=${EXTERNAL_IP}`
-  : "";
+
+const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
+const NAMESPACE = process.env.KUBE_NAMESPACE || "";
+const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
 
 app.use(
   bodyParser.raw({
@@ -63,7 +68,7 @@ const spawnProcess = startProcess => {
   mcproc = startProcess();
   isRunning = true;
   mcproc.on("close", async code => {
-    isRunning = false
+    isRunning = false;
     if (!autostart) {
       console.log(
         `>>> multichaind stopped with exit code ${code} and autorestart is disabled`,
@@ -89,28 +94,65 @@ configureChain(
   RPC_ALLOW_IP,
 );
 
-if (isMaster) {
-  spawnProcess(() =>
-    startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
-  );
+function initMultichain() {
+  if (isMaster) {
+    spawnProcess(() =>
+      startMultichainDaemon(
+        CHAINNAME,
+        externalIpArg,
+        blockNotifyArg,
+        P2P_PORT,
+        multichainDir,
+      ),
+    );
+  } else {
+    spawnProcess(() =>
+      startSlave(
+        CHAINNAME,
+        API_PROTO,
+        API_HOST,
+        API_PORT,
+        P2P_PORT,
+        connectArg,
+        blockNotifyArg,
+        externalIpArg,
+        multichainDir,
+      ),
+    );
+    setTimeout(
+      () => registerNodeAtMaster(ORGANIZATION, API_PROTO, API_HOST, API_PORT),
+      5000,
+    );
+  }
+}
+
+let externalIpArg = "";
+
+if (EXPOSE_MC) {
+  const kc = new k8s.KubeConfig();
+
+  if (fs.existsSync(os.homedir() + "/.kube/config") /* ? */) {
+    kc.loadFromDefault();
+  } else {
+    kc.loadFromCluster();
+  }
+
+  const k8sApi = kc.makeApiClient(k8s.Core_v1Api);
+  const kubernetesClient = new KubernetesClient(k8sApi);
+
+  kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then(response => {
+    console.log(`externalIp: ${response}`);
+    if (response) {
+      externalIpArg = `-externalip=${response}`;
+    } else {
+      externalIpArg = process.env.EXTERNAL_IP
+        ? `-externalip=${EXTERNAL_IP}`
+        : "";
+    }
+    initMultichain();
+  });
 } else {
-  spawnProcess(() =>
-    startSlave(
-      CHAINNAME,
-      API_PROTO,
-      API_HOST,
-      API_PORT,
-      P2P_PORT,
-      connectArg,
-      blockNotifyArg,
-      externalIpArg,
-      multichainDir
-    ),
-  );
-  setTimeout(
-    () => registerNodeAtMaster(ORGANIZATION, API_PROTO, API_HOST, API_PORT),
-    5000,
-  );
+  initMultichain();
 }
 
 const stopMultichain = async mcproc => {
@@ -143,7 +185,7 @@ app.get("/chain", async (req, res) => {
               externalIpArg,
               blockNotifyArg,
               P2P_PORT,
-              multichainDir
+              multichainDir,
             ),
           );
           autostart = true;
@@ -189,7 +231,7 @@ app.post("/chain", async (req, res) => {
               externalIpArg,
               blockNotifyArg,
               P2P_PORT,
-              multichainDir
+              multichainDir,
             ),
           );
           autostart = true;
