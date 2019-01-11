@@ -651,7 +651,6 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
 export function* fetchProjectHistorySaga({ projectId, offset, limit, showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.viewProjectHistory, projectId, offset, limit);
-    yield delay(5000);
     yield put({
       type: FETCH_PROJECT_HISTORY_SUCCESS,
       offset,
@@ -675,6 +674,7 @@ export function* fetchSubprojectHistorySaga({ projectId, subprojectId, offset, l
     const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId, offset, limit);
     yield put({
       type: FETCH_SUBPROJECT_HISTORY_SUCCESS,
+      offset,
       ...data
     });
   }, showLoading);

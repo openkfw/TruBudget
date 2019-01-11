@@ -89,7 +89,6 @@ class ProjectHistoryContainer extends Component {
   fetchNextHistoryItems = () => {
     const newOffset = this.props.offset + this.props.limit;
     this.props.fetchProjectHistory(this.props.projectId, newOffset, this.props.limit)
-    // this.props.setProjectHistoryOffset(newOffset);
   };
 
   render() {

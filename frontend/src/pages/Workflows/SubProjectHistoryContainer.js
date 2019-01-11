@@ -105,7 +105,6 @@ class SubProjectHistoryContainer extends Component {
   fetchNextHistoryItems = () => {
     const newOffset = this.props.offset + this.props.limit;
     this.props.fetchSubProjectHistory(this.props.projectId, this.props.subprojectId, newOffset, this.props.limit)
-    this.props.setSubProjectHistoryOffset(newOffset);
   };
 
   render() {

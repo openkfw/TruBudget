@@ -211,6 +211,7 @@ export default function detailviewReducer(state = defaultState, action) {
         historyItems: [...state.get("historyItems"), ...fromJS(action.events)],
         historyItemsCount: action.historyItemsCount,
         isHistoryLoading: false,
+        offset: action.offset,
       });
     case HIDE_HISTORY:
       return state.merge({
