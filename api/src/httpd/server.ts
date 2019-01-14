@@ -114,7 +114,7 @@ export const createBasicApp = (
         const d2 = JSON.stringify(data, null, 2);
 
         if (d1 !== d2) {
-          logger.warn("ALERT!: Redacted additional payload paramters!");
+          logger.warn("ALERT! Redacted additional payload paramters!");
           logger.warn("Original Payload: \n", d1);
           logger.warn("Redacted Payload: \n", d2);
         }

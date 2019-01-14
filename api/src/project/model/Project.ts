@@ -1,3 +1,6 @@
+/**
+ * DEPRECATED - see index.ts
+ */
 import { getAllowedIntents, getUserAndGroups } from "../../authz";
 import { onlyAllowedData } from "../../authz/history";
 import Intent from "../../authz/intents";
@@ -6,11 +9,11 @@ import { AllowedUserGroupsByIntent, People } from "../../authz/types";
 import deepcopy from "../../lib/deepcopy";
 import { isNotEmpty } from "../../lib/emptyChecks";
 import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
+import logger from "../../lib/logger";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
-import logger from "../../lib/logger";
 
 export interface AugmentedEvent extends Event {
   snapshot: {

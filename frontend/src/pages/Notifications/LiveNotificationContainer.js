@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import _isEmpty from "lodash/isEmpty";
 
-
 import LiveNotification from "./LiveNotification";
 import { hideSnackbar, fetchNotificationCounts, fetchFlyInNotifications, fetchLatestNotification } from "./actions.js";
 import { toJS } from "../../helper";
-
 
 // Currently when a fly in appears the notifications aren't reloaded, due to the latency of the call.
 // Once notifications are compacted/snapshoted we can refresh every time the fly in saga was called.
@@ -28,9 +26,12 @@ class LiveNotificationContainer extends Component {
     }, 15000);
   }
 
+  // If there are no notifications yet, set the latestFlyInId to "0"
+  // to tell the API to return all new notifications
+
   fetch() {
     const { fetchFlyInNotifications, latestFlyInId } = this.props;
-    if (!_isEmpty(latestFlyInId)) {
+    if (!_isEmpty(latestFlyInId) || latestFlyInId === "0") {
       fetchFlyInNotifications(latestFlyInId);
     }
   }

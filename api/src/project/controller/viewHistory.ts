@@ -1,12 +1,12 @@
-import { throwIfUnauthorized } from "../../authz";
-import Intent from "../../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { isNonemptyString, value, isNumber } from "../../lib/validation";
+/**
+ * DEPRECATED - see index.ts
+ */
+import { HttpResponse } from "../../httpd/lib";
+import { isNonemptyString, isNumber, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain";
 import { Event } from "../../multichain/event";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
-import logger from "../../lib/logger";
 
 export async function getProjectHistory(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = req.query;

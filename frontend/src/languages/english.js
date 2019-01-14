@@ -63,7 +63,8 @@ const en = {
     groups: "Groups",
     add_group: "Add Group",
     edit_group: "Edit Group",
-    edit_permissions_for: "Edit permissions for"
+    edit_permissions_for: "Edit permissions for",
+    new_group: "New Group"
   },
 
   nodesDashboard: {

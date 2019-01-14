@@ -1,6 +1,7 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { MultichainClient } from "../../multichain";
 import * as Notification from "../model/Notification";
+import { raw } from "body-parser";
 
 export const getNewestNotifications = async (
   multichain: MultichainClient,
@@ -10,9 +11,21 @@ export const getNewestNotifications = async (
   const notificationList = await Notification.get(multichain, req.user);
   const rawNotifications = notificationList.notifications;
 
-  const index = rawNotifications.findIndex(
-    notification => notification.notificationId === beforeId,
-  );
+  let index = 0;
+
+  // If the beforeId is 0 it means that there are no messages yet in the user's inbox
+  // This case needs special handling for the fly-in notifications
+  if (beforeId === "0") {
+    index = rawNotifications.length;
+  } else {
+    index = rawNotifications.findIndex(
+      notification => notification.notificationId === beforeId,
+    );
+  }
+
+
+
+
 
   const notifications: Notification.NotificationDto[] = [];
   if (index > 0) {

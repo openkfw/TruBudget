@@ -1,7 +1,7 @@
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-async function withRetry(cb, maxTimes = 12, timeoutMs = 10000) {
+async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
   try {
     return await cb();
   } catch (err) {

@@ -38,17 +38,21 @@
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
-    "eslint": "^4.19.1",
-    "eslint-config-prettier": "^2.9.0",
     "prettier": "1.12.1",
-    "react-scripts": "^1.1.5"
+    "react-scripts": "^2.1.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom && npm run check-translations",
+    "test": "npm run check-translations",
     "eject": "react-scripts eject",
     "check-translations": "node scripts/check-translations.js"
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

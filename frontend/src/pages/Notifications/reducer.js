@@ -40,7 +40,9 @@ export default function navbarReducer(state = defaultState, action) {
     case FETCH_LATEST_NOTIFICATION_SUCCESS:{
       const { notifications } = action;
       const count = notifications.length;
-      const latestFlyInId = count > 0 ? notifications[count - 1].notificationId : undefined;
+      // If there are no notifications yet, set the latestFlyInId to "0"
+      // to tell the API to return all new notifications
+      const latestFlyInId = count > 0 ? notifications[count - 1].notificationId : "0";
       return state.merge({
         latestFlyInId: latestFlyInId
       });
@@ -49,9 +51,11 @@ export default function navbarReducer(state = defaultState, action) {
       const { newNotifications } = action;
       const count = newNotifications.length;
       const latestFlyInId = count > 0 ? newNotifications[count - 1].notificationId : state.get("latestFlyInId");
+      const unreadNotificationCount = state.get("unreadNotificationCount") + count ;
       return state.merge({
         newNotifications: fromJS(newNotifications),
-        latestFlyInId: latestFlyInId
+        latestFlyInId: latestFlyInId,
+        unreadNotificationCount,
       });
     }
     case TIME_OUT_FLY_IN: {
