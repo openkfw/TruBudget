@@ -1139,6 +1139,12 @@ const schemas = {
           projectId: {
             type: "string",
           },
+          offset: {
+            type: "string",
+          },
+          limit: {
+            type: "string",
+          },
         },
       },
       security: [
@@ -1185,6 +1191,10 @@ const schemas = {
                       },
                     },
                   },
+                },
+                historyItemsCount: {
+                  type: "number",
+                  example: 10,
                 },
               },
             },
@@ -1839,6 +1849,12 @@ const schemas = {
           subprojectId: {
             type: "string",
           },
+          offset: {
+            type: "string",
+          },
+          limit: {
+            type: "string",
+          },
         },
       },
       security: [
@@ -1899,6 +1915,10 @@ const schemas = {
                       },
                     },
                   },
+                },
+                historyItemsCount: {
+                  type: "number",
+                  example: 10,
                 },
               },
             },

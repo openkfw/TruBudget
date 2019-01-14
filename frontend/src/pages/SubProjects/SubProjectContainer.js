@@ -63,7 +63,7 @@ class SubProjectContainer extends Component {
             canClose={canClose}
           />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubproject} />
-          <ProjectHistoryContainer />
+          <ProjectHistoryContainer projectId={this.projectId} offset={this.props.offset} limit={this.props.limit} />
           <SubprojectPermissionsContainer
             projectId={this.projectId}
             subProjects={this.props.subProjects}
@@ -81,8 +81,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
 
-    openHistory: projectId => {
-      dispatch(fetchProjectHistory(projectId, true));
+    openHistory: (projectId, offset, limit) => {
+      dispatch(fetchProjectHistory(projectId, offset, limit, true));
       dispatch(showHistory());
     },
     hideHistory: () => dispatch(hideHistory()),
@@ -114,7 +114,10 @@ const mapStateToProps = state => {
     roles: state.getIn(["login", "roles"]),
     user: state.getIn(["login", "user"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
-    thumbnail: state.getIn(["detailview", "thumbnail"])
+    thumbnail: state.getIn(["detailview", "thumbnail"]),
+    offset: state.getIn(["detailview", "offset"]),
+    limit: state.getIn(["detailview", "limit"]),
+
   };
 };
 

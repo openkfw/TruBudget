@@ -26,6 +26,8 @@ export const HIDE_PROJECT_ASSIGNEES = "HIDE_PROJECT_ASSIGNEES";
 export const ASSIGN_PROJECT = "ASSIGN_PROJECT";
 export const ASSIGN_PROJECT_SUCCESS = "ASSIGN_PROJECT_SUCCESS";
 
+export const SET_HISTORY_OFFSET = "SET_HISTORY_OFFSET";
+
 export const FETCH_PROJECT_HISTORY = "FETCH_PROJECT_HISTORY";
 export const FETCH_PROJECT_HISTORY_SUCCESS = "FETCH_PROJECT_HISTORY_SUCCESS";
 
@@ -81,10 +83,20 @@ export function fetchAllProjectDetails(projectId, showLoading = false) {
     showLoading
   };
 }
-export function fetchProjectHistory(projectId, showLoading = false) {
+
+export function setProjectHistoryOffset(offset) {
+  return {
+    type: SET_HISTORY_OFFSET,
+    offset,
+  }
+}
+
+export function fetchProjectHistory(projectId, offset, limit, showLoading = false) {
   return {
     type: FETCH_PROJECT_HISTORY,
     projectId,
+    offset,
+    limit,
     showLoading
   };
 }

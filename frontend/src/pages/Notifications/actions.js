@@ -104,10 +104,12 @@ export function hideHistory() {
   };
 }
 
-export function fetchHistoryItems(project) {
+export function fetchHistoryItems(project, offset, limit) {
   return {
     type: FETCH_HISTORY,
-    project
+    project,
+    offset,
+    limit
   };
 }
 

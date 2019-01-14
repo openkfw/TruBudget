@@ -110,7 +110,12 @@ class WorkflowContainer extends Component {
             closeWorkflowItem={this.closeWorkflowItem}
           />
           <WorkflowDialogContainer location={this.props.location} />
-          <SubProjectHistoryContainer />
+          <SubProjectHistoryContainer
+            projectId={this.projectId}
+            subprojectId={this.subProjectId}
+            offset={this.props.offset}
+            limit={this.props.limit}
+          />
         </div>
       </div>
     );
@@ -124,8 +129,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
-    openHistory: (projectId, subprojectId) => {
-      dispatch(fetchSubprojectHistory(projectId, subprojectId, true));
+    openHistory: (projectId, subprojectId, offset, limit) => {
+      dispatch(fetchSubprojectHistory(projectId, subprojectId, offset, limit, true));
       dispatch(showHistory());
     },
     openWorkflowDetails: id => dispatch(showWorkflowDetails(id)),
@@ -181,7 +186,9 @@ const mapStateToProps = state => {
     subProjectAmount: state.getIn(["workflow", "subProjectAmount"]),
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
-    users: state.getIn(["login", "user"])
+    users: state.getIn(["login", "user"]),
+    offset: state.getIn(["workflow", "offset"]),
+    limit: state.getIn(["workflow", "limit"])
   };
 };
 

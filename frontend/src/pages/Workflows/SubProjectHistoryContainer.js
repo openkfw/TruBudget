@@ -9,6 +9,7 @@ import { hideHistory } from "../Notifications/actions";
 import strings from "../../localizeStrings";
 import { toJS, formatString, formatUpdateString } from "../../helper";
 import { formatPermission } from "../Common/History/helper";
+import { fetchSubprojectHistory, setSubProjectHistoryOffset } from "./actions";
 
 const calculateHistory = items => {
   return sortBy(
@@ -101,20 +102,28 @@ class SubProjectHistoryContainer extends Component {
     }
   }
 
+  fetchNextHistoryItems = () => {
+    const newOffset = this.props.offset + this.props.limit;
+    this.props.fetchSubProjectHistory(this.props.projectId, this.props.subprojectId, newOffset, this.props.limit)
+  };
+
   render() {
-    return <ResourceHistory resourceHistory={this.state.resourceHistory} mapIntent={mapIntent} {...this.props} />;
+    return <ResourceHistory resourceHistory={this.state.resourceHistory} fetchNextHistoryItems={this.fetchNextHistoryItems} mapIntent={mapIntent} {...this.props} />;
   }
 }
 
 const mapStateToProps = state => {
   return {
     items: state.getIn(["workflow", "historyItems"]),
+    historyItemsCount: state.getIn(["workflow", "historyItemsCount"]),
     show: state.getIn(["notifications", "showHistory"])
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
-    close: () => dispatch(hideHistory())
+    close: () => dispatch(hideHistory()),
+    setSubProjectHistoryOffset: offset => dispatch(setSubProjectHistoryOffset(offset)),
+    fetchSubProjectHistory: (projectId, subprojectId, offset, limit) => dispatch(fetchSubprojectHistory(projectId, subprojectId, offset, limit, false))
   };
 };
 

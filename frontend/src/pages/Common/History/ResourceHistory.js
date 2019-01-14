@@ -10,6 +10,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Avatar from "@material-ui/core/Avatar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+import InfiniteScroll from "react-infinite-scroller";
+
 import strings from "../../../localizeStrings";
 
 const styles = {
@@ -26,27 +28,77 @@ const styles = {
   },
   icon: {
     fontSize: "40px"
+  },
+  loader: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: 400
+    // src: local('Roboto'), local('Roboto-Regular'), url(/oMMgfZMQthOryQo9n22dcuvvDin1pK8aKteLpeZ5c0A.woff2) format('woff2'),
+    // unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215,
   }
 };
-export default ({ show, close, resourceHistory, mapIntent }) => {
+
+const loadFunc = (isLoading,fetchNextHistoryItems) => {
+  if(!isLoading) fetchNextHistoryItems();
+};
+
+export default ({
+  offset,
+  limit,
+  historyItemsCount,
+  isLoading,
+  fetchNextHistoryItems,
+  show,
+  close,
+  resourceHistory,
+  mapIntent
+}) => {
+  let items = [];
+  resourceHistory.map((i, index) =>
+    items.push(
+      <ListItem key={index}>
+        <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
+        <ListItemText
+          primary={mapIntent(i)}
+          secondary={i.createdAt ? moment(i.createdAt).fromNow() : "Processing ..."}
+        />
+      </ListItem>
+    )
+  );
+  const hasMore = (offset + limit >= historyItemsCount) && (historyItemsCount !== 0) ? false : true;
+  if(!hasMore && !isLoading) {
+    items.push(
+      <ListItem key={historyItemsCount+1}>
+        <Avatar alt={""} src="" />
+        <ListItemText
+          primary=""
+          secondary="Last Element reached"/>
+      </ListItem>
+    )
+  }
   return (
     <Drawer open={show} onClose={close} anchor="right">
       {resourceHistory.length > 0 ? (
-        <List subheader={<ListSubheader disableSticky>{strings.common.history}</ListSubheader>} style={styles.list}>
-          {resourceHistory.map(i => (
-            <ListItem key={i.key + i.createdAt}>
-              <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
-              <ListItemText
-                primary={mapIntent(i)}
-                secondary={i.createdAt ? moment(i.createdAt).fromNow() : "Processing ..."}
-              />
-            </ListItem>
-          ))}
-        </List>
+        <InfiniteScroll
+          pageStart={0}
+          initialLoad={false}
+          useWindow={false}
+          loadMore={_ => loadFunc(isLoading,fetchNextHistoryItems)}
+          hasMore={hasMore}
+          loader={
+            <div className="loader" key={0} style={styles.loader}>
+              {strings.login.loading}
+            </div>
+          }
+        >
+          <List subheader={<ListSubheader disableSticky>{strings.common.history}</ListSubheader>} style={styles.list}>
+            {items}
+          </List>
+        </InfiniteScroll>
       ) : (
         <div style={{ ...styles.empty, ...styles.list }}>
           <Card elevation={0}>
-          <div style={styles.container}>
+            <div style={styles.container}>
               <div style={styles.refreshContainer}>
                 <CircularProgress size={50} left={0} top={0} percentage={50} color="primary" style={styles.refresh} />
               </div>
