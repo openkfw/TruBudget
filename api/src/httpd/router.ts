@@ -50,6 +50,7 @@ import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { createBackup } from "../system/createBackup";
+import { getVersion} from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
 import { authenticateUser } from "../user/controller/authenticate";
 import { getUserList } from "../user/controller/list";
@@ -181,6 +182,19 @@ const handleError = (req, res, err: any) => {
       break;
     }
 
+    case "FileNotFound": {
+      const message = "File not found.";
+      logger.debug({ error: err }, message);
+      send(res, [
+        404,
+        {
+          apiVersion: "1.0",
+          error: { code: 404, message },
+        },
+      ]);
+      break;
+    }
+
     case "CorruptFileError": {
       const message = "File corrupt.";
       logger.error({ error: err }, message);
@@ -264,6 +278,12 @@ export const registerRoutes = (
 
   server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), (_, reply) => {
     reply.status(200).send("OK");
+  });
+
+  server.get(`${urlPrefix}/version`, getSchema(server, "version"), async (request, reply) => {
+    getVersion(multichainHost, backupApiPort, multichainClient)
+      .then(response => send(reply, response))
+      .catch(err => handleError(request, reply, err));
   });
 
   // ------------------------------------------------------------

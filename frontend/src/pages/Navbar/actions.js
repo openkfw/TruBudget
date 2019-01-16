@@ -13,6 +13,9 @@ export const CREATE_BACKUP_SUCCESS = "CREATE_BACKUP_SUCCESS";
 export const RESTORE_BACKUP = "RESTORE_BACKUP";
 export const RESTORE_BACKUP_SUCCESS = "RESTORE_BACKUP_SUCCESS";
 
+export const FETCH_VERSIONS = "FETCH_VERSIONS";
+export const FETCH_VERSIONS_SUCCESS = "FETCH_VERSIONS_SUCCESS";
+
 export function toggleSidebar() {
   return {
     type: TOGGLE_SIDEBAR,
@@ -54,5 +57,10 @@ export function restoreBackup (file) {
 export function createBackup () {
   return {
     type: CREATE_BACKUP
+  }
+}
+export function fetchVersions () {
+  return {
+    type: FETCH_VERSIONS
   }
 }

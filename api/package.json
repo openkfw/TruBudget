@@ -19,8 +19,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
     "start": "node dist/",
+    "build": "tsc",
     "dev": "tsc --watch & nodemon dist",
     "test": "npm run build && nyc mocha \"dist/*.spec.js\" \"dist/**/*.spec.js\"",
     "generate-report": "nyc report --reporter=html",

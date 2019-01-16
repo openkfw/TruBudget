@@ -46,6 +46,7 @@ class Api {
         password
       }
     });
+  fetchVersions = () => instance.get(`/version`);
   createUser = (displayName, organization, username, password) =>
     instance.post(`/global.createUser`, {
       user: {
@@ -273,7 +274,8 @@ class Api {
     instance.post(`/notification.markRead`, {
       notificationId
     });
-  markMultipleNotificationsAsRead = notificationIds => instance.post(`/notification.markMultipleRead`, { notificationIds });
+  markMultipleNotificationsAsRead = notificationIds =>
+    instance.post(`/notification.markMultipleRead`, { notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {

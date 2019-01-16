@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup } from "./actions";
+import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup, fetchVersions } from "./actions";
 import { logout } from "../Login/actions";
 
 import FlyInNotifications from "../Notifications/FlyInNotifications";
@@ -12,6 +12,7 @@ import { toJS } from "../../helper";
 class NavbarContainer extends Component {
   componentDidMount() {
     this.props.getPeers()
+    this.props.fetchVersions()
   }
 
   render() {
@@ -33,7 +34,8 @@ const mapDispatchToProps = dispatch => {
     logout: () => dispatch(logout()),
     getPeers: () => dispatch(fetchActivePeers()),
     createBackup: () => dispatch(createBackup()),
-    restoreBackup: (file) => dispatch(restoreBackup(file))
+    restoreBackup: (file) => dispatch(restoreBackup(file)),
+    fetchVersions: () => dispatch(fetchVersions())
   };
 };
 
@@ -54,6 +56,7 @@ const mapStateToProps = state => {
     avatarBackground: state.getIn(["login", "avatarBackground"]),
     currentProject: state.getIn(["navbar", "currentProject"]),
     currentSubProject: state.getIn(["navbar", "currentSubProject"]),
+    versions: state.getIn(["navbar", "versions"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     groups: state.getIn(["login", "groups"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),

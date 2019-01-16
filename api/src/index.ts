@@ -13,7 +13,6 @@ import { ensureOrganizationStream } from "./organization/organization";
 import { ProjectService } from "./project";
 
 const URL_PREFIX = "/api";
-
 /*
  * Deal with the environment:
  */
