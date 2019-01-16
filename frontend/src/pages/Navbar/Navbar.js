@@ -39,7 +39,8 @@ const Navbar = ({
   userId,
   createBackup,
   restoreBackup,
-  classes
+  classes,
+  versions
 }) => (
   <div>
     <AppBar classes={classes} position="absolute">
@@ -77,6 +78,7 @@ const Navbar = ({
       userId={userId}
       createBackup={createBackup}
       restoreBackup={restoreBackup}
+      versions={versions}
     />
   </div>
 );

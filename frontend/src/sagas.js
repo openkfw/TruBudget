@@ -129,6 +129,8 @@ import {
 import {
   FETCH_ACTIVE_PEERS,
   FETCH_ACTIVE_PEERS_SUCCESS,
+  FETCH_VERSIONS,
+  FETCH_VERSIONS_SUCCESS,
   CREATE_BACKUP_SUCCESS,
   CREATE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
@@ -230,6 +232,17 @@ function* handleLoading(showLoading) {
 }
 
 // SAGAS
+
+export function* fetchVersionsSaga() {
+  yield execute(function*() {
+    const { data } = yield callApi(api.fetchVersions);
+    data["frontend"] = {"release": process.env.REACT_APP_VERSION};
+    yield put({
+      type: FETCH_VERSIONS_SUCCESS,
+      versions: data
+    });
+  });
+}
 
 export function* createProjectSaga(action) {
   yield execute(function*() {
@@ -1144,7 +1157,9 @@ export function* watchCreateBackup() {
 export function* watchRestoreBackup() {
   yield takeLatest(RESTORE_BACKUP, restoreBackupSaga);
 }
-
+export function* watchFetchVersions() {
+  yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga);
+}
 export function* watchGrantGlobalPermission() {
   yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga);
 }
@@ -1227,7 +1242,8 @@ export default function* rootSaga() {
 
       // System
       watchCreateBackup(),
-      watchRestoreBackup()
+      watchRestoreBackup(),
+      watchFetchVersions()
     ];
   } catch (error) {
     console.log(error);

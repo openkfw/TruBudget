@@ -12,6 +12,11 @@ export interface NotFoundError {
   what: object;
 }
 
+export interface FileNotFoundError {
+  kind: "FileNotFound";
+  filePath: string;
+}
+
 export interface AuthenticationError {
   kind: "AuthenticationError";
   userId: string;

@@ -5,7 +5,8 @@ import {
   FETCH_PEERS_SUCCESS,
   FETCH_STREAM_NAMES_SUCCESS,
   SET_SELECTED_VIEW,
-  FETCH_ACTIVE_PEERS_SUCCESS
+  FETCH_ACTIVE_PEERS_SUCCESS,
+  FETCH_VERSIONS_SUCCESS
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
@@ -20,7 +21,8 @@ const defaultState = fromJS({
   selectedId: "",
   selectedSection: "",
   currentProject: " ",
-  currentSubProject: " "
+  currentSubProject: " ",
+  versions: null
 });
 
 export default function navbarReducer(state = defaultState, action) {
@@ -47,6 +49,8 @@ export default function navbarReducer(state = defaultState, action) {
         currentSubProject: action.subproject.data.displayName,
         currentProject: action.parentProject.displayName
       });
+    case FETCH_VERSIONS_SUCCESS:
+      return state.set("versions", action.versions);
     case LOGOUT:
       return defaultState;
     default:

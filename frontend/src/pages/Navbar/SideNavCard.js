@@ -1,19 +1,20 @@
-import React from "react";
-
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import Subheader from "@material-ui/core/ListSubheader";
 import ProjectIcon from "@material-ui/icons/Business";
 import NodesIcon from "@material-ui/icons/DesktopWindows";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import UsersIcon from "@material-ui/icons/PeopleOutline";
-import Subheader from "@material-ui/core/ListSubheader";
-import RestoreBackupButton from './RestoreBackupButton';
-import DownloadBackupButton from './DownloadBackupButton';
+import React from "react";
+
 import strings from "../../localizeStrings";
+import DownloadBackupButton from "./DownloadBackupButton";
+import RestoreBackupButton from "./RestoreBackupButton";
+import VersionsTable from "./VersionsTable";
 
 const SideNavCard = ({
   avatarBackground,
@@ -26,9 +27,17 @@ const SideNavCard = ({
   groups,
   userId,
   createBackup,
-  restoreBackup
+  restoreBackup,
+  versions
 }) => (
-  <div>
+  <div
+    style={{
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      overflowY: "auto"
+    }}
+  >
     <div
       style={{
         background: `url('${avatarBackground}') no-repeat`,
@@ -41,34 +50,24 @@ const SideNavCard = ({
     >
       <div
         style={{
-          bottom: 0,
-          position: "absolute",
-          width: "100%",
+          flex: 1,
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "row",
+          justifyContent: "center"
         }}
       >
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center"
-          }}
-        >
-          <ListItem style={{ paddingTop: "16px" }}>
-            <ListItemIcon>
-              <Avatar
-                size={60}
-                src={avatar}
-                style={{
-                  marginLeft: "16px"
-                }}
-              />
-            </ListItemIcon>
-            <ListItemText primary={<span>{displayName}</span>} secondary={<span>{organization}</span>} />
-          </ListItem>
-        </div>
+        <ListItem style={{ paddingTop: "16px" }}>
+          <ListItemIcon>
+            <Avatar
+              size={60}
+              src={avatar}
+              style={{
+                marginLeft: "16px"
+              }}
+            />
+          </ListItemIcon>
+          <ListItemText primary={<span>{displayName}</span>} secondary={<span>{organization}</span>} />
+        </ListItem>
       </div>
     </div>
     <List>
@@ -106,9 +105,9 @@ const SideNavCard = ({
     {userId === "root" ? (
       <List>
         <Subheader> {strings.navigation.backup} </Subheader>
-        <ListItem >
-            <DownloadBackupButton createBackup={createBackup}/>
-            <RestoreBackupButton restoreBackup={restoreBackup}/>
+        <ListItem>
+          <DownloadBackupButton createBackup={createBackup} />
+          <RestoreBackupButton restoreBackup={restoreBackup} />
         </ListItem>
         <Divider />
       </List>
@@ -124,6 +123,8 @@ const SideNavCard = ({
         </div>
       ))}
     </List>
+    <div style={{ flexGrow: 1 }} />
+    <VersionsTable versions={versions} />
   </div>
 );
 

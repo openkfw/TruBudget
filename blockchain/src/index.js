@@ -198,6 +198,15 @@ app.get("/chain", async (req, res) => {
   }
 });
 
+app.get("/version", (req, res) => {
+    const content =  {
+      release: process.env.npm_package_version,
+      commit: process.env.CI_COMMIT_SHA,
+      buildTimeStamp: process.env.BUILDTIMESTAMP
+    };
+    res.send(content);
+});
+
 const loadConfig = path => {
   const config = yaml.safeLoad(fs.readFileSync(path, "utf8"));
   removeFile(path);

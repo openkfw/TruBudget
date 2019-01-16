@@ -78,6 +78,49 @@ const schemas = {
     },
   },
 
+  version: {
+    schema: {
+      description: "Returns version of the current release.",
+      tags: ["system"],
+      summary: "Check version of current release.",
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                api: {
+                  type: "object",
+                  properties: {
+                    release: { type: "string", example: "1.0.0" },
+                    commit: { type: "string", example: "f48b2af8e44f6a6d46f512efc68de35cb7e44c00" },
+                    buildTimeStamp: { type: "string", example: "1546950454" },
+                  },
+                },
+                blockchain: {
+                  type: "object",
+                  properties: {
+                    release: { type: "string", example: "1.0.0" },
+                    commit: { type: "string", example: "f48b2af8e44f6a6d46f512efc68de35cb7e44c00" },
+                    buildTimeStamp: { type: "string", example: "1546950454" },
+                  },
+                },
+                multichain: {
+                  type: "object",
+                  properties: {
+                    release: { type: "string", example: "1.0.0" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   // ------------------------------------------------------------
   //       user
   // ------------------------------------------------------------

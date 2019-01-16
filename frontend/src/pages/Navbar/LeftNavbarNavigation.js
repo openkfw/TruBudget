@@ -6,7 +6,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 const LeftNavbarNavigation = ({ onToggleSidebar }) => {
   return (
     <div>
-      <IconButton onClick={onToggleSidebar}>
+      <IconButton onClick={onToggleSidebar} data-test="openSideNavbar">
         <MenuIcon color="primary" />
       </IconButton>
     </div>
