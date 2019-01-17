@@ -4,3 +4,4 @@ DOCKER_REGISTRY_PASSWORD
 .env
 *~
 *-audit.json
+.vscode/*

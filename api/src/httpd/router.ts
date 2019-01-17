@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 
+import { NotifierCreator, WriterFactory } from ".";
 import { getAllowedIntents } from "../authz";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
@@ -14,6 +15,7 @@ import { removeUserFromGroup } from "../group/removeUser";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
 import { MultichainClient } from "../multichain";
+import { MultichainRepository } from "../MultichainRepository";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
 import { getNodeList } from "../network/controller/list";
@@ -25,8 +27,7 @@ import { getNotificationList } from "../notification/controller/list";
 import { markMultipleRead } from "../notification/controller/markMultipleRead";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { getNewestNotifications } from "../notification/controller/poll";
-import { ProjectAPI } from "../project";
-import { assignProject } from "../project/controller/assign";
+import { ProjectAPI, ProjectAssigner, ProjectNotifier } from "../project";
 import { closeProject } from "../project/controller/close";
 import { createSubproject } from "../project/controller/createSubproject";
 import { grantProjectPermission } from "../project/controller/intent.grantPermission";
@@ -258,6 +259,9 @@ export const registerRoutes = (
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
+  reader: MultichainRepository,
+  writerFactory: WriterFactory,
+  notifierFactory: NotifierCreator,
   projectAPI: ProjectAPI,
 ) => {
   // ------------------------------------------------------------
@@ -426,7 +430,7 @@ export const registerRoutes = (
     const req = request as AuthenticatedRequest;
     const user: ProjectUser = { id: req.user.userId, groups: req.user.groups };
     projectAPI
-      .projectList(user)
+      .getProjectList(reader, user)
       .then(
         (projects: Project[]): ProjectResource[] =>
           projects.map(project => ({
@@ -477,7 +481,26 @@ export const registerRoutes = (
     `${urlPrefix}/project.assign`,
     getSchema(server, "projectAssign"),
     (request, reply) => {
-      assignProject(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      const user: ProjectUser = { id: token.userId, groups: token.groups };
+      const projectId: string = request.body.data.projectId;
+      const assignee: string = request.body.data.identity;
+
+      const assigner: ProjectAssigner = writerFactory.projectAssigner(token);
+      const notifier: ProjectNotifier = notifierFactory.createNotifier(token);
+
+      projectAPI
+        .assignProject(reader, assigner, notifier, user, projectId, assignee)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

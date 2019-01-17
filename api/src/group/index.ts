@@ -1,11 +1,10 @@
 import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
+import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
 import * as Liststreamkeyitems from "../multichain/responses/liststreamkeyitems";
-import { removeUserFromGroup } from "./removeUser";
-import { isEmpty } from "../lib/emptyChecks";
 
 const groupsStreamName = "groups";
 

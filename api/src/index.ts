@@ -7,8 +7,12 @@ import timeout from "./lib/timeout";
 import { RpcMultichainClient } from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
-import { MultichainReader } from "./MultichainReader";
+import { MultichainGroupResolver } from "./MultichainGroupResolver";
+import { MultichainedNotifierCreator } from "./MultichainNotifier";
+import { MultichainRepository } from "./MultichainRepository";
+import { MultichainUserRepository } from "./MultichainUserRepository";
 import { registerNode } from "./network/controller/registerNode";
+import { NotificationService } from "./notification";
 import { ensureOrganizationStream } from "./organization/organization";
 import { ProjectService } from "./project";
 
@@ -103,8 +107,16 @@ function registerSelf(): Promise<boolean> {
     .catch(() => false);
 }
 
-const reader = new MultichainReader(multichainClient);
-const projectAPI = new ProjectService(reader);
+const repo = new MultichainRepository(multichainClient);
+const writerFactory = new MultichainUserRepository(repo);
+const groupResolver = new MultichainGroupResolver(multichainClient);
+const notificationAPI = new NotificationService();
+const notifierFactory = new MultichainedNotifierCreator(
+  multichainClient,
+  groupResolver,
+  notificationAPI,
+);
+const projectAPI = new ProjectService();
 
 registerRoutes(
   server,
@@ -116,6 +128,9 @@ registerRoutes(
   URL_PREFIX,
   multichainHost,
   backupApiPort,
+  repo,
+  writerFactory,
+  notifierFactory,
   projectAPI,
 );
 

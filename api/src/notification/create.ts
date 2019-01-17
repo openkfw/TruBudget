@@ -3,13 +3,13 @@ import { v4 as uuid } from "uuid";
 import Intent from "../authz/intents";
 import { UserId } from "../authz/types";
 import { getUsersForGroup, groupExists } from "../group";
+import logger from "../lib/logger";
 import { MultichainClient } from "../multichain";
 import { Event } from "../multichain/event";
 import * as Project from "../project/model/Project";
 import * as Subproject from "../subproject/model/Subproject";
 import * as Workflowitem from "../workflowitem/model/Workflowitem";
 import * as Notification from "./model/Notification";
-import logger from "../lib/logger";
 
 export async function createNotification(
   multichain: MultichainClient,
