@@ -34,6 +34,9 @@ export async function createProject(
   // Is the user allowed to create new projects?
   await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
+  // Max. length of projectId is 32
+  // By converting to hex, each byte is represented by 2 characters
+  // Therefore it should be called with an input length of 16
   const projectId = value("id", input.id || randomString(), isNonemptyString);
 
   // check if projectId already exists

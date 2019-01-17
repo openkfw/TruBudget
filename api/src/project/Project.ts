@@ -19,7 +19,9 @@ export interface Project {
 }
 
 const schema = Joi.object().keys({
-  id: Joi.string().required(),
+  id: Joi.string()
+    .max(32)
+    .required(),
   creationUnixTs: Joi.date()
     .timestamp("unix")
     .required(),
@@ -72,5 +74,13 @@ export function isProjectVisibleTo(project: Project, user: User): boolean {
   const allowedIntents: Intent[] = ["project.viewSummary", "project.viewDetails"];
   const userIntents = getAllowedIntents(userIdentities(user), project.permissions);
   const hasPermission = allowedIntents.some(allowedIntent => userIntents.includes(allowedIntent));
+  return hasPermission;
+}
+
+export function isProjectAssignable(project: Project, assigner: User, _assignee: string): boolean {
+  const allowedIntent: Intent = "project.assign";
+  const userIntents = getAllowedIntents(userIdentities(assigner), project.permissions);
+  const hasPermission = userIntents.includes(allowedIntent);
+  // do we need to check whether the project is closed?
   return hasPermission;
 }

@@ -1,3 +1,4 @@
+import Intent from "./authz/intents";
 import deepcopy from "./lib/deepcopy";
 import { isNotEmpty } from "./lib/emptyChecks";
 import { inheritDefinedProperties } from "./lib/inheritDefinedProperties";
@@ -6,7 +7,8 @@ import { MultichainClient } from "./multichain";
 import { asMapKey } from "./multichain/Client";
 import { Event, throwUnsupportedEventVersion } from "./multichain/event";
 import * as Liststreamkeyitems from "./multichain/responses/liststreamkeyitems";
-import { ProjectReader } from "./project";
+import { Issuer } from "./MultichainRepository/Issuer";
+import { AllProjectsReader, SingleProjectReader } from "./project";
 import {
   grantProjectPermission,
   Project,
@@ -16,15 +18,98 @@ import {
 
 const projectSelfKey = "self";
 
-export class MultichainReader implements ProjectReader {
+export class MultichainRepository implements SingleProjectReader, AllProjectsReader {
   constructor(private readonly multichain: MultichainClient) {}
 
-  public projectList(): Promise<Project[]> {
-    return projectList(this.multichain);
+  public getProject(id: string): Promise<Project> {
+    return getProject(this.multichain, id);
+  }
+
+  public getProjectList(): Promise<Project[]> {
+    return getProjectList(this.multichain);
+  }
+
+  public assignProject(issuer: Issuer, project: string, assignee: string): Promise<void> {
+    return assignProject(this.multichain, issuer, project, assignee);
   }
 }
 
-async function projectList(multichain: MultichainClient): Promise<Project[]> {
+async function assignProject(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  projectId: string,
+  assignee: string,
+): Promise<void> {
+  const intent: Intent = "project.assign";
+  const event = {
+    key: projectId,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: { identity: assignee },
+  };
+
+  const streamName = projectId;
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
+
+  const publishEvent = () => {
+    logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+    return multichain
+      .getRpcClient()
+      .invoke("publish", streamName, streamItemKey, streamItem)
+      .then(() => event);
+  };
+
+  return publishEvent().catch(err => {
+    if (err.code === -708) {
+      logger.debug(
+        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
+      );
+      // The stream does not exist yet. Create the stream and try again:
+      return multichain
+        .getOrCreateStream({ kind: "project", name: streamName })
+        .then(() => publishEvent());
+    } else {
+      logger.error({ error: err }, `Publishing ${intent} failed.`);
+      throw err;
+    }
+  });
+}
+
+async function getProject(multichain: MultichainClient, id: string): Promise<Project> {
+  const streamItems = await fetchStreamItems(multichain, id);
+  let project: Project | undefined;
+
+  for (const item of streamItems) {
+    const event = item.data.json as Event;
+    if (project === undefined) {
+      project = handleCreate(event);
+      if (project === undefined) {
+        throw Error(`Failed to read project: ${JSON.stringify(event)}.`);
+      }
+    } else {
+      const hasProcessedEvent =
+        applyUpdate(event, project) ||
+        applyAssign(event, project) ||
+        applyClose(event, project) ||
+        applyGrantPermission(event, project) ||
+        applyRevokePermission(event, project);
+      if (!hasProcessedEvent) {
+        throw Error(`Unexpected event: ${JSON.stringify(event)}.`);
+      }
+    }
+  }
+
+  if (project === undefined) {
+    throw Error(`Failed to source project ${id}`);
+  }
+
+  return project;
+}
+
+async function getProjectList(multichain: MultichainClient): Promise<Project[]> {
   const streamItems = await fetchStreamItems(multichain);
   const projectsMap = new Map<string, Project>();
 
