@@ -1,4 +1,4 @@
-import { MultichainClient } from ".";
+import { MultichainClient } from "./Client.h";
 
 export interface KeyPair {
   address: string;

@@ -4,10 +4,10 @@ import {
   AllProjectsReader,
   ProjectAPI,
   ProjectAssigner,
-  ProjectNotifier,
   ProjectService,
   SingleProjectReader,
 } from ".";
+import { AssignedNotifier } from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { Project } from "./Project";
@@ -84,18 +84,13 @@ describe("Assigning a project,", () => {
     };
 
     const calls = new Map<string, number>();
-    const assigner: ProjectAssigner = {
-      assignProject(projectId: string, _assignee: string): Promise<void> {
-        calls.set(projectId, (calls.get(projectId) || 0) + 1);
-        return Promise.resolve();
-      },
+    const assigner: ProjectAssigner = (projectId: string, _assignee: string): Promise<void> => {
+      calls.set(projectId, (calls.get(projectId) || 0) + 1);
+      return Promise.resolve();
     };
 
-    const notifier: ProjectNotifier = {
-      projectAssigned(_assigner: string, project: Project): Promise<void> {
-        return Promise.resolve();
-      },
-    };
+    const notifier: AssignedNotifier = (project: Project, _assigner: string): Promise<void> =>
+      Promise.resolve();
 
     const service: ProjectAPI = new ProjectService();
     await assertIsResolved(
@@ -115,6 +110,7 @@ describe("Assigning a project,", () => {
     assert.equal(calls.get("friendsProject"), 1);
     assert.isUndefined(calls.get("nonAssignableProject"));
   });
+
   it("tells the notifier about the event only if successful.", async () => {
     const alice: User = { id: "alice", groups: ["friends"] };
 
@@ -139,18 +135,13 @@ describe("Assigning a project,", () => {
       },
     };
 
-    const assigner: ProjectAssigner = {
-      assignProject(projectId: string, _assignee: string): Promise<void> {
-        return Promise.resolve();
-      },
-    };
+    const assigner: ProjectAssigner = (projectId: string, _assignee: string): Promise<void> =>
+      Promise.resolve();
 
     const calls = new Map<string, number>();
-    const notifier: ProjectNotifier = {
-      projectAssigned(_assigner: string, project: Project): Promise<void> {
-        calls.set(project.id, (calls.get(project.id) || 0) + 1);
-        return Promise.resolve();
-      },
+    const notifier: AssignedNotifier = (project: Project, _assigner: string): Promise<void> => {
+      calls.set(project.id, (calls.get(project.id) || 0) + 1);
+      return Promise.resolve();
     };
 
     const service: ProjectAPI = new ProjectService();

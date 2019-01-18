@@ -2,7 +2,7 @@ import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
-import { MultichainClient } from "../multichain";
+import { MultichainClient } from "../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
 import * as Liststreamkeyitems from "../multichain/responses/liststreamkeyitems";
 
@@ -144,6 +144,7 @@ const mapItems = (streamItems: Liststreamkeyitems.Item[]): Map<string, GroupReso
   }
   return resourceMap;
 };
+
 export const getAll = async (multichain: MultichainClient): Promise<GroupResource[]> => {
   await ensureStreamExists(multichain);
   const streamItems = await fetchStreamItems(multichain);
@@ -174,6 +175,7 @@ function addUser(event: Event, resource: GroupResource): true | undefined {
   }
   throwUnsupportedEventVersion(event);
 }
+
 function removeUser(event: Event, resource: GroupResource): true | undefined {
   if (event.intent !== "group.removeUser") {
     return;

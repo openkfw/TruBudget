@@ -1,7 +1,7 @@
 import Intent from "../../authz/intents";
 import { AuthenticationError } from "../../error";
 import logger from "../../lib/logger";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
 

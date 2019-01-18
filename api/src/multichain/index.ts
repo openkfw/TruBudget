@@ -1,1 +1,6 @@
-export { MultichainClient, RpcMultichainClient, Stream, StreamItem, StreamTxId } from "./Client.h";
+export * from "./event";
+
+export interface Issuer {
+  name: string;
+  address: string;
+}

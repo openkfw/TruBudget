@@ -1,6 +1,9 @@
 import { isProjectAssignable, isProjectVisibleTo, Project } from "./Project";
 import { User } from "./User";
 
+export * from "./Project";
+export * from "./User";
+
 export interface ProjectAPI {
   /**
    *
@@ -17,7 +20,7 @@ export interface ProjectAPI {
   assignProject(
     singleProjectReader: SingleProjectReader,
     projectAssigner: ProjectAssigner,
-    notifier: ProjectNotifier,
+    notifier: AssignedNotifier,
     assigner: User,
     projectId: string,
     assignee: string,
@@ -40,18 +43,10 @@ export interface AllProjectsReader {
   getProjectList(): Promise<Project[]>;
 }
 
-export interface ProjectAssigner {
-  /**
-   *
-   * @param project ID of the affected project.
-   * @param assignee The identity (user ID or group ID) to be assigned to the project.
-   */
-  assignProject(projectId: string, assignee: string): Promise<void>;
-}
+export type ProjectAssigner = (projectId: string, assignee: string) => Promise<void>;
 
-export interface ProjectNotifier {
-  projectAssigned(assigner: string, project: Project, assignee: string): Promise<void>;
-}
+export type AssignedNotifier = (project: Project, assigner: string) => Promise<void>;
+// export type UpdatedNotifier = (project: Project, update: Update) => Promise<void>;
 
 export class ProjectService implements ProjectAPI {
   public async getProjectList(projectLister: AllProjectsReader, user: User): Promise<Project[]> {
@@ -62,8 +57,8 @@ export class ProjectService implements ProjectAPI {
 
   public async assignProject(
     singleProjectReader: SingleProjectReader,
-    assigner: ProjectAssigner,
-    notifier: ProjectNotifier,
+    assignProject: ProjectAssigner,
+    notify: AssignedNotifier,
     user: User,
     projectId: string,
     assignee: string,
@@ -74,7 +69,7 @@ export class ProjectService implements ProjectAPI {
         `Identity ${user.id} is not allowed to re-assign project ${projectId} to ${assignee}.`,
       );
     }
-    await assigner.assignProject(projectId, assignee);
-    await notifier.projectAssigned(user.id, project, assignee);
+    await assignProject(projectId, assignee);
+    await notify(project, user.id);
   }
 }

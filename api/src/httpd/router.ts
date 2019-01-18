@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { NotifierCreator, WriterFactory } from ".";
+import { ProjectPort } from ".";
 import { getAllowedIntents } from "../authz";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
@@ -14,7 +14,7 @@ import { getGroupList } from "../group/list";
 import { removeUserFromGroup } from "../group/removeUser";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
-import { MultichainClient } from "../multichain";
+import { MultichainClient } from "../multichain/Client.h";
 import { MultichainRepository } from "../MultichainRepository";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
@@ -27,7 +27,7 @@ import { getNotificationList } from "../notification/controller/list";
 import { markMultipleRead } from "../notification/controller/markMultipleRead";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { getNewestNotifications } from "../notification/controller/poll";
-import { ProjectAPI, ProjectAssigner, ProjectNotifier } from "../project";
+import { ProjectAPI } from "../project";
 import { closeProject } from "../project/controller/close";
 import { createSubproject } from "../project/controller/createSubproject";
 import { grantProjectPermission } from "../project/controller/intent.grantPermission";
@@ -51,7 +51,7 @@ import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { createBackup } from "../system/createBackup";
-import { getVersion} from "../system/getVersion";
+import { getVersion } from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
 import { authenticateUser } from "../user/controller/authenticate";
 import { getUserList } from "../user/controller/list";
@@ -260,8 +260,7 @@ export const registerRoutes = (
   multichainHost: string,
   backupApiPort: string,
   reader: MultichainRepository,
-  writerFactory: WriterFactory,
-  notifierFactory: NotifierCreator,
+  projectAdapter: ProjectPort,
   projectAPI: ProjectAPI,
 ) => {
   // ------------------------------------------------------------
@@ -487,11 +486,8 @@ export const registerRoutes = (
       const projectId: string = request.body.data.projectId;
       const assignee: string = request.body.data.identity;
 
-      const assigner: ProjectAssigner = writerFactory.projectAssigner(token);
-      const notifier: ProjectNotifier = notifierFactory.createNotifier(token);
-
-      projectAPI
-        .assignProject(reader, assigner, notifier, user, projectId, assignee)
+      projectAdapter
+        .assignProject(token, projectId, assignee)
         .then(
           (): HttpResponse => [
             200,

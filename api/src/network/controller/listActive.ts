@@ -2,7 +2,7 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import * as Global from "../../global";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import * as Nodes from "../model/Nodes";
 
 export async function getActiveNodes(multichain: MultichainClient, req: AuthenticatedRequest): Promise<HttpResponse> {

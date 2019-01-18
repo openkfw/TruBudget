@@ -3,40 +3,39 @@ import deepcopy from "./lib/deepcopy";
 import { isNotEmpty } from "./lib/emptyChecks";
 import { inheritDefinedProperties } from "./lib/inheritDefinedProperties";
 import logger from "./lib/logger";
-import { MultichainClient } from "./multichain";
+import * as Multichain from "./multichain";
 import { asMapKey } from "./multichain/Client";
+import { MultichainClient } from "./multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "./multichain/event";
 import * as Liststreamkeyitems from "./multichain/responses/liststreamkeyitems";
-import { Issuer } from "./MultichainRepository/Issuer";
 import { AllProjectsReader, SingleProjectReader } from "./project";
-import {
-  grantProjectPermission,
-  Project,
-  revokeProjectPermission,
-  validateProject,
-} from "./project/Project";
+import * as Project from "./project";
 
 const projectSelfKey = "self";
 
 export class MultichainRepository implements SingleProjectReader, AllProjectsReader {
   constructor(private readonly multichain: MultichainClient) {}
 
-  public getProject(id: string): Promise<Project> {
+  public getProject(id: string): Promise<Project.Project> {
     return getProject(this.multichain, id);
   }
 
-  public getProjectList(): Promise<Project[]> {
+  public getProjectList(): Promise<Project.Project[]> {
     return getProjectList(this.multichain);
   }
 
-  public assignProject(issuer: Issuer, project: string, assignee: string): Promise<void> {
+  public assignProject(
+    issuer: Multichain.Issuer,
+    project: string,
+    assignee: string,
+  ): Promise<void> {
     return assignProject(this.multichain, issuer, project, assignee);
   }
 }
 
 async function assignProject(
   multichain: MultichainClient,
-  issuer: Issuer,
+  issuer: Multichain.Issuer,
   projectId: string,
   assignee: string,
 ): Promise<void> {
@@ -78,9 +77,9 @@ async function assignProject(
   });
 }
 
-async function getProject(multichain: MultichainClient, id: string): Promise<Project> {
+async function getProject(multichain: MultichainClient, id: string): Promise<Project.Project> {
   const streamItems = await fetchStreamItems(multichain, id);
-  let project: Project | undefined;
+  let project: Project.Project | undefined;
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
@@ -109,9 +108,9 @@ async function getProject(multichain: MultichainClient, id: string): Promise<Pro
   return project;
 }
 
-async function getProjectList(multichain: MultichainClient): Promise<Project[]> {
+async function getProjectList(multichain: MultichainClient): Promise<Project.Project[]> {
   const streamItems = await fetchStreamItems(multichain);
-  const projectsMap = new Map<string, Project>();
+  const projectsMap = new Map<string, Project.Project>();
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
@@ -178,73 +177,73 @@ async function fetchStreamItems(
   }
 }
 
-function handleCreate(event: Event): Project | undefined {
+function handleCreate(event: Event): Project.Project | undefined {
   if (event.intent !== "global.createProject") return undefined;
   switch (event.dataVersion) {
     case 1: {
       const { project, permissions } = event.data;
       const values = { ...deepcopy(project), permissions: deepcopy(permissions) };
-      return validateProject(values);
+      return Project.validateProject(values);
     }
   }
   throwUnsupportedEventVersion(event);
 }
 
-function applyUpdate(event: Event, project: Project): true | undefined {
+function applyUpdate(event: Event, project: Project.Project): true | undefined {
   if (event.intent !== "project.update") return;
   switch (event.dataVersion) {
     case 1: {
       inheritDefinedProperties(project, event.data);
-      validateProject(project);
+      Project.validateProject(project);
       return true;
     }
   }
   throwUnsupportedEventVersion(event);
 }
 
-function applyAssign(event: Event, project: Project): true | undefined {
+function applyAssign(event: Event, project: Project.Project): true | undefined {
   if (event.intent !== "project.assign") return;
   switch (event.dataVersion) {
     case 1: {
       const { identity } = event.data;
       project.assignee = identity;
-      validateProject(project);
+      Project.validateProject(project);
       return true;
     }
   }
   throwUnsupportedEventVersion(event);
 }
 
-function applyClose(event: Event, project: Project): true | undefined {
+function applyClose(event: Event, project: Project.Project): true | undefined {
   if (event.intent !== "project.close") return;
   switch (event.dataVersion) {
     case 1: {
       project.status = "closed";
-      validateProject(project);
+      Project.validateProject(project);
       return true;
     }
   }
   throwUnsupportedEventVersion(event);
 }
 
-function applyGrantPermission(event: Event, project: Project): true | undefined {
+function applyGrantPermission(event: Event, project: Project.Project): true | undefined {
   if (event.intent !== "project.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
       const { identity, intent } = event.data;
-      grantProjectPermission(project, identity, intent);
+      Project.grantProjectPermission(project, identity, intent);
       return true;
     }
   }
   throwUnsupportedEventVersion(event);
 }
 
-function applyRevokePermission(event: Event, project: Project): true | undefined {
+function applyRevokePermission(event: Event, project: Project.Project): true | undefined {
   if (event.intent !== "project.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {
       const { identity, intent } = event.data;
-      revokeProjectPermission(project, identity, intent);
+      Project.revokeProjectPermission(project, identity, intent);
       return true;
     }
   }

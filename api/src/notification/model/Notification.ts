@@ -4,7 +4,7 @@ import deepcopy from "../../lib/deepcopy";
 import { isEmpty } from "../../lib/emptyChecks";
 import logger from "../../lib/logger";
 import { ResourceType } from "../../lib/resourceTypes";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
 import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
 import * as Project from "../../project/model/Project";

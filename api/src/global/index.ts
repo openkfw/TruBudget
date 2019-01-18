@@ -2,7 +2,7 @@ import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import * as Group from "../group";
 import logger from "../lib/logger";
-import { MultichainClient } from "../multichain";
+import { MultichainClient } from "../multichain/Client.h";
 import { Event } from "../multichain/event";
 import * as User from "../user/model/user";
 import * as Permission from "./model/Permission";

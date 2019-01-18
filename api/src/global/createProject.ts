@@ -13,7 +13,7 @@ import {
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
-import { MultichainClient } from "../multichain";
+import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";
 
