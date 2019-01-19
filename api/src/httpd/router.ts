@@ -1,7 +1,6 @@
 import { FastifyInstance } from "fastify";
 
 import { ProjectPort } from ".";
-import { getAllowedIntents } from "../authz";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
@@ -15,7 +14,6 @@ import { removeUserFromGroup } from "../group/removeUser";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
 import { MultichainClient } from "../multichain/Client.h";
-import { MultichainRepository } from "../MultichainRepository";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
 import { getNodeList } from "../network/controller/list";
@@ -27,7 +25,6 @@ import { getNotificationList } from "../notification/controller/list";
 import { markMultipleRead } from "../notification/controller/markMultipleRead";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { getNewestNotifications } from "../notification/controller/poll";
-import { ProjectAPI } from "../project";
 import { closeProject } from "../project/controller/close";
 import { createSubproject } from "../project/controller/createSubproject";
 import { grantProjectPermission } from "../project/controller/intent.grantPermission";
@@ -37,8 +34,7 @@ import { updateProject } from "../project/controller/update";
 import { getProjectDetails } from "../project/controller/viewDetails";
 import { getProjectHistory } from "../project/controller/viewHistory";
 import { ProjectResource } from "../project/model/Project";
-import { Project } from "../project/Project";
-import { User as ProjectUser, userIdentities } from "../project/User";
+import { User as ProjectUser } from "../project/User";
 import { assignSubproject } from "../subproject/controller/assign";
 import { closeSubproject } from "../subproject/controller/close";
 import { createWorkflowitem } from "../subproject/controller/createWorkflowitem";
@@ -259,9 +255,7 @@ export const registerRoutes = (
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
-  reader: MultichainRepository,
   projectAdapter: ProjectPort,
-  projectAPI: ProjectAPI,
 ) => {
   // ------------------------------------------------------------
   //       system
@@ -427,30 +421,8 @@ export const registerRoutes = (
 
   server.get(`${urlPrefix}/project.list`, getSchema(server, "projectList"), (request, reply) => {
     const req = request as AuthenticatedRequest;
-    const user: ProjectUser = { id: req.user.userId, groups: req.user.groups };
-    projectAPI
-      .getProjectList(reader, user)
-      .then(
-        (projects: Project[]): ProjectResource[] =>
-          projects.map(project => ({
-            // TODO Is `log` used on the frontend? If it is this must be set here, likely
-            // through a dedicated `projectHistory(id)` method implemented by the
-            // (Multichain)Reader.
-            log: [],
-            allowedIntents: getAllowedIntents(userIdentities(user), project.permissions),
-            data: {
-              id: project.id,
-              creationUnixTs: project.creationUnixTs,
-              status: project.status,
-              displayName: project.displayName,
-              assignee: project.assignee,
-              description: project.description,
-              amount: project.amount,
-              currency: project.currency,
-              thumbnail: project.thumbnail,
-            },
-          })),
-      )
+    return projectAdapter
+      .getProjectList(req.user)
       .then(
         (projects: ProjectResource[]): HttpResponse => [
           200,

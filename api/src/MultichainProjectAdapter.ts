@@ -1,5 +1,6 @@
 import uuid = require("uuid");
 
+import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
 import { AuthToken } from "./authz/token";
 import * as HTTP from "./httpd";
@@ -10,7 +11,6 @@ import { MultichainClient } from "./multichain/Client.h";
 import * as MultichainGroupResolverAdapter from "./MultichainGroupResolverAdapter";
 import { MultichainRepository } from "./MultichainRepository";
 import * as Notification from "./notification";
-import { GroupResolverPort } from "./notification";
 import { NotificationResourceDescription } from "./notification/model/Notification";
 import * as Project from "./project";
 
@@ -18,9 +18,31 @@ export class MultichainProjectAdapter implements HTTP.ProjectPort {
   constructor(
     private readonly multichainClient: MultichainClient,
     private readonly repo: MultichainRepository,
-    private readonly projectService: Project.ProjectAPI,
+    private readonly projectService: Project.API,
     private readonly notificationService: Notification.NotificationAPI,
   ) {}
+
+  public async getProjectList(token: AuthToken): Promise<HTTP.Project[]> {
+    const user: Project.User = { id: token.userId, groups: token.groups };
+    const lister: Project.AllProjectsReader = () => this.repo.getProjectList();
+    const projects = await this.projectService.getProjectList(lister, user);
+    return projects.map(project => ({
+      // TODO Is `log` used on the frontend?
+      log: [],
+      allowedIntents: getAllowedIntents(Project.userIdentities(user), project.permissions),
+      data: {
+        id: project.id,
+        creationUnixTs: project.creationUnixTs,
+        status: project.status,
+        displayName: project.displayName,
+        assignee: project.assignee,
+        description: project.description,
+        amount: project.amount,
+        currency: project.currency,
+        thumbnail: project.thumbnail,
+      },
+    }));
+  }
 
   public assignProject(token: AuthToken, projectId: string, assignee: string): Promise<void> {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
@@ -47,8 +69,10 @@ export class MultichainProjectAdapter implements HTTP.ProjectPort {
       return this.notificationService.projectAssigned(sender, resolver, assigner, subject);
     };
 
+    const reader: Project.ProjectReader = id => this.repo.getProject(id);
+
     return this.projectService.assignProject(
-      this.repo,
+      reader,
       multichainAssigner,
       multichainNotifier,
       assigningUser,

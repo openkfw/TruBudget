@@ -2,12 +2,12 @@ import { assert } from "chai";
 
 import {
   AllProjectsReader,
-  ProjectAPI,
+  API,
+  AssignedNotifier,
   ProjectAssigner,
+  ProjectReader,
   ProjectService,
-  SingleProjectReader,
 } from ".";
-import { AssignedNotifier } from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { Project } from "./Project";
@@ -40,13 +40,9 @@ describe("When listing project,", () => {
 
       const projects = [projectVisibleToBob, projectVisibleToFriends, nonVisibleProject];
 
-      const lister: AllProjectsReader = {
-        getProjectList(): Promise<Project[]> {
-          return Promise.resolve(projects);
-        },
-      };
+      const lister: AllProjectsReader = () => Promise.resolve(projects);
 
-      const service: ProjectAPI = new ProjectService();
+      const service: API = new ProjectService();
       const visibleProjects = await service.getProjectList(lister, user);
 
       assert.equal(visibleProjects.length, 2);
@@ -68,19 +64,17 @@ describe("Assigning a project,", () => {
     });
     const nonAssignableProject = newProject("nonAssignableProject", {});
 
-    const reader: SingleProjectReader = {
-      getProject(id: string): Promise<Project> {
-        switch (id) {
-          case "aliceProject":
-            return Promise.resolve(projectAssignableToAlice);
-          case "friendsProject":
-            return Promise.resolve(projectAssignableToFriends);
-          case "nonAssignableProject":
-            return Promise.resolve(nonAssignableProject);
-          default:
-            return Promise.reject(id);
-        }
-      },
+    const reader: ProjectReader = id => {
+      switch (id) {
+        case "aliceProject":
+          return Promise.resolve(projectAssignableToAlice);
+        case "friendsProject":
+          return Promise.resolve(projectAssignableToFriends);
+        case "nonAssignableProject":
+          return Promise.resolve(nonAssignableProject);
+        default:
+          return Promise.reject(id);
+      }
     };
 
     const calls = new Map<string, number>();
@@ -92,7 +86,7 @@ describe("Assigning a project,", () => {
     const notifier: AssignedNotifier = (project: Project, _assigner: string): Promise<void> =>
       Promise.resolve();
 
-    const service: ProjectAPI = new ProjectService();
+    const service: API = new ProjectService();
     await assertIsResolved(
       service.assignProject(reader, assigner, notifier, alice, "aliceProject", "bob"),
     );
@@ -122,17 +116,15 @@ describe("Assigning a project,", () => {
     });
     const nonAssignableProject = newProject("nonAssignableProject", {});
 
-    const reader: SingleProjectReader = {
-      getProject(id: string): Promise<Project> {
-        switch (id) {
-          case "aliceProject":
-            return Promise.resolve(projectAssignableToAlice);
-          case "nonAssignableProject":
-            return Promise.resolve(nonAssignableProject);
-          default:
-            return Promise.reject(id);
-        }
-      },
+    const reader: ProjectReader = id => {
+      switch (id) {
+        case "aliceProject":
+          return Promise.resolve(projectAssignableToAlice);
+        case "nonAssignableProject":
+          return Promise.resolve(nonAssignableProject);
+        default:
+          return Promise.reject(id);
+      }
     };
 
     const assigner: ProjectAssigner = (projectId: string, _assignee: string): Promise<void> =>
@@ -144,7 +136,7 @@ describe("Assigning a project,", () => {
       return Promise.resolve();
     };
 
-    const service: ProjectAPI = new ProjectService();
+    const service: API = new ProjectService();
     await assertIsResolved(
       service.assignProject(reader, assigner, notifier, alice, "aliceProject", "bob"),
     );

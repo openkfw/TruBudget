@@ -8,12 +8,11 @@ import { asMapKey } from "./multichain/Client";
 import { MultichainClient } from "./multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "./multichain/event";
 import * as Liststreamkeyitems from "./multichain/responses/liststreamkeyitems";
-import { AllProjectsReader, SingleProjectReader } from "./project";
 import * as Project from "./project";
 
 const projectSelfKey = "self";
 
-export class MultichainRepository implements SingleProjectReader, AllProjectsReader {
+export class MultichainRepository {
   constructor(private readonly multichain: MultichainClient) {}
 
   public getProject(id: string): Promise<Project.Project> {

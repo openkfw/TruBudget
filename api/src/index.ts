@@ -120,9 +120,7 @@ registerRoutes(
   URL_PREFIX,
   multichainHost,
   backupApiPort,
-  repo,
   new MultichainProjectAdapter(multichainClient, repo, projectAPI, notificationAPI),
-  projectAPI,
 );
 
 server.listen(port, "0.0.0.0", async err => {
