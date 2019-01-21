@@ -54,11 +54,25 @@ export class ProjectService implements API {
   ): Promise<void> {
     const project = await getProject(projectId);
     if (!isProjectAssignable(project, user, assignee)) {
-      throw new Error(
-        `Identity ${user.id} is not allowed to re-assign project ${projectId} to ${assignee}.`,
+      return Promise.reject(
+        Error(
+          `Identity ${user.id} is not allowed to re-assign project ${projectId} to ${assignee}.`,
+        ),
       );
     }
     await assignProject(projectId, assignee);
     await notify(project, user.id);
   }
+}
+
+export async function getAuthorizedProject(
+  getProject: ProjectReader,
+  user: User,
+  projectId: string,
+): Promise<Project> {
+  const project = await getProject(projectId);
+  if (!isProjectVisibleTo(project, user)) {
+    return Promise.reject(Error(`Identity ${user.id} is not allowed to see project ${projectId}.`));
+  }
+  return project;
 }

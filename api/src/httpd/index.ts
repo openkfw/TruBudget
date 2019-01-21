@@ -1,10 +1,15 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 
-export interface ProjectPort {
-  getProjectList(token: AuthToken): Promise<Project[]>;
-  assignProject(token: AuthToken, projectId: string, assignee: string): Promise<void>;
-}
+export type ProjectReader = (token: AuthToken, id: string) => Promise<Project>;
+
+export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
+
+export type ProjectAssigner = (
+  token: AuthToken,
+  projectId: string,
+  assignee: string,
+) => Promise<void>;
 
 interface HistoricEvent {
   key: string; // the resource ID (same for all events that relate to the same resource)

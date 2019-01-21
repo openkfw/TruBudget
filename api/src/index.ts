@@ -1,5 +1,6 @@
 import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
+import * as HttpdMultichainAdapter from "./HttpdMultichainAdapter";
 import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -7,9 +8,6 @@ import timeout from "./lib/timeout";
 import { RpcMultichainClient } from "./multichain/Client";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
-import * as MultichainGroupResolverAdapter from "./MultichainGroupResolverAdapter";
-import { MultichainProjectAdapter } from "./MultichainProjectAdapter";
-import { MultichainRepository } from "./MultichainRepository";
 import { registerNode } from "./network/controller/registerNode";
 import { NotificationService } from "./notification";
 import { ensureOrganizationStream } from "./organization/organization";
@@ -106,7 +104,6 @@ function registerSelf(): Promise<boolean> {
     .catch(() => false);
 }
 
-const repo = new MultichainRepository(multichainClient);
 const notificationAPI = new NotificationService();
 const projectAPI = new ProjectService();
 
@@ -120,7 +117,10 @@ registerRoutes(
   URL_PREFIX,
   multichainHost,
   backupApiPort,
-  new MultichainProjectAdapter(multichainClient, repo, projectAPI, notificationAPI),
+  {
+    projectLister: HttpdMultichainAdapter.getProjectList(multichainClient, projectAPI),
+    projectAssigner: HttpdMultichainAdapter.assignProject(multichainClient, notificationAPI),
+  },
 );
 
 server.listen(port, "0.0.0.0", async err => {

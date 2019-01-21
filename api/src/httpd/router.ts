@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { ProjectPort } from ".";
+import { AllProjectsReader, ProjectAssigner } from ".";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
@@ -255,7 +255,13 @@ export const registerRoutes = (
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
-  projectAdapter: ProjectPort,
+  {
+    projectLister,
+    projectAssigner,
+  }: {
+    projectLister: AllProjectsReader;
+    projectAssigner: ProjectAssigner;
+  },
 ) => {
   // ------------------------------------------------------------
   //       system
@@ -421,8 +427,7 @@ export const registerRoutes = (
 
   server.get(`${urlPrefix}/project.list`, getSchema(server, "projectList"), (request, reply) => {
     const req = request as AuthenticatedRequest;
-    return projectAdapter
-      .getProjectList(req.user)
+    return projectLister(req.user)
       .then(
         (projects: ProjectResource[]): HttpResponse => [
           200,
@@ -458,8 +463,7 @@ export const registerRoutes = (
       const projectId: string = request.body.data.projectId;
       const assignee: string = request.body.data.identity;
 
-      projectAdapter
-        .assignProject(token, projectId, assignee)
+      return projectAssigner(token, projectId, assignee)
         .then(
           (): HttpResponse => [
             200,
