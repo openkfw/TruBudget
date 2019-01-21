@@ -1,7 +1,7 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import * as Nodes from "../model/Nodes";
 import { voteHelper } from "../voteHelper";
 

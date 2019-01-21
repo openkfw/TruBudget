@@ -1,9 +1,7 @@
 import { assert } from "chai";
 
-import { NotificationAPI } from ".";
-import { GroupResolver, NotificationService, Sender } from ".";
+import { GroupResolverPort, NotificationAPI, NotificationService, Project, Sender } from ".";
 import { Event } from "../multichain/event";
-import { Project } from "./Project";
 
 describe("A notification for project.assign", () => {
   it("is sent to the assignee", async () => {
@@ -18,19 +16,13 @@ describe("A notification for project.assign", () => {
     };
 
     const callSpy = [0];
-    const sender: Sender = {
-      send(message: Event, recipient: string): Promise<void> {
-        ++callSpy[0];
-        assert.equal(recipient, assignee);
-        return Promise.resolve();
-      },
+    const sender: Sender = (message: Event, recipient: string): Promise<void> => {
+      ++callSpy[0];
+      assert.equal(recipient, assignee);
+      return Promise.resolve();
     };
 
-    const resolver: GroupResolver = {
-      resolveGroup(groupId: string): Promise<string[]> {
-        return Promise.resolve([]);
-      },
-    };
+    const resolver: GroupResolverPort = (groupId: string): Promise<string[]> => Promise.resolve([]);
 
     const api: NotificationAPI = new NotificationService();
     await api.projectAssigned(sender, resolver, assigner, project);
@@ -50,17 +42,11 @@ describe("A notification for project.assign", () => {
       assignee,
     };
 
-    const sender: Sender = {
-      send(message: Event, recipient: string): Promise<void> {
-        throw Error("this should not be called");
-      },
+    const sender: Sender = (message: Event, recipient: string): Promise<void> => {
+      throw Error("this should not be called");
     };
 
-    const resolver: GroupResolver = {
-      resolveGroup(groupId: string): Promise<string[]> {
-        return Promise.resolve([]);
-      },
-    };
+    const resolver: GroupResolverPort = (groupId: string): Promise<string[]> => Promise.resolve([]);
 
     const api: NotificationAPI = new NotificationService();
     await api.projectAssigned(sender, resolver, assigner, project);
@@ -78,19 +64,14 @@ describe("A notification for project.assign", () => {
     };
 
     const callSpy = [0];
-    const sender: Sender = {
-      send(message: Event, recipient: string): Promise<void> {
-        ++callSpy[0];
-        assert.oneOf(recipient, friends);
-        return Promise.resolve();
-      },
+    const sender: Sender = (message: Event, recipient: string): Promise<void> => {
+      ++callSpy[0];
+      assert.oneOf(recipient, friends);
+      return Promise.resolve();
     };
 
-    const resolver: GroupResolver = {
-      resolveGroup(groupId: string): Promise<string[]> {
-        return Promise.resolve(groupId === "friends" ? friends : []);
-      },
-    };
+    const resolver: GroupResolverPort = (groupId: string): Promise<string[]> =>
+      Promise.resolve(groupId === "friends" ? friends : []);
 
     const api: NotificationAPI = new NotificationService();
     await api.projectAssigned(sender, resolver, assigner, project);
@@ -113,19 +94,14 @@ describe("A notification for project.assign", () => {
     };
 
     const callSpy = [0];
-    const sender: Sender = {
-      send(message: Event, recipient: string): Promise<void> {
-        ++callSpy[0];
-        assert.oneOf(recipient, expectedRecipients);
-        return Promise.resolve();
-      },
+    const sender: Sender = (message: Event, recipient: string): Promise<void> => {
+      ++callSpy[0];
+      assert.oneOf(recipient, expectedRecipients);
+      return Promise.resolve();
     };
 
-    const resolver: GroupResolver = {
-      resolveGroup(groupId: string): Promise<string[]> {
-        return Promise.resolve(groupId === "friends" ? friends : []);
-      },
-    };
+    const resolver: GroupResolverPort = (groupId: string): Promise<string[]> =>
+      Promise.resolve(groupId === "friends" ? friends : []);
 
     const api: NotificationAPI = new NotificationService();
     await api.projectAssigned(sender, resolver, assigner, project);

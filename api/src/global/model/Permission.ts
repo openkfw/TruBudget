@@ -1,5 +1,5 @@
 import Intent from "../../authz/intents";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import { Event } from "../../multichain/event";
 
 export const publish = async (

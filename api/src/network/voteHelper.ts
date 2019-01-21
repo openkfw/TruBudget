@@ -1,7 +1,7 @@
 import { AuthToken } from "../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
-import { MultichainClient } from "../multichain";
+import { MultichainClient } from "../multichain/Client.h";
 import { getCurrentVote, voteForNetworkPermission } from "./controller/vote";
 import * as AccessVote from "./model/AccessVote";
 import * as Nodes from "./model/Nodes";

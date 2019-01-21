@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import { hashBase64String } from "../../subproject/controller/createWorkflowitem";
 
 export async function validateDocument(multichain: MultichainClient, req): Promise<HttpResponse> {

@@ -1,7 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { NotifierCreator, WriterFactory } from ".";
-import { getAllowedIntents } from "../authz";
+import { AllProjectsReader, ProjectAssigner } from ".";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
@@ -14,8 +13,7 @@ import { getGroupList } from "../group/list";
 import { removeUserFromGroup } from "../group/removeUser";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
-import { MultichainClient } from "../multichain";
-import { MultichainRepository } from "../MultichainRepository";
+import { MultichainClient } from "../multichain/Client.h";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
 import { getNodeList } from "../network/controller/list";
@@ -27,7 +25,6 @@ import { getNotificationList } from "../notification/controller/list";
 import { markMultipleRead } from "../notification/controller/markMultipleRead";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { getNewestNotifications } from "../notification/controller/poll";
-import { ProjectAPI, ProjectAssigner, ProjectNotifier } from "../project";
 import { closeProject } from "../project/controller/close";
 import { createSubproject } from "../project/controller/createSubproject";
 import { grantProjectPermission } from "../project/controller/intent.grantPermission";
@@ -37,8 +34,7 @@ import { updateProject } from "../project/controller/update";
 import { getProjectDetails } from "../project/controller/viewDetails";
 import { getProjectHistory } from "../project/controller/viewHistory";
 import { ProjectResource } from "../project/model/Project";
-import { Project } from "../project/Project";
-import { User as ProjectUser, userIdentities } from "../project/User";
+import { User as ProjectUser } from "../project/User";
 import { assignSubproject } from "../subproject/controller/assign";
 import { closeSubproject } from "../subproject/controller/close";
 import { createWorkflowitem } from "../subproject/controller/createWorkflowitem";
@@ -51,7 +47,7 @@ import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectDetails } from "../subproject/controller/viewDetails";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { createBackup } from "../system/createBackup";
-import { getVersion} from "../system/getVersion";
+import { getVersion } from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
 import { authenticateUser } from "../user/controller/authenticate";
 import { getUserList } from "../user/controller/list";
@@ -259,10 +255,13 @@ export const registerRoutes = (
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
-  reader: MultichainRepository,
-  writerFactory: WriterFactory,
-  notifierFactory: NotifierCreator,
-  projectAPI: ProjectAPI,
+  {
+    projectLister,
+    projectAssigner,
+  }: {
+    projectLister: AllProjectsReader;
+    projectAssigner: ProjectAssigner;
+  },
 ) => {
   // ------------------------------------------------------------
   //       system
@@ -428,30 +427,7 @@ export const registerRoutes = (
 
   server.get(`${urlPrefix}/project.list`, getSchema(server, "projectList"), (request, reply) => {
     const req = request as AuthenticatedRequest;
-    const user: ProjectUser = { id: req.user.userId, groups: req.user.groups };
-    projectAPI
-      .getProjectList(reader, user)
-      .then(
-        (projects: Project[]): ProjectResource[] =>
-          projects.map(project => ({
-            // TODO Is `log` used on the frontend? If it is this must be set here, likely
-            // through a dedicated `projectHistory(id)` method implemented by the
-            // (Multichain)Reader.
-            log: [],
-            allowedIntents: getAllowedIntents(userIdentities(user), project.permissions),
-            data: {
-              id: project.id,
-              creationUnixTs: project.creationUnixTs,
-              status: project.status,
-              displayName: project.displayName,
-              assignee: project.assignee,
-              description: project.description,
-              amount: project.amount,
-              currency: project.currency,
-              thumbnail: project.thumbnail,
-            },
-          })),
-      )
+    return projectLister(req.user)
       .then(
         (projects: ProjectResource[]): HttpResponse => [
           200,
@@ -487,11 +463,7 @@ export const registerRoutes = (
       const projectId: string = request.body.data.projectId;
       const assignee: string = request.body.data.identity;
 
-      const assigner: ProjectAssigner = writerFactory.projectAssigner(token);
-      const notifier: ProjectNotifier = notifierFactory.createNotifier(token);
-
-      projectAPI
-        .assignProject(reader, assigner, notifier, user, projectId, assignee)
+      return projectAssigner(token, projectId, assignee)
         .then(
           (): HttpResponse => [
             200,

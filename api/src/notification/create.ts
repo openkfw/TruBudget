@@ -4,7 +4,7 @@ import Intent from "../authz/intents";
 import { UserId } from "../authz/types";
 import { getUsersForGroup, groupExists } from "../group";
 import logger from "../lib/logger";
-import { MultichainClient } from "../multichain";
+import { MultichainClient } from "../multichain/Client.h";
 import { Event } from "../multichain/event";
 import * as Project from "../project/model/Project";
 import * as Subproject from "../subproject/model/Subproject";

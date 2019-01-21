@@ -5,7 +5,7 @@ import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
 import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";

@@ -1,5 +1,11 @@
 import { Event } from "../multichain/event";
-import { Project } from "./Project";
+
+export interface Project {
+  id: string;
+  status: "open" | "closed";
+  displayName: string;
+  assignee: string;
+}
 
 export interface NotificationAPI {
   /**
@@ -7,37 +13,30 @@ export interface NotificationAPI {
    */
   projectAssigned(
     sender: Sender,
-    resolver: GroupResolver,
+    resolver: GroupResolverPort,
     assigner: string,
     project: Project,
   ): Promise<void>;
 }
 
-export interface Sender {
-  /**
-   * Forwards a message (without interpreting it).
-   */
-  send(message: Event, recipient: string): Promise<void>;
-}
+export type Sender = (message: Event, recipient: string) => Promise<void>;
 
-export interface GroupResolver {
-  /**
-   * Returns the members for a given group.
-   *
-   * If the group does not exist, an empty array is returned.
-   */
-  resolveGroup(groupId: string): Promise<string[]>;
-}
+/**
+ * Returns the members for a given group.
+ *
+ * If the group does not exist, an empty array is returned.
+ */
+export type GroupResolverPort = (groupId: string) => Promise<string[]>;
 
 export class NotificationService implements NotificationAPI {
   public async projectAssigned(
-    sender: Sender,
-    resolver: GroupResolver,
+    send: Sender,
+    resolveGroup: GroupResolverPort,
     assigner: string,
     project: Project,
   ): Promise<void> {
     const assignee = project.assignee;
-    const groupMembers = await resolver.resolveGroup(assignee);
+    const groupMembers = await resolveGroup(assignee);
     const resolvedAssignees = groupMembers.length ? groupMembers : [assignee];
     const recipients = resolvedAssignees.filter(x => x !== assigner);
 
@@ -53,7 +52,7 @@ export class NotificationService implements NotificationAPI {
     };
 
     for (const recipient of recipients) {
-      await sender.send(event, recipient);
+      await send(event, recipient);
     }
   }
 }

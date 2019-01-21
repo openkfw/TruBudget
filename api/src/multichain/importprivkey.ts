@@ -1,4 +1,4 @@
-import { MultichainClient } from ".";
+import { MultichainClient } from "./Client.h";
 
 export function importprivkey(
   multichain: MultichainClient,

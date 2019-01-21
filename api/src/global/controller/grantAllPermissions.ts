@@ -4,7 +4,7 @@ import Intent, { userAssignableIntents } from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 
 export const grantAllPermissions = async (
   multichain: MultichainClient,
@@ -18,7 +18,7 @@ export const grantAllPermissions = async (
   await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
 
   for (const intent of userAssignableIntents) {
-    logger.debug( { identity, intent }, "Granting all permissions.");
+    logger.debug({ identity, intent }, "Granting all permissions.");
     await Global.grantPermission(multichain, identity, intent);
   }
 

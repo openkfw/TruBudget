@@ -1,7 +1,7 @@
 import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import { fetchWorkflowitemOrdering } from "../../subproject/model/WorkflowitemOrdering";
 import { sortWorkflowitems } from "../../subproject/sortWorkflowitems";
 import * as Workflowitem from "../model/Workflowitem";

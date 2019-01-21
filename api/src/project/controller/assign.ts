@@ -6,7 +6,7 @@ import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";

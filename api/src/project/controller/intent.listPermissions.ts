@@ -4,7 +4,7 @@
 import { throwIfUnauthorized } from "../../authz";
 import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import * as Project from "../model/Project";
 
 export async function getProjectPermissions(

@@ -3,7 +3,7 @@ import Intent from "../../authz/intents";
 import * as Global from "../../global";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
 import logger from "../../lib/logger";

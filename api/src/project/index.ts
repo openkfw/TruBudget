@@ -1,80 +1,65 @@
 import { isProjectAssignable, isProjectVisibleTo, Project } from "./Project";
 import { User } from "./User";
 
-export interface ProjectAPI {
-  /**
-   *
-   * @param user The requesting user.
-   */
-  getProjectList(projectLister: AllProjectsReader, user: User): Promise<Project[]>;
+export * from "./Project";
+export * from "./User";
 
-  /**
-   *
-   * @param assigner The requesting user.
-   * @param projectId ID of the affected project.
-   * @param assignee The identity (user ID or group ID) to be assigned to the project.
-   */
-  assignProject(
-    singleProjectReader: SingleProjectReader,
-    projectAssigner: ProjectAssigner,
-    notifier: ProjectNotifier,
-    assigner: User,
-    projectId: string,
-    assignee: string,
-  ): Promise<void>;
-}
+export type Reader = (id: string) => Promise<Project>;
 
-export interface SingleProjectReader {
-  /**
-   * Fetch a single project.
-   *
-   * @param id Project ID.
-   */
-  getProject(id: string): Promise<Project>;
-}
+export type ListReader = () => Promise<Project[]>;
 
-export interface AllProjectsReader {
-  /**
-   * Fetch all projects.
-   */
-  getProjectList(): Promise<Project[]>;
-}
+export type Assigner = (projectId: string, assignee: string) => Promise<void>;
 
-export interface ProjectAssigner {
-  /**
-   *
-   * @param project ID of the affected project.
-   * @param assignee The identity (user ID or group ID) to be assigned to the project.
-   */
-  assignProject(projectId: string, assignee: string): Promise<void>;
-}
+export type AssignmentNotifier = (project: Project, assigner: string) => Promise<void>;
 
-export interface ProjectNotifier {
-  projectAssigned(assigner: string, project: Project, assignee: string): Promise<void>;
-}
+// export type UpdatedNotifier = (project: Project, update: Update) => Promise<void>;
 
-export class ProjectService implements ProjectAPI {
-  public async getProjectList(projectLister: AllProjectsReader, user: User): Promise<Project[]> {
-    const allProjects = await projectLister.getProjectList();
-    const authorizedProjects = allProjects.filter(project => isProjectVisibleTo(project, user));
-    return authorizedProjects;
+export async function getOne(getProject: Reader, user: User, projectId: string): Promise<Project> {
+  const project = await getProject(projectId);
+  if (!isProjectVisibleTo(project, user)) {
+    return Promise.reject(Error(`Identity ${user.id} is not allowed to see project ${projectId}.`));
   }
+  return project;
+}
 
-  public async assignProject(
-    singleProjectReader: SingleProjectReader,
-    assigner: ProjectAssigner,
-    notifier: ProjectNotifier,
-    user: User,
-    projectId: string,
-    assignee: string,
-  ): Promise<void> {
-    const project = await singleProjectReader.getProject(projectId);
-    if (!isProjectAssignable(project, user, assignee)) {
-      throw new Error(
-        `Identity ${user.id} is not allowed to re-assign project ${projectId} to ${assignee}.`,
-      );
-    }
-    await assigner.assignProject(projectId, assignee);
-    await notifier.projectAssigned(user.id, project, assignee);
+export async function getAllVisible(
+  asUser: User,
+  { getAllProjects }: { getAllProjects: ListReader },
+): Promise<Project[]> {
+  const allProjects = await getAllProjects();
+  const authorizedProjects = allProjects.filter(project => isProjectVisibleTo(project, asUser));
+  return authorizedProjects;
+}
+
+/**
+ *
+ * @param assigner The requesting user.
+ * @param projectId ID of the affected project.
+ * @param assignee The identity (user ID or group ID) to be assigned to the project.
+ */
+export async function assign(
+  assigner: User,
+  projectId: string,
+  assignee: string,
+  {
+    getProject,
+    saveProjectAssignment,
+    notify,
+  }: {
+    getProject: Reader;
+    saveProjectAssignment: Assigner;
+    notify: AssignmentNotifier;
+  },
+): Promise<void> {
+  const project = await getProject(projectId);
+  if (!isProjectAssignable(project, assigner, assignee)) {
+    return Promise.reject(
+      Error(
+        `Identity ${assigner.id} is not allowed to re-assign project ${projectId} to ${assignee}.`,
+      ),
+    );
   }
+  await saveProjectAssignment(projectId, assignee);
+  const updatedProject = await getProject(projectId);
+  await notify(updatedProject, assigner.id);
 }

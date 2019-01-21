@@ -2,7 +2,7 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain";
+import { MultichainClient } from "../../multichain/Client.h";
 import * as Subproject from "../model/Subproject";
 import { publishWorkflowitemOrderingUpdate } from "../model/WorkflowitemOrdering";
 
