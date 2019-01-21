@@ -61,6 +61,8 @@ import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
+import { AllWorkflowitemsReader } from "./index";
+import { WorkflowitemResource } from "../workflowitem/model/Workflowitem";
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -258,9 +260,11 @@ export const registerRoutes = (
   {
     projectLister,
     projectAssigner,
+    workflowitemLister,
   }: {
     projectLister: AllProjectsReader;
     projectAssigner: ProjectAssigner;
+    workflowitemLister: AllWorkflowitemsReader;
   },
 ) => {
   // ------------------------------------------------------------
@@ -429,7 +433,7 @@ export const registerRoutes = (
     const req = request as AuthenticatedRequest;
     return projectLister(req.user)
       .then(
-        (projects: ProjectResource[]): HttpResponse => [
+        (projects): HttpResponse => [
           200,
           {
             apiVersion: "1.0",
@@ -668,7 +672,21 @@ export const registerRoutes = (
     `${urlPrefix}/workflowitem.list`,
     getSchema(server, "workflowitemList"),
     (request, reply) => {
-      getWorkflowitemList(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      // TODO: Typedefinition for workflowitems missing
+      console.log("calling workflowitemLister");
+      return workflowitemLister(req.user, req.query.projectId, req.query.subprojectId)
+        .then(
+          (workflowitems): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: {
+                workflowitems,
+              },
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

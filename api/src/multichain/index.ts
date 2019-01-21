@@ -1,19 +1,27 @@
 import uuid = require("uuid");
 
+import { getAllowedIntents } from "../authz";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
+import { User } from "../workflowitem/User";
 import { asMapKey } from "./Client";
 import { MultichainClient } from "./Client.h";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import * as MultichainWorkflowitem from "./Workflowitem";
+import { redactWorkflowitemData } from "../workflowitem";
+import { getUserAndGroups } from "../authz/index";
 
 export * from "./event";
+export * from "./Workflowitem";
 
 const projectSelfKey = "self";
+const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
+const workflowitemOrderingKey = subprojectId => `${subprojectId}_workflowitem_ordering`;
 
 export interface Issuer {
   name: string;
@@ -338,4 +346,140 @@ function notificationTypeFromIntent(intent: Intent): ResourceType {
   } else {
     throw Error(`Unknown ResourceType for intent ${intent}`);
   }
+}
+
+export async function getWorkflowitemList(
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+  user: MultichainWorkflowitem.User,
+): Promise<MultichainWorkflowitem.Workflowitem[]> {
+  console.log("In getWorkflowitemList / multichain");
+  const queryKey = workflowitemsGroupKey(subprojectId);
+  console.log(queryKey);
+
+  const streamItems = await multichain.v2_readStreamItems(projectId, queryKey);
+  console.log(streamItems);
+  // const userAndGroups = await getUserAndGroups(token);
+  const workflowitemsMap = new Map<string, MultichainWorkflowitem.Workflowitem>();
+  const permissionsMap = new Map<string, AllowedUserGroupsByIntent>();
+
+  for (const item of streamItems) {
+    const event = item.data.json as Event;
+
+    // Events look differently for different intents!
+    let workflowitem = workflowitemsMap.get(asMapKey(item));
+    console.log("Resource: ");
+    console.log(workflowitem);
+
+    if (workflowitem === undefined) {
+      const result = MultichainWorkflowitem.handleCreate(event);
+      if (result === undefined) {
+        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
+      }
+      workflowitem = result;
+      permissionsMap.set(asMapKey(item), result.permissions);
+    } else {
+      // We've already encountered this workflowitem, so we can apply operations on it.
+      const permissions = permissionsMap.get(asMapKey(item))!;
+      const hasProcessedEvent =
+        MultichainWorkflowitem.applyUpdate(event, workflowitem) ||
+        MultichainWorkflowitem.applyAssign(event, workflowitem) ||
+        MultichainWorkflowitem.applyClose(event, workflowitem) ||
+        MultichainWorkflowitem.applyGrantPermission(event, permissions) ||
+        MultichainWorkflowitem.applyRevokePermission(event, permissions);
+      if (!hasProcessedEvent) {
+        const message = "Unexpected event occured";
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
+      }
+    }
+
+    if (workflowitem !== undefined) {
+      // Save all events to the log for now; we'll filter them once we
+      // know the final workflowitem permissions.
+      workflowitem.log.push({
+        ...event,
+        snapshot: {
+          displayName: deepcopy(workflowitem.displayName),
+          amount: deepcopy(workflowitem.amount),
+          currency: deepcopy(workflowitem.currency),
+          amountType: deepcopy(workflowitem.amountType),
+        },
+      });
+      workflowitemsMap.set(asMapKey(item), workflowitem);
+    }
+    if (workflowitem !== undefined) {
+      // Save all events to the log for now; we'll filter them once we
+      // know the final resource permissions.
+      workflowitemsMap.set(asMapKey(item), workflowitem);
+    }
+  }
+
+  for (const [key, permissions] of permissionsMap.entries()) {
+    const resource = workflowitemsMap.get(key);
+    if (resource !== undefined) {
+      resource.permissions = await getAllowedIntents(
+        MultichainWorkflowitem.userIdentities(user),
+        permissions,
+      );
+    }
+  }
+
+  const unfilteredResources = [...workflowitemsMap.values()];
+
+  return unfilteredResources;
+
+  // Instead of filtering out workflowitems the user is not allowed to see,
+  // we simply blank out all fields except the status, which is considered "public".
+  // const allowedToSeeDataIntent: Intent = "workflowitem.view";
+  // const filteredResources = unfilteredResources.map(resource => {
+  // Redact data if the user is not allowed to view it:
+  // Redaction of data is part of the business logic and should be done there!
+  // const isAllowedToSeeData = Object.values(resource.permissions).includes(allowedToSeeDataIntent);
+  // if (!isAllowedToSeeData) resource = redactWorkflowitemData(resource) as any;
+
+  // Filter event log according to the user permissions and the type of event:
+  // Filtering of event log is part of busoness logic
+  // resource.log = resource.log
+  //   .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
+  //   .filter(isNotEmpty);
+
+  // return resource;
+  // });
+
+  // return filteredResources;
+}
+
+export async function fetchWorkflowitemOrdering(
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+): Promise<string[]> {
+  // Currently, the workflowitem ordering is stored in full; therefore, we only
+  // need to retrieve the latest item(see`publishWorkflowitemOrdering`).
+  const expectedDataVersion = 1;
+  const nValues = 1;
+
+  const streamItems = await multichain
+    .v2_readStreamItems(projectId, workflowitemOrderingKey(subprojectId), nValues)
+    .then(items => {
+      if (items.length > 0) return items;
+      else throw { kind: "NotFound", what: workflowitemOrderingKey(subprojectId) };
+    })
+    .catch(err => {
+      if (err.kind === "NotFound") {
+        return [{ data: { json: { dataVersion: 1, data: [] } } }];
+      } else {
+        throw err;
+      }
+    });
+
+  const item = streamItems[0];
+  const event = item.data.json as Event;
+  if (event.dataVersion !== expectedDataVersion) {
+    throwUnsupportedEventVersion(event);
+  }
+
+  const ordering: string[] = event.data;
+  return ordering;
 }

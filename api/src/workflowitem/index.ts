@@ -1,34 +1,32 @@
-import { Workflowitem } from "./Workflowitem";
+import { User } from "./User";
+import {
+  isWorkflowitemVisibleTo,
+  removeEventLog,
+  sortWorkflowitems,
+  Workflowitem,
+} from "./Workflowitem";
 
-export interface WorkflowitemAPI {
-  getWorkflowitemList(
-    workflowitemLister: WorkflowitemLister,
-    projectId: string,
-    subprojectId: string,
-    user: string,
-  ): Promise<Workflowitem[]>;
-}
-export interface WorkflowitemLister {
-  getWorkflowitemList(projectId: string, subprojectId: string): Promise<Workflowitem[]>;
-  getWorkflowitemOrdering(): Promise<string[]>;
-}
+export * from "./Workflowitem";
+export * from "./User";
 
-export class WorkflowitemService implements WorkflowitemAPI {
-  public async getWorkflowitemList(
-    workflowitemLister: WorkflowitemLister,
-    projectId: string,
-    subprojectId: string,
-    user: string,
-  ): Promise<Workflowitem[]> {
-    const workflowitemOrdering = workflowitemLister.getWorkflowitemOrdering();
-    const workflowitems = await workflowitemLister.getWorkflowitemList(projectId, subprojectId);
-    const authorizedWorkflowitems = await workflowitems.filter(workflowitem =>
-      isWorkflowitemVisibleTo(workflowitem, user),
-    );
-    return Promise.resolve([]);
-  }
+export type ListReader = () => Promise<Workflowitem[]>;
+export type OrderingReader = () => Promise<string[]>;
 
-  public async getWorkflowitemOrdering(): Promise<string[]> {
-    return Promise.resolve([]);
-  }
+export async function getAllVisible(
+  asUser: User,
+  {
+    getAllWorkflowitems,
+    getWorkflowitemOrdering,
+  }: { getAllWorkflowitems: ListReader; getWorkflowitemOrdering: OrderingReader },
+): Promise<Workflowitem[]> {
+  const workflowitemOrdering = await getWorkflowitemOrdering();
+  const workflowitems = await getAllWorkflowitems();
+  const authorizedWorkflowitems = await workflowitems.filter(workflowitem =>
+    isWorkflowitemVisibleTo(workflowitem, asUser),
+  );
+  const sortedWorkflowitems = await sortWorkflowitems(
+    authorizedWorkflowitems,
+    workflowitemOrdering,
+  );
+  return sortedWorkflowitems.map(removeEventLog);
 }

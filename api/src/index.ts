@@ -118,6 +118,7 @@ registerRoutes(
   {
     projectLister: HttpdMultichainAdapter.getProjectList(multichainClient),
     projectAssigner: HttpdMultichainAdapter.assignProject(multichainClient, notificationAPI),
+    workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(multichainClient),
   },
 );
 
