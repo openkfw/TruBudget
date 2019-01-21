@@ -3,7 +3,7 @@ import { AuthToken } from "./authz/token";
 import * as HTTP from "./httpd";
 import * as Multichain from "./multichain";
 import { MultichainClient } from "./multichain/Client.h";
-import * as MultichainGroupResolverAdapter from "./MultichainGroupResolverAdapter";
+import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
 
@@ -89,9 +89,8 @@ export function assignProject(
       const sender: Notification.Sender = (message, recipient) =>
         Multichain.issueNotification(multichainClient, issuer, message, recipient);
 
-      const resolver: Notification.GroupResolverPort = MultichainGroupResolverAdapter.create(
-        multichainClient,
-      );
+      const resolver: Notification.GroupResolverPort = groupId =>
+        Group.getUsers(multichainClient, groupId);
 
       const subject: Notification.Project = {
         id: project.id,
