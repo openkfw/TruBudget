@@ -2,11 +2,11 @@ import { assert } from "chai";
 
 import {
   AllProjectsReader,
-  API,
   AssignedNotifier,
+  assignProject,
+  getAuthorizedProjectList,
   ProjectAssigner,
   ProjectReader,
-  ProjectService,
 } from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
@@ -42,8 +42,7 @@ describe("When listing project,", () => {
 
       const lister: AllProjectsReader = () => Promise.resolve(projects);
 
-      const service: API = new ProjectService();
-      const visibleProjects = await service.getProjectList(lister, user);
+      const visibleProjects = await getAuthorizedProjectList(user, { getAllProjects: lister });
 
       assert.equal(visibleProjects.length, 2);
       assert.equal(visibleProjects[0].id, "bobProject");
@@ -86,19 +85,17 @@ describe("Assigning a project,", () => {
     const notifier: AssignedNotifier = (project: Project, _assigner: string): Promise<void> =>
       Promise.resolve();
 
-    const service: API = new ProjectService();
-    await assertIsResolved(
-      service.assignProject(reader, assigner, notifier, alice, "aliceProject", "bob"),
-    );
+    const deps = {
+      getProject: reader,
+      saveProjectAssignment: assigner,
+      notify: notifier,
+    };
 
-    await assertIsResolved(
-      service.assignProject(reader, assigner, notifier, alice, "friendsProject", "bob"),
-    );
+    await assertIsResolved(assignProject(alice, "aliceProject", "bob", deps));
 
-    await assertIsRejectedWith(
-      service.assignProject(reader, assigner, notifier, alice, "nonAssignableProject", "bob"),
-      Error,
-    );
+    await assertIsResolved(assignProject(alice, "friendsProject", "bob", deps));
+
+    await assertIsRejectedWith(assignProject(alice, "nonAssignableProject", "bob", deps), Error);
 
     assert.equal(calls.get("aliceProject"), 1);
     assert.equal(calls.get("friendsProject"), 1);
@@ -136,14 +133,14 @@ describe("Assigning a project,", () => {
       return Promise.resolve();
     };
 
-    const service: API = new ProjectService();
-    await assertIsResolved(
-      service.assignProject(reader, assigner, notifier, alice, "aliceProject", "bob"),
-    );
-    await assertIsRejectedWith(
-      service.assignProject(reader, assigner, notifier, alice, "nonAssignableProject", "bob"),
-      Error,
-    );
+    const deps = {
+      getProject: reader,
+      saveProjectAssignment: assigner,
+      notify: notifier,
+    };
+
+    await assertIsResolved(assignProject(alice, "aliceProject", "bob", deps));
+    await assertIsRejectedWith(assignProject(alice, "nonAssignableProject", "bob", deps), Error);
 
     assert.equal(calls.get("aliceProject"), 1);
     assert.isUndefined(calls.get("nonAssignableProject"));

@@ -11,7 +11,6 @@ import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
 import { NotificationService } from "./notification";
 import { ensureOrganizationStream } from "./organization/organization";
-import { ProjectService } from "./project";
 
 const URL_PREFIX = "/api";
 /*
@@ -105,7 +104,6 @@ function registerSelf(): Promise<boolean> {
 }
 
 const notificationAPI = new NotificationService();
-const projectAPI = new ProjectService();
 
 registerRoutes(
   server,
@@ -118,7 +116,7 @@ registerRoutes(
   multichainHost,
   backupApiPort,
   {
-    projectLister: HttpdMultichainAdapter.getProjectList(multichainClient, projectAPI),
+    projectLister: HttpdMultichainAdapter.getProjectList(multichainClient),
     projectAssigner: HttpdMultichainAdapter.assignProject(multichainClient, notificationAPI),
   },
 );

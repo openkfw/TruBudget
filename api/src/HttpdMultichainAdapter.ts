@@ -42,10 +42,7 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
   };
 }
 
-export function getProjectList(
-  multichainClient: MultichainClient,
-  projectService: Project.API,
-): HTTP.AllProjectsReader {
+export function getProjectList(multichainClient: MultichainClient): HTTP.AllProjectsReader {
   return async (token: AuthToken) => {
     const user: Project.User = { id: token.userId, groups: token.groups };
 
@@ -54,7 +51,7 @@ export function getProjectList(
       return projectList.map(Project.validateProject);
     };
 
-    const projects = await projectService.getProjectList(lister, user);
+    const projects = await Project.getAuthorizedProjectList(user, { getAllProjects: lister });
     return projects.map(project => ({
       // TODO Is `log` used on the frontend?
       log: [],
