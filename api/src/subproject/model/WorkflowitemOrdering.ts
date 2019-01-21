@@ -31,6 +31,7 @@ export async function publishWorkflowitemOrderingUpdate(
     dataVersion: 1,
     data: ordering,
   };
+  console.log("Ordering: " + ordering);
   return multichain
     .getRpcClient()
     .invoke("publish", projectId, workflowitemOrderingKey(subprojectId), {
