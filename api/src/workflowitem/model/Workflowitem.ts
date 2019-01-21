@@ -1,3 +1,6 @@
+/*
+  Deprecated - see index.tx
+*/
 import { getAllowedIntents, getUserAndGroups } from "../../authz";
 import { onlyAllowedData } from "../../authz/history";
 import Intent from "../../authz/intents";

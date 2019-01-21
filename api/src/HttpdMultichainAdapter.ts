@@ -17,6 +17,7 @@ import { MultichainClient } from "./multichain/Client.h";
 import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
+import * as Workflowitem from "./workflowitem";
 
 export function getProject(multichainClient: MultichainClient): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
@@ -219,5 +220,57 @@ function multichainProjectToProjectProject(multichainProject: Multichain.Project
         },
       };
     }),
+  };
+}
+export function getWorkflowitemList(
+  multichainClient: MultichainClient,
+): HTTP.AllWorkflowitemsReader {
+  return async (token: AuthToken, projectId: string, subprojectId: string) => {
+    console.log("In getWorkflowitemList / HTTPD");
+    const user: Workflowitem.User = { id: token.userId, groups: token.groups };
+    // Get Workflowitems from Multichain
+    const orderingReader: Workflowitem.OrderingReader = async () => {
+      const ordering: string[] = await Multichain.fetchWorkflowitemOrdering(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return ordering;
+    };
+    const lister: Workflowitem.ListReader = async () => {
+      const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
+        multichainClient,
+        projectId,
+        subprojectId,
+        user,
+      );
+      return workflowitemList.map(Workflowitem.validateWorkflowitem);
+    };
+
+    // Filter workflowitems based on business logic (permission, ordering)
+    const workflowitems = await Workflowitem.getAllVisible(user, {
+      getAllWorkflowitems: lister,
+      getWorkflowitemOrdering: orderingReader,
+    });
+    console.log(workflowitems);
+
+    return workflowitems.map(item => ({
+      data: {
+        id: item.id,
+        creationUnixTs: item.creationUnixTs,
+        status: item.status,
+        amountType: item.amountType,
+        displayName: item.displayName,
+        description: item.description,
+        amount: item.amount,
+        assignee: item.assignee,
+        currency: item.currency,
+        billingDate: item.billingDate,
+        exchangeRate: item.exchangeRate,
+        documents: item.documents,
+      },
+      allowedIntents: item.permissions,
+    })) as HTTP.Workflowitem[];
+    // return Promise.resolve(lister());
   };
 }
