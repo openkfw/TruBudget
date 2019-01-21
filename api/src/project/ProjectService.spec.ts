@@ -1,13 +1,6 @@
 import { assert } from "chai";
 
-import {
-  AllProjectsReader,
-  AssignedNotifier,
-  assignProject,
-  getAuthorizedProjectList,
-  ProjectAssigner,
-  ProjectReader,
-} from ".";
+import { assign, Assigner, AssignmentNotifier, getAllVisible, ListReader, Reader } from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { Project } from "./Project";
@@ -40,9 +33,9 @@ describe("When listing project,", () => {
 
       const projects = [projectVisibleToBob, projectVisibleToFriends, nonVisibleProject];
 
-      const lister: AllProjectsReader = () => Promise.resolve(projects);
+      const lister: ListReader = () => Promise.resolve(projects);
 
-      const visibleProjects = await getAuthorizedProjectList(user, { getAllProjects: lister });
+      const visibleProjects = await getAllVisible(user, { getAllProjects: lister });
 
       assert.equal(visibleProjects.length, 2);
       assert.equal(visibleProjects[0].id, "bobProject");
@@ -63,7 +56,7 @@ describe("Assigning a project,", () => {
     });
     const nonAssignableProject = newProject("nonAssignableProject", {});
 
-    const reader: ProjectReader = id => {
+    const reader: Reader = id => {
       switch (id) {
         case "aliceProject":
           return Promise.resolve(projectAssignableToAlice);
@@ -77,12 +70,12 @@ describe("Assigning a project,", () => {
     };
 
     const calls = new Map<string, number>();
-    const assigner: ProjectAssigner = (projectId: string, _assignee: string): Promise<void> => {
+    const assigner: Assigner = (projectId: string, _assignee: string): Promise<void> => {
       calls.set(projectId, (calls.get(projectId) || 0) + 1);
       return Promise.resolve();
     };
 
-    const notifier: AssignedNotifier = (project: Project, _assigner: string): Promise<void> =>
+    const notifier: AssignmentNotifier = (project: Project, _assigner: string): Promise<void> =>
       Promise.resolve();
 
     const deps = {
@@ -91,11 +84,11 @@ describe("Assigning a project,", () => {
       notify: notifier,
     };
 
-    await assertIsResolved(assignProject(alice, "aliceProject", "bob", deps));
+    await assertIsResolved(assign(alice, "aliceProject", "bob", deps));
 
-    await assertIsResolved(assignProject(alice, "friendsProject", "bob", deps));
+    await assertIsResolved(assign(alice, "friendsProject", "bob", deps));
 
-    await assertIsRejectedWith(assignProject(alice, "nonAssignableProject", "bob", deps), Error);
+    await assertIsRejectedWith(assign(alice, "nonAssignableProject", "bob", deps), Error);
 
     assert.equal(calls.get("aliceProject"), 1);
     assert.equal(calls.get("friendsProject"), 1);
@@ -113,7 +106,7 @@ describe("Assigning a project,", () => {
     });
     const nonAssignableProject = newProject("nonAssignableProject", {});
 
-    const reader: ProjectReader = id => {
+    const reader: Reader = id => {
       switch (id) {
         case "aliceProject":
           return Promise.resolve(projectAssignableToAlice);
@@ -124,11 +117,11 @@ describe("Assigning a project,", () => {
       }
     };
 
-    const assigner: ProjectAssigner = (projectId: string, _assignee: string): Promise<void> =>
+    const assigner: Assigner = (projectId: string, _assignee: string): Promise<void> =>
       Promise.resolve();
 
     const calls = new Map<string, number>();
-    const notifier: AssignedNotifier = (project: Project, _assigner: string): Promise<void> => {
+    const notifier: AssignmentNotifier = (project: Project, _assigner: string): Promise<void> => {
       calls.set(project.id, (calls.get(project.id) || 0) + 1);
       return Promise.resolve();
     };
@@ -139,8 +132,8 @@ describe("Assigning a project,", () => {
       notify: notifier,
     };
 
-    await assertIsResolved(assignProject(alice, "aliceProject", "bob", deps));
-    await assertIsRejectedWith(assignProject(alice, "nonAssignableProject", "bob", deps), Error);
+    await assertIsResolved(assign(alice, "aliceProject", "bob", deps));
+    await assertIsRejectedWith(assign(alice, "nonAssignableProject", "bob", deps), Error);
 
     assert.equal(calls.get("aliceProject"), 1);
     assert.isUndefined(calls.get("nonAssignableProject"));

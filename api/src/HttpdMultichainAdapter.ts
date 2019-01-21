@@ -11,7 +11,7 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
   return async (token: AuthToken, projectId: string) => {
     const user: Project.User = { id: token.userId, groups: token.groups };
 
-    const reader: Project.ProjectReader = async id => {
+    const reader: Project.Reader = async id => {
       const multichainProject: Multichain.Project = await Multichain.getProject(
         multichainClient,
         id,
@@ -19,7 +19,7 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
       return Project.validateProject(multichainProject);
     };
 
-    const project: Project.Project = await Project.getAuthorizedProject(reader, user, projectId);
+    const project: Project.Project = await Project.getOne(reader, user, projectId);
 
     const httpProject: HTTP.Project = {
       // TODO Is `log` used on the frontend?
@@ -46,12 +46,12 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
   return async (token: AuthToken) => {
     const user: Project.User = { id: token.userId, groups: token.groups };
 
-    const lister: Project.AllProjectsReader = async () => {
+    const lister: Project.ListReader = async () => {
       const projectList: Multichain.Project[] = await Multichain.getProjectList(multichainClient);
       return projectList.map(Project.validateProject);
     };
 
-    const projects = await Project.getAuthorizedProjectList(user, { getAllProjects: lister });
+    const projects = await Project.getAllVisible(user, { getAllProjects: lister });
     return projects.map(project => ({
       // TODO Is `log` used on the frontend?
       log: [],
@@ -79,10 +79,10 @@ export function assignProject(
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const assigningUser: Project.User = { id: token.userId, groups: token.groups };
 
-    const multichainAssigner: Project.ProjectAssigner = (id, selectedAssignee) =>
+    const multichainAssigner: Project.Assigner = (id, selectedAssignee) =>
       Multichain.writeProjectAssignedToChain(multichainClient, issuer, id, selectedAssignee);
 
-    const multichainNotifier: Project.AssignedNotifier = (project, assigner) => {
+    const multichainNotifier: Project.AssignmentNotifier = (project, assigner) => {
       const sender: Notification.Sender = (message, recipient) =>
         Multichain.issueNotification(multichainClient, issuer, message, recipient);
 
@@ -99,15 +99,18 @@ export function assignProject(
       return notificationService.projectAssigned(sender, resolver, assigner, subject);
     };
 
-    const reader: Project.ProjectReader = id => this.repo.getProject(id);
+    const reader: Project.Reader = async id => {
+      const multichainProject: Multichain.Project = await Multichain.getProject(
+        multichainClient,
+        id,
+      );
+      return Project.validateProject(multichainProject);
+    };
 
-    return this.projectService.assignProject(
-      reader,
-      multichainAssigner,
-      multichainNotifier,
-      assigningUser,
-      projectId,
-      assignee,
-    );
+    return Project.assign(assigningUser, projectId, assignee, {
+      getProject: reader,
+      saveProjectAssignment: multichainAssigner,
+      notify: multichainNotifier,
+    });
   };
 }
