@@ -74,7 +74,7 @@ const registerSwagger = (
         version: "0.1.0",
       },
       basePath: `${swaggerBasePath}`,
-      schemes: ["http"],
+      schemes: ["http", "https"],
       consumes: ["application/json"],
       produces: ["application/json"],
       securityDefinitions: {
