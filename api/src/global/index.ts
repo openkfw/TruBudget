@@ -4,10 +4,26 @@ import * as Group from "../group";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain/Client.h";
 import { Event } from "../multichain/event";
-import * as User from "../user/model/user";
+import * as UserOld from "../user/model/user";
 import * as Permission from "./model/Permission";
+import { User } from "./User";
+
+export * from "./User";
 
 const globalstreamName = "global";
+
+export type ListReader = () => Promise<Permission.Permissions>;
+
+export async function list(
+  actingUser: User,
+  { getAllPermissions }: { getAllPermissions: ListReader },
+) {
+  const allPermissions = await getAllPermissions();
+  if (!Permission.isAllowedToList(allPermissions, actingUser)) {
+    return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to list Permissions.`));
+  }
+  return allPermissions;
+}
 
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
   await multichain.getOrCreateStream({
@@ -122,7 +138,7 @@ export const identityExists = async (multichain, groupOrUserId) => {
   await ensureStreamExists(multichain);
   const existingGroups = await Group.getGroup(multichain, groupOrUserId);
   const groupIdExists = existingGroups ? true : false;
-  const userIdExists = await User.get(multichain, groupOrUserId)
+  const userIdExists = await UserOld.get(multichain, groupOrUserId)
     .then(() => true)
     .catch(() => false);
 
