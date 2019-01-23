@@ -1,7 +1,7 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 
-export type ProjectReader = (token: AuthToken, id: string) => Promise<Project>;
+export type ProjectReader = (token: AuthToken, id: string) => Promise<ProjectAndSubprojects>;
 
 export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
 
@@ -35,4 +35,25 @@ export interface Project {
     currency: string;
     thumbnail: string;
   };
+}
+
+export interface ProjectAndSubprojects {
+  project: Project;
+  subprojects: [
+    {
+      allowedIntents: Intent[];
+      data: {
+        id: string;
+        creationUnixTs: string;
+        status: "open" | "closed";
+        displayName: string;
+        description: string;
+        amount: string;
+        currency: string;
+        exchangeRate: string;
+        billingDate: string;
+        assignee?: string;
+      };
+    }
+  ];
 }

@@ -95,7 +95,6 @@ export function isProjectAssignable(project: Project, actingUser: User): boolean
   const allowedIntent: Intent = "project.assign";
   const userIntents = getAllowedIntents(userIdentities(actingUser), project.permissions);
   const hasPermission = userIntents.includes(allowedIntent);
-  // do we need to check whether the project is closed?
   return hasPermission;
 }
 
@@ -133,7 +132,10 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["project.update", ["project.viewDetails"]],
   ["project.close", ["project.viewSummary", "project.viewDetails"]],
   ["project.archive", ["project.viewSummary", "project.viewDetails"]],
-  ["project.createSubproject", ["project.viewDetails", "subproject.viewDetails"]],
+  [
+    "project.createSubproject",
+    ["project.viewDetails", "subproject.viewSummary", "subproject.viewDetails"],
+  ],
 ]);
 
 function redactHistoryEvent(event: HistoryEvent, userIntents: Intent[]): ScrubbedHistoryEvent {

@@ -17,46 +17,58 @@ import { MultichainClient } from "./multichain/Client.h";
 import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
+import * as Subproject from "./subproject";
 
 export function getProject(multichainClient: MultichainClient): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
-    const reader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(
-        multichainClient,
-        id,
-      );
-      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
-    };
-
     const project: Project.ScrubbedProject = await Project.getOne(actingUser, projectId, {
-      getProject: reader,
+      getProject: async id => {
+        const multichainProject: Multichain.Project = await Multichain.getProject(
+          multichainClient,
+          id,
+        );
+        return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+      ,
     });
 
-    const httpProject: HTTP.Project = {
-      log: project.log.map(scrubbedEvent => {
-        if (scrubbedEvent === null) return null;
-        return {
-          intent: scrubbedEvent.intent,
-          snapshot: {
-            displayName: scrubbedEvent.snapshot.displayName,
-            permissions: scrubbedEvent.snapshot.permissions,
-          },
-        };
-      }),
-      allowedIntents: getAllowedIntents(Project.userIdentities(actingUser), project.permissions),
-      data: {
-        id: project.id,
-        creationUnixTs: project.creationUnixTs,
-        status: project.status,
-        displayName: project.displayName,
-        assignee: project.assignee,
-        description: project.description,
-        amount: project.amount,
-        currency: project.currency,
-        thumbnail: project.thumbnail,
+    const subprojects: Subproject.ScrubbedSubproject[] = await Subproject.allVisible(actingUser, projectId, {
+      getAllSubprojects: async () => {
+        const list: Multichain.Subproject[] = await Multichain.getSubprojectList(multichainClient);
+        return list.map(multichainSubproject => {
+          return Subproject.validateSubproject(multichainSubprojectToSubprojectSubproject(multichainSubproject));
+        });
+      }
+    });
+
+    const httpProject: HTTP.ProjectAndSubprojects = {
+      project: {
+        log: project.log.map(scrubbedEvent =>
+          scrubbedEvent === null
+            ? null
+            : {
+                intent: scrubbedEvent.intent,
+                snapshot: {
+                  displayName: scrubbedEvent.snapshot.displayName,
+                  permissions: scrubbedEvent.snapshot.permissions,
+                },
+              },
+        ),
+        allowedIntents: getAllowedIntents(Project.userIdentities(actingUser), project.permissions),
+        data: {
+          id: project.id,
+          creationUnixTs: project.creationUnixTs,
+          status: project.status,
+          displayName: project.displayName,
+          assignee: project.assignee,
+          description: project.description,
+          amount: project.amount,
+          currency: project.currency,
+          thumbnail: project.thumbnail,
+        },
       },
+      subprojects: subprojects.map(x => { delete x.log; return x })
     };
 
     return httpProject;
