@@ -23,6 +23,7 @@ export const getAllowedIntents = (
     return allIntents;
   }
 
+  console.log({ userAndGroups, resourcePermissions });
   const allowedIntents = Object.keys(resourcePermissions as any).filter(intent =>
     hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];

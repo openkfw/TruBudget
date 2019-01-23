@@ -1,5 +1,6 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
+import { AllowedUserGroupsByIntentMap, AllowedUserGroupsByIntent } from "../authz/types";
 
 export type ProjectReader = (token: AuthToken, id: string) => Promise<Project>;
 

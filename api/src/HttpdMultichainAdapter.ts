@@ -7,6 +7,7 @@ import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Workflowitem from "./workflowitem";
+import { getUserAndGroups } from "./authz/index";
 
 export function getProject(multichainClient: MultichainClient): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
@@ -146,7 +147,9 @@ export function getWorkflowitemList(
       getAllWorkflowitems: lister,
       getWorkflowitemOrdering: orderingReader,
     });
-    console.log(workflowitems);
+
+    console.log("HERE COMES THE WORKFLOWITEM");
+    console.log(workflowitems[0].permissions);
 
     return workflowitems.map(item => ({
       data: {
@@ -163,7 +166,7 @@ export function getWorkflowitemList(
         exchangeRate: item.exchangeRate,
         documents: item.documents,
       },
-      allowedIntents: item.permissions,
+      allowedIntents: getAllowedIntents(Workflowitem.userIdentities(user), item.permissions),
     })) as HTTP.Workflowitem[];
     // return Promise.resolve(lister());
   };
