@@ -31,6 +31,19 @@ export interface Project {
   currency: string;
   thumbnail: string;
   permissions: AllowedUserGroupsByIntent;
+  log: HistoryEvent[];
+}
+
+interface HistoryEvent {
+  key: string; // the resource ID (same for all events that relate to the same resource)
+  intent: Intent;
+  createdBy: string;
+  createdAt: string;
+  dataVersion: number; // integer
+  data: any;
+  snapshot: {
+    displayName: string;
+  };
 }
 
 type ResourceType = "project" | "subproject" | "workflowitem";
@@ -78,28 +91,47 @@ export async function writeProjectAssignedToChain(
   const streamItemKey = "self";
   const streamItem = { json: event };
 
-  const publishEvent = () => {
-    logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-    return multichain
-      .getRpcClient()
-      .invoke("publish", streamName, streamItemKey, streamItem)
-      .then(() => event);
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  return multichain
+    .getRpcClient()
+    .invoke("publish", streamName, streamItemKey, streamItem)
+    .then(() => event);
+}
+
+export interface ProjectUpdate {
+  displayName?: string;
+  description?: string;
+  amount?: string;
+  currency?: string;
+  thumbnail?: string;
+}
+
+export async function updateProject(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  projectId: string,
+  update: ProjectUpdate,
+): Promise<void> {
+  const intent: Intent = "project.update";
+
+  const event = {
+    key: projectId,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: update,
   };
 
-  return publishEvent().catch(err => {
-    if (err.code === -708) {
-      logger.debug(
-        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
-      );
-      // The stream does not exist yet. Create the stream and try again:
-      return multichain
-        .getOrCreateStream({ kind: "project", name: streamName })
-        .then(() => publishEvent());
-    } else {
-      logger.error({ error: err }, `Publishing ${intent} failed.`);
-      throw err;
-    }
-  });
+  const streamName = projectId;
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  return multichain
+    .getRpcClient()
+    .invoke("publish", streamName, streamItemKey, streamItem)
+    .then(() => event);
 }
 
 export async function getProject(multichain: MultichainClient, id: string): Promise<Project> {
@@ -124,6 +156,10 @@ export async function getProject(multichain: MultichainClient, id: string): Prom
         throw Error(`Unexpected event: ${JSON.stringify(event)}.`);
       }
     }
+    project.log.push({
+      ...event,
+      snapshot: { displayName: deepcopy(project.displayName) },
+    });
   }
 
   if (project === undefined) {
@@ -207,7 +243,7 @@ function handleCreate(event: Event): Project | undefined {
   switch (event.dataVersion) {
     case 1: {
       const { project, permissions } = event.data;
-      const values = { ...deepcopy(project), permissions: deepcopy(permissions) };
+      const values = { ...deepcopy(project), permissions: deepcopy(permissions), log: [] };
       return values as Project;
     }
   }

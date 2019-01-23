@@ -1,22 +1,16 @@
 import { Event } from "../multichain/event";
 
-export interface Project {
-  id: string;
-  status: "open" | "closed";
-  displayName: string;
-  assignee: string;
+export interface ProjectAssignment {
+  projectId: string;
+  actingUser: string;
+  assignee?: string;
 }
 
-export interface NotificationAPI {
-  /**
-   * Selects assignees and sends notification(s) to a given backend.
-   */
-  projectAssigned(
-    sender: Sender,
-    resolver: GroupResolverPort,
-    assigner: string,
-    project: Project,
-  ): Promise<void>;
+export interface ProjectUpdate {
+  projectId: string;
+  assignee?: string;
+  actingUser: string;
+  update: any;
 }
 
 export type Sender = (message: Event, recipient: string) => Promise<void>;
@@ -26,33 +20,66 @@ export type Sender = (message: Event, recipient: string) => Promise<void>;
  *
  * If the group does not exist, an empty array is returned.
  */
-export type GroupResolverPort = (groupId: string) => Promise<string[]>;
+export type GroupResolver = (groupId: string) => Promise<string[]>;
 
-export class NotificationService implements NotificationAPI {
-  public async projectAssigned(
-    send: Sender,
-    resolveGroup: GroupResolverPort,
-    assigner: string,
-    project: Project,
-  ): Promise<void> {
-    const assignee = project.assignee;
-    const groupMembers = await resolveGroup(assignee);
-    const resolvedAssignees = groupMembers.length ? groupMembers : [assignee];
-    const recipients = resolvedAssignees.filter(x => x !== assigner);
+export async function projectAssigned(
+  projectAssignment: ProjectAssignment,
+  {
+    send,
+    resolveGroup,
+  }: {
+    send: Sender;
+    resolveGroup: GroupResolver;
+  },
+): Promise<void> {
+  const assignee = projectAssignment.assignee;
+  if (assignee === undefined) return;
+  const groupMembers = await resolveGroup(assignee);
+  const resolvedAssignees = groupMembers.length ? groupMembers : [assignee];
+  const recipients = resolvedAssignees.filter(x => x !== projectAssignment.actingUser);
 
-    const event: Event = {
-      key: project.id,
-      intent: "project.assign",
-      createdBy: assigner,
-      createdAt: new Date().toISOString(),
-      dataVersion: 1,
-      data: {
-        identity: assignee,
-      },
-    };
+  const event: Event = {
+    key: projectAssignment.projectId,
+    intent: "project.assign",
+    createdBy: projectAssignment.actingUser,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: {
+      identity: assignee,
+    },
+  };
 
-    for (const recipient of recipients) {
-      await send(event, recipient);
-    }
+  for (const recipient of recipients) {
+    await send(event, recipient);
+  }
+}
+
+export async function projectUpdated(
+  projectUpdate: ProjectUpdate,
+  {
+    send,
+    resolveGroup,
+  }: {
+    send: Sender;
+    resolveGroup: GroupResolver;
+  },
+): Promise<void> {
+  const assignee = projectUpdate.assignee;
+  if (assignee === undefined) return;
+  const groupMembers = await resolveGroup(assignee);
+  const resolvedAssignees = groupMembers.length ? groupMembers : [assignee];
+  const recipients = resolvedAssignees.filter(x => x !== projectUpdate.actingUser);
+
+  const event: Event = {
+    key: projectUpdate.projectId,
+    intent: "project.update",
+    createdBy: projectUpdate.actingUser,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: projectUpdate.update,
+  };
+
+  for (const recipient of recipients) {
+    await send(event, recipient);
   }
 }
