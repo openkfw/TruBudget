@@ -1,6 +1,6 @@
 import { User } from "./User";
 import {
-  isWorkflowitemVisibleTo,
+  redactWorkflowitem,
   removeEventLog,
   sortWorkflowitems,
   Workflowitem,
@@ -21,12 +21,11 @@ export async function getAllVisible(
 ): Promise<Workflowitem[]> {
   const workflowitemOrdering = await getWorkflowitemOrdering();
   const workflowitems = await getAllWorkflowitems();
-  const authorizedWorkflowitems = await workflowitems.filter(workflowitem =>
-    isWorkflowitemVisibleTo(workflowitem, asUser),
+  const sortedWorkflowitems = await sortWorkflowitems(workflowitems, workflowitemOrdering);
+  const redactedWorkflowitems = await sortedWorkflowitems.map(workflowitem =>
+    redactWorkflowitem(workflowitem, asUser),
   );
-  const sortedWorkflowitems = await sortWorkflowitems(
-    authorizedWorkflowitems,
-    workflowitemOrdering,
-  );
+
+  // return redactedWorkflowitems.map(removeEventLog);
   return sortedWorkflowitems.map(removeEventLog);
 }

@@ -13,8 +13,6 @@ import { MultichainClient } from "./Client.h";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 import * as MultichainWorkflowitem from "./Workflowitem";
-import { redactWorkflowitemData } from "../workflowitem";
-import { getUserAndGroups } from "../authz/index";
 
 export * from "./event";
 export * from "./Workflowitem";
@@ -402,6 +400,7 @@ export async function getWorkflowitemList(
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
+    console.log(event);
 
     // Events look differently for different intents!
     let workflowitem = workflowitemsMap.get(asMapKey(item));
@@ -410,11 +409,18 @@ export async function getWorkflowitemList(
 
     if (workflowitem === undefined) {
       const result = MultichainWorkflowitem.handleCreate(event);
+      console.log("Created...");
+      console.log(result);
+
       if (result === undefined) {
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
       workflowitem = result;
-      permissionsMap.set(asMapKey(item), result.permissions);
+      workflowitem.log = [];
+      permissionsMap.set(asMapKey(item), workflowitem.permissions);
+      console.log(permissionsMap);
+      console.log("Permissions of workflowitem:");
+      console.log(workflowitem.permissions);
     } else {
       // We've already encountered this workflowitem, so we can apply operations on it.
       const permissions = permissionsMap.get(asMapKey(item))!;
@@ -444,46 +450,10 @@ export async function getWorkflowitemList(
       });
       workflowitemsMap.set(asMapKey(item), workflowitem);
     }
-    if (workflowitem !== undefined) {
-      // Save all events to the log for now; we'll filter them once we
-      // know the final resource permissions.
-      workflowitemsMap.set(asMapKey(item), workflowitem);
-    }
-  }
-
-  for (const [key, permissions] of permissionsMap.entries()) {
-    const resource = workflowitemsMap.get(key);
-    if (resource !== undefined) {
-      resource.permissions = await getAllowedIntents(
-        MultichainWorkflowitem.userIdentities(user),
-        permissions,
-      );
-    }
   }
 
   const unfilteredResources = [...workflowitemsMap.values()];
-
   return unfilteredResources;
-
-  // Instead of filtering out workflowitems the user is not allowed to see,
-  // we simply blank out all fields except the status, which is considered "public".
-  // const allowedToSeeDataIntent: Intent = "workflowitem.view";
-  // const filteredResources = unfilteredResources.map(resource => {
-  // Redact data if the user is not allowed to view it:
-  // Redaction of data is part of the business logic and should be done there!
-  // const isAllowedToSeeData = Object.values(resource.permissions).includes(allowedToSeeDataIntent);
-  // if (!isAllowedToSeeData) resource = redactWorkflowitemData(resource) as any;
-
-  // Filter event log according to the user permissions and the type of event:
-  // Filtering of event log is part of busoness logic
-  // resource.log = resource.log
-  //   .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
-  //   .filter(isNotEmpty);
-
-  // return resource;
-  // });
-
-  // return filteredResources;
 }
 
 export async function fetchWorkflowitemOrdering(

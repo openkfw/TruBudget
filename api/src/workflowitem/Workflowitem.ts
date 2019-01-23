@@ -1,11 +1,12 @@
 import Joi = require("joi");
 
 import { getAllowedIntents } from "../authz";
+import { getUserAndGroups } from "../authz";
+import { onlyAllowedData } from "../authz/history";
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
-import deepcopy from "../lib/deepcopy";
-import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
-import { Event, throwUnsupportedEventVersion } from "../multichain/event";
+import { AllowedUserGroupsByIntent } from "../authz/types";
+import { isNotEmpty } from "../lib/emptyChecks";
+import { Event } from "../multichain/event";
 import { userIdentities } from "../project";
 
 interface HistoryEvent {
@@ -22,7 +23,24 @@ interface HistoryEvent {
     amountType: string;
   };
 }
-export interface Workflowitem {
+export interface Item {
+  id: string;
+  creationUnixTs: string;
+  displayName: string | null;
+  exchangeRate?: string | null;
+  billingDate?: string | null;
+  amount?: string | null;
+  currency?: string | null;
+  amountType: "N/A" | "disbursed" | "allocated" | null;
+  description: string | null;
+  status: "open" | "closed";
+  assignee?: string | null;
+  documents?: Document[] | [];
+  permissions: AllowedUserGroupsByIntent | null;
+  log: HistoryEvent[] | [];
+}
+
+export interface Workflowitem extends Item {
   id: string;
   creationUnixTs: string;
   displayName: string;
@@ -39,19 +57,21 @@ export interface Workflowitem {
   log: HistoryEvent[];
 }
 
-export interface RedactedWorkflowitem {
+export interface RedactedWorkflowitem extends Item {
   id: string;
   creationUnixTs: string;
   displayName: null;
-  amount: null;
-  currency: null;
+  exchangeRate?: null;
+  billingDate?: null;
+  amount?: null;
+  currency?: null;
   amountType: null;
   description: null;
   status: "open" | "closed";
-  assignee: null;
-  documents: null;
-  exchangeRate: null;
-  billingDate: null;
+  assignee?: null;
+  documents?: [];
+  permissions: AllowedUserGroupsByIntent;
+  log: [];
 }
 
 const schema = Joi.object().keys({
@@ -66,12 +86,19 @@ const schema = Joi.object().keys({
   amount: Joi.string(),
   currency: Joi.string(),
   amountType: Joi.string().valid("N/A", "disbursed", "allocated"),
-  description: Joi.string(),
+  description: Joi.string().allow(""),
   status: Joi.string().valid("open", "closed"),
   assignee: Joi.string(),
-  // TODO validate document type
-  documents: Joi.array().items(Joi.string()), // Document[],
-  permissions: Joi.any(),
+  documents: Joi.array().items(
+    Joi.object().keys({
+      id: Joi.string(),
+      hash: Joi.string(),
+    }),
+  ), // Document[],
+  permissions: Joi.object()
+    .pattern(/.*/, Joi.array().items(Joi.string()))
+    .required(),
+  log: Joi.any(),
 });
 
 export function validateWorkflowitem(input: any): Workflowitem {
@@ -83,10 +110,35 @@ export function validateWorkflowitem(input: any): Workflowitem {
   }
 }
 
+export function redactWorkflowitem(workflowitem, user): Item {
+  const isWorkflowitemVisibleToUser = isWorkflowitemVisibleTo(workflowitem, user);
+  if (!isWorkflowitemVisibleToUser) {
+    return redactWorkflowitemData(workflowitem) as Item;
+  }
+  return workflowitem;
+}
 export function isWorkflowitemVisibleTo(workflowitem, user): boolean {
   const allowedIntent: Intent = "workflowitem.view";
   const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
-  return true;
+  console.log({ allowedIntent, userIntents });
+
+  const isAllowedToSeeData = userIntents.includes(allowedIntent);
+  console.log(isAllowedToSeeData);
+  return isAllowedToSeeData;
+}
+export function redactWorkflowitemHistory(workflowitem, user): Workflowitem {
+  if (workflowitem.log) {
+    workflowitem.log = workflowitem.log
+      .map(
+        event =>
+          onlyAllowedData(
+            event,
+            getAllowedIntents(getUserAndGroups(user), workflowitem.permissions),
+          ) as Event | null,
+      )
+      .filter(isNotEmpty);
+  }
+  return workflowitem;
 }
 
 export function sortWorkflowitems(
@@ -183,13 +235,14 @@ export const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWork
   id: workflowitem.id,
   creationUnixTs: workflowitem.creationUnixTs,
   displayName: null,
+  exchangeRate: null,
+  billingDate: null,
   amount: null,
   currency: null,
   amountType: null,
   description: null,
   status: workflowitem.status,
   assignee: null,
-  documents: null,
-  exchangeRate: null,
-  billingDate: null,
+  permissions: workflowitem.permissions,
+  log: [],
 });
