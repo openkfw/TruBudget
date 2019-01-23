@@ -38,9 +38,9 @@ export type UpdateNotifier = (
 ) => Promise<void>;
 
 export async function getOne(
-  getProject: Reader,
   actingUser: User,
   projectId: string,
+  { getProject }: { getProject: Reader },
 ): Promise<ScrubbedProject> {
   const project = await getProject(projectId);
 

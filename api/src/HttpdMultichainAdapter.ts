@@ -20,7 +20,7 @@ import * as Project from "./project";
 
 export function getProject(multichainClient: MultichainClient): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
-    const user: Project.User = { id: token.userId, groups: token.groups };
+    const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const reader: Project.Reader = async id => {
       const multichainProject: Multichain.Project = await Multichain.getProject(
@@ -30,7 +30,9 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
       return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
-    const project: Project.ScrubbedProject = await Project.getOne(reader, user, projectId);
+    const project: Project.ScrubbedProject = await Project.getOne(actingUser, projectId, {
+      getProject: reader,
+    });
 
     const httpProject: HTTP.Project = {
       log: project.log.map(scrubbedEvent => {
@@ -43,7 +45,7 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
           },
         };
       }),
-      allowedIntents: getAllowedIntents(Project.userIdentities(user), project.permissions),
+      allowedIntents: getAllowedIntents(Project.userIdentities(actingUser), project.permissions),
       data: {
         id: project.id,
         creationUnixTs: project.creationUnixTs,
@@ -63,7 +65,7 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
 
 export function getProjectList(multichainClient: MultichainClient): HTTP.AllProjectsReader {
   return async (token: AuthToken) => {
-    const user: Project.User = { id: token.userId, groups: token.groups };
+    const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const lister: Project.ListReader = async () => {
       const projectList: Multichain.Project[] = await Multichain.getProjectList(multichainClient);
@@ -71,7 +73,7 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
         return Project.validateProject(multichainProjectToProjectProject(multichainProject));
       });
     };
-    const projects: Project.ScrubbedProject[] = await Project.getAllVisible(user, {
+    const projects: Project.ScrubbedProject[] = await Project.getAllVisible(actingUser, {
       getAllProjects: lister,
     });
     return projects.map(project => ({
@@ -85,7 +87,7 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
           },
         };
       }),
-      allowedIntents: getAllowedIntents(Project.userIdentities(user), project.permissions),
+      allowedIntents: getAllowedIntents(Project.userIdentities(actingUser), project.permissions),
       data: {
         id: project.id,
         creationUnixTs: project.creationUnixTs,
@@ -104,12 +106,12 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
 export function assignProject(multichainClient: MultichainClient): HTTP.ProjectAssigner {
   return async (token: AuthToken, projectId: string, assignee: string) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const assigningUser: Project.User = { id: token.userId, groups: token.groups };
+    const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const multichainAssigner: Project.Assigner = (id, selectedAssignee) =>
       Multichain.writeProjectAssignedToChain(multichainClient, issuer, id, selectedAssignee);
 
-    const multichainNotifier: Project.AssignmentNotifier = (project, actingUser) => {
+    const multichainNotifier: Project.AssignmentNotifier = (project, user) => {
       const sender: Notification.Sender = (message, recipient) =>
         Multichain.issueNotification(multichainClient, issuer, message, recipient);
 
@@ -118,7 +120,7 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
 
       const assignmentNotification: Notification.ProjectAssignment = {
         projectId: project.id,
-        actingUser,
+        actingUser: user,
         assignee: project.assignee,
       };
 
@@ -137,7 +139,7 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
       return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
-    return Project.assign(assigningUser, projectId, assignee, {
+    return Project.assign(actingUser, projectId, assignee, {
       getProject: reader,
       saveProjectAssignment: multichainAssigner,
       notify: multichainNotifier,
@@ -148,7 +150,7 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
 export function updateProject(multichainClient: MultichainClient): HTTP.ProjectUpdater {
   return async (token: AuthToken, projectId: string, update: object) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const user: Project.User = { id: token.userId, groups: token.groups };
+    const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const reader: Project.Reader = async id => {
       const multichainProject = await Multichain.getProject(multichainClient, id);
@@ -166,11 +168,7 @@ export function updateProject(multichainClient: MultichainClient): HTTP.ProjectU
       await Multichain.updateProject(multichainClient, issuer, id, multichainUpdate);
     };
 
-    const multichainNotifier: Project.UpdateNotifier = (
-      updatedProject,
-      actingUser,
-      projectUpdate,
-    ) => {
+    const multichainNotifier: Project.UpdateNotifier = (updatedProject, user, projectUpdate) => {
       const sender: Notification.Sender = (message, recipient) =>
         Multichain.issueNotification(multichainClient, issuer, message, recipient);
 
@@ -180,7 +178,7 @@ export function updateProject(multichainClient: MultichainClient): HTTP.ProjectU
       const updateNotification: Notification.ProjectUpdate = {
         projectId: updatedProject.id,
         assignee: updatedProject.assignee,
-        actingUser,
+        actingUser: user,
         update: projectUpdate,
       };
 
@@ -190,7 +188,7 @@ export function updateProject(multichainClient: MultichainClient): HTTP.ProjectU
       });
     };
 
-    return Project.update(user, projectId, update, {
+    return Project.update(actingUser, projectId, update, {
       getProject: reader,
       updateProject: updater,
       notify: multichainNotifier,

@@ -131,8 +131,8 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["project.intent.revokePermission", ["project.intent.listPermissions"]],
   ["project.assign", ["project.viewDetails"]],
   ["project.update", ["project.viewDetails"]],
-  ["project.close", ["project.viewDetails"]],
-  ["project.archive", ["project.viewDetails"]],
+  ["project.close", ["project.viewSummary", "project.viewDetails"]],
+  ["project.archive", ["project.viewSummary", "project.viewDetails"]],
   ["project.createSubproject", ["project.viewDetails", "subproject.viewDetails"]],
 ]);
 
@@ -147,26 +147,18 @@ function redactHistoryEvent(event: HistoryEvent, userIntents: Intent[]): Scrubbe
       return null;
     }
 
-    if (
-      event.intent === "global.createProject" &&
-      !userIntents.includes("project.intent.listPermissions")
-    ) {
-      // The user can see the event but not the associated project permissions:
+    // The event is visible, but what about the permissions?
+    // project.createSubproject is a special case here..
+    const permissionListingPermission =
+      event.intent === "project.createSubproject"
+        ? "subproject.intent.listPermissions"
+        : "project.intent.listPermissions";
+
+    if (!userIntents.includes(permissionListingPermission)) {
+      // The user can see the event but not the associated (sub-)project permissions:
       delete event.snapshot.permissions;
     }
 
-    if (
-      event.intent === "project.createSubproject" &&
-      !userIntents.includes("subproject.intent.listPermissions")
-    ) {
-      // The user can see the event but not the associated subproject permissions:
-      delete event.snapshot.permissions;
-    }
-
-    return event;
-  } else if (userIntents.includes(observedIntent)) {
-    // If not explicitly stated otherwise, always allow to see events related to
-    // something the user is already entitled for
     return event;
   } else {
     // Redacted by default:
