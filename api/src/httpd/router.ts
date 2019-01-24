@@ -674,7 +674,6 @@ export const registerRoutes = (
     (request, reply) => {
       const req = request as AuthenticatedRequest;
       // TODO: Typedefinition for workflowitems missing
-      console.log("calling workflowitemLister");
       return workflowitemLister(req.user, req.query.projectId, req.query.subprojectId)
         .then(
           (workflowitems): HttpResponse => [

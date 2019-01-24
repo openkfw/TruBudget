@@ -7,7 +7,6 @@ import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Workflowitem from "./workflowitem";
-import { getUserAndGroups } from "./authz/index";
 
 export function getProject(multichainClient: MultichainClient): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
@@ -121,7 +120,6 @@ export function getWorkflowitemList(
   multichainClient: MultichainClient,
 ): HTTP.AllWorkflowitemsReader {
   return async (token: AuthToken, projectId: string, subprojectId: string) => {
-    console.log("In getWorkflowitemList / HTTPD");
     const user: Workflowitem.User = { id: token.userId, groups: token.groups };
     // Get Workflowitems from Multichain
     const orderingReader: Workflowitem.OrderingReader = async () => {
@@ -143,13 +141,10 @@ export function getWorkflowitemList(
     };
 
     // Filter workflowitems based on business logic (permission, ordering)
-    const workflowitems = await Workflowitem.getAllVisible(user, {
+    const workflowitems = await Workflowitem.getAllScrubbedItems(user, {
       getAllWorkflowitems: lister,
       getWorkflowitemOrdering: orderingReader,
     });
-
-    console.log("HERE COMES THE WORKFLOWITEM");
-    console.log(workflowitems[0].permissions);
 
     return workflowitems.map(item => ({
       data: {
@@ -166,8 +161,9 @@ export function getWorkflowitemList(
         exchangeRate: item.exchangeRate,
         documents: item.documents,
       },
-      allowedIntents: getAllowedIntents(Workflowitem.userIdentities(user), item.permissions),
+      allowedIntents: item.permissions
+        ? getAllowedIntents(Workflowitem.userIdentities(user), item.permissions)
+        : [],
     })) as HTTP.Workflowitem[];
-    // return Promise.resolve(lister());
   };
 }

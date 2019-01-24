@@ -1,6 +1,6 @@
 import Joi = require("joi");
 
-import { getAllowedIntents } from "../authz";
+import { getAllowedIntents, hasIntersection } from "../authz";
 import { getUserAndGroups } from "../authz";
 import { onlyAllowedData } from "../authz/history";
 import Intent from "../authz/intents";
@@ -8,6 +8,7 @@ import { AllowedUserGroupsByIntent } from "../authz/types";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { Event } from "../multichain/event";
 import { userIdentities } from "../project";
+import { User } from "../project/User";
 
 interface HistoryEvent {
   key: string; // the resource ID (same for all events that relate to the same resource)
@@ -23,24 +24,14 @@ interface HistoryEvent {
     amountType: string;
   };
 }
-export interface Item {
-  id: string;
-  creationUnixTs: string;
-  displayName: string | null;
-  exchangeRate?: string | null;
-  billingDate?: string | null;
-  amount?: string | null;
-  currency?: string | null;
-  amountType: "N/A" | "disbursed" | "allocated" | null;
-  description: string | null;
-  status: "open" | "closed";
-  assignee?: string | null;
-  documents?: Document[] | [];
-  permissions: AllowedUserGroupsByIntent | null;
-  log: HistoryEvent[] | [];
-}
 
-export interface Workflowitem extends Item {
+type ScrubbedHistoryEvent = null | HistoryEvent;
+
+export interface Document {
+  id: string;
+  hash: string;
+}
+export interface Workflowitem {
   id: string;
   creationUnixTs: string;
   displayName: string;
@@ -56,12 +47,13 @@ export interface Workflowitem extends Item {
   permissions: AllowedUserGroupsByIntent;
   log: HistoryEvent[];
 }
+export type ScrubbedWorkflowItem = Workflowitem | RedactedWorkflowitem;
 
-export interface RedactedWorkflowitem extends Item {
+export interface RedactedWorkflowitem {
   id: string;
   creationUnixTs: string;
   displayName: null;
-  exchangeRate?: null;
+  exchangeRate: null;
   billingDate?: null;
   amount?: null;
   currency?: null;
@@ -69,9 +61,9 @@ export interface RedactedWorkflowitem extends Item {
   description: null;
   status: "open" | "closed";
   assignee?: null;
-  documents?: [];
-  permissions: AllowedUserGroupsByIntent;
-  log: [];
+  documents?: null;
+  permissions: null;
+  log: null;
 }
 
 const schema = Joi.object().keys({
@@ -110,35 +102,19 @@ export function validateWorkflowitem(input: any): Workflowitem {
   }
 }
 
-export function redactWorkflowitem(workflowitem, user): Item {
-  const isWorkflowitemVisibleToUser = isWorkflowitemVisibleTo(workflowitem, user);
-  if (!isWorkflowitemVisibleToUser) {
-    return redactWorkflowitemData(workflowitem) as Item;
+export function redactWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowItem {
+  if (!isWorkflowitemVisibleTo(workflowitem, user)) {
+    const scrubbedWorkflowitem = redactWorkflowitemData(workflowitem);
+    return scrubbedWorkflowitem;
   }
   return workflowitem;
 }
-export function isWorkflowitemVisibleTo(workflowitem, user): boolean {
+export function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
   const allowedIntent: Intent = "workflowitem.view";
   const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
-  console.log({ allowedIntent, userIntents });
 
   const isAllowedToSeeData = userIntents.includes(allowedIntent);
-  console.log(isAllowedToSeeData);
   return isAllowedToSeeData;
-}
-export function redactWorkflowitemHistory(workflowitem, user): Workflowitem {
-  if (workflowitem.log) {
-    workflowitem.log = workflowitem.log
-      .map(
-        event =>
-          onlyAllowedData(
-            event,
-            getAllowedIntents(getUserAndGroups(user), workflowitem.permissions),
-          ) as Event | null,
-      )
-      .filter(isNotEmpty);
-  }
-  return workflowitem;
 }
 
 export function sortWorkflowitems(
@@ -146,11 +122,13 @@ export function sortWorkflowitems(
   ordering: string[],
 ): Workflowitem[] {
   const indexedItems = workflowitems.map((item, index) => {
+    // tslint:disable-next-line:no-string-literal
     item["_index"] = index;
     return item;
   });
   const sortedItems = indexedItems.sort((a, b) => byOrderingCriteria(a, b, ordering));
   return sortedItems.map(item => {
+    // tslint:disable-next-line:no-string-literal
     delete item["_index"];
     return item;
   });
@@ -189,6 +167,7 @@ function byOrderingCriteria(a: Workflowitem, b: Workflowitem, ordering: string[]
       const cTimeComparison = byCreationTime(a, b);
       // they are the same age we have the ordering unchanged
       if (cTimeComparison === 0) {
+        // tslint:disable-next-line:no-string-literal
         return a["_index"] > b["_index"] ? 1 : -1;
       }
       return cTimeComparison;
@@ -226,7 +205,7 @@ function byCreationTime(a: Workflowitem, b: Workflowitem): -1 | 1 | 0 {
   }
 }
 
-export function removeEventLog(workflowitem: Workflowitem): Workflowitem {
+export function removeEventLog(workflowitem: ScrubbedWorkflowItem): ScrubbedWorkflowItem {
   delete workflowitem.log;
   return workflowitem;
 }
@@ -243,6 +222,39 @@ export const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWork
   description: null,
   status: workflowitem.status,
   assignee: null,
-  permissions: workflowitem.permissions,
-  log: [],
+  permissions: null,
+  log: null,
+  documents: null,
 });
+
+const requiredPermissions = new Map<Intent, Intent[]>([
+  ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.view"]],
+  ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.view"]],
+  ["workflowitem.intent.grantPermission", ["workflowitem.intent.listPermissions"]],
+  ["workflowitem.intent.revokePermission", ["workflowitem.intent.listPermissions"]],
+  ["workflowitem.assign", ["workflowitem.view"]],
+  ["workflowitem.update", ["workflowitem.view"]],
+  ["workflowitem.close", ["workflowitem.view"]],
+  ["workflowitem.archive", ["workflowitem.view"]],
+]);
+
+export function redactHistoryEvent(
+  event: HistoryEvent,
+  userIntents: Intent[],
+): ScrubbedHistoryEvent {
+  const observedIntent = event.intent;
+  if (requiredPermissions.has(observedIntent)) {
+    const allowedIntents = requiredPermissions.get(observedIntent);
+    const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
+
+    if (!isAllowedToSee) {
+      // The user can't see the event..
+      return null;
+    }
+
+    return event;
+  } else {
+    // Redacted by default:
+    return null;
+  }
+}
