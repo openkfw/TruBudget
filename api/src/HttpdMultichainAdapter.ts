@@ -227,7 +227,9 @@ export function getWorkflowitemList(
 ): HTTP.AllWorkflowitemsReader {
   return async (token: AuthToken, projectId: string, subprojectId: string) => {
     const user: Workflowitem.User = { id: token.userId, groups: token.groups };
-    // Get Workflowitems from Multichain
+
+    // Get ordering of workflowitems from blockchain
+    // If items are rearranged by user, the call returns an array of IDs in order
     const orderingReader: Workflowitem.OrderingReader = async () => {
       const ordering: string[] = await Multichain.fetchWorkflowitemOrdering(
         multichainClient,
@@ -236,6 +238,8 @@ export function getWorkflowitemList(
       );
       return ordering;
     };
+
+    // Get all unfiltered workflowitems from the blockchain
     const lister: Workflowitem.ListReader = async () => {
       const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
         multichainClient,
@@ -246,12 +250,14 @@ export function getWorkflowitemList(
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
 
-    // Filter workflowitems based on business logic (permission, ordering)
+    // Filter workflowitems based on business logic:
+    // Redact data, redact history events and remove log
     const workflowitems = await Workflowitem.getAllScrubbedItems(user, {
       getAllWorkflowitems: lister,
       getWorkflowitemOrdering: orderingReader,
     });
 
+    // Map data to HTTP response
     return workflowitems.map(item => ({
       data: {
         id: item.id,
