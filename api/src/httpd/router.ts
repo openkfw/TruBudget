@@ -4,7 +4,6 @@ import { AllProjectsReader, ProjectAssigner } from ".";
 import { ProjectUpdater } from ".";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
-import { getGlobalPermissions } from "../global/controller/listPermissions";
 import { revokeGlobalPermission } from "../global/controller/revokePermission";
 import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
@@ -59,6 +58,7 @@ import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
+import { AllPermissionsReader } from "./index";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
 
@@ -259,10 +259,12 @@ export const registerRoutes = (
     listProjects,
     assignProject,
     updateProject,
+    listGlobalPermissions,
   }: {
     listProjects: AllProjectsReader;
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
+    listGlobalPermissions: AllPermissionsReader;
   },
 ) => {
   // ------------------------------------------------------------
@@ -361,7 +363,18 @@ export const registerRoutes = (
     `${urlPrefix}/global.listPermissions`,
     getSchema(server, "globalListPermissions"),
     (request, reply) => {
-      getGlobalPermissions(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      listGlobalPermissions(token)
+        .then(
+          (permissions): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: permissions,
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

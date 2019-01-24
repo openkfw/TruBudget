@@ -9,6 +9,7 @@ import * as Permission from "./model/Permission";
 import { User } from "./User";
 
 export * from "./User";
+export * from "./Permission";
 
 const globalstreamName = "global";
 
