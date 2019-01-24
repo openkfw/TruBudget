@@ -7,6 +7,12 @@ export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
 
 export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
 
+export type GlobalPermissionGranter = (
+  token: AuthToken,
+  userId: string,
+  intent: Intent,
+) => Promise<void>;
+
 export type ProjectAssigner = (
   token: AuthToken,
   projectId: string,

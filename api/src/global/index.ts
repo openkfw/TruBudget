@@ -15,6 +15,8 @@ const globalstreamName = "global";
 
 export type ListReader = () => Promise<Permission.Permissions>;
 
+export type Granter = (intent: Intent, userId: string) => Promise<void>;
+
 export async function list(
   actingUser: User,
   { getAllPermissions }: { getAllPermissions: ListReader },
@@ -24,6 +26,28 @@ export async function list(
     return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to list Permissions.`));
   }
   return allPermissions;
+}
+
+export async function grant(
+  actingUser: User,
+  identity: string,
+  intent: Intent,
+  {
+    getAllPermissions,
+    // tslint:disable-next-line:no-shadowed-variable
+    grantPermission,
+  }: { getAllPermissions: ListReader; grantPermission: Granter },
+) {
+  const allPermissions = await getAllPermissions();
+  const permissionsForIntent: People = allPermissions[intent] || [];
+  if (permissionsForIntent.includes(identity)) {
+    logger.debug({ params: { intent } }, "User is already permitted to execute given intent");
+    return;
+  }
+  if (!Permission.isAllowedToGrant(allPermissions, actingUser)) {
+    return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to grant Permissions.`));
+  }
+  await grantPermission(intent, identity);
 }
 
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
