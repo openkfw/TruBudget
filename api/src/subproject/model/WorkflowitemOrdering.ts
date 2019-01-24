@@ -1,7 +1,6 @@
 import Intent from "../../authz/intents";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
-import logger from "../../lib/logger";
 
 // Allows a custom ordering among workflowitems. Note that not all workflowitems need
 // to be included; those that aren't are simply ordered by their ctime and concatenated
@@ -31,7 +30,6 @@ export async function publishWorkflowitemOrderingUpdate(
     dataVersion: 1,
     data: ordering,
   };
-  console.log("Ordering: " + ordering);
   return multichain
     .getRpcClient()
     .invoke("publish", projectId, workflowitemOrderingKey(subprojectId), {

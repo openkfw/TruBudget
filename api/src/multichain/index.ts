@@ -388,29 +388,21 @@ export async function getWorkflowitemList(
   subprojectId: string,
   user: MultichainWorkflowitem.User,
 ): Promise<MultichainWorkflowitem.Workflowitem[]> {
-  console.log("In getWorkflowitemList / multichain");
   const queryKey = workflowitemsGroupKey(subprojectId);
-  console.log(queryKey);
 
   const streamItems = await multichain.v2_readStreamItems(projectId, queryKey);
-  console.log(streamItems);
   // const userAndGroups = await getUserAndGroups(token);
   const workflowitemsMap = new Map<string, MultichainWorkflowitem.Workflowitem>();
   const permissionsMap = new Map<string, AllowedUserGroupsByIntent>();
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
-    console.log(event);
 
     // Events look differently for different intents!
     let workflowitem = workflowitemsMap.get(asMapKey(item));
-    console.log("Resource: ");
-    console.log(workflowitem);
 
     if (workflowitem === undefined) {
       const result = MultichainWorkflowitem.handleCreate(event);
-      console.log("Created...");
-      console.log(result);
 
       if (result === undefined) {
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
@@ -418,9 +410,6 @@ export async function getWorkflowitemList(
       workflowitem = result;
       workflowitem.log = [];
       permissionsMap.set(asMapKey(item), workflowitem.permissions);
-      console.log(permissionsMap);
-      console.log("Permissions of workflowitem:");
-      console.log(workflowitem.permissions);
     } else {
       // We've already encountered this workflowitem, so we can apply operations on it.
       const permissions = permissionsMap.get(asMapKey(item))!;

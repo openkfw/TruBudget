@@ -1,7 +1,11 @@
+import { getAllowedIntents } from "../authz";
+import { userIdentities } from "../project";
 import { User } from "./User";
 import {
+  redactHistoryEvent,
   redactWorkflowitem,
   removeEventLog,
+  ScrubbedWorkflowItem,
   sortWorkflowitems,
   Workflowitem,
 } from "./Workflowitem";
@@ -12,20 +16,25 @@ export * from "./User";
 export type ListReader = () => Promise<Workflowitem[]>;
 export type OrderingReader = () => Promise<string[]>;
 
-export async function getAllVisible(
+export async function getAllScrubbedItems(
   asUser: User,
   {
     getAllWorkflowitems,
     getWorkflowitemOrdering,
   }: { getAllWorkflowitems: ListReader; getWorkflowitemOrdering: OrderingReader },
-): Promise<Workflowitem[]> {
+): Promise<ScrubbedWorkflowItem[]> {
   const workflowitemOrdering = await getWorkflowitemOrdering();
   const workflowitems = await getAllWorkflowitems();
   const sortedWorkflowitems = await sortWorkflowitems(workflowitems, workflowitemOrdering);
-  const redactedWorkflowitems = await sortedWorkflowitems.map(workflowitem =>
-    redactWorkflowitem(workflowitem, asUser),
-  );
+  const scrubbedWorkflowitems = await sortedWorkflowitems.map(workflowitem => {
+    workflowitem.log.map(historyevent =>
+      redactHistoryEvent(
+        historyevent,
+        getAllowedIntents(userIdentities(asUser), workflowitem.permissions),
+      ),
+    );
+    return redactWorkflowitem(workflowitem, asUser);
+  });
 
-  // return redactedWorkflowitems.map(removeEventLog);
-  return sortedWorkflowitems.map(removeEventLog);
+  return scrubbedWorkflowitems.map(removeEventLog);
 }
