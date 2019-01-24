@@ -355,7 +355,6 @@ export async function getWorkflowitemList(
   const queryKey = workflowitemsGroupKey(subprojectId);
 
   const streamItems = await multichain.v2_readStreamItems(projectId, queryKey);
-  // const userAndGroups = await getUserAndGroups(token);
   const workflowitemsMap = new Map<string, MultichainWorkflowitem.Workflowitem>();
   const permissionsMap = new Map<string, AllowedUserGroupsByIntent>();
 
