@@ -365,6 +365,8 @@ export async function getWorkflowitemList(
     let workflowitem = workflowitemsMap.get(asMapKey(item));
 
     if (workflowitem === undefined) {
+      // If we didn't encounter the workflowitem while looping we just need to create
+      // a workflowitem with no data in it
       const result = MultichainWorkflowitem.handleCreate(event);
 
       if (result === undefined) {

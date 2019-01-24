@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 
 import { AllProjectsReader, ProjectAssigner } from ".";
+import { AllWorkflowitemsReader } from ".";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
@@ -33,7 +34,6 @@ import { revokeProjectPermission } from "../project/controller/intent.revokePerm
 import { updateProject } from "../project/controller/update";
 import { getProjectDetails } from "../project/controller/viewDetails";
 import { getProjectHistory } from "../project/controller/viewHistory";
-import { ProjectResource } from "../project/model/Project";
 import { User as ProjectUser } from "../project/User";
 import { assignSubproject } from "../subproject/controller/assign";
 import { closeSubproject } from "../subproject/controller/close";
@@ -56,13 +56,10 @@ import { closeWorkflowitem } from "../workflowitem/controller/close";
 import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
 import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
 import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
-import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
-import { AllWorkflowitemsReader } from "./index";
-import { WorkflowitemResource } from "../workflowitem/model/Workflowitem";
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
