@@ -1,4 +1,4 @@
-import Intent from "../authz/intents";
+import Intent, { userAssignableIntents } from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import * as Group from "../group";
 import logger from "../lib/logger";
@@ -48,6 +48,29 @@ export async function grant(
     return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to grant Permissions.`));
   }
   await grantPermission(intent, identity);
+}
+
+export async function grantAll(
+  actingUser: User,
+  identity: string,
+  {
+    getAllPermissions,
+    // tslint:disable-next-line:no-shadowed-variable
+    grantPermission,
+  }: { getAllPermissions: ListReader; grantPermission: Granter },
+) {
+  const allPermissions = await getAllPermissions();
+  if (!Permission.isAllowedToGrant(allPermissions, actingUser)) {
+    return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to grant Permissions.`));
+  }
+  let permissionsForIntent: People;
+  for (const intent of userAssignableIntents) {
+    permissionsForIntent = allPermissions[intent] || [];
+    if (permissionsForIntent.includes(identity)) {
+      continue;
+    }
+    await grantPermission(intent, identity);
+  }
 }
 
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {

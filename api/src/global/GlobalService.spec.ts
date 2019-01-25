@@ -2,7 +2,7 @@ import { assert } from "chai";
 
 import * as Permission from ".";
 import { Granter, ListReader } from ".";
-import Intent from "../authz/intents";
+import Intent, { userAssignableIntents } from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { Permissions } from "./Permission";
 import { User } from "./User";
@@ -51,7 +51,7 @@ describe("Granting a permission", () => {
     const getAllPermissions: ListReader = () => Promise.resolve(permissionsMock);
 
     const calls = new Map<string, string>();
-    const grantPermission: Granter = (intent, userId) => {
+    const grantPermission: Granter = (intent, userId): Promise<void> => {
       calls.set(intent, userId);
       return Promise.resolve();
     };
@@ -76,12 +76,11 @@ describe("Granting a permission", () => {
     };
     const actingUser: User = { id: "alice", groups: ["friends"] };
 
-    const getAllPermissions: ListReader = () => Promise.resolve(permissionsMock);
+    const getAllPermissions: ListReader = async () => permissionsMock;
 
     const calls = new Map<string, string>();
-    const grantPermission: Granter = (intent, userId) => {
+    const grantPermission: Granter = async (intent, userId): Promise<void> => {
       calls.set(intent, userId);
-      return Promise.resolve();
     };
 
     const intentToBeGranted: Intent = "global.createProject";
@@ -106,12 +105,11 @@ describe("Granting a permission", () => {
     };
     const actingUser: User = { id: "alice", groups: ["friends"] };
 
-    const getAllPermissions: ListReader = () => Promise.resolve(permissionsMock);
+    const getAllPermissions: ListReader = async () => permissionsMock;
 
     const calls = new Map<string, string>();
-    const grantPermission: Granter = (intent, userId) => {
+    const grantPermission: Granter = async (intent, userId): Promise<void> => {
       calls.set(intent, userId);
-      return Promise.resolve();
     };
 
     const intentToBeGranted: Intent = "global.createProject";
@@ -125,5 +123,83 @@ describe("Granting a permission", () => {
     await assertIsResolved(Permission.grant(actingUser, identity, intentToBeGranted, deps));
 
     assert.isUndefined(calls.get("global.createProject"), identity);
+  });
+});
+
+describe("Granting all permissions", () => {
+  it("is allowed if the user has the required permissions", async () => {
+    const permissionsMock: Permissions = {
+      "global.listPermissions": ["alice", "friends"],
+      "global.grantPermission": ["alice"],
+    };
+    const actingUser: User = { id: "alice", groups: ["friends"] };
+
+    const getAllPermissions: ListReader = async () => permissionsMock;
+
+    const calls = new Map<string, string>();
+    const grantPermission: Granter = async (intent, userId): Promise<void> => {
+      calls.set(intent, userId);
+    };
+
+    const identity = "otherUser";
+
+    const deps = {
+      getAllPermissions,
+      grantPermission,
+    };
+
+    await assertIsResolved(Permission.grantAll(actingUser, identity, deps));
+
+    assert.equal(calls.size, userAssignableIntents.length);
+  });
+
+  it("is rejected if the user does not have the required permission", async () => {
+    const permissionsMock: Permissions = {
+      "global.listPermissions": ["alice", "friends"],
+      "global.grantPermission": ["otherUser"],
+    };
+    const actingUser: User = { id: "alice", groups: ["friends"] };
+
+    const getAllPermissions: ListReader = async () => permissionsMock;
+
+    const grantPermission: Granter = (intent, userId): Promise<void> => {
+      return Promise.resolve();
+    };
+
+    const identity = "alice";
+
+    const deps = {
+      getAllPermissions,
+      grantPermission,
+    };
+
+    await assertIsRejectedWith(Permission.grantAll(actingUser, identity, deps), Error);
+  });
+
+  it("will only call grantPermission if permission is not set already", async () => {
+    const permissionsMock: Permissions = {
+      "global.listPermissions": ["alice", "friends"],
+      "global.grantPermission": ["alice"],
+      "global.createProject": ["alice"],
+    };
+    const actingUser: User = { id: "alice", groups: ["friends"] };
+
+    const getAllPermissions: ListReader = async () => permissionsMock;
+
+    const calls = new Map<string, string>();
+    const grantPermission: Granter = async (intent, userId): Promise<void> => {
+      calls.set(intent, userId);
+    };
+
+    const identity = "friends";
+
+    const deps = {
+      getAllPermissions,
+      grantPermission,
+    };
+
+    await assertIsResolved(Permission.grantAll(actingUser, identity, deps));
+
+    assert.equal(calls.size, userAssignableIntents.length - 1);
   });
 });

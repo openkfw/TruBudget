@@ -1,9 +1,8 @@
 import { FastifyInstance } from "fastify";
 
 import { AllProjectsReader, ProjectAssigner, ProjectUpdater } from ".";
-import { AllPermissionsReader, GlobalPermissionGranter } from ".";
+import { AllPermissionsGranter, AllPermissionsReader, GlobalPermissionGranter } from ".";
 import Intent from "../authz/intents";
-import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { revokeGlobalPermission } from "../global/controller/revokePermission";
 import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
@@ -260,12 +259,14 @@ export const registerRoutes = (
     updateProject,
     listGlobalPermissions,
     grantGlobalPermission,
+    grantAllPermissions,
   }: {
     listProjects: AllProjectsReader;
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
     listGlobalPermissions: AllPermissionsReader;
     grantGlobalPermission: GlobalPermissionGranter;
+    grantAllPermissions: AllPermissionsGranter;
   },
 ) => {
   // ------------------------------------------------------------
@@ -410,7 +411,21 @@ export const registerRoutes = (
     `${urlPrefix}/global.grantAllPermissions`,
     getSchema(server, "globalGrantAllPermissions"),
     (request, reply) => {
-      grantAllPermissions(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+
+      const identity: string = request.body.data.identity;
+
+      return grantAllPermissions(token, identity)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

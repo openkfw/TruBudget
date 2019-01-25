@@ -274,3 +274,32 @@ export function grantPermission(multichainClient: MultichainClient): HTTP.Global
     });
   };
 }
+
+export function grantAllPermissions(
+  multichainClient: MultichainClient,
+): HTTP.AllPermissionsGranter {
+  return async (token: AuthToken, identity: string) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const user: Permission.User = { id: token.userId, groups: token.groups };
+
+    const lister: Permission.ListReader = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    const granter: Permission.Granter = async (grantIntent: Intent, grantIdentity: string) => {
+      return await Multichain.grantGlobalPermission(
+        multichainClient,
+        issuer,
+        grantIdentity,
+        grantIntent,
+      );
+    };
+    return Permission.grantAll(user, identity, {
+      getAllPermissions: lister,
+      grantPermission: granter,
+    });
+  };
+}
