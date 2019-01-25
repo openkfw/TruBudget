@@ -14,7 +14,6 @@ import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 export * from "./event";
 
 const projectSelfKey = "self";
-const globalstreamName = "global";
 
 export type Permissions = { [key in Intent]?: string[] };
 
@@ -204,7 +203,7 @@ export async function getProjectList(multichain: MultichainClient): Promise<Proj
 
 export async function getPermissionList(multichain: MultichainClient): Promise<Permissions> {
   try {
-    const streamItems = await multichain.v2_readStreamItems(globalstreamName, "self", 1);
+    const streamItems = await multichain.v2_readStreamItems("global", "self", 1);
     if (streamItems.length < 1) {
       return {};
     }

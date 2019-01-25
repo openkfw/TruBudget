@@ -5,8 +5,6 @@ import { MultichainClient } from "../../multichain/Client.h";
 import { Event } from "../../multichain/event";
 import { User, userIdentities } from "../User";
 
-export type Permission = { [key in Intent]?: string[] };
-
 export type Permissions = { [key in Intent]?: string[] };
 
 export function isAllowedToList(permissions: Permissions, actingUser: User): boolean {
