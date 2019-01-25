@@ -39,21 +39,21 @@ export interface Project {
 
 export interface ProjectAndSubprojects {
   project: Project;
-  subprojects: [
-    {
-      allowedIntents: Intent[];
-      data: {
-        id: string;
-        creationUnixTs: string;
-        status: "open" | "closed";
-        displayName: string;
-        description: string;
-        amount: string;
-        currency: string;
-        exchangeRate: string;
-        billingDate: string;
-        assignee?: string;
-      };
-    }
-  ];
+  subprojects: Subproject[];
+}
+
+interface Subproject {
+  allowedIntents: Intent[];
+  data: {
+    id: string;
+    creationUnixTs: string;
+    status: "open" | "closed";
+    displayName: string;
+    description: string;
+    amount: string;
+    currency: string;
+    exchangeRate: string;
+    billingDate: string;
+    assignee?: string;
+  };
 }

@@ -7,7 +7,7 @@ export * from "./User";
 /** Fetch all workflowitems for a given project. */
 export type Lister = (projectId: string) => Promise<Subproject[]>;
 
-export async function allVisible(
+export async function getAllVisible(
   actingUser: User,
   projectId: string,
   { getAllSubprojects }: { getAllSubprojects: Lister },

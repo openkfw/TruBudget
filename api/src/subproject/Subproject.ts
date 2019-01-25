@@ -39,7 +39,6 @@ interface HistoryEvent {
   intent: Intent;
   snapshot: {
     displayName: string;
-    permissions: object;
   };
 }
 
@@ -142,30 +141,13 @@ const requiredPermissions = new Map<Intent, Intent[]>([
 
 function redactHistoryEvent(event: HistoryEvent, userIntents: Intent[]): ScrubbedHistoryEvent {
   const observedIntent = event.intent;
-  if (requiredPermissions.has(observedIntent)) {
-    const allowedIntents = requiredPermissions.get(observedIntent);
-    const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
-
-    if (!isAllowedToSee) {
-      // The user can't see the event..
-      return null;
-    }
-
-    // The event is visible, but what about the permissions?
-    // subproject.createWorkflowitem is a special case here..
-    const permissionListingPermission =
-      event.intent === "subproject.createWorkflowitem"
-        ? "workflowitem.intent.listPermissions"
-        : "subproject.intent.listPermissions";
-
-    if (!userIntents.includes(permissionListingPermission)) {
-      // The user can see the event but not the associated project or workflowitem permissions:
-      delete event.snapshot.permissions;
-    }
-
-    return event;
-  } else {
+  if (!requiredPermissions.has(observedIntent)) {
     // Redacted by default:
     return null;
   }
+
+  const allowedIntents = requiredPermissions.get(observedIntent);
+  const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
+
+  return isAllowedToSee ? event : null;
 }

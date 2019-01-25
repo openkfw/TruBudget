@@ -457,7 +457,7 @@ export const registerRoutes = (
     (request, reply) => {
       const req = request as AuthenticatedRequest;
       const token = req.user;
-      const projectId: string = request.body.data.projectId;
+      const projectId: string = request.query.projectId;
       return getProjectWithSubprojects(token, projectId)
         .then(
           (projectWithSubprojects: ProjectAndSubprojects): HttpResponse => [

@@ -30,17 +30,26 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
           id,
         );
         return Project.validateProject(multichainProjectToProjectProject(multichainProject));
-      ,
+      },
     });
 
-    const subprojects: Subproject.ScrubbedSubproject[] = await Subproject.allVisible(actingUser, projectId, {
-      getAllSubprojects: async () => {
-        const list: Multichain.Subproject[] = await Multichain.getSubprojectList(multichainClient);
-        return list.map(multichainSubproject => {
-          return Subproject.validateSubproject(multichainSubprojectToSubprojectSubproject(multichainSubproject));
-        });
-      }
-    });
+    const subprojects: Subproject.ScrubbedSubproject[] = await Subproject.getAllVisible(
+      actingUser,
+      projectId,
+      {
+        getAllSubprojects: async id => {
+          const list: Multichain.Subproject[] = await Multichain.getSubprojectList(
+            multichainClient,
+            id,
+          );
+          return list.map(multichainSubproject => {
+            return Subproject.validateSubproject(
+              multichainSubprojectToSubprojectSubproject(multichainSubproject),
+            );
+          });
+        },
+      },
+    );
 
     const httpProject: HTTP.ProjectAndSubprojects = {
       project: {
@@ -68,7 +77,24 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
           thumbnail: project.thumbnail,
         },
       },
-      subprojects: subprojects.map(x => { delete x.log; return x })
+      subprojects: subprojects.map(x => ({
+        allowedIntents: getAllowedIntents(
+          Subproject.userIdentities({ id: actingUser.id, groups: actingUser.groups }),
+          x.permissions,
+        ),
+        data: {
+          id: x.id,
+          creationUnixTs: x.creationUnixTs,
+          status: x.status,
+          displayName: x.displayName,
+          description: x.description,
+          amount: x.amount,
+          currency: x.currency,
+          exchangeRate: x.exchangeRate,
+          billingDate: x.billingDate,
+          assignee: x.assignee,
+        },
+      })),
     };
 
     return httpProject;
@@ -229,5 +255,24 @@ function multichainProjectToProjectProject(multichainProject: Multichain.Project
         },
       };
     }),
+  };
+}
+
+function multichainSubprojectToSubprojectSubproject(
+  multichainSubproject: Multichain.Subproject,
+): Subproject.Subproject {
+  return {
+    id: multichainSubproject.id,
+    creationUnixTs: multichainSubproject.creationUnixTs,
+    status: multichainSubproject.status,
+    displayName: multichainSubproject.displayName,
+    description: multichainSubproject.description,
+    amount: multichainSubproject.amount,
+    currency: multichainSubproject.currency,
+    exchangeRate: multichainSubproject.currency,
+    billingDate: multichainSubproject.currency,
+    assignee: multichainSubproject.assignee,
+    permissions: multichainSubproject.permissions,
+    log: multichainSubproject.log,
   };
 }
