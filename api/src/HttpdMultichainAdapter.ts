@@ -261,7 +261,12 @@ export function grantPermission(multichainClient: MultichainClient): HTTP.Global
     };
 
     const granter: Permission.Granter = async (grantIntent: Intent, grantIdentity: string) => {
-      return await Multichain.grantGlobalPermission(multichainClient, issuer, identity, intent);
+      return await Multichain.grantGlobalPermission(
+        multichainClient,
+        issuer,
+        grantIdentity,
+        grantIntent,
+      );
     };
     return Permission.grant(user, identity, intent, {
       getAllPermissions: lister,
