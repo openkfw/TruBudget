@@ -1,6 +1,4 @@
 import Intent from "../authz/intents";
-import logger from "../lib/logger";
-import { Issuer } from ".";
 
 export interface Event {
   key: string; // the resource ID (same for all events that relate to the same resource)
