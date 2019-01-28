@@ -47,7 +47,7 @@ export interface Workflowitem {
   permissions: AllowedUserGroupsByIntent;
   log: HistoryEvent[];
 }
-export type ScrubbedWorkflowItem = Workflowitem | RedactedWorkflowitem;
+export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
 
 export interface RedactedWorkflowitem {
   id: string;
@@ -102,7 +102,7 @@ export function validateWorkflowitem(input: any): Workflowitem {
   }
 }
 
-export function redactWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowItem {
+export function redactWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowitem {
   if (!isWorkflowitemVisibleTo(workflowitem, user)) {
     const scrubbedWorkflowitem = redactWorkflowitemData(workflowitem);
     return scrubbedWorkflowitem;
@@ -205,7 +205,7 @@ function byCreationTime(a: Workflowitem, b: Workflowitem): -1 | 1 | 0 {
   }
 }
 
-export function removeEventLog(workflowitem: ScrubbedWorkflowItem): ScrubbedWorkflowItem {
+export function removeEventLog(workflowitem: ScrubbedWorkflowitem): ScrubbedWorkflowitem {
   delete workflowitem.log;
   return workflowitem;
 }
@@ -256,5 +256,48 @@ export function redactHistoryEvent(
   } else {
     // Redacted by default:
     return null;
+  }
+}
+
+export function isWorkflowitemClosable(
+  workflowitemId: string,
+  closingUser: User,
+  sortedWorkflowitems: Workflowitem[],
+): void {
+  const allowedIntent: Intent = "workflowitem.close";
+  const closingWorkflowitem: Workflowitem | undefined = sortedWorkflowitems.find(
+    item => item.id === workflowitemId,
+  );
+  if (closingWorkflowitem === undefined) {
+    throw {
+      kind: "PreconditionError",
+      message: "The workflowitem you want to close is not available",
+    };
+  } else {
+    const userIntents = getAllowedIntents(userIdentities(closingUser), closingWorkflowitem);
+    const hasPermission = userIntents.includes(allowedIntent);
+    if (!hasPermission) {
+      throw {
+        kind: "NotAuthorized",
+        message: `User ${closingUser} is not authorized to close workflowitem ${workflowitemId}`,
+      };
+    }
+  }
+}
+
+export function arePreviousClosed(
+  closingItemId: string,
+  sortedWorkflowitems: Workflowitem[],
+): void {
+  for (const item of sortedWorkflowitems) {
+    if (item.id === closingItemId) {
+      break;
+    } else if (item.status !== "closed") {
+      const message = "Cannot close workflowitems if there are preceding non-closed workflowitems.";
+      throw {
+        kind: "PreconditionError",
+        message,
+      };
+    }
   }
 }

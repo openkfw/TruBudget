@@ -1,6 +1,5 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntentMap, AllowedUserGroupsByIntent } from "../authz/types";
 
 export type ProjectReader = (token: AuthToken, id: string) => Promise<Project>;
 
@@ -27,6 +26,12 @@ type MaybeHistoryEvent = null | {
   };
 };
 
+export type WorkflowitemCloser = (
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+) => Promise<void>;
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];

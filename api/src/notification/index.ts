@@ -13,6 +13,12 @@ export interface ProjectUpdate {
   update: any;
 }
 
+export interface WorkflowitemClosing {
+  workflowitemId: string;
+  actingUser: string;
+  assignee?: string;
+}
+
 export type Sender = (message: Event, recipient: string) => Promise<void>;
 
 /**

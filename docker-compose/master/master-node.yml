@@ -2,6 +2,8 @@ version: '3.2'
 services:
   api:
     image: index.docker.io/trubudget/v1/api:${TAG}
+    ports:
+      - "8088:8080" # Mapping the nginx port 
     environment:
       RPC_HOST: master
       RPC_PORT: ${RPC_PORT}
@@ -27,6 +29,8 @@ services:
 
   testapi:
     image: index.docker.io/trubudget/v1/api:${TAG}
+    ports:
+      - "8089:8080" # Mapping the nginx port 
     environment:
       RPC_HOST: testmaster
       RPC_PORT: ${RPC_PORT}

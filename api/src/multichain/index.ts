@@ -1,6 +1,5 @@
 import uuid = require("uuid");
 
-import { getAllowedIntents } from "../authz";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
@@ -319,17 +318,18 @@ export async function issueNotification(
   issuer: Issuer,
   message: Event,
   recipient: string,
+  resources: NotificationResourceDescription[],
 ): Promise<void> {
   const notificationId = uuid();
   // TODO message.key is working for projects
   // TODO but we need to access projectId subprojectid and workflowitemid and build data.resources
-  const projectId = message.key;
-  const resources: NotificationResourceDescription[] = [
-    {
-      id: projectId,
-      type: notificationTypeFromIntent(message.intent),
-    },
-  ];
+  // const projectId = message.key;
+  // const resources: NotificationResourceDescription[] = [
+  //   {
+  //     id: projectId,
+  //     type: notificationTypeFromIntent(message.intent),
+  //   },
+  // ];
   const intent = "notification.create";
   const event: Event = {
     key: recipient,
@@ -380,6 +380,35 @@ function notificationTypeFromIntent(intent: Intent): ResourceType {
   } else {
     throw Error(`Unknown ResourceType for intent ${intent}`);
   }
+}
+
+export function generateResources(
+  projectId: string,
+  subprojectId?: string,
+  workflowitemId?: string,
+): NotificationResourceDescription[] {
+  const notificationResource: NotificationResourceDescription[] = [];
+  if (!projectId) {
+    throw { kind: "PreconditionError", message: "No project ID provided" };
+  }
+  notificationResource.unshift({
+    id: projectId,
+    type: "project",
+  });
+  if (subprojectId) {
+    notificationResource.unshift({
+      id: subprojectId,
+      type: "subproject",
+    });
+  }
+  if (workflowitemId) {
+    notificationResource.unshift({
+      id: workflowitemId,
+      type: "workflowitem",
+    });
+  }
+
+  return notificationResource;
 }
 
 export async function getWorkflowitemList(
@@ -477,3 +506,142 @@ export async function fetchWorkflowitemOrdering(
   const ordering: string[] = event.data;
   return ordering;
 }
+
+export function closeWorkflowitem(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+): Promise<void> {
+  const intent: Intent = "workflowitem.close";
+
+  const event = {
+    key: workflowitemId,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    data: {},
+  };
+
+  const streamName = projectId;
+  const streamItemKey = workflowitemsGroupKey(subprojectId);
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  return multichain
+    .getRpcClient()
+    .invoke("publish", streamName, streamItemKey, streamItem)
+    .then(() => event);
+}
+
+/*
+Event on chain:
+{
+        "publishers" : [
+            "1DUPFSzYNwPkyunNsWiRNHtJXGDRgpMwtwgZKA"
+        ],
+        "keys" : [
+            "38c119026592c19ad80ecbd42272e212_workflows",
+            "b08bfd9df7dcc42cc781ca36b583ad7a"
+        ],
+        "offchain" : false,
+        "available" : true,
+        "data" : {
+            "json" : {
+                "key" : "b08bfd9df7dcc42cc781ca36b583ad7a",
+                "intent" : "workflowitem.close",
+                "createdBy" : "mstein",
+                "createdAt" : "2019-01-25T08:45:00.201Z",
+                "dataVersion" : 1,
+                "data" : {
+                }
+            }
+        },
+        "confirmations" : 1,
+        "blocktime" : 1548405901,
+        "txid" : "4176136e077daaf25c9bbb819394fd7c3de406d543e87467fcdb97e9272da169"
+    },
+*/
+// export async function closeWorkflowitem(multichain: MultichainClient, req): Promise<HttpResponse> {
+//   const input = value("data", req.body.data, x => x !== undefined);
+
+//   const projectId: string = value("projectId", input.projectId, isNonemptyString);
+//   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
+//   const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
+
+//   const userIntent: Intent = "workflowitem.close";
+
+//   // Is the user allowed to close a workflowitem?
+//   await throwIfUnauthorized(
+//     req.user,
+//     userIntent,
+//     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
+//   );
+
+//   // We need to make sure that all previous (wrt. ordering) workflowitems are already closed:
+//   const sortedItems = await ensureAllPreviousWorkflowitemsAreClosed(
+//     multichain,
+//     req.user,
+//     projectId,
+//     subprojectId,
+//     workflowitemId,
+//   );
+
+//   const publishedEvent = await sendEventToDatabase(
+//     multichain,
+//     req.user,
+//     userIntent,
+//     projectId,
+//     subprojectId,
+//     workflowitemId,
+//   );
+
+//   const resourceDescriptions: Notification.NotificationResourceDescription[] = [
+//     { id: workflowitemId, type: "workflowitem" },
+//     { id: subprojectId, type: "subproject" },
+//     { id: projectId, type: "project" },
+//   ];
+//   const createdBy = req.user.userId;
+
+//   // If the workflowitem is assigned to someone else, that person is notified about the
+//   // change:
+//   const workflowitemAssignee = await notifyAssignee(
+//     multichain,
+//     resourceDescriptions,
+//     createdBy,
+//     await Workflowitem.get(
+//       multichain,
+//       req.user,
+//       projectId,
+//       subprojectId,
+//       workflowitemId,
+//       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+//     ),
+//     publishedEvent,
+//     [req.user.userId], // skipNotificationsFor
+//   );
+
+//   // If the parent subproject is (1) not assigned to the token user and (2) not assigned
+//   // to the same guy the workflowitem is assigned to, that person is notified about the
+//   // change too.
+//   const skipNotificationsFor = [req.user.userId].concat(
+//     workflowitemAssignee ? [workflowitemAssignee] : [],
+//   );
+//   await notifyAssignee(
+//     multichain,
+//     resourceDescriptions,
+//     createdBy,
+//     await Subproject.get(
+//       multichain,
+//       req.user,
+//       projectId,
+//       subprojectId,
+//       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+//     ),
+//     publishedEvent,
+//     skipNotificationsFor,
+//   );
+
+//   return [200, { apiVersion: "1.0", data: "OK" }];
+// }
