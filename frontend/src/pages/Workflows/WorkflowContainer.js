@@ -25,7 +25,8 @@ import {
   closeSubproject,
   hideWorkflowDetails,
   hideWorkflowDialog,
-  saveWorkflowItemsBeforeSort
+  saveWorkflowItemsBeforeSort,
+  liveUpdateSubproject
 } from "./actions";
 
 import { addDocument } from "../Documents/actions";
@@ -75,7 +76,7 @@ class WorkflowContainer extends Component {
   closeSubproject = () => this.props.closeSubproject(this.projectId, this.subProjectId, true);
 
   update = () => {
-    this.props.fetchAllSubprojectDetails(this.projectId, this.subProjectId, false);
+    this.props.updateSubProject(this.projectId, this.subProjectId);
   };
 
   addLiveUpdates = () => {
@@ -126,7 +127,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
     showCreateDialog: () => dispatch(showCreateDialog()),
-
+    updateSubProject: (pId, sId) => dispatch(liveUpdateSubproject(pId, sId)),
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
     openHistory: (projectId, subprojectId, offset, limit) => {
