@@ -16,7 +16,7 @@ export const revokeGlobalPermission = async (
   const intent = value("intent", input.intent, x => userAssignableIntents.includes(x));
 
   const userIntent: Intent = "global.revokePermission";
-  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
 
   await Global.revokePermission(multichain, identity, intent);
   logger.debug({ intent, user: req.user }, "Revoking permission.");

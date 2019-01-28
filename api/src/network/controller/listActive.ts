@@ -8,7 +8,7 @@ import * as Nodes from "../model/Nodes";
 export async function getActiveNodes(multichain: MultichainClient, req: AuthenticatedRequest): Promise<HttpResponse> {
   // Permission check:
   const userIntent: Intent = "network.listActive";
-  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
 
   // Get ALL the info:
   const numberOfConnections = await Nodes.active(multichain);
