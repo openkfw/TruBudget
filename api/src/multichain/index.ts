@@ -225,19 +225,19 @@ export async function getPermissionList(multichain: MultichainClient): Promise<P
 export async function grantGlobalPermission(
   multichain: MultichainClient,
   issuer: Issuer,
-  identity: string,
-  grantedIntent: Intent,
+  grantee: string,
+  intent: Intent,
 ): Promise<void> {
   const permissions = await getPermissionList(multichain);
-  const permissionsForIntent: People = permissions[grantedIntent] || [];
-  permissionsForIntent.push(identity);
-  permissions[grantedIntent] = permissionsForIntent;
+  const permissionsForIntent: People = permissions[intent] || [];
+  permissionsForIntent.push(grantee);
+  permissions[intent] = permissionsForIntent;
 
-  const intent: Intent = "global.grantPermission";
+  const grantintent: Intent = "global.grantPermission";
 
   const event = {
     key: projectSelfKey,
-    intent,
+    intent: grantintent,
     createdBy: issuer.name,
     createdAt: new Date().toISOString(),
     data: { permissions },
@@ -248,7 +248,7 @@ export async function grantGlobalPermission(
   const streamItemKey = projectSelfKey;
   const streamItem = { json: event };
 
-  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  logger.debug(`Publishing ${grantintent} to ${streamName}/${streamItemKey}`);
 
   const publishEvent = () => {
     return multichain

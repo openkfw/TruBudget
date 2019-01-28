@@ -390,9 +390,9 @@ export const registerRoutes = (
       const token = req.user;
 
       const intent: Intent = request.body.data.intent;
-      const identity: string = request.body.data.identity;
+      const grantee: string = request.body.data.identity;
 
-      return grantGlobalPermission(token, identity, intent)
+      return grantGlobalPermission(token, grantee, intent)
         .then(
           (): HttpResponse => [
             200,
@@ -414,9 +414,9 @@ export const registerRoutes = (
       const req = request as AuthenticatedRequest;
       const token = req.user;
 
-      const identity: string = request.body.data.identity;
+      const grantee: string = request.body.data.identity;
 
-      return grantAllPermissions(token, identity)
+      return grantAllPermissions(token, grantee)
         .then(
           (): HttpResponse => [
             200,

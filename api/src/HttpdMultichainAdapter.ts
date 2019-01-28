@@ -237,7 +237,7 @@ export function getPermissionList(multichainClient: MultichainClient): HTTP.AllP
   return async (token: AuthToken) => {
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
-    const lister: Permission.ListReader = async () => {
+    const lister: Permission.PermissionsLister = async () => {
       const permissions: Multichain.Permissions = await Multichain.getPermissionList(
         multichainClient,
       );
@@ -253,14 +253,17 @@ export function grantPermission(multichainClient: MultichainClient): HTTP.Global
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
-    const lister: Permission.ListReader = async () => {
+    const lister: Permission.PermissionsLister = async () => {
       const permissions: Multichain.Permissions = await Multichain.getPermissionList(
         multichainClient,
       );
       return permissions;
     };
 
-    const granter: Permission.Granter = async (grantIntent: Intent, grantIdentity: string) => {
+    const granter: Permission.PermissionsGranter = async (
+      grantIntent: Intent,
+      grantIdentity: string,
+    ) => {
       return await Multichain.grantGlobalPermission(
         multichainClient,
         issuer,
@@ -278,26 +281,29 @@ export function grantPermission(multichainClient: MultichainClient): HTTP.Global
 export function grantAllPermissions(
   multichainClient: MultichainClient,
 ): HTTP.AllPermissionsGranter {
-  return async (token: AuthToken, identity: string) => {
+  return async (token: AuthToken, grantee: string) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
-    const lister: Permission.ListReader = async () => {
+    const lister: Permission.PermissionsLister = async () => {
       const permissions: Multichain.Permissions = await Multichain.getPermissionList(
         multichainClient,
       );
       return permissions;
     };
 
-    const granter: Permission.Granter = async (grantIntent: Intent, grantIdentity: string) => {
+    const granter: Permission.PermissionsGranter = async (
+      grantIntent: Intent,
+      grantGrantee: string,
+    ) => {
       return await Multichain.grantGlobalPermission(
         multichainClient,
         issuer,
-        grantIdentity,
+        grantGrantee,
         grantIntent,
       );
     };
-    return Permission.grantAll(user, identity, {
+    return Permission.grantAll(user, grantee, {
       getAllPermissions: lister,
       grantPermission: granter,
     });

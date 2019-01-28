@@ -9,11 +9,11 @@ export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
 
 export type GlobalPermissionGranter = (
   token: AuthToken,
-  userId: string,
+  grantee: string,
   intent: Intent,
 ) => Promise<void>;
 
-export type AllPermissionsGranter = (token: AuthToken, userId: string) => Promise<void>;
+export type AllPermissionsGranter = (token: AuthToken, grantee: string) => Promise<void>;
 
 export type ProjectAssigner = (
   token: AuthToken,
