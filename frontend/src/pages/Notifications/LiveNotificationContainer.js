@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import _isEmpty from "lodash/isEmpty";
 
 import LiveNotification from "./LiveNotification";
-import { hideSnackbar, fetchNotificationCounts, fetchFlyInNotifications, fetchLatestNotification } from "./actions.js";
+import { hideSnackbar, fetchNotificationCounts, updateNotification, fetchLatestNotification } from "./actions.js";
 import { toJS } from "../../helper";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 
@@ -38,7 +38,7 @@ class LiveNotificationContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchFlyInNotifications: beforeId => dispatch(fetchFlyInNotifications(false, beforeId)),
+    fetchFlyInNotifications: beforeId => dispatch(updateNotification(false, beforeId)),
     fetchNotificationCounts: () => dispatch(fetchNotificationCounts()),
     fetchLatestNotification: () => dispatch(fetchLatestNotification()),
     closeSnackbar: () => dispatch(hideSnackbar())
