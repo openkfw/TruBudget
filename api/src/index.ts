@@ -117,6 +117,7 @@ registerRoutes(
     assignProject: HttpdMultichainAdapter.assignProject(multichainClient),
     updateProject: HttpdMultichainAdapter.updateProject(multichainClient),
     workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(multichainClient),
+    workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(multichainClient),
   },
 );
 

@@ -56,7 +56,11 @@ export async function close(
   const workflowitemOrdering = await getOrdering();
   const workflowitems = await getWorkflowitems();
   const sortedWorkflowitems = sortWorkflowitems(workflowitems, workflowitemOrdering);
+  const closingWorkflowitem: Workflowitem | undefined = sortedWorkflowitems.find(
+    item => item.id === workflowitemId,
+  );
   isWorkflowitemClosable(workflowitemId, closingUser, sortedWorkflowitems);
 
   await closeWorkflowitem(projectId, subprojectId, workflowitemId);
+  await notify(projectId, subprojectId, closingWorkflowitem);
 }

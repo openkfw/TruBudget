@@ -115,6 +115,7 @@ export async function workflowitemClosed(
     dataVersion: 1,
     data: {},
   };
+  console.log(event);
 
   for (const recipient of recipients) {
     await sender(event, recipient);

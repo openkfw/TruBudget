@@ -425,9 +425,13 @@ export async function getWorkflowitemList(
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
+    console.log("Event für List");
+    console.log(event);
 
     // Events look differently for different intents!
     let workflowitem = workflowitemsMap.get(asMapKey(item));
+    console.log("workflowitem");
+    console.log(workflowitem);
 
     if (workflowitem === undefined) {
       const result = MultichainWorkflowitem.handleCreate(event);
@@ -478,10 +482,13 @@ export async function fetchWorkflowitemOrdering(
   projectId: string,
   subprojectId: string,
 ): Promise<string[]> {
+  console.log("ProjectId and subprojectId:", { projectId, subprojectId });
+  console.log(workflowitemOrderingKey(subprojectId));
   // Currently, the workflowitem ordering is stored in full; therefore, we only
   // need to retrieve the latest item(see`publishWorkflowitemOrdering`).
   const expectedDataVersion = 1;
   const nValues = 1;
+  console.log("Fetching...");
 
   const streamItems = await multichain
     .v2_readStreamItems(projectId, workflowitemOrderingKey(subprojectId), nValues)
@@ -493,10 +500,14 @@ export async function fetchWorkflowitemOrdering(
       if (err.kind === "NotFound") {
         return [{ data: { json: { dataVersion: 1, data: [] } } }];
       } else {
+        console.log("Throwing error...");
+        console.log(err);
         throw err;
       }
     });
 
+  console.log("Streamitems:");
+  console.log(streamItems);
   const item = streamItems[0];
   const event = item.data.json as Event;
   if (event.dataVersion !== expectedDataVersion) {

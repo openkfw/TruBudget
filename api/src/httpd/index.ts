@@ -32,6 +32,7 @@ export type WorkflowitemCloser = (
   subprojectId: string,
   workflowitemId: string,
 ) => Promise<void>;
+
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];

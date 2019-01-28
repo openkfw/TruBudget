@@ -9,6 +9,7 @@ import { isNotEmpty } from "../lib/emptyChecks";
 import { Event } from "../multichain/event";
 import { userIdentities } from "../project";
 import { User } from "../project/User";
+import { closeWorkflowitem } from "../multichain/index";
 
 interface HistoryEvent {
   key: string; // the resource ID (same for all events that relate to the same resource)
@@ -274,7 +275,10 @@ export function isWorkflowitemClosable(
       message: "The workflowitem you want to close is not available",
     };
   } else {
-    const userIntents = getAllowedIntents(userIdentities(closingUser), closingWorkflowitem);
+    const userIntents = getAllowedIntents(
+      userIdentities(closingUser),
+      closingWorkflowitem.permissions,
+    );
     const hasPermission = userIntents.includes(allowedIntent);
     if (!hasPermission) {
       throw {
