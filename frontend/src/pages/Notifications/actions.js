@@ -53,7 +53,7 @@ export function storeSnackbarMessage(message) {
   };
 }
 
-export function fetchFlyInNotifications(showLoading = false, beforeId) {
+export function updateNotification(showLoading = false, beforeId) {
   return {
     type: LIVE_UPDATE_NOTIFICATIONS,
     beforeId,
