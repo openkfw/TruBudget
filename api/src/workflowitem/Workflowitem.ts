@@ -1,15 +1,10 @@
 import Joi = require("joi");
 
 import { getAllowedIntents, hasIntersection } from "../authz";
-import { getUserAndGroups } from "../authz";
-import { onlyAllowedData } from "../authz/history";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import { isNotEmpty } from "../lib/emptyChecks";
-import { Event } from "../multichain/event";
 import { userIdentities } from "../project";
 import { User } from "../project/User";
-import { closeWorkflowitem } from "../multichain/index";
 
 interface HistoryEvent {
   key: string; // the resource ID (same for all events that relate to the same resource)
@@ -286,6 +281,7 @@ export function isWorkflowitemClosable(
         message: `User ${closingUser} is not authorized to close workflowitem ${workflowitemId}`,
       };
     }
+    arePreviousClosed(workflowitemId, sortedWorkflowitems);
   }
 }
 

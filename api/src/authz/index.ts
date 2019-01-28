@@ -19,8 +19,6 @@ export const getAllowedIntents = (
   userAndGroups: People,
   resourcePermissions: AllowedUserGroupsByIntent,
 ): Intent[] => {
-  console.log("Getting allowed intents");
-  console.log(userAndGroups, resourcePermissions);
   if (userAndGroups.includes("root")) {
     return allIntents;
   }

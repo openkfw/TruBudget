@@ -1,9 +1,7 @@
-version: '3.2'
+version: "3.2"
 services:
   api:
     image: index.docker.io/trubudget/v1/api:${TAG}
-    ports:
-      - "8088:8080" # Mapping the nginx port 
     environment:
       RPC_HOST: master
       RPC_PORT: ${RPC_PORT}
@@ -15,7 +13,7 @@ services:
       PRETTY_PRINT: ${PRETTY_PRINT}
       SWAGGER_BASEPATH: /prod
       # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
-    links: 
+    links:
       - master
 
   master:
@@ -23,14 +21,12 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-#     EXTERNAL_IP: ${EXTERNAL_IP}
+    #     EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
 
   testapi:
     image: index.docker.io/trubudget/v1/api:${TAG}
-    ports:
-      - "8089:8080" # Mapping the nginx port 
     environment:
       RPC_HOST: testmaster
       RPC_PORT: ${RPC_PORT}
@@ -41,7 +37,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       SWAGGER_BASEPATH: /test
-    links: 
+    links:
       - testmaster
 
   testmaster:
@@ -49,14 +45,14 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-#      EXTERNAL_IP: ${EXTERNAL_IP}
+    #      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcTestMasterVolume:/root/.multichain
 
   frontend:
     image: index.docker.io/trubudget/v1/frontend:${TAG}
     ports:
-      - "80:80" # Mapping the nginx port 
+      - "80:80" # Mapping the nginx port
     environment:
       PROD_API_HOST: api
       PROD_API_PORT: ${API_PORT}
@@ -75,7 +71,7 @@ services:
       ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
-    links: 
+    links:
       - api
 
   provision-test:
@@ -87,6 +83,5 @@ services:
       ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
-    links: 
+    links:
       - testapi
-  

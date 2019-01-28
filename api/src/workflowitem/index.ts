@@ -51,7 +51,17 @@ export async function close(
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
-  { getOrdering, getWorkflowitems, closeWorkflowitem, notify },
+  {
+    getOrdering,
+    getWorkflowitems,
+    closeWorkflowitem,
+    notify,
+  }: {
+    getOrdering: OrderingReader;
+    getWorkflowitems: ListReader;
+    closeWorkflowitem: Closer;
+    notify: CloseNotifier;
+  },
 ): Promise<void> {
   const workflowitemOrdering = await getOrdering();
   const workflowitems = await getWorkflowitems();
@@ -62,5 +72,5 @@ export async function close(
   isWorkflowitemClosable(workflowitemId, closingUser, sortedWorkflowitems);
 
   await closeWorkflowitem(projectId, subprojectId, workflowitemId);
-  await notify(projectId, subprojectId, closingWorkflowitem);
+  await notify(projectId, subprojectId, closingWorkflowitem, closingUser);
 }

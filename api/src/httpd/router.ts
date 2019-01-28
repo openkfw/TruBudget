@@ -730,8 +730,6 @@ export const registerRoutes = (
     (request, reply) => {
       const req = request as AuthenticatedRequest;
       const body = req.body.data;
-      console.log("Request: ");
-      console.log(request);
       workflowitemCloser(req.user, body.projectId, body.subprojectId, body.workflowitemId)
         .then(
           (): HttpResponse => [

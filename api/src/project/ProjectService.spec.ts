@@ -91,7 +91,7 @@ describe("Assigning a project,", () => {
 
     await assertIsResolved(assign(alice, "friendsProject", "bob", deps));
 
-    await assertIsRejectedWith(assign(alice, "nonAssignableProject", "bob", deps), Error);
+    await assertIsRejectedWith(assign(alice, "nonAssignableProject", "bob", deps));
 
     assert.equal(calls.get("aliceProject"), 1);
     assert.equal(calls.get("friendsProject"), 1);
@@ -139,7 +139,7 @@ describe("Assigning a project,", () => {
     };
 
     await assertIsResolved(assign(alice, "aliceProject", "bob", deps));
-    await assertIsRejectedWith(assign(alice, "nonAssignableProject", "bob", deps), Error);
+    await assertIsRejectedWith(assign(alice, "nonAssignableProject", "bob", deps));
 
     assert.equal(calls.get("aliceProject"), 1);
     assert.isUndefined(calls.get("nonAssignableProject"));
@@ -194,7 +194,7 @@ describe("Updating a project", () => {
 
     await assertIsResolved(Project.update(alice, "friendsProject", update, deps));
 
-    await assertIsRejectedWith(Project.update(alice, "nonAssignableProject", update, deps), Error);
+    await assertIsRejectedWith(Project.update(alice, "nonAssignableProject", update, deps));
 
     assert.equal(calls.get("aliceProject"), 1);
     assert.equal(calls.get("friendsProject"), 1);

@@ -425,13 +425,9 @@ export async function getWorkflowitemList(
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
-    console.log("Event für List");
-    console.log(event);
 
     // Events look differently for different intents!
     let workflowitem = workflowitemsMap.get(asMapKey(item));
-    console.log("workflowitem");
-    console.log(workflowitem);
 
     if (workflowitem === undefined) {
       const result = MultichainWorkflowitem.handleCreate(event);
@@ -482,13 +478,10 @@ export async function fetchWorkflowitemOrdering(
   projectId: string,
   subprojectId: string,
 ): Promise<string[]> {
-  console.log("ProjectId and subprojectId:", { projectId, subprojectId });
-  console.log(workflowitemOrderingKey(subprojectId));
   // Currently, the workflowitem ordering is stored in full; therefore, we only
   // need to retrieve the latest item(see`publishWorkflowitemOrdering`).
   const expectedDataVersion = 1;
   const nValues = 1;
-  console.log("Fetching...");
 
   const streamItems = await multichain
     .v2_readStreamItems(projectId, workflowitemOrderingKey(subprojectId), nValues)
@@ -500,14 +493,10 @@ export async function fetchWorkflowitemOrdering(
       if (err.kind === "NotFound") {
         return [{ data: { json: { dataVersion: 1, data: [] } } }];
       } else {
-        console.log("Throwing error...");
-        console.log(err);
         throw err;
       }
     });
 
-  console.log("Streamitems:");
-  console.log(streamItems);
   const item = streamItems[0];
   const event = item.data.json as Event;
   if (event.dataVersion !== expectedDataVersion) {
@@ -532,11 +521,12 @@ export function closeWorkflowitem(
     intent,
     createdBy: issuer.name,
     createdAt: new Date().toISOString(),
+    dataVersion: 1,
     data: {},
   };
 
   const streamName = projectId;
-  const streamItemKey = workflowitemsGroupKey(subprojectId);
+  const streamItemKey = [workflowitemsGroupKey(subprojectId), workflowitemId];
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
@@ -545,114 +535,3 @@ export function closeWorkflowitem(
     .invoke("publish", streamName, streamItemKey, streamItem)
     .then(() => event);
 }
-
-/*
-Event on chain:
-{
-        "publishers" : [
-            "1DUPFSzYNwPkyunNsWiRNHtJXGDRgpMwtwgZKA"
-        ],
-        "keys" : [
-            "38c119026592c19ad80ecbd42272e212_workflows",
-            "b08bfd9df7dcc42cc781ca36b583ad7a"
-        ],
-        "offchain" : false,
-        "available" : true,
-        "data" : {
-            "json" : {
-                "key" : "b08bfd9df7dcc42cc781ca36b583ad7a",
-                "intent" : "workflowitem.close",
-                "createdBy" : "mstein",
-                "createdAt" : "2019-01-25T08:45:00.201Z",
-                "dataVersion" : 1,
-                "data" : {
-                }
-            }
-        },
-        "confirmations" : 1,
-        "blocktime" : 1548405901,
-        "txid" : "4176136e077daaf25c9bbb819394fd7c3de406d543e87467fcdb97e9272da169"
-    },
-*/
-// export async function closeWorkflowitem(multichain: MultichainClient, req): Promise<HttpResponse> {
-//   const input = value("data", req.body.data, x => x !== undefined);
-
-//   const projectId: string = value("projectId", input.projectId, isNonemptyString);
-//   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
-//   const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
-
-//   const userIntent: Intent = "workflowitem.close";
-
-//   // Is the user allowed to close a workflowitem?
-//   await throwIfUnauthorized(
-//     req.user,
-//     userIntent,
-//     await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
-//   );
-
-//   // We need to make sure that all previous (wrt. ordering) workflowitems are already closed:
-//   const sortedItems = await ensureAllPreviousWorkflowitemsAreClosed(
-//     multichain,
-//     req.user,
-//     projectId,
-//     subprojectId,
-//     workflowitemId,
-//   );
-
-//   const publishedEvent = await sendEventToDatabase(
-//     multichain,
-//     req.user,
-//     userIntent,
-//     projectId,
-//     subprojectId,
-//     workflowitemId,
-//   );
-
-//   const resourceDescriptions: Notification.NotificationResourceDescription[] = [
-//     { id: workflowitemId, type: "workflowitem" },
-//     { id: subprojectId, type: "subproject" },
-//     { id: projectId, type: "project" },
-//   ];
-//   const createdBy = req.user.userId;
-
-//   // If the workflowitem is assigned to someone else, that person is notified about the
-//   // change:
-//   const workflowitemAssignee = await notifyAssignee(
-//     multichain,
-//     resourceDescriptions,
-//     createdBy,
-//     await Workflowitem.get(
-//       multichain,
-//       req.user,
-//       projectId,
-//       subprojectId,
-//       workflowitemId,
-//       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-//     ),
-//     publishedEvent,
-//     [req.user.userId], // skipNotificationsFor
-//   );
-
-//   // If the parent subproject is (1) not assigned to the token user and (2) not assigned
-//   // to the same guy the workflowitem is assigned to, that person is notified about the
-//   // change too.
-//   const skipNotificationsFor = [req.user.userId].concat(
-//     workflowitemAssignee ? [workflowitemAssignee] : [],
-//   );
-//   await notifyAssignee(
-//     multichain,
-//     resourceDescriptions,
-//     createdBy,
-//     await Subproject.get(
-//       multichain,
-//       req.user,
-//       projectId,
-//       subprojectId,
-//       "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-//     ),
-//     publishedEvent,
-//     skipNotificationsFor,
-//   );
-
-//   return [200, { apiVersion: "1.0", data: "OK" }];
-// }

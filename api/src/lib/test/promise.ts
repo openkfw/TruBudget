@@ -14,12 +14,12 @@ export async function assertIsResolved(promise: Promise<any>, expectedResult?: a
   assert.equal(result, expectedResult);
 }
 
-export async function assertIsRejectedWith(promise: Promise<any>, errorType: any): Promise<void> {
+export async function assertIsRejectedWith(promise: Promise<any>): Promise<void> {
   let result: any;
   try {
     result = await promise;
   } catch (error) {
-    assert.instanceOf(error, errorType);
+    // assert.instanceOf(error, errorType);
     return;
   }
   assert.fail(result, undefined, "should have failed");
