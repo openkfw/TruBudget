@@ -1,4 +1,3 @@
-import Intent from "../authz/intents";
 import { AuthenticationError } from "../error";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain/Client.h";

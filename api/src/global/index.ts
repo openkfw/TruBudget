@@ -3,7 +3,7 @@ import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain/Client.h";
 import { Event } from "../multichain/event";
-import { isAllowedToSee, publish } from "./Permission";
+import { isAllowedToGrant, isAllowedToSee, publish } from "./Permission";
 import { get, User } from "./User";
 
 import * as Group from "../group";
@@ -21,7 +21,7 @@ export type PermissionsGranter = (intent: Intent, grantee: string) => Promise<vo
 export async function list(
   actingUser: User,
   { getAllPermissions }: { getAllPermissions: PermissionsLister },
-) {
+): Promise<Permission.Permissions> {
   const allPermissions = await getAllPermissions();
   if (!isAllowedToSee(allPermissions, actingUser)) {
     return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to list Permissions.`));
@@ -35,17 +35,16 @@ export async function grant(
   intent: Intent,
   {
     getAllPermissions,
-    // tslint:disable-next-line:no-shadowed-variable
     grantPermission,
   }: { getAllPermissions: PermissionsLister; grantPermission: PermissionsGranter },
-) {
+): Promise<void> {
   const allPermissions = await getAllPermissions();
   const permissionsForIntent: People = allPermissions[intent] || [];
   if (permissionsForIntent.includes(grantee)) {
-    logger.debug({ params: { intent } }, "User is already permitted to execute given intent");
+    logger.debug(`${grantee} is already permitted to execute given intent.`);
     return;
   }
-  if (!Permission.isAllowedToGrant(allPermissions, actingUser)) {
+  if (!isAllowedToGrant(allPermissions, actingUser)) {
     return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to grant Permissions.`));
   }
   await grantPermission(intent, grantee);
@@ -95,7 +94,9 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
   }
 };
 
-export const getPermissions = async (
+// old implementations
+
+export const oldGetPermissions = async (
   multichain: MultichainClient,
 ): Promise<AllowedUserGroupsByIntent> => {
   try {
@@ -117,13 +118,13 @@ export const getPermissions = async (
   }
 };
 
-export const grantPermission = async (
+export const oldGrantPermission = async (
   multichain: MultichainClient,
   grantee: string,
   intent: Intent,
 ): Promise<void> => {
   await ensureStreamExists(multichain);
-  const permissions = await getPermissions(multichain);
+  const permissions = await oldGetPermissions(multichain);
   const permissionsForIntent: People = permissions[intent] || [];
   if (permissionsForIntent.includes(grantee)) {
     logger.debug({ params: { intent } }, "User is already permitted to execute given intent");
@@ -140,7 +141,6 @@ export const grantPermission = async (
   };
   await publish(multichain, globalstreamName, args);
 };
-
 export const revokePermission = async (
   multichain: MultichainClient,
   identity: string,
@@ -148,7 +148,7 @@ export const revokePermission = async (
 ): Promise<void> => {
   let permissions;
   try {
-    permissions = await getPermissions(multichain);
+    permissions = await oldGetPermissions(multichain);
   } catch (err) {
     if (err.kind === "NotFound") {
       logger.debug("No permission set, nothing to revoke");

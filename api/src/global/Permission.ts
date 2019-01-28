@@ -12,7 +12,6 @@ export function isAllowedToSee(permissions: Permissions, actingUser: User): bool
   const hasPermission = userIntents.includes(allowedIntent);
   return hasPermission;
 }
-
 export function isAllowedToGrant(permissions: Permissions, actingUser: User): boolean {
   const allowedIntents: Intent[] = ["global.grantPermission"];
   const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
