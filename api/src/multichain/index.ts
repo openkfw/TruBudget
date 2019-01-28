@@ -7,14 +7,17 @@ import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
 import { asMapKey } from "./Client";
-import { MultichainClient } from "./Client.h";
+import { MultichainClient, RpcMultichainClient } from "./Client.h";
+import { ConnToken as ConnectionToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import { ConnectionSettings } from "./RpcClient.h";
 import * as MultichainWorkflowitem from "./Workflowitem";
 
 export * from "./event";
 export * from "./Workflowitem";
 export * from "./SubprojectEvents";
+export type ConnToken = ConnectionToken;
 
 const projectSelfKey = "self";
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
@@ -61,8 +64,15 @@ interface NotificationResourceDescription {
   type: ResourceType;
 }
 
+export function init(rpcSettings: ConnectionSettings): ConnectionToken {
+  const multichainClient = new RpcMultichainClient(rpcSettings);
+  return {
+    multichainClient,
+  };
+}
+
 export async function writeProjectAssignedToChain(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   projectId: string,
   assignee: string,
@@ -82,7 +92,7 @@ export async function writeProjectAssignedToChain(
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-  return multichain
+  return conn.multichainClient
     .getRpcClient()
     .invoke("publish", streamName, streamItemKey, streamItem)
     .then(() => event);
@@ -97,7 +107,7 @@ export interface ProjectUpdate {
 }
 
 export async function createProjectOnChain(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   project: Project,
 ): Promise<void> {
@@ -123,19 +133,19 @@ export async function createProjectOnChain(
 
   const publishEvent = () => {
     logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-    return multichain
+    return conn.multichainClient
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)
       .then(() => event);
   };
 
-  return multichain
+  return conn.multichainClient
     .getOrCreateStream({ kind: "project", name: streamName })
     .then(() => publishEvent());
 }
 
 export async function updateProject(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   projectId: string,
   update: ProjectUpdate,
@@ -156,14 +166,14 @@ export async function updateProject(
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-  return multichain
+  return conn.multichainClient
     .getRpcClient()
     .invoke("publish", streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 
-export async function getProject(multichain: MultichainClient, id: string): Promise<Project> {
-  const streamItems = await fetchStreamItems(multichain, id);
+export async function getProject(conn: ConnectionToken, id: string): Promise<Project> {
+  const streamItems = await fetchStreamItems(conn.multichainClient, id);
   let project: Project | undefined;
 
   for (const item of streamItems) {
@@ -197,8 +207,8 @@ export async function getProject(multichain: MultichainClient, id: string): Prom
   return project;
 }
 
-export async function getProjectList(multichain: MultichainClient): Promise<Project[]> {
-  const streamItems = await fetchStreamItems(multichain);
+export async function getProjectList(conn: ConnectionToken): Promise<Project[]> {
+  const streamItems = await fetchStreamItems(conn.multichainClient);
   const projectsMap = new Map<string, Project>();
 
   for (const item of streamItems) {
@@ -228,15 +238,15 @@ export async function getProjectList(multichain: MultichainClient): Promise<Proj
 }
 
 export async function getProjectPermissionList(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   projectId: string,
 ): Promise<Permissions> {
-  const project = await getProject(multichain, projectId);
+  const project = await getProject(conn, projectId);
   return project.permissions;
 }
 
 export async function grantProjectPermission(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   projectId: string,
   grantee: string,
@@ -258,15 +268,15 @@ export async function grantProjectPermission(
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${grantIntent} to ${streamName}/${streamItemKey}`);
-  return multichain
+  return conn.multichainClient
     .getRpcClient()
     .invoke("publish", streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 
-export async function getGlobalPermissionList(multichain: MultichainClient): Promise<Permissions> {
+export async function getGlobalPermissionList(conn: ConnectionToken): Promise<Permissions> {
   try {
-    const streamItems = await multichain.v2_readStreamItems("global", globalSelfKey, 1);
+    const streamItems = await conn.multichainClient.v2_readStreamItems("global", globalSelfKey, 1);
     if (streamItems.length < 1) {
       return {};
     }
@@ -285,12 +295,12 @@ export async function getGlobalPermissionList(multichain: MultichainClient): Pro
 }
 
 export async function grantGlobalPermission(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   grantee: string,
   intent: Intent,
 ): Promise<void> {
-  const permissions = await getGlobalPermissionList(multichain);
+  const permissions = await getGlobalPermissionList(conn);
   const permissionsForIntent: People = permissions[intent] || [];
   permissionsForIntent.push(grantee);
   permissions[intent] = permissionsForIntent;
@@ -313,7 +323,7 @@ export async function grantGlobalPermission(
   logger.debug(`Publishing ${grantintent} to ${streamName}/${streamItemKey}`);
 
   const publishEvent = () => {
-    return multichain
+    return conn.multichainClient
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)
       .then(() => event);
@@ -322,7 +332,7 @@ export async function grantGlobalPermission(
   return publishEvent().catch(err => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
-      return multichain
+      return conn.multichainClient
         .getOrCreateStream({ kind: "global", name: streamName })
         .then(() => publishEvent());
     } else {
@@ -332,12 +342,12 @@ export async function grantGlobalPermission(
 }
 
 export async function revokeGlobalPermission(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   recipient: string,
   intent: Intent,
 ): Promise<void> {
-  const permissions = await getGlobalPermissionList(multichain);
+  const permissions = await getGlobalPermissionList(conn);
   if (permissions === {}) {
     return;
   }
@@ -364,7 +374,7 @@ export async function revokeGlobalPermission(
   logger.debug(`Publishing ${revokeIntent} to ${streamName}/${streamItemKey}`);
 
   const publishEvent = () => {
-    return multichain
+    return conn.multichainClient
       .getRpcClient()
       .invoke("publish", streamName, streamItemKey, streamItem)
       .then(() => event);
@@ -381,22 +391,22 @@ export async function revokeGlobalPermission(
 }
 
 async function fetchStreamItems(
-  multichain: MultichainClient,
+  multichainClient: MultichainClient,
   projectId?: string,
 ): Promise<Liststreamkeyitems.Item[]> {
   if (projectId !== undefined) {
-    return multichain.v2_readStreamItems(projectId, projectSelfKey);
+    return multichainClient.v2_readStreamItems(projectId, projectSelfKey);
   } else {
     // This fetches all the streams, keeping only project streams; then fetches the
     // project-stream's self key, which includes the actual project data, as stream
     // items.
-    const streams = await multichain.streams();
+    const streams = await multichainClient.streams();
     const streamItemLists = await Promise.all(
       streams
         .filter(stream => stream.details.kind === "project")
         .map(stream => stream.name)
         .map(streamName =>
-          multichain
+          multichainClient
             .v2_readStreamItems(streamName, projectSelfKey)
             .then(items =>
               items.map(item => {
@@ -501,7 +511,7 @@ function applyRevokePermission(event: Event, project: Project): true | undefined
 }
 
 export async function issueNotification(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   message: Event,
   recipient: string,
@@ -536,7 +546,7 @@ export async function issueNotification(
 
   const publishEvent = () => {
     logger.debug(`Publishing ${intent} to ${streamName}/${recipient}`);
-    return multichain.getRpcClient().invoke("publish", streamName, recipient, {
+    return conn.multichainClient.getRpcClient().invoke("publish", streamName, recipient, {
       json: event,
     });
   };
@@ -547,7 +557,7 @@ export async function issueNotification(
         `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
       );
       // The stream does not exist yet. Create the stream and try again:
-      return multichain
+      return conn.multichainClient
         .getOrCreateStream({ kind: "notifications", name: streamName })
         .then(() => publishEvent());
     } else {
@@ -599,13 +609,13 @@ export function generateResources(
 }
 
 export async function getWorkflowitemList(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   projectId: string,
   subprojectId: string,
 ): Promise<MultichainWorkflowitem.Workflowitem[]> {
   const queryKey = workflowitemsGroupKey(subprojectId);
 
-  const streamItems = await multichain.v2_readStreamItems(projectId, queryKey);
+  const streamItems = await conn.multichainClient.v2_readStreamItems(projectId, queryKey);
   const workflowitemsMap = new Map<string, MultichainWorkflowitem.Workflowitem>();
 
   for (const item of streamItems) {
@@ -656,7 +666,7 @@ export async function getWorkflowitemList(
 }
 
 export async function getWorkflowitemOrdering(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   projectId: string,
   subprojectId: string,
 ): Promise<string[]> {
@@ -665,7 +675,7 @@ export async function getWorkflowitemOrdering(
   const expectedDataVersion = 1;
   const nValues = 1;
 
-  const streamItems = await multichain
+  const streamItems = await conn.multichainClient
     .v2_readStreamItems(projectId, workflowitemOrderingKey(subprojectId), nValues)
     .then(items => {
       if (items.length > 0) return items;
@@ -690,7 +700,7 @@ export async function getWorkflowitemOrdering(
 }
 
 export function closeWorkflowitem(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   projectId: string,
   subprojectId: string,
@@ -712,14 +722,14 @@ export function closeWorkflowitem(
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-  return multichain
+  return conn.multichainClient
     .getRpcClient()
     .invoke("publish", streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 
 export function updateWorkflowitem(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   projectId: string,
   subprojectId: string,
@@ -742,14 +752,14 @@ export function updateWorkflowitem(
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-  return multichain
+  return conn.multichainClient
     .getRpcClient()
     .invoke("publish", streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 
 export function assignWorkflowitem(
-  multichain: MultichainClient,
+  conn: ConnectionToken,
   issuer: Issuer,
   newAssignee: string,
   projectId: string,
@@ -774,7 +784,7 @@ export function assignWorkflowitem(
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-  return multichain
+  return conn.multichainClient
     .getRpcClient()
     .invoke("publish", streamName, streamItemKey, streamItem)
     .then(() => event);

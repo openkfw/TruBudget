@@ -3,7 +3,7 @@ import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import { asMapKey } from "./Client";
-import { MultichainClient } from "./Client.h";
+import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
 
 export * from "./event";
@@ -36,11 +36,8 @@ interface HistoryEvent {
   };
 }
 
-export async function getSubprojectList(
-  multichain: MultichainClient,
-  projectId: string,
-): Promise<Subproject[]> {
-  const streamItems = await multichain.v2_readStreamItems(projectId, "subprojects");
+export async function getSubprojectList(conn: ConnToken, projectId: string): Promise<Subproject[]> {
+  const streamItems = await conn.multichainClient.v2_readStreamItems(projectId, "subprojects");
   const subprojectsByKey = new Map<string, Subproject>();
 
   for (const item of streamItems) {

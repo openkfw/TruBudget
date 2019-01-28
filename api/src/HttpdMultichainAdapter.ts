@@ -22,16 +22,13 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-export function getProject(multichainClient: MultichainClient): HTTP.ProjectReader {
+export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const project: Project.ScrubbedProject = await Project.getOne(actingUser, projectId, {
       getProject: async id => {
-        const multichainProject: Multichain.Project = await Multichain.getProject(
-          multichainClient,
-          id,
-        );
+        const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
         return Project.validateProject(multichainProjectToProjectProject(multichainProject));
       },
     });
@@ -41,10 +38,7 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
       projectId,
       {
         getAllSubprojects: async id => {
-          const list: Multichain.Subproject[] = await Multichain.getSubprojectList(
-            multichainClient,
-            id,
-          );
+          const list: Multichain.Subproject[] = await Multichain.getSubprojectList(conn, id);
           return list.map(multichainSubproject => {
             return Subproject.validateSubproject(
               multichainSubprojectToSubprojectSubproject(multichainSubproject),
@@ -104,22 +98,19 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
 }
 
 export function getProjectPermissionList(
-  multichainClient: MultichainClient,
+  conn: Multichain.ConnToken,
 ): HTTP.ProjectPermissionsReader {
   return async (token: AuthToken, projectId: string) => {
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const reader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(
-        multichainClient,
-        id,
-      );
+      const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
       return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
     const permissionsReader: Project.PermissionsLister = async id => {
       const permissions: Multichain.Permissions = await Multichain.getProjectPermissionList(
-        multichainClient,
+        conn,
         id,
       );
       return permissions;
@@ -132,29 +123,18 @@ export function getProjectPermissionList(
   };
 }
 
-export function grantProjectPermission(
-  multichainClient: MultichainClient,
-): HTTP.ProjectPermissionsGranter {
+export function grantProjectPermission(conn: Multichain.ConnToken): HTTP.ProjectPermissionsGranter {
   return async (token: AuthToken, projectId: string, grantee: string, intent: Intent) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const reader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(
-        multichainClient,
-        id,
-      );
+      const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
       return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
     const granter: Project.Granter = async (id, selectedGrantee, selectedIntent) => {
-      await Multichain.grantProjectPermission(
-        multichainClient,
-        issuer,
-        id,
-        selectedGrantee,
-        selectedIntent,
-      );
+      await Multichain.grantProjectPermission(conn, issuer, id, selectedGrantee, selectedIntent);
     };
 
     return await Project.grantPermission(actingUser, projectId, grantee, intent, {
@@ -164,12 +144,12 @@ export function grantProjectPermission(
   };
 }
 
-export function getProjectList(multichainClient: MultichainClient): HTTP.AllProjectsReader {
+export function getProjectList(conn: Multichain.ConnToken): HTTP.AllProjectsReader {
   return async (token: AuthToken) => {
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const lister: Project.ListReader = async () => {
-      const projectList: Multichain.Project[] = await Multichain.getProjectList(multichainClient);
+      const projectList: Multichain.Project[] = await Multichain.getProjectList(conn);
       return projectList.map(multichainProject => {
         return Project.validateProject(multichainProjectToProjectProject(multichainProject));
       });
@@ -203,23 +183,18 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
   };
 }
 
-export function createProject(multichainClient: MultichainClient): HTTP.ProjectCreator {
+export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
   return async (token: AuthToken, payload: HTTP.CreateProjectPayload) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const assigningUser: Project.User = { id: token.userId, groups: token.groups };
 
     const permissionLister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
-        multichainClient,
-      );
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 
     const projectReader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(
-        multichainClient,
-        id,
-      );
+      const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
       return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
@@ -228,7 +203,7 @@ export function createProject(multichainClient: MultichainClient): HTTP.ProjectC
 
       const multichainProject: Multichain.Project = { ...project, log: [] };
 
-      Multichain.createProjectOnChain(multichainClient, issuer, multichainProject);
+      Multichain.createProjectOnChain(conn, issuer, multichainProject);
     };
 
     const input: Project.CreateProjectInput = payload;
@@ -241,27 +216,20 @@ export function createProject(multichainClient: MultichainClient): HTTP.ProjectC
   };
 }
 
-export function assignProject(multichainClient: MultichainClient): HTTP.ProjectAssigner {
+export function assignProject(conn: Multichain.ConnToken): HTTP.ProjectAssigner {
   return async (token: AuthToken, projectId: string, assignee: string) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const multichainAssigner: Project.Assigner = (id, selectedAssignee) =>
-      Multichain.writeProjectAssignedToChain(multichainClient, issuer, id, selectedAssignee);
+      Multichain.writeProjectAssignedToChain(conn, issuer, id, selectedAssignee);
 
     const multichainNotifier: Project.AssignmentNotifier = (project, user) => {
       const notificationResource = Multichain.generateResources(project.id);
       const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(
-          multichainClient,
-          issuer,
-          message,
-          recipient,
-          notificationResource,
-        );
+        Multichain.issueNotification(conn, issuer, message, recipient, notificationResource);
 
-      const resolver: Notification.GroupResolver = groupId =>
-        Group.getUsers(multichainClient, groupId);
+      const resolver: Notification.GroupResolver = groupId => Group.getUsers(conn, groupId);
 
       const assignmentNotification: Notification.ProjectAssignment = {
         projectId: project.id,
@@ -276,10 +244,7 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
     };
 
     const reader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(
-        multichainClient,
-        id,
-      );
+      const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
 
       return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
@@ -292,13 +257,13 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
   };
 }
 
-export function updateProject(multichainClient: MultichainClient): HTTP.ProjectUpdater {
+export function updateProject(conn: Multichain.ConnToken): HTTP.ProjectUpdater {
   return async (token: AuthToken, projectId: string, update: object) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
     const reader: Project.Reader = async id => {
-      const multichainProject = await Multichain.getProject(multichainClient, id);
+      const multichainProject = await Multichain.getProject(conn, id);
       return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
@@ -310,22 +275,15 @@ export function updateProject(multichainClient: MultichainClient): HTTP.ProjectU
       if (data.currency !== undefined) multichainUpdate.currency = data.currency;
       if (data.thumbnail !== undefined) multichainUpdate.thumbnail = data.thumbnail;
 
-      await Multichain.updateProject(multichainClient, issuer, id, multichainUpdate);
+      await Multichain.updateProject(conn, issuer, id, multichainUpdate);
     };
 
     const multichainNotifier: Project.UpdateNotifier = (updatedProject, user, projectUpdate) => {
       const notificationResource = Multichain.generateResources(updatedProject.id);
       const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(
-          multichainClient,
-          issuer,
-          message,
-          recipient,
-          notificationResource,
-        );
+        Multichain.issueNotification(conn, issuer, message, recipient, notificationResource);
 
-      const resolver: Notification.GroupResolver = groupId =>
-        Group.getUsers(multichainClient, groupId);
+      const resolver: Notification.GroupResolver = groupId => Group.getUsers(conn, groupId);
 
       const updateNotification: Notification.ProjectUpdate = {
         projectId: updatedProject.id,
@@ -372,9 +330,7 @@ function multichainProjectToProjectProject(multichainProject: Multichain.Project
   };
 }
 
-export function getWorkflowitemList(
-  multichainClient: MultichainClient,
-): HTTP.AllWorkflowitemsReader {
+export function getWorkflowitemList(conn: Multichain.ConnToken): HTTP.AllWorkflowitemsReader {
   return async (token: AuthToken, projectId: string, subprojectId: string) => {
     const user: Workflowitem.User = { id: token.userId, groups: token.groups };
 
@@ -382,7 +338,7 @@ export function getWorkflowitemList(
     // If items are rearranged by user, the call returns an array of IDs in order
     const orderingReader: Workflowitem.OrderingReader = async () => {
       const ordering: string[] = await Multichain.getWorkflowitemOrdering(
-        multichainClient,
+        conn,
         projectId,
         subprojectId,
       );
@@ -392,7 +348,7 @@ export function getWorkflowitemList(
     // Get all unfiltered workflowitems from the blockchain
     const lister: Workflowitem.ListReader = async () => {
       const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
-        multichainClient,
+        conn,
         projectId,
         subprojectId,
       );
@@ -428,7 +384,8 @@ export function getWorkflowitemList(
     }));
   };
 }
-export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemCloser {
+
+export function closeWorkflowitem(conn: Multichain.ConnToken): HTTP.WorkflowitemCloser {
   return async (
     token: AuthToken,
     projectId: string,
@@ -442,7 +399,7 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
     // If items are rearranged by user, the call returns an array of IDs in order
     const multichainOrderingReader: Workflowitem.OrderingReader = async () => {
       const ordering: string[] = await Multichain.getWorkflowitemOrdering(
-        multichainClient,
+        conn,
         projectId,
         subprojectId,
       );
@@ -452,14 +409,14 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
     // Get all unfiltered workflowitems from the blockchain
     const multichainLister: Workflowitem.ListReader = async () => {
       const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
-        multichainClient,
+        conn,
         projectId,
         subprojectId,
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
     const multichainCloser: Workflowitem.Closer = async workflowitem => {
-      Multichain.closeWorkflowitem(multichainClient, issuer, projectId, subprojectId, workflowitem);
+      Multichain.closeWorkflowitem(conn, issuer, projectId, subprojectId, workflowitem);
     };
 
     const multichainNotifier: Workflowitem.CloseNotifier = workflowitem => {
@@ -470,16 +427,9 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
       );
 
       const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(
-          multichainClient,
-          issuer,
-          message,
-          recipient,
-          notificationResource,
-        );
+        Multichain.issueNotification(conn, issuer, message, recipient, notificationResource);
 
-      const resolver: Notification.GroupResolver = groupId =>
-        Group.getUsers(multichainClient, groupId);
+      const resolver: Notification.GroupResolver = groupId => Group.getUsers(conn, groupId);
 
       const closeNotification: Notification.WorkflowitemClosing = {
         workflowitemId: workflowitem.id,
@@ -521,14 +471,12 @@ function multichainSubprojectToSubprojectSubproject(
   };
 }
 
-export function getPermissionList(multichainClient: MultichainClient): HTTP.AllPermissionsReader {
+export function getPermissionList(conn: Multichain.ConnToken): HTTP.AllPermissionsReader {
   return async (token: AuthToken) => {
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
-        multichainClient,
-      );
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 
@@ -536,15 +484,13 @@ export function getPermissionList(multichainClient: MultichainClient): HTTP.AllP
   };
 }
 
-export function grantPermission(multichainClient: MultichainClient): HTTP.GlobalPermissionGranter {
+export function grantPermission(conn: Multichain.ConnToken): HTTP.GlobalPermissionGranter {
   return async (token: AuthToken, identity: string, intent: Intent) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
-        multichainClient,
-      );
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 
@@ -552,12 +498,7 @@ export function grantPermission(multichainClient: MultichainClient): HTTP.Global
       grantIntent: Intent,
       grantIdentity: string,
     ) => {
-      return await Multichain.grantGlobalPermission(
-        multichainClient,
-        issuer,
-        grantIdentity,
-        grantIntent,
-      );
+      return await Multichain.grantGlobalPermission(conn, issuer, grantIdentity, grantIntent);
     };
     return Permission.grant(user, identity, intent, {
       getAllPermissions: lister,
@@ -566,17 +507,13 @@ export function grantPermission(multichainClient: MultichainClient): HTTP.Global
   };
 }
 
-export function grantAllPermissions(
-  multichainClient: MultichainClient,
-): HTTP.AllPermissionsGranter {
+export function grantAllPermissions(conn: Multichain.ConnToken): HTTP.AllPermissionsGranter {
   return async (token: AuthToken, grantee: string) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
-        multichainClient,
-      );
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 
@@ -584,12 +521,7 @@ export function grantAllPermissions(
       grantIntent: Intent,
       grantGrantee: string,
     ) => {
-      return await Multichain.grantGlobalPermission(
-        multichainClient,
-        issuer,
-        grantGrantee,
-        grantIntent,
-      );
+      return await Multichain.grantGlobalPermission(conn, issuer, grantGrantee, grantIntent);
     };
     return Permission.grantAll(user, grantee, {
       getAllPermissions: lister,
@@ -598,7 +530,7 @@ export function grantAllPermissions(
   };
 }
 
-export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemUpdater {
+export function updateWorkflowitem(conn: Multichain.ConnToken): HTTP.WorkflowitemUpdater {
   return async (
     token: AuthToken,
     projectId: string,
@@ -612,21 +544,14 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
     // Get all unfiltered workflowitems from the blockchain
     const multichainLister: Workflowitem.ListReader = async () => {
       const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
-        multichainClient,
+        conn,
         projectId,
         subprojectId,
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
     const multichainUpdater: Workflowitem.Updater = async (workflowitem, data) => {
-      Multichain.updateWorkflowitem(
-        multichainClient,
-        issuer,
-        projectId,
-        subprojectId,
-        workflowitem,
-        data,
-      );
+      Multichain.updateWorkflowitem(conn, issuer, projectId, subprojectId, workflowitem, data);
     };
 
     const multichainNotifier: Workflowitem.UpdateNotifier = (workflowitem, updatedData) => {
@@ -637,16 +562,9 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
       );
 
       const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(
-          multichainClient,
-          issuer,
-          message,
-          recipient,
-          notificationResource,
-        );
+        Multichain.issueNotification(conn, issuer, message, recipient, notificationResource);
 
-      const resolver: Notification.GroupResolver = groupId =>
-        Group.getUsers(multichainClient, groupId);
+      const resolver: Notification.GroupResolver = groupId => Group.getUsers(conn, groupId);
 
       const updateNotification: Notification.WorkflowitemUpdate = {
         workflowitemId: workflowitem.id,
@@ -669,7 +587,7 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
   };
 }
 
-export function assignWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemUpdater {
+export function assignWorkflowitem(conn: Multichain.ConnToken): HTTP.WorkflowitemUpdater {
   return async (
     token: AuthToken,
     projectId: string,
@@ -683,21 +601,14 @@ export function assignWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
     // Get all unfiltered workflowitems from the blockchain
     const multichainLister: Workflowitem.ListReader = async () => {
       const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
-        multichainClient,
+        conn,
         projectId,
         subprojectId,
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
     const multichainAssigner: Workflowitem.Assigner = async (assignee, workflowitem) =>
-      Multichain.assignWorkflowitem(
-        multichainClient,
-        issuer,
-        assignee,
-        projectId,
-        subprojectId,
-        workflowitem,
-      );
+      Multichain.assignWorkflowitem(conn, issuer, assignee, projectId, subprojectId, workflowitem);
 
     const multichainNotifier: Workflowitem.AssignNotifier = async (assignee, workflowitemID) => {
       const notificationResource = Multichain.generateResources(
@@ -707,16 +618,9 @@ export function assignWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
       );
 
       const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(
-          multichainClient,
-          issuer,
-          message,
-          recipient,
-          notificationResource,
-        );
+        Multichain.issueNotification(conn, issuer, message, recipient, notificationResource);
 
-      const resolver: Notification.GroupResolver = groupId =>
-        Group.getUsers(multichainClient, groupId);
+      const resolver: Notification.GroupResolver = groupId => Group.getUsers(conn, groupId);
 
       const assignNotification: Notification.WorkflowitemAssignment = {
         workflowitemId: workflowitemID,
@@ -738,15 +642,13 @@ export function assignWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
   };
 }
 
-export function revokePermission(multichainClient: MultichainClient): HTTP.GlobalPermissionRevoker {
+export function revokePermission(conn: Multichain.ConnToken): HTTP.GlobalPermissionRevoker {
   return async (token: AuthToken, recipient: string, intent: Intent) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
-        multichainClient,
-      );
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 
@@ -754,12 +656,7 @@ export function revokePermission(multichainClient: MultichainClient): HTTP.Globa
       revokeIntent: Intent,
       revokeRecipient: string,
     ) => {
-      return await Multichain.revokeGlobalPermission(
-        multichainClient,
-        issuer,
-        revokeRecipient,
-        revokeIntent,
-      );
+      return await Multichain.revokeGlobalPermission(conn, issuer, revokeRecipient, revokeIntent);
     };
     return Permission.revoke(user, recipient, intent, {
       getAllPermissions: lister,

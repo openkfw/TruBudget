@@ -3,15 +3,16 @@ import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { MultichainClient } from "./Client.h";
+import { ConnToken } from "./conn";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 
 //
 // public
 //
 
-export function getUsers(multichain: MultichainClient, groupId: string): Promise<string[]> {
+export function getUsers(conn: ConnToken, groupId: string): Promise<string[]> {
   if (isEmpty(groupId)) return Promise.resolve([]);
-  return getGroup(multichain, groupId)
+  return getGroup(conn.multichainClient, groupId)
     .then(group => group.users)
     .catch(_ => []);
 }
