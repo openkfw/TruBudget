@@ -11,13 +11,18 @@
  */
 import { getAllowedIntents } from "./authz";
 import { AuthToken } from "./authz/token";
+import * as Permission from "./global";
 import * as HTTP from "./httpd";
 import * as Multichain from "./multichain";
 import { MultichainClient } from "./multichain/Client.h";
 import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
-
+/**
+ *
+ * Project
+ *
+ */
 export function getProject(multichainClient: MultichainClient): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
     const user: Project.User = { id: token.userId, groups: token.groups };
@@ -219,5 +224,25 @@ function multichainProjectToProjectProject(multichainProject: Multichain.Project
         },
       };
     }),
+  };
+}
+
+/**
+ *
+ * Permissions
+ *
+ */
+export function getPermissionList(multichainClient: MultichainClient): HTTP.AllPermissionsReader {
+  return async (token: AuthToken) => {
+    const user: Permission.User = { id: token.userId, groups: token.groups };
+
+    const lister: Permission.ListReader = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    return Permission.list(user, { getAllPermissions: lister });
   };
 }

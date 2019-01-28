@@ -15,6 +15,8 @@ export * from "./event";
 
 const projectSelfKey = "self";
 
+export type Permissions = { [key in Intent]?: string[] };
+
 export interface Issuer {
   name: string;
   address: string;
@@ -197,6 +199,26 @@ export async function getProjectList(multichain: MultichainClient): Promise<Proj
   }
 
   return [...projectsMap.values()];
+}
+
+export async function getPermissionList(multichain: MultichainClient): Promise<Permissions> {
+  try {
+    const streamItems = await multichain.v2_readStreamItems("global", "self", 1);
+    if (streamItems.length < 1) {
+      return {};
+    }
+    const event: Event = streamItems[0].data.json;
+    return event.data.permissions;
+  } catch (err) {
+    if (err.kind === "NotFound") {
+      // Happens at startup, no need to worry...
+      logger.debug("Global permissions not found. Happens at startup.");
+      return {};
+    } else {
+      logger.error({ error: err }, "Error while retrieving global permissions");
+      throw err;
+    }
+  }
 }
 
 async function fetchStreamItems(

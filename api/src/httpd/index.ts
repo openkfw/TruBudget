@@ -5,6 +5,8 @@ export type ProjectReader = (token: AuthToken, id: string) => Promise<Project>;
 
 export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
 
+export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
+
 export type ProjectAssigner = (
   token: AuthToken,
   projectId: string,
@@ -36,3 +38,5 @@ export interface Project {
     thumbnail: string;
   };
 }
+
+export type Permissions = { [key in Intent]?: string[] };
