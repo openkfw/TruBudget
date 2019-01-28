@@ -10,6 +10,7 @@
  *
  */
 import { getAllowedIntents } from "./authz";
+import Intent from "./authz/intents";
 import { AuthToken } from "./authz/token";
 import * as Permission from "./global";
 import * as HTTP from "./httpd";
@@ -244,5 +245,32 @@ export function getPermissionList(multichainClient: MultichainClient): HTTP.AllP
     };
 
     return Permission.list(user, { getAllPermissions: lister });
+  };
+}
+
+export function grantPermission(multichainClient: MultichainClient): HTTP.GlobalPermissionGranter {
+  return async (token: AuthToken, identity: string, intent: Intent) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const user: Permission.User = { id: token.userId, groups: token.groups };
+
+    const lister: Permission.ListReader = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    const granter: Permission.Granter = async (grantIntent: Intent, grantIdentity: string) => {
+      return await Multichain.grantGlobalPermission(
+        multichainClient,
+        issuer,
+        grantIdentity,
+        grantIntent,
+      );
+    };
+    return Permission.grant(user, identity, intent, {
+      getAllPermissions: lister,
+      grantPermission: granter,
+    });
   };
 }

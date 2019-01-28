@@ -1,9 +1,9 @@
 import { FastifyInstance } from "fastify";
 
-import { AllProjectsReader, ProjectAssigner } from ".";
-import { ProjectUpdater } from ".";
+import { AllProjectsReader, ProjectAssigner, ProjectUpdater } from ".";
+import { AllPermissionsReader, GlobalPermissionGranter } from ".";
+import Intent from "../authz/intents";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
-import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { revokeGlobalPermission } from "../global/controller/revokePermission";
 import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
@@ -58,7 +58,6 @@ import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.
 import { getWorkflowitemList } from "../workflowitem/controller/list";
 import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
-import { AllPermissionsReader } from "./index";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
 
@@ -260,11 +259,13 @@ export const registerRoutes = (
     assignProject,
     updateProject,
     listGlobalPermissions,
+    grantGlobalPermission,
   }: {
     listProjects: AllProjectsReader;
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
     listGlobalPermissions: AllPermissionsReader;
+    grantGlobalPermission: GlobalPermissionGranter;
   },
 ) => {
   // ------------------------------------------------------------
@@ -384,7 +385,22 @@ export const registerRoutes = (
     `${urlPrefix}/global.grantPermission`,
     getSchema(server, "globalGrantPermission"),
     (request, reply) => {
-      grantGlobalPermission(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+
+      const intent: Intent = request.body.data.intent;
+      const identity: string = request.body.data.identity;
+
+      return grantGlobalPermission(token, identity, intent)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
