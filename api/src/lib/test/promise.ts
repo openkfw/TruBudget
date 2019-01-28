@@ -21,10 +21,6 @@ export async function assertIsRejectedWith(promise: Promise<any>): Promise<void>
     console.log(result);
   } catch (error) {
     // assert.instanceOf(error, errorType);
-<<<<<<< HEAD
-=======
-    console.log(error);
->>>>>>> ecdf4b352f4da0f4da2fb58ab3632634134ad2a8
     return;
   }
   assert.fail(result, undefined, "should have failed");
