@@ -1,12 +1,8 @@
 import Joi = require("joi");
 
 import { getAllowedIntents, hasIntersection } from "../authz";
-import { getUserAndGroups } from "../authz";
-import { onlyAllowedData } from "../authz/history";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent } from "../authz/types";
-import { isNotEmpty } from "../lib/emptyChecks";
-import { Event } from "../multichain/event";
 import { userIdentities } from "../project";
 import { User } from "../project/User";
 
@@ -31,6 +27,7 @@ export interface Document {
   id: string;
   hash: string;
 }
+
 export interface Workflowitem {
   id: string;
   creationUnixTs: string;
@@ -47,7 +44,8 @@ export interface Workflowitem {
   permissions: AllowedUserGroupsByIntent;
   log: HistoryEvent[];
 }
-export type ScrubbedWorkflowItem = Workflowitem | RedactedWorkflowitem;
+
+export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
 
 export interface RedactedWorkflowitem {
   id: string;
@@ -77,9 +75,13 @@ const schema = Joi.object().keys({
   billingDate: Joi.string(),
   amount: Joi.string(),
   currency: Joi.string(),
-  amountType: Joi.string().valid("N/A", "disbursed", "allocated"),
+  amountType: Joi.string()
+    .valid("N/A", "disbursed", "allocated")
+    .required(),
   description: Joi.string().allow(""),
-  status: Joi.string().valid("open", "closed"),
+  status: Joi.string()
+    .valid("open", "closed")
+    .required(),
   assignee: Joi.string(),
   documents: Joi.array().items(
     Joi.object().keys({
@@ -90,7 +92,8 @@ const schema = Joi.object().keys({
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
-  log: Joi.any(),
+  // TODO find better values for log
+  log: Joi.array().items(Joi.any()),
 });
 
 export function validateWorkflowitem(input: any): Workflowitem {
@@ -102,14 +105,14 @@ export function validateWorkflowitem(input: any): Workflowitem {
   }
 }
 
-export function redactWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowItem {
+export function scrubWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowitem {
   if (!isWorkflowitemVisibleTo(workflowitem, user)) {
     const scrubbedWorkflowitem = redactWorkflowitemData(workflowitem);
     return scrubbedWorkflowitem;
   }
   return workflowitem;
 }
-export function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
+function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
   const allowedIntent: Intent = "workflowitem.view";
   const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
 
@@ -117,10 +120,7 @@ export function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User):
   return isAllowedToSeeData;
 }
 
-export function sortWorkflowitems(
-  workflowitems: Workflowitem[],
-  ordering: string[],
-): Workflowitem[] {
+function sortWorkflowitems(workflowitems: Workflowitem[], ordering: string[]): Workflowitem[] {
   const indexedItems = workflowitems.map((item, index) => {
     // tslint:disable-next-line:no-string-literal
     item["_index"] = index;
@@ -175,24 +175,24 @@ function byOrderingCriteria(a: Workflowitem, b: Workflowitem, ordering: string[]
   }
 }
 
-function isClosed(item: Workflowitem): boolean {
+function isClosed(item: ScrubbedWorkflowitem): boolean {
   return item.status === "closed";
 }
 
-function isRedacted(item: Workflowitem): boolean {
+function isRedacted(item: ScrubbedWorkflowitem): boolean {
   return item.displayName === null;
 }
 
-function closedAt(item: Workflowitem): string {
+function closedAt(item: Workflowitem): Promise<string> {
   const event = item.log.find(e => e.intent === "workflowitem.close");
   if (event === undefined) {
     const message = "Item is not closed.";
-    throw Error(`${message}: ${JSON.stringify(event)}`);
+    Promise.reject(Error(`${message}: ${JSON.stringify(event)}`));
   }
-  return event.createdAt;
+  return event ? Promise.resolve(event.createdAt) : Promise.reject(Error(`Event is undefined`));
 }
 
-function byCreationTime(a: Workflowitem, b: Workflowitem): -1 | 1 | 0 {
+function byCreationTime(a: ScrubbedWorkflowitem, b: ScrubbedWorkflowitem): -1 | 1 | 0 {
   const ctimeA = a.creationUnixTs;
   const ctimeB = b.creationUnixTs;
   if (ctimeA < ctimeB) {
@@ -205,12 +205,12 @@ function byCreationTime(a: Workflowitem, b: Workflowitem): -1 | 1 | 0 {
   }
 }
 
-export function removeEventLog(workflowitem: ScrubbedWorkflowItem): ScrubbedWorkflowItem {
+export function removeEventLog(workflowitem: ScrubbedWorkflowitem): ScrubbedWorkflowitem {
   delete workflowitem.log;
   return workflowitem;
 }
 
-export const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowitem => ({
+const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowitem => ({
   id: workflowitem.id,
   creationUnixTs: workflowitem.creationUnixTs,
   displayName: null,
@@ -228,8 +228,6 @@ export const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWork
 });
 
 const requiredPermissions = new Map<Intent, Intent[]>([
-  ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.view"]],
-  ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.view"]],
   ["workflowitem.intent.grantPermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.intent.revokePermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.assign", ["workflowitem.view"]],

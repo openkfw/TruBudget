@@ -25,8 +25,8 @@ function newWorkflowitem(id: string, permissions: object): Workflowitem {
   };
 }
 
-describe("When listing workflowitems,", () => {
-  it("filters the list of workflowitems according to the user's permissions.", async () => {
+describe("Listing workflowitems,", () => {
+  it("redacts history events the user is not allowed to see.", async () => {
     const user: User = { id: "bob", groups: ["friends"] };
 
     const viewIntent: Intent = "workflowitem.view";

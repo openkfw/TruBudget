@@ -3,9 +3,9 @@ import { userIdentities } from "../project";
 import { User } from "./User";
 import {
   redactHistoryEvent,
-  redactWorkflowitem,
+  scrubWorkflowitem,
   removeEventLog,
-  ScrubbedWorkflowItem,
+  ScrubbedWorkflowitem,
   sortWorkflowitems,
   Workflowitem,
 } from "./Workflowitem";
@@ -22,7 +22,7 @@ export async function getAllScrubbedItems(
     getAllWorkflowitems,
     getWorkflowitemOrdering,
   }: { getAllWorkflowitems: ListReader; getWorkflowitemOrdering: OrderingReader },
-): Promise<ScrubbedWorkflowItem[]> {
+): Promise<ScrubbedWorkflowitem[]> {
   const workflowitemOrdering = await getWorkflowitemOrdering();
   const workflowitems = await getAllWorkflowitems();
   const sortedWorkflowitems = await sortWorkflowitems(workflowitems, workflowitemOrdering);
@@ -33,7 +33,7 @@ export async function getAllScrubbedItems(
         getAllowedIntents(userIdentities(asUser), workflowitem.permissions),
       ),
     );
-    return redactWorkflowitem(workflowitem, asUser);
+    return scrubWorkflowitem(workflowitem, asUser);
   });
 
   return scrubbedWorkflowitems.map(removeEventLog);

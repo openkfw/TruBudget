@@ -1,13 +1,11 @@
 import uuid = require("uuid");
 
-import { getAllowedIntents } from "../authz";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
-import { User } from "../workflowitem/User";
 import { asMapKey } from "./Client";
 import { MultichainClient } from "./Client.h";
 import { Event, throwUnsupportedEventVersion } from "./event";
@@ -406,11 +404,10 @@ export async function getWorkflowitemList(
     }
   }
 
-  const unfilteredResources = [...workflowitemsMap.values()];
-  return unfilteredResources;
+  return [...workflowitemsMap.values()];
 }
 
-export async function fetchWorkflowitemOrdering(
+export async function getWorkflowitemOrdering(
   multichain: MultichainClient,
   projectId: string,
   subprojectId: string,

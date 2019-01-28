@@ -1,7 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { AllProjectsReader, ProjectAssigner } from ".";
-import { AllWorkflowitemsReader } from ".";
+import { AllProjectsReader, AllWorkflowitemsReader, ProjectAssigner } from ".";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
