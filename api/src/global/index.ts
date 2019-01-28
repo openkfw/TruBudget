@@ -3,14 +3,14 @@ import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain/Client.h";
 import { Event } from "../multichain/event";
-import { isAllowedToGrant, isAllowedToList, publish } from "./Permission";
+import { isAllowedToGrant, isAllowedToSee, publish } from "./Permission";
 import { get, User } from "./User";
 
 import * as Group from "../group";
 import * as Permission from "./Permission";
 
-export * from "./User";
 export * from "./Permission";
+export * from "./User";
 
 const globalstreamName = "global";
 
@@ -23,7 +23,7 @@ export async function list(
   { getAllPermissions }: { getAllPermissions: ListReader },
 ): Promise<Permission.Permissions> {
   const allPermissions = await getAllPermissions();
-  if (!isAllowedToList(allPermissions, actingUser)) {
+  if (!isAllowedToSee(allPermissions, actingUser)) {
     return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to list Permissions.`));
   }
   return allPermissions;
@@ -116,7 +116,7 @@ export const oldGrantPermission = async (
     data: { permissions },
     dataVersion: 1, // integer
   };
-  await Permission.publish(multichain, globalstreamName, args);
+  await publish(multichain, globalstreamName, args);
 };
 export const revokePermission = async (
   multichain: MultichainClient,

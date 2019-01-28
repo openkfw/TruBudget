@@ -244,7 +244,7 @@ export function getPermissionList(multichainClient: MultichainClient): HTTP.AllP
       return permissions;
     };
 
-    return await Permission.list(user, { getAllPermissions: lister });
+    return Permission.list(user, { getAllPermissions: lister });
   };
 }
 
