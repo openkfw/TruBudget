@@ -72,5 +72,11 @@ export async function close(
   isWorkflowitemClosable(workflowitemId, closingUser, sortedWorkflowitems);
 
   await closeWorkflowitem(projectId, subprojectId, workflowitemId);
+<<<<<<< HEAD
   await notify(projectId, subprojectId, closingWorkflowitem, closingUser);
+=======
+  console.log("Notifying user...");
+  await notify(projectId, subprojectId, closingWorkflowitem, closingUser);
+  console.log("User notified");
+>>>>>>> ecdf4b352f4da0f4da2fb58ab3632634134ad2a8
 }
