@@ -308,19 +308,16 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
     // Get ordering of workflowitems from blockchain
     // If items are rearranged by user, the call returns an array of IDs in order
     const multichainOrderingReader: Workflowitem.OrderingReader = async () => {
-      console.log("In OrderingReader");
       const ordering: string[] = await Multichain.fetchWorkflowitemOrdering(
         multichainClient,
         projectId,
         subprojectId,
       );
-      console.log("Workflowordering fetched");
       return ordering;
     };
 
     // Get all unfiltered workflowitems from the blockchain
     const multichainLister: Workflowitem.ListReader = async () => {
-      console.log("In MultichainLister");
       const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
         multichainClient,
         projectId,
@@ -330,7 +327,6 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
     const multichainCloser: Workflowitem.Closer = async (project, subproject, workflowitem) => {
-      console.log("In multichainCloser");
       Multichain.closeWorkflowitem(multichainClient, issuer, project, subproject, workflowitem);
     };
 
@@ -339,7 +335,6 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
       subprojectID,
       workflowitem,
     ) => {
-      console.log("in multichainNotifier");
       const notificationResource = Multichain.generateResources(
         projectID,
         subprojectID,
