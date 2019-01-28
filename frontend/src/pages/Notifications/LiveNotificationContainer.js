@@ -5,6 +5,7 @@ import _isEmpty from "lodash/isEmpty";
 import LiveNotification from "./LiveNotification";
 import { hideSnackbar, fetchNotificationCounts, fetchFlyInNotifications, fetchLatestNotification } from "./actions.js";
 import { toJS } from "../../helper";
+import LiveUpdates from "../LiveUpdates/LiveUpdates";
 
 // Currently when a fly in appears the notifications aren't reloaded, due to the latency of the call.
 // Once notifications are compacted/snapshoted we can refresh every time the fly in saga was called.
@@ -13,17 +14,6 @@ class LiveNotificationContainer extends Component {
   componentWillMount() {
     this.props.fetchNotificationCounts();
     this.props.fetchLatestNotification();
-    this.startUpdates();
-  }
-
-  componentWillUnmount() {
-    this.stopUpdates();
-  }
-
-  startUpdates() {
-    this.timer = setInterval(() => {
-      this.fetch();
-    }, 15000);
   }
 
   // If there are no notifications yet, set the latestFlyInId to "0"
@@ -36,12 +26,13 @@ class LiveNotificationContainer extends Component {
     }
   }
 
-  stopUpdates() {
-    clearInterval(this.timer);
-  }
-
   render() {
-    return <LiveNotification {...this.props} />;
+    return (
+      <div>
+        <LiveUpdates update={() => this.fetch()} interval={15000} />
+        <LiveNotification {...this.props} />;
+      </div>
+    );
   }
 }
 

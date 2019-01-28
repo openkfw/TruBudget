@@ -45,6 +45,9 @@ export const REVOKE_SUBPROJECT_PERMISSION_SUCCESS = "REVOKE_SUBPROJECT_PERMISSIO
 export const FETCH_SUBPROJECT_PERMISSIONS = "FETCH_SUBPROJECT_PERMISSIONS";
 export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSIONS_SUCCESS";
 
+export const LIVE_UPDATE_PROJECT = "LIVE_UPDATE_PROJECT";
+export const LIVE_UPDATE_PROJECT_SUCCESS = "LIVE_UPDATE_PROJECT_SUCCESS";
+
 export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_SUBPROJECT_PERMISSIONS,
@@ -87,8 +90,8 @@ export function fetchAllProjectDetails(projectId, showLoading = false) {
 export function setProjectHistoryOffset(offset) {
   return {
     type: SET_HISTORY_OFFSET,
-    offset,
-  }
+    offset
+  };
 }
 
 export function fetchProjectHistory(projectId, offset, limit, showLoading = false) {
@@ -216,5 +219,12 @@ export function closeProject(projectId, showLoading = false) {
     type: CLOSE_PROJECT,
     projectId,
     showLoading
+  };
+}
+
+export function liveUpdateProject(projectId) {
+  return {
+    type: LIVE_UPDATE_PROJECT,
+    projectId
   };
 }

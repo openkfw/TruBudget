@@ -1,5 +1,4 @@
-import { put, takeEvery, takeLatest, call, select } from "redux-saga/effects";
-import { delay } from "redux-saga";
+import { all, put, takeEvery, takeLatest, takeLeading, call, select, delay } from "redux-saga/effects";
 import { saveAs } from "file-saver/FileSaver";
 import Api from "./api.js";
 import {
@@ -36,7 +35,8 @@ import {
   GRANT_SUBPROJECT_PERMISSION,
   GRANT_SUBPROJECT_PERMISSION_SUCCESS,
   FETCH_SUBPROJECT_PERMISSIONS,
-  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS
+  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
+  LIVE_UPDATE_PROJECT
 } from "./pages/SubProjects/actions";
 import {
   SHOW_SNACKBAR,
@@ -49,8 +49,8 @@ import {
   MARK_MULTIPLE_NOTIFICATION_AS_READ,
   FETCH_NOTIFICATION_COUNTS_SUCCESS,
   FETCH_NOTIFICATION_COUNTS,
-  FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
-  FETCH_FLYIN_NOTIFICATIONS,
+  LIVE_UPDATE_NOTIFICATIONS,
+  LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
   TIME_OUT_FLY_IN,
   FETCH_LATEST_NOTIFICATION,
   FETCH_LATEST_NOTIFICATION_SUCCESS
@@ -80,7 +80,8 @@ import {
   REORDER_WORKFLOW_ITEMS_SUCCESS,
   CLOSE_SUBPROJECT,
   CLOSE_SUBPROJECT_SUCCESS,
-  HIDE_WORKFLOW_DETAILS
+  HIDE_WORKFLOW_DETAILS,
+  LIVE_UPDATE_SUBPROJECT
 } from "./pages/Workflows/actions";
 
 import {
@@ -236,7 +237,7 @@ function* handleLoading(showLoading) {
 export function* fetchVersionsSaga() {
   yield execute(function*() {
     const { data } = yield callApi(api.fetchVersions);
-    data["frontend"] = {"release": process.env.REACT_APP_VERSION};
+    data["frontend"] = { release: process.env.REACT_APP_VERSION };
     yield put({
       type: FETCH_VERSIONS_SUCCESS,
       versions: data
@@ -383,7 +384,7 @@ export function* fetchNotificationsSaga({ showLoading, offset, limit }) {
   yield commonfetchNotifications(showLoading, offset, limit, FETCH_ALL_NOTIFICATIONS_SUCCESS);
 }
 
-export function* fetchLatestNotificationSaga({ showLoading, }) {
+export function* fetchLatestNotificationSaga({ showLoading }) {
   yield commonfetchNotifications(showLoading, 0, 1, FETCH_LATEST_NOTIFICATION_SUCCESS);
 }
 
@@ -393,20 +394,6 @@ export function* commonfetchNotifications(showLoading, offset, limit, type) {
     yield put({
       type,
       notifications: data.notifications
-    });
-  }, showLoading);
-}
-
-export function* fetchFlyInNotificationsSaga({ showLoading, beforeId }) {
-  yield execute(function*() {
-    const { data } = yield callApi(api.pollNewNotifications, beforeId);
-    yield put({
-      type: FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
-      newNotifications: data.notifications
-    });
-    yield delay(5000);
-    yield put({
-      type: TIME_OUT_FLY_IN
     });
   }, showLoading);
 }
@@ -435,7 +422,7 @@ export function* markNotificationAsReadSaga({ notificationId, offset, limit }) {
       limit
     });
     yield put({
-      type: FETCH_NOTIFICATION_COUNTS,
+      type: FETCH_NOTIFICATION_COUNTS
     });
   }, true);
 }
@@ -970,281 +957,110 @@ export function* restoreBackupSaga({ file, showLoading = true }) {
   }, showLoading);
 }
 
-// WATCHERS
-
-export function* watchFetchAllSubprojectDetails() {
-  yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga);
+// LiveUpdate Sagas
+export function* liveUpdateProjectSaga({ projectId }) {
+  yield execute(function*() {
+    yield fetchAllProjectDetailsSaga({ projectId, loading: false });
+  }, false);
 }
 
-export function* watchFetchSubprojectHistory() {
-  yield takeEvery(FETCH_SUBPROJECT_HISTORY, fetchSubprojectHistorySaga);
+export function* liveUpdateSubProjectSaga({ projectId, subprojectId }) {
+  yield execute(function*() {
+    yield fetchAllSubprojectDetailsSaga({ projectId, subprojectId, loading: false });
+  }, false);
 }
 
-export function* watchFetchAllProjectDetails() {
-  yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga);
-}
-export function* watchFetchProjectHistorySaga() {
-  yield takeEvery(FETCH_PROJECT_HISTORY, fetchProjectHistorySaga);
-}
-
-export function* watchFetchAllProjects() {
-  yield takeEvery(FETCH_ALL_PROJECTS, fetchAllProjectsSaga);
-}
-
-export function* watchCreateSubProject() {
-  yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga);
-}
-
-export function* watchEditSubProject() {
-  yield takeEvery(EDIT_SUBPROJECT, editSubProjectSaga);
-}
-
-export function* watchCreateWorkflowItem() {
-  yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga);
-}
-
-export function* watchEditWorkflowItem() {
-  yield takeEvery(EDIT_WORKFLOW_ITEM, editWorkflowItemSaga);
-}
-
-export function* watchReorderWorkflowItems() {
-  yield takeEvery(REORDER_WORKFLOW_ITEMS, reorderWorkflowitemsSaga);
-}
-
-export function* watchCreateProject() {
-  yield takeEvery(CREATE_PROJECT, createProjectSaga);
-}
-
-export function* watchEditProject() {
-  yield takeEvery(EDIT_PROJECT, editProjectSaga);
-}
-
-export function* watchFetchNotifications() {
-  yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga);
-}
-
-export function* watchFetchLatestNotification() {
-  yield takeEvery(FETCH_LATEST_NOTIFICATION, fetchLatestNotificationSaga);
-}
-
-
-export function* watchFetchFlyInNotifications() {
-  yield takeLatest(FETCH_FLYIN_NOTIFICATIONS, fetchFlyInNotificationsSaga);
-}
-
-export function* watchFetchNotificationCounts() {
-  yield takeEvery(FETCH_NOTIFICATION_COUNTS, fetchNotificationCountsSaga);
-}
-
-export function* watchMarkNotificationAsRead() {
-  yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga);
-}
-
-export function* watchMarkMultipleNotificationsAsRead() {
-  yield takeEvery(MARK_MULTIPLE_NOTIFICATION_AS_READ, markMultipleNotificationsAsReadSaga);
-}
-
-export function* watchLogin() {
-  yield takeLatest(LOGIN, loginSaga);
-}
-
-export function* watchCreateUser() {
-  yield takeEvery(CREATE_USER, createUserSaga);
-}
-
-export function* watchGrantAllUserPermissions() {
-  yield takeEvery(GRANT_ALL_USER_PERMISSIONS, grantAllUserPermissionsSaga);
-}
-export function* watchFetchUser() {
-  yield takeEvery(FETCH_USER, fetchUserSaga);
-}
-export function* watchFetchGroups() {
-  yield takeEvery(FETCH_GROUPS, fetchGroupSaga);
-}
-
-export function* watchCreateGroup() {
-  yield takeEvery(CREATE_GROUP, createGroupSaga);
-}
-
-export function* watchAddUserToGroup() {
-  yield takeEvery(ADD_USER, addUserToGroupSaga);
-}
-export function* watchRemoveUserFromGroup() {
-  yield takeEvery(REMOVE_USER, removeUserFromGroupSaga);
-}
-
-export function* watchFetchNodes() {
-  yield takeEvery(FETCH_NODES, fetchNodesSaga);
-}
-export function* watchApproveNewOrganization() {
-  yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga);
-}
-
-export function* watchApproveNewNodeForOrganization() {
-  yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga);
-}
-
-export function* watchLogout() {
-  yield takeEvery(LOGOUT, logoutSaga);
-}
-
-export function* watchSetEnvironment() {
-  yield takeLatest(STORE_ENVIRONMENT, setEnvironmentSaga);
-}
-
-export function* watchGetEnvironment() {
-  yield takeLatest(FETCH_ENVIRONMENT, getEnvironmentSaga);
-}
-
-export function* watchFetchProjectPermissions() {
-  yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga);
-}
-
-export function* watchFetchSubProjectPermissions() {
-  yield takeLatest(FETCH_SUBPROJECT_PERMISSIONS, fetchSubProjectPermissionsSaga);
-}
-export function* watchFetchWorkflowItemPermissions() {
-  yield takeLatest(FETCH_WORKFLOWITEM_PERMISSIONS, fetchWorkflowItemPermissionsSaga);
-}
-export function* watchGrantPermissions() {
-  yield takeEvery(GRANT_PERMISSION, grantPermissionsSaga);
-}
-export function* watchRevokePermissions() {
-  yield takeEvery(REVOKE_PERMISSION, revokePermissionsSaga);
-}
-export function* watchGrantSubProjectPermissions() {
-  yield takeEvery(GRANT_SUBPROJECT_PERMISSION, grantSubProjectPermissionsSaga);
-}
-export function* watchRevokeSubProjectPermissions() {
-  yield takeEvery(REVOKE_SUBPROJECT_PERMISSION, revokeSubProjectPermissionsSaga);
-}
-export function* watchGrantWorkflowitemPermissions() {
-  yield takeEvery(GRANT_WORKFLOWITEM_PERMISSION, grantWorkflowItemPermissionsSaga);
-}
-export function* watchRevokeWorkflowitemPermissions() {
-  yield takeEvery(REVOKE_WORKFLOWITEM_PERMISSION, revokeWorkflowItemPermissionsSaga);
-}
-export function* watchCloseProject() {
-  yield takeEvery(CLOSE_PROJECT, closeProjectSaga);
-}
-export function* watchCloseSubproject() {
-  yield takeEvery(CLOSE_SUBPROJECT, closeSubprojectSaga);
-}
-export function* watchCloseWorkflowItem() {
-  yield takeEvery(CLOSE_WORKFLOWITEM, closeWorkflowItemSaga);
-}
-export function* watchAssignWorkflowItem() {
-  yield takeEvery(ASSIGN_WORKFLOWITEM, assignWorkflowItemSaga);
-}
-export function* watchAssignSubproject() {
-  yield takeEvery(ASSIGN_SUBPROJECT, assignSubprojectSaga);
-}
-export function* watchAssignProject() {
-  yield takeEvery(ASSIGN_PROJECT, assignProjectSaga);
-}
-export function* watchFetchAcitvePeers() {
-  yield takeLatest(FETCH_ACTIVE_PEERS, fetchActivePeersSaga);
-}
-export function* watchValidateDocument() {
-  yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga);
-}
-export function* watchhideWorkflowDetails() {
-  yield takeEvery(HIDE_WORKFLOW_DETAILS, hideWorkflowDetailsSaga);
-}
-export function* watchCreateBackup() {
-  yield takeLatest(CREATE_BACKUP, createBackupSaga);
-}
-export function* watchRestoreBackup() {
-  yield takeLatest(RESTORE_BACKUP, restoreBackupSaga);
-}
-export function* watchFetchVersions() {
-  yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga);
-}
-export function* watchGrantGlobalPermission() {
-  yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga);
-}
-
-export function* watchRevokeGlobalPermission() {
-  yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga);
-}
-
-export function* watchListGlobalPermissions() {
-  yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga);
+export function* liveUpdateNotificationsSaga({ showLoading, beforeId }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.pollNewNotifications, beforeId);
+    yield put({
+      type: LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
+      newNotifications: data.notifications
+    });
+    yield delay(5000);
+    yield put({
+      type: TIME_OUT_FLY_IN
+    });
+  }, showLoading);
 }
 
 export default function* rootSaga() {
   try {
-    yield [
+    yield all([
       // Global
-      watchFetchUser(),
-      watchCreateUser(),
-      watchLogin(),
-      watchLogout(),
-      watchSetEnvironment(),
-      watchGetEnvironment(),
-      watchFetchNodes(),
-      watchApproveNewOrganization(),
-      watchApproveNewNodeForOrganization(),
-      watchFetchGroups(),
-      watchCreateGroup(),
-      watchAddUserToGroup(),
-      watchRemoveUserFromGroup(),
-      watchGrantAllUserPermissions(),
-      watchGrantGlobalPermission(),
-      watchRevokeGlobalPermission(),
-      watchListGlobalPermissions(),
+      yield takeLatest(LOGIN, loginSaga),
+      yield takeEvery(LOGOUT, logoutSaga),
+      yield takeEvery(CREATE_USER, createUserSaga),
+      yield takeEvery(GRANT_ALL_USER_PERMISSIONS, grantAllUserPermissionsSaga),
+      yield takeEvery(FETCH_USER, fetchUserSaga),
+      yield takeEvery(FETCH_GROUPS, fetchGroupSaga),
+      yield takeEvery(CREATE_GROUP, createGroupSaga),
+      yield takeEvery(ADD_USER, addUserToGroupSaga),
+      yield takeEvery(REMOVE_USER, removeUserFromGroupSaga),
+      yield takeEvery(FETCH_NODES, fetchNodesSaga),
+      yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga),
+      yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga),
+      yield takeLatest(STORE_ENVIRONMENT, setEnvironmentSaga),
+      yield takeLatest(FETCH_ENVIRONMENT, getEnvironmentSaga),
+      yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
+      yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),
+      yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga),
+
+      // LiveUpdates
+      yield takeLeading(LIVE_UPDATE_PROJECT, liveUpdateProjectSaga),
+      yield takeLeading(LIVE_UPDATE_SUBPROJECT, liveUpdateSubProjectSaga),
+      yield takeLeading(LIVE_UPDATE_NOTIFICATIONS, liveUpdateNotificationsSaga),
 
       // Project
-      watchCreateProject(),
-      watchFetchAllProjects(),
-      watchFetchAllProjectDetails(),
-      watchFetchProjectPermissions(),
-      watchGrantPermissions(),
-      watchRevokePermissions(),
-      watchAssignProject(),
-      watchFetchProjectHistorySaga(),
-      watchEditProject(),
-      watchCloseProject(),
+      yield takeEvery(FETCH_ALL_PROJECTS, fetchAllProjectsSaga),
+      yield takeEvery(CREATE_PROJECT, createProjectSaga),
+      yield takeEvery(EDIT_PROJECT, editProjectSaga),
+      yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga),
+      yield takeEvery(GRANT_PERMISSION, grantPermissionsSaga),
+      yield takeEvery(REVOKE_PERMISSION, revokePermissionsSaga),
+      yield takeEvery(ASSIGN_PROJECT, assignProjectSaga),
+      yield takeEvery(FETCH_PROJECT_HISTORY, fetchProjectHistorySaga),
+      yield takeEvery(CLOSE_PROJECT, closeProjectSaga),
+      yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga),
 
       // Subproject
-      watchCreateSubProject(),
-      watchEditSubProject(),
-      watchFetchAllSubprojectDetails(),
-      watchFetchSubProjectPermissions(),
-      watchGrantSubProjectPermissions(),
-      watchRevokeSubProjectPermissions(),
-      watchAssignSubproject(),
-      watchFetchSubprojectHistory(),
-      watchCloseSubproject(),
+      yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga),
+      yield takeEvery(FETCH_SUBPROJECT_HISTORY, fetchSubprojectHistorySaga),
+      yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga),
+      yield takeEvery(EDIT_SUBPROJECT, editSubProjectSaga),
+      yield takeLatest(FETCH_SUBPROJECT_PERMISSIONS, fetchSubProjectPermissionsSaga),
+      yield takeEvery(GRANT_SUBPROJECT_PERMISSION, grantSubProjectPermissionsSaga),
+      yield takeEvery(REVOKE_SUBPROJECT_PERMISSION, revokeSubProjectPermissionsSaga),
+      yield takeEvery(CLOSE_SUBPROJECT, closeSubprojectSaga),
+      yield takeEvery(ASSIGN_SUBPROJECT, assignSubprojectSaga),
 
       // Workflow
-      watchCreateWorkflowItem(),
-      watchEditWorkflowItem(),
-      watchReorderWorkflowItems(),
-      watchFetchWorkflowItemPermissions(),
-      watchGrantWorkflowitemPermissions(),
-      watchRevokeWorkflowitemPermissions(),
-      watchCloseWorkflowItem(),
-      watchAssignWorkflowItem(),
-      watchValidateDocument(),
-      watchhideWorkflowDetails(),
+      yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga),
+      yield takeEvery(EDIT_WORKFLOW_ITEM, editWorkflowItemSaga),
+      yield takeEvery(REORDER_WORKFLOW_ITEMS, reorderWorkflowitemsSaga),
+      yield takeLatest(FETCH_WORKFLOWITEM_PERMISSIONS, fetchWorkflowItemPermissionsSaga),
+      yield takeEvery(GRANT_WORKFLOWITEM_PERMISSION, grantWorkflowItemPermissionsSaga),
+      yield takeEvery(REVOKE_WORKFLOWITEM_PERMISSION, revokeWorkflowItemPermissionsSaga),
+      yield takeEvery(CLOSE_WORKFLOWITEM, closeWorkflowItemSaga),
+      yield takeEvery(ASSIGN_WORKFLOWITEM, assignWorkflowItemSaga),
+      yield takeEvery(HIDE_WORKFLOW_DETAILS, hideWorkflowDetailsSaga),
+      yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga),
 
       // Notifications
-      watchFetchNotifications(),
-      watchMarkNotificationAsRead(),
-      watchMarkMultipleNotificationsAsRead(),
-      watchFetchNotificationCounts(),
-      watchFetchFlyInNotifications(),
-      watchFetchLatestNotification(),
+      yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),
+      yield takeEvery(FETCH_LATEST_NOTIFICATION, fetchLatestNotificationSaga),
+      yield takeEvery(FETCH_NOTIFICATION_COUNTS, fetchNotificationCountsSaga),
+      yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga),
+      yield takeEvery(MARK_MULTIPLE_NOTIFICATION_AS_READ, markMultipleNotificationsAsReadSaga),
 
       // Peers
-      watchFetchAcitvePeers(),
+      yield takeLatest(FETCH_ACTIVE_PEERS, fetchActivePeersSaga),
 
       // System
-      watchCreateBackup(),
-      watchRestoreBackup(),
-      watchFetchVersions()
-    ];
+      yield takeLatest(CREATE_BACKUP, createBackupSaga),
+      yield takeLatest(RESTORE_BACKUP, restoreBackupSaga),
+      yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga)
+    ]);
   } catch (error) {
     console.log(error);
   }
