@@ -8,7 +8,7 @@ import { Permissions } from "./Permission";
 import { User } from "./User";
 
 describe("Listing permissions", () => {
-  it("is listing all permissions correctly", async () => {
+  it("is allowed if the user has the required permission", async () => {
     const permissionsMock: Permissions = {
       "global.listPermissions": ["alice", "friends"],
       "global.grantPermission": ["otherUser"],
@@ -22,7 +22,7 @@ describe("Listing permissions", () => {
     assert.equal(permissionsMock, permissions);
   });
 
-  it("requires a specific permission", async () => {
+  it("is rejected if the user does not have the required permission", async () => {
     const permissionsMock: Permissions = {
       "global.listPermissions": ["alice", "friends"],
       "global.grantPermission": ["otherUser"],
@@ -31,10 +31,10 @@ describe("Listing permissions", () => {
     let getAllPermissions: PermissionsLister = () => Promise.resolve(permissionsMock);
     const listedPermissions = await Permission.list(actingUser, { getAllPermissions });
 
-    await assert.equal(listedPermissions, permissionsMock);
+    assert.equal(listedPermissions, permissionsMock);
 
     delete permissionsMock["global.listPermissions"];
-    getAllPermissions = () => Promise.resolve(permissionsMock);
+    getAllPermissions = async () => permissionsMock;
 
     await assertIsRejectedWith(Permission.list(actingUser, { getAllPermissions }), Error);
   });
@@ -57,16 +57,16 @@ describe("Granting a permission", () => {
     };
 
     const intentToBeGranted: Intent = "global.createProject";
-    const grantee = "bob";
+    const userId = "bob";
 
     const deps = {
       getAllPermissions,
       grantPermission,
     };
 
-    await assertIsResolved(Permission.grant(actingUser, grantee, intentToBeGranted, deps));
+    await assertIsResolved(Permission.grant(actingUser, userId, intentToBeGranted, deps));
 
-    assert.equal(calls.get("global.createProject"), grantee);
+    assert.equal(calls.get("global.createProject"), userId);
   });
 
   it("requires a specific permission", async () => {

@@ -1,15 +1,16 @@
 import Intent, { userAssignableIntents } from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
-import * as Group from "../group";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain/Client.h";
 import { Event } from "../multichain/event";
-import * as UserOld from "../user/model/user";
-import * as Permission from "./model/Permission";
-import { User } from "./User";
+import { isAllowedToSee, publish } from "./Permission";
+import { get, User } from "./User";
 
-export * from "./User";
+import * as Group from "../group";
+import * as Permission from "./Permission";
+
 export * from "./Permission";
+export * from "./User";
 
 const globalstreamName = "global";
 
@@ -22,7 +23,7 @@ export async function list(
   { getAllPermissions }: { getAllPermissions: PermissionsLister },
 ) {
   const allPermissions = await getAllPermissions();
-  if (!Permission.isAllowedToList(allPermissions, actingUser)) {
+  if (!isAllowedToSee(allPermissions, actingUser)) {
     return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to list Permissions.`));
   }
   return allPermissions;
@@ -90,7 +91,7 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
       data: { permissions },
       dataVersion: 1, // integer
     };
-    await Permission.publish(multichain, globalstreamName, args);
+    await publish(multichain, globalstreamName, args);
   }
 };
 
@@ -137,7 +138,7 @@ export const grantPermission = async (
     data: { permissions },
     dataVersion: 1, // integer
   };
-  await Permission.publish(multichain, globalstreamName, args);
+  await publish(multichain, globalstreamName, args);
 };
 
 export const revokePermission = async (
@@ -179,14 +180,14 @@ export const revokePermission = async (
     data: { permissions },
     dataVersion: 1, // integer
   };
-  await Permission.publish(multichain, globalstreamName, args);
+  await publish(multichain, globalstreamName, args);
 };
 
 export const identityExists = async (multichain, groupOrUserId) => {
   await ensureStreamExists(multichain);
   const existingGroups = await Group.getGroup(multichain, groupOrUserId);
   const groupIdExists = existingGroups ? true : false;
-  const userIdExists = await UserOld.get(multichain, groupOrUserId)
+  const userIdExists = await get(multichain, groupOrUserId)
     .then(() => true)
     .catch(() => false);
 

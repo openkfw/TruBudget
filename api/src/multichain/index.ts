@@ -14,7 +14,6 @@ import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 export * from "./event";
 
 const projectSelfKey = "self";
-const globalstreamName = "global";
 
 export type Permissions = { [key in Intent]?: string[] };
 
@@ -204,7 +203,7 @@ export async function getProjectList(multichain: MultichainClient): Promise<Proj
 
 export async function getPermissionList(multichain: MultichainClient): Promise<Permissions> {
   try {
-    const streamItems = await multichain.v2_readStreamItems(globalstreamName, "self", 1);
+    const streamItems = await multichain.v2_readStreamItems("global", "self", 1);
     if (streamItems.length < 1) {
       return {};
     }
@@ -244,7 +243,7 @@ export async function grantGlobalPermission(
     dataVersion: 1,
   };
 
-  const streamName = globalstreamName;
+  const streamName = "global";
   const streamItemKey = projectSelfKey;
   const streamItem = { json: event };
 
@@ -261,7 +260,7 @@ export async function grantGlobalPermission(
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
       return multichain
-        .getOrCreateStream({ kind: "global", name: globalstreamName })
+        .getOrCreateStream({ kind: "global", name: streamName })
         .then(() => publishEvent());
     } else {
       throw err;
