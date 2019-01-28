@@ -16,6 +16,7 @@ import * as Multichain from "./multichain";
 import { MultichainClient } from "./multichain/Client.h";
 import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
+import { Sender } from "./notification";
 import * as Project from "./project";
 import * as Workflowitem from "./workflowitem";
 
@@ -359,14 +360,10 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
         assignee: workflowitem.assignee,
       };
 
-      // const subject: Notification.Project = {
-      //   id: project.id,
-      //   status: project.status,
-      //   displayName: project.displayName,
-      //   assignee: project.assignee!,
-      // };
-
-      return Promise.resolve();
+      return Notification.workflowitemClosed(closeNotification, {
+        sender,
+        resolver,
+      });
     };
 
     return Workflowitem.close(closingUser, projectId, subprojectId, workflowitemId, {
@@ -376,135 +373,4 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
       notify: multichainNotifier,
     });
   };
-
-  // const input = value("data", req.body.data, x => x !== undefined);
-
-  // const projectId: string = value("projectId", input.projectId, isNonemptyString);
-  // const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
-  // const workflowitemId: string = value("workflowitemId", input.workflowitemId, isNonemptyString);
-
-  // const userIntent: Intent = "workflowitem.close";
-
-  // // Is the user allowed to close a workflowitem?
-  // await throwIfUnauthorized(
-  //   req.user,
-  //   userIntent,
-  //   await Workflowitem.getPermissions(multichain, projectId, workflowitemId),
-  // );
-
-  // // We need to make sure that all previous (wrt. ordering) workflowitems are already closed:
-  // const sortedItems = await ensureAllPreviousWorkflowitemsAreClosed(
-  //   multichain,
-  //   req.user,
-  //   projectId,
-  //   subprojectId,
-  //   workflowitemId,
-  // );
-
-  // const publishedEvent = await sendEventToDatabase(
-  //   multichain,
-  //   req.user,
-  //   userIntent,
-  //   projectId,
-  //   subprojectId,
-  //   workflowitemId,
-  // );
-
-  // const resourceDescriptions: Notification.NotificationResourceDescription[] = [
-  //   { id: workflowitemId, type: "workflowitem" },
-  //   { id: subprojectId, type: "subproject" },
-  //   { id: projectId, type: "project" },
-  // ];
-  // const createdBy = req.user.userId;
-
-  // // If the workflowitem is assigned to someone else, that person is notified about the
-  // // change:
-  // const workflowitemAssignee = await notifyAssignee(
-  //   multichain,
-  //   resourceDescriptions,
-  //   createdBy,
-  //   await Workflowitem.get(
-  //     multichain,
-  //     req.user,
-  //     projectId,
-  //     subprojectId,
-  //     workflowitemId,
-  //     "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-  //   ),
-  //   publishedEvent,
-  //   [req.user.userId], // skipNotificationsFor
-  // );
-
-  // // If the parent subproject is (1) not assigned to the token user and (2) not assigned
-  // // to the same guy the workflowitem is assigned to, that person is notified about the
-  // // change too.
-  // const skipNotificationsFor = [req.user.userId].concat(
-  //   workflowitemAssignee ? [workflowitemAssignee] : [],
-  // );
-  // await notifyAssignee(
-  //   multichain,
-  //   resourceDescriptions,
-  //   createdBy,
-  //   await Subproject.get(
-  //     multichain,
-  //     req.user,
-  //     projectId,
-  //     subprojectId,
-  //     "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-  //   ),
-  //   publishedEvent,
-  //   skipNotificationsFor,
-  // );
-
-  // // return [200, { apiVersion: "1.0", data: "OK" }];
 }
-
-// async function ensureAllPreviousWorkflowitemsAreClosed(
-//   multichain: MultichainClient,
-//   token: AuthToken,
-//   projectId: string,
-//   subprojectId: string,
-//   workflowitemId: string,
-// ): Promise<Workflowitem.WorkflowitemResource[]> {
-//   const ordering = await fetchWorkflowitemOrdering(multichain, projectId, subprojectId);
-//   const sortedItems = await Workflowitem.get(multichain, token, projectId, subprojectId).then(
-//     unsortedItems => sortWorkflowitems(unsortedItems, ordering),
-//   );
-//   for (const item of sortedItems) {
-//     if (item.data.id === workflowitemId) {
-//       break;
-//     } else if (item.data.status !== "closed") {
-//       const message = "Cannot close workflowitems if there are preceding non-closed workflowitems.";
-//       throw {
-//         kind: "PreconditionError",
-//         message,
-//       };
-//     }
-//   }
-//   return sortedItems;
-// }
-
-// async function sendEventToDatabase(
-//   multichain: MultichainClient,
-//   token: AuthToken,
-//   userIntent: Intent,
-//   projectId: string,
-//   subprojectId: string,
-//   workflowitemId: string,
-// ): Promise<Event> {
-//   const event = {
-//     intent: userIntent,
-//     createdBy: token.userId,
-//     creationTimestamp: new Date(),
-//     dataVersion: 1,
-//     data: {},
-//   };
-//   const publishedEvent = await Workflowitem.publish(
-//     multichain,
-//     projectId,
-//     subprojectId,
-//     workflowitemId,
-//     event,
-//   );
-//   return publishedEvent;
-// }
