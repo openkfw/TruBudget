@@ -17,6 +17,8 @@ export type PermissionsLister = () => Promise<Permission.Permissions>;
 
 export type PermissionsGranter = (intent: Intent, grantee: string) => Promise<void>;
 
+export type PermissionsRevoker = (intent: Intent, recipient: string) => Promise<void>;
+
 export async function list(
   actingUser: User,
   { getAllPermissions }: { getAllPermissions: PermissionsLister },
@@ -71,6 +73,31 @@ export async function grantAll(
     }
     await grantPermission(intent, grantee);
   }
+}
+
+export async function revoke(
+  actingUser: User,
+  recipient: string,
+  intent: Intent,
+  {
+    getAllPermissions,
+    // tslint:disable-next-line:no-shadowed-variable
+    revokePermission,
+  }: { getAllPermissions: PermissionsLister; revokePermission: PermissionsRevoker },
+) {
+  const allPermissions = await getAllPermissions();
+  const permissionsForIntent: People = allPermissions[intent] || [];
+  if (!permissionsForIntent.includes(recipient)) {
+    logger.debug(
+      { params: { intent } },
+      "User has no permission to execute given intent, nothing has to be revoked",
+    );
+    return;
+  }
+  if (!Permission.isAllowedToRevoke(allPermissions, actingUser)) {
+    return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to revoke Permissions.`));
+  }
+  await revokePermission(intent, recipient);
 }
 
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {

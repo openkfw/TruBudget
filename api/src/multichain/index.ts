@@ -269,6 +269,54 @@ export async function grantGlobalPermission(
   });
 }
 
+export async function revokeGlobalPermission(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  recipient: string,
+  intent: Intent,
+): Promise<void> {
+  const permissions = await getPermissionList(multichain);
+  const permissionsForIntent: People = permissions[intent] || [];
+  const userIndex = permissionsForIntent.indexOf(recipient);
+  permissionsForIntent.splice(userIndex, 1);
+  permissions[intent] = permissionsForIntent;
+
+  const revokeintent: Intent = "global.revokePermission";
+
+  const event = {
+    key: projectSelfKey,
+    intent: revokeintent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    data: { permissions },
+    dataVersion: 1,
+  };
+
+  const streamName = globalstreamName;
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${revokeintent} to ${streamName}/${streamItemKey}`);
+
+  const publishEvent = () => {
+    return multichain
+      .getRpcClient()
+      .invoke("publish", streamName, streamItemKey, streamItem)
+      .then(() => event);
+  };
+
+  return publishEvent().catch(err => {
+    if (err.code === -708) {
+      // The stream does not exist yet. Create the stream and try again:
+      return multichain
+        .getOrCreateStream({ kind: "global", name: globalstreamName })
+        .then(() => publishEvent());
+    } else {
+      throw err;
+    }
+  });
+}
+
 async function fetchStreamItems(
   multichain: MultichainClient,
   projectId?: string,

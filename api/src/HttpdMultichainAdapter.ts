@@ -309,3 +309,33 @@ export function grantAllPermissions(
     });
   };
 }
+
+export function revokePermission(multichainClient: MultichainClient): HTTP.GlobalPermissionRevoker {
+  return async (token: AuthToken, recipient: string, intent: Intent) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const user: Permission.User = { id: token.userId, groups: token.groups };
+
+    const lister: Permission.PermissionsLister = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    const revoker: Permission.PermissionsRevoker = async (
+      revokeIntent: Intent,
+      revokeRecipient: string,
+    ) => {
+      return await Multichain.revokeGlobalPermission(
+        multichainClient,
+        issuer,
+        revokeRecipient,
+        revokeIntent,
+      );
+    };
+    return Permission.revoke(user, recipient, intent, {
+      getAllPermissions: lister,
+      revokePermission: revoker,
+    });
+  };
+}

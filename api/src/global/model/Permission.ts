@@ -14,6 +14,12 @@ export function isAllowedToList(permissions: Permissions, actingUser: User): boo
   const hasPermission = allowedIntents.some(allowedIntent => userIntents.includes(allowedIntent));
   return hasPermission;
 }
+export function isAllowedToRevoke(permissions: Permissions, actingUser: User): boolean {
+  const allowedIntents: Intent[] = ["global.revokePermission"];
+  const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
+  const hasPermission = allowedIntents.some(allowedIntent => userIntents.includes(allowedIntent));
+  return hasPermission;
+}
 
 export function isAllowedToGrant(permissions: Permissions, actingUser: User): boolean {
   const allowedIntents: Intent[] = ["global.grantPermission"];
