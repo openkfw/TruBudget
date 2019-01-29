@@ -2,11 +2,11 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import * as Global from "../../global";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
-import logger from "../../lib/logger";
 
 export async function voteForNetworkPermission(
   multichain: MultichainClient,
@@ -14,7 +14,7 @@ export async function voteForNetworkPermission(
 ): Promise<HttpResponse> {
   // Permission check:
   const userIntent: Intent = "network.voteForPermission";
-  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
 
   // Input validation:
   const input = value("data", req.body.data, x => x !== undefined);
@@ -61,8 +61,8 @@ export async function getCurrentVote(
   const currentVote: AccessVote.t = hasApprover(adminPermissionInfo, callerAddress)
     ? "admin"
     : hasApprover(connectPermissionInfo, callerAddress)
-      ? "basic"
-      : "none";
+    ? "basic"
+    : "none";
   return currentVote;
 }
 

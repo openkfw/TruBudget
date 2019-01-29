@@ -19,7 +19,7 @@ export const createGroup = async (
   const users = value("users", groupFromRequest.users, Array.isArray);
   const userIntent: Intent = "global.createGroup";
   // Is the user allowed to create new projects?
-  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
   const ctime = new Date();
   const group: Group.GroupResource = {
     groupId,
