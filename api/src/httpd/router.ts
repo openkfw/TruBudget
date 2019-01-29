@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { AllProjectsReader, AllWorkflowitemsReader, ProjectAssigner } from ".";
+import { AllProjectsReader, AllWorkflowitemsReader, ProjectAssigner, ProjectUpdater } from ".";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
 import { getGlobalPermissions } from "../global/controller/listPermissions";
@@ -30,7 +30,6 @@ import { createSubproject } from "../project/controller/createSubproject";
 import { grantProjectPermission } from "../project/controller/intent.grantPermission";
 import { getProjectPermissions } from "../project/controller/intent.listPermissions";
 import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
-import { updateProject } from "../project/controller/update";
 import { getProjectDetails } from "../project/controller/viewDetails";
 import { getProjectHistory } from "../project/controller/viewHistory";
 import { User as ProjectUser } from "../project/User";
@@ -254,12 +253,14 @@ export const registerRoutes = (
   multichainHost: string,
   backupApiPort: string,
   {
-    projectLister,
-    projectAssigner,
     workflowitemLister,
+    listProjects,
+    assignProject,
+    updateProject,
   }: {
-    projectLister: AllProjectsReader;
-    projectAssigner: ProjectAssigner;
+    listProjects: AllProjectsReader;
+    assignProject: ProjectAssigner;
+    updateProject: ProjectUpdater;
     workflowitemLister: AllWorkflowitemsReader;
   },
 ) => {
@@ -427,7 +428,7 @@ export const registerRoutes = (
 
   server.get(`${urlPrefix}/project.list`, getSchema(server, "projectList"), (request, reply) => {
     const req = request as AuthenticatedRequest;
-    return projectLister(req.user)
+    return listProjects(req.user)
       .then(
         (projects): HttpResponse => [
           200,
@@ -463,7 +464,7 @@ export const registerRoutes = (
       const projectId: string = request.body.data.projectId;
       const assignee: string = request.body.data.identity;
 
-      return projectAssigner(token, projectId, assignee)
+      return assignProject(token, projectId, assignee)
         .then(
           (): HttpResponse => [
             200,
@@ -482,7 +483,21 @@ export const registerRoutes = (
     `${urlPrefix}/project.update`,
     getSchema(server, "projectUpdate"),
     (request, reply) => {
-      updateProject(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      const update = request.body.data;
+      const projectId = request.body.data.projectId;
+
+      updateProject(token, projectId, update)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

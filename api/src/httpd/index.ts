@@ -17,20 +17,18 @@ export type ProjectAssigner = (
   assignee: string,
 ) => Promise<void>;
 
-interface HistoricEvent {
-  key: string; // the resource ID (same for all events that relate to the same resource)
+export type ProjectUpdater = (token: AuthToken, projectId: string, update: object) => Promise<void>;
+
+type MaybeHistoryEvent = null | {
   intent: Intent;
-  createdBy: string;
-  createdAt: string;
-  dataVersion: number; // integer
-  data: any;
   snapshot: {
     displayName: string;
+    permissions?: object;
   };
-}
+};
 
 export interface Project {
-  log: HistoricEvent[];
+  log: MaybeHistoryEvent[];
   allowedIntents: Intent[];
   data: {
     id: string;

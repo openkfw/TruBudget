@@ -1,5 +1,5 @@
 import os = require("os");
-import * as pino from "pino";
+import pino = require("pino");
 
 // Log Parameters
 const logLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
@@ -8,16 +8,15 @@ const name = "TruBudget";
 const hostname = os.hostname();
 const base = { hostname };
 const prettyPrintInput = process.env.PRETTY_PRINT || "";
-const prettyPrint =
-  prettyPrintOptions.includes(prettyPrintInput.toLowerCase())
-    ? false
-    : {
-        colorize: "true",
-        levelFirst: false,
-        messageKey: "message",
-        translateTime: true,
-        crlf: false,
-      };
+const prettyPrint = prettyPrintOptions.includes(prettyPrintInput.toLowerCase())
+  ? false
+  : {
+      colorize: "true",
+      levelFirst: false,
+      messageKey: "message",
+      translateTime: true,
+      crlf: false,
+    };
 
 const levelInput = process.env.LOG_LEVEL || "info";
 const levelInputLowerCase = levelInput.toLowerCase();

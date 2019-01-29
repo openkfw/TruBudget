@@ -1,3 +1,14 @@
+/**
+ * Binds the HTTP context and the other contexts together, hiding the
+ * implementation details in the process.
+ *
+ * Please make sure that callback arguments are always used and not replaced
+ * with variables of the enclosing scope. Doing so introduces business logic
+ * into the adapter and could lead to subtle bugs.
+ *
+ * Also note that arguments should be treated as immutable.
+ *
+ */
 import { getAllowedIntents } from "./authz";
 import { AuthToken } from "./authz/token";
 import * as HTTP from "./httpd";
@@ -17,14 +28,22 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
         multichainClient,
         id,
       );
-      return Project.validateProject(multichainProject);
+      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
-    const project: Project.Project = await Project.getOne(reader, user, projectId);
+    const project: Project.ScrubbedProject = await Project.getOne(reader, user, projectId);
 
     const httpProject: HTTP.Project = {
-      // TODO Is `log` used on the frontend?
-      log: [],
+      log: project.log.map(scrubbedEvent => {
+        if (scrubbedEvent === null) return null;
+        return {
+          intent: scrubbedEvent.intent,
+          snapshot: {
+            displayName: scrubbedEvent.snapshot.displayName,
+            permissions: scrubbedEvent.snapshot.permissions,
+          },
+        };
+      }),
       allowedIntents: getAllowedIntents(Project.userIdentities(user), project.permissions),
       data: {
         id: project.id,
@@ -49,13 +68,24 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
 
     const lister: Project.ListReader = async () => {
       const projectList: Multichain.Project[] = await Multichain.getProjectList(multichainClient);
-      return projectList.map(Project.validateProject);
+      return projectList.map(multichainProject => {
+        return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+      });
     };
-
-    const projects = await Project.getAllVisible(user, { getAllProjects: lister });
+    const projects: Project.ScrubbedProject[] = await Project.getAllVisible(user, {
+      getAllProjects: lister,
+    });
     return projects.map(project => ({
-      // TODO Is `log` used on the frontend?
-      log: [],
+      log: project.log.map(scrubbedEvent => {
+        if (scrubbedEvent === null) return null;
+        return {
+          intent: scrubbedEvent.intent,
+          snapshot: {
+            displayName: scrubbedEvent.snapshot.displayName,
+            permissions: scrubbedEvent.snapshot.permissions,
+          },
+        };
+      }),
       allowedIntents: getAllowedIntents(Project.userIdentities(user), project.permissions),
       data: {
         id: project.id,
@@ -72,10 +102,7 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
   };
 }
 
-export function assignProject(
-  multichainClient: MultichainClient,
-  notificationService: Notification.NotificationAPI,
-): HTTP.ProjectAssigner {
+export function assignProject(multichainClient: MultichainClient): HTTP.ProjectAssigner {
   return async (token: AuthToken, projectId: string, assignee: string) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const assigningUser: Project.User = { id: token.userId, groups: token.groups };
@@ -83,21 +110,23 @@ export function assignProject(
     const multichainAssigner: Project.Assigner = (id, selectedAssignee) =>
       Multichain.writeProjectAssignedToChain(multichainClient, issuer, id, selectedAssignee);
 
-    const multichainNotifier: Project.AssignmentNotifier = (project, assigner) => {
+    const multichainNotifier: Project.AssignmentNotifier = (project, actingUser) => {
       const sender: Notification.Sender = (message, recipient) =>
         Multichain.issueNotification(multichainClient, issuer, message, recipient);
 
-      const resolver: Notification.GroupResolverPort = groupId =>
+      const resolver: Notification.GroupResolver = groupId =>
         Group.getUsers(multichainClient, groupId);
 
-      const subject: Notification.Project = {
-        id: project.id,
-        status: project.status,
-        displayName: project.displayName,
-        assignee: project.assignee!,
+      const assignmentNotification: Notification.ProjectAssignment = {
+        projectId: project.id,
+        actingUser,
+        assignee: project.assignee,
       };
 
-      return notificationService.projectAssigned(sender, resolver, assigner, subject);
+      return Notification.projectAssigned(assignmentNotification, {
+        send: sender,
+        resolveGroup: resolver,
+      });
     };
 
     const reader: Project.Reader = async id => {
@@ -105,7 +134,8 @@ export function assignProject(
         multichainClient,
         id,
       );
-      return Project.validateProject(multichainProject);
+
+      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
     return Project.assign(assigningUser, projectId, assignee, {
@@ -170,5 +200,82 @@ export function getWorkflowitemList(
         ? getAllowedIntents(Workflowitem.userIdentities(user), item.permissions)
         : [],
     })) as HTTP.Workflowitem[];
+  };
+}
+
+export function updateProject(multichainClient: MultichainClient): HTTP.ProjectUpdater {
+  return async (token: AuthToken, projectId: string, update: object) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const user: Project.User = { id: token.userId, groups: token.groups };
+
+    const reader: Project.Reader = async id => {
+      const multichainProject = await Multichain.getProject(multichainClient, id);
+      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+    };
+
+    const updater: Project.Updater = async (id, data) => {
+      const multichainUpdate: Multichain.ProjectUpdate = {};
+      if (data.displayName !== undefined) multichainUpdate.displayName = data.displayName;
+      if (data.description !== undefined) multichainUpdate.description = data.description;
+      if (data.amount !== undefined) multichainUpdate.amount = data.amount;
+      if (data.currency !== undefined) multichainUpdate.currency = data.currency;
+      if (data.thumbnail !== undefined) multichainUpdate.thumbnail = data.thumbnail;
+
+      await Multichain.updateProject(multichainClient, issuer, id, multichainUpdate);
+    };
+
+    const multichainNotifier: Project.UpdateNotifier = (
+      updatedProject,
+      actingUser,
+      projectUpdate,
+    ) => {
+      const sender: Notification.Sender = (message, recipient) =>
+        Multichain.issueNotification(multichainClient, issuer, message, recipient);
+
+      const resolver: Notification.GroupResolver = groupId =>
+        Group.getUsers(multichainClient, groupId);
+
+      const updateNotification: Notification.ProjectUpdate = {
+        projectId: updatedProject.id,
+        assignee: updatedProject.assignee,
+        actingUser,
+        update: projectUpdate,
+      };
+
+      return Notification.projectUpdated(updateNotification, {
+        send: sender,
+        resolveGroup: resolver,
+      });
+    };
+
+    return Project.update(user, projectId, update, {
+      getProject: reader,
+      updateProject: updater,
+      notify: multichainNotifier,
+    });
+  };
+}
+
+function multichainProjectToProjectProject(multichainProject: Multichain.Project): Project.Project {
+  return {
+    id: multichainProject.id,
+    creationUnixTs: multichainProject.creationUnixTs,
+    status: multichainProject.status,
+    displayName: multichainProject.displayName,
+    assignee: multichainProject.assignee,
+    description: multichainProject.description,
+    amount: multichainProject.amount,
+    currency: multichainProject.currency,
+    thumbnail: multichainProject.thumbnail,
+    permissions: multichainProject.permissions,
+    log: multichainProject.log.map(log => {
+      return {
+        intent: log.intent,
+        snapshot: {
+          displayName: log.snapshot.displayName,
+          permissions: {},
+        },
+      };
+    }),
   };
 }
