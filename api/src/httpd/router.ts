@@ -669,7 +669,6 @@ export const registerRoutes = (
     getSchema(server, "workflowitemList"),
     (request, reply) => {
       const req = request as AuthenticatedRequest;
-      // TODO: Typedefinition for workflowitems missing
       return workflowitemLister(req.user, req.query.projectId, req.query.subprojectId)
         .then(
           (workflowitems): HttpResponse => [

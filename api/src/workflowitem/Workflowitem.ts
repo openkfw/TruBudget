@@ -70,11 +70,33 @@ const schema = Joi.object().keys({
     .timestamp("unix")
     .required(),
   displayName: Joi.string().required(),
-  exchangeRate: Joi.string(),
-  // TODO set proper date format
-  billingDate: Joi.string(),
-  amount: Joi.string(),
-  currency: Joi.string(),
+  exchangeRate: Joi.string().when("status", {
+    is: Joi.valid("closed"),
+    then: Joi.required(),
+    otherwise: Joi.optional(),
+  }),
+  billingDate: Joi.date()
+    .iso()
+    .when("status", {
+      is: Joi.valid("closed"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
+  amount: Joi.string()
+    .when("amountType", {
+      is: Joi.valid("disbursed", "allocated"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() })
+    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+  currency: Joi.string()
+    .when("amountType", {
+      is: Joi.valid("disbursed", "allocated"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() }),
   amountType: Joi.string()
     .valid("N/A", "disbursed", "allocated")
     .required(),
@@ -92,8 +114,7 @@ const schema = Joi.object().keys({
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
-  // TODO find better values for log
-  log: Joi.array().items(Joi.any()),
+  log: Joi.array(),
 });
 
 export function validateWorkflowitem(input: any): Workflowitem {
@@ -120,7 +141,10 @@ function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolea
   return isAllowedToSeeData;
 }
 
-function sortWorkflowitems(workflowitems: Workflowitem[], ordering: string[]): Workflowitem[] {
+export function sortWorkflowitems(
+  workflowitems: Workflowitem[],
+  ordering: string[],
+): Workflowitem[] {
   const indexedItems = workflowitems.map((item, index) => {
     // tslint:disable-next-line:no-string-literal
     item["_index"] = index;

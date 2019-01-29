@@ -3,9 +3,9 @@ import { userIdentities } from "../project";
 import { User } from "./User";
 import {
   redactHistoryEvent,
-  scrubWorkflowitem,
   removeEventLog,
   ScrubbedWorkflowitem,
+  scrubWorkflowitem,
   sortWorkflowitems,
   Workflowitem,
 } from "./Workflowitem";
@@ -27,14 +27,8 @@ export async function getAllScrubbedItems(
   const workflowitems = await getAllWorkflowitems();
   const sortedWorkflowitems = await sortWorkflowitems(workflowitems, workflowitemOrdering);
   const scrubbedWorkflowitems = await sortedWorkflowitems.map(workflowitem => {
-    workflowitem.log.map(historyevent =>
-      redactHistoryEvent(
-        historyevent,
-        getAllowedIntents(userIdentities(asUser), workflowitem.permissions),
-      ),
-    );
     return scrubWorkflowitem(workflowitem, asUser);
   });
 
-  return scrubbedWorkflowitems.map(removeEventLog);
+  return scrubbedWorkflowitems;
 }

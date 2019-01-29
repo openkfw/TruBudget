@@ -139,7 +139,6 @@ export function getWorkflowitemList(
         multichainClient,
         projectId,
         subprojectId,
-        user,
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };

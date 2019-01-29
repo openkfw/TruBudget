@@ -53,15 +53,6 @@ export interface Workflowitem {
   log: HistoryEvent[];
 }
 
-export interface User {
-  id: string;
-  groups: string[];
-}
-
-export function userIdentities({ id, groups }: User): string[] {
-  return [id].concat(groups);
-}
-
 export function applyUpdate(event: Event, workflowitem: Workflowitem): true | undefined {
   if (event.intent !== "workflowitem.update") return;
   switch (event.dataVersion) {
@@ -161,7 +152,7 @@ export function handleCreate(event: Event): Workflowitem | undefined {
   switch (event.dataVersion) {
     case 1: {
       const { workflowitem, permissions } = event.data;
-      const values = { ...deepcopy(workflowitem), permissions: deepcopy(permissions) };
+      const values = { ...deepcopy(workflowitem), permissions: deepcopy(permissions), log: [] };
       return values as Workflowitem;
     }
   }
