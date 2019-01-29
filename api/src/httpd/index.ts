@@ -13,6 +13,8 @@ export type GlobalPermissionGranter = (
   intent: Intent,
 ) => Promise<void>;
 
+export type ProjectCreator = (token: AuthToken, createData: object) => Promise<void>;
+
 export type ProjectAssigner = (
   token: AuthToken,
   projectId: string,

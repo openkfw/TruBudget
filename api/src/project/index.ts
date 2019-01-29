@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import {
@@ -9,6 +10,11 @@ import {
   scrubHistory,
 } from "./Project";
 import { User } from "./User";
+
+import Intent from "../authz/intents";
+import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
+import * as Permission from "./Permission";
+import { CreateData, isProjectCreateable } from "./Project";
 
 export * from "./Project";
 export * from "./User";
@@ -24,6 +30,10 @@ export interface Update {
 }
 
 export type ListReader = () => Promise<Project[]>;
+
+export type PermissionListReader = () => Promise<Permission.Permissions>;
+
+export type Creator = (createData: Project) => Promise<void>;
 
 export type Assigner = (projectId: string, assignee: string) => Promise<void>;
 
@@ -62,6 +72,78 @@ export async function getAllVisible(
     .filter(project => isProjectVisibleTo(project, actingUser))
     .map(project => scrubHistory(project, actingUser));
   return authorizedProjects;
+}
+
+/**
+ *
+ * @param actingUser The requesting user.
+ * @param rawCreateData The data used to create project. Internally mapped to Project.Project.
+ */
+export async function create(
+  actingUser: User,
+  rawCreateData: any,
+  {
+    getAllPermissions,
+    getProject,
+    createProject,
+  }: {
+    getAllPermissions: PermissionListReader;
+    getProject: Reader;
+    createProject: Creator;
+  },
+): Promise<void> {
+  const allPermissions = await getAllPermissions();
+  if (!isProjectCreateable(allPermissions, actingUser)) {
+    return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to create a Project.`));
+  }
+
+  // Max. length of projectId is 32
+  // By converting to hex, each byte is represented by 2 characters
+  // Therefore it should be called with an input length of 16
+  const randomString = (bytes = 16) => randomBytes(bytes).toString("hex");
+
+  const getProjectDefaultPermissions = (userId: string): Permission.Permissions => {
+    if (userId === "root") return {};
+
+    const intents: Intent[] = [
+      "project.viewSummary",
+      "project.viewDetails",
+      "project.assign",
+      "project.update",
+      "project.intent.listPermissions",
+      "project.intent.grantPermission",
+      "project.intent.revokePermission",
+      "project.createSubproject",
+      "project.viewHistory",
+      "project.close",
+    ];
+    return intents.reduce(
+      (obj, intent): Permission.Permissions => ({ ...obj, [intent]: [userId] }),
+      {},
+    );
+  };
+
+  const project: Project = {
+    id: value("id", rawCreateData.id || randomString(), isNonemptyString),
+    creationUnixTs: rawCreateData.creationUnixTs || new Date().toISOString(),
+    status: value("status", rawCreateData.status, x => ["open", "closed"].includes(x), "open"),
+    displayName: value("displayName", rawCreateData.displayName, isNonemptyString),
+    description: value("description", rawCreateData.description, isNonemptyString),
+    amount: value("amount", rawCreateData.amount, isNonemptyString),
+    assignee: value("assignee", rawCreateData.assignee, isUserOrUndefined, actingUser.id),
+    currency: value("currency", rawCreateData.currency, isNonemptyString).toUpperCase(),
+    thumbnail: value("thumbnail", rawCreateData.thumbnail, x => typeof x === "string", ""),
+    permissions: getProjectDefaultPermissions(actingUser.id),
+    log: [],
+  };
+
+  // check if projectId already exists
+  const existingProject = await getProject(project.id).catch(() => undefined);
+  if (existingProject === undefined) {
+    await createProject(project);
+  } else {
+    return Promise.reject(Error(`There already exists a project with projectId ${project.id}.`));
+  }
 }
 
 /**

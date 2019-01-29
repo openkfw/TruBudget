@@ -1,7 +1,7 @@
 import { assert } from "chai";
 
 import * as Permission from ".";
-import { Granter, ListReader } from ".";
+import { PermissionGranter, PermissionListReader } from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { Permissions } from "./Permission";
@@ -15,7 +15,7 @@ describe("Listing permissions", () => {
     };
     const actingUser: User = { id: "alice", groups: ["friends"] };
 
-    const getAllPermissions: ListReader = async () => permissionsMock;
+    const getAllPermissions: PermissionListReader = async () => permissionsMock;
 
     const permissions = await Permission.list(actingUser, { getAllPermissions });
 
@@ -28,7 +28,7 @@ describe("Listing permissions", () => {
       "global.grantPermission": ["otherUser"],
     };
     const actingUser: User = { id: "alice", groups: ["friends"] };
-    let getAllPermissions: ListReader = () => Promise.resolve(permissionsMock);
+    let getAllPermissions: PermissionListReader = () => Promise.resolve(permissionsMock);
 
     delete permissionsMock["global.listPermissions"];
     getAllPermissions = async () => permissionsMock;
@@ -45,10 +45,10 @@ describe("Granting a permission", () => {
     };
     const actingUser: User = { id: "alice", groups: ["friends"] };
 
-    const getAllPermissions: ListReader = () => Promise.resolve(permissionsMock);
+    const getAllPermissions: PermissionListReader = () => Promise.resolve(permissionsMock);
 
     const calls = new Map<string, string>();
-    const grantPermission: Granter = (intent, userId) => {
+    const grantPermission: PermissionGranter = (intent, userId) => {
       calls.set(intent, userId);
       return Promise.resolve();
     };
@@ -73,10 +73,10 @@ describe("Granting a permission", () => {
     };
     const actingUser: User = { id: "alice", groups: ["friends"] };
 
-    const getAllPermissions: ListReader = () => Promise.resolve(permissionsMock);
+    const getAllPermissions: PermissionListReader = () => Promise.resolve(permissionsMock);
 
     const calls = new Map<string, string>();
-    const grantPermission: Granter = (intent, userId) => {
+    const grantPermission: PermissionGranter = (intent, userId) => {
       calls.set(intent, userId);
       return Promise.resolve();
     };
@@ -103,10 +103,10 @@ describe("Granting a permission", () => {
     };
     const actingUser: User = { id: "alice", groups: ["friends"] };
 
-    const getAllPermissions: ListReader = () => Promise.resolve(permissionsMock);
+    const getAllPermissions: PermissionListReader = () => Promise.resolve(permissionsMock);
 
     const calls = new Map<string, string>();
-    const grantPermission: Granter = (intent, userId) => {
+    const grantPermission: PermissionGranter = (intent, userId) => {
       calls.set(intent, userId);
       return Promise.resolve();
     };

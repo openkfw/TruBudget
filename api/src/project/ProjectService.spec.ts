@@ -1,9 +1,21 @@
 import { assert } from "chai";
 
-import { assign, Assigner, AssignmentNotifier, getAllVisible, ListReader, Reader } from ".";
+import {
+  assign,
+  Assigner,
+  AssignmentNotifier,
+  create,
+  CreateData,
+  Creator,
+  getAllVisible,
+  ListReader,
+  PermissionListReader,
+  Reader,
+} from ".";
 import * as Project from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
+import { Permissions } from "./Permission";
 import { User } from "./User";
 
 function newProject(id: string, permissions: object): Project.Project {
@@ -42,6 +54,90 @@ describe("When listing project,", () => {
       assert.equal(visibleProjects[0].id, "bobProject");
       assert.equal(visibleProjects[1].id, "friendsProject");
     }
+  });
+});
+
+describe("Creating a project,", () => {
+  it("requires a specific permission.", async () => {
+    const alice: User = { id: "alice", groups: ["friends"] };
+
+    const createIntent: Intent = "global.createProject";
+
+    const permissions: Permissions = {
+      "global.createProject": ["alice"],
+    };
+
+    const existingProject = newProject("aliceProject", { [createIntent]: ["alice"] });
+
+    const permissionLister: PermissionListReader = async () => {
+      return permissions;
+    };
+    const projectReader: Reader = id => {
+      switch (id) {
+        case "aliceProject":
+          return Promise.resolve(existingProject);
+        default:
+          return Promise.reject(id);
+      }
+    };
+
+    const createdProjects = new Map<string, Project.Project>();
+    const creator: Creator = (data): Promise<void> => {
+      createdProjects.set(data.displayName, data);
+      return Promise.resolve();
+    };
+
+    const createData: CreateData = {
+      displayName: "testProject",
+      description: "testDescription",
+      amount: "5000",
+      currency: "EUR",
+      id: "testId",
+      creationUnixTs: "1548771169",
+      status: "open",
+      assignee: "alice",
+      thumbnail: "testThumbnail",
+    };
+
+    const createdProject: Project.Project = {
+      displayName: "testProject",
+      description: "testDescription",
+      amount: "5000",
+      currency: "EUR",
+      id: "testId",
+      creationUnixTs: "1548771169",
+      status: "open",
+      assignee: "alice",
+      thumbnail: "testThumbnail",
+      permissions: {
+        "project.viewSummary": ["alice"],
+        "project.viewDetails": ["alice"],
+        "project.assign": ["alice"],
+        "project.update": ["alice"],
+        "project.intent.listPermissions": ["alice"],
+        "project.intent.grantPermission": ["alice"],
+        "project.intent.revokePermission": ["alice"],
+        "project.createSubproject": ["alice"],
+        "project.viewHistory": ["alice"],
+        "project.close": ["alice"],
+      },
+      log: [],
+    };
+
+    const deps = {
+      getAllPermissions: permissionLister,
+      getProject: projectReader,
+      createProject: creator,
+    };
+
+    await assertIsResolved(create(alice, createData, deps));
+    assert.deepEqual(createdProjects.get(createData.displayName), createdProject);
+
+    createData.id = "aliceProject";
+
+    await assertIsRejectedWith(create(alice, createData, deps), Error);
+
+    assert.equal(createdProjects.size, 1);
   });
 });
 

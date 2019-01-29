@@ -3,8 +3,20 @@ import Joi = require("joi");
 import { getAllowedIntents, hasIntersection } from "../authz";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent } from "../authz/types";
+import * as Permission from "./Permission";
 import { User, userIdentities } from "./User";
 
+export interface CreateData {
+  displayName: string;
+  description: string;
+  amount: string;
+  currency: string;
+  id?: string;
+  creationUnixTs?: string;
+  status?: "open" | "closed";
+  assignee?: string;
+  thumbnail?: string;
+}
 export interface Project {
   id: string;
   creationUnixTs: string;
@@ -88,6 +100,16 @@ export function isProjectVisibleTo(project: Project, actingUser: User): boolean 
   const allowedIntents: Intent[] = ["project.viewSummary", "project.viewDetails"];
   const userIntents = getAllowedIntents(userIdentities(actingUser), project.permissions);
   const hasPermission = allowedIntents.some(allowedIntent => userIntents.includes(allowedIntent));
+  return hasPermission;
+}
+
+export function isProjectCreateable(
+  permissions: Permission.Permissions,
+  actingUser: User,
+): boolean {
+  const allowedIntent: Intent = "global.createProject";
+  const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
+  const hasPermission = userIntents.includes(allowedIntent);
   return hasPermission;
 }
 

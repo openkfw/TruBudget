@@ -19,6 +19,13 @@ export function isAllowedToGrant(permissions: Permissions, actingUser: User): bo
   return hasPermission;
 }
 
+export function isAllowedToCreateProject(permissions: Permissions, actingUser: User): boolean {
+  const allowedIntent: Intent = "global.createProject";
+  const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
+  const hasPermission = userIntents.includes(allowedIntent);
+  return hasPermission;
+}
+
 export const publish = async (
   multichain: MultichainClient,
   globalstreamName: string,

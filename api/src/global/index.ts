@@ -14,13 +14,13 @@ export * from "./User";
 
 const globalstreamName = "global";
 
-export type ListReader = () => Promise<Permission.Permissions>;
+export type PermissionListReader = () => Promise<Permission.Permissions>;
 
-export type Granter = (intent: Intent, userId: string) => Promise<void>;
+export type PermissionGranter = (intent: Intent, userId: string) => Promise<void>;
 
 export async function list(
   actingUser: User,
-  { getAllPermissions }: { getAllPermissions: ListReader },
+  { getAllPermissions }: { getAllPermissions: PermissionListReader },
 ): Promise<Permission.Permissions> {
   const allPermissions = await getAllPermissions();
   if (!isAllowedToSee(allPermissions, actingUser)) {
@@ -36,7 +36,7 @@ export async function grant(
   {
     getAllPermissions,
     grantPermission,
-  }: { getAllPermissions: ListReader; grantPermission: Granter },
+  }: { getAllPermissions: PermissionListReader; grantPermission: PermissionGranter },
 ): Promise<void> {
   const allPermissions = await getAllPermissions();
   const permissionsForIntent: People = allPermissions[intent] || [];
@@ -49,6 +49,8 @@ export async function grant(
   }
   await grantPermission(intent, identity);
 }
+
+// old implementations
 
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
   await multichain.getOrCreateStream({
@@ -70,8 +72,6 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
     await publish(multichain, globalstreamName, args);
   }
 };
-
-// old implementations
 
 export const oldGetPermissions = async (
   multichain: MultichainClient,

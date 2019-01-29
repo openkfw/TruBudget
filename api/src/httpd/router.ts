@@ -1,7 +1,13 @@
 import { FastifyInstance } from "fastify";
 
-import { AllProjectsReader, ProjectAssigner, ProjectUpdater } from ".";
-import { AllPermissionsReader, GlobalPermissionGranter } from ".";
+import {
+  AllPermissionsReader,
+  AllProjectsReader,
+  GlobalPermissionGranter,
+  ProjectAssigner,
+  ProjectCreator,
+  ProjectUpdater,
+} from ".";
 import Intent from "../authz/intents";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { revokeGlobalPermission } from "../global/controller/revokePermission";
@@ -260,12 +266,14 @@ export const registerRoutes = (
     updateProject,
     listGlobalPermissions,
     grantGlobalPermission,
-  }: {
+  }: // createProject,
+  {
     listProjects: AllProjectsReader;
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
     listGlobalPermissions: AllPermissionsReader;
     grantGlobalPermission: GlobalPermissionGranter;
+    // createProject: ProjectCreator;
   },
 ) => {
   // ------------------------------------------------------------
@@ -354,6 +362,18 @@ export const registerRoutes = (
     `${urlPrefix}/global.createProject`,
     getSchema(server, "createProject"),
     (request, reply) => {
+      // const req = request as AuthenticatedRequest;
+      // const token = req.user;
+      // createProject(token, req.body.data.project)
+      //   .then(
+      //     (permissions): HttpResponse => [
+      //       200,
+      //       {
+      //         apiVersion: "1.0",
+      //         data: "OK",
+      //       },
+      //     ],
+      //   )
       createProject(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
