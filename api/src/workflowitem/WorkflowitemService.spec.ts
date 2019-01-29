@@ -106,7 +106,7 @@ describe("Closing a project", () => {
         subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
         !workflowitemIds.includes(workflowitemId)
       ) {
-        return Promise.reject();
+        return Promise.reject("Incorrect requirements");
       }
       return;
     };
@@ -116,7 +116,7 @@ describe("Closing a project", () => {
         subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
         !workflowitemIds.includes(workflowitemId.id)
       ) {
-        return Promise.reject();
+        return Promise.reject("Incorrect requirements");
       }
       return;
     };
@@ -172,7 +172,7 @@ describe("Closing a project", () => {
         subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
         !workflowitems.filter(item => item.id === workflowitemId)
       ) {
-        return Promise.reject();
+        return Promise.reject("Incorrect requirements");
       }
       return;
     };
@@ -183,7 +183,7 @@ describe("Closing a project", () => {
         !workflowitems.filter(item => item.id === workflowitemId) ||
         actingUser !== bob
       ) {
-        return Promise.reject();
+        return Promise.reject("Incorrect requirements");
       }
       return;
     };

@@ -270,6 +270,12 @@ export function isWorkflowitemClosable(
       message: "The workflowitem you want to close is not available",
     };
   } else {
+    if (closingWorkflowitem.status === "closed") {
+      throw {
+        kind: "PreconditionError",
+        message: "The workflowitem you want to close is already closed",
+      };
+    }
     const userIntents = getAllowedIntents(
       userIdentities(closingUser),
       closingWorkflowitem.permissions,
