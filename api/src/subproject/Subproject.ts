@@ -36,19 +36,18 @@ export interface ScrubbedSubproject {
 }
 
 interface HistoryEvent {
+  key: string; // the resource ID (same for all events that relate to the same resource)
   intent: Intent;
+  createdBy: string;
+  createdAt: string;
+  dataVersion: number; // integer
+  data: any;
   snapshot: {
     displayName: string;
   };
 }
 
-type ScrubbedHistoryEvent = null | {
-  intent: Intent;
-  snapshot: {
-    displayName: string;
-    permissions?: object;
-  };
-};
+type ScrubbedHistoryEvent = null | HistoryEvent;
 
 const schema = Joi.object({
   id: Joi.string()
@@ -72,7 +71,7 @@ const schema = Joi.object({
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
-  log: Joi.array(),
+  log: Joi.array().required(),
 });
 
 export function validateSubproject(input: Subproject): Subproject {
@@ -107,9 +106,7 @@ export function isSubprojectUpdateable(subproject: Subproject, actingUser: User)
 
 export function scrubHistory(subproject: Subproject, actingUser: User): ScrubbedSubproject {
   const userIntents = getAllowedIntents(userIdentities(actingUser), subproject.permissions);
-  const log = subproject.log
-    ? subproject.log.map(event => redactHistoryEvent(event, userIntents))
-    : [];
+  const log = subproject.log.map(event => redactHistoryEvent(event, userIntents));
   const scrubbed = {
     id: subproject.id,
     creationUnixTs: subproject.creationUnixTs,

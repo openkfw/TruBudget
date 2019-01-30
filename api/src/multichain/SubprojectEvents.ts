@@ -32,7 +32,6 @@ interface HistoryEvent {
   data: any;
   snapshot: {
     displayName: string;
-    // permissions: object;
   };
 }
 

@@ -3,15 +3,15 @@ function set_alias() {
   alias "$@"
 }
 
-chainname=ACMECorpChain
+chainname=TrubudgetChain
 
 export HOST_IP="$(ifconfig en0 inet | grep 'inet ' | awk '{ print $2 }')"
 
 [[ -r my-docker-compose.yml ]] \
   && set_alias Dc='docker-compose -f my-docker-compose.yml'
 
-set_alias multichain-cli='Dc exec master-node multichain-cli $chainname'
-set_alias slave-multichain-cli='Dc exec slave-node multichain-cli $chainname'
+set_alias multichain-cli="Dc exec master-node multichain-cli $chainname"
+set_alias slave-multichain-cli="Dc exec slave-node multichain-cli $chainname"
 
 set_alias exec-master='Dc exec master-node bash'
 set_alias exec-slave='Dc exec slave-node bash'

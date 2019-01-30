@@ -45,21 +45,19 @@ export interface ScrubbedProject {
   log: ScrubbedHistoryEvent[];
 }
 
-interface HistoryEvent {
+export interface HistoryEvent {
+  key: string; // the resource ID (same for all events that relate to the same resource)
   intent: Intent;
+  createdBy: string;
+  createdAt: string;
+  dataVersion: number; // integer
+  data: any;
   snapshot: {
     displayName: string;
-    permissions: object;
   };
 }
 
-type ScrubbedHistoryEvent = null | {
-  intent: Intent;
-  snapshot: {
-    displayName: string;
-    permissions?: object;
-  };
-};
+type ScrubbedHistoryEvent = null | HistoryEvent;
 
 const schema = Joi.object().keys({
   id: Joi.string()
@@ -144,10 +142,7 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["project.update", ["project.viewDetails"]],
   ["project.close", ["project.viewSummary", "project.viewDetails"]],
   ["project.archive", ["project.viewSummary", "project.viewDetails"]],
-  [
-    "project.createSubproject",
-    ["project.viewDetails", "subproject.viewSummary", "subproject.viewDetails"],
-  ],
+  ["project.createSubproject", ["project.viewDetails"]],
 ]);
 
 function redactHistoryEvent(event: HistoryEvent, userIntents: Intent[]): ScrubbedHistoryEvent {
@@ -160,22 +155,5 @@ function redactHistoryEvent(event: HistoryEvent, userIntents: Intent[]): Scrubbe
   const allowedIntents = requiredPermissions.get(observedIntent);
   const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
 
-  if (!isAllowedToSee) {
-    // The user can't see the event..
-    return null;
-  }
-
-  // The event is visible, but what about the permissions?
-  // project.createSubproject is a special case here..
-  const permissionListingPermission =
-    event.intent === "project.createSubproject"
-      ? "subproject.intent.listPermissions"
-      : "project.intent.listPermissions";
-
-  if (!userIntents.includes(permissionListingPermission)) {
-    // The user can see the event but not the associated (sub-)project permissions:
-    delete event.snapshot.permissions;
-  }
-
-  return event;
+  return isAllowedToSee ? event : null;
 }

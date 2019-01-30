@@ -15,7 +15,6 @@ import { AuthToken } from "./authz/token";
 import * as Permission from "./global";
 import * as HTTP from "./httpd";
 import * as Multichain from "./multichain";
-import { MultichainClient } from "./multichain/Client.h";
 import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
@@ -28,38 +27,24 @@ export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
 
     const project: Project.ScrubbedProject = await Project.getOne(actingUser, projectId, {
       getProject: async id => {
-        const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
-        return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+        // return Project.validateProject(await Multichain.getAndCacheProject(conn, id));
+        return Project.validateProject(await Multichain.getProject(conn, id));
       },
     });
 
     const subprojects: Subproject.ScrubbedSubproject[] = await Subproject.getAllVisible(
       actingUser,
-      projectId,
       {
-        getAllSubprojects: async id => {
-          const list: Multichain.Subproject[] = await Multichain.getSubprojectList(conn, id);
-          return list.map(multichainSubproject => {
-            return Subproject.validateSubproject(
-              multichainSubprojectToSubprojectSubproject(multichainSubproject),
-            );
-          });
+        getAllSubprojects: async () => {
+          const list: Multichain.Subproject[] = await Multichain.getSubprojectList(conn, projectId);
+          return list.map(Subproject.validateSubproject);
         },
       },
     );
 
     const httpProject: HTTP.ProjectAndSubprojects = {
       project: {
-        log: project.log.map(scrubbedEvent =>
-          scrubbedEvent === null
-            ? null
-            : {
-                intent: scrubbedEvent.intent,
-                snapshot: {
-                  displayName: scrubbedEvent.snapshot.displayName,
-                },
-              },
-        ),
+        log: project.log,
         allowedIntents: getAllowedIntents(Project.userIdentities(actingUser), project.permissions),
         data: {
           id: project.id,
@@ -105,7 +90,7 @@ export function getProjectPermissionList(
 
     const reader: Project.Reader = async id => {
       const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
-      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+      return Project.validateProject(multichainProject);
     };
 
     const permissionsReader: Project.PermissionsLister = async id => {
@@ -130,7 +115,7 @@ export function grantProjectPermission(conn: Multichain.ConnToken): HTTP.Project
 
     const reader: Project.Reader = async id => {
       const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
-      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+      return Project.validateProject(multichainProject);
     };
 
     const granter: Project.Granter = async (id, selectedGrantee, selectedIntent) => {
@@ -148,25 +133,16 @@ export function getProjectList(conn: Multichain.ConnToken): HTTP.AllProjectsRead
   return async (token: AuthToken) => {
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
-    const lister: Project.ListReader = async () => {
-      const projectList: Multichain.Project[] = await Multichain.getProjectList(conn);
-      return projectList.map(multichainProject => {
-        return Project.validateProject(multichainProjectToProjectProject(multichainProject));
-      });
-    };
     const projects: Project.ScrubbedProject[] = await Project.getAllVisible(actingUser, {
-      getAllProjects: lister,
+      getAllProjects: async () => {
+        const projectList: Multichain.Project[] = await Multichain.getAndCacheProjectList(conn);
+        // const projectList: Multichain.Project[] = await Multichain.getProjectList(conn);
+        return projectList.map(Project.validateProject);
+      },
     });
+
     return projects.map(project => ({
-      log: project.log.map(scrubbedEvent => {
-        if (scrubbedEvent === null) return null;
-        return {
-          intent: scrubbedEvent.intent,
-          snapshot: {
-            displayName: scrubbedEvent.snapshot.displayName,
-          },
-        };
-      }),
+      log: project.log,
       allowedIntents: getAllowedIntents(Project.userIdentities(actingUser), project.permissions),
       data: {
         id: project.id,
@@ -195,7 +171,7 @@ export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
 
     const projectReader: Project.Reader = async id => {
       const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
-      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+      return Project.validateProject(multichainProject);
     };
 
     const creator: Project.Creator = async project => {
@@ -221,38 +197,31 @@ export function assignProject(conn: Multichain.ConnToken): HTTP.ProjectAssigner 
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
-    const multichainAssigner: Project.Assigner = (id, selectedAssignee) =>
-      Multichain.writeProjectAssignedToChain(conn, issuer, id, selectedAssignee);
-
-    const multichainNotifier: Project.AssignmentNotifier = (project, user) => {
-      const notificationResource = Multichain.generateResources(project.id);
-      const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(conn, issuer, message, recipient, notificationResource);
-
-      const resolver: Notification.GroupResolver = groupId => Group.getUsers(conn, groupId);
-
-      const assignmentNotification: Notification.ProjectAssignment = {
-        projectId: project.id,
-        actingUser: user,
-        assignee: project.assignee,
-      };
-
-      return Notification.projectAssigned(assignmentNotification, {
-        send: sender,
-        resolveGroup: resolver,
-      });
-    };
-
-    const reader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
-
-      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
-    };
-
     return Project.assign(actingUser, projectId, assignee, {
-      getProject: reader,
-      saveProjectAssignment: multichainAssigner,
-      notify: multichainNotifier,
+      getProject: async id => Project.validateProject(await Multichain.getProject(conn, id)),
+      saveProjectAssignment: (id, selectedAssignee) =>
+        Multichain.writeProjectAssignedToChain(conn, issuer, id, selectedAssignee),
+      notify: (project, user) => {
+        const assignmentNotification: Notification.ProjectAssignment = {
+          projectId: project.id,
+          actingUser: user,
+          assignee: project.assignee,
+        };
+
+        return Notification.projectAssigned(assignmentNotification, {
+          send: (message, recipient) => {
+            const notificationResource = Multichain.generateResources(project.id);
+            return Multichain.issueNotification(
+              conn,
+              issuer,
+              message,
+              recipient,
+              notificationResource,
+            );
+          },
+          resolveGroup: groupId => Group.getUsers(conn, groupId),
+        });
+      },
     });
   };
 }
@@ -262,71 +231,39 @@ export function updateProject(conn: Multichain.ConnToken): HTTP.ProjectUpdater {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
-    const reader: Project.Reader = async id => {
-      const multichainProject = await Multichain.getProject(conn, id);
-      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
-    };
-
-    const updater: Project.Updater = async (id, data) => {
-      const multichainUpdate: Multichain.ProjectUpdate = {};
-      if (data.displayName !== undefined) multichainUpdate.displayName = data.displayName;
-      if (data.description !== undefined) multichainUpdate.description = data.description;
-      if (data.amount !== undefined) multichainUpdate.amount = data.amount;
-      if (data.currency !== undefined) multichainUpdate.currency = data.currency;
-      if (data.thumbnail !== undefined) multichainUpdate.thumbnail = data.thumbnail;
-
-      await Multichain.updateProject(conn, issuer, id, multichainUpdate);
-    };
-
-    const multichainNotifier: Project.UpdateNotifier = (updatedProject, user, projectUpdate) => {
-      const notificationResource = Multichain.generateResources(updatedProject.id);
-      const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(conn, issuer, message, recipient, notificationResource);
-
-      const resolver: Notification.GroupResolver = groupId => Group.getUsers(conn, groupId);
-
-      const updateNotification: Notification.ProjectUpdate = {
-        projectId: updatedProject.id,
-        assignee: updatedProject.assignee,
-        actingUser: user,
-        update: projectUpdate,
-      };
-
-      return Notification.projectUpdated(updateNotification, {
-        send: sender,
-        resolveGroup: resolver,
-      });
-    };
-
     return Project.update(actingUser, projectId, update, {
-      getProject: reader,
-      updateProject: updater,
-      notify: multichainNotifier,
+      getProject: async id => Project.validateProject(await Multichain.getProject(conn, id)),
+      updateProject: async (id, data) => {
+        const multichainUpdate: Multichain.ProjectUpdate = {};
+        if (data.displayName !== undefined) multichainUpdate.displayName = data.displayName;
+        if (data.description !== undefined) multichainUpdate.description = data.description;
+        if (data.amount !== undefined) multichainUpdate.amount = data.amount;
+        if (data.currency !== undefined) multichainUpdate.currency = data.currency;
+        if (data.thumbnail !== undefined) multichainUpdate.thumbnail = data.thumbnail;
+        await Multichain.updateProject(conn, issuer, id, multichainUpdate);
+      },
+      notify: (updatedProject, user, projectUpdate) => {
+        const updateNotification: Notification.ProjectUpdate = {
+          projectId: updatedProject.id,
+          assignee: updatedProject.assignee,
+          actingUser: user,
+          update: projectUpdate,
+        };
+        return Notification.projectUpdated(updateNotification, {
+          send: (message, recipient) => {
+            const notificationResource = Multichain.generateResources(updatedProject.id);
+            return Multichain.issueNotification(
+              conn,
+              issuer,
+              message,
+              recipient,
+              notificationResource,
+            );
+          },
+          resolveGroup: groupId => Group.getUsers(conn, groupId),
+        });
+      },
     });
-  };
-}
-
-function multichainProjectToProjectProject(multichainProject: Multichain.Project): Project.Project {
-  return {
-    id: multichainProject.id,
-    creationUnixTs: multichainProject.creationUnixTs,
-    status: multichainProject.status,
-    displayName: multichainProject.displayName,
-    assignee: multichainProject.assignee,
-    description: multichainProject.description,
-    amount: multichainProject.amount,
-    currency: multichainProject.currency,
-    thumbnail: multichainProject.thumbnail,
-    permissions: multichainProject.permissions,
-    log: multichainProject.log.map(log => {
-      return {
-        ...log,
-        snapshot: {
-          displayName: log.snapshot.displayName,
-          permissions: {},
-        },
-      };
-    }),
   };
 }
 
@@ -449,25 +386,6 @@ export function closeWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowitem
       closeWorkflowitem: multichainCloser,
       notify: multichainNotifier,
     });
-  };
-}
-
-function multichainSubprojectToSubprojectSubproject(
-  multichainSubproject: Multichain.Subproject,
-): Subproject.Subproject {
-  return {
-    id: multichainSubproject.id,
-    creationUnixTs: multichainSubproject.creationUnixTs,
-    status: multichainSubproject.status,
-    displayName: multichainSubproject.displayName,
-    description: multichainSubproject.description,
-    amount: multichainSubproject.amount,
-    currency: multichainSubproject.currency,
-    exchangeRate: multichainSubproject.currency,
-    billingDate: multichainSubproject.currency,
-    assignee: multichainSubproject.assignee,
-    permissions: multichainSubproject.permissions,
-    log: multichainSubproject.log,
   };
 }
 

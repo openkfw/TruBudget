@@ -22,14 +22,9 @@ export const getAllowedIntents = (
   if (userAndGroups.includes("root")) {
     return allIntents;
   }
-
   const allowedIntents = Object.keys(resourcePermissions as any).filter(intent =>
     hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
-  logger.debug(
-    { userAndGroups, allowedIntents },
-    `Getting allowed intents for user ${userAndGroups[0]}`,
-  );
   return allowedIntents;
 };
 

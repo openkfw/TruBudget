@@ -1,61 +1,31 @@
 import uuid = require("uuid");
 
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import { People } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
-import { isNotEmpty } from "../lib/emptyChecks";
-import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
+import { initCache } from "./cache";
 import { asMapKey } from "./Client";
 import { MultichainClient, RpcMultichainClient } from "./Client.h";
-import { ConnToken as ConnectionToken } from "./conn";
+import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
-import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import { Issuer } from "./issuer";
 import { ConnectionSettings } from "./RpcClient.h";
 import * as MultichainWorkflowitem from "./Workflowitem";
 
+export * from "./cache";
 export * from "./event";
 export * from "./Workflowitem";
 export * from "./SubprojectEvents";
-export type ConnToken = ConnectionToken;
+export * from "./issuer";
+export * from "./ProjectEvents";
+export * from "./SubprojectEvents";
+export { ConnToken } from "./conn";
 
-const projectSelfKey = "self";
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 const workflowitemOrderingKey = subprojectId => `${subprojectId}_workflowitem_ordering`;
 const globalSelfKey = "self";
-
 export type Permissions = { [key in Intent]?: string[] };
-
-export interface Issuer {
-  name: string;
-  address: string;
-}
-
-export interface Project {
-  id: string;
-  creationUnixTs: string;
-  status: "open" | "closed";
-  displayName: string;
-  assignee?: string;
-  description: string;
-  amount: string;
-  currency: string;
-  thumbnail: string;
-  permissions: AllowedUserGroupsByIntent;
-  log: HistoryEvent[];
-}
-
-interface HistoryEvent {
-  key: string; // the resource ID (same for all events that relate to the same resource)
-  intent: Intent;
-  createdBy: string;
-  createdAt: string;
-  dataVersion: number; // integer
-  data: any;
-  snapshot: {
-    displayName: string;
-  };
-}
 
 type ResourceType = "project" | "subproject" | "workflowitem";
 
@@ -64,217 +34,15 @@ interface NotificationResourceDescription {
   type: ResourceType;
 }
 
-export function init(rpcSettings: ConnectionSettings): ConnectionToken {
+export function init(rpcSettings: ConnectionSettings): ConnToken {
   const multichainClient = new RpcMultichainClient(rpcSettings);
   return {
     multichainClient,
+    cache: initCache(),
   };
 }
 
-export async function writeProjectAssignedToChain(
-  conn: ConnectionToken,
-  issuer: Issuer,
-  projectId: string,
-  assignee: string,
-): Promise<void> {
-  const intent: Intent = "project.assign";
-  const event = {
-    key: projectId,
-    intent,
-    createdBy: issuer.name,
-    createdAt: new Date().toISOString(),
-    dataVersion: 1,
-    data: { identity: assignee },
-  };
-
-  const streamName = projectId;
-  const streamItemKey = projectSelfKey;
-  const streamItem = { json: event };
-
-  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-  return conn.multichainClient
-    .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
-    .then(() => event);
-}
-
-export interface ProjectUpdate {
-  displayName?: string;
-  description?: string;
-  amount?: string;
-  currency?: string;
-  thumbnail?: string;
-}
-
-export async function createProjectOnChain(
-  conn: ConnectionToken,
-  issuer: Issuer,
-  project: Project,
-): Promise<void> {
-  const intent: Intent = "global.createProject";
-
-  const { permissions, ...metadata } = project;
-
-  const event: Event = {
-    key: project.id,
-    intent,
-    createdBy: issuer.name,
-    createdAt: new Date().toISOString(),
-    dataVersion: 1,
-    data: {
-      project: metadata,
-      permissions,
-    },
-  };
-
-  const streamName = project.id;
-  const streamItemKey = projectSelfKey;
-  const streamItem = { json: event };
-
-  const publishEvent = () => {
-    logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-    return conn.multichainClient
-      .getRpcClient()
-      .invoke("publish", streamName, streamItemKey, streamItem)
-      .then(() => event);
-  };
-
-  return conn.multichainClient
-    .getOrCreateStream({ kind: "project", name: streamName })
-    .then(() => publishEvent());
-}
-
-export async function updateProject(
-  conn: ConnectionToken,
-  issuer: Issuer,
-  projectId: string,
-  update: ProjectUpdate,
-): Promise<void> {
-  const intent: Intent = "project.update";
-
-  const event = {
-    key: projectId,
-    intent,
-    createdBy: issuer.name,
-    createdAt: new Date().toISOString(),
-    dataVersion: 1,
-    data: update,
-  };
-
-  const streamName = projectId;
-  const streamItemKey = projectSelfKey;
-  const streamItem = { json: event };
-
-  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
-  return conn.multichainClient
-    .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
-    .then(() => event);
-}
-
-export async function getProject(conn: ConnectionToken, id: string): Promise<Project> {
-  const streamItems = await fetchStreamItems(conn.multichainClient, id);
-  let project: Project | undefined;
-
-  for (const item of streamItems) {
-    const event = item.data.json as Event;
-    if (project === undefined) {
-      project = handleCreate(event);
-      if (project === undefined) {
-        throw Error(`Failed to read project: ${JSON.stringify(event)}.`);
-      }
-    } else {
-      const hasProcessedEvent =
-        applyUpdate(event, project) ||
-        applyAssign(event, project) ||
-        applyClose(event, project) ||
-        applyGrantPermission(event, project) ||
-        applyRevokePermission(event, project);
-      if (!hasProcessedEvent) {
-        throw Error(`Unexpected event: ${JSON.stringify(event)}.`);
-      }
-    }
-    project.log.push({
-      ...event,
-      snapshot: { displayName: deepcopy(project.displayName) },
-    });
-  }
-
-  if (project === undefined) {
-    throw Error(`Failed to source project ${id}`);
-  }
-
-  return project;
-}
-
-export async function getProjectList(conn: ConnectionToken): Promise<Project[]> {
-  const streamItems = await fetchStreamItems(conn.multichainClient);
-  const projectsMap = new Map<string, Project>();
-
-  for (const item of streamItems) {
-    const event = item.data.json as Event;
-    let project = projectsMap.get(asMapKey(item));
-    if (project === undefined) {
-      project = handleCreate(event);
-      if (project === undefined) {
-        throw Error(`Failed to read project: ${JSON.stringify(event)}.`);
-      }
-    } else {
-      // We've already encountered this project, so we can apply operations on it.
-      const hasProcessedEvent =
-        applyUpdate(event, project) ||
-        applyAssign(event, project) ||
-        applyClose(event, project) ||
-        applyGrantPermission(event, project) ||
-        applyRevokePermission(event, project);
-      if (!hasProcessedEvent) {
-        throw Error(`Unexpected event: ${JSON.stringify(event)}.`);
-      }
-    }
-    projectsMap.set(asMapKey(item), project);
-  }
-
-  return [...projectsMap.values()];
-}
-
-export async function getProjectPermissionList(
-  conn: ConnectionToken,
-  projectId: string,
-): Promise<Permissions> {
-  const project = await getProject(conn, projectId);
-  return project.permissions;
-}
-
-export async function grantProjectPermission(
-  conn: ConnectionToken,
-  issuer: Issuer,
-  projectId: string,
-  grantee: string,
-  intent: Intent,
-): Promise<void> {
-  const grantIntent: Intent = "project.intent.grantPermission";
-
-  const event = {
-    key: projectId,
-    intent: grantIntent,
-    createdBy: issuer.name,
-    createdAt: new Date().toISOString(),
-    dataVersion: 1,
-    data: { identity: grantee, intent },
-  };
-
-  const streamName = projectId;
-  const streamItemKey = projectSelfKey;
-  const streamItem = { json: event };
-
-  logger.debug(`Publishing ${grantIntent} to ${streamName}/${streamItemKey}`);
-  return conn.multichainClient
-    .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
-    .then(() => event);
-}
-
-export async function getGlobalPermissionList(conn: ConnectionToken): Promise<Permissions> {
+export async function getGlobalPermissionList(conn: ConnToken): Promise<Permissions> {
   try {
     const streamItems = await conn.multichainClient.v2_readStreamItems("global", globalSelfKey, 1);
     if (streamItems.length < 1) {
@@ -295,7 +63,7 @@ export async function getGlobalPermissionList(conn: ConnectionToken): Promise<Pe
 }
 
 export async function grantGlobalPermission(
-  conn: ConnectionToken,
+  conn: ConnToken,
   issuer: Issuer,
   grantee: string,
   intent: Intent,
@@ -306,9 +74,10 @@ export async function grantGlobalPermission(
   permissions[intent] = permissionsForIntent;
 
   const grantintent: Intent = "global.grantPermission";
+  const streamItemKey = globalSelfKey;
 
   const event = {
-    key: globalSelfKey,
+    key: streamItemKey,
     intent: grantintent,
     createdBy: issuer.name,
     createdAt: new Date().toISOString(),
@@ -317,7 +86,6 @@ export async function grantGlobalPermission(
   };
 
   const streamName = "global";
-  const streamItemKey = globalSelfKey;
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${grantintent} to ${streamName}/${streamItemKey}`);
@@ -342,7 +110,7 @@ export async function grantGlobalPermission(
 }
 
 export async function revokeGlobalPermission(
-  conn: ConnectionToken,
+  conn: ConnToken,
   issuer: Issuer,
   recipient: string,
   intent: Intent,
@@ -357,9 +125,10 @@ export async function revokeGlobalPermission(
   permissions[intent] = permissionsForIntent;
 
   const revokeIntent: Intent = "global.revokePermission";
+  const streamItemKey = globalSelfKey;
 
   const event = {
-    key: globalSelfKey,
+    key: streamItemKey,
     intent: revokeIntent,
     createdBy: issuer.name,
     createdAt: new Date().toISOString(),
@@ -368,7 +137,6 @@ export async function revokeGlobalPermission(
   };
 
   const streamName = "global";
-  const streamItemKey = globalSelfKey;
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${revokeIntent} to ${streamName}/${streamItemKey}`);
@@ -390,128 +158,8 @@ export async function revokeGlobalPermission(
   });
 }
 
-async function fetchStreamItems(
-  multichainClient: MultichainClient,
-  projectId?: string,
-): Promise<Liststreamkeyitems.Item[]> {
-  if (projectId !== undefined) {
-    return multichainClient.v2_readStreamItems(projectId, projectSelfKey);
-  } else {
-    // This fetches all the streams, keeping only project streams; then fetches the
-    // project-stream's self key, which includes the actual project data, as stream
-    // items.
-    const streams = await multichainClient.streams();
-    const streamItemLists = await Promise.all(
-      streams
-        .filter(stream => stream.details.kind === "project")
-        .map(stream => stream.name)
-        .map(streamName =>
-          multichainClient
-            .v2_readStreamItems(streamName, projectSelfKey)
-            .then(items =>
-              items.map(item => {
-                // Make it possible to associate the "self" key to the actual project later on:
-                item.keys = [streamName, projectSelfKey];
-                return item;
-              }),
-            )
-            .catch(err => {
-              logger.error(
-                { error: err },
-                `Failed to fetch '${projectSelfKey}' stream item from project stream ${streamName}`,
-              );
-              return null;
-            }),
-        ),
-    ).then(lists => lists.filter(isNotEmpty));
-    // Remove failed attempts and flatten into a single list of stream items:
-    return streamItemLists.reduce((acc, x) => acc.concat(x), []);
-  }
-}
-
-function handleCreate(event: Event): Project | undefined {
-  if (event.intent !== "global.createProject") return undefined;
-  switch (event.dataVersion) {
-    case 1: {
-      const { project, permissions } = event.data;
-      const values = { ...deepcopy(project), permissions: deepcopy(permissions), log: [] };
-      return values as Project;
-    }
-  }
-  throwUnsupportedEventVersion(event);
-}
-
-function applyUpdate(event: Event, project: Project): true | undefined {
-  if (event.intent !== "project.update") return;
-  switch (event.dataVersion) {
-    case 1: {
-      inheritDefinedProperties(project, event.data);
-      return true;
-    }
-  }
-  throwUnsupportedEventVersion(event);
-}
-
-function applyAssign(event: Event, project: Project): true | undefined {
-  if (event.intent !== "project.assign") return;
-  switch (event.dataVersion) {
-    case 1: {
-      const { identity } = event.data;
-      project.assignee = identity;
-      return true;
-    }
-  }
-  throwUnsupportedEventVersion(event);
-}
-
-function applyClose(event: Event, project: Project): true | undefined {
-  if (event.intent !== "project.close") return;
-  switch (event.dataVersion) {
-    case 1: {
-      project.status = "closed";
-      return true;
-    }
-  }
-  throwUnsupportedEventVersion(event);
-}
-
-function applyGrantPermission(event: Event, project: Project): true | undefined {
-  if (event.intent !== "project.intent.grantPermission") return;
-  switch (event.dataVersion) {
-    case 1: {
-      const { identity, intent } = event.data;
-      const permissionsForIntent: People = project.permissions[intent] || [];
-      if (!permissionsForIntent.includes(identity)) {
-        permissionsForIntent.push(identity);
-      }
-      project.permissions[intent] = permissionsForIntent;
-
-      return true;
-    }
-  }
-  throwUnsupportedEventVersion(event);
-}
-
-function applyRevokePermission(event: Event, project: Project): true | undefined {
-  if (event.intent !== "project.intent.revokePermission") return;
-  switch (event.dataVersion) {
-    case 1: {
-      const { identity, intent } = event.data;
-      const permissionsForIntent: People = project.permissions[intent] || [];
-      const userIndex = permissionsForIntent.indexOf(identity);
-      if (userIndex !== -1) {
-        // Remove the user from the array:
-        permissionsForIntent.splice(userIndex, 1);
-        project.permissions[intent] = permissionsForIntent;
-      }
-      return true;
-    }
-  }
-  throwUnsupportedEventVersion(event);
-}
-
 export async function issueNotification(
-  conn: ConnectionToken,
+  conn: ConnToken,
   issuer: Issuer,
   message: Event,
   recipient: string,
@@ -609,7 +257,7 @@ export function generateResources(
 }
 
 export async function getWorkflowitemList(
-  conn: ConnectionToken,
+  conn: ConnToken,
   projectId: string,
   subprojectId: string,
 ): Promise<MultichainWorkflowitem.Workflowitem[]> {
@@ -666,7 +314,7 @@ export async function getWorkflowitemList(
 }
 
 export async function getWorkflowitemOrdering(
-  conn: ConnectionToken,
+  conn: ConnToken,
   projectId: string,
   subprojectId: string,
 ): Promise<string[]> {
@@ -700,7 +348,7 @@ export async function getWorkflowitemOrdering(
 }
 
 export function closeWorkflowitem(
-  conn: ConnectionToken,
+  conn: ConnToken,
   issuer: Issuer,
   projectId: string,
   subprojectId: string,
@@ -729,7 +377,7 @@ export function closeWorkflowitem(
 }
 
 export function updateWorkflowitem(
-  conn: ConnectionToken,
+  conn: ConnToken,
   issuer: Issuer,
   projectId: string,
   subprojectId: string,
@@ -759,7 +407,7 @@ export function updateWorkflowitem(
 }
 
 export function assignWorkflowitem(
-  conn: ConnectionToken,
+  conn: ConnToken,
   issuer: Issuer,
   newAssignee: string,
   projectId: string,
