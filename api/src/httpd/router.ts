@@ -1,7 +1,15 @@
 import { FastifyInstance } from "fastify";
 
-import { AllProjectsReader, ProjectAssigner, ProjectUpdater } from ".";
-import { AllPermissionsGranter, AllPermissionsReader, GlobalPermissionGranter } from ".";
+import {
+  AllPermissionsGranter,
+  AllPermissionsReader,
+  AllProjectsReader,
+  GlobalPermissionGranter,
+  ProjectAndSubprojects,
+  ProjectAssigner,
+  ProjectReader,
+  ProjectUpdater,
+} from ".";
 import Intent from "../authz/intents";
 import { revokeGlobalPermission } from "../global/controller/revokePermission";
 import { createGroup } from "../global/createGroup";
@@ -29,7 +37,6 @@ import { createSubproject } from "../project/controller/createSubproject";
 import { grantProjectPermission } from "../project/controller/intent.grantPermission";
 import { getProjectPermissions } from "../project/controller/intent.listPermissions";
 import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
-import { getProjectDetails } from "../project/controller/viewDetails";
 import { getProjectHistory } from "../project/controller/viewHistory";
 import { ProjectResource } from "../project/model/Project";
 import { User as ProjectUser } from "../project/User";
@@ -255,6 +262,7 @@ export const registerRoutes = (
   backupApiPort: string,
   {
     listProjects,
+    getProjectWithSubprojects,
     assignProject,
     updateProject,
     listGlobalPermissions,
@@ -262,6 +270,7 @@ export const registerRoutes = (
     grantAllPermissions,
   }: {
     listProjects: AllProjectsReader;
+    getProjectWithSubprojects: ProjectReader;
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
     listGlobalPermissions: AllPermissionsReader;
@@ -493,7 +502,19 @@ export const registerRoutes = (
     `${urlPrefix}/project.viewDetails`,
     getSchema(server, "projectViewDetails"),
     (request, reply) => {
-      getProjectDetails(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      const projectId: string = request.query.projectId;
+      return getProjectWithSubprojects(token, projectId)
+        .then(
+          (projectWithSubprojects: ProjectAndSubprojects): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: projectWithSubprojects,
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
