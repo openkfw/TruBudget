@@ -12,6 +12,7 @@ import { Event, throwUnsupportedEventVersion } from "./event";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 
 export * from "./event";
+export * from "./SubprojectEvents";
 
 const projectSelfKey = "self";
 const globalSelfKey = "self";

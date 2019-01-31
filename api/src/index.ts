@@ -114,6 +114,7 @@ registerRoutes(
   backupApiPort,
   {
     listProjects: HttpdMultichainAdapter.getProjectList(multichainClient),
+    getProjectWithSubprojects: HttpdMultichainAdapter.getProject(multichainClient),
     assignProject: HttpdMultichainAdapter.assignProject(multichainClient),
     updateProject: HttpdMultichainAdapter.updateProject(multichainClient),
     listGlobalPermissions: HttpdMultichainAdapter.getPermissionList(multichainClient),

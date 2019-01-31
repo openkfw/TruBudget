@@ -95,7 +95,6 @@ export function isProjectAssignable(project: Project, actingUser: User): boolean
   const allowedIntent: Intent = "project.assign";
   const userIntents = getAllowedIntents(userIdentities(actingUser), project.permissions);
   const hasPermission = userIntents.includes(allowedIntent);
-  // do we need to check whether the project is closed?
   return hasPermission;
 }
 
@@ -131,45 +130,40 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["project.intent.revokePermission", ["project.intent.listPermissions"]],
   ["project.assign", ["project.viewDetails"]],
   ["project.update", ["project.viewDetails"]],
-  ["project.close", ["project.viewDetails"]],
-  ["project.archive", ["project.viewDetails"]],
-  ["project.createSubproject", ["project.viewDetails", "subproject.viewDetails"]],
+  ["project.close", ["project.viewSummary", "project.viewDetails"]],
+  ["project.archive", ["project.viewSummary", "project.viewDetails"]],
+  [
+    "project.createSubproject",
+    ["project.viewDetails", "subproject.viewSummary", "subproject.viewDetails"],
+  ],
 ]);
 
 function redactHistoryEvent(event: HistoryEvent, userIntents: Intent[]): ScrubbedHistoryEvent {
   const observedIntent = event.intent;
-  if (requiredPermissions.has(observedIntent)) {
-    const allowedIntents = requiredPermissions.get(observedIntent);
-    const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
-
-    if (!isAllowedToSee) {
-      // The user can't see the event..
-      return null;
-    }
-
-    if (
-      event.intent === "global.createProject" &&
-      !userIntents.includes("project.intent.listPermissions")
-    ) {
-      // The user can see the event but not the associated project permissions:
-      delete event.snapshot.permissions;
-    }
-
-    if (
-      event.intent === "project.createSubproject" &&
-      !userIntents.includes("subproject.intent.listPermissions")
-    ) {
-      // The user can see the event but not the associated subproject permissions:
-      delete event.snapshot.permissions;
-    }
-
-    return event;
-  } else if (userIntents.includes(observedIntent)) {
-    // If not explicitly stated otherwise, always allow to see events related to
-    // something the user is already entitled for
-    return event;
-  } else {
+  if (!requiredPermissions.has(observedIntent)) {
     // Redacted by default:
     return null;
   }
+
+  const allowedIntents = requiredPermissions.get(observedIntent);
+  const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
+
+  if (!isAllowedToSee) {
+    // The user can't see the event..
+    return null;
+  }
+
+  // The event is visible, but what about the permissions?
+  // project.createSubproject is a special case here..
+  const permissionListingPermission =
+    event.intent === "project.createSubproject"
+      ? "subproject.intent.listPermissions"
+      : "project.intent.listPermissions";
+
+  if (!userIntents.includes(permissionListingPermission)) {
+    // The user can see the event but not the associated (sub-)project permissions:
+    delete event.snapshot.permissions;
+  }
+
+  return event;
 }
