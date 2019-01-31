@@ -33,7 +33,7 @@ interface NodeInfoDto {
 export async function getNodeList(multichain: MultichainClient, req): Promise<HttpResponse> {
   // Permission check:
   const userIntent: Intent = "network.list";
-  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
 
   // Get ALL the info:
   const nodes = await Nodes.get(multichain);

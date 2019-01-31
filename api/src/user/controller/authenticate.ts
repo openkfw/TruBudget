@@ -4,8 +4,7 @@ import { globalIntents } from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import * as Global from "../../global";
 import * as Group from "../../group";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import logger from "../../lib/logger";
+import { HttpResponse } from "../../httpd/lib";
 import * as SymmetricCrypto from "../../lib/symmetricCrypto";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
@@ -13,8 +12,8 @@ import { importprivkey } from "../../multichain/importprivkey";
 import { WalletAddress } from "../../network/model/Nodes";
 import { getOrganizationAddress } from "../../organization/organization";
 import * as User from "../model/user";
-import { hashPassword, isPasswordMatch } from "../password";
 import { UserRecord } from "../model/user";
+import { hashPassword, isPasswordMatch } from "../password";
 
 export interface UserLoginResponse {
   id: string;
@@ -136,7 +135,7 @@ const authenticate = async (
     organizationAddress,
     groupIds,
   );
-  const globalPermissions = await Global.getPermissions(multichain);
+  const globalPermissions = await Global.oldGetPermissions(multichain);
 
   return {
     id,

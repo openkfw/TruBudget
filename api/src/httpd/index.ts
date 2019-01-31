@@ -1,9 +1,21 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 
+export type Permissions = { [key in Intent]?: string[] };
+
 export type ProjectReader = (token: AuthToken, id: string) => Promise<ProjectAndSubprojects>;
 
 export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
+
+export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
+
+export type GlobalPermissionGranter = (
+  token: AuthToken,
+  grantee: string,
+  intent: Intent,
+) => Promise<void>;
+
+export type AllPermissionsGranter = (token: AuthToken, grantee: string) => Promise<void>;
 
 export type ProjectAssigner = (
   token: AuthToken,

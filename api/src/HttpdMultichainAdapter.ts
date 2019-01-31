@@ -10,7 +10,9 @@
  *
  */
 import { getAllowedIntents } from "./authz";
+import Intent from "./authz/intents";
 import { AuthToken } from "./authz/token";
+import * as Permission from "./global";
 import * as HTTP from "./httpd";
 import * as Multichain from "./multichain";
 import { MultichainClient } from "./multichain/Client.h";
@@ -60,7 +62,6 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
                 intent: scrubbedEvent.intent,
                 snapshot: {
                   displayName: scrubbedEvent.snapshot.displayName,
-                  permissions: scrubbedEvent.snapshot.permissions,
                 },
               },
         ),
@@ -121,7 +122,6 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
           intent: scrubbedEvent.intent,
           snapshot: {
             displayName: scrubbedEvent.snapshot.displayName,
-            permissions: scrubbedEvent.snapshot.permissions,
           },
         };
       }),
@@ -248,7 +248,7 @@ function multichainProjectToProjectProject(multichainProject: Multichain.Project
     permissions: multichainProject.permissions,
     log: multichainProject.log.map(log => {
       return {
-        intent: log.intent,
+        ...log,
         snapshot: {
           displayName: log.snapshot.displayName,
           permissions: {},
@@ -274,5 +274,82 @@ function multichainSubprojectToSubprojectSubproject(
     assignee: multichainSubproject.assignee,
     permissions: multichainSubproject.permissions,
     log: multichainSubproject.log,
+  };
+}
+
+export function getPermissionList(multichainClient: MultichainClient): HTTP.AllPermissionsReader {
+  return async (token: AuthToken) => {
+    const user: Permission.User = { id: token.userId, groups: token.groups };
+
+    const lister: Permission.PermissionsLister = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    return Permission.list(user, { getAllPermissions: lister });
+  };
+}
+
+export function grantPermission(multichainClient: MultichainClient): HTTP.GlobalPermissionGranter {
+  return async (token: AuthToken, identity: string, intent: Intent) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const user: Permission.User = { id: token.userId, groups: token.groups };
+
+    const lister: Permission.PermissionsLister = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    const granter: Permission.PermissionsGranter = async (
+      grantIntent: Intent,
+      grantIdentity: string,
+    ) => {
+      return await Multichain.grantGlobalPermission(
+        multichainClient,
+        issuer,
+        grantIdentity,
+        grantIntent,
+      );
+    };
+    return Permission.grant(user, identity, intent, {
+      getAllPermissions: lister,
+      grantPermission: granter,
+    });
+  };
+}
+
+export function grantAllPermissions(
+  multichainClient: MultichainClient,
+): HTTP.AllPermissionsGranter {
+  return async (token: AuthToken, grantee: string) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const user: Permission.User = { id: token.userId, groups: token.groups };
+
+    const lister: Permission.PermissionsLister = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    const granter: Permission.PermissionsGranter = async (
+      grantIntent: Intent,
+      grantGrantee: string,
+    ) => {
+      return await Multichain.grantGlobalPermission(
+        multichainClient,
+        issuer,
+        grantGrantee,
+        grantIntent,
+      );
+    };
+    return Permission.grantAll(user, grantee, {
+      getAllPermissions: lister,
+      grantPermission: granter,
+    });
   };
 }
