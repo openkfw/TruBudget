@@ -82,6 +82,8 @@ export const HIDE_SUBPROJECT_ASSIGNEES = "HIDE_SUBPROJECT_ASSIGNEES";
 export const SAVE_WORKFLOW_ITEM_BEFORE_SORT = "SAVE_WORKFLOW_ITEM_BEFORE_SORT";
 export const HAVE_WORKFLOW_ITEM_CHANGED = "HAVE_WORKFLOW_ITEM_CHANGED";
 
+export const LIVE_UPDATE_SUBPROJECT = "LIVE_UPDATE_SUBPROJECT";
+
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
@@ -94,8 +96,8 @@ export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading =
 export function setSubProjectHistoryOffset(offset) {
   return {
     type: SET_HISTORY_OFFSET,
-    offset,
-  }
+    offset
+  };
 }
 
 export function fetchSubprojectHistory(projectId, subprojectId, offset, limit, showLoading = false) {
@@ -436,5 +438,13 @@ export function closeWorkflowItem(projectId, subprojectId, workflowitemId, showL
     subprojectId,
     workflowitemId,
     showLoading
+  };
+}
+
+export function liveUpdateSubproject(projectId, subprojectId) {
+  return {
+    type: LIVE_UPDATE_SUBPROJECT,
+    projectId,
+    subprojectId
   };
 }
