@@ -9,7 +9,7 @@ import {
   HIDE_SNACKBAR,
   FETCH_NOTIFICATION_COUNTS_SUCCESS,
   SET_NOTIFICATIONS_PER_PAGE,
-  FETCH_FLYIN_NOTIFICATIONS_SUCCESS,
+  LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
   SET_NOTIFICATION_OFFSET,
   TIME_OUT_FLY_IN,
   FETCH_LATEST_NOTIFICATION_SUCCESS
@@ -37,7 +37,7 @@ export default function navbarReducer(state = defaultState, action) {
       return state.merge({
         notifications: fromJS(action.notifications)
       });
-    case FETCH_LATEST_NOTIFICATION_SUCCESS:{
+    case FETCH_LATEST_NOTIFICATION_SUCCESS: {
       const { notifications } = action;
       const count = notifications.length;
       // If there are no notifications yet, set the latestFlyInId to "0"
@@ -47,15 +47,16 @@ export default function navbarReducer(state = defaultState, action) {
         latestFlyInId: latestFlyInId
       });
     }
-    case FETCH_FLYIN_NOTIFICATIONS_SUCCESS:{
+
+    case LIVE_UPDATE_NOTIFICATIONS_SUCCESS: {
       const { newNotifications } = action;
       const count = newNotifications.length;
       const latestFlyInId = count > 0 ? newNotifications[count - 1].notificationId : state.get("latestFlyInId");
-      const unreadNotificationCount = state.get("unreadNotificationCount") + count ;
+      const unreadNotificationCount = state.get("unreadNotificationCount") + count;
       return state.merge({
         newNotifications: fromJS(newNotifications),
         latestFlyInId: latestFlyInId,
-        unreadNotificationCount,
+        unreadNotificationCount
       });
     }
     case TIME_OUT_FLY_IN: {
@@ -64,7 +65,10 @@ export default function navbarReducer(state = defaultState, action) {
       });
     }
     case FETCH_NOTIFICATION_COUNTS_SUCCESS:
-      return state.merge({"unreadNotificationCount": action.unreadNotificationCount,notificationCount: action.notificationCount });
+      return state.merge({
+        unreadNotificationCount: action.unreadNotificationCount,
+        notificationCount: action.notificationCount
+      });
     case SHOW_SNACKBAR:
       return state.merge({
         showSnackbar: action.show,

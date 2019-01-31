@@ -14,8 +14,8 @@ export const FETCH_HISTORY_SUCCESS = "FETCH_HISTORY_SUCCESS";
 export const FETCH_ALL_NOTIFICATIONS = "FETCH_ALL_NOTIFICATIONS";
 export const FETCH_ALL_NOTIFICATIONS_SUCCESS = "FETCH_ALL_NOTIFICATIONS_SUCCESS";
 
-export const FETCH_FLYIN_NOTIFICATIONS = "FETCH_FLYIN_NOTIFICATIONS";
-export const FETCH_FLYIN_NOTIFICATIONS_SUCCESS = "FETCH_FLYIN_NOTIFICATIONS_SUCCESS";
+export const LIVE_UPDATE_NOTIFICATIONS = "LIVE_UPDATE_NOTIFICATIONS";
+export const LIVE_UPDATE_NOTIFICATIONS_SUCCESS = "LIVE_UPDATE_NOTIFICATIONS_SUCCESS";
 
 export const MARK_MULTIPLE_NOTIFICATION_AS_READ = "MARK_MULTIPLE_NOTIFICATION_AS_READ";
 export const MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS = "MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS";
@@ -53,9 +53,9 @@ export function storeSnackbarMessage(message) {
   };
 }
 
-export function fetchFlyInNotifications(showLoading = false, beforeId) {
+export function updateNotification(showLoading = false, beforeId) {
   return {
-    type: FETCH_FLYIN_NOTIFICATIONS,
+    type: LIVE_UPDATE_NOTIFICATIONS,
     beforeId,
     showLoading
   };
@@ -72,10 +72,9 @@ export function fetchNotifications(showLoading = false, offset, limit) {
 export function fetchLatestNotification(showLoading = false) {
   return {
     type: FETCH_LATEST_NOTIFICATION,
-    showLoading,
+    showLoading
   };
 }
-
 
 export function fetchNotificationCounts(showLoading = false) {
   return {
@@ -129,13 +128,9 @@ export function setNotifcationsPerPage(limit) {
   };
 }
 
-
 export function setNotificationOffset(offset) {
   return {
     type: SET_NOTIFICATION_OFFSET,
     offset
   };
 }
-
-
-

@@ -1,8 +1,9 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntentMap, AllowedUserGroupsByIntent } from "../authz/types";
 
-export type ProjectReader = (token: AuthToken, id: string) => Promise<Project>;
+export type Permissions = { [key in Intent]?: string[] };
+
+export type ProjectReader = (token: AuthToken, id: string) => Promise<ProjectAndSubprojects>;
 
 export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
 export type AllWorkflowitemsReader = (
@@ -10,6 +11,16 @@ export type AllWorkflowitemsReader = (
   projectId: string,
   subprojectId: string,
 ) => Promise<Workflowitem[]>;
+
+export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
+
+export type GlobalPermissionGranter = (
+  token: AuthToken,
+  grantee: string,
+  intent: Intent,
+) => Promise<void>;
+
+export type AllPermissionsGranter = (token: AuthToken, grantee: string) => Promise<void>;
 
 export type ProjectAssigner = (
   token: AuthToken,
@@ -43,11 +54,13 @@ export interface Project {
   };
 }
 
+export interface ProjectAndSubprojects {
+  project: Project;
+  subprojects: Subproject[];
+}
 export interface Workflowitem {
   allowedIntents: Intent[];
   data: {
-    id: string;
-    creationUnixTs: string;
     displayName: string;
     exchangeRate?: string;
     billingDate?: string;
@@ -58,5 +71,21 @@ export interface Workflowitem {
     status: "open" | "closed";
     assignee?: string;
     documents?: Document[];
+  };
+}
+
+interface Subproject {
+  allowedIntents: Intent[];
+  data: {
+    id: string;
+    creationUnixTs: string;
+    status: "open" | "closed";
+    displayName: string;
+    description: string;
+    amount: string;
+    currency: string;
+    exchangeRate: string;
+    billingDate: string;
+    assignee?: string;
   };
 }
