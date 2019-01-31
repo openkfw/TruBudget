@@ -2,8 +2,7 @@ import Joi = require("joi");
 
 import { getAllowedIntents, hasIntersection } from "../authz";
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent } from "../authz/types";
-import * as Permission from "./Permission";
+import { Permissions } from "../authz/types";
 import { User, userIdentities } from "./User";
 
 export interface CreateProjectInput {
@@ -17,6 +16,7 @@ export interface CreateProjectInput {
   assignee?: string;
   thumbnail?: string;
 }
+
 export interface Project {
   id: string;
   creationUnixTs: string;
@@ -27,7 +27,7 @@ export interface Project {
   amount: string;
   currency: string;
   thumbnail: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
 }
 
@@ -41,7 +41,7 @@ export interface ScrubbedProject {
   amount: string;
   currency: string;
   thumbnail: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: ScrubbedHistoryEvent[];
 }
 
@@ -100,10 +100,7 @@ export function isProjectVisibleTo(project: Project, actingUser: User): boolean 
   return hasPermission;
 }
 
-export function isProjectCreateable(
-  permissions: Permission.Permissions,
-  actingUser: User,
-): boolean {
+export function isProjectCreateable(permissions: Permissions, actingUser: User): boolean {
   const allowedIntent: Intent = "global.createProject";
   const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
   const hasPermission = userIntents.includes(allowedIntent);

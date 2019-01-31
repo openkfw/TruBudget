@@ -1,8 +1,8 @@
-import { AllowedUserGroupsByIntent } from "../authz/types";
-import { RpcClient } from "./RpcClient";
-export { RpcMultichainClient } from "./Client";
+import { Permissions } from "../authz/types";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import { RpcClient } from "./RpcClient";
 
+export { RpcMultichainClient } from "./Client";
 export type StreamKind =
   | "global"
   | "organization"
@@ -68,7 +68,7 @@ export interface StreamItem {
 
 export interface Resource {
   log: LogEntry[];
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   data: any;
 }
 

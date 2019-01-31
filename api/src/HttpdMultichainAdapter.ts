@@ -12,6 +12,7 @@
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
 import { AuthToken } from "./authz/token";
+import { Permissions } from "./authz/types";
 import * as Permission from "./global";
 import * as HTTP from "./httpd";
 import * as Multichain from "./multichain";
@@ -394,7 +395,7 @@ export function getPermissionList(conn: Multichain.ConnToken): HTTP.AllPermissio
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
+      const permissions: Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 
@@ -408,7 +409,7 @@ export function grantPermission(conn: Multichain.ConnToken): HTTP.GlobalPermissi
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
+      const permissions: Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 
@@ -431,7 +432,7 @@ export function grantAllPermissions(conn: Multichain.ConnToken): HTTP.AllPermiss
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
+      const permissions: Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 
@@ -566,7 +567,7 @@ export function revokePermission(conn: Multichain.ConnToken): HTTP.GlobalPermiss
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
+      const permissions: Permissions = await Multichain.getGlobalPermissionList(conn);
       return permissions;
     };
 

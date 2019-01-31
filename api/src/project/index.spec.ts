@@ -13,8 +13,8 @@ import {
 } from ".";
 import * as Project from ".";
 import Intent from "../authz/intents";
+import { Permissions } from "../authz/types";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
-import { Permissions } from "./Permission";
 import { User } from "./User";
 
 function newProject(id: string, permissions: object): Project.Project {
@@ -487,7 +487,7 @@ describe("Granting project permissions", () => {
         grantProjectPermission: granter,
       }),
     );
-    assert.equal(bobProject.permissions["project.viewSummary"], "alice");
+    assert.deepEqual(bobProject.permissions["project.viewSummary"], ["alice"]);
 
     await assertIsRejectedWith(
       Project.grantPermission(user, "aliceProject", "alice", "project.viewSummary", {

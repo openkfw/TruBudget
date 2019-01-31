@@ -2,7 +2,7 @@ import * as crypto from "crypto";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
-import { AllowedUserGroupsByIntent } from "../../authz/types";
+import { Permissions } from "../../authz/types";
 import {
   AuthenticatedRequest,
   HttpResponse,
@@ -183,7 +183,7 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
   ];
 }
 
-function getWorkflowitemDefaultPermissions(token: AuthToken): AllowedUserGroupsByIntent {
+function getWorkflowitemDefaultPermissions(token: AuthToken): Permissions {
   if (token.userId === "root") return {};
 
   const intents: Intent[] = [

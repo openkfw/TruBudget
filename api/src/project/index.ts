@@ -1,11 +1,12 @@
 import { randomBytes } from "crypto";
 
 import Intent from "../authz/intents";
+import { Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
-import { isAllowedTo, Permissions } from "./Permission";
+import { isAllowedTo } from "./Permission";
 import {
   CreateProjectInput,
   isProjectAssignable,

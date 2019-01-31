@@ -1,7 +1,7 @@
 import uuid = require("uuid");
 
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import { Permissions, People } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
@@ -34,7 +34,7 @@ export interface Project {
   amount: string;
   currency: string;
   thumbnail: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
 }
 

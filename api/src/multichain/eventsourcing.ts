@@ -1,17 +1,9 @@
-import uuid = require("uuid");
-
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
-import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
-import { asMapKey } from "./Client";
-import { MultichainClient } from "./Client.h";
-import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
-import { Issuer } from "./issuer";
-import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 import { Item } from "./responses/liststreamkeyitems";
 
 export interface Subproject {
@@ -25,7 +17,7 @@ export interface Subproject {
   exchangeRate: string;
   billingDate: string;
   assignee?: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
   // workflowitems: Workflowitem[];
 }
@@ -40,7 +32,7 @@ export interface Project {
   amount: string;
   currency: string;
   thumbnail: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
   subprojects: Map<string, Subproject>;
 }

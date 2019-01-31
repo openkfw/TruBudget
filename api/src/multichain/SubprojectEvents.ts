@@ -1,5 +1,5 @@
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import { asMapKey } from "./Client";
@@ -19,7 +19,7 @@ export interface Subproject {
   exchangeRate: string;
   billingDate: string;
   assignee?: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
 }
 

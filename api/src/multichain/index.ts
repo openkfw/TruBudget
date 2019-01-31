@@ -1,12 +1,12 @@
 import uuid = require("uuid");
 
 import Intent from "../authz/intents";
-import { People } from "../authz/types";
+import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import logger from "../lib/logger";
 import { initCache } from "./cache";
 import { asMapKey } from "./Client";
-import { MultichainClient, RpcMultichainClient } from "./Client.h";
+import { RpcMultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import { Issuer } from "./issuer";
@@ -25,7 +25,6 @@ export { ConnToken } from "./conn";
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 const workflowitemOrderingKey = subprojectId => `${subprojectId}_workflowitem_ordering`;
 const globalSelfKey = "self";
-export type Permissions = { [key in Intent]?: string[] };
 
 type ResourceType = "project" | "subproject" | "workflowitem";
 

@@ -3,7 +3,7 @@ import Joi = require("joi");
 
 import { getAllowedIntents, hasIntersection } from "../authz";
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { Permissions } from "../authz/types";
 import { userIdentities } from "../project";
 import { User } from "../project/User";
 
@@ -41,7 +41,7 @@ export interface Workflowitem {
   status: "open" | "closed";
   assignee?: string;
   documents?: Document[];
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
 }
 export interface Update {

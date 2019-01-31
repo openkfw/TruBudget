@@ -2,7 +2,7 @@ import Joi = require("joi");
 
 import { getAllowedIntents, hasIntersection } from "../authz";
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { Permissions } from "../authz/types";
 import { User, userIdentities } from "./User";
 
 export interface Subproject {
@@ -16,7 +16,7 @@ export interface Subproject {
   exchangeRate: string;
   billingDate: string;
   assignee?: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
 }
 
@@ -31,7 +31,7 @@ export interface ScrubbedSubproject {
   exchangeRate: string;
   billingDate: string;
   assignee?: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: ScrubbedHistoryEvent[];
 }
 

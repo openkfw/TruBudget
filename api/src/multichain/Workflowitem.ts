@@ -1,7 +1,6 @@
 import { Event, throwUnsupportedEventVersion } from ".";
-import { getAllowedIntents } from "../authz";
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 
@@ -50,7 +49,7 @@ export interface Workflowitem {
   status: "open" | "closed";
   assignee?: string;
   documents?: Document[];
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
 }
 
@@ -136,10 +135,7 @@ export function applyClose(event: Event, workflowitem: Workflowitem): true | und
   throwUnsupportedEventVersion(event);
 }
 
-export function applyGrantPermission(
-  event: Event,
-  permissions: AllowedUserGroupsByIntent,
-): true | undefined {
+export function applyGrantPermission(event: Event, permissions: Permissions): true | undefined {
   if (event.intent !== "workflowitem.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
@@ -155,10 +151,7 @@ export function applyGrantPermission(
   throwUnsupportedEventVersion(event);
 }
 
-export function applyRevokePermission(
-  event: Event,
-  permissions: AllowedUserGroupsByIntent,
-): true | undefined {
+export function applyRevokePermission(event: Event, permissions: Permissions): true | undefined {
   if (event.intent !== "workflowitem.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {

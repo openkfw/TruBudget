@@ -4,7 +4,7 @@
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
-import { AllowedUserGroupsByIntent } from "../../authz/types";
+import { Permissions } from "../../authz/types";
 import { SubprojectIdAlreadyExistsError } from "../../error";
 import { HttpResponse, throwParseError, throwParseErrorIfUndefined } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
@@ -108,7 +108,7 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
   ];
 }
 
-function getSubprojectDefaultPermissions(token: AuthToken): AllowedUserGroupsByIntent {
+function getSubprojectDefaultPermissions(token: AuthToken): Permissions {
   if (token.userId === "root") return {};
 
   const intents: Intent[] = [
