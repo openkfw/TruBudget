@@ -15,11 +15,11 @@ export const grantAllPermissions = async (
   const identity: string = value("identity", input.identity, isNonemptyString);
 
   const userIntent: Intent = "global.grantPermission";
-  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
 
   for (const intent of userAssignableIntents) {
     logger.debug({ identity, intent }, "Granting all permissions.");
-    await Global.grantPermission(multichain, identity, intent);
+    await Global.oldGrantPermission(multichain, identity, intent);
   }
 
   return [

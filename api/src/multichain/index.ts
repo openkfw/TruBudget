@@ -12,8 +12,11 @@ import { Event, throwUnsupportedEventVersion } from "./event";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
 
 export * from "./event";
+export * from "./SubprojectEvents";
 
 const projectSelfKey = "self";
+
+export type Permissions = { [key in Intent]?: string[] };
 
 export interface Issuer {
   name: string;
@@ -197,6 +200,73 @@ export async function getProjectList(multichain: MultichainClient): Promise<Proj
   }
 
   return [...projectsMap.values()];
+}
+
+export async function getPermissionList(multichain: MultichainClient): Promise<Permissions> {
+  try {
+    const streamItems = await multichain.v2_readStreamItems("global", "self", 1);
+    if (streamItems.length < 1) {
+      return {};
+    }
+    const event: Event = streamItems[0].data.json;
+    return event.data.permissions;
+  } catch (err) {
+    if (err.kind === "NotFound") {
+      // Happens at startup, no need to worry...
+      logger.debug("Global permissions not found. Happens at startup.");
+      return {};
+    } else {
+      logger.error({ error: err }, "Error while retrieving global permissions");
+      throw err;
+    }
+  }
+}
+
+export async function grantGlobalPermission(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  grantee: string,
+  intent: Intent,
+): Promise<void> {
+  const permissions = await getPermissionList(multichain);
+  const permissionsForIntent: People = permissions[intent] || [];
+  permissionsForIntent.push(grantee);
+  permissions[intent] = permissionsForIntent;
+
+  const grantintent: Intent = "global.grantPermission";
+
+  const event = {
+    key: projectSelfKey,
+    intent: grantintent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    data: { permissions },
+    dataVersion: 1,
+  };
+
+  const streamName = "global";
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${grantintent} to ${streamName}/${streamItemKey}`);
+
+  const publishEvent = () => {
+    return multichain
+      .getRpcClient()
+      .invoke("publish", streamName, streamItemKey, streamItem)
+      .then(() => event);
+  };
+
+  return publishEvent().catch(err => {
+    if (err.code === -708) {
+      // The stream does not exist yet. Create the stream and try again:
+      return multichain
+        .getOrCreateStream({ kind: "global", name: streamName })
+        .then(() => publishEvent());
+    } else {
+      throw err;
+    }
+  });
 }
 
 async function fetchStreamItems(
