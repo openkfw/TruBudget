@@ -1,7 +1,7 @@
 import { assert } from "chai";
 
 import * as Permission from ".";
-import { PermissionsGranter, PermissionsLister } from ".";
+import { PermissionsGranter, PermissionsLister, PermissionsRevoker } from ".";
 import Intent, { userAssignableIntents } from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { Permissions } from "./Permission";
@@ -201,5 +201,64 @@ describe("Granting all permissions", () => {
     await assertIsResolved(Permission.grantAll(actingUser, identity, deps));
 
     assert.equal(calls.size, userAssignableIntents.length - 1);
+  });
+});
+
+describe("Revoking a permission", () => {
+  it("is allowed if the user has the required permission", async () => {
+    const permissionsMock: Permissions = {
+      "global.listPermissions": ["alice", "friends"],
+      "global.revokePermission": ["alice"],
+      "global.createProject": ["alice"],
+    };
+    const actingUser: User = { id: "alice", groups: ["friends"] };
+
+    const getAllPermissions: PermissionsLister = () => Promise.resolve(permissionsMock);
+
+    const revokePermission: PermissionsRevoker = (intent, recipient): Promise<void> => {
+      delete permissionsMock["global.createProject"];
+      return Promise.resolve();
+    };
+
+    const intentToBeRevoked: Intent = "global.createProject";
+    const userId = "alice";
+
+    const deps = {
+      getAllPermissions,
+      revokePermission,
+    };
+
+    await assertIsResolved(Permission.revoke(actingUser, userId, intentToBeRevoked, deps));
+
+    assert.isUndefined(permissionsMock["global.createProject"]);
+  });
+
+  it("is rejected if the user does not have the required permission", async () => {
+    const permissionsMock: Permissions = {
+      "global.listPermissions": ["alice", "friends"],
+      "global.revokePermission": ["otherUser"],
+      "global.createProject": ["alice"],
+    };
+    const actingUser: User = { id: "alice", groups: ["friends"] };
+
+    const getAllPermissions: PermissionsLister = () => Promise.resolve(permissionsMock);
+
+    const revokePermission: PermissionsRevoker = (intent, recipient): Promise<void> => {
+      delete permissionsMock["global.createProject"];
+      return Promise.resolve();
+    };
+
+    const intentToBeRevoked: Intent = "global.createProject";
+    const userId = "alice";
+
+    const deps = {
+      getAllPermissions,
+      revokePermission,
+    };
+
+    await assertIsRejectedWith(
+      Permission.revoke(actingUser, userId, intentToBeRevoked, deps),
+      Error,
+    );
   });
 });

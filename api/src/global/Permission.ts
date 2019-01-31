@@ -20,6 +20,13 @@ export function isAllowedToGrant(permissions: Permissions, actingUser: User): bo
   return hasPermission;
 }
 
+export function isAllowedToRevoke(permissions: Permissions, actingUser: User): boolean {
+  const allowedIntent: Intent = "global.revokePermission";
+  const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
+  const hasPermission = userIntents.includes(allowedIntent);
+  return hasPermission;
+}
+
 export const publish = async (
   multichain: MultichainClient,
   globalstreamName: string,
