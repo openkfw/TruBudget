@@ -46,7 +46,6 @@ export const FETCH_SUBPROJECT_PERMISSIONS = "FETCH_SUBPROJECT_PERMISSIONS";
 export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSIONS_SUCCESS";
 
 export const LIVE_UPDATE_PROJECT = "LIVE_UPDATE_PROJECT";
-export const LIVE_UPDATE_PROJECT_SUCCESS = "LIVE_UPDATE_PROJECT_SUCCESS";
 
 export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
   return {
