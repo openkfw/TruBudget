@@ -18,6 +18,21 @@ export interface WorkflowitemClosing {
   actingUser: string;
   assignee?: string;
 }
+export interface WorkflowitemUpdating {
+  workflowitemId: string;
+  actingUser: string;
+  assignee?: string;
+  updatedData: {
+    displayName?: string;
+    amount?: string;
+    currency?: string;
+    amountType?: "N/A" | "disbursed" | "allocated";
+    description?: string;
+    documents?: Document[];
+    exchangeRate?: string;
+    billingDate?: string;
+  };
+}
 
 export type Sender = (message: Event, recipient: string) => Promise<void>;
 
@@ -114,6 +129,38 @@ export async function workflowitemClosed(
     createdAt: new Date().toISOString(),
     dataVersion: 1,
     data: {},
+  };
+
+  for (const recipient of recipients) {
+    await sender(event, recipient);
+  }
+}
+
+export async function workflowitemUpdated(
+  workflowitemUpdate: WorkflowitemUpdating,
+  updatedData,
+  {
+    sender,
+    resolver,
+  }: {
+    sender: Sender;
+    resolver: GroupResolver;
+  },
+): Promise<void> {
+  const assignee = workflowitemUpdate.assignee;
+  if (assignee === undefined) return;
+
+  const groupMembers = await resolver(assignee);
+  const resolvedAssignees = groupMembers.length ? groupMembers : [assignee];
+  const recipients = resolvedAssignees.filter(x => x !== workflowitemUpdate.actingUser);
+
+  const event: Event = {
+    key: workflowitemUpdate.workflowitemId,
+    intent: "workflowitem.update",
+    createdBy: workflowitemUpdate.actingUser,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: updatedData,
   };
 
   for (const recipient of recipients) {

@@ -1,3 +1,4 @@
+import * as crypto from "crypto";
 import Joi = require("joi");
 
 import { getAllowedIntents, hasIntersection } from "../authz";
@@ -43,6 +44,17 @@ export interface Workflowitem {
   permissions: AllowedUserGroupsByIntent;
   log: HistoryEvent[];
 }
+export interface Update {
+  displayName?: string;
+  amount?: string;
+  currency?: string;
+  amountType?: "N/A" | "disbursed" | "allocated";
+  description?: string;
+  documents?: Document[];
+  exchangeRate?: string;
+  billingDate?: string;
+}
+
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
 
 export interface RedactedWorkflowitem {
@@ -111,6 +123,17 @@ export function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User):
 
   const isAllowedToSeeData = userIntents.includes(allowedIntent);
   return isAllowedToSeeData;
+}
+
+export function isUserAllowedTo(
+  allowedIntent: Intent,
+  workflowitem: Workflowitem,
+  user: User,
+): boolean {
+  const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
+
+  const isAllowedTo = userIntents.includes(allowedIntent);
+  return isAllowedTo;
 }
 
 export function sortWorkflowitems(
@@ -305,5 +328,38 @@ export function arePreviousClosed(
         message,
       };
     }
+  }
+}
+
+export async function hashBase64String(base64String: string): Promise<string> {
+  return new Promise<string>(resolve => {
+    const hash = crypto.createHash("sha256");
+    hash.update(Buffer.from(base64String, "base64"));
+    resolve(hash.digest("hex"));
+  });
+}
+
+export async function hashDocuments(docs): Promise<Document[]> {
+  return await Promise.all<Document>(
+    docs.map(
+      (document): Promise<Document> => {
+        return hashBase64String(document.base64).then(hashValue => ({
+          id: document.id,
+          hash: hashValue,
+        }));
+      },
+    ),
+  );
+}
+
+export function getWorkflowitemFromList(
+  workflowitemList: Workflowitem[],
+  workflowitemId: string,
+): Workflowitem {
+  const workflowitem = workflowitemList.find(item => item.id === workflowitemId);
+  if (!workflowitem) {
+    throw { kind: "PreconditionError", message: "Cannot find workflowitem in list" };
+  } else {
+    return workflowitem;
   }
 }

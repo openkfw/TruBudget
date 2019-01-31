@@ -535,3 +535,47 @@ export function closeWorkflowitem(
     .invoke("publish", streamName, streamItemKey, streamItem)
     .then(() => event);
 }
+
+export function updateWorkflowitem(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+  data: MultichainWorkflowitem.Update,
+): Promise<void> {
+  const intent: Intent = "workflowitem.update";
+
+  const event = {
+    key: workflowitemId,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data, // UPDATED DATA HERE
+  };
+
+  const streamName = projectId;
+  const streamItemKey = [workflowitemsGroupKey(subprojectId), workflowitemId];
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  return multichain
+    .getRpcClient()
+    .invoke("publish", streamName, streamItemKey, streamItem)
+    .then(() => event);
+}
+// const event = {
+//   intent: userIntent,
+//   createdBy: token.userId,
+//   creationTimestamp: new Date(),
+//   dataVersion: 1,
+//   data: theUpdate,
+// };
+// const publishedEvent = await Workflowitem.publish(
+//   multichain,
+//   projectId,
+//   subprojectId,
+//   workflowitemId,
+//   event,
+// );

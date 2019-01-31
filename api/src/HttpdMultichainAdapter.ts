@@ -373,3 +373,84 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
     });
   };
 }
+
+export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemCloser {
+  return async (
+    token: AuthToken,
+    projectId: string,
+    subprojectId: string,
+    workflowitemId: string,
+  ) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const updatingUser: Workflowitem.User = { id: token.userId, groups: token.groups };
+
+    // Get all unfiltered workflowitems from the blockchain
+    const multichainLister: Workflowitem.ListReader = async () => {
+      const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
+        multichainClient,
+        projectId,
+        subprojectId,
+        updatingUser,
+      );
+      return workflowitemList.map(Workflowitem.validateWorkflowitem);
+    };
+    const multichainUpdater: Workflowitem.Updater = async (
+      project,
+      subproject,
+      workflowitem,
+      data,
+    ) => {
+      Multichain.updateWorkflowitem(
+        multichainClient,
+        issuer,
+        project,
+        subproject,
+        workflowitem,
+        data,
+      );
+    };
+
+    const multichainNotifier: Workflowitem.CloseNotifier = (
+      projectID,
+      subprojectID,
+      workflowitem,
+      updatedData,
+    ) => {
+      const notificationResource = Multichain.generateResources(
+        projectID,
+        subprojectID,
+        workflowitem.id,
+      );
+
+      const sender: Notification.Sender = (message, recipient) =>
+        Multichain.issueNotification(
+          multichainClient,
+          issuer,
+          message,
+          recipient,
+          notificationResource,
+        );
+
+      const resolver: Notification.GroupResolver = groupId =>
+        Group.getUsers(multichainClient, groupId);
+
+      const updateNotification: Notification.WorkflowitemUpdating = {
+        workflowitemId: workflowitem.id,
+        actingUser: updatingUser.id,
+        assignee: workflowitem.assignee,
+        updatedData,
+      };
+
+      return Notification.workflowitemUpdated(updateNotification, updatedData, {
+        sender,
+        resolver,
+      });
+    };
+
+    return Workflowitem.update(updatingUser, projectId, subprojectId, workflowitemId, {
+      getWorkflowitems: multichainLister,
+      updateWorkflowitem: multichainUpdater,
+      notify: multichainNotifier,
+    });
+  };
+}
