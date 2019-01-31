@@ -238,7 +238,7 @@ export function getPermissionList(multichainClient: MultichainClient): HTTP.AllP
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
         multichainClient,
       );
       return permissions;
@@ -254,7 +254,7 @@ export function grantPermission(multichainClient: MultichainClient): HTTP.Global
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
         multichainClient,
       );
       return permissions;
@@ -286,7 +286,7 @@ export function grantAllPermissions(
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
         multichainClient,
       );
       return permissions;
@@ -316,7 +316,7 @@ export function revokePermission(multichainClient: MultichainClient): HTTP.Globa
     const user: Permission.User = { id: token.userId, groups: token.groups };
 
     const lister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
         multichainClient,
       );
       return permissions;
