@@ -275,6 +275,9 @@ export async function revokeGlobalPermission(
   intent: Intent,
 ): Promise<void> {
   const permissions = await getPermissionList(multichain);
+  if (permissions === undefined) {
+    return;
+  }
   const permissionsForIntent: People = permissions[intent] || [];
   const userIndex = permissionsForIntent.indexOf(recipient);
   permissionsForIntent.splice(userIndex, 1);
@@ -306,10 +309,10 @@ export async function revokeGlobalPermission(
 
   return publishEvent().catch(err => {
     if (err.code === -708) {
-      // The stream does not exist yet. Create the stream and try again:
-      return multichain
-        .getOrCreateStream({ kind: "global", name: streamName })
-        .then(() => publishEvent());
+      logger.debug(
+        `The stream ${streamName} does not exist yet. Return without revoking ${intent} for ${recipient}.`,
+      );
+      return;
     } else {
       throw err;
     }

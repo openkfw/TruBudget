@@ -82,7 +82,7 @@ export async function revoke(
     getAllPermissions,
     revokePermission,
   }: { getAllPermissions: PermissionsLister; revokePermission: PermissionsRevoker },
-) {
+): Promise<void> {
   const allPermissions = await getAllPermissions();
   const permissionsForIntent: People = allPermissions[intent] || [];
   if (!permissionsForIntent.includes(recipient)) {
