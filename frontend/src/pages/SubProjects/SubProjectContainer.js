@@ -8,7 +8,8 @@ import {
   fetchProjectHistory,
   showEditDialog,
   closeProject,
-  showSubProjectPermissions
+  showSubProjectPermissions,
+  liveUpdateProject
 } from "./actions";
 
 import SubProjects from "./SubProjects";
@@ -45,7 +46,7 @@ class SubProjectContainer extends Component {
   };
 
   update = () => {
-    this.props.fetchAllProjectDetails(this.projectId, false);
+    this.props.liveUpdate(this.projectId);
   };
 
   render() {
@@ -79,6 +80,7 @@ class SubProjectContainer extends Component {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
+    liveUpdate: projectId => dispatch(liveUpdateProject(projectId)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
 
     openHistory: (projectId, offset, limit) => {
@@ -116,8 +118,7 @@ const mapStateToProps = state => {
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     thumbnail: state.getIn(["detailview", "thumbnail"]),
     offset: state.getIn(["detailview", "offset"]),
-    limit: state.getIn(["detailview", "limit"]),
-
+    limit: state.getIn(["detailview", "limit"])
   };
 };
 

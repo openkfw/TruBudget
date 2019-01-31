@@ -1,10 +1,18 @@
 import { FastifyInstance } from "fastify";
 
-import { AllProjectsReader, AllWorkflowitemsReader, ProjectAssigner, ProjectUpdater } from ".";
-import { WorkflowitemCloser } from ".";
-import { grantAllPermissions } from "../global/controller/grantAllPermissions";
-import { grantGlobalPermission } from "../global/controller/grantPermission";
-import { getGlobalPermissions } from "../global/controller/listPermissions";
+import {
+  AllPermissionsGranter,
+  AllPermissionsReader,
+  AllProjectsReader,
+  AllWorkflowitemsReader,
+  GlobalPermissionGranter,
+  ProjectAndSubprojects,
+  ProjectAssigner,
+  ProjectReader,
+  ProjectUpdater,
+  WorkflowitemCloser,
+} from ".";
+import Intent from "../authz/intents";
 import { revokeGlobalPermission } from "../global/controller/revokePermission";
 import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
@@ -31,7 +39,6 @@ import { createSubproject } from "../project/controller/createSubproject";
 import { grantProjectPermission } from "../project/controller/intent.grantPermission";
 import { getProjectPermissions } from "../project/controller/intent.listPermissions";
 import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
-import { getProjectDetails } from "../project/controller/viewDetails";
 import { getProjectHistory } from "../project/controller/viewHistory";
 import { User as ProjectUser } from "../project/User";
 import { assignSubproject } from "../subproject/controller/assign";
@@ -254,16 +261,24 @@ export const registerRoutes = (
   backupApiPort: string,
   {
     listProjects,
+    getProjectWithSubprojects,
     assignProject,
     updateProject,
     workflowitemLister,
     workflowitemCloser,
+    listGlobalPermissions,
+    grantGlobalPermission,
+    grantAllPermissions,
   }: {
     listProjects: AllProjectsReader;
+    getProjectWithSubprojects: ProjectReader;
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
     workflowitemLister: AllWorkflowitemsReader;
     workflowitemCloser: WorkflowitemCloser;
+    listGlobalPermissions: AllPermissionsReader;
+    grantGlobalPermission: GlobalPermissionGranter;
+    grantAllPermissions: AllPermissionsGranter;
   },
 ) => {
   // ------------------------------------------------------------
@@ -362,7 +377,18 @@ export const registerRoutes = (
     `${urlPrefix}/global.listPermissions`,
     getSchema(server, "globalListPermissions"),
     (request, reply) => {
-      getGlobalPermissions(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      listGlobalPermissions(token)
+        .then(
+          (permissions): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: permissions,
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -372,7 +398,22 @@ export const registerRoutes = (
     `${urlPrefix}/global.grantPermission`,
     getSchema(server, "globalGrantPermission"),
     (request, reply) => {
-      grantGlobalPermission(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+
+      const intent: Intent = request.body.data.intent;
+      const grantee: string = request.body.data.identity;
+
+      return grantGlobalPermission(token, grantee, intent)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -382,7 +423,21 @@ export const registerRoutes = (
     `${urlPrefix}/global.grantAllPermissions`,
     getSchema(server, "globalGrantAllPermissions"),
     (request, reply) => {
-      grantAllPermissions(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+
+      const grantee: string = request.body.data.identity;
+
+      return grantAllPermissions(token, grantee)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -450,7 +505,19 @@ export const registerRoutes = (
     `${urlPrefix}/project.viewDetails`,
     getSchema(server, "projectViewDetails"),
     (request, reply) => {
-      getProjectDetails(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      const projectId: string = request.query.projectId;
+      return getProjectWithSubprojects(token, projectId)
+        .then(
+          (projectWithSubprojects: ProjectAndSubprojects): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: projectWithSubprojects,
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

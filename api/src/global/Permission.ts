@@ -1,10 +1,24 @@
-import { getAllowedIntents } from "../../authz";
-import Intent from "../../authz/intents";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event } from "../../multichain/event";
-import { User, userIdentities } from "../User";
+import { getAllowedIntents } from "../authz";
+import Intent from "../authz/intents";
+import { MultichainClient } from "../multichain/Client.h";
+import { Event } from "../multichain/event";
+import { User, userIdentities } from "./User";
 
 export type Permissions = { [key in Intent]?: string[] };
+
+export function isAllowedToSee(permissions: Permissions, actingUser: User): boolean {
+  const allowedIntent: Intent = "global.listPermissions";
+  const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
+  const hasPermission = userIntents.includes(allowedIntent);
+  return hasPermission;
+}
+
+export function isAllowedToGrant(permissions: Permissions, actingUser: User): boolean {
+  const allowedIntent: Intent = "global.grantPermission";
+  const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
+  const hasPermission = userIntents.includes(allowedIntent);
+  return hasPermission;
+}
 
 export const publish = async (
   multichain: MultichainClient,

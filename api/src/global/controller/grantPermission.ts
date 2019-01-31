@@ -16,9 +16,9 @@ export const grantGlobalPermission = async (
   const intent = value("intent", input.intent, x => userAssignableIntents.includes(x));
 
   const userIntent: Intent = "global.grantPermission";
-  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
 
-  await Global.grantPermission(multichain, identity, intent);
+  await Global.oldGrantPermission(multichain, identity, intent);
   logger.debug({ identity, intent }, "Granting permission.");
   return [
     200,
