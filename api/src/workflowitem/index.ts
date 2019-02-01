@@ -123,10 +123,10 @@ export async function update(
     "amountType",
   ]);
   if (!isUserAllowedTo(allowedIntent, workflowitemToBeUpdated, updatingUser)) {
-    Promise.reject("User is not allowed to update workflowitem");
+    return Promise.reject("User is not allowed to update workflowitem");
   }
-  if (!isEmpty(workflowitemToBeUpdated.documents)) {
-    updatedWorkflowitemData.documents = await hashDocuments(workflowitemToBeUpdated.documents);
+  if (!isEmpty(updates.documents)) {
+    updatedWorkflowitemData.documents = await hashDocuments(updates.documents);
   }
   if (updatedWorkflowitemData.amountType === "N/A") {
     delete updatedWorkflowitemData.amount;
@@ -135,8 +135,6 @@ export async function update(
   if (isEmpty(updatedWorkflowitemData)) {
     return Promise.resolve();
   }
-
-  console.log(updates);
 
   await updateWorkflowitem(projectId, subprojectId, workflowitemId, updatedWorkflowitemData);
   await notify(projectId, subprojectId, workflowitemId, updatedWorkflowitemData);

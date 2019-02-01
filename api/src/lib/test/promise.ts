@@ -18,7 +18,6 @@ export async function assertIsRejectedWith(promise: Promise<any>): Promise<void>
   let result: any;
   try {
     result = await promise;
-    console.log(result);
   } catch (error) {
     // assert.instanceOf(error, errorType);
     return;

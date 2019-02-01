@@ -805,7 +805,6 @@ export const registerRoutes = (
     (request, reply) => {
       const req = request as AuthenticatedRequest;
       const body = req.body.data;
-      console.log(body);
 
       workflowitemUpdater(
         req.user,
