@@ -107,6 +107,52 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
   };
 }
 
+export function createProject(multichainClient: MultichainClient): HTTP.ProjectCreator {
+  return async (token: AuthToken, createData: Project.CreateData) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const assigningUser: Project.User = { id: token.userId, groups: token.groups };
+
+    const permissionLister: Permission.PermissionListReader = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    const projectReader: Project.Reader = async id => {
+      const multichainProject: Multichain.Project = await Multichain.getProject(
+        multichainClient,
+        id,
+      );
+      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+    };
+
+    const creator: Project.Creator = async project => {
+      Project.validateProject(project);
+      const multichainProject: Multichain.Project = {
+        id: project.id,
+        creationUnixTs: project.creationUnixTs,
+        status: project.status,
+        displayName: project.displayName,
+        assignee: project.assignee,
+        description: project.description,
+        amount: project.amount,
+        currency: project.currency,
+        thumbnail: project.thumbnail,
+        permissions: project.permissions,
+        log: [],
+      };
+      Multichain.createProject(multichainClient, issuer, multichainProject);
+    };
+
+    return Project.create(assigningUser, createData, {
+      getAllPermissions: permissionLister,
+      getProject: projectReader,
+      createProject: creator,
+    });
+  };
+}
+
 export function assignProject(multichainClient: MultichainClient): HTTP.ProjectAssigner {
   return async (token: AuthToken, projectId: string, assignee: string) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };

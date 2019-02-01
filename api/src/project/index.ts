@@ -33,7 +33,7 @@ export type ListReader = () => Promise<Project[]>;
 
 export type PermissionListReader = () => Promise<Permission.Permissions>;
 
-export type Creator = (createData: Project) => Promise<void>;
+export type Creator = (project: Project) => Promise<void>;
 
 export type Assigner = (projectId: string, assignee: string) => Promise<void>;
 
@@ -125,7 +125,7 @@ export async function create(
 
   const project: Project = {
     id: value("id", rawCreateData.id || randomString(), isNonemptyString),
-    creationUnixTs: rawCreateData.creationUnixTs || new Date().toISOString(),
+    creationUnixTs: rawCreateData.creationUnixTs || new Date().getTime().toString(),
     status: value("status", rawCreateData.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", rawCreateData.displayName, isNonemptyString),
     description: value("description", rawCreateData.description, isNonemptyString),

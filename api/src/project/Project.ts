@@ -65,9 +65,8 @@ const schema = Joi.object().keys({
   id: Joi.string()
     .max(32)
     .required(),
-  creationUnixTs: Joi.date()
-    .timestamp("unix")
-    .required(),
+  // https://github.com/hapijs/joi/issues/1051
+  creationUnixTs: Joi.string().required(),
   status: Joi.string()
     .valid("open", "closed")
     .required(),

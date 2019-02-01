@@ -12,7 +12,6 @@ import Intent from "../authz/intents";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { revokeGlobalPermission } from "../global/controller/revokePermission";
 import { createGroup } from "../global/createGroup";
-import { createProject } from "../global/createProject";
 import { createUser } from "../global/createUser";
 import { addUserToGroup } from "../group/addUser";
 import { getGroupList } from "../group/list";
@@ -266,14 +265,14 @@ export const registerRoutes = (
     updateProject,
     listGlobalPermissions,
     grantGlobalPermission,
-  }: // createProject,
-  {
+    createProject,
+  }: {
     listProjects: AllProjectsReader;
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
     listGlobalPermissions: AllPermissionsReader;
     grantGlobalPermission: GlobalPermissionGranter;
-    // createProject: ProjectCreator;
+    createProject: ProjectCreator;
   },
 ) => {
   // ------------------------------------------------------------
@@ -362,19 +361,20 @@ export const registerRoutes = (
     `${urlPrefix}/global.createProject`,
     getSchema(server, "createProject"),
     (request, reply) => {
-      // const req = request as AuthenticatedRequest;
-      // const token = req.user;
-      // createProject(token, req.body.data.project)
-      //   .then(
-      //     (permissions): HttpResponse => [
-      //       200,
-      //       {
-      //         apiVersion: "1.0",
-      //         data: "OK",
-      //       },
-      //     ],
-      //   )
-      createProject(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      createProject(token, req.body.data.project)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: {
+                created: true,
+              },
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
