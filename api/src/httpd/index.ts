@@ -22,6 +22,12 @@ export type GlobalPermissionGranter = (
 
 export type AllPermissionsGranter = (token: AuthToken, grantee: string) => Promise<void>;
 
+export type GlobalPermissionRevoker = (
+  token: AuthToken,
+  recipient: string,
+  intent: Intent,
+) => Promise<void>;
+
 export type ProjectAssigner = (
   token: AuthToken,
   projectId: string,

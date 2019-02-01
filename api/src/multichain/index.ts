@@ -18,8 +18,12 @@ export * from "./Workflowitem";
 export * from "./SubprojectEvents";
 
 const projectSelfKey = "self";
+<<<<<<< HEAD
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 const workflowitemOrderingKey = subprojectId => `${subprojectId}_workflowitem_ordering`;
+=======
+const globalSelfKey = "self";
+>>>>>>> master
 
 export type Permissions = { [key in Intent]?: string[] };
 
@@ -96,7 +100,7 @@ export async function writeProjectAssignedToChain(
   };
 
   const streamName = projectId;
-  const streamItemKey = "self";
+  const streamItemKey = projectSelfKey;
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
@@ -207,9 +211,9 @@ export async function getProjectList(multichain: MultichainClient): Promise<Proj
   return [...projectsMap.values()];
 }
 
-export async function getPermissionList(multichain: MultichainClient): Promise<Permissions> {
+export async function getGlobalPermissionList(multichain: MultichainClient): Promise<Permissions> {
   try {
-    const streamItems = await multichain.v2_readStreamItems("global", "self", 1);
+    const streamItems = await multichain.v2_readStreamItems("global", globalSelfKey, 1);
     if (streamItems.length < 1) {
       return {};
     }
@@ -233,7 +237,7 @@ export async function grantGlobalPermission(
   grantee: string,
   intent: Intent,
 ): Promise<void> {
-  const permissions = await getPermissionList(multichain);
+  const permissions = await getGlobalPermissionList(multichain);
   const permissionsForIntent: People = permissions[intent] || [];
   permissionsForIntent.push(grantee);
   permissions[intent] = permissionsForIntent;
@@ -241,7 +245,7 @@ export async function grantGlobalPermission(
   const grantintent: Intent = "global.grantPermission";
 
   const event = {
-    key: projectSelfKey,
+    key: globalSelfKey,
     intent: grantintent,
     createdBy: issuer.name,
     createdAt: new Date().toISOString(),
@@ -250,7 +254,7 @@ export async function grantGlobalPermission(
   };
 
   const streamName = "global";
-  const streamItemKey = projectSelfKey;
+  const streamItemKey = globalSelfKey;
   const streamItem = { json: event };
 
   logger.debug(`Publishing ${grantintent} to ${streamName}/${streamItemKey}`);
@@ -268,6 +272,55 @@ export async function grantGlobalPermission(
       return multichain
         .getOrCreateStream({ kind: "global", name: streamName })
         .then(() => publishEvent());
+    } else {
+      throw err;
+    }
+  });
+}
+
+export async function revokeGlobalPermission(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  recipient: string,
+  intent: Intent,
+): Promise<void> {
+  const permissions = await getGlobalPermissionList(multichain);
+  if (permissions === {}) {
+    return;
+  }
+  const permissionsForIntent: People = permissions[intent] || [];
+  const userIndex = permissionsForIntent.indexOf(recipient);
+  permissionsForIntent.splice(userIndex, 1);
+  permissions[intent] = permissionsForIntent;
+
+  const revokeIntent: Intent = "global.revokePermission";
+
+  const event = {
+    key: globalSelfKey,
+    intent: revokeIntent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    data: { permissions },
+    dataVersion: 1,
+  };
+
+  const streamName = "global";
+  const streamItemKey = globalSelfKey;
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${revokeIntent} to ${streamName}/${streamItemKey}`);
+
+  const publishEvent = () => {
+    return multichain
+      .getRpcClient()
+      .invoke("publish", streamName, streamItemKey, streamItem)
+      .then(() => event);
+  };
+
+  return publishEvent().catch(err => {
+    if (err.code === -708) {
+      // stream does not exist yet. Return without revoking permission
+      return;
     } else {
       throw err;
     }

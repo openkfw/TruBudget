@@ -12,8 +12,8 @@ import {
   ProjectUpdater,
   WorkflowitemCloser,
 } from ".";
+import { GlobalPermissionRevoker } from ".";
 import Intent from "../authz/intents";
-import { revokeGlobalPermission } from "../global/controller/revokePermission";
 import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
 import { createUser } from "../global/createUser";
@@ -269,6 +269,7 @@ export const registerRoutes = (
     listGlobalPermissions,
     grantGlobalPermission,
     grantAllPermissions,
+    revokeGlobalPermission,
   }: {
     listProjects: AllProjectsReader;
     getProjectWithSubprojects: ProjectReader;
@@ -279,6 +280,7 @@ export const registerRoutes = (
     listGlobalPermissions: AllPermissionsReader;
     grantGlobalPermission: GlobalPermissionGranter;
     grantAllPermissions: AllPermissionsGranter;
+    revokeGlobalPermission: GlobalPermissionRevoker;
   },
 ) => {
   // ------------------------------------------------------------
@@ -447,7 +449,22 @@ export const registerRoutes = (
     `${urlPrefix}/global.revokePermission`,
     getSchema(server, "globalRevokePermission"),
     (request, reply) => {
-      revokeGlobalPermission(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+
+      const intent: Intent = request.body.data.intent;
+      const recipient: string = request.body.data.identity;
+
+      return revokeGlobalPermission(token, recipient, intent)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
