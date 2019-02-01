@@ -1,6 +1,12 @@
 import { FastifyInstance } from "fastify";
 
-import { AllProjectsReader, AllWorkflowitemsReader, ProjectAssigner, ProjectUpdater } from ".";
+import {
+  AllProjectsReader,
+  AllWorkflowitemsReader,
+  ProjectAssigner,
+  ProjectUpdater,
+  WorkflowitemUpdater,
+} from ".";
 import { WorkflowitemCloser } from ".";
 import { grantAllPermissions } from "../global/controller/grantAllPermissions";
 import { grantGlobalPermission } from "../global/controller/grantPermission";
@@ -258,12 +264,14 @@ export const registerRoutes = (
     updateProject,
     workflowitemLister,
     workflowitemCloser,
+    workflowitemUpdater,
   }: {
     listProjects: AllProjectsReader;
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
     workflowitemLister: AllWorkflowitemsReader;
     workflowitemCloser: WorkflowitemCloser;
+    workflowitemUpdater: WorkflowitemUpdater;
   },
 ) => {
   // ------------------------------------------------------------
@@ -686,7 +694,6 @@ export const registerRoutes = (
     getSchema(server, "workflowitemList"),
     (request, reply) => {
       const req = request as AuthenticatedRequest;
-      // TODO: Typedefinition for workflowitems missing
       return workflowitemLister(req.user, req.query.projectId, req.query.subprojectId)
         .then(
           (workflowitems): HttpResponse => [
@@ -718,7 +725,27 @@ export const registerRoutes = (
     `${urlPrefix}/workflowitem.update`,
     getSchema(server, "workflowitemUpdate"),
     (request, reply) => {
-      updateWorkflowitem(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const body = req.body.data;
+      console.log(body);
+
+      workflowitemUpdater(
+        req.user,
+        body.projectId,
+        body.subprojectId,
+        body.workflowitemId,
+        req.body.data,
+      )
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
+        // updateWorkflowitem(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

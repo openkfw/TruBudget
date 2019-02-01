@@ -374,12 +374,14 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
   };
 }
 
-export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemCloser {
+export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemUpdater {
   return async (
     token: AuthToken,
     projectId: string,
     subprojectId: string,
     workflowitemId: string,
+    // TODO find better type
+    updates: any,
   ) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const updatingUser: Workflowitem.User = { id: token.userId, groups: token.groups };
@@ -447,7 +449,7 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
       });
     };
 
-    return Workflowitem.update(updatingUser, projectId, subprojectId, workflowitemId, {
+    return Workflowitem.update(updatingUser, projectId, subprojectId, workflowitemId, updates, {
       getWorkflowitems: multichainLister,
       updateWorkflowitem: multichainUpdater,
       notify: multichainNotifier,

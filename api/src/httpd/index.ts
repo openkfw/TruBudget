@@ -33,6 +33,15 @@ export type WorkflowitemCloser = (
   workflowitemId: string,
 ) => Promise<void>;
 
+export type WorkflowitemUpdater = (
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+  // TODO find better type
+  updatedData: any,
+) => Promise<void>;
+
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];

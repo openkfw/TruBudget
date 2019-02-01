@@ -97,6 +97,7 @@ export async function update(
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
+  updates: Update,
   {
     getWorkflowitems,
     updateWorkflowitem,
@@ -114,7 +115,7 @@ export async function update(
     workflowitemId,
   );
   const updatedWorkflowitemData: Update = {};
-  inheritDefinedProperties(updatedWorkflowitemData, workflowitemToBeUpdated, [
+  inheritDefinedProperties(updatedWorkflowitemData, updates, [
     "displayName",
     "description",
     "amount",
@@ -134,6 +135,8 @@ export async function update(
   if (isEmpty(updatedWorkflowitemData)) {
     return Promise.resolve();
   }
+
+  console.log(updates);
 
   await updateWorkflowitem(projectId, subprojectId, workflowitemId, updatedWorkflowitemData);
   await notify(projectId, subprojectId, workflowitemId, updatedWorkflowitemData);
