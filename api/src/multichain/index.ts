@@ -18,12 +18,9 @@ export * from "./Workflowitem";
 export * from "./SubprojectEvents";
 
 const projectSelfKey = "self";
-<<<<<<< HEAD
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 const workflowitemOrderingKey = subprojectId => `${subprojectId}_workflowitem_ordering`;
-=======
 const globalSelfKey = "self";
->>>>>>> master
 
 export type Permissions = { [key in Intent]?: string[] };
 
