@@ -31,7 +31,7 @@ export const createUser = async (
 
   // Is the user allowed to create new users?
   const userIntent: Intent = "global.createUser";
-  await throwIfUnauthorized(req.user, userIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
 
   // Quick check (= no guarantee) that the given ID doesn't exist already as user or group ID (in case there's a
   // race and a user/group ID gets created more than once, only the first creation will actually
@@ -90,6 +90,6 @@ async function grantInitialPermissions(
       { params: { userId: user.id, intent } },
       `Granting default permissions to ${user.id}`,
     );
-    await Global.grantPermission(multichain, user.id, intent);
+    await Global.oldGrantPermission(multichain, user.id, intent);
   }
 }

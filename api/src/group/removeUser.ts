@@ -16,7 +16,7 @@ export async function removeUserFromGroup(
   const userId: string = value("userId", input.userId, isNonemptyString);
   const userIntent: Intent = "group.removeUser";
   const permissionIntent: Intent = "global.createGroup";
-  await throwIfUnauthorized(req.user, permissionIntent, await Global.getPermissions(multichain));
+  await throwIfUnauthorized(req.user, permissionIntent, await Global.oldGetPermissions(multichain));
 
   const groupExists = await Group.groupExists(multichain, groupId);
 
