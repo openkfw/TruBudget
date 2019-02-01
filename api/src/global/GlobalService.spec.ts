@@ -36,7 +36,7 @@ describe("Listing permissions", () => {
     delete permissionsMock["global.listPermissions"];
     getAllPermissions = async () => permissionsMock;
 
-    await assertIsRejectedWith(Permission.list(actingUser, { getAllPermissions }), Error);
+    await assertIsRejectedWith(Permission.list(actingUser, { getAllPermissions }));
   });
 });
 
@@ -91,10 +91,7 @@ describe("Granting a permission", () => {
       grantPermission,
     };
 
-    await assertIsRejectedWith(
-      Permission.grant(actingUser, userId, intentToBeGranted, deps),
-      Error,
-    );
+    await assertIsRejectedWith(Permission.grant(actingUser, userId, intentToBeGranted, deps));
   });
 
   it("will not call grantPermission if permission is already set", async () => {
@@ -173,7 +170,7 @@ describe("Granting all permissions", () => {
       grantPermission,
     };
 
-    await assertIsRejectedWith(Permission.grantAll(actingUser, identity, deps), Error);
+    await assertIsRejectedWith(Permission.grantAll(actingUser, identity, deps));
   });
 
   it("will only call grantPermission if permission is not set already", async () => {
@@ -256,9 +253,6 @@ describe("Revoking a permission", () => {
       revokePermission,
     };
 
-    await assertIsRejectedWith(
-      Permission.revoke(actingUser, userId, intentToBeRevoked, deps),
-      Error,
-    );
+    await assertIsRejectedWith(Permission.revoke(actingUser, userId, intentToBeRevoked, deps));
   });
 });
