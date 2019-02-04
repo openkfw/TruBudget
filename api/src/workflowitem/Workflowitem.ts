@@ -94,7 +94,7 @@ const schema = Joi.object().keys({
     .when("amountType", {
       is: Joi.valid("disbursed", "allocated"),
       then: Joi.required(),
-      otherwise: Joi.optional(),
+      otherwise: Joi.forbidden(),
     })
     .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() }),
   amountType: Joi.string()
