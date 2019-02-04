@@ -121,22 +121,14 @@ describe("Closing a project", () => {
 
     const getOrdering: OrderingReader = () => Promise.resolve(ordering);
     const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
-    const closeWorkflowitem: Closer = async (projectId, subprojectId, workflowitemId) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitemIds.includes(workflowitemId)
-      ) {
+    const closeWorkflowitem: Closer = async workflowitemId => {
+      if (!workflowitemIds.includes(workflowitemId)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
-    const notify: CloseNotifier = async (projectId, subprojectId, workflowitemId, actingUser) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitemIds.includes(workflowitemId.id)
-      ) {
+    const notify: CloseNotifier = async (workflowitemId, _actingUser) => {
+      if (!workflowitemIds.includes(workflowitemId.id)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
@@ -187,23 +179,14 @@ describe("Closing a project", () => {
 
     const getOrdering: OrderingReader = () => Promise.resolve(ordering);
     const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
-    const closeWorkflowitem: Closer = async (projectId, subprojectId, workflowitemId) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitems.filter(item => item.id === workflowitemId)
-      ) {
+    const closeWorkflowitem: Closer = async workflowitemId => {
+      if (!workflowitems.filter(item => item.id === workflowitemId)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
-    const notify: CloseNotifier = async (projectId, subprojectId, workflowitemId, actingUser) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitems.filter(item => item.id === workflowitemId) ||
-        actingUser !== bob
-      ) {
+    const notify: CloseNotifier = async (workflowitemId, actingUser) => {
+      if (!workflowitems.filter(item => item.id === workflowitemId) || actingUser !== bob) {
         return Promise.reject("Incorrect requirements");
       }
       return;

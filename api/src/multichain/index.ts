@@ -511,18 +511,18 @@ export function generateResources(
   if (!projectId) {
     throw { kind: "PreconditionError", message: "No project ID provided" };
   }
-  notificationResource.unshift({
+  notificationResource.push({
     id: projectId,
     type: "project",
   });
   if (subprojectId) {
-    notificationResource.unshift({
+    notificationResource.push({
       id: subprojectId,
       type: "subproject",
     });
   }
   if (workflowitemId) {
-    notificationResource.unshift({
+    notificationResource.push({
       id: workflowitemId,
       type: "workflowitem",
     });

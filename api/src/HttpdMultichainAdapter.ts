@@ -138,7 +138,7 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
         currency: project.currency,
         thumbnail: project.thumbnail,
       },
-    })) as HTTP.Project[];
+    }));
   };
 }
 
@@ -360,18 +360,14 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
-    const multichainCloser: Workflowitem.Closer = async (project, subproject, workflowitem) => {
-      Multichain.closeWorkflowitem(multichainClient, issuer, project, subproject, workflowitem);
+    const multichainCloser: Workflowitem.Closer = async workflowitem => {
+      Multichain.closeWorkflowitem(multichainClient, issuer, projectId, subprojectId, workflowitem);
     };
 
-    const multichainNotifier: Workflowitem.CloseNotifier = (
-      projectID,
-      subprojectID,
-      workflowitem,
-    ) => {
+    const multichainNotifier: Workflowitem.CloseNotifier = workflowitem => {
       const notificationResource = Multichain.generateResources(
-        projectID,
-        subprojectID,
+        projectId,
+        subprojectId,
         workflowitem.id,
       );
 

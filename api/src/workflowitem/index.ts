@@ -14,14 +14,10 @@ import {
 export * from "./Workflowitem";
 export * from "./User";
 
-export type CloseNotifier = (projectId, subprojectId, workflowitemId, actingUser) => Promise<void>;
+export type CloseNotifier = (workflowitemId, actingUser) => Promise<void>;
 export type ListReader = () => Promise<Workflowitem[]>;
 export type OrderingReader = () => Promise<string[]>;
-export type Closer = (
-  projectId: string,
-  subprojectId: string,
-  workflowitemId: string,
-) => Promise<void>;
+export type Closer = (workflowitemId: string) => Promise<void>;
 
 export async function getAllScrubbedItems(
   asUser: User,
@@ -71,6 +67,6 @@ export async function close(
   );
   isWorkflowitemClosable(workflowitemId, closingUser, sortedWorkflowitems);
 
-  await closeWorkflowitem(projectId, subprojectId, workflowitemId);
-  await notify(projectId, subprojectId, closingWorkflowitem, closingUser);
+  await closeWorkflowitem(workflowitemId);
+  await notify(closingWorkflowitem, closingUser);
 }

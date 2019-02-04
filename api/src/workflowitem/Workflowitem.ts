@@ -110,7 +110,7 @@ const schema = Joi.object().keys({
       id: Joi.string(),
       hash: Joi.string(),
     }),
-  ), // Document[],
+  ),
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
@@ -133,6 +133,7 @@ export function scrubWorkflowitem(workflowitem: Workflowitem, user: User): Scrub
   }
   return workflowitem;
 }
+
 export function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
   const allowedIntent: Intent = "workflowitem.view";
   const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
