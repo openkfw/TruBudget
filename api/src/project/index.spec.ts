@@ -1,9 +1,10 @@
 import { assert } from "chai";
 
-import { assign, Assigner, AssignmentNotifier, getAllVisible, ListReader, Reader } from ".";
+import { assign, Assigner, AssignmentNotifier, getAllVisible, Reader } from ".";
 import * as Project from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
+import { Permissions } from "./Permission";
 import { User } from "./User";
 
 function newProject(id: string, permissions: object): Project.Project {
@@ -230,7 +231,7 @@ describe("Listing project permissions", () => {
   it("requires a specific permission.", async () => {
     const user: User = { id: "bob", groups: ["friends"] };
 
-    const newPermissions = {
+    const newPermissions: Permissions = {
       "project.intent.listPermissions": ["bob"],
       "project.viewDetails": ["bob"],
     };
@@ -238,18 +239,25 @@ describe("Listing project permissions", () => {
     const projectNoListPermission = newProject("aliceProject", {
       "project.viewDetails": ["bob"],
     });
-
+    const calls = new Map<string, number>();
+    const getProjectPermissions = async id => {
+      calls.set(id, (calls.get(id) || 0) + 1);
+      return newPermissions;
+    };
     const permissions = await Project.getPermissions(user, "bobProject", {
       getProject: async () => projectWithListPermission,
+      getProjectPermissions,
     });
     assert.deepEqual(permissions, newPermissions);
 
     await assertIsRejectedWith(
       Project.getPermissions(user, "bobProject", {
         getProject: async () => projectNoListPermission,
+        getProjectPermissions,
       }),
       Error,
     );
+    assert.equal(calls.size, 1);
   });
 });
 

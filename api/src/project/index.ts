@@ -1,5 +1,6 @@
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
+import { isAllowedToSee, Permissions } from "./Permission";
 import {
   isProjectAssignable,
   isProjectUpdateable,
@@ -9,8 +10,6 @@ import {
   scrubHistory,
 } from "./Project";
 import { User } from "./User";
-
-import { isAllowedToSee, Permissions } from "./Permission";
 
 export * from "./Project";
 export * from "./User";
@@ -27,7 +26,7 @@ export interface Update {
 
 export type ListReader = () => Promise<Project[]>;
 
-export type PermissionsLister = () => Promise<Permissions>;
+export type PermissionsLister = (projectId: string) => Promise<Permissions>;
 
 export type Assigner = (projectId: string, assignee: string) => Promise<void>;
 
@@ -71,7 +70,10 @@ export async function getAllVisible(
 export async function getPermissions(
   actingUser: User,
   projectId: string,
-  { getProject }: { getProject: Reader },
+  {
+    getProject,
+    getProjectPermissions,
+  }: { getProject: Reader; getProjectPermissions: PermissionsLister },
 ): Promise<Permissions> {
   const project = await getOne(actingUser, projectId, { getProject });
   if (!isAllowedToSee(project.permissions, actingUser)) {
@@ -79,7 +81,7 @@ export async function getPermissions(
       Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
     );
   }
-  return project.permissions;
+  return await getProjectPermissions(projectId);
 }
 
 /**

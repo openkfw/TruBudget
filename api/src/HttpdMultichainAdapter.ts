@@ -116,7 +116,18 @@ export function getProjectPermissionList(
       return Project.validateProject(multichainProjectToProjectProject(multichainProject));
     };
 
-    return Project.getPermissions(actingUser, projectId, { getProject: reader });
+    const permissionsReader: Project.PermissionsLister = async id => {
+      const permissions: Multichain.Permissions = await Multichain.getProjectPermissionList(
+        multichainClient,
+        id,
+      );
+      return permissions;
+    };
+
+    return Project.getPermissions(actingUser, projectId, {
+      getProject: reader,
+      getProjectPermissions: permissionsReader,
+    });
   };
 }
 
