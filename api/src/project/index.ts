@@ -10,6 +10,8 @@ import {
 } from "./Project";
 import { User } from "./User";
 
+import { isAllowedToSee, Permissions } from "./Permission";
+
 export * from "./Project";
 export * from "./User";
 
@@ -24,6 +26,8 @@ export interface Update {
 }
 
 export type ListReader = () => Promise<Project[]>;
+
+export type PermissionsLister = () => Promise<Permissions>;
 
 export type Assigner = (projectId: string, assignee: string) => Promise<void>;
 
@@ -62,6 +66,20 @@ export async function getAllVisible(
     .filter(project => isProjectVisibleTo(project, actingUser))
     .map(project => scrubHistory(project, actingUser));
   return authorizedProjects;
+}
+
+export async function getPermissions(
+  actingUser: User,
+  projectId: string,
+  { getProject }: { getProject: Reader },
+): Promise<Permissions> {
+  const project = await getOne(actingUser, projectId, { getProject });
+  if (!isAllowedToSee(project.permissions, actingUser)) {
+    return Promise.reject(
+      Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
+    );
+  }
+  return project.permissions;
 }
 
 /**

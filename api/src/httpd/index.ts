@@ -9,6 +9,11 @@ export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
 
 export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
 
+export type AllProjectPermissionsReader = (
+  token: AuthToken,
+  projectId: string,
+) => Promise<Permissions>;
+
 export type GlobalPermissionGranter = (
   token: AuthToken,
   grantee: string,

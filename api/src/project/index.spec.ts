@@ -174,56 +174,83 @@ describe("Listing projects", () => {
     assert.isTrue(hasIntent(6, "project.close"));
     assert.isTrue(hasIntent(7, "project.archive"));
   });
+
+  it("The project.listPermissions permission relates to all events, including those in the past.", async () => {
+    const isRedacted = (p: Project.ScrubbedProject, idx: number) => p.log[idx] === null;
+
+    const user: User = { id: "alice", groups: [] };
+
+    // Initially, Alice cannot see the project:
+
+    const initialPermissions = {};
+    const project = newProject("test", initialPermissions);
+    project.log = [
+      {
+        intent: "global.createProject",
+        snapshot: { displayName: "test", permissions: initialPermissions },
+      },
+    ];
+
+    await assertIsRejectedWith(
+      Project.getOne(user, project.id, {
+        getProject: async () => project,
+      }),
+      Error,
+    );
+
+    // When we assign the required permission to Alice,
+    // she should be able to see the original event as well:
+
+    const newPermissions = {
+      "project.viewDetails": ["alice"],
+      "project.intent.listPermissions": ["alice"],
+    };
+    project.permissions = newPermissions;
+    project.log = [
+      {
+        intent: "global.createProject",
+        snapshot: { displayName: "test", permissions: initialPermissions },
+      },
+      {
+        intent: "project.intent.grantPermission",
+        snapshot: { displayName: "test", permissions: newPermissions },
+      },
+    ];
+
+    const afterGrantingPermission = await Project.getOne(user, project.id, {
+      getProject: async () => project,
+    });
+    assert.equal(afterGrantingPermission.log.length, 2);
+    assert.isFalse(isRedacted(afterGrantingPermission, 0));
+    assert.isFalse(isRedacted(afterGrantingPermission, 1));
+  });
 });
 
-it("The project.listPermissions permission relates to all events, including those in the past.", async () => {
-  const isRedacted = (p: Project.ScrubbedProject, idx: number) => p.log[idx] === null;
+describe("Listing project permissions", () => {
+  it("requires a specific permission.", async () => {
+    const user: User = { id: "bob", groups: ["friends"] };
 
-  const user: User = { id: "alice", groups: [] };
+    const newPermissions = {
+      "project.intent.listPermissions": ["bob"],
+      "project.viewDetails": ["bob"],
+    };
+    const projectWithListPermission = newProject("bobProject", newPermissions);
+    const projectNoListPermission = newProject("aliceProject", {
+      "project.viewDetails": ["bob"],
+    });
 
-  // Initially, Alice cannot see the project:
+    const permissions = await Project.getPermissions(user, "bobProject", {
+      getProject: async () => projectWithListPermission,
+    });
+    assert.deepEqual(permissions, newPermissions);
 
-  const initialPermissions = {};
-  const project = newProject("test", initialPermissions);
-  project.log = [
-    {
-      intent: "global.createProject",
-      snapshot: { displayName: "test", permissions: initialPermissions },
-    },
-  ];
-
-  await assertIsRejectedWith(
-    Project.getOne(user, project.id, {
-      getProject: async () => project,
-    }),
-    Error,
-  );
-
-  // When we assign the required permission to Alice,
-  // she should be able to see the original event as well:
-
-  const newPermissions = {
-    "project.viewDetails": ["alice"],
-    "project.intent.listPermissions": ["alice"],
-  };
-  project.permissions = newPermissions;
-  project.log = [
-    {
-      intent: "global.createProject",
-      snapshot: { displayName: "test", permissions: initialPermissions },
-    },
-    {
-      intent: "project.intent.grantPermission",
-      snapshot: { displayName: "test", permissions: newPermissions },
-    },
-  ];
-
-  const afterGrantingPermission = await Project.getOne(user, project.id, {
-    getProject: async () => project,
+    await assertIsRejectedWith(
+      Project.getPermissions(user, "bobProject", {
+        getProject: async () => projectNoListPermission,
+      }),
+      Error,
+    );
   });
-  assert.equal(afterGrantingPermission.log.length, 2);
-  assert.isFalse(isRedacted(afterGrantingPermission, 0));
-  assert.isFalse(isRedacted(afterGrantingPermission, 1));
 });
 
 describe("Assigning a project,", () => {

@@ -3,6 +3,7 @@ import { FastifyInstance } from "fastify";
 import {
   AllPermissionsGranter,
   AllPermissionsReader,
+  AllProjectPermissionsReader,
   AllProjectsReader,
   GlobalPermissionGranter,
   ProjectAndSubprojects,
@@ -35,7 +36,6 @@ import { getNewestNotifications } from "../notification/controller/poll";
 import { closeProject } from "../project/controller/close";
 import { createSubproject } from "../project/controller/createSubproject";
 import { grantProjectPermission } from "../project/controller/intent.grantPermission";
-import { getProjectPermissions } from "../project/controller/intent.listPermissions";
 import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
 import { getProjectHistory } from "../project/controller/viewHistory";
 import { ProjectResource } from "../project/model/Project";
@@ -269,6 +269,7 @@ export const registerRoutes = (
     grantGlobalPermission,
     grantAllPermissions,
     revokeGlobalPermission,
+    getProjectPermissions,
   }: {
     listProjects: AllProjectsReader;
     getProjectWithSubprojects: ProjectReader;
@@ -278,6 +279,7 @@ export const registerRoutes = (
     grantGlobalPermission: GlobalPermissionGranter;
     grantAllPermissions: AllPermissionsGranter;
     revokeGlobalPermission: GlobalPermissionRevoker;
+    getProjectPermissions: AllProjectPermissionsReader;
   },
 ) => {
   // ------------------------------------------------------------
@@ -616,10 +618,21 @@ export const registerRoutes = (
     `${urlPrefix}/project.intent.listPermissions`,
     getSchema(server, "projectListPermissions"),
     (request, reply) => {
-      getProjectPermissions(multichainClient, request as AuthenticatedRequest)
-        .then(response => {
-          return send(reply, response);
-        })
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      const projectId: string = request.query.projectId;
+
+      getProjectPermissions(token, projectId)
+        .then(
+          (permissions): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: permissions,
+            },
+          ],
+        )
+        .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
   );

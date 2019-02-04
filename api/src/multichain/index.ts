@@ -203,6 +203,14 @@ export async function getProjectList(multichain: MultichainClient): Promise<Proj
   return [...projectsMap.values()];
 }
 
+export async function getProjectPermissionList(
+  multichain: MultichainClient,
+  projectId: string,
+): Promise<Permissions> {
+  const project = await getProject(multichain, projectId);
+  return project.permissions;
+}
+
 export async function getGlobalPermissionList(multichain: MultichainClient): Promise<Permissions> {
   try {
     const streamItems = await multichain.v2_readStreamItems("global", globalSelfKey, 1);
