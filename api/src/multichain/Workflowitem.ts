@@ -181,7 +181,7 @@ export function handleCreate(event: Event): Workflowitem | undefined {
   switch (event.dataVersion) {
     case 1: {
       const { workflowitem, permissions } = event.data;
-      const values = { ...deepcopy(workflowitem), permissions: deepcopy(permissions) };
+      const values = { ...deepcopy(workflowitem), permissions: deepcopy(permissions), log: [] };
       return values as Workflowitem;
     }
   }

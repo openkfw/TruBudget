@@ -1,10 +1,17 @@
 import { assert } from "chai";
 
+<<<<<<< HEAD
 import { close, CloseNotifier, Closer, getAllScrubbedItems, ListReader, OrderingReader } from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { User } from "./User";
 import { Workflowitem } from "./Workflowitem";
+=======
+import { getAllScrubbedItems, ListReader, OrderingReader } from ".";
+import Intent from "../authz/intents";
+import { User } from "./User";
+import { ScrubbedWorkflowitem, Workflowitem } from "./Workflowitem";
+>>>>>>> origin/master
 
 function newWorkflowitem(id: string, permissions: object): Workflowitem {
   return {
@@ -24,9 +31,33 @@ function newWorkflowitem(id: string, permissions: object): Workflowitem {
     log: [],
   };
 }
+<<<<<<< HEAD
 
 describe("When listing workflowitems,", () => {
   it("filters the list of workflowitems according to the user's permissions.", async () => {
+=======
+function newRedactedWorkflowitemFromWorkflowitem(item: Workflowitem): ScrubbedWorkflowitem {
+  return {
+    id: item.id,
+    creationUnixTs: item.creationUnixTs,
+    displayName: null,
+    exchangeRate: null,
+    billingDate: null,
+    amount: null,
+    currency: null,
+    amountType: null,
+    description: null,
+    status: item.status,
+    assignee: null,
+    permissions: null,
+    log: null,
+    documents: null,
+  };
+}
+
+describe("Listing workflowitems,", () => {
+  it("redacts history events the user is not allowed to see.", async () => {
+>>>>>>> origin/master
     const user: User = { id: "bob", groups: ["friends"] };
 
     const viewIntent: Intent = "workflowitem.view";
@@ -34,7 +65,14 @@ describe("When listing workflowitems,", () => {
     const workflowitemVisibleToFriends = newWorkflowitem("friendsWorkflowitem", {
       [viewIntent]: ["friends"],
     });
+<<<<<<< HEAD
     const nonVisibleWorkflowitem = newWorkflowitem("hiddenWorkflowitem", {});
+=======
+    const nonVisibleWorkflowitem: Workflowitem = newWorkflowitem("hiddenWorkflowitem", {});
+    const redactedWorkflowitem: ScrubbedWorkflowitem = newRedactedWorkflowitemFromWorkflowitem(
+      nonVisibleWorkflowitem,
+    );
+>>>>>>> origin/master
 
     const workflowitems = [
       workflowitemVisibleToBob,
@@ -44,7 +82,11 @@ describe("When listing workflowitems,", () => {
     const ordering = [];
 
     const lister: ListReader = () => Promise.resolve(workflowitems);
+<<<<<<< HEAD
     const orderingReader: OrderingReader = () => Promise.resolve(ordering);
+=======
+    const orderingReader: OrderingReader = async () => ordering;
+>>>>>>> origin/master
 
     const visibleWorkflowitems = await getAllScrubbedItems(user, {
       getAllWorkflowitems: lister,
@@ -55,6 +97,7 @@ describe("When listing workflowitems,", () => {
     assert.equal(visibleWorkflowitems[0].id, "bobWorkflowitem");
     assert.equal(visibleWorkflowitems[1].id, "friendsWorkflowitem");
     assert.equal(visibleWorkflowitems[2].id, "hiddenWorkflowitem");
+<<<<<<< HEAD
   });
 });
 
@@ -196,5 +239,8 @@ describe("Closing a project", () => {
         notify,
       }),
     );
+=======
+    assert.equal(JSON.stringify(visibleWorkflowitems[2]), JSON.stringify(redactedWorkflowitem));
+>>>>>>> origin/master
   });
 });

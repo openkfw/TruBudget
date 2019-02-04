@@ -113,6 +113,7 @@ registerRoutes(
   multichainHost,
   backupApiPort,
   {
+    workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(multichainClient),
     listProjects: HttpdMultichainAdapter.getProjectList(multichainClient),
     getProjectWithSubprojects: HttpdMultichainAdapter.getProject(multichainClient),
     assignProject: HttpdMultichainAdapter.assignProject(multichainClient),

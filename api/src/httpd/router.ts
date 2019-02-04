@@ -260,11 +260,11 @@ export const registerRoutes = (
   multichainHost: string,
   backupApiPort: string,
   {
+    workflowitemLister,
     listProjects,
     getProjectWithSubprojects,
     assignProject,
     updateProject,
-    workflowitemLister,
     workflowitemCloser,
     listGlobalPermissions,
     grantGlobalPermission,
@@ -770,7 +770,6 @@ export const registerRoutes = (
     getSchema(server, "workflowitemList"),
     (request, reply) => {
       const req = request as AuthenticatedRequest;
-      // TODO: Typedefinition for workflowitems missing
       return workflowitemLister(req.user, req.query.projectId, req.query.subprojectId)
         .then(
           (workflowitems): HttpResponse => [

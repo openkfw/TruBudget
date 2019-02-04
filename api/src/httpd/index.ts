@@ -88,6 +88,21 @@ export interface ProjectAndSubprojects {
   project: Project;
   subprojects: Subproject[];
 }
+export interface Workflowitem {
+  allowedIntents: Intent[];
+  data: {
+    displayName: string;
+    exchangeRate?: string;
+    billingDate?: string;
+    amount?: string;
+    currency?: string;
+    amountType: "N/A" | "disbursed" | "allocated";
+    description: string;
+    status: "open" | "closed";
+    assignee?: string;
+    documents?: Document[];
+  };
+}
 
 interface Subproject {
   allowedIntents: Intent[];

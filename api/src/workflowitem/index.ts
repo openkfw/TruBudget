@@ -4,9 +4,9 @@ import { User } from "./User";
 import {
   isWorkflowitemClosable,
   redactHistoryEvent,
-  redactWorkflowitem,
   removeEventLog,
   ScrubbedWorkflowitem,
+  scrubWorkflowitem,
   sortWorkflowitems,
   Workflowitem,
 } from "./Workflowitem";
@@ -40,7 +40,7 @@ export async function getAllScrubbedItems(
         getAllowedIntents(userIdentities(asUser), workflowitem.permissions),
       ),
     );
-    return redactWorkflowitem(workflowitem, asUser);
+    return scrubWorkflowitem(workflowitem, asUser);
   });
 
   return scrubbedWorkflowitems.map(removeEventLog);
