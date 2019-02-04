@@ -32,7 +32,7 @@ export async function getAllScrubbedItems(
 ): Promise<ScrubbedWorkflowitem[]> {
   const workflowitemOrdering = await getWorkflowitemOrdering();
   const workflowitems = await getAllWorkflowitems();
-  const sortedWorkflowitems = await sortWorkflowitems(workflowitems, workflowitemOrdering);
+  const sortedWorkflowitems = sortWorkflowitems(workflowitems, workflowitemOrdering);
   const scrubbedWorkflowitems = await sortedWorkflowitems.map(workflowitem => {
     workflowitem.log.map(historyevent =>
       redactHistoryEvent(

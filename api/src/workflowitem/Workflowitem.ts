@@ -207,13 +207,16 @@ function isRedacted(item: ScrubbedWorkflowitem): boolean {
   return item.displayName === null;
 }
 
-function closedAt(item: Workflowitem): Promise<string> {
+function closedAt(item: Workflowitem): string {
   const event = item.log.find(e => e.intent === "workflowitem.close");
   if (event === undefined) {
     const message = "Item is not closed.";
-    Promise.reject(Error(`${message}: ${JSON.stringify(event)}`));
+    // Promise.reject(Error(`${message}: ${JSON.stringify(event)}`));
+    throw Error(`${message}: ${JSON.stringify(event)}`);
+  } else {
+    return event.createdAt;
   }
-  return event ? Promise.resolve(event.createdAt) : Promise.reject(Error(`Event is undefined`));
+  // return event ? Promise.resolve(event.createdAt) : Promise.reject(Error(`Event is undefined`));
 }
 
 function byCreationTime(a: ScrubbedWorkflowitem, b: ScrubbedWorkflowitem): -1 | 1 | 0 {
