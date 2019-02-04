@@ -273,6 +273,70 @@ describe("Listing project permissions", () => {
   });
 });
 
+describe("Granting project permissions", () => {
+  it("requires a specific permission.", async () => {
+    const user: User = { id: "bob", groups: ["friends"] };
+
+    const newPermissions: Permissions = {
+      "project.intent.listPermissions": ["bob"],
+      "project.intent.grantPermission": ["bob"],
+      "project.viewDetails": ["bob"],
+    };
+    const projectWithGrantPermission = newProject("bobProject", newPermissions);
+    const projectWithoutGrantPermission = newProject("aliceProject", {
+      "project.viewDetails": ["bob"],
+    });
+
+    const projectReader = async id => {
+      switch (id) {
+        case "bobProject":
+          return projectWithGrantPermission;
+        case "aliceProject":
+          return projectWithoutGrantPermission;
+        default:
+          return Promise.reject(id);
+      }
+    };
+
+    const granter = async (projectId, grantee, intent) => {
+      switch (projectId) {
+        case "bobProject":
+          if (projectWithGrantPermission.permissions[intent]) {
+            projectWithGrantPermission.permissions[intent].push(grantee);
+          } else {
+            projectWithGrantPermission.permissions[intent] = [grantee];
+          }
+          return Promise.resolve();
+        case "aliceProject":
+          if (projectWithGrantPermission.permissions[intent]) {
+            projectWithGrantPermission.permissions[intent].push(grantee);
+          } else {
+            projectWithGrantPermission.permissions[intent] = [grantee];
+          }
+          return Promise.resolve();
+        default:
+          return Promise.reject(projectId);
+      }
+    };
+    await assertIsResolved(
+      Project.grantPermission(user, "bobProject", "alice", "project.viewSummary", {
+        getProject: projectReader,
+        grantProjectPermission: granter,
+      }),
+    );
+    assert.equal(projectWithGrantPermission.permissions["project.viewSummary"], "alice");
+
+    await assertIsRejectedWith(
+      Project.grantPermission(user, "aliceProject", "alice", "project.viewSummary", {
+        getProject: projectReader,
+        grantProjectPermission: granter,
+      }),
+      Error,
+    );
+    assert.isUndefined(projectWithoutGrantPermission.permissions["project.viewSummary"]);
+  });
+});
+
 describe("Assigning a project,", () => {
   it("requires a specific permission.", async () => {
     const alice: User = { id: "alice", groups: ["friends"] };

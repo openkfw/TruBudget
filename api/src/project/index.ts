@@ -1,6 +1,7 @@
+import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
-import { isAllowedToSee, Permissions } from "./Permission";
+import { isAllowedToGrant, isAllowedToSee, Permissions } from "./Permission";
 import {
   isProjectAssignable,
   isProjectUpdateable,
@@ -27,6 +28,8 @@ export interface Update {
 export type ListReader = () => Promise<Project[]>;
 
 export type PermissionsLister = (projectId: string) => Promise<Permissions>;
+
+export type Granter = (projectId: string, grantee: string, intent: Intent) => Promise<void>;
 
 export type Assigner = (projectId: string, assignee: string) => Promise<void>;
 
@@ -82,6 +85,30 @@ export async function getPermissions(
     );
   }
   return await getProjectPermissions(projectId);
+}
+
+/**
+ *
+ * @param actingUser The requesting user.
+ * @param projectId ID of the affected project.
+ * @param grantee The grantee the permission is granted to.
+ * @param intent The permission which should be granted.
+ */
+export async function grantPermission(
+  actingUser: User,
+  projectId: string,
+  grantee: string,
+  intent: Intent,
+  { getProject, grantProjectPermission }: { getProject: Reader; grantProjectPermission: Granter },
+): Promise<void> {
+  const project = await getProject(projectId);
+  if (!isAllowedToGrant(project.permissions, actingUser)) {
+    return Promise.reject(
+      Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
+    );
+  }
+  // check if grantee does exist?
+  return grantProjectPermission(projectId, grantee, intent);
 }
 
 /**
