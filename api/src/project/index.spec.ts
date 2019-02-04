@@ -236,9 +236,21 @@ describe("Listing project permissions", () => {
       "project.viewDetails": ["bob"],
     };
     const projectWithListPermission = newProject("bobProject", newPermissions);
-    const projectNoListPermission = newProject("aliceProject", {
+    const projectWithoutListPermission = newProject("aliceProject", {
       "project.viewDetails": ["bob"],
     });
+
+    const projectReader = async id => {
+      switch (id) {
+        case "bobProject":
+          return projectWithListPermission;
+        case "aliceProject":
+          return projectWithoutListPermission;
+        default:
+          return Promise.reject(id);
+      }
+    };
+
     const calls = new Map<string, number>();
     const getProjectPermissions = async id => {
       calls.set(id, (calls.get(id) || 0) + 1);
@@ -251,8 +263,8 @@ describe("Listing project permissions", () => {
     assert.deepEqual(permissions, newPermissions);
 
     await assertIsRejectedWith(
-      Project.getPermissions(user, "bobProject", {
-        getProject: async () => projectNoListPermission,
+      Project.getPermissions(user, "aliceProject", {
+        getProject: projectReader,
         getProjectPermissions,
       }),
       Error,
