@@ -20,6 +20,7 @@ import * as Group from "./multichain/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
+import * as Workflowitem from "./workflowitem";
 
 export function getProject(multichainClient: MultichainClient): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
@@ -182,6 +183,63 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
       saveProjectAssignment: multichainAssigner,
       notify: multichainNotifier,
     });
+  };
+}
+
+export function getWorkflowitemList(
+  multichainClient: MultichainClient,
+): HTTP.AllWorkflowitemsReader {
+  return async (token: AuthToken, projectId: string, subprojectId: string) => {
+    const user: Workflowitem.User = { id: token.userId, groups: token.groups };
+
+    // Get ordering of workflowitems from blockchain
+    // If items are rearranged by user, the call returns an array of IDs in order
+    const orderingReader: Workflowitem.OrderingReader = async () => {
+      const ordering: string[] = await Multichain.getWorkflowitemOrdering(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return ordering;
+    };
+
+    // Get all unfiltered workflowitems from the blockchain
+    const lister: Workflowitem.ListReader = async () => {
+      const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return workflowitemList.map(Workflowitem.validateWorkflowitem);
+    };
+
+    // Filter workflowitems based on business logic:
+    // Redact data, redact history events and remove log
+    const workflowitems = await Workflowitem.getAllScrubbedItems(user, {
+      getAllWorkflowitems: lister,
+      getWorkflowitemOrdering: orderingReader,
+    });
+
+    // Map data to HTTP response
+    return workflowitems.map(item => ({
+      data: {
+        id: item.id,
+        creationUnixTs: item.creationUnixTs,
+        status: item.status,
+        amountType: item.amountType,
+        displayName: item.displayName,
+        description: item.description,
+        amount: item.amount,
+        assignee: item.assignee,
+        currency: item.currency,
+        billingDate: item.billingDate,
+        exchangeRate: item.exchangeRate,
+        documents: item.documents,
+      },
+      allowedIntents: item.permissions
+        ? getAllowedIntents(Workflowitem.userIdentities(user), item.permissions)
+        : [],
+    })) as HTTP.Workflowitem[];
   };
 }
 

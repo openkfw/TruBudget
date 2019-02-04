@@ -10,11 +10,15 @@ import { asMapKey } from "./Client";
 import { MultichainClient } from "./Client.h";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import * as MultichainWorkflowitem from "./Workflowitem";
 
 export * from "./event";
+export * from "./Workflowitem";
 export * from "./SubprojectEvents";
 
 const projectSelfKey = "self";
+const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
+const workflowitemOrderingKey = subprojectId => `${subprojectId}_workflowitem_ordering`;
 const globalSelfKey = "self";
 
 export type Permissions = { [key in Intent]?: string[] };
@@ -494,4 +498,95 @@ function notificationTypeFromIntent(intent: Intent): ResourceType {
   } else {
     throw Error(`Unknown ResourceType for intent ${intent}`);
   }
+}
+
+export async function getWorkflowitemList(
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+): Promise<MultichainWorkflowitem.Workflowitem[]> {
+  const queryKey = workflowitemsGroupKey(subprojectId);
+
+  const streamItems = await multichain.v2_readStreamItems(projectId, queryKey);
+  const workflowitemsMap = new Map<string, MultichainWorkflowitem.Workflowitem>();
+
+  for (const item of streamItems) {
+    const event = item.data.json as Event;
+
+    // Events look differently for different intents!
+    let workflowitem = workflowitemsMap.get(asMapKey(item));
+
+    if (workflowitem === undefined) {
+      // If we didn't encounter the workflowitem while looping we just need to create
+      // a workflowitem with no data in it
+      workflowitem = MultichainWorkflowitem.handleCreate(event);
+
+      if (workflowitem === undefined) {
+        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
+      }
+    } else {
+      // We've already encountered this workflowitem, so we can apply operations on it.
+      const hasProcessedEvent =
+        MultichainWorkflowitem.applyUpdate(event, workflowitem) ||
+        MultichainWorkflowitem.applyAssign(event, workflowitem) ||
+        MultichainWorkflowitem.applyClose(event, workflowitem) ||
+        MultichainWorkflowitem.applyGrantPermission(event, workflowitem.permissions) ||
+        MultichainWorkflowitem.applyRevokePermission(event, workflowitem.permissions);
+      if (!hasProcessedEvent) {
+        const message = "Unexpected event occured";
+        throw Error(`${message}: ${JSON.stringify(event)}.`);
+      }
+    }
+
+    if (workflowitem !== undefined) {
+      // Save all events to the log for now; we'll filter them once we
+      // know the final workflowitem permissions.
+      workflowitem.log.push({
+        ...event,
+        snapshot: {
+          displayName: deepcopy(workflowitem.displayName),
+          amount: deepcopy(workflowitem.amount),
+          currency: deepcopy(workflowitem.currency),
+          amountType: deepcopy(workflowitem.amountType),
+        },
+      });
+      workflowitemsMap.set(asMapKey(item), workflowitem);
+    }
+  }
+
+  return [...workflowitemsMap.values()];
+}
+
+export async function getWorkflowitemOrdering(
+  multichain: MultichainClient,
+  projectId: string,
+  subprojectId: string,
+): Promise<string[]> {
+  // Currently, the workflowitem ordering is stored in full; therefore, we only
+  // need to retrieve the latest item(see`publishWorkflowitemOrdering`).
+  const expectedDataVersion = 1;
+  const nValues = 1;
+
+  const streamItems = await multichain
+    .v2_readStreamItems(projectId, workflowitemOrderingKey(subprojectId), nValues)
+    .then(items => {
+      if (items.length > 0) return items;
+      else throw { kind: "NotFound", what: workflowitemOrderingKey(subprojectId) };
+    })
+    .catch(err => {
+      if (err.kind === "NotFound") {
+        return [{ data: { json: { dataVersion: 1, data: [] } } }];
+      } else {
+        throw err;
+      }
+    });
+
+  const item = streamItems[0];
+  const event = item.data.json as Event;
+  if (event.dataVersion !== expectedDataVersion) {
+    throwUnsupportedEventVersion(event);
+  }
+
+  const ordering: string[] = event.data;
+  return ordering;
 }
