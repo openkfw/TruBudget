@@ -100,8 +100,8 @@ export interface MultichainClient {
   // Create a new stream. If name is set and the stream exists, nothing happens.
   getOrCreateStream(options: CreateStreamOptions);
 
-  // Get a list of all streams:
-  streams(): Promise<Stream[]>;
+  // Get a list of (all) streams:
+  streams(stream?: string): Promise<Stream[]>;
 
   // Return the most recent values for all keys
   streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]>;

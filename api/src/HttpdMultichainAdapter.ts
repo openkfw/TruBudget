@@ -21,6 +21,7 @@ import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import { tellCacheWhatHappened } from "./multichain";
 
 export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
@@ -28,8 +29,8 @@ export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
 
     const project: Project.ScrubbedProject = await Project.getOne(actingUser, projectId, {
       getProject: async id => {
-        // return Project.validateProject(await Multichain.getAndCacheProject(conn, id));
-        return Project.validateProject(await Multichain.getProject(conn, id));
+        return Project.validateProject(await Multichain.getAndCacheProject(conn, id));
+        // return Project.validateProject(await Multichain.getProject(conn, id));
       },
     });
 
@@ -189,6 +190,7 @@ export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
       getAllPermissions: permissionLister,
       getProject: projectReader,
       createProject: creator,
+      notify: (project, _actingUser) => tellCacheWhatHappened(conn.cache, "global.createProject"),
     });
   };
 }

@@ -12,6 +12,7 @@ import {
 } from "../httpd/lib";
 import { isEmpty } from "../lib/emptyChecks";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
+import { Cache, tellCacheWhatHappened } from "../multichain/cache";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";

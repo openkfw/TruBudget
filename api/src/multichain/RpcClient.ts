@@ -1,16 +1,50 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import * as http from "http";
 import * as https from "https";
+
 import logger from "../lib/logger";
 import { ConnectionSettings } from "./RpcClient.h";
 import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
 import RpcResponse from "./RpcResponse.h";
-import * as bodyParser from "body-parser";
+
+const count = new Map();
+const durations = new Map();
+const nTopCalls = 5;
+const topCallWindowSizeInSeconds = 10;
+const intervalTimer = setInterval(() => {
+  if (!count.size) return;
+  const topCalls = [...count.entries()]
+    // Sort by total duration:
+    .sort(
+      ([whatA, _timesA], [whatB, _timesB]) =>
+        (durations.get(whatB) || 0) - (durations.get(whatA) || 0),
+    )
+    // Take only the first nTopCalls:
+    .slice(0, nTopCalls)
+    // Compute average durations:
+    .map(([what, times]) => {
+      const total = durations.get(what) || 0;
+      const avg = total / times;
+      return [what, times, total, avg];
+    })
+    .map(
+      ([what, times, total, avg]) =>
+        `- ${times}x avg=${Math.floor(avg)}ms total=${Math.floor(total)}ms: ${what}`,
+    );
+  console.log(
+    `Top-${nTopCalls} calls in the last ${topCallWindowSizeInSeconds} seconds:\n${topCalls.join(
+      "\n",
+    )}`,
+  );
+  count.clear();
+}, topCallWindowSizeInSeconds * 1000);
+// The timer should not prevent the event loop from shutting down:
+intervalTimer.unref();
 
 export class RpcClient {
-  call: (string, any) => any;
-  instance: AxiosInstance;
+  private call: (method: string, params: any) => any;
+  private instance: AxiosInstance;
 
   constructor(settings: ConnectionSettings) {
     const protocol = `${settings.protocol || "http"}`;
@@ -29,7 +63,9 @@ export class RpcClient {
     });
   }
 
-  invoke(method: string, ...params: any[]): any {
+  public invoke(method: string, ...params: any[]): any {
+    const startTime = process.hrtime();
+
     logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
     const request: RpcRequest = {
       method,
@@ -41,6 +77,13 @@ export class RpcClient {
         .then(resp => {
           // this is only on Response code 2xx
           logger.trace({ data: resp.data }, "Received valid response.");
+
+          const countKey = `${method}(${params.map(x => JSON.stringify(x)).join(", ")})`;
+          const hrtimeDiff = process.hrtime(startTime);
+          const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
+          durations.set(countKey, (durations.get(countKey) || 0) + elapsedMilliseconds);
+          count.set(countKey, (count.get(countKey) || 0) + 1);
+
           resolve(resp.data.result);
         })
         .catch((error: AxiosError) => {
@@ -91,7 +134,7 @@ export class RpcClient {
 // DEPRECATED, we're testing the new implementation
 // TODO -- Remove this code block as it's not needed
 export class VanillaNodeJSRpcClient {
-  call: (string, any) => any;
+  private call: (method: string, params: any) => any;
   constructor(settings: ConnectionSettings) {
     const requestOptions: http.RequestOptions = {
       protocol: `${settings.protocol || "http"}:`,
@@ -144,15 +187,15 @@ export class VanillaNodeJSRpcClient {
           resolve(response.result);
         }
 
-        const body = JSON.stringify(request);
-        logger.info(body);
+        const requestBody = JSON.stringify(request);
+        logger.info(requestBody);
         sendRequest(requestOptions, handleMessage)
           .on("error", reject)
-          .end(body);
+          .end(requestBody);
       });
     };
   }
-  invoke(method: string, ...params: any[]): any {
+  public invoke(method: string, ...params: any[]): any {
     return this.call(method, params);
   }
 }

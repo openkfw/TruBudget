@@ -326,6 +326,9 @@ describe("Creating a project,", () => {
       getAllPermissions: permissionLister,
       getProject: projectReader,
       createProject: creator,
+      notify: async (_project, _actingUser) => {
+        return;
+      },
     };
 
     await assertIsResolved(create(alice, createData, deps));
@@ -381,6 +384,9 @@ describe("Creating a project,", () => {
       getAllPermissions: permissionLister,
       getProject: projectReader,
       createProject: creator,
+      notify: async (_project, _actingUser) => {
+        return;
+      },
     };
     await assertIsRejectedWith(create(alice, createData, deps));
   });
@@ -425,11 +431,56 @@ describe("Creating a project,", () => {
       getAllPermissions: permissionLister,
       getProject: projectReader,
       createProject: creator,
+      notify: async (_project, _actingUser) => {
+        return;
+      },
     };
     await assertIsResolved(create(alice, createData, deps));
     const projectId = generatedProjectIds.get("testProject");
     assert.isString(projectId);
     assert.equal(projectId!.length, 32);
+  });
+
+  it("issues a notification if successful.", async () => {
+    const alice: User = { id: "alice", groups: ["friends"] };
+    let hasSeenNotification = false;
+    const createWithHelper = data =>
+      create(alice, data, {
+        getAllPermissions: async () => ({ "global.createProject": ["alice"] }),
+        getProject: _id => Promise.reject(""),
+        createProject: _project => Promise.resolve(),
+        notify: async (_project, _actingUser) => {
+          hasSeenNotification = true;
+        },
+      });
+
+    // When creating a new project fails, no notification is issued:
+
+    const invalidData: CreateProjectInput = {
+      description: "not enough data to create a project",
+    } as CreateProjectInput;
+
+    hasSeenNotification = false;
+    await createWithHelper(invalidData).catch(() => {});
+    assert.isFalse(hasSeenNotification);
+
+    // When creating a new project succeeds, indeed a notification is issued:
+
+    const validData: CreateProjectInput = {
+      displayName: "testProject",
+      description: "testDescription",
+      amount: "5000",
+      currency: "EUR",
+      id: "testId",
+      creationUnixTs: "1548771169",
+      status: "open",
+      assignee: "alice",
+      thumbnail: "testThumbnail",
+    };
+
+    hasSeenNotification = false;
+    await createWithHelper(validData);
+    assert.isTrue(hasSeenNotification);
   });
 });
 
