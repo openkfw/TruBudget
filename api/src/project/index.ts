@@ -14,7 +14,7 @@ import { User } from "./User";
 import Intent from "../authz/intents";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import * as Permission from "./Permission";
-import { CreateData, isProjectCreateable } from "./Project";
+import { CreateProjectInput, isProjectCreateable } from "./Project";
 
 export * from "./Project";
 export * from "./User";
@@ -77,11 +77,11 @@ export async function getAllVisible(
 /**
  *
  * @param actingUser The requesting user.
- * @param rawCreateData The data used to create project. Internally mapped to Project.Project.
+ * @param createData The data used to create project. Internally mapped to Project.Project.
  */
 export async function create(
   actingUser: User,
-  rawCreateData: any,
+  createData: CreateProjectInput,
   {
     getAllPermissions,
     getProject,
@@ -124,15 +124,15 @@ export async function create(
   };
 
   const project: Project = {
-    id: value("id", rawCreateData.id || randomString(), isNonemptyString),
-    creationUnixTs: rawCreateData.creationUnixTs || new Date().getTime().toString(),
-    status: value("status", rawCreateData.status, x => ["open", "closed"].includes(x), "open"),
-    displayName: value("displayName", rawCreateData.displayName, isNonemptyString),
-    description: value("description", rawCreateData.description, isNonemptyString),
-    amount: value("amount", rawCreateData.amount, isNonemptyString),
-    assignee: value("assignee", rawCreateData.assignee, isUserOrUndefined, actingUser.id),
-    currency: value("currency", rawCreateData.currency, isNonemptyString).toUpperCase(),
-    thumbnail: value("thumbnail", rawCreateData.thumbnail, x => typeof x === "string", ""),
+    id: value("id", createData.id || randomString(), isNonemptyString),
+    creationUnixTs: createData.creationUnixTs || new Date().getTime().toString(),
+    status: value("status", createData.status, x => ["open", "closed"].includes(x), "open"),
+    displayName: value("displayName", createData.displayName, isNonemptyString),
+    description: value("description", createData.description, isNonemptyString),
+    amount: value("amount", createData.amount, isNonemptyString),
+    assignee: value("assignee", createData.assignee, isUserOrUndefined, actingUser.id),
+    currency: value("currency", createData.currency, isNonemptyString).toUpperCase(),
+    thumbnail: value("thumbnail", createData.thumbnail, x => typeof x === "string", ""),
     permissions: getProjectDefaultPermissions(actingUser.id),
     log: [],
   };

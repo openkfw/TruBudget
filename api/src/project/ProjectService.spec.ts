@@ -5,7 +5,7 @@ import {
   Assigner,
   AssignmentNotifier,
   create,
-  CreateData,
+  CreateProjectInput,
   Creator,
   getAllVisible,
   ListReader,
@@ -87,7 +87,7 @@ describe("Creating a project,", () => {
       return Promise.resolve();
     };
 
-    const createData: CreateData = {
+    const createData: CreateProjectInput = {
       displayName: "testProject",
       description: "testDescription",
       amount: "5000",
@@ -167,7 +167,7 @@ describe("Creating a project,", () => {
       return Promise.resolve();
     };
 
-    const createData: CreateData = {
+    const createData: CreateProjectInput = {
       displayName: "testProject",
       description: "testDescription",
       amount: "5000",
@@ -216,7 +216,7 @@ describe("Creating a project,", () => {
       return Promise.resolve();
     };
 
-    const createData: CreateData = {
+    const createData: CreateProjectInput = {
       displayName: "testProject",
       description: "testDescription",
       amount: "5000",

@@ -6,7 +6,7 @@ import { AllowedUserGroupsByIntent } from "../authz/types";
 import * as Permission from "./Permission";
 import { User, userIdentities } from "./User";
 
-export interface CreateData {
+export interface CreateProjectInput {
   displayName: string;
   description: string;
   amount: string;
