@@ -223,14 +223,15 @@ export class RpcMultichainClient implements MultichainClient {
   }
 
   public async getLastBlockInfo(skip: number = 0): Promise<BlockInfo> {
-    return this.rpcClient
-      .invoke("getlastblockinfo", skip);
+    return this.rpcClient.invoke("getlastblockinfo", skip);
   }
 
-  public async listBlocksByHeight(to: number, from: number = 0, verbose: boolean = false,
+  public async listBlocksByHeight(
+    to: number,
+    from: number = 0,
+    verbose: boolean = false,
   ): Promise<BlockListItem[]> {
-    return this.rpcClient
-      .invoke("listblocks", `${from}-${to}`, verbose);
+    return this.rpcClient.invoke("listblocks", `${from}-${to}`, verbose);
   }
 
   public async listStreamBlockItemsByHeight(
@@ -283,7 +284,7 @@ export class RpcMultichainClient implements MultichainClient {
         if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
           logger.warn(
             "Reached max data size. Maybe you should increase the runtime variable 'maxshowndata' of the multichain" +
-            "with command: 'setruntimeparam maxshowndata <value>'.",
+              "with command: 'setruntimeparam maxshowndata <value>'.",
           );
           item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
           logger.debug({ item: item.data }, `Received items.`);
@@ -291,7 +292,7 @@ export class RpcMultichainClient implements MultichainClient {
         return item;
       }),
     );
-  }
+  };
 }
 
 const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));

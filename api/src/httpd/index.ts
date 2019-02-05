@@ -44,6 +44,13 @@ type MaybeHistoryEvent = null | {
   };
 };
 
+export type WorkflowitemCloser = (
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+) => Promise<void>;
+
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];
@@ -60,13 +67,11 @@ export interface Project {
   };
 }
 
-export interface ProjectAndSubprojects {
-  project: Project;
-  subprojects: Subproject[];
-}
 export interface Workflowitem {
   allowedIntents: Intent[];
   data: {
+    id: string;
+    creationUnixTs: string;
     displayName: string;
     exchangeRate?: string;
     billingDate?: string;
@@ -78,6 +83,10 @@ export interface Workflowitem {
     assignee?: string;
     documents?: Document[];
   };
+}
+export interface ProjectAndSubprojects {
+  project: Project;
+  subprojects: Subproject[];
 }
 
 interface Subproject {

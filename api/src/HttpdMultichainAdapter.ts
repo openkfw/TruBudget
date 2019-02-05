@@ -151,8 +151,16 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
       Multichain.writeProjectAssignedToChain(multichainClient, issuer, id, selectedAssignee);
 
     const multichainNotifier: Project.AssignmentNotifier = (project, user) => {
+      const notificationResource = Multichain.generateResources(project.id);
+
       const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(multichainClient, issuer, message, recipient);
+        Multichain.issueNotification(
+          multichainClient,
+          issuer,
+          message,
+          recipient,
+          notificationResource,
+        );
 
       const resolver: Notification.GroupResolver = groupId =>
         Group.getUsers(multichainClient, groupId);
@@ -265,8 +273,15 @@ export function updateProject(multichainClient: MultichainClient): HTTP.ProjectU
     };
 
     const multichainNotifier: Project.UpdateNotifier = (updatedProject, user, projectUpdate) => {
+      const notificationResource = Multichain.generateResources(updatedProject.id);
       const sender: Notification.Sender = (message, recipient) =>
-        Multichain.issueNotification(multichainClient, issuer, message, recipient);
+        Multichain.issueNotification(
+          multichainClient,
+          issuer,
+          message,
+          recipient,
+          notificationResource,
+        );
 
       const resolver: Notification.GroupResolver = groupId =>
         Group.getUsers(multichainClient, groupId);
@@ -313,6 +328,79 @@ function multichainProjectToProjectProject(multichainProject: Multichain.Project
         },
       };
     }),
+  };
+}
+export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemCloser {
+  return async (
+    token: AuthToken,
+    projectId: string,
+    subprojectId: string,
+    workflowitemId: string,
+  ) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const closingUser: Workflowitem.User = { id: token.userId, groups: token.groups };
+
+    // Get ordering of workflowitems from blockchain
+    // If items are rearranged by user, the call returns an array of IDs in order
+    const multichainOrderingReader: Workflowitem.OrderingReader = async () => {
+      const ordering: string[] = await Multichain.getWorkflowitemOrdering(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return ordering;
+    };
+
+    // Get all unfiltered workflowitems from the blockchain
+    const multichainLister: Workflowitem.ListReader = async () => {
+      const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return workflowitemList.map(Workflowitem.validateWorkflowitem);
+    };
+    const multichainCloser: Workflowitem.Closer = async workflowitem => {
+      Multichain.closeWorkflowitem(multichainClient, issuer, projectId, subprojectId, workflowitem);
+    };
+
+    const multichainNotifier: Workflowitem.CloseNotifier = workflowitem => {
+      const notificationResource = Multichain.generateResources(
+        projectId,
+        subprojectId,
+        workflowitem.id,
+      );
+
+      const sender: Notification.Sender = (message, recipient) =>
+        Multichain.issueNotification(
+          multichainClient,
+          issuer,
+          message,
+          recipient,
+          notificationResource,
+        );
+
+      const resolver: Notification.GroupResolver = groupId =>
+        Group.getUsers(multichainClient, groupId);
+
+      const closeNotification: Notification.WorkflowitemClosing = {
+        workflowitemId: workflowitem.id,
+        actingUser: closingUser.id,
+        assignee: workflowitem.assignee,
+      };
+
+      return Notification.workflowitemClosed(closeNotification, {
+        sender,
+        resolver,
+      });
+    };
+
+    return Workflowitem.close(closingUser, projectId, subprojectId, workflowitemId, {
+      getOrdering: multichainOrderingReader,
+      getWorkflowitems: multichainLister,
+      closeWorkflowitem: multichainCloser,
+      notify: multichainNotifier,
+    });
   };
 }
 

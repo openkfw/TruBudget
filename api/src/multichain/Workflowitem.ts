@@ -1,4 +1,5 @@
 import { Event, throwUnsupportedEventVersion } from ".";
+import { getAllowedIntents } from "../authz";
 import Intent from "../authz/intents";
 import { AllowedUserGroupsByIntent, People } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
@@ -51,6 +52,34 @@ export interface Workflowitem {
   documents?: Document[];
   permissions: AllowedUserGroupsByIntent;
   log: HistoryEvent[];
+}
+
+export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
+
+export interface RedactedWorkflowitem {
+  id: string;
+  creationUnixTs: string;
+  displayName: null;
+  exchangeRate: null;
+  billingDate?: null;
+  amount?: null;
+  currency?: null;
+  amountType: null;
+  description: null;
+  status: "open" | "closed";
+  assignee?: null;
+  documents?: null;
+  permissions: null;
+  log: null;
+}
+
+export interface User {
+  id: string;
+  groups: string[];
+}
+
+export function userIdentities({ id, groups }: User): string[] {
+  return [id].concat(groups);
 }
 
 export function applyUpdate(event: Event, workflowitem: Workflowitem): true | undefined {

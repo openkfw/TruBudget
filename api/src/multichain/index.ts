@@ -6,6 +6,7 @@ import deepcopy from "../lib/deepcopy";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
+import { User } from "../workflowitem/User";
 import { asMapKey } from "./Client";
 import { MultichainClient } from "./Client.h";
 import { Event, throwUnsupportedEventVersion } from "./event";
@@ -437,17 +438,18 @@ export async function issueNotification(
   issuer: Issuer,
   message: Event,
   recipient: string,
+  resources: NotificationResourceDescription[],
 ): Promise<void> {
   const notificationId = uuid();
   // TODO message.key is working for projects
   // TODO but we need to access projectId subprojectid and workflowitemid and build data.resources
-  const projectId = message.key;
-  const resources: NotificationResourceDescription[] = [
-    {
-      id: projectId,
-      type: notificationTypeFromIntent(message.intent),
-    },
-  ];
+  // const projectId = message.key;
+  // const resources: NotificationResourceDescription[] = [
+  //   {
+  //     id: projectId,
+  //     type: notificationTypeFromIntent(message.intent),
+  //   },
+  // ];
   const intent = "notification.create";
   const event: Event = {
     key: recipient,
@@ -498,6 +500,35 @@ function notificationTypeFromIntent(intent: Intent): ResourceType {
   } else {
     throw Error(`Unknown ResourceType for intent ${intent}`);
   }
+}
+
+export function generateResources(
+  projectId: string,
+  subprojectId?: string,
+  workflowitemId?: string,
+): NotificationResourceDescription[] {
+  const notificationResource: NotificationResourceDescription[] = [];
+  if (!projectId) {
+    throw { kind: "PreconditionError", message: "No project ID provided" };
+  }
+  notificationResource.push({
+    id: projectId,
+    type: "project",
+  });
+  if (subprojectId) {
+    notificationResource.push({
+      id: subprojectId,
+      type: "subproject",
+    });
+  }
+  if (workflowitemId) {
+    notificationResource.push({
+      id: workflowitemId,
+      type: "workflowitem",
+    });
+  }
+
+  return notificationResource;
 }
 
 export async function getWorkflowitemList(
@@ -589,4 +620,33 @@ export async function getWorkflowitemOrdering(
 
   const ordering: string[] = event.data;
   return ordering;
+}
+
+export function closeWorkflowitem(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+): Promise<void> {
+  const intent: Intent = "workflowitem.close";
+
+  const event = {
+    key: workflowitemId,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: {},
+  };
+
+  const streamName = projectId;
+  const streamItemKey = [workflowitemsGroupKey(subprojectId), workflowitemId];
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  return multichain
+    .getRpcClient()
+    .invoke("publish", streamName, streamItemKey, streamItem)
+    .then(() => event);
 }

@@ -10,6 +10,7 @@ import {
   ProjectAssigner,
   ProjectReader,
   ProjectUpdater,
+  WorkflowitemCloser,
 } from ".";
 import { GlobalPermissionRevoker } from ".";
 import Intent from "../authz/intents";
@@ -57,7 +58,6 @@ import { restoreBackup } from "../system/restoreBackup";
 import { authenticateUser } from "../user/controller/authenticate";
 import { getUserList } from "../user/controller/list";
 import { assignWorkflowitem } from "../workflowitem/controller/assign";
-import { closeWorkflowitem } from "../workflowitem/controller/close";
 import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
 import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
 import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
@@ -265,6 +265,7 @@ export const registerRoutes = (
     getProjectWithSubprojects,
     assignProject,
     updateProject,
+    workflowitemCloser,
     listGlobalPermissions,
     grantGlobalPermission,
     grantAllPermissions,
@@ -275,6 +276,7 @@ export const registerRoutes = (
     assignProject: ProjectAssigner;
     updateProject: ProjectUpdater;
     workflowitemLister: AllWorkflowitemsReader;
+    workflowitemCloser: WorkflowitemCloser;
     listGlobalPermissions: AllPermissionsReader;
     grantGlobalPermission: GlobalPermissionGranter;
     grantAllPermissions: AllPermissionsGranter;
@@ -809,7 +811,18 @@ export const registerRoutes = (
     `${urlPrefix}/workflowitem.close`,
     getSchema(server, "workflowitemClose"),
     (request, reply) => {
-      closeWorkflowitem(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const body = req.body.data;
+      workflowitemCloser(req.user, body.projectId, body.subprojectId, body.workflowitemId)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

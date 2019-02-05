@@ -110,7 +110,7 @@ const schema = Joi.object().keys({
       id: Joi.string(),
       hash: Joi.string(),
     }),
-  ), // Document[],
+  ),
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
@@ -133,7 +133,8 @@ export function scrubWorkflowitem(workflowitem: Workflowitem, user: User): Scrub
   }
   return workflowitem;
 }
-function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
+
+export function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
   const allowedIntent: Intent = "workflowitem.view";
   const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
 
@@ -207,13 +208,16 @@ function isRedacted(item: ScrubbedWorkflowitem): boolean {
   return item.displayName === null;
 }
 
-function closedAt(item: Workflowitem): Promise<string> {
+function closedAt(item: Workflowitem): string {
   const event = item.log.find(e => e.intent === "workflowitem.close");
   if (event === undefined) {
     const message = "Item is not closed.";
-    Promise.reject(Error(`${message}: ${JSON.stringify(event)}`));
+    // Promise.reject(Error(`${message}: ${JSON.stringify(event)}`));
+    throw Error(`${message}: ${JSON.stringify(event)}`);
+  } else {
+    return event.createdAt;
   }
-  return event ? Promise.resolve(event.createdAt) : Promise.reject(Error(`Event is undefined`));
+  // return event ? Promise.resolve(event.createdAt) : Promise.reject(Error(`Event is undefined`));
 }
 
 function byCreationTime(a: ScrubbedWorkflowitem, b: ScrubbedWorkflowitem): -1 | 1 | 0 {
@@ -234,7 +238,7 @@ export function removeEventLog(workflowitem: ScrubbedWorkflowitem): ScrubbedWork
   return workflowitem;
 }
 
-const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowitem => ({
+export const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowitem => ({
   id: workflowitem.id,
   creationUnixTs: workflowitem.creationUnixTs,
   displayName: null,
@@ -278,5 +282,58 @@ export function redactHistoryEvent(
   } else {
     // Redacted by default:
     return null;
+  }
+}
+
+export function isWorkflowitemClosable(
+  workflowitemId: string,
+  closingUser: User,
+  sortedWorkflowitems: Workflowitem[],
+): void {
+  const allowedIntent: Intent = "workflowitem.close";
+  const closingWorkflowitem: Workflowitem | undefined = sortedWorkflowitems.find(
+    item => item.id === workflowitemId,
+  );
+  if (closingWorkflowitem === undefined) {
+    throw {
+      kind: "PreconditionError",
+      message: "The workflowitem you want to close is not available",
+    };
+  } else {
+    if (closingWorkflowitem.status === "closed") {
+      throw {
+        kind: "PreconditionError",
+        message: "The workflowitem you want to close is already closed",
+      };
+    }
+    const userIntents = getAllowedIntents(
+      userIdentities(closingUser),
+      closingWorkflowitem.permissions,
+    );
+    const hasPermission = userIntents.includes(allowedIntent);
+    if (!hasPermission) {
+      throw {
+        kind: "NotAuthorized",
+        message: `User ${closingUser} is not authorized to close workflowitem ${workflowitemId}`,
+      };
+    }
+    arePreviousClosed(workflowitemId, sortedWorkflowitems);
+  }
+}
+
+export function arePreviousClosed(
+  closingItemId: string,
+  sortedWorkflowitems: Workflowitem[],
+): void {
+  for (const item of sortedWorkflowitems) {
+    if (item.id === closingItemId) {
+      break;
+    } else if (item.status !== "closed") {
+      const message = "Cannot close workflowitems if there are preceding non-closed workflowitems.";
+      throw {
+        kind: "PreconditionError",
+        message,
+      };
+    }
   }
 }
