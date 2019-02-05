@@ -26,7 +26,8 @@
     "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "test:here": "node ./runTest.js"
   },
   "keywords": [],
   "author": "",

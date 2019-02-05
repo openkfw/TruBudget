@@ -108,7 +108,7 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
 }
 
 export function createProject(multichainClient: MultichainClient): HTTP.ProjectCreator {
-  return async (token: AuthToken, createData: Project.CreateProjectInput) => {
+  return async (token: AuthToken, payload: HTTP.CreateProjectPayload) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const assigningUser: Project.User = { id: token.userId, groups: token.groups };
 
@@ -129,23 +129,15 @@ export function createProject(multichainClient: MultichainClient): HTTP.ProjectC
 
     const creator: Project.Creator = async project => {
       Project.validateProject(project);
-      const multichainProject: Multichain.Project = {
-        id: project.id,
-        creationUnixTs: project.creationUnixTs,
-        status: project.status,
-        displayName: project.displayName,
-        assignee: project.assignee,
-        description: project.description,
-        amount: project.amount,
-        currency: project.currency,
-        thumbnail: project.thumbnail,
-        permissions: project.permissions,
-        log: [],
-      };
-      Multichain.createProject(multichainClient, issuer, multichainProject);
+
+      const multichainProject: Multichain.Project = { ...project, log: [] };
+
+      Multichain.createProjectOnChain(multichainClient, issuer, multichainProject);
     };
 
-    return Project.create(assigningUser, createData, {
+    const input: Project.CreateProjectInput = payload;
+
+    return Project.create(assigningUser, input, {
       getAllPermissions: permissionLister,
       getProject: projectReader,
       createProject: creator,

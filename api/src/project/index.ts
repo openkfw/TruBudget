@@ -15,6 +15,7 @@ import Intent from "../authz/intents";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import * as Permission from "./Permission";
 import { CreateProjectInput, isProjectCreateable } from "./Project";
+import logger from "../lib/logger";
 
 export * from "./Project";
 export * from "./User";
@@ -138,11 +139,12 @@ export async function create(
   };
 
   // check if projectId already exists
-  const existingProject = await getProject(project.id).catch(() => undefined);
-  if (existingProject === undefined) {
-    await createProject(project);
-  } else {
+  try {
+    await getProject(project.id);
     return Promise.reject(Error(`There already exists a project with projectId ${project.id}.`));
+  } catch (_) {
+    logger.debug(`Project - Create: Creating new project with id ${project.id}`, project);
+    await createProject(project);
   }
 }
 

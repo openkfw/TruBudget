@@ -13,7 +13,7 @@ export type GlobalPermissionGranter = (
   intent: Intent,
 ) => Promise<void>;
 
-export type ProjectCreator = (token: AuthToken, createData: CreateProjectInput) => Promise<void>;
+export type ProjectCreator = (token: AuthToken, payload: CreateProjectPayload) => Promise<void>;
 
 export type ProjectAssigner = (
   token: AuthToken,
@@ -31,7 +31,7 @@ type MaybeHistoryEvent = null | {
   };
 };
 
-export interface CreateProjectInput {
+export interface CreateProjectPayload {
   displayName: string;
   description: string;
   amount: string;

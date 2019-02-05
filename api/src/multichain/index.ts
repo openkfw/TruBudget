@@ -108,12 +108,14 @@ export interface ProjectUpdate {
   thumbnail?: string;
 }
 
-export async function createProject(
+export async function createProjectOnChain(
   multichain: MultichainClient,
   issuer: Issuer,
   project: Project,
 ): Promise<void> {
   const intent: Intent = "global.createProject";
+
+  const { permissions, ...metadata } = project;
 
   const event: Event = {
     key: project.id,
@@ -122,18 +124,8 @@ export async function createProject(
     createdAt: new Date().toISOString(),
     dataVersion: 1,
     data: {
-      project: {
-        id: project.id,
-        creationUnixTs: project.creationUnixTs,
-        status: project.status,
-        displayName: project.displayName,
-        assignee: project.assignee,
-        description: project.description,
-        amount: project.amount,
-        currency: project.currency,
-        thumbnail: project.thumbnail,
-      },
-      permissions: project.permissions,
+      project: metadata,
+      permissions,
     },
   };
 

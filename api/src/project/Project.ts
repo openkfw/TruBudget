@@ -131,16 +131,7 @@ export function scrubHistory(project: Project, actingUser: User): ScrubbedProjec
   const userIntents = getAllowedIntents(userIdentities(actingUser), project.permissions);
   const log = project.log ? project.log.map(event => redactHistoryEvent(event, userIntents)) : [];
   const scrubbed = {
-    id: project.id,
-    creationUnixTs: project.creationUnixTs,
-    status: project.status,
-    displayName: project.displayName,
-    assignee: project.assignee,
-    description: project.description,
-    amount: project.amount,
-    currency: project.currency,
-    thumbnail: project.thumbnail,
-    permissions: project.permissions,
+    ...project,
     log,
   };
   return scrubbed;
