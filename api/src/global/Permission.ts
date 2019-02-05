@@ -12,10 +12,18 @@ export function isAllowedToSee(permissions: Permissions, actingUser: User): bool
   const hasPermission = userIntents.includes(allowedIntent);
   return hasPermission;
 }
+
 export function isAllowedToGrant(permissions: Permissions, actingUser: User): boolean {
-  const allowedIntents: Intent[] = ["global.grantPermission"];
+  const allowedIntent: Intent = "global.grantPermission";
   const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
-  const hasPermission = allowedIntents.some(allowedIntent => userIntents.includes(allowedIntent));
+  const hasPermission = userIntents.includes(allowedIntent);
+  return hasPermission;
+}
+
+export function isAllowedToRevoke(permissions: Permissions, actingUser: User): boolean {
+  const allowedIntent: Intent = "global.revokePermission";
+  const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
+  const hasPermission = userIntents.includes(allowedIntent);
   return hasPermission;
 }
 

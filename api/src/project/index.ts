@@ -1,8 +1,15 @@
 import { randomBytes } from "crypto";
+
+import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
+import logger from "../lib/logger";
+import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
+import * as Permission from "./Permission";
 import {
+  CreateProjectInput,
   isProjectAssignable,
+  isProjectCreateable,
   isProjectUpdateable,
   isProjectVisibleTo,
   Project,
@@ -10,12 +17,6 @@ import {
   scrubHistory,
 } from "./Project";
 import { User } from "./User";
-
-import Intent from "../authz/intents";
-import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
-import * as Permission from "./Permission";
-import { CreateProjectInput, isProjectCreateable } from "./Project";
-import logger from "../lib/logger";
 
 export * from "./Project";
 export * from "./User";
@@ -49,9 +50,9 @@ export type UpdateNotifier = (
 ) => Promise<void>;
 
 export async function getOne(
-  getProject: Reader,
   actingUser: User,
   projectId: string,
+  { getProject }: { getProject: Reader },
 ): Promise<ScrubbedProject> {
   const project = await getProject(projectId);
 

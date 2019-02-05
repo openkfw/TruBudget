@@ -113,12 +113,17 @@ registerRoutes(
   multichainHost,
   backupApiPort,
   {
+    workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(multichainClient),
     listProjects: HttpdMultichainAdapter.getProjectList(multichainClient),
+    getProjectWithSubprojects: HttpdMultichainAdapter.getProject(multichainClient),
     assignProject: HttpdMultichainAdapter.assignProject(multichainClient),
     updateProject: HttpdMultichainAdapter.updateProject(multichainClient),
+    workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(multichainClient),
     listGlobalPermissions: HttpdMultichainAdapter.getPermissionList(multichainClient),
     grantGlobalPermission: HttpdMultichainAdapter.grantPermission(multichainClient),
     createProject: HttpdMultichainAdapter.createProject(multichainClient),
+    grantAllPermissions: HttpdMultichainAdapter.grantAllPermissions(multichainClient),
+    revokeGlobalPermission: HttpdMultichainAdapter.revokePermission(multichainClient),
   },
 );
 

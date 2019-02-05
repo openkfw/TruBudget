@@ -8,7 +8,6 @@ import {
   CreateProjectInput,
   Creator,
   getAllVisible,
-  ListReader,
   PermissionListReader,
   Reader,
 } from ".";
@@ -34,8 +33,8 @@ function newProject(id: string, permissions: object): Project.Project {
   };
 }
 
-describe("When listing project,", () => {
-  it("filters the list of projects according to the user's permissions.", async () => {
+describe("Listing projects", () => {
+  it("does not include projects you're not allowed to see.", async () => {
     const user: User = { id: "bob", groups: ["friends"] };
 
     const viewIntents: Intent[] = ["project.viewSummary", "project.viewDetails"];
@@ -46,15 +45,195 @@ describe("When listing project,", () => {
 
       const projects = [projectVisibleToBob, projectVisibleToFriends, nonVisibleProject];
 
-      const lister: ListReader = () => Promise.resolve(projects);
-
-      const visibleProjects = await getAllVisible(user, { getAllProjects: lister });
+      const visibleProjects = await getAllVisible(user, { getAllProjects: async () => projects });
 
       assert.equal(visibleProjects.length, 2);
       assert.equal(visibleProjects[0].id, "bobProject");
       assert.equal(visibleProjects[1].id, "friendsProject");
     }
   });
+
+  it("returns all but permissions-related events, given a project.viewDetails permission.", async () => {
+    const user: User = { id: "alice", groups: [] };
+    const permissions = { "project.viewDetails": ["alice"] };
+    const extendedPermissions = { "project.viewDetails": ["alice", "bob"] };
+    const project = newProject("aliceProject", permissions);
+    project.log = [
+      { intent: "global.createProject", snapshot: { displayName: "aliceProject", permissions } },
+      { intent: "project.update", snapshot: { displayName: "renamed", permissions } },
+      {
+        intent: "project.intent.grantPermission",
+        snapshot: { displayName: "renamed", permissions: extendedPermissions },
+      },
+      {
+        intent: "project.intent.revokePermission",
+        snapshot: { displayName: "renamed", permissions },
+      },
+      { intent: "project.assign", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.createSubproject", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.close", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.archive", snapshot: { displayName: "renamed", permissions } },
+    ];
+
+    const scrubbed = await Project.getOne(user, project.id, { getProject: async () => project });
+
+    assert.equal(scrubbed.log.length, 8);
+
+    const hasIntent = (index, intent) => scrubbed.log[index]!.intent === intent;
+    const isRedacted = index => scrubbed.log[index] === null;
+    const hasPermissions = event => event.snapshot.permissions !== undefined;
+
+    // Permissions are not visible for any event:
+    assert.isTrue(scrubbed.log.every(event => event === null || !hasPermissions(event)));
+
+    assert.isTrue(hasIntent(0, "global.createProject"));
+    assert.isTrue(hasIntent(1, "project.update"));
+    assert.isTrue(isRedacted(2));
+    assert.isTrue(isRedacted(3));
+    assert.isTrue(hasIntent(4, "project.assign"));
+    assert.isTrue(hasIntent(5, "project.createSubproject"));
+    assert.isTrue(hasIntent(6, "project.close"));
+    assert.isTrue(hasIntent(7, "project.archive"));
+  });
+
+  it("returns only creation, closing and archival events, given a project.viewSummary permission.", async () => {
+    const user: User = { id: "alice", groups: [] };
+    const permissions = { "project.viewSummary": ["alice"] };
+    const extendedPermissions = { "project.viewSummary": ["alice", "bob"] };
+    const project = newProject("aliceProject", permissions);
+    project.log = [
+      { intent: "global.createProject", snapshot: { displayName: "aliceProject", permissions } },
+      { intent: "project.update", snapshot: { displayName: "renamed", permissions } },
+      {
+        intent: "project.intent.grantPermission",
+        snapshot: { displayName: "renamed", permissions: extendedPermissions },
+      },
+      {
+        intent: "project.intent.revokePermission",
+        snapshot: { displayName: "renamed", permissions },
+      },
+      { intent: "project.assign", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.createSubproject", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.close", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.archive", snapshot: { displayName: "renamed", permissions } },
+    ];
+
+    const scrubbed = await Project.getOne(user, project.id, { getProject: async () => project });
+
+    assert.equal(scrubbed.log.length, 8);
+
+    const hasIntent = (index, intent) => scrubbed.log[index]!.intent === intent;
+    const isRedacted = index => scrubbed.log[index] === null;
+    const hasPermissions = event => event.snapshot.permissions !== undefined;
+
+    // Permissions are not visible for any event:
+    assert.isTrue(scrubbed.log.every(event => event === null || !hasPermissions(event)));
+
+    assert.isTrue(hasIntent(0, "global.createProject"));
+    assert.isTrue(isRedacted(1));
+    assert.isTrue(isRedacted(2));
+    assert.isTrue(isRedacted(3));
+    assert.isTrue(isRedacted(4));
+    assert.isTrue(isRedacted(5));
+    assert.isTrue(hasIntent(6, "project.close"));
+    assert.isTrue(hasIntent(7, "project.archive"));
+  });
+
+  it("also returns permission-related events, given a project.listPermissions permission.", async () => {
+    const user: User = { id: "alice", groups: [] };
+    const permissions = {
+      "project.viewDetails": ["alice"],
+      "project.intent.listPermissions": ["alice"],
+      "subproject.intent.listPermissions": ["alice"],
+    };
+    const extendedPermissions = { "project.viewDetails": ["alice", "bob"] };
+    const project = newProject("aliceProject", permissions);
+    project.log = [
+      { intent: "global.createProject", snapshot: { displayName: "aliceProject", permissions } },
+      { intent: "project.update", snapshot: { displayName: "renamed", permissions } },
+      {
+        intent: "project.intent.grantPermission",
+        snapshot: { displayName: "renamed", permissions: extendedPermissions },
+      },
+      {
+        intent: "project.intent.revokePermission",
+        snapshot: { displayName: "renamed", permissions },
+      },
+      { intent: "project.assign", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.createSubproject", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.close", snapshot: { displayName: "renamed", permissions } },
+      { intent: "project.archive", snapshot: { displayName: "renamed", permissions } },
+    ];
+
+    const scrubbed = await Project.getOne(user, project.id, { getProject: async () => project });
+
+    assert.equal(scrubbed.log.length, 8);
+
+    const hasIntent = (index, intent) => scrubbed.log[index]!.intent === intent;
+    const isRedacted = index => scrubbed.log[index] === null;
+    const hasPermissions = event => event.snapshot.permissions !== undefined;
+
+    // Permissions are visible for all events:
+    assert.isTrue(scrubbed.log.every(hasPermissions));
+
+    assert.isTrue(hasIntent(0, "global.createProject"));
+    assert.isTrue(hasIntent(1, "project.update"));
+    assert.isTrue(hasIntent(2, "project.intent.grantPermission"));
+    assert.isTrue(hasIntent(3, "project.intent.revokePermission"));
+    assert.isTrue(hasIntent(4, "project.assign"));
+    assert.isTrue(hasIntent(5, "project.createSubproject"));
+    assert.isTrue(hasIntent(6, "project.close"));
+    assert.isTrue(hasIntent(7, "project.archive"));
+  });
+});
+
+it("The project.listPermissions permission relates to all events, including those in the past.", async () => {
+  const isRedacted = (p: Project.ScrubbedProject, idx: number) => p.log[idx] === null;
+
+  const user: User = { id: "alice", groups: [] };
+
+  // Initially, Alice cannot see the project:
+
+  const initialPermissions = {};
+  const project = newProject("test", initialPermissions);
+  project.log = [
+    {
+      intent: "global.createProject",
+      snapshot: { displayName: "test", permissions: initialPermissions },
+    },
+  ];
+
+  await assertIsRejectedWith(
+    Project.getOne(user, project.id, {
+      getProject: async () => project,
+    }),
+  );
+
+  // When we assign the required permission to Alice,
+  // she should be able to see the original event as well:
+
+  const newPermissions = {
+    "project.viewDetails": ["alice"],
+    "project.intent.listPermissions": ["alice"],
+  };
+  project.permissions = newPermissions;
+  project.log = [
+    {
+      intent: "global.createProject",
+      snapshot: { displayName: "test", permissions: initialPermissions },
+    },
+    {
+      intent: "project.intent.grantPermission",
+      snapshot: { displayName: "test", permissions: newPermissions },
+    },
+  ];
+
+  const afterGrantingPermission = await Project.getOne(user, project.id, {
+    getProject: async () => project,
+  });
+  assert.equal(afterGrantingPermission.log.length, 2);
+  assert.isFalse(isRedacted(afterGrantingPermission, 0));
+  assert.isFalse(isRedacted(afterGrantingPermission, 1));
 });
 
 describe("Creating a project,", () => {

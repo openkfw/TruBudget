@@ -1,5 +1,4 @@
 import { Component } from "react";
-import { connect } from "react-redux";
 
 class LiveUpdates extends Component {
   constructor(props) {
@@ -16,9 +15,12 @@ class LiveUpdates extends Component {
   }
 
   startLiveUpdates() {
+    const { update, interval = 5000, immediatly = false } = this.props;
     if (this.timer === undefined) {
-      this.timer = setInterval(() => this.props.update(), 5000);
+      this.timer = setInterval(() => update(), interval);
     }
+
+    if (immediatly) update();
   }
 
   stopLiveUpdates() {
@@ -33,4 +35,4 @@ class LiveUpdates extends Component {
   }
 }
 
-export default connect()(LiveUpdates);
+export default LiveUpdates;
