@@ -9,7 +9,7 @@ export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
 
 export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
 
-export type AllProjectPermissionsReader = (
+export type ProjectPermissionsReader = (
   token: AuthToken,
   projectId: string,
 ) => Promise<Permissions>;

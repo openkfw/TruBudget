@@ -176,7 +176,7 @@ describe("Listing projects", () => {
     assert.isTrue(hasIntent(7, "project.archive"));
   });
 
-  it("The project.listPermissions permission relates to all events, including those in the past.", async () => {
+  it("relates to all events, including those in the past.", async () => {
     const isRedacted = (p: Project.ScrubbedProject, idx: number) => p.log[idx] === null;
 
     const user: User = { id: "alice", groups: [] };

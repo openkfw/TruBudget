@@ -3,7 +3,7 @@ import { FastifyInstance } from "fastify";
 import {
   AllPermissionsGranter,
   AllPermissionsReader,
-  AllProjectPermissionsReader,
+  ProjectPermissionsReader,
   AllProjectsReader,
   GlobalPermissionGranter,
   ProjectAndSubprojects,
@@ -279,7 +279,7 @@ export const registerRoutes = (
     grantGlobalPermission: GlobalPermissionGranter;
     grantAllPermissions: AllPermissionsGranter;
     revokeGlobalPermission: GlobalPermissionRevoker;
-    getProjectPermissions: AllProjectPermissionsReader;
+    getProjectPermissions: ProjectPermissionsReader;
   },
 ) => {
   // ------------------------------------------------------------

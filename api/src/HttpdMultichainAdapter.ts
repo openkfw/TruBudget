@@ -104,7 +104,7 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
 
 export function getProjectPermissionList(
   multichainClient: MultichainClient,
-): HTTP.AllProjectPermissionsReader {
+): HTTP.ProjectPermissionsReader {
   return async (token: AuthToken, projectId: string) => {
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
 
