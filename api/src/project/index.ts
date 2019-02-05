@@ -1,6 +1,6 @@
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
-import { isAllowedToSee, Permissions } from "./Permission";
+import { isAllowedTo, Permissions } from "./Permission";
 import {
   isProjectAssignable,
   isProjectUpdateable,
@@ -76,7 +76,7 @@ export async function getPermissions(
   }: { getProject: Reader; getProjectPermissions: PermissionsLister },
 ): Promise<Permissions> {
   const project = await getOne(actingUser, projectId, { getProject });
-  if (!isAllowedToSee(project.permissions, actingUser)) {
+  if (!isAllowedTo("project.intent.listPermissions", project.permissions, actingUser)) {
     return Promise.reject(
       Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
     );
