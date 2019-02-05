@@ -9,12 +9,12 @@ import {
   OrderingReader,
   update,
   UpdateNotifier,
+  Updater,
 } from ".";
-import { Updater } from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { User } from "./User";
-import { Update, Workflowitem } from "./Workflowitem";
+import { ScrubbedWorkflowitem, Update, Workflowitem } from "./Workflowitem";
 
 const updateIntent: Intent = "workflowitem.update";
 const viewIntent: Intent = "workflowitem.view";
@@ -38,16 +38,37 @@ function newWorkflowitem(id: string, permissions: object): Workflowitem {
     log: [],
   };
 }
+function newRedactedWorkflowitemFromWorkflowitem(item: Workflowitem): ScrubbedWorkflowitem {
+  return {
+    id: item.id,
+    creationUnixTs: item.creationUnixTs,
+    displayName: null,
+    exchangeRate: null,
+    billingDate: null,
+    amount: null,
+    currency: null,
+    amountType: null,
+    description: null,
+    status: item.status,
+    assignee: null,
+    permissions: null,
+    log: null,
+    documents: null,
+  };
+}
 
-describe("When listing workflowitems,", () => {
-  it("filters the list of workflowitems according to the user's permissions.", async () => {
+describe("Listing workflowitems,", () => {
+  it("redacts history events the user is not allowed to see.", async () => {
     const user: User = { id: "bob", groups: ["friends"] };
 
     const workflowitemVisibleToBob = newWorkflowitem("bobWorkflowitem", { [viewIntent]: ["bob"] });
     const workflowitemVisibleToFriends = newWorkflowitem("friendsWorkflowitem", {
       [viewIntent]: ["friends"],
     });
-    const nonVisibleWorkflowitem = newWorkflowitem("hiddenWorkflowitem", {});
+    const nonVisibleWorkflowitem: Workflowitem = newWorkflowitem("hiddenWorkflowitem", {});
+    const redactedWorkflowitem: ScrubbedWorkflowitem = newRedactedWorkflowitemFromWorkflowitem(
+      nonVisibleWorkflowitem,
+    );
 
     const workflowitems = [
       workflowitemVisibleToBob,
@@ -57,7 +78,7 @@ describe("When listing workflowitems,", () => {
     const ordering = [];
 
     const lister: ListReader = () => Promise.resolve(workflowitems);
-    const orderingReader: OrderingReader = () => Promise.resolve(ordering);
+    const orderingReader: OrderingReader = async () => ordering;
 
     const visibleWorkflowitems = await getAllScrubbedItems(user, {
       getAllWorkflowitems: lister,

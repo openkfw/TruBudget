@@ -281,7 +281,7 @@ export function getWorkflowitemList(
     // Get ordering of workflowitems from blockchain
     // If items are rearranged by user, the call returns an array of IDs in order
     const orderingReader: Workflowitem.OrderingReader = async () => {
-      const ordering: string[] = await Multichain.fetchWorkflowitemOrdering(
+      const ordering: string[] = await Multichain.getWorkflowitemOrdering(
         multichainClient,
         projectId,
         subprojectId,
@@ -342,7 +342,7 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
     // Get ordering of workflowitems from blockchain
     // If items are rearranged by user, the call returns an array of IDs in order
     const multichainOrderingReader: Workflowitem.OrderingReader = async () => {
-      const ordering: string[] = await Multichain.fetchWorkflowitemOrdering(
+      const ordering: string[] = await Multichain.getWorkflowitemOrdering(
         multichainClient,
         projectId,
         subprojectId,

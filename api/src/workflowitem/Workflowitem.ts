@@ -80,14 +80,40 @@ const schema = Joi.object().keys({
     .timestamp("unix")
     .required(),
   displayName: Joi.string().required(),
-  exchangeRate: Joi.string(),
-  // TODO set proper date format
-  billingDate: Joi.string(),
-  amount: Joi.string(),
-  currency: Joi.string(),
-  amountType: Joi.string().valid("N/A", "disbursed", "allocated"),
+  exchangeRate: Joi.string().when("status", {
+    is: Joi.valid("closed"),
+    then: Joi.required(),
+    otherwise: Joi.optional(),
+  }),
+  billingDate: Joi.date()
+    .iso()
+    .when("status", {
+      is: Joi.valid("closed"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
+  amount: Joi.string()
+    .when("amountType", {
+      is: Joi.valid("disbursed", "allocated"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() })
+    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+  currency: Joi.string()
+    .when("amountType", {
+      is: Joi.valid("disbursed", "allocated"),
+      then: Joi.required(),
+      otherwise: Joi.forbidden(),
+    })
+    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() }),
+  amountType: Joi.string()
+    .valid("N/A", "disbursed", "allocated")
+    .required(),
   description: Joi.string().allow(""),
-  status: Joi.string().valid("open", "closed"),
+  status: Joi.string()
+    .valid("open", "closed")
+    .required(),
   assignee: Joi.string(),
   documents: Joi.array().items(
     Joi.object().keys({
@@ -98,7 +124,7 @@ const schema = Joi.object().keys({
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
-  log: Joi.any(),
+  log: Joi.array(),
 });
 
 export function validateWorkflowitem(input: any): Workflowitem {
@@ -110,14 +136,14 @@ export function validateWorkflowitem(input: any): Workflowitem {
   }
 }
 
-export function redactWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowitem {
+export function scrubWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowitem {
   if (!isWorkflowitemVisibleTo(workflowitem, user)) {
     const scrubbedWorkflowitem = redactWorkflowitemData(workflowitem);
     return scrubbedWorkflowitem;
   }
   return workflowitem;
 }
-export function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
+function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
   const allowedIntent: Intent = "workflowitem.view";
   const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
 
@@ -229,7 +255,7 @@ export function removeEventLog(workflowitem: ScrubbedWorkflowitem): ScrubbedWork
   return workflowitem;
 }
 
-export const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowitem => ({
+const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowitem => ({
   id: workflowitem.id,
   creationUnixTs: workflowitem.creationUnixTs,
   displayName: null,
@@ -247,8 +273,6 @@ export const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWork
 });
 
 const requiredPermissions = new Map<Intent, Intent[]>([
-  ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.view"]],
-  ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.view"]],
   ["workflowitem.intent.grantPermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.intent.revokePermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.assign", ["workflowitem.view"]],
