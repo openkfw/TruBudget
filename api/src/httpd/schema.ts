@@ -1,4 +1,5 @@
 import * as fastify from "fastify";
+import { projectIntents } from "../authz/intents";
 
 export interface SwaggerSchema extends fastify.RouteSchema {
   description: string;
@@ -1307,7 +1308,7 @@ const schemas = {
             additionalProperties: false,
             properties: {
               identity: { type: "string", example: "aSmith" },
-              intent: { type: "string", example: "global.createProject" },
+              intent: { type: "string", enum: projectIntents, example: "global.createProject" },
               projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
             },
             required: ["identity", "intent", "projectId"],
