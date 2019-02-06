@@ -14,6 +14,11 @@ export type AllWorkflowitemsReader = (
 
 export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
 
+export type ProjectPermissionsReader = (
+  token: AuthToken,
+  projectId: string,
+) => Promise<Permissions>;
+
 export type GlobalPermissionGranter = (
   token: AuthToken,
   grantee: string,

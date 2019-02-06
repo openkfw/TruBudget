@@ -103,6 +103,35 @@ export function getProject(multichainClient: MultichainClient): HTTP.ProjectRead
   };
 }
 
+export function getProjectPermissionList(
+  multichainClient: MultichainClient,
+): HTTP.ProjectPermissionsReader {
+  return async (token: AuthToken, projectId: string) => {
+    const actingUser: Project.User = { id: token.userId, groups: token.groups };
+
+    const reader: Project.Reader = async id => {
+      const multichainProject: Multichain.Project = await Multichain.getProject(
+        multichainClient,
+        id,
+      );
+      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+    };
+
+    const permissionsReader: Project.PermissionsLister = async id => {
+      const permissions: Multichain.Permissions = await Multichain.getProjectPermissionList(
+        multichainClient,
+        id,
+      );
+      return permissions;
+    };
+
+    return Project.getPermissions(actingUser, projectId, {
+      getProject: reader,
+      getProjectPermissions: permissionsReader,
+    });
+  };
+}
+
 export function getProjectList(multichainClient: MultichainClient): HTTP.AllProjectsReader {
   return async (token: AuthToken) => {
     const actingUser: Project.User = { id: token.userId, groups: token.groups };
