@@ -19,7 +19,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node dist/",
+    "start": "node dist/",
     "build": "tsc",
     "dev": "tsc --watch & nodemon dist",
     "test": "npm run build && nyc mocha \"dist/*.spec.js\" \"dist/**/*.spec.js\"",
