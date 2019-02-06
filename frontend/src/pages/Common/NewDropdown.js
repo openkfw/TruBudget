@@ -9,7 +9,7 @@ class Dropdown extends React.Component {
     const { value, children, id = "default", floatingLabel, onChange, style, disabled } = this.props;
     return (
       <form autoComplete="off">
-        <FormControl disabled={disabled} style={style}>
+        <FormControl disabled={disabled} style={style} data-test={`dropdown-${id}`}>
           <InputLabel htmlFor={id}>{floatingLabel}</InputLabel>
           <Select
             value={value}
@@ -18,6 +18,7 @@ class Dropdown extends React.Component {
               name: id,
               id
             }}
+            SelectDisplayProps={{ "data-test": `dropdown-${id}-click` }}
           >
             {children}
           </Select>

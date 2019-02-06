@@ -38,6 +38,7 @@ const SubProjects = props => {
             position: "relative",
             zIndex: 20
           }}
+          data-test="subproject-create-button"
         >
           <ContentAdd />
         </Button>

@@ -80,7 +80,7 @@ export const formatAmountString = (amount, currency) => {
   return amount;
 };
 export const getCurrencies = parentCurrency => {
-  return ["EUR", "USD", "BRL"].map(currency => {
+  return Object.keys(currencies).map(currency => {
     const disabled = !_isEmpty(parentCurrency) && !(parentCurrency === currency);
     return {
       disabled,
