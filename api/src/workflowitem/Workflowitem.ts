@@ -44,6 +44,7 @@ export interface Workflowitem {
   permissions: AllowedUserGroupsByIntent;
   log: HistoryEvent[];
 }
+
 export interface Update {
   displayName?: string;
   amount?: string;
@@ -85,13 +86,11 @@ const schema = Joi.object().keys({
     then: Joi.required(),
     otherwise: Joi.optional(),
   }),
-  billingDate: Joi.date()
-    .iso()
-    .when("status", {
-      is: Joi.valid("closed"),
-      then: Joi.required(),
-      otherwise: Joi.optional(),
-    }),
+  billingDate: Joi.date().when("status", {
+    is: Joi.valid("closed"),
+    then: Joi.required(),
+    otherwise: Joi.optional(),
+  }),
   amount: Joi.string()
     .when("amountType", {
       is: Joi.valid("disbursed", "allocated"),
@@ -137,18 +136,12 @@ export function validateWorkflowitem(input: any): Workflowitem {
 }
 
 export function scrubWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowitem {
-  if (!isWorkflowitemVisibleTo(workflowitem, user)) {
+  const allowedIntent: Intent = "workflowitem.view";
+  if (!isUserAllowedTo(allowedIntent, workflowitem, user)) {
     const scrubbedWorkflowitem = redactWorkflowitemData(workflowitem);
     return scrubbedWorkflowitem;
   }
   return workflowitem;
-}
-function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
-  const allowedIntent: Intent = "workflowitem.view";
-  const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
-
-  const isAllowedToSeeData = userIntents.includes(allowedIntent);
-  return isAllowedToSeeData;
 }
 
 export function isUserAllowedTo(

@@ -272,6 +272,7 @@ function multichainProjectToProjectProject(multichainProject: Multichain.Project
     }),
   };
 }
+
 export function getWorkflowitemList(
   multichainClient: MultichainClient,
 ): HTTP.AllWorkflowitemsReader {
@@ -504,7 +505,6 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
     projectId: string,
     subprojectId: string,
     workflowitemId: string,
-    // TODO find better type
     updates: any,
   ) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
@@ -530,7 +530,7 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
       );
     };
 
-    const multichainNotifier: Workflowitem.CloseNotifier = (workflowitem, updatedData) => {
+    const multichainNotifier: Workflowitem.UpdateNotifier = (workflowitem, updatedData) => {
       const notificationResource = Multichain.generateResources(
         projectId,
         subprojectId,
@@ -549,7 +549,7 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
       const resolver: Notification.GroupResolver = groupId =>
         Group.getUsers(multichainClient, groupId);
 
-      const updateNotification: Notification.WorkflowitemUpdating = {
+      const updateNotification: Notification.WorkflowitemUpdate = {
         workflowitemId: workflowitem.id,
         actingUser: updatingUser.id,
         assignee: workflowitem.assignee,
@@ -569,6 +569,7 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
     });
   };
 }
+
 export function revokePermission(multichainClient: MultichainClient): HTTP.GlobalPermissionRevoker {
   return async (token: AuthToken, recipient: string, intent: Intent) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };

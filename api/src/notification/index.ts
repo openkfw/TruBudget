@@ -1,5 +1,9 @@
 import { Event } from "../multichain/event";
 
+export interface Document {
+  id: string;
+  hash: string;
+}
 export interface ProjectAssignment {
   projectId: string;
   actingUser: string;
@@ -18,7 +22,8 @@ export interface WorkflowitemClosing {
   actingUser: string;
   assignee?: string;
 }
-export interface WorkflowitemUpdating {
+
+export interface WorkflowitemUpdate {
   workflowitemId: string;
   actingUser: string;
   assignee?: string;
@@ -137,7 +142,7 @@ export async function workflowitemClosed(
 }
 
 export async function workflowitemUpdated(
-  workflowitemUpdate: WorkflowitemUpdating,
+  workflowitemUpdate: WorkflowitemUpdate,
   updatedData,
   {
     sender,

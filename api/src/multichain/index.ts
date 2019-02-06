@@ -6,7 +6,6 @@ import deepcopy from "../lib/deepcopy";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
-import { User } from "../workflowitem/User";
 import { asMapKey } from "./Client";
 import { MultichainClient } from "./Client.h";
 import { Event, throwUnsupportedEventVersion } from "./event";
@@ -667,7 +666,7 @@ export function updateWorkflowitem(
     createdBy: issuer.name,
     createdAt: new Date().toISOString(),
     dataVersion: 1,
-    data, // UPDATED DATA HERE
+    data,
   };
 
   const streamName = projectId;

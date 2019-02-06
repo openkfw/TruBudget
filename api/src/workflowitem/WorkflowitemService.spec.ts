@@ -196,8 +196,8 @@ describe("Closing a project", () => {
       }
       return;
     };
-    const notify: CloseNotifier = async (workflowitemId, actingUser) => {
-      if (!workflowitems.filter(item => item.id === workflowitemId) || actingUser !== bob) {
+    const notify: CloseNotifier = async (workflowitem, actingUser) => {
+      if (!workflowitems.filter(item => item.id === workflowitem.id) || actingUser !== bob) {
         return Promise.reject("Incorrect requirements");
       }
       return;
@@ -247,8 +247,8 @@ describe("Updating a project", () => {
       }
       return;
     };
-    const notify: CloseNotifier = async (workflowitemId, _actingUser) => {
-      if (!(workflowitemId === originalWorkflowitem.id)) {
+    const notify: UpdateNotifier = async (workflowitem, _actingUser) => {
+      if (!(workflowitem.id === originalWorkflowitem.id)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
@@ -300,8 +300,8 @@ describe("Updating a project", () => {
       }
       return;
     };
-    const notify: UpdateNotifier = async (workflowitemId, _actingUser) => {
-      if (!workflowitemIds.includes(workflowitemId)) {
+    const notify: UpdateNotifier = async (workflowitem, _actingUser) => {
+      if (!workflowitemIds.includes(workflowitem.id)) {
         return Promise.reject("Incorrect requirements");
       }
       return;

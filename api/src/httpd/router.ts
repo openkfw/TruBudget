@@ -822,7 +822,6 @@ export const registerRoutes = (
             },
           ],
         )
-        // updateWorkflowitem(multichainClient, request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

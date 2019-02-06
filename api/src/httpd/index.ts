@@ -56,7 +56,6 @@ export type WorkflowitemUpdater = (
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
-  // TODO find better type
   updatedData: any,
 ) => Promise<void>;
 
