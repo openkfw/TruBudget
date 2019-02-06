@@ -105,24 +105,7 @@ export const createBasicApp = (
   });
 
   server.setSchemaCompiler(schema => {
-    const validator = ajv.compile(schema);
-    return data => {
-      let valid;
-      if (env !== "production") {
-        const d1 = JSON.stringify(data, null, 2);
-        valid = validator(data);
-        const d2 = JSON.stringify(data, null, 2);
-
-        if (d1 !== d2) {
-          logger.warn("ALERT! Redacted additional payload paramters!");
-          logger.warn("Original Payload: \n", d1);
-          logger.warn("Redacted Payload: \n", d2);
-        }
-      } else {
-        valid = validator(data);
-      }
-      return valid;
-    };
+    return ajv.compile(schema);
   });
 
   server.register(metricsPlugin, { endpoint: "/metrics" });
