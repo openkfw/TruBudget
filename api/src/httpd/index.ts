@@ -14,6 +14,13 @@ export type AllProjectPermissionsReader = (
   projectId: string,
 ) => Promise<Permissions>;
 
+export type ProjectPermissionsGranter = (
+  token: AuthToken,
+  projectId: string,
+  grantee: string,
+  intent: Intent,
+) => Promise<void>;
+
 export type GlobalPermissionGranter = (
   token: AuthToken,
   grantee: string,

@@ -107,7 +107,7 @@ export async function grantPermission(
       Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
     );
   }
-  // check if grantee does exist?
+  // check if grantee does exist
   return grantProjectPermission(projectId, grantee, intent);
 }
 

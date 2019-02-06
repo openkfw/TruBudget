@@ -6,12 +6,13 @@ import {
   AllProjectPermissionsReader,
   AllProjectsReader,
   GlobalPermissionGranter,
+  GlobalPermissionRevoker,
   ProjectAndSubprojects,
   ProjectAssigner,
   ProjectReader,
   ProjectUpdater,
 } from ".";
-import { GlobalPermissionRevoker } from ".";
+import { ProjectPermissionsGranter } from ".";
 import Intent from "../authz/intents";
 import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
@@ -35,7 +36,6 @@ import { markNotificationRead } from "../notification/controller/markRead";
 import { getNewestNotifications } from "../notification/controller/poll";
 import { closeProject } from "../project/controller/close";
 import { createSubproject } from "../project/controller/createSubproject";
-import { grantProjectPermission } from "../project/controller/intent.grantPermission";
 import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
 import { getProjectHistory } from "../project/controller/viewHistory";
 import { ProjectResource } from "../project/model/Project";
@@ -270,6 +270,7 @@ export const registerRoutes = (
     grantAllPermissions,
     revokeGlobalPermission,
     getProjectPermissions,
+    grantProjectPermission,
   }: {
     listProjects: AllProjectsReader;
     getProjectWithSubprojects: ProjectReader;
@@ -280,6 +281,7 @@ export const registerRoutes = (
     grantAllPermissions: AllPermissionsGranter;
     revokeGlobalPermission: GlobalPermissionRevoker;
     getProjectPermissions: AllProjectPermissionsReader;
+    grantProjectPermission: ProjectPermissionsGranter;
   },
 ) => {
   // ------------------------------------------------------------
@@ -641,7 +643,22 @@ export const registerRoutes = (
     `${urlPrefix}/project.intent.grantPermission`,
     getSchema(server, "projectGrantPermission"),
     (request, reply) => {
-      grantProjectPermission(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      const projectId: string = request.body.data.projectId;
+      const grantee: string = request.body.data.identity;
+      const intent: Intent = request.body.data.intent;
+      // Joi.validat(intent)
+      grantProjectPermission(token, projectId, grantee, intent)
+        .then(
+          (permissions): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
