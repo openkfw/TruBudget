@@ -132,29 +132,21 @@ describe("Closing a project", () => {
 
     const getOrdering: OrderingReader = () => Promise.resolve(ordering);
     const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
-    const closeWorkflowitem: Closer = async (projectId, subprojectId, workflowitemId) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitemIds.includes(workflowitemId)
-      ) {
+    const closeWorkflowitem: Closer = async workflowitemId => {
+      if (!workflowitemIds.includes(workflowitemId)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
-    const notify: CloseNotifier = async (projectId, subprojectId, workflowitemId, actingUser) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitemIds.includes(workflowitemId.id)
-      ) {
+    const notify: CloseNotifier = async (workflowitemId, _actingUser) => {
+      if (!workflowitemIds.includes(workflowitemId.id)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
 
     await assertIsResolved(
-      close(bob, projectForTesting, subprojectForTesting, workflowitemIds[0], {
+      close(bob, workflowitemIds[0], {
         getOrdering,
         getWorkflowitems,
         closeWorkflowitem,
@@ -163,7 +155,7 @@ describe("Closing a project", () => {
     );
     workflowitemClosableByBob.status = "closed";
     await assertIsResolved(
-      close(bob, projectForTesting, subprojectForTesting, workflowitemIds[1], {
+      close(bob, workflowitemIds[1], {
         getOrdering,
         getWorkflowitems,
         closeWorkflowitem,
@@ -172,7 +164,7 @@ describe("Closing a project", () => {
     );
     workflowitemClosableByFriends.status = "closed";
     await assertIsRejectedWith(
-      close(bob, projectForTesting, subprojectForTesting, workflowitemIds[3], {
+      close(bob, workflowitemIds[3], {
         getOrdering,
         getWorkflowitems,
         closeWorkflowitem,
@@ -198,30 +190,21 @@ describe("Closing a project", () => {
 
     const getOrdering: OrderingReader = () => Promise.resolve(ordering);
     const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
-    const closeWorkflowitem: Closer = async (projectId, subprojectId, workflowitemId) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitems.filter(item => item.id === workflowitemId)
-      ) {
+    const closeWorkflowitem: Closer = async workflowitemId => {
+      if (!workflowitems.filter(item => item.id === workflowitemId)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
-    const notify: CloseNotifier = async (projectId, subprojectId, workflowitemId, actingUser) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitems.filter(item => item.id === workflowitemId) ||
-        actingUser !== bob
-      ) {
+    const notify: CloseNotifier = async (workflowitemId, actingUser) => {
+      if (!workflowitems.filter(item => item.id === workflowitemId) || actingUser !== bob) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
 
     await assertIsRejectedWith(
-      close(bob, projectForTesting, subprojectForTesting, "bobWorkflowitem", {
+      close(bob, "bobWorkflowitem", {
         getOrdering,
         getWorkflowitems,
         closeWorkflowitem,
@@ -258,35 +241,21 @@ describe("Updating a project", () => {
     const workflowitems = [originalWorkflowitem, updatedWorkflowitem];
 
     const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
-    const updateWorkflowitem: Updater = async (
-      projectId,
-      subprojectId,
-      workflowitemId,
-      updateData,
-    ) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !(workflowitemId === originalWorkflowitem.id)
-      ) {
+    const updateWorkflowitem: Updater = async (workflowitemId, _updateData) => {
+      if (!(workflowitemId === originalWorkflowitem.id)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
-    const notify: CloseNotifier = async (projectId, subprojectId, workflowitemId, actingUser) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !(workflowitemId === originalWorkflowitem.id)
-      ) {
-        console.log("IM HERE IN NOTIFY");
+    const notify: CloseNotifier = async (workflowitemId, _actingUser) => {
+      if (!(workflowitemId === originalWorkflowitem.id)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
 
     await assertIsResolved(
-      update(bob, projectForTesting, subprojectForTesting, workflowitems[0].id, data, {
+      update(bob, workflowitems[0].id, data, {
         getWorkflowitems,
         updateWorkflowitem,
         notify,
@@ -325,29 +294,21 @@ describe("Updating a project", () => {
     };
 
     const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
-    const updateWorkflowitem: Updater = async (projectId, subprojectId, workflowitemId) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitemIds.includes(workflowitemId)
-      ) {
+    const updateWorkflowitem: Updater = async workflowitemId => {
+      if (!workflowitemIds.includes(workflowitemId)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
-    const notify: UpdateNotifier = async (projectId, subprojectId, workflowitemId, actingUser) => {
-      if (
-        projectId.toLowerCase() !== projectForTesting.toLowerCase() ||
-        subprojectId.toLowerCase() !== subprojectForTesting.toLowerCase() ||
-        !workflowitemIds.includes(workflowitemId)
-      ) {
+    const notify: UpdateNotifier = async (workflowitemId, _actingUser) => {
+      if (!workflowitemIds.includes(workflowitemId)) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
 
     await assertIsResolved(
-      update(bob, projectForTesting, subprojectForTesting, workflowitemIds[0], updatesData, {
+      update(bob, workflowitemIds[0], updatesData, {
         getWorkflowitems,
         updateWorkflowitem,
         notify,
@@ -355,7 +316,7 @@ describe("Updating a project", () => {
     );
 
     await assertIsResolved(
-      update(bob, projectForTesting, subprojectForTesting, workflowitemIds[1], updatesData, {
+      update(bob, workflowitemIds[1], updatesData, {
         getWorkflowitems,
         updateWorkflowitem,
         notify,
@@ -363,7 +324,7 @@ describe("Updating a project", () => {
     );
 
     await assertIsRejectedWith(
-      update(bob, projectForTesting, subprojectForTesting, workflowitemIds[2], updatesData, {
+      update(bob, workflowitemIds[2], updatesData, {
         getWorkflowitems,
         updateWorkflowitem,
         notify,

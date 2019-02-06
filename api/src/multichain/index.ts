@@ -15,12 +15,11 @@ import * as MultichainWorkflowitem from "./Workflowitem";
 
 export * from "./event";
 export * from "./Workflowitem";
+export * from "./SubprojectEvents";
 
 const projectSelfKey = "self";
 const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
 const workflowitemOrderingKey = subprojectId => `${subprojectId}_workflowitem_ordering`;
-export * from "./SubprojectEvents";
-
 const globalSelfKey = "self";
 
 export type Permissions = { [key in Intent]?: string[] };
@@ -512,18 +511,18 @@ export function generateResources(
   if (!projectId) {
     throw { kind: "PreconditionError", message: "No project ID provided" };
   }
-  notificationResource.unshift({
+  notificationResource.push({
     id: projectId,
     type: "project",
   });
   if (subprojectId) {
-    notificationResource.unshift({
+    notificationResource.push({
       id: subprojectId,
       type: "subproject",
     });
   }
   if (workflowitemId) {
-    notificationResource.unshift({
+    notificationResource.push({
       id: workflowitemId,
       type: "workflowitem",
     });
@@ -536,7 +535,6 @@ export async function getWorkflowitemList(
   multichain: MultichainClient,
   projectId: string,
   subprojectId: string,
-  user: MultichainWorkflowitem.User,
 ): Promise<MultichainWorkflowitem.Workflowitem[]> {
   const queryKey = workflowitemsGroupKey(subprojectId);
 

@@ -120,7 +120,7 @@ const schema = Joi.object().keys({
       id: Joi.string(),
       hash: Joi.string(),
     }),
-  ), // Document[],
+  ),
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
@@ -220,11 +220,11 @@ function byOrderingCriteria(a: Workflowitem, b: Workflowitem, ordering: string[]
   }
 }
 
-function isClosed(item: Workflowitem): boolean {
+function isClosed(item: ScrubbedWorkflowitem): boolean {
   return item.status === "closed";
 }
 
-function isRedacted(item: Workflowitem): boolean {
+function isRedacted(item: ScrubbedWorkflowitem): boolean {
   return item.displayName === null;
 }
 

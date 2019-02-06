@@ -20,21 +20,12 @@ import {
 export * from "./Workflowitem";
 export * from "./User";
 
-export type CloseNotifier = (projectId, subprojectId, workflowitemId, actingUser) => Promise<void>;
-export type UpdateNotifier = (projectId, subprojectId, workflowitemId, actingUser) => Promise<void>;
+export type CloseNotifier = (workflowitemId, actingUser) => Promise<void>;
 export type ListReader = () => Promise<Workflowitem[]>;
 export type OrderingReader = () => Promise<string[]>;
-export type Closer = (
-  projectId: string,
-  subprojectId: string,
-  workflowitemId: string,
-) => Promise<void>;
-export type Updater = (
-  projectId: string,
-  subprojectId: string,
-  workflowitemId: string,
-  data: Update,
-) => Promise<void>;
+export type Closer = (workflowitemId: string) => Promise<void>;
+export type UpdateNotifier = (workflowitemId, actingUser) => Promise<void>;
+export type Updater = (workflowitemId: string, data: Update) => Promise<void>;
 
 export async function getAllScrubbedItems(
   asUser: User,
@@ -43,12 +34,9 @@ export async function getAllScrubbedItems(
     getWorkflowitemOrdering,
   }: { getAllWorkflowitems: ListReader; getWorkflowitemOrdering: OrderingReader },
 ): Promise<ScrubbedWorkflowitem[]> {
-  const workflowitemOrdering: string[] = await getWorkflowitemOrdering();
-  const workflowitems: Workflowitem[] = await getAllWorkflowitems();
-  const sortedWorkflowitems: Workflowitem[] = await sortWorkflowitems(
-    workflowitems,
-    workflowitemOrdering,
-  );
+  const workflowitemOrdering = await getWorkflowitemOrdering();
+  const workflowitems = await getAllWorkflowitems();
+  const sortedWorkflowitems = sortWorkflowitems(workflowitems, workflowitemOrdering);
   const scrubbedWorkflowitems = await sortedWorkflowitems.map(workflowitem => {
     workflowitem.log.map(historyevent =>
       redactHistoryEvent(
@@ -64,8 +52,6 @@ export async function getAllScrubbedItems(
 
 export async function close(
   closingUser: User,
-  projectId: string,
-  subprojectId: string,
   workflowitemId: string,
   {
     getOrdering,
@@ -88,14 +74,12 @@ export async function close(
   );
   isWorkflowitemClosable(workflowitemId, closingUser, sortedWorkflowitems);
 
-  await closeWorkflowitem(projectId, subprojectId, workflowitemId);
-  await notify(projectId, subprojectId, closingWorkflowitem, closingUser);
+  await closeWorkflowitem(workflowitemId);
+  await notify(closingWorkflowitem, closingUser);
 }
 
 export async function update(
   updatingUser: User,
-  projectId: string,
-  subprojectId: string,
   workflowitemId: string,
   updates: Update,
   {
@@ -136,6 +120,6 @@ export async function update(
     return Promise.resolve();
   }
 
-  await updateWorkflowitem(projectId, subprojectId, workflowitemId, updatedWorkflowitemData);
-  await notify(projectId, subprojectId, workflowitemId, updatedWorkflowitemData);
+  await updateWorkflowitem(workflowitemId, updatedWorkflowitemData);
+  await notify(workflowitemId, updatedWorkflowitemData);
 }

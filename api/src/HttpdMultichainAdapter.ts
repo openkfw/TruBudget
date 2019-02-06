@@ -138,7 +138,7 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
         currency: project.currency,
         thumbnail: project.thumbnail,
       },
-    })) as HTTP.Project[];
+    }));
   };
 }
 
@@ -295,7 +295,6 @@ export function getWorkflowitemList(
         multichainClient,
         projectId,
         subprojectId,
-        user,
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
@@ -356,22 +355,17 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
         multichainClient,
         projectId,
         subprojectId,
-        closingUser,
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
-    const multichainCloser: Workflowitem.Closer = async (project, subproject, workflowitem) => {
-      Multichain.closeWorkflowitem(multichainClient, issuer, project, subproject, workflowitem);
+    const multichainCloser: Workflowitem.Closer = async workflowitem => {
+      Multichain.closeWorkflowitem(multichainClient, issuer, projectId, subprojectId, workflowitem);
     };
 
-    const multichainNotifier: Workflowitem.CloseNotifier = (
-      projectID,
-      subprojectID,
-      workflowitem,
-    ) => {
+    const multichainNotifier: Workflowitem.CloseNotifier = workflowitem => {
       const notificationResource = Multichain.generateResources(
-        projectID,
-        subprojectID,
+        projectId,
+        subprojectId,
         workflowitem.id,
       );
 
@@ -399,7 +393,7 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
       });
     };
 
-    return Workflowitem.close(closingUser, projectId, subprojectId, workflowitemId, {
+    return Workflowitem.close(closingUser, workflowitemId, {
       getOrdering: multichainOrderingReader,
       getWorkflowitems: multichainLister,
       closeWorkflowitem: multichainCloser,
@@ -522,35 +516,24 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
         multichainClient,
         projectId,
         subprojectId,
-        updatingUser,
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
-    const multichainUpdater: Workflowitem.Updater = async (
-      project,
-      subproject,
-      workflowitem,
-      data,
-    ) => {
+    const multichainUpdater: Workflowitem.Updater = async (workflowitem, data) => {
       Multichain.updateWorkflowitem(
         multichainClient,
         issuer,
-        project,
-        subproject,
+        projectId,
+        subprojectId,
         workflowitem,
         data,
       );
     };
 
-    const multichainNotifier: Workflowitem.CloseNotifier = (
-      projectID,
-      subprojectID,
-      workflowitem,
-      updatedData,
-    ) => {
+    const multichainNotifier: Workflowitem.CloseNotifier = (workflowitem, updatedData) => {
       const notificationResource = Multichain.generateResources(
-        projectID,
-        subprojectID,
+        projectId,
+        subprojectId,
         workflowitem.id,
       );
 
@@ -579,7 +562,7 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
       });
     };
 
-    return Workflowitem.update(updatingUser, projectId, subprojectId, workflowitemId, updates, {
+    return Workflowitem.update(updatingUser, workflowitemId, updates, {
       getWorkflowitems: multichainLister,
       updateWorkflowitem: multichainUpdater,
       notify: multichainNotifier,
