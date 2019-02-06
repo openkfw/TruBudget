@@ -30,7 +30,6 @@ export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
     const project: Project.ScrubbedProject = await Project.getOne(actingUser, projectId, {
       getProject: async id => {
         return Project.validateProject(await Multichain.getAndCacheProject(conn, id));
-        // return Project.validateProject(await Multichain.getProject(conn, id));
       },
     });
 
@@ -138,7 +137,6 @@ export function getProjectList(conn: Multichain.ConnToken): HTTP.AllProjectsRead
     const projects: Project.ScrubbedProject[] = await Project.getAllVisible(actingUser, {
       getAllProjects: async () => {
         const projectList: Multichain.Project[] = await Multichain.getAndCacheProjectList(conn);
-        // const projectList: Multichain.Project[] = await Multichain.getProjectList(conn);
         return projectList.map(Project.validateProject);
       },
     });

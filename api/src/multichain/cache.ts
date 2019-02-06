@@ -20,10 +20,6 @@ export type Cache = {
   // A lock is used to prevent sourcing updates concurrently:
   isWriteLocked: boolean;
   // How recent the cache is, in MultiChain terms:
-  // lastblock?: {
-  //   height: number;
-  //   hash: string;
-  // };
   streamState: Map<StreamName, StreamCursor>;
   // Cached project streams, to be invalidated regularly and after project.create:
   projectStreams?: Stream[];
@@ -121,31 +117,6 @@ export async function getAndCacheProjectList(conn: ConnToken): Promise<ProjectEv
     releaseWriteLock(cache);
   }
 }
-
-// /**
-//  * Clients expect reads to reflect all previous writes, but MultiChain's block-related
-//  * API does not directly support this. Instead, new transactions are first written to
-//  * the "mempool" (and can subsequently be extracted using `getrawtransaction`). Instead
-//  * of accessing this pool directly, we instead wait for MultiChain to complete
-//  * processing those pending transactions. This is not only easier from an implementation
-//  * perspective, but it also guarantees that the changes are agreed upon in the network
-//  * (i.e. "mined").
-//  */
-// async function waitForPendingTransactions(conn: ConnToken) {
-//   while (true) {
-//     // TODO remove
-//     logger.error("XXXXXXXXXX");
-//     const pendingTransactions = await conn.multichainClient.getRpcClient().invoke("getrawmempool");
-//     // TODO debug
-//     logger.error(
-//       `Cache: waiting for ${pendingTransactions.length} pending MultiChain transactions`,
-//     );
-//     if (pendingTransactions.length === 0) {
-//       break;
-//     }
-//     await new Promise(res => setTimeout(res, 2000));
-//   }
-// }
 
 async function findStartIndex(
   multichainClient: MultichainClient,
@@ -315,120 +286,3 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
     }, updated=${nUpdatedProjects}, rebuilt:${nRebuiltProjects}`,
   );
 }
-
-// async function updateCacheFromBlocks(conn: ConnToken): Promise<void> {
-//   await waitForPendingTransactions(conn);
-//
-//   /**
-//    * height and last txid of mempool -> save
-//    * snapshot for active chain: read up to top block
-//    * snapshot for mempool: active-chain snapshot + mempool transactions
-//    * if block height stays the same apply new mempool transactions
-//    *    if known latest tx is no longer in mempool -> re-read top block
-//    */
-//
-//   const { cache } = conn;
-//   const lastCachedBlock = cache.lastblock;
-//
-//   let firstNewBlockNo: number;
-//   if (lastCachedBlock === undefined) {
-//     firstNewBlockNo = 0;
-//   } else {
-//     // Verify that the chain hasn't changed:
-//     const hashOnChain = await conn.multichainClient
-//       .listBlocksByHeight(lastCachedBlock.height, lastCachedBlock.height)
-//       .then(list => (list.length ? list[0].hash : undefined));
-//     if (hashOnChain === undefined || lastCachedBlock.hash !== hashOnChain) {
-//       logger.info({ lastCachedBlock, hashOnChain }, `Cache out-of-sync, rebuilding..`);
-//       firstNewBlockNo = 0;
-//     } else {
-//       // last known block = last actual block => we continue with the next block:
-//       firstNewBlockNo = lastCachedBlock.height + 1;
-//     }
-//   }
-//
-//   const lastBlockOnChain = await conn.multichainClient.getLastBlockInfo();
-//   // TODO remove
-//   logger.error(
-//     await conn.multichainClient.getRpcClient().invoke("getlastblockinfo"),
-//     "getlastblockinfo",
-//   );
-//   logger.error(
-//     await conn.multichainClient.getRpcClient().invoke("getblockchaininfo"),
-//     "getblockchaininfo",
-//   );
-//   logger.error(
-//     await conn.multichainClient.getRpcClient().invoke("listblocks", "-1"),
-//     "listblocks -1",
-//   );
-//   logger.error(
-//     await conn.multichainClient.getRpcClient().invoke("getmempoolinfo"),
-//     "getmempoolinfo",
-//   );
-//   const mempool = await conn.multichainClient.getRpcClient().invoke("getrawmempool");
-//   for (const txid of mempool) {
-//     logger.error(
-//       await conn.multichainClient.getRpcClient().invoke("getrawtransaction", txid, "1"),
-//       "getrawmempool/getrawtransaction",
-//     );
-//   }
-//
-//   if (lastCachedBlock !== undefined && lastCachedBlock.height === lastBlockOnChain.height) {
-//     // TODO debug
-//     logger.warn(`Cache up-to-date (block #${lastCachedBlock.height}: ${lastCachedBlock.hash})`);
-//     return;
-//   }
-//
-//   if (lastCachedBlock !== undefined && lastCachedBlock.height > lastBlockOnChain.height) {
-//     logger.info(
-//       `Chain block height ${lastCachedBlock.height} < cache block height ${
-//         lastBlockOnChain.height
-//       } => rebuilding cache..`,
-//     );
-//     firstNewBlockNo = 0;
-//   }
-//
-//   let loggedAction: string;
-//   if (firstNewBlockNo === 0) {
-//     if (lastCachedBlock === undefined) {
-//       loggedAction = "Initializing";
-//     } else {
-//       loggedAction = "Clearing and rebuilding";
-//       cache.projects.clear();
-//     }
-//   } else {
-//     loggedAction = "Updating";
-//   }
-//   // TODO debug
-//   logger.warn(`${loggedAction} cache with blocks [${firstNewBlockNo}, ${lastBlockOnChain.height}]`);
-//
-//   const streams = await conn.multichainClient.streams();
-//   const projectStreams = streams.filter(x => x.details.kind === "project").map(x => x.name);
-//   // TODO remove
-//   logger.warn(streams, "streams");
-//   for (const stream of projectStreams) {
-//     const newStreamItems = await conn.multichainClient.listStreamBlockItemsByHeight(
-//       stream,
-//       lastBlockOnChain.height,
-//       firstNewBlockNo,
-//     );
-//     // TODO remove
-//     logger.warn(newStreamItems, `new items for stream ${stream}`);
-//     const projectId = stream;
-//     const project = await Eventsourcing.applyStreamItems(
-//       newStreamItems,
-//       cache.projects.get(projectId),
-//     );
-//     if (project !== undefined) {
-//       cache.projects.set(projectId, project);
-//     }
-//   }
-//
-//   cache.lastblock = {
-//     height: lastBlockOnChain.height,
-//     hash: lastBlockOnChain.hash,
-//   };
-//
-//   // TODO debug
-//   logger.warn(cache.lastblock, `Cache updated`);
-// }
