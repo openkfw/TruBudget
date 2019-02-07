@@ -61,24 +61,6 @@ interface NotificationResourceDescription {
   type: ResourceType;
 }
 
-function grantProjectPermission(project: Project, identity: string, intent: Intent) {
-  const permissionsForIntent: People = project.permissions[intent] || [];
-  if (!permissionsForIntent.includes(identity)) {
-    permissionsForIntent.push(identity);
-  }
-  project.permissions[intent] = permissionsForIntent;
-}
-
-function revokeProjectPermission(project: Project, identity: string, intent: Intent) {
-  const permissionsForIntent: People = project.permissions[intent] || [];
-  const userIndex = permissionsForIntent.indexOf(identity);
-  if (userIndex !== -1) {
-    // Remove the user from the array:
-    permissionsForIntent.splice(userIndex, 1);
-    project.permissions[intent] = permissionsForIntent;
-  }
-}
-
 export async function writeProjectAssignedToChain(
   multichain: MultichainClient,
   issuer: Issuer,
@@ -251,6 +233,35 @@ export async function getProjectPermissionList(
 ): Promise<Permissions> {
   const project = await getProject(multichain, projectId);
   return project.permissions;
+}
+
+export async function grantProjectPermission(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  projectId: string,
+  grantee: string,
+  intent: Intent,
+): Promise<void> {
+  const grantIntent: Intent = "project.intent.grantPermission";
+
+  const event = {
+    key: projectId,
+    intent: grantIntent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: { identity: grantee, intent },
+  };
+
+  const streamName = projectId;
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${grantIntent} to ${streamName}/${streamItemKey}`);
+  return multichain
+    .getRpcClient()
+    .invoke("publish", streamName, streamItemKey, streamItem)
+    .then(() => event);
 }
 
 export async function getGlobalPermissionList(multichain: MultichainClient): Promise<Permissions> {
@@ -459,7 +470,12 @@ function applyGrantPermission(event: Event, project: Project): true | undefined 
   switch (event.dataVersion) {
     case 1: {
       const { identity, intent } = event.data;
-      grantProjectPermission(project, identity, intent);
+      const permissionsForIntent: People = project.permissions[intent] || [];
+      if (!permissionsForIntent.includes(identity)) {
+        permissionsForIntent.push(identity);
+      }
+      project.permissions[intent] = permissionsForIntent;
+
       return true;
     }
   }
@@ -471,7 +487,13 @@ function applyRevokePermission(event: Event, project: Project): true | undefined
   switch (event.dataVersion) {
     case 1: {
       const { identity, intent } = event.data;
-      revokeProjectPermission(project, identity, intent);
+      const permissionsForIntent: People = project.permissions[intent] || [];
+      const userIndex = permissionsForIntent.indexOf(identity);
+      if (userIndex !== -1) {
+        // Remove the user from the array:
+        permissionsForIntent.splice(userIndex, 1);
+        project.permissions[intent] = permissionsForIntent;
+      }
       return true;
     }
   }

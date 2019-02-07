@@ -132,6 +132,38 @@ export function getProjectPermissionList(
   };
 }
 
+export function grantProjectPermission(
+  multichainClient: MultichainClient,
+): HTTP.ProjectPermissionsGranter {
+  return async (token: AuthToken, projectId: string, grantee: string, intent: Intent) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const actingUser: Project.User = { id: token.userId, groups: token.groups };
+
+    const reader: Project.Reader = async id => {
+      const multichainProject: Multichain.Project = await Multichain.getProject(
+        multichainClient,
+        id,
+      );
+      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+    };
+
+    const granter: Project.Granter = async (id, selectedGrantee, selectedIntent) => {
+      await Multichain.grantProjectPermission(
+        multichainClient,
+        issuer,
+        id,
+        selectedGrantee,
+        selectedIntent,
+      );
+    };
+
+    return await Project.grantPermission(actingUser, projectId, grantee, intent, {
+      getProject: reader,
+      grantProjectPermission: granter,
+    });
+  };
+}
+
 export function getProjectList(multichainClient: MultichainClient): HTTP.AllProjectsReader {
   return async (token: AuthToken) => {
     const actingUser: Project.User = { id: token.userId, groups: token.groups };

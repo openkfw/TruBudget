@@ -127,6 +127,7 @@ registerRoutes(
     grantAllPermissions: HttpdMultichainAdapter.grantAllPermissions(multichainClient),
     revokeGlobalPermission: HttpdMultichainAdapter.revokePermission(multichainClient),
     getProjectPermissions: HttpdMultichainAdapter.getProjectPermissionList(multichainClient),
+    grantProjectPermission: HttpdMultichainAdapter.grantProjectPermission(multichainClient),
   },
 );
 

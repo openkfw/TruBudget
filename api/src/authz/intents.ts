@@ -92,6 +92,20 @@ export const userDefaultIntents: Intent[] = [
   "network.listActive",
 ];
 
+export const projectIntents: Intent[] = [
+  "project.intent.listPermissions",
+  "project.intent.grantPermission",
+  "project.intent.revokePermission",
+  "project.viewSummary",
+  "project.viewDetails",
+  "project.assign",
+  "project.update",
+  "project.close",
+  "project.archive",
+  "project.createSubproject",
+  "project.viewHistory",
+];
+
 export const allIntents: Intent[] = [
   "global.listPermissions",
   "global.grantPermission",

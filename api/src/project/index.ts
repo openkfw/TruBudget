@@ -35,6 +35,7 @@ export type ListReader = () => Promise<Project[]>;
 
 export type PermissionsLister = (projectId: string) => Promise<Permissions>;
 
+export type Granter = (projectId: string, grantee: string, intent: Intent) => Promise<void>;
 export type GlobalPermissionsLister = () => Promise<Permissions>;
 
 export type Creator = (project: Project) => Promise<void>;
@@ -163,6 +164,27 @@ export async function create(
     logger.debug(`Project - Create: Creating new project with id ${project.id}`, project);
     await createProject(project);
   }
+}
+
+/**
+ *
+ * @param intent The permission which should be granted.
+ */
+export async function grantPermission(
+  actingUser: User,
+  projectId: string,
+  grantee: string,
+  intent: Intent,
+  { getProject, grantProjectPermission }: { getProject: Reader; grantProjectPermission: Granter },
+): Promise<void> {
+  const project = await getProject(projectId);
+  if (!isAllowedTo("project.intent.grantPermission", project.permissions, actingUser)) {
+    return Promise.reject(
+      Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
+    );
+  }
+  // TODO check if grantee does exist
+  return grantProjectPermission(projectId, grantee, intent);
 }
 
 /**
