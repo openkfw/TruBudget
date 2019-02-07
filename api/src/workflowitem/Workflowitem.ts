@@ -1,3 +1,4 @@
+import * as crypto from "crypto";
 import Joi = require("joi");
 
 import { getAllowedIntents, hasIntersection } from "../authz";
@@ -45,6 +46,17 @@ export interface Workflowitem {
   log: HistoryEvent[];
 }
 
+export interface Update {
+  displayName?: string;
+  amount?: string;
+  currency?: string;
+  amountType?: "N/A" | "disbursed" | "allocated";
+  description?: string;
+  documents?: Document[];
+  exchangeRate?: string;
+  billingDate?: string;
+}
+
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
 
 export interface RedactedWorkflowitem {
@@ -75,13 +87,11 @@ const schema = Joi.object().keys({
     then: Joi.required(),
     otherwise: Joi.optional(),
   }),
-  billingDate: Joi.date()
-    .iso()
-    .when("status", {
-      is: Joi.valid("closed"),
-      then: Joi.required(),
-      otherwise: Joi.optional(),
-    }),
+  billingDate: Joi.date().when("status", {
+    is: Joi.valid("closed"),
+    then: Joi.required(),
+    otherwise: Joi.optional(),
+  }),
   amount: Joi.string()
     .when("amountType", {
       is: Joi.valid("disbursed", "allocated"),
@@ -127,19 +137,23 @@ export function validateWorkflowitem(input: any): Workflowitem {
 }
 
 export function scrubWorkflowitem(workflowitem: Workflowitem, user: User): ScrubbedWorkflowitem {
-  if (!isWorkflowitemVisibleTo(workflowitem, user)) {
+  const allowedIntent: Intent = "workflowitem.view";
+  if (!isUserAllowedTo(allowedIntent, workflowitem, user)) {
     const scrubbedWorkflowitem = redactWorkflowitemData(workflowitem);
     return scrubbedWorkflowitem;
   }
   return workflowitem;
 }
 
-export function isWorkflowitemVisibleTo(workflowitem: Workflowitem, user: User): boolean {
-  const allowedIntent: Intent = "workflowitem.view";
+export function isUserAllowedTo(
+  allowedIntent: Intent,
+  workflowitem: Workflowitem,
+  user: User,
+): boolean {
   const userIntents = getAllowedIntents(userIdentities(user), workflowitem.permissions);
 
-  const isAllowedToSeeData = userIntents.includes(allowedIntent);
-  return isAllowedToSeeData;
+  const isAllowedTo = userIntents.includes(allowedIntent);
+  return isAllowedTo;
 }
 
 export function sortWorkflowitems(
@@ -212,15 +226,12 @@ function closedAt(item: Workflowitem): string {
   const event = item.log.find(e => e.intent === "workflowitem.close");
   if (event === undefined) {
     const message = "Item is not closed.";
-    // Promise.reject(Error(`${message}: ${JSON.stringify(event)}`));
     throw Error(`${message}: ${JSON.stringify(event)}`);
-  } else {
-    return event.createdAt;
   }
-  // return event ? Promise.resolve(event.createdAt) : Promise.reject(Error(`Event is undefined`));
+  return event.createdAt;
 }
 
-function byCreationTime(a: ScrubbedWorkflowitem, b: ScrubbedWorkflowitem): -1 | 1 | 0 {
+function byCreationTime(a: Workflowitem, b: Workflowitem): -1 | 1 | 0 {
   const ctimeA = a.creationUnixTs;
   const ctimeB = b.creationUnixTs;
   if (ctimeA < ctimeB) {
@@ -238,7 +249,7 @@ export function removeEventLog(workflowitem: ScrubbedWorkflowitem): ScrubbedWork
   return workflowitem;
 }
 
-export const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowitem => ({
+const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowitem => ({
   id: workflowitem.id,
   creationUnixTs: workflowitem.creationUnixTs,
   displayName: null,
@@ -335,5 +346,38 @@ export function arePreviousClosed(
         message,
       };
     }
+  }
+}
+
+export async function hashBase64String(base64String: string): Promise<string> {
+  return new Promise<string>(resolve => {
+    const hash = crypto.createHash("sha256");
+    hash.update(Buffer.from(base64String, "base64"));
+    resolve(hash.digest("hex"));
+  });
+}
+
+export async function hashDocuments(docs): Promise<Document[]> {
+  return await Promise.all<Document>(
+    docs.map(
+      (document): Promise<Document> => {
+        return hashBase64String(document.base64).then(hashValue => ({
+          id: document.id,
+          hash: hashValue,
+        }));
+      },
+    ),
+  );
+}
+
+export function getWorkflowitemFromList(
+  workflowitemList: Workflowitem[],
+  workflowitemId: string,
+): Workflowitem {
+  const workflowitem = workflowitemList.find(item => item.id === workflowitemId);
+  if (!workflowitem) {
+    throw { kind: "PreconditionError", message: "Cannot find workflowitem in list" };
+  } else {
+    return workflowitem;
   }
 }

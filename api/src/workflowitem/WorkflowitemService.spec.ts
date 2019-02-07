@@ -1,10 +1,24 @@
 import { assert } from "chai";
 
-import { close, CloseNotifier, Closer, getAllScrubbedItems, ListReader, OrderingReader } from ".";
+import {
+  close,
+  CloseNotifier,
+  Closer,
+  getAllScrubbedItems,
+  ListReader,
+  OrderingReader,
+  update,
+  UpdateNotifier,
+  Updater,
+} from ".";
 import Intent from "../authz/intents";
 import { assertIsRejectedWith, assertIsResolved } from "../lib/test/promise";
 import { User } from "./User";
-import { ScrubbedWorkflowitem, Workflowitem } from "./Workflowitem";
+import { ScrubbedWorkflowitem, Update, Workflowitem } from "./Workflowitem";
+
+const updateIntent: Intent = "workflowitem.update";
+const viewIntent: Intent = "workflowitem.view";
+const closeIntent: Intent = "workflowitem.close";
 
 function newWorkflowitem(id: string, permissions: object): Workflowitem {
   return {
@@ -47,7 +61,6 @@ describe("Listing workflowitems,", () => {
   it("redacts history events the user is not allowed to see.", async () => {
     const user: User = { id: "bob", groups: ["friends"] };
 
-    const viewIntent: Intent = "workflowitem.view";
     const workflowitemVisibleToBob = newWorkflowitem("bobWorkflowitem", { [viewIntent]: ["bob"] });
     const workflowitemVisibleToFriends = newWorkflowitem("friendsWorkflowitem", {
       [viewIntent]: ["friends"],
@@ -83,8 +96,6 @@ describe("Closing a project", () => {
   const alice: User = { id: "alice", groups: ["otherfriends"] };
   const bob: User = { id: "bob", groups: ["friends"] };
   const notifier: CloseNotifier = _workflowitem => Promise.resolve();
-  const closeIntent: Intent = "workflowitem.close";
-  const viewIntent: Intent = "workflowitem.view";
 
   it("requires specific permissions", async () => {
     const workflowitemIds: string[] = [
@@ -135,7 +146,7 @@ describe("Closing a project", () => {
     };
 
     await assertIsResolved(
-      close(bob, projectForTesting, subprojectForTesting, workflowitemIds[0], {
+      close(bob, workflowitemIds[0], {
         getOrdering,
         getWorkflowitems,
         closeWorkflowitem,
@@ -144,7 +155,7 @@ describe("Closing a project", () => {
     );
     workflowitemClosableByBob.status = "closed";
     await assertIsResolved(
-      close(bob, projectForTesting, subprojectForTesting, workflowitemIds[1], {
+      close(bob, workflowitemIds[1], {
         getOrdering,
         getWorkflowitems,
         closeWorkflowitem,
@@ -153,7 +164,7 @@ describe("Closing a project", () => {
     );
     workflowitemClosableByFriends.status = "closed";
     await assertIsRejectedWith(
-      close(bob, projectForTesting, subprojectForTesting, workflowitemIds[3], {
+      close(bob, workflowitemIds[3], {
         getOrdering,
         getWorkflowitems,
         closeWorkflowitem,
@@ -185,20 +196,139 @@ describe("Closing a project", () => {
       }
       return;
     };
-    const notify: CloseNotifier = async (workflowitemId, actingUser) => {
-      if (!workflowitems.filter(item => item.id === workflowitemId) || actingUser !== bob) {
+    const notify: CloseNotifier = async (workflowitem, actingUser) => {
+      if (!workflowitems.filter(item => item.id === workflowitem.id) || actingUser !== bob) {
         return Promise.reject("Incorrect requirements");
       }
       return;
     };
 
     await assertIsRejectedWith(
-      close(bob, projectForTesting, subprojectForTesting, "bobWorkflowitem", {
+      close(bob, "bobWorkflowitem", {
         getOrdering,
         getWorkflowitems,
         closeWorkflowitem,
         notify,
       }),
     );
+  });
+});
+
+describe("Updating a project", () => {
+  const alice: User = { id: "alice", groups: ["otherfriends"] };
+  const bob: User = { id: "bob", groups: ["friends"] };
+  const notifier: UpdateNotifier = _workflowitem => Promise.resolve();
+  const projectForTesting = "ProjectA";
+  const subprojectForTesting = "SubrojectA";
+
+  it("updates the workflowitem and shows the new data", async () => {
+    const originalWorkflowitem = newWorkflowitem("originalWorkflowitem", {
+      [updateIntent]: ["bob"],
+      [viewIntent]: ["bob"],
+    });
+    const updatedWorkflowitem = originalWorkflowitem;
+
+    const data: Update = {
+      displayName: "Defg",
+      amount: "1000",
+      description: "Defg",
+    };
+
+    updatedWorkflowitem.displayName = data.displayName!;
+    updatedWorkflowitem.amount = data.amount;
+    updatedWorkflowitem.description = data.description!;
+
+    const workflowitems = [originalWorkflowitem, updatedWorkflowitem];
+
+    const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
+    const updateWorkflowitem: Updater = async (workflowitemId, _updateData) => {
+      if (!(workflowitemId === originalWorkflowitem.id)) {
+        return Promise.reject("Incorrect requirements");
+      }
+      return;
+    };
+    const notify: UpdateNotifier = async (workflowitem, _actingUser) => {
+      if (!(workflowitem.id === originalWorkflowitem.id)) {
+        return Promise.reject("Incorrect requirements");
+      }
+      return;
+    };
+
+    await assertIsResolved(
+      update(bob, workflowitems[0].id, data, {
+        getWorkflowitems,
+        updateWorkflowitem,
+        notify,
+      }),
+    );
+    assert.equal(JSON.stringify(originalWorkflowitem), JSON.stringify(updatedWorkflowitem));
+  });
+  it("requires specific permissions", async () => {
+    const bobWorkflowitem = newWorkflowitem("bobWorkflowitem", {
+      [updateIntent]: ["bob"],
+      [viewIntent]: ["bob"],
+    });
+    const friendsWorkflowitem = newWorkflowitem("friendsWorkflowitem", {
+      [updateIntent]: ["friends"],
+      [viewIntent]: ["friends"],
+    });
+    const nonUpdatableWorkflowitem = newWorkflowitem("nonUpdatableWorkflowitem", {
+      [updateIntent]: ["alice"],
+      [viewIntent]: ["alice"],
+    });
+    const workflowitemIds: string[] = [
+      "bobWorkflowitem",
+      "friendsWorkflowitem",
+      "nonUpdatableWorkflowitem",
+    ];
+    const workflowitems: Workflowitem[] = [
+      bobWorkflowitem,
+      friendsWorkflowitem,
+      nonUpdatableWorkflowitem,
+    ];
+
+    const updatesData: Update = {
+      displayName: "Defg",
+      amount: "1000",
+      description: "Defg",
+    };
+
+    const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
+    const updateWorkflowitem: Updater = async workflowitemId => {
+      if (!workflowitemIds.includes(workflowitemId)) {
+        return Promise.reject("Incorrect requirements");
+      }
+      return;
+    };
+    const notify: UpdateNotifier = async (workflowitem, _actingUser) => {
+      if (!workflowitemIds.includes(workflowitem.id)) {
+        return Promise.reject("Incorrect requirements");
+      }
+      return;
+    };
+
+    await assertIsResolved(
+      update(bob, workflowitemIds[0], updatesData, {
+        getWorkflowitems,
+        updateWorkflowitem,
+        notify,
+      }),
+    );
+
+    await assertIsResolved(
+      update(bob, workflowitemIds[1], updatesData, {
+        getWorkflowitems,
+        updateWorkflowitem,
+        notify,
+      }),
+    );
+
+    await assertIsRejectedWith(
+      update(bob, workflowitemIds[2], updatesData, {
+        getWorkflowitems,
+        updateWorkflowitem,
+        notify,
+      }),
+    ).catch(err => console.log(err));
   });
 });

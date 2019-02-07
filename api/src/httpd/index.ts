@@ -1,6 +1,11 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 
+export interface Document {
+  id: string;
+  hash: string;
+}
+
 export type Permissions = { [key in Intent]?: string[] };
 
 export type ProjectReader = (token: AuthToken, id: string) => Promise<ProjectAndSubprojects>;
@@ -56,6 +61,14 @@ export type WorkflowitemCloser = (
   workflowitemId: string,
 ) => Promise<void>;
 
+export type WorkflowitemUpdater = (
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+  updatedData: any,
+) => Promise<void>;
+
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];
@@ -77,16 +90,16 @@ export interface Workflowitem {
   data: {
     id: string;
     creationUnixTs: string;
-    displayName: string;
-    exchangeRate?: string;
-    billingDate?: string;
-    amount?: string;
-    currency?: string;
-    amountType: "N/A" | "disbursed" | "allocated";
-    description: string;
+    displayName: string | null;
+    exchangeRate?: string | null;
+    billingDate?: string | null;
+    amount?: string | null;
+    currency?: string | null;
+    amountType: "N/A" | "disbursed" | "allocated" | null;
+    description: string | null;
     status: "open" | "closed";
-    assignee?: string;
-    documents?: Document[];
+    assignee?: string | null;
+    documents?: Document[] | null;
   };
 }
 export interface ProjectAndSubprojects {

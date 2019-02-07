@@ -7,13 +7,14 @@ import {
   AllProjectsReader,
   AllWorkflowitemsReader,
   GlobalPermissionGranter,
+  GlobalPermissionRevoker,
   ProjectAndSubprojects,
   ProjectAssigner,
   ProjectReader,
   ProjectUpdater,
   WorkflowitemCloser,
+  WorkflowitemUpdater,
 } from ".";
-import { GlobalPermissionRevoker } from ".";
 import Intent from "../authz/intents";
 import { createGroup } from "../global/createGroup";
 import { createProject } from "../global/createProject";
@@ -61,7 +62,6 @@ import { assignWorkflowitem } from "../workflowitem/controller/assign";
 import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
 import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
 import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
-import { updateWorkflowitem } from "../workflowitem/controller/update";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
@@ -260,12 +260,13 @@ export const registerRoutes = (
   multichainHost: string,
   backupApiPort: string,
   {
-    workflowitemLister,
     listProjects,
     getProjectWithSubprojects,
     assignProject,
     updateProject,
+    workflowitemLister,
     workflowitemCloser,
+    workflowitemUpdater,
     listGlobalPermissions,
     grantGlobalPermission,
     grantAllPermissions,
@@ -278,6 +279,7 @@ export const registerRoutes = (
     updateProject: ProjectUpdater;
     workflowitemLister: AllWorkflowitemsReader;
     workflowitemCloser: WorkflowitemCloser;
+    workflowitemUpdater: WorkflowitemUpdater;
     listGlobalPermissions: AllPermissionsReader;
     grantGlobalPermission: GlobalPermissionGranter;
     grantAllPermissions: AllPermissionsGranter;
@@ -814,7 +816,25 @@ export const registerRoutes = (
     `${urlPrefix}/workflowitem.update`,
     getSchema(server, "workflowitemUpdate"),
     (request, reply) => {
-      updateWorkflowitem(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const body = req.body.data;
+
+      workflowitemUpdater(
+        req.user,
+        body.projectId,
+        body.subprojectId,
+        body.workflowitemId,
+        req.body.data,
+      )
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
