@@ -47,14 +47,18 @@ const createTableHeader = props => (
 
 const renderSortButton = props => (
   <Button
+    variant="contained"
+    color="primary"
     disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
     onClick={() => handleEnableWorkflowSort(props)}
     style={{
       position: "relative",
+      left: "5px",
       zIndex: 2
     }}
   >
-    <SortIcon />
+    {/* <SortIcon /> */}
+    Edit
   </Button>
 );
 
@@ -63,6 +67,7 @@ const renderSubmitSortButton = props => (
     onClick={() => handleSubmitSort(props)}
     style={{
       position: "relative",
+      left: "5px",
       zIndex: 2
     }}
   >
@@ -75,6 +80,7 @@ const handleEnableWorkflowSort = props => {
   props.workflowItems.map(item => workflowItemIds.push(item.data.id));
   props.saveWorkflowItemsBeforeSort(workflowItemIds);
   props.enableWorkflowSort();
+  console.log(props.workflowSortEnabled);
 };
 
 const handleSubmitSort = props => {

@@ -14,6 +14,7 @@ import Paper from "@material-ui/core/Paper";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import Typography from "@material-ui/core/Typography";
 import green from "@material-ui/core/colors/lightGreen";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import { toAmountString, amountTypes } from "../../helper.js";
 import strings from "../../localizeStrings";
@@ -35,8 +36,18 @@ const styles = {
     textAlign: "center",
     display: "inline-block",
     position: "absolute",
-    top: "18px",
+    top: "17px",
     left: "16px",
+    borderRadius: "10px"
+  },
+  checkbox: {
+    height: 20,
+    width: 20,
+    textAlign: "center",
+    display: "inline-block",
+    position: "absolute",
+    top: "6px",
+    left: "2px",
     borderRadius: "10px"
   },
   actions: {
@@ -44,7 +55,7 @@ const styles = {
     justifyContent: "center",
     width: "100%"
   },
-  actionButton:{
+  actionButton: {
     width: "33%"
   },
   line: {
@@ -132,7 +143,7 @@ const createLine = (isFirst, selectable) => {
   return <div style={lineStyle} />;
 };
 
-const StepDot = ({ status, selectable }) => {
+const StepDot = ({ sortenabled, status, selectable }) => {
   let Icon;
   switch (status) {
     case "open":
@@ -144,10 +155,19 @@ const StepDot = ({ status, selectable }) => {
     default:
       Icon = OpenIcon;
   }
-  return (
+  // return (
+  //   <Paper style={styles.dots} elevation={2} disabled={selectable}>
+  //     <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
+  //   </Paper>
+  // );
+  return !sortenabled ? (
     <Paper style={styles.dots} elevation={2} disabled={selectable}>
       <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
     </Paper>
+  ) : (
+    <div style={styles.checkbox}>
+      <Checkbox disabled={!selectable} />
+    </div>
   );
 };
 
@@ -232,74 +252,72 @@ const renderActionButtons = (
   return (
     <div style={{ flex: 2 }}>
       <div style={styles.actions}>
-      <div style={styles.actionButton}>
-      {status !== "closed" ?
-        <Tooltip
-          id="tooltip-wedit"
-          title={!canEditWorkflow || workflowSortEnabled ? "" : strings.common.edit}
-          // Otherwise the tooltip is shacking
-          PopperProps={{ style: { pointerEvents: "none" } }}
-          disableFocusListener={!canEditWorkflow || workflowSortEnabled}
-          disableHoverListener={!canEditWorkflow || workflowSortEnabled}
-          disableTouchListener={!canEditWorkflow || workflowSortEnabled}
-        >
-          <div>
-            <IconButton
-              onClick={!canEditWorkflow || workflowSortEnabled ? undefined : edit}
-              style={getButtonStyle(workflowSortEnabled, status)}
-              disabled={!canEditWorkflow || workflowSortEnabled}
+        <div style={styles.actionButton}>
+          {status !== "closed" ? (
+            <Tooltip
+              id="tooltip-wedit"
+              title={!canEditWorkflow || workflowSortEnabled ? "" : strings.common.edit}
+              // Otherwise the tooltip is shacking
+              PopperProps={{ style: { pointerEvents: "none" } }}
+              disableFocusListener={!canEditWorkflow || workflowSortEnabled}
+              disableHoverListener={!canEditWorkflow || workflowSortEnabled}
+              disableTouchListener={!canEditWorkflow || workflowSortEnabled}
             >
-              <EditIcon />
-            </IconButton>
-          </div>
-        </Tooltip>
-        : null
-      }
+              <div>
+                <IconButton
+                  onClick={!canEditWorkflow || workflowSortEnabled ? undefined : edit}
+                  style={getButtonStyle(workflowSortEnabled, status)}
+                  disabled={!canEditWorkflow || workflowSortEnabled}
+                >
+                  <EditIcon />
+                </IconButton>
+              </div>
+            </Tooltip>
+          ) : null}
         </div>
         <div style={styles.actionButton}>
-        <Tooltip
-          id="tooltip-wpermissions"
-          title={!canListWorkflowPermissions || workflowSortEnabled ? "" : strings.common.show_permissions}
-          // Otherwise the tooltip is shacking
-          PopperProps={{ style: { pointerEvents: "none" } }}
-          disableFocusListener={!canListWorkflowPermissions || workflowSortEnabled}
-          disableHoverListener={!canListWorkflowPermissions || workflowSortEnabled}
-          disableTouchListener={!canListWorkflowPermissions || workflowSortEnabled}
-        >
-          <div>
-            <IconButton
-              onClick={!canListWorkflowPermissions || workflowSortEnabled ? undefined : showPerm}
-              style={getButtonStyle(workflowSortEnabled, status)}
-              disabled={!canListWorkflowPermissions || workflowSortEnabled}
-            >
-              <PermissionIcon />
-            </IconButton>
-          </div>
-        </Tooltip>
+          <Tooltip
+            id="tooltip-wpermissions"
+            title={!canListWorkflowPermissions || workflowSortEnabled ? "" : strings.common.show_permissions}
+            // Otherwise the tooltip is shacking
+            PopperProps={{ style: { pointerEvents: "none" } }}
+            disableFocusListener={!canListWorkflowPermissions || workflowSortEnabled}
+            disableHoverListener={!canListWorkflowPermissions || workflowSortEnabled}
+            disableTouchListener={!canListWorkflowPermissions || workflowSortEnabled}
+          >
+            <div>
+              <IconButton
+                onClick={!canListWorkflowPermissions || workflowSortEnabled ? undefined : showPerm}
+                style={getButtonStyle(workflowSortEnabled, status)}
+                disabled={!canListWorkflowPermissions || workflowSortEnabled}
+              >
+                <PermissionIcon />
+              </IconButton>
+            </div>
+          </Tooltip>
         </div>
         <div style={styles.actionButton}>
-        {status !== "closed" ?
-        <Tooltip
-          id="tooltip-wclose"
-          title={!canCloseWorkflow || workflowSortEnabled ? "" : strings.common.close}
-          // Otherwise the tooltip is shacking
-          PopperProps={{ style: { pointerEvents: "none" } }}
-          disableFocusListener={!canCloseWorkflow || workflowSortEnabled}
-          disableHoverListener={!canCloseWorkflow || workflowSortEnabled}
-          disableTouchListener={!canCloseWorkflow || workflowSortEnabled}
-        >
-          <div>
-            <IconButton
-              onClick={!canCloseWorkflow || workflowSortEnabled ? undefined : close}
-              style={getButtonStyle(workflowSortEnabled, status)}
-              disabled={!canCloseWorkflow || workflowSortEnabled}
+          {status !== "closed" ? (
+            <Tooltip
+              id="tooltip-wclose"
+              title={!canCloseWorkflow || workflowSortEnabled ? "" : strings.common.close}
+              // Otherwise the tooltip is shacking
+              PopperProps={{ style: { pointerEvents: "none" } }}
+              disableFocusListener={!canCloseWorkflow || workflowSortEnabled}
+              disableHoverListener={!canCloseWorkflow || workflowSortEnabled}
+              disableTouchListener={!canCloseWorkflow || workflowSortEnabled}
             >
-              <DoneIcon />
-            </IconButton>
-          </div>
-        </Tooltip>
-        : null
-        }
+              <div>
+                <IconButton
+                  onClick={!canCloseWorkflow || workflowSortEnabled ? undefined : close}
+                  style={getButtonStyle(workflowSortEnabled, status)}
+                  disabled={!canCloseWorkflow || workflowSortEnabled}
+                >
+                  <DoneIcon />
+                </IconButton>
+              </div>
+            </Tooltip>
+          ) : null}
         </div>
       </div>
     </div>
@@ -339,7 +357,7 @@ export const WorkflowItem = SortableElement(
     return (
       <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
-        <StepDot status={status} selectable={workflowSelectable} />
+        <StepDot sortenabled={workflowSortEnabled} status={status} selectable={workflowSelectable} />
         <Card
           elevation={workflowSelectable ? 1 : 0}
           key={mapIndex}
