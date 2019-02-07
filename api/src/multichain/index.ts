@@ -434,12 +434,11 @@ function applyGrantPermission(event: Event, project: Project): true | undefined 
     case 1: {
       const { identity, intent } = event.data;
       const permissionsForIntent: People = project.permissions[intent] || [];
-      const userIndex = permissionsForIntent.indexOf(identity);
-      if (userIndex !== -1) {
-        // Remove the user from the array:
-        permissionsForIntent.splice(userIndex, 1);
-        project.permissions[intent] = permissionsForIntent;
+      if (!permissionsForIntent.includes(identity)) {
+        permissionsForIntent.push(identity);
       }
+      project.permissions[intent] = permissionsForIntent;
+
       return true;
     }
   }
@@ -452,11 +451,12 @@ function applyRevokePermission(event: Event, project: Project): true | undefined
     case 1: {
       const { identity, intent } = event.data;
       const permissionsForIntent: People = project.permissions[intent] || [];
-      if (!permissionsForIntent.includes(identity)) {
-        permissionsForIntent.push(identity);
+      const userIndex = permissionsForIntent.indexOf(identity);
+      if (userIndex !== -1) {
+        // Remove the user from the array:
+        permissionsForIntent.splice(userIndex, 1);
+        project.permissions[intent] = permissionsForIntent;
       }
-      project.permissions[intent] = permissionsForIntent;
-
       return true;
     }
   }
