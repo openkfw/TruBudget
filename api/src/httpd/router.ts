@@ -13,6 +13,7 @@ import {
   ProjectPermissionsReader,
   ProjectReader,
   ProjectUpdater,
+  WorkflowitemAssigner,
   WorkflowitemCloser,
   WorkflowitemUpdater,
 } from ".";
@@ -58,7 +59,6 @@ import { getVersion } from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
 import { authenticateUser } from "../user/controller/authenticate";
 import { getUserList } from "../user/controller/list";
-import { assignWorkflowitem } from "../workflowitem/controller/assign";
 import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
 import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
 import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
@@ -267,6 +267,7 @@ export const registerRoutes = (
     workflowitemLister,
     workflowitemCloser,
     workflowitemUpdater,
+    workflowitemAssigner,
     listGlobalPermissions,
     grantGlobalPermission,
     createProject,
@@ -281,6 +282,7 @@ export const registerRoutes = (
     workflowitemLister: AllWorkflowitemsReader;
     workflowitemCloser: WorkflowitemCloser;
     workflowitemUpdater: WorkflowitemUpdater;
+    workflowitemAssigner: WorkflowitemAssigner;
     listGlobalPermissions: AllPermissionsReader;
     grantGlobalPermission: GlobalPermissionGranter;
     createProject: ProjectCreator;
@@ -821,7 +823,25 @@ export const registerRoutes = (
     `${urlPrefix}/workflowitem.assign`,
     getSchema(server, "workflowitemAssign"),
     (request, reply) => {
-      assignWorkflowitem(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const body = req.body.data;
+      // assignWorkflowitem(multichainClient, request as AuthenticatedRequest)
+      workflowitemAssigner(
+        req.user,
+        body.projectId,
+        body.subprojectId,
+        body.workflowitemId,
+        body.identity,
+      )
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: "OK",
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

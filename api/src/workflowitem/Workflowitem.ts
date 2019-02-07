@@ -28,7 +28,6 @@ export interface Document {
   id: string;
   hash: string;
 }
-
 export interface Workflowitem {
   id: string;
   creationUnixTs: string;
@@ -45,7 +44,6 @@ export interface Workflowitem {
   permissions: AllowedUserGroupsByIntent;
   log: HistoryEvent[];
 }
-
 export interface Update {
   displayName?: string;
   amount?: string;
@@ -144,7 +142,6 @@ export function scrubWorkflowitem(workflowitem: Workflowitem, user: User): Scrub
   }
   return workflowitem;
 }
-
 export function isUserAllowedTo(
   allowedIntent: Intent,
   workflowitem: Workflowitem,

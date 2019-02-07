@@ -82,6 +82,14 @@ export type WorkflowitemUpdater = (
   updatedData: any,
 ) => Promise<void>;
 
+export type WorkflowitemAssigner = (
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+  newAssignee: string,
+) => Promise<void>;
+
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];

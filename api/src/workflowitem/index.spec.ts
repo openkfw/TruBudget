@@ -1,6 +1,9 @@
 import { assert } from "chai";
 
 import {
+  assign,
+  Assigner,
+  AssignNotifier,
   close,
   CloseNotifier,
   Closer,
@@ -19,6 +22,7 @@ import { ScrubbedWorkflowitem, Update, Workflowitem } from "./Workflowitem";
 const updateIntent: Intent = "workflowitem.update";
 const viewIntent: Intent = "workflowitem.view";
 const closeIntent: Intent = "workflowitem.close";
+const assignIntent: Intent = "workflowitem.assign";
 
 function newWorkflowitem(id: string, permissions: object): Workflowitem {
   return {
@@ -92,26 +96,32 @@ describe("Listing workflowitems,", () => {
   });
 });
 
-describe("Closing a project", () => {
+describe("Closing a workflowitem", () => {
   const alice: User = { id: "alice", groups: ["otherfriends"] };
   const bob: User = { id: "bob", groups: ["friends"] };
   const notifier: CloseNotifier = _workflowitem => Promise.resolve();
 
-  it("requires specific permissions", async () => {
+  it("requires permission workflowitem.close", async () => {
     const workflowitemIds: string[] = [
       "bobWorkflowitem",
       "friendsWorkflowitem",
       "nonClosableWorkflowitem",
     ];
+
+    const permission = {
+      [viewIntent]: ["alice", "bob", "friends"],
+    };
+
     const workflowitemClosableByBob = newWorkflowitem(workflowitemIds[0], {
+      ...permission,
       [closeIntent]: ["bob"],
-      [viewIntent]: ["bob"],
     });
     const workflowitemClosableByFriends = newWorkflowitem(workflowitemIds[1], {
+      ...permission,
       [closeIntent]: ["friends"],
-      [viewIntent]: ["friends"],
     });
     const notClosableByBob = newWorkflowitem(workflowitemIds[2], {
+      ...permission,
       [closeIntent]: ["alice"],
     });
 
@@ -120,9 +130,6 @@ describe("Closing a project", () => {
       workflowitemClosableByFriends,
       notClosableByBob,
     ];
-
-    const projectForTesting = "ProjectA";
-    const subprojectForTesting = "SubrojectA";
 
     const ordering = [
       workflowitemClosableByBob.id,
@@ -185,9 +192,6 @@ describe("Closing a project", () => {
     const workflowitems = [workflowitemClosableByBob, workflowitemClosableByFriends];
     const ordering = [workflowitemClosableByFriends.id, workflowitemClosableByBob.id];
 
-    const projectForTesting = "ProjectA";
-    const subprojectForTesting = "SubrojectA";
-
     const getOrdering: OrderingReader = () => Promise.resolve(ordering);
     const getWorkflowitems: ListReader = () => Promise.resolve(workflowitems);
     const closeWorkflowitem: Closer = async workflowitemId => {
@@ -214,12 +218,8 @@ describe("Closing a project", () => {
   });
 });
 
-describe("Updating a project", () => {
-  const alice: User = { id: "alice", groups: ["otherfriends"] };
+describe("Updating a workflowitem", () => {
   const bob: User = { id: "bob", groups: ["friends"] };
-  const notifier: UpdateNotifier = _workflowitem => Promise.resolve();
-  const projectForTesting = "ProjectA";
-  const subprojectForTesting = "SubrojectA";
 
   it("updates the workflowitem and shows the new data", async () => {
     const originalWorkflowitem = newWorkflowitem("originalWorkflowitem", {
@@ -329,6 +329,105 @@ describe("Updating a project", () => {
         updateWorkflowitem,
         notify,
       }),
-    ).catch(err => console.log(err));
+    );
+  });
+});
+
+describe("Assigning a workflowitem", () => {
+  const bob: User = { id: "bob", groups: ["friends"] };
+
+  it("requires permission workflowitem.assign", async () => {
+    const permissions = {
+      [viewIntent]: ["alice", "bob", "friends"],
+    };
+    const bobWorkflowitem = newWorkflowitem("bobWorkflowitem", {
+      ...permissions,
+      [assignIntent]: ["bob"],
+    });
+    const friendsWorkflowitem = newWorkflowitem("friendsWorkflowitem", {
+      ...permissions,
+      [assignIntent]: ["friends"],
+    });
+    const nonAssignableWorkflowitem = newWorkflowitem("nonAssignableWorkflowitem", {
+      ...permissions,
+      [assignIntent]: ["alice"],
+    });
+    const workflowitems: Workflowitem[] = [
+      bobWorkflowitem,
+      friendsWorkflowitem,
+      nonAssignableWorkflowitem,
+    ];
+
+    const newAssignee = "alice";
+
+    const getWorkflowitems: ListReader = async () => workflowitems;
+    const calls = new Map<string, number>();
+    const assigner: Assigner = async (_assignee: string, workflowitemId: string): Promise<void> => {
+      calls.set(workflowitemId, (calls.get(workflowitemId) || 0) + 1);
+    };
+    const notify: AssignNotifier = async (_assignee, _workflowitemId, _actingUser) => {
+      return;
+    };
+
+    const deps = {
+      getWorkflowitems,
+      assignWorkflowitem: assigner,
+      notify,
+    };
+
+    await assertIsResolved(assign(bob, newAssignee, workflowitems[0].id, deps));
+    await assertIsResolved(assign(bob, newAssignee, workflowitems[1].id, deps));
+    await assertIsRejectedWith(assign(bob, newAssignee, workflowitems[2].id, deps));
+
+    assert.equal(calls.get(workflowitems[0].id), 1);
+    assert.equal(calls.get(workflowitems[1].id), 1);
+    assert.isUndefined(calls.get(workflowitems[2].id));
+  });
+
+  it("tells the notifier about the event only if successful", async () => {
+    const permissions = {
+      [viewIntent]: ["alice", "bob", "friends"],
+    };
+    const bobWorkflowitem = newWorkflowitem("bobWorkflowitem", {
+      ...permissions,
+      [assignIntent]: ["bob"],
+    });
+    const friendsWorkflowitem = newWorkflowitem("friendsWorkflowitem", {
+      ...permissions,
+      [assignIntent]: ["friends"],
+    });
+    const nonAssignableWorkflowitem = newWorkflowitem("nonAssignableWorkflowitem", {
+      ...permissions,
+      [assignIntent]: ["alice"],
+    });
+    const workflowitems: Workflowitem[] = [
+      bobWorkflowitem,
+      friendsWorkflowitem,
+      nonAssignableWorkflowitem,
+    ];
+
+    const newAssignee = "alice";
+
+    const getWorkflowitems: ListReader = async () => workflowitems;
+    const calls = new Map<string, number>();
+    const assigner: Assigner = (_assignee: string, _workflowitemId: string): Promise<void> =>
+      Promise.resolve();
+    const notify: AssignNotifier = async (assignee, workflowitemId, actingUser) => {
+      calls.set(workflowitemId, (calls.get(workflowitemId) || 0) + 1);
+    };
+
+    const deps = {
+      getWorkflowitems,
+      assignWorkflowitem: assigner,
+      notify,
+    };
+
+    await assertIsResolved(assign(bob, newAssignee, workflowitems[0].id, deps));
+    await assertIsResolved(assign(bob, newAssignee, workflowitems[1].id, deps));
+    await assertIsRejectedWith(assign(bob, newAssignee, workflowitems[2].id, deps));
+
+    assert.equal(calls.get(workflowitems[0].id), 1);
+    assert.equal(calls.get(workflowitems[1].id), 1);
+    assert.isUndefined(calls.get(workflowitems[2].id));
   });
 });

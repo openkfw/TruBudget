@@ -120,6 +120,7 @@ registerRoutes(
     updateProject: HttpdMultichainAdapter.updateProject(multichainClient),
     workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(multichainClient),
     workflowitemUpdater: HttpdMultichainAdapter.updateWorkflowitem(multichainClient),
+    workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(multichainClient),
     listGlobalPermissions: HttpdMultichainAdapter.getPermissionList(multichainClient),
     grantGlobalPermission: HttpdMultichainAdapter.grantPermission(multichainClient),
     createProject: HttpdMultichainAdapter.createProject(multichainClient),

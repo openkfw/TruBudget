@@ -4,7 +4,6 @@ import { isEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import { userIdentities } from "../project";
 import { User } from "./User";
-import { getWorkflowitemList } from "../HttpdMultichainAdapter";
 import {
   hashDocuments,
   isUserAllowedTo,
@@ -21,6 +20,9 @@ import {
 
 export * from "./Workflowitem";
 export * from "./User";
+
+export type Assigner = (assignee: string, workflowitemId: string) => Promise<void>;
+export type AssignNotifier = (assignee, workflowitemId, actingUser) => Promise<void>;
 
 export type Closer = (workflowitemId: string) => Promise<void>;
 export type CloseNotifier = (workflowitem: Workflowitem, actingUser: User) => Promise<void>;
@@ -153,5 +155,34 @@ export async function update(
 
     await updateWorkflowitem(validatedWorkflowitem.id, updatedWorkflowitemData);
     await notify(validatedWorkflowitem, updatedWorkflowitemData);
+  }
+}
+
+export async function assign(
+  assigningUser: User,
+  newAssignee: string,
+  workflowitemId: string,
+  {
+    getWorkflowitems,
+    assignWorkflowitem,
+    notify,
+  }: {
+    getWorkflowitems: ListReader;
+    assignWorkflowitem: Assigner;
+    notify: AssignNotifier;
+  },
+): Promise<void> {
+  const allowedIntent = "workflowitem.assign";
+  const workflowitemList: Workflowitem[] = await getWorkflowitems();
+  const workflowitemToBeAssigned = workflowitemList.find(item => item.id === workflowitemId);
+  if (!workflowitemToBeAssigned) {
+    throw { kind: "PreconditionError", message: "Cannot find workflowitem in list" };
+  } else {
+    if (!isUserAllowedTo(allowedIntent, workflowitemToBeAssigned, assigningUser)) {
+      return Promise.reject("User is not allowed to update workflowitem");
+    }
+
+    await assignWorkflowitem(newAssignee, workflowitemId);
+    await notify(newAssignee, workflowitemId, assigningUser);
   }
 }
