@@ -114,6 +114,44 @@ export interface ProjectUpdate {
   thumbnail?: string;
 }
 
+export async function createProjectOnChain(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  project: Project,
+): Promise<void> {
+  const intent: Intent = "global.createProject";
+
+  const { permissions, ...metadata } = project;
+
+  const event: Event = {
+    key: project.id,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: {
+      project: metadata,
+      permissions,
+    },
+  };
+
+  const streamName = project.id;
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
+
+  const publishEvent = () => {
+    logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+    return multichain
+      .getRpcClient()
+      .invoke("publish", streamName, streamItemKey, streamItem)
+      .then(() => event);
+  };
+
+  return multichain
+    .getOrCreateStream({ kind: "project", name: streamName })
+    .then(() => publishEvent());
+}
+
 export async function updateProject(
   multichain: MultichainClient,
   issuer: Issuer,

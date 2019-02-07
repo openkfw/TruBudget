@@ -1,10 +1,12 @@
 import * as Ajv from "ajv";
 import * as fastify from "fastify";
 import * as metricsPlugin from "fastify-metrics";
+import { IncomingMessage, Server, ServerResponse } from "http";
+
 import logger from "../lib/logger";
+
 const rawBody = require("raw-body");
 
-import { IncomingMessage, Server, ServerResponse } from "http";
 const DEFAULT_API_VERSION = "1.0";
 
 const ajv = new Ajv({

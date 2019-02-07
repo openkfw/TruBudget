@@ -171,6 +171,44 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
   };
 }
 
+export function createProject(multichainClient: MultichainClient): HTTP.ProjectCreator {
+  return async (token: AuthToken, payload: HTTP.CreateProjectPayload) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const assigningUser: Project.User = { id: token.userId, groups: token.groups };
+
+    const permissionLister: Permission.PermissionsLister = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    const projectReader: Project.Reader = async id => {
+      const multichainProject: Multichain.Project = await Multichain.getProject(
+        multichainClient,
+        id,
+      );
+      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+    };
+
+    const creator: Project.Creator = async project => {
+      Project.validateProject(project);
+
+      const multichainProject: Multichain.Project = { ...project, log: [] };
+
+      Multichain.createProjectOnChain(multichainClient, issuer, multichainProject);
+    };
+
+    const input: Project.CreateProjectInput = payload;
+
+    return Project.create(assigningUser, input, {
+      getAllPermissions: permissionLister,
+      getProject: projectReader,
+      createProject: creator,
+    });
+  };
+}
+
 export function assignProject(multichainClient: MultichainClient): HTTP.ProjectAssigner {
   return async (token: AuthToken, projectId: string, assignee: string) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };

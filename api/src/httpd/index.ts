@@ -38,6 +38,8 @@ export type GlobalPermissionRevoker = (
   intent: Intent,
 ) => Promise<void>;
 
+export type ProjectCreator = (token: AuthToken, payload: CreateProjectPayload) => Promise<void>;
+
 export type ProjectAssigner = (
   token: AuthToken,
   projectId: string,
@@ -54,6 +56,17 @@ type MaybeHistoryEvent = null | {
   };
 };
 
+export interface CreateProjectPayload {
+  displayName: string;
+  description: string;
+  amount: string;
+  currency: string;
+  id?: string;
+  creationUnixTs?: string;
+  status?: "open" | "closed";
+  assignee?: string;
+  thumbnail?: string;
+}
 export type WorkflowitemCloser = (
   token: AuthToken,
   projectId: string,

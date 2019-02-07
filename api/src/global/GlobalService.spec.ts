@@ -15,7 +15,7 @@ describe("Listing permissions", () => {
     };
     const actingUser: User = { id: "alice", groups: ["friends"] };
 
-    const getAllPermissions: PermissionsLister = () => Promise.resolve(permissionsMock);
+    const getAllPermissions: PermissionsLister = async () => permissionsMock;
 
     const permissions = await Permission.list(actingUser, { getAllPermissions });
 

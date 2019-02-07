@@ -1,8 +1,15 @@
+import { randomBytes } from "crypto";
+
+import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
+import logger from "../lib/logger";
+import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { isAllowedTo, Permissions } from "./Permission";
 import {
+  CreateProjectInput,
   isProjectAssignable,
+  isProjectCreateable,
   isProjectUpdateable,
   isProjectVisibleTo,
   Project,
@@ -27,6 +34,10 @@ export interface Update {
 export type ListReader = () => Promise<Project[]>;
 
 export type PermissionsLister = (projectId: string) => Promise<Permissions>;
+
+export type GlobalPermissionsLister = () => Promise<Permissions>;
+
+export type Creator = (project: Project) => Promise<void>;
 
 export type Assigner = (projectId: string, assignee: string) => Promise<void>;
 
@@ -82,6 +93,76 @@ export async function getPermissions(
     );
   }
   return await getProjectPermissions(projectId);
+}
+
+/**
+ *
+ * @param actingUser The requesting user.
+ * @param createData The data used to create project. Internally mapped to Project.Project.
+ */
+export async function create(
+  actingUser: User,
+  createData: CreateProjectInput,
+  {
+    getAllPermissions,
+    getProject,
+    createProject,
+  }: {
+    getAllPermissions: GlobalPermissionsLister;
+    getProject: Reader;
+    createProject: Creator;
+  },
+): Promise<void> {
+  const allPermissions = await getAllPermissions();
+  if (!isProjectCreateable(allPermissions, actingUser)) {
+    return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to create a Project.`));
+  }
+
+  // Max. length of projectId is 32
+  // By converting to hex, each byte is represented by 2 characters
+  // Therefore it should be called with an input length of 16
+  const randomString = (bytes = 16) => randomBytes(bytes).toString("hex");
+
+  const getProjectDefaultPermissions = (userId: string): Permissions => {
+    if (userId === "root") return {};
+
+    const intents: Intent[] = [
+      "project.viewSummary",
+      "project.viewDetails",
+      "project.assign",
+      "project.update",
+      "project.intent.listPermissions",
+      "project.intent.grantPermission",
+      "project.intent.revokePermission",
+      "project.createSubproject",
+      "project.viewHistory",
+      "project.close",
+    ];
+    return intents.reduce((obj, intent): Permissions => ({ ...obj, [intent]: [userId] }), {});
+  };
+
+  const project: Project = {
+    id: value("id", createData.id || randomString(), isNonemptyString),
+    creationUnixTs: createData.creationUnixTs || new Date().getTime().toString(),
+    status: value("status", createData.status, x => ["open", "closed"].includes(x), "open"),
+    displayName: value("displayName", createData.displayName, isNonemptyString),
+    description: value("description", createData.description, isNonemptyString),
+    amount: value("amount", createData.amount, isNonemptyString),
+    assignee: value("assignee", createData.assignee, isUserOrUndefined, actingUser.id),
+    currency: value("currency", createData.currency, isNonemptyString).toUpperCase(),
+    thumbnail: value("thumbnail", createData.thumbnail, x => typeof x === "string", ""),
+    permissions: getProjectDefaultPermissions(actingUser.id),
+    log: [],
+  };
+
+  // check if projectId already exists
+  try {
+    await getProject(project.id);
+    return Promise.reject(Error(`There already exists a project with projectId ${project.id}.`));
+  } catch (_) {
+    logger.debug(`Project - Create: Creating new project with id ${project.id}`, project);
+    await createProject(project);
+  }
 }
 
 /**

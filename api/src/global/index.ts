@@ -98,6 +98,8 @@ export async function revoke(
   await revokePermission(intent, recipient);
 }
 
+// old implementations
+
 const ensureStreamExists = async (multichain: MultichainClient): Promise<void> => {
   await multichain.getOrCreateStream({
     kind: "global",
@@ -118,8 +120,6 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
     await publish(multichain, globalstreamName, args);
   }
 };
-
-// old implementations
 
 export const oldGetPermissions = async (
   multichain: MultichainClient,

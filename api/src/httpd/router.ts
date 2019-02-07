@@ -3,13 +3,14 @@ import { FastifyInstance } from "fastify";
 import {
   AllPermissionsGranter,
   AllPermissionsReader,
-  ProjectPermissionsReader,
   AllProjectsReader,
   AllWorkflowitemsReader,
   GlobalPermissionGranter,
   GlobalPermissionRevoker,
   ProjectAndSubprojects,
   ProjectAssigner,
+  ProjectCreator,
+  ProjectPermissionsReader,
   ProjectReader,
   ProjectUpdater,
   WorkflowitemCloser,
@@ -17,7 +18,6 @@ import {
 } from ".";
 import Intent from "../authz/intents";
 import { createGroup } from "../global/createGroup";
-import { createProject } from "../global/createProject";
 import { createUser } from "../global/createUser";
 import { addUserToGroup } from "../group/addUser";
 import { getGroupList } from "../group/list";
@@ -269,6 +269,7 @@ export const registerRoutes = (
     workflowitemUpdater,
     listGlobalPermissions,
     grantGlobalPermission,
+    createProject,
     grantAllPermissions,
     revokeGlobalPermission,
     getProjectPermissions,
@@ -282,6 +283,7 @@ export const registerRoutes = (
     workflowitemUpdater: WorkflowitemUpdater;
     listGlobalPermissions: AllPermissionsReader;
     grantGlobalPermission: GlobalPermissionGranter;
+    createProject: ProjectCreator;
     grantAllPermissions: AllPermissionsGranter;
     revokeGlobalPermission: GlobalPermissionRevoker;
     getProjectPermissions: ProjectPermissionsReader;
@@ -373,7 +375,20 @@ export const registerRoutes = (
     `${urlPrefix}/global.createProject`,
     getSchema(server, "createProject"),
     (request, reply) => {
-      createProject(multichainClient, request as AuthenticatedRequest)
+      const req = request as AuthenticatedRequest;
+      const token = req.user;
+      createProject(token, req.body.data.project)
+        .then(
+          (): HttpResponse => [
+            200,
+            {
+              apiVersion: "1.0",
+              data: {
+                created: true,
+              },
+            },
+          ],
+        )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
