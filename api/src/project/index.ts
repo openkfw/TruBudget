@@ -168,9 +168,6 @@ export async function create(
 
 /**
  *
- * @param actingUser The requesting user.
- * @param projectId ID of the affected project.
- * @param grantee The grantee the permission is granted to.
  * @param intent The permission which should be granted.
  */
 export async function grantPermission(
@@ -186,7 +183,7 @@ export async function grantPermission(
       Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
     );
   }
-  // check if grantee does exist
+  // TODO check if grantee does exist
   return grantProjectPermission(projectId, grantee, intent);
 }
 

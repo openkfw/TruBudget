@@ -463,22 +463,25 @@ describe("Granting project permissions", () => {
   it("requires a specific permission.", async () => {
     const user: User = { id: "bob", groups: ["friends"] };
 
-    const newPermissions: Permissions = {
+    const commonPermissions = {
       "project.intent.listPermissions": ["bob"],
-      "project.intent.grantPermission": ["bob"],
       "project.viewDetails": ["bob"],
     };
-    const projectWithGrantPermission = newProject("bobProject", newPermissions);
-    const projectWithoutGrantPermission = newProject("aliceProject", {
-      "project.viewDetails": ["bob"],
+    const bobProject = newProject("bobProject", {
+      ...commonPermissions,
+      "project.intent.grantPermission": ["bob"],
+    });
+    const aliceProject = newProject("aliceProject", {
+      ...commonPermissions,
+      "project.intent.grantPermission": [],
     });
 
     const projectReader = async id => {
       switch (id) {
         case "bobProject":
-          return projectWithGrantPermission;
+          return bobProject;
         case "aliceProject":
-          return projectWithoutGrantPermission;
+          return aliceProject;
         default:
           return Promise.reject(id);
       }
@@ -487,19 +490,19 @@ describe("Granting project permissions", () => {
     const granter = async (projectId, grantee, intent) => {
       switch (projectId) {
         case "bobProject":
-          if (projectWithGrantPermission.permissions[intent]) {
-            projectWithGrantPermission.permissions[intent].push(grantee);
+          if (bobProject.permissions[intent]) {
+            bobProject.permissions[intent].push(grantee);
           } else {
-            projectWithGrantPermission.permissions[intent] = [grantee];
+            bobProject.permissions[intent] = [grantee];
           }
-          return Promise.resolve();
+          return;
         case "aliceProject":
-          if (projectWithGrantPermission.permissions[intent]) {
-            projectWithGrantPermission.permissions[intent].push(grantee);
+          if (aliceProject.permissions[intent]) {
+            aliceProject.permissions[intent].push(grantee);
           } else {
-            projectWithGrantPermission.permissions[intent] = [grantee];
+            aliceProject.permissions[intent] = [grantee];
           }
-          return Promise.resolve();
+          return;
         default:
           return Promise.reject(projectId);
       }
@@ -510,7 +513,7 @@ describe("Granting project permissions", () => {
         grantProjectPermission: granter,
       }),
     );
-    assert.equal(projectWithGrantPermission.permissions["project.viewSummary"], "alice");
+    assert.equal(bobProject.permissions["project.viewSummary"], "alice");
 
     await assertIsRejectedWith(
       Project.grantPermission(user, "aliceProject", "alice", "project.viewSummary", {
@@ -518,7 +521,7 @@ describe("Granting project permissions", () => {
         grantProjectPermission: granter,
       }),
     );
-    assert.isUndefined(projectWithoutGrantPermission.permissions["project.viewSummary"]);
+    assert.isUndefined(aliceProject.permissions["project.viewSummary"]);
   });
 });
 
