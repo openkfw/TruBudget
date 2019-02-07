@@ -5,7 +5,7 @@ import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
-import * as Permission from "./Permission";
+import { isAllowedTo, Permissions } from "./Permission";
 import {
   CreateProjectInput,
   isProjectAssignable,
@@ -33,7 +33,9 @@ export interface Update {
 
 export type ListReader = () => Promise<Project[]>;
 
-export type PermissionListReader = () => Promise<Permission.Permissions>;
+export type PermissionsLister = (projectId: string) => Promise<Permissions>;
+
+export type GlobalPermissionsLister = () => Promise<Permissions>;
 
 export type Creator = (project: Project) => Promise<void>;
 
@@ -76,6 +78,23 @@ export async function getAllVisible(
   return authorizedProjects;
 }
 
+export async function getPermissions(
+  actingUser: User,
+  projectId: string,
+  {
+    getProject,
+    getProjectPermissions,
+  }: { getProject: Reader; getProjectPermissions: PermissionsLister },
+): Promise<Permissions> {
+  const project = await getOne(actingUser, projectId, { getProject });
+  if (!isAllowedTo("project.intent.listPermissions", project.permissions, actingUser)) {
+    return Promise.reject(
+      Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
+    );
+  }
+  return await getProjectPermissions(projectId);
+}
+
 /**
  *
  * @param actingUser The requesting user.
@@ -89,7 +108,7 @@ export async function create(
     getProject,
     createProject,
   }: {
-    getAllPermissions: PermissionListReader;
+    getAllPermissions: GlobalPermissionsLister;
     getProject: Reader;
     createProject: Creator;
   },
@@ -104,7 +123,7 @@ export async function create(
   // Therefore it should be called with an input length of 16
   const randomString = (bytes = 16) => randomBytes(bytes).toString("hex");
 
-  const getProjectDefaultPermissions = (userId: string): Permission.Permissions => {
+  const getProjectDefaultPermissions = (userId: string): Permissions => {
     if (userId === "root") return {};
 
     const intents: Intent[] = [
@@ -119,10 +138,7 @@ export async function create(
       "project.viewHistory",
       "project.close",
     ];
-    return intents.reduce(
-      (obj, intent): Permission.Permissions => ({ ...obj, [intent]: [userId] }),
-      {},
-    );
+    return intents.reduce((obj, intent): Permissions => ({ ...obj, [intent]: [userId] }), {});
   };
 
   const project: Project = {

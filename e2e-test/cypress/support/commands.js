@@ -128,7 +128,6 @@ Cypress.Commands.add(
     description,
     thumbnail = "/Thumbnail_0001.jpg"
   ) => {
-    console.log(displayName);
     cy.request({
       url: `${baseUrl}/api/global.createProject`,
       method: "POST",
@@ -172,26 +171,25 @@ Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
     .then(body => Promise.resolve(body.data));
 });
 
-
-
-
-Cypress.Commands.add("updateProjectPermissions", (projectId, intent, identity) => {
-  cy.request({
-    url: `${baseUrl}/api/project.intent.grantPermission`,
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-    body: {
-      apiVersion: "1.0",
-      data: {
-        projectId: projectId,
-        identity: identity,
-        intent: intent
+Cypress.Commands.add(
+  "updateProjectPermissions",
+  (projectId, intent, identity) => {
+    cy.request({
+      url: `${baseUrl}/api/project.intent.grantPermission`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: {
+        apiVersion: "1.0",
+        data: {
+          projectId: projectId,
+          identity: identity,
+          intent: intent
+        }
       }
-    }
-  })
-    .its("body")
-    .then(body => Promise.resolve(body.data));
-});
-
+    })
+      .its("body")
+      .then(body => Promise.resolve(body.data));
+  }
+);

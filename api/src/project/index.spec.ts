@@ -8,7 +8,7 @@ import {
   CreateProjectInput,
   Creator,
   getAllVisible,
-  PermissionListReader,
+  GlobalPermissionsLister,
   Reader,
 } from ".";
 import * as Project from ".";
@@ -185,55 +185,100 @@ describe("Listing projects", () => {
     assert.isTrue(hasIntent(6, "project.close"));
     assert.isTrue(hasIntent(7, "project.archive"));
   });
+
+  it("relates to all events, including those in the past.", async () => {
+    const isRedacted = (p: Project.ScrubbedProject, idx: number) => p.log[idx] === null;
+
+    const user: User = { id: "alice", groups: [] };
+
+    // Initially, Alice cannot see the project:
+
+    const initialPermissions = {};
+    const project = newProject("test", initialPermissions);
+    project.log = [
+      {
+        intent: "global.createProject",
+        snapshot: { displayName: "test", permissions: initialPermissions },
+      },
+    ];
+
+    await assertIsRejectedWith(
+      Project.getOne(user, project.id, {
+        getProject: async () => project,
+      }),
+    );
+
+    // When we assign the required permission to Alice,
+    // she should be able to see the original event as well:
+
+    const newPermissions = {
+      "project.viewDetails": ["alice"],
+      "project.intent.listPermissions": ["alice"],
+    };
+    project.permissions = newPermissions;
+    project.log = [
+      {
+        intent: "global.createProject",
+        snapshot: { displayName: "test", permissions: initialPermissions },
+      },
+      {
+        intent: "project.intent.grantPermission",
+        snapshot: { displayName: "test", permissions: newPermissions },
+      },
+    ];
+
+    const afterGrantingPermission = await Project.getOne(user, project.id, {
+      getProject: async () => project,
+    });
+    assert.equal(afterGrantingPermission.log.length, 2);
+    assert.isFalse(isRedacted(afterGrantingPermission, 0));
+    assert.isFalse(isRedacted(afterGrantingPermission, 1));
+  });
 });
 
-it("The project.listPermissions permission relates to all events, including those in the past.", async () => {
-  const isRedacted = (p: Project.ScrubbedProject, idx: number) => p.log[idx] === null;
+describe("Listing project permissions", () => {
+  it("requires a specific permission.", async () => {
+    const user: User = { id: "bob", groups: ["friends"] };
 
-  const user: User = { id: "alice", groups: [] };
+    const newPermissions: Permissions = {
+      "project.intent.listPermissions": ["bob"],
+      "project.viewDetails": ["bob"],
+    };
+    const projectWithListPermission = newProject("bobProject", newPermissions);
+    const projectWithoutListPermission = newProject("aliceProject", {
+      "project.viewDetails": ["bob"],
+    });
 
-  // Initially, Alice cannot see the project:
+    const projectReader = async id => {
+      switch (id) {
+        case "bobProject":
+          return projectWithListPermission;
+        case "aliceProject":
+          return projectWithoutListPermission;
+        default:
+          return Promise.reject(id);
+      }
+    };
 
-  const initialPermissions = {};
-  const project = newProject("test", initialPermissions);
-  project.log = [
-    {
-      intent: "global.createProject",
-      snapshot: { displayName: "test", permissions: initialPermissions },
-    },
-  ];
+    const calls = new Map<string, number>();
+    const getProjectPermissions = async id => {
+      calls.set(id, (calls.get(id) || 0) + 1);
+      return newPermissions;
+    };
+    const permissions = await Project.getPermissions(user, "bobProject", {
+      getProject: async () => projectWithListPermission,
+      getProjectPermissions,
+    });
+    assert.deepEqual(permissions, newPermissions);
 
-  await assertIsRejectedWith(
-    Project.getOne(user, project.id, {
-      getProject: async () => project,
-    }),
-  );
-
-  // When we assign the required permission to Alice,
-  // she should be able to see the original event as well:
-
-  const newPermissions = {
-    "project.viewDetails": ["alice"],
-    "project.intent.listPermissions": ["alice"],
-  };
-  project.permissions = newPermissions;
-  project.log = [
-    {
-      intent: "global.createProject",
-      snapshot: { displayName: "test", permissions: initialPermissions },
-    },
-    {
-      intent: "project.intent.grantPermission",
-      snapshot: { displayName: "test", permissions: newPermissions },
-    },
-  ];
-
-  const afterGrantingPermission = await Project.getOne(user, project.id, {
-    getProject: async () => project,
+    await assertIsRejectedWith(
+      Project.getPermissions(user, "aliceProject", {
+        getProject: projectReader,
+        getProjectPermissions,
+      }),
+    );
+    assert.equal(calls.size, 1);
   });
-  assert.equal(afterGrantingPermission.log.length, 2);
-  assert.isFalse(isRedacted(afterGrantingPermission, 0));
-  assert.isFalse(isRedacted(afterGrantingPermission, 1));
 });
 
 describe("Creating a project,", () => {
@@ -248,7 +293,7 @@ describe("Creating a project,", () => {
 
     const existingProject = newProject("aliceProject", { [createIntent]: ["alice"] });
 
-    const permissionLister: PermissionListReader = async () => {
+    const permissionLister: GlobalPermissionsLister = async () => {
       return permissions;
     };
     const projectReader: Reader = id => {
@@ -330,7 +375,7 @@ describe("Creating a project,", () => {
 
     const existingProject = newProject("aliceProject", { [createIntent]: ["alice"] });
 
-    const permissionLister: PermissionListReader = async () => {
+    const permissionLister: GlobalPermissionsLister = async () => {
       return permissions;
     };
     const projectReader: Reader = id => {
@@ -377,7 +422,7 @@ describe("Creating a project,", () => {
 
     const existingProject = newProject("aliceProject", { [createIntent]: ["alice"] });
 
-    const permissionLister: PermissionListReader = async () => {
+    const permissionLister: GlobalPermissionsLister = async () => {
       return permissions;
     };
     const projectReader: Reader = id => {
