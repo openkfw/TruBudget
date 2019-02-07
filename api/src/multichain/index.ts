@@ -6,7 +6,6 @@ import deepcopy from "../lib/deepcopy";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
-import { User } from "../workflowitem/User";
 import { asMapKey } from "./Client";
 import { MultichainClient } from "./Client.h";
 import { Event, throwUnsupportedEventVersion } from "./event";
@@ -95,6 +94,44 @@ export interface ProjectUpdate {
   amount?: string;
   currency?: string;
   thumbnail?: string;
+}
+
+export async function createProjectOnChain(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  project: Project,
+): Promise<void> {
+  const intent: Intent = "global.createProject";
+
+  const { permissions, ...metadata } = project;
+
+  const event: Event = {
+    key: project.id,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: {
+      project: metadata,
+      permissions,
+    },
+  };
+
+  const streamName = project.id;
+  const streamItemKey = projectSelfKey;
+  const streamItem = { json: event };
+
+  const publishEvent = () => {
+    logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+    return multichain
+      .getRpcClient()
+      .invoke("publish", streamName, streamItemKey, streamItem)
+      .then(() => event);
+  };
+
+  return multichain
+    .getOrCreateStream({ kind: "project", name: streamName })
+    .then(() => publishEvent());
 }
 
 export async function updateProject(
@@ -668,6 +705,36 @@ export function closeWorkflowitem(
     createdAt: new Date().toISOString(),
     dataVersion: 1,
     data: {},
+  };
+
+  const streamName = projectId;
+  const streamItemKey = [workflowitemsGroupKey(subprojectId), workflowitemId];
+  const streamItem = { json: event };
+
+  logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
+  return multichain
+    .getRpcClient()
+    .invoke("publish", streamName, streamItemKey, streamItem)
+    .then(() => event);
+}
+
+export function updateWorkflowitem(
+  multichain: MultichainClient,
+  issuer: Issuer,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+  data: MultichainWorkflowitem.Update,
+): Promise<void> {
+  const intent: Intent = "workflowitem.update";
+
+  const event = {
+    key: workflowitemId,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data,
   };
 
   const streamName = projectId;

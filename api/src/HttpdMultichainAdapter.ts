@@ -203,6 +203,44 @@ export function getProjectList(multichainClient: MultichainClient): HTTP.AllProj
   };
 }
 
+export function createProject(multichainClient: MultichainClient): HTTP.ProjectCreator {
+  return async (token: AuthToken, payload: HTTP.CreateProjectPayload) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const assigningUser: Project.User = { id: token.userId, groups: token.groups };
+
+    const permissionLister: Permission.PermissionsLister = async () => {
+      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(
+        multichainClient,
+      );
+      return permissions;
+    };
+
+    const projectReader: Project.Reader = async id => {
+      const multichainProject: Multichain.Project = await Multichain.getProject(
+        multichainClient,
+        id,
+      );
+      return Project.validateProject(multichainProjectToProjectProject(multichainProject));
+    };
+
+    const creator: Project.Creator = async project => {
+      Project.validateProject(project);
+
+      const multichainProject: Multichain.Project = { ...project, log: [] };
+
+      Multichain.createProjectOnChain(multichainClient, issuer, multichainProject);
+    };
+
+    const input: Project.CreateProjectInput = payload;
+
+    return Project.create(assigningUser, input, {
+      getAllPermissions: permissionLister,
+      getProject: projectReader,
+      createProject: creator,
+    });
+  };
+}
+
 export function assignProject(multichainClient: MultichainClient): HTTP.ProjectAssigner {
   return async (token: AuthToken, projectId: string, assignee: string) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
@@ -213,7 +251,6 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
 
     const multichainNotifier: Project.AssignmentNotifier = (project, user) => {
       const notificationResource = Multichain.generateResources(project.id);
-
       const sender: Notification.Sender = (message, recipient) =>
         Multichain.issueNotification(
           multichainClient,
@@ -252,63 +289,6 @@ export function assignProject(multichainClient: MultichainClient): HTTP.ProjectA
       saveProjectAssignment: multichainAssigner,
       notify: multichainNotifier,
     });
-  };
-}
-
-export function getWorkflowitemList(
-  multichainClient: MultichainClient,
-): HTTP.AllWorkflowitemsReader {
-  return async (token: AuthToken, projectId: string, subprojectId: string) => {
-    const user: Workflowitem.User = { id: token.userId, groups: token.groups };
-
-    // Get ordering of workflowitems from blockchain
-    // If items are rearranged by user, the call returns an array of IDs in order
-    const orderingReader: Workflowitem.OrderingReader = async () => {
-      const ordering: string[] = await Multichain.getWorkflowitemOrdering(
-        multichainClient,
-        projectId,
-        subprojectId,
-      );
-      return ordering;
-    };
-
-    // Get all unfiltered workflowitems from the blockchain
-    const lister: Workflowitem.ListReader = async () => {
-      const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
-        multichainClient,
-        projectId,
-        subprojectId,
-      );
-      return workflowitemList.map(Workflowitem.validateWorkflowitem);
-    };
-
-    // Filter workflowitems based on business logic:
-    // Redact data, redact history events and remove log
-    const workflowitems = await Workflowitem.getAllScrubbedItems(user, {
-      getAllWorkflowitems: lister,
-      getWorkflowitemOrdering: orderingReader,
-    });
-
-    // Map data to HTTP response
-    return workflowitems.map(item => ({
-      data: {
-        id: item.id,
-        creationUnixTs: item.creationUnixTs,
-        status: item.status,
-        amountType: item.amountType,
-        displayName: item.displayName,
-        description: item.description,
-        amount: item.amount,
-        assignee: item.assignee,
-        currency: item.currency,
-        billingDate: item.billingDate,
-        exchangeRate: item.exchangeRate,
-        documents: item.documents,
-      },
-      allowedIntents: item.permissions
-        ? getAllowedIntents(Workflowitem.userIdentities(user), item.permissions)
-        : [],
-    })) as HTTP.Workflowitem[];
   };
 }
 
@@ -391,6 +371,63 @@ function multichainProjectToProjectProject(multichainProject: Multichain.Project
     }),
   };
 }
+
+export function getWorkflowitemList(
+  multichainClient: MultichainClient,
+): HTTP.AllWorkflowitemsReader {
+  return async (token: AuthToken, projectId: string, subprojectId: string) => {
+    const user: Workflowitem.User = { id: token.userId, groups: token.groups };
+
+    // Get ordering of workflowitems from blockchain
+    // If items are rearranged by user, the call returns an array of IDs in order
+    const orderingReader: Workflowitem.OrderingReader = async () => {
+      const ordering: string[] = await Multichain.getWorkflowitemOrdering(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return ordering;
+    };
+
+    // Get all unfiltered workflowitems from the blockchain
+    const lister: Workflowitem.ListReader = async () => {
+      const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return workflowitemList.map(Workflowitem.validateWorkflowitem);
+    };
+
+    // Filter workflowitems based on business logic:
+    // Redact data, redact history events and remove log
+    const workflowitems = await Workflowitem.getAllScrubbedItems(user, {
+      getAllWorkflowitems: lister,
+      getWorkflowitemOrdering: orderingReader,
+    });
+
+    // Map data to HTTP response
+    return workflowitems.map(item => ({
+      data: {
+        id: item.id,
+        creationUnixTs: item.creationUnixTs,
+        status: item.status,
+        amountType: item.amountType,
+        displayName: item.displayName,
+        description: item.description,
+        amount: item.amount,
+        assignee: item.assignee,
+        currency: item.currency,
+        billingDate: item.billingDate,
+        exchangeRate: item.exchangeRate,
+        documents: item.documents,
+      },
+      allowedIntents: item.permissions
+        ? getAllowedIntents(Workflowitem.userIdentities(user), item.permissions)
+        : [],
+    }));
+  };
+}
 export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemCloser {
   return async (
     token: AuthToken,
@@ -456,7 +493,7 @@ export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.Work
       });
     };
 
-    return Workflowitem.close(closingUser, projectId, subprojectId, workflowitemId, {
+    return Workflowitem.close(closingUser, workflowitemId, {
       getOrdering: multichainOrderingReader,
       getWorkflowitems: multichainLister,
       closeWorkflowitem: multichainCloser,
@@ -557,6 +594,77 @@ export function grantAllPermissions(
     return Permission.grantAll(user, grantee, {
       getAllPermissions: lister,
       grantPermission: granter,
+    });
+  };
+}
+
+export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemUpdater {
+  return async (
+    token: AuthToken,
+    projectId: string,
+    subprojectId: string,
+    workflowitemId: string,
+    updates: any,
+  ) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const updatingUser: Workflowitem.User = { id: token.userId, groups: token.groups };
+
+    // Get all unfiltered workflowitems from the blockchain
+    const multichainLister: Workflowitem.ListReader = async () => {
+      const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return workflowitemList.map(Workflowitem.validateWorkflowitem);
+    };
+    const multichainUpdater: Workflowitem.Updater = async (workflowitem, data) => {
+      Multichain.updateWorkflowitem(
+        multichainClient,
+        issuer,
+        projectId,
+        subprojectId,
+        workflowitem,
+        data,
+      );
+    };
+
+    const multichainNotifier: Workflowitem.UpdateNotifier = (workflowitem, updatedData) => {
+      const notificationResource = Multichain.generateResources(
+        projectId,
+        subprojectId,
+        workflowitem.id,
+      );
+
+      const sender: Notification.Sender = (message, recipient) =>
+        Multichain.issueNotification(
+          multichainClient,
+          issuer,
+          message,
+          recipient,
+          notificationResource,
+        );
+
+      const resolver: Notification.GroupResolver = groupId =>
+        Group.getUsers(multichainClient, groupId);
+
+      const updateNotification: Notification.WorkflowitemUpdate = {
+        workflowitemId: workflowitem.id,
+        actingUser: updatingUser.id,
+        assignee: workflowitem.assignee,
+        updatedData,
+      };
+
+      return Notification.workflowitemUpdated(updateNotification, updatedData, {
+        sender,
+        resolver,
+      });
+    };
+
+    return Workflowitem.update(updatingUser, workflowitemId, updates, {
+      getWorkflowitems: multichainLister,
+      updateWorkflowitem: multichainUpdater,
+      notify: multichainNotifier,
     });
   };
 }

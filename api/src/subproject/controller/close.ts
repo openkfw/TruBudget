@@ -1,7 +1,8 @@
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { HttpResponse } from "../../httpd/lib";
+import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event } from "../../multichain/event";
@@ -10,7 +11,6 @@ import * as Notification from "../../notification/model/Notification";
 import * as Project from "../../project/model/Project";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
-import logger from "../../lib/logger";
 
 export const closeSubproject = async (multichain: MultichainClient, req): Promise<HttpResponse> => {
   const input = value("data", req.body.data, x => x !== undefined);

@@ -1,6 +1,11 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 
+export interface Document {
+  id: string;
+  hash: string;
+}
+
 export type Permissions = { [key in Intent]?: string[] };
 
 export type ProjectReader = (token: AuthToken, id: string) => Promise<ProjectAndSubprojects>;
@@ -40,6 +45,8 @@ export type GlobalPermissionRevoker = (
   intent: Intent,
 ) => Promise<void>;
 
+export type ProjectCreator = (token: AuthToken, payload: CreateProjectPayload) => Promise<void>;
+
 export type ProjectAssigner = (
   token: AuthToken,
   projectId: string,
@@ -56,11 +63,30 @@ type MaybeHistoryEvent = null | {
   };
 };
 
+export interface CreateProjectPayload {
+  displayName: string;
+  description: string;
+  amount: string;
+  currency: string;
+  id?: string;
+  creationUnixTs?: string;
+  status?: "open" | "closed";
+  assignee?: string;
+  thumbnail?: string;
+}
 export type WorkflowitemCloser = (
   token: AuthToken,
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
+) => Promise<void>;
+
+export type WorkflowitemUpdater = (
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+  updatedData: any,
 ) => Promise<void>;
 
 export interface Project {
@@ -84,16 +110,16 @@ export interface Workflowitem {
   data: {
     id: string;
     creationUnixTs: string;
-    displayName: string;
-    exchangeRate?: string;
-    billingDate?: string;
-    amount?: string;
-    currency?: string;
-    amountType: "N/A" | "disbursed" | "allocated";
-    description: string;
+    displayName: string | null;
+    exchangeRate?: string | null;
+    billingDate?: string | null;
+    amount?: string | null;
+    currency?: string | null;
+    amountType: "N/A" | "disbursed" | "allocated" | null;
+    description: string | null;
     status: "open" | "closed";
-    assignee?: string;
-    documents?: Document[];
+    assignee?: string | null;
+    documents?: Document[] | null;
   };
 }
 export interface ProjectAndSubprojects {
