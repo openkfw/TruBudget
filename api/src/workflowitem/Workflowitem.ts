@@ -28,6 +28,7 @@ export interface Document {
   id: string;
   hash: string;
 }
+
 export interface Workflowitem {
   id: string;
   creationUnixTs: string;

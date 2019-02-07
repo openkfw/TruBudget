@@ -99,10 +99,6 @@ export async function update(
 ): Promise<void> {
   const allowedIntent: Intent = "workflowitem.update";
   const workflowitemList: Workflowitem[] = await getWorkflowitems();
-  console.log(
-    { workflowitemIds: workflowitemList.map(item => item.id), workflowitemId },
-    "Checking if workflowitem is in list",
-  );
   const workflowitemToBeUpdated = workflowitemList.find(item => item.id === workflowitemId);
   if (!workflowitemToBeUpdated) {
     throw { kind: "PreconditionError", message: "Cannot find workflowitem in list" };

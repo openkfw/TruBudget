@@ -326,7 +326,7 @@ export function getWorkflowitemList(
       allowedIntents: item.permissions
         ? getAllowedIntents(Workflowitem.userIdentities(user), item.permissions)
         : [],
-    })) as HTTP.Workflowitem[];
+    }));
   };
 }
 export function closeWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemCloser {
