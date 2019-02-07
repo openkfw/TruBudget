@@ -668,7 +668,7 @@ export const registerRoutes = (
       const projectId: string = request.body.data.projectId;
       const grantee: string = request.body.data.identity;
       const intent: Intent = request.body.data.intent;
-      // Joi.validat(intent)
+
       grantProjectPermission(token, projectId, grantee, intent)
         .then(
           (permissions): HttpResponse => [
