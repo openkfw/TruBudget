@@ -18,7 +18,6 @@ const getMenuItems = items => {
 const Dropdown = ({ value, title, onChange, items, disabled }) => {
   const menuItems = getMenuItems(items);
   return (
-    <FormControl>
       <InputLabel htmlFor="age-simple">{title}</InputLabel>
       <Select
         style={styles.selectField}

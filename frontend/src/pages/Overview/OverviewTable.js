@@ -102,6 +102,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                 color="primary"
                 onClick={() => history.push("/projects/" + id)}
                 variant="fab"
+                data-test={`project-view-button-${index}`}
               >
                 <ViewIcon />
               </Button>
@@ -151,7 +152,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                 <Tooltip id="tooltip-pedit" title={strings.common.edit}>
                   <div>
                     <IconButton
-                      data-test="pe-button"
+                      data-test={`pe-button-${index}`}
                       className={classes.editIcon}
                       disabled={editDisabled}
                       onClick={() =>
@@ -211,6 +212,7 @@ const OverviewTable = props => {
                   onClick={() => props.showCreationDialog()}
                   variant="fab"
                   color="primary"
+                  data-test="create-project-button"
                 >
                   <ContentAdd />
                 </Button>

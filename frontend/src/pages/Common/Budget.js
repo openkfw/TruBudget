@@ -58,6 +58,7 @@ class Budget extends Component {
           value={currency}
           onChange={storeCurrency}
           disabled={disabled}
+          id="currencies"
         >
           {this.getMenuItems(currencies)}
         </DropwDown>
@@ -73,6 +74,7 @@ class Budget extends Component {
           type="number"
           aria-label="amount"
           disabled={disabled}
+          id="amountinput"
         />
       </div>
     );

@@ -6,10 +6,15 @@ export type Permissions = { [key in Intent]?: string[] };
 export type ProjectReader = (token: AuthToken, id: string) => Promise<ProjectAndSubprojects>;
 
 export type AllProjectsReader = (token: AuthToken) => Promise<Project[]>;
+export type AllWorkflowitemsReader = (
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+) => Promise<Workflowitem[]>;
 
 export type AllPermissionsReader = (token: AuthToken) => Promise<Permissions>;
 
-export type AllProjectPermissionsReader = (
+export type ProjectPermissionsReader = (
   token: AuthToken,
   projectId: string,
 ) => Promise<Permissions>;
@@ -51,6 +56,13 @@ type MaybeHistoryEvent = null | {
   };
 };
 
+export type WorkflowitemCloser = (
+  token: AuthToken,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+) => Promise<void>;
+
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];
@@ -67,6 +79,23 @@ export interface Project {
   };
 }
 
+export interface Workflowitem {
+  allowedIntents: Intent[];
+  data: {
+    id: string;
+    creationUnixTs: string;
+    displayName: string;
+    exchangeRate?: string;
+    billingDate?: string;
+    amount?: string;
+    currency?: string;
+    amountType: "N/A" | "disbursed" | "allocated";
+    description: string;
+    status: "open" | "closed";
+    assignee?: string;
+    documents?: Document[];
+  };
+}
 export interface ProjectAndSubprojects {
   project: Project;
   subprojects: Subproject[];

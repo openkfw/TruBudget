@@ -1,7 +1,7 @@
 import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
-import { isAllowedToGrant, isAllowedToSee, Permissions } from "./Permission";
+import { isAllowedTo, Permissions } from "./Permission";
 import {
   isProjectAssignable,
   isProjectUpdateable,
@@ -79,7 +79,7 @@ export async function getPermissions(
   }: { getProject: Reader; getProjectPermissions: PermissionsLister },
 ): Promise<Permissions> {
   const project = await getOne(actingUser, projectId, { getProject });
-  if (!isAllowedToSee(project.permissions, actingUser)) {
+  if (!isAllowedTo("project.intent.listPermissions", project.permissions, actingUser)) {
     return Promise.reject(
       Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
     );
@@ -102,7 +102,7 @@ export async function grantPermission(
   { getProject, grantProjectPermission }: { getProject: Reader; grantProjectPermission: Granter },
 ): Promise<void> {
   const project = await getProject(projectId);
-  if (!isAllowedToGrant(project.permissions, actingUser)) {
+  if (!isAllowedTo("project.intent.grantPermission", project.permissions, actingUser)) {
     return Promise.reject(
       Error(`Identity ${actingUser.id} is not allowed to see permissions of project ${projectId}.`),
     );

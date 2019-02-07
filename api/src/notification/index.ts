@@ -13,6 +13,12 @@ export interface ProjectUpdate {
   update: any;
 }
 
+export interface WorkflowitemClosing {
+  workflowitemId: string;
+  actingUser: string;
+  assignee?: string;
+}
+
 export type Sender = (message: Event, recipient: string) => Promise<void>;
 
 /**
@@ -81,5 +87,36 @@ export async function projectUpdated(
 
   for (const recipient of recipients) {
     await send(event, recipient);
+  }
+}
+
+export async function workflowitemClosed(
+  workflowitemClose: WorkflowitemClosing,
+  {
+    sender,
+    resolver,
+  }: {
+    sender: Sender;
+    resolver: GroupResolver;
+  },
+): Promise<void> {
+  const assignee = workflowitemClose.assignee;
+  if (assignee === undefined) return;
+
+  const groupMembers = await resolver(assignee);
+  const resolvedAssignees = groupMembers.length ? groupMembers : [assignee];
+  const recipients = resolvedAssignees.filter(x => x !== workflowitemClose.actingUser);
+
+  const event: Event = {
+    key: workflowitemClose.workflowitemId,
+    intent: "workflowitem.close",
+    createdBy: workflowitemClose.actingUser,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: {},
+  };
+
+  for (const recipient of recipients) {
+    await sender(event, recipient);
   }
 }
