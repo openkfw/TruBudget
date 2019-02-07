@@ -637,6 +637,75 @@ export function updateWorkflowitem(multichainClient: MultichainClient): HTTP.Wor
   };
 }
 
+export function assignWorkflowitem(multichainClient: MultichainClient): HTTP.WorkflowitemUpdater {
+  return async (
+    token: AuthToken,
+    projectId: string,
+    subprojectId: string,
+    workflowitemId: string,
+    newAssignee: string,
+  ) => {
+    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
+    const assigningUser: Workflowitem.User = { id: token.userId, groups: token.groups };
+
+    // Get all unfiltered workflowitems from the blockchain
+    const multichainLister: Workflowitem.ListReader = async () => {
+      const workflowitemList: Multichain.Workflowitem[] = await Multichain.getWorkflowitemList(
+        multichainClient,
+        projectId,
+        subprojectId,
+      );
+      return workflowitemList.map(Workflowitem.validateWorkflowitem);
+    };
+    const multichainAssigner: Workflowitem.Assigner = async (assignee, workflowitem) =>
+      Multichain.assignWorkflowitem(
+        multichainClient,
+        issuer,
+        assignee,
+        projectId,
+        subprojectId,
+        workflowitem,
+      );
+
+    const multichainNotifier: Workflowitem.AssignNotifier = async (assignee, workflowitemID) => {
+      const notificationResource = Multichain.generateResources(
+        projectId,
+        subprojectId,
+        workflowitemID,
+      );
+
+      const sender: Notification.Sender = (message, recipient) =>
+        Multichain.issueNotification(
+          multichainClient,
+          issuer,
+          message,
+          recipient,
+          notificationResource,
+        );
+
+      const resolver: Notification.GroupResolver = groupId =>
+        Group.getUsers(multichainClient, groupId);
+
+      const assignNotification: Notification.WorkflowitemAssignment = {
+        workflowitemId: workflowitemID,
+        actingUser: assigningUser.id,
+        assignee,
+      };
+
+      return Notification.workflowitemAssigned(assignNotification, assignee, {
+        sender,
+        resolver,
+      });
+    };
+
+    return Workflowitem.assign(assigningUser, newAssignee, workflowitemId, {
+      getWorkflowitems: multichainLister,
+      assignWorkflowitem: multichainAssigner,
+      notify: multichainNotifier,
+    });
+  };
+}
+
 export function revokePermission(multichainClient: MultichainClient): HTTP.GlobalPermissionRevoker {
   return async (token: AuthToken, recipient: string, intent: Intent) => {
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };

@@ -39,6 +39,12 @@ export interface WorkflowitemUpdate {
   };
 }
 
+export interface WorkflowitemAssignment {
+  workflowitemId: string;
+  actingUser: string;
+  assignee?: string;
+}
+
 export type Sender = (message: Event, recipient: string) => Promise<void>;
 
 /**
@@ -166,6 +172,40 @@ export async function workflowitemUpdated(
     createdAt: new Date().toISOString(),
     dataVersion: 1,
     data: updatedData,
+  };
+
+  for (const recipient of recipients) {
+    await sender(event, recipient);
+  }
+}
+
+export async function workflowitemAssigned(
+  workflowitemUpdate: WorkflowitemAssignment,
+  newAssignee: string,
+  {
+    sender,
+    resolver,
+  }: {
+    sender: Sender;
+    resolver: GroupResolver;
+  },
+): Promise<void> {
+  const assignee = workflowitemUpdate.assignee;
+  if (assignee === undefined) return;
+
+  const groupMembers = await resolver(assignee);
+  const resolvedAssignees = groupMembers.length ? groupMembers : [assignee];
+  const recipients = resolvedAssignees.filter(x => x !== workflowitemUpdate.actingUser);
+
+  const event: Event = {
+    key: workflowitemUpdate.workflowitemId,
+    intent: "workflowitem.assign",
+    createdBy: workflowitemUpdate.actingUser,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: {
+      identity: newAssignee,
+    },
   };
 
   for (const recipient of recipients) {
