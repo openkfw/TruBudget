@@ -155,11 +155,6 @@ const StepDot = ({ sortenabled, status, selectable }) => {
     default:
       Icon = OpenIcon;
   }
-  // return (
-  //   <Paper style={styles.dots} elevation={2} disabled={selectable}>
-  //     <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
-  //   </Paper>
-  // );
   return !sortenabled ? (
     <Paper style={styles.dots} elevation={2} disabled={selectable}>
       <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />

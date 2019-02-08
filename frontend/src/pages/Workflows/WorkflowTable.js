@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import SortIcon from "@material-ui/icons/LowPriority";
 import DoneIcon from "@material-ui/icons/Check";
 import Button from "@material-ui/core/Button";
+import Drawer from "@material-ui/core/Drawer";
 
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
@@ -80,7 +81,6 @@ const handleEnableWorkflowSort = props => {
   props.workflowItems.map(item => workflowItemIds.push(item.data.id));
   props.saveWorkflowItemsBeforeSort(workflowItemIds);
   props.enableWorkflowSort();
-  console.log(props.workflowSortEnabled);
 };
 
 const handleSubmitSort = props => {
@@ -102,6 +102,46 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 
   return <WorkflowList lockAxis={"y"} workflowItems={workflowItems} onSortEnd={onSortEnd} {...props} />;
 };
+
+const createEditDrawer = props => (
+  <Drawer open={props.workflowSortEnabled} variant="persistent" anchor="right" style={{ width: "250px" }}>
+    <Button
+      variant="contained"
+      color="primary"
+      disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
+      onClick={() => handleEnableWorkflowSort(props)}
+      style={
+        {
+          // position: "relative",
+          // left: "5px",
+          // zIndex: 2
+        }
+      }
+    >
+      Preview
+    </Button>
+    <Button
+      variant="contained"
+      color="secondary"
+      disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
+      onClick={() => handleEnableWorkflowSort(props)}
+      style={
+        {
+          // position: "relative",
+          // left: "5px",
+          // zIndex: 2
+        }
+      }
+    >
+      Cancel
+    </Button>
+
+    <Card>
+      <div>Test</div>
+    </Card>
+  </Drawer>
+);
+
 // Not sure about the Name
 const WorkflowTable = props => {
   return (
@@ -109,6 +149,7 @@ const WorkflowTable = props => {
       {createTableHeader(props)}
       {createWorkflowItems(props)}
       {<WorkflowDetails {...props} />}
+      {createEditDrawer(props)}
     </div>
   );
 };
