@@ -18,6 +18,8 @@ import {
   SHOW_SUBPROJECT_CREATE,
   SHOW_SUBPROJECT_EDIT,
   SET_HISTORY_OFFSET,
+  SHOW_SUBPROJECT_PREVIEW,
+  HIDE_SUBPROJECT_PREVIEW
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import strings from "../../localizeStrings";
@@ -33,6 +35,7 @@ const defaultState = fromJS({
   projectStatus: "open",
   projectTS: 0,
   subProjects: [],
+  //selectedSubProject: [],
   subprojectToAdd: {
     id: "",
     displayName: "",
@@ -41,6 +44,7 @@ const defaultState = fromJS({
     currency: ""
   },
   creationDialogShown: false,
+  previewDialogShown: false,
   editDialogShown: false,
   showHistory: false,
   roles: [],
@@ -56,7 +60,8 @@ const defaultState = fromJS({
   idForPermissions: "",
   showProjectAssignees: false,
   projectAssignee: "",
-  dialogTitle: strings.subproject.subproject_add_title
+  dialogTitle: strings.subproject.subproject_add_title,
+  previewDialogTitle: strings.subproject.subproject_preview
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -132,6 +137,12 @@ export default function detailviewReducer(state = defaultState, action) {
         creationDialogShown: false,
         subprojectToAdd: defaultState.getIn(["subprojectToAdd"])
       });
+    }
+    case SHOW_SUBPROJECT_PREVIEW: {
+      return state.set("previewDialogShown", true);
+    }
+    case HIDE_SUBPROJECT_PREVIEW: {
+      return state.set("previewDialogShown", false);
     }
     case HIDE_HISTORY:
       return state.merge({

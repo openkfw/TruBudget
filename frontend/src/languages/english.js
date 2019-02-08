@@ -126,6 +126,7 @@ const en = {
     subproject_currency: "Sub-project Currency",
     subproject_edit_title: "Edit Subproject",
     subproject_permissions_title: "Set permissions for subproject",
+    subproject_preview: "Subproject Preview",
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",
     subproject_title_description: "Name of the sub-project"

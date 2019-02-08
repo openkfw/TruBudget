@@ -42,6 +42,7 @@ const SubProjects = props => {
         >
           <ContentAdd />
         </Button>
+        <Button onClick={props.showSubprojectPreviewDialog} variant="fab" color="primary" />
         <Button
           mini={true}
           onClick={() => props.openHistory(props.projectId, props.offset, props.limit)}

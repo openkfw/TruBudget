@@ -4,6 +4,9 @@ export const FETCH_PROJECT_DETAILS_SUCCESS = "FETCH_PROJECT_DETAILS_SUCCESS";
 export const SHOW_SUBPROJECT_CREATE = "SHOW_SUBPROJECT_CREATE";
 export const HIDE_SUBPROJECT_DIALOG = "HIDE_SUBPROJECT_DIALOG";
 
+export const SHOW_SUBPROJECT_PREVIEW = "SHOW_SUBPROJECT_PREVIEW";
+export const HIDE_SUBPROJECT_PREVIEW = "HIDE_SUBPROJECT_PREVIEW";
+
 export const SHOW_SUBPROJECT_EDIT = "SHOW_SUBPROJECT_EDIT";
 
 export const CREATE_SUBPROJECT = "CREATE_SUBPROJECT";
@@ -11,6 +14,9 @@ export const CREATE_SUBPROJECT_SUCCESS = "CREATE_SUBPROJECT_SUCCESS";
 
 export const EDIT_SUBPROJECT = "EDIT_SUBPROJECT";
 export const EDIT_SUBPROJECT_SUCCESS = "EDIT_SUBPROJECT_SUCCESS";
+
+export const EDIT_SUBPROJECTS = "EDIT_SUBPROJECTS";
+export const EDIT_SUBPROJECTS_SUCCESS = "EDIT_SUBPROJECTS_SUCCESS";
 
 export const SUBPROJECT_NAME = "SUBPROJECT_NAME";
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
@@ -163,9 +169,21 @@ export function showSubprojectDialog() {
   };
 }
 
+export function showSubprojectPreviewDialog() {
+  return {
+    type: SHOW_SUBPROJECT_PREVIEW
+  };
+}
+
 export function hideSubprojectDialog() {
   return {
     type: HIDE_SUBPROJECT_DIALOG
+  };
+}
+
+export function hideSubprojectPreviewDialog() {
+  return {
+    type: HIDE_SUBPROJECT_PREVIEW
   };
 }
 
@@ -225,5 +243,12 @@ export function liveUpdateProject(projectId) {
   return {
     type: LIVE_UPDATE_PROJECT,
     projectId
+  };
+}
+
+export function editSubProjects(subprojects) {
+  return {
+    type: EDIT_SUBPROJECTS,
+    subprojects
   };
 }

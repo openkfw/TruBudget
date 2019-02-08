@@ -5,6 +5,7 @@ import {
   fetchAllProjectDetails,
   showSubprojectDialog,
   showProjectAssignees,
+  showSubprojectPreviewDialog,
   fetchProjectHistory,
   showEditDialog,
   closeProject,
@@ -82,6 +83,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     liveUpdate: projectId => dispatch(liveUpdateProject(projectId)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
+    showSubprojectPreviewDialog: () => dispatch(showSubprojectPreviewDialog()),
 
     openHistory: (projectId, offset, limit) => {
       dispatch(fetchProjectHistory(projectId, offset, limit, true));
