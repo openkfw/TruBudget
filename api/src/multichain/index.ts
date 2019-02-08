@@ -285,8 +285,8 @@ export async function getWorkflowitemList(
         MultichainWorkflowitem.applyUpdate(event, workflowitem) ||
         MultichainWorkflowitem.applyAssign(event, workflowitem) ||
         MultichainWorkflowitem.applyClose(event, workflowitem) ||
-        MultichainWorkflowitem.applyGrantPermission(event, workflowitem.permissions) ||
-        MultichainWorkflowitem.applyRevokePermission(event, workflowitem.permissions);
+        MultichainWorkflowitem.applyGrantPermission(event, workflowitem) ||
+        MultichainWorkflowitem.applyRevokePermission(event, workflowitem);
       if (!hasProcessedEvent) {
         const message = "Unexpected event occured";
         throw Error(`${message}: ${JSON.stringify(event)}.`);

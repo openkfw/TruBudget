@@ -36,6 +36,7 @@ export interface Update {
   exchangeRate?: string;
   billingDate?: string;
 }
+
 export interface Workflowitem {
   id: string;
   creationUnixTs: string;
@@ -135,7 +136,8 @@ export function applyClose(event: Event, workflowitem: Workflowitem): true | und
   throwUnsupportedEventVersion(event);
 }
 
-export function applyGrantPermission(event: Event, permissions: Permissions): true | undefined {
+export function applyGrantPermission(event: Event, workflowitem: Workflowitem): true | undefined {
+  const permissions = workflowitem.permissions;
   if (event.intent !== "workflowitem.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
@@ -151,7 +153,8 @@ export function applyGrantPermission(event: Event, permissions: Permissions): tr
   throwUnsupportedEventVersion(event);
 }
 
-export function applyRevokePermission(event: Event, permissions: Permissions): true | undefined {
+export function applyRevokePermission(event: Event, workflowitem: Workflowitem): true | undefined {
+  const permissions = workflowitem.permissions;
   if (event.intent !== "workflowitem.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {

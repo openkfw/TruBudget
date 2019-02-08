@@ -5,6 +5,7 @@ import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import { Item } from "./responses/liststreamkeyitems";
+import * as Workflowitem from "./Workflowitem";
 
 export interface Subproject {
   id: string;
@@ -19,7 +20,7 @@ export interface Subproject {
   assignee?: string;
   permissions: Permissions;
   log: HistoryEvent[];
-  // workflowitems: Workflowitem[];
+  workflowitems: Map<string, Workflowitem.Workflowitem>;
 }
 
 export interface Project {
@@ -98,7 +99,49 @@ function applySubprojectEvent(project: Project, item: Item): void {
 }
 
 function applyWorkflowitemEvent(project: Project, subprojectId: string, item: Item): void {
-  // TODO
+  const event = item.data.json as Event;
+  const subproject = project.subprojects.get(subprojectId);
+  if (subproject === undefined) {
+    logger.error(event, `Workflowitem event ignored for unknown subproject ${subprojectId}`);
+    return;
+  }
+  let workflowitem = subproject.workflowitems.get(event.key);
+  if (workflowitem === undefined) {
+    workflowitem = Workflowitem.handleCreate(event);
+    if (workflowitem !== undefined) {
+      subproject.workflowitems.set(event.key, workflowitem);
+    } else {
+      logger.error(
+        event,
+        `Workflowitem event ignored for subproject ${subproject.id} of project ${project.id}`,
+      );
+    }
+  } else {
+    const hasProcessedEvent =
+      Workflowitem.applyUpdate(event, workflowitem) ||
+      Workflowitem.applyAssign(event, workflowitem) ||
+      Workflowitem.applyClose(event, workflowitem) ||
+      Workflowitem.applyGrantPermission(event, workflowitem) ||
+      Workflowitem.applyRevokePermission(event, workflowitem);
+    if (!hasProcessedEvent) {
+      logger.error(
+        event,
+        `Workflowitem event ignored for subproject ${subproject.id} of project ${project.id}`,
+      );
+    }
+  }
+
+  if (workflowitem !== undefined && isWorkflowitemEvent(item)) {
+    workflowitem.log.push({
+      ...event,
+      snapshot: {
+        displayName: deepcopy(workflowitem.displayName),
+        amount: deepcopy(workflowitem.amount),
+        currency: deepcopy(workflowitem.currency),
+        amountType: deepcopy(workflowitem.amountType),
+      },
+    });
+  }
 }
 
 export function applyStreamItems(streamItems: Item[], project?: Project): Project | undefined {
