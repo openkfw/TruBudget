@@ -16,6 +16,7 @@ import Input from "@material-ui/core/Input";
 
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
+import AssigneeSelection from "../Common/AssigneeSelection";
 import WorkflowList from "./WorkflowList";
 import strings from "../../localizeStrings";
 import { canReorderWorkflowItems } from "../../permissions.js";
@@ -150,7 +151,18 @@ const createEditDrawer = props => (
       <Card style={{ minWidth: "350px" }}>
         <CardContent>
           <Typography>Assignee:</Typography>
-          <FormControl data-test="assignee-container" disabled={false} style={{ width: "100%" }}>
+          <div>
+            <AssigneeSelection
+              assigneeId={null}
+              disabled={false}
+              users={props.users}
+              title={null}
+              assign={null}
+              workflowSortEnabled={null}
+              status={props.status}
+            />
+          </div>
+          {/* <FormControl data-test="assignee-container" disabled={false} style={{ width: "100%" }}>
             <Select data-test="assignee-selection" value={null} renderValue={null} onClose={null}>
               <div>
                 <FormControl>
@@ -160,7 +172,7 @@ const createEditDrawer = props => (
               </div>
               <div data-test="assignee-list">Test</div>
             </Select>
-          </FormControl>
+          </FormControl> */}
         </CardContent>
       </Card>
     </div>
@@ -169,6 +181,7 @@ const createEditDrawer = props => (
 
 // Not sure about the Name
 const WorkflowTable = props => {
+  console.log(props);
   return (
     <div style={{ paddingBottom: "8px" }}>
       {createTableHeader(props)}
