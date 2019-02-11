@@ -31,7 +31,10 @@ import {
   SHOW_WORKFLOW_CREATE,
   HIDE_WORKFLOW_DETAILS,
   SAVE_WORKFLOW_ITEM_BEFORE_SORT,
-  SET_HISTORY_OFFSET
+  SET_HISTORY_OFFSET,
+  SHOW_WORKFLOW_PREVIEW,
+  HIDE_WORKFLOW_PREVIEW,
+  WORKFLOWITEMS_SELECTED
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -60,7 +63,6 @@ const defaultState = fromJS({
     status: "open",
     documents: []
   },
-
   showWorkflowPermissions: false,
   workflowItemReference: "",
   permissions: {},
@@ -82,7 +84,9 @@ const defaultState = fromJS({
   workflowAssignee: "",
   showSubProjectAssignee: false,
   editDialogShown: false,
-  dialogTitle: strings.workflow.add_item
+  dialogTitle: strings.workflow.add_item,
+  previewDialogShown: false,
+  selectedWorkflowItems: []
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -198,6 +202,8 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowItemReference: defaultState.getIn(["workflowItemReference"]),
         workflowAssignee: defaultState.getIn("workflowAssignee")
       });
+    case WORKFLOWITEMS_SELECTED:
+      return state.set("selectedWorkflowItems", action.workflowItems);
     case SHOW_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:
@@ -211,13 +217,17 @@ export default function detailviewReducer(state = defaultState, action) {
         historyItems: [...state.get("historyItems"), ...fromJS(action.events)],
         historyItemsCount: action.historyItemsCount,
         isHistoryLoading: false,
-        offset: action.offset,
+        offset: action.offset
       });
     case HIDE_HISTORY:
       return state.merge({
         historyItems: fromJS([]),
         offset: 0
       });
+    case SHOW_WORKFLOW_PREVIEW:
+      return state.set("previewDialogShown", true);
+    case HIDE_WORKFLOW_PREVIEW:
+      return state.set("previewDialogShown", false);
     case LOGOUT:
       return defaultState;
     default:

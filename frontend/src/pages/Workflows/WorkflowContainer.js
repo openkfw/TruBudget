@@ -26,7 +26,10 @@ import {
   hideWorkflowDetails,
   hideWorkflowDialog,
   saveWorkflowItemsBeforeSort,
-  liveUpdateSubproject
+  liveUpdateSubproject,
+  storeWorkflowItemsSelected,
+  grantWorkflowItemPermission,
+  revokeWorkflowItemPermission
 } from "./actions";
 
 import { addDocument } from "../Documents/actions";
@@ -43,6 +46,7 @@ import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
 import { fetchUser } from "../Login/actions";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
+import WorkflowEditDrawer from "./WorkflowEditDrawer";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -117,6 +121,7 @@ class WorkflowContainer extends Component {
             offset={this.props.offset}
             limit={this.props.limit}
           />
+          <WorkflowEditDrawer {...this.props} />
         </div>
       </div>
     );
@@ -159,6 +164,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showEditDialog: (id, displayName, amount, amountType, description, currency, documents) =>
       dispatch(showEditDialog(id, displayName, amount, amountType, description, currency, documents)),
     saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
+    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
 
     addDocument: (payload, name) => dispatch(addDocument(payload, name))
   };
@@ -174,6 +180,7 @@ const mapStateToProps = state => {
     currency: state.getIn(["workflow", "currency"]),
     assignee: state.getIn(["workflow", "assignee"]),
     created: state.getIn(["workflow", "created"]),
+    permissions: state.getIn(["workflow", "permissions"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
@@ -189,7 +196,8 @@ const mapStateToProps = state => {
     validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
     users: state.getIn(["login", "user"]),
     offset: state.getIn(["workflow", "offset"]),
-    limit: state.getIn(["workflow", "limit"])
+    limit: state.getIn(["workflow", "limit"]),
+    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"])
   };
 };
 

@@ -4,6 +4,11 @@ export const FETCH_WORKFLOW_ITEMS_SUCCESS = "FETCH_WORKFLOW_ITEMS_SUCCESS";
 export const SHOW_WORKFLOW_CREATE = "SHOW_WORKFLOW_CREATE";
 export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 
+export const SHOW_WORKFLOW_PREVIEW = "SHOW_WORKFLOW_PREVIEW";
+export const HIDE_WORKFLOW_PREVIEW = "HIDE_WORKFLOW_PREVIEW";
+
+export const WORKFLOWITEMS_SELECTED = "WORKFLOWITEMS_SELECTED";
+
 export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
 export const SET_HISTORY_OFFSET = "SET_HISTORY_OFFSET";
@@ -108,6 +113,18 @@ export function fetchSubprojectHistory(projectId, subprojectId, offset, limit, s
     offset,
     limit,
     showLoading
+  };
+}
+
+export function showWorkflowItemPreview() {
+  return {
+    type: SHOW_WORKFLOW_PREVIEW
+  };
+}
+
+export function hideWorkflowItemPreview() {
+  return {
+    type: HIDE_WORKFLOW_PREVIEW
   };
 }
 
@@ -375,6 +392,12 @@ export function storeWorkflowStatus(status) {
   return {
     type: WORKFLOW_STATUS,
     status: status
+  };
+}
+export function storeWorkflowItemsSelected(workflowItems) {
+  return {
+    type: WORKFLOWITEMS_SELECTED,
+    workflowItems
   };
 }
 

@@ -13,20 +13,20 @@ import strings from "../../localizeStrings";
 import PreviewDialog from "../Common/PreviewDialog";
 
 const styles = {
-  cellFormat: {
-    fontSize: "14px",
-    paddingRight: "12px"
-  },
-  notUpdated: {
-    color: "lightgrey"
-  },
-  rowHeight: {
-    height: "56px"
-  }
+  // cellFormat: {
+  //   fontSize: "14px",
+  //   paddingRight: "12px"
+  // },
+  // notUpdated: {
+  //   color: "lightgrey"
+  // },
+  // rowHeight: {
+  //   height: "56px"
+  // }
 };
 
-const getTableEntries = (classes, subProjects, changes) => {
-  return subProjects.map(({ data }, index) => {
+const getTableEntries = (classes, worklflowItems, changes) => {
+  return worklflowItems.map(({ data }, index) => {
     const { currency, amount, description, displayName } = data;
     const amountString = toAmountString(amount, currency);
     return (
@@ -56,8 +56,12 @@ const getTableEntries = (classes, subProjects, changes) => {
   });
 };
 
-const SubprojectPreviewDialog = props => {
-  const { subProjects, previewDialogTitle, hidePreviewDialog, previewDialogShown, editSubProjects, classes } = props;
+const WorkflowPreviewDialog = props => {
+  const { workflowItems, hideWorkflowItemPreview, previewDialogShown, editWorkflowitem, classes } = props;
+
+  const editWorkflowitems = (editWorkflowitem, workflowitems) => {
+    return;
+  };
 
   const preview = (
     <Card>
@@ -70,7 +74,7 @@ const SubprojectPreviewDialog = props => {
             <TableCell className={classes.cellFormat}>{strings.common.budget} </TableCell>
           </TableRow>
         </TableHead>
-        {getTableEntries(classes, subProjects, { currency: "EUR" })}
+        {getTableEntries(classes, workflowItems, { currency: "EUR" })}
       </Table>
     </Card>
   );
@@ -78,10 +82,10 @@ const SubprojectPreviewDialog = props => {
   return (
     <div>
       <PreviewDialog
-        title={previewDialogTitle}
+        title={strings.workflow.workflow_title}
         dialogShown={previewDialogShown}
-        onDialogCancel={hidePreviewDialog}
-        onDialogSubmit={editSubProjects}
+        onDialogCancel={hideWorkflowItemPreview}
+        onDialogSubmit={editWorkflowitems}
         preview={preview}
         {...props}
       />
@@ -89,4 +93,4 @@ const SubprojectPreviewDialog = props => {
   );
 };
 
-export default withStyles(styles)(SubprojectPreviewDialog);
+export default withStyles(styles)(WorkflowPreviewDialog);

@@ -8,15 +8,8 @@ import Typography from "@material-ui/core/Typography";
 import SortIcon from "@material-ui/icons/LowPriority";
 import DoneIcon from "@material-ui/icons/Check";
 import Button from "@material-ui/core/Button";
-import Drawer from "@material-ui/core/Drawer";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
 
 import WorkflowDetails from "./WorkflowDetails";
-import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
-import AssigneeSelection from "../Common/AssigneeSelection";
 import WorkflowList from "./WorkflowList";
 import strings from "../../localizeStrings";
 import { canReorderWorkflowItems } from "../../permissions.js";
@@ -54,8 +47,6 @@ const createTableHeader = props => (
 
 const renderSortButton = props => (
   <Button
-    variant="contained"
-    color="primary"
     disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
     onClick={() => handleEnableWorkflowSort(props)}
     style={{
@@ -64,8 +55,7 @@ const renderSortButton = props => (
       zIndex: 2
     }}
   >
-    {/* <SortIcon /> */}
-    Edit
+    <SortIcon />
   </Button>
 );
 
@@ -109,85 +99,13 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
   return <WorkflowList lockAxis={"y"} workflowItems={workflowItems} onSortEnd={onSortEnd} {...props} />;
 };
 
-const createEditDrawer = props => (
-  <Drawer open={!props.workflowSortEnabled} variant="persistent" anchor="right">
-    <div>
-      <Button
-        variant="contained"
-        color="primary"
-        disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
-        onClick={() => handleEnableWorkflowSort(props)}
-        style={{
-          // position: "relative",
-          // left: "5px",
-          // zIndex: 2
-          float: "left",
-          top: "10px",
-          left: "15px"
-        }}
-      >
-        Preview
-      </Button>
-      <span>&nbsp;</span>
-      <Button
-        variant="contained"
-        color="secondary"
-        disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
-        onClick={() => handleEnableWorkflowSort(props)}
-        style={{
-          // position: "relative",
-          // left: "5px",
-          // zIndex: 2
-          float: "right",
-          right: "15px",
-          top: "10px"
-        }}
-      >
-        Cancel
-      </Button>
-    </div>
-    <br />
-    <div>
-      <Card style={{ minWidth: "350px" }}>
-        <CardContent>
-          <Typography>Assignee:</Typography>
-          <div>
-            <AssigneeSelection
-              assigneeId={null}
-              disabled={false}
-              users={props.users}
-              title={null}
-              assign={null}
-              workflowSortEnabled={null}
-              status={props.status}
-            />
-          </div>
-          {/* <FormControl data-test="assignee-container" disabled={false} style={{ width: "100%" }}>
-            <Select data-test="assignee-selection" value={null} renderValue={null} onClose={null}>
-              <div>
-                <FormControl>
-                  <InputLabel>{strings.common.search}</InputLabel>
-                  <Input value={null} onChange={null} />
-                </FormControl>
-              </div>
-              <div data-test="assignee-list">Test</div>
-            </Select>
-          </FormControl> */}
-        </CardContent>
-      </Card>
-    </div>
-  </Drawer>
-);
-
 // Not sure about the Name
 const WorkflowTable = props => {
-  console.log(props);
   return (
     <div style={{ paddingBottom: "8px" }}>
       {createTableHeader(props)}
       {createWorkflowItems(props)}
       {<WorkflowDetails {...props} />}
-      {createEditDrawer(props)}
     </div>
   );
 };

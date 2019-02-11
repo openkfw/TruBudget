@@ -143,7 +143,15 @@ const createLine = (isFirst, selectable) => {
   return <div style={lineStyle} />;
 };
 
-const StepDot = ({ sortenabled, status, selectable }) => {
+const StepDot = ({
+  sortenabled,
+  status,
+  selectable,
+  redacted,
+  storeWorkflowItemsSelected,
+  selectedWorkflowItems,
+  currentWorkflowItem
+}) => {
   let Icon;
   switch (status) {
     case "open":
@@ -155,13 +163,21 @@ const StepDot = ({ sortenabled, status, selectable }) => {
     default:
       Icon = OpenIcon;
   }
-  return !sortenabled ? (
+  const updateSelectedList = event => {
+    if (event.target.checked) {
+      selectedWorkflowItems.push(currentWorkflowItem);
+    } else {
+      selectedWorkflowItems.splice(selectedWorkflowItems.indexOf(currentWorkflowItem), 1);
+    }
+    storeWorkflowItemsSelected(selectedWorkflowItems);
+  };
+  return redacted || sortenabled ? (
     <Paper style={styles.dots} elevation={2} disabled={selectable}>
       <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
     </Paper>
   ) : (
     <div style={styles.checkbox}>
-      <Checkbox disabled={!selectable} />
+      <Checkbox onChange={updateSelectedList} />
     </div>
   );
 };
@@ -331,6 +347,7 @@ export const WorkflowItem = SortableElement(
     users,
     ...props
   }) => {
+    const { storeWorkflowItemsSelected, selectedWorkflowItems } = props;
     const { id, status, displayName, amountType, assignee, currency } = workflow.data;
     const allowedIntents = workflow.allowedIntents;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
@@ -352,7 +369,14 @@ export const WorkflowItem = SortableElement(
     return (
       <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
-        <StepDot sortenabled={workflowSortEnabled} status={status} selectable={workflowSelectable} />
+        <StepDot
+          sortenabled={workflowSortEnabled}
+          status={status}
+          selectable={workflowSelectable}
+          storeWorkflowItemsSelected={storeWorkflowItemsSelected}
+          currentWorkflowItem={workflow}
+          selectedWorkflowItems={selectedWorkflowItems}
+        />
         <Card
           elevation={workflowSelectable ? 1 : 0}
           key={mapIndex}
@@ -409,7 +433,7 @@ export const RedactedWorkflowItem = SortableElement(
     return (
       <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
-        <StepDot status={status} selectable={workflowSelectable} />
+        <StepDot status={status} selectable={workflowSelectable} redacted={true} />
         <Card elevation={workflowSelectable ? 1 : 0} key={mapIndex} style={styles.card}>
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>

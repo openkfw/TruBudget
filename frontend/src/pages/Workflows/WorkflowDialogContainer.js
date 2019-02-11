@@ -4,6 +4,7 @@ import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { withStyles } from "@material-ui/core";
 import WorkflowDialog from "./WorkflowDialog";
+import WorkflowPreviewDialog from "./WorkflowPreviewDialog";
 import {
   createWorkflowItem,
   editWorkflowItem,
@@ -15,7 +16,8 @@ import {
   storeWorkflowStatus,
   hideWorkflowDialog,
   setCurrentStep,
-  storeWorkflowDocument
+  storeWorkflowDocument,
+  hideWorkflowItemPreview
 } from "./actions";
 import { storeSnackbarMessage } from "../Notifications/actions";
 
@@ -41,17 +43,21 @@ class WorkflowDialogContainer extends Component {
 
   render() {
     return (
-      <WorkflowDialog
-        createWorkflowItem={this.createWorkflowItem}
-        onDialogCancel={this.props.hideWorkflowDialog}
-        {...this.props}
-      />
+      <div>
+        <WorkflowDialog
+          createWorkflowItem={this.createWorkflowItem}
+          onDialogCancel={this.props.hideWorkflowDialog}
+          {...this.props}
+        />
+        <WorkflowPreviewDialog {...this.props} />
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => {
   return {
+    previewDialogShown: state.getIn(["workflow", "previewDialogShown"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
     creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
     editDialogShown: state.getIn(["workflow", "editDialogShown"]),
@@ -86,6 +92,7 @@ const mapDispatchToProps = dispatch => {
     storeWorkflowName: name => dispatch(storeWorkflowName(name)),
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
+    hideWorkflowItemPreview: () => dispatch(hideWorkflowItemPreview()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name))
