@@ -788,7 +788,9 @@ export function* grantWorkflowItemPermissionsSaga({
     yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
 
     yield put({
-      type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS
+      type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+      workflowitemId,
+      intent
     });
 
     yield put({
@@ -874,7 +876,8 @@ export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemI
   yield execute(function*() {
     yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
     yield put({
-      type: ASSIGN_WORKFLOWITEM_SUCCESS
+      type: ASSIGN_WORKFLOWITEM_SUCCESS,
+      workflowitemId
     });
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,

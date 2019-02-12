@@ -102,6 +102,7 @@ const fr = {
     subproject_currency: "Devise du sous-projet",
     subproject_edit_title: "Modifier le sous-projet",
     subproject_permissions_title: "Définir les autorisations pour le sous-projet",
+    subproject_preview: "French: Subproject Preview",
     subproject_select_button: "Sélectionnez",
     subproject_title: "Sous-projet",
     subproject_title_description: "Titre du sous-projet"

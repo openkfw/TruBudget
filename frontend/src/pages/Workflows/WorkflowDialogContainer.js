@@ -17,7 +17,10 @@ import {
   hideWorkflowDialog,
   setCurrentStep,
   storeWorkflowDocument,
-  hideWorkflowItemPreview
+  hideWorkflowItemPreview,
+  grantWorkflowItemPermission,
+  assignWorkflowItem,
+  resetSucceededWorkflowitems
 } from "./actions";
 import { storeSnackbarMessage } from "../Notifications/actions";
 
@@ -64,7 +67,12 @@ const mapStateToProps = state => {
     dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     currentStep: state.getIn(["workflow", "currentStep"]),
-    currency: state.getIn(["workflow", "currency"])
+    currency: state.getIn(["workflow", "currency"]),
+    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
+    tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
+    workflowAssignee: state.getIn(["workflow", "workflowAssignee"]),
+    succeededWorkflowAssign: state.getIn(["workflow", "succeededWorkflowAssign"]),
+    succeededWorkflowGrant: state.getIn(["workflow", "succeededWorkflowGrant"])
   };
 };
 
@@ -95,7 +103,12 @@ const mapDispatchToProps = dispatch => {
     hideWorkflowItemPreview: () => dispatch(hideWorkflowItemPreview()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name))
+    storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name)),
+    grantWorkflowItemPermission: (pId, sId, wId, permission, user) =>
+      dispatch(grantWorkflowItemPermission(pId, sId, wId, permission, user, true)),
+    assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
+      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
+    resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems())
   };
 };
 

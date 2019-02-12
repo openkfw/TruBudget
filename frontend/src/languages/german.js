@@ -98,6 +98,7 @@ const de = {
     subproject_completion_string: "{0} von {1} erledigt",
     subproject_currency: "German: Sub-project Currency",
     subproject_permissions_title: "German: Set permissions for subproject",
+    subproject_preview: "German: Subproject Preview",
     subproject_close_info: "German: At least one workflow item has not been closed yet.",
     subproject_edit_title: "German: Edit Subproject",
     subproject_select_button: "Select",

@@ -20,8 +20,6 @@ import {
   SHOW_WORKFLOWITEM_PERMISSIONS,
   HIDE_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
-  SHOW_WORKFLOW_ASSIGNEES,
-  HIDE_WORKFLOW_ASSIGNEES,
   SHOW_SUBPROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_ASSIGNEES,
   FETCH_SUBPROJECT_HISTORY,
@@ -34,7 +32,12 @@ import {
   SET_HISTORY_OFFSET,
   SHOW_WORKFLOW_PREVIEW,
   HIDE_WORKFLOW_PREVIEW,
-  WORKFLOWITEMS_SELECTED
+  WORKFLOWITEMS_SELECTED,
+  SET_WORKFLOW_DRAWER_PERMISSIONS,
+  ASSIGN_WORKFLOWITEM_SUCCESS,
+  STORE_WORKFLOW_ASSIGNEE,
+  GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+  RESET_SUCCEEDED_WORKFLOWITEMS
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -66,6 +69,7 @@ const defaultState = fromJS({
   showWorkflowPermissions: false,
   workflowItemReference: "",
   permissions: {},
+  tempDrawerPermissions: {},
   creationDialogShown: false,
   showDetails: false,
   showDetailsItemId: "",
@@ -86,7 +90,9 @@ const defaultState = fromJS({
   editDialogShown: false,
   dialogTitle: strings.workflow.add_item,
   previewDialogShown: false,
-  selectedWorkflowItems: []
+  selectedWorkflowItems: [],
+  succeededWorkflowAssign: [],
+  succeededWorkflowGrant: []
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -116,9 +122,24 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("amountType", action.amountType)
           .set("description", action.description)
           .set("currency", action.currency)
-          .set("documents", action.documents),
+          .set("documents", fromJS(action.documents)),
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
+      });
+    case ASSIGN_WORKFLOWITEM_SUCCESS:
+      return state.updateIn(["succeededWorkflowAssign"], succeededActions => [
+        ...succeededActions,
+        action.workflowitemId
+      ]);
+    case GRANT_WORKFLOWITEM_PERMISSION_SUCCESS:
+      return state.updateIn(["succeededWorkflowGrant"], succeededActions => [
+        ...succeededActions,
+        { id: action.workflowitemId, intent: action.intent }
+      ]);
+    case RESET_SUCCEEDED_WORKFLOWITEMS:
+      return state.merge({
+        succeededWorkflowAssign: defaultState.get("succeededWorkflowAssign"),
+        succeededWorkflowGrant: defaultState.get("succeededWorkflowGrant")
       });
     case SHOW_WORKFLOW_CREATE:
       return state.merge({ creationDialogShown: true, dialogTitle: strings.workflow.add_item });
@@ -170,8 +191,10 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         workflowToAdd: defaultState.getIn(["workflowToAdd"])
       });
+    case SET_WORKFLOW_DRAWER_PERMISSIONS:
+      return state.set("tempDrawerPermissions", fromJS(action.permissions));
     case SAVE_WORKFLOW_ITEM_BEFORE_SORT:
-      return state.set("workflowItemsBeforeSort", action.workflowItems);
+      return state.set("workflowItemsBeforeSort", fromJS(action.workflowItems));
     case SHOW_WORKFLOW_DETAILS:
       return state.merge({
         showDetails: true,
@@ -186,24 +209,14 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("workflowSortEnabled", action.sortEnabled);
     case UPDATE_WORKFLOW_SORT:
       return state.merge({
-        workflowItems: action.workflowItems
+        workflowItems: fromJS(action.workflowItems)
       });
     case ENABLE_BUDGET_EDIT:
       return state.set("subProjectBudgetEditEnabled", action.budgetEditEnabled);
-    case SHOW_WORKFLOW_ASSIGNEES:
-      return state.merge({
-        showWorkflowAssignee: true,
-        workflowItemReference: action.workflowId,
-        workflowAssignee: action.assignee
-      });
-    case HIDE_WORKFLOW_ASSIGNEES:
-      return state.merge({
-        showWorkflowAssignee: false,
-        workflowItemReference: defaultState.getIn(["workflowItemReference"]),
-        workflowAssignee: defaultState.getIn("workflowAssignee")
-      });
+    case STORE_WORKFLOW_ASSIGNEE:
+      return state.set("workflowAssignee", action.assignee);
     case WORKFLOWITEMS_SELECTED:
-      return state.set("selectedWorkflowItems", action.workflowItems);
+      return state.set("selectedWorkflowItems", fromJS(action.workflowItems));
     case SHOW_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:

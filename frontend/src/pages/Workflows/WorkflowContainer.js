@@ -18,7 +18,6 @@ import {
   fetchAllSubprojectDetails,
   showWorkflowItemPermissions,
   closeWorkflowItem,
-  showWorkflowItemAssignee,
   showSubProjectAssignee,
   fetchSubprojectHistory,
   showEditDialog,
@@ -28,8 +27,10 @@ import {
   saveWorkflowItemsBeforeSort,
   liveUpdateSubproject,
   storeWorkflowItemsSelected,
-  grantWorkflowItemPermission,
-  revokeWorkflowItemPermission
+  storePermissions,
+  showWorkflowItemPreview,
+  closeDrawer,
+  storeWorkflowItemsAssignee
 } from "./actions";
 
 import { addDocument } from "../Documents/actions";
@@ -66,6 +67,9 @@ class WorkflowContainer extends Component {
     this.props.hideWorkflowDetails();
     this.props.hideWorkflowDialog();
     this.props.disableWorkflowSort();
+    this.props.resetPermissions();
+    this.props.deselectWorkflowItems();
+    this.props.resetAssignee();
   }
 
   closeSubproject = () => {
@@ -143,7 +147,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
-    showWorkflowItemAssignee: (workflowId, assignee) => dispatch(showWorkflowItemAssignee(workflowId, assignee)),
+    storeAssignee: assignee => dispatch(storeWorkflowItemsAssignee(assignee)),
+    resetAssignee: () => dispatch(storeWorkflowItemsAssignee("")),
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
 
@@ -165,8 +170,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(showEditDialog(id, displayName, amount, amountType, description, currency, documents)),
     saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
     storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
-
-    addDocument: (payload, name) => dispatch(addDocument(payload, name))
+    deselectWorkflowItems: () => dispatch(storeWorkflowItemsSelected([])),
+    storePermissions: permissions => dispatch(storePermissions(permissions)),
+    showWorkflowItemPreview: () => dispatch(showWorkflowItemPreview()),
+    addDocument: (payload, name) => dispatch(addDocument(payload, name)),
+    resetPermissions: () => dispatch(storePermissions({}))
   };
 };
 
@@ -181,6 +189,7 @@ const mapStateToProps = state => {
     assignee: state.getIn(["workflow", "assignee"]),
     created: state.getIn(["workflow", "created"]),
     permissions: state.getIn(["workflow", "permissions"]),
+    tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
@@ -197,7 +206,8 @@ const mapStateToProps = state => {
     users: state.getIn(["login", "user"]),
     offset: state.getIn(["workflow", "offset"]),
     limit: state.getIn(["workflow", "limit"]),
-    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"])
+    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
+    workflowAssignee: state.getIn(["workflow", "workflowAssignee"])
   };
 };
 

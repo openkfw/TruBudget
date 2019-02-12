@@ -143,15 +143,17 @@ const createLine = (isFirst, selectable) => {
   return <div style={lineStyle} />;
 };
 
-const StepDot = ({
-  sortenabled,
-  status,
-  selectable,
-  redacted,
-  storeWorkflowItemsSelected,
-  selectedWorkflowItems,
-  currentWorkflowItem
-}) => {
+const StepDot = props => {
+  const {
+    sortenabled,
+    status,
+    selectable,
+    redacted,
+    storeWorkflowItemsSelected,
+    selectedWorkflowItems,
+    currentWorkflowItem,
+    allowedIntents
+  } = props;
   let Icon;
   switch (status) {
     case "open":
@@ -171,17 +173,28 @@ const StepDot = ({
     }
     storeWorkflowItemsSelected(selectedWorkflowItems);
   };
-  return redacted || sortenabled ? (
-    <Paper style={styles.dots} elevation={2} disabled={selectable}>
-      <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
-    </Paper>
-  ) : (
+  return isWorkflowItemSelectable(redacted, sortenabled, allowedIntents, status) ? (
     <div style={styles.checkbox}>
       <Checkbox onChange={updateSelectedList} />
     </div>
+  ) : (
+    <Paper style={styles.dots} elevation={2} disabled={selectable}>
+      <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
+    </Paper>
   );
 };
 
+function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents, status) {
+  const intents = allowedIntents.filter(
+    i =>
+      i === "workflowitem.intent.listPermissions" ||
+      i === "workflowitem.intent.grantPermission" ||
+      i === "workflowitem.intent.revokePermission"
+  );
+  return !redacted && sortenabled && (allowedIntents.includes("workflowitem.assign") || intents.length === 3)
+    ? true
+    : false;
+}
 const editWorkflow = ({ id, displayName, amount, amountType, currency, description, status, documents }, props) => {
   // Otherwise we need to deal with undefined which causes errors in the editDialog
   const workflowitemAmount = amount ? amount : "";
@@ -336,17 +349,7 @@ const renderActionButtons = (
 };
 
 export const WorkflowItem = SortableElement(
-  ({
-    workflow,
-    mapIndex,
-    index,
-    currentWorkflowSelectable,
-    workflowSortEnabled,
-    showWorkflowItemAssignee,
-    parentProject,
-    users,
-    ...props
-  }) => {
+  ({ workflow, mapIndex, index, currentWorkflowSelectable, workflowSortEnabled, parentProject, users, ...props }) => {
     const { storeWorkflowItemsSelected, selectedWorkflowItems } = props;
     const { id, status, displayName, amountType, assignee, currency } = workflow.data;
     const allowedIntents = workflow.allowedIntents;
@@ -376,6 +379,7 @@ export const WorkflowItem = SortableElement(
           storeWorkflowItemsSelected={storeWorkflowItemsSelected}
           currentWorkflowItem={workflow}
           selectedWorkflowItems={selectedWorkflowItems}
+          allowedIntents={allowedIntents}
         />
         <Card
           elevation={workflowSelectable ? 1 : 0}

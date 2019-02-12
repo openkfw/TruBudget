@@ -127,6 +127,7 @@ const pt = {
     subproject_currency: "Moeda do subprojeto",
     subproject_edit_title: "Portuguese: Edit Subproject",
     subproject_permissions_title: "Portuguese: Set permissions for subproject",
+    subproject_preview: "Portuguese: Subproject Preview",
     subproject_select_button: "Selecionar",
     subproject_title: "Nome do subprojeto",
     subproject_title_description: "Descrição do subprojeto"

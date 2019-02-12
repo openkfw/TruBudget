@@ -7,6 +7,10 @@ export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 export const SHOW_WORKFLOW_PREVIEW = "SHOW_WORKFLOW_PREVIEW";
 export const HIDE_WORKFLOW_PREVIEW = "HIDE_WORKFLOW_PREVIEW";
 
+export const SET_WORKFLOW_DRAWER_PERMISSIONS = "SET_WORKFLOW_DRAWER_PERMISSIONS";
+
+export const CLOSE_DRAWER = "CLOSE_DRAWER";
+
 export const WORKFLOWITEMS_SELECTED = "WORKFLOWITEMS_SELECTED";
 
 export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
@@ -37,6 +41,8 @@ export const ENABLE_WORKFLOW_SORT = "ENABLE_WORKFLOW_SORT";
 
 export const REORDER_WORKFLOW_ITEMS = "REORDER_WORKFLOW_ITEMS";
 export const REORDER_WORKFLOW_ITEMS_SUCCESS = "REORDER_WORKFLOW_ITEMS_SUCCESS";
+
+export const RESET_SUCCEEDED_WORKFLOWITEMS = "RESET_SUCCEEDED_WORKFLOWITEMS";
 
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
 export const OPEN_HISTORY = "OPEN_HISTORY";
@@ -78,8 +84,7 @@ export const CLOSE_WORKFLOWITEM_SUCCESS = "CLOSE_WORKFLOWITEM_SUCCESS";
 export const CLOSE_SUBPROJECT = "CLOSE_SUBPROJECT";
 export const CLOSE_SUBPROJECT_SUCCESS = "CLOSE_SUBPROJECT_SUCCESS";
 
-export const SHOW_WORKFLOW_ASSIGNEES = "SHOW_WORKFLOW_ASSIGNEES";
-export const HIDE_WORKFLOW_ASSIGNEES = "HIDE_WORKFLOW_ASSIGNEES";
+export const STORE_WORKFLOW_ASSIGNEE = "STORE_WORKFLOW_ASSIGNEE";
 
 export const SHOW_SUBPROJECT_ASSIGNEES = "SHOW_SUBPROJECT_ASSIGNEES";
 export const HIDE_SUBPROJECT_ASSIGNEES = "HIDE_SUBPROJECT_ASSIGNEES";
@@ -102,6 +107,24 @@ export function setSubProjectHistoryOffset(offset) {
   return {
     type: SET_HISTORY_OFFSET,
     offset
+  };
+}
+
+export function storePermissions(permissions) {
+  return {
+    type: SET_WORKFLOW_DRAWER_PERMISSIONS,
+    permissions
+  };
+}
+
+export function closeDrawer() {
+  return {
+    type: CLOSE_DRAWER
+  };
+}
+export function resetSucceededWorkflowitems() {
+  return {
+    type: RESET_SUCCEEDED_WORKFLOWITEMS
   };
 }
 
@@ -128,17 +151,10 @@ export function hideWorkflowItemPreview() {
   };
 }
 
-export function showWorkflowItemAssignee(workflowId, assignee) {
+export function storeWorkflowItemsAssignee(assignee) {
   return {
-    type: SHOW_WORKFLOW_ASSIGNEES,
-    workflowId,
+    type: STORE_WORKFLOW_ASSIGNEE,
     assignee
-  };
-}
-
-export function hideWorkflowAssignee() {
-  return {
-    type: HIDE_WORKFLOW_ASSIGNEES
   };
 }
 

@@ -5,7 +5,6 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Typography from "@material-ui/core/Typography";
-import SortIcon from "@material-ui/icons/LowPriority";
 import DoneIcon from "@material-ui/icons/Check";
 import Button from "@material-ui/core/Button";
 
@@ -47,15 +46,18 @@ const createTableHeader = props => (
 
 const renderSortButton = props => (
   <Button
+    variant="contained"
+    color="primary"
     disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
     onClick={() => handleEnableWorkflowSort(props)}
     style={{
       position: "relative",
-      left: "5px",
+      left: "12px",
       zIndex: 2
     }}
   >
-    <SortIcon />
+    {/*// TODO strings */}
+    Edit
   </Button>
 );
 
@@ -81,6 +83,9 @@ const handleEnableWorkflowSort = props => {
 
 const handleSubmitSort = props => {
   const currentWorkflowItemIds = [];
+  props.deselectWorkflowItems();
+  props.resetPermissions();
+  props.resetAssignee();
   props.workflowItems.map(item => currentWorkflowItemIds.push(item.data.id));
   const hasChanged =
     currentWorkflowItemIds.find((id, index) => props.workflowItemsBeforeSort[index] !== id) !== undefined;
