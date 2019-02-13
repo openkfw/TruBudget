@@ -1,18 +1,12 @@
 let projects = undefined;
-let subprojects = undefined;
 
 describe("Subproject Permissions", function() {
   before(() => {
     cy.login();
-    cy
-      .fetchProjects()
-      .then(p => (projects = p))
-      .then(() => {
-        cy.fetchSubprojects(projects[0].data.id).then(s => (subprojects = s));
-      });
+    cy.fetchProjects().then(p => (projects = p));
   });
+
   beforeEach(function() {
-    cy.fixture("testdata.json").as("data");
     cy.login();
     cy.visit(`/projects/${projects[0].data.id}`);
   });
@@ -29,6 +23,7 @@ describe("Subproject Permissions", function() {
   });
 
   it("Grant and revoke permissions", function() {
+    cy.fixture("testdata.json").as("data");
     cy.get("[data-test=spp-button-0]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test='permission-select-subproject.intent.grantPermission']").click();

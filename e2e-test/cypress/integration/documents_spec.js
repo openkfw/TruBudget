@@ -12,7 +12,6 @@ describe("Add workflowitem with document", function() {
       });
   });
   beforeEach(function() {
-    cy.fixture("testdata.json").as("data");
     cy.login();
     openProject = projects.find(project => project.data.status === "open").data;
     openSubproject = subprojects.find(project => project.data.status === "open")

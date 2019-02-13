@@ -1,6 +1,6 @@
 describe("Overview Page", function() {
+
   beforeEach(function() {
-    cy.fixture("testdata.json").as("data");
     cy.login();
     cy.visit(`/projects`);
   });
@@ -11,6 +11,7 @@ describe("Overview Page", function() {
   });
 
   it("Show example project", function() {
+    cy.fixture("testdata.json").as("data");
     cy.get("[data-test=projectcard-0]").should("have.length.above", 0);
     cy.get("[data-test=projectcard-0]")
       .eq(0)
