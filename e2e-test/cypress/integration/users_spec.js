@@ -3,10 +3,12 @@ describe("Users/Groups Dashboard", function() {
     cy.login();
     cy.visit("/users");
   });
+
   it("Show user dashboard", function() {
     cy.location("pathname").should("eq", "/users");
     cy.get("#userdashboard").should("be.visible");
   });
+
   it("Create new user", function() {
     cy.get("[data-test=create]").click();
     cy.get("#fullname")

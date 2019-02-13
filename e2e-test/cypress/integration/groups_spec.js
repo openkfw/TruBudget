@@ -3,11 +3,13 @@ describe("User/Groups Dashboard", function() {
     cy.login();
     cy.visit("/users");
   });
+
   it("Show group table", function() {
     cy.location("pathname").should("eq", "/users");
     cy.get("[aria-label=groupsTab]").click();
     cy.get("#userdashboard").should("be.visible");
   });
+
   it("Create new group", function() {
     cy.get("[data-test=create]").click();
     cy.get("#id")

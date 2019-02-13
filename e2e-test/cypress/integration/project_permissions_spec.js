@@ -1,12 +1,6 @@
-let projects = undefined;
-
 describe("Project Permissions", function() {
-  before(() => {
-    cy.login();
-    cy.fetchProjects().then(p => (projects = p));
-  });
+
   beforeEach(function() {
-    cy.fixture("testdata.json").as("data");
     cy.login();
     cy.visit(`/projects`);
   });
@@ -23,6 +17,7 @@ describe("Project Permissions", function() {
   });
 
   it("Grant and revoke permissions", function() {
+    cy.fixture("testdata.json").as("data");
     cy.get("[data-test=pp-button-0]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test='permission-select-project.intent.listPermissions']").click();
