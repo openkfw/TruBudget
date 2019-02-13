@@ -5,7 +5,7 @@ import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
-import { RpcMultichainClient } from "./multichain/Client";
+import * as Multichain from "./multichain";
 import { randomString } from "./multichain/hash";
 import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
@@ -62,7 +62,8 @@ logger.info(
   { rpcSettings: rpcSettingsWithoutPassword(rpcSettings) },
   "Connecting to MultiChain node",
 );
-const multichainClient = new RpcMultichainClient(rpcSettings);
+const db = Multichain.init(rpcSettings);
+const { multichainClient } = db;
 
 const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH, env);
 
@@ -113,21 +114,21 @@ registerRoutes(
   multichainHost,
   backupApiPort,
   {
-    workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(multichainClient),
-    listProjects: HttpdMultichainAdapter.getProjectList(multichainClient),
-    getProjectWithSubprojects: HttpdMultichainAdapter.getProject(multichainClient),
-    assignProject: HttpdMultichainAdapter.assignProject(multichainClient),
-    updateProject: HttpdMultichainAdapter.updateProject(multichainClient),
-    workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(multichainClient),
-    workflowitemUpdater: HttpdMultichainAdapter.updateWorkflowitem(multichainClient),
-    workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(multichainClient),
-    listGlobalPermissions: HttpdMultichainAdapter.getPermissionList(multichainClient),
-    grantGlobalPermission: HttpdMultichainAdapter.grantPermission(multichainClient),
-    createProject: HttpdMultichainAdapter.createProject(multichainClient),
-    grantAllPermissions: HttpdMultichainAdapter.grantAllPermissions(multichainClient),
-    revokeGlobalPermission: HttpdMultichainAdapter.revokePermission(multichainClient),
-    getProjectPermissions: HttpdMultichainAdapter.getProjectPermissionList(multichainClient),
-    grantProjectPermission: HttpdMultichainAdapter.grantProjectPermission(multichainClient),
+    assignProject: HttpdMultichainAdapter.assignProject(db),
+    createProject: HttpdMultichainAdapter.createProject(db),
+    getProjectPermissions: HttpdMultichainAdapter.getProjectPermissionList(db),
+    getProjectWithSubprojects: HttpdMultichainAdapter.getProject(db),
+    grantAllPermissions: HttpdMultichainAdapter.grantAllPermissions(db),
+    grantGlobalPermission: HttpdMultichainAdapter.grantPermission(db),
+    grantProjectPermission: HttpdMultichainAdapter.grantProjectPermission(db),
+    listGlobalPermissions: HttpdMultichainAdapter.getPermissionList(db),
+    listProjects: HttpdMultichainAdapter.getProjectList(db),
+    revokeGlobalPermission: HttpdMultichainAdapter.revokePermission(db),
+    updateProject: HttpdMultichainAdapter.updateProject(db),
+    workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(db),
+    workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(db),
+    workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(db),
+    workflowitemUpdater: HttpdMultichainAdapter.updateWorkflowitem(db),
   },
 );
 

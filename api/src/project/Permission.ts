@@ -1,8 +1,7 @@
 import { getAllowedIntents } from "../authz";
 import Intent from "../authz/intents";
+import { Permissions } from "../authz/types";
 import { User, userIdentities } from "./User";
-
-export type Permissions = { [key in Intent]?: string[] };
 
 export function isAllowedTo(
   allowedIntent: Intent,
