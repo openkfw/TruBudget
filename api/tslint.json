@@ -15,8 +15,12 @@
       "check-format",
       "allow-leading-underscore"
     ],
-    "no-unused-variable": [true, { "ignore-pattern": "^_" }],
-    "max-classes-per-file": false
+    "no-unused-variable": [true, {
+      "ignore-pattern": "^_"
+    }],
+    "max-classes-per-file": false,
+    "interface-over-type-literal": false,
+    "no-empty": false
   },
   "rulesDirectory": []
 }

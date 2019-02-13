@@ -1,8 +1,8 @@
-import { AllowedUserGroupsByIntent } from "../authz/types";
-import { RpcClient } from "./RpcClient";
-export { RpcMultichainClient } from "./Client";
+import { Permissions } from "../authz/types";
 import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import { RpcClient } from "./RpcClient";
 
+export { RpcMultichainClient } from "./Client";
 export type StreamKind =
   | "global"
   | "organization"
@@ -68,7 +68,7 @@ export interface StreamItem {
 
 export interface Resource {
   log: LogEntry[];
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   data: any;
 }
 
@@ -100,8 +100,8 @@ export interface MultichainClient {
   // Create a new stream. If name is set and the stream exists, nothing happens.
   getOrCreateStream(options: CreateStreamOptions);
 
-  // Get a list of all streams:
-  streams(): Promise<Stream[]>;
+  // Get a list of (all) streams:
+  streams(stream?: string): Promise<Stream[]>;
 
   // Return the most recent values for all keys
   streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]>;

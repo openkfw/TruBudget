@@ -56,10 +56,14 @@ export type ProjectAssigner = (
 export type ProjectUpdater = (token: AuthToken, projectId: string, update: object) => Promise<void>;
 
 type MaybeHistoryEvent = null | {
+  key: string; // the resource ID (same for all events that relate to the same resource)
   intent: Intent;
+  createdBy: string;
+  createdAt: string;
+  dataVersion: number; // integer
+  data: any;
   snapshot: {
     displayName: string;
-    permissions?: object;
   };
 };
 

@@ -1,7 +1,7 @@
 import logger from "../lib/logger";
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
-import { AllowedUserGroupsByIntent, People } from "./types";
+import { People, Permissions } from "./types";
 
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
@@ -17,26 +17,21 @@ export const getUserAndGroups = (token: AuthToken) => {
 
 export const getAllowedIntents = (
   userAndGroups: People,
-  resourcePermissions: AllowedUserGroupsByIntent,
+  resourcePermissions: Permissions,
 ): Intent[] => {
   if (userAndGroups.includes("root")) {
     return allIntents;
   }
-
   const allowedIntents = Object.keys(resourcePermissions as any).filter(intent =>
     hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
-  logger.debug(
-    { userAndGroups, allowedIntents },
-    `Getting allowed intents for user ${userAndGroups[0]}`,
-  );
   return allowedIntents;
 };
 
 const can = async (
   token: AuthToken,
   intent: Intent,
-  resourcePermissions: AllowedUserGroupsByIntent,
+  resourcePermissions: Permissions,
 ): Promise<boolean> => {
   if (token.userId === "root") {
     // root can do everything
@@ -68,7 +63,7 @@ const can = async (
  * @deprecated
  */
 export const authorized = (token: AuthToken, intent: Intent) => async (
-  resourcePermissions: AllowedUserGroupsByIntent,
+  resourcePermissions: Permissions,
 ): Promise<undefined> => {
   const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
   if (!canDo) {
@@ -80,7 +75,7 @@ export const authorized = (token: AuthToken, intent: Intent) => async (
 export const throwIfUnauthorized = (
   token: AuthToken,
   intent: Intent,
-  permissions: AllowedUserGroupsByIntent,
+  permissions: Permissions,
 ): Promise<undefined> => {
   return authorized(token, intent)(permissions);
 };

@@ -794,6 +794,7 @@ const schemas = {
                             dataVersion: { type: "string", example: "1" },
                             data: {
                               type: "object",
+                              additionalProperties: true,
                               properties: {
                                 project: {
                                   type: "object",
@@ -825,14 +826,14 @@ const schemas = {
                                     "subproject.intent.listPermissions": ["aSmith", "jDoe"],
                                   },
                                 },
-                                snapshot: {
-                                  type: "object",
-                                  properties: {
-                                    displayName: {
-                                      type: "string",
-                                      example: "Build a town-project",
-                                    },
-                                  },
+                              },
+                            },
+                            snapshot: {
+                              type: "object",
+                              properties: {
+                                displayName: {
+                                  type: "string",
+                                  example: "Build a town-project",
                                 },
                               },
                             },

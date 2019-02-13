@@ -2,8 +2,7 @@ import Joi = require("joi");
 
 import { getAllowedIntents, hasIntersection } from "../authz";
 import Intent from "../authz/intents";
-import { AllowedUserGroupsByIntent } from "../authz/types";
-import * as Permission from "./Permission";
+import { Permissions } from "../authz/types";
 import { User, userIdentities } from "./User";
 
 export interface CreateProjectInput {
@@ -17,6 +16,7 @@ export interface CreateProjectInput {
   assignee?: string;
   thumbnail?: string;
 }
+
 export interface Project {
   id: string;
   creationUnixTs: string;
@@ -27,7 +27,7 @@ export interface Project {
   amount: string;
   currency: string;
   thumbnail: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: HistoryEvent[];
 }
 
@@ -41,25 +41,23 @@ export interface ScrubbedProject {
   amount: string;
   currency: string;
   thumbnail: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
   log: ScrubbedHistoryEvent[];
 }
 
-interface HistoryEvent {
+export interface HistoryEvent {
+  key: string; // the resource ID (same for all events that relate to the same resource)
   intent: Intent;
+  createdBy: string;
+  createdAt: string;
+  dataVersion: number; // integer
+  data: any;
   snapshot: {
     displayName: string;
-    permissions: object;
   };
 }
 
-type ScrubbedHistoryEvent = null | {
-  intent: Intent;
-  snapshot: {
-    displayName: string;
-    permissions?: object;
-  };
-};
+type ScrubbedHistoryEvent = null | HistoryEvent;
 
 const schema = Joi.object().keys({
   id: Joi.string()
@@ -102,10 +100,7 @@ export function isProjectVisibleTo(project: Project, actingUser: User): boolean 
   return hasPermission;
 }
 
-export function isProjectCreateable(
-  permissions: Permission.Permissions,
-  actingUser: User,
-): boolean {
+export function isProjectCreateable(permissions: Permissions, actingUser: User): boolean {
   const allowedIntent: Intent = "global.createProject";
   const userIntents = getAllowedIntents(userIdentities(actingUser), permissions);
   const hasPermission = userIntents.includes(allowedIntent);
@@ -144,10 +139,7 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["project.update", ["project.viewDetails"]],
   ["project.close", ["project.viewSummary", "project.viewDetails"]],
   ["project.archive", ["project.viewSummary", "project.viewDetails"]],
-  [
-    "project.createSubproject",
-    ["project.viewDetails", "subproject.viewSummary", "subproject.viewDetails"],
-  ],
+  ["project.createSubproject", ["project.viewDetails"]],
 ]);
 
 function redactHistoryEvent(event: HistoryEvent, userIntents: Intent[]): ScrubbedHistoryEvent {
@@ -160,22 +152,5 @@ function redactHistoryEvent(event: HistoryEvent, userIntents: Intent[]): Scrubbe
   const allowedIntents = requiredPermissions.get(observedIntent);
   const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
 
-  if (!isAllowedToSee) {
-    // The user can't see the event..
-    return null;
-  }
-
-  // The event is visible, but what about the permissions?
-  // project.createSubproject is a special case here..
-  const permissionListingPermission =
-    event.intent === "project.createSubproject"
-      ? "subproject.intent.listPermissions"
-      : "project.intent.listPermissions";
-
-  if (!userIntents.includes(permissionListingPermission)) {
-    // The user can see the event but not the associated (sub-)project permissions:
-    delete event.snapshot.permissions;
-  }
-
-  return event;
+  return isAllowedToSee ? event : null;
 }
