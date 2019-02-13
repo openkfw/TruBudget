@@ -10,37 +10,50 @@ import RpcResponse from "./RpcResponse.h";
 
 const count = new Map();
 const durations = new Map();
-const nTopCalls = 5;
-const topCallWindowSizeInSeconds = 10;
-const intervalTimer = setInterval(() => {
-  if (!count.size) return;
-  const topCalls = [...count.entries()]
-    // Sort by total duration:
-    .sort(
-      ([whatA, _timesA], [whatB, _timesB]) =>
-        (durations.get(whatB) || 0) - (durations.get(whatA) || 0),
-    )
-    // Take only the first nTopCalls:
-    .slice(0, nTopCalls)
-    // Compute average durations:
-    .map(([what, times]) => {
-      const total = durations.get(what) || 0;
-      const avg = total / times;
-      return [what, times, total, avg];
-    })
-    .map(
-      ([what, times, total, avg]) =>
-        `- ${times}x avg=${Math.floor(avg)}ms total=${Math.floor(total)}ms: ${what}`,
+const nTopCalls = 3;
+const topCallWindowSizeInSeconds = 30;
+if (logger.isLevelEnabled("debug")) {
+  const intervalTimer = setInterval(() => {
+    if (!count.size) return;
+    const topCalls = [...count.entries()]
+      // Sort by total duration:
+      .sort(
+        ([whatA, _timesA], [whatB, _timesB]) =>
+          (durations.get(whatB) || 0) - (durations.get(whatA) || 0),
+      )
+      // Take only the first nTopCalls:
+      .slice(0, nTopCalls)
+      // Compute average durations:
+      .map(([what, times]) => {
+        const total = Math.floor(durations.get(what) || 0);
+        const avg = Math.floor(total / times);
+        return [what, times, total, avg];
+      });
+    // .map(
+    //   ([what, times, total, avg]) =>
+    //     `${times}x avg=${Math.floor(avg)}ms total=${Math.floor(total)}ms: ${what}`,
+    // );
+    logger.debug(
+      {
+        calls: topCalls.map(([command, times, totalMs, avgMs]) => ({
+          command,
+          times,
+          totalMs,
+          avgMs,
+        })),
+      },
+      `Top-${nTopCalls} calls in the last ${topCallWindowSizeInSeconds} seconds`,
     );
-  console.log(
-    `Top-${nTopCalls} calls in the last ${topCallWindowSizeInSeconds} seconds:\n${topCalls.join(
-      "\n",
-    )}`,
-  );
-  count.clear();
-}, topCallWindowSizeInSeconds * 1000);
-// The timer should not prevent the event loop from shutting down:
-intervalTimer.unref();
+    // logger.debug(
+    //   `Top-${nTopCalls} calls in the last ${topCallWindowSizeInSeconds} seconds:\n${topCalls.join(
+    //     "\n",
+    //   )}`,
+    // );
+    count.clear();
+  }, topCallWindowSizeInSeconds * 1000);
+  // The timer should not prevent the event loop from shutting down:
+  intervalTimer.unref();
+}
 
 export class RpcClient {
   private call: (method: string, params: any) => any;
@@ -78,11 +91,13 @@ export class RpcClient {
           // this is only on Response code 2xx
           logger.trace({ data: resp.data }, "Received valid response.");
 
-          const countKey = `${method}(${params.map(x => JSON.stringify(x)).join(", ")})`;
-          const hrtimeDiff = process.hrtime(startTime);
-          const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
-          durations.set(countKey, (durations.get(countKey) || 0) + elapsedMilliseconds);
-          count.set(countKey, (count.get(countKey) || 0) + 1);
+          if (logger.isLevelEnabled("debug")) {
+            const countKey = `${method}(${params.map(x => JSON.stringify(x)).join(", ")})`;
+            const hrtimeDiff = process.hrtime(startTime);
+            const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
+            durations.set(countKey, (durations.get(countKey) || 0) + elapsedMilliseconds);
+            count.set(countKey, (count.get(countKey) || 0) + 1);
+          }
 
           resolve(resp.data.result);
         })

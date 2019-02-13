@@ -30,7 +30,6 @@ export type Cache = {
 export function initCache(): Cache {
   return {
     isWriteLocked: false,
-    // lastblock: undefined,
     streamState: new Map(),
     projectStreams: undefined,
     projects: new Map(),
