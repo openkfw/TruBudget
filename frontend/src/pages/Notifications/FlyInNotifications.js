@@ -40,7 +40,7 @@ export default class FlyInNotification extends Component {
           }}
         >
           <CardHeader
-            avatar={<Avatar>{createdBy[0] || "?"}</Avatar>}
+            avatar={<Avatar>{createdBy ? createdBy[0].toString().toUpperCase() : "?"}</Avatar>}
             action={
               <IconButton
                 disabled={!hasAccess(resources)}
