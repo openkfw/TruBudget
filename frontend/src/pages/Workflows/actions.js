@@ -36,8 +36,10 @@ export const WORKFLOW_EDIT = "WORKFLOW_EDIT";
 export const SHOW_WORKFLOW_DETAILS = "SHOW_WORKFLOW_DETAILS";
 export const HIDE_WORKFLOW_DETAILS = "HIDE_WORKFLOW_DETAILS";
 
-export const UPDATE_WORKFLOW_SORT = "UPDATE_WORKFLOW_SORT";
-export const ENABLE_WORKFLOW_SORT = "ENABLE_WORKFLOW_SORT";
+export const ENABLE_WORKFLOW_EDIT = "ENABLE_WORKFLOW_EDIT";
+export const DISABLE_WORKFLOW_EDIT = "DISABLE_WORKFLOW_EDIT";
+
+export const UPDATE_WORKFLOW_ORDER = "UPDATE_WORKFLOW_ORDER";
 
 export const REORDER_WORKFLOW_ITEMS = "REORDER_WORKFLOW_ITEMS";
 export const REORDER_WORKFLOW_ITEMS_SUCCESS = "REORDER_WORKFLOW_ITEMS_SUCCESS";
@@ -117,11 +119,6 @@ export function storePermissions(permissions) {
   };
 }
 
-export function closeDrawer() {
-  return {
-    type: CLOSE_DRAWER
-  };
-}
 export function resetSucceededWorkflowitems() {
   return {
     type: RESET_SUCCEEDED_WORKFLOWITEMS
@@ -276,10 +273,14 @@ export function enableSubProjectBudgetEdit(budgetEditEnabled) {
   };
 }
 
-export function enableWorkflowSort(sortEnabled) {
+export function enableWorkflowEdit() {
   return {
-    type: ENABLE_WORKFLOW_SORT,
-    sortEnabled
+    type: ENABLE_WORKFLOW_EDIT
+  };
+}
+export function disableWorkflowEdit() {
+  return {
+    type: DISABLE_WORKFLOW_EDIT
   };
 }
 export function saveWorkflowItemsBeforeSort(workflowItems) {
@@ -301,9 +302,9 @@ export function reorderWorkflowItems(projectId, subprojectId, workflowItems) {
   };
 }
 
-export function updateWorkflowSortOnState(workflowItems) {
+export function updateWorkflowOrderOnState(workflowItems) {
   return {
-    type: UPDATE_WORKFLOW_SORT,
+    type: UPDATE_WORKFLOW_ORDER,
     workflowItems
   };
 }

@@ -1,53 +1,46 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import { toJS } from "../../helper";
+import strings from "../../localizeStrings";
+import { canAssignSubProject, canCloseSubProject, canViewSubProjectPermissions } from "../../permissions";
 import globalStyles from "../../styles";
-
-import {
-  fetchWorkflowItems,
-  showCreateDialog,
-  showWorkflowDetails,
-  updateWorkflowSortOnState,
-  enableWorkflowSort,
-  storeWorkflowType,
-  reorderWorkflowItems,
-  enableSubProjectBudgetEdit,
-  storeSubProjectAmount,
-  postSubProjectEdit,
-  isWorkflowApprovalRequired,
-  fetchAllSubprojectDetails,
-  showWorkflowItemPermissions,
-  closeWorkflowItem,
-  showSubProjectAssignee,
-  fetchSubprojectHistory,
-  showEditDialog,
-  closeSubproject,
-  hideWorkflowDetails,
-  hideWorkflowDialog,
-  saveWorkflowItemsBeforeSort,
-  liveUpdateSubproject,
-  storeWorkflowItemsSelected,
-  storePermissions,
-  showWorkflowItemPreview,
-  closeDrawer,
-  storeWorkflowItemsAssignee
-} from "./actions";
-
 import { addDocument } from "../Documents/actions";
-
+import LiveUpdates from "../LiveUpdates/LiveUpdates";
+import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
 import { showHistory } from "../Notifications/actions";
-import Workflow from "./Workflow";
+import {
+  closeSubproject,
+  closeWorkflowItem,
+  enableSubProjectBudgetEdit,
+  fetchAllSubprojectDetails,
+  fetchSubprojectHistory,
+  fetchWorkflowItems,
+  hideWorkflowDetails,
+  hideWorkflowDialog,
+  isWorkflowApprovalRequired,
+  liveUpdateSubproject,
+  postSubProjectEdit,
+  reorderWorkflowItems,
+  saveWorkflowItemsBeforeSort,
+  showCreateDialog,
+  showEditDialog,
+  showSubProjectAssignee,
+  showWorkflowDetails,
+  storeSubProjectAmount,
+  storeWorkflowItemsSelected,
+  storeWorkflowType,
+  updateWorkflowOrderOnState,
+  enableWorkflowEdit,
+  disableWorkflowEdit
+} from "./actions";
 import SubProjectDetails from "./SubProjectDetails";
-import { canViewSubProjectPermissions, canAssignSubProject, canCloseSubProject } from "../../permissions";
-import { toJS } from "../../helper";
-import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
-import strings from "../../localizeStrings";
 import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
-import { fetchUser } from "../Login/actions";
+import Workflow from "./Workflow";
+import WorkflowBatchEditContainer from "./WorkflowBatchEditContainer";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
-import LiveUpdates from "../LiveUpdates/LiveUpdates";
-import WorkflowEditDrawer from "./WorkflowEditDrawer";
+import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -66,7 +59,7 @@ class WorkflowContainer extends Component {
   componentWillUnmount() {
     this.props.hideWorkflowDetails();
     this.props.hideWorkflowDialog();
-    this.props.disableWorkflowSort();
+    this.props.disableWorkflowEdit();
     this.props.resetPermissions();
     this.props.deselectWorkflowItems();
     this.props.resetAssignee();
@@ -125,7 +118,7 @@ class WorkflowContainer extends Component {
             offset={this.props.offset}
             limit={this.props.limit}
           />
-          <WorkflowEditDrawer {...this.props} />
+          <WorkflowBatchEditContainer projectId={this.projectId} subprojectId={this.subprojectId} />
         </div>
       </div>
     );
@@ -138,7 +131,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showCreateDialog: () => dispatch(showCreateDialog()),
     updateSubProject: (pId, sId) => dispatch(liveUpdateSubproject(pId, sId)),
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
-    showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
     openHistory: (projectId, subprojectId, offset, limit) => {
       dispatch(fetchSubprojectHistory(projectId, subprojectId, offset, limit, true));
       dispatch(showHistory());
@@ -147,14 +139,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
-    storeAssignee: assignee => dispatch(storeWorkflowItemsAssignee(assignee)),
-    resetAssignee: () => dispatch(storeWorkflowItemsAssignee("")),
+
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
 
-    updateWorkflowSortOnState: items => dispatch(updateWorkflowSortOnState(items)),
-    enableWorkflowSort: () => dispatch(enableWorkflowSort(true)),
-    disableWorkflowSort: () => dispatch(enableWorkflowSort(false)),
+    updateWorkflowOrderOnState: items => dispatch(updateWorkflowOrderOnState(items)),
+    enableWorkflowEdit: () => dispatch(enableWorkflowEdit()),
+    disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),
     reorderWorkflowItems: (projectId, subProjectId, workflowItems) =>
       dispatch(reorderWorkflowItems(projectId, subProjectId, workflowItems)),
     storeWorkflowType: value => dispatch(storeWorkflowType(value)),
@@ -169,12 +160,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showEditDialog: (id, displayName, amount, amountType, description, currency, documents) =>
       dispatch(showEditDialog(id, displayName, amount, amountType, description, currency, documents)),
     saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
-    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
-    deselectWorkflowItems: () => dispatch(storeWorkflowItemsSelected([])),
-    storePermissions: permissions => dispatch(storePermissions(permissions)),
-    showWorkflowItemPreview: () => dispatch(showWorkflowItemPreview()),
     addDocument: (payload, name) => dispatch(addDocument(payload, name)),
-    resetPermissions: () => dispatch(storePermissions({}))
+    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems))
   };
 };
 
@@ -188,8 +175,6 @@ const mapStateToProps = state => {
     currency: state.getIn(["workflow", "currency"]),
     assignee: state.getIn(["workflow", "assignee"]),
     created: state.getIn(["workflow", "created"]),
-    permissions: state.getIn(["workflow", "permissions"]),
-    tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
@@ -206,8 +191,7 @@ const mapStateToProps = state => {
     users: state.getIn(["login", "user"]),
     offset: state.getIn(["workflow", "offset"]),
     limit: state.getIn(["workflow", "limit"]),
-    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
-    workflowAssignee: state.getIn(["workflow", "workflowAssignee"])
+    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"])
   };
 };
 

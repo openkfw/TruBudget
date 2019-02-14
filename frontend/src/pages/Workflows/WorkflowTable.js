@@ -49,7 +49,7 @@ const renderSortButton = props => (
     variant="contained"
     color="primary"
     disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
-    onClick={() => handleEnableWorkflowSort(props)}
+    onClick={() => handleEnableWorkflowEdit(props)}
     style={{
       position: "relative",
       left: "12px",
@@ -63,7 +63,7 @@ const renderSortButton = props => (
 
 const renderSubmitSortButton = props => (
   <Button
-    onClick={() => handleSubmitSort(props)}
+    onClick={() => handleSubmitEdit(props)}
     style={{
       position: "relative",
       left: "5px",
@@ -74,31 +74,28 @@ const renderSubmitSortButton = props => (
   </Button>
 );
 
-const handleEnableWorkflowSort = props => {
+const handleEnableWorkflowEdit = props => {
   const workflowItemIds = [];
   props.workflowItems.map(item => workflowItemIds.push(item.data.id));
   props.saveWorkflowItemsBeforeSort(workflowItemIds);
-  props.enableWorkflowSort();
+  props.enableWorkflowEdit();
 };
 
-const handleSubmitSort = props => {
+const handleSubmitEdit = props => {
   const currentWorkflowItemIds = [];
-  props.deselectWorkflowItems();
-  props.resetPermissions();
-  props.resetAssignee();
   props.workflowItems.map(item => currentWorkflowItemIds.push(item.data.id));
   const hasChanged =
     currentWorkflowItemIds.find((id, index) => props.workflowItemsBeforeSort[index] !== id) !== undefined;
   if (hasChanged) {
     props.reorderWorkflowItems(props.projectId, props.subProjectId, props.workflowItems);
   }
-  props.disableWorkflowSort();
+  props.disableWorkflowEdit();
 };
 
 const createWorkflowItems = ({ workflowItems, ...props }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     workflowItems = arrayMove(workflowItems, oldIndex, newIndex);
-    props.updateWorkflowSortOnState(workflowItems);
+    props.updateWorkflowOrderOnState(workflowItems);
   };
 
   return <WorkflowList lockAxis={"y"} workflowItems={workflowItems} onSortEnd={onSortEnd} {...props} />;

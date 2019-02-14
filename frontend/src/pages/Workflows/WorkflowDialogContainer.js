@@ -1,28 +1,25 @@
+import { withStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import withInitialLoading from "../Loading/withInitialLoading";
+
 import { toJS } from "../../helper";
-import { withStyles } from "@material-ui/core";
-import WorkflowDialog from "./WorkflowDialog";
-import WorkflowPreviewDialog from "./WorkflowPreviewDialog";
+import withInitialLoading from "../Loading/withInitialLoading";
+import { storeSnackbarMessage } from "../Notifications/actions";
 import {
   createWorkflowItem,
   editWorkflowItem,
-  storeWorkflowComment,
-  storeWorkflowCurrency,
+  hideWorkflowDialog,
+  hideWorkflowItemPreview,
+  setCurrentStep,
   storeWorkflowAmount,
   storeWorkflowAmountType,
-  storeWorkflowName,
-  storeWorkflowStatus,
-  hideWorkflowDialog,
-  setCurrentStep,
+  storeWorkflowComment,
+  storeWorkflowCurrency,
   storeWorkflowDocument,
-  hideWorkflowItemPreview,
-  grantWorkflowItemPermission,
-  assignWorkflowItem,
-  resetSucceededWorkflowitems
+  storeWorkflowName,
+  storeWorkflowStatus
 } from "./actions";
-import { storeSnackbarMessage } from "../Notifications/actions";
+import WorkflowDialog from "./WorkflowDialog";
 
 const styles = {};
 
@@ -46,14 +43,11 @@ class WorkflowDialogContainer extends Component {
 
   render() {
     return (
-      <div>
-        <WorkflowDialog
-          createWorkflowItem={this.createWorkflowItem}
-          onDialogCancel={this.props.hideWorkflowDialog}
-          {...this.props}
-        />
-        <WorkflowPreviewDialog {...this.props} />
-      </div>
+      <WorkflowDialog
+        createWorkflowItem={this.createWorkflowItem}
+        onDialogCancel={this.props.hideWorkflowDialog}
+        {...this.props}
+      />
     );
   }
 }
@@ -67,12 +61,7 @@ const mapStateToProps = state => {
     dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     currentStep: state.getIn(["workflow", "currentStep"]),
-    currency: state.getIn(["workflow", "currency"]),
-    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
-    tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
-    workflowAssignee: state.getIn(["workflow", "workflowAssignee"]),
-    succeededWorkflowAssign: state.getIn(["workflow", "succeededWorkflowAssign"]),
-    succeededWorkflowGrant: state.getIn(["workflow", "succeededWorkflowGrant"])
+    currency: state.getIn(["workflow", "currency"])
   };
 };
 
@@ -103,12 +92,7 @@ const mapDispatchToProps = dispatch => {
     hideWorkflowItemPreview: () => dispatch(hideWorkflowItemPreview()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name)),
-    grantWorkflowItemPermission: (pId, sId, wId, permission, user) =>
-      dispatch(grantWorkflowItemPermission(pId, sId, wId, permission, user, true)),
-    assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
-      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
-    resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems())
+    storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name))
   };
 };
 

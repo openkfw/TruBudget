@@ -10,8 +10,6 @@ import {
   CREATE_WORKFLOW_SUCCESS,
   EDIT_WORKFLOW_ITEM_SUCCESS,
   SHOW_WORKFLOW_DETAILS,
-  UPDATE_WORKFLOW_SORT,
-  ENABLE_WORKFLOW_SORT,
   ENABLE_BUDGET_EDIT,
   SUBPROJECT_AMOUNT,
   WORKFLOW_CREATION_STEP,
@@ -37,7 +35,10 @@ import {
   ASSIGN_WORKFLOWITEM_SUCCESS,
   STORE_WORKFLOW_ASSIGNEE,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
-  RESET_SUCCEEDED_WORKFLOWITEMS
+  RESET_SUCCEEDED_WORKFLOWITEMS,
+  ENABLE_WORKFLOW_EDIT,
+  DISABLE_WORKFLOW_EDIT,
+  UPDATE_WORKFLOW_ORDER
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -69,7 +70,6 @@ const defaultState = fromJS({
   showWorkflowPermissions: false,
   workflowItemReference: "",
   permissions: {},
-  tempDrawerPermissions: {},
   creationDialogShown: false,
   showDetails: false,
   showDetailsItemId: "",
@@ -85,14 +85,15 @@ const defaultState = fromJS({
   historyItems: [],
   isHistoryLoading: false,
   showWorkflowAssignee: false,
-  workflowAssignee: "",
   showSubProjectAssignee: false,
   editDialogShown: false,
   dialogTitle: strings.workflow.add_item,
   previewDialogShown: false,
   selectedWorkflowItems: [],
   succeededWorkflowAssign: [],
-  succeededWorkflowGrant: []
+  succeededWorkflowGrant: [],
+  tempDrawerPermissions: {},
+  tempDrawerAssignee: ""
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -205,16 +206,23 @@ export default function detailviewReducer(state = defaultState, action) {
         showDetails: false,
         showDetailsItemId: defaultState.getIn("showDetailsItemId")
       });
-    case ENABLE_WORKFLOW_SORT:
-      return state.set("workflowSortEnabled", action.sortEnabled);
-    case UPDATE_WORKFLOW_SORT:
+    case ENABLE_WORKFLOW_EDIT:
+      return state.set("workflowSortEnabled", true);
+    case DISABLE_WORKFLOW_EDIT:
+      return state.merge({
+        workflowSortEnabled: defaultState.get("workflowSortEnabled"),
+        selectedWorkflowItems: defaultState.get("selectedWorkflowItems"),
+        tempDrawerPermissions: defaultState.get("tempDrawerPermissions"),
+        tempDrawerAssignee: defaultState.get("tempDrawerAssignee")
+      });
+    case UPDATE_WORKFLOW_ORDER:
       return state.merge({
         workflowItems: fromJS(action.workflowItems)
       });
     case ENABLE_BUDGET_EDIT:
       return state.set("subProjectBudgetEditEnabled", action.budgetEditEnabled);
     case STORE_WORKFLOW_ASSIGNEE:
-      return state.set("workflowAssignee", action.assignee);
+      return state.set("tempDrawerAssignee", action.assignee);
     case WORKFLOWITEMS_SELECTED:
       return state.set("selectedWorkflowItems", fromJS(action.workflowItems));
     case SHOW_SUBPROJECT_ASSIGNEES:

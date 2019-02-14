@@ -26,35 +26,31 @@ const WorkflowEditDrawer = props => {
     showWorkflowItemPreview,
     storePermissions,
     users,
-    disableWorkflowSort,
-    deselectWorkflowItems,
-    resetPermissions,
-    workflowAssignee,
-    storeAssignee,
-    resetAssignee
+    disableWorkflowEdit,
+    tempDrawerAssignee,
+    tempDrawerPermissions,
+    storeAssignee
   } = props;
-  const permissions = _isEmpty(props.tempDrawerPermissions) ? getDefaultPermissions() : props.tempDrawerPermissions;
+  const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
+
   const assign = assignee => {
     storeAssignee(assignee);
   };
+
   const grantPermission = (_, intent, user) => {
     if (!permissions[intent].includes(user)) {
       permissions[intent].push(user);
     }
     storePermissions(permissions);
   };
+
   const revokePermission = (_, intent, user) => {
     if (permissions[intent].includes(user)) {
       permissions[intent].splice(permissions[intent].indexOf(user), 1);
     }
     storePermissions(permissions);
   };
-  const closeDrawer = () => {
-    disableWorkflowSort();
-    deselectWorkflowItems();
-    resetPermissions();
-    resetAssignee();
-  };
+
   return (
     <Drawer
       open={selectedWorkflowItems !== undefined && selectedWorkflowItems.length !== 0}
@@ -65,19 +61,20 @@ const WorkflowEditDrawer = props => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => showWorkflowItemPreview()}
+          onClick={() => showWorkflowItemPreview()} // TODO maybe here call api
           style={{
             float: "left",
             top: "10px",
             left: "15px"
           }}
         >
+          {/* // TODO strings */}
           Update All
         </Button>
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => closeDrawer()}
+          onClick={() => disableWorkflowEdit()}
           style={{
             position: "right",
             left: "205px",
@@ -85,6 +82,7 @@ const WorkflowEditDrawer = props => {
             top: "10px"
           }}
         >
+          {/* // TODO strings */}
           Cancel
         </Button>
       </div>
@@ -93,13 +91,14 @@ const WorkflowEditDrawer = props => {
         color="primary"
         variant="subtitle1"
       >
+        {/* // TODO strings */}
         You have selected {selectedWorkflowItems.length} workflowitems
       </Typography>
       <div>
         <Card style={{ marginTop: "12px", marginBottom: "12px" }}>
           <CardHeader subheader="Assignee" />
           <CardContent>
-            <AssigneeSelection assigneeId={workflowAssignee} disabled={false} users={users} assign={assign} />
+            <AssigneeSelection assigneeId={tempDrawerAssignee} disabled={false} users={users} assign={assign} />
           </CardContent>
         </Card>
         <PermissionsTable
