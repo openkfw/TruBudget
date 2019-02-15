@@ -1,7 +1,7 @@
 import React from "react";
 
 import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import ContentAdd from "@material-ui/icons/Add";
 import HistoryIcon from "@material-ui/icons/Reorder";
 
@@ -9,9 +9,11 @@ import WorkflowTable from "./WorkflowTable";
 import { canCreateWorkflowItems } from "../../permissions";
 
 const Workflow = props => {
-  const subprojectStatus = props.status
+  const subprojectStatus = props.status;
   const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents);
-  const createDisabled = props.workflowSortEnabled ? props.workflowSortEnabled : !allowedToCreateWorkflows || subprojectStatus === "closed"
+  const createDisabled = props.workflowSortEnabled
+    ? props.workflowSortEnabled
+    : !allowedToCreateWorkflows || subprojectStatus === "closed";
   return (
     <div
       style={{
@@ -34,24 +36,22 @@ const Workflow = props => {
         }}
       >
         {/* Button is disabled either if the user is not allowed to edit or the user is in "sort" mode */}
-        <Button
+        <Fab
           disabled={createDisabled}
           id="createWorkflowItem"
           color="primary"
           onClick={() => props.showCreateDialog()}
-          variant="fab"
           style={{
             position: "relative"
           }}
         >
           <ContentAdd />
-        </Button>
-        <Button
-          mini={true}
+        </Fab>
+        <Fab
+          size="small"
           disabled={props.workflowSortEnabled}
           onClick={() => props.openHistory(props.projectId, props.subProjectId, props.offset, props.limit)}
           color="default"
-          variant="fab"
           style={{
             position: "relative",
             marginTop: "8px",
@@ -59,7 +59,7 @@ const Workflow = props => {
           }}
         >
           <HistoryIcon />
-        </Button>
+        </Fab>
       </div>
     </div>
   );

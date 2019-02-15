@@ -4,7 +4,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import GroupTable from "./GroupTable";
-import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import Add from "@material-ui/icons/Add";
 import DialogContainer from "./DialogContainer";
 import strings from "../../localizeStrings";
@@ -36,10 +36,9 @@ const styles = {
 };
 const Users = props => {
   const { tabIndex, setTabIndex, showDashboardDialog, allowedIntents } = props;
-  const isCreateButtonDisabled = tabIndex === 0 ?
-    ! allowedIntents.includes("global.createUser") :
-    ! allowedIntents.includes("global.createGroup");
-  const onClick = () => tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup");
+  const isCreateButtonDisabled =
+    tabIndex === 0 ? !allowedIntents.includes("global.createUser") : !allowedIntents.includes("global.createGroup");
+  const onClick = () => (tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup"));
   const permissionIconDisplayed = allowedIntents.includes("global.listPermissions");
   return (
     <div id="userdashboard" style={styles.container}>
@@ -56,16 +55,16 @@ const Users = props => {
           </Tabs>
         </AppBar>
         <div style={styles.createButtonContainer}>
-          <Button disabled={isCreateButtonDisabled}
+          <Fab
+            disabled={isCreateButtonDisabled}
             data-test="create"
             onClick={onClick}
             color="primary"
             style={styles.createButton}
-            variant="fab"
             aria-label="Add"
           >
             <Add />
-          </Button>
+          </Fab>
         </div>
         {tabIndex === 0 && <UsersTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
         {tabIndex === 1 && <GroupTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}

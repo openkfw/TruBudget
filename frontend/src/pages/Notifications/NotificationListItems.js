@@ -5,7 +5,7 @@ import Unread from "@material-ui/icons/Email";
 import Read from "@material-ui/icons/MailOutline";
 import ListItemText from "@material-ui/core/ListItemText";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
-import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import Divider from "@material-ui/core/Divider";
 
 import moment from "moment";
@@ -92,15 +92,14 @@ const NotificationListItems = ({
             secondary={createdAt}
           />
           <div className={classes.button}>
-            <Button
-              mini
+            <Fab
+              size="small"
               disabled={!hasAccess(resources)}
               color="primary"
-              variant="fab"
               onClick={() => history.push(redirectUri)}
             >
               <LaunchIcon />
-            </Button>
+            </Fab>
           </div>
         </ListItem>
       </div>
