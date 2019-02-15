@@ -1,12 +1,12 @@
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
+import { MultichainClient } from "../../service/Client.h";
+import { Event } from "../../service/event";
 import * as Subproject from "../model/Subproject";
 
 export const assignSubproject = async (

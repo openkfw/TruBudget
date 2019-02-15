@@ -2,9 +2,9 @@ import Intent from "../authz/intents";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
-import { MultichainClient } from "../multichain/Client.h";
-import { Event, throwUnsupportedEventVersion } from "../multichain/event";
-import * as Liststreamkeyitems from "../multichain/liststreamkeyitems";
+import { MultichainClient } from "../service/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../service/event";
+import * as Liststreamkeyitems from "../service/liststreamkeyitems";
 
 const groupsStreamName = "groups";
 

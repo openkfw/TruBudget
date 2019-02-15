@@ -1,6 +1,6 @@
 import axios from "axios";
 import { HttpResponse } from "../httpd/lib";
-import { MultichainClient } from "../multichain/Client.h";
+import { MultichainClient } from "../service/Client.h";
 
 const bcVersionMetaData = async (multichainHost, backupApiPort) => {
   const { data } = await axios.get(`http://${multichainHost}:${backupApiPort}/version`);

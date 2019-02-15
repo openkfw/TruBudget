@@ -1,8 +1,6 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain/Client.h";
+import { MultichainClient } from "../../service/Client.h";
 import * as Notification from "../model/Notification";
-
-
 
 export const getNotificationList = async (
   multichain: MultichainClient,

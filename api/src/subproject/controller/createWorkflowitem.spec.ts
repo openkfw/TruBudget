@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { AuthenticatedRequest } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain/Client.h";
+
+import { MultichainClient } from "../../service/Client.h";
 import { createWorkflowitem } from "./createWorkflowitem";
 
 describe("subproject.createWorkflowitem", () => {

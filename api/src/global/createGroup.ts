@@ -6,7 +6,7 @@ import * as Group from "../group";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 import { isNonemptyString, isObject, value } from "../lib/validation";
-import { MultichainClient } from "../multichain/Client.h";
+import { MultichainClient } from "../service/Client.h";
 
 export const createGroup = async (
   multichain: MultichainClient,

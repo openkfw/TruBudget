@@ -1,6 +1,4 @@
-import { MultichainClient } from "../multichain/Client.h";
 import * as Workflowitem from "../workflowitem/model/Workflowitem";
-import logger from "../lib/logger";
 
 export function sortWorkflowitems(
   workflowitems: Workflowitem.WorkflowitemResource[],

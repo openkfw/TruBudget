@@ -15,13 +15,13 @@ import { AuthToken } from "./authz/token";
 import { Permissions } from "./authz/types";
 import * as Permission from "./global";
 import * as HTTP from "./httpd";
-import * as Multichain from "./multichain";
-import * as Group from "./multichain/groups";
+import * as Multichain from "./service";
+import * as Group from "./service/groups";
 import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import { tellCacheWhatHappened } from "./multichain";
+import { tellCacheWhatHappened } from "./service";
 
 export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {

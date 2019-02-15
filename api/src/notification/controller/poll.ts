@@ -1,7 +1,6 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain/Client.h";
+import { MultichainClient } from "../../service/Client.h";
 import * as Notification from "../model/Notification";
-import { raw } from "body-parser";
 
 export const getNewestNotifications = async (
   multichain: MultichainClient,
@@ -18,14 +17,8 @@ export const getNewestNotifications = async (
   if (beforeId === "0") {
     index = rawNotifications.length;
   } else {
-    index = rawNotifications.findIndex(
-      notification => notification.notificationId === beforeId,
-    );
+    index = rawNotifications.findIndex(notification => notification.notificationId === beforeId);
   }
-
-
-
-
 
   const notifications: Notification.NotificationDto[] = [];
   if (index > 0) {

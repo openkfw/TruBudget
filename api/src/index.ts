@@ -5,11 +5,11 @@ import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
-import * as Multichain from "./multichain";
-import { randomString } from "./multichain/hash";
-import { ConnectionSettings } from "./multichain/RpcClient.h";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStream } from "./organization/organization";
+import * as Multichain from "./service";
+import { randomString } from "./service/hash";
+import { ConnectionSettings } from "./service/RpcClient.h";
 
 const URL_PREFIX = "/api";
 /*

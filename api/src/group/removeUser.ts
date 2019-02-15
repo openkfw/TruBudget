@@ -3,9 +3,8 @@ import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import * as Global from "../global";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
-import logger from "../lib/logger";
 import { isNonemptyString, isObject, value } from "../lib/validation";
-import { MultichainClient } from "../multichain/Client.h";
+import { MultichainClient } from "../service/Client.h";
 
 export async function removeUserFromGroup(
   multichain: MultichainClient,

@@ -3,23 +3,18 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { Permissions } from "../../authz/types";
-import {
-  AuthenticatedRequest,
-  HttpResponse,
-  throwParseError,
-  throwParseErrorIfUndefined,
-} from "../../httpd/lib";
+import { HttpResponse, throwParseError, throwParseErrorIfUndefined } from "../../httpd/lib";
 import logger from "../../lib/logger";
 import {
   asyncValue,
+  isDate,
   isNonemptyString,
+  isNumber,
   isUserOrUndefined,
   value,
-  isNumber,
-  isDate,
 } from "../../lib/validation";
-import { MultichainClient } from "../../multichain/Client.h";
-import { randomString } from "../../multichain/hash";
+import { MultichainClient } from "../../service/Client.h";
+import { randomString } from "../../service/hash";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import { Document } from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";

@@ -9,8 +9,8 @@ import { SubprojectIdAlreadyExistsError } from "../../error";
 import { HttpResponse, throwParseError, throwParseErrorIfUndefined } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
 import { isDate, isNonemptyString, isNumber, isUserOrUndefined, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain/Client.h";
-import { randomString } from "../../multichain/hash";
+import { MultichainClient } from "../../service/Client.h";
+import { randomString } from "../../service/hash";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
 
