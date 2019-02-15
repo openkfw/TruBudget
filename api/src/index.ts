@@ -1,6 +1,5 @@
 import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
-import * as HttpdMultichainAdapter from "./HttpdMultichainAdapter";
 import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -9,6 +8,7 @@ import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStream } from "./organization/organization";
 import * as Multichain from "./service";
 import { randomString } from "./service/hash";
+import * as HttpdMultichainAdapter from "./service/HttpdMultichainAdapter";
 import { ConnectionSettings } from "./service/RpcClient.h";
 
 const URL_PREFIX = "/api";

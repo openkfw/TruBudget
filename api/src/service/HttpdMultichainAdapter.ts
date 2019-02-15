@@ -9,19 +9,19 @@
  * Also note that arguments should be treated as immutable.
  *
  */
-import { getAllowedIntents } from "./authz";
-import Intent from "./authz/intents";
-import { AuthToken } from "./authz/token";
-import { Permissions } from "./authz/types";
-import * as Permission from "./global";
-import * as HTTP from "./httpd";
-import * as Multichain from "./service";
-import * as Group from "./service/groups";
-import * as Notification from "./notification";
-import * as Project from "./project";
-import * as Subproject from "./subproject";
-import * as Workflowitem from "./workflowitem";
-import { tellCacheWhatHappened } from "./service";
+import { tellCacheWhatHappened } from ".";
+import { getAllowedIntents } from "../authz";
+import Intent from "../authz/intents";
+import { AuthToken } from "../authz/token";
+import { Permissions } from "../authz/types";
+import * as Permission from "../global";
+import * as HTTP from "../httpd";
+import * as Notification from "../notification";
+import * as Project from "../project";
+import * as Multichain from "../service";
+import * as Group from "../service/groups";
+import * as Subproject from "../subproject";
+import * as Workflowitem from "../workflowitem";
 
 export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
