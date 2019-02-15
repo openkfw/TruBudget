@@ -4,7 +4,7 @@ import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../multichain/event";
-import * as Liststreamkeyitems from "../multichain/responses/liststreamkeyitems";
+import * as Liststreamkeyitems from "../multichain/liststreamkeyitems";
 
 const groupsStreamName = "groups";
 

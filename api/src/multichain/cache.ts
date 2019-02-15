@@ -4,8 +4,8 @@ import logger from "../lib/logger";
 import { MultichainClient, Stream } from "./Client.h";
 import { ConnToken } from "./conn";
 import * as Eventsourcing from "./eventsourcing";
+import { Item } from "./liststreamitems";
 import * as ProjectEvents from "./ProjectEvents";
-import { Item } from "./responses/liststreamitems";
 
 // Currently the project-stream cache doesn't quite work:
 // Projects aren't updated as long as the items count in the project-stream list doesn't

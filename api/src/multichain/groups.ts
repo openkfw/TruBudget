@@ -4,7 +4,7 @@ import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
-import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import * as Liststreamkeyitems from "./liststreamkeyitems";
 
 //
 // public

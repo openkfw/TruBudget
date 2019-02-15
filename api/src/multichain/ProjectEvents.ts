@@ -1,7 +1,7 @@
 import uuid = require("uuid");
 
 import Intent from "../authz/intents";
-import { Permissions, People } from "../authz/types";
+import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
@@ -10,8 +10,8 @@ import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import { Issuer } from "./issuer";
-import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
-import { Item } from "./responses/liststreamkeyitems";
+import * as Liststreamkeyitems from "./liststreamkeyitems";
+import { Item } from "./liststreamkeyitems";
 
 type ResourceType = "project" | "subproject" | "workflowitem";
 

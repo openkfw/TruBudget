@@ -6,7 +6,7 @@ import logger from "../../lib/logger";
 import { ResourceType } from "../../lib/resourceTypes";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
-import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import * as Liststreamkeyitems from "../../multichain/liststreamkeyitems";
 import * as Project from "../../project/model/Project";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";

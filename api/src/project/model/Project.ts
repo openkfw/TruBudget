@@ -13,7 +13,7 @@ import logger from "../../lib/logger";
 import { asMapKey } from "../../multichain/Client";
 import { MultichainClient } from "../../multichain/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
-import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import * as Liststreamkeyitems from "../../multichain/liststreamkeyitems";
 
 export interface AugmentedEvent extends Event {
   snapshot: {
