@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@kubernetes/client-node": "^0.7.2",
+    "@kubernetes/client-node": "^0.8.1",
     "async-each": "^1.0.1",
     "axios": "^0.17.1",
     "body-parser": "^1.18.3",
@@ -36,6 +36,6 @@
   "devDependencies": {
     "eslint": "^5.13.0",
     "jshint": "^2.9.7",
-    "nyc": "^13.1.0"
+    "nyc": "^13.3.0"
   }
 }
