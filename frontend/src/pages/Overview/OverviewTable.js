@@ -4,7 +4,7 @@ import _isEmpty from "lodash/isEmpty";
 
 import { withStyles } from "@material-ui/core/styles";
 import AmountIcon from "@material-ui/icons/AccountBalance";
-import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -96,16 +96,15 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
         >
           <Tooltip id="tooltip-pview" title={strings.common.view}>
             <div>
-              <Button
+              <Fab
                 className={classes.button}
                 disabled={!canViewProjectDetails(allowedIntents)}
                 color="primary"
                 onClick={() => history.push("/projects/" + id)}
-                variant="fab"
                 data-test={`project-view-button-${index}`}
               >
                 <ViewIcon />
-              </Button>
+              </Fab>
             </div>
           </Tooltip>
         </CardActions>
@@ -205,17 +204,16 @@ const OverviewTable = props => {
           <CardActions>
             <Tooltip id="tooltip-pcreate" title={strings.common.create}>
               <div>
-                <Button
+                <Fab
                   className={props.classes.button}
                   aria-label="create"
                   disabled={!canCreateProject(props.allowedIntents)}
                   onClick={() => props.showCreationDialog()}
-                  variant="fab"
                   color="primary"
                   data-test="create-project-button"
                 >
                   <ContentAdd />
-                </Button>
+                </Fab>
               </div>
             </Tooltip>
           </CardActions>

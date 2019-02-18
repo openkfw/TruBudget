@@ -1,6 +1,6 @@
 import React from "react";
 
-import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import Card from "@material-ui/core/Card";
 import ContentAdd from "@material-ui/icons/Add";
 import HistoryIcon from "@material-ui/icons/Reorder";
@@ -29,10 +29,9 @@ const SubProjects = props => {
           right: "-26px"
         }}
       >
-        <Button
+        <Fab
           disabled={!props.canCreateSubProject || props.projectStatus === "closed"}
           onClick={props.showSubprojectDialog}
-          variant="fab"
           color="primary"
           style={{
             position: "relative",
@@ -41,18 +40,17 @@ const SubProjects = props => {
           data-test="subproject-create-button"
         >
           <ContentAdd />
-        </Button>
-        <Button
-          mini={true}
+        </Fab>
+        <Fab
+          size="small"
           onClick={() => props.openHistory(props.projectId, props.offset, props.limit)}
-          variant="fab"
           style={{
             position: "relative",
             marginTop: "8px"
           }}
         >
           <HistoryIcon />
-        </Button>
+        </Fab>
       </div>
     </div>
   );
