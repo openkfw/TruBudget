@@ -203,6 +203,14 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
   const projectStreams = await getProjectStreams(conn, maybeOnlySpecificProject);
 
   for (const { name: streamName, items: nStreamItems } of projectStreams) {
+    if (nStreamItems === 0) {
+      if (logger.isLevelEnabled("debug")) {
+        const stream = projectStreams.find(x => x.name === streamName);
+        logger.debug({ stream }, `Found empty stream ${streamName}`);
+      }
+      continue;
+    }
+
     const cursor = cache.streamState.get(streamName);
 
     // If the number of items hasn't changed, we don't need to check for changes. Even if
