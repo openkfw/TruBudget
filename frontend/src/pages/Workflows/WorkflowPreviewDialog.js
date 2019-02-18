@@ -11,7 +11,6 @@ import { withStyles } from "@material-ui/core";
 import strings from "../../localizeStrings";
 
 import PreviewDialog from "../Common/PreviewDialog";
-import { revokeWorkflowItemPermission } from "./actions";
 
 const styles = {
   cellFormat: {

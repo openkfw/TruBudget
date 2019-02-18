@@ -60,9 +60,6 @@ class WorkflowContainer extends Component {
     this.props.hideWorkflowDetails();
     this.props.hideWorkflowDialog();
     this.props.disableWorkflowEdit();
-    this.props.resetPermissions();
-    this.props.deselectWorkflowItems();
-    this.props.resetAssignee();
   }
 
   closeSubproject = () => {

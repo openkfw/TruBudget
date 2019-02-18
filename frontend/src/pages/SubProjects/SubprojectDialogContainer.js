@@ -15,14 +15,12 @@ import {
   editSubProjects
 } from "./actions";
 import { storeSnackbarMessage } from "../Notifications/actions";
-import SubprojectPreviewDialog from "./SubprojectPreviewDialog";
 
 class SubprojectDialogContainer extends Component {
   render() {
     return (
       <div>
         <SubprojectDialog {...this.props} />
-        <SubprojectPreviewDialog {...this.props} />
       </div>
     );
   }
