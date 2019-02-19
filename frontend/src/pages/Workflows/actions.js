@@ -7,6 +7,8 @@ export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 export const SHOW_WORKFLOW_PREVIEW = "SHOW_WORKFLOW_PREVIEW";
 export const HIDE_WORKFLOW_PREVIEW = "HIDE_WORKFLOW_PREVIEW";
 
+export const STORE_WORKFLOWACTIONS = "STORE_WORKFLOWACTIONS";
+
 export const SET_WORKFLOW_DRAWER_PERMISSIONS = "SET_WORKFLOW_DRAWER_PERMISSIONS";
 
 export const CLOSE_DRAWER = "CLOSE_DRAWER";
@@ -16,6 +18,9 @@ export const WORKFLOWITEMS_SELECTED = "WORKFLOWITEMS_SELECTED";
 export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
 export const SET_HISTORY_OFFSET = "SET_HISTORY_OFFSET";
+
+export const SUBMIT_BATCH_FOR_WORKFLOW = "SUBMIT_BATCH_FOR_WORKFLOW";
+export const SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS = "SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS";
 
 export const WORKFLOW_NAME = "WORKFLOW_NAME";
 export const WORKFLOW_TYPE = "WORKFLOW_TYPE";
@@ -136,9 +141,13 @@ export function fetchSubprojectHistory(projectId, subprojectId, offset, limit, s
   };
 }
 
-export function showWorkflowItemPreview() {
+export function showWorkflowItemPreview(projectId, resources, selectedAssignee, permissions) {
   return {
-    type: SHOW_WORKFLOW_PREVIEW
+    type: SHOW_WORKFLOW_PREVIEW,
+    projectId,
+    ressources: resources,
+    selectedAssignee,
+    permissions
   };
 }
 
@@ -316,6 +325,12 @@ export function fetchWorkflowItems(streamName) {
   };
 }
 
+export function storeWorkflowActions(actions) {
+  return {
+    type: STORE_WORKFLOWACTIONS,
+    actions
+  };
+}
 export function showCreateDialog() {
   return {
     type: SHOW_WORKFLOW_CREATE
@@ -450,6 +465,16 @@ export function editWorkflowItem(projectId, subprojectId, workflowitemId, change
     subprojectId,
     workflowitemId,
     changes
+  };
+}
+
+export function submitBatchForWorkflow(projectId, subprojectId, actions, showLoading = true) {
+  return {
+    type: SUBMIT_BATCH_FOR_WORKFLOW,
+    projectId,
+    subprojectId,
+    actions,
+    showLoading
   };
 }
 

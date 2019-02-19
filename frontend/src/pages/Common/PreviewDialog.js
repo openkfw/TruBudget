@@ -15,32 +15,53 @@ const styles = {
   }
 };
 
-const getDialogActions = (props, handleCancel, handleSubmit, submitButtonText) => {
-  const { subProjects } = props;
+const getDialogActions = props => {
+  const { onDialogSubmit, onDialogCancel, onDialogDone, submitButtonText, disableCancelButton, submitDone } = props;
   const cancelButton = (
-    <Button aria-label="cancel" data-test="cancel" color="secondary" onClick={() => handleCancel()}>
+    <Button
+      disabled={disableCancelButton}
+      aria-label="cancel"
+      data-test="cancel"
+      color="secondary"
+      onClick={() => onDialogCancel()}
+    >
       {strings.common.cancel}
     </Button>
   );
   const submitButton = (
-    <Button aria-label="submit" data-test="submit" color="primary" onClick={() => handleSubmit(subProjects)}>
-      {!isEmpty(submitButtonText) ? submitButtonText : strings.common.submit}
+    <Button
+      aria-label="submit"
+      data-test="submit"
+      color="primary"
+      onClick={disableCancelButton ? () => onDialogCancel() : () => onDialogSubmit()}
+    >
+      {submitButtonText}
+    </Button>
+  );
+  const doneButton = (
+    <Button
+      aria-label="done"
+      data-test="done"
+      color="primary"
+      onClick={submitDone ? () => onDialogDone() : () => onDialogCancel()}
+    >
+      {submitButtonText}
     </Button>
   );
 
   const leftActions = <div key="leftactions">{cancelButton}</div>;
-  const rightActions = <div key="rightactions">{submitButton}</div>;
+  const rightActions = <div key="rightactions">{disableCancelButton ? doneButton : submitButton}</div>;
 
   return [leftActions, rightActions];
 };
 
 const PreviewDialog = props => {
-  const { dialogShown, title, classes, onDialogSubmit, onDialogCancel } = props;
+  const { dialogShown, title, classes } = props;
   return (
     <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown} data-test="preview-dialog">
       <DialogTitle> {title}</DialogTitle>
       {props.preview}
-      <DialogActions>{getDialogActions(props, onDialogCancel, onDialogSubmit, strings.common.submit)}</DialogActions>
+      <DialogActions>{getDialogActions(props)}</DialogActions>
     </Dialog>
   );
 };

@@ -29,7 +29,8 @@ const WorkflowEditDrawer = props => {
     disableWorkflowEdit,
     tempDrawerAssignee,
     tempDrawerPermissions,
-    storeAssignee
+    storeAssignee,
+    projectId
   } = props;
   const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
 
@@ -61,7 +62,9 @@ const WorkflowEditDrawer = props => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => showWorkflowItemPreview()} // TODO maybe here call api
+          onClick={() => {
+            return showWorkflowItemPreview(projectId, selectedWorkflowItems, tempDrawerAssignee, tempDrawerPermissions);
+          }}
           style={{
             float: "left",
             top: "10px",

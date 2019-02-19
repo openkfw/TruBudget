@@ -1,6 +1,7 @@
 import { all, put, takeEvery, takeLatest, takeLeading, call, select, delay } from "redux-saga/effects";
 import { saveAs } from "file-saver/FileSaver";
 import Api from "./api.js";
+import _isEmpty from "lodash/isEmpty";
 import {
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
@@ -81,7 +82,11 @@ import {
   CLOSE_SUBPROJECT,
   CLOSE_SUBPROJECT_SUCCESS,
   HIDE_WORKFLOW_DETAILS,
-  LIVE_UPDATE_SUBPROJECT
+  LIVE_UPDATE_SUBPROJECT,
+  SHOW_WORKFLOW_PREVIEW,
+  STORE_WORKFLOWACTIONS,
+  SUBMIT_BATCH_FOR_WORKFLOW,
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
 } from "./pages/Workflows/actions";
 
 import {
@@ -193,7 +198,9 @@ function* handleError(error) {
     });
   }
 }
-
+const getSelfId = state => {
+  return state.getIn(["login", "id"]);
+};
 const getJwt = state => state.toJS().login.jwt;
 const getEnvironment = state => {
   const env = state.getIn(["login", "environment"]);
@@ -230,6 +237,79 @@ function* handleLoading(showLoading) {
   } else {
     return function*() {};
   }
+}
+
+function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee, permissions) {
+  if (_isEmpty(selectedAssignee) && _isEmpty(permissions)) {
+    return;
+  }
+  const possible = [];
+  const notPossible = [];
+  let action = {};
+  const assignAction = "assign";
+  const grantAction = "grantPermission";
+  const revokeAction = "revokePermission";
+  const self = yield select(getSelfId);
+
+  for (const r of resources) {
+    // check Assignee
+    if (selectedAssignee !== "") {
+      const assigneeForResource = r.data.assignee;
+      action = {
+        action: assignAction,
+        id: r.data.id,
+        displayName: r.data.displayName,
+        assignee: selectedAssignee
+      };
+      if (selectedAssignee === assigneeForResource || selectedAssignee === self || r.data.status === "closed") {
+        notPossible.push(action);
+      } else {
+        possible.push(action);
+      }
+    }
+    // check Permissions
+    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, r.data.id);
+    const permissionsForResource = data;
+    for (const intent in permissions) {
+      const notRevokedIdentities = [];
+      let revokeIdentities = [];
+      for (const index in permissions[intent]) {
+        if (permissions[intent] === []) {
+          break;
+        }
+        const identity = permissions[intent][index];
+        action = {
+          action: grantAction,
+          id: r.data.id,
+          displayName: r.data.displayName,
+          intent,
+          identity
+        };
+        if (permissionsForResource[intent].includes(identity) || identity === self) {
+          notPossible.push(action);
+        } else {
+          possible.push(action);
+        }
+        notRevokedIdentities.push(identity);
+      }
+      revokeIdentities = permissionsForResource[intent].filter(i => !notRevokedIdentities.includes(i) && i !== self);
+      for (const revokeIdentity in revokeIdentities) {
+        action = {
+          action: revokeAction,
+          id: r.data.id,
+          displayName: r.data.displayName,
+          intent,
+          identity: revokeIdentities[revokeIdentity]
+        };
+        possible.push(action);
+      }
+    }
+  }
+
+  return {
+    possible,
+    notPossible
+  };
 }
 
 // SAGAS
@@ -872,6 +952,76 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
   }, showLoading);
 }
 
+export function* fetchWorkflowActionsSaga({ projectId, ressources, selectedAssignee, permissions, showLoading }) {
+  yield execute(function*() {
+    const actions = yield getBatchFromSubprojectTemplate(projectId, ressources, selectedAssignee, permissions);
+    yield put({
+      type: STORE_WORKFLOWACTIONS,
+      actions
+    });
+  }, showLoading);
+}
+
+export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, showLoading }) {
+  yield execute(function*() {
+    for (const index in actions) {
+      const action = actions[index];
+      const actionString = action.action;
+      switch (actionString) {
+        case "assign":
+          yield callApi(api.assignWorkflowItem, projectId, subprojectId, action.id, action.assignee);
+          yield put({
+            type: ASSIGN_WORKFLOWITEM_SUCCESS,
+            workflowitemId: action.id
+          });
+          break;
+
+        case "grantPermission":
+          yield callApi(
+            api.grantWorkflowItemPermissions,
+            projectId,
+            subprojectId,
+            action.id,
+            action.intent,
+            action.identity
+          );
+          yield put({
+            type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+            workflowitemId: action.id,
+            intent: action.intent
+          });
+          break;
+
+        case "revokePermission":
+          yield callApi(
+            api.revokeWorkflowItemPermissions,
+            projectId,
+            subprojectId,
+            action.id,
+            action.intent,
+            action.identity
+          );
+          yield put({
+            type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
+          });
+          break;
+
+        default:
+          break;
+      }
+    }
+    yield put({
+      type: SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
+    });
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId,
+      subprojectId,
+      showLoading: true
+    });
+  }, showLoading);
+}
+
 export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemId, assigneeId, showLoading }) {
   yield execute(function*() {
     yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
@@ -1048,6 +1198,8 @@ export default function* rootSaga() {
       yield takeEvery(ASSIGN_WORKFLOWITEM, assignWorkflowItemSaga),
       yield takeEvery(HIDE_WORKFLOW_DETAILS, hideWorkflowDetailsSaga),
       yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga),
+      yield takeEvery(SHOW_WORKFLOW_PREVIEW, fetchWorkflowActionsSaga),
+      yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),

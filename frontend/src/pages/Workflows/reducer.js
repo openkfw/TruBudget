@@ -38,7 +38,9 @@ import {
   RESET_SUCCEEDED_WORKFLOWITEMS,
   ENABLE_WORKFLOW_EDIT,
   DISABLE_WORKFLOW_EDIT,
-  UPDATE_WORKFLOW_ORDER
+  UPDATE_WORKFLOW_ORDER,
+  STORE_WORKFLOWACTIONS,
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -93,7 +95,9 @@ const defaultState = fromJS({
   succeededWorkflowAssign: [],
   succeededWorkflowGrant: [],
   tempDrawerPermissions: {},
-  tempDrawerAssignee: ""
+  tempDrawerAssignee: "",
+  workflowActions: {},
+  submitDone: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -207,13 +211,22 @@ export default function detailviewReducer(state = defaultState, action) {
         showDetailsItemId: defaultState.getIn("showDetailsItemId")
       });
     case ENABLE_WORKFLOW_EDIT:
-      return state.set("workflowSortEnabled", true);
+      return state.merge({
+        workflowSortEnabled: true,
+        submitDone: defaultState.get("submitDone")
+      });
     case DISABLE_WORKFLOW_EDIT:
       return state.merge({
         workflowSortEnabled: defaultState.get("workflowSortEnabled"),
         selectedWorkflowItems: defaultState.get("selectedWorkflowItems"),
         tempDrawerPermissions: defaultState.get("tempDrawerPermissions"),
-        tempDrawerAssignee: defaultState.get("tempDrawerAssignee")
+        tempDrawerAssignee: defaultState.get("tempDrawerAssignee"),
+        workflowActions: defaultState.get("workflowActions")
+      });
+    case SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS:
+      return state.merge({
+        workflowActions: defaultState.get("workflowActions"),
+        submitDone: true
       });
     case UPDATE_WORKFLOW_ORDER:
       return state.merge({
@@ -245,6 +258,8 @@ export default function detailviewReducer(state = defaultState, action) {
         historyItems: fromJS([]),
         offset: 0
       });
+    case STORE_WORKFLOWACTIONS:
+      return state.set("workflowActions", fromJS(action.actions));
     case SHOW_WORKFLOW_PREVIEW:
       return state.set("previewDialogShown", true);
     case HIDE_WORKFLOW_PREVIEW:

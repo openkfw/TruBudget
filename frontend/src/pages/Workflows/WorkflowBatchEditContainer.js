@@ -14,7 +14,8 @@ import {
   revokeWorkflowItemPermission,
   showWorkflowItemPreview,
   storePermissions,
-  storeWorkflowItemsAssignee
+  storeWorkflowItemsAssignee,
+  submitBatchForWorkflow
 } from "./actions";
 import WorkflowEditDrawer from "./WorkflowEditDrawer";
 import WorkflowPreviewDialog from "./WorkflowPreviewDialog";
@@ -44,7 +45,9 @@ const mapStateToProps = state => {
     succeededWorkflowGrant: state.getIn(["workflow", "succeededWorkflowGrant"]),
     currentWorkflowitemPermissions: state.getIn(["workflow", "permissions"]),
     permissions: state.getIn(["workflow", "permissions"]),
-    users: state.getIn(["login", "user"])
+    users: state.getIn(["login", "user"]),
+    workflowActions: state.getIn(["workflow", "workflowActions"]),
+    submitDone: state.getIn(["workflow", "submitDone"])
   };
 };
 
@@ -62,8 +65,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchWorkflowItemPermissions(pId, wId, showLoading)),
     storeAssignee: assignee => dispatch(storeWorkflowItemsAssignee(assignee)),
     storePermissions: permissions => dispatch(storePermissions(permissions)),
-    showWorkflowItemPreview: () => dispatch(showWorkflowItemPreview()),
-    disableWorkflowEdit: () => dispatch(disableWorkflowEdit())
+    showWorkflowItemPreview: (pId, resources, assignee, permissions) =>
+      dispatch(showWorkflowItemPreview(pId, resources, assignee, permissions)),
+    disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),
+    editWorkflowitems: (pId, subpId, actions) => dispatch(submitBatchForWorkflow(pId, subpId, actions))
   };
 };
 

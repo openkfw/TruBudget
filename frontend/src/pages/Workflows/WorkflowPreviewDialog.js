@@ -7,6 +7,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import { withStyles } from "@material-ui/core";
+import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 
@@ -50,114 +51,85 @@ const styles = {
   }
 };
 
-const editWorkflowitems = props => {
-  // actions.map(action => {
-  //   if (action.intent !== undefined && !workflowitemIdsRevoked.includes(action.id)) {
-  //     fetchWorkflowItemPermissions(action.projectId, action.id, true);
-  //     const identities = currentWorkflowitemPermissions[action.intent];
-  //     if (identities !== undefined) {
-  //       identities.map(identity => {
-  //         revokeWorkflowItemPermission(action.projectId, action.subprojectId, action.id, action.intent, identity);
-  //       });
-  //     }
-  //     workflowitemIdsRevoked.push(action.id);
-  //   }
-  //   if ("intent" in action) {
-  //     grantWorkflowItemPermission(action.projectId, action.subprojectId, action.id, action.intent, action.identity);
-  //   } else {
-  //     assignWorkflow(action.projectId, action.subprojectId, action.id, action.assignee);
-  //   }
-  // });
-};
-
 const getTableEntries = props => {
-  const {
-    selectedWorkflowItems,
-    tempDrawerPermissions,
-    tempDrawerAssignee,
-    projectId,
-    subprojectId,
-    succeededWorkflowGrant,
-    succeededWorkflowAssign,
-    classes
-  } = props;
-  const actions = [];
-  const table = [];
-  const assignAction = "assign";
-  const grantAction = "grantPermission";
-  selectedWorkflowItems.forEach((item, index) => {
-    const assignSucceeded = succeededWorkflowAssign.includes(item.data.id);
-    if (tempDrawerAssignee !== "") {
-      actions.push({
-        projectId,
-        subprojectId,
-        action: assignAction,
-        id: item.data.id,
-        displayName: item.data.displayName,
-        assignee: tempDrawerAssignee
-      });
-      table.push(
-        <TableRow
-          className={assignSucceeded ? classes.succeed : classes.flexbox}
-          style={{ height: "unset", borderBottom: "unset" }}
-          key={index + assignAction + tempDrawerAssignee}
-        >
-          <TableCell className={classes.transactionMessages}>{item.data.displayName}</TableCell>
-          <TableCell className={classes.transactionMessages}>{assignAction}</TableCell>
-          <TableCell className={classes.transactionMessages} />
-          <TableCell className={classes.transactionMessages}>{tempDrawerAssignee}</TableCell>
-        </TableRow>
-      );
-    }
-    for (const intent in tempDrawerPermissions) {
-      if (tempDrawerPermissions[intent] !== []) {
-        const grantSucceeded = succeededWorkflowGrant.some(
-          action => action.id === item.data.id && action.intent === intent
-        );
-        tempDrawerPermissions[intent].forEach(identity => {
-          actions.push({
-            projectId,
-            subprojectId,
-            action: grantAction,
-            id: item.data.id,
-            displayName: item.data.displayName,
-            intent: intent,
-            identity: identity
-          });
-          table.push(
-            <TableRow
-              className={grantSucceeded ? classes.succeed : classes.flexbox}
-              style={{ height: "unset", borderBottom: "unset" }}
-              key={index + grantAction + intent + identity}
-            >
-              <TableCell className={classes.transactionMessages}>{item.data.displayName}</TableCell>
-              <TableCell className={classes.transactionMessages}>{grantAction}</TableCell>
-              <TableCell className={classes.transactionMessages}>{intent}</TableCell>
-              <TableCell className={classes.transactionMessages}>{identity}</TableCell>
-            </TableRow>
-          );
-        });
-      }
-    }
+  const { workflowActions, classes } = props;
+  const possibleActions = workflowActions.possible;
+  const notPossibleActions = workflowActions.notPossible;
+  let table = [];
+
+  table = addHeader(table, "Possible actions", classes);
+
+  possibleActions.forEach(action => {
+    table.push(
+      <TableRow className={classes.flexbox} style={{ height: "unset", borderBottom: "unset" }}>
+        <TableCell className={classes.transactionMessages}>{action.displayName}</TableCell>
+        <TableCell className={classes.transactionMessages}>{action.action}</TableCell>
+        <TableCell className={classes.transactionMessages}> {action.intent}</TableCell>
+        <TableCell className={classes.transactionMessages}>{action.assignee || action.identity}</TableCell>
+      </TableRow>
+    );
   });
+  table = addHeader(table, "Not possible actions", classes);
+
+  notPossibleActions.forEach(action => {
+    table.push(
+      <TableRow className={classes.flexbox} style={{ height: "unset", borderBottom: "unset" }}>
+        <TableCell className={classes.transactionMessages}>{action.displayName}</TableCell>
+        <TableCell className={classes.transactionMessages}>{action.action}</TableCell>
+        <TableCell className={classes.transactionMessages}> {action.intent}</TableCell>
+        <TableCell className={classes.transactionMessages}>{action.assignee || action.identity}</TableCell>
+      </TableRow>
+    );
+  });
+
   return table;
 };
 
+function addHeader(table, headline, classes) {
+  table.push(
+    <div>
+      <TableRow style={{ display: "flex" }}>
+        <TableCell style={{ fontSize: "16px", alignSelf: "center", flex: "1", textAlign: "center" }}>
+          {headline}
+        </TableCell>
+      </TableRow>
+      <TableRow style={{ display: "flex" }} className={classes.rowHeight}>
+        <TableCell className={classes.cellFormat}>Name</TableCell>
+        <TableCell className={classes.cellFormat}>Action</TableCell>
+        <TableCell className={classes.cellFormat}>Intent</TableCell>
+        <TableCell className={classes.cellFormat}>Identity</TableCell>
+      </TableRow>
+    </div>
+  );
+  return table;
+}
+
 const WorkflowPreviewDialog = props => {
-  const { classes, previewDialogShown, hideWorkflowItemPreview, resetSucceededWorkflowitems, ...rest } = props;
+  const {
+    classes,
+    previewDialogShown,
+    hideWorkflowItemPreview,
+    resetSucceededWorkflowitems,
+    workflowActions,
+    editWorkflowitems,
+    projectId,
+    subProjectId,
+    disableWorkflowEdit,
+    submitDone,
+    ...rest
+  } = props;
+
+  const handleDone = () => {
+    hideWorkflowItemPreview();
+    disableWorkflowEdit();
+  };
 
   const preview = (
     <Card>
       <Table data-test="ssp-table">
-        <TableHead>
-          <TableRow style={{ display: "flex" }} className={classes.rowHeight}>
-            <TableCell className={classes.cellFormat}>Display-Name</TableCell>
-            <TableCell className={classes.cellFormat}>Intent</TableCell>
-            <TableCell className={classes.cellFormat}>Grant-Permission</TableCell>
-            <TableCell className={classes.cellFormat}>User</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody className={classes.flexboxColumn}>{getTableEntries(props)}</TableBody>
+        <TableBody className={classes.flexboxColumn}>
+          {_isEmpty(workflowActions) ? "no actions to submit" : getTableEntries(props)}
+        </TableBody>
       </Table>
     </Card>
   );
@@ -173,8 +145,12 @@ const WorkflowPreviewDialog = props => {
         title={strings.workflow.workflow_title}
         dialogShown={previewDialogShown}
         onDialogCancel={() => onCancel()}
-        onDialogSubmit={editWorkflowitems}
+        onDialogSubmit={() => editWorkflowitems(projectId, subProjectId, workflowActions.possible)}
         preview={preview}
+        disableCancelButton={_isEmpty(workflowActions)}
+        submitButtonText={_isEmpty(workflowActions) ? strings.common.done : strings.common.submit}
+        onDialogDone={handleDone}
+        submitDone={submitDone}
         {...rest}
       />
     </div>

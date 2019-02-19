@@ -33,7 +33,8 @@ import {
   storeWorkflowType,
   updateWorkflowOrderOnState,
   enableWorkflowEdit,
-  disableWorkflowEdit
+  disableWorkflowEdit,
+  showWorkflowItemPermissions
 } from "./actions";
 import SubProjectDetails from "./SubProjectDetails";
 import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
@@ -115,7 +116,7 @@ class WorkflowContainer extends Component {
             offset={this.props.offset}
             limit={this.props.limit}
           />
-          <WorkflowBatchEditContainer projectId={this.projectId} subprojectId={this.subprojectId} />
+          <WorkflowBatchEditContainer projectId={this.projectId} subProjectId={this.subProjectId} />
         </div>
       </div>
     );
@@ -140,6 +141,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
 
+    showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
     updateWorkflowOrderOnState: items => dispatch(updateWorkflowOrderOnState(items)),
     enableWorkflowEdit: () => dispatch(enableWorkflowEdit()),
     disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),
