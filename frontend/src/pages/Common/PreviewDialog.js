@@ -5,7 +5,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
-import isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -16,10 +15,10 @@ const styles = {
 };
 
 const getDialogActions = props => {
-  const { onDialogSubmit, onDialogCancel, onDialogDone, submitButtonText, disableCancelButton, submitDone } = props;
+  const { onDialogSubmit, onDialogCancel, onDialogDone, submitDone, nSubmittedItems, nItemsToSubmit } = props;
   const cancelButton = (
     <Button
-      disabled={disableCancelButton}
+      disabled={submitDone}
       aria-label="cancel"
       data-test="cancel"
       color="secondary"
@@ -29,30 +28,24 @@ const getDialogActions = props => {
     </Button>
   );
   const submitButton = (
-    <Button
-      aria-label="submit"
-      data-test="submit"
-      color="primary"
-      onClick={disableCancelButton ? () => onDialogCancel() : () => onDialogSubmit()}
-    >
-      {submitButtonText}
+    <Button aria-label="submit" data-test="submit" color="primary" onClick={() => onDialogSubmit()}>
+      {strings.common.submit}
     </Button>
   );
   const doneButton = (
-    <Button
-      aria-label="done"
-      data-test="done"
-      color="primary"
-      onClick={submitDone ? () => onDialogDone() : () => onDialogCancel()}
-    >
-      {submitButtonText}
+    <Button aria-label="done" data-test="done" color="primary" onClick={() => onDialogDone()}>
+      {strings.common.done}
     </Button>
   );
-
+  const progressInfo = (
+    <div key="progressInfo" style={{ flex: 1 }}>
+      {nSubmittedItems} from {nItemsToSubmit} actions done
+    </div>
+  );
   const leftActions = <div key="leftactions">{cancelButton}</div>;
-  const rightActions = <div key="rightactions">{disableCancelButton ? doneButton : submitButton}</div>;
+  const rightActions = <div key="rightactions">{submitDone ? doneButton : submitButton}</div>;
 
-  return [leftActions, rightActions];
+  return [progressInfo, leftActions, rightActions];
 };
 
 const PreviewDialog = props => {

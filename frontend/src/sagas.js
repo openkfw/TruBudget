@@ -254,14 +254,13 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
   for (const r of resources) {
     // check Assignee
     if (selectedAssignee !== "") {
-      const assigneeForResource = r.data.assignee;
       action = {
         action: assignAction,
         id: r.data.id,
         displayName: r.data.displayName,
         assignee: selectedAssignee
       };
-      if (selectedAssignee === assigneeForResource || selectedAssignee === self || r.data.status === "closed") {
+      if (selectedAssignee === self || r.data.status === "closed") {
         notPossible.push(action);
       } else {
         possible.push(action);
@@ -285,7 +284,7 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
           intent,
           identity
         };
-        if (permissionsForResource[intent].includes(identity) || identity === self) {
+        if (identity === self) {
           notPossible.push(action);
         } else {
           possible.push(action);
@@ -870,7 +869,8 @@ export function* grantWorkflowItemPermissionsSaga({
     yield put({
       type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
       workflowitemId,
-      intent
+      intent,
+      identity
     });
 
     yield put({
@@ -895,7 +895,10 @@ export function* revokeWorkflowItemPermissionsSaga({
     yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
 
     yield put({
-      type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
+      type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+      workflowitemId,
+      intent,
+      identity
     });
 
     yield put({
@@ -972,7 +975,8 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
           yield callApi(api.assignWorkflowItem, projectId, subprojectId, action.id, action.assignee);
           yield put({
             type: ASSIGN_WORKFLOWITEM_SUCCESS,
-            workflowitemId: action.id
+            workflowitemId: action.id,
+            assignee: action.assignee
           });
           break;
 
@@ -988,7 +992,8 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
           yield put({
             type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
             workflowitemId: action.id,
-            intent: action.intent
+            intent: action.intent,
+            identity: action.identity
           });
           break;
 
@@ -1002,7 +1007,10 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
             action.identity
           );
           yield put({
-            type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
+            type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+            workflowitemId: action.id,
+            intent: action.intent,
+            identity: action.identity
           });
           break;
 
@@ -1027,7 +1035,8 @@ export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemI
     yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
     yield put({
       type: ASSIGN_WORKFLOWITEM_SUCCESS,
-      workflowitemId
+      workflowitemId,
+      assignee: assigneeId
     });
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,

@@ -40,7 +40,8 @@ import {
   DISABLE_WORKFLOW_EDIT,
   UPDATE_WORKFLOW_ORDER,
   STORE_WORKFLOWACTIONS,
-  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
+  REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -92,11 +93,10 @@ const defaultState = fromJS({
   dialogTitle: strings.workflow.add_item,
   previewDialogShown: false,
   selectedWorkflowItems: [],
-  succeededWorkflowAssign: [],
-  succeededWorkflowGrant: [],
   tempDrawerPermissions: {},
   tempDrawerAssignee: "",
   workflowActions: {},
+  submittedWorkflowItems: [],
   submitDone: false
 });
 
@@ -132,14 +132,19 @@ export default function detailviewReducer(state = defaultState, action) {
         dialogTitle: strings.workflow.edit_item
       });
     case ASSIGN_WORKFLOWITEM_SUCCESS:
-      return state.updateIn(["succeededWorkflowAssign"], succeededActions => [
-        ...succeededActions,
-        action.workflowitemId
+      return state.updateIn(["submittedWorkflowItems"], workflowitems => [
+        ...workflowitems,
+        { id: action.workflowitemId, assignee: action.assignee }
       ]);
     case GRANT_WORKFLOWITEM_PERMISSION_SUCCESS:
-      return state.updateIn(["succeededWorkflowGrant"], succeededActions => [
-        ...succeededActions,
-        { id: action.workflowitemId, intent: action.intent }
+      return state.updateIn(["submittedWorkflowItems"], workflowitems => [
+        ...workflowitems,
+        { id: action.workflowitemId, identity: action.identity, intent: action.intent }
+      ]);
+    case REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS:
+      return state.updateIn(["submittedWorkflowItems"], workflowitems => [
+        ...workflowitems,
+        { id: action.workflowitemId, identity: action.identity, intent: action.intent }
       ]);
     case RESET_SUCCEEDED_WORKFLOWITEMS:
       return state.merge({
@@ -221,11 +226,11 @@ export default function detailviewReducer(state = defaultState, action) {
         selectedWorkflowItems: defaultState.get("selectedWorkflowItems"),
         tempDrawerPermissions: defaultState.get("tempDrawerPermissions"),
         tempDrawerAssignee: defaultState.get("tempDrawerAssignee"),
-        workflowActions: defaultState.get("workflowActions")
+        workflowActions: defaultState.get("workflowActions"),
+        submittedWorkflowItems: defaultState.get("submittedWorkflowItems")
       });
     case SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS:
       return state.merge({
-        workflowActions: defaultState.get("workflowActions"),
         submitDone: true
       });
     case UPDATE_WORKFLOW_ORDER:
@@ -263,7 +268,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case SHOW_WORKFLOW_PREVIEW:
       return state.set("previewDialogShown", true);
     case HIDE_WORKFLOW_PREVIEW:
-      return state.set("previewDialogShown", false);
+      return state.merge({
+        previewDialogShown: defaultState.get("previewDialogShown"),
+        submittedWorkflowItems: defaultState.get("submittedWorkflowItems")
+      });
     case LOGOUT:
       return defaultState;
     default:

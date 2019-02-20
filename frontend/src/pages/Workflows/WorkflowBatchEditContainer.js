@@ -1,6 +1,7 @@
 import { withStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEmpty from "lodash/isEmpty";
 
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
@@ -26,7 +27,9 @@ class WorkflowBatchEditContainer extends Component {
   render() {
     return (
       <div>
-        <WorkflowPreviewDialog {...this.props} />
+        {this.props.previewDialogShown === true && !_isEmpty(this.props.workflowActions) ? (
+          <WorkflowPreviewDialog {...this.props} />
+        ) : null}
         <WorkflowEditDrawer {...this.props} />
       </div>
     );
@@ -41,12 +44,11 @@ const mapStateToProps = state => {
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
     tempDrawerAssignee: state.getIn(["workflow", "tempDrawerAssignee"]),
-    succeededWorkflowAssign: state.getIn(["workflow", "succeededWorkflowAssign"]),
-    succeededWorkflowGrant: state.getIn(["workflow", "succeededWorkflowGrant"]),
     currentWorkflowitemPermissions: state.getIn(["workflow", "permissions"]),
     permissions: state.getIn(["workflow", "permissions"]),
     users: state.getIn(["login", "user"]),
     workflowActions: state.getIn(["workflow", "workflowActions"]),
+    submittedWorkflowItems: state.getIn(["workflow", "submittedWorkflowItems"]),
     submitDone: state.getIn(["workflow", "submitDone"])
   };
 };

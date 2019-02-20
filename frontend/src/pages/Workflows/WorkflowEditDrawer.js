@@ -54,6 +54,7 @@ const WorkflowEditDrawer = props => {
 
   return (
     <Drawer
+      id="myDwarf"
       open={selectedWorkflowItems !== undefined && selectedWorkflowItems.length !== 0}
       variant="persistent"
       anchor="right"
@@ -70,9 +71,10 @@ const WorkflowEditDrawer = props => {
             top: "10px",
             left: "15px"
           }}
+          disabled={_isEmpty(tempDrawerAssignee) && _isEmpty(tempDrawerPermissions)}
         >
           {/* // TODO strings */}
-          Update All
+          Update
         </Button>
         <Button
           variant="contained"

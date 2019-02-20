@@ -3,29 +3,27 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import Table from "@material-ui/core/Table";
 import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import { withStyles } from "@material-ui/core";
 import _isEmpty from "lodash/isEmpty";
+import ErrorIcon from "@material-ui/icons/Close";
+import DoneIcon from "@material-ui/icons/Done";
 
 import strings from "../../localizeStrings";
 
 import PreviewDialog from "../Common/PreviewDialog";
 
 const styles = {
-  cellFormat: {
+  headerCell: {
     fontSize: "14px",
     alignSelf: "center",
-    textAlign: "center",
-    flex: "0 0 150px",
+    flex: "1",
     padding: "0px 0px 0px 8px"
   },
   transactionMessages: {
     fontSize: "14px",
-    borderRight: "1px solid rgba(224, 224, 224, 1)",
     borderBottom: "unset",
-    flex: "0 0 150px",
     padding: "0px 0px 0px 8px"
   },
   notUpdated: {
@@ -51,55 +49,86 @@ const styles = {
   }
 };
 
-const getTableEntries = props => {
-  const { workflowActions, classes } = props;
+const getTableEntries = (props, cardRef) => {
+  const { workflowActions, submittedWorkflowItems, classes } = props;
   const possibleActions = workflowActions.possible;
   const notPossibleActions = workflowActions.notPossible;
   let table = [];
 
-  table = addHeader(table, "Possible actions", classes);
-
-  possibleActions.forEach(action => {
-    table.push(
-      <TableRow className={classes.flexbox} style={{ height: "unset", borderBottom: "unset" }}>
-        <TableCell className={classes.transactionMessages}>{action.displayName}</TableCell>
-        <TableCell className={classes.transactionMessages}>{action.action}</TableCell>
-        <TableCell className={classes.transactionMessages}> {action.intent}</TableCell>
-        <TableCell className={classes.transactionMessages}>{action.assignee || action.identity}</TableCell>
-      </TableRow>
-    );
-  });
-  table = addHeader(table, "Not possible actions", classes);
-
-  notPossibleActions.forEach(action => {
-    table.push(
-      <TableRow className={classes.flexbox} style={{ height: "unset", borderBottom: "unset" }}>
-        <TableCell className={classes.transactionMessages}>{action.displayName}</TableCell>
-        <TableCell className={classes.transactionMessages}>{action.action}</TableCell>
-        <TableCell className={classes.transactionMessages}> {action.intent}</TableCell>
-        <TableCell className={classes.transactionMessages}>{action.assignee || action.identity}</TableCell>
-      </TableRow>
-    );
-  });
-
+  if (!_isEmpty(notPossibleActions)) {
+    table = addHeader(table, "Not possible actions", classes);
+    table = addActions(table, notPossibleActions, classes, undefined, cardRef);
+  }
+  if (!_isEmpty(possibleActions)) {
+    table = addHeader(table, "Possible actions", classes);
+    table = addActions(table, possibleActions, classes, submittedWorkflowItems, cardRef);
+  }
   return table;
 };
 
-function addHeader(table, headline, classes) {
-  table.push(
-    <div>
-      <TableRow style={{ display: "flex" }}>
-        <TableCell style={{ fontSize: "16px", alignSelf: "center", flex: "1", textAlign: "center" }}>
-          {headline}
+function addActions(table, actions, classes, submittedWorkflowItems, cardRef) {
+  actions.forEach((action, index) => {
+    table.push(
+      <TableRow
+        className={classes.flexbox}
+        style={{ height: "30px", borderBottom: "unset" }}
+        key={index + "-" + action.displayName + "-" + action.action + "-" + action.identity}
+      >
+        <TableCell className={classes.transactionMessages} style={{ flex: 6 }}>
+          {action.displayName}:
+        </TableCell>
+        <TableCell className={classes.transactionMessages} style={{ flex: 12 }}>
+          {action.action}&nbsp;
+          {action.intent}&nbsp;
+          {action.assignee || action.identity}
+        </TableCell>
+        <TableCell className={classes.transactionMessages} style={{ flex: 1, textAlign: "right" }}>
+          {getStatusIcon(submittedWorkflowItems, action, cardRef)}
         </TableCell>
       </TableRow>
-      <TableRow style={{ display: "flex" }} className={classes.rowHeight}>
-        <TableCell className={classes.cellFormat}>Name</TableCell>
-        <TableCell className={classes.cellFormat}>Action</TableCell>
-        <TableCell className={classes.cellFormat}>Intent</TableCell>
-        <TableCell className={classes.cellFormat}>Identity</TableCell>
+    );
+  });
+  return table;
+}
+function getStatusIcon(submittedWorkflowItems, action, cardRef) {
+  if (submittedWorkflowItems === undefined) {
+    return <ErrorIcon />;
+  } else {
+    if (
+      submittedWorkflowItems.some(
+        item =>
+          action.id === item.id &&
+          action.assignee === item.assignee &&
+          action.identity === item.identity &&
+          action.intent === item.intent
+      )
+    ) {
+      //cardRef.scroll(0, 40);
+      return <DoneIcon />;
+    } else {
+      return "-";
+    }
+  }
+}
+
+function addHeader(table, headline, classes) {
+  table.push(
+    <React.Fragment key={headline + "-div"}>
+      <TableRow style={{ display: "flex" }} key={headline}>
+        <TableCell style={{ fontSize: "16px", alignSelf: "center", flex: 1 }}>{headline}</TableCell>
       </TableRow>
-    </div>
+      <TableRow style={{ display: "flex" }} className={classes.rowHeight} key={headline + "-columns"}>
+        <TableCell className={classes.headerCell} style={{ flex: 6 }}>
+          Workflowitem
+        </TableCell>
+        <TableCell className={classes.headerCell} style={{ flex: 12 }}>
+          Action
+        </TableCell>
+        <TableCell className={classes.headerCell} style={{ flex: 1, textAlign: "right" }}>
+          Status
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
   );
   return table;
 }
@@ -116,6 +145,7 @@ const WorkflowPreviewDialog = props => {
     subProjectId,
     disableWorkflowEdit,
     submitDone,
+    submittedWorkflowItems,
     ...rest
   } = props;
 
@@ -124,36 +154,47 @@ const WorkflowPreviewDialog = props => {
     disableWorkflowEdit();
   };
 
-  const preview = (
-    <Card>
-      <Table data-test="ssp-table">
-        <TableBody className={classes.flexboxColumn}>
-          {_isEmpty(workflowActions) ? "no actions to submit" : getTableEntries(props)}
-        </TableBody>
-      </Table>
-    </Card>
-  );
+  class Preview extends React.Component {
+    constructor(props) {
+      super(props);
+      this.cardRef = null;
+    }
+
+    render() {
+      return (
+        <Card
+          ref={ref => (this.cardRef = ref)}
+          style={{
+            overflowY: "scroll"
+          }}
+        >
+          <Table data-test="ssp-table">
+            <TableBody className={classes.flexboxColumn}>{getTableEntries(props, this.cardRef)}</TableBody>
+          </Table>
+        </Card>
+      );
+    }
+  }
 
   const onCancel = () => {
     hideWorkflowItemPreview();
     resetSucceededWorkflowitems();
   };
+  const preview = <Preview {...props} />;
 
   return (
-    <div>
-      <PreviewDialog
-        title={strings.workflow.workflow_title}
-        dialogShown={previewDialogShown}
-        onDialogCancel={() => onCancel()}
-        onDialogSubmit={() => editWorkflowitems(projectId, subProjectId, workflowActions.possible)}
-        preview={preview}
-        disableCancelButton={_isEmpty(workflowActions)}
-        submitButtonText={_isEmpty(workflowActions) ? strings.common.done : strings.common.submit}
-        onDialogDone={handleDone}
-        submitDone={submitDone}
-        {...rest}
-      />
-    </div>
+    <PreviewDialog
+      title={strings.workflow.workflow_title}
+      dialogShown={previewDialogShown}
+      onDialogCancel={() => onCancel()}
+      onDialogSubmit={() => editWorkflowitems(projectId, subProjectId, workflowActions.possible)}
+      preview={preview}
+      onDialogDone={handleDone}
+      submitDone={submitDone}
+      nItemsToSubmit={!_isEmpty(workflowActions.possible) ? workflowActions.possible.length : 0}
+      nSubmittedItems={!_isEmpty(submittedWorkflowItems) ? submittedWorkflowItems.length : 0}
+      {...rest}
+    />
   );
 };
 
