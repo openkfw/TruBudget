@@ -71,8 +71,9 @@ export class RpcMultichainClient implements MultichainClient {
     return txId;
   }
 
-  public async streams(): Promise<Stream[]> {
-    return (await this.rpcClient.invoke("liststreams")) as Stream[];
+  public async streams(stream?: string): Promise<Stream[]> {
+    const streams = stream !== undefined ? stream : "*";
+    return (await this.rpcClient.invoke("liststreams", streams)) as Stream[];
   }
 
   public async streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]> {
@@ -228,7 +229,7 @@ export class RpcMultichainClient implements MultichainClient {
 
   public async listBlocksByHeight(
     to: number,
-    from: number = 0,
+    from: number | string = 0,
     verbose: boolean = false,
   ): Promise<BlockListItem[]> {
     return this.rpcClient.invoke("listblocks", `${from}-${to}`, verbose);
@@ -273,9 +274,9 @@ export class RpcMultichainClient implements MultichainClient {
       });
   }
 
-  private retrieveItems = (
+  private async retrieveItems(
     items: Liststreamkeyitems.Item[],
-  ): Promise<Liststreamkeyitems.Item[]> => {
+  ): Promise<Liststreamkeyitems.Item[]> {
     // if data size is bigger than the runtime variable "maxshowndata"
     // the data has to be accessed by calling gettxoutdata
     // Increase maxshowndata with command 'setruntimeparam maxshowndata <value>' in the multichain-cli
@@ -292,7 +293,7 @@ export class RpcMultichainClient implements MultichainClient {
         return item;
       }),
     );
-  };
+  }
 }
 
-const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+const sleep = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout));

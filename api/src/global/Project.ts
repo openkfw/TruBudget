@@ -1,6 +1,6 @@
 import Joi = require("joi");
 
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { Permissions } from "../authz/types";
 
 export interface Project {
   id: string;
@@ -12,7 +12,7 @@ export interface Project {
   amount: string;
   currency: string;
   thumbnail: string;
-  permissions: AllowedUserGroupsByIntent;
+  permissions: Permissions;
 }
 
 const schema = Joi.object().keys({

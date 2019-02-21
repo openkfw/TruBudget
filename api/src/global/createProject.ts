@@ -2,7 +2,7 @@ import * as Global from ".";
 import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
-import { AllowedUserGroupsByIntent } from "../authz/types";
+import { Permissions } from "../authz/types";
 import { ProjectIdAlreadyExistsError } from "../error";
 import {
   AuthenticatedRequest,
@@ -11,8 +11,8 @@ import {
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
 import { isEmpty } from "../lib/emptyChecks";
-import logger from "../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
+import { Cache, tellCacheWhatHappened } from "../multichain/cache";
 import { MultichainClient } from "../multichain/Client.h";
 import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";
@@ -40,9 +40,14 @@ export async function createProject(
   const projectId = value("id", input.id || randomString(), isNonemptyString);
 
   // check if projectId already exists
-  const projects = await Project.get(multichain, req.user);
-  if (!isEmpty(projects.filter(p => p.data.id === projectId))) {
-    throw { kind: "ProjectIdAlreadyExists", projectId } as ProjectIdAlreadyExistsError;
+  const projectAlreadyExists = await Project.get(multichain, req.user, projectId)
+    .then(() => true)
+    .catch(err => {
+      if (err.kind === "NotFound") return false;
+      throw err;
+    });
+  if (projectAlreadyExists) {
+    throw { kind: "ProjectIdAlreadyExists", projectId };
   }
 
   const ctime = new Date();
@@ -83,7 +88,7 @@ export async function createProject(
   ];
 }
 
-function getProjectDefaultPermissions(token: AuthToken): AllowedUserGroupsByIntent {
+function getProjectDefaultPermissions(token: AuthToken): Permissions {
   if (token.userId === "root") return {};
 
   const intents: Intent[] = [

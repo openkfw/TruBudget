@@ -1,11 +1,12 @@
 import { randomBytes } from "crypto";
 
 import Intent from "../authz/intents";
+import { Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
-import { isAllowedTo, Permissions } from "./Permission";
+import { isAllowedTo } from "./Permission";
 import {
   CreateProjectInput,
   isProjectAssignable,
@@ -39,6 +40,8 @@ export type Granter = (projectId: string, grantee: string, intent: Intent) => Pr
 export type GlobalPermissionsLister = () => Promise<Permissions>;
 
 export type Creator = (project: Project) => Promise<void>;
+
+export type CreationNotifier = (project: Project, actingUser: string) => Promise<void>;
 
 export type Assigner = (projectId: string, assignee: string) => Promise<void>;
 
@@ -108,10 +111,12 @@ export async function create(
     getAllPermissions,
     getProject,
     createProject,
+    notify,
   }: {
     getAllPermissions: GlobalPermissionsLister;
     getProject: Reader;
     createProject: Creator;
+    notify: CreationNotifier;
   },
 ): Promise<void> {
   const allPermissions = await getAllPermissions();
@@ -163,6 +168,7 @@ export async function create(
   } catch (_) {
     logger.debug(`Project - Create: Creating new project with id ${project.id}`, project);
     await createProject(project);
+    await notify(project, actingUser.id);
   }
 }
 

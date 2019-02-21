@@ -14,17 +14,13 @@ function clickEditProject(projectName) {
     .click();
 }
 
-let projects = undefined;
 const currenciesArray = Object.keys(currencies);
 
 describe("Overview Page", function() {
+
   beforeEach(function() {
-    cy.fixture("testdata.json").as("data");
     cy.login();
     cy.visit(`/projects`);
-    return cy.fetchProjects().then(p => {
-      projects = p;
-    });
   });
 
   it("Shows all the currencies dropdown when editing a project", function() {

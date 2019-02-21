@@ -5,7 +5,7 @@ import { getAllowedIntents, getUserAndGroups } from "../../authz";
 import { onlyAllowedData } from "../../authz/history";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
-import { AllowedUserGroupsByIntent, People } from "../../authz/types";
+import { People, Permissions } from "../../authz/types";
 import deepcopy from "../../lib/deepcopy";
 import { isNotEmpty } from "../../lib/emptyChecks";
 import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
@@ -145,7 +145,7 @@ export async function get(
   const streamItems = await fetchStreamItems(multichain, projectId);
   const userAndGroups = await getUserAndGroups(token);
   const resourceMap = new Map<string, ProjectResource>();
-  const permissionsMap = new Map<string, AllowedUserGroupsByIntent>();
+  const permissionsMap = new Map<string, Permissions>();
 
   for (const item of streamItems) {
     const event = item.data.json as Event;
@@ -219,7 +219,7 @@ export async function get(
 
 function handleCreate(
   event: Event,
-): { resource: ProjectResource; permissions: AllowedUserGroupsByIntent } | undefined {
+): { resource: ProjectResource; permissions: Permissions } | undefined {
   if (event.intent !== "global.createProject") return undefined;
   switch (event.dataVersion) {
     case 1: {
@@ -272,10 +272,7 @@ function applyClose(event: Event, resource: ProjectResource): true | undefined {
   throwUnsupportedEventVersion(event);
 }
 
-function applyGrantPermission(
-  event: Event,
-  permissions: AllowedUserGroupsByIntent,
-): true | undefined {
+function applyGrantPermission(event: Event, permissions: Permissions): true | undefined {
   if (event.intent !== "project.intent.grantPermission") return;
   switch (event.dataVersion) {
     case 1: {
@@ -291,10 +288,7 @@ function applyGrantPermission(
   throwUnsupportedEventVersion(event);
 }
 
-function applyRevokePermission(
-  event: Event,
-  permissions: AllowedUserGroupsByIntent,
-): true | undefined {
+function applyRevokePermission(event: Event, permissions: Permissions): true | undefined {
   if (event.intent !== "project.intent.revokePermission") return;
   switch (event.dataVersion) {
     case 1: {
@@ -315,9 +309,9 @@ function applyRevokePermission(
 export async function getPermissions(
   multichain: MultichainClient,
   projectId: string,
-): Promise<AllowedUserGroupsByIntent> {
+): Promise<Permissions> {
   const streamItems = await fetchStreamItems(multichain, projectId);
-  let permissions: AllowedUserGroupsByIntent | undefined;
+  let permissions: Permissions | undefined;
   for (const item of streamItems) {
     const event = item.data.json;
     if (permissions === undefined) {

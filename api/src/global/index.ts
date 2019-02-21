@@ -1,13 +1,12 @@
 import Intent, { userAssignableIntents } from "../authz/intents";
-import { AllowedUserGroupsByIntent, People } from "../authz/types";
+import { People, Permissions } from "../authz/types";
+import * as Group from "../group";
 import logger from "../lib/logger";
 import { MultichainClient } from "../multichain/Client.h";
 import { Event } from "../multichain/event";
 import { isAllowedToGrant, isAllowedToSee, publish } from "./Permission";
-import { get, User } from "./User";
-
-import * as Group from "../group";
 import * as Permission from "./Permission";
+import { get, User } from "./User";
 
 export * from "./Permission";
 export * from "./User";
@@ -121,9 +120,9 @@ const ensureStreamExists = async (multichain: MultichainClient): Promise<void> =
   }
 };
 
-export const oldGetPermissions = async (
-  multichain: MultichainClient,
-): Promise<AllowedUserGroupsByIntent> => {
+// old implementations
+
+export const oldGetPermissions = async (multichain: MultichainClient): Promise<Permissions> => {
   try {
     const streamItems = await multichain.v2_readStreamItems(globalstreamName, "self", 1);
     if (streamItems.length < 1) {
