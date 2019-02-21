@@ -49,7 +49,8 @@ const mapStateToProps = state => {
     users: state.getIn(["login", "user"]),
     workflowActions: state.getIn(["workflow", "workflowActions"]),
     submittedWorkflowItems: state.getIn(["workflow", "submittedWorkflowItems"]),
-    submitDone: state.getIn(["workflow", "submitDone"])
+    submitDone: state.getIn(["workflow", "submitDone"]),
+    submitInProgress: state.getIn(["workflow", "submitInProgress"])
   };
 };
 
@@ -70,7 +71,7 @@ const mapDispatchToProps = dispatch => {
     showWorkflowItemPreview: (pId, resources, assignee, permissions) =>
       dispatch(showWorkflowItemPreview(pId, resources, assignee, permissions)),
     disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),
-    editWorkflowitems: (pId, subpId, actions) => dispatch(submitBatchForWorkflow(pId, subpId, actions))
+    editWorkflowitems: (pId, subpId, actions) => dispatch(submitBatchForWorkflow(pId, subpId, actions, false))
   };
 };
 

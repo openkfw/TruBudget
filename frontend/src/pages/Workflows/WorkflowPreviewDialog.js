@@ -9,6 +9,7 @@ import { withStyles } from "@material-ui/core";
 import _isEmpty from "lodash/isEmpty";
 import ErrorIcon from "@material-ui/icons/Close";
 import DoneIcon from "@material-ui/icons/Done";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 import strings from "../../localizeStrings";
 
@@ -49,7 +50,7 @@ const styles = {
   }
 };
 
-const getTableEntries = (props, cardRef) => {
+const getTableEntries = props => {
   const { workflowActions, submittedWorkflowItems, classes } = props;
   const possibleActions = workflowActions.possible;
   const notPossibleActions = workflowActions.notPossible;
@@ -57,16 +58,16 @@ const getTableEntries = (props, cardRef) => {
 
   if (!_isEmpty(notPossibleActions)) {
     table = addHeader(table, "Not possible actions", classes);
-    table = addActions(table, notPossibleActions, classes, undefined, cardRef);
+    table = addActions(table, notPossibleActions, classes);
   }
   if (!_isEmpty(possibleActions)) {
     table = addHeader(table, "Possible actions", classes);
-    table = addActions(table, possibleActions, classes, submittedWorkflowItems, cardRef);
+    table = addActions(table, possibleActions, classes, submittedWorkflowItems);
   }
   return table;
 };
 
-function addActions(table, actions, classes, submittedWorkflowItems, cardRef) {
+function addActions(table, actions, classes, submittedWorkflowItems) {
   actions.forEach((action, index) => {
     table.push(
       <TableRow
@@ -83,14 +84,15 @@ function addActions(table, actions, classes, submittedWorkflowItems, cardRef) {
           {action.assignee || action.identity}
         </TableCell>
         <TableCell className={classes.transactionMessages} style={{ flex: 1, textAlign: "right" }}>
-          {getStatusIcon(submittedWorkflowItems, action, cardRef)}
+          {getStatusIcon(submittedWorkflowItems, action)}
         </TableCell>
       </TableRow>
     );
   });
   return table;
 }
-function getStatusIcon(submittedWorkflowItems, action, cardRef) {
+
+function getStatusIcon(submittedWorkflowItems, action) {
   if (submittedWorkflowItems === undefined) {
     return <ErrorIcon />;
   } else {
@@ -103,7 +105,6 @@ function getStatusIcon(submittedWorkflowItems, action, cardRef) {
           action.intent === item.intent
       )
     ) {
-      //cardRef.scroll(0, 40);
       return <DoneIcon />;
     } else {
       return "-";
@@ -115,7 +116,9 @@ function addHeader(table, headline, classes) {
   table.push(
     <React.Fragment key={headline + "-div"}>
       <TableRow style={{ display: "flex" }} key={headline}>
-        <TableCell style={{ fontSize: "16px", alignSelf: "center", flex: 1 }}>{headline}</TableCell>
+        <TableCell style={{ fontSize: "16px", alignSelf: "center", textAlign: "center", flex: 1 }}>
+          {headline}
+        </TableCell>
       </TableRow>
       <TableRow style={{ display: "flex" }} className={classes.rowHeight} key={headline + "-columns"}>
         <TableCell className={classes.headerCell} style={{ flex: 6 }}>
@@ -146,6 +149,7 @@ const WorkflowPreviewDialog = props => {
     disableWorkflowEdit,
     submitDone,
     submittedWorkflowItems,
+    submitInProgress,
     ...rest
   } = props;
 
@@ -154,33 +158,25 @@ const WorkflowPreviewDialog = props => {
     disableWorkflowEdit();
   };
 
-  class Preview extends React.Component {
-    constructor(props) {
-      super(props);
-      this.cardRef = null;
-    }
-
-    render() {
-      return (
-        <Card
-          ref={ref => (this.cardRef = ref)}
-          style={{
-            overflowY: "scroll"
-          }}
-        >
-          <Table data-test="ssp-table">
-            <TableBody className={classes.flexboxColumn}>{getTableEntries(props, this.cardRef)}</TableBody>
-          </Table>
-        </Card>
-      );
-    }
-  }
+  const preview = (
+    <React.Fragment>
+      <Card
+        style={{
+          overflowY: "scroll"
+        }}
+      >
+        <Table data-test="ssp-table">
+          <TableBody className={classes.flexboxColumn}>{getTableEntries(props)}</TableBody>
+        </Table>
+      </Card>
+      {submitInProgress ? <LinearProgress color="primary" /> : null}
+    </React.Fragment>
+  );
 
   const onCancel = () => {
     hideWorkflowItemPreview();
     resetSucceededWorkflowitems();
   };
-  const preview = <Preview {...props} />;
 
   return (
     <PreviewDialog
@@ -191,6 +187,7 @@ const WorkflowPreviewDialog = props => {
       preview={preview}
       onDialogDone={handleDone}
       submitDone={submitDone}
+      submitInProgress={submitInProgress}
       nItemsToSubmit={!_isEmpty(workflowActions.possible) ? workflowActions.possible.length : 0}
       nSubmittedItems={!_isEmpty(submittedWorkflowItems) ? submittedWorkflowItems.length : 0}
       {...rest}

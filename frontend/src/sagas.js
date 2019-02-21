@@ -270,12 +270,12 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
     const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, r.data.id);
     const permissionsForResource = data;
     for (const intent in permissions) {
+      if (_isEmpty(permissions[intent])) {
+        continue;
+      }
       const notRevokedIdentities = [];
       let revokeIdentities = [];
       for (const index in permissions[intent]) {
-        if (permissions[intent] === []) {
-          break;
-        }
         const identity = permissions[intent][index];
         action = {
           action: grantAction,
@@ -1019,13 +1019,13 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
       }
     }
     yield put({
-      type: SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
-    });
-    yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,
       projectId,
       subprojectId,
-      showLoading: true
+      showLoading: false
+    });
+    yield put({
+      type: SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
     });
   }, showLoading);
 }

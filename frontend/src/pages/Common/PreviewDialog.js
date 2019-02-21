@@ -3,9 +3,10 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { withStyles } from "@material-ui/core";
+import { withStyles, Typography } from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
 import strings from "../../localizeStrings";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = {
   paperRoot: {
@@ -15,10 +16,18 @@ const styles = {
 };
 
 const getDialogActions = props => {
-  const { onDialogSubmit, onDialogCancel, onDialogDone, submitDone, nSubmittedItems, nItemsToSubmit } = props;
+  const {
+    onDialogSubmit,
+    onDialogCancel,
+    onDialogDone,
+    submitDone,
+    nSubmittedItems,
+    nItemsToSubmit,
+    submitInProgress
+  } = props;
   const cancelButton = (
     <Button
-      disabled={submitDone}
+      disabled={submitDone || submitInProgress}
       aria-label="cancel"
       data-test="cancel"
       color="secondary"
@@ -28,7 +37,13 @@ const getDialogActions = props => {
     </Button>
   );
   const submitButton = (
-    <Button aria-label="submit" data-test="submit" color="primary" onClick={() => onDialogSubmit()}>
+    <Button
+      disabled={submitInProgress}
+      aria-label="submit"
+      data-test="submit"
+      color="primary"
+      onClick={() => onDialogSubmit()}
+    >
       {strings.common.submit}
     </Button>
   );
@@ -38,9 +53,9 @@ const getDialogActions = props => {
     </Button>
   );
   const progressInfo = (
-    <div key="progressInfo" style={{ flex: 1 }}>
+    <Typography key="progressInfo" style={{ flex: 1 }}>
       {nSubmittedItems} from {nItemsToSubmit} actions done
-    </div>
+    </Typography>
   );
   const leftActions = <div key="leftactions">{cancelButton}</div>;
   const rightActions = <div key="rightactions">{submitDone ? doneButton : submitButton}</div>;
