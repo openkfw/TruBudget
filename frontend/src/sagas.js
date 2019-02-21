@@ -2,6 +2,7 @@ import { all, put, takeEvery, takeLatest, takeLeading, call, select, delay } fro
 import { saveAs } from "file-saver/FileSaver";
 import Api from "./api.js";
 import _isEmpty from "lodash/isEmpty";
+import strings from "./localizeStrings";
 import {
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
@@ -246,13 +247,13 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
   const possible = [];
   const notPossible = [];
   let action = {};
-  const assignAction = "assign";
-  const grantAction = "grantPermission";
-  const revokeAction = "revokePermission";
+  const assignAction = strings.common.assign;
+  const grantAction = strings.common.grant;
+  const revokeAction = strings.common.revoke;
   const self = yield select(getSelfId);
 
   for (const r of resources) {
-    // check Assignee
+    // add assign action first
     if (selectedAssignee !== "") {
       action = {
         action: assignAction,
@@ -266,7 +267,7 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
         possible.push(action);
       }
     }
-    // check Permissions
+    // add grant permission actions next
     const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, r.data.id);
     const permissionsForResource = data;
     for (const intent in permissions) {
@@ -291,6 +292,7 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
         }
         notRevokedIdentities.push(identity);
       }
+      // add revoke permission actions last
       revokeIdentities = permissionsForResource[intent].filter(i => !notRevokedIdentities.includes(i) && i !== self);
       for (const revokeIdentity in revokeIdentities) {
         action = {
@@ -969,9 +971,8 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
   yield execute(function*() {
     for (const index in actions) {
       const action = actions[index];
-      const actionString = action.action;
-      switch (actionString) {
-        case "assign":
+      switch (action.action) {
+        case strings.common.assign:
           yield callApi(api.assignWorkflowItem, projectId, subprojectId, action.id, action.assignee);
           yield put({
             type: ASSIGN_WORKFLOWITEM_SUCCESS,
@@ -980,7 +981,7 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
           });
           break;
 
-        case "grantPermission":
+        case strings.common.grant:
           yield callApi(
             api.grantWorkflowItemPermissions,
             projectId,
@@ -997,7 +998,7 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
           });
           break;
 
-        case "revokePermission":
+        case strings.common.revoke:
           yield callApi(
             api.revokeWorkflowItemPermissions,
             projectId,

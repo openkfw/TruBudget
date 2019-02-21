@@ -9,8 +9,10 @@ import CardHeader from "@material-ui/core/CardHeader";
 
 import { workflowItemIntentOrder } from "../../permissions";
 import { PermissionsTable } from "../Common/Permissions/PermissionsScreen";
-import _isEmpty from "lodash/isEmpty";
 import AssigneeSelection from "../Common/AssigneeSelection";
+
+import _isEmpty from "lodash/isEmpty";
+import strings from "../../localizeStrings";
 
 const getDefaultPermissions = () => {
   const permissions = workflowItemIntentOrder.reduce((acc, next) => {
@@ -54,7 +56,6 @@ const WorkflowEditDrawer = props => {
 
   return (
     <Drawer
-      id="myDwarf"
       open={selectedWorkflowItems !== undefined && selectedWorkflowItems.length !== 0}
       variant="persistent"
       anchor="right"
@@ -73,8 +74,7 @@ const WorkflowEditDrawer = props => {
           }}
           disabled={_isEmpty(tempDrawerAssignee) && _isEmpty(tempDrawerPermissions)}
         >
-          {/* // TODO strings */}
-          Update
+          {strings.common.update}
         </Button>
         <Button
           variant="contained"
@@ -87,8 +87,7 @@ const WorkflowEditDrawer = props => {
             top: "10px"
           }}
         >
-          {/* // TODO strings */}
-          Cancel
+          {strings.common.cancel}
         </Button>
       </div>
       <Typography
@@ -96,14 +95,13 @@ const WorkflowEditDrawer = props => {
         color="primary"
         variant="subtitle1"
       >
-        {/* // TODO strings */}
-        You have selected {selectedWorkflowItems.length} workflowitems
+        {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
       </Typography>
       <div>
         <Card style={{ marginTop: "12px", marginBottom: "12px" }}>
           <CardHeader subheader="Assignee" />
           <CardContent>
-            <AssigneeSelection assigneeId={tempDrawerAssignee} disabled={false} users={users} assign={assign} />
+            <AssigneeSelection assigneeId={tempDrawerAssignee} users={users} assign={assign} />
           </CardContent>
         </Card>
         <PermissionsTable

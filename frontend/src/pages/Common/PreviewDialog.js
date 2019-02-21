@@ -6,7 +6,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles, Typography } from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
 import strings from "../../localizeStrings";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = {
   paperRoot: {

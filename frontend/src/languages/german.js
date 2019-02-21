@@ -1,8 +1,10 @@
 const de = {
   common: {
+    action: "German: Action",
     actions: "Actions",
     added: "German: Added",
     approver: "Approver",
+    assign: "German: assign",
     assigned: "Assigned",
     assigned_budget: "Assigned Budget",
     assignee: "Assignee",
@@ -25,6 +27,7 @@ const de = {
     edit: "German: Edit",
     edited: "German: Edited",
     finish: "Finish",
+    grant: "German: grant",
     history: "History",
     in_progress: "In Progress",
     in_review: "In Review",
@@ -37,6 +40,7 @@ const de = {
     open: "Open",
     password: "Passwort",
     project: "German: Project",
+    revoke: "German: revoke",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
     status: "Status",
@@ -45,6 +49,7 @@ const de = {
     subprojects: "Subprojects",
     task_status: "Task status",
     thumbnail: "German: Thumbnail",
+    update: "German: Update",
     username: "Username",
     id: "German: Id",
     name: "German: Name",
@@ -141,6 +146,7 @@ const de = {
     workflow_none: "None",
     workflow_permissions_title: "German: Set permissions for workflowitem",
     workflow_redacted: "German: Redacted",
+    workflow_selection: "German: You have selected {0} workflows",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflow items",
     workflow_title: "Workflow title",
@@ -175,6 +181,15 @@ const de = {
     new_organization: "German: New Organizations",
     nodes: "German: Nodes",
     permissions: "German: Permissions"
+  },
+
+  preview: {
+    preview: "German: Preview",
+    assign_action_text: "German: assign {0}",
+    grant_permission_action_text: "German: grant {0} to {1}",
+    revoke_permission_action_text: "German: revoke {0} to {1}",
+    possible_action: "German: Possible actions",
+    not_possible_action: "German: Not possible actions"
   },
 
   navigation: {

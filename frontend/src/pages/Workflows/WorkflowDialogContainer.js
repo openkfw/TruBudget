@@ -9,7 +9,6 @@ import {
   createWorkflowItem,
   editWorkflowItem,
   hideWorkflowDialog,
-  hideWorkflowItemPreview,
   setCurrentStep,
   storeWorkflowAmount,
   storeWorkflowAmountType,
@@ -54,7 +53,6 @@ class WorkflowDialogContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    previewDialogShown: state.getIn(["workflow", "previewDialogShown"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
     creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
     editDialogShown: state.getIn(["workflow", "editDialogShown"]),
@@ -89,7 +87,6 @@ const mapDispatchToProps = dispatch => {
     storeWorkflowName: name => dispatch(storeWorkflowName(name)),
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
-    hideWorkflowItemPreview: () => dispatch(hideWorkflowItemPreview()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name))

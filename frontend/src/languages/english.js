@@ -1,8 +1,10 @@
 const en = {
   common: {
+    action: "Action",
     actions: "Actions",
     added: "Added",
     approver: "Approver",
+    assign: "assign",
     assigned: "Assigned",
     assigned_budget: "Assigned",
     assignee: "Assignee",
@@ -25,6 +27,7 @@ const en = {
     edit: "Edit",
     edited: "Edited",
     finish: "Finish",
+    grant: "grant",
     history: "History",
     id: "Id",
     in_progress: "In Progress",
@@ -39,6 +42,7 @@ const en = {
     open: "Open",
     password: "Password",
     project: "Project",
+    revoke: "revoke",
     search: "Search",
     show_permissions: "Show Permissions",
     status: "Status",
@@ -47,6 +51,7 @@ const en = {
     subprojects: "Subprojects",
     task_status: "Task status",
     thumbnail: "Thumbnail",
+    update: "Update",
     username: "Username",
     view: "View",
     workflowItem: "WorkflowItem"
@@ -167,6 +172,7 @@ const en = {
     workflow_none: "None",
     workflow_permissions_title: "Set permissions for workflowitem",
     workflow_redacted: "Redacted",
+    workflow_selection: "You have selected {0} workflows",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflow items",
     workflow_title: "Workflow title",
@@ -175,6 +181,15 @@ const en = {
     workflow_type_transaction: "Transaction",
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Upload"
+  },
+
+  preview: {
+    preview: "Preview",
+    assign_action_text: "assign {0}",
+    grant_permission_action_text: "grant {0} to {1}",
+    revoke_permission_action_text: "revoke {0} to {1}",
+    possible_action: "Possible actions",
+    not_possible_action: "Not possible actions"
   },
 
   navigation: {

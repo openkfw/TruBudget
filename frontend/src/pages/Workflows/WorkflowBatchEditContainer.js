@@ -1,7 +1,6 @@
 import { withStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import _isEmpty from "lodash/isEmpty";
 
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
@@ -27,9 +26,7 @@ class WorkflowBatchEditContainer extends Component {
   render() {
     return (
       <div>
-        {this.props.previewDialogShown === true && !_isEmpty(this.props.workflowActions) ? (
-          <WorkflowPreviewDialog {...this.props} />
-        ) : null}
+        {this.props.previewDialogShown === true ? <WorkflowPreviewDialog {...this.props} /> : null}
         <WorkflowEditDrawer {...this.props} />
       </div>
     );
@@ -39,7 +36,6 @@ class WorkflowBatchEditContainer extends Component {
 const mapStateToProps = state => {
   return {
     previewDialogShown: state.getIn(["workflow", "previewDialogShown"]),
-    dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),

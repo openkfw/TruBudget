@@ -6,47 +6,51 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import { withStyles } from "@material-ui/core";
-import _isEmpty from "lodash/isEmpty";
 import ErrorIcon from "@material-ui/icons/Close";
 import DoneIcon from "@material-ui/icons/Done";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-import strings from "../../localizeStrings";
-
 import PreviewDialog from "../Common/PreviewDialog";
 
+import _isEmpty from "lodash/isEmpty";
+import strings from "../../localizeStrings";
+import { formatString } from "../../helper";
+
 const styles = {
+  scrollable: {
+    overflowY: "scroll"
+  },
+  tableBody: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  headerRow: {
+    display: "flex",
+    height: "40px"
+  },
   headerCell: {
+    fontSize: "16px",
+    alignSelf: "center",
+    textAlign: "center",
+    flex: "1",
+    borderBottom: "unset"
+  },
+  columnHeaderCell: {
     fontSize: "14px",
     alignSelf: "center",
     flex: "1",
     padding: "0px 0px 0px 8px"
   },
-  transactionMessages: {
+  workflowRow: {
+    display: "flex",
+    height: "30px",
+    borderBottom: "unset"
+  },
+  workflowCell: {
     fontSize: "14px",
     borderBottom: "unset",
-    padding: "0px 0px 0px 8px"
-  },
-  notUpdated: {
-    color: "lightgrey"
-  },
-  rowHeight: {
-    height: "40px"
-  },
-  flexbox: {
-    display: "flex"
-  },
-  failed: {
-    textDecorationLine: "line-through",
-    backgroundColor: "red"
-  },
-  succeed: {
-    display: "flex",
-    backgroundColor: "green"
-  },
-  flexboxColumn: {
-    display: "flex",
-    flexDirection: "column"
+    padding: "0px 0px 0px 8px",
+    flex: 1
   }
 };
 
@@ -57,39 +61,76 @@ const getTableEntries = props => {
   let table = [];
 
   if (!_isEmpty(notPossibleActions)) {
-    table = addHeader(table, "Not possible actions", classes);
+    table = addHeader(table, strings.preview.not_possible_action, classes);
     table = addActions(table, notPossibleActions, classes);
   }
   if (!_isEmpty(possibleActions)) {
-    table = addHeader(table, "Possible actions", classes);
+    table = addHeader(table, strings.preview.possible_action, classes);
     table = addActions(table, possibleActions, classes, submittedWorkflowItems);
   }
   return table;
 };
 
+function addHeader(table, headline, classes) {
+  table.push(
+    <React.Fragment key={headline}>
+      <TableRow className={classes.headerRow} key={headline}>
+        <TableCell className={classes.headerCell}>{headline}</TableCell>
+      </TableRow>
+      <TableRow className={classes.headerRow} key={headline + "-columns"}>
+        <TableCell className={classes.columnHeaderCell} style={{ flex: 6 }}>
+          {strings.common.workflowItem}
+        </TableCell>
+        <TableCell className={classes.columnHeaderCell} style={{ flex: 12 }}>
+          {strings.common.action}
+        </TableCell>
+        <TableCell className={classes.columnHeaderCell} style={{ textAlign: "right" }}>
+          {strings.common.status}
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+  return table;
+}
+
 function addActions(table, actions, classes, submittedWorkflowItems) {
   actions.forEach((action, index) => {
     table.push(
       <TableRow
-        className={classes.flexbox}
-        style={{ height: "30px", borderBottom: "unset" }}
+        className={classes.workflowRow}
         key={index + "-" + action.displayName + "-" + action.action + "-" + action.identity}
       >
-        <TableCell className={classes.transactionMessages} style={{ flex: 6 }}>
+        <TableCell className={classes.workflowCell} style={{ flex: 6 }}>
           {action.displayName}:
         </TableCell>
-        <TableCell className={classes.transactionMessages} style={{ flex: 12 }}>
-          {action.action}&nbsp;
-          {action.intent}&nbsp;
-          {action.assignee || action.identity}
+        <TableCell className={classes.workflowCell} style={{ flex: 12 }}>
+          {getActionText(action)}
         </TableCell>
-        <TableCell className={classes.transactionMessages} style={{ flex: 1, textAlign: "right" }}>
+        <TableCell className={classes.workflowCell} style={{ textAlign: "right" }}>
           {getStatusIcon(submittedWorkflowItems, action)}
         </TableCell>
       </TableRow>
     );
   });
   return table;
+}
+
+function getActionText(action) {
+  let actionText = "";
+  switch (action.action) {
+    case strings.common.assign:
+      actionText = formatString(strings.preview.assign_action_text, action.assignee);
+      break;
+    case strings.common.grant:
+      actionText = formatString(strings.preview.grant_permission_action_text, action.intent, action.identity);
+      break;
+    case strings.common.revoke:
+      actionText = formatString(strings.preview.revoke_permission_action_text, action.intent, action.identity);
+      break;
+    default:
+      break;
+  }
+  return actionText;
 }
 
 function getStatusIcon(submittedWorkflowItems, action) {
@@ -110,30 +151,6 @@ function getStatusIcon(submittedWorkflowItems, action) {
       return "-";
     }
   }
-}
-
-function addHeader(table, headline, classes) {
-  table.push(
-    <React.Fragment key={headline + "-div"}>
-      <TableRow style={{ display: "flex" }} key={headline}>
-        <TableCell style={{ fontSize: "16px", alignSelf: "center", textAlign: "center", flex: 1 }}>
-          {headline}
-        </TableCell>
-      </TableRow>
-      <TableRow style={{ display: "flex" }} className={classes.rowHeight} key={headline + "-columns"}>
-        <TableCell className={classes.headerCell} style={{ flex: 6 }}>
-          Workflowitem
-        </TableCell>
-        <TableCell className={classes.headerCell} style={{ flex: 12 }}>
-          Action
-        </TableCell>
-        <TableCell className={classes.headerCell} style={{ flex: 1, textAlign: "right" }}>
-          Status
-        </TableCell>
-      </TableRow>
-    </React.Fragment>
-  );
-  return table;
 }
 
 const WorkflowPreviewDialog = props => {
@@ -160,13 +177,9 @@ const WorkflowPreviewDialog = props => {
 
   const preview = (
     <React.Fragment>
-      <Card
-        style={{
-          overflowY: "scroll"
-        }}
-      >
-        <Table data-test="ssp-table">
-          <TableBody className={classes.flexboxColumn}>{getTableEntries(props)}</TableBody>
+      <Card className={classes.scrollable}>
+        <Table>
+          <TableBody className={classes.tableBody}>{getTableEntries(props)}</TableBody>
         </Table>
       </Card>
       {submitInProgress ? <LinearProgress color="primary" /> : null}
@@ -180,7 +193,7 @@ const WorkflowPreviewDialog = props => {
 
   return (
     <PreviewDialog
-      title={strings.workflow.workflow_title}
+      title={strings.preview.preview}
       dialogShown={previewDialogShown}
       onDialogCancel={() => onCancel()}
       onDialogSubmit={() => editWorkflowitems(projectId, subProjectId, workflowActions.possible)}

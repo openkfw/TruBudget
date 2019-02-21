@@ -56,8 +56,7 @@ const renderSortButton = props => (
       zIndex: 2
     }}
   >
-    {/*// TODO strings */}
-    Edit
+    {strings.common.edit}
   </Button>
 );
 

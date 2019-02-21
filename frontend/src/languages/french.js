@@ -1,8 +1,10 @@
 const fr = {
   common: {
+    action: "French: Action",
     actions: "Actions",
     added: "Ajouté",
     approver: "Approbateur",
+    assign: "French: assign",
     assigned: "Alloué",
     assigned_budget: "Budget alloué",
     assignee: "Cessionnaire",
@@ -25,6 +27,7 @@ const fr = {
     edit: "Modifier",
     edited: "Modifié",
     finish: "Terminer",
+    grant: "French: grant",
     history: "Historique",
     id: "Id",
     in_progress: "En cours d'exécution",
@@ -39,6 +42,7 @@ const fr = {
     open: "Ouvert",
     password: "Mot de passe",
     project: "Projet",
+    revoke: "French: revoke",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",
     status: "Statut",
@@ -47,6 +51,7 @@ const fr = {
     subprojects: "Sous-projets",
     task_status: "Etat de la tâche",
     thumbnail: "Vignette",
+    update: "French: Update",
     username: "Nom d'utilisateur",
     view: "Vue",
     workflowItem: "Élement de workflow"
@@ -143,6 +148,7 @@ const fr = {
     workflow_none: "blub",
     workflow_permissions_title: "Définir les autorisations pour l'élement du workflow",
     workflow_redacted: "Expurgé",
+    workflow_selection: "French: You have selected {0} workflows",
     workflow_submit_for_review: "Soumettre pour examen",
     workflow_table_title: "Titre de la table de travail",
     workflow_title: "Titre du workflow",
@@ -177,6 +183,15 @@ const fr = {
     new_organization: "Nouvelles organisations",
     nodes: "Noeuds",
     permissions: "Autorisations"
+  },
+
+  preview: {
+    preview: "French: Preview",
+    assign_action_text: "French: assign {0}",
+    grant_permission_action_text: "French: grant {0} to {1}",
+    revoke_permission_action_text: "French: revoke {0} to {1}",
+    possible_action: "French: Possible actions",
+    not_possible_action: "French: Not possible actions"
   },
 
   navigation: {
