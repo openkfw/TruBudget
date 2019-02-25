@@ -11,6 +11,7 @@ const pt = {
     bank: "Banco",
     budget: "Orçamento",
     budget_distribution: "Distribuição do orçamento",
+    no_budget_distribution: "Não é possível exibir a distribuição, se nem todos os itens estiverem visíveis",
     cancel: "Cancelar",
     close: "Fechar",
     closed: "Portuguese: Closed",

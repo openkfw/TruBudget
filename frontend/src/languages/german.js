@@ -11,6 +11,7 @@ const de = {
     bank: "Bank",
     budget: "Budget",
     budget_distribution: "Budget distribution",
+    no_budget_distribution: "Verteilung kann nicht angezeigt werden, da nicht alle Elemente sichtbar sind",
     cancel: "Abbrechen",
     close: "Schließen",
     closed: "German: Closed",

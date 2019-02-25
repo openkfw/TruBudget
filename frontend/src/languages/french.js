@@ -11,6 +11,7 @@ const fr = {
     bank: "Banque",
     budget: "Budget",
     budget_distribution: "Affectation budgétaire",
+    no_budget_distribution: "Impossible d'afficher la distribution si tous les éléments ne sont pas visibles",
     cancel: "Annuler",
     close: "Fermer",
     closed: "Fermé",
