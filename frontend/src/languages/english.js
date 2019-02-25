@@ -178,7 +178,8 @@ const en = {
 
   navigation: {
     admin_permission: "Admin",
-    connected_peers: "Connected Peers",
+    connected_peers: "Connected",
+    disconnected_peers: "Disconnected",
     logout: "Logout",
     main_site: "Main",
     menu_item_network: "Network",
