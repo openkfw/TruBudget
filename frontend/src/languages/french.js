@@ -7,12 +7,13 @@ const fr = {
     assign: "French: assign",
     assigned: "Alloué",
     assigned_budget: "Budget alloué",
-    assignee: "Cessionnaire",
-    assignees: "Cessionnaire(s)",
+    assignee: "Responsable",
+    assignees: "Responsable(s)",
     back: "Retour",
     bank: "Banque",
     budget: "Budget",
     budget_distribution: "Affectation budgétaire",
+    no_budget_distribution: "Impossible d'afficher la distribution si tous les éléments ne sont pas visibles",
     cancel: "Annuler",
     close: "Fermer",
     closed: "Fermé",
@@ -22,7 +23,7 @@ const fr = {
     create: "Créer",
     created: "Créé",
     disbursed_budget: "Budget décaissé",
-    disbursement: "Décaissé",
+    disbursement: "Décaissements prévus",
     done: "Terminé",
     edit: "Modifier",
     edited: "Modifié",
@@ -102,6 +103,7 @@ const fr = {
     subproject_budget_amount: "Montant du budget du sous-projet",
     subproject_budget_amount_description: "description du montant du sous projet",
     subproject_close_info: "Au moins un workflow n'est pas encore terminé",
+    subproject_close_not_allowed: "Vous n'êtes pas autorisé à fermer le sous-projet",
     subproject_comment: "Commentaire du sous-projet",
     subproject_completion_string: "{0} cal {1} van",
     subproject_currency: "Devise du sous-projet",
@@ -150,7 +152,7 @@ const fr = {
     workflow_redacted: "Expurgé",
     workflow_selection: "French: You have selected {0} workflows",
     workflow_submit_for_review: "Soumettre pour examen",
-    workflow_table_title: "Titre de la table de travail",
+    workflow_table_title: "Liste des étapes",
     workflow_title: "Titre du workflow",
     workflow_title_description: "Description du titre du workflow",
     workflow_type: "Type du Workflow",
@@ -197,7 +199,8 @@ const fr = {
 
   navigation: {
     admin_permission: "Admin",
-    connected_peers: "Les pairs connectés",
+    connected_peers: "Pairs Connectés",
+    disconnected_peers: "Pas de Pairs connectés",
     logout: "Déconnexion",
     main_site: "Principal",
     menu_item_network: "Réseau",
@@ -353,7 +356,7 @@ const fr = {
   language: {
     english: "Anglais",
     french: "Français",
-    german: "Allemande",
+    german: "Allemand",
     portuguese: "Portugues"
   }
 };

@@ -13,6 +13,7 @@ const de = {
     bank: "Bank",
     budget: "Budget",
     budget_distribution: "Budget distribution",
+    no_budget_distribution: "Verteilung kann nicht angezeigt werden, da nicht alle Elemente sichtbar sind",
     cancel: "Abbrechen",
     close: "Schließen",
     closed: "German: Closed",
@@ -105,6 +106,7 @@ const de = {
     subproject_permissions_title: "German: Set permissions for subproject",
     subproject_preview: "German: Subproject Preview",
     subproject_close_info: "German: At least one workflow item has not been closed yet.",
+    subproject_close_not_allowed: "Sie haben keine Berechtigung das Projekt zu schließen",
     subproject_edit_title: "German: Edit Subproject",
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",
@@ -195,7 +197,8 @@ const de = {
 
   navigation: {
     admin_permission: "Admin",
-    connected_peers: "Connected Peers",
+    connected_peers: "Peers Verbunden",
+    disconnected_peers: "Keine Peers verbunden",
     logout: "Logout",
     main_site: "Main",
     menu_item_network: "Network",

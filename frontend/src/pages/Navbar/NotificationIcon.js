@@ -10,8 +10,8 @@ import { Typography } from "@material-ui/core";
 
 const styles = {
   badge: {
-    top: "-2px",
-    right: "-2px",
+    top: "8px",
+    right: "8px",
     width: "25px",
     height: "25px"
   },
@@ -23,10 +23,11 @@ const styles = {
 const NotificationIcon = ({ unreadNotificationCount, history, classes }) => {
   if (typeof unreadNotificationCount === "number" && unreadNotificationCount > 0) {
     const maxNotificationCount = 50;
-    const unread = unreadNotificationCount > maxNotificationCount ? `${maxNotificationCount}+` : unreadNotificationCount;
+    const unread =
+      unreadNotificationCount > maxNotificationCount ? `${maxNotificationCount}+` : unreadNotificationCount;
     return (
       <Badge
-        classes={{badge: classes.badge}}
+        classes={{ badge: classes.badge }}
         badgeContent={
           <Typography className={classes.white} variant="caption">
             {unread}

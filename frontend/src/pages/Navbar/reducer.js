@@ -2,7 +2,6 @@ import { fromJS } from "immutable";
 
 import {
   TOGGLE_SIDEBAR,
-  FETCH_PEERS_SUCCESS,
   FETCH_STREAM_NAMES_SUCCESS,
   SET_SELECTED_VIEW,
   FETCH_ACTIVE_PEERS_SUCCESS,
@@ -14,7 +13,6 @@ import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from "../Workflows/actions";
 
 const defaultState = fromJS({
   showSidebar: false,
-  peers: [],
   numberOfActivePeers: 0,
   unreadNotifications: 0,
   streamNames: {},
@@ -29,10 +27,6 @@ export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case TOGGLE_SIDEBAR:
       return state.set("showSidebar", !state.get("showSidebar"));
-    case FETCH_PEERS_SUCCESS:
-      return state.merge({
-        peers: action.peers
-      });
     case FETCH_ACTIVE_PEERS_SUCCESS:
       return state.set("numberOfActivePeers", action.activePeers);
     case FETCH_STREAM_NAMES_SUCCESS:

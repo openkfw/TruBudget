@@ -1,6 +1,6 @@
 import React from "react";
 
-import _isNaN from "lodash/isNaN";
+import _isFinite from "lodash/isFinite";
 import _isUndefined from "lodash/isUndefined";
 
 import AmountIcon from "@material-ui/icons/AccountBalance";
@@ -162,6 +162,14 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     paddingLeft: "12px"
+  },
+  distributionPlaceholder: {
+    height: "70%",
+    padding: "16px",
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column"
   }
 };
 
@@ -178,7 +186,20 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   );
 };
 
-const createRatio = ratio => (_isNaN(ratio) ? 0 : ratio * 100);
+const createRatio = ratio => ratio * 100;
+
+const subProjectCanBeClosed = (subProjectIsClosed, userIsAllowedToClose, workflowItems) =>
+  !subProjectIsClosed && userIsAllowedToClose && _isUndefined(workflowItems.find(i => i.data.status !== "closed"));
+
+const subProjectCloseButtonTooltip = (userIsAllowedToClose, subProjectCanBeClosed) => {
+  if (subProjectCanBeClosed) {
+    return strings.common.close;
+  } else if (!userIsAllowedToClose) {
+    return strings.subproject.subproject_close_not_allowed;
+  } else {
+    return strings.subproject.subproject_close_info;
+  }
+};
 
 const SubProjectDetails = ({
   displayName,
@@ -206,8 +227,8 @@ const SubProjectDetails = ({
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = tsToString(created);
-  const openWorkflowItems = workflowItems.find(wItem => wItem.data.status === "open");
-  const closeDisabled = !(canCloseSubproject && _isUndefined(openWorkflowItems)) || status === "closed";
+
+  const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
   const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(
     workflowItems
   );
@@ -220,10 +241,12 @@ const SubProjectDetails = ({
 
   const allowedToEdit = false;
 
-  const allocatedBudgetRatio = _isUndefined(amount) ? 0 : assignedBudget / amount;
-  const consumptionBudgetRatio = _isUndefined(amount) ? 0 : currentDisbursement / assignedBudget;
-  const currentDisbursementRatio = _isUndefined(amount) ? 0 : disbursedBudget / assignedBudget;
-  const tooltipTitle = closeDisabled ? strings.subproject.subproject_close_info : strings.common.close;
+  const allocatedBudgetRatio = !_isFinite(amount) || amount === 0 ? 0 : assignedBudget / amount;
+  const consumptionBudgetRatio = !_isFinite(amount) || assignedBudget === 0 ? 0 : currentDisbursement / assignedBudget;
+  const currentDisbursementRatio = !_isFinite(amount) || assignedBudget === 0 ? 0 : disbursedBudget / assignedBudget;
+
+  const containsRedactedWorkflowItems = workflowItems.find(w => w.data.displayName === null);
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
@@ -241,12 +264,15 @@ const SubProjectDetails = ({
             <div style={styles.statusContainer}>
               <ListItemText style={styles.statusText} primary={mappedStatus} secondary={strings.common.status} />
               {status !== "closed" ? (
-                <Tooltip id="tooltip-sclose" title={tooltipTitle}>
+                <Tooltip
+                  id="tooltip-sclose"
+                  title={subProjectCloseButtonTooltip(canCloseSubproject, closingOfSubProjectAllowed)}
+                >
                   <div>
                     <IconButton
                       color="primary"
                       data-test="spc-button"
-                      disabled={closeDisabled}
+                      disabled={!closingOfSubProjectAllowed}
                       onClick={closeSubproject}
                     >
                       <DoneIcon />
@@ -284,59 +310,67 @@ const SubProjectDetails = ({
       <Card style={styles.card}>
         <CardHeader title={strings.common.budget_distribution} />
         <Divider />
-        <div style={styles.charts}>
-          <div style={styles.listItem}>
-            <ListItem style={styles.budgetDistListItem}>
-              <ListItemIcon>
-                <UnspentIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText
-                primary={unSpendBudgetString}
-                secondary={strings.common.assigned_budget}
-                style={styles.budgetDistListItem}
-              />
-            </ListItem>
+        {containsRedactedWorkflowItems ? (
+          <div style={styles.distributionPlaceholder}>
+            <Typography variant="caption">{strings.common.no_budget_distribution}</Typography>
           </div>
-          <div style={styles.chart}>
-            <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
+        ) : (
+          <div>
+            <div style={styles.charts}>
+              <div style={styles.listItem}>
+                <ListItem style={styles.budgetDistListItem}>
+                  <ListItemIcon>
+                    <UnspentIcon color="primary" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={unSpendBudgetString}
+                    secondary={strings.common.assigned_budget}
+                    style={styles.budgetDistListItem}
+                  />
+                </ListItem>
+              </div>
+              <div style={styles.chart}>
+                <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
+              </div>
+            </div>
+            <Divider />
+            <div style={styles.charts}>
+              <div style={styles.listItem}>
+                <ListItem style={styles.budgetDistListItem}>
+                  <ListItemIcon>
+                    <SpentIcon color="primary" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={spendBudgetString}
+                    secondary={strings.common.disbursed_budget}
+                    style={styles.budgetDistListItem}
+                  />
+                </ListItem>
+              </div>
+              <div style={styles.chart}>
+                <GaugeChart size={0.2} responsive={false} value={createRatio(consumptionBudgetRatio)} />
+              </div>
+            </div>
+            <Divider />
+            <div style={styles.charts}>
+              <div style={styles.listItem}>
+                <ListItem style={styles.budgetDistListItem}>
+                  <ListItemIcon>
+                    <NotAssignedIcon color="primary" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={disbursedBudgetString}
+                    secondary={strings.common.disbursement}
+                    style={styles.budgetDistListItem}
+                  />
+                </ListItem>
+              </div>
+              <div style={styles.chart}>
+                <GaugeChart size={0.2} responsive={false} value={createRatio(currentDisbursementRatio)} />
+              </div>
+            </div>
           </div>
-        </div>
-        <Divider />
-        <div style={styles.charts}>
-          <div style={styles.listItem}>
-            <ListItem style={styles.budgetDistListItem}>
-              <ListItemIcon>
-                <SpentIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText
-                primary={spendBudgetString}
-                secondary={strings.common.disbursed_budget}
-                style={styles.budgetDistListItem}
-              />
-            </ListItem>
-          </div>
-          <div style={styles.chart}>
-            <GaugeChart size={0.2} responsive={false} value={createRatio(consumptionBudgetRatio)} />
-          </div>
-        </div>
-        <Divider />
-        <div style={styles.charts}>
-          <div style={styles.listItem}>
-            <ListItem style={styles.budgetDistListItem}>
-              <ListItemIcon>
-                <NotAssignedIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText
-                primary={disbursedBudgetString}
-                secondary={strings.common.disbursement}
-                style={styles.budgetDistListItem}
-              />
-            </ListItem>
-          </div>
-          <div style={styles.chart}>
-            <GaugeChart size={0.2} responsive={false} value={createRatio(currentDisbursementRatio)} />
-          </div>
-        </div>
+        )}
         <Divider />
       </Card>
       <Card style={styles.card}>
