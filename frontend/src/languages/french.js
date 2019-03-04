@@ -5,8 +5,8 @@ const fr = {
     approver: "Approbateur",
     assigned: "Alloué",
     assigned_budget: "Budget alloué",
-    assignee: "Cessionnaire",
-    assignees: "Cessionnaire(s)",
+    assignee: "Responsable",
+    assignees: "Responsable(s)",
     back: "Retour",
     bank: "Banque",
     budget: "Budget",
@@ -21,7 +21,7 @@ const fr = {
     create: "Créer",
     created: "Créé",
     disbursed_budget: "Budget décaissé",
-    disbursement: "Décaissé",
+    disbursement: "Décaissements prévus",
     done: "Terminé",
     edit: "Modifier",
     edited: "Modifié",
@@ -145,7 +145,7 @@ const fr = {
     workflow_permissions_title: "Définir les autorisations pour l'élement du workflow",
     workflow_redacted: "Expurgé",
     workflow_submit_for_review: "Soumettre pour examen",
-    workflow_table_title: "Titre de la table de travail",
+    workflow_table_title: "Liste des étapes",
     workflow_title: "Titre du workflow",
     workflow_title_description: "Description du titre du workflow",
     workflow_type: "Type du Workflow",
@@ -339,7 +339,7 @@ const fr = {
   language: {
     english: "Anglais",
     french: "Français",
-    german: "Allemande",
+    german: "Allemand",
     portuguese: "Portugues"
   }
 };
