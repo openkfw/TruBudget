@@ -188,6 +188,19 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
 
 const createRatio = ratio => ratio * 100;
 
+const subProjectCanBeClosed = (subProjectIsClosed, userIsAllowedToClose, workflowItems) =>
+  !subProjectIsClosed && userIsAllowedToClose && _isUndefined(workflowItems.find(i => i.data.status !== "closed"));
+
+const subProjectCloseButtonTooltip = (userIsAllowedToClose, subProjectCanBeClosed) => {
+  if (subProjectCanBeClosed) {
+    return strings.common.close;
+  } else if (!userIsAllowedToClose) {
+    return strings.subproject.subproject_close_not_allowed;
+  } else {
+    return strings.subproject.subproject_close_info;
+  }
+};
+
 const SubProjectDetails = ({
   displayName,
   description,
@@ -214,8 +227,8 @@ const SubProjectDetails = ({
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = tsToString(created);
-  const openWorkflowItems = workflowItems.find(wItem => wItem.data.status === "open");
-  const closeDisabled = !(canCloseSubproject && _isUndefined(openWorkflowItems)) || status === "closed";
+
+  const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
   const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(
     workflowItems
   );
@@ -231,7 +244,6 @@ const SubProjectDetails = ({
   const allocatedBudgetRatio = !_isFinite(amount) || amount === 0 ? 0 : assignedBudget / amount;
   const consumptionBudgetRatio = !_isFinite(amount) || assignedBudget === 0 ? 0 : currentDisbursement / assignedBudget;
   const currentDisbursementRatio = !_isFinite(amount) || assignedBudget === 0 ? 0 : disbursedBudget / assignedBudget;
-  const tooltipTitle = closeDisabled ? strings.subproject.subproject_close_info : strings.common.close;
 
   const containsRedactedWorkflowItems = workflowItems.find(w => w.data.displayName === null);
 
@@ -252,12 +264,15 @@ const SubProjectDetails = ({
             <div style={styles.statusContainer}>
               <ListItemText style={styles.statusText} primary={mappedStatus} secondary={strings.common.status} />
               {status !== "closed" ? (
-                <Tooltip id="tooltip-sclose" title={tooltipTitle}>
+                <Tooltip
+                  id="tooltip-sclose"
+                  title={subProjectCloseButtonTooltip(canCloseSubproject, closingOfSubProjectAllowed)}
+                >
                   <div>
                     <IconButton
                       color="primary"
                       data-test="spc-button"
-                      disabled={closeDisabled}
+                      disabled={!closingOfSubProjectAllowed}
                       onClick={closeSubproject}
                     >
                       <DoneIcon />

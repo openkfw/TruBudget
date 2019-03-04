@@ -100,6 +100,7 @@ const de = {
     subproject_currency: "German: Sub-project Currency",
     subproject_permissions_title: "German: Set permissions for subproject",
     subproject_close_info: "German: At least one workflow item has not been closed yet.",
+    subproject_close_not_allowed: "Sie haben keine Berechtigung das Projekt zu schließen",
     subproject_edit_title: "German: Edit Subproject",
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",

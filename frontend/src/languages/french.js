@@ -98,6 +98,7 @@ const fr = {
     subproject_budget_amount: "Montant du budget du sous-projet",
     subproject_budget_amount_description: "description du montant du sous projet",
     subproject_close_info: "Au moins un workflow n'est pas encore terminé",
+    subproject_close_not_allowed: "Vous n'êtes pas autorisé à fermer le sous-projet",
     subproject_comment: "Commentaire du sous-projet",
     subproject_completion_string: "{0} cal {1} van",
     subproject_currency: "Devise du sous-projet",
