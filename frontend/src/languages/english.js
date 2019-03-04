@@ -11,6 +11,7 @@ const en = {
     bank: "Bank",
     budget: "Budget",
     budget_distribution: "Budget distribution",
+    no_budget_distribution: "Unable to display distribution if not all items are visible",
     cancel: "Cancel",
     close: "Close",
     closed: "Closed",
@@ -120,7 +121,8 @@ const en = {
     subproject_assigned_organization: "Assigned Organization",
     subproject_budget_amount: "Sub-project  budget amount",
     subproject_budget_amount_description: "e.g.",
-    subproject_close_info: "At least one workflow item has not been closed yet.",
+    subproject_close_info: "At least one workflow item has not been closed yet",
+    subproject_close_not_allowed: "You are not allowed to close the subproject",
     subproject_comment: "Sub-project Comment",
     subproject_completion_string: "{0} of {1} done",
     subproject_currency: "Sub-project Currency",
@@ -178,7 +180,8 @@ const en = {
 
   navigation: {
     admin_permission: "Admin",
-    connected_peers: "Connected Peers",
+    connected_peers: "Peers connected",
+    disconnected_peers: "No Peers connected",
     logout: "Logout",
     main_site: "Main",
     menu_item_network: "Network",

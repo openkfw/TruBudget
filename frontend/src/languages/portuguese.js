@@ -11,6 +11,7 @@ const pt = {
     bank: "Banco",
     budget: "Orçamento",
     budget_distribution: "Distribuição do orçamento",
+    no_budget_distribution: "Não é possível exibir a distribuição, se nem todos os itens estiverem visíveis",
     cancel: "Cancelar",
     close: "Fechar",
     closed: "Portuguese: Closed",
@@ -121,7 +122,8 @@ const pt = {
     subproject_assigned_organization: "Organização responsável",
     subproject_budget_amount: "Valor do orçamento do subprojeto",
     subproject_budget_amount_description: "Descrição do orçamento para o subprojeto",
-    subproject_close_info: "Portuguese: At least one workflow item has not been closed yet.",
+    subproject_close_info: "Pelo menos um item do fluxo de trabalho ainda não foi fechado",
+    subproject_close_not_allowed: "Você não tem permissão para fechar o subprojeto",
     subproject_comment: "Comentário do subprojeto",
     subproject_completion_string: "{0} de {1} finalizado",
     subproject_currency: "Moeda do subprojeto",
@@ -179,7 +181,8 @@ const pt = {
 
   navigation: {
     admin_permission: "Admin",
-    connected_peers: "Nós conectados",
+    connected_peers: "Pares conectados",
+    disconnected_peers: "Sem pares conectados",
     logout: "Logout",
     main_site: "Principal",
     menu_item_network: "Rede",
