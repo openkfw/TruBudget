@@ -181,8 +181,8 @@ const pt = {
 
   navigation: {
     admin_permission: "Admin",
-    connected_peers: "Conectado",
-    disconnected_peers: "Desconectado",
+    connected_peers: "Pares conectados",
+    disconnected_peers: "Sem pares conectados",
     logout: "Logout",
     main_site: "Principal",
     menu_item_network: "Rede",

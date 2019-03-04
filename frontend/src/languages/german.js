@@ -180,8 +180,8 @@ const de = {
 
   navigation: {
     admin_permission: "Admin",
-    connected_peers: "Verbunden",
-    disconnected_peers: "Getrennt",
+    connected_peers: "Peers Verbunden",
+    disconnected_peers: "Keine Peers verbunden",
     logout: "Logout",
     main_site: "Main",
     menu_item_network: "Network",
