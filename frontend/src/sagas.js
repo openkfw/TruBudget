@@ -261,7 +261,7 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
         displayName: r.data.displayName,
         assignee: selectedAssignee
       };
-      if (selectedAssignee === self || r.data.status === "closed") {
+      if (r.data.status === "closed") {
         notPossible.push(action);
       } else {
         possible.push(action);
@@ -285,11 +285,7 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
           intent,
           identity
         };
-        if (identity === self) {
-          notPossible.push(action);
-        } else {
-          possible.push(action);
-        }
+        possible.push(action);
         notRevokedIdentities.push(identity);
       }
       // add revoke permission actions last

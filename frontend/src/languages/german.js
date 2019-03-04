@@ -189,7 +189,8 @@ const de = {
     grant_permission_action_text: "German: grant {0} to {1}",
     revoke_permission_action_text: "German: revoke {0} to {1}",
     possible_action: "German: Possible actions",
-    not_possible_action: "German: Not possible actions"
+    not_possible_action: "German: Not possible actions",
+    actions_done: "German: {0} from {1} actions done"
   },
 
   navigation: {

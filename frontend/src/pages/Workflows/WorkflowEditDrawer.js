@@ -14,6 +14,29 @@ import AssigneeSelection from "../Common/AssigneeSelection";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 
+const styles = {
+  drawerCancelButton: {
+    position: "right",
+    left: "205px",
+    zIndex: 2,
+    top: "10px"
+  },
+  drawerUpdateButton: {
+    float: "left",
+    top: "10px",
+    left: "15px"
+  },
+  assigneeCard: {
+    marginTop: "12px",
+    marginBottom: "12px"
+  },
+  selectedWorkflowItemsDisplay: {
+    paddingTop: "36px",
+    align: "center",
+    textAlign: "center"
+  }
+};
+
 const getDefaultPermissions = () => {
   const permissions = workflowItemIntentOrder.reduce((acc, next) => {
     next.intents.map(intent => (acc[intent] = []));
@@ -55,11 +78,7 @@ const WorkflowEditDrawer = props => {
   };
 
   return (
-    <Drawer
-      open={selectedWorkflowItems !== undefined && selectedWorkflowItems.length !== 0}
-      variant="persistent"
-      anchor="right"
-    >
+    <Drawer open={!_isEmpty(selectedWorkflowItems)} variant="persistent" anchor="right">
       <div>
         <Button
           variant="contained"
@@ -67,11 +86,7 @@ const WorkflowEditDrawer = props => {
           onClick={() => {
             return showWorkflowItemPreview(projectId, selectedWorkflowItems, tempDrawerAssignee, tempDrawerPermissions);
           }}
-          style={{
-            float: "left",
-            top: "10px",
-            left: "15px"
-          }}
+          style={styles.drawerUpdateButton}
           disabled={_isEmpty(tempDrawerAssignee) && _isEmpty(tempDrawerPermissions)}
         >
           {strings.common.update}
@@ -80,25 +95,16 @@ const WorkflowEditDrawer = props => {
           variant="contained"
           color="secondary"
           onClick={() => disableWorkflowEdit()}
-          style={{
-            position: "right",
-            left: "205px",
-            zIndex: 2,
-            top: "10px"
-          }}
+          style={styles.drawerCancelButton}
         >
           {strings.common.cancel}
         </Button>
       </div>
-      <Typography
-        style={{ paddingTop: "36px", align: "center", textAlign: "center" }}
-        color="primary"
-        variant="subtitle1"
-      >
+      <Typography style={styles.selectedWorkflowItemsDisplay} color="primary" variant="subtitle1">
         {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
       </Typography>
       <div>
-        <Card style={{ marginTop: "12px", marginBottom: "12px" }}>
+        <Card style={styles.assigneeCard}>
           <CardHeader subheader="Assignee" />
           <CardContent>
             <AssigneeSelection assigneeId={tempDrawerAssignee} users={users} assign={assign} />

@@ -191,7 +191,8 @@ const fr = {
     grant_permission_action_text: "French: grant {0} to {1}",
     revoke_permission_action_text: "French: revoke {0} to {1}",
     possible_action: "French: Possible actions",
-    not_possible_action: "French: Not possible actions"
+    not_possible_action: "French: Not possible actions",
+    actions_done: "French: {0} from {1} actions done"
   },
 
   navigation: {

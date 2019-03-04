@@ -190,7 +190,8 @@ const pt = {
     grant_permission_action_text: "Portuguese: grant {0} to {1}",
     revoke_permission_action_text: "Portuguese: revoke {0} to {1}",
     possible_action: "Portuguese: Possible actions",
-    not_possible_action: "Portuguese: Not possible actions"
+    not_possible_action: "Portuguese: Not possible actions",
+    actions_done: "Portuguese: {0} from {1} actions done"
   },
 
   navigation: {

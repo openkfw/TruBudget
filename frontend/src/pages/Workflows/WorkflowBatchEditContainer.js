@@ -1,4 +1,3 @@
-import { withStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
@@ -19,8 +18,6 @@ import {
 } from "./actions";
 import WorkflowEditDrawer from "./WorkflowEditDrawer";
 import WorkflowPreviewDialog from "./WorkflowPreviewDialog";
-
-const styles = {};
 
 class WorkflowBatchEditContainer extends Component {
   render() {
@@ -71,6 +68,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withInitialLoading(toJS(withStyles(styles)(WorkflowBatchEditContainer)))
-);
+export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(WorkflowBatchEditContainer)));

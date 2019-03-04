@@ -172,7 +172,7 @@ const en = {
     workflow_none: "None",
     workflow_permissions_title: "Set permissions for workflowitem",
     workflow_redacted: "Redacted",
-    workflow_selection: "You have selected {0} workflows",
+    workflow_selection: "{0} workflow items are selected",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflow items",
     workflow_title: "Workflow title",
@@ -187,9 +187,10 @@ const en = {
     preview: "Preview",
     assign_action_text: "assign {0}",
     grant_permission_action_text: "grant {0} to {1}",
-    revoke_permission_action_text: "revoke {0} to {1}",
+    revoke_permission_action_text: "revoke {0} from {1}",
     possible_action: "Possible actions",
-    not_possible_action: "Not possible actions"
+    not_possible_action: "Not possible actions",
+    actions_done: "{0} from {1} actions done"
   },
 
   navigation: {

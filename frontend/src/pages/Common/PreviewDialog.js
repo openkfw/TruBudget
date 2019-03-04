@@ -28,7 +28,7 @@ const getDialogActions = props => {
     <Button
       disabled={submitDone || submitInProgress}
       aria-label="cancel"
-      data-test="cancel"
+      data-test="preview-dialog-cancel"
       color="secondary"
       onClick={() => onDialogCancel()}
     >
@@ -39,7 +39,7 @@ const getDialogActions = props => {
     <Button
       disabled={submitInProgress}
       aria-label="submit"
-      data-test="submit"
+      data-test="preview-dialog-submit"
       color="primary"
       onClick={() => onDialogSubmit()}
     >
@@ -47,13 +47,13 @@ const getDialogActions = props => {
     </Button>
   );
   const doneButton = (
-    <Button aria-label="done" data-test="done" color="primary" onClick={() => onDialogDone()}>
+    <Button aria-label="done" data-test="preview-dialog-done" color="primary" onClick={() => onDialogDone()}>
       {strings.common.done}
     </Button>
   );
   const progressInfo = (
     <Typography key="progressInfo" style={{ flex: 1 }}>
-      {nSubmittedItems} from {nItemsToSubmit} actions done
+      {strings.formatString(strings.preview.actions_done, nSubmittedItems, nItemsToSubmit)}
     </Typography>
   );
   const leftActions = <div key="leftactions">{cancelButton}</div>;
@@ -66,7 +66,7 @@ const PreviewDialog = props => {
   const { dialogShown, title, classes } = props;
   return (
     <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown} data-test="preview-dialog">
-      <DialogTitle> {title}</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       {props.preview}
       <DialogActions>{getDialogActions(props)}</DialogActions>
     </Dialog>
