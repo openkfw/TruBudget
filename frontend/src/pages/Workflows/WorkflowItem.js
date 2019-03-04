@@ -145,7 +145,7 @@ const createLine = (isFirst, selectable) => {
 
 const StepDot = props => {
   const {
-    sortenabled,
+    sortEnabled,
     status,
     selectable,
     redacted,
@@ -173,7 +173,7 @@ const StepDot = props => {
     }
     storeWorkflowItemsSelected(selectedWorkflowItems);
   };
-  return isWorkflowItemSelectable(redacted, sortenabled, allowedIntents, status) ? (
+  return isWorkflowItemSelectable(redacted, sortEnabled, allowedIntents) ? (
     <div style={styles.checkbox}>
       <Checkbox onChange={updateSelectedList} />
     </div>
@@ -184,13 +184,14 @@ const StepDot = props => {
   );
 };
 
-function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents, status) {
+function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
   const intents = allowedIntents.filter(
     i =>
       i === "workflowitem.intent.listPermissions" ||
       i === "workflowitem.intent.grantPermission" ||
       i === "workflowitem.intent.revokePermission"
   );
+  // a user must have assign permissions or all three permission handling permissions
   return !redacted && sortenabled && (allowedIntents.includes("workflowitem.assign") || intents.length === 3)
     ? true
     : false;
@@ -281,7 +282,7 @@ const renderActionButtons = (
             <Tooltip
               id="tooltip-wedit"
               title={!canEditWorkflow || workflowSortEnabled ? "" : strings.common.edit}
-              // Otherwise the tooltip is shacking
+              // Otherwise the tooltip is shaking
               PopperProps={{ style: { pointerEvents: "none" } }}
               disableFocusListener={!canEditWorkflow || workflowSortEnabled}
               disableHoverListener={!canEditWorkflow || workflowSortEnabled}
@@ -303,7 +304,7 @@ const renderActionButtons = (
           <Tooltip
             id="tooltip-wpermissions"
             title={!canListWorkflowPermissions || workflowSortEnabled ? "" : strings.common.show_permissions}
-            // Otherwise the tooltip is shacking
+            // Otherwise the tooltip is shaking
             PopperProps={{ style: { pointerEvents: "none" } }}
             disableFocusListener={!canListWorkflowPermissions || workflowSortEnabled}
             disableHoverListener={!canListWorkflowPermissions || workflowSortEnabled}
@@ -325,7 +326,7 @@ const renderActionButtons = (
             <Tooltip
               id="tooltip-wclose"
               title={!canCloseWorkflow || workflowSortEnabled ? "" : strings.common.close}
-              // Otherwise the tooltip is shacking
+              // Otherwise the tooltip is shaking
               PopperProps={{ style: { pointerEvents: "none" } }}
               disableFocusListener={!canCloseWorkflow || workflowSortEnabled}
               disableHoverListener={!canCloseWorkflow || workflowSortEnabled}
@@ -373,7 +374,7 @@ export const WorkflowItem = SortableElement(
       <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
         <StepDot
-          sortenabled={workflowSortEnabled}
+          sortEnabled={workflowSortEnabled}
           status={status}
           selectable={workflowSelectable}
           storeWorkflowItemsSelected={storeWorkflowItemsSelected}
