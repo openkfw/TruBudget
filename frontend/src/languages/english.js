@@ -11,7 +11,7 @@ const en = {
     bank: "Bank",
     budget: "Budget",
     budget_distribution: "Budget distribution",
-    no_budget_distribution: "Not able to display distribution if not all items are visible",
+    no_budget_distribution: "Unable to display distribution if not all items are visible",
     cancel: "Cancel",
     close: "Close",
     closed: "Closed",
