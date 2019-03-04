@@ -55,18 +55,18 @@ const styles = {
 };
 
 const getTableEntries = props => {
-  const { workflowActions, submittedWorkflowItems, classes } = props;
+  const { workflowActions, submittedWorkflowItems, failedWorkflowItem, classes } = props;
   const possibleActions = workflowActions.possible;
   const notPossibleActions = workflowActions.notPossible;
   let table = [];
 
   if (!_isEmpty(notPossibleActions)) {
     table = addHeader(table, strings.preview.not_possible_action, classes);
-    table = addActions(table, notPossibleActions, classes);
+    table = addActions(table, notPossibleActions, classes, failedWorkflowItem);
   }
   if (!_isEmpty(possibleActions)) {
     table = addHeader(table, strings.preview.possible_action, classes);
-    table = addActions(table, possibleActions, classes, submittedWorkflowItems);
+    table = addActions(table, possibleActions, classes, failedWorkflowItem, submittedWorkflowItems);
   }
   return table;
 };
@@ -93,7 +93,7 @@ function addHeader(table, headline, classes) {
   return table;
 }
 
-function addActions(table, actions, classes, submittedWorkflowItems) {
+function addActions(table, actions, classes, failedWorkflowItem, submittedWorkflowItems) {
   actions.forEach((action, index) => {
     table.push(
       <TableRow
@@ -107,7 +107,7 @@ function addActions(table, actions, classes, submittedWorkflowItems) {
           {getActionText(action)}
         </TableCell>
         <TableCell className={classes.workflowCell} style={{ textAlign: "right" }}>
-          {getStatusIcon(submittedWorkflowItems, action)}
+          {getStatusIcon(submittedWorkflowItems, failedWorkflowItem, action)}
         </TableCell>
       </TableRow>
     );
@@ -133,8 +133,14 @@ function getActionText(action) {
   return actionText;
 }
 
-function getStatusIcon(submittedWorkflowItems, action) {
-  if (submittedWorkflowItems === undefined) {
+function getStatusIcon(submittedWorkflowItems, failedWorkflowItem, action) {
+  if (
+    submittedWorkflowItems === undefined ||
+    (action.id === failedWorkflowItem.id &&
+      action.assignee === failedWorkflowItem.assignee &&
+      action.identity === failedWorkflowItem.identity &&
+      action.intent === failedWorkflowItem.intent)
+  ) {
     return <ErrorIcon />;
   } else {
     if (
@@ -199,7 +205,7 @@ const WorkflowPreviewDialog = props => {
       onDialogSubmit={() => editWorkflowitems(projectId, subProjectId, workflowActions.possible)}
       preview={preview}
       onDialogDone={handleDone}
-      submitDone={submitDone}
+      submitDone={submitDone || _isEmpty(workflowActions.possible)}
       submitInProgress={submitInProgress}
       nItemsToSubmit={!_isEmpty(workflowActions.possible) ? workflowActions.possible.length : 0}
       nSubmittedItems={!_isEmpty(submittedWorkflowItems) ? submittedWorkflowItems.length : 0}

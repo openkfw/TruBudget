@@ -87,7 +87,8 @@ import {
   SHOW_WORKFLOW_PREVIEW,
   STORE_WORKFLOWACTIONS,
   SUBMIT_BATCH_FOR_WORKFLOW,
-  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
+  SUBMIT_BATCH_FOR_WORKFLOW_FAILURE
 } from "./pages/Workflows/actions";
 
 import {
@@ -967,63 +968,74 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
   yield execute(function*() {
     for (const index in actions) {
       const action = actions[index];
-      switch (action.action) {
-        case strings.common.assign:
-          yield callApi(api.assignWorkflowItem, projectId, subprojectId, action.id, action.assignee);
-          yield put({
-            type: ASSIGN_WORKFLOWITEM_SUCCESS,
-            workflowitemId: action.id,
-            assignee: action.assignee
-          });
-          break;
+      try {
+        switch (action.action) {
+          case strings.common.assign:
+            yield callApi(api.assignWorkflowItem, projectId, subprojectId, action.id, action.assignee);
+            yield put({
+              type: ASSIGN_WORKFLOWITEM_SUCCESS,
+              workflowitemId: action.id,
+              assignee: action.assignee
+            });
+            break;
 
-        case strings.common.grant:
-          yield callApi(
-            api.grantWorkflowItemPermissions,
-            projectId,
-            subprojectId,
-            action.id,
-            action.intent,
-            action.identity
-          );
-          yield put({
-            type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
-            workflowitemId: action.id,
-            intent: action.intent,
-            identity: action.identity
-          });
-          break;
+          case strings.common.grant:
+            yield callApi(
+              api.grantWorkflowItemPermissions,
+              projectId,
+              subprojectId,
+              action.id,
+              action.intent,
+              action.identity
+            );
+            yield put({
+              type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+              workflowitemId: action.id,
+              intent: action.intent,
+              identity: action.identity
+            });
+            break;
 
-        case strings.common.revoke:
-          yield callApi(
-            api.revokeWorkflowItemPermissions,
-            projectId,
-            subprojectId,
-            action.id,
-            action.intent,
-            action.identity
-          );
-          yield put({
-            type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
-            workflowitemId: action.id,
-            intent: action.intent,
-            identity: action.identity
-          });
-          break;
+          case strings.common.revoke:
+            yield callApi(
+              api.revokeWorkflowItemPermissions,
+              projectId,
+              subprojectId,
+              action.id,
+              action.intent,
+              action.identity
+            );
+            yield put({
+              type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+              workflowitemId: action.id,
+              intent: action.intent,
+              identity: action.identity
+            });
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
+      } catch (error) {
+        yield put({
+          type: SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
+          workflowitemId: action.id,
+          assignee: action.assignee,
+          identity: action.identity,
+          intent: action.intent
+        });
+        throw error;
       }
+      yield put({
+        type: FETCH_ALL_SUBPROJECT_DETAILS,
+        projectId,
+        subprojectId,
+        showLoading: false
+      });
+      yield put({
+        type: SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
+      });
     }
-    yield put({
-      type: FETCH_ALL_SUBPROJECT_DETAILS,
-      projectId,
-      subprojectId,
-      showLoading: false
-    });
-    yield put({
-      type: SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
-    });
   }, showLoading);
 }
 

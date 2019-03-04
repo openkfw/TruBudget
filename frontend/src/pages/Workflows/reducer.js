@@ -41,6 +41,7 @@ import {
   UPDATE_WORKFLOW_ORDER,
   STORE_WORKFLOWACTIONS,
   SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
+  SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   SUBMIT_BATCH_FOR_WORKFLOW
 } from "./actions";
@@ -98,6 +99,7 @@ const defaultState = fromJS({
   tempDrawerAssignee: "",
   workflowActions: {},
   submittedWorkflowItems: [],
+  failedWorkflowItem: {},
   submitDone: false,
   submitInProgress: false
 });
@@ -233,6 +235,17 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS:
       return state.merge({
+        submitDone: true,
+        submitInProgress: defaultState.get("submitInProgress")
+      });
+    case SUBMIT_BATCH_FOR_WORKFLOW_FAILURE:
+      return state.merge({
+        failedWorkflowItem: {
+          id: action.workflowitemId,
+          assignee: action.assignee,
+          identity: action.identity,
+          intent: action.intent
+        },
         submitDone: true,
         submitInProgress: defaultState.get("submitInProgress")
       });
