@@ -8,7 +8,7 @@ import * as UserRecord from "../organization/user_record";
 
 export type Id = string;
 
-export const idSchema = Joi.string().max(32);
+export const idSchema = Joi.string().max(36);
 
 type eventTypeType = "notification";
 const eventType: eventTypeType = "notification";

@@ -1,4 +1,7 @@
 import { Event } from "./event";
+
+import * as NotificationRead from "../service/domain/workflow/notification_read";
+import * as NotificationCreated from "../service/domain/workflow/notification_created";
 import * as WorkflowitemAssign from "../service/domain/workflow/workflowitem_assigned";
 import * as WorkflowitemCreated from "../service/domain/workflow/workflowitem_created";
 import * as WorkflowitemUpdated from "../service/domain/workflow/workflowitem_updated";
@@ -26,6 +29,50 @@ function isOldEvent(event) {
   );
 }
 
+function mapOldEventToBusinessEvent(event, resources) {
+  const stream = resources[0] ? resources[0].id : undefined;
+  const key = [
+    `${resources[1] ? resources[1].id : undefined}_workflows`,
+    resources[2] ? resources[2].id : undefined,
+  ];
+  const data: Event = event;
+
+  const params = [stream, key, data];
+  const [a = undefined, b = undefined, request] = matchPublishRequest(params, stream, key, data);
+
+  // TODO: will not work until all events are translated or new
+  return request.json;
+}
+
+function makeOldNotificationResources(projectId, subprojectId, workflowitemId) {
+  const resources: any[] = [];
+
+  if (projectId) {
+    resources.push({
+      id: projectId,
+      type: "project",
+    });
+  }
+  if (subprojectId) {
+    resources.push({
+      id: subprojectId,
+      type: "subproject",
+    });
+  }
+  if (workflowitemId) {
+    resources.push({
+      id: workflowitemId,
+      type: "workflowitem",
+    });
+  }
+
+  return resources;
+}
+
+function mapBusinessEventToOldEvent(event) {
+  return event;
+}
+
 function extractSubprojectFromKey(key) {
   const captured = /([^_]+)_workflows/.exec(key);
 
@@ -51,7 +98,36 @@ function handlePublishRequest(params: any[]): any[] {
 
   const event: Event = data.json;
 
+  return matchPublishRequest(params, stream, key, event);
+}
+
+function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
   switch (event.intent) {
+    case "notification.create":
+      // Check if it is an old notification event
+      if (!event.intent) {
+        return params;
+      }
+
+      if (!event.data || !event.data.resources) {
+        console.error("Error handling publish request for notification.create", params);
+        return params;
+      }
+      console.log("notification.create");
+      console.log(event);
+      const notificationCreated: NotificationCreated.Event = NotificationCreated.createEvent(
+        event.data.notificationId,
+        "http",
+        event.createdBy,
+        event.key,
+        mapOldEventToBusinessEvent(event.data.originalEvent, event.data.resources),
+        event.data.resources[0] ? event.data.resources[0].id : undefined,
+        event.data.resources[1] ? event.data.resources[1].id : undefined,
+        event.data.resources[2] ? event.data.resources[2].id : undefined,
+      );
+      return [stream, key, { json: notificationCreated }];
+    case "notification.markRead":
+      return params;
     case "subproject.createWorkflowitem": {
       const subProjectId = extractSubprojectFromKey(key[0]);
 
@@ -216,6 +292,29 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
   }
 
   switch (result.data.json.type) {
+    case "notification_created": {
+      const event: NotificationCreated.Event = result.data.json;
+
+      const oldEvent: Event = {
+        key: event.recipient,
+        intent: "notification.create",
+        createdBy: event.publisher,
+        createdAt: event.time,
+        dataVersion: 1,
+        data: {
+          notificationId: event.id,
+          resources: makeOldNotificationResources(
+            event.projectId,
+            event.subprojectId,
+            event.workflowitemId,
+          ),
+          time: event.time,
+          isRead: false,
+          originalEvent: event.businessEvent,
+        },
+      };
+      return { ...result, data: { json: oldEvent } };
+    }
     case "workflowitem_assigned": {
       const event: WorkflowitemAssign.Event = result.data.json;
       const oldEvent: Event = {
@@ -336,7 +435,6 @@ export function interceptResult(method: string, params: any[], oldResult: any): 
       return oldResult.map(r => handleListStreamKeyItemsResponse(method, params, r));
 
     case "liststreamitems":
-      console.log(method, params);
       return oldResult;
 
     default:

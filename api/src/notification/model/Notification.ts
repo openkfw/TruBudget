@@ -44,6 +44,7 @@ export interface Notification {
   resources: NotificationResourceDescription[];
   isRead: boolean;
   originalEvent: Event;
+  time: string;
 }
 
 export interface NotificationList {
@@ -182,8 +183,8 @@ const findIndices = (
 };
 
 function compareNotifications(a: Notification, b: Notification): number {
-  const tsA = new Date(a.originalEvent.createdAt);
-  const tsB = new Date(b.originalEvent.createdAt);
+  const tsA = new Date(a.time);
+  const tsB = new Date(b.time);
   if (tsA < tsB) return 1;
   if (tsA > tsB) return -1;
   return 0;
