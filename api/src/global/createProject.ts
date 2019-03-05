@@ -55,9 +55,8 @@ export async function createProject(
     status: value("status", input.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", input.displayName, isNonemptyString),
     description: value("description", input.description, isNonemptyString),
-    amount: value("amount", input.amount, isNonemptyString),
     assignee: value("assignee", input.assignee, isUserOrUndefined, req.user.userId),
-    currency: value("currency", input.currency, isNonemptyString).toUpperCase(),
+    projectedBudgets: value("projectedBudgets", input.projectedBudgets, isNonemptyString, []),
     thumbnail: value("thumbnail", input.thumbnail, x => typeof x === "string", ""),
   };
 

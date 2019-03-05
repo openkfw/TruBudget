@@ -24,11 +24,16 @@ export * from "./User";
 
 export type Reader = (id: string) => Promise<Project>;
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Update {
   displayName?: string;
   description?: string;
-  amount?: string;
-  currency?: string;
+  projectedBudgets?: ProjectedBudget[];
   thumbnail?: string;
 }
 
@@ -154,9 +159,7 @@ export async function create(
     status: value("status", createData.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", createData.displayName, isNonemptyString),
     description: value("description", createData.description, isNonemptyString),
-    // amount: value("amount", createData.amount, isNonemptyString),
     assignee: value("assignee", createData.assignee, isUserOrUndefined, actingUser.id),
-    // currency: value("currency", createData.currency, isNonemptyString).toUpperCase(),
     // TODO: check correct form of this
     projectedBudgets: value("projectedBudgets", createData.projectedBudgets, isNotEmpty, []),
     thumbnail: value("thumbnail", createData.thumbnail, x => typeof x === "string", ""),
@@ -268,8 +271,7 @@ export async function update(
   const checkedUpdate = inheritDefinedProperties(rawUpdate, [
     "displayName",
     "description",
-    "amount",
-    "currency",
+    "projectedBudgets",
     "thumbnail",
   ]);
   const project = await getProject(projectId);

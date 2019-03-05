@@ -8,14 +8,19 @@ import { Event, throwUnsupportedEventVersion } from "./event";
 
 export * from "./event";
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Subproject {
   id: string;
   creationUnixTs: string;
   status: "open" | "closed";
   displayName: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   exchangeRate: string;
   billingDate: string;
   assignee?: string;

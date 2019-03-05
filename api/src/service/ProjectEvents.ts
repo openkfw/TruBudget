@@ -46,8 +46,7 @@ export interface Project {
 export interface ProjectUpdate {
   displayName?: string;
   description?: string;
-  amount?: string;
-  currency?: string;
+  projectedBudget?: ProjectedBudget[];
   thumbnail?: string;
 }
 
@@ -131,8 +130,7 @@ export async function writeProjectAssignedToChain(
 export interface ProjectUpdate {
   displayName?: string;
   description?: string;
-  amount?: string;
-  currency?: string;
+  projectedBudgets?: ProjectedBudget[];
   thumbnail?: string;
 }
 

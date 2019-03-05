@@ -420,9 +420,7 @@ const schemas = {
                   status: { type: "string", example: "open" },
                   displayName: { type: "string", example: "Build a town-project" },
                   description: { type: "string", example: "A town should be built" },
-                  amount: { type: "string", example: "10000" },
                   assignee: { type: "string", example: "aSmith" },
-                  currency: { type: "string", example: "EUR" },
                   projectedBudgets: {
                     type: "array",
                     items: {
@@ -789,9 +787,18 @@ const schemas = {
                           status: { type: "string", example: "open" },
                           displayName: { type: "string", example: "Build a town-project" },
                           description: { type: "string", example: "A town should be built" },
-                          amount: { type: "string", example: "10000" },
                           assignee: { type: "string", example: "aSmith" },
-                          currency: { type: "string", example: "EUR" },
+                          projectedBudgets: {
+                            type: "array",
+                            items: {
+                              type: "object",
+                              properties: {
+                                organization: { type: "string", example: "MyOrga" },
+                                value: { type: "string", example: "1234" },
+                                currencyCode: { type: "string", example: "EUR" },
+                              },
+                            },
+                          },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                         },
                       },
@@ -826,9 +833,18 @@ const schemas = {
                                       type: "string",
                                       example: "A town should be built",
                                     },
-                                    amount: { type: "string", example: "10000" },
                                     assignee: { type: "string", example: "aSmith" },
-                                    currency: { type: "string", example: "EUR" },
+                                    projectedBudgets: {
+                                      type: "array",
+                                      items: {
+                                        type: "object",
+                                        properties: {
+                                          organization: { type: "string", example: "MyOrga" },
+                                          value: { type: "string", example: "1234" },
+                                          currencyCode: { type: "string", example: "EUR" },
+                                        },
+                                      },
+                                    },
                                     thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                   },
                                 },
@@ -904,9 +920,18 @@ const schemas = {
                         status: { type: "string", example: "open" },
                         displayName: { type: "string", example: "Build a town-project" },
                         description: { type: "string", example: "A town should be built" },
-                        amount: { type: "string", example: "10000" },
                         assignee: { type: "string", example: "aSmith" },
-                        currency: { type: "string", example: "EUR" },
+                        projectedBudgets: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              organization: { type: "string", example: "MyOrga" },
+                              value: { type: "string", example: "1234" },
+                              currencyCode: { type: "string", example: "EUR" },
+                            },
+                          },
+                        },
                         billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                         exchangeRate: { type: "string", example: "1.0" },
                         thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
@@ -947,9 +972,18 @@ const schemas = {
                                     example: "2018-12-11T00:00:00.000Z",
                                   },
                                   exchangeRate: { type: "string", example: "1.0" },
-                                  amount: { type: "string", example: "10000" },
                                   assignee: { type: "string", example: "aSmith" },
-                                  currency: { type: "string", example: "EUR" },
+                                  projectedBudgets: {
+                                    type: "array",
+                                    items: {
+                                      type: "object",
+                                      properties: {
+                                        organization: { type: "string", example: "MyOrga" },
+                                        value: { type: "string", example: "1234" },
+                                        currencyCode: { type: "string", example: "EUR" },
+                                      },
+                                    },
+                                  },
                                   thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                 },
                               },
@@ -1058,9 +1092,18 @@ const schemas = {
             properties: {
               displayName: { type: "string", example: "townproject" },
               description: { type: "string", example: "A town should be built" },
-              amount: { type: "string", example: "10000" },
               assignee: { type: "string", example: "aSmith" },
-              currency: { type: "string", example: "EUR" },
+              projectedBudgets: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    organization: { type: "string", example: "MyOrga" },
+                    value: { type: "string", example: "1234" },
+                    currencyCode: { type: "string", example: "EUR" },
+                  },
+                },
+              },
               projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
             },
@@ -1154,13 +1197,22 @@ const schemas = {
                   status: { type: "string", example: "open" },
                   displayName: { type: "string", example: "townproject" },
                   description: { type: "string", example: "A town should be built" },
-                  amount: { type: "string", example: "10000" },
                   assignee: { type: "string", example: "aSmith" },
-                  currency: { type: "string", example: "EUR" },
+                  projectedBudgets: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        organization: { type: "string", example: "MyOrga" },
+                        value: { type: "string", example: "1234" },
+                        currencyCode: { type: "string", example: "EUR" },
+                      },
+                    },
+                  },
                   billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                   exchangeRate: { type: "string", example: "1.0" },
                 },
-                required: ["displayName", "description", "amount", "currency"],
+                required: ["displayName", "description", "projectedBudgets"],
               },
             },
           },
@@ -1438,9 +1490,18 @@ const schemas = {
                           status: { type: "string", example: "open" },
                           displayName: { type: "string", example: "school" },
                           description: { type: "string", example: "school should be built" },
-                          amount: { type: "string", example: "3000" },
                           assignee: { type: "string", example: "aSmith" },
-                          currency: { type: "string", example: "EUR" },
+                          projectedBudgets: {
+                            type: "array",
+                            items: {
+                              type: "object",
+                              properties: {
+                                organization: { type: "string", example: "MyOrga" },
+                                value: { type: "string", example: "1234" },
+                                currencyCode: { type: "string", example: "EUR" },
+                              },
+                            },
+                          },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                           billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           exchangeRate: { type: "string", example: "1.0" },
@@ -1478,9 +1539,18 @@ const schemas = {
                                       type: "string",
                                       example: "school should be built",
                                     },
-                                    amount: { type: "string", example: "3000" },
                                     assignee: { type: "string", example: "aSmith" },
-                                    currency: { type: "string", example: "EUR" },
+                                    projectedBudgets: {
+                                      type: "array",
+                                      items: {
+                                        type: "object",
+                                        properties: {
+                                          organization: { type: "string", example: "MyOrga" },
+                                          value: { type: "string", example: "1234" },
+                                          currencyCode: { type: "string", example: "EUR" },
+                                        },
+                                      },
+                                    },
                                     thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                   },
                                 },
@@ -1565,11 +1635,20 @@ const schemas = {
                         status: { type: "string", example: "open" },
                         displayName: { type: "string", example: "school" },
                         description: { type: "string", example: "school should be built" },
-                        amount: { type: "string", example: "3000" },
                         assignee: { type: "string", example: "aSmith" },
                         billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                         exchangeRate: { type: "string", example: "1.0" },
-                        currency: { type: "string", example: "EUR" },
+                        projectedBudgets: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              organization: { type: "string", example: "MyOrga" },
+                              value: { type: "string", example: "1234" },
+                              currencyCode: { type: "string", example: "EUR" },
+                            },
+                          },
+                        },
                         thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                       },
                     },
@@ -1605,9 +1684,18 @@ const schemas = {
                                     example: "2018-12-11T00:00:00.000Z",
                                   },
                                   exchangeRate: { type: "string", example: "1.0" },
-                                  amount: { type: "string", example: "3000" },
                                   assignee: { type: "string", example: "aSmith" },
-                                  currency: { type: "string", example: "EUR" },
+                                  projectedBudgets: {
+                                    type: "array",
+                                    items: {
+                                      type: "object",
+                                      properties: {
+                                        organization: { type: "string", example: "MyOrga" },
+                                        value: { type: "string", example: "1234" },
+                                        currencyCode: { type: "string", example: "EUR" },
+                                      },
+                                    },
+                                  },
                                   thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                 },
                               },
@@ -1714,9 +1802,18 @@ const schemas = {
             properties: {
               displayName: { type: "string", example: "school" },
               description: { type: "string", example: "school should be built" },
-              amount: { type: "string", example: "3000" },
               assignee: { type: "string", example: "aSmith" },
-              currency: { type: "string", example: "EUR" },
+              projectedBudgets: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    organization: { type: "string", example: "MyOrga" },
+                    value: { type: "string", example: "1234" },
+                    currencyCode: { type: "string", example: "EUR" },
+                  },
+                },
+              },
               projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
             },
@@ -1953,9 +2050,14 @@ const schemas = {
                             status: "open",
                             displayName: "school",
                             description: "school should be built",
-                            amount: "500",
-                            currency: "EUR",
                             assignee: "aSmith",
+                            projectedBudgets: [
+                              {
+                                organization: "ACMECorp",
+                                value: "500",
+                                currencyCode: "EUR",
+                              },
+                            ],
                           },
                         },
                         properties: {
@@ -2600,9 +2702,14 @@ const schemas = {
                                 status: "open",
                                 displayName: "town-project",
                                 description: "a town should be built",
-                                amount: "10000",
                                 assignee: "aSmith",
-                                currency: "EUR",
+                                projectedBudgets: [
+                                  {
+                                    organization: "ACMECorp",
+                                    value: "10000",
+                                    currencyCode: "EUR",
+                                  },
+                                ],
                                 thumbnail: "/Thumbnail_0001.jpg",
                               },
                             },
@@ -2692,9 +2799,14 @@ const schemas = {
                                 status: "open",
                                 displayName: "town-project",
                                 description: "a town should be built",
-                                amount: "10000",
                                 assignee: "aSmith",
-                                currency: "EUR",
+                                projectedBudgets: [
+                                  {
+                                    organization: "ACMECorp",
+                                    value: "10000",
+                                    currencyCode: "EUR",
+                                  },
+                                ],
                                 thumbnail: "/Thumbnail_0001.jpg",
                               },
                             },

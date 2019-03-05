@@ -13,6 +13,7 @@ import { MultichainClient } from "../../service/Client.h";
 import { randomString } from "../../service/hash";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
+import { isArray } from "util";
 
 export async function createSubproject(multichain: MultichainClient, req): Promise<HttpResponse> {
   const body = req.body;
@@ -81,8 +82,7 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
     status: value("status", subprojectArgs.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", subprojectArgs.displayName, isNonemptyString),
     description: value("description", subprojectArgs.description, isNonemptyString),
-    amount: value("amount", subprojectArgs.amount, isNonemptyString),
-    currency: value("currency", subprojectArgs.currency, isNonemptyString).toUpperCase(),
+    projectedBudgets: value("projectedBudgets", subprojectArgs.projectedBudgets, isArray),
     assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.user.userId),
   };
 

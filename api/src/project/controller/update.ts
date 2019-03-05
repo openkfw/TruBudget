@@ -23,8 +23,7 @@ export async function updateProject(multichain: MultichainClient, req): Promise<
   inheritDefinedProperties(theUpdate, input, [
     "displayName",
     "description",
-    "amount",
-    "currency",
+    "projectedBudget",
     "thumbnail",
   ]);
 

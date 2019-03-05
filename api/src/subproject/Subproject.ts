@@ -5,14 +5,19 @@ import Intent from "../authz/intents";
 import { Permissions } from "../authz/types";
 import { User, userIdentities } from "./User";
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Subproject {
   id: string;
   creationUnixTs: string;
   status: "open" | "closed";
   displayName: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   exchangeRate: string;
   billingDate: string;
   assignee?: string;
@@ -26,8 +31,7 @@ export interface ScrubbedSubproject {
   status: "open" | "closed";
   displayName: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   exchangeRate: string;
   billingDate: string;
   assignee?: string;
@@ -63,8 +67,13 @@ const schema = Joi.object({
   description: Joi.string()
     .allow("")
     .required(),
-  amount: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
-  currency: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
+  projectedBudgets: Joi.array().items(
+    Joi.object().keys({
+      organization: Joi.string(),
+      value: Joi.string(),
+      currencyCode: Joi.string(),
+    }),
+  ),
   exchangeRate: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
   billingDate: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
   assignee: Joi.string(),
@@ -113,8 +122,7 @@ export function scrubHistory(subproject: Subproject, actingUser: User): Scrubbed
     status: subproject.status,
     displayName: subproject.displayName,
     description: subproject.description,
-    amount: subproject.amount,
-    currency: subproject.currency,
+    projectedBudgets: subproject.projectedBudgets,
     exchangeRate: subproject.exchangeRate,
     billingDate: subproject.billingDate,
     assignee: subproject.assignee,

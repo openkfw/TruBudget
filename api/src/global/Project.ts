@@ -2,6 +2,12 @@ import Joi = require("joi");
 
 import { Permissions } from "../authz/types";
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Project {
   id: string;
   creationUnixTs: string;
@@ -9,8 +15,7 @@ export interface Project {
   displayName: string;
   assignee?: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   thumbnail: string;
   permissions: Permissions;
 }
@@ -30,8 +35,13 @@ const schema = Joi.object().keys({
   description: Joi.string()
     .allow("")
     .required(),
-  amount: Joi.string().required(),
-  currency: Joi.string().required(),
+  projectedBudgets: Joi.array().items(
+    Joi.object().keys({
+      organization: Joi.string(),
+      value: Joi.string(),
+      currencyCode: Joi.string(),
+    }),
+  ),
   thumbnail: Joi.string()
     .allow("")
     .required(),

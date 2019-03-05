@@ -721,8 +721,13 @@ describe("Updating a project", () => {
     const update: Project.Update = {
       displayName: "newName",
       description: "update my project",
-      amount: "500",
-      currency: "EUR",
+      projectedBudgets: [
+        {
+          organization: "Test",
+          value: "500",
+          currencyCode: "EUR",
+        },
+      ],
       thumbnail: "a new thumbnail",
     };
     await assertIsResolved(Project.update(alice, "aliceProject", update, deps));

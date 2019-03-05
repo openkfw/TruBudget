@@ -23,14 +23,19 @@ export interface SubprojectResource {
   data: Data;
 }
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Data {
   id: string;
   creationUnixTs: string;
   status: "open" | "closed";
   displayName: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   exchangeRate: string;
   billingDate: string;
   assignee?: string;
@@ -42,8 +47,7 @@ export interface RedactedData {
   status: "open" | "closed";
   displayName: null;
   description: null;
-  amount: null;
-  currency: null;
+  projectedBudgets: null;
   assignee: null;
   exchangeRate: null;
   billingDate: null;
@@ -52,8 +56,7 @@ export interface RedactedData {
 export interface Update {
   displayName?: string;
   description?: string;
-  amount?: string;
-  currency?: string;
+  projectedBudgets?: ProjectedBudget[];
   exchangeRate?: string;
   billingDate?: string;
 }
@@ -70,8 +73,7 @@ const redactSubprojectData = (subproject: Data): RedactedData => ({
   status: subproject.status,
   displayName: null,
   description: null,
-  amount: null,
-  currency: null,
+  projectedBudgets: null,
   assignee: null,
   exchangeRate: null,
   billingDate: null,

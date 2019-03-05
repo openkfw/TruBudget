@@ -38,8 +38,13 @@ describe("subproject.createWorkflowitem", () => {
                       id: subprojectId,
                       displayName: `Subproject ${subprojectId}`,
                       status: "open",
-                      amount: "1",
-                      currency: "EUR",
+                      projectedBudgets: [
+                        {
+                          organization: "ACMECorp",
+                          value: "1",
+                          currencyCode: "EUR",
+                        },
+                      ],
                       description: "",
                     },
                     permissions: {

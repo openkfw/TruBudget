@@ -48,8 +48,13 @@ describe("subproject.viewDetails", () => {
                       status: "open",
                       displayName: "The Sample Project",
                       description: "This project has no description.",
-                      amount: "923",
-                      currency: "EUR",
+                      projectedBudgets: [
+                        {
+                          organization: "ACMECorp",
+                          value: "923",
+                          currencyCode: "EUR",
+                        },
+                      ],
                     },
                     permissions: {
                       "project.viewSummary": ["alice"],

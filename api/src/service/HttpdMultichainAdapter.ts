@@ -69,8 +69,7 @@ export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
           status: x.status,
           displayName: x.displayName,
           description: x.description,
-          amount: x.amount,
-          currency: x.currency,
+          projectedBudgets: x.projectedBudgets,
           exchangeRate: x.exchangeRate,
           billingDate: x.billingDate,
           assignee: x.assignee,
@@ -241,8 +240,9 @@ export function updateProject(conn: Multichain.ConnToken): HTTP.ProjectUpdater {
         const multichainUpdate: Multichain.ProjectUpdate = {};
         if (data.displayName !== undefined) multichainUpdate.displayName = data.displayName;
         if (data.description !== undefined) multichainUpdate.description = data.description;
-        if (data.amount !== undefined) multichainUpdate.amount = data.amount;
-        if (data.currency !== undefined) multichainUpdate.currency = data.currency;
+        if (data.projectedBudgets !== undefined) {
+          multichainUpdate.projectedBudgets = data.projectedBudgets;
+        }
         if (data.thumbnail !== undefined) multichainUpdate.thumbnail = data.thumbnail;
         await Multichain.updateProject(conn, issuer, id, multichainUpdate);
       },

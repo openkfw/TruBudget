@@ -10,10 +10,18 @@ import deepcopy from "../../lib/deepcopy";
 import { isNotEmpty } from "../../lib/emptyChecks";
 import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import logger from "../../lib/logger";
+<<<<<<< HEAD
 import { asMapKey } from "../../service/Client";
 import { MultichainClient } from "../../service/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../service/event";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
+=======
+import { asMapKey } from "../../multichain/Client";
+import { MultichainClient } from "../../multichain/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
+import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import { ProjectedBudget } from "../Project";
+>>>>>>> api: add projectedBudgets to subproject
 
 export interface AugmentedEvent extends Event {
   snapshot: {
@@ -34,16 +42,14 @@ export interface Data {
   displayName: string;
   assignee?: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   thumbnail: string;
 }
 
 export interface Update {
   displayName?: string;
   description?: string;
-  amount?: string;
-  currency?: string;
+  projectedBudgets?: ProjectedBudget[];
   thumbnail?: string;
 }
 
