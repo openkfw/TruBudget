@@ -5,7 +5,8 @@ const currencies = {
   EUR: { symbol: "€", format: "%v %s" },
   USD: { symbol: "$", format: "%s %v" },
   BRL: { symbol: "R$", format: "%s %v" },
-  XOF: { symbol: "CFA", format: "%s %v" }
+  XOF: { symbol: "CFA", format: "%s %v" },
+  DKK: { symbol: "kr.", format: "%v %s" }
 };
 
 export default currencies;
