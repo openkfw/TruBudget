@@ -136,8 +136,8 @@ function applyWorkflowitemEvent(project: Project, subprojectId: string, item: It
       ...event,
       snapshot: {
         displayName: deepcopy(workflowitem.displayName),
-        amount: deepcopy(workflowitem.amount),
-        currency: deepcopy(workflowitem.currency),
+        amount: deepcopy(workflowitem.amount)!,
+        currency: deepcopy(workflowitem.currency)!,
         amountType: deepcopy(workflowitem.amountType),
       },
     });
@@ -145,11 +145,11 @@ function applyWorkflowitemEvent(project: Project, subprojectId: string, item: It
 }
 
 export function applyStreamItems(streamItems: Item[], project?: Project): Project | undefined {
-  logger.trace(
-    `${project ? "Applying" : "Sourcing"} ${streamItems.length} stream items${
-      project ? ` to project ${project.id}` : ""
-    }`,
-  );
+  if (logger.isLevelEnabled("trace")) {
+    const action = project ? "Applying" : "Sourcing";
+    const target = project ? ` to project ${project.id}` : "";
+    logger.trace(`${action} ${streamItems.length} stream items${target}`);
+  }
   for (const item of streamItems) {
     const event = item.data.json as Event;
 

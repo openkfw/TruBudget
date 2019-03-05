@@ -338,21 +338,23 @@ const schemas = {
       ],
       body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
             additionalProperties: false,
+            required: ["group"],
             properties: {
               group: {
                 type: "object",
+                required: ["id", "displayName", "users"],
                 properties: {
                   additionalProperties: false,
                   id: { type: "string", example: "Manager" },
                   displayName: { type: "string", example: "All Manager Group" },
                   users: { type: "array", items: { type: "string" } },
                 },
-                required: ["id", "displayName", "users"],
               },
             },
           },

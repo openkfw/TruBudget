@@ -13,8 +13,11 @@ export default class RpcError extends Error {
     public readonly status: number,
     public readonly statusText: string,
     public readonly headers: object,
-    public readonly body: string
+    public readonly body: string,
   ) {
     super(`${status} ${statusText}`);
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, RpcError);
+    }
   }
 }

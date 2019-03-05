@@ -176,8 +176,8 @@ export async function get(
         ...event,
         snapshot: {
           displayName: deepcopy(resource.data.displayName),
-          amount: deepcopy(resource.data.amount),
-          currency: deepcopy(resource.data.currency),
+          amount: deepcopy(resource.data.amount)!,
+          currency: deepcopy(resource.data.currency)!,
           amountType: deepcopy(resource.data.amountType),
         },
       });

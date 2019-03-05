@@ -1,6 +1,10 @@
 import Joi = require("joi");
 
+import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
+import { canAssumeIdentity } from "../organization/auth_token";
+import { Identity } from "../organization/identity";
+import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import { SubprojectTraceEvent, subprojectTraceEventSchema } from "./subproject_trace_event";
@@ -17,12 +21,12 @@ export interface Subproject {
   description: string;
   assignee?: string;
   currency: string;
-  closingDate?: string;
+  billingDate?: string;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
   log: SubprojectTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
-  additionalData: {};
+  additionalData: object;
 }
 
 const schema = Joi.object({
@@ -39,7 +43,7 @@ const schema = Joi.object({
     .required(),
   assignee: Joi.string(),
   currency: Joi.string().required(),
-  closingDate: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
+  billingDate: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
@@ -53,4 +57,19 @@ const schema = Joi.object({
 export function validate(input: any): Result.Type<Subproject> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function permits(
+  subproject: Subproject,
+  actingUser: ServiceUser,
+  intents: Intent[],
+): boolean {
+  const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
+    const eligibles = subproject.permissions[intent] || [];
+    return acc.concat(eligibles);
+  }, []);
+  const hasPermission = eligibleIdentities.some(identity =>
+    canAssumeIdentity(actingUser, identity),
+  );
+  return hasPermission;
 }

@@ -71,9 +71,17 @@ export class RpcMultichainClient implements MultichainClient {
     return txId;
   }
 
-  public async streams(stream?: string): Promise<Stream[]> {
-    const streams = stream !== undefined ? stream : "*";
-    return (await this.rpcClient.invoke("liststreams", streams)) as Stream[];
+  public async streams(name?: string): Promise<Stream[]> {
+    const streamNames = name !== undefined ? name : "*";
+    try {
+      const streams = (await this.rpcClient.invoke("liststreams", streamNames)) as Stream[];
+      return streams;
+    } catch (err) {
+      if (err && err.code === -708 && name !== undefined) {
+        return [];
+      }
+      throw err;
+    }
   }
 
   public async streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]> {
