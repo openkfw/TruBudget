@@ -30,6 +30,8 @@ export const schema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
+  projectId: Project.idSchema.required(),
+  subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
   assignee: Joi.string().required(),
 });

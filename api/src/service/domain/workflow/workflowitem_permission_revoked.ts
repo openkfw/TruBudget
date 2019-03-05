@@ -8,8 +8,8 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-type eventTypeType = "workflowitem_permissions_granted";
-const eventType: eventTypeType = "workflowitem_permissions_granted";
+type eventTypeType = "workflowitem_permission_revoked";
+const eventType: eventTypeType = "workflowitem_permission_revoked";
 
 export interface Event {
   type: eventTypeType;
@@ -20,7 +20,7 @@ export interface Event {
   subprojectId: Subproject.Id;
   workflowitemId: Workflowitem.Id;
   permission: Intent;
-  grantee: Identity;
+  revokee: Identity;
 }
 
 export const schema = Joi.object({
@@ -36,7 +36,7 @@ export const schema = Joi.object({
   subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
   permission: Joi.valid(workflowitemIntents).required(),
-  grantee: Joi.string().required(),
+  revokee: Joi.string().required(),
 });
 
 export function createEvent(
@@ -46,7 +46,7 @@ export function createEvent(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
   permission: Intent,
-  grantee: Identity,
+  revokee: Identity,
   time: string = new Date().toISOString(),
 ): Event {
   const event = {
@@ -57,7 +57,7 @@ export function createEvent(
     subprojectId,
     workflowitemId,
     permission,
-    grantee,
+    revokee,
     time,
   };
 

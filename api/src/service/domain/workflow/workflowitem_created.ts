@@ -74,7 +74,6 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
-  workflowitemId: Workflowitem.idSchema.required(),
   workflowitem: initialDataSchema.required(),
 });
 

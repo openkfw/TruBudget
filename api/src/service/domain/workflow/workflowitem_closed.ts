@@ -3,6 +3,8 @@ import { VError } from "verror";
 
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import * as Project from "./project";
+import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
 type eventTypeType = "workflowitem_closed";
@@ -13,6 +15,8 @@ export interface Event {
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;
+  projectId: Project.Id;
+  subprojectId: Subproject.Id;
   workflowitemId: Workflowitem.Id;
 }
 
@@ -25,12 +29,16 @@ export const schema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
+  projectId: Project.idSchema.required(),
+  subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
 });
 
 export function createEvent(
   source: string,
   publisher: Identity,
+  projectId: Project.Id,
+  subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
   time: string = new Date().toISOString(),
 ): Event {
@@ -39,6 +47,8 @@ export function createEvent(
     source,
     publisher,
     time,
+    projectId,
+    subprojectId,
     workflowitemId,
   };
   const validationResult = validate(event);

@@ -23,10 +23,10 @@ import * as SubprojectUpdated from "./workflow/subproject_updated";
 import * as WorkflowitemAssigned from "./workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./workflow/workflowitem_created";
-import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permissions_granted";
-import * as SubprojectPermissionGranted from "./workflow/workflowitem_permissions_granted";
-import * as SubprojectPermissionRevoked from "./workflow/workflowitem_permissions_revoked";
-import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permissions_revoked";
+import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permission_granted";
+import * as SubprojectPermissionGranted from "./workflow/subproject_permissions_granted";
+import * as SubprojectPermissionRevoked from "./workflow/subproject_permissions_revoked";
+import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permission_revoked";
 
 export type BusinessEvent =
   | GlobalPermissionsGranted.Event

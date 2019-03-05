@@ -12,10 +12,8 @@ type eventTypeType = "workflowitem_updated";
 const eventType: eventTypeType = "workflowitem_updated";
 
 interface UpdatedData {
-  status?: "open" | "closed";
   displayName?: string;
   description?: string;
-  assignee?: Identity;
   amount?: string;
   currency?: string;
   amountType?: "N/A" | "disbursed" | "allocated";
@@ -38,14 +36,8 @@ export interface Event {
 }
 
 const updatedDataSchema = Joi.object({
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
   displayName: Joi.string(),
-  description: Joi.string()
-    .allow("")
-    .required(),
-  assignee: Joi.string(),
+  description: Joi.string().allow(""),
   amount: Joi.string(),
   currency: Joi.string(),
   amountType: Joi.valid("N/A", "disbursed", "allocated"),

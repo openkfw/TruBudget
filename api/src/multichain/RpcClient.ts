@@ -8,6 +8,8 @@ import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
 import RpcResponse from "./RpcResponse.h";
 
+import * as Adapter from "./FancyPancyAdapter";
+
 const count = new Map();
 const durations = new Map();
 const nTopCalls = 3;
@@ -76,7 +78,9 @@ export class RpcClient {
     });
   }
 
-  public invoke(method: string, ...params: any[]): any {
+  public invoke(method: string, ...oldParams: any[]): any {
+    const params: any[] = Adapter.interceptRequest(method, oldParams);
+
     const startTime = process.hrtime();
 
     logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
@@ -98,8 +102,8 @@ export class RpcClient {
             durations.set(countKey, (durations.get(countKey) || 0) + elapsedMilliseconds);
             count.set(countKey, (count.get(countKey) || 0) + 1);
           }
-
-          resolve(resp.data.result);
+          const result = Adapter.interceptResult(method, params, resp.data.result);
+          resolve(result);
         })
         .catch((error: AxiosError) => {
           let response: RpcError;
