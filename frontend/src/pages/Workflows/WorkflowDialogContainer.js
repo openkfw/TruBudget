@@ -1,23 +1,24 @@
+import { withStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import withInitialLoading from "../Loading/withInitialLoading";
+
 import { toJS } from "../../helper";
-import { withStyles } from "@material-ui/core";
-import WorkflowDialog from "./WorkflowDialog";
+import withInitialLoading from "../Loading/withInitialLoading";
+import { storeSnackbarMessage } from "../Notifications/actions";
 import {
   createWorkflowItem,
   editWorkflowItem,
-  storeWorkflowComment,
-  storeWorkflowCurrency,
-  storeWorkflowAmount,
-  storeWorkflowAmountType,
-  storeWorkflowName,
-  storeWorkflowStatus,
   hideWorkflowDialog,
   setCurrentStep,
-  storeWorkflowDocument
+  storeWorkflowAmount,
+  storeWorkflowAmountType,
+  storeWorkflowComment,
+  storeWorkflowCurrency,
+  storeWorkflowDocument,
+  storeWorkflowName,
+  storeWorkflowStatus
 } from "./actions";
-import { storeSnackbarMessage } from "../Notifications/actions";
+import WorkflowDialog from "./WorkflowDialog";
 
 const styles = {};
 

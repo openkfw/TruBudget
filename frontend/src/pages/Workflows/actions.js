@@ -4,9 +4,24 @@ export const FETCH_WORKFLOW_ITEMS_SUCCESS = "FETCH_WORKFLOW_ITEMS_SUCCESS";
 export const SHOW_WORKFLOW_CREATE = "SHOW_WORKFLOW_CREATE";
 export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 
+export const SHOW_WORKFLOW_PREVIEW = "SHOW_WORKFLOW_PREVIEW";
+export const HIDE_WORKFLOW_PREVIEW = "HIDE_WORKFLOW_PREVIEW";
+
+export const STORE_WORKFLOWACTIONS = "STORE_WORKFLOWACTIONS";
+
+export const SET_WORKFLOW_DRAWER_PERMISSIONS = "SET_WORKFLOW_DRAWER_PERMISSIONS";
+
+export const CLOSE_DRAWER = "CLOSE_DRAWER";
+
+export const WORKFLOWITEMS_SELECTED = "WORKFLOWITEMS_SELECTED";
+
 export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
 export const SET_HISTORY_OFFSET = "SET_HISTORY_OFFSET";
+
+export const SUBMIT_BATCH_FOR_WORKFLOW = "SUBMIT_BATCH_FOR_WORKFLOW";
+export const SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS = "SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS";
+export const SUBMIT_BATCH_FOR_WORKFLOW_FAILURE = "SUBMIT_BATCH_FOR_WORKFLOW_FAILURE";
 
 export const WORKFLOW_NAME = "WORKFLOW_NAME";
 export const WORKFLOW_TYPE = "WORKFLOW_TYPE";
@@ -27,11 +42,15 @@ export const WORKFLOW_EDIT = "WORKFLOW_EDIT";
 export const SHOW_WORKFLOW_DETAILS = "SHOW_WORKFLOW_DETAILS";
 export const HIDE_WORKFLOW_DETAILS = "HIDE_WORKFLOW_DETAILS";
 
-export const UPDATE_WORKFLOW_SORT = "UPDATE_WORKFLOW_SORT";
-export const ENABLE_WORKFLOW_SORT = "ENABLE_WORKFLOW_SORT";
+export const ENABLE_WORKFLOW_EDIT = "ENABLE_WORKFLOW_EDIT";
+export const DISABLE_WORKFLOW_EDIT = "DISABLE_WORKFLOW_EDIT";
+
+export const UPDATE_WORKFLOW_ORDER = "UPDATE_WORKFLOW_ORDER";
 
 export const REORDER_WORKFLOW_ITEMS = "REORDER_WORKFLOW_ITEMS";
 export const REORDER_WORKFLOW_ITEMS_SUCCESS = "REORDER_WORKFLOW_ITEMS_SUCCESS";
+
+export const RESET_SUCCEEDED_WORKFLOWITEMS = "RESET_SUCCEEDED_WORKFLOWITEMS";
 
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
 export const OPEN_HISTORY = "OPEN_HISTORY";
@@ -73,8 +92,7 @@ export const CLOSE_WORKFLOWITEM_SUCCESS = "CLOSE_WORKFLOWITEM_SUCCESS";
 export const CLOSE_SUBPROJECT = "CLOSE_SUBPROJECT";
 export const CLOSE_SUBPROJECT_SUCCESS = "CLOSE_SUBPROJECT_SUCCESS";
 
-export const SHOW_WORKFLOW_ASSIGNEES = "SHOW_WORKFLOW_ASSIGNEES";
-export const HIDE_WORKFLOW_ASSIGNEES = "HIDE_WORKFLOW_ASSIGNEES";
+export const STORE_WORKFLOW_ASSIGNEE = "STORE_WORKFLOW_ASSIGNEE";
 
 export const SHOW_SUBPROJECT_ASSIGNEES = "SHOW_SUBPROJECT_ASSIGNEES";
 export const HIDE_SUBPROJECT_ASSIGNEES = "HIDE_SUBPROJECT_ASSIGNEES";
@@ -100,6 +118,19 @@ export function setSubProjectHistoryOffset(offset) {
   };
 }
 
+export function storePermissions(permissions) {
+  return {
+    type: SET_WORKFLOW_DRAWER_PERMISSIONS,
+    permissions
+  };
+}
+
+export function resetSucceededWorkflowitems() {
+  return {
+    type: RESET_SUCCEEDED_WORKFLOWITEMS
+  };
+}
+
 export function fetchSubprojectHistory(projectId, subprojectId, offset, limit, showLoading = false) {
   return {
     type: FETCH_SUBPROJECT_HISTORY,
@@ -111,17 +142,26 @@ export function fetchSubprojectHistory(projectId, subprojectId, offset, limit, s
   };
 }
 
-export function showWorkflowItemAssignee(workflowId, assignee) {
+export function showWorkflowItemPreview(projectId, resources, selectedAssignee, permissions) {
   return {
-    type: SHOW_WORKFLOW_ASSIGNEES,
-    workflowId,
-    assignee
+    type: SHOW_WORKFLOW_PREVIEW,
+    projectId,
+    ressources: resources,
+    selectedAssignee,
+    permissions
   };
 }
 
-export function hideWorkflowAssignee() {
+export function hideWorkflowItemPreview() {
   return {
-    type: HIDE_WORKFLOW_ASSIGNEES
+    type: HIDE_WORKFLOW_PREVIEW
+  };
+}
+
+export function storeWorkflowItemsAssignee(assignee) {
+  return {
+    type: STORE_WORKFLOW_ASSIGNEE,
+    assignee
   };
 }
 
@@ -243,10 +283,14 @@ export function enableSubProjectBudgetEdit(budgetEditEnabled) {
   };
 }
 
-export function enableWorkflowSort(sortEnabled) {
+export function enableWorkflowEdit() {
   return {
-    type: ENABLE_WORKFLOW_SORT,
-    sortEnabled
+    type: ENABLE_WORKFLOW_EDIT
+  };
+}
+export function disableWorkflowEdit() {
+  return {
+    type: DISABLE_WORKFLOW_EDIT
   };
 }
 export function saveWorkflowItemsBeforeSort(workflowItems) {
@@ -268,9 +312,9 @@ export function reorderWorkflowItems(projectId, subprojectId, workflowItems) {
   };
 }
 
-export function updateWorkflowSortOnState(workflowItems) {
+export function updateWorkflowOrderOnState(workflowItems) {
   return {
-    type: UPDATE_WORKFLOW_SORT,
+    type: UPDATE_WORKFLOW_ORDER,
     workflowItems
   };
 }
@@ -282,6 +326,12 @@ export function fetchWorkflowItems(streamName) {
   };
 }
 
+export function storeWorkflowActions(actions) {
+  return {
+    type: STORE_WORKFLOWACTIONS,
+    actions
+  };
+}
 export function showCreateDialog() {
   return {
     type: SHOW_WORKFLOW_CREATE
@@ -377,6 +427,12 @@ export function storeWorkflowStatus(status) {
     status: status
   };
 }
+export function storeWorkflowItemsSelected(workflowItems) {
+  return {
+    type: WORKFLOWITEMS_SELECTED,
+    workflowItems
+  };
+}
 
 export function createWorkflowItem(
   projectId,
@@ -410,6 +466,16 @@ export function editWorkflowItem(projectId, subprojectId, workflowitemId, change
     subprojectId,
     workflowitemId,
     changes
+  };
+}
+
+export function submitBatchForWorkflow(projectId, subprojectId, actions, showLoading = true) {
+  return {
+    type: SUBMIT_BATCH_FOR_WORKFLOW,
+    projectId,
+    subprojectId,
+    actions,
+    showLoading
   };
 }
 

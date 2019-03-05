@@ -1,6 +1,8 @@
 import { all, put, takeEvery, takeLatest, takeLeading, call, select, delay } from "redux-saga/effects";
 import { saveAs } from "file-saver/FileSaver";
 import Api from "./api.js";
+import _isEmpty from "lodash/isEmpty";
+import strings from "./localizeStrings";
 import {
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
@@ -81,7 +83,12 @@ import {
   CLOSE_SUBPROJECT,
   CLOSE_SUBPROJECT_SUCCESS,
   HIDE_WORKFLOW_DETAILS,
-  LIVE_UPDATE_SUBPROJECT
+  LIVE_UPDATE_SUBPROJECT,
+  SHOW_WORKFLOW_PREVIEW,
+  STORE_WORKFLOWACTIONS,
+  SUBMIT_BATCH_FOR_WORKFLOW,
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
+  SUBMIT_BATCH_FOR_WORKFLOW_FAILURE
 } from "./pages/Workflows/actions";
 
 import {
@@ -193,7 +200,9 @@ function* handleError(error) {
     });
   }
 }
-
+const getSelfId = state => {
+  return state.getIn(["login", "id"]);
+};
 const getJwt = state => state.toJS().login.jwt;
 const getEnvironment = state => {
   const env = state.getIn(["login", "environment"]);
@@ -230,6 +239,75 @@ function* handleLoading(showLoading) {
   } else {
     return function*() {};
   }
+}
+
+function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee, permissions) {
+  if (_isEmpty(selectedAssignee) && _isEmpty(permissions)) {
+    return;
+  }
+  const possible = [];
+  const notPossible = [];
+  let action = {};
+  const assignAction = strings.common.assign;
+  const grantAction = strings.common.grant;
+  const revokeAction = strings.common.revoke;
+  const self = yield select(getSelfId);
+
+  for (const r of resources) {
+    // add assign action first
+    if (selectedAssignee !== "") {
+      action = {
+        action: assignAction,
+        id: r.data.id,
+        displayName: r.data.displayName,
+        assignee: selectedAssignee
+      };
+      if (r.data.status === "closed") {
+        notPossible.push(action);
+      } else {
+        possible.push(action);
+      }
+    }
+    // add grant permission actions next
+    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, r.data.id);
+    const permissionsForResource = data;
+    for (const intent in permissions) {
+      if (_isEmpty(permissions[intent])) {
+        continue;
+      }
+      const notRevokedIdentities = [];
+      let revokeIdentities = [];
+      for (const index in permissions[intent]) {
+        const identity = permissions[intent][index];
+        action = {
+          action: grantAction,
+          id: r.data.id,
+          displayName: r.data.displayName,
+          intent,
+          identity
+        };
+        possible.push(action);
+        notRevokedIdentities.push(identity);
+      }
+      // add revoke permission actions last
+      revokeIdentities = permissionsForResource[intent].filter(i => !notRevokedIdentities.includes(i) && i !== self);
+      for (const revokeIdentity in revokeIdentities) {
+        action = {
+          action: revokeAction,
+          id: r.data.id,
+          displayName: r.data.displayName,
+          intent,
+          identity: revokeIdentities[revokeIdentity]
+        };
+        possible.push(action);
+      }
+    }
+  }
+
+  return {
+    possible,
+    notPossible
+  };
 }
 
 // SAGAS
@@ -788,7 +866,10 @@ export function* grantWorkflowItemPermissionsSaga({
     yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
 
     yield put({
-      type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS
+      type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+      workflowitemId,
+      intent,
+      identity
     });
 
     yield put({
@@ -813,7 +894,10 @@ export function* revokeWorkflowItemPermissionsSaga({
     yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
 
     yield put({
-      type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
+      type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+      workflowitemId,
+      intent,
+      identity
     });
 
     yield put({
@@ -870,11 +954,98 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
   }, showLoading);
 }
 
+export function* fetchWorkflowActionsSaga({ projectId, ressources, selectedAssignee, permissions, showLoading }) {
+  yield execute(function*() {
+    const actions = yield getBatchFromSubprojectTemplate(projectId, ressources, selectedAssignee, permissions);
+    yield put({
+      type: STORE_WORKFLOWACTIONS,
+      actions
+    });
+  }, showLoading);
+}
+
+export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, showLoading }) {
+  yield execute(function*() {
+    for (const index in actions) {
+      const action = actions[index];
+      try {
+        switch (action.action) {
+          case strings.common.assign:
+            yield callApi(api.assignWorkflowItem, projectId, subprojectId, action.id, action.assignee);
+            yield put({
+              type: ASSIGN_WORKFLOWITEM_SUCCESS,
+              workflowitemId: action.id,
+              assignee: action.assignee
+            });
+            break;
+
+          case strings.common.grant:
+            yield callApi(
+              api.grantWorkflowItemPermissions,
+              projectId,
+              subprojectId,
+              action.id,
+              action.intent,
+              action.identity
+            );
+            yield put({
+              type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+              workflowitemId: action.id,
+              intent: action.intent,
+              identity: action.identity
+            });
+            break;
+
+          case strings.common.revoke:
+            yield callApi(
+              api.revokeWorkflowItemPermissions,
+              projectId,
+              subprojectId,
+              action.id,
+              action.intent,
+              action.identity
+            );
+            yield put({
+              type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+              workflowitemId: action.id,
+              intent: action.intent,
+              identity: action.identity
+            });
+            break;
+
+          default:
+            break;
+        }
+      } catch (error) {
+        yield put({
+          type: SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
+          workflowitemId: action.id,
+          assignee: action.assignee,
+          identity: action.identity,
+          intent: action.intent
+        });
+        throw error;
+      }
+    }
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId,
+      subprojectId,
+      showLoading: false
+    });
+    yield put({
+      type: SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
+    });
+  }, showLoading);
+}
+
 export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemId, assigneeId, showLoading }) {
   yield execute(function*() {
     yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
     yield put({
-      type: ASSIGN_WORKFLOWITEM_SUCCESS
+      type: ASSIGN_WORKFLOWITEM_SUCCESS,
+      workflowitemId,
+      assignee: assigneeId
     });
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,
@@ -1045,6 +1216,8 @@ export default function* rootSaga() {
       yield takeEvery(ASSIGN_WORKFLOWITEM, assignWorkflowItemSaga),
       yield takeEvery(HIDE_WORKFLOW_DETAILS, hideWorkflowDetailsSaga),
       yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga),
+      yield takeEvery(SHOW_WORKFLOW_PREVIEW, fetchWorkflowActionsSaga),
+      yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),

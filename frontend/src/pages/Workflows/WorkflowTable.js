@@ -5,7 +5,6 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Typography from "@material-ui/core/Typography";
-import SortIcon from "@material-ui/icons/LowPriority";
 import DoneIcon from "@material-ui/icons/Check";
 import Button from "@material-ui/core/Button";
 
@@ -47,22 +46,26 @@ const createTableHeader = props => (
 
 const renderSortButton = props => (
   <Button
+    variant="contained"
+    color="primary"
     disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
-    onClick={() => handleEnableWorkflowSort(props)}
+    onClick={() => handleEnableWorkflowEdit(props)}
     style={{
       position: "relative",
+      left: "12px",
       zIndex: 2
     }}
   >
-    <SortIcon />
+    {strings.common.edit}
   </Button>
 );
 
 const renderSubmitSortButton = props => (
   <Button
-    onClick={() => handleSubmitSort(props)}
+    onClick={() => handleSubmitEdit(props)}
     style={{
       position: "relative",
+      left: "5px",
       zIndex: 2
     }}
   >
@@ -70,14 +73,14 @@ const renderSubmitSortButton = props => (
   </Button>
 );
 
-const handleEnableWorkflowSort = props => {
+const handleEnableWorkflowEdit = props => {
   const workflowItemIds = [];
   props.workflowItems.map(item => workflowItemIds.push(item.data.id));
   props.saveWorkflowItemsBeforeSort(workflowItemIds);
-  props.enableWorkflowSort();
+  props.enableWorkflowEdit();
 };
 
-const handleSubmitSort = props => {
+const handleSubmitEdit = props => {
   const currentWorkflowItemIds = [];
   props.workflowItems.map(item => currentWorkflowItemIds.push(item.data.id));
   const hasChanged =
@@ -85,17 +88,18 @@ const handleSubmitSort = props => {
   if (hasChanged) {
     props.reorderWorkflowItems(props.projectId, props.subProjectId, props.workflowItems);
   }
-  props.disableWorkflowSort();
+  props.disableWorkflowEdit();
 };
 
 const createWorkflowItems = ({ workflowItems, ...props }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     workflowItems = arrayMove(workflowItems, oldIndex, newIndex);
-    props.updateWorkflowSortOnState(workflowItems);
+    props.updateWorkflowOrderOnState(workflowItems);
   };
 
   return <WorkflowList lockAxis={"y"} workflowItems={workflowItems} onSortEnd={onSortEnd} {...props} />;
 };
+
 // Not sure about the Name
 const WorkflowTable = props => {
   return (

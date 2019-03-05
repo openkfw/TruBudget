@@ -1,8 +1,10 @@
 const en = {
   common: {
+    action: "Action",
     actions: "Actions",
     added: "Added",
     approver: "Approver",
+    assign: "assign",
     assigned: "Assigned",
     assigned_budget: "Assigned",
     assignee: "Assignee",
@@ -26,6 +28,7 @@ const en = {
     edit: "Edit",
     edited: "Edited",
     finish: "Finish",
+    grant: "grant",
     history: "History",
     id: "Id",
     in_progress: "In Progress",
@@ -40,6 +43,7 @@ const en = {
     open: "Open",
     password: "Password",
     project: "Project",
+    revoke: "revoke",
     search: "Search",
     show_permissions: "Show Permissions",
     status: "Status",
@@ -48,6 +52,7 @@ const en = {
     subprojects: "Subprojects",
     task_status: "Task status",
     thumbnail: "Thumbnail",
+    update: "Update",
     username: "Username",
     view: "View",
     workflowItem: "WorkflowItem"
@@ -128,6 +133,7 @@ const en = {
     subproject_currency: "Sub-project Currency",
     subproject_edit_title: "Edit Subproject",
     subproject_permissions_title: "Set permissions for subproject",
+    subproject_preview: "Subproject Preview",
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",
     subproject_title_description: "Name of the sub-project"
@@ -168,6 +174,7 @@ const en = {
     workflow_none: "None",
     workflow_permissions_title: "Set permissions for workflowitem",
     workflow_redacted: "Redacted",
+    workflow_selection: "{0} workflow items are selected",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflow items",
     workflow_title: "Workflow title",
@@ -176,6 +183,16 @@ const en = {
     workflow_type_transaction: "Transaction",
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Upload"
+  },
+
+  preview: {
+    preview: "Preview",
+    assign_action_text: "assign {0}",
+    grant_permission_action_text: "grant {0} to {1}",
+    revoke_permission_action_text: "revoke {0} from {1}",
+    possible_action: "Possible actions",
+    not_possible_action: "Not possible actions",
+    actions_done: "{0} from {1} actions done"
   },
 
   navigation: {

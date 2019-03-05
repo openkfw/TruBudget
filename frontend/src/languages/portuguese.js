@@ -1,8 +1,10 @@
 const pt = {
   common: {
+    action: "Portuguese: Action",
     actions: "Ações",
     added: "Adicionado",
     approver: "Aprovador",
+    assign: "Portuguese: assign",
     assigned: "Atribuído",
     assigned_budget: "Atribuído",
     assignee: "Responsável",
@@ -26,6 +28,7 @@ const pt = {
     edit: "Portuguese: Edit",
     edited: "Portuguese: Edited",
     finish: "Finalizar",
+    grant: "Portuguese: grant",
     history: "Histórico",
     id: "Portuguese: Id",
     in_progress: "Em andamento",
@@ -40,6 +43,7 @@ const pt = {
     open: "Abrir",
     password: "Senha",
     project: "Portuguese: Project",
+    revoke: "Portuguese: revoke",
     search: "Portuguese: Search",
     show_permissions: "Portuguese: Show Permissions",
     status: "Status",
@@ -48,6 +52,7 @@ const pt = {
     subprojects: "Subprojetos",
     task_status: "Status da tarefa",
     thumbnail: "Portuguese: Thumbnail",
+    update: "Portuguese: Update",
     username: "Usuário",
     view: "Portuguese: View",
     workflowItem: "Portuguese: WorkflowItem"
@@ -129,6 +134,7 @@ const pt = {
     subproject_currency: "Moeda do subprojeto",
     subproject_edit_title: "Portuguese: Edit Subproject",
     subproject_permissions_title: "Portuguese: Set permissions for subproject",
+    subproject_preview: "Portuguese: Subproject Preview",
     subproject_select_button: "Selecionar",
     subproject_title: "Nome do subprojeto",
     subproject_title_description: "Descrição do subprojeto"
@@ -169,6 +175,7 @@ const pt = {
     workflow_none: "Nenhum",
     workflow_permissions_title: "Portuguese: Set permissions for workflowitem",
     workflow_redacted: "Portuguese: Redacted",
+    workflow_selection: "Portuguese: You have selected {0} workflows",
     workflow_submit_for_review: "Enviar para revisão",
     workflow_table_title: "Lista de workflows",
     workflow_title: "Nome do workflow",
@@ -177,6 +184,16 @@ const pt = {
     workflow_type_transaction: "Transação",
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Autenticar"
+  },
+
+  preview: {
+    preview: "Portuguese: Preview",
+    assign_action_text: "Portuguese: assign {0}",
+    grant_permission_action_text: "Portuguese: grant {0} to {1}",
+    revoke_permission_action_text: "Portuguese: revoke {0} to {1}",
+    possible_action: "Portuguese: Possible actions",
+    not_possible_action: "Portuguese: Not possible actions",
+    actions_done: "Portuguese: {0} from {1} actions done"
   },
 
   navigation: {

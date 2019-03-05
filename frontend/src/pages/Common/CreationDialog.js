@@ -32,7 +32,13 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   ) : null;
   const backButton =
     numberOfSteps > 1 ? (
-      <Button aria-label="back" data-test="back" color="primary" disabled={isFirstStep} onClick={() => handleBack(props)}>
+      <Button
+        aria-label="back"
+        data-test="back"
+        color="primary"
+        disabled={isFirstStep}
+        onClick={() => handleBack(props)}
+      >
         {strings.common.back}
       </Button>
     ) : null;
@@ -89,7 +95,7 @@ const CreationDialog = props => {
     <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown} data-test="creation-dialog">
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
-      <DialogActions >{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>
+      <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>
     </Dialog>
   );
 };

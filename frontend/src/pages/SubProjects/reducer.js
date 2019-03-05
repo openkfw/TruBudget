@@ -17,7 +17,7 @@ import {
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   SHOW_SUBPROJECT_CREATE,
   SHOW_SUBPROJECT_EDIT,
-  SET_HISTORY_OFFSET,
+  SET_HISTORY_OFFSET
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import strings from "../../localizeStrings";

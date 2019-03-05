@@ -177,7 +177,7 @@ const renderPermission = (name, userList, permissions, myself, grant, revoke, di
   );
 };
 
-const PermissionsTable = ({ permissions, user, grant, revoke, id, intentOrder, myself, disabled }) => (
+export const PermissionsTable = ({ permissions, user, grant, revoke, id, intentOrder, myself, disabled }) => (
   <div>
     {intentOrder.map(section => {
       return (
