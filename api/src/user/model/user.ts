@@ -1,9 +1,9 @@
 import Intent from "../../authz/intents";
 import { AuthenticationError } from "../../error";
 import logger from "../../lib/logger";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
-import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import { MultichainClient } from "../../service/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../../service/event";
+import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 
 const usersStreamName = "users";
 

@@ -4,7 +4,7 @@ import deepcopy from "../lib/deepcopy";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
 import { Event, throwUnsupportedEventVersion } from "./event";
-import { Item } from "./responses/liststreamkeyitems";
+import { Item } from "./liststreamkeyitems";
 import * as Workflowitem from "./Workflowitem";
 
 export interface Subproject {

@@ -4,10 +4,10 @@ import deepcopy from "../../lib/deepcopy";
 import { isEmpty } from "../../lib/emptyChecks";
 import logger from "../../lib/logger";
 import { ResourceType } from "../../lib/resourceTypes";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
-import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
 import * as Project from "../../project/model/Project";
+import { MultichainClient } from "../../service/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../../service/event";
+import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 

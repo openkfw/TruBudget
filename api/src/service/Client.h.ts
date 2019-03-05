@@ -1,5 +1,5 @@
 import { Permissions } from "../authz/types";
-import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import * as Liststreamkeyitems from "./liststreamkeyitems";
 import { RpcClient } from "./RpcClient";
 
 export { RpcMultichainClient } from "./Client";

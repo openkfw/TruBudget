@@ -9,19 +9,19 @@
  * Also note that arguments should be treated as immutable.
  *
  */
-import { getAllowedIntents } from "./authz";
-import Intent from "./authz/intents";
-import { AuthToken } from "./authz/token";
-import { Permissions } from "./authz/types";
-import * as Permission from "./global";
-import * as HTTP from "./httpd";
-import * as Multichain from "./multichain";
-import * as Group from "./multichain/groups";
-import * as Notification from "./notification";
-import * as Project from "./project";
-import * as Subproject from "./subproject";
-import * as Workflowitem from "./workflowitem";
-import { tellCacheWhatHappened } from "./multichain";
+import { tellCacheWhatHappened } from ".";
+import { getAllowedIntents } from "../authz";
+import Intent from "../authz/intents";
+import { AuthToken } from "../authz/token";
+import { Permissions } from "../authz/types";
+import * as Permission from "../global";
+import * as HTTP from "../httpd";
+import * as Notification from "../notification";
+import * as Project from "../project";
+import * as Multichain from "../service";
+import * as Group from "../service/groups";
+import * as Subproject from "../subproject";
+import * as Workflowitem from "../workflowitem";
 
 export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
   return async (token: AuthToken, projectId: string) => {
@@ -176,10 +176,8 @@ export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
 
     const creator: Project.Creator = async project => {
       Project.validateProject(project);
-
-      const multichainProject: Multichain.Project = { ...project, log: [] };
-
-      Multichain.createProjectOnChain(conn, issuer, multichainProject);
+      const multichainProject: Multichain.Project = project;
+      await Multichain.createProjectOnChain(conn, issuer, multichainProject);
     };
 
     const input: Project.CreateProjectInput = payload;
@@ -202,14 +200,14 @@ export function assignProject(conn: Multichain.ConnToken): HTTP.ProjectAssigner 
       getProject: async id => Project.validateProject(await Multichain.getProject(conn, id)),
       saveProjectAssignment: (id, selectedAssignee) =>
         Multichain.writeProjectAssignedToChain(conn, issuer, id, selectedAssignee),
-      notify: (project, user) => {
+      notify: async (project, user) => {
         const assignmentNotification: Notification.ProjectAssignment = {
           projectId: project.id,
           actingUser: user,
           assignee: project.assignee,
         };
 
-        return Notification.projectAssigned(assignmentNotification, {
+        await Notification.projectAssigned(assignmentNotification, {
           send: (message, recipient) => {
             const notificationResource = Multichain.generateResources(project.id);
             return Multichain.issueNotification(
@@ -243,17 +241,17 @@ export function updateProject(conn: Multichain.ConnToken): HTTP.ProjectUpdater {
         if (data.thumbnail !== undefined) multichainUpdate.thumbnail = data.thumbnail;
         await Multichain.updateProject(conn, issuer, id, multichainUpdate);
       },
-      notify: (updatedProject, user, projectUpdate) => {
+      notify: async (updatedProject, user, projectUpdate) => {
         const updateNotification: Notification.ProjectUpdate = {
           projectId: updatedProject.id,
           assignee: updatedProject.assignee,
           actingUser: user,
           update: projectUpdate,
         };
-        return Notification.projectUpdated(updateNotification, {
-          send: (message, recipient) => {
+        await Notification.projectUpdated(updateNotification, {
+          send: async (message, recipient) => {
             const notificationResource = Multichain.generateResources(updatedProject.id);
-            return Multichain.issueNotification(
+            await Multichain.issueNotification(
               conn,
               issuer,
               message,
@@ -354,10 +352,10 @@ export function closeWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowitem
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
     const multichainCloser: Workflowitem.Closer = async workflowitem => {
-      Multichain.closeWorkflowitem(conn, issuer, projectId, subprojectId, workflowitem);
+      await Multichain.closeWorkflowitem(conn, issuer, projectId, subprojectId, workflowitem);
     };
 
-    const multichainNotifier: Workflowitem.CloseNotifier = workflowitem => {
+    const multichainNotifier: Workflowitem.CloseNotifier = async workflowitem => {
       const notificationResource = Multichain.generateResources(
         projectId,
         subprojectId,
@@ -375,7 +373,7 @@ export function closeWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowitem
         assignee: workflowitem.assignee,
       };
 
-      return Notification.workflowitemClosed(closeNotification, {
+      await Notification.workflowitemClosed(closeNotification, {
         sender,
         resolver,
       });
@@ -417,7 +415,7 @@ export function grantPermission(conn: Multichain.ConnToken): HTTP.GlobalPermissi
       grantIntent: Intent,
       grantIdentity: string,
     ) => {
-      return await Multichain.grantGlobalPermission(conn, issuer, grantIdentity, grantIntent);
+      await Multichain.grantGlobalPermission(conn, issuer, grantIdentity, grantIntent);
     };
     return Permission.grant(user, identity, intent, {
       getAllPermissions: lister,
@@ -440,7 +438,7 @@ export function grantAllPermissions(conn: Multichain.ConnToken): HTTP.AllPermiss
       grantIntent: Intent,
       grantGrantee: string,
     ) => {
-      return await Multichain.grantGlobalPermission(conn, issuer, grantGrantee, grantIntent);
+      await Multichain.grantGlobalPermission(conn, issuer, grantGrantee, grantIntent);
     };
     return Permission.grantAll(user, grantee, {
       getAllPermissions: lister,
@@ -473,7 +471,7 @@ export function updateWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowite
       Multichain.updateWorkflowitem(conn, issuer, projectId, subprojectId, workflowitem, data);
     };
 
-    const multichainNotifier: Workflowitem.UpdateNotifier = (workflowitem, updatedData) => {
+    const multichainNotifier: Workflowitem.UpdateNotifier = async (workflowitem, updatedData) => {
       const notificationResource = Multichain.generateResources(
         projectId,
         subprojectId,
@@ -492,7 +490,7 @@ export function updateWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowite
         updatedData,
       };
 
-      return Notification.workflowitemUpdated(updateNotification, updatedData, {
+      await Notification.workflowitemUpdated(updateNotification, updatedData, {
         sender,
         resolver,
       });
@@ -547,7 +545,7 @@ export function assignWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowite
         assignee,
       };
 
-      return Notification.workflowitemAssigned(assignNotification, assignee, {
+      await Notification.workflowitemAssigned(assignNotification, assignee, {
         sender,
         resolver,
       });
@@ -575,7 +573,7 @@ export function revokePermission(conn: Multichain.ConnToken): HTTP.GlobalPermiss
       revokeIntent: Intent,
       revokeRecipient: string,
     ) => {
-      return await Multichain.revokeGlobalPermission(conn, issuer, revokeRecipient, revokeIntent);
+      await Multichain.revokeGlobalPermission(conn, issuer, revokeRecipient, revokeIntent);
     };
     return Permission.revoke(user, recipient, intent, {
       getAllPermissions: lister,

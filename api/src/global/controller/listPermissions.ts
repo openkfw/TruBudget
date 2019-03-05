@@ -3,7 +3,7 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import logger from "../../lib/logger";
-import { MultichainClient } from "../../multichain/Client.h";
+import { MultichainClient } from "../../service/Client.h";
 
 export const getGlobalPermissions = async (
   multichain: MultichainClient,

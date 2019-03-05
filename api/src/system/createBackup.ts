@@ -1,6 +1,6 @@
-import { AuthenticatedRequest } from "../httpd/lib";
-import logger from "../lib/logger";
 import axios from "axios";
+
+import { AuthenticatedRequest } from "../httpd/lib";
 
 export const createBackup = async (
   multichainHost: string,

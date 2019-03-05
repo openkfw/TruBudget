@@ -1,8 +1,8 @@
 import { HttpResponse } from "../../httpd/lib";
 import flatten from "../../lib/flatMap";
 import { isNonemptyString, isNumber, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event } from "../../multichain/event";
+import { MultichainClient } from "../../service/Client.h";
+import { Event } from "../../service/event";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
 import * as WorkflowitemOrdering from "../model/WorkflowitemOrdering";

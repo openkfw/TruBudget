@@ -3,19 +3,16 @@ import { throwIfUnauthorized } from "../authz";
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { Permissions } from "../authz/types";
-import { ProjectIdAlreadyExistsError } from "../error";
 import {
   AuthenticatedRequest,
   HttpResponse,
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
-import { isEmpty } from "../lib/emptyChecks";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
-import { Cache, tellCacheWhatHappened } from "../multichain/cache";
-import { MultichainClient } from "../multichain/Client.h";
-import { randomString } from "../multichain/hash";
 import * as Project from "../project/model/Project";
+import { MultichainClient } from "../service/Client.h";
+import { randomString } from "../service/hash";
 
 export async function createProject(
   multichain: MultichainClient,

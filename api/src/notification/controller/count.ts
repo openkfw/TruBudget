@@ -1,5 +1,5 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain/Client.h";
+import { MultichainClient } from "../../service/Client.h";
 import * as Notification from "../model/Notification";
 
 export const getNotificationCounts = async (
@@ -16,7 +16,7 @@ export const getNotificationCounts = async (
       apiVersion: "1.0",
       data: {
         unreadNotificationCount,
-        notificationCount
+        notificationCount,
       },
     },
   ];

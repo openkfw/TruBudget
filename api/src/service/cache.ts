@@ -4,8 +4,8 @@ import logger from "../lib/logger";
 import { MultichainClient, Stream } from "./Client.h";
 import { ConnToken } from "./conn";
 import * as Eventsourcing from "./eventsourcing";
+import { Item } from "./liststreamitems";
 import * as ProjectEvents from "./ProjectEvents";
-import { Item } from "./responses/liststreamitems";
 
 // Currently the project-stream cache doesn't quite work:
 // Projects aren't updated as long as the items count in the project-stream list doesn't
@@ -203,6 +203,14 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
   const projectStreams = await getProjectStreams(conn, maybeOnlySpecificProject);
 
   for (const { name: streamName, items: nStreamItems } of projectStreams) {
+    if (nStreamItems === 0) {
+      if (logger.isLevelEnabled("debug")) {
+        const stream = projectStreams.find(x => x.name === streamName);
+        logger.debug({ stream }, `Found empty stream ${streamName}`);
+      }
+      continue;
+    }
+
     const cursor = cache.streamState.get(streamName);
 
     // If the number of items hasn't changed, we don't need to check for changes. Even if

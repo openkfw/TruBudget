@@ -15,7 +15,7 @@ import {
 } from "./Client.h";
 import { randomString } from "./hash";
 import { hexToObject, objectToHex } from "./hexconverter";
-import * as Liststreamkeyitems from "./responses/liststreamkeyitems";
+import * as Liststreamkeyitems from "./liststreamkeyitems";
 import { ConnectionSettings, RpcClient } from "./RpcClient.h";
 
 // Oddly enough, there is no way to tell Multichain to return _everything_..

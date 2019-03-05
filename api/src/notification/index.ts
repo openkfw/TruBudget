@@ -1,4 +1,4 @@
-import { Event } from "../multichain/event";
+import { Event } from "../service/event";
 
 export interface Document {
   id: string;
