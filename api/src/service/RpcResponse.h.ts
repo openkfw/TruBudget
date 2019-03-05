@@ -16,7 +16,7 @@ export default interface RpcResponse {
    * Identifier of the request associated with the response, if any.
    */
   readonly id: number | string | null;
-};
+}
 
 /**
  * Type of the `error` property of [[RpcResponse]].
@@ -62,5 +62,5 @@ export enum ErrorCode {
   /**
    * The request body is an invalid JSON document.
    */
-  ParseError = -32700
+  ParseError = -32700,
 }

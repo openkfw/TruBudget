@@ -16,4 +16,4 @@ export default interface RpcRequest {
    * Request identifier.
    */
   readonly id?: number | string | null;
-};
+}

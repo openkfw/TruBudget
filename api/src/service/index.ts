@@ -4,7 +4,8 @@ import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import logger from "../lib/logger";
-import { initCache } from "./cache";
+import * as Cache from "./cache";
+import * as Cache2 from "./cache2";
 import { asMapKey } from "./Client";
 import { RpcMultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
@@ -37,7 +38,8 @@ export function init(rpcSettings: ConnectionSettings): ConnToken {
   const multichainClient = new RpcMultichainClient(rpcSettings);
   return {
     multichainClient,
-    cache: initCache(),
+    cache: Cache.initCache(),
+    cache2: Cache2.initCache(),
   };
 }
 
@@ -300,8 +302,8 @@ export async function getWorkflowitemList(
         ...event,
         snapshot: {
           displayName: deepcopy(workflowitem.displayName),
-          amount: deepcopy(workflowitem.amount),
-          currency: deepcopy(workflowitem.currency),
+          amount: deepcopy(workflowitem.amount)!,
+          currency: deepcopy(workflowitem.currency)!,
           amountType: deepcopy(workflowitem.amountType),
         },
       });
