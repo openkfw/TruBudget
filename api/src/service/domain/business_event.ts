@@ -64,4 +64,4 @@ export const businessEventSchema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
-});
+}).unknown();

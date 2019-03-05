@@ -7,8 +7,8 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 
-type eventTypeType = "subproject_permission_revoked";
-const eventType: eventTypeType = "subproject_permission_revoked";
+type eventTypeType = "subproject_permissions_revoked";
+const eventType: eventTypeType = "subproject_permissions_revoked";
 
 export interface Event {
   type: eventTypeType;

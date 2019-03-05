@@ -5,8 +5,8 @@ import Intent, { globalIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 
-type eventTypeType = "global_permission_granted";
-const eventType: eventTypeType = "global_permission_granted";
+type eventTypeType = "global_permissions_granted";
+const eventType: eventTypeType = "global_permissions_granted";
 
 export interface Event {
   type: eventTypeType;
