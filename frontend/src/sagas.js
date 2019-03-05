@@ -1026,16 +1026,16 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
         });
         throw error;
       }
-      yield put({
-        type: FETCH_ALL_SUBPROJECT_DETAILS,
-        projectId,
-        subprojectId,
-        showLoading: false
-      });
-      yield put({
-        type: SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
-      });
     }
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId,
+      subprojectId,
+      showLoading: false
+    });
+    yield put({
+      type: SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
+    });
   }, showLoading);
 }
 
