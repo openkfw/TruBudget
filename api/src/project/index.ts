@@ -3,7 +3,7 @@ import { randomBytes } from "crypto";
 import Intent from "../authz/intents";
 import { Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
-import { isEmpty } from "../lib/emptyChecks";
+import { isEmpty, isNotEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
 import { isAllowedTo } from "./Permission";
@@ -123,6 +123,7 @@ export async function create(
   if (!isProjectCreateable(allPermissions, actingUser)) {
     return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to create a Project.`));
   }
+  console.log(createData);
 
   // Max. length of projectId is 32
   // By converting to hex, each byte is represented by 2 characters
@@ -153,9 +154,11 @@ export async function create(
     status: value("status", createData.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", createData.displayName, isNonemptyString),
     description: value("description", createData.description, isNonemptyString),
-    amount: value("amount", createData.amount, isNonemptyString),
+    // amount: value("amount", createData.amount, isNonemptyString),
     assignee: value("assignee", createData.assignee, isUserOrUndefined, actingUser.id),
-    currency: value("currency", createData.currency, isNonemptyString).toUpperCase(),
+    // currency: value("currency", createData.currency, isNonemptyString).toUpperCase(),
+    // TODO: check correct form of this
+    projectedBudgets: value("projectedBudgets", createData.projectedBudgets, isNotEmpty, []),
     thumbnail: value("thumbnail", createData.thumbnail, x => typeof x === "string", ""),
     permissions: getProjectDefaultPermissions(actingUser.id),
     log: [],

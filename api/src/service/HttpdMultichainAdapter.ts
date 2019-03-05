@@ -54,8 +54,7 @@ export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
           displayName: project.displayName,
           assignee: project.assignee,
           description: project.description,
-          amount: project.amount,
-          currency: project.currency,
+          projectedBudgets: project.projectedBudgets,
           thumbnail: project.thumbnail,
         },
       },
@@ -151,8 +150,7 @@ export function getProjectList(conn: Multichain.ConnToken): HTTP.AllProjectsRead
         displayName: project.displayName,
         assignee: project.assignee,
         description: project.description,
-        amount: project.amount,
-        currency: project.currency,
+        projectedBudgets: project.projectedBudgets,
         thumbnail: project.thumbnail,
       },
     }));
@@ -161,6 +159,7 @@ export function getProjectList(conn: Multichain.ConnToken): HTTP.AllProjectsRead
 
 export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
   return async (token: AuthToken, payload: HTTP.CreateProjectPayload) => {
+    console.log(token);
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const assigningUser: Project.User = { id: token.userId, groups: token.groups };
 
@@ -176,7 +175,13 @@ export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
 
     const creator: Project.Creator = async project => {
       Project.validateProject(project);
+<<<<<<< HEAD:api/src/service/HttpdMultichainAdapter.ts
       const multichainProject: Multichain.Project = project;
+=======
+
+      const multichainProject: Multichain.Project = { ...project, log: [] };
+
+>>>>>>> api: Update project to include projectedBudget:api/src/HttpdMultichainAdapter.ts
       await Multichain.createProjectOnChain(conn, issuer, multichainProject);
     };
 

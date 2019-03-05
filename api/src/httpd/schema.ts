@@ -423,6 +423,17 @@ const schemas = {
                   amount: { type: "string", example: "10000" },
                   assignee: { type: "string", example: "aSmith" },
                   currency: { type: "string", example: "EUR" },
+                  projectedBudgets: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        organization: { type: "string", example: "MyOrga" },
+                        value: { type: "string", example: "1234" },
+                        currencyCode: { type: "string", example: "EUR" },
+                      },
+                    },
+                  },
                   thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                 },
               },

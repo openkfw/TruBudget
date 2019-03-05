@@ -24,6 +24,12 @@ interface NotificationResourceDescription {
   type: ResourceType;
 }
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Project {
   id: string;
   creationUnixTs: string;
@@ -31,8 +37,7 @@ export interface Project {
   displayName: string;
   assignee?: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   thumbnail: string;
   permissions: Permissions;
   log: HistoryEvent[];

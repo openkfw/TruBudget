@@ -25,8 +25,13 @@ function newProject(id: string, permissions: object): Project.Project {
     displayName: "A test project",
     assignee: "my-user",
     description: "This is a project created for, and during, testing.",
-    amount: "1234",
-    currency: "EUR",
+    projectedBudgets: [
+      {
+        organization: "Test",
+        value: "1234",
+        currencyCode: "EUR",
+      },
+    ],
     thumbnail: "",
     permissions,
     log: [],
@@ -288,8 +293,13 @@ describe("Creating a project,", () => {
     const createData: CreateProjectInput = {
       displayName: "testProject",
       description: "testDescription",
-      amount: "5000",
-      currency: "EUR",
+      projectedBudgets: [
+        {
+          organization: "Test",
+          value: "5000",
+          currencyCode: "EUR",
+        },
+      ],
       id: "testId",
       creationUnixTs: "1548771169",
       status: "open",
@@ -300,8 +310,13 @@ describe("Creating a project,", () => {
     const createdProject: Project.Project = {
       displayName: "testProject",
       description: "testDescription",
-      amount: "5000",
-      currency: "EUR",
+      projectedBudgets: [
+        {
+          organization: "Test",
+          value: "5000",
+          currencyCode: "EUR",
+        },
+      ],
       id: "testId",
       creationUnixTs: "1548771169",
       status: "open",
@@ -371,8 +386,13 @@ describe("Creating a project,", () => {
     const createData: CreateProjectInput = {
       displayName: "testProject",
       description: "testDescription",
-      amount: "5000",
-      currency: "EUR",
+      projectedBudgets: [
+        {
+          organization: "Test",
+          value: "5000",
+          currencyCode: "EUR",
+        },
+      ],
       id: "aliceProject",
       creationUnixTs: "1548771169",
       status: "open",
@@ -423,8 +443,13 @@ describe("Creating a project,", () => {
     const createData: CreateProjectInput = {
       displayName: "testProject",
       description: "testDescription",
-      amount: "5000",
-      currency: "EUR",
+      projectedBudgets: [
+        {
+          organization: "Test",
+          value: "5000",
+          currencyCode: "EUR",
+        },
+      ],
     };
 
     const deps = {
@@ -469,13 +494,18 @@ describe("Creating a project,", () => {
     const validData: CreateProjectInput = {
       displayName: "testProject",
       description: "testDescription",
-      amount: "5000",
-      currency: "EUR",
       id: "testId",
       creationUnixTs: "1548771169",
       status: "open",
       assignee: "alice",
       thumbnail: "testThumbnail",
+      projectedBudgets: [
+        {
+          organization: "Test",
+          value: "5000",
+          currencyCode: "EUR",
+        },
+      ],
     };
 
     hasSeenNotification = false;

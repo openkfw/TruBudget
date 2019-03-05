@@ -70,8 +70,7 @@ type MaybeHistoryEvent = null | {
 export interface CreateProjectPayload {
   displayName: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   id?: string;
   creationUnixTs?: string;
   status?: "open" | "closed";
@@ -101,6 +100,12 @@ export type WorkflowitemAssigner = (
   newAssignee: string,
 ) => Promise<void>;
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];
@@ -111,8 +116,7 @@ export interface Project {
     displayName: string;
     assignee?: string;
     description: string;
-    amount: string;
-    currency: string;
+    projectedBudgets: ProjectedBudget[];
     thumbnail: string;
   };
 }

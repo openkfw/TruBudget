@@ -2,9 +2,12 @@
   "displayName": "Primary School Project",
   "description": "Projects in 2018",
   "status": "open",
-  "amount": "30000000",
   "assignee": "jxavier",
-  "currency": "EUR",
+  "projectedBudgets": [{
+    "organization": "ACMECorp",
+    "value": "30000000",
+    "currencyCode": "EUR"
+  }],
   "permissions": {
     "project.viewDetails": ["mstein", "jxavier"],
     "project.viewSummary": ["mstein", "jxavier"],
@@ -13,20 +16,22 @@
     "project.intent.grantPermission": ["mstein", "jxavier"],
     "project.intent.revokePermission": ["mstein", "jxavier"]
   },
-  "subprojects": [
-    {
+  "subprojects": [{
       "displayName": "Design studies",
       "description": "No description",
       "status": "closed",
-      "amount": "500000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "500000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -112,15 +117,18 @@
       "displayName": "Consultancy supervision",
       "description": "No description",
       "status": "open",
-      "amount": "1500000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "1500000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -199,15 +207,18 @@
     {
       "displayName": "Construction lot 1",
       "description": "No description",
-      "amount": "15000000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "15000000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -286,15 +297,18 @@
     {
       "displayName": "Construction lot 2",
       "description": "No description",
-      "amount": "8000000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "8000000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -365,15 +379,18 @@
     {
       "displayName": "Equipment",
       "description": "No description",
-      "amount": "3000000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "3000000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
