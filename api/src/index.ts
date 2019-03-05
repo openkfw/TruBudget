@@ -97,7 +97,7 @@ function registerSelf(): Promise<boolean> {
           },
         },
       };
-      registerNode(multichainClient, req);
+      return registerNode(multichainClient, req);
     })
     .then(() => true)
     .catch(() => false);

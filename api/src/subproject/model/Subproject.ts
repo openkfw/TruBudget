@@ -35,6 +35,7 @@ export interface Data {
   status: "open" | "closed";
   displayName: string;
   description: string;
+  currency: string;
   projectedBudgets: ProjectedBudget[];
   exchangeRate: string;
   billingDate: string;
@@ -47,6 +48,7 @@ export interface RedactedData {
   status: "open" | "closed";
   displayName: null;
   description: null;
+  currency: null;
   projectedBudgets: null;
   assignee: null;
   exchangeRate: null;
@@ -56,6 +58,7 @@ export interface RedactedData {
 export interface Update {
   displayName?: string;
   description?: string;
+  currency?: string;
   projectedBudgets?: ProjectedBudget[];
   exchangeRate?: string;
   billingDate?: string;
@@ -73,6 +76,7 @@ const redactSubprojectData = (subproject: Data): RedactedData => ({
   status: subproject.status,
   displayName: null,
   description: null,
+  currency: null,
   projectedBudgets: null,
   assignee: null,
   exchangeRate: null,

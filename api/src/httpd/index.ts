@@ -151,6 +151,7 @@ interface Subproject {
     status: "open" | "closed";
     displayName: string;
     description: string;
+    currency: string;
     projectedBudgets: ProjectedBudget[];
     exchangeRate: string;
     billingDate: string;

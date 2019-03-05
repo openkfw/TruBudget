@@ -71,6 +71,7 @@ const createSubproject = async (axios, project, subprojectTemplate) => {
         displayName: subprojectTemplate.displayName,
         description: "FAILED UPDATE?",
         status: "open", // otherwise we won't be able to add workflowitems
+        currency: subprojectTemplate.currency,
         projectedBudgets: subprojectTemplate.projectedBudgets,
         assignee: subprojectTemplate.assignee
       }

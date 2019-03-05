@@ -69,6 +69,7 @@ export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
           status: x.status,
           displayName: x.displayName,
           description: x.description,
+          currency: x.currency,
           projectedBudgets: x.projectedBudgets,
           exchangeRate: x.exchangeRate,
           billingDate: x.billingDate,

@@ -82,6 +82,7 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
     status: value("status", subprojectArgs.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", subprojectArgs.displayName, isNonemptyString),
     description: value("description", subprojectArgs.description, isNonemptyString),
+    currency: value("currency", subprojectArgs.currency, isNonemptyString),
     projectedBudgets: value("projectedBudgets", subprojectArgs.projectedBudgets, isArray),
     assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.user.userId),
   };

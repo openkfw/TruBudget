@@ -1198,6 +1198,7 @@ const schemas = {
                   displayName: { type: "string", example: "townproject" },
                   description: { type: "string", example: "A town should be built" },
                   assignee: { type: "string", example: "aSmith" },
+                  currency: { type: "string", example: "EUR" },
                   projectedBudgets: {
                     type: "array",
                     items: {
@@ -1491,6 +1492,7 @@ const schemas = {
                           displayName: { type: "string", example: "school" },
                           description: { type: "string", example: "school should be built" },
                           assignee: { type: "string", example: "aSmith" },
+                          currency: { type: "string", example: "EUR" },
                           projectedBudgets: {
                             type: "array",
                             items: {
@@ -1540,6 +1542,7 @@ const schemas = {
                                       example: "school should be built",
                                     },
                                     assignee: { type: "string", example: "aSmith" },
+                                    currency: { type: "string", example: "EUR" },
                                     projectedBudgets: {
                                       type: "array",
                                       items: {
@@ -1685,6 +1688,7 @@ const schemas = {
                                   },
                                   exchangeRate: { type: "string", example: "1.0" },
                                   assignee: { type: "string", example: "aSmith" },
+                                  currency: { type: "string", example: "EUR" },
                                   projectedBudgets: {
                                     type: "array",
                                     items: {
@@ -1803,6 +1807,7 @@ const schemas = {
               displayName: { type: "string", example: "school" },
               description: { type: "string", example: "school should be built" },
               assignee: { type: "string", example: "aSmith" },
+              currency: { type: "string", example: "EUR" },
               projectedBudgets: {
                 type: "array",
                 items: {
@@ -2051,6 +2056,7 @@ const schemas = {
                             displayName: "school",
                             description: "school should be built",
                             assignee: "aSmith",
+                            currency: "EUR",
                             projectedBudgets: [
                               {
                                 organization: "ACMECorp",
@@ -2703,6 +2709,7 @@ const schemas = {
                                 displayName: "town-project",
                                 description: "a town should be built",
                                 assignee: "aSmith",
+                                currency: "EUR",
                                 projectedBudgets: [
                                   {
                                     organization: "ACMECorp",
@@ -2800,6 +2807,7 @@ const schemas = {
                                 displayName: "town-project",
                                 description: "a town should be built",
                                 assignee: "aSmith",
+                                currency: "EUR",
                                 projectedBudgets: [
                                   {
                                     organization: "ACMECorp",
