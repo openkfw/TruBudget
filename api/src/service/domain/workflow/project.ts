@@ -1,0 +1,69 @@
+import Joi = require("joi");
+
+import Intent from "../../../authz/intents";
+import * as Result from "../../../result";
+import { canAssumeIdentity } from "../organization/auth_token";
+import { Identity } from "../organization/identity";
+import { ServiceUser } from "../organization/service_user";
+import { Permissions, permissionsSchema } from "../permissions";
+import { ProjectTraceEvent, projectTraceEventSchema } from "./project_trace_event";
+import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+
+export type Id = string;
+
+export const idSchema = Joi.string().max(32);
+
+export interface Project {
+  id: Id;
+  createdAt: string; // ISO timestamp
+  status: "open" | "closed";
+  displayName: string;
+  description: string;
+  assignee?: string;
+  thumbnail?: string;
+  projectedBudgets: ProjectedBudget[];
+  permissions: Permissions;
+  log: ProjectTraceEvent[];
+  // Additional information (key-value store), e.g. external IDs:
+  additionalData: {};
+}
+
+const schema = Joi.object({
+  id: idSchema.required(),
+  createdAt: Joi.date()
+    .iso()
+    .required(),
+  status: Joi.string()
+    .valid("open", "closed")
+    .required(),
+  displayName: Joi.string().required(),
+  description: Joi.string()
+    .allow("")
+    .required(),
+  assignee: Joi.string(),
+  thumbnail: Joi.string()
+    .allow("")
+    .required(),
+  projectedBudgets: projectedBudgetListSchema.required(),
+  permissions: permissionsSchema.required(),
+  log: Joi.array()
+    .required()
+    .items(projectTraceEventSchema),
+  additionalData: Joi.object(),
+});
+
+export function validate(input: any): Result.Type<Project> {
+  const { error, value } = Joi.validate(input, schema);
+  return !error ? value : error;
+}
+
+export function permits(project: Project, actingUser: ServiceUser, intents: Intent[]): boolean {
+  const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
+    const eligibles = project.permissions[intent] || [];
+    return acc.concat(eligibles);
+  }, []);
+  const hasPermission = eligibleIdentities.some(identity =>
+    canAssumeIdentity(actingUser, identity),
+  );
+  return hasPermission;
+}
