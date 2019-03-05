@@ -1,7 +1,9 @@
 import Intent from "../../authz/intents";
 import logger from "../../lib/logger";
+import * as Result from "../../result";
 import { MultichainClient } from "../../service/Client.h";
-import { Event, throwUnsupportedEventVersion } from "../../service/event";
+import * as NodeRegistered from "../../service/domain/network/node_registered";
+import { Event } from "../../service/event";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 
 const streamName = "nodes";
@@ -66,14 +68,12 @@ export async function publish(
   },
 ): Promise<Event> {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
-  const event: Event = {
-    key: address,
-    intent,
-    createdBy,
-    createdAt: creationTimestamp.toISOString(),
-    dataVersion,
-    data,
-  };
+  const event = NodeRegistered.createEvent(
+    "system",
+    "system",
+    (data as any).address,
+    (data as any).organization,
+  );
   const streamItemKey = address;
   const streamItem = { json: event };
 
@@ -120,7 +120,7 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
   const organizationsByAddress = new Map<WalletAddress, Organization>();
 
   for (const item of streamItems) {
-    const event = item.data.json as Event;
+    const event = item.data.json as NodeRegistered.Event;
 
     if (item.keys.length !== 1) {
       const message = "Unexpected item key in 'nodes' stream";
@@ -165,20 +165,18 @@ export async function active(multichain: MultichainClient): Promise<number> {
   return networkInfo.connections;
 }
 
-function handleCreate(event: Event): NodeInfo | undefined {
-  if (event.intent !== "network.registerNode") return undefined;
-  switch (event.dataVersion) {
-    case 1: {
-      return {
-        address: {
-          address: event.key,
-          organization: event.data.organization,
-        },
-        networkPermissions: [],
-      };
-    }
+function handleCreate(input: any): NodeInfo | undefined {
+  const event = NodeRegistered.validate(input);
+  if (Result.isErr(event)) {
+    return undefined;
   }
-  throwUnsupportedEventVersion(event);
+  return {
+    address: {
+      address: event.address,
+      organization: event.organization,
+    },
+    networkPermissions: [],
+  };
 }
 
 interface PermissionsPendingInfo {
