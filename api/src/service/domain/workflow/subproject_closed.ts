@@ -4,6 +4,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Subproject from "./subproject";
+import * as Project from "./project";
 
 type eventTypeType = "subproject_closed";
 const eventType: eventTypeType = "subproject_closed";
@@ -13,6 +14,7 @@ export interface Event {
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;
+  projectId: Project.Id;
   subprojectId: Subproject.Id;
 }
 
@@ -25,12 +27,14 @@ export const schema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
+  projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
 });
 
 export function createEvent(
   source: string,
   publisher: Identity,
+  projectId: Project.Id,
   subprojectId: Subproject.Id,
   time: string = new Date().toISOString(),
 ): Event {
@@ -38,8 +42,9 @@ export function createEvent(
     type: eventType,
     source,
     publisher,
-    time,
+    projectId,
     subprojectId,
+    time,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

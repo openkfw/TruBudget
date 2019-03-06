@@ -11,7 +11,6 @@ type eventTypeType = "subproject_updated";
 const eventType: eventTypeType = "subproject_updated";
 
 interface UpdatedData {
-  status?: "open" | "closed";
   displayName?: string;
   description?: string;
   assignee?: Identity;

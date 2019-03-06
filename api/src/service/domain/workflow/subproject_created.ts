@@ -23,6 +23,10 @@ interface InitialData {
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
   additionalData: {};
+  // TODO: remove!
+  billingDate?: string;
+  amount?: string;
+  exchangeRate?: string;
 }
 
 const initialDataSchema = Joi.object({
@@ -40,6 +44,10 @@ const initialDataSchema = Joi.object({
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
   additionalData: Joi.object().required(),
+  // TODO: remove!
+  billingDate: Joi.string(),
+  amount: Joi.string(),
+  exchangeRate: Joi.string(),
 });
 
 export interface Event {
