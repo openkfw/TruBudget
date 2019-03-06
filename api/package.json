@@ -22,12 +22,32 @@
     "start": "node dist/",
     "build": "rimraf dist && tsc",
     "dev": "rimraf dist && tsc --watch & nodemon dist",
-    "test": "npm run build && nyc mocha \"dist/*.spec.js\" \"dist/**/*.spec.js\"",
+    "test": "nyc mocha --require ts-node/register \"src/**/*.spec.ts\"",
     "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
     "tsc": "tsc",
     "test:here": "node ./runTest.js"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "exclude": [
+      "src/**/*.spec.ts"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "all": true,
+    "sourceMap": true,
+    "instrument": true
   },
   "keywords": [],
   "author": "",
