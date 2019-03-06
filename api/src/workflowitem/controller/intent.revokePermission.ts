@@ -1,5 +1,5 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain/Client.h";
+import { MultichainClient } from "../../service/Client.h";
 import { changeWorkflowitemPermission } from "../intent";
 
 export async function revokeWorkflowitemPermission(

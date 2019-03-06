@@ -10,10 +10,10 @@ import deepcopy from "../../lib/deepcopy";
 import { isNotEmpty } from "../../lib/emptyChecks";
 import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import logger from "../../lib/logger";
-import { asMapKey } from "../../multichain/Client";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
-import * as Liststreamkeyitems from "../../multichain/responses/liststreamkeyitems";
+import { asMapKey } from "../../service/Client";
+import { MultichainClient } from "../../service/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../../service/event";
+import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 
 export interface AugmentedEvent extends Event {
   snapshot: {

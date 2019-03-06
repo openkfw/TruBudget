@@ -24,7 +24,7 @@ const modificationSchema = Joi.object({
   displayName: Joi.string(),
   description: Joi.string().allow(""),
   thumbnail: Joi.string().allow(""),
-});
+}).or("displayName", "description", "thumbnail");
 
 export interface Event {
   type: eventTypeType;

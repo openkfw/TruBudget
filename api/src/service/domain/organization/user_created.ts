@@ -22,7 +22,7 @@ interface InitialData {
 }
 
 const initialDataSchema = Joi.object({
-  userId: UserRecord.idSchema.required(),
+  id: UserRecord.idSchema.required(),
   displayName: Joi.string().required(),
   organization: Joi.string().required(),
   passwordHash: Joi.string().required(),
@@ -49,7 +49,7 @@ export const schema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
-  group: initialDataSchema.required(),
+  user: initialDataSchema.required(),
 });
 
 export function createEvent(

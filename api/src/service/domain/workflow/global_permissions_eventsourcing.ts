@@ -1,0 +1,92 @@
+import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
+import { BusinessEvent } from "../business_event";
+import { EventSourcingError } from "../errors/event_sourcing_error";
+import * as GlobalPermissions from "./global_permissions";
+import * as GlobalPermissionsGranted from "./global_permissions_granted";
+import * as GlobalPermissionsRevoked from "./global_permissions_revoked";
+import { GlobalPermissionsTraceEvent } from "./global_permissions_trace_event";
+
+export function sourceGlobalPermissions(
+  ctx: Ctx,
+  events: BusinessEvent[],
+): { globalPermissions: GlobalPermissions.GlobalPermissions; errors: EventSourcingError[] } {
+  const globalPerms = { permissions: {}, log: [] };
+  const errors: EventSourcingError[] = [];
+  for (const event of events) {
+    apply(ctx, globalPerms, event, errors);
+  }
+  return { globalPermissions: globalPerms, errors };
+}
+
+function apply(
+  ctx: Ctx,
+  globalPerms: GlobalPermissions.GlobalPermissions,
+  event: BusinessEvent,
+  errors: EventSourcingError[],
+) {
+  if (event.type === "global_permissions_granted") {
+    applyGrantPermission(ctx, globalPerms, event, errors);
+  }
+  if (event.type === "global_permissions_revoked") {
+    applyRevokePermission(ctx, globalPerms, event, errors);
+  }
+}
+
+function applyGrantPermission(
+  ctx: Ctx,
+  globalPerms: GlobalPermissions.GlobalPermissions,
+  permissionGranted: GlobalPermissionsGranted.Event,
+  errors: EventSourcingError[],
+) {
+  const eligibleIdentities = globalPerms.permissions[permissionGranted.permission] || [];
+  if (!eligibleIdentities.includes(permissionGranted.grantee)) {
+    eligibleIdentities.push(permissionGranted.grantee);
+  }
+  globalPerms.permissions[permissionGranted.permission] = eligibleIdentities;
+
+  const result = GlobalPermissions.validate(globalPerms);
+  if (Result.isErr(result)) {
+    errors.push(new EventSourcingError(ctx, permissionGranted, result.message));
+    return;
+  }
+
+  const traceEvent: GlobalPermissionsTraceEvent = {
+    entityId: "global_permissions",
+    entityType: "global",
+    businessEvent: permissionGranted,
+  };
+  globalPerms.log.push(traceEvent);
+}
+
+function applyRevokePermission(
+  ctx: Ctx,
+  globalPerms: GlobalPermissions.GlobalPermissions,
+  permissionRevoked: GlobalPermissionsRevoked.Event,
+  errors: EventSourcingError[],
+) {
+  const permissionsObject = globalPerms.permissions;
+
+  const eligibleIdentities = globalPerms.permissions[permissionRevoked.permission];
+  if (eligibleIdentities !== undefined) {
+    const foundIndex = eligibleIdentities.indexOf(permissionRevoked.revokee);
+    const hasPermission = foundIndex !== -1;
+    if (hasPermission) {
+      // Remove the user from the array:
+      eligibleIdentities.splice(foundIndex, 1);
+    }
+  }
+
+  const result = GlobalPermissions.validate(globalPerms);
+  if (Result.isErr(result)) {
+    errors.push(new EventSourcingError(ctx, permissionRevoked, result.message));
+    return;
+  }
+
+  const traceEvent: GlobalPermissionsTraceEvent = {
+    entityId: "global_permissions",
+    entityType: "global",
+    businessEvent: permissionRevoked,
+  };
+  globalPerms.log.push(traceEvent);
+}

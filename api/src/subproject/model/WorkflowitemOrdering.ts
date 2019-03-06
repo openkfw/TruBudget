@@ -1,6 +1,6 @@
 import Intent from "../../authz/intents";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event, throwUnsupportedEventVersion } from "../../multichain/event";
+import { MultichainClient } from "../../service/Client.h";
+import { Event, throwUnsupportedEventVersion } from "../../service/event";
 
 // Allows a custom ordering among workflowitems. Note that not all workflowitems need
 // to be included; those that aren't are simply ordered by their ctime and concatenated

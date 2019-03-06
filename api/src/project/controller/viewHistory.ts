@@ -3,8 +3,8 @@
  */
 import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, isNumber, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event } from "../../multichain/event";
+import { MultichainClient } from "../../service/Client.h";
+import { Event } from "../../service/event";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
 

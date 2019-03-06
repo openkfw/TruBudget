@@ -18,7 +18,7 @@ interface InitialData {
   description: string;
   assignee?: Identity;
   currency: string;
-  closingDate?: string;
+  billingDate?: string;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
@@ -40,7 +40,7 @@ const initialDataSchema = Joi.object({
     .required(),
   assignee: Joi.string(),
   currency: Joi.string().required(),
-  closingDate: Joi.date().iso(),
+  billingDate: Joi.date().iso(),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
   additionalData: Joi.object().required(),

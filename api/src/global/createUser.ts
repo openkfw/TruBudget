@@ -6,8 +6,8 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 import { encrypt } from "../lib/symmetricCrypto";
 import { isNonemptyString, value } from "../lib/validation";
-import { MultichainClient } from "../multichain/Client.h";
-import { createkeypairs } from "../multichain/createkeypairs";
+import { MultichainClient } from "../service/Client.h";
+import { createkeypairs } from "../service/createkeypairs";
 import * as User from "../user/model/user";
 import { hashPassword } from "../user/password";
 

@@ -2,7 +2,7 @@
  * DEPRECATED - see index.ts
  */
 import { HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain/Client.h";
+import { MultichainClient } from "../../service/Client.h";
 import { changeProjectPermission } from "../intent";
 
 export async function revokeProjectPermission(

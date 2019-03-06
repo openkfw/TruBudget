@@ -1,6 +1,6 @@
 import * as Group from "../../group";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain/Client.h";
+import { HttpResponse } from "../../httpd/lib";
+import { MultichainClient } from "../../service/Client.h";
 import * as User from "../model/user";
 
 export const getUserList = async (multichain: MultichainClient, req): Promise<HttpResponse> => {

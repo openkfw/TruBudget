@@ -8,10 +8,10 @@ import { HttpResponse } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
 import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain/Client.h";
-import { Event } from "../../multichain/event";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
+import { MultichainClient } from "../../service/Client.h";
+import { Event } from "../../service/event";
 import * as Project from "../model/Project";
 
 export async function updateProject(multichain: MultichainClient, req): Promise<HttpResponse> {

@@ -15,7 +15,7 @@ interface UpdatedData {
   description?: string;
   assignee?: Identity;
   currency?: string;
-  closingDate?: string;
+  billingDate?: string;
   projectedBudgets?: ProjectedBudget[];
   // Additional information (key-value store), e.g. external IDs:
   additionalData?: {};
@@ -37,7 +37,7 @@ const updatedDataSchema = Joi.object({
   description: Joi.string().allow(""),
   assignee: Joi.string(),
   currency: Joi.string(),
-  closingDate: Joi.date().iso(),
+  billingDate: Joi.date().iso(),
   projectedBudgets: projectedBudgetListSchema,
   additionalData: Joi.object(),
 });

@@ -1,7 +1,7 @@
 import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
-import { MultichainClient } from "../multichain/Client.h";
 import { Organization, WalletAddress } from "../network/model/Nodes";
+import { MultichainClient } from "../service/Client.h";
 import { organizationStreamName } from "./streamNames";
 
 interface GetaddressesItem {

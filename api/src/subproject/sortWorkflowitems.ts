@@ -1,17 +1,17 @@
-import { MultichainClient } from "../multichain/Client.h";
 import * as Workflowitem from "../workflowitem/model/Workflowitem";
-import logger from "../lib/logger";
 
 export function sortWorkflowitems(
   workflowitems: Workflowitem.WorkflowitemResource[],
   ordering: string[],
 ): Workflowitem.WorkflowitemResource[] {
   const indexedItems = workflowitems.map((item, index) => {
+    // tslint:disable-next-line:no-string-literal
     item["_index"] = index;
     return item;
   });
   const sortedItems = indexedItems.sort((a, b) => byOrderingCriteria(a, b, ordering));
   return sortedItems.map(item => {
+    // tslint:disable-next-line:no-string-literal
     delete item["_index"];
     return item;
   });
@@ -54,6 +54,7 @@ function byOrderingCriteria(
       const cTimeComparison = byCreationTime(a, b);
       // they are the same age we have the ordering unchanged
       if (cTimeComparison === 0) {
+        // tslint:disable-next-line:no-string-literal
         return a["_index"] > b["_index"] ? 1 : -1;
       }
       return cTimeComparison;

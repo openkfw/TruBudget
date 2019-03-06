@@ -1,7 +1,7 @@
 import { getAllowedIntents } from "../authz";
 import Intent from "../authz/intents";
-import { MultichainClient } from "../multichain/Client.h";
-import { Event } from "../multichain/event";
+import { MultichainClient } from "../service/Client.h";
+import { Event } from "../service/event";
 import { User, userIdentities } from "./User";
 
 export type Permissions = { [key in Intent]?: string[] };

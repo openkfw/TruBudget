@@ -1,5 +1,5 @@
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../multichain/Client.h";
+import { HttpResponse } from "../../httpd/lib";
+import { MultichainClient } from "../../service/Client.h";
 import { changeSubprojectPermission } from "../intent";
 
 export async function grantSubprojectPermission(

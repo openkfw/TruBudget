@@ -1,9 +1,9 @@
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
-import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
+import { HttpResponse } from "../../httpd/lib";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../multichain/Client.h";
 import * as Project from "../../project/model/Project";
+import { MultichainClient } from "../../service/Client.h";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
 import { fetchWorkflowitemOrdering } from "../model/WorkflowitemOrdering";
