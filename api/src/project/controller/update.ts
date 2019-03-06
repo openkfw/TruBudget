@@ -20,12 +20,7 @@ export async function updateProject(multichain: MultichainClient, req): Promise<
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
 
   const theUpdate: Project.Update = {};
-  inheritDefinedProperties(theUpdate, input, [
-    "displayName",
-    "description",
-    "projectedBudget",
-    "thumbnail",
-  ]);
+  inheritDefinedProperties(theUpdate, input, ["displayName", "description", "thumbnail"]);
 
   if (isEmpty(theUpdate)) {
     return ok();

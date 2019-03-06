@@ -9,7 +9,7 @@ import {
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
-import { isNonemptyString, isUserOrUndefined, value, isObject } from "../lib/validation";
+import { isNonemptyString, isObject, isUserOrUndefined, value } from "../lib/validation";
 import * as Project from "../project/model/Project";
 import { MultichainClient } from "../service/Client.h";
 import { randomString } from "../service/hash";

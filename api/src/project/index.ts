@@ -128,7 +128,6 @@ export async function create(
   if (!isProjectCreateable(allPermissions, actingUser)) {
     return Promise.reject(Error(`Identity ${actingUser.id} is not allowed to create a Project.`));
   }
-  console.log(createData);
 
   // Max. length of projectId is 32
   // By converting to hex, each byte is represented by 2 characters

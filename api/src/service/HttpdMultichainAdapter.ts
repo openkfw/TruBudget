@@ -159,7 +159,6 @@ export function getProjectList(conn: Multichain.ConnToken): HTTP.AllProjectsRead
 
 export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
   return async (token: AuthToken, payload: HTTP.CreateProjectPayload) => {
-    console.log(token);
     const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
     const assigningUser: Project.User = { id: token.userId, groups: token.groups };
 
