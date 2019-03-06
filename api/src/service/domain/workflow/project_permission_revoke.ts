@@ -8,7 +8,7 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import { sourceProjects } from "./project_eventsourcing";
-import * as ProjectPermissionsRevoked from "./project_permissions_revoked";
+import * as ProjectPermissionsRevoked from "./project_permission_revoked";
 
 interface Repository {
   getProjectEvents(): Promise<BusinessEvent[]>;

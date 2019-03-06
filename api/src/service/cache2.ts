@@ -10,8 +10,8 @@ import * as GlobalPermissionsRevoked from "./domain/workflow/global_permissions_
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
-import * as ProjectPermissionsGranted from "./domain/workflow/project_permissions_granted";
-import * as ProjectPermissionsRevoked from "./domain/workflow/project_permissions_revoked";
+import * as ProjectPermissionsGranted from "./domain/workflow/project_permission_granted";
+import * as ProjectPermissionsRevoked from "./domain/workflow/project_permission_revoked";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";

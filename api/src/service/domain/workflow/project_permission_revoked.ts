@@ -1,14 +1,13 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import Intent, { subprojectIntents } from "../../../authz/intents";
+import Intent, { projectIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
-import * as Subproject from "./subproject";
 
-type eventTypeType = "subproject_permissions_revoked";
-const eventType: eventTypeType = "subproject_permissions_revoked";
+type eventTypeType = "project_permission_revoked";
+const eventType: eventTypeType = "project_permission_revoked";
 
 export interface Event {
   type: eventTypeType;
@@ -16,7 +15,6 @@ export interface Event {
   time: string; // ISO timestamp
   publisher: Identity;
   projectId: Project.Id;
-  subprojectId: Subproject.Id;
   permission: Intent;
   revokee: Identity;
 }
@@ -31,8 +29,7 @@ export const schema = Joi.object({
     .required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
-  subprojectId: Subproject.idSchema.required(),
-  permission: Joi.valid(subprojectIntents).required(),
+  permission: Joi.valid(projectIntents).required(),
   revokee: Joi.string().required(),
 });
 
@@ -40,7 +37,6 @@ export function createEvent(
   source: string,
   publisher: Identity,
   projectId: Project.Id,
-  subprojectId: Subproject.Id,
   permission: Intent,
   revokee: Identity,
   time: string = new Date().toISOString(),
@@ -49,13 +45,11 @@ export function createEvent(
     type: eventType,
     source,
     publisher,
+    time,
     projectId,
-    subprojectId,
     permission,
     revokee,
-    time,
   };
-
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     throw new VError(validationResult, `not a valid ${eventType} event`);

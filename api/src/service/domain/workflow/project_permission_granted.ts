@@ -6,8 +6,8 @@ import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
 
-type eventTypeType = "project_permissions_revoked";
-const eventType: eventTypeType = "project_permissions_revoked";
+type eventTypeType = "project_permission_granted";
+const eventType: eventTypeType = "project_permission_granted";
 
 export interface Event {
   type: eventTypeType;
@@ -16,7 +16,7 @@ export interface Event {
   publisher: Identity;
   projectId: Project.Id;
   permission: Intent;
-  revokee: Identity;
+  grantee: Identity;
 }
 
 export const schema = Joi.object({
@@ -30,7 +30,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   permission: Joi.valid(projectIntents).required(),
-  revokee: Joi.string().required(),
+  grantee: Joi.string().required(),
 });
 
 export function createEvent(
@@ -38,7 +38,7 @@ export function createEvent(
   publisher: Identity,
   projectId: Project.Id,
   permission: Intent,
-  revokee: Identity,
+  grantee: Identity,
   time: string = new Date().toISOString(),
 ): Event {
   const event = {
@@ -48,7 +48,7 @@ export function createEvent(
     time,
     projectId,
     permission,
-    revokee,
+    grantee,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

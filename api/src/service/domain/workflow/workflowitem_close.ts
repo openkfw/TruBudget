@@ -6,6 +6,8 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import { Id } from "./workflowitem";
 import * as WorkflowitemClosed from "./workflowitem_closed";
+import * as Project from "./project";
+import * as Subproject from "./subproject";
 import { sourceWorkflowitems } from "./workflowitem_eventsourcing";
 import { sortWorkflowitems } from "./workflowitem_ordering";
 
@@ -14,6 +16,8 @@ export function closeWorkflowitem(
   closingUser: ServiceUser,
   allSubprojectWorkflowitemEvents: BusinessEvent[],
   workflowitemOrdering: Id[],
+  projectId: Project.Id,
+  subprojectId: Subproject.Id,
   workflowitemId: Id,
 ): { newEvents: BusinessEvent[]; errors: Error[] } {
   const { workflowitems: items, errors: sourcingErrors } = sourceWorkflowitems(
@@ -32,7 +36,13 @@ export function closeWorkflowitem(
   }
 
   const publisher = closingUser.id;
-  const closeEvent = WorkflowitemClosed.createEvent(ctx.source, publisher, workflowitemId);
+  const closeEvent = WorkflowitemClosed.createEvent(
+    ctx.source,
+    publisher,
+    projectId,
+    subprojectId,
+    workflowitemId,
+  );
 
   // Check authorization (if not root):
   if (closingUser.id !== "root") {

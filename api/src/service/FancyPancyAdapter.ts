@@ -1,33 +1,28 @@
 import { Event } from "./event";
 
-import * as NotificationCreated from "../service/domain/workflow/notification_created";
-import * as NotificationRead from "../service/domain/workflow/notification_read";
-import * as ProjectAssigned from "../service/domain/workflow/project_assigned";
-import * as ProjectCreated from "../service/domain/workflow/project_created";
-import * as ProjectUpdated from "../service/domain/workflow/project_updated";
-import * as ProjectClosed from "../service/domain/workflow/project_closed";
-// TODO: rename file (plural to singular -> permissions to permission)
-import * as ProjectPermissionGranted from "../service/domain/workflow/project_permissions_granted";
-import * as ProjectPermissionRevoked from "../service/domain/workflow/project_permissions_revoked";
-import * as SubprojectAssigned from "../service/domain/workflow/subproject_assigned";
-import * as SubprojectCreated from "../service/domain/workflow/subproject_created";
-import * as SubprojectUpdated from "../service/domain/workflow/subproject_updated";
-import * as SubprojectClosed from "../service/domain/workflow/subproject_closed";
-// TODO: rename file (plural to singular -> permissions to permission)
-import * as SubprojectPermissionGranted from "../service/domain/workflow/subproject_permissions_granted";
-import * as SubprojectPermissionRevoked from "../service/domain/workflow/subproject_permissions_revoked";
-import * as WorkflowitemsReordered from "../service/domain/workflow/workflowitems_reordered";
-import * as WorkflowitemAssign from "../service/domain/workflow/workflowitem_assigned";
-import * as WorkflowitemCreated from "../service/domain/workflow/workflowitem_created";
-import * as WorkflowitemUpdated from "../service/domain/workflow/workflowitem_updated";
-import * as WorkflowitemClosed from "../service/domain/workflow/workflowitem_closed";
-import * as WorkflowitemPermissionGranted from "../service/domain/workflow/workflowitem_permission_granted";
-import * as WorkflowitemPermissionRevoked from "../service/domain/workflow/workflowitem_permission_revoked";
+// TODO: at the end implement notification
+import * as NotificationCreated from "./domain/workflow/notification_created";
+import * as NotificationRead from "./domain/workflow/notification_read";
+
+import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
+import * as SubprojectCreated from "./domain/workflow/subproject_created";
+import * as SubprojectUpdated from "./domain/workflow/subproject_updated";
+import * as SubprojectClosed from "./domain/workflow/subproject_closed";
+import * as SubprojectPermissionGranted from "./domain/workflow/subproject_permission_granted";
+import * as SubprojectPermissionRevoked from "./domain/workflow/subproject_permission_revoked";
+import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
+import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
+import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
+import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
+import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
+import * as WorkflowitemPermissionGranted from "./domain/workflow/workflowitem_permission_granted";
+import * as WorkflowitemPermissionRevoked from "./domain/workflow/workflowitem_permission_revoked";
 
 /**
  * What will not work anymout:
  *  Subproject.Update will not update amount
  *  Subporject.Create Projecected Budgets need to be respected
+ *  Rename all files permissions -> permission
  */
 
 function isOldEvent(event) {
@@ -182,7 +177,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
           assignee: event.data.subproject.assignee,
           currency: event.data.subproject.currency,
           projectedBudgets: event.data.subproject.projectedBudgets || [],
-          closingDate: event.data.subproject.closingDate || new Date().toISOString(),
 
           //TODO: remove!
           billingDate: event.data.subproject.billingDate,
@@ -209,7 +203,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
           assignee: event.data.assignee,
           currency: event.data.currency,
           projectedBudgets: event.data.projectedBudgets || [],
-          closingDate: event.data.closingDate || new Date().toISOString(),
         },
       );
       return [stream, key, { json: spUpdated }];
@@ -367,7 +360,7 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
         return params;
       }
 
-      const wfiAssigned: WorkflowitemAssign.Event = WorkflowitemAssign.createEvent(
+      const wfiAssigned: WorkflowitemAssigned.Event = WorkflowitemAssigned.createEvent(
         "http",
         event.createdBy,
         stream,
@@ -609,7 +602,7 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
 
       return result;
     case "workflowitem_assigned": {
-      const event: WorkflowitemAssign.Event = result.data.json;
+      const event: WorkflowitemAssigned.Event = result.data.json;
       const oldEvent: Event = {
         key: event.workflowitemId,
         intent: "workflowitem.assign",

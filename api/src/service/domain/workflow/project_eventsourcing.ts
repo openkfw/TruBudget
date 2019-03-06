@@ -6,8 +6,8 @@ import * as Project from "./project";
 import * as ProjectAssigned from "./project_assigned";
 import * as ProjectClosed from "./project_closed";
 import * as ProjectCreated from "./project_created";
-import * as ProjectPermissionGranted from "./project_permissions_granted";
-import * as ProjectPermissionRevoked from "./project_permissions_revoked";
+import * as ProjectPermissionGranted from "./project_permission_granted";
+import * as ProjectPermissionRevoked from "./project_permission_revoked";
 import { ProjectTraceEvent } from "./project_trace_event";
 import * as ProjectUpdated from "./project_updated";
 import deepcopy from "../../../lib/deepcopy";
@@ -38,9 +38,9 @@ function apply(
     applyAssign(ctx, projects, event, errors);
   } else if (event.type === "project_closed") {
     applyClose(ctx, projects, event, errors);
-  } else if (event.type === "project_permissions_granted") {
+  } else if (event.type === "project_permission_granted") {
     applyGrantPermission(ctx, projects, event, errors);
-  } else if (event.type === "project_permissions_revoked") {
+  } else if (event.type === "project_permission_revoked") {
     applyRevokePermission(ctx, projects, event, errors);
   }
 }

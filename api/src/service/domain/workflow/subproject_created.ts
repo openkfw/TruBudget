@@ -24,7 +24,6 @@ interface InitialData {
   // Additional information (key-value store), e.g. external IDs:
   additionalData: {};
   // TODO: remove!
-  billingDate?: string;
   amount?: string;
   exchangeRate?: string;
 }
@@ -45,7 +44,6 @@ const initialDataSchema = Joi.object({
   permissions: permissionsSchema.required(),
   additionalData: Joi.object().required(),
   // TODO: remove!
-  billingDate: Joi.string(),
   amount: Joi.string(),
   exchangeRate: Joi.string(),
 });

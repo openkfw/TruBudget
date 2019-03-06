@@ -23,7 +23,7 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
       return writeTo(conn, ctx, { stream: streamName, keys: ["self"], event });
 
     case "project_updated":
-    case "project_permissions_granted":
+    case "project_permission_granted":
       return writeTo(conn, ctx, { stream: event.projectId, keys: ["self"], event });
 
     case "subproject_created":

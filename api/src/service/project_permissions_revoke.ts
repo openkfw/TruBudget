@@ -5,7 +5,7 @@ import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
-import * as ProjectPermissionRevoke from "./domain/workflow/project_permissions_revoke";
+import * as ProjectPermissionRevoke from "./domain/workflow/project_permission_revoke";
 import { store } from "./store";
 
 export { RequestData } from "./domain/workflow/project_create";

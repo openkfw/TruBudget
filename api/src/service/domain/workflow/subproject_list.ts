@@ -38,8 +38,8 @@ export async function getAllVisible(
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
   ["subproject_created", ["subproject.viewSummary", "subproject.viewDetails"]],
-  ["subproject_permissions_granted", ["subproject.intent.listPermissions"]],
-  ["subproject_permissions_revoked", ["subproject.intent.listPermissions"]],
+  ["subproject_permission_granted", ["subproject.intent.listPermissions"]],
+  ["subproject_permission_revoked", ["subproject.intent.listPermissions"]],
   ["subproject_assigned", ["subproject.viewDetails"]],
   ["subproject_updated", ["subproject.viewDetails"]],
   ["subproject_closed", ["subproject.viewSummary", "subproject.viewDetails"]],

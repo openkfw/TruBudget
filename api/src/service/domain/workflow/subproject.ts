@@ -27,6 +27,10 @@ export interface Subproject {
   log: SubprojectTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
+
+  // TODO: remove!
+  amount?: string;
+  exchangeRate?: string;
 }
 
 const schema = Joi.object({
@@ -52,6 +56,9 @@ const schema = Joi.object({
     .required()
     .items(subprojectTraceEventSchema),
   additionalData: Joi.object(),
+  // TODO: remove!
+  amount: Joi.string(),
+  exchangeRate: Joi.string(),
 });
 
 export function validate(input: any): Result.Type<Subproject> {
