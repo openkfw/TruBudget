@@ -9,7 +9,7 @@ import {
   throwParseError,
   throwParseErrorIfUndefined,
 } from "../httpd/lib";
-import { isNonemptyString, isUserOrUndefined, value } from "../lib/validation";
+import { isNonemptyString, isUserOrUndefined, value, isObject } from "../lib/validation";
 import * as Project from "../project/model/Project";
 import { MultichainClient } from "../service/Client.h";
 import { randomString } from "../service/hash";
@@ -56,7 +56,7 @@ export async function createProject(
     displayName: value("displayName", input.displayName, isNonemptyString),
     description: value("description", input.description, isNonemptyString),
     assignee: value("assignee", input.assignee, isUserOrUndefined, req.user.userId),
-    projectedBudgets: value("projectedBudgets", input.projectedBudgets, isNonemptyString, []),
+    projectedBudgets: value("projectedBudgets", input.projectedBudgets, isObject, []),
     thumbnail: value("thumbnail", input.thumbnail, x => typeof x === "string", ""),
   };
 

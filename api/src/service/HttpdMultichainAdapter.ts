@@ -175,13 +175,9 @@ export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
 
     const creator: Project.Creator = async project => {
       Project.validateProject(project);
-<<<<<<< HEAD:api/src/service/HttpdMultichainAdapter.ts
-      const multichainProject: Multichain.Project = project;
-=======
 
       const multichainProject: Multichain.Project = { ...project, log: [] };
 
->>>>>>> api: Update project to include projectedBudget:api/src/HttpdMultichainAdapter.ts
       await Multichain.createProjectOnChain(conn, issuer, multichainProject);
     };
 
