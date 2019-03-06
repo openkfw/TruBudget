@@ -114,7 +114,7 @@ export async function publish(
 
 export async function get(
   multichain: MultichainClient,
-  token: AuthToken,
+  token: { userId: string; groups: string[] },
   projectId: string,
   subprojectId?: string,
   skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",

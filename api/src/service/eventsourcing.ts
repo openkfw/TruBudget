@@ -158,6 +158,11 @@ export function applyStreamItems(streamItems: Item[], project?: Project): Projec
   for (const item of streamItems) {
     const event = item.data.json as Event;
 
+    if (event.intent === undefined) {
+      logger.debug({ event }, `cache1: ignoring event`);
+      continue;
+    }
+
     if (project === undefined) {
       project = projectCreated(event);
     } else {

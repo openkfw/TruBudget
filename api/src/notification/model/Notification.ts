@@ -1,13 +1,16 @@
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
+import { Ctx } from "../../lib/ctx";
 import deepcopy from "../../lib/deepcopy";
 import { isEmpty } from "../../lib/emptyChecks";
 import logger from "../../lib/logger";
 import { ResourceType } from "../../lib/resourceTypes";
-import * as Project from "../../project/model/Project";
+import * as Result from "../../result";
 import { MultichainClient } from "../../service/Client.h";
+import { ConnToken } from "../../service/conn";
 import { Event, throwUnsupportedEventVersion } from "../../service/event";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
+import * as ProjectGet from "../../service/project_get";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 
@@ -222,10 +225,13 @@ function applyMarkRead(event: Event, notification: Notification): true | undefin
 }
 
 export async function buildDisplayNameMap(
-  multichain: MultichainClient,
+  conn: ConnToken,
+  ctx: Ctx,
   token: AuthToken,
   rawNotifications: Notification[],
 ): Promise<Map<string, string | undefined>> {
+  const multichain = conn.multichainClient;
+
   // The displayNames for all IDs found in the resource descriptions:
   const displayNamesById: Map<string, string | undefined> = new Map();
 
@@ -259,7 +265,7 @@ export async function buildDisplayNameMap(
   }
 
   for (const [projectId, _] of projectSet.entries()) {
-    displayNamesById.set(projectId, await getProjectDisplayName(multichain, token, projectId));
+    displayNamesById.set(projectId, await getProjectDisplayName(conn, ctx, token, projectId));
   }
 
   for (const [subprojectId, projectId] of subprojectParentLookup.entries()) {
@@ -290,14 +296,23 @@ function getResourceId(
     .find(_ => true);
 }
 
-function getProjectDisplayName(
-  multichain: MultichainClient,
+async function getProjectDisplayName(
+  conn: ConnToken,
+  ctx: Ctx,
   token: AuthToken,
   projectId: string,
 ): Promise<string | undefined> {
-  return Project.get(multichain, token, projectId).then(items =>
-    items.map(x => x.data.displayName).find(_ => true),
+  const result = await ProjectGet.getProject(
+    conn,
+    ctx,
+    { id: token.userId, groups: token.groups },
+    projectId,
   );
+  if (Result.isErr(result)) {
+    return undefined;
+  } else {
+    return result.displayName;
+  }
 }
 
 function getSubprojectDisplayName(

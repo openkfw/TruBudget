@@ -1,29 +1,13 @@
 import { FastifyInstance } from "fastify";
 
 import {
-  AllPermissionsGranter,
-  AllPermissionsReader,
-  AllProjectsReader,
   AllWorkflowitemsReader,
-  GlobalPermissionGranter,
-  GlobalPermissionRevoker,
-  ProjectAndSubprojects,
   ProjectAssigner,
-  ProjectCreator,
-  ProjectPermissionsGranter,
-  ProjectPermissionsReader,
-  ProjectReader,
-  ProjectUpdater,
   WorkflowitemAssigner,
   WorkflowitemCloser,
   WorkflowitemUpdater,
 } from ".";
-import Intent from "../authz/intents";
-import { createGroup } from "../global/createGroup";
-import { createUser } from "../global/createUser";
-import { addUserToGroup } from "../group/addUser";
-import { getGroupList } from "../group/list";
-import { removeUserFromGroup } from "../group/removeUser";
+import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
@@ -37,12 +21,9 @@ import { getNotificationList } from "../notification/controller/list";
 import { markMultipleRead } from "../notification/controller/markMultipleRead";
 import { markNotificationRead } from "../notification/controller/markRead";
 import { getNewestNotifications } from "../notification/controller/poll";
-import { closeProject } from "../project/controller/close";
 import { createSubproject } from "../project/controller/createSubproject";
-import { revokeProjectPermission } from "../project/controller/intent.revokePermission";
-import { getProjectHistory } from "../project/controller/viewHistory";
-import { User as ProjectUser } from "../project/User";
-import { MultichainClient } from "../service/Client.h";
+import { ConnToken } from "../service/conn";
+import { ServiceUser } from "../service/domain/organization/service_user";
 import { assignSubproject } from "../subproject/controller/assign";
 import { closeSubproject } from "../subproject/controller/close";
 import { createWorkflowitem } from "../subproject/controller/createWorkflowitem";
@@ -57,8 +38,6 @@ import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { createBackup } from "../system/createBackup";
 import { getVersion } from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
-import { authenticateUser } from "../user/controller/authenticate";
-import { getUserList } from "../user/controller/list";
 import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
 import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
 import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
@@ -249,50 +228,37 @@ const handleError = (req, res, err: any) => {
   }
 };
 
+function ctx(request: any): Ctx {
+  return { requestId: request.id, source: "http" };
+}
+
+function issuer(request: any): ServiceUser {
+  const req = request as AuthenticatedRequest;
+  return { id: req.user.userId, groups: req.user.groups };
+}
+
 export const registerRoutes = (
   server: FastifyInstance,
-  multichainClient: MultichainClient,
-  jwtSecret: string,
-  rootSecret: string,
-  organization: string,
-  organizationVaultSecret: string,
+  conn: ConnToken,
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
   {
-    listProjects,
-    getProjectWithSubprojects,
     assignProject,
-    updateProject,
     workflowitemLister,
     workflowitemCloser,
     workflowitemUpdater,
     workflowitemAssigner,
-    listGlobalPermissions,
-    grantGlobalPermission,
-    createProject,
-    grantAllPermissions,
-    revokeGlobalPermission,
-    getProjectPermissions,
-    grantProjectPermission,
   }: {
-    listProjects: AllProjectsReader;
-    getProjectWithSubprojects: ProjectReader;
     assignProject: ProjectAssigner;
-    updateProject: ProjectUpdater;
     workflowitemLister: AllWorkflowitemsReader;
     workflowitemCloser: WorkflowitemCloser;
     workflowitemUpdater: WorkflowitemUpdater;
     workflowitemAssigner: WorkflowitemAssigner;
-    listGlobalPermissions: AllPermissionsReader;
-    grantGlobalPermission: GlobalPermissionGranter;
-    createProject: ProjectCreator;
-    grantAllPermissions: AllPermissionsGranter;
-    revokeGlobalPermission: GlobalPermissionRevoker;
-    getProjectPermissions: ProjectPermissionsReader;
-    grantProjectPermission: ProjectPermissionsGranter;
   },
 ) => {
+  const multichainClient = conn.multichainClient;
+
   // ------------------------------------------------------------
   //       system
   // ------------------------------------------------------------
@@ -320,377 +286,14 @@ export const registerRoutes = (
   });
 
   // ------------------------------------------------------------
-  //       user
-  // ------------------------------------------------------------
-
-  server.post(
-    `${urlPrefix}/user.authenticate`,
-    getSchemaWithoutAuth("authenticate"),
-    (request, reply) => {
-      authenticateUser(
-        multichainClient,
-        request,
-        jwtSecret,
-        rootSecret,
-        organization,
-        organizationVaultSecret,
-      )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(`${urlPrefix}/user.list`, getSchema(server, "userList"), (request, reply) => {
-    getUserList(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
-
-  // ------------------------------------------------------------
-  //       global
-  // ------------------------------------------------------------
-  server.post(
-    `${urlPrefix}/global.createUser`,
-    getSchema(server, "createUser"),
-    (request, reply) => {
-      createUser(
-        multichainClient,
-        request as AuthenticatedRequest,
-        jwtSecret,
-        rootSecret,
-        organizationVaultSecret,
-      )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/global.createGroup`,
-    getSchema(server, "createGroup"),
-    (request, reply) => {
-      createGroup(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/global.createProject`,
-    getSchema(server, "createProject"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-      createProject(token, req.body.data.project)
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: {
-                created: true,
-              },
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
-    `${urlPrefix}/global.listPermissions`,
-    getSchema(server, "globalListPermissions"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-      listGlobalPermissions(token)
-        .then(
-          (permissions): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: permissions,
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/global.grantPermission`,
-    getSchema(server, "globalGrantPermission"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-
-      const intent: Intent = request.body.data.intent;
-      const grantee: string = request.body.data.identity;
-
-      return grantGlobalPermission(token, grantee, intent)
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/global.grantAllPermissions`,
-    getSchema(server, "globalGrantAllPermissions"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-
-      const grantee: string = request.body.data.identity;
-
-      return grantAllPermissions(token, grantee)
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/global.revokePermission`,
-    getSchema(server, "globalRevokePermission"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-
-      const intent: Intent = request.body.data.intent;
-      const recipient: string = request.body.data.identity;
-
-      return revokeGlobalPermission(token, recipient, intent)
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  // ------------------------------------------------------------
-  //       group
-  // ------------------------------------------------------------
-
-  server.get(`${urlPrefix}/group.list`, getSchema(server, "groupList"), (request, reply) => {
-    getGroupList(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
-
-  server.post(`${urlPrefix}/group.addUser`, getSchema(server, "addUser"), (request, reply) => {
-    addUserToGroup(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
-
-  server.post(
-    `${urlPrefix}/group.removeUser`,
-    getSchema(server, "removeUser"),
-    (request, reply) => {
-      removeUserFromGroup(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  // ------------------------------------------------------------
   //       project
   // ------------------------------------------------------------
-
-  server.get(`${urlPrefix}/project.list`, getSchema(server, "projectList"), (request, reply) => {
-    const req = request as AuthenticatedRequest;
-    return listProjects(req.user)
-      .then(
-        (projects): HttpResponse => [
-          200,
-          {
-            apiVersion: "1.0",
-            data: {
-              items: projects,
-            },
-          },
-        ],
-      )
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
-
-  server.get(
-    `${urlPrefix}/project.viewDetails`,
-    getSchema(server, "projectViewDetails"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-      const projectId: string = request.query.projectId;
-      return getProjectWithSubprojects(token, projectId)
-        .then(
-          (projectWithSubprojects: ProjectAndSubprojects): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: projectWithSubprojects,
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/project.assign`,
-    getSchema(server, "projectAssign"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-      const user: ProjectUser = { id: token.userId, groups: token.groups };
-      const projectId: string = request.body.data.projectId;
-      const assignee: string = request.body.data.identity;
-
-      return assignProject(token, projectId, assignee)
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/project.update`,
-    getSchema(server, "projectUpdate"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-      const update = request.body.data;
-      const projectId = request.body.data.projectId;
-
-      updateProject(token, projectId, update)
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(`${urlPrefix}/project.close`, getSchema(server, "projectClose"), (request, reply) => {
-    closeProject(multichainClient, request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
-  });
 
   server.post(
     `${urlPrefix}/project.createSubproject`,
     getSchema(server, "createSubproject"),
     (request, reply) => {
-      createSubproject(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
-    `${urlPrefix}/project.viewHistory`,
-    getSchema(server, "projectViewHistory"),
-    (request, reply) => {
-      getProjectHistory(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
-    `${urlPrefix}/project.intent.listPermissions`,
-    getSchema(server, "projectListPermissions"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-      const projectId: string = request.query.projectId;
-
-      getProjectPermissions(token, projectId)
-        .then(
-          (permissions): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: permissions,
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/project.intent.grantPermission`,
-    getSchema(server, "projectGrantPermission"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const token = req.user;
-      const projectId: string = request.body.data.projectId;
-      const grantee: string = request.body.data.identity;
-      const intent: Intent = request.body.data.intent;
-
-      grantProjectPermission(token, projectId, grantee, intent)
-        .then(
-          (permissions): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/project.intent.revokePermission`,
-    getSchema(server, "projectRevokePermission"),
-    (request, reply) => {
-      revokeProjectPermission(multichainClient, request as AuthenticatedRequest)
+      createSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -714,7 +317,7 @@ export const registerRoutes = (
     `${urlPrefix}/subproject.viewDetails`,
     getSchema(server, "subprojectViewDetails"),
     (request, reply) => {
-      getSubprojectDetails(multichainClient, request as AuthenticatedRequest)
+      getSubprojectDetails(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -724,7 +327,7 @@ export const registerRoutes = (
     `${urlPrefix}/subproject.assign`,
     getSchema(server, "subprojectAssign"),
     (request, reply) => {
-      assignSubproject(multichainClient, request as AuthenticatedRequest)
+      assignSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -734,7 +337,7 @@ export const registerRoutes = (
     `${urlPrefix}/subproject.update`,
     getSchema(server, "subprojectUpdate"),
     (request, reply) => {
-      updateSubproject(multichainClient, request as AuthenticatedRequest)
+      updateSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -744,7 +347,7 @@ export const registerRoutes = (
     `${urlPrefix}/subproject.close`,
     getSchema(server, "subprojectClose"),
     (request, reply) => {
-      closeSubproject(multichainClient, request as AuthenticatedRequest)
+      closeSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -964,7 +567,7 @@ export const registerRoutes = (
     `${urlPrefix}/notification.list`,
     getSchema(server, "notificationList"),
     (request, reply) => {
-      getNotificationList(multichainClient, request as AuthenticatedRequest)
+      getNotificationList(conn, ctx(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -974,7 +577,7 @@ export const registerRoutes = (
     `${urlPrefix}/notification.poll`,
     getSchema(server, "notificationPoll"),
     (request, reply) => {
-      getNewestNotifications(multichainClient, request as AuthenticatedRequest)
+      getNewestNotifications(conn, ctx(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -1028,7 +631,7 @@ export const registerRoutes = (
     `${urlPrefix}/network.voteForPermission`,
     getSchema(server, "voteForPermission"),
     (request, reply) => {
-      voteForNetworkPermission(multichainClient, request as AuthenticatedRequest)
+      voteForNetworkPermission(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -1038,7 +641,7 @@ export const registerRoutes = (
     `${urlPrefix}/network.approveNewOrganization`,
     getSchema(server, "approveNewOrganization"),
     (request, reply) => {
-      approveNewOrganization(multichainClient, request as AuthenticatedRequest)
+      approveNewOrganization(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
@@ -1048,14 +651,19 @@ export const registerRoutes = (
     `${urlPrefix}/network.approveNewNodeForExistingOrganization`,
     getSchema(server, "approveNewNodeForExistingOrganization"),
     (request, reply) => {
-      approveNewNodeForExistingOrganization(multichainClient, request as AuthenticatedRequest)
+      approveNewNodeForExistingOrganization(
+        conn,
+        ctx(request),
+        issuer(request),
+        request as AuthenticatedRequest,
+      )
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },
   );
 
   server.get(`${urlPrefix}/network.list`, getSchema(server, "networkList"), (request, reply) => {
-    getNodeList(multichainClient, request as AuthenticatedRequest)
+    getNodeList(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
   });
@@ -1064,7 +672,7 @@ export const registerRoutes = (
     `${urlPrefix}/network.listActive`,
     getSchema(server, "listActive"),
     (request, reply) => {
-      getActiveNodes(multichainClient, request as AuthenticatedRequest)
+      getActiveNodes(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

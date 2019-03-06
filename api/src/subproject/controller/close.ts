@@ -2,17 +2,26 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { HttpResponse } from "../../httpd/lib";
+import { Ctx } from "../../lib/ctx";
 import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
-import * as Project from "../../project/model/Project";
+import { ConnToken } from "../../service";
 import { MultichainClient } from "../../service/Client.h";
+import { ServiceUser } from "../../service/domain/organization/service_user";
 import { Event } from "../../service/event";
 import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
 
-export const closeSubproject = async (multichain: MultichainClient, req): Promise<HttpResponse> => {
+export const closeSubproject = async (
+  conn: ConnToken,
+  ctx: Ctx,
+  issuer: ServiceUser,
+  req,
+): Promise<HttpResponse> => {
+  const multichain = conn.multichainClient;
+
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -55,7 +64,9 @@ export const closeSubproject = async (multichain: MultichainClient, req): Promis
   // If the subproject is assigned to someone else, that person is notified about the
   // change:
   const subprojectAssignee = await notifyAssignee(
-    multichain,
+    conn,
+    ctx,
+    issuer,
     resourceDescriptions,
     createdBy,
     await Subproject.get(
@@ -75,19 +86,18 @@ export const closeSubproject = async (multichain: MultichainClient, req): Promis
   const skipNotificationsFor = [req.user.userId].concat(
     subprojectAssignee ? [subprojectAssignee] : [],
   );
-  await notifyAssignee(
-    multichain,
-    resourceDescriptions,
-    createdBy,
-    await Project.get(
-      multichain,
-      req.user,
-      projectId,
-      "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-    ),
-    publishedEvent,
-    skipNotificationsFor,
-  );
+  // const project = await ProjectGet.getProject(conn, ctx, issuer, projectId);
+  // if (Result.isErr(project)) throw project;
+  // await notifyAssignee(
+  //   conn,
+  //   ctx,
+  //   issuer,
+  //   resourceDescriptions,
+  //   createdBy,
+  //   project,
+  //   publishedEvent,
+  //   skipNotificationsFor,
+  // );
 
   return [200, { apiVersion: "1.0", data: "OK" }];
 };

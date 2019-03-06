@@ -8,7 +8,7 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import { sourceProjects } from "./project_eventsourcing";
-import * as ProjectPermissionsGranted from "./project_permission_granted";
+import * as ProjectPermissionGranted from "./project_permission_granted";
 
 interface Repository {
   getProjectEvents(): Promise<BusinessEvent[]>;
@@ -31,7 +31,7 @@ export async function grantProjectPermission(
   }
 
   // Create the new event:
-  const permissionGranted = ProjectPermissionsGranted.createEvent(
+  const permissionGranted = ProjectPermissionGranted.createEvent(
     ctx.source,
     issuer.id,
     projectId,

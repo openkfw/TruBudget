@@ -1,14 +1,20 @@
 import { HttpResponse } from "../../httpd/lib";
+import { Ctx } from "../../lib/ctx";
 import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
-import { MultichainClient } from "../../service/Client.h";
+import { ConnToken } from "../../service/conn";
+import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as Nodes from "../model/Nodes";
 import { voteHelper } from "../voteHelper";
 
 export async function approveNewOrganization(
-  multichain: MultichainClient,
+  conn: ConnToken,
+  ctx: Ctx,
+  issuer: ServiceUser,
   req,
 ): Promise<HttpResponse> {
+  const multichain = conn.multichainClient;
+
   const input = value("data", req.body.data, x => x !== undefined);
   const organization: string = value("organization", input.organization, isNonemptyString);
 
@@ -25,5 +31,5 @@ export async function approveNewOrganization(
     throw Error(message);
   }
 
-  return voteHelper(multichain, req.user, futureOrganizationAddress, "admin");
+  return voteHelper(conn, ctx, issuer, req.user, futureOrganizationAddress, "admin");
 }

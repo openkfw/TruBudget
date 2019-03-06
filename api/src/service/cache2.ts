@@ -5,8 +5,8 @@ import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
 import * as NodeRegistered from "./domain/network/node_registered";
 import * as UserCreated from "./domain/organization/user_created";
-import * as GlobalPermissionsGranted from "./domain/workflow/global_permissions_granted";
-import * as GlobalPermissionsRevoked from "./domain/workflow/global_permissions_revoked";
+import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
+import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
@@ -221,33 +221,39 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
 }
 
 const EVENT_PARSER_MAP = {
-  global_permissions_granted: GlobalPermissionsGranted.validate,
-  global_permissions_revoked: GlobalPermissionsRevoked.validate,
+  global_permission_granted: GlobalPermissionsGranted.validate,
+  global_permission_revoked: GlobalPermissionsRevoked.validate,
   node_registered: NodeRegistered.validate,
   project_assigned: ProjectAssigned.validate,
   project_closed: ProjectClosed.validate,
   project_created: ProjectCreated.validate,
-  project_permissions_granted: ProjectPermissionsGranted.validate,
-  project_permissions_revoked: ProjectPermissionsRevoked.validate,
+  project_permission_granted: ProjectPermissionsGranted.validate,
+  project_permission_revoked: ProjectPermissionsRevoked.validate,
   project_updated: ProjectUpdated.validate,
-  subproject_created: SubprojectCreated.validate,
+  // subproject_created: SubprojectCreated.validate,
   user_created: UserCreated.validate,
   workflowitem_closed: WorkflowitemClosed.validate,
   workflowitem_created: WorkflowitemCreated.validate,
 };
 
 function parseBusinessEvents(items: Item[], streamName: string): Array<Result.Type<BusinessEvent>> {
-  return items.map(item => {
-    const event = item.data.json;
-    const parser = EVENT_PARSER_MAP[event.type];
-    if (parser === undefined) {
-      const eventType = event && event.type ? event.type : JSON.stringify(event);
-      logger.fatal(
-        { streamName, item },
-        "Cache: Event type not implemented. Please file an issue and include this log entry - thank you.",
-      );
-      process.exit(1);
-    }
-    return parser(event);
-  });
+  return items
+    .map(item => {
+      const event = item.data.json;
+      if (event.intent) {
+        logger.debug(`cache2: ignoring event of intent ${event.intent}`);
+        return;
+      }
+      const parser = EVENT_PARSER_MAP[event.type];
+      if (parser === undefined) {
+        const eventType = event && event.type ? event.type : JSON.stringify(event);
+        logger.fatal(
+          { streamName, item },
+          "Cache: Event type not implemented. Please file an issue and include this log entry - thank you.",
+        );
+        process.exit(1);
+      }
+      return parser(event);
+    })
+    .filter(x => x !== undefined);
 }

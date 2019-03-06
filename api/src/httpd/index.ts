@@ -1,5 +1,7 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
+import { Ctx } from "../lib/ctx";
+import { ServiceUser } from "../service/domain/organization/service_user";
 
 export interface Document {
   id: string;
@@ -45,7 +47,12 @@ export type GlobalPermissionRevoker = (
   intent: Intent,
 ) => Promise<void>;
 
-export type ProjectCreator = (token: AuthToken, payload: CreateProjectPayload) => Promise<void>;
+export type ProjectCreator = (
+  ctx: Ctx,
+  issuer: ServiceUser,
+  token: AuthToken,
+  payload: CreateProjectPayload,
+) => Promise<void>;
 
 export type ProjectAssigner = (
   token: AuthToken,

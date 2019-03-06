@@ -1,6 +1,6 @@
 import Joi = require("joi");
 
-import Intent, { userIntents } from "../../../authz/intents";
+import Intent, { userDefaultIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -110,6 +110,6 @@ function newDefaultPermissionsFor(userId: UserRecord.Id): Permissions {
   if (userId === "root") return {};
 
   // All group related permissions granted by default:
-  const intents: Intent[] = userIntents;
+  const intents: Intent[] = userDefaultIntents;
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
 }

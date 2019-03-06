@@ -1,16 +1,15 @@
 import { ConnToken } from ".";
-import { getAllowedIntents, getUserAndGroups } from "../authz";
 import { globalIntents } from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { getOrganizationAddress } from "../organization/organization";
 import * as Result from "../result";
-import { hashPassword, isPasswordMatch } from "../user/password";
 import * as AuthToken from "./domain/organization/auth_token";
 import { AuthenticationFailed } from "./errors/authentication_failed";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { getGroupsForUser } from "./group_query";
 import { importprivkey } from "./importprivkey";
+import { hashPassword, isPasswordMatch } from "./password";
 import * as UserQuery from "./user_query";
 
 // Use root as the service user to ensure we see all the data:

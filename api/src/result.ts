@@ -17,3 +17,11 @@ export function map<T, U>(result: Result<T>, fn: mapFn<T, U>): Result<U> {
     return fn(result);
   }
 }
+
+export function mapErr<T>(result: Result<T>, fn: mapFn<Error, Error>): Result<T> {
+  if (result instanceof Error) {
+    return fn(result);
+  } else {
+    return result;
+  }
+}
