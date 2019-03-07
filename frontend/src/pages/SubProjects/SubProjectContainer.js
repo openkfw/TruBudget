@@ -73,7 +73,7 @@ class SubProjectContainer extends Component {
             subProjects={this.props.subProjects}
             title={strings.subproject.subproject_permissions_title}
           />
-          // TODO: put SubProjectInfo in separate container
+          {/* // TODO: put SubProjectInfo in separate container */}
           <SubProjectInfo {...this.props} />
           <SubprojectDialogContainer location={this.props.location} />
         </div>

@@ -52,7 +52,11 @@ const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectInfoShown, hideSub
       <DialogContent style={styles.dialogContent}>
         <List>
           <ListItem>
-            <ListItemText data-test="workflowitemInfoDisplayName" primary={""} secondary={"Test"} />
+            <ListItemText
+              data-test="workflowitemInfoDisplayName"
+              primary={""}
+              secondary={subProjectForInfo ? JSON.stringify(subProjectForInfo.data.additionalData) : ""}
+            />
           </ListItem>
         </List>
       </DialogContent>
