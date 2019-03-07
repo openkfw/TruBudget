@@ -15,9 +15,15 @@ function clickEditProject(projectName) {
 }
 
 const currenciesArray = Object.keys(currencies);
+const standardBudget = [
+  {
+    organization: "Test",
+    value: "12345",
+    currencyCode: "EUR"
+  }
+];
 
 describe("Overview Page", function() {
-
   beforeEach(function() {
     cy.login();
     cy.visit(`/projects`);
@@ -26,7 +32,7 @@ describe("Overview Page", function() {
   it("Shows all the currencies dropdown when editing a project", function() {
     // Create project just to have at least one
     const projectName = "First Project";
-    cy.createProject(projectName, "12345", "EUR", projectName);
+    cy.createProject(projectName, projectName, standardBudget);
 
     cy.get("[data-test=pe-button-0]").click();
     cy.get("[data-test=creation-dialog]").should("be.visible");
@@ -67,7 +73,7 @@ describe("Overview Page", function() {
   });
 
   it("Sets the currency of a new project to EUR and checks if the Euro sign is displayed", function() {
-    cy.createProject("Test", "12345", "EUR", "Test");
+    cy.createProject("Test", "Test", standardBudget);
 
     //Fetch projects to get newest one
     cy.reload();

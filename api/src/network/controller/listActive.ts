@@ -19,7 +19,6 @@ export async function getActiveNodes(
   const userIntent: Intent = "network.listActive";
   const globalPermissions = (await GlobalPermissionsGet.getGlobalPermissions(conn, ctx, issuer))
     .permissions;
-  console.log("XXX", JSON.stringify(globalPermissions, null, 2));
   await throwIfUnauthorized(req.user, userIntent, globalPermissions);
 
   // Get ALL the info:

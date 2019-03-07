@@ -17,14 +17,37 @@
       "displayName": "Consultancy studies",
       "description": "No description.",
       "status": "closed",
-      "amount": "500000",
-      "currency": "BRL",
+      "projectedBudgets": [
+        {
+          "organization": "Test",
+          "value": "500000",
+          "currencyCode": "BRL"
+        }
+      ],
       "assignee": "jdoe",
-      "permissions": { "subproject.viewSummary": ["jxavier"], "subproject.viewDetails": ["jxavier"] },
+      "permissions": {
+        "subproject.viewSummary": ["jxavier"],
+        "subproject.viewDetails": ["jxavier"]
+      },
       "workflows": [
-        { "displayName": "Budget allocation", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender publication", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender evaluation", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender evaluation",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Contract signature",
           "status": "closed",
@@ -33,7 +56,12 @@
           "currency": "BRL",
           "amountType": "allocated"
         },
-        { "displayName": "Execution monitoring", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Execution monitoring",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Payment advance installment",
           "status": "closed",
@@ -58,20 +86,44 @@
           "currency": "BRL",
           "amountType": "disbursed"
         },
-        { "displayName": "Completion subproject", "status": "closed", "assignee": "jdoe", "amountType": "N/A" }
+        {
+          "displayName": "Completion subproject",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        }
       ]
     },
     {
       "displayName": "Consultancy supervision",
       "description": "No description.",
       "status": "closed",
-      "amount": "750000",
-      "currency": "BRL",
+      "projectedBudgets": [
+        {
+          "organization": "Test",
+          "value": "750000",
+          "currencyCode": "BRL"
+        }
+      ],
       "assignee": "jdoe",
       "workflows": [
-        { "displayName": "Budget allocation", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender publication", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender evaluation", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender evaluation",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Contract signature",
           "assignee": "jdoe",
@@ -79,7 +131,11 @@
           "currency": "BRL",
           "amountType": "allocated"
         },
-        { "displayName": "Execution monitoring", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Execution monitoring",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Payment advance installment",
           "assignee": "jdoe",
@@ -101,19 +157,42 @@
           "currency": "BRL",
           "amountType": "disbursed"
         },
-        { "displayName": "Completion subproject", "assignee": "jdoe", "amountType": "N/A" }
+        {
+          "displayName": "Completion subproject",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        }
       ]
     },
     {
       "displayName": "Construction lot 1",
       "description": "No description.",
-      "amount": "1750000",
-      "currency": "BRL",
+      "projectedBudgets": [
+        {
+          "organization": "Test",
+          "value": "1750000",
+          "currencyCode": "BRL"
+        }
+      ],
       "assignee": "jdoe",
       "workflows": [
-        { "displayName": "Budget allocation", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender publication", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender evaluation", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender evaluation",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Contract signature",
           "assignee": "jdoe",
@@ -121,7 +200,11 @@
           "currency": "BRL",
           "amountType": "allocated"
         },
-        { "displayName": "Execution monitoring", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Execution monitoring",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Payment advance installment",
           "assignee": "jdoe",
@@ -143,19 +226,42 @@
           "currency": "BRL",
           "amountType": "disbursed"
         },
-        { "displayName": "Completion subproject", "assignee": "jdoe", "amountType": "N/A" }
+        {
+          "displayName": "Completion subproject",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        }
       ]
     },
     {
       "displayName": "Construction lot 2",
       "description": "No description.",
-      "amount": "2500000",
-      "currency": "BRL",
+      "projectedBudgets": [
+        {
+          "organization": "Test",
+          "value": "2500000",
+          "currencyCode": "BRL"
+        }
+      ],
       "assignee": "jdoe",
       "workflows": [
-        { "displayName": "Budget allocation", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender publication", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender evaluation", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender evaluation",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Contract signature",
           "assignee": "jdoe",
@@ -163,19 +269,42 @@
           "currency": "BRL",
           "amountType": "allocated"
         },
-        { "displayName": "Execution monitoring", "assignee": "jdoe", "amountType": "N/A" }
+        {
+          "displayName": "Execution monitoring",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        }
       ]
     },
     {
       "displayName": "Furniture",
       "description": "No description.",
-      "amount": "500000",
-      "currency": "BRL",
+      "projectedBudgets": [
+        {
+          "organization": "Test",
+          "value": "500000",
+          "currencyCode": "BRL"
+        }
+      ],
       "assignee": "jdoe",
       "workflows": [
-        { "displayName": "Budget allocation", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender publication", "status": "closed", "assignee": "jdoe", "amountType": "N/A" },
-        { "displayName": "Tender evaluation", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
+        {
+          "displayName": "Tender evaluation",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Contract signature",
           "assignee": "jdoe",
@@ -183,7 +312,11 @@
           "currency": "BRL",
           "amountType": "allocated"
         },
-        { "displayName": "Execution monitoring", "assignee": "jdoe", "amountType": "N/A" },
+        {
+          "displayName": "Execution monitoring",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        },
         {
           "displayName": "Payment advance installment",
           "assignee": "jdoe",
@@ -205,7 +338,11 @@
           "currency": "BRL",
           "amountType": "disbursed"
         },
-        { "displayName": "Completion subproject", "assignee": "jdoe", "amountType": "N/A" }
+        {
+          "displayName": "Completion subproject",
+          "assignee": "jdoe",
+          "amountType": "N/A"
+        }
       ]
     }
   ]
