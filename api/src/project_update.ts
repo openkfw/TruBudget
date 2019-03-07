@@ -7,6 +7,7 @@ import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
+import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as ProjectUpdate from "./service/domain/workflow/project_update";
@@ -18,6 +19,7 @@ interface RequestBodyV1 {
     displayName?: string;
     description?: string;
     thumbnail?: string;
+    additionalData?: object;
   };
 }
 
@@ -28,7 +30,8 @@ const requestBodyV1Schema = Joi.object({
     displayName: Joi.string(),
     description: Joi.string().allow(""),
     thumbnail: Joi.string().allow(""),
-  }),
+    additionalData: AdditionalData.schema,
+  }).required(),
 });
 
 type RequestBody = RequestBodyV1;
@@ -65,6 +68,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
             displayName: { type: "string", example: "townproject" },
             description: { type: "string", example: "A town should be built" },
             thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+            additionalData: { type: "object" },
           },
         },
       },
@@ -116,6 +120,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       displayName: bodyResult.data.displayName,
       description: bodyResult.data.description,
       thumbnail: bodyResult.data.thumbnail,
+      additionalData: bodyResult.data.additionalData,
     };
 
     service

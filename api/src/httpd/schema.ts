@@ -1639,8 +1639,6 @@ const schemas = {
                         displayName: { type: "string", example: "school" },
                         description: { type: "string", example: "school should be built" },
                         assignee: { type: "string", example: "aSmith" },
-                        billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-                        exchangeRate: { type: "string", example: "1.0" },
                         projectedBudgets: {
                           type: "array",
                           items: {
@@ -1652,7 +1650,7 @@ const schemas = {
                             },
                           },
                         },
-                        thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                        additionalData: { type: "object" },
                       },
                     },
                     log: {

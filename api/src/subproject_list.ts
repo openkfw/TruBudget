@@ -58,7 +58,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         description: { type: "string", example: "school should be built" },
                         assignee: { type: "string", example: "aSmith" },
                         currency: { type: "string", example: "EUR" },
-                        billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                         projectedBudgets: {
                           type: "array",
                           items: {
@@ -131,7 +130,6 @@ interface ExposedSubproject {
     description: string;
     assignee?: string;
     currency: string;
-    billingDate?: string;
     projectedBudgets: Array<{
       organization: string;
       value: string;
@@ -188,7 +186,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
               description: subproject.description,
               assignee: subproject.assignee,
               currency: subproject.currency,
-              billingDate: subproject.billingDate,
               projectedBudgets: subproject.projectedBudgets,
               additionalData: subproject.additionalData,
             },

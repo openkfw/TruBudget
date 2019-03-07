@@ -2,6 +2,7 @@ import Joi = require("joi");
 import { VError } from "verror";
 
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import * as Group from "./group";
@@ -16,7 +17,7 @@ interface InitialData {
   members: Group.Member[];
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
-  additionalData: {};
+  additionalData: object;
 }
 
 const initialDataSchema = Joi.object({
@@ -27,7 +28,7 @@ const initialDataSchema = Joi.object({
     .required(),
   members: Group.membersSchema.required(),
   permissions: permissionsSchema.required(),
-  additionalData: Joi.object().required(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export interface Event {

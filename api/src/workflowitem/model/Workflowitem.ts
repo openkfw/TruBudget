@@ -49,6 +49,7 @@ export interface Data {
   status: "open" | "closed";
   assignee?: string;
   documents?: Document[];
+  additionalData: object;
 }
 
 export interface RedactedData {
@@ -64,6 +65,7 @@ export interface RedactedData {
   documents: null;
   exchangeRate: null;
   billingDate: null;
+  additionalData: null;
 }
 
 export interface Update {
@@ -75,6 +77,7 @@ export interface Update {
   documents?: Document[];
   exchangeRate?: string;
   billingDate?: string;
+  additionalData?: object;
 }
 
 export interface Document {
@@ -95,6 +98,7 @@ const redactWorkflowitemData = (workflowitem: Data): RedactedData => ({
   documents: null,
   exchangeRate: null,
   billingDate: null,
+  additionalData: null,
 });
 
 export async function publish(
@@ -256,6 +260,14 @@ function applyUpdate(event: Event, resource: WorkflowitemResource): true | undef
         delete event.data.documents;
       }
       const update: Update = event.data;
+
+      if (event.data.additionalData) {
+        if (!resource.data.additionalData) resource.data.additionalData = {};
+        for (const key of Object.keys(event.data.additionalData)) {
+          resource.data.additionalData[key] = event.data.additionalData[key];
+        }
+        delete event.data.additionalData;
+      }
 
       inheritDefinedProperties(resource.data, update);
       // In case the update has set the amountType to N/A, we don't want to retain the

@@ -1,6 +1,7 @@
 import Joi = require("joi");
 
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import { Permissions, permissionsSchema } from "../permissions";
 import { UserTraceEvent, userTraceEventSchema } from "./user_trace_event";
 
@@ -34,7 +35,7 @@ const schema = Joi.object({
   log: Joi.array()
     .required()
     .items(userTraceEventSchema),
-  additionalData: Joi.object().required(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export function validate(input: any): Result.Type<Event> {

@@ -3,6 +3,7 @@ import { VError } from "verror";
 
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import * as AdditionalData from "../additional_data";
 import * as Project from "./project";
 
 type eventTypeType = "project_updated";
@@ -18,13 +19,15 @@ interface Modification {
   displayName?: string;
   description?: string;
   thumbnail?: string;
+  additionalData?: object;
 }
 
 const modificationSchema = Joi.object({
   displayName: Joi.string(),
   description: Joi.string().allow(""),
   thumbnail: Joi.string().allow(""),
-}).or("displayName", "description", "thumbnail");
+  additionalData: AdditionalData.schema,
+}).or("displayName", "description", "thumbnail", "additionalData");
 
 export interface Event {
   type: eventTypeType;

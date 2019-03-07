@@ -24,7 +24,7 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     identity: Joi.string().required(),
     intent: Joi.valid(globalIntents).required(),
-  }),
+  }).required(),
 });
 
 type RequestBody = RequestBodyV1;

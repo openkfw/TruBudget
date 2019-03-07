@@ -31,8 +31,8 @@ const requestBodyV1Schema = Joi.object({
       users: Joi.array()
         .required()
         .items(Joi.string()),
-    }),
-  }),
+    }).required(),
+  }).required(),
 });
 
 type RequestBody = RequestBodyV1;

@@ -2,6 +2,7 @@ import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import { Permissions, permissionsSchema } from "../permissions";
 import { canAssumeIdentity } from "./auth_token";
 import { GroupTraceEvent, groupTraceEventSchema } from "./group_trace_event";
@@ -24,7 +25,7 @@ export interface Group {
   permissions: Permissions;
   log: GroupTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
-  additionalData: {};
+  additionalData: object;
 }
 
 const schema = Joi.object({
@@ -41,7 +42,7 @@ const schema = Joi.object({
   log: Joi.array()
     .required()
     .items(groupTraceEventSchema),
-  additionalData: Joi.object(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export function validate(input: any): Result.Type<Group> {

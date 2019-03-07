@@ -27,8 +27,8 @@ const requestBodyV1Schema = Joi.object({
     user: Joi.object({
       id: Joi.string().required(),
       password: Joi.string().required(),
-    }),
-  }),
+    }).required(),
+  }).required(),
 });
 
 type RequestBody = RequestBodyV1;

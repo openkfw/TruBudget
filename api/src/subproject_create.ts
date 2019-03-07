@@ -7,6 +7,7 @@ import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
+import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as Subproject from "./service/domain/workflow/subproject";
@@ -24,12 +25,12 @@ interface RequestBodyV1 {
       description?: string;
       assignee?: string;
       currency: string;
-      billingDate: string;
-      projectedBudgets: Array<{
+      projectedBudgets?: Array<{
         organization: string;
         value: string;
         currencyCode: string;
       }>;
+      additionalData?: object;
     };
   };
 }
@@ -44,10 +45,10 @@ const requestBodyV1Schema = Joi.object({
       description: Joi.string().allow(""),
       assignee: Joi.string(),
       currency: Joi.string().required(),
-      billingDate: Joi.date().iso(),
       projectedBudgets: projectedBudgetListSchema,
-    }),
-  }),
+      additionalData: AdditionalData.schema,
+    }).required(),
+  }).required(),
 });
 
 type RequestBody = RequestBodyV1;
@@ -91,7 +92,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
                 description: { type: "string", example: "A town should be built" },
                 assignee: { type: "string", example: "aSmith" },
                 currency: { type: "string", example: "EUR" },
-                billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                 projectedBudgets: [
                   {
                     type: "object",
@@ -103,6 +103,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                     },
                   },
                 ],
+                additionalData: { type: "object" },
               },
             },
           },
@@ -164,8 +165,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         description: bodyResult.data.subproject.description,
         assignee: bodyResult.data.subproject.assignee,
         currency: bodyResult.data.subproject.currency,
-        billingDate: bodyResult.data.subproject.billingDate,
         projectedBudgets: bodyResult.data.subproject.projectedBudgets,
+        additionalData: bodyResult.data.subproject.additionalData,
       };
 
       service

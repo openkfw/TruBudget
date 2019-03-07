@@ -17,6 +17,7 @@ import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemPermissionGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionRevoked from "./domain/workflow/workflowitem_permission_revoked";
+import logger from "../lib/logger";
 
 /**
  * What will not work anymout:
@@ -172,16 +173,11 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
           status: event.data.subproject.status,
           displayName: event.data.subproject.displayName,
           description: event.data.subproject.description,
-          permissions: event.data.permissions,
-          additionalData: {},
           assignee: event.data.subproject.assignee,
           currency: event.data.subproject.currency,
           projectedBudgets: event.data.subproject.projectedBudgets || [],
-
-          //TODO: remove!
-          billingDate: event.data.subproject.billingDate,
-          amount: event.data.subproject.amount,
-          exchangeRate: event.data.subproject.exchangeRate,
+          permissions: event.data.permissions,
+          additionalData: event.data.subproject.additionalData,
         },
       );
       return [stream, key, { json: spCreated }];
@@ -199,10 +195,9 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
         {
           displayName: event.data.displayName,
           description: event.data.description,
-          additionalData: {},
           assignee: event.data.assignee,
           currency: event.data.currency,
-          projectedBudgets: event.data.projectedBudgets || [],
+          additionalData: event.data.additionalData,
         },
       );
       return [stream, key, { json: spUpdated }];
@@ -308,13 +303,13 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
           amountType: event.data.workflowitem.amountType,
           documents: event.data.workflowitem.documents,
           permissions: event.data.permissions,
-          additionalData: {},
           assignee: event.data.workflowitem.assignee,
           amount: event.data.workflowitem.amount,
           currency: event.data.workflowitem.currency,
           exchangeRate: event.data.workflowitem.exchangeRate,
           billingDate: event.data.workflowitem.billingDate,
           dueDate: event.data.workflowitem.dueDate,
+          additionalData: event.data.workflowitem.additionalData,
         },
       );
       return [stream, key, { json: wfiCreated }];
@@ -341,12 +336,12 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
           description: event.data.description,
           amountType: event.data.amountType,
           documents: event.data.documents,
-          additionalData: {},
           amount: event.data.amount,
           currency: event.data.currency,
           exchangeRate: event.data.exchangeRate,
           billingDate: event.data.billingDate,
           dueDate: event.data.dueDate,
+          additionalData: event.data.additionalData,
         },
       );
 
@@ -497,11 +492,10 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
             status: event.subproject.status,
             displayName: event.subproject.displayName,
             description: event.subproject.description,
-            amount: event.subproject.amount,
-            currency: event.subproject.currency,
-            exchangeRate: event.subproject.exchangeRate,
-            billingDate: event.subproject.billingDate,
             assignee: event.subproject.assignee,
+            currency: event.subproject.currency,
+            projectedBudgets: event.subproject.projectedBudgets,
+            additionalData: event.subproject.additionalData,
           },
           permissions: event.subproject.permissions,
         },
@@ -520,11 +514,7 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
           displayName: event.subproject.displayName,
           description: event.subproject.description,
           currency: event.subproject.currency,
-
-          // TODO: remove!
-          amount: undefined,
-          exchangeRate: undefined,
-          billingDate: undefined,
+          additionalData: event.subproject.additionalData,
         },
       };
       return { ...result, data: { json: oldEvent } };
@@ -637,6 +627,7 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
             status: event.workflowitem.status,
             assignee: event.workflowitem.assignee,
             documents: event.workflowitem.documents,
+            additionalData: event.workflowitem.additionalData,
           },
           permissions: event.workflowitem.permissions,
         },
@@ -660,6 +651,7 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
           amountType: event.workflowitem.amountType,
           description: event.workflowitem.description,
           documents: event.workflowitem.documents,
+          additionalData: event.workflowitem.additionalData,
         },
       };
       return { ...result, data: { json: oldEvent } };

@@ -12,6 +12,7 @@ import {
   isNumber,
   isUserOrUndefined,
   value,
+  isObject,
 } from "../../lib/validation";
 import { MultichainClient } from "../../service/Client.h";
 import { randomString } from "../../service/hash";
@@ -154,6 +155,8 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
       req.user.userId,
     ),
     documents: data.documents !== undefined ? await hashDocuments(data.documents) : [],
+
+    additionalData: value("additionalData", data.additionalData, isObject, {}),
   };
 
   const event = {

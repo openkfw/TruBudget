@@ -21,6 +21,7 @@ function mkWorkflowitem(id, data: any = {}, log: any = []) {
     description: data.description || id,
     status: data.status || "open",
     documents: [],
+    additionalData: {},
   };
   return {
     log: itemLog,

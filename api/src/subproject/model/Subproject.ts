@@ -35,11 +35,10 @@ export interface Data {
   status: "open" | "closed";
   displayName: string;
   description: string;
+  assignee?: string;
   currency: string;
   projectedBudgets: ProjectedBudget[];
-  exchangeRate: string;
-  billingDate: string;
-  assignee?: string;
+  additionalData: object;
 }
 
 export interface RedactedData {
@@ -52,16 +51,14 @@ export interface RedactedData {
   projectedBudgets: null;
   assignee: null;
   exchangeRate: null;
-  billingDate: null;
+  additionalData: null;
 }
 
 export interface Update {
   displayName?: string;
   description?: string;
   currency?: string;
-  projectedBudgets?: ProjectedBudget[];
-  exchangeRate?: string;
-  billingDate?: string;
+  additionalData?: object;
 }
 
 const subprojectsGroupKey = "subprojects";
@@ -80,7 +77,7 @@ const redactSubprojectData = (subproject: Data): RedactedData => ({
   projectedBudgets: null,
   assignee: null,
   exchangeRate: null,
-  billingDate: null,
+  additionalData: null,
 });
 
 export async function publish(
@@ -207,7 +204,17 @@ function handleCreate(
       const { subproject, permissions } = event.data;
       return {
         resource: {
-          data: deepcopy(subproject),
+          data: {
+            id: subproject.id,
+            creationUnixTs: subproject.creationUnixTs,
+            status: subproject.status,
+            displayName: subproject.displayName,
+            description: subproject.description,
+            currency: subproject.currency,
+            projectedBudgets: deepcopy(subproject.projectedBudgets),
+            assignee: subproject.assignee,
+            additionalData: deepcopy(subproject.additionalData),
+          },
           log: [], // event is added later
           allowedIntents: [], // is set later using permissionsMap
         },
@@ -223,7 +230,16 @@ function applyUpdate(event: Event, resource: SubprojectResource): true | undefin
   switch (event.dataVersion) {
     case 1: {
       const update: Update = event.data;
-      inheritDefinedProperties(resource.data, update);
+      const data = resource.data;
+      if (update.displayName) data.displayName = update.displayName;
+      if (update.description) data.description = update.description;
+      if (update.currency) data.currency = update.currency;
+      if (update.additionalData) {
+        if (!data.additionalData) data.additionalData = {};
+        for (const key of Object.keys(update.additionalData)) {
+          data.additionalData[key] = update.additionalData[key];
+        }
+      }
       return true;
     }
   }

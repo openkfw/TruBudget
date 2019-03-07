@@ -4,6 +4,7 @@ import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Permissions from "../permissions";
+import * as AdditionalData from "../additional_data";
 import {
   GlobalPermissionsTraceEvent,
   globalPermissionsTraceEventSchema,
@@ -19,7 +20,7 @@ const schema = Joi.object({
   log: Joi.array()
     .required()
     .items(globalPermissionsTraceEventSchema),
-  additionalData: Joi.object(),
+  additionalData: AdditionalData.schema,
 });
 
 export function validate(input: any): Result.Type<GlobalPermissions> {

@@ -6,6 +6,7 @@ import Intent from "../authz/intents";
 import { Permissions } from "../authz/types";
 import { userIdentities } from "../project";
 import { User } from "../project/User";
+import * as AdditionalData from "../service/domain/additional_data";
 
 interface HistoryEvent {
   key: string; // the resource ID (same for all events that relate to the same resource)
@@ -43,6 +44,7 @@ export interface Workflowitem {
   documents?: Document[];
   permissions: Permissions;
   log: HistoryEvent[];
+  additionalData: object;
 }
 export interface Update {
   displayName?: string;
@@ -53,6 +55,7 @@ export interface Update {
   documents?: Document[];
   exchangeRate?: string;
   billingDate?: string;
+  additionalData?: object;
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -72,6 +75,7 @@ export interface RedactedWorkflowitem {
   documents?: null;
   permissions: null;
   log: null;
+  additionalData: null;
 }
 
 const schema = Joi.object().keys({
@@ -123,6 +127,7 @@ const schema = Joi.object().keys({
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
   log: Joi.array(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export function validateWorkflowitem(input: any): Workflowitem {
@@ -261,6 +266,7 @@ const redactWorkflowitemData = (workflowitem: Workflowitem): RedactedWorkflowite
   permissions: null,
   log: null,
   documents: null,
+  additionalData: null,
 });
 
 const requiredPermissions = new Map<Intent, Intent[]>([

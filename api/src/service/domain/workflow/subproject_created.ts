@@ -4,6 +4,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
+import * as AdditionalData from "../additional_data";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
@@ -18,14 +19,10 @@ interface InitialData {
   description: string;
   assignee?: Identity;
   currency: string;
-  billingDate?: string;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
-  additionalData: {};
-  // TODO: remove!
-  amount?: string;
-  exchangeRate?: string;
+  additionalData: object;
 }
 
 const initialDataSchema = Joi.object({
@@ -39,13 +36,9 @@ const initialDataSchema = Joi.object({
     .required(),
   assignee: Joi.string(),
   currency: Joi.string().required(),
-  billingDate: Joi.date().iso(),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
-  additionalData: Joi.object().required(),
-  // TODO: remove!
-  amount: Joi.string(),
-  exchangeRate: Joi.string(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export interface Event {

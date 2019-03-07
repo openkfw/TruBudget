@@ -28,7 +28,12 @@ export async function updateSubproject(
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
   const theUpdate: Subproject.Update = {};
-  inheritDefinedProperties(theUpdate, input, ["displayName", "description", "amount", "currency"]);
+  inheritDefinedProperties(theUpdate, input, [
+    "displayName",
+    "description",
+    "currency",
+    "additionalData",
+  ]);
 
   if (isEmpty(theUpdate)) {
     return ok();
@@ -54,28 +59,28 @@ export async function updateSubproject(
 
   // If the suproject is assigned to someone else, that person is notified about the
   // change:
-  const resourceDescriptions: Notification.NotificationResourceDescription[] = [
-    { id: subprojectId, type: "subproject" },
-    { id: projectId, type: "project" },
-  ];
-  const createdBy = req.user.userId;
-  const skipNotificationsFor = [req.user.userId];
-  await notifyAssignee(
-    conn,
-    ctx,
-    issuer,
-    resourceDescriptions,
-    createdBy,
-    await Subproject.get(
-      multichain,
-      req.user,
-      projectId,
-      subprojectId,
-      "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-    ),
-    publishedEvent,
-    skipNotificationsFor,
-  );
+  // const resourceDescriptions: Notification.NotificationResourceDescription[] = [
+  //   { id: subprojectId, type: "subproject" },
+  //   { id: projectId, type: "project" },
+  // ];
+  // const createdBy = req.user.userId;
+  // const skipNotificationsFor = [req.user.userId];
+  // await notifyAssignee(
+  //   conn,
+  //   ctx,
+  //   issuer,
+  //   resourceDescriptions,
+  //   createdBy,
+  //   await Subproject.get(
+  //     multichain,
+  //     req.user,
+  //     projectId,
+  //     subprojectId,
+  //     "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+  //   ),
+  //   publishedEvent,
+  //   skipNotificationsFor,
+  // );
 
   return ok();
 }

@@ -10,7 +10,14 @@ import { Permissions } from "../../authz/types";
 import { SubprojectIdAlreadyExistsError } from "../../error";
 import { HttpResponse, throwParseError, throwParseErrorIfUndefined } from "../../httpd/lib";
 import { isEmpty } from "../../lib/emptyChecks";
-import { isDate, isNonemptyString, isNumber, isUserOrUndefined, value } from "../../lib/validation";
+import {
+  isDate,
+  isNonemptyString,
+  isNumber,
+  isUserOrUndefined,
+  value,
+  isObject,
+} from "../../lib/validation";
 import { MultichainClient } from "../../service/Client.h";
 import { randomString } from "../../service/hash";
 import * as Subproject from "../../subproject/model/Subproject";
@@ -21,6 +28,7 @@ import { Ctx } from "../../lib/ctx";
 import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as Result from "../../result";
 import { VError } from "verror";
+import logger from "../../lib/logger";
 
 export async function createSubproject(
   conn: ConnToken,
@@ -68,35 +76,17 @@ export async function createSubproject(
   }
 
   const ctime = new Date();
-  const defaultBillingDate = new Date(ctime);
-  defaultBillingDate.setUTCHours(0);
-  defaultBillingDate.setUTCMinutes(0);
-  defaultBillingDate.setUTCSeconds(0);
-  defaultBillingDate.setUTCMilliseconds(0);
 
   const subproject: Subproject.Data = {
     id: subprojectId,
     creationUnixTs: ctime.getTime().toString(),
-    exchangeRate: value(
-      "exchangeRate",
-      subprojectArgs.exchangeRate,
-      x => isNonemptyString(x) && isNumber(x),
-      "1.0",
-    ),
-
-    billingDate: value(
-      "billingDate",
-      subprojectArgs.billingDate,
-      x => isNonemptyString(x) && isDate(x),
-      defaultBillingDate.toISOString(),
-    ),
-
     status: value("status", subprojectArgs.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", subprojectArgs.displayName, isNonemptyString),
     description: value("description", subprojectArgs.description, isNonemptyString),
     currency: value("currency", subprojectArgs.currency, isNonemptyString),
     projectedBudgets: value("projectedBudgets", subprojectArgs.projectedBudgets, isArray),
     assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.user.userId),
+    additionalData: value("additionalData", subprojectArgs.additionalData, isObject, {}),
   };
 
   const event = {

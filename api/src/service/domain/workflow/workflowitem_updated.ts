@@ -3,6 +3,7 @@ import { VError } from "verror";
 
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import * as AdditionalData from "../additional_data";
 import { StoredDocument, storedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -45,7 +46,7 @@ const updatedDataSchema = Joi.object({
   billingDate: Joi.date().iso(),
   dueDate: Joi.date().iso(),
   documents: Joi.array().items(storedDocumentSchema),
-  additionalData: Joi.object(),
+  additionalData: AdditionalData.schema,
 });
 
 export const schema = Joi.object({
