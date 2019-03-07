@@ -147,11 +147,16 @@ const styles = {
   }
 };
 
-const calculateMetrics = (subProjects, projectAmount, projectCurrency) => {
+const calculateMetrics = (subProjects, projectAmount, projectCurrency, projectProjectedBudgets) => {
   const spentAmount = calculateUnspentAmount(subProjects);
   return {
     spentAmount,
-    amountString: toAmountString(projectAmount, projectCurrency),
+    // amountString: toAmountString(projectAmount, projectCurrency),
+    amountString: projectProjectedBudgets.map(budget => {
+      let string = toAmountString(budget.value, budget.currencyCode);
+      string += "\n";
+      return string;
+    }),
     completionRatio: getCompletionRatio(subProjects),
     completionString: getCompletionString(subProjects),
     spentAmountString: toAmountString(spentAmount.toString(), projectCurrency),
@@ -179,6 +184,7 @@ const ProjectDetails = ({
   showProjectAssignees,
   closeProject,
   canClose,
+  projectProjectedBudgets,
   ...rest
 }) => {
   const {
@@ -188,7 +194,7 @@ const ProjectDetails = ({
     spentAmountString,
     statusDetails,
     allocatedRatio
-  } = calculateMetrics(subProjects, projectAmount, projectCurrency);
+  } = calculateMetrics(subProjects, projectAmount, projectCurrency, projectProjectedBudgets);
 
   const openSubprojects = subProjects.find(subproject => subproject.data.status === "open");
   const closeDisabled = !(canClose && _isUndefined(openSubprojects)) || projectStatus === "closed";

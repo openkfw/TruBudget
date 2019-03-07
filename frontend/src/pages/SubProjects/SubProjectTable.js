@@ -33,11 +33,16 @@ const styles = {
 
 const getTableEntries = (classes, subProjects, location, history, showEditDialog, showSubProjectPermissions) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
-    const { currency, status, amount, description, displayName, id } = data;
+    const { currency, status, amount, description, displayName, id, projectedBudgets } = data;
     const isOpen = status !== "closed";
     const editDisabled = !(canEditSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
     const amountString = toAmountString(amount, currency);
+    // const amountString = projectedBudgets.map(budget => {
+    //   let string = toAmountString(budget.value, budget.currencyCode);
+    //   string += "\n";
+    //   return string;
+    // });
     const redacted = displayName === null && amount === null;
     if (!redacted) {
       return (
@@ -109,6 +114,7 @@ const SubProjectTable = ({ classes, subProjects, history, location, showEditDial
     showEditDialog,
     showSubProjectPermissions
   );
+  console.log(subProjects);
   return (
     <Card>
       <CardHeader title={strings.common.subprojects} />

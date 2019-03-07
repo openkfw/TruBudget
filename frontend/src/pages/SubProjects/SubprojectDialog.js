@@ -66,7 +66,10 @@ const SubprojectDialog = props => {
       nextDisabled:
         _isEmpty(subprojectToAdd.displayName) ||
         _isEmpty(subprojectToAdd.description) ||
-        (_isEmpty(subprojectToAdd.amount) && isNaN(parseFloat(subprojectToAdd.amount))) ||
+        subprojectToAdd.projectedBudgets.length === 0 ||
+        // (_isEmpty(subprojectToAdd.amount) &&
+        //   isNaN(parseFloat(subprojectToAdd.amount)) &&
+        //   subprojectToAdd.projectedBudgets.length === 0) ||
         _isEmpty(changes)
     }
   ];

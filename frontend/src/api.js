@@ -102,9 +102,7 @@ class Api {
     instance.post(`/global.createProject`, {
       project: {
         displayName,
-        amount: `${amount}`,
         description,
-        currency,
         thumbnail,
         projectedBudgets
       }

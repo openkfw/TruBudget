@@ -6,6 +6,7 @@ import _isEmpty from "lodash/isEmpty";
 import DropwDown from "./NewDropdown";
 import TextInput from "./TextInput";
 import Fab from "@material-ui/core/Fab";
+import ContentAdd from "@material-ui/icons/Add";
 
 import { getCurrencies, preselectCurrency, fromAmountString, toAmountString, amountTypes } from "../../helper";
 import { withStyles } from "@material-ui/core";
@@ -14,7 +15,7 @@ const styles = {
   inputDiv: {
     marginTop: 15,
     marginBottom: 15,
-    width: "100%",
+    width: "99%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -123,23 +124,25 @@ class Budget extends Component {
             disabled={disabled}
             id="amountinput"
           />
-          <Fab
-            className={null}
-            aria-label="create"
-            disabled={false}
-            onClick={() => {
-              addProjectedBudget({
-                organization: organization,
-                value: budget,
-                currencyCode: currency
-              });
-            }}
-            color="primary"
-            data-test="create-project-button"
-          >
-            +
-          </Fab>
         </div>
+        <Fab
+          className={null}
+          size="small"
+          variant="round"
+          aria-label="create"
+          disabled={false}
+          onClick={() => {
+            addProjectedBudget({
+              organization: organization,
+              value: budget,
+              currencyCode: currency
+            });
+          }}
+          color="primary"
+          data-test="create-project-button"
+        >
+          <ContentAdd />
+        </Fab>
       </div>
     );
   }
