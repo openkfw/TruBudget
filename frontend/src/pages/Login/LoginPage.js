@@ -58,8 +58,8 @@ const LoginPage = ({
             justifyContent: "center"
           }}
         >
-        <div style={{width: "70%"}}>
-          <CardHeader title="TruBudget" subheader={strings.login.tru_budget_description} />
+          <div style={{ width: "70%" }}>
+            <CardHeader title="TruBudget" subheader={strings.login.tru_budget_description} />
           </div>
           <div style={{ width: "30%", marginRight: "8px" }}>
             <Dropdown
@@ -74,7 +74,7 @@ const LoginPage = ({
           </div>
         </div>
         <Divider />
-        <Username username={username} storeUsername={storeUsername}  id="username" />
+        <Username username={username} storeUsername={storeUsername} id="username" />
         <Password
           password={password}
           storePassword={storePassword}
@@ -110,16 +110,12 @@ const LoginPage = ({
           </Button>
         </div>
         <Divider />
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-          <CardContent style={{ fontSize: "11px" }}>
-            <Typography variant="caption">{strings.login.accenture_tag}</Typography>
-          </CardContent>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", float: "right" }}>
           <IconButton disabled={!(connectedToAdminNode > -1)} onClick={() => history.push("/admin")}>
             <SettingsIcon />
           </IconButton>
         </div>
       </Card>
-      <img style={{ marginTop: "40px", width: "200px" }} alt="Logo" src="/do_logo.png" />
     </div>
   );
 };
