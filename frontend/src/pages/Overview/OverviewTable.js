@@ -73,9 +73,15 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
       description,
       status,
       thumbnail = "/Thumbnail_0008.jpg",
-      creationUnixTs
+      creationUnixTs,
+      projectedBudgets
     } = data;
-    const amountString = toAmountString(amount, currency);
+    const amountString = projectedBudgets.map(budget => {
+      let string = toAmountString(budget.value, budget.currencyCode);
+      string += "\n";
+      return string;
+    });
+    console.log(amountString);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);

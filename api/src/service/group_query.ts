@@ -10,7 +10,7 @@ import * as GroupGet from "./domain/organization/group_get";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 
-const GROUPS_STREAM = "users";
+const GROUPS_STREAM = "groups";
 
 export async function getGroups(
   conn: ConnToken,

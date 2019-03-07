@@ -57,6 +57,7 @@ const defaultState = fromJS({
   status: "open",
   amount: 0,
   currency: "EUR",
+  projectedBudgets: [],
   created: 0,
   allowedIntents: [],
   workflowItems: [],
@@ -119,7 +120,8 @@ export default function detailviewReducer(state = defaultState, action) {
         allowedIntents: fromJS(subproject.allowedIntents),
         assignee: fromJS(subproject.data.assignee),
         workflowItems: fromJS(workflowitems),
-        parentProject: fromJS(parentProject)
+        parentProject: fromJS(parentProject),
+        projectedBudgets: subproject.data.projectedBudgets
       });
     case SHOW_WORKFLOW_EDIT:
       return state.merge({

@@ -3,9 +3,12 @@
   "description": "Projects in Burkina Faso 2018",
   "thumbnail": "/Thumbnail_0017.jpg",
   "status": "open",
-  "amount": "30000000",
   "assignee": "atutelle",
-  "currency": "EUR",
+  "projectedBudgets": [{
+    "organization": "ACMECorp",
+    "value": "30000000",
+    "currencyCode": "EUR"
+  }],
   "permissions": {
     "project.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier", "ftender"],
     "project.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier", "ftender"],
@@ -16,40 +19,42 @@
     "project.intent.grantPermission": ["rfinance", "atutelle"],
     "project.intent.revokePermission": ["rfinance", "atutelle"]
   },
-  "subprojects": [
-    {
+  "subprojects": [{
       "displayName": "Design studies",
       "description": "No description",
       "status": "closed",
-      "amount": "500000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "500000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "atutelle",
       "permissions": {
         "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
         "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
         "subproject.close": ["atutelle"],
         "subproject.update": ["atutelle"],
-        "subproject.createWorkflowitem":["atutelle"],
+        "subproject.createWorkflowitem": ["atutelle"],
         "subproject.reorderWorkflowitems": ["atutelle"],
         "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
         "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
         "subproject.intent.grantPermission": ["rfinance", "atutelle"],
         "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -57,14 +62,14 @@
           "status": "closed",
           "assignee": "ftender",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -72,14 +77,14 @@
           "status": "closed",
           "assignee": "ftender",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -87,14 +92,14 @@
           "status": "closed",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 500000,
           "currency": "EUR",
           "amountType": "allocated"
@@ -104,14 +109,14 @@
           "status": "closed",
           "assignee": "rfinance",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -119,14 +124,14 @@
           "status": "closed",
           "assignee": "pchantier",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["pchantier"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["pchantier"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -136,14 +141,14 @@
           "status": "closed",
           "assignee": "rfinance",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -153,14 +158,14 @@
           "status": "closed",
           "assignee": "rfinance",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 250000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -171,35 +176,38 @@
       "displayName": "Consultancy supervision",
       "description": "No description",
       "status": "open",
-      "amount": "1600000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "1600000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "atutelle",
       "permissions": {
-      "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
-      "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
-      "subproject.close": ["atutelle"],
-      "subproject.update": ["atutelle"],
-      "subproject.createWorkflowitem":["atutelle"],
-      "subproject.reorderWorkflowitems": ["atutelle"],
-      "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-      "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
-      "subproject.intent.grantPermission": ["rfinance", "atutelle"],
-      "subproject.intent.revokePermission": ["rfinance", "atutelle"]
+        "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.close": ["atutelle"],
+        "subproject.update": ["atutelle"],
+        "subproject.createWorkflowitem": ["atutelle"],
+        "subproject.reorderWorkflowitems": ["atutelle"],
+        "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+        "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+        "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+        "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -207,14 +215,14 @@
           "status": "closed",
           "assignee": "ftender",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -222,14 +230,14 @@
           "status": "closed",
           "assignee": "ftender",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -237,14 +245,14 @@
           "status": "closed",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 1500000,
           "currency": "EUR",
           "amountType": "allocated"
@@ -254,14 +262,14 @@
           "status": "closed",
           "assignee": "rfinance",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 500000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -270,14 +278,14 @@
           "displayName": "Payment interim installment",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 500000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -286,28 +294,28 @@
           "displayName": "Progress report",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["pchantier"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["pchantier"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
           "displayName": "Payment final installment",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 500000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -317,35 +325,38 @@
     {
       "displayName": "Construction lot 1",
       "description": "No description",
-      "amount": "13000000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "13000000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "atutelle",
       "permissions": {
-      "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
-      "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
-      "subproject.close": ["atutelle"],
-      "subproject.update": ["atutelle"],
-      "subproject.createWorkflowitem":["atutelle"],
-      "subproject.reorderWorkflowitems": ["atutelle"],
-      "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-      "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
-      "subproject.intent.grantPermission": ["rfinance", "atutelle"],
-      "subproject.intent.revokePermission": ["rfinance", "atutelle"]
+        "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.close": ["atutelle"],
+        "subproject.update": ["atutelle"],
+        "subproject.createWorkflowitem": ["atutelle"],
+        "subproject.reorderWorkflowitems": ["atutelle"],
+        "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+        "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+        "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+        "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -353,42 +364,42 @@
           "status": "closed",
           "assignee": "ftender",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
           "displayName": "Tender evaluation",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
           "displayName": "Contract signature",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 15000000,
           "currency": "EUR",
           "amountType": "allocated"
@@ -397,14 +408,14 @@
           "displayName": "Payment first installment",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 5000000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -413,14 +424,14 @@
           "displayName": "Progress report",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["pchantier"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["pchantier"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 5000000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -429,14 +440,14 @@
           "displayName": "Payment final installment",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 5000000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -445,14 +456,14 @@
           "displayName": "Completion subproject",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         }
       ]
@@ -460,35 +471,38 @@
     {
       "displayName": "Construction lot 2",
       "description": "No description",
-      "amount": "8000000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "8000000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "atutelle",
       "permissions": {
-      "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
-      "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
-      "subproject.close": ["atutelle"],
-      "subproject.update": ["atutelle"],
-      "subproject.createWorkflowitem":["atutelle"],
-      "subproject.reorderWorkflowitems": ["atutelle"],
-      "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-      "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
-      "subproject.intent.grantPermission": ["rfinance", "atutelle"],
-      "subproject.intent.revokePermission": ["rfinance", "atutelle"]
+        "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.close": ["atutelle"],
+        "subproject.update": ["atutelle"],
+        "subproject.createWorkflowitem": ["atutelle"],
+        "subproject.reorderWorkflowitems": ["atutelle"],
+        "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+        "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+        "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+        "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -496,42 +510,42 @@
           "status": "closed",
           "assignee": "ftender",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
           "displayName": "Tender evaluation",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
           "displayName": "Contract signature",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 8000000,
           "currency": "EUR",
           "amountType": "allocated"
@@ -540,14 +554,14 @@
           "displayName": "Payment first installment",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 3000000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -556,14 +570,14 @@
           "displayName": "Progress report",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["pchantier"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["pchantier"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "currency": "EUR",
           "amount": 2000000,
           "amountType": "disbursed"
@@ -572,14 +586,14 @@
           "displayName": "Payment final installment",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 3000000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -589,35 +603,38 @@
     {
       "displayName": "Equipment",
       "description": "No description",
-      "amount": "3000000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "3000000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "atutelle",
       "permissions": {
-      "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
-      "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
-      "subproject.close": ["atutelle"],
-      "subproject.update": ["atutelle"],
-      "subproject.createWorkflowitem":["atutelle"],
-      "subproject.reorderWorkflowitems": ["atutelle"],
-      "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-      "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
-      "subproject.intent.grantPermission": ["rfinance", "atutelle"],
-      "subproject.intent.revokePermission": ["rfinance", "atutelle"]
+        "subproject.viewSummary": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.viewDetails": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender", "pchantier"],
+        "subproject.close": ["atutelle"],
+        "subproject.update": ["atutelle"],
+        "subproject.createWorkflowitem": ["atutelle"],
+        "subproject.reorderWorkflowitems": ["atutelle"],
+        "subproject.viewHistory": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+        "subproject.intent.listPermissions": ["atutelle", "rfinance", "pbailleur"],
+        "subproject.intent.grantPermission": ["rfinance", "atutelle"],
+        "subproject.intent.revokePermission": ["rfinance", "atutelle"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
@@ -625,42 +642,42 @@
           "status": "closed",
           "assignee": "ftender",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
           "displayName": "Tender evaluation",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle","ftender"],
-          "workflowitem.update": ["atutelle", "ftender"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "ftender"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle", "ftender"],
+            "workflowitem.update": ["atutelle", "ftender"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
           "displayName": "Contract signature",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["atutelle"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["atutelle"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 3000000,
           "currency": "EUR",
           "amountType": "allocated"
@@ -669,14 +686,14 @@
           "displayName": "Payment first installment",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 1500000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -685,28 +702,28 @@
           "displayName": "Progress report",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["pchantier"],
-          "workflowitem.update": ["atutelle"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit", "pchantier"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["pchantier"],
+            "workflowitem.update": ["atutelle"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amountType": "N/A"
         },
         {
           "displayName": "Payment final installment",
           "assignee": "atutelle",
           "permissions": {
-          "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
-          "workflowitem.assign": ["atutelle"],
-          "workflowitem.close": ["rfinance"],
-          "workflowitem.update": ["atutelle", "rfinance"],
-          "workflowitem.intent.listPermissions": ["atutelle"],
-          "workflowitem.intent.grantPermission": ["atutelle"],
-          "workflowitem.intent.revokePermission": ["atutelle"]
-      },
+            "workflowitem.view": ["atutelle", "rfinance", "pbailleur", "stresor", "faudit"],
+            "workflowitem.assign": ["atutelle"],
+            "workflowitem.close": ["rfinance"],
+            "workflowitem.update": ["atutelle", "rfinance"],
+            "workflowitem.intent.listPermissions": ["atutelle"],
+            "workflowitem.intent.grantPermission": ["atutelle"],
+            "workflowitem.intent.revokePermission": ["atutelle"]
+          },
           "amount": 1500000,
           "currency": "EUR",
           "amountType": "disbursed"

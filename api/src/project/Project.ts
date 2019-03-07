@@ -8,13 +8,18 @@ import { User, userIdentities } from "./User";
 export interface CreateProjectInput {
   displayName: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   id?: string;
   creationUnixTs?: string;
   status?: "open" | "closed";
   assignee?: string;
   thumbnail?: string;
+}
+
+export interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
 }
 
 export interface Project {
@@ -24,9 +29,8 @@ export interface Project {
   displayName: string;
   assignee?: string;
   description: string;
-  amount: string;
-  currency: string;
   thumbnail: string;
+  projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
   log: HistoryEvent[];
 }
@@ -38,8 +42,7 @@ export interface ScrubbedProject {
   displayName: string;
   assignee?: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   thumbnail: string;
   permissions: Permissions;
   log: ScrubbedHistoryEvent[];
@@ -73,8 +76,13 @@ const schema = Joi.object().keys({
   description: Joi.string()
     .allow("")
     .required(),
-  amount: Joi.string().required(),
-  currency: Joi.string().required(),
+  projectedBudgets: Joi.array().items(
+    Joi.object().keys({
+      organization: Joi.string(),
+      value: Joi.string(),
+      currencyCode: Joi.string(),
+    }),
+  ),
   thumbnail: Joi.string()
     .allow("")
     .required(),

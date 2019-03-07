@@ -15,8 +15,10 @@ export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
 
 export const PROJECT_NAME = "PROJECT_NAME";
 export const PROJECT_AMOUNT = "PROJECT_AMOUNT";
+export const ADD_PROJECT_BUDGET = "ADD_PROJECT_BUDGET";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
 export const PROJECT_CURRENCY = "PROJECT_CURRENCY";
+export const PROJECT_ORGANIZATION = "PROJECT_ORGANIZATION";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
 
@@ -41,14 +43,15 @@ export function fetchAllProjects(showLoading = false) {
   };
 }
 
-export function createProject(name, amount, comment, currency, thumbnail) {
+export function createProject(name, amount, comment, currency, thumbnail, projectedBudgets) {
   return {
     type: CREATE_PROJECT,
     name,
     amount,
     comment,
     currency,
-    thumbnail
+    thumbnail,
+    projectedBudgets
   };
 }
 
@@ -118,10 +121,24 @@ export function storeProjectAmount(amount) {
   };
 }
 
+export function addProjectedBudget(projectedBudget) {
+  return {
+    type: ADD_PROJECT_BUDGET,
+    projectedBudget: projectedBudget
+  };
+}
+
 export function storeProjectCurrency(currency) {
   return {
     type: PROJECT_CURRENCY,
     currency: currency
+  };
+}
+
+export function storeProjectOrganization(organization) {
+  return {
+    type: PROJECT_ORGANIZATION,
+    organization: organization
   };
 }
 

@@ -5,6 +5,8 @@ import {
   SUBPROJECT_AMOUNT,
   SUBPROJECT_COMMENT,
   SUBPROJECT_CURRENCY,
+  SUBPROJECT_ORGANIZATION,
+  SUBPROJECT_PROJECTED_BUDGETS,
   CREATE_SUBPROJECT_SUCCESS,
   HIDE_SUBPROJECT_DIALOG,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
@@ -31,6 +33,7 @@ const defaultState = fromJS({
   projectCurrency: "",
   projectComment: "Default Comment",
   projectStatus: "open",
+  projectProjectedBudgets: [],
   projectTS: 0,
   subProjects: [],
   subprojectToAdd: {
@@ -38,7 +41,9 @@ const defaultState = fromJS({
     displayName: "",
     amount: "",
     description: "",
-    currency: ""
+    currency: "",
+    organization: "",
+    projectedBudgets: []
   },
   creationDialogShown: false,
   editDialogShown: false,
@@ -71,6 +76,7 @@ export default function detailviewReducer(state = defaultState, action) {
         projectStatus: action.project.data.status,
         projectTS: action.project.data.creationUnixTs,
         projectAssignee: action.project.data.assignee,
+        projectProjectedBudgets: action.project.data.projectedBudgets,
         allowedIntents: fromJS(action.project.allowedIntents),
         logs: fromJS(action.project.log),
         subProjects: fromJS(action.subprojects)
@@ -90,12 +96,22 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({ creationDialogShown: true, dialogTitle: strings.subproject.subproject_add_title });
     case SUBPROJECT_NAME:
       return state.setIn(["subprojectToAdd", "displayName"], action.name);
+    case SUBPROJECT_ORGANIZATION:
+      return state.setIn(["subprojectToAdd", "organization"], action.organization);
     case SUBPROJECT_AMOUNT:
       return state.setIn(["subprojectToAdd", "amount"], action.amount);
     case SUBPROJECT_COMMENT:
       return state.setIn(["subprojectToAdd", "description"], action.description);
     case SUBPROJECT_CURRENCY:
       return state.setIn(["subprojectToAdd", "currency"], action.currency);
+    case SUBPROJECT_PROJECTED_BUDGETS:
+      return state.merge({
+        subprojectToAdd: state
+          .getIn(["subprojectToAdd"])
+          .update("projectedBudgets", budgets => [...budgets, action.projectedBudgets])
+          .set("amount", "")
+          .set("organization", "")
+      });
     case CREATE_SUBPROJECT_SUCCESS:
       return state.set("subprojectToAdd", defaultState.getIn(["subprojectToAdd"]));
     case SHOW_PROJECT_ASSIGNEES:

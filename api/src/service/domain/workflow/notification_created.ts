@@ -4,6 +4,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent, businessEventSchema } from "../business_event";
 import { Identity } from "../organization/identity";
+import * as UserRecord from "../organization/user_record";
 import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -13,13 +14,12 @@ type eventTypeType = "notification_created";
 const eventType: eventTypeType = "notification_created";
 
 export interface Event {
-  id: Notification.Id;
   type: eventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;
-  // TODO: can a notification be send to a group? if yes, identity type is correct
-  recipient: Identity;
+  notificationId: Notification.Id;
+  recipient: UserRecord.Id;
   businessEvent: BusinessEvent;
   projectId?: Project.Id;
   subprojectId?: Subproject.Id;
@@ -27,7 +27,6 @@ export interface Event {
 }
 
 export const schema = Joi.object({
-  id: Notification.idSchema.required(),
   type: Joi.valid(eventType).required(),
   source: Joi.string()
     .allow("")
@@ -36,7 +35,8 @@ export const schema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
-  recipient: Joi.string().required(),
+  notificationId: Notification.idSchema.required(),
+  recipient: UserRecord.idSchema,
   // "object" due to recursiveness of validation:
   businessEvent: businessEventSchema,
   projectId: Project.idSchema,
@@ -45,10 +45,10 @@ export const schema = Joi.object({
 });
 
 export function createEvent(
-  id: Notification.Id,
   source: string,
   publisher: Identity,
-  recipient: Identity,
+  notificationId: Notification.Id,
+  recipient: UserRecord.Id,
   businessEvent: BusinessEvent,
   projectId?: Project.Id,
   subprojectId?: Subproject.Id,
@@ -56,11 +56,11 @@ export function createEvent(
   time: string = new Date().toISOString(),
 ): Event {
   const event = {
-    id,
     type: eventType,
     source,
     time,
     publisher,
+    notificationId,
     recipient,
     businessEvent,
     projectId,

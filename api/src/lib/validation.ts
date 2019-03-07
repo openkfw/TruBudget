@@ -1,17 +1,19 @@
 import { throwParseError } from "../httpd/lib";
-import * as User from "../user/model/user";
-import logger from "./logger";
+import { ConnToken } from "../service/conn";
+import { ServiceUser } from "../service/domain/organization/service_user";
+import * as UserQuery from "../service/user_query";
+import { Ctx } from "./ctx";
 
 export function isNonemptyString(x: any): boolean {
   return typeof x === "string" && x.length > 0;
 }
 
-export async function isUserOrUndefined(multichain, input) {
+export async function isUserOrUndefined(conn: ConnToken, ctx: Ctx, issuer: ServiceUser, input) {
   if (input === undefined) {
     return true;
   } else {
     if (isNonemptyString) {
-      const user = await User.get(multichain, input).catch(err => {
+      const user = await UserQuery.getUser(conn, ctx, issuer, input).catch(err => {
         if (err.kind === "NotFound") {
           return undefined;
         } else {

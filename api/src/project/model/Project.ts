@@ -14,6 +14,7 @@ import { asMapKey } from "../../service/Client";
 import { MultichainClient } from "../../service/Client.h";
 import { Event, throwUnsupportedEventVersion } from "../../service/event";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
+import { ProjectedBudget } from "../Project";
 
 export interface AugmentedEvent extends Event {
   snapshot: {
@@ -34,8 +35,7 @@ export interface Data {
   displayName: string;
   assignee?: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   thumbnail: string;
 }
 
@@ -136,86 +136,86 @@ async function fetchStreamItems(
   }
 }
 
-export async function get(
-  multichain: MultichainClient,
-  token: AuthToken,
-  projectId?: string,
-  skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
-): Promise<ProjectResource[]> {
-  const streamItems = await fetchStreamItems(multichain, projectId);
-  const userAndGroups = await getUserAndGroups(token);
-  const resourceMap = new Map<string, ProjectResource>();
-  const permissionsMap = new Map<string, Permissions>();
+// export async function get(
+//   multichain: MultichainClient,
+//   token: AuthToken,
+//   projectId?: string,
+//   skipAuthorizationCheck?: "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!",
+// ): Promise<ProjectResource[]> {
+//   const streamItems = await fetchStreamItems(multichain, projectId);
+//   const userAndGroups = await getUserAndGroups(token);
+//   const resourceMap = new Map<string, ProjectResource>();
+//   const permissionsMap = new Map<string, Permissions>();
 
-  for (const item of streamItems) {
-    const event = item.data.json as Event;
-    let resource = resourceMap.get(asMapKey(item));
-    if (resource === undefined) {
-      const result = handleCreate(event);
-      if (result === undefined) {
-        const message = "Failed to initialize resource";
-        throw Error(`${message}: ${JSON.stringify(event)}.`);
-      }
-      resource = result.resource;
-      permissionsMap.set(asMapKey(item), result.permissions);
-    } else {
-      // We've already encountered this project, so we can apply operations on it.
-      const permissions = permissionsMap.get(asMapKey(item))!;
-      const hasProcessedEvent =
-        applyUpdate(event, resource) ||
-        applyAssign(event, resource) ||
-        applyClose(event, resource) ||
-        applyGrantPermission(event, permissions) ||
-        applyRevokePermission(event, permissions);
-      if (!hasProcessedEvent) {
-        const message = "Unexpected event";
-        throw Error(`${message}: ${JSON.stringify(event)}.`);
-      }
-    }
+//   for (const item of streamItems) {
+//     const event = item.data.json as Event;
+//     let resource = resourceMap.get(asMapKey(item));
+//     if (resource === undefined) {
+//       const result = handleCreate(event);
+//       if (result === undefined) {
+//         const message = "Failed to initialize resource";
+//         throw Error(`${message}: ${JSON.stringify(event)}.`);
+//       }
+//       resource = result.resource;
+//       permissionsMap.set(asMapKey(item), result.permissions);
+//     } else {
+//       // We've already encountered this project, so we can apply operations on it.
+//       const permissions = permissionsMap.get(asMapKey(item))!;
+//       const hasProcessedEvent =
+//         applyUpdate(event, resource) ||
+//         applyAssign(event, resource) ||
+//         applyClose(event, resource) ||
+//         applyGrantPermission(event, permissions) ||
+//         applyRevokePermission(event, permissions);
+//       if (!hasProcessedEvent) {
+//         const message = "Unexpected event";
+//         throw Error(`${message}: ${JSON.stringify(event)}.`);
+//       }
+//     }
 
-    if (resource !== undefined) {
-      // Save all events to the log for now; we'll filter them once we
-      // know the final resource permissions.
-      resource.log.push({
-        ...event,
-        snapshot: { displayName: deepcopy(resource.data.displayName) },
-      });
-      resourceMap.set(asMapKey(item), resource);
-    }
-  }
+//     if (resource !== undefined) {
+//       // Save all events to the log for now; we'll filter them once we
+//       // know the final resource permissions.
+//       resource.log.push({
+//         ...event,
+//         snapshot: { displayName: deepcopy(resource.data.displayName) },
+//       });
+//       resourceMap.set(asMapKey(item), resource);
+//     }
+//   }
 
-  for (const [key, permissions] of permissionsMap.entries()) {
-    const resource = resourceMap.get(key);
-    if (resource !== undefined) {
-      resource.allowedIntents = await getAllowedIntents(userAndGroups, permissions);
-    }
-  }
+//   for (const [key, permissions] of permissionsMap.entries()) {
+//     const resource = resourceMap.get(key);
+//     if (resource !== undefined) {
+//       resource.allowedIntents = await getAllowedIntents(userAndGroups, permissions);
+//     }
+//   }
 
-  const unfilteredResources = [...resourceMap.values()];
+//   const unfilteredResources = [...resourceMap.values()];
 
-  if (
-    skipAuthorizationCheck ===
-    "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!"
-  ) {
-    return unfilteredResources;
-  }
+//   if (
+//     skipAuthorizationCheck ===
+//     "skip authorization check FOR INTERNAL USE ONLY TAKE CARE DON'T LEAK DATA !!!"
+//   ) {
+//     return unfilteredResources;
+//   }
 
-  // Projects the user is not allowed to see are simply left out of the response. The
-  // remaining have their event log filtered according to what the user is entitled to
-  // know.
-  const allowedToSeeDataIntent: Intent = "project.viewSummary";
-  const filteredResources = unfilteredResources
-    .filter(resource => resource.allowedIntents.includes(allowedToSeeDataIntent))
-    .map(resource => {
-      // Filter event log according to the user permissions and the type of event:
-      resource.log = resource.log
-        .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
-        .filter(isNotEmpty);
-      return resource;
-    });
+//   // Projects the user is not allowed to see are simply left out of the response. The
+//   // remaining have their event log filtered according to what the user is entitled to
+//   // know.
+//   const allowedToSeeDataIntent: Intent = "project.viewSummary";
+//   const filteredResources = unfilteredResources
+//     .filter(resource => resource.allowedIntents.includes(allowedToSeeDataIntent))
+//     .map(resource => {
+//       // Filter event log according to the user permissions and the type of event:
+//       resource.log = resource.log
+//         .map(event => onlyAllowedData(event, resource.allowedIntents) as AugmentedEvent | null)
+//         .filter(isNotEmpty);
+//       return resource;
+//     });
 
-  return filteredResources;
-}
+//   return filteredResources;
+// }
 
 function handleCreate(
   event: Event,

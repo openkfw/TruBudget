@@ -10,7 +10,9 @@ import {
   editSubproject,
   storeSubProjectAmount,
   storeSubProjectComment,
-  storeSubProjectCurrency
+  storeSubProjectCurrency,
+  addSubProjectProjectedBudgets,
+  storeSubProjectOrganization
 } from "./actions";
 import { storeSnackbarMessage } from "../Notifications/actions";
 
@@ -27,7 +29,8 @@ const mapStateToProps = state => {
     editDialogShown: state.getIn(["detailview", "editDialogShown"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
     dialogTitle: state.getIn(["detailview", "dialogTitle"]),
-    projectCurrency: state.getIn(["detailview", "projectCurrency"])
+    projectCurrency: state.getIn(["detailview", "projectCurrency"]),
+    projectProjectedBudgets: state.getIn(["detailview", "projectProjectedBudgets"])
   };
 };
 
@@ -35,12 +38,14 @@ const mapDispatchToProps = dispatch => {
   return {
     hideSubprojectDialog: () => dispatch(hideSubprojectDialog()),
     storeSubProjectName: name => dispatch(storeSubProjectName(name)),
-    createSubProject: (subprojectName, amount, description, currency, parentName) =>
-      dispatch(createSubProject(parentName, subprojectName, amount, description, currency)),
+    createSubProject: (subprojectName, amount, description, currency, parentName, projectedBudget) =>
+      dispatch(createSubProject(parentName, subprojectName, amount, description, currency, projectedBudget)),
     editSubproject: (pId, sId, changes) => dispatch(editSubproject(pId, sId, changes)),
     storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),
     storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
+    storeSubProjectOrganization: organization => dispatch(storeSubProjectOrganization(organization)),
+    addSubProjectProjectedBudgets: projectedBudgets => dispatch(addSubProjectProjectedBudgets(projectedBudgets)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };

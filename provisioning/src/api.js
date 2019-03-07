@@ -48,9 +48,7 @@ const createProject = async (axios, projectTemplate) => {
       project: {
         displayName: projectTemplate.displayName,
         description: "FAILED UPDATE?",
-        amount: projectTemplate.amount,
-        assignee: projectTemplate.assignee,
-        currency: projectTemplate.currency,
+        projectedBudgets: projectTemplate.projectedBudgets,
         thumbnail: projectTemplate.thumbnail
       }
     })
@@ -73,8 +71,8 @@ const createSubproject = async (axios, project, subprojectTemplate) => {
         displayName: subprojectTemplate.displayName,
         description: "FAILED UPDATE?",
         status: "open", // otherwise we won't be able to add workflowitems
-        amount: subprojectTemplate.amount,
         currency: subprojectTemplate.currency,
+        projectedBudgets: subprojectTemplate.projectedBudgets,
         assignee: subprojectTemplate.assignee
       }
     })
@@ -156,6 +154,10 @@ const findProject = async (axios, projectTemplate) => {
       .then(projects =>
         projects.find(p => p.data.displayName === projectTemplate.displayName)
       )
+      .catch(err => {
+        console.error(err);
+        process.exit(1);
+      })
   );
 };
 

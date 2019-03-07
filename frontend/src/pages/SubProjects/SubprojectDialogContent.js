@@ -27,12 +27,16 @@ const SubprojectDialogContent = props => {
         <Budget
           currencyTitle={strings.subproject.subproject_currency}
           currency={props.subprojectToAdd.currency}
+          organization={props.subprojectToAdd.organization}
           storeCurrency={props.storeSubProjectCurrency}
           parentCurrency={props.projectCurrency}
           budgetLabel={strings.subproject.subproject_budget_amount}
           budgetHintText={strings.subproject.subproject_budget_amount_description + " " + toAmountString(99999.99)}
           budget={props.subprojectToAdd.amount}
           storeBudget={props.storeSubProjectAmount}
+          storeOrganization={props.storeSubProjectOrganization}
+          projectedBudgets={props.subprojectToAdd.projectedBudgets}
+          addProjectedBudget={props.addSubProjectProjectedBudgets}
         />
       </div>
     </div>

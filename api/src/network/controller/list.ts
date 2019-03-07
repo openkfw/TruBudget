@@ -1,9 +1,11 @@
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
-import * as Global from "../../global";
 import { HttpResponse } from "../../httpd/lib";
+import { Ctx } from "../../lib/ctx";
 import logger from "../../lib/logger";
-import { MultichainClient } from "../../service/Client.h";
+import { ConnToken } from "../../service";
+import { ServiceUser } from "../../service/domain/organization/service_user";
+import * as GlobalPermissionsGet from "../../service/global_permissions_get";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
 import { AugmentedWalletAddress, WalletAddress } from "../model/Nodes";
@@ -30,10 +32,21 @@ interface NodeInfoDto {
   pendingAccess?: PendingAccess;
 }
 
-export async function getNodeList(multichain: MultichainClient, req): Promise<HttpResponse> {
+export async function getNodeList(
+  conn: ConnToken,
+  ctx: Ctx,
+  issuer: ServiceUser,
+  req,
+): Promise<HttpResponse> {
+  const multichain = conn.multichainClient;
+
   // Permission check:
   const userIntent: Intent = "network.list";
-  await throwIfUnauthorized(req.user, userIntent, await Global.oldGetPermissions(multichain));
+  await throwIfUnauthorized(
+    req.user,
+    userIntent,
+    (await GlobalPermissionsGet.getGlobalPermissions(conn, ctx, issuer)).permissions,
+  );
 
   // Get ALL the info:
   const nodes = await Nodes.get(multichain);

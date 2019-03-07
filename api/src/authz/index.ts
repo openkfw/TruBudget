@@ -11,7 +11,7 @@ const intersection = (groups1, groups2) => groups1.filter(g1 => groups2.indexOf(
 export const hasIntersection = (actualGroups, allowedGroups) =>
   intersection(actualGroups, allowedGroups).length > 0;
 
-export const getUserAndGroups = (token: AuthToken) => {
+export const getUserAndGroups = (token: { userId: string; groups: string[] }) => {
   return [token.userId, ...token.groups];
 };
 
@@ -41,7 +41,7 @@ const can = async (
     if (!resourcePermissions[intent]) {
       logger.info(
         { params: { resourcePermissions } },
-        `Acces denied for user ${token.userId} with intent ${intent}`,
+        `Access denied for user ${token.userId} with intent ${intent}`,
       );
       return false;
     }

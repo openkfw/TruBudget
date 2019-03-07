@@ -13,14 +13,20 @@ export interface Subproject {
   status: "open" | "closed";
   displayName: string;
   description: string;
-  amount: string;
   currency: string;
+  projectedBudgets: ProjectedBudget[];
   exchangeRate: string;
   billingDate: string;
   assignee?: string;
   permissions: Permissions;
   log: HistoryEvent[];
   workflowitems: Map<string, Workflowitem.Workflowitem>;
+}
+
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
 }
 
 export interface Project {
@@ -30,8 +36,7 @@ export interface Project {
   displayName: string;
   assignee?: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   thumbnail: string;
   permissions: Permissions;
   log: HistoryEvent[];
@@ -152,6 +157,11 @@ export function applyStreamItems(streamItems: Item[], project?: Project): Projec
   }
   for (const item of streamItems) {
     const event = item.data.json as Event;
+
+    if (event.intent === undefined) {
+      logger.debug({ event }, `cache1: ignoring event`);
+      continue;
+    }
 
     if (project === undefined) {
       project = projectCreated(event);

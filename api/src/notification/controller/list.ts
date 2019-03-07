@@ -1,11 +1,15 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { MultichainClient } from "../../service/Client.h";
+import { Ctx } from "../../lib/ctx";
+import { ConnToken } from "../../service/conn";
 import * as Notification from "../model/Notification";
 
 export const getNotificationList = async (
-  multichain: MultichainClient,
+  conn: ConnToken,
+  ctx: Ctx,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
+  const multichain = conn.multichainClient;
+
   const limit: string | undefined = req.query.limit;
   const offset: string | undefined = req.query.offset;
   const notificationList = await Notification.get(multichain, req.user, offset, limit);
@@ -13,7 +17,8 @@ export const getNotificationList = async (
   const unreadNotificationCount = notificationList.unreadNotificationCount;
 
   const displayNamesById: Map<string, string | undefined> = await Notification.buildDisplayNameMap(
-    multichain,
+    conn,
+    ctx,
     req.user,
     rawNotifications,
   );

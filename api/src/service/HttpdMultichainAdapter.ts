@@ -9,187 +9,14 @@
  * Also note that arguments should be treated as immutable.
  *
  */
-import { tellCacheWhatHappened } from ".";
 import { getAllowedIntents } from "../authz";
-import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
-import { Permissions } from "../authz/types";
-import * as Permission from "../global";
 import * as HTTP from "../httpd";
 import * as Notification from "../notification";
 import * as Project from "../project";
 import * as Multichain from "../service";
 import * as Group from "../service/groups";
-import * as Subproject from "../subproject";
 import * as Workflowitem from "../workflowitem";
-
-export function getProject(conn: Multichain.ConnToken): HTTP.ProjectReader {
-  return async (token: AuthToken, projectId: string) => {
-    const actingUser: Project.User = { id: token.userId, groups: token.groups };
-
-    const project: Project.ScrubbedProject = await Project.getOne(actingUser, projectId, {
-      getProject: async id => {
-        return Project.validateProject(await Multichain.getAndCacheProject(conn, id));
-      },
-    });
-
-    const subprojects: Subproject.ScrubbedSubproject[] = await Subproject.getAllVisible(
-      actingUser,
-      {
-        getAllSubprojects: async () => {
-          const list: Multichain.Subproject[] = await Multichain.getSubprojectList(conn, projectId);
-          return list.map(Subproject.validateSubproject);
-        },
-      },
-    );
-
-    const httpProject: HTTP.ProjectAndSubprojects = {
-      project: {
-        log: project.log,
-        allowedIntents: getAllowedIntents(Project.userIdentities(actingUser), project.permissions),
-        data: {
-          id: project.id,
-          creationUnixTs: project.creationUnixTs,
-          status: project.status,
-          displayName: project.displayName,
-          assignee: project.assignee,
-          description: project.description,
-          amount: project.amount,
-          currency: project.currency,
-          thumbnail: project.thumbnail,
-        },
-      },
-      subprojects: subprojects.map(x => ({
-        allowedIntents: getAllowedIntents(
-          Subproject.userIdentities({ id: actingUser.id, groups: actingUser.groups }),
-          x.permissions,
-        ),
-        data: {
-          id: x.id,
-          creationUnixTs: x.creationUnixTs,
-          status: x.status,
-          displayName: x.displayName,
-          description: x.description,
-          amount: x.amount,
-          currency: x.currency,
-          exchangeRate: x.exchangeRate,
-          billingDate: x.billingDate,
-          assignee: x.assignee,
-        },
-      })),
-    };
-
-    return httpProject;
-  };
-}
-
-export function getProjectPermissionList(
-  conn: Multichain.ConnToken,
-): HTTP.ProjectPermissionsReader {
-  return async (token: AuthToken, projectId: string) => {
-    const actingUser: Project.User = { id: token.userId, groups: token.groups };
-
-    const reader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
-      return Project.validateProject(multichainProject);
-    };
-
-    const permissionsReader: Project.PermissionsLister = async id => {
-      const permissions: Multichain.Permissions = await Multichain.getProjectPermissionList(
-        conn,
-        id,
-      );
-      return permissions;
-    };
-
-    return Project.getPermissions(actingUser, projectId, {
-      getProject: reader,
-      getProjectPermissions: permissionsReader,
-    });
-  };
-}
-
-export function grantProjectPermission(conn: Multichain.ConnToken): HTTP.ProjectPermissionsGranter {
-  return async (token: AuthToken, projectId: string, grantee: string, intent: Intent) => {
-    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const actingUser: Project.User = { id: token.userId, groups: token.groups };
-
-    const reader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
-      return Project.validateProject(multichainProject);
-    };
-
-    const granter: Project.Granter = async (id, selectedGrantee, selectedIntent) => {
-      await Multichain.grantProjectPermission(conn, issuer, id, selectedGrantee, selectedIntent);
-    };
-
-    return await Project.grantPermission(actingUser, projectId, grantee, intent, {
-      getProject: reader,
-      grantProjectPermission: granter,
-    });
-  };
-}
-
-export function getProjectList(conn: Multichain.ConnToken): HTTP.AllProjectsReader {
-  return async (token: AuthToken) => {
-    const actingUser: Project.User = { id: token.userId, groups: token.groups };
-
-    const projects: Project.ScrubbedProject[] = await Project.getAllVisible(actingUser, {
-      getAllProjects: async () => {
-        const projectList: Multichain.Project[] = await Multichain.getAndCacheProjectList(conn);
-        return projectList.map(Project.validateProject);
-      },
-    });
-
-    return projects.map(project => ({
-      log: project.log,
-      allowedIntents: getAllowedIntents(Project.userIdentities(actingUser), project.permissions),
-      data: {
-        id: project.id,
-        creationUnixTs: project.creationUnixTs,
-        status: project.status,
-        displayName: project.displayName,
-        assignee: project.assignee,
-        description: project.description,
-        amount: project.amount,
-        currency: project.currency,
-        thumbnail: project.thumbnail,
-      },
-    }));
-  };
-}
-
-export function createProject(conn: Multichain.ConnToken): HTTP.ProjectCreator {
-  return async (token: AuthToken, payload: HTTP.CreateProjectPayload) => {
-    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const assigningUser: Project.User = { id: token.userId, groups: token.groups };
-
-    const permissionLister: Permission.PermissionsLister = async () => {
-      const permissions: Multichain.Permissions = await Multichain.getGlobalPermissionList(conn);
-      return permissions;
-    };
-
-    const projectReader: Project.Reader = async id => {
-      const multichainProject: Multichain.Project = await Multichain.getProject(conn, id);
-      return Project.validateProject(multichainProject);
-    };
-
-    const creator: Project.Creator = async project => {
-      Project.validateProject(project);
-      const multichainProject: Multichain.Project = project;
-      await Multichain.createProjectOnChain(conn, issuer, multichainProject);
-    };
-
-    const input: Project.CreateProjectInput = payload;
-
-    return Project.create(assigningUser, input, {
-      getAllPermissions: permissionLister,
-      getProject: projectReader,
-      createProject: creator,
-      notify: (project, _actingUser) => tellCacheWhatHappened(conn.cache, "global.createProject"),
-    });
-  };
-}
 
 export function assignProject(conn: Multichain.ConnToken): HTTP.ProjectAssigner {
   return async (token: AuthToken, projectId: string, assignee: string) => {
@@ -211,47 +38,6 @@ export function assignProject(conn: Multichain.ConnToken): HTTP.ProjectAssigner 
           send: (message, recipient) => {
             const notificationResource = Multichain.generateResources(project.id);
             return Multichain.issueNotification(
-              conn,
-              issuer,
-              message,
-              recipient,
-              notificationResource,
-            );
-          },
-          resolveGroup: groupId => Group.getUsers(conn, groupId),
-        });
-      },
-    });
-  };
-}
-
-export function updateProject(conn: Multichain.ConnToken): HTTP.ProjectUpdater {
-  return async (token: AuthToken, projectId: string, update: object) => {
-    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const actingUser: Project.User = { id: token.userId, groups: token.groups };
-
-    return Project.update(actingUser, projectId, update, {
-      getProject: async id => Project.validateProject(await Multichain.getProject(conn, id)),
-      updateProject: async (id, data) => {
-        const multichainUpdate: Multichain.ProjectUpdate = {};
-        if (data.displayName !== undefined) multichainUpdate.displayName = data.displayName;
-        if (data.description !== undefined) multichainUpdate.description = data.description;
-        if (data.amount !== undefined) multichainUpdate.amount = data.amount;
-        if (data.currency !== undefined) multichainUpdate.currency = data.currency;
-        if (data.thumbnail !== undefined) multichainUpdate.thumbnail = data.thumbnail;
-        await Multichain.updateProject(conn, issuer, id, multichainUpdate);
-      },
-      notify: async (updatedProject, user, projectUpdate) => {
-        const updateNotification: Notification.ProjectUpdate = {
-          projectId: updatedProject.id,
-          assignee: updatedProject.assignee,
-          actingUser: user,
-          update: projectUpdate,
-        };
-        await Notification.projectUpdated(updateNotification, {
-          send: async (message, recipient) => {
-            const notificationResource = Multichain.generateResources(updatedProject.id);
-            await Multichain.issueNotification(
               conn,
               issuer,
               message,
@@ -388,65 +174,6 @@ export function closeWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowitem
   };
 }
 
-export function getPermissionList(conn: Multichain.ConnToken): HTTP.AllPermissionsReader {
-  return async (token: AuthToken) => {
-    const user: Permission.User = { id: token.userId, groups: token.groups };
-
-    const lister: Permission.PermissionsLister = async () => {
-      const permissions: Permissions = await Multichain.getGlobalPermissionList(conn);
-      return permissions;
-    };
-
-    return Permission.list(user, { getAllPermissions: lister });
-  };
-}
-
-export function grantPermission(conn: Multichain.ConnToken): HTTP.GlobalPermissionGranter {
-  return async (token: AuthToken, identity: string, intent: Intent) => {
-    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const user: Permission.User = { id: token.userId, groups: token.groups };
-
-    const lister: Permission.PermissionsLister = async () => {
-      const permissions: Permissions = await Multichain.getGlobalPermissionList(conn);
-      return permissions;
-    };
-
-    const granter: Permission.PermissionsGranter = async (
-      grantIntent: Intent,
-      grantIdentity: string,
-    ) => {
-      await Multichain.grantGlobalPermission(conn, issuer, grantIdentity, grantIntent);
-    };
-    return Permission.grant(user, identity, intent, {
-      getAllPermissions: lister,
-      grantPermission: granter,
-    });
-  };
-}
-
-export function grantAllPermissions(conn: Multichain.ConnToken): HTTP.AllPermissionsGranter {
-  return async (token: AuthToken, grantee: string) => {
-    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const user: Permission.User = { id: token.userId, groups: token.groups };
-
-    const lister: Permission.PermissionsLister = async () => {
-      const permissions: Permissions = await Multichain.getGlobalPermissionList(conn);
-      return permissions;
-    };
-
-    const granter: Permission.PermissionsGranter = async (
-      grantIntent: Intent,
-      grantGrantee: string,
-    ) => {
-      await Multichain.grantGlobalPermission(conn, issuer, grantGrantee, grantIntent);
-    };
-    return Permission.grantAll(user, grantee, {
-      getAllPermissions: lister,
-      grantPermission: granter,
-    });
-  };
-}
-
 export function updateWorkflowitem(conn: Multichain.ConnToken): HTTP.WorkflowitemUpdater {
   return async (
     token: AuthToken,
@@ -555,29 +282,6 @@ export function assignWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowite
       getWorkflowitems: multichainLister,
       assignWorkflowitem: multichainAssigner,
       notify: multichainNotifier,
-    });
-  };
-}
-
-export function revokePermission(conn: Multichain.ConnToken): HTTP.GlobalPermissionRevoker {
-  return async (token: AuthToken, recipient: string, intent: Intent) => {
-    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const user: Permission.User = { id: token.userId, groups: token.groups };
-
-    const lister: Permission.PermissionsLister = async () => {
-      const permissions: Permissions = await Multichain.getGlobalPermissionList(conn);
-      return permissions;
-    };
-
-    const revoker: Permission.PermissionsRevoker = async (
-      revokeIntent: Intent,
-      revokeRecipient: string,
-    ) => {
-      await Multichain.revokeGlobalPermission(conn, issuer, revokeRecipient, revokeIntent);
-    };
-    return Permission.revoke(user, recipient, intent, {
-      getAllPermissions: lister,
-      revokePermission: revoker,
     });
   };
 }

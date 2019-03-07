@@ -1,7 +1,6 @@
 import { Ctx } from "../lib/ctx";
 import { encrypt } from "../lib/symmetricCrypto";
 import { getOrganizationAddress } from "../organization/organization";
-import { hashPassword } from "../user/password";
 import { ConnToken } from "./conn";
 import { createkeypairs } from "./createkeypairs";
 import * as AuthToken from "./domain/organization/auth_token";
@@ -10,6 +9,7 @@ import * as UserCreate from "./domain/organization/user_create";
 import { sourceUserRecords } from "./domain/organization/user_eventsourcing";
 import { getGlobalPermissions } from "./global_permissions_get";
 import * as GroupQuery from "./group_query";
+import { hashPassword } from "./password";
 import { store } from "./store";
 import { userExists } from "./user_query";
 

@@ -109,6 +109,7 @@ const mapStateToProps = state => {
     projectStatus: state.getIn(["detailview", "projectStatus"]),
     projectAssignee: state.getIn(["detailview", "projectAssignee"]),
     projectTS: state.getIn(["detailview", "projectTS"]),
+    projectProjectedBudgets: state.getIn(["detailview", "projectProjectedBudgets"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
     showProjectAssignees: state.getIn(["detailview", "showProjectAssignees"]),
     showHistory: state.getIn(["notifications", "showHistory"]),
@@ -118,7 +119,8 @@ const mapStateToProps = state => {
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     thumbnail: state.getIn(["detailview", "thumbnail"]),
     offset: state.getIn(["detailview", "offset"]),
-    limit: state.getIn(["detailview", "limit"])
+    limit: state.getIn(["detailview", "limit"]),
+    projectedBudgets: state.getIn(["detailview", "projectedBudgets"])
   };
 };
 

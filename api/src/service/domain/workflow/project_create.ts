@@ -16,6 +16,7 @@ import * as Project from "./project";
 import * as ProjectCreated from "./project_created";
 import { sourceProjects } from "./project_eventsourcing";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+import { projectIntents } from "../../../authz/intents";
 
 /**
  * Initial data for the new project as given in the request.
@@ -104,16 +105,6 @@ function newDefaultPermissionsFor(user: ServiceUser): Permissions {
   // The user can always do anything anyway:
   if (user.id === "root") return {};
 
-  const intents: Intent[] = [
-    "project.intent.listPermissions",
-    "project.intent.grantPermission",
-    "project.intent.revokePermission",
-    "project.viewSummary",
-    "project.viewDetails",
-    "project.assign",
-    "project.update",
-    "project.close",
-    "project.archive",
-  ];
+  const intents: Intent[] = projectIntents;
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [user.id] }), {});
 }

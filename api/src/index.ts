@@ -1,17 +1,63 @@
+import * as GlobalPermissionGrantAPI from "./global_permission_grant";
+import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
+import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
+import * as GlobalPermissionsListAPI from "./global_permissions_list";
+import * as GroupCreateAPI from "./group_create";
+import * as GroupListAPI from "./group_list";
+import * as GroupMemberAddAPI from "./group_member_add";
+import * as GroupMemberRemoveAPI from "./group_member_remove";
 import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
+import { Ctx } from "./lib/ctx";
 import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStream } from "./organization/organization";
+import * as ProjectAssignAPI from "./project_assign";
+import * as ProjectCloseAPI from "./project_close";
+import * as ProjectCreateAPI from "./project_create";
+import * as ProjectListAPI from "./project_list";
+import * as ProjectPermissionGrantAPI from "./project_permission_grant";
+import * as ProjectPermissionRevokeAPI from "./project_permission_revoke";
+import * as ProjectPermissionsListAPI from "./project_permissions_list";
+import * as ProjectUpdateAPI from "./project_update";
+import * as ProjectViewDetailsAPI from "./project_view_details";
+import * as ProjectViewHistoryAPI from "./project_view_history";
 import * as Multichain from "./service";
+import { BusinessEvent } from "./service/domain/business_event";
+import { ServiceUser } from "./service/domain/organization/service_user";
+import * as Subproject from "./service/domain/workflow/subproject";
+import * as GlobalPermissionGrantService from "./service/global_permission_grant";
+import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
+import * as GlobalPermissionsGetService from "./service/global_permissions_get";
+import * as GroupCreateService from "./service/group_create";
+import * as GroupMemberAddService from "./service/group_member_add";
+import * as GroupMemberRemoveService from "./service/group_member_remove";
+import * as GroupQueryService from "./service/group_query";
 import { randomString } from "./service/hash";
 import * as HttpdMultichainAdapter from "./service/HttpdMultichainAdapter";
+import * as ProjectAssignService from "./service/project_assign";
+import * as ProjectCloseService from "./service/project_close";
+import * as ProjectCreateService from "./service/project_create";
+import * as ProjectGetService from "./service/project_get";
+import * as ProjectListService from "./service/project_list";
+import * as ProjectPermissionGrantService from "./service/project_permission_grant";
+import * as ProjectPermissionRevokeService from "./service/project_permission_revoke";
+import * as ProjectPermissionsListService from "./service/project_permissions_list";
+import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
+import * as UserAuthenticateService from "./service/user_authenticate";
+import * as UserCreateService from "./service/user_create";
+import * as UserQueryService from "./service/user_query";
+import * as OldSubprojectModel from "./subproject/model/Subproject";
+import * as UserAuthenticateAPI from "./user_authenticate";
+import * as UserCreateAPI from "./user_create";
+import * as UserListAPI from "./user_list";
 
 const URL_PREFIX = "/api";
+
 /*
  * Deal with the environment:
  */
@@ -97,40 +143,252 @@ function registerSelf(): Promise<boolean> {
           },
         },
       };
-      registerNode(multichainClient, req);
+      return registerNode(multichainClient, req);
     })
     .then(() => true)
     .catch(() => false);
 }
 
-registerRoutes(
+/*
+ * Deprecated API-setup
+ */
+
+registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, {
+  assignProject: HttpdMultichainAdapter.assignProject(db),
+  workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(db),
+  workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(db),
+  workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(db),
+  workflowitemUpdater: HttpdMultichainAdapter.updateWorkflowitem(db),
+});
+
+/*
+ * APIs related to Global Permissions
+ */
+
+GlobalPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
+  grantGlobalPermission: (ctx, user, grantee, permission) =>
+    GlobalPermissionGrantService.grantGlobalPermission(db, ctx, user, grantee, permission),
+});
+
+GlobalPermissionsGrantAllAPI.addHttpHandler(server, URL_PREFIX, {
+  getGlobalPermissions: (ctx, user) =>
+    GlobalPermissionsGetService.getGlobalPermissions(db, ctx, user),
+  grantGlobalPermissions: (ctx, user, grantee, permission) =>
+    GlobalPermissionGrantService.grantGlobalPermission(db, ctx, user, grantee, permission),
+});
+
+GlobalPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
+  revokeGlobalPermission: (ctx, user, revokee, permission) =>
+    GlobalPermissionRevokeService.revokeGlobalPermission(db, ctx, user, revokee, permission),
+});
+
+GlobalPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
+  getGlobalPermissions: (ctx, user) =>
+    GlobalPermissionsGetService.getGlobalPermissions(db, ctx, user),
+});
+
+/*
+ * APIs related to Users
+ */
+
+UserAuthenticateAPI.addHttpHandler(
   server,
-  multichainClient,
-  jwtSecret,
-  rootSecret,
-  organization!,
-  organizationVaultSecret!,
   URL_PREFIX,
-  multichainHost,
-  backupApiPort,
   {
-    assignProject: HttpdMultichainAdapter.assignProject(db),
-    createProject: HttpdMultichainAdapter.createProject(db),
-    getProjectPermissions: HttpdMultichainAdapter.getProjectPermissionList(db),
-    getProjectWithSubprojects: HttpdMultichainAdapter.getProject(db),
-    grantAllPermissions: HttpdMultichainAdapter.grantAllPermissions(db),
-    grantGlobalPermission: HttpdMultichainAdapter.grantPermission(db),
-    grantProjectPermission: HttpdMultichainAdapter.grantProjectPermission(db),
-    listGlobalPermissions: HttpdMultichainAdapter.getPermissionList(db),
-    listProjects: HttpdMultichainAdapter.getProjectList(db),
-    revokeGlobalPermission: HttpdMultichainAdapter.revokePermission(db),
-    updateProject: HttpdMultichainAdapter.updateProject(db),
-    workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(db),
-    workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(db),
-    workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(db),
-    workflowitemUpdater: HttpdMultichainAdapter.updateWorkflowitem(db),
+    authenticate: (ctx, userId, password) =>
+      UserAuthenticateService.authenticate(
+        organization,
+        organizationVaultSecret,
+        rootSecret,
+        db,
+        ctx,
+        userId,
+        password,
+      ),
+    getGroupsForUser: (ctx, serviceUser, userId) =>
+      GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
   },
+  jwtSecret,
 );
+
+UserCreateAPI.addHttpHandler(server, URL_PREFIX, {
+  createUser: (ctx, issuer, reqData) =>
+    UserCreateService.createUser(organizationVaultSecret, db, ctx, issuer, reqData),
+});
+
+UserListAPI.addHttpHandler(server, URL_PREFIX, {
+  listUsers: (ctx, issuer) => UserQueryService.getUsers(db, ctx, issuer),
+  listGroups: (ctx, issuer) => GroupQueryService.getGroups(db, ctx, issuer),
+});
+
+/*
+ * APIs related to Groups
+ */
+
+GroupCreateAPI.addHttpHandler(server, URL_PREFIX, {
+  createGroup: (ctx, issuer, reqData) => GroupCreateService.createGroup(db, ctx, issuer, reqData),
+});
+
+GroupListAPI.addHttpHandler(server, URL_PREFIX, {
+  listGroups: (ctx, issuer) => GroupQueryService.getGroups(db, ctx, issuer),
+});
+
+GroupMemberAddAPI.addHttpHandler(server, URL_PREFIX, {
+  addGroupMember: (ctx, issuer, groupId, newMember) =>
+    GroupMemberAddService.addMember(db, ctx, issuer, groupId, newMember),
+});
+
+GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
+  removeGroupMember: (ctx, issuer, groupId, newMember) =>
+    GroupMemberRemoveService.removeMember(db, ctx, issuer, groupId, newMember),
+});
+
+/*
+ * APIs related to Projects
+ */
+
+ProjectAssignAPI.addHttpHandler(server, URL_PREFIX, {
+  assignProject: (ctx, user, projectId, assignee) =>
+    ProjectAssignService.assignProject(db, ctx, user, projectId, assignee),
+});
+
+ProjectCloseAPI.addHttpHandler(server, URL_PREFIX, {
+  closeProject: (ctx, user, projectId) =>
+    ProjectCloseService.closeProject(db, ctx, user, projectId),
+});
+
+ProjectCreateAPI.addHttpHandler(server, URL_PREFIX, {
+  createProject: (ctx, user, body) => ProjectCreateService.createProject(db, ctx, user, body),
+});
+
+ProjectUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateProject: (ctx, user, projectId, reqData) =>
+    ProjectUpdateService.updateProject(db, ctx, user, projectId, reqData),
+});
+
+ProjectPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
+  grantProjectPermission: (ctx, user, projectId, grantee, intent) =>
+    ProjectPermissionGrantService.grantProjectPermission(db, ctx, user, projectId, grantee, intent),
+});
+
+ProjectPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
+  revokeProjectPermission: (ctx, user, projectId, grantee, intent) =>
+    ProjectPermissionRevokeService.revokeProjectPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      grantee,
+      intent,
+    ),
+});
+
+ProjectPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
+  getProjectPermissions: (ctx, user, projectId) =>
+    ProjectPermissionsListService.getProjectPermissions(db, ctx, user, projectId),
+});
+
+ProjectListAPI.addHttpHandler(server, URL_PREFIX, {
+  listProjects: (ctx, user) => ProjectListService.listProjects(db, ctx, user),
+});
+
+ProjectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
+  getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
+  getSubprojects: async (
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: string,
+  ): Promise<Subproject.Subproject[]> => {
+    const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
+      db.multichainClient,
+      { userId: user.id, groups: user.groups },
+      projectId,
+    );
+    const newSubprojects: Subproject.Subproject[] = [];
+    for (const x of subprojects) {
+      const permissions = await OldSubprojectModel.getPermissions(
+        db.multichainClient,
+        projectId,
+        x.data.id,
+      );
+      newSubprojects.push({
+        id: x.data.id,
+        createdAt: new Date(x.data.creationUnixTs).toISOString(),
+        status: x.data.status,
+        displayName: x.data.displayName,
+        description: x.data.description,
+        assignee: x.data.assignee,
+        currency: x.data.currency,
+        projectedBudgets: x.data.projectedBudgets,
+        additionalData: {},
+        permissions,
+        log: x.log.map(l => ({
+          entityId: l.key,
+          entityType: "subproject" as "subproject",
+          businessEvent: {
+            type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
+            source: "",
+            time: l.createdAt,
+            publisher: l.createdBy,
+          } as BusinessEvent,
+          snapshot: l.snapshot,
+        })),
+      });
+    }
+    return newSubprojects;
+  },
+});
+
+ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
+  getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
+  getSubprojects: async (
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: string,
+  ): Promise<Subproject.Subproject[]> => {
+    const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
+      db.multichainClient,
+      { userId: user.id, groups: user.groups },
+      projectId,
+    );
+    const newSubprojects: Subproject.Subproject[] = [];
+    for (const x of subprojects) {
+      const permissions = await OldSubprojectModel.getPermissions(
+        db.multichainClient,
+        projectId,
+        x.data.id,
+      );
+      newSubprojects.push({
+        id: x.data.id,
+        createdAt: new Date(x.data.creationUnixTs).toISOString(),
+        status: x.data.status,
+        displayName: x.data.displayName,
+        description: x.data.description,
+        assignee: x.data.assignee,
+        currency: x.data.currency,
+        projectedBudgets: x.data.projectedBudgets,
+        additionalData: {},
+        permissions,
+        log: x.log.map(l => ({
+          entityId: l.key,
+          entityType: "subproject" as "subproject",
+          businessEvent: {
+            type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
+            source: "",
+            time: l.createdAt,
+            publisher: l.createdBy,
+          } as BusinessEvent,
+          snapshot: l.snapshot,
+        })),
+      });
+    }
+    return newSubprojects;
+  },
+});
+
+/*
+ * Run the server.
+ */
 
 server.listen(port, "0.0.0.0", async err => {
   if (err) {

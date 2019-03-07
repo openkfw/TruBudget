@@ -1,6 +1,8 @@
 /**
  * DEPRECATED - see index.ts
  */
+import { isArray } from "util";
+
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
@@ -13,8 +15,19 @@ import { MultichainClient } from "../../service/Client.h";
 import { randomString } from "../../service/hash";
 import * as Subproject from "../../subproject/model/Subproject";
 import * as Project from "../model/Project";
+import * as ProjectGet from "../../service/project_get";
+import { ConnToken } from "../../service/conn";
+import { Ctx } from "../../lib/ctx";
+import { ServiceUser } from "../../service/domain/organization/service_user";
+import * as Result from "../../result";
+import { VError } from "verror";
 
-export async function createSubproject(multichain: MultichainClient, req): Promise<HttpResponse> {
+export async function createSubproject(
+  conn: ConnToken,
+  ctx: Ctx,
+  serviceUser: ServiceUser,
+  req,
+): Promise<HttpResponse> {
   const body = req.body;
 
   if (body.apiVersion !== "1.0") {
@@ -27,20 +40,18 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
 
   const userIntent: Intent = "project.createSubproject";
 
+  const projectResult = await ProjectGet.getProject(conn, ctx, serviceUser, projectId);
+  if (Result.isErr(projectResult)) {
+    throw new VError(projectResult, `could not create subproject`);
+  }
+  const project = projectResult;
+
   // Is the user allowed to create subprojects?
-  await throwIfUnauthorized(
-    req.user,
-    userIntent,
-    await Project.getPermissions(multichain, projectId),
-  );
+  await throwIfUnauthorized(req.user, userIntent, project.permissions);
 
   // Make sure the parent project is not already closed:
-  if (await Project.isClosed(multichain, projectId)) {
-    const message = "Cannot add a subproject to a closed project.";
-    throw {
-      kind: "PreconditionError",
-      message,
-    };
+  if (project.status === "closed") {
+    throw new Error(`Cannot add a subproject to the closed project ${projectId}.`);
   }
 
   throwParseErrorIfUndefined(data, ["subproject"]);
@@ -49,9 +60,11 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
   const subprojectId = value("id", subprojectArgs.id, isNonemptyString, randomString());
 
   // check if subprojectId already exists
-  const subprojects = await Subproject.get(multichain, req.user, projectId);
+  const subprojects = await Subproject.get(conn.multichainClient, req.user, projectId);
   if (!isEmpty(subprojects.filter(s => s.data.id === subprojectId))) {
-    throw { kind: "SubprojectIdAlreadyExists", subprojectId } as SubprojectIdAlreadyExistsError;
+    throw new Error(
+      `cannot add subproject ${subprojectId} to project ${projectId}: the project already contains a subproject with that ID`,
+    );
   }
 
   const ctime = new Date();
@@ -81,8 +94,8 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
     status: value("status", subprojectArgs.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", subprojectArgs.displayName, isNonemptyString),
     description: value("description", subprojectArgs.description, isNonemptyString),
-    amount: value("amount", subprojectArgs.amount, isNonemptyString),
-    currency: value("currency", subprojectArgs.currency, isNonemptyString).toUpperCase(),
+    currency: value("currency", subprojectArgs.currency, isNonemptyString),
+    projectedBudgets: value("projectedBudgets", subprojectArgs.projectedBudgets, isArray),
     assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.user.userId),
   };
 
@@ -97,7 +110,7 @@ export async function createSubproject(multichain: MultichainClient, req): Promi
     },
   };
 
-  await Subproject.publish(multichain, projectId, subprojectId, event);
+  await Subproject.publish(conn.multichainClient, projectId, subprojectId, event);
 
   return [
     201,

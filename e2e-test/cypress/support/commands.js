@@ -123,9 +123,8 @@ Cypress.Commands.add(
   "createProject",
   (
     displayName,
-    amount,
-    currency,
     description,
+    projectedBudgets,
     thumbnail = "/Thumbnail_0001.jpg"
   ) => {
     cy.request({
@@ -139,9 +138,8 @@ Cypress.Commands.add(
         data: {
           project: {
             displayName: displayName,
-            amount: amount,
-            currency: currency,
             description: description,
+            projectedBudgets: projectedBudgets,
             thumbnail: thumbnail
           }
         }

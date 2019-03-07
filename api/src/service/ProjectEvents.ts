@@ -24,6 +24,12 @@ interface NotificationResourceDescription {
   type: ResourceType;
 }
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Project {
   id: string;
   creationUnixTs: string;
@@ -31,8 +37,7 @@ export interface Project {
   displayName: string;
   assignee?: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   thumbnail: string;
   permissions: Permissions;
   log: HistoryEvent[];
@@ -41,8 +46,7 @@ export interface Project {
 export interface ProjectUpdate {
   displayName?: string;
   description?: string;
-  amount?: string;
-  currency?: string;
+  projectedBudget?: ProjectedBudget[];
   thumbnail?: string;
 }
 
@@ -126,8 +130,7 @@ export async function writeProjectAssignedToChain(
 export interface ProjectUpdate {
   displayName?: string;
   description?: string;
-  amount?: string;
-  currency?: string;
+  projectedBudgets?: ProjectedBudget[];
   thumbnail?: string;
 }
 
@@ -372,54 +375,51 @@ export async function issueNotification(
   message: Event,
   recipient: string,
 ): Promise<void> {
-  const notificationId = uuid();
-  // TODO message.key is working for projects
-  // TODO but we need to access projectId subprojectid and workflowitemid and build data.resources
-  const projectId = message.key;
-  const resources: NotificationResourceDescription[] = [
-    {
-      id: projectId,
-      type: notificationTypeFromIntent(message.intent),
-    },
-  ];
-  const intent = "notification.create";
-  const event: Event = {
-    key: recipient,
-    intent,
-    createdBy: issuer.name,
-    createdAt: new Date().toISOString(),
-    dataVersion: 1,
-    data: {
-      notificationId,
-      resources,
-      isRead: false,
-      originalEvent: message,
-    },
-  };
-
-  const streamName = "notifications";
-
-  const publishEvent = () => {
-    logger.debug(`Publishing ${intent} to ${streamName}/${recipient}`);
-    return conn.multichainClient.getRpcClient().invoke("publish", streamName, recipient, {
-      json: event,
-    });
-  };
-
-  return publishEvent().catch(err => {
-    if (err.code === -708) {
-      logger.debug(
-        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
-      );
-      // The stream does not exist yet. Create the stream and try again:
-      return conn.multichainClient
-        .getOrCreateStream({ kind: "notifications", name: streamName })
-        .then(() => publishEvent());
-    } else {
-      logger.error({ error: err }, `Publishing ${intent} failed.`);
-      throw err;
-    }
-  });
+  // const notificationId = uuid();
+  // // TODO message.key is working for projects
+  // // TODO but we need to access projectId subprojectid and workflowitemid and build data.resources
+  // const projectId = message.key;
+  // const resources: NotificationResourceDescription[] = [
+  //   {
+  //     id: projectId,
+  //     type: notificationTypeFromIntent(message.intent),
+  //   },
+  // ];
+  // const intent = "notification.create";
+  // const event: Event = {
+  //   key: recipient,
+  //   intent,
+  //   createdBy: issuer.name,
+  //   createdAt: new Date().toISOString(),
+  //   dataVersion: 1,
+  //   data: {
+  //     notificationId,
+  //     resources,
+  //     isRead: false,
+  //     originalEvent: message,
+  //   },
+  // };
+  // const streamName = "notifications";
+  // const publishEvent = () => {
+  //   logger.debug(`Publishing ${intent} to ${streamName}/${recipient}`);
+  //   return conn.multichainClient.getRpcClient().invoke("publish", streamName, recipient, {
+  //     json: event,
+  //   });
+  // };
+  // return publishEvent().catch(err => {
+  //   if (err.code === -708) {
+  //     logger.debug(
+  //       `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
+  //     );
+  //     // The stream does not exist yet. Create the stream and try again:
+  //     return conn.multichainClient
+  //       .getOrCreateStream({ kind: "notifications", name: streamName })
+  //       .then(() => publishEvent());
+  //   } else {
+  //     logger.error({ error: err }, `Publishing ${intent} failed.`);
+  //     throw err;
+  //   }
+  // });
 }
 
 function notificationTypeFromIntent(intent: Intent): ResourceType {

@@ -9,14 +9,15 @@ import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
   const { createProject, onDialogCancel, projectToAdd, location, storeSnackbarMessage } = props;
-  const { displayName, amount, description, currency, thumbnail } = projectToAdd;
+  const { displayName, amount, description, currency, thumbnail, organization, projectedBudgets } = projectToAdd;
   createProject(
     displayName,
     fromAmountString(amount).toString(),
     description,
     currency,
     location.pathname.split("/")[2],
-    thumbnail
+    thumbnail,
+    projectedBudgets
   );
   onDialogCancel();
   storeSnackbarMessage(strings.common.added + " " + strings.common.project + " " + displayName);
@@ -39,7 +40,7 @@ const handleEdit = props => {
 
 const ProjectDialog = props => {
   const { projects, projectToAdd, editDialogShown, creationDialogShown } = props;
-  const { displayName, description, amount } = projectToAdd;
+  const { displayName, description, amount, projectedBudgets, organization } = projectToAdd;
   const changes = compareObjects(projects, projectToAdd);
   const specificProps = props.editDialogShown
     ? {
@@ -56,9 +57,8 @@ const ProjectDialog = props => {
       title: strings.project.project_details,
       content: <ProjectDialogContent {...props} />,
       nextDisabled:
-        _isEmpty(displayName) ||
-        _isEmpty(description) ||
-        ((_isEmpty(amount) && isNaN(parseFloat(amount))) || _isEmpty(changes))
+        _isEmpty(displayName) || _isEmpty(description) || (projectedBudgets.length === 0 || _isEmpty(changes))
+      // ((_isEmpty(amount) && isNaN(parseFloat(amount)) && projectedBudgets.length === 0) || _isEmpty(changes))
     }
   ];
 

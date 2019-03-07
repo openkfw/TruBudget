@@ -8,6 +8,8 @@ import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import { toAmountString } from "../../helper";
 
+import _isEmpty from "lodash/isEmpty";
+
 const ProjectDialogContent = props => {
   return (
     <div>
@@ -33,6 +35,10 @@ const ProjectDialogContent = props => {
           budgetHintText={strings.project.project_budget_amount_description + " " + toAmountString(99999.99)}
           budget={props.projectToAdd.amount}
           storeBudget={props.storeProjectAmount}
+          addProjectedBudget={props.addProjectedBudget}
+          organization={props.projectToAdd.organization}
+          storeOrganization={props.storeProjectOrganization}
+          projectedBudgets={props.projectToAdd.projectedBudgets}
         />
       </div>
       <Divider />

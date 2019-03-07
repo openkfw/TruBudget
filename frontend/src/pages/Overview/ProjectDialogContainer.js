@@ -1,21 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import withInitialLoading from "../Loading/withInitialLoading";
-import { toJS } from "../../helper";
 
-import ProjectDialog from "./ProjectDialog";
+import { toJS } from "../../helper";
+import withInitialLoading from "../Loading/withInitialLoading";
+import { storeSnackbarMessage } from "../Notifications/actions";
 import {
+  addProjectedBudget,
   createProject,
   editProject,
   hideProjectDialog,
-  storeProjectName,
+  setCurrentStep,
   storeProjectAmount,
   storeProjectComment,
   storeProjectCurrency,
-  setCurrentStep,
-  storeProjectThumbnail
+  storeProjectName,
+  storeProjectThumbnail,
+  storeProjectOrganization
 } from "./actions";
-import { storeSnackbarMessage } from "../Notifications/actions";
+import ProjectDialog from "./ProjectDialog";
 
 class ProjectDialogContainer extends Component {
   render() {
@@ -37,8 +39,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createProject: (name, amount, comment, currency, _, thumbnail) =>
-      dispatch(createProject(name, amount, comment, currency, thumbnail)),
+    createProject: (name, amount, comment, currency, _, thumbnail, projectedBudgets) =>
+      dispatch(createProject(name, amount, comment, currency, thumbnail, projectedBudgets)),
     editProject: (id, changes) => dispatch(editProject(id, changes)),
     hideProjectDialog: () => dispatch(hideProjectDialog()),
     storeProjectName: name => dispatch(storeProjectName(name)),
@@ -47,6 +49,8 @@ const mapDispatchToProps = dispatch => {
     storeProjectCurrency: currency => dispatch(storeProjectCurrency(currency)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
+    addProjectedBudget: projectedBudget => dispatch(addProjectedBudget(projectedBudget)),
+    storeProjectOrganization: organization => dispatch(storeProjectOrganization(organization)),
 
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };

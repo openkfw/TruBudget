@@ -1,5 +1,7 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
+import { Ctx } from "../lib/ctx";
+import { ServiceUser } from "../service/domain/organization/service_user";
 
 export interface Document {
   id: string;
@@ -45,7 +47,12 @@ export type GlobalPermissionRevoker = (
   intent: Intent,
 ) => Promise<void>;
 
-export type ProjectCreator = (token: AuthToken, payload: CreateProjectPayload) => Promise<void>;
+export type ProjectCreator = (
+  ctx: Ctx,
+  issuer: ServiceUser,
+  token: AuthToken,
+  payload: CreateProjectPayload,
+) => Promise<void>;
 
 export type ProjectAssigner = (
   token: AuthToken,
@@ -70,8 +77,7 @@ type MaybeHistoryEvent = null | {
 export interface CreateProjectPayload {
   displayName: string;
   description: string;
-  amount: string;
-  currency: string;
+  projectedBudgets: ProjectedBudget[];
   id?: string;
   creationUnixTs?: string;
   status?: "open" | "closed";
@@ -101,6 +107,12 @@ export type WorkflowitemAssigner = (
   newAssignee: string,
 ) => Promise<void>;
 
+interface ProjectedBudget {
+  organization: string;
+  value: string;
+  currencyCode: string;
+}
+
 export interface Project {
   log: MaybeHistoryEvent[];
   allowedIntents: Intent[];
@@ -111,8 +123,7 @@ export interface Project {
     displayName: string;
     assignee?: string;
     description: string;
-    amount: string;
-    currency: string;
+    projectedBudgets: ProjectedBudget[];
     thumbnail: string;
   };
 }
@@ -147,8 +158,8 @@ interface Subproject {
     status: "open" | "closed";
     displayName: string;
     description: string;
-    amount: string;
     currency: string;
+    projectedBudgets: ProjectedBudget[];
     exchangeRate: string;
     billingDate: string;
     assignee?: string;

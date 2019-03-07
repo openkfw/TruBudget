@@ -2,16 +2,26 @@ import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { HttpResponse } from "../../httpd/lib";
+import { Ctx } from "../../lib/ctx";
 import { isEmpty } from "../../lib/emptyChecks";
 import { inheritDefinedProperties } from "../../lib/inheritDefinedProperties";
 import { isNonemptyString, value } from "../../lib/validation";
 import { notifyAssignee } from "../../notification/create";
 import * as Notification from "../../notification/model/Notification";
+import { ConnToken } from "../../service";
 import { MultichainClient } from "../../service/Client.h";
+import { ServiceUser } from "../../service/domain/organization/service_user";
 import { Event } from "../../service/event";
 import * as Subproject from "../model/Subproject";
 
-export async function updateSubproject(multichain: MultichainClient, req): Promise<HttpResponse> {
+export async function updateSubproject(
+  conn: ConnToken,
+  ctx: Ctx,
+  issuer: ServiceUser,
+  req,
+): Promise<HttpResponse> {
+  const multichain = conn.multichainClient;
+
   const input = value("data", req.body.data, x => x !== undefined);
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -51,7 +61,9 @@ export async function updateSubproject(multichain: MultichainClient, req): Promi
   const createdBy = req.user.userId;
   const skipNotificationsFor = [req.user.userId];
   await notifyAssignee(
-    multichain,
+    conn,
+    ctx,
+    issuer,
     resourceDescriptions,
     createdBy,
     await Subproject.get(

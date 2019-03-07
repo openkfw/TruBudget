@@ -4,14 +4,21 @@ import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
-import { randomString } from "./hash";
 
 export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Promise<void> {
   switch (event.type) {
-    case "global_permissions_granted":
-    case "global_permissions_revoked":
+    case "global_permission_granted":
+    case "global_permission_revoked":
       await ensureStreamExists(conn, ctx, "global", "global");
       return writeTo(conn, ctx, { stream: "global", keys: ["permissions"], event });
+
+    case "group_created":
+      await ensureStreamExists(conn, ctx, "groups", "groups");
+      return writeTo(conn, ctx, { stream: "groups", keys: [event.group.id], event });
+
+    case "group_member_added":
+    case "group_member_removed":
+      return writeTo(conn, ctx, { stream: "groups", keys: [event.groupId], event });
 
     case "user_created":
       await ensureStreamExists(conn, ctx, "users", "users");
@@ -23,7 +30,10 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
       return writeTo(conn, ctx, { stream: streamName, keys: ["self"], event });
 
     case "project_updated":
+    case "project_assigned":
+    case "project_closed":
     case "project_permission_granted":
+    case "project_permission_revoked":
       return writeTo(conn, ctx, { stream: event.projectId, keys: ["self"], event });
 
     case "subproject_created":

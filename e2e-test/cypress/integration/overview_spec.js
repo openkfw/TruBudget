@@ -1,5 +1,4 @@
 describe("Overview Page", function() {
-
   beforeEach(function() {
     cy.login();
     cy.visit(`/projects`);
@@ -28,7 +27,7 @@ describe("Overview Page", function() {
             .find("[data-test=projectbudget]")
             .children()
             .first()
-        ).to.have.text("R$ 32,000,000.00");
+        ).to.have.text("R$ 32,000,000.00\n");
         expect(
           $card
             .find("[data-test=projectcreation]")

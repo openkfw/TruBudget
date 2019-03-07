@@ -9,27 +9,21 @@ import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
   const { createSubProject, onDialogCancel, subprojectToAdd, location, storeSnackbarMessage } = props;
-  const { displayName, amount, description, currency } = subprojectToAdd;
+  const { displayName, amount, description, currency, projectedBudgets } = subprojectToAdd;
   createSubProject(
     displayName,
     fromAmountString(amount).toString(),
     description,
     currency,
-    location.pathname.split("/")[2]
+    location.pathname.split("/")[2],
+    projectedBudgets
   );
   onDialogCancel();
   storeSnackbarMessage(strings.common.added + " " + strings.common.subproject + " " + displayName);
 };
 
 const handleEdit = props => {
-  const {
-    editSubproject,
-    onDialogCancel,
-    subProjects,
-    subprojectToAdd,
-    location,
-    storeSnackbarMessage,
-  } = props;
+  const { editSubproject, onDialogCancel, subProjects, subprojectToAdd, location, storeSnackbarMessage } = props;
 
   const changes = compareObjects(subProjects, subprojectToAdd);
   const projectId = location.pathname.split("/")[2];
@@ -72,7 +66,10 @@ const SubprojectDialog = props => {
       nextDisabled:
         _isEmpty(subprojectToAdd.displayName) ||
         _isEmpty(subprojectToAdd.description) ||
-        (_isEmpty(subprojectToAdd.amount) && isNaN(parseFloat(subprojectToAdd.amount))) ||
+        subprojectToAdd.projectedBudgets.length === 0 ||
+        // (_isEmpty(subprojectToAdd.amount) &&
+        //   isNaN(parseFloat(subprojectToAdd.amount)) &&
+        //   subprojectToAdd.projectedBudgets.length === 0) ||
         _isEmpty(changes)
     }
   ];

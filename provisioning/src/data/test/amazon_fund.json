@@ -2,9 +2,12 @@
   "displayName": "Amazonas Fund 53",
   "description": "Projects in 2017",
   "status": "open",
-  "amount": "32000000",
   "assignee": "jxavier",
-  "currency": "BRL",
+  "projectedBudgets": [{
+    "organization": "ACMECorp",
+    "value": "32000000",
+    "currencyCode": "BRL"
+  }],
   "permissions": {
     "project.viewDetails": ["mstein", "jxavier"],
     "project.viewSummary": ["mstein", "jxavier"],
@@ -13,20 +16,22 @@
     "project.intent.grantPermission": ["mstein", "jxavier"],
     "project.intent.revokePermission": ["mstein", "jxavier"]
   },
-  "subprojects": [
-    {
+  "subprojects": [{
       "displayName": "Consultancy studies",
       "description": "No description.",
       "status": "closed",
-      "amount": "500000",
       "currency": "BRL",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "500000",
+        "currencyCode": "BRL"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -121,15 +126,18 @@
       "displayName": "Consultancy supervision",
       "description": "No description.",
       "status": "open",
-      "amount": "750000",
       "currency": "BRL",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "750000",
+        "currencyCode": "BRL"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -216,15 +224,18 @@
     {
       "displayName": "Construction lot 1",
       "description": "No description.",
-      "amount": "1750000",
       "currency": "BRL",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "1750000",
+        "currencyCode": "BRL"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -311,15 +322,18 @@
     {
       "displayName": "Construction lot 2",
       "description": "No description.",
-      "amount": "2500000",
       "currency": "BRL",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "2500000",
+        "currencyCode": "BRL"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -368,15 +382,18 @@
     {
       "displayName": "Furniture",
       "description": "No description.",
-      "amount": "500000",
       "currency": "BRL",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "500000",
+        "currencyCode": "BRL"
+      }],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",

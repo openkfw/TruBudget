@@ -3,12 +3,15 @@
   "description": "Gavi Vaccination Senegal 2018",
   "thumbnail": "/Thumbnail_0017.jpg",
   "status": "open",
-  "amount": "8000000",
   "assignee": "atutelle",
-  "currency": "EUR",
+  "projectedBudgets": [{
+    "organization": "ACMECorp",
+    "value": "8000000",
+    "currencyCode": "EUR"
+  }],
   "permissions": {
-    "project.viewDetails": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth","ahealth"],
-    "project.viewSummary": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth","ahealth"],
+    "project.viewDetails": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth", "ahealth"],
+    "project.viewSummary": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth", "ahealth"],
     "project.close": ["msiddiqui"],
     "project.assign": ["msiddiqui"],
     "project.createSubproject": ["msiddiqui"],
@@ -16,40 +19,42 @@
     "project.intent.grantPermission": ["msiddiqui"],
     "project.intent.revokePermission": ["msiddiqui"]
   },
-  "subprojects": [
-    {
+  "subprojects": [{
       "displayName": "Shipment DTP 1/10",
       "description": "DTP ordered from Novartis on 20/06/2018",
       "status": "closed",
-      "amount": "1000000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "1000000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "msiddiqui",
       "permissions": {
-        "subproject.viewSummary": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth","ahealth"],
-        "subproject.viewDetails": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth","ahealth"],
+        "subproject.viewSummary": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth", "ahealth"],
+        "subproject.viewDetails": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth", "ahealth"],
         "subproject.close": ["msiddiqui"],
         "subproject.update": ["msiddiqui"],
-        "subproject.createWorkflowitem":["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth","ahealth"],
+        "subproject.createWorkflowitem": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth", "ahealth"],
         "subproject.reorderWorkflowitems": ["msiddiqui"],
         "subproject.viewHistory": ["msiddiqui"],
         "subproject.intent.listPermissions": ["msiddiqui"],
         "subproject.intent.grantPermission": ["msiddiqui"],
         "subproject.intent.revokePermission": ["msiddiqui"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Gavi to Novartis: Order",
           "status": "closed",
           "assignee": "msiddiqui",
           "permissions": {
-          "workflowitem.view": ["msiddiqui","aproducer"],
-          "workflowitem.assign": ["msiddiqui","aproducer"],
-          "workflowitem.close": ["aproducer"],
-          "workflowitem.update": ["msiddiqui","aproducer"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "aproducer"],
+            "workflowitem.assign": ["msiddiqui", "aproducer"],
+            "workflowitem.close": ["aproducer"],
+            "workflowitem.update": ["msiddiqui", "aproducer"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 1000000,
           "currency": "EUR",
           "amountType": "allocated"
@@ -59,14 +64,14 @@
           "status": "closed",
           "assignee": "aproducer",
           "permissions": {
-          "workflowitem.view": ["msiddiqui","aproducer", "kdeliverer"],
-          "workflowitem.assign": ["msiddiqui","aproducer", "kdeliverer"],
-          "workflowitem.close": ["kdeliverer"],
-          "workflowitem.update": ["aproducer", "kdeliverer"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "aproducer", "kdeliverer"],
+            "workflowitem.assign": ["msiddiqui", "aproducer", "kdeliverer"],
+            "workflowitem.close": ["kdeliverer"],
+            "workflowitem.update": ["aproducer", "kdeliverer"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 200000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -76,14 +81,14 @@
           "status": "closed",
           "assignee": "kdeliverer",
           "permissions": {
-          "workflowitem.view": ["msiddiqui","ccustoms", "kdeliverer"],
-          "workflowitem.assign": ["msiddiqui","ccustoms", "kdeliverer"],
-          "workflowitem.close": ["kdeliverer"],
-          "workflowitem.update": ["ccustoms", "kdeliverer"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "ccustoms", "kdeliverer"],
+            "workflowitem.assign": ["msiddiqui", "ccustoms", "kdeliverer"],
+            "workflowitem.close": ["kdeliverer"],
+            "workflowitem.update": ["ccustoms", "kdeliverer"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 200000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -93,14 +98,14 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-          "workflowitem.view": ["msiddiqui", "sdistributor","ccustoms"],
-          "workflowitem.assign": ["msiddiqui", "sdistributor","ccustoms"],
-          "workflowitem.close": ["sdistributor"],
-          "workflowitem.update": ["sdistributor","ccustoms"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "sdistributor", "ccustoms"],
+            "workflowitem.assign": ["msiddiqui", "sdistributor", "ccustoms"],
+            "workflowitem.close": ["sdistributor"],
+            "workflowitem.update": ["sdistributor", "ccustoms"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amountType": "N/A"
         },
         {
@@ -108,14 +113,14 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-          "workflowitem.view": ["msiddiqui", "sdistributor"],
-          "workflowitem.assign": ["msiddiqui", "sdistributor"],
-          "workflowitem.close": ["sdistributor"],
-          "workflowitem.update": ["sdistributor"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "sdistributor"],
+            "workflowitem.assign": ["msiddiqui", "sdistributor"],
+            "workflowitem.close": ["sdistributor"],
+            "workflowitem.update": ["sdistributor"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amountType": "N/A"
         },
         {
@@ -123,14 +128,14 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-          "workflowitem.view": ["sdistributor", "msiddiqui", "fhealth"],
-          "workflowitem.assign": ["sdistributor", "msiddiqui"],
-          "workflowitem.close": ["fhealth"],
-          "workflowitem.update": ["fhealth", "sdistributor"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["sdistributor", "msiddiqui", "fhealth"],
+            "workflowitem.assign": ["sdistributor", "msiddiqui"],
+            "workflowitem.close": ["fhealth"],
+            "workflowitem.update": ["fhealth", "sdistributor"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -140,14 +145,14 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-          "workflowitem.view": ["sdistributor", "msiddiqui", "ihealth"],
-          "workflowitem.assign": ["sdistributor", "msiddiqui"],
-          "workflowitem.close": ["ihealth"],
-          "workflowitem.update": ["ihealth", "sdistributor"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["sdistributor", "msiddiqui", "ihealth"],
+            "workflowitem.assign": ["sdistributor", "msiddiqui"],
+            "workflowitem.close": ["ihealth"],
+            "workflowitem.update": ["ihealth", "sdistributor"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -157,14 +162,14 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-          "workflowitem.view": ["sdistributor", "msiddiqui", "ahealth"],
-          "workflowitem.assign": ["sdistributor", "msiddiqui"],
-          "workflowitem.close": ["ahealth"],
-          "workflowitem.update": ["ahealth", "sdistributor"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["sdistributor", "msiddiqui", "ahealth"],
+            "workflowitem.assign": ["sdistributor", "msiddiqui"],
+            "workflowitem.close": ["ahealth"],
+            "workflowitem.update": ["ahealth", "sdistributor"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -172,38 +177,41 @@
       ]
     },
     {
-       "displayName": "Shipment DTP 2/10",
+      "displayName": "Shipment DTP 2/10",
       "description": "DTP ordered from Novartis on 20/06/2018",
       "status": "closed",
-      "amount": "1000000",
       "currency": "EUR",
+      "projectedBudgets": [{
+        "organization": "ACMECorp",
+        "value": "1000000",
+        "currencyCode": "EUR"
+      }],
       "assignee": "msiddiqui",
       "permissions": {
-        "subproject.viewSummary": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth","ahealth"],
-        "subproject.viewDetails": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth","ahealth"],
+        "subproject.viewSummary": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth", "ahealth"],
+        "subproject.viewDetails": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth", "ahealth"],
         "subproject.close": ["msiddiqui"],
         "subproject.update": ["msiddiqui"],
-        "subproject.createWorkflowitem":["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth","ahealth"],
+        "subproject.createWorkflowitem": ["msiddiqui", "aproducer", "kdeliverer", "ccustoms", "sdistributor", "fhealth", "ihealth", "ahealth"],
         "subproject.reorderWorkflowitems": ["msiddiqui"],
         "subproject.viewHistory": ["msiddiqui"],
         "subproject.intent.listPermissions": ["msiddiqui"],
         "subproject.intent.grantPermission": ["msiddiqui"],
         "subproject.intent.revokePermission": ["msiddiqui"]
       },
-      "workflows": [
-        {
+      "workflows": [{
           "displayName": "Gavi to Novartis: Order",
           "status": "closed",
           "assignee": "msiddiqui",
           "permissions": {
-          "workflowitem.view": ["msiddiqui","aproducer"],
-          "workflowitem.assign": ["msiddiqui","aproducer"],
-          "workflowitem.close": ["aproducer"],
-          "workflowitem.update": ["msiddiqui","aproducer"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "aproducer"],
+            "workflowitem.assign": ["msiddiqui", "aproducer"],
+            "workflowitem.close": ["aproducer"],
+            "workflowitem.update": ["msiddiqui", "aproducer"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 1000000,
           "currency": "EUR",
           "amountType": "allocated"
@@ -213,14 +221,14 @@
           "status": "closed",
           "assignee": "aproducer",
           "permissions": {
-          "workflowitem.view": ["msiddiqui","aproducer", "kdeliverer"],
-          "workflowitem.assign": ["msiddiqui","aproducer", "kdeliverer"],
-          "workflowitem.close": ["kdeliverer"],
-          "workflowitem.update": ["aproducer", "kdeliverer"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "aproducer", "kdeliverer"],
+            "workflowitem.assign": ["msiddiqui", "aproducer", "kdeliverer"],
+            "workflowitem.close": ["kdeliverer"],
+            "workflowitem.update": ["aproducer", "kdeliverer"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 200000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -230,14 +238,14 @@
           "status": "closed",
           "assignee": "kdeliverer",
           "permissions": {
-          "workflowitem.view": ["msiddiqui","ccustoms", "kdeliverer"],
-          "workflowitem.assign": ["msiddiqui","ccustoms", "kdeliverer"],
-          "workflowitem.close": ["kdeliverer"],
-          "workflowitem.update": ["ccustoms", "kdeliverer"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "ccustoms", "kdeliverer"],
+            "workflowitem.assign": ["msiddiqui", "ccustoms", "kdeliverer"],
+            "workflowitem.close": ["kdeliverer"],
+            "workflowitem.update": ["ccustoms", "kdeliverer"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amount": 200000,
           "currency": "EUR",
           "amountType": "disbursed"
@@ -247,14 +255,14 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-          "workflowitem.view": ["msiddiqui", "sdistributor","ccustoms"],
-          "workflowitem.assign": ["msiddiqui", "sdistributor","ccustoms"],
-          "workflowitem.close": ["sdistributor"],
-          "workflowitem.update": ["sdistributor","ccustoms"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "sdistributor", "ccustoms"],
+            "workflowitem.assign": ["msiddiqui", "sdistributor", "ccustoms"],
+            "workflowitem.close": ["sdistributor"],
+            "workflowitem.update": ["sdistributor", "ccustoms"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amountType": "N/A"
         },
         {
@@ -262,14 +270,14 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-          "workflowitem.view": ["msiddiqui", "sdistributor"],
-          "workflowitem.assign": ["msiddiqui", "sdistributor"],
-          "workflowitem.close": ["sdistributor"],
-          "workflowitem.update": ["sdistributor"],
-          "workflowitem.intent.listPermissions": ["msiddiqui"],
-          "workflowitem.intent.grantPermission": ["msiddiqui"],
-          "workflowitem.intent.revokePermission": ["msiddiqui"]
-      },
+            "workflowitem.view": ["msiddiqui", "sdistributor"],
+            "workflowitem.assign": ["msiddiqui", "sdistributor"],
+            "workflowitem.close": ["sdistributor"],
+            "workflowitem.update": ["sdistributor"],
+            "workflowitem.intent.listPermissions": ["msiddiqui"],
+            "workflowitem.intent.grantPermission": ["msiddiqui"],
+            "workflowitem.intent.revokePermission": ["msiddiqui"]
+          },
           "amountType": "N/A"
         }
       ]

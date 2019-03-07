@@ -1,18 +1,25 @@
 import { AuthToken } from "../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
+import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { MultichainClient } from "../service/Client.h";
+import { ConnToken } from "../service/conn";
+import { ServiceUser } from "../service/domain/organization/service_user";
 import { getCurrentVote, voteForNetworkPermission } from "./controller/vote";
 import * as AccessVote from "./model/AccessVote";
 import * as Nodes from "./model/Nodes";
 import { WalletAddress } from "./model/Nodes";
 
 export async function voteHelper(
-  multichain: MultichainClient,
+  conn: ConnToken,
+  ctx: Ctx,
+  issuer: ServiceUser,
   user: AuthToken,
   targetAddress: WalletAddress,
   vote: AccessVote.t,
 ): Promise<HttpResponse> {
+  const multichain = conn.multichainClient;
+
   const callerAddress = user.organizationAddress;
   const currentVote = await getCurrentVote(multichain, callerAddress, targetAddress);
   const currentAccess = await getCurrentAccess(multichain, targetAddress);
@@ -42,7 +49,7 @@ export async function voteHelper(
     },
   } as AuthenticatedRequest;
 
-  return voteForNetworkPermission(multichain, fakeReq);
+  return voteForNetworkPermission(conn, ctx, issuer, fakeReq);
 }
 
 async function getCurrentAccess(

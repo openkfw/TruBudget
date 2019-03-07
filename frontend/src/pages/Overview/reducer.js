@@ -3,8 +3,10 @@ import { fromJS, Set } from "immutable";
 import {
   PROJECT_NAME,
   PROJECT_AMOUNT,
+  ADD_PROJECT_BUDGET,
   PROJECT_COMMENT,
   PROJECT_CURRENCY,
+  PROJECT_ORGANIZATION,
   CREATE_PROJECT_SUCCESS,
   PROJECT_CREATION_STEP,
   SHOW_CREATION_DIALOG,
@@ -29,7 +31,9 @@ const defaultState = fromJS({
     amount: "",
     description: "",
     thumbnail: "/Thumbnail_0001.jpg",
-    currency: ""
+    currency: "",
+    projectedBudgets: [],
+    organization: ""
   },
   idForPermissions: "",
   permissions: {},
@@ -84,10 +88,20 @@ export default function overviewReducer(state = defaultState, action) {
       return state.setIn(["projectToAdd", "displayName"], action.name);
     case PROJECT_AMOUNT:
       return state.setIn(["projectToAdd", "amount"], action.amount);
+    case ADD_PROJECT_BUDGET:
+      return state.merge({
+        projectToAdd: state
+          .getIn(["projectToAdd"])
+          .update("projectedBudgets", budgets => [...budgets, action.projectedBudget])
+          .set("amount", "")
+          .set("organization", "")
+      });
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
     case PROJECT_CURRENCY:
       return state.setIn(["projectToAdd", "currency"], action.currency);
+    case PROJECT_ORGANIZATION:
+      return state.setIn(["projectToAdd", "organization"], action.organization);
     case PROJECT_THUMBNAIL:
       return state.setIn(["projectToAdd", "thumbnail"], action.thumbnail);
     case CREATE_PROJECT_SUCCESS:

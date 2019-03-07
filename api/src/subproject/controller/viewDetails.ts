@@ -8,6 +8,11 @@ import * as Workflowitem from "../../workflowitem/model/Workflowitem";
 import * as Subproject from "../model/Subproject";
 import { fetchWorkflowitemOrdering } from "../model/WorkflowitemOrdering";
 import { sortWorkflowitems } from "../sortWorkflowitems";
+import * as ProjectGet from "../../service/project_get";
+import * as Result from "../../result";
+import { ConnToken } from "../../service/conn";
+import { Ctx } from "../../lib/ctx";
+import { ServiceUser } from "../../service/domain/organization/service_user";
 
 interface WorkflowitemDTO {
   allowedIntents: Intent[];
@@ -20,9 +25,13 @@ function removeEventLog(workflowitem: Workflowitem.WorkflowitemResource): Workfl
 }
 
 export async function getSubprojectDetails(
-  multichain: MultichainClient,
+  conn: ConnToken,
+  ctx: Ctx,
+  issuer: ServiceUser,
   req,
 ): Promise<HttpResponse> {
+  const multichain = conn.multichainClient;
+
   const input = req.query;
 
   const projectId: string = value("projectId", input.projectId, isNonemptyString);
@@ -47,15 +56,15 @@ export async function getSubprojectDetails(
     .then(unsortedItems => sortWorkflowitems(unsortedItems, ordering))
     .then(sortedItems => sortedItems.map(removeEventLog));
 
-  const parentProject = await Project.get(multichain, req.user, projectId).then(result => {
-    if (result.length) {
-      const { id, displayName } = result[0].data;
-      return { id, displayName };
-    } else {
-      // The callee is not allowed to see the parent project
-      return { id: undefined, displayName: undefined };
-    }
-  });
+  const project = await ProjectGet.getProject(conn, ctx, issuer, projectId);
+
+  const parentProject = Result.isOk(project)
+    ? { id: project.id, displayName: project.displayName }
+    : {
+        // The callee is not allowed to see the parent project
+        id: undefined,
+        displayName: undefined,
+      };
 
   return [
     200,
