@@ -96,7 +96,6 @@ export default function overviewReducer(state = defaultState, action) {
           .set("amount", "")
           .set("organization", "")
       });
-    // return state.updateIn(["projectToAdd", "projectedBudgets"], budgets => [...budgets, action.projectedBudget]);
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
     case PROJECT_CURRENCY:

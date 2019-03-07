@@ -10,25 +10,7 @@ import { toAmountString } from "../../helper";
 
 import _isEmpty from "lodash/isEmpty";
 
-import DropwDown from "../Common/NewDropdown";
-import TextInput from "../Common/TextInput";
-import MenuItem from "@material-ui/core/MenuItem";
-
-const styles = {
-  inputDiv: {
-    marginTop: 15,
-    marginBottom: 15,
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "red"
-  }
-};
-
 const ProjectDialogContent = props => {
-  let eId = 1;
   return (
     <div>
       <div>
@@ -42,29 +24,6 @@ const ProjectDialogContent = props => {
           comment={props.projectToAdd.description}
           commentOnChange={props.storeProjectComment}
         />
-      </div>
-      <Divider />
-      <div style={styles.inputDiv}>
-        {props.projectToAdd.projectedBudgets.length > 0
-          ? props.projectToAdd.projectedBudgets.map(item => (
-              <div key={(eId += 1)}>
-                <TextInput
-                  // TODO organization & helper
-                  value={item.organization}
-                  type="string"
-                  aria-label="organization"
-                  disabled={true}
-                  id="organizationoutput"
-                />
-                <DropwDown style={{ minWidth: 160 }} value={item.currencyCode} disabled={true} id="currenciesoutput">
-                  <MenuItem key={`m-${eId}`} value={item.currencyCode} disabled={true}>
-                    {item.currencyCode}
-                  </MenuItem>
-                </DropwDown>
-                <TextInput value={item.value} aria-label="amount" disabled={true} id="amountoutput" />
-              </div>
-            ))
-          : null}
       </div>
       <Divider />
       <div>

@@ -136,14 +136,15 @@ class Api {
       identity
     });
 
-  createSubProject = (projectId, name, amount, description, currency) =>
+  createSubProject = (projectId, name, amount, description, currency, projectedBudgets) =>
     instance.post(`/project.createSubproject`, {
       projectId,
       subproject: {
         displayName: name,
         amount,
         description,
-        currency
+        currency,
+        projectedBudgets
       }
     });
 

@@ -65,7 +65,7 @@ class Budget extends Component {
 
     return (
       <div>
-        {/* {projectedBudgets.length > 0
+        {projectedBudgets.length > 0
           ? projectedBudgets.map(item => (
               <div style={styles.inputDiv} key={(eId += 1)}>
                 <TextInput
@@ -82,7 +82,7 @@ class Budget extends Component {
                 <TextInput value={item.value} aria-label="amount" disabled={true} id="amountoutput" />
               </div>
             ))
-          : null} */}
+          : null}
         <div style={styles.inputDiv}>
           <TextInput
             // TODO organization & helper
@@ -137,7 +137,7 @@ class Budget extends Component {
             color="primary"
             data-test="create-project-button"
           >
-            T
+            +
           </Fab>
         </div>
       </div>

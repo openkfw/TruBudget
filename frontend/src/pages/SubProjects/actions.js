@@ -16,6 +16,9 @@ export const SUBPROJECT_NAME = "SUBPROJECT_NAME";
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
 export const SUBPROJECT_COMMENT = "SUBPROJECT_COMMENT";
 export const SUBPROJECT_CURRENCY = "SUBPROJECT_CURRENCY";
+export const SUBPROJECT_ORGANIZATION = "SUBPROJECT_ORGANIZATION";
+
+export const SUBPROJECT_PROJECTED_BUDGETS = "SUBPROJECT_PROJECTED_BUDGETS";
 
 export const FETCH_ALL_PROJECT_DETAILS = "FETCH_ALL_PROJECT_DETAILS";
 export const FETCH_ALL_PROJECT_DETAILS_SUCCESS = "FETCH_ALL_PROJECT_DETAILS_SUCCESS";
@@ -130,7 +133,15 @@ export function assignProject(projectId, assigneeId) {
   };
 }
 
-export function createSubProject(projectId, name, amount, description, currency, showLoading = false) {
+export function createSubProject(
+  projectId,
+  name,
+  amount,
+  description,
+  currency,
+  projectedBudgets,
+  showLoading = false
+) {
   return {
     type: CREATE_SUBPROJECT,
     projectId,
@@ -138,6 +149,7 @@ export function createSubProject(projectId, name, amount, description, currency,
     amount,
     description,
     currency,
+    projectedBudgets,
     showLoading
   };
 }
@@ -180,6 +192,20 @@ export function storeSubProjectCurrency(currency) {
   return {
     type: SUBPROJECT_CURRENCY,
     currency: currency
+  };
+}
+
+export function storeSubProjectOrganization(organization) {
+  return {
+    type: SUBPROJECT_ORGANIZATION,
+    organization: organization
+  };
+}
+
+export function addSubProjectProjectedBudgets(projectedBudgets) {
+  return {
+    type: SUBPROJECT_PROJECTED_BUDGETS,
+    projectedBudgets: projectedBudgets
   };
 }
 
