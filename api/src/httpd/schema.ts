@@ -1989,6 +1989,9 @@ const schemas = {
               type: "object",
               properties: {
                 created: { type: "boolean", example: "true" },
+                projectId: { type: "string" },
+                subprojectId: { type: "string" },
+                workflowitemId: { type: "string" },
               },
             },
           },

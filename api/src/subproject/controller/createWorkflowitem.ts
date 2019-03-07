@@ -173,7 +173,12 @@ export async function createWorkflowitem(multichain: MultichainClient, req): Pro
     201,
     {
       apiVersion: "1.0",
-      data: { created: true },
+      data: {
+        created: true,
+        projectId,
+        subprojectId,
+        workflowitemId,
+      },
     },
   ];
 }
