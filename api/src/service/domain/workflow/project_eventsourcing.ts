@@ -1,4 +1,5 @@
 import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -10,7 +11,6 @@ import * as ProjectPermissionGranted from "./project_permission_granted";
 import * as ProjectPermissionRevoked from "./project_permission_revoked";
 import { ProjectTraceEvent } from "./project_trace_event";
 import * as ProjectUpdated from "./project_updated";
-import deepcopy from "../../../lib/deepcopy";
 
 export function sourceProjects(
   ctx: Ctx,
@@ -95,7 +95,7 @@ function applyUpdate(
   projectUpdated: ProjectUpdated.Event,
   errors: EventSourcingError[],
 ) {
-  let project = deepcopy(projects.get(projectUpdated.projectId));
+  const project = deepcopy(projects.get(projectUpdated.projectId));
   if (project === undefined) return;
 
   const update = projectUpdated.update;
@@ -134,7 +134,7 @@ function applyAssign(
   projectAssigned: ProjectAssigned.Event,
   errors: EventSourcingError[],
 ) {
-  const project = projects.get(projectAssigned.projectId);
+  const project = deepcopy(projects.get(projectAssigned.projectId));
   if (project === undefined) return;
 
   project.assignee = projectAssigned.assignee;
@@ -164,7 +164,7 @@ function applyClose(
   projectClosed: ProjectClosed.Event,
   errors: EventSourcingError[],
 ) {
-  const project = projects.get(projectClosed.projectId);
+  const project = deepcopy(projects.get(projectClosed.projectId));
   if (project === undefined) return;
 
   project.status = "closed";
@@ -194,7 +194,7 @@ function applyGrantPermission(
   permissionGranted: ProjectPermissionGranted.Event,
   errors: EventSourcingError[],
 ) {
-  const project = projects.get(permissionGranted.projectId);
+  const project = deepcopy(projects.get(permissionGranted.projectId));
   if (project === undefined) return;
 
   const eligibleIdentities = project.permissions[permissionGranted.permission] || [];
@@ -228,7 +228,7 @@ function applyRevokePermission(
   permissionRevoked: ProjectPermissionRevoked.Event,
   errors: EventSourcingError[],
 ) {
-  const project = projects.get(permissionRevoked.projectId);
+  const project = deepcopy(projects.get(permissionRevoked.projectId));
   if (project === undefined) return;
 
   const eligibleIdentities = project.permissions[permissionRevoked.permission];

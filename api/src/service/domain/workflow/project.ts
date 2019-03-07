@@ -25,7 +25,7 @@ export interface Project {
   permissions: Permissions;
   log: ProjectTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
-  additionalData: {};
+  additionalData: object;
 }
 
 const schema = Joi.object({

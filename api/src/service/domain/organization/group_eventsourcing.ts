@@ -1,4 +1,5 @@
 import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -88,7 +89,7 @@ function applyMemberAdded(
   memberAdded: GroupMemberAdded.Event,
   errors: EventSourcingError[],
 ) {
-  const group = groups.get(memberAdded.groupId);
+  const group = deepcopy(groups.get(memberAdded.groupId));
   if (group === undefined) return;
 
   if (group.members.includes(memberAdded.newMember)) {
@@ -122,7 +123,7 @@ function applyMemberRemoved(
   memberRemoved: GroupMemberRemoved.Event,
   errors: EventSourcingError[],
 ) {
-  const group = groups.get(memberRemoved.groupId);
+  const group = deepcopy(groups.get(memberRemoved.groupId));
   if (group === undefined) return;
 
   const memberIdx = group.members.indexOf(memberRemoved.member);
@@ -158,7 +159,7 @@ function applyPermissionGranted(
   permissionGranted: GroupPermissionGranted.Event,
   errors: EventSourcingError[],
 ) {
-  const group = groups.get(permissionGranted.groupId);
+  const group = deepcopy(groups.get(permissionGranted.groupId));
   if (group === undefined) return;
 
   const eligibleIdentities = group.permissions[permissionGranted.permission] || [];
@@ -192,7 +193,7 @@ function applyPermissionRevoked(
   permissionRevoked: GroupPermissionRevoked.Event,
   errors: EventSourcingError[],
 ) {
-  const group = groups.get(permissionRevoked.groupId);
+  const group = deepcopy(groups.get(permissionRevoked.groupId));
   if (group === undefined) return;
 
   const eligibleIdentities = group.permissions[permissionRevoked.permission];
