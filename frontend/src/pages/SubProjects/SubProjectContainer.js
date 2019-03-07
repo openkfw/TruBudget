@@ -9,7 +9,9 @@ import {
   showEditDialog,
   closeProject,
   showSubProjectPermissions,
-  liveUpdateProject
+  liveUpdateProject,
+  showSubProjectInfo,
+  hideSubProjectInfo
 } from "./actions";
 
 import SubProjects from "./SubProjects";
@@ -25,6 +27,7 @@ import { canCreateSubProject, canAssignProject, canCloseProject } from "../../pe
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import SubprojectDialogContainer from "./SubprojectDialogContainer";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
+import SubProjectInfo from "./SubProjectInfo";
 
 class SubProjectContainer extends Component {
   constructor(props) {
@@ -70,6 +73,8 @@ class SubProjectContainer extends Component {
             subProjects={this.props.subProjects}
             title={strings.subproject.subproject_permissions_title}
           />
+          {/* // TODO: put SubProjectInfo in separate container */}
+          <SubProjectInfo {...this.props} />
           <SubprojectDialogContainer location={this.props.location} />
         </div>
       </div>
@@ -94,7 +99,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(showEditDialog(id, displayName, description, amount, currency)),
     fetchUser: () => dispatch(fetchUser(true)),
     closeProject: pId => dispatch(closeProject(pId, true)),
-    showSubProjectPermissions: id => dispatch(showSubProjectPermissions(id))
+    showSubProjectPermissions: id => dispatch(showSubProjectPermissions(id)),
+    showSubProjectInfo: id => dispatch(showSubProjectInfo(id)),
+    hideSubProjectInfo: () => dispatch(hideSubProjectInfo())
   };
 };
 
@@ -120,7 +127,9 @@ const mapStateToProps = state => {
     thumbnail: state.getIn(["detailview", "thumbnail"]),
     offset: state.getIn(["detailview", "offset"]),
     limit: state.getIn(["detailview", "limit"]),
-    projectedBudgets: state.getIn(["detailview", "projectedBudgets"])
+    projectedBudgets: state.getIn(["detailview", "projectedBudgets"]),
+    isSubProjectInfoShown: state.getIn(["detailview", "isSubProjectInfoShown"]),
+    idForInfo: state.getIn(["detailview", "idForInfo"])
   };
 };
 

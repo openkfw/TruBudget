@@ -13,11 +13,9 @@ export interface Subproject {
   status: "open" | "closed";
   displayName: string;
   description: string;
+  assignee?: string;
   currency: string;
   projectedBudgets: ProjectedBudget[];
-  exchangeRate: string;
-  billingDate: string;
-  assignee?: string;
   permissions: Permissions;
   log: HistoryEvent[];
   workflowitems: Map<string, Workflowitem.Workflowitem>;

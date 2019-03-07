@@ -108,6 +108,11 @@ function applyUpdate(
   if (update.thumbnail !== undefined) {
     project.thumbnail = update.thumbnail;
   }
+  if (update.additionalData) {
+    for (const key of Object.keys(update.additionalData)) {
+      project.additionalData[key] = update.additionalData[key];
+    }
+  }
 
   const result = Project.validate(project);
   if (Result.isErr(result)) {

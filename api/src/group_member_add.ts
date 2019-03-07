@@ -23,7 +23,7 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     groupId: Joi.string().required(),
     userId: Joi.string().required(),
-  }),
+  }).required(),
 });
 
 type RequestBody = RequestBodyV1;

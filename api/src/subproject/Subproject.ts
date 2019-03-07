@@ -3,6 +3,7 @@ import Joi = require("joi");
 import { getAllowedIntents, hasIntersection } from "../authz";
 import Intent from "../authz/intents";
 import { Permissions } from "../authz/types";
+import * as AdditionalData from "../service/domain/additional_data";
 import { User, userIdentities } from "./User";
 
 interface ProjectedBudget {
@@ -17,13 +18,12 @@ export interface Subproject {
   status: "open" | "closed";
   displayName: string;
   description: string;
+  assignee?: string;
   currency: string;
   projectedBudgets: ProjectedBudget[];
-  exchangeRate: string;
-  billingDate: string;
-  assignee?: string;
   permissions: Permissions;
   log: HistoryEvent[];
+  additionalData: object;
 }
 
 export interface ScrubbedSubproject {
@@ -32,13 +32,12 @@ export interface ScrubbedSubproject {
   status: "open" | "closed";
   displayName: string;
   description: string;
+  assignee?: string;
   currency: string;
   projectedBudgets: ProjectedBudget[];
-  exchangeRate: string;
-  billingDate: string;
-  assignee?: string;
   permissions: Permissions;
   log: ScrubbedHistoryEvent[];
+  additionalData: object;
 }
 
 interface HistoryEvent {
@@ -77,13 +76,12 @@ const schema = Joi.object({
       currencyCode: Joi.string(),
     }),
   ),
-  exchangeRate: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
-  billingDate: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
   assignee: Joi.string(),
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),
   log: Joi.array().required(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export function validateSubproject(input: Subproject): Subproject {
@@ -127,10 +125,9 @@ export function scrubHistory(subproject: Subproject, actingUser: User): Scrubbed
     description: subproject.description,
     currency: subproject.currency,
     projectedBudgets: subproject.projectedBudgets,
-    exchangeRate: subproject.exchangeRate,
-    billingDate: subproject.billingDate,
     assignee: subproject.assignee,
     permissions: subproject.permissions,
+    additionalData: subproject.additionalData,
     log,
   };
   return scrubbed;

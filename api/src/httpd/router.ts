@@ -244,13 +244,11 @@ export const registerRoutes = (
   multichainHost: string,
   backupApiPort: string,
   {
-    assignProject,
     workflowitemLister,
     workflowitemCloser,
     workflowitemUpdater,
     workflowitemAssigner,
   }: {
-    assignProject: ProjectAssigner;
     workflowitemLister: AllWorkflowitemsReader;
     workflowitemCloser: WorkflowitemCloser;
     workflowitemUpdater: WorkflowitemUpdater;

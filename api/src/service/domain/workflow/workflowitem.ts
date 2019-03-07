@@ -1,6 +1,7 @@
 import Joi = require("joi");
 
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
@@ -27,7 +28,7 @@ export interface Workflowitem {
   permissions: Permissions;
   log: WorkflowitemTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
-  additionalData: {};
+  additionalData: object;
 }
 
 export interface RedactedWorkflowitem {
@@ -108,7 +109,7 @@ const schema = Joi.object().keys({
   log: Joi.array()
     .required()
     .items(workflowitemTraceEventSchema),
-  additionalData: Joi.object().required(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export function validate(input: any): Result.Type<Workflowitem> {

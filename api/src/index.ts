@@ -154,7 +154,6 @@ function registerSelf(): Promise<boolean> {
  */
 
 registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, {
-  assignProject: HttpdMultichainAdapter.assignProject(db),
   workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(db),
   workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(db),
   workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(db),
@@ -320,7 +319,7 @@ ProjectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
         assignee: x.data.assignee,
         currency: x.data.currency,
         projectedBudgets: x.data.projectedBudgets,
-        additionalData: {},
+        additionalData: x.data.additionalData,
         permissions,
         log: x.log.map(l => ({
           entityId: l.key,
@@ -367,7 +366,7 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
         assignee: x.data.assignee,
         currency: x.data.currency,
         projectedBudgets: x.data.projectedBudgets,
-        additionalData: {},
+        additionalData: x.data.additionalData,
         permissions,
         log: x.log.map(l => ({
           entityId: l.key,

@@ -4,6 +4,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
+import * as AdditionalData from "../additional_data";
 import { StoredDocument, storedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -27,7 +28,7 @@ interface InitialData {
   documents: StoredDocument[];
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
-  additionalData: {};
+  additionalData: object;
 }
 
 const initialDataSchema = Joi.object({
@@ -50,7 +51,7 @@ const initialDataSchema = Joi.object({
     .items(storedDocumentSchema)
     .required(),
   permissions: permissionsSchema.required(),
-  additionalData: Joi.object().required(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export interface Event {

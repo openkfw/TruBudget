@@ -10,6 +10,7 @@ import { NotFound } from "../errors/not_found";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import * as AdditionalData from "../additional_data";
 import * as Project from "./project";
 import { sourceProjects } from "./project_eventsourcing";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
@@ -25,7 +26,6 @@ export interface RequestData {
   description?: string;
   assignee?: string;
   currency: string;
-  billingDate?: string;
   projectedBudgets?: ProjectedBudget[];
   additionalData?: object;
 }
@@ -38,9 +38,8 @@ const requestDataSchema = Joi.object({
   description: Joi.string().allow(""),
   assignee: Joi.string(),
   currency: Joi.string().required(),
-  billingDate: Joi.string(),
   projectedBudgets: projectedBudgetListSchema,
-  additionalData: Joi.object(),
+  additionalData: AdditionalData.schema,
 });
 
 export function validate(input: any): RequestData {
@@ -73,7 +72,6 @@ export async function createSubproject(
       description: reqData.description || "",
       assignee: reqData.assignee || creatingUser.id,
       currency: reqData.currency,
-      billingDate: reqData.billingDate,
       projectedBudgets: reqData.projectedBudgets || [],
       permissions: newDefaultPermissionsFor(creatingUser.id),
       additionalData: reqData.additionalData || {},

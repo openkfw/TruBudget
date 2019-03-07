@@ -76,6 +76,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           },
                         },
                       },
+                      additionalData: {
+                        type: "object",
+                        additionalProperties: true,
+                      },
                     },
                   },
                   log: {
@@ -148,6 +152,7 @@ interface ExposedProject {
       value: string;
       currencyCode: string;
     }>;
+    additionalData: object;
   };
 }
 
@@ -166,6 +171,7 @@ interface ExposedSubproject {
       value: string;
       currencyCode: string;
     }>;
+    additionalData: object;
   };
 }
 
@@ -223,6 +229,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             description: project.description,
             thumbnail: project.thumbnail,
             projectedBudgets: project.projectedBudgets,
+            additionalData: project.additionalData,
           },
         };
 
@@ -239,6 +246,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             assignee: subproject.assignee,
             currency: subproject.currency,
             projectedBudgets: subproject.projectedBudgets,
+            additionalData: subproject.additionalData,
           },
         }));
 

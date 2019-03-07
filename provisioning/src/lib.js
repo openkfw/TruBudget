@@ -25,11 +25,11 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       );
       await timeout(timeoutMs);
       return await withRetry(cb, --maxTimes);
-    } else if (err.response && err.response.status === 409) {
-      console.log("The item you tried to create already exists");
+    } else if (err.response && err.response.status >= 400 && err.response.status < 500) {
+      console.log("The request had no effect: a precondition was not fulfilled.");
     } else {
-      // console.log(err);
-      throw new Error(`Something strange happend ${err}`);
+      console.error(err);
+      process.exit(1);
     }
   }
 }

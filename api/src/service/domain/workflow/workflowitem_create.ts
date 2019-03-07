@@ -12,6 +12,7 @@ import { NotFound } from "../errors/not_found";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import * as AdditionalData from "../additional_data";
 import { StoredDocument, UploadedDocument, uploadedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -59,7 +60,7 @@ const requestDataSchema = Joi.object({
   dueDate: Joi.date().iso(),
   assignee: Joi.string(),
   documents: Joi.array().items(uploadedDocumentSchema),
-  additionalData: Joi.object(),
+  additionalData: AdditionalData.schema,
 });
 
 export function validate(input: any): Result.Type<RequestData> {

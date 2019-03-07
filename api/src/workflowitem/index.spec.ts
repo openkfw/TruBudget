@@ -40,6 +40,7 @@ function newWorkflowitem(id: string, permissions: object): Workflowitem {
     documents: [{ id: "abc", hash: "def" }],
     permissions,
     log: [],
+    additionalData: {},
   };
 }
 function newRedactedWorkflowitemFromWorkflowitem(item: Workflowitem): ScrubbedWorkflowitem {
@@ -58,6 +59,7 @@ function newRedactedWorkflowitemFromWorkflowitem(item: Workflowitem): ScrubbedWo
     permissions: null,
     log: null,
     documents: null,
+    additionalData: null,
   };
 }
 

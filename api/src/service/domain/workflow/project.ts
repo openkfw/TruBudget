@@ -6,6 +6,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions, permissionsSchema } from "../permissions";
+import * as AdditionalData from "../additional_data";
 import { ProjectTraceEvent, projectTraceEventSchema } from "./project_trace_event";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 
@@ -49,7 +50,7 @@ const schema = Joi.object({
   log: Joi.array()
     .required()
     .items(projectTraceEventSchema),
-  additionalData: Joi.object(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export function validate(input: any): Result.Type<Project> {

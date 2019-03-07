@@ -42,8 +42,8 @@ const requestBodyV1Schema = Joi.object({
       assignee: Joi.string(),
       thumbnail: Joi.string(),
       projectedBudgets: projectedBudgetListSchema,
-    }),
-  }),
+    }).required(),
+  }).required(),
 });
 
 type RequestBody = RequestBodyV1;

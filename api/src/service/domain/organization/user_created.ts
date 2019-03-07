@@ -2,6 +2,7 @@ import Joi = require("joi");
 import { VError } from "verror";
 
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import * as UserRecord from "../organization/user_record";
 import { Permissions, permissionsSchema } from "../permissions";
 import { Identity } from "./identity";
@@ -29,7 +30,7 @@ const initialDataSchema = Joi.object({
   address: Joi.string().required(),
   encryptedPrivKey: Joi.string().required(),
   permissions: permissionsSchema.required(),
-  additionalData: Joi.object().required(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export interface Event {

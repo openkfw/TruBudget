@@ -6,6 +6,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import * as AdditionalData from "../additional_data";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import { SubprojectTraceEvent, subprojectTraceEventSchema } from "./subproject_trace_event";
 
@@ -21,16 +22,11 @@ export interface Subproject {
   description: string;
   assignee?: string;
   currency: string;
-  billingDate?: string;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
   log: SubprojectTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
-
-  // TODO: remove!
-  amount?: string;
-  exchangeRate?: string;
 }
 
 const schema = Joi.object({
@@ -47,7 +43,6 @@ const schema = Joi.object({
     .required(),
   assignee: Joi.string(),
   currency: Joi.string().required(),
-  billingDate: Joi.string().when("status", { is: Joi.valid("closed"), then: Joi.required() }),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
@@ -55,10 +50,7 @@ const schema = Joi.object({
   log: Joi.array()
     .required()
     .items(subprojectTraceEventSchema),
-  additionalData: Joi.object(),
-  // TODO: remove!
-  amount: Joi.string(),
-  exchangeRate: Joi.string(),
+  additionalData: AdditionalData.schema.required(),
 });
 
 export function validate(input: any): Result.Type<Subproject> {

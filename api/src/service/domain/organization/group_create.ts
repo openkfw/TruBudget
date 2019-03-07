@@ -3,6 +3,7 @@ import Joi = require("joi");
 import Intent, { groupIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -31,7 +32,7 @@ const requestDataSchema = Joi.object({
     .allow("")
     .required(),
   members: Group.membersSchema.required(),
-  additionalData: Joi.object(),
+  additionalData: AdditionalData.schema,
 });
 
 export function validate(input: any): Result.Type<RequestData> {
