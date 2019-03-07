@@ -3,17 +3,21 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Table from "@material-ui/core/Table";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { withStyles } from "@material-ui/core";
+import { withStyles, Dialog } from "@material-ui/core";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import EditIcon from "@material-ui/icons/Edit";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Stepper from "@material-ui/core/Stepper";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
 
+import SubProjectInfo from "./SubProjectInfo";
 import { toAmountString, statusMapping } from "../../helper";
 import strings from "../../localizeStrings";
 import { canViewSubProjectDetails, canEditSubProject, canViewSubProjectPermissions } from "../../permissions";
@@ -31,7 +35,15 @@ const styles = {
   }
 };
 
-const getTableEntries = (classes, subProjects, location, history, showEditDialog, showSubProjectPermissions) => {
+const getTableEntries = (
+  classes,
+  subProjects,
+  location,
+  history,
+  showEditDialog,
+  showSubProjectPermissions,
+  showSubProjectInfo
+) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
     const { currency, status, amount, description, displayName, id, projectedBudgets } = data;
     const isOpen = status !== "closed";
@@ -96,6 +108,26 @@ const getTableEntries = (classes, subProjects, location, history, showEditDialog
                   </Tooltip>
                 ) : null}
               </div>
+              <div className={classes.button}>
+                {true ? (
+                  // TODO insert generic label
+                  <Tooltip id="tooltip-pedit" title="Additional info">
+                    <div>
+                      <IconButton
+                        data-test={`pe-button-${index}`}
+                        className={null}
+                        disabled={false}
+                        onClick={() => {
+                          console.log(id);
+                          showSubProjectInfo(id);
+                        }}
+                      >
+                        <InfoIcon />
+                      </IconButton>
+                    </div>
+                  </Tooltip>
+                ) : null}
+              </div>
             </div>
           </TableCell>
         </TableRow>
@@ -105,16 +137,26 @@ const getTableEntries = (classes, subProjects, location, history, showEditDialog
   });
 };
 
-const SubProjectTable = ({ classes, subProjects, history, location, showEditDialog, showSubProjectPermissions }) => {
+const SubProjectTable = ({
+  classes,
+  subProjects,
+  history,
+  location,
+  showEditDialog,
+  showSubProjectPermissions,
+  showSubProjectInfo,
+  isSubProjectInfoShown
+}) => {
   const tableEntries = getTableEntries(
     classes,
     subProjects,
     location,
     history,
     showEditDialog,
-    showSubProjectPermissions
+    showSubProjectPermissions,
+    showSubProjectInfo,
+    isSubProjectInfoShown
   );
-  console.log(subProjects);
   return (
     <Card>
       <CardHeader title={strings.common.subprojects} />

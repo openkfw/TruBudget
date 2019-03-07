@@ -37,6 +37,8 @@ export const FETCH_PROJECT_HISTORY_SUCCESS = "FETCH_PROJECT_HISTORY_SUCCESS";
 export const CLOSE_PROJECT = "CLOSE_PROJECT";
 export const CLOSE_PROJECT_SUCCESS = "CLOSE_PROJECT_SUCCESS";
 export const SHOW_SUBPROJECT_PERMISSIONS = "SHOW_SUBPROJECT_PERMISSIONS";
+export const SHOW_SUBPROJECT_INFO = "SHOW_SUBPROJECT_INFO";
+export const HIDE_SUBPROJECT_INFO = "HIDE_SUBPROJECT_INFO";
 export const HIDE_SUBPROJECT_PERMISSIONS = "HIDE_SUBPROJECT_PERMISSIONS";
 
 export const GRANT_SUBPROJECT_PERMISSION = "GRANT_SUBPROJECT_PERMISSION";
@@ -230,6 +232,19 @@ export function showSubProjectPermissions(id) {
   return {
     type: SHOW_SUBPROJECT_PERMISSIONS,
     id
+  };
+}
+
+export function showSubProjectInfo(id) {
+  return {
+    type: SHOW_SUBPROJECT_INFO,
+    id
+  };
+}
+
+export function hideSubProjectInfo() {
+  return {
+    type: HIDE_SUBPROJECT_INFO
   };
 }
 

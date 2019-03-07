@@ -16,6 +16,8 @@ import {
   FETCH_PROJECT_HISTORY_SUCCESS,
   HIDE_SUBPROJECT_PERMISSIONS,
   SHOW_SUBPROJECT_PERMISSIONS,
+  SHOW_SUBPROJECT_INFO,
+  HIDE_SUBPROJECT_INFO,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   SHOW_SUBPROJECT_CREATE,
   SHOW_SUBPROJECT_EDIT,
@@ -57,6 +59,8 @@ const defaultState = fromJS({
   limit: 30,
   allowedIntents: [],
   showSubProjectPermissions: false,
+  isSubProjectInfoShown: false,
+  idForInfo: "",
   permissions: [],
   idForPermissions: "",
   showProjectAssignees: false,
@@ -88,6 +92,11 @@ export default function detailviewReducer(state = defaultState, action) {
         idForPermissions: action.id,
         showSubProjectPermissions: true
       });
+    case SHOW_SUBPROJECT_INFO:
+      return state.merge({
+        idForInfo: fromJS(action.id),
+        isSubProjectInfoShown: true
+      });
     case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
       return state.set("permissions", fromJS(action.permissions));
     case HIDE_SUBPROJECT_PERMISSIONS:
@@ -118,6 +127,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showProjectAssignees", true);
     case HIDE_PROJECT_ASSIGNEES:
       return state.set("showProjectAssignees", false);
+    case HIDE_SUBPROJECT_INFO:
+      return state.set("isSubProjectInfoShown", false);
     case SET_HISTORY_OFFSET:
       return state.set("offset", action.offset);
     case FETCH_PROJECT_HISTORY:
