@@ -234,8 +234,8 @@ function applyUpdate(event: Event, resource: SubprojectResource): true | undefin
       if (update.displayName) data.displayName = update.displayName;
       if (update.description) data.description = update.description;
       if (update.currency) data.currency = update.currency;
-      if (update.additionalData) {
-        if (!data.additionalData) data.additionalData = {};
+      if (update.additionalData !== undefined) {
+        if (data.additionalData === undefined) data.additionalData = {};
         for (const key of Object.keys(update.additionalData)) {
           data.additionalData[key] = update.additionalData[key];
         }

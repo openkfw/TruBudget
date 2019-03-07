@@ -1,9 +1,10 @@
 import Joi = require("joi");
 
-import Intent from "../../../authz/intents";
+import Intent, { projectIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
+import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -16,7 +17,6 @@ import * as Project from "./project";
 import * as ProjectCreated from "./project_created";
 import { sourceProjects } from "./project_eventsourcing";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
-import { projectIntents } from "../../../authz/intents";
 
 /**
  * Initial data for the new project as given in the request.
@@ -32,6 +32,7 @@ export interface RequestData {
   assignee?: string;
   thumbnail?: string;
   projectedBudgets?: ProjectedBudget[];
+  additionalData?: AdditionalData.AdditionalData;
 }
 
 const requestDataSchema = Joi.object({
@@ -42,6 +43,7 @@ const requestDataSchema = Joi.object({
   assignee: Joi.string(),
   thumbnail: Joi.string().allow(""),
   projectedBudgets: projectedBudgetListSchema,
+  additionData: AdditionalData.schema,
 });
 
 export function validate(input: any): Result.Type<RequestData> {
@@ -71,7 +73,7 @@ export async function createProject(
     thumbnail: data.thumbnail || "",
     projectedBudgets: data.projectedBudgets || [],
     permissions: newDefaultPermissionsFor(creatingUser),
-    additionalData: {},
+    additionalData: data.additionalData || {},
   });
 
   if (await repository.projectExists(createEvent.project.id)) {

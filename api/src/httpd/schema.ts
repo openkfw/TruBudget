@@ -1650,7 +1650,7 @@ const schemas = {
                             },
                           },
                         },
-                        additionalData: { type: "object" },
+                        additionalData: { type: "object", additionalProperties: true },
                       },
                     },
                     log: {
@@ -1817,6 +1817,7 @@ const schemas = {
                   },
                 },
               },
+              additionalData: { type: "object" },
               projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
             },

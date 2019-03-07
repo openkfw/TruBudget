@@ -28,7 +28,7 @@ interface InitialData {
   documents: StoredDocument[];
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
-  additionalData: {};
+  additionalData: object;
 }
 
 const initialDataSchema = Joi.object({

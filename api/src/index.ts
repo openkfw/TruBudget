@@ -366,7 +366,7 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
         assignee: x.data.assignee,
         currency: x.data.currency,
         projectedBudgets: x.data.projectedBudgets,
-        additionalData: {},
+        additionalData: x.data.additionalData,
         permissions,
         log: x.log.map(l => ({
           entityId: l.key,

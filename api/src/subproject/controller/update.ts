@@ -13,6 +13,7 @@ import { MultichainClient } from "../../service/Client.h";
 import { ServiceUser } from "../../service/domain/organization/service_user";
 import { Event } from "../../service/event";
 import * as Subproject from "../model/Subproject";
+import logger from "../../lib/logger";
 
 export async function updateSubproject(
   conn: ConnToken,
@@ -28,12 +29,8 @@ export async function updateSubproject(
   const subprojectId: string = value("subprojectId", input.subprojectId, isNonemptyString);
 
   const theUpdate: Subproject.Update = {};
-  inheritDefinedProperties(theUpdate, input, [
-    "displayName",
-    "description",
-    "currency",
-    "additionalData",
-  ]);
+  inheritDefinedProperties(theUpdate, input, ["displayName", "description", "currency"]);
+  if (input.additionalData !== undefined) theUpdate.additionalData = input.additionalData;
 
   if (isEmpty(theUpdate)) {
     return ok();
