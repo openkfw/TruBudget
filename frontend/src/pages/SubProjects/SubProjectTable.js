@@ -18,6 +18,7 @@ import LaunchIcon from "@material-ui/icons/ZoomIn";
 import { toAmountString, statusMapping } from "../../helper";
 import strings from "../../localizeStrings";
 import { canViewSubProjectDetails, canEditSubProject, canViewSubProjectPermissions } from "../../permissions";
+import _isEmpty from "lodash/isEmpty";
 
 const styles = {
   tableText: {
@@ -46,14 +47,14 @@ const getTableEntries = (
     const isOpen = status !== "closed";
     const editDisabled = !(canEditSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
-    // const amountString = toAmountString(amount, currency);
-    const amountString = projectedBudgets.map(budget => {
-      let string = toAmountString(budget.value, budget.currencyCode);
-      string += "\n";
-      return string;
-    });
-    const redacted = displayName === null && amount === null;
+    const redacted = displayName === null && _isEmpty(projectedBudgets);
+
     if (!redacted) {
+      const amountString = projectedBudgets.map(budget => {
+        let string = toAmountString(budget.value, budget.currencyCode);
+        string += "\n";
+        return string;
+      });
       return (
         <TableRow key={index}>
           <TableCell className={classes.tableText}>{displayName}</TableCell>
