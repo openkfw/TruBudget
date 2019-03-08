@@ -10,6 +10,7 @@ import ContentAdd from "@material-ui/icons/Add";
 
 import { getCurrencies, preselectCurrency, fromAmountString, toAmountString } from "../../helper";
 import { withStyles } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
 
 const styles = {
   inputDiv: {
@@ -60,7 +61,8 @@ class Budget extends Component {
       organization,
       storeOrganization,
       projectedBudgets,
-      editDialogShown
+      editDialogShown,
+      hideAddButton = false
     } = this.props;
     const currencies = getCurrencies(parentCurrency);
     let eId = 1;
@@ -113,22 +115,27 @@ class Budget extends Component {
           >
             {this.getMenuItems(currencies)}
           </DropwDown>
-          <TextInput
+          <TextField
             label={budgetLabel}
             helperText={budgetHintText}
             value={budget}
             onChange={v => {
-              if (/^[0-9,.-]*$/.test(v)) storeBudget(v);
+              if (/^[0-9,.-]*$/.test(v.target.value)) storeBudget(v.target.value);
             }}
             onBlur={e => storeBudget(toAmountString(e.target.value))}
             onFocus={() => storeBudget(fromAmountString(budget))}
-            type="number"
+            type="text"
+            multiline={false}
             aria-label="amount"
             disabled={disabled || editDialogShown}
             id="amountinput"
+            style={{
+              width: "60%",
+              paddingRight: 20
+            }}
           />
         </div>
-        {!editDialogShown ? (
+        {!editDialogShown && !hideAddButton ? (
           <Fab
             className={null}
             size="small"

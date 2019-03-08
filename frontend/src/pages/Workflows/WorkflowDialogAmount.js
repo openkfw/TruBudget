@@ -93,6 +93,7 @@ class WorkflowDialogAmount extends Component {
               budget={workflowAmount}
               storeBudget={storeWorkflowAmount}
               disabled={budgetDisabled}
+              hideAddButton={true}
             />
           </div>
         ) : null}
