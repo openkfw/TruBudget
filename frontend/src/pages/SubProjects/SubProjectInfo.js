@@ -1,4 +1,3 @@
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -10,7 +9,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import React from "react";
 
 import strings from "../../localizeStrings";
-import { hideSubProjectInfo } from "./actions";
 
 const styles = {
   textfield: {
@@ -45,7 +43,6 @@ const styles = {
 
 const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectInfoShown, hideSubProjectInfo }) => {
   const subProjectForInfo = subProjects.find(item => item.data.id === idForInfo);
-  console.log(subProjectForInfo);
   return (
     <Dialog open={isSubProjectInfoShown} style={styles.dialog} onClose={hideSubProjectInfo}>
       <DialogTitle data-test="workflowInfoDialog">Info</DialogTitle>

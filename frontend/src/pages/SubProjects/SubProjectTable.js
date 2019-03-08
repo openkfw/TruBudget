@@ -10,14 +10,11 @@ import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { withStyles, Dialog } from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import EditIcon from "@material-ui/icons/Edit";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Stepper from "@material-ui/core/Stepper";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
 
-import SubProjectInfo from "./SubProjectInfo";
 import { toAmountString, statusMapping } from "../../helper";
 import strings from "../../localizeStrings";
 import { canViewSubProjectDetails, canEditSubProject, canViewSubProjectPermissions } from "../../permissions";
@@ -45,7 +42,7 @@ const getTableEntries = (
   showSubProjectInfo
 ) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
-    const { currency, status, amount, description, displayName, id, projectedBudgets } = data;
+    const { currency, status, amount, description, displayName, id } = data;
     const isOpen = status !== "closed";
     const editDisabled = !(canEditSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
@@ -118,7 +115,6 @@ const getTableEntries = (
                         className={null}
                         disabled={false}
                         onClick={() => {
-                          console.log(id);
                           showSubProjectInfo(id);
                         }}
                       >

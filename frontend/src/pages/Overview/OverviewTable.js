@@ -69,7 +69,6 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
       displayName,
       id,
       amount,
-      currency,
       description,
       status,
       thumbnail = "/Thumbnail_0008.jpg",
@@ -81,7 +80,6 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
       string += "\n";
       return string;
     });
-    console.log(amountString);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = tsToString(creationUnixTs);
@@ -160,9 +158,9 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                       data-test={`pe-button-${index}`}
                       className={classes.editIcon}
                       disabled={editDisabled}
-                      onClick={() =>
-                        showEditDialog(id, displayName, toAmountString(amount), currency, description, thumbnail)
-                      }
+                      onClick={() => {
+                        showEditDialog(id, displayName, toAmountString(amount), "EUR", description, thumbnail);
+                      }}
                     >
                       <EditIcon />
                     </IconButton>

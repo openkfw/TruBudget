@@ -66,7 +66,7 @@ const SubprojectDialog = props => {
       nextDisabled:
         _isEmpty(subprojectToAdd.displayName) ||
         _isEmpty(subprojectToAdd.description) ||
-        subprojectToAdd.projectedBudgets.length === 0 ||
+        (subprojectToAdd.projectedBudgets.length === 0 && !editDialogShown) ||
         // (_isEmpty(subprojectToAdd.amount) &&
         //   isNaN(parseFloat(subprojectToAdd.amount)) &&
         //   subprojectToAdd.projectedBudgets.length === 0) ||
@@ -81,6 +81,7 @@ const SubprojectDialog = props => {
         numberOfSteps={steps.length}
         dialogShown={createDialogShown}
         onDialogCancel={hideSubprojectDialog}
+        editDialogShown={editDialogShown}
         {...specifcProps}
         {...props}
       />

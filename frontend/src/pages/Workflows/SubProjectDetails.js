@@ -217,6 +217,7 @@ const SubProjectDetails = ({
   canAssignSubproject,
   parentProject,
   users,
+  projectedBudgets,
 
   showSubProjectAssignee,
   closeSubproject,
@@ -224,6 +225,11 @@ const SubProjectDetails = ({
   ...props
 }) => {
   const amountString = toAmountString(amount, currency);
+  // const amountString = projectedBudgets.map(budget => {
+  //   let string = toAmountString(budget.value, budget.currencyCode);
+  //   string += "\n";
+  //   return string;
+  // });
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = tsToString(created);

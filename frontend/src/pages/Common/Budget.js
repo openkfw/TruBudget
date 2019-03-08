@@ -8,7 +8,7 @@ import TextInput from "./TextInput";
 import Fab from "@material-ui/core/Fab";
 import ContentAdd from "@material-ui/icons/Add";
 
-import { getCurrencies, preselectCurrency, fromAmountString, toAmountString, amountTypes } from "../../helper";
+import { getCurrencies, preselectCurrency, fromAmountString, toAmountString } from "../../helper";
 import { withStyles } from "@material-ui/core";
 
 const styles = {
@@ -59,14 +59,15 @@ class Budget extends Component {
       addProjectedBudget,
       organization,
       storeOrganization,
-      projectedBudgets
+      projectedBudgets,
+      editDialogShown
     } = this.props;
     const currencies = getCurrencies(parentCurrency);
     let eId = 1;
 
     return (
       <div>
-        {projectedBudgets.length > 0
+        {projectedBudgets && projectedBudgets.length > 0
           ? projectedBudgets.map(item => (
               <div style={styles.inputDiv} key={(eId += 1)}>
                 <TextInput
@@ -85,27 +86,29 @@ class Budget extends Component {
             ))
           : null}
         <div style={styles.inputDiv}>
-          <TextInput
-            // TODO organization & helper
-            label="Organization"
-            helperText="e.g. 'MyOrganization'"
-            value={organization}
-            onChange={o => {
-              storeOrganization(o);
-            }}
-            onBlur={e => storeOrganization(e.target.value)}
-            onFocus={() => storeOrganization(organization)}
-            type="string"
-            aria-label="organization"
-            disabled={disabled}
-            id="organizationinput"
-          />
+          {storeOrganization ? (
+            <TextInput
+              // TODO organization & helper
+              label="Organization"
+              helperText="e.g. 'MyOrganization'"
+              value={organization}
+              onChange={o => {
+                storeOrganization(o);
+              }}
+              onBlur={e => storeOrganization(e.target.value)}
+              onFocus={() => storeOrganization(organization)}
+              type="string"
+              aria-label="organization"
+              disabled={disabled || editDialogShown}
+              id="organizationinput"
+            />
+          ) : null}
           <DropwDown
             style={{ minWidth: 160 }}
             floatingLabel={currencyTitle}
             value={currency}
             onChange={storeCurrency}
-            disabled={disabled}
+            disabled={disabled || editDialogShown}
             id="currencies"
           >
             {this.getMenuItems(currencies)}
@@ -121,28 +124,30 @@ class Budget extends Component {
             onFocus={() => storeBudget(fromAmountString(budget))}
             type="number"
             aria-label="amount"
-            disabled={disabled}
+            disabled={disabled || editDialogShown}
             id="amountinput"
           />
         </div>
-        <Fab
-          className={null}
-          size="small"
-          variant="round"
-          aria-label="create"
-          disabled={false}
-          onClick={() => {
-            addProjectedBudget({
-              organization: organization,
-              value: budget,
-              currencyCode: currency
-            });
-          }}
-          color="primary"
-          data-test="create-project-button"
-        >
-          <ContentAdd />
-        </Fab>
+        {!editDialogShown ? (
+          <Fab
+            className={null}
+            size="small"
+            variant="round"
+            aria-label="create"
+            disabled={false}
+            onClick={() => {
+              addProjectedBudget({
+                organization: organization,
+                value: budget,
+                currencyCode: currency
+              });
+            }}
+            color="primary"
+            data-test="create-project-button"
+          >
+            <ContentAdd />
+          </Fab>
+        ) : null}
       </div>
     );
   }
