@@ -10,11 +10,11 @@ import { Ctx } from "./lib/ctx";
 import logger from "./lib/logger";
 import * as Result from "./result";
 import { Identity } from "./service/domain/organization/identity";
+import { ServiceUser } from "./service/domain/organization/service_user";
 import {
   GlobalPermissions,
   identitiesAuthorizedFor,
 } from "./service/domain/workflow/global_permissions";
-import { ServiceUser } from "./service/domain/organization/service_user";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";

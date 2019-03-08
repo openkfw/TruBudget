@@ -16,6 +16,7 @@ import { ServiceUser } from "./service_user";
 import * as UserCreated from "./user_created";
 import { sourceUserRecords } from "./user_eventsourcing";
 import * as UserRecord from "./user_record";
+import * as GlobalPermissionGranted from "../workflow/global_permission_granted";
 
 export interface RequestData {
   userId: string;
@@ -61,7 +62,8 @@ export async function createUser(
     passwordHash: "...",
     address: "...",
     encryptedPrivKey: "...",
-    permissions: newDefaultPermissionsFor(creatingUser.id),
+    // TODO user permissions are currently managed in global-permissions:
+    permissions: {},
     additionalData: data.additionalData || {},
   };
 
@@ -103,14 +105,10 @@ export async function createUser(
     return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, errors)] };
   }
 
-  return { newEvents: [createEvent], errors: [] };
-}
+  // Create events that'll grant default permissions to the user:
+  const defaultPermissionGrantedEvents = userDefaultIntents.map(intent =>
+    GlobalPermissionGranted.createEvent(ctx.source, publisher, intent, createEvent.user.id),
+  );
 
-function newDefaultPermissionsFor(userId: UserRecord.Id): Permissions {
-  // The user can always do anything anyway:
-  if (userId === "root") return {};
-
-  // All group related permissions granted by default:
-  const intents: Intent[] = userDefaultIntents;
-  return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
+  return { newEvents: [createEvent, ...defaultPermissionGrantedEvents], errors: [] };
 }

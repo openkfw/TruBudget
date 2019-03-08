@@ -3,15 +3,14 @@ import { Ctx } from "../../../lib/ctx";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
-import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as GlobalPermissionRevoked from "./global_permission_revoked";
-import { GlobalPermissions, identitiesAuthorizedFor } from "./global_permissions";
+import * as GlobalPermissions from "./global_permissions";
 import { sourceProjects } from "./project_eventsourcing";
 
 interface Repository {
-  getGlobalPermissions(): Promise<GlobalPermissions>;
+  getGlobalPermissions(): Promise<GlobalPermissions.GlobalPermissions>;
 }
 
 export async function revokeGlobalPermission(
@@ -32,11 +31,7 @@ export async function revokeGlobalPermission(
   // Check authorization (if not root):
   if (issuer.id !== "root") {
     const currentGlobalPermissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(
-      currentGlobalPermissions,
-      "global.revokePermission",
-    ).some(identity => canAssumeIdentity(issuer, identity));
-    if (!isAuthorized) {
+    if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, ["global.revokePermission"])) {
       return {
         newEvents: [],
         errors: [new NotAuthorized(ctx, issuer.id, globalPermissionRevoked)],

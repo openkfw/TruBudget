@@ -3,15 +3,14 @@ import { Ctx } from "../../../lib/ctx";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
-import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as GlobalPermissionGranted from "./global_permission_granted";
-import { GlobalPermissions, identitiesAuthorizedFor } from "./global_permissions";
+import * as GlobalPermissions from "./global_permissions";
 import { sourceProjects } from "./project_eventsourcing";
 
 interface Repository {
-  getGlobalPermissions(): Promise<GlobalPermissions>;
+  getGlobalPermissions(): Promise<GlobalPermissions.GlobalPermissions>;
 }
 
 export async function grantGlobalPermission(
@@ -32,11 +31,7 @@ export async function grantGlobalPermission(
   // Check authorization (if not root):
   if (issuer.id !== "root") {
     const currentGlobalPermissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(
-      currentGlobalPermissions,
-      "global.grantPermission",
-    ).some(identity => canAssumeIdentity(issuer, identity));
-    if (!isAuthorized) {
+    if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, ["global.grantPermission"])) {
       return {
         newEvents: [],
         errors: [new NotAuthorized(ctx, issuer.id, globalPermissionGranted)],

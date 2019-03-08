@@ -2,9 +2,9 @@ import Joi = require("joi");
 import { VError } from "verror";
 
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
-import * as AdditionalData from "../additional_data";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 
