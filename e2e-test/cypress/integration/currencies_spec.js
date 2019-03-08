@@ -29,22 +29,23 @@ describe("Overview Page", function() {
     cy.visit(`/projects`);
   });
 
-  it("Shows all the currencies dropdown when editing a project", function() {
-    // Create project just to have at least one
-    const projectName = "First Project";
-    cy.createProject(projectName, projectName, standardBudget);
+  // Disabled until implementation of editing a project is final
+  // it("Shows all the currencies dropdown when editing a project", function() {
+  //   // Create project just to have at least one
+  //   const projectName = "First Project";
+  //   cy.createProject(projectName, projectName, standardBudget);
 
-    cy.get("[data-test=pe-button-0]").click();
-    cy.get("[data-test=creation-dialog]").should("be.visible");
-    cy.get("[data-test=dropdown-currencies]").should("be.visible");
-    cy.get("[data-test=dropdown-currencies-click]").click();
-    currenciesArray.forEach(currency => {
-      cy.get(`[data-value=${currency}]`).should("be.visible");
-    });
-    //To close the dropdown we need to click on one of the elements
-    cy.get(`[data-value=${currenciesArray[0]}]`).click();
-    cy.get("[data-test=cancel]").click();
-  });
+  //   cy.get("[data-test=pe-button-0]").click();
+  //   cy.get("[data-test=creation-dialog]").should("be.visible");
+  //   cy.get("[data-test=dropdown-currencies]").should("be.visible");
+  //   cy.get("[data-test=dropdown-currencies-click]").click();
+  //   currenciesArray.forEach(currency => {
+  //     cy.get(`[data-value=${currency}]`).should("be.visible");
+  //   });
+  //   //To close the dropdown we need to click on one of the elements
+  //   cy.get(`[data-value=${currenciesArray[0]}]`).click();
+  //   cy.get("[data-test=cancel]").click();
+  // });
 
   it("Shows all the currencies dropdown when creating a project", function() {
     cy.get("[data-test=create-project-button]").click();
@@ -59,7 +60,7 @@ describe("Overview Page", function() {
   });
 
   it("Selects every currency successively", function() {
-    cy.get("[data-test=pe-button-0]").click();
+    cy.get("[data-test=create-project-button]").click();
     cy.get("[data-test=creation-dialog]").should("be.visible");
     cy.get("[data-test=dropdown-currencies]").should("be.visible");
     cy.get("[data-test=dropdown-currencies-click]").click();
