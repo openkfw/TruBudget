@@ -1,4 +1,5 @@
 import * as fastify from "fastify";
+
 import { projectIntents } from "../authz/intents";
 
 export interface SwaggerSchema extends fastify.RouteSchema {
@@ -1505,8 +1506,7 @@ const schemas = {
                             },
                           },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
-                          billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-                          exchangeRate: { type: "string", example: "1.0" },
+                          additionalData: { type: "object", additionalProperties: true },
                         },
                       },
                       log: {
