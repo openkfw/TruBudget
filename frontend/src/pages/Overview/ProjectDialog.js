@@ -29,10 +29,12 @@ const handleEdit = props => {
   const changes = compareObjects(projects, projectToAdd);
 
   if (!_isEmpty(changes)) {
-    if (changes.amount) {
-      changes.amount = fromAmountString(changes.amount).toString();
-    }
-    editProject(projectToAdd.id, changes);
+    // TODO: Fix changes object when editing projectedBudget is enabled
+    editProject(projectToAdd.id, {
+      displayName: changes.displayName,
+      description: changes.description,
+      thumbnail: changes.thumbnail
+    });
     storeSnackbarMessage(strings.common.edited + " " + strings.common.project + " " + projectToAdd.displayName);
   }
   onDialogCancel();

@@ -28,10 +28,11 @@ const handleEdit = props => {
   const changes = compareObjects(subProjects, subprojectToAdd);
   const projectId = location.pathname.split("/")[2];
   if (!_isEmpty(changes)) {
-    if (changes.amount) {
-      changes.amount = fromAmountString(changes.amount).toString();
-    }
-    editSubproject(projectId, subprojectToAdd.id, changes);
+    // TODO: Fix changes object if editing projectedBudgets is enabled
+    editSubproject(projectId, subprojectToAdd.id, {
+      displayName: changes.displayName,
+      description: changes.description
+    });
     storeSnackbarMessage(strings.common.edited + " " + strings.common.subproject + " " + subprojectToAdd.displayName);
   }
 
