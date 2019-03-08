@@ -38,9 +38,19 @@ const styles = {
   }
 };
 
-const loadFunc = (isLoading,fetchNextHistoryItems) => {
-  if(!isLoading) fetchNextHistoryItems();
+const loadFunc = (isLoading, fetchNextHistoryItems) => {
+  if (!isLoading) fetchNextHistoryItems();
 };
+
+function creationTimeExists(item) {
+  if (item.createdAt) {
+    return moment(item.createdAt).fromNow();
+  }
+  if (item.businessEvent.time) {
+    return moment(item.businessEvent.time).fromNow();
+  }
+  return "Processing ...";
+}
 
 export default ({
   offset,
@@ -59,22 +69,32 @@ export default ({
       <ListItem key={index}>
         <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
         <ListItemText
-          primary={mapIntent(i)}
-          secondary={i.createdAt ? moment(i.createdAt).fromNow() : "Processing ..."}
+          primary={
+            i.intent
+              ? mapIntent(i)
+              : mapIntent({
+                  createdBy: i.businessEvent.publisher,
+                  intent: i.businessEvent.type,
+                  data: {
+                    intent: i.businessEvent.permission || "",
+                    identity: i.businessEvent.grantee || i.businessEvent.revokee || ""
+                  },
+                  snapshot: i.snapshot
+                })
+          }
+          secondary={creationTimeExists(i)}
         />
       </ListItem>
     )
   );
-  const hasMore = (offset + limit >= historyItemsCount) && (historyItemsCount !== 0) ? false : true;
-  if(!hasMore && !isLoading) {
+  const hasMore = offset + limit >= historyItemsCount && historyItemsCount !== 0 ? false : true;
+  if (!hasMore && !isLoading) {
     items.push(
-      <ListItem key={historyItemsCount+1}>
+      <ListItem key={historyItemsCount + 1}>
         <Avatar alt={""} src="" />
-        <ListItemText
-          primary=""
-          secondary="Last Element reached"/>
+        <ListItemText primary="" secondary="Last Element reached" />
       </ListItem>
-    )
+    );
   }
   return (
     <Drawer open={show} onClose={close} anchor="right">
@@ -83,7 +103,7 @@ export default ({
           pageStart={0}
           initialLoad={false}
           useWindow={false}
-          loadMore={_ => loadFunc(isLoading,fetchNextHistoryItems)}
+          loadMore={_ => loadFunc(isLoading, fetchNextHistoryItems)}
           hasMore={hasMore}
           loader={
             <div className="loader" key={0} style={styles.loader}>

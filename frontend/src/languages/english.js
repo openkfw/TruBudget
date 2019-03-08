@@ -273,7 +273,7 @@ const en = {
   },
 
   history: {
-    changed_by: "{0} changed by {1}: ",
+    changed_by: "{0} changed by {1} ",
     created_project: "Project created ",
     created_subproject: "Subproject {0} created",
     created_workflow: "Workflow {0} created ",
