@@ -9,10 +9,9 @@ import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
-import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
-import { GlobalPermissions, identitiesAuthorizedFor } from "./global_permissions";
+import * as GlobalPermissions from "./global_permissions";
 import * as Project from "./project";
 import * as ProjectCreated from "./project_created";
 import { sourceProjects } from "./project_eventsourcing";
@@ -52,7 +51,7 @@ export function validate(input: any): Result.Type<RequestData> {
 }
 
 interface Repository {
-  getGlobalPermissions(): Promise<GlobalPermissions>;
+  getGlobalPermissions(): Promise<GlobalPermissions.GlobalPermissions>;
   projectExists(projectId: string): Promise<boolean>;
 }
 
@@ -86,10 +85,7 @@ export async function createProject(
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
     const permissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(permissions, "global.createProject").some(
-      identity => canAssumeIdentity(creatingUser, identity),
-    );
-    if (!isAuthorized) {
+    if (!GlobalPermissions.permits(permissions, creatingUser, ["global.createProject"])) {
       return { newEvents: [], errors: [new NotAuthorized(ctx, creatingUser.id, createEvent)] };
     }
   }

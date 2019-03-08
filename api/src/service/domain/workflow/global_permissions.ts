@@ -2,9 +2,11 @@ import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
-import { Identity } from "../organization/identity";
-import * as Permissions from "../permissions";
 import * as AdditionalData from "../additional_data";
+import { canAssumeIdentity } from "../organization/auth_token";
+import { Identity } from "../organization/identity";
+import { ServiceUser } from "../organization/service_user";
+import * as Permissions from "../permissions";
 import {
   GlobalPermissionsTraceEvent,
   globalPermissionsTraceEventSchema,
@@ -33,4 +35,19 @@ export function identitiesAuthorizedFor(
   intent: Intent,
 ): Identity[] {
   return globalPermissions.permissions[intent] || [];
+}
+
+export function permits(
+  globalPermissions: GlobalPermissions,
+  actingUser: ServiceUser,
+  intents: Intent[],
+): boolean {
+  const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
+    const eligibles = globalPermissions.permissions[intent] || [];
+    return acc.concat(eligibles);
+  }, []);
+  const hasPermission = eligibleIdentities.some(identity =>
+    canAssumeIdentity(actingUser, identity),
+  );
+  return hasPermission;
 }

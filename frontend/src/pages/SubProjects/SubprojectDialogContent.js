@@ -37,6 +37,7 @@ const SubprojectDialogContent = props => {
           storeOrganization={props.storeSubProjectOrganization}
           projectedBudgets={props.subprojectToAdd.projectedBudgets}
           addProjectedBudget={props.addSubProjectProjectedBudgets}
+          editDialogShown={props.editDialogShown}
         />
       </div>
     </div>

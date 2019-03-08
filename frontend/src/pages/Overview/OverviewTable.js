@@ -22,7 +22,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 
-import { toAmountString, statusMapping, tsToString } from "../../helper";
+import { toAmountString, statusMapping, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import { canCreateProject, canViewProjectDetails, canEditProject, canViewProjectPermissions } from "../../permissions";
 
@@ -69,7 +69,6 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
       displayName,
       id,
       amount,
-      currency,
       description,
       status,
       thumbnail = "/Thumbnail_0008.jpg",
@@ -81,10 +80,9 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
       string += "\n";
       return string;
     });
-    console.log(amountString);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
-    const dateString = tsToString(creationUnixTs);
+    const dateString = unixTsToString(creationUnixTs);
     const isOpen = status !== "closed";
     const editDisabled = !(canEditProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
@@ -160,9 +158,9 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                       data-test={`pe-button-${index}`}
                       className={classes.editIcon}
                       disabled={editDisabled}
-                      onClick={() =>
-                        showEditDialog(id, displayName, toAmountString(amount), currency, description, thumbnail)
-                      }
+                      onClick={() => {
+                        showEditDialog(id, displayName, toAmountString(amount), "EUR", description, thumbnail);
+                      }}
                     >
                       <EditIcon />
                     </IconButton>

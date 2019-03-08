@@ -41,7 +41,7 @@ interface Service {
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
-  server.post(
+  server.get(
     `${urlPrefix}/global.listPermissions`,
     mkSwaggerSchema(server),
     async (request, reply) => {

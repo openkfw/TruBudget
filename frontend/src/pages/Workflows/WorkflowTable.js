@@ -12,6 +12,7 @@ import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
 import strings from "../../localizeStrings";
 import { canReorderWorkflowItems } from "../../permissions.js";
+import _isEmpty from "lodash/isEmpty";
 
 const style = {
   paddingLeft: "0px"
@@ -48,7 +49,9 @@ const renderSortButton = props => (
   <Button
     variant="contained"
     color="primary"
-    disabled={!canReorderWorkflowItems(props.allowedIntents) || props.status === "closed"}
+    disabled={
+      !canReorderWorkflowItems(props.allowedIntents) || props.status === "closed" || _isEmpty(props.workflowItems)
+    }
     onClick={() => handleEnableWorkflowEdit(props)}
     style={{
       position: "relative",

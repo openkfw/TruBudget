@@ -2,11 +2,11 @@ import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
-import * as AdditionalData from "../additional_data";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import { SubprojectTraceEvent, subprojectTraceEventSchema } from "./subproject_trace_event";
 

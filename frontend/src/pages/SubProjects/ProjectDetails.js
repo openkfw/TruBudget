@@ -31,9 +31,9 @@ import {
   createTaskData,
   statusIconMapping,
   statusMapping,
-  tsToString,
   calculateUnspentAmount,
-  getProgressInformation
+  getProgressInformation,
+  unixTsToString
 } from "../../helper.js";
 
 import GaugeChart from "../Common/GaugeChart";
@@ -244,7 +244,7 @@ const ProjectDetails = ({
             <ListItemIcon>
               <DateIcon />
             </ListItemIcon>
-            <ListItemText primary={tsToString(projectTS)} secondary={strings.common.created} />
+            <ListItemText primary={unixTsToString(projectTS)} secondary={strings.common.created} />
           </ListItem>
           <Divider />
           <ListItem>

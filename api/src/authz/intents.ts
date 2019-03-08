@@ -66,6 +66,9 @@ export const globalIntents: Intent[] = [
   "network.voteForPermission",
   "network.approveNewOrganization",
   "network.approveNewNodeForExistingOrganization",
+  // TODO: those should probably be user intents rather than global ones:
+  "notification.list",
+  "notification.markRead",
 ];
 
 export const userAssignableIntents: Intent[] = [
