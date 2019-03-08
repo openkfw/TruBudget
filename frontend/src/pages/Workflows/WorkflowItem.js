@@ -185,6 +185,9 @@ const StepDot = props => {
 };
 
 function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
+  if (redacted || !sortenabled) {
+    return false;
+  }
   const intents = allowedIntents.filter(
     i =>
       i === "workflowitem.intent.listPermissions" ||
@@ -192,9 +195,7 @@ function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
       i === "workflowitem.intent.revokePermission"
   );
   // a user must have assign permissions or all three permission handling permissions
-  return !redacted && sortenabled && (allowedIntents.includes("workflowitem.assign") || intents.length === 3)
-    ? true
-    : false;
+  return allowedIntents.includes("workflowitem.assign") || intents.length === 3 ? true : false;
 }
 const editWorkflow = ({ id, displayName, amount, amountType, currency, description, status, documents }, props) => {
   // Otherwise we need to deal with undefined which causes errors in the editDialog
