@@ -1,7 +1,7 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import Intent, { projectIntents } from "../../../authz/intents";
+import Intent, { globalIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 
@@ -26,7 +26,7 @@ export const schema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
-  permission: Joi.valid(projectIntents).required(),
+  permission: Joi.valid(globalIntents).required(),
   revokee: Joi.string().required(),
 });
 
