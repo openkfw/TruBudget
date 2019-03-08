@@ -121,7 +121,7 @@ export default function detailviewReducer(state = defaultState, action) {
         assignee: fromJS(subproject.data.assignee),
         workflowItems: fromJS(workflowitems),
         parentProject: fromJS(parentProject),
-        projectedBudgets: subproject.data.projectedBudgets
+        projectedBudgets: fromJS(subproject.data.projectedBudgets)
       });
     case SHOW_WORKFLOW_EDIT:
       return state.merge({

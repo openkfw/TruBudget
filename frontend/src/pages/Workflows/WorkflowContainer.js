@@ -191,7 +191,7 @@ const mapStateToProps = state => {
     offset: state.getIn(["workflow", "offset"]),
     limit: state.getIn(["workflow", "limit"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
-    projectProjectedBudges: state.getIn(["detailview", "projectProjectedBudgets"])
+    projectedBudgets: state.getIn(["workflow", "projectedBudgets"])
   };
 };
 
