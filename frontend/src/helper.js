@@ -106,6 +106,11 @@ export const tsToString = ts => {
   return dateString;
 };
 
+export const unixTsToString = ts => {
+  let dateString = moment(new Date(ts * 1000)).format("MMM D, YYYY");
+  return dateString;
+};
+
 export const statusMapping = status => {
   switch (status) {
     case "closed":

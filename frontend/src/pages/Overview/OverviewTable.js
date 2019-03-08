@@ -22,7 +22,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 
-import { toAmountString, statusMapping, tsToString } from "../../helper";
+import { toAmountString, statusMapping, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import { canCreateProject, canViewProjectDetails, canEditProject, canViewProjectPermissions } from "../../permissions";
 
@@ -82,7 +82,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
     });
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
-    const dateString = tsToString(creationUnixTs);
+    const dateString = unixTsToString(creationUnixTs);
     const isOpen = status !== "closed";
     const editDisabled = !(canEditProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
