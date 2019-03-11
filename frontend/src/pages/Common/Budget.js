@@ -27,7 +27,7 @@ const styles = {
 
 class Budget extends Component {
   componentWillMount() {
-    if (_isEmpty(this.props.currency)) {
+    if (_isEmpty(this.props.currency) && this.props.storeCurrency) {
       preselectCurrency(this.props.parentCurrency, this.props.storeCurrency);
     }
   }
@@ -66,7 +66,7 @@ class Budget extends Component {
     } = this.props;
     const currencies = getCurrencies(parentCurrency);
     let eId = 1;
-
+    console.log(projectedBudgets);
     return (
       <div>
         {projectedBudgets && projectedBudgets.length > 0
@@ -101,7 +101,6 @@ class Budget extends Component {
               onFocus={() => storeOrganization(organization)}
               type="string"
               aria-label="organization"
-              disabled={disabled || editDialogShown}
               id="organizationinput"
             />
           ) : null}
@@ -110,7 +109,6 @@ class Budget extends Component {
             floatingLabel={currencyTitle}
             value={currency}
             onChange={storeCurrency}
-            disabled={disabled || editDialogShown}
             id="currencies"
           >
             {this.getMenuItems(currencies)}
@@ -127,7 +125,6 @@ class Budget extends Component {
             type="text"
             multiline={false}
             aria-label="amount"
-            disabled={disabled || editDialogShown}
             id="amountinput"
             style={{
               width: "60%",
@@ -135,7 +132,7 @@ class Budget extends Component {
             }}
           />
         </div>
-        {!editDialogShown && !hideAddButton ? (
+        {!hideAddButton ? (
           <Fab
             className={null}
             size="small"

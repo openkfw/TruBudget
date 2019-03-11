@@ -179,7 +179,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                       className={classes.editIcon}
                       disabled={editDisabled}
                       onClick={() => {
-                        showEditDialog(id, displayName, toAmountString(amount), "EUR", description, thumbnail);
+                        showEditDialog(id, displayName, description, thumbnail, projectedBudgets);
                       }}
                     >
                       <EditIcon />

@@ -14,10 +14,8 @@ export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
 export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
 
 export const PROJECT_NAME = "PROJECT_NAME";
-export const PROJECT_AMOUNT = "PROJECT_AMOUNT";
 export const ADD_PROJECT_BUDGET = "ADD_PROJECT_BUDGET";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
-export const PROJECT_CURRENCY = "PROJECT_CURRENCY";
 export const PROJECT_ORGANIZATION = "PROJECT_ORGANIZATION";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
@@ -93,15 +91,14 @@ export function hideProjectDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, amount, currency, description, thumbnail) {
+export function showEditDialog(id, displayName, description, thumbnail, projectedBudgets) {
   return {
     type: SHOW_EDIT_DIALOG,
     id,
     displayName,
-    amount,
-    currency,
     description,
-    thumbnail
+    thumbnail,
+    projectedBudgets
   };
 }
 
@@ -112,24 +109,10 @@ export function storeProjectName(name) {
   };
 }
 
-export function storeProjectAmount(amount) {
-  return {
-    type: PROJECT_AMOUNT,
-    amount: amount
-  };
-}
-
 export function addProjectedBudget(projectedBudget) {
   return {
     type: ADD_PROJECT_BUDGET,
     projectedBudget: projectedBudget
-  };
-}
-
-export function storeProjectCurrency(currency) {
-  return {
-    type: PROJECT_CURRENCY,
-    currency: currency
   };
 }
 

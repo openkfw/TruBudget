@@ -4,7 +4,7 @@ import Divider from "@material-ui/core/Divider";
 
 import strings from "../../localizeStrings";
 import ImageSelector from "../Common/ImageSelector";
-import Budget from "../Common/Budget";
+import Budget from "../Common/Budget2";
 import Identifier from "../Common/Identifier";
 import { toAmountString } from "../../helper";
 
@@ -24,6 +24,8 @@ const ProjectDialogContent = props => {
         />
       </div>
       <Divider />
+      <ImageSelector onTouchTap={props.storeProjectThumbnail} selectedImage={props.projectToAdd.thumbnail} />
+      <Divider />
       <div>
         <Budget
           currencyTitle={strings.project.project_currency}
@@ -40,8 +42,6 @@ const ProjectDialogContent = props => {
           editDialogShown={props.editDialogShown}
         />
       </div>
-      <Divider />
-      <ImageSelector onTouchTap={props.storeProjectThumbnail} selectedImage={props.projectToAdd.thumbnail} />
     </div>
   );
 };

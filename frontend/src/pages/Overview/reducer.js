@@ -28,10 +28,8 @@ const defaultState = fromJS({
   projectToAdd: {
     id: "",
     displayName: "",
-    amount: "",
     description: "",
     thumbnail: "/Thumbnail_0001.jpg",
-    currency: "",
     projectedBudgets: [],
     organization: ""
   },
@@ -58,11 +56,10 @@ export default function overviewReducer(state = defaultState, action) {
         projectToAdd: state
           .getIn(["projectToAdd"])
           .set("id", action.id)
-          .set("currency", action.currency)
           .set("displayName", action.displayName)
-          .set("amount", action.amount)
           .set("description", action.description)
-          .set("thumbnail", action.thumbnail),
+          .set("thumbnail", action.thumbnail)
+          .set("projectedBudgets", fromJS(action.projectedBudgets)),
         currentStep: action.currentStep,
         editDialogShown: true
       });
@@ -86,20 +83,15 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set("permissions", fromJS(action.permissions));
     case PROJECT_NAME:
       return state.setIn(["projectToAdd", "displayName"], action.name);
-    case PROJECT_AMOUNT:
-      return state.setIn(["projectToAdd", "amount"], action.amount);
     case ADD_PROJECT_BUDGET:
       return state.merge({
         projectToAdd: state
           .getIn(["projectToAdd"])
-          .update("projectedBudgets", budgets => [...budgets, action.projectedBudget])
-          .set("amount", "")
+          .update("projectedBudgets", budgets => fromJS([...budgets, action.projectedBudget]))
           .set("organization", "")
       });
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
-    case PROJECT_CURRENCY:
-      return state.setIn(["projectToAdd", "currency"], action.currency);
     case PROJECT_ORGANIZATION:
       return state.setIn(["projectToAdd", "organization"], action.organization);
     case PROJECT_THUMBNAIL:
