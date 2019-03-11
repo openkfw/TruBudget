@@ -98,7 +98,7 @@ class Api {
     });
   listProjects = () => instance.get(`/project.list`);
 
-  createProject = (displayName, amount, description, currency, thumbnail, projectedBudgets) =>
+  createProject = (displayName, description, thumbnail, projectedBudgets) =>
     instance.post(`/global.createProject`, {
       project: {
         displayName,
@@ -134,12 +134,11 @@ class Api {
       identity
     });
 
-  createSubProject = (projectId, name, amount, description, currency, projectedBudgets) =>
+  createSubProject = (projectId, name, description, currency, projectedBudgets) =>
     instance.post(`/project.createSubproject`, {
       projectId,
       subproject: {
         displayName: name,
-        amount,
         description,
         currency,
         projectedBudgets

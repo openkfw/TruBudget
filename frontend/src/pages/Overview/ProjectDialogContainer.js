@@ -39,8 +39,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createProject: (name, amount, comment, currency, _, thumbnail, projectedBudgets) =>
-      dispatch(createProject(name, amount, comment, currency, thumbnail, projectedBudgets)),
+    createProject: (name, comment, thumbnail, projectedBudgets) =>
+      dispatch(createProject(name, comment, thumbnail, projectedBudgets)),
     editProject: (id, changes) => dispatch(editProject(id, changes)),
     hideProjectDialog: () => dispatch(hideProjectDialog()),
     storeProjectName: name => dispatch(storeProjectName(name)),

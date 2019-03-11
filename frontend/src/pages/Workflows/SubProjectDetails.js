@@ -6,6 +6,7 @@ import _isUndefined from "lodash/isUndefined";
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import DateIcon from "@material-ui/icons/DateRange";
@@ -173,6 +174,25 @@ const styles = {
   }
 };
 
+const displaySubprojectBudget = budgets => {
+  return (
+    <div>
+      {budgets.map((b, i) => {
+        return (
+          <div key={`subprojectedBudget-wf-${i}`} style={styles.budgets}>
+            <Tooltip title={b.organization}>
+              <Chip
+                avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
+                label={toAmountString(b.value, b.currencyCode)}
+              />
+            </Tooltip>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   return (
     <div style={styles.budget}>
@@ -224,13 +244,7 @@ const SubProjectDetails = ({
   ...props
 }) => {
   // const amountString = toAmountString(amount, currency);
-  const amountString = props.projectedBudgets
-    ? props.projectedBudgets.map(budget => {
-        let string = toAmountString(budget.value, budget.currencyCode);
-        string += "\n";
-        return string;
-      })
-    : "";
+  const amountString = displaySubprojectBudget(props.projectedBudgets);
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = tsToString(created);

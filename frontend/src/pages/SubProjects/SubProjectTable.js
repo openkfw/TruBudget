@@ -2,6 +2,8 @@ import React from "react";
 
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
 import Table from "@material-ui/core/Table";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,6 +16,7 @@ import { withStyles } from "@material-ui/core";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import EditIcon from "@material-ui/icons/Edit";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
+import MoreIcon from "@material-ui/icons/MoreHoriz";
 
 import { toAmountString, statusMapping } from "../../helper";
 import strings from "../../localizeStrings";
@@ -30,7 +33,53 @@ const styles = {
   },
   button: {
     width: "33%"
+  },
+  budgetContainer: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  budget: {
+    margin: "4px"
   }
+};
+
+const displaySubprojectBudget = budgets => {
+  const consolidatedBudgets = budgets.reduce((acc, next) => {
+    acc[next.currencyCode] = acc[next.currencyCode] ? [...acc[next.currencyCode], next] : [next];
+    return acc;
+  }, {});
+
+  let display = [];
+  for (const currencyCode in consolidatedBudgets) {
+    const numberOfBudgets = consolidatedBudgets[currencyCode].length;
+    display.push(
+      <div key={`projectedBudget-sp-${currencyCode}`} style={styles.budget}>
+        <Tooltip
+          title={
+            <div>
+              {consolidatedBudgets[currencyCode].map((b, i) => (
+                <div key={`tt-pb-sp-${i}`}>{`${b.organization}: ${toAmountString(b.value, currencyCode)}`}</div>
+              ))}
+            </div>
+          }
+        >
+          <Chip
+            avatar={
+              <Avatar>
+                {numberOfBudgets === 1 ? consolidatedBudgets[currencyCode][0].organization.slice(0, 1) : <MoreIcon />}
+              </Avatar>
+            }
+            label={toAmountString(
+              consolidatedBudgets[currencyCode].reduce((acc, next) => acc + parseFloat(next.value), 0),
+              currencyCode
+            )}
+          />
+        </Tooltip>
+      </div>
+    );
+  }
+
+  return <div style={styles.budgetContainer}>{display}</div>;
 };
 
 const getTableEntries = (
@@ -50,11 +99,7 @@ const getTableEntries = (
     const redacted = displayName === null && _isEmpty(projectedBudgets);
 
     if (!redacted) {
-      const amountString = projectedBudgets.map(budget => {
-        let string = toAmountString(budget.value, budget.currencyCode);
-        string += "\n";
-        return string;
-      });
+      const amountString = displaySubprojectBudget(projectedBudgets);
       return (
         <TableRow key={index}>
           <TableCell className={classes.tableText}>{displayName}</TableCell>

@@ -38,8 +38,8 @@ const mapDispatchToProps = dispatch => {
   return {
     hideSubprojectDialog: () => dispatch(hideSubprojectDialog()),
     storeSubProjectName: name => dispatch(storeSubProjectName(name)),
-    createSubProject: (subprojectName, amount, description, currency, parentName, projectedBudget) =>
-      dispatch(createSubProject(parentName, subprojectName, amount, description, currency, projectedBudget)),
+    createSubProject: (subprojectName, description, currency, parentName, projectedBudget) =>
+      dispatch(createSubProject(parentName, subprojectName, description, currency, projectedBudget)),
     editSubproject: (pId, sId, changes) => dispatch(editSubproject(pId, sId, changes)),
     storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),

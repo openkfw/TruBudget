@@ -43,13 +43,11 @@ export function fetchAllProjects(showLoading = false) {
   };
 }
 
-export function createProject(name, amount, comment, currency, thumbnail, projectedBudgets) {
+export function createProject(name, comment, thumbnail, projectedBudgets) {
   return {
     type: CREATE_PROJECT,
     name,
-    amount,
     comment,
-    currency,
     thumbnail,
     projectedBudgets
   };

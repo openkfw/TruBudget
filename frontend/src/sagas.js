@@ -325,15 +325,7 @@ export function* fetchVersionsSaga() {
 
 export function* createProjectSaga(action) {
   yield execute(function*() {
-    yield callApi(
-      api.createProject,
-      action.name,
-      action.amount,
-      action.comment,
-      action.currency,
-      action.thumbnail,
-      action.projectedBudgets
-    );
+    yield callApi(api.createProject, action.name, action.comment, action.thumbnail, action.projectedBudgets);
     yield showSnackbarSuccess();
     yield put({
       type: CREATE_PROJECT_SUCCESS
@@ -359,17 +351,9 @@ export function* editProjectSaga({ projectId, changes }) {
   }, true);
 }
 
-export function* createSubProjectSaga({
-  projectId,
-  name,
-  amount,
-  description,
-  currency,
-  projectedBudgets,
-  showLoading
-}) {
+export function* createSubProjectSaga({ projectId, name, description, currency, projectedBudgets, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.createSubProject, projectId, name, `${amount}`, description, currency, projectedBudgets);
+    yield callApi(api.createSubProject, projectId, name, description, currency, projectedBudgets);
     yield showSnackbarSuccess();
     yield put({
       type: CREATE_SUBPROJECT_SUCCESS

@@ -9,14 +9,13 @@ import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
   const { createSubProject, onDialogCancel, subprojectToAdd, location, storeSnackbarMessage } = props;
-  const { displayName, amount, description, currency, projectedBudgets } = subprojectToAdd;
+  const { displayName, description, currency, projectedBudgets } = subprojectToAdd;
   createSubProject(
     displayName,
-    fromAmountString(amount).toString(),
     description,
     currency,
     location.pathname.split("/")[2],
-    projectedBudgets
+    projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) }))
   );
   onDialogCancel();
   storeSnackbarMessage(strings.common.added + " " + strings.common.subproject + " " + displayName);

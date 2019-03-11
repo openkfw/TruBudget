@@ -135,20 +135,11 @@ export function assignProject(projectId, assigneeId) {
   };
 }
 
-export function createSubProject(
-  projectId,
-  name,
-  amount,
-  description,
-  currency,
-  projectedBudgets,
-  showLoading = false
-) {
+export function createSubProject(projectId, name, description, currency, projectedBudgets, showLoading = false) {
   return {
     type: CREATE_SUBPROJECT,
     projectId,
     name,
-    amount,
     description,
     currency,
     projectedBudgets,
