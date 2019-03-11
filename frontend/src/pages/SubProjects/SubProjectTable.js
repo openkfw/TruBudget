@@ -5,7 +5,6 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import Table from "@material-ui/core/Table";
-import InfoIcon from "@material-ui/icons/InfoOutlined";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -89,10 +88,10 @@ const getTableEntries = (
   history,
   showEditDialog,
   showSubProjectPermissions,
-  showSubProjectInfo
+  showSubProjectAdditionalData
 ) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
-    const { currency, status, amount, description, displayName, id, projectedBudgets } = data;
+    const { currency, status, description, displayName, id, projectedBudgets } = data;
     const isOpen = status !== "closed";
     const editDisabled = !(canEditSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
@@ -108,12 +107,26 @@ const getTableEntries = (
           <TableCell>
             <div className={classes.buttonContainer}>
               <div className={classes.button}>
+                <Tooltip id="tooltip-additionalData" title="Additional Data">
+                  <div>
+                    <IconButton
+                      data-test={`adata-button-${index}`}
+                      onClick={() => {
+                        showSubProjectAdditionalData(id);
+                      }}
+                    >
+                      <MoreIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              </div>
+              <div className={classes.button}>
                 {isOpen && !editDisabled ? (
                   <Tooltip id="tooltip-pedit" title={strings.common.edit}>
                     <div>
                       <IconButton
                         disabled={editDisabled}
-                        onClick={() => showEditDialog(id, displayName, description, toAmountString(amount), currency)}
+                        onClick={() => showEditDialog(id, displayName, description, currency, projectedBudgets)}
                       >
                         <EditIcon />
                       </IconButton>
@@ -151,25 +164,6 @@ const getTableEntries = (
                   </Tooltip>
                 ) : null}
               </div>
-              <div className={classes.button}>
-                {true ? (
-                  // TODO insert generic label
-                  <Tooltip id="tooltip-pedit" title="Additional info">
-                    <div>
-                      <IconButton
-                        data-test={`pe-button-${index}`}
-                        className={null}
-                        disabled={false}
-                        onClick={() => {
-                          showSubProjectInfo(id);
-                        }}
-                      >
-                        <InfoIcon />
-                      </IconButton>
-                    </div>
-                  </Tooltip>
-                ) : null}
-              </div>
             </div>
           </TableCell>
         </TableRow>
@@ -186,8 +180,8 @@ const SubProjectTable = ({
   location,
   showEditDialog,
   showSubProjectPermissions,
-  showSubProjectInfo,
-  isSubProjectInfoShown
+  showSubProjectAdditionalData,
+  isSubProjectAdditionalDataShown
 }) => {
   const tableEntries = getTableEntries(
     classes,
@@ -196,8 +190,8 @@ const SubProjectTable = ({
     history,
     showEditDialog,
     showSubProjectPermissions,
-    showSubProjectInfo,
-    isSubProjectInfoShown
+    showSubProjectAdditionalData,
+    isSubProjectAdditionalDataShown
   );
   return (
     <Card>

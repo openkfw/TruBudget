@@ -8,6 +8,7 @@ import DoneIcon from "@material-ui/icons/Check";
 import indigo from "@material-ui/core/colors/indigo";
 
 import _isEmpty from "lodash/isEmpty";
+import _isEqual from "lodash/isEqual";
 import _cloneDeep from "lodash/cloneDeep";
 import _isUndefined from "lodash/isUndefined";
 import _isString from "lodash/isString";
@@ -48,11 +49,9 @@ export const compareObjects = (items, itemToAdd) => {
     const itemToAddClone = _cloneDeep(itemToAdd);
     const originalItem = items.find(item => item.data.id === itemToAdd.id);
     if (originalItem) {
-      originalItem.data.amount = toAmountString(originalItem.data.amount);
-      itemToAddClone.amount = toAmountString(itemToAddClone.amount);
       const changes = {};
       for (const key of Object.keys(itemToAddClone)) {
-        if (originalItem.data[key] !== itemToAddClone[key]) {
+        if (!_isEqual(originalItem.data[key], itemToAddClone[key])) {
           changes[key] = itemToAddClone[key];
         }
       }

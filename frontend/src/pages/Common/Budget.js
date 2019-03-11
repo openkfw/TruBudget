@@ -56,17 +56,14 @@ class Budget extends Component {
       budgetHintText,
       budget,
       storeBudget,
-      disabled,
       addProjectedBudget,
       organization,
       storeOrganization,
       projectedBudgets,
-      editDialogShown,
       hideAddButton = false
     } = this.props;
     const currencies = getCurrencies(parentCurrency);
     let eId = 1;
-    console.log(projectedBudgets);
     return (
       <div>
         {projectedBudgets && projectedBudgets.length > 0

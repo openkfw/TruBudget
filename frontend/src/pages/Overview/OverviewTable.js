@@ -92,7 +92,6 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
     const {
       displayName,
       id,
-      amount,
       description,
       status,
       thumbnail = "/Thumbnail_0008.jpg",

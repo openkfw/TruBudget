@@ -3,9 +3,8 @@ import React from "react";
 import Divider from "@material-ui/core/Divider";
 
 import strings from "../../localizeStrings";
-import Budget from "../Common/Budget";
+import Budget from "../Common/Budget2";
 import Identifier from "../Common/Identifier";
-import { toAmountString } from "../../helper";
 
 const SubprojectDialogContent = props => {
   return (
@@ -26,18 +25,10 @@ const SubprojectDialogContent = props => {
       <div>
         <Budget
           currencyTitle={strings.subproject.subproject_currency}
-          currency={props.subprojectToAdd.currency}
-          organization={props.subprojectToAdd.organization}
-          storeCurrency={props.storeSubProjectCurrency}
           parentCurrency={props.projectCurrency}
           budgetLabel={strings.subproject.subproject_budget_amount}
-          budgetHintText={strings.subproject.subproject_budget_amount_description + " " + toAmountString(99999.99)}
-          budget={props.subprojectToAdd.amount}
-          storeBudget={props.storeSubProjectAmount}
-          storeOrganization={props.storeSubProjectOrganization}
           projectedBudgets={props.subprojectToAdd.projectedBudgets}
           addProjectedBudget={props.addSubProjectProjectedBudgets}
-          editDialogShown={props.editDialogShown}
         />
       </div>
     </div>

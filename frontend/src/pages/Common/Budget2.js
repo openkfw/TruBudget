@@ -5,12 +5,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import DropDown from "./NewDropdown";
-import TextInput from "./TextInput";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 import MenuItem from "@material-ui/core/MenuItem";
-import _isEmpty from "lodash/isEmpty";
 
 import { toAmountString, fromAmountString, getCurrencies } from "../../helper";
 
@@ -53,11 +51,11 @@ export default class Budget extends React.Component {
             ))}
             <TableRow key={`pb-row-add`}>
               <TableCell>
-                <TextInput
+                <TextField
                   label="Organization"
                   value={this.state.organization}
-                  onChange={e => this.setState({ organization: e })}
-                  type="string"
+                  onChange={e => this.setState({ organization: e.target.value })}
+                  type="text"
                   aria-label="organization"
                   id="organizationinput"
                 />

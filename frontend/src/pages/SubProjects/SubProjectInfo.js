@@ -41,24 +41,28 @@ const styles = {
   }
 };
 
-const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectInfoShown, hideSubProjectInfo }) => {
+const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectAdditionalDataShown, hideSubProjectAdditionalData }) => {
   const subProjectForInfo = subProjects.find(item => item.data.id === idForInfo);
   return (
-    <Dialog open={isSubProjectInfoShown} style={styles.dialog} onClose={hideSubProjectInfo}>
-      <DialogTitle data-test="workflowInfoDialog">Info</DialogTitle>
+    <Dialog open={isSubProjectAdditionalDataShown} style={styles.dialog} onClose={hideSubProjectAdditionalData}>
+      <DialogTitle>Additional Data</DialogTitle>
       <DialogContent style={styles.dialogContent}>
         <List>
           <ListItem>
             <ListItemText
               data-test="workflowitemInfoDisplayName"
               primary={""}
-              secondary={subProjectForInfo ? JSON.stringify(subProjectForInfo.data.additionalData) : ""}
+              secondary={
+                subProjectForInfo && !subProjectForInfo.data.additionalData
+                  ? JSON.stringify(subProjectForInfo.data.additionalData)
+                  : "No fields are added to this Subproject"
+              }
             />
           </ListItem>
         </List>
       </DialogContent>
       <DialogActions>
-        <Button onClick={hideSubProjectInfo}>{strings.common.close}</Button>
+        <Button onClick={hideSubProjectAdditionalData}>{strings.common.close}</Button>
       </DialogActions>
     </Dialog>
   );
