@@ -1,13 +1,12 @@
 {
 	"info": {
-		"_postman_id": "f453e1e3-c088-4fb3-993c-c18f4804b0b4",
+		"_postman_id": "1ce66a90-d291-4bd4-b855-e4842fd8bbd3",
 		"name": "TruBudget",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "User",
-			"description": "",
 			"item": [
 				{
 					"name": "user.authenticate",
@@ -24,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"root\",\n\t\t\t\"password\": \"'asdf'\"\n\t\t}\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"root\",\n\t\t\t\"password\": \"asdf\"\n\t\t}\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/user.authenticate",
@@ -61,7 +60,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"bb\",\n\t\t\"displayName\": \"bb\",\n\t\t\"organization\": \"The Two-Letter Company\",\n\t\t\"password\": \"bb\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/user.list",
@@ -80,7 +79,6 @@
 		},
 		{
 			"name": "Global",
-			"description": "",
 			"item": [
 				{
 					"name": "global.createGroup",
@@ -141,7 +139,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\":{\n\t\t\t\"id\": \"myFirstP\",\n\t\t\t\"status\": \"open\",\n\t\t\t\"displayName\": \"myFirstProject\",\n\t\t\t\"description\": \"mydescription\",\n\t\t\t\"amount\": \"500\",\n\t\t\t\"assignee\": \"asmith\",\n\t\t\t\"currency\": \"EUR\",\n\t\t\t\"thumbnail\": \"/Thumbnail_0001.jpg\"\n\t\t}\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {}\n\t\t\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/global.createProject",
@@ -178,7 +176,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"bb\",\n\t\t\t\"displayName\": \"bb\",\n\t\t\t\"organization\": \"ACMECorp\",\n\t\t\t\"password\": \"bb\"\n\t\t}\n\t}\n}"
+							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"user\":{\n      \"id\": \"bb\",\n      \"some\":\"a\",\n      \"some1\":\"a\",\n      \"some2\":\"a\",\n      \"some3\":\"a\",\n      \"some4\":\"a\",\n      \"some5\":\"a\",\n      \"some6\":\"a\",\n      \"displayName\": \"bb\",\n      \"organization\": \"ACMECorp\",\n      \"password\": \"bb\"\n    }\n  }\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/global.createUser",
@@ -252,7 +250,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"global.createProject\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"alice\",\n\t\t\"intent\": \"global.createProject\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/global.grantPermission",
@@ -289,7 +287,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/global.listPermissions?projectId={{projectId}}",
@@ -332,7 +330,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"global.createProject\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"thouse\",\n\t\t\"intent\": \"notification.list\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/global.revokePermission",
@@ -351,7 +349,6 @@
 		},
 		{
 			"name": "Group",
-			"description": "",
 			"item": [
 				{
 					"name": "group.addUser",
@@ -375,7 +372,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"devs\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"bb\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/group.addUser",
@@ -412,7 +409,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"devs\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/group.list",
@@ -449,7 +446,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"devs\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"bb\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/group.removeUser",
@@ -468,7 +465,6 @@
 		},
 		{
 			"name": "Project",
-			"description": "",
 			"item": [
 				{
 					"name": "project.assign",
@@ -603,7 +599,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"global.viewDetails\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"project.viewDetails\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/project.intent.grantPermission",
@@ -640,7 +636,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/project.intent.listPermissions?projectId={{projectId}}",
@@ -687,7 +683,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"id\": \"mrfox1\",\n    \"displayName\": \"Mr. Fox1\",\n    \"organization\": \"Westwood\",\n    \"password\": \"foxi\"\n  }\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/project.list",
@@ -724,7 +720,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"global.viewDetails\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"project.viewDetails\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/project.intent.revokePermission",
@@ -798,7 +794,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/project.viewDetails?projectId={{projectId}}",
@@ -841,7 +837,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/project.viewHistory?projectId={{projectId}}",
@@ -866,7 +862,6 @@
 		},
 		{
 			"name": "Subproject",
-			"description": "",
 			"item": [
 				{
 					"name": "subproject.assign",
@@ -964,7 +959,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"anotherone\",\n\t\t\"amount\": \"1\",\n\t\t\"currency\": \"EUR\",\n\t\t\"amountType\": \"disbursed\",\n\t\t\"description\": \"\",\n\t\t\"status\": \"open\",\n\t\t\"documents\": [{\n\t\t\t\"id\":\"SomehtingsDoc\",\n\t\t\t\"base64\":\"c29tZXRoaW5ns\"\n\t\t}]\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"a\",\n\t\t\"amount\": \"1\",\n\t\t\"currency\": \"EUR\",\n\t\t\"amountType\": \"disbursed\",\n\t\t\"description\": \"\",\n\t\t\"status\": \"open\",\n\t\t\"assignee\":\"mstein\",\n\t\t\"documents\": []\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/subproject.createWorkflowitem",
@@ -1001,7 +996,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"subproject.close\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"subproject.reorderWorkflowitems\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/subproject.intent.grantPermission",
@@ -1038,7 +1033,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/subproject.intent.listPermissions?projectId={{projectId}}&subprojectId={{subprojectId}}",
@@ -1239,7 +1234,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/subproject.viewDetails?projectId={{projectId}}&subprojectId={{subprojectId}}",
@@ -1286,7 +1281,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/subproject.viewHistory?projectId={{projectId}}&subprojectId={{subprojectId}}",
@@ -1315,7 +1310,6 @@
 		},
 		{
 			"name": "Workflowitem",
-			"description": "",
 			"item": [
 				{
 					"name": "workflowitem.list",
@@ -1339,7 +1333,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"id\": \"mrfox1\",\n    \"displayName\": \"Mr. Fox1\",\n    \"organization\": \"Westwood\",\n    \"password\": \"foxi\"\n  }\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/workflowitem.list?projectId={{projectId}}&subprojectId={{subprojectId}}",
@@ -1386,7 +1380,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem1}}\",\n\t\t\"identity\": \"alice\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"alice\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/workflowitem.assign",
@@ -1423,7 +1417,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"projectId\": \"{{projectId}}\",\n    \"subprojectId\": \"{{subprojectId}}\",\n    \"workflowitemId\": \"{{workflowitem1}}\",\n    \"displayName\": \"newDisplayName\",\n    \"description\": \"somedesc\"\n  }\n}"
+							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n   \"projectId\": \"{{projectId}}\",\n\t\"subprojectId\": \"{{subprojectId}}\",\n\t\"workflowitemId\": \"{{workflowitem}}\",\n    \"displayName\": \"newDisplayName\",\n    \"description\": \"somedesc\",\n    \"amountType\": \"N/As\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/workflowitem.update",
@@ -1460,7 +1454,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitemId}}\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/workflowitem.close",
@@ -1497,10 +1491,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.listPermissions?projectId={{projectId}}&subprojectId={{subprojectId}}&workflowitemId={{workflowitem1}}",
+							"raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.listPermissions?projectId={{projectId}}&subprojectId={{subprojectId}}&workflowitemId={{workflowitem}}",
 							"host": [
 								"{{host}}"
 							],
@@ -1519,7 +1513,7 @@
 								},
 								{
 									"key": "workflowitemId",
-									"value": "{{workflowitem1}}"
+									"value": "{{workflowitem}}"
 								}
 							]
 						}
@@ -1548,7 +1542,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem1}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"workflowitem.close\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"workflowitem.close\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.grantPermission",
@@ -1585,7 +1579,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem1}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"workflowitem.close\"\n\t}\n}"
+							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"workflowitem.close\"\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.revokePermission",
@@ -1641,7 +1635,6 @@
 		},
 		{
 			"name": "Notification",
-			"description": "",
 			"item": [
 				{
 					"name": "notification.list",
@@ -1714,7 +1707,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/notification.list",
@@ -1819,7 +1812,6 @@
 		},
 		{
 			"name": "Network",
-			"description": "",
 			"item": [
 				{
 					"name": "network.listActive",
@@ -1855,7 +1847,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"address\": \"1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/network.listActive",
@@ -2125,7 +2117,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"id\": \"mrfox1\",\n\t\t\"displayName\": \"Mr. Fox1\",\n\t\t\"organization\": \"Westwood\",\n\t\t\"password\": \"foxi\"\n\t}\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{host}}:{{port}}{{base}}/network.list",
@@ -2192,59 +2184,154 @@
 			]
 		},
 		{
-			"name": "chain metadata",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": ""
-				},
-				"description": "Returns chain metadata of the connected peers"
-			},
-			"response": []
-		},
-		{
-			"name": "create stream",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
-							"type": "string"
+			"name": "System",
+			"item": [
+				{
+					"name": "readiness",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJyb290IiwiYWRkcmVzcyI6IjFIRm1oc1NacW9HNFVhVjFXTnZmOWhQSktKNlREMjNKaTlXZDZQIiwib3JnYW5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFIRm1oc1NacW9HNFVhVjFXTnZmOWhQSktKNlREMjNKaTlXZDZQIiwiZ3JvdXBzIjpbXSwiaWF0IjoxNTM2NzYyODk4LCJleHAiOjE1MzY3NjY0OTh9.RDy9KDPIoCz3pwP1sdZwP4I0tv3gGfqw4SP7D_SwpwA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
 						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
+						"url": {
+							"raw": "{{host}}:{{port}}{{base}}/readiness",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{base}}",
+							"path": [
+								"readiness"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"create\",\n\t\"params\": [\n\t\t\"stream\",\n\t\t\"test\",\n\t\ttrue,\n\t\t{\"foo\":\"bar\"}\n\t]\n}"
+				{
+					"name": "liveness",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{rootToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}{{base}}/liveness",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{base}}",
+							"path": [
+								"liveness"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:8000",
-					"host": [
-						"localhost"
+				{
+					"name": "version",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2cfd0663-1770-4184-974e-63129061d389",
+								"exec": [
+									"pm.test(\"Your test name\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.value).to.eql(100);",
+									"});",
+									"",
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"required\": [\"apiVersion\", \"data\"],",
+									"    \"properties\": {",
+									"        \"apiVersion\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"data\": {",
+									"            \"type\": \"object\",",
+									"            \"required\": [\"notifications\"],",
+									"            \"properties\": {",
+									"                \"notifications\": {",
+									"                    \"type\": \"array\",",
+									"                    \"items\": {",
+									"                        \"type\": \"object\",",
+									"                        \"properties\": {",
+									"                            \"id\": { \"type\": \"string\" },",
+									"                            \"url\": ",
+									"                        }",
+									"                    }",
+									"                }",
+									"            }",
+									"        }",
+									"    }",
+									"};",
+									"",
+									"var data1 = [true, false];",
+									"var data2 = [true, 123];",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  pm.expect(tv4.validate(data1, schema)).to.be.true;",
+									"  pm.expect(tv4.validate(data2, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"port": "8000"
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{rootToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}{{base}}/version",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{base}}",
+							"path": [
+								"version"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "liststreams",
@@ -2276,11 +2363,11 @@
 					"raw": "{\n\t\"method\": \"liststreams\",\n\t\"params\": []\n}"
 				},
 				"url": {
-					"raw": "localhost:8011",
+					"raw": "localhost:8000",
 					"host": [
 						"localhost"
 					],
-					"port": "8011"
+					"port": "8000"
 				}
 			},
 			"response": []
@@ -2323,240 +2410,52 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "be057f75-cc5a-4358-b0f3-229a2c81cf7c",
+				"type": "text/javascript",
+				"exec": [
+					"const base = `${pm.environment.get(\"host\")}:${pm.environment.get(\"port\")}${pm.environment.get(\"base\")}`; ",
+					"pm.sendRequest({",
+					"    url: base + \"/user.authenticate\",",
+					"    method: \"POST\",",
+					"    header: {",
+					"        \"content-type\": \"application/json\"",
+					"    },",
+					"    body: {",
+					"        mode: \"raw\",",
+					"        raw: JSON.stringify({",
+					"            \"apiVersion\": \"1.0\",",
+					"            \"data\": {",
+					"                \"user\": {",
+					"                    \"id\": pm.environment.get(\"userId\"),",
+					"                    \"password\": pm.environment.get(\"password\")",
+					"                }",
+					"            }",
+					"        })",
+					"    }",
+					"}, function (err, response) {",
+					"    console.log(response.json());",
+					"    const token = response.json().data.user.token;",
+					"    console.log(token)",
+					"    pm.environment.set(\"rootToken\", token);",
+					"});"
+				]
+			}
 		},
 		{
-			"name": "liststreamkeyitems",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"liststreamkeyitems\",\n\t\"params\": [\"294e3e7cea9c2adab9978669b8ace845\", \"subprojects\", false, 99999]\n}"
-				},
-				"url": {
-					"raw": "localhost:8011",
-					"host": [
-						"localhost"
-					],
-					"port": "8011"
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "liststreamkeys",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"liststreamkeys\",\n\t\"params\": [\"a571c19886bcc89a43feaf9c278e232f\", \"*\"]\n}"
-				},
-				"url": {
-					"raw": "localhost:8000",
-					"host": [
-						"localhost"
-					],
-					"port": "8000"
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "getstreamkeysummary",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"getstreamkeysummary\",\n\t\"params\": [\"test\", \"x\", \"jsonobjectmerge\"]\n}"
-				},
-				"url": {
-					"raw": "localhost:8000",
-					"host": [
-						"localhost"
-					],
-					"port": "8000"
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "publish",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"publish\",\n\t\"params\": [\"quotes\", \"quotes\", {\"json\":{\"intent\":\"quote.add\",\"author\":\"Kevin\",\"text\":\"funktioniert sicher\"}}]\n}"
-				},
-				"url": {
-					"raw": "localhost:8000",
-					"host": [
-						"localhost"
-					],
-					"port": "8000"
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "listpermissions",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"listpermissions\",\n\t\"params\": [\"connect,admin\", \"1Z9WSkaGJ9ifwB7Mmu342Woty5YX3n4epwAGqD\", true]\n}"
-				},
-				"url": {
-					"raw": "localhost:8012",
-					"host": [
-						"localhost"
-					],
-					"port": "8012"
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "getblockchainparams",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"getblockchainparams\",\n\t\"params\": []\n}"
-				},
-				"url": {
-					"raw": "localhost:8000",
-					"host": [
-						"localhost"
-					],
-					"port": "8000"
-				}
-			},
-			"response": []
+			"listen": "test",
+			"script": {
+				"id": "5618f9c6-afa3-4367-95d3-29e089b7a2e1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
