@@ -11,6 +11,7 @@ import { NotFound } from "../errors/not_found";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { sourceProjects } from "./project_eventsourcing";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
@@ -25,7 +26,7 @@ export interface RequestData {
   displayName: string;
   description?: string;
   assignee?: string;
-  currency: string;
+  currency: CurrencyCode;
   projectedBudgets?: ProjectedBudget[];
   additionalData?: object;
 }
@@ -37,7 +38,7 @@ const requestDataSchema = Joi.object({
   displayName: Joi.string().required(),
   description: Joi.string().allow(""),
   assignee: Joi.string(),
-  currency: Joi.string().required(),
+  currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema,
   additionalData: AdditionalData.schema,
 });

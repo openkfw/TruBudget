@@ -7,6 +7,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import { CurrencyCode, currencyCodeSchema } from "./money";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import { SubprojectTraceEvent, subprojectTraceEventSchema } from "./subproject_trace_event";
 
@@ -21,7 +22,7 @@ export interface Subproject {
   displayName: string;
   description: string;
   assignee?: string;
-  currency: string;
+  currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
   log: SubprojectTraceEvent[];
@@ -42,7 +43,7 @@ const schema = Joi.object({
     .allow("")
     .required(),
   assignee: Joi.string(),
-  currency: Joi.string().required(),
+  currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))

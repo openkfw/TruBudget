@@ -1638,6 +1638,11 @@ const schemas = {
                         displayName: { type: "string", example: "school" },
                         description: { type: "string", example: "school should be built" },
                         assignee: { type: "string", example: "aSmith" },
+                        currency: {
+                          type: "string",
+                          description: "contract currency",
+                          example: "EUR",
+                        },
                         projectedBudgets: {
                           type: "array",
                           items: {
