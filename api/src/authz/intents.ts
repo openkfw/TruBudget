@@ -21,6 +21,8 @@ type Intent =
   | "project.archive"
   | "project.createSubproject"
   | "project.viewHistory"
+  | "project.budget.updateProjected"
+  | "project.budget.deleteProjected"
   | "subproject.intent.listPermissions"
   | "subproject.intent.grantPermission"
   | "subproject.intent.revokePermission"
@@ -111,6 +113,8 @@ export const projectIntents: Intent[] = [
   "project.archive",
   "project.createSubproject",
   "project.viewHistory",
+  "project.budget.updateProjected",
+  "project.budget.deleteProjected",
 ];
 
 export const subprojectIntents: Intent[] = [
@@ -162,6 +166,8 @@ export const allIntents: Intent[] = [
   "project.archive",
   "project.createSubproject",
   "project.viewHistory",
+  "project.budget.updateProjected",
+  "project.budget.deleteProjected",
   "subproject.intent.listPermissions",
   "subproject.intent.grantPermission",
   "subproject.intent.revokePermission",

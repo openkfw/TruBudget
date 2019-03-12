@@ -4,19 +4,20 @@ import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
 import * as NodeRegistered from "./domain/network/node_registered";
-import * as UserCreated from "./domain/organization/user_created";
-import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
-import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as GroupCreated from "./domain/organization/group_created";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
+import * as UserCreated from "./domain/organization/user_created";
+import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
+import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
 import * as ProjectPermissionsGranted from "./domain/workflow/project_permission_granted";
 import * as ProjectPermissionsRevoked from "./domain/workflow/project_permission_revoked";
+import * as ProjectProjectedBudgetDeleted from "./domain/workflow/project_projected_budget_deleted";
+import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
-import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import { Item } from "./liststreamitems";
@@ -235,8 +236,9 @@ const EVENT_PARSER_MAP = {
   project_created: ProjectCreated.validate,
   project_permission_granted: ProjectPermissionsGranted.validate,
   project_permission_revoked: ProjectPermissionsRevoked.validate,
+  project_projected_budget_deleted: ProjectProjectedBudgetDeleted.validate,
+  project_projected_budget_updated: ProjectProjectedBudgetUpdated.validate,
   project_updated: ProjectUpdated.validate,
-  // subproject_created: SubprojectCreated.validate,
   user_created: UserCreated.validate,
   workflowitem_closed: WorkflowitemClosed.validate,
   workflowitem_created: WorkflowitemCreated.validate,

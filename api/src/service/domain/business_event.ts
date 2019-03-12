@@ -15,17 +15,19 @@ import * as ProjectClosed from "./workflow/project_closed";
 import * as ProjectCreated from "./workflow/project_created";
 import * as ProjectPermissionGranted from "./workflow/project_permission_granted";
 import * as ProjectPermissionRevoked from "./workflow/project_permission_revoked";
+import * as ProjectProjectedBudgetDeleted from "./workflow/project_projected_budget_deleted";
+import * as ProjectProjectedBudgetUpdated from "./workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./workflow/project_updated";
 import * as SubprojectAssigned from "./workflow/subproject_assigned";
 import * as SubprojectClosed from "./workflow/subproject_closed";
 import * as SubprojectCreated from "./workflow/subproject_created";
+import * as SubprojectPermissionGranted from "./workflow/subproject_permission_granted";
+import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_revoked";
 import * as SubprojectUpdated from "./workflow/subproject_updated";
 import * as WorkflowitemAssigned from "./workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./workflow/workflowitem_created";
 import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permission_granted";
-import * as SubprojectPermissionGranted from "./workflow/subproject_permission_granted";
-import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_revoked";
 import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permission_revoked";
 
 export type BusinessEvent =
@@ -43,6 +45,8 @@ export type BusinessEvent =
   | ProjectCreated.Event
   | ProjectPermissionGranted.Event
   | ProjectPermissionRevoked.Event
+  | ProjectProjectedBudgetDeleted.Event
+  | ProjectProjectedBudgetUpdated.Event
   | ProjectUpdated.Event
   | SubprojectAssigned.Event
   | SubprojectClosed.Event

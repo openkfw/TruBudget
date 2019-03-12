@@ -16,6 +16,8 @@ import timeout from "./lib/timeout";
 import { registerNode } from "./network/controller/registerNode";
 import { ensureOrganizationStream } from "./organization/organization";
 import * as ProjectAssignAPI from "./project_assign";
+import * as ProjectProjectedBudgetUpdateAPI from "./project_budget_update_projected";
+import * as ProjectProjectedBudgetDeleteAPI from "./project_budget_delete_projected";
 import * as ProjectCloseAPI from "./project_close";
 import * as ProjectCreateAPI from "./project_create";
 import * as ProjectListAPI from "./project_list";
@@ -39,6 +41,8 @@ import * as GroupQueryService from "./service/group_query";
 import { randomString } from "./service/hash";
 import * as HttpdMultichainAdapter from "./service/HttpdMultichainAdapter";
 import * as ProjectAssignService from "./service/project_assign";
+import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
+import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
 import * as ProjectCloseService from "./service/project_close";
 import * as ProjectCreateService from "./service/project_create";
 import * as ProjectGetService from "./service/project_get";
@@ -383,6 +387,31 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
     }
     return newSubprojects;
   },
+});
+
+ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateProjectedBudget: (ctx, user, projectId, orga, amount, currencyCode) =>
+    ProjectProjectedBudgetUpdateService.updateProjectedBudget(
+      db,
+      ctx,
+      user,
+      projectId,
+      orga,
+      amount,
+      currencyCode,
+    ),
+});
+
+ProjectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
+  deleteProjectedBudget: (ctx, user, projectId, orga, currencyCode) =>
+    ProjectProjectedBudgetDeleteService.deleteProjectedBudget(
+      db,
+      ctx,
+      user,
+      projectId,
+      orga,
+      currencyCode,
+    ),
 });
 
 /*
