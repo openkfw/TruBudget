@@ -27,6 +27,8 @@ export const WORKFLOW_NAME = "WORKFLOW_NAME";
 export const WORKFLOW_TYPE = "WORKFLOW_TYPE";
 export const WORKFLOW_APPROVAL_REQUIRED = "WORKFLOW_APPROVAL_REQUIRED";
 export const WORKFLOW_AMOUNT = "WORKFLOW_AMOUNT";
+export const WORKFLOW_EXCHANGERATE = "WORKFLOW_EXCHANGERATE";
+
 export const WORKFLOW_AMOUNT_TYPE = "WORKFLOW_AMOUNT_TYPE";
 export const WORKFLOW_PURPOSE = "WORKFLOW_PURPOSE";
 export const WORKFLOW_ADDITIONAL_DATA = "WORKFLOW_ADDITIONAL_DATA";
@@ -344,12 +346,13 @@ export function hideWorkflowDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, amount, amountType, description, currency, documents) {
+export function showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents) {
   return {
     type: SHOW_WORKFLOW_EDIT,
     id,
     displayName,
     amount,
+    exchangeRate,
     amountType,
     description,
     currency,
@@ -399,6 +402,12 @@ export function storeWorkflowAmount(amount) {
     amount
   };
 }
+export function storeWorkflowExchangeRate(exchangeRate) {
+  return {
+    type: WORKFLOW_EXCHANGERATE,
+    exchangeRate
+  };
+}
 
 export function storeWorkflowAmountType(amountType) {
   return {
@@ -439,6 +448,7 @@ export function createWorkflowItem(
   subprojectId,
   displayName,
   amount,
+  exchangeRate,
   amountType,
   currency,
   description,
@@ -451,6 +461,7 @@ export function createWorkflowItem(
     subprojectId,
     displayName,
     amount: `${amount}`,
+    exchangeRate,
     amountType,
     currency,
     description,

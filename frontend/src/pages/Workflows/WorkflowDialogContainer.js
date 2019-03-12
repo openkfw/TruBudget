@@ -16,14 +16,24 @@ import {
   storeWorkflowCurrency,
   storeWorkflowDocument,
   storeWorkflowName,
-  storeWorkflowStatus
+  storeWorkflowStatus,
+  storeWorkflowExchangeRate
 } from "./actions";
 import WorkflowDialog from "./WorkflowDialog";
 
 const styles = {};
 
 class WorkflowDialogContainer extends Component {
-  createWorkflowItem = (displayName, amount, amountType, currency, description, status, workflowDocuments) => {
+  createWorkflowItem = (
+    displayName,
+    amount,
+    exchangeRate,
+    amountType,
+    currency,
+    description,
+    status,
+    workflowDocuments
+  ) => {
     const path = this.props.location.pathname.split("/");
     const projectId = path[2];
     const subProjectId = path[3];
@@ -32,6 +42,7 @@ class WorkflowDialogContainer extends Component {
       subProjectId,
       displayName,
       amount,
+      exchangeRate,
       amountType,
       currency,
       description,
@@ -59,19 +70,32 @@ const mapStateToProps = state => {
     dialogTitle: state.getIn(["workflow", "dialogTitle"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     currentStep: state.getIn(["workflow", "currentStep"]),
-    currency: state.getIn(["workflow", "currency"])
+    currency: state.getIn(["workflow", "currency"]),
+    subProjectCurrency: state.getIn(["workflow", "subProjectCurrency"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    createItem: (projectId, subprojectId, displayName, amount, amountType, currency, description, status, documents) =>
+    createItem: (
+      projectId,
+      subprojectId,
+      displayName,
+      amount,
+      exchangeRate,
+      amountType,
+      currency,
+      description,
+      status,
+      documents
+    ) =>
       dispatch(
         createWorkflowItem(
           projectId,
           subprojectId,
           displayName,
           amount,
+          exchangeRate,
           amountType,
           currency,
           description,
@@ -83,6 +107,7 @@ const mapDispatchToProps = dispatch => {
     storeWorkflowComment: comment => dispatch(storeWorkflowComment(comment)),
     storeWorkflowCurrency: currency => dispatch(storeWorkflowCurrency(currency)),
     storeWorkflowAmount: amount => dispatch(storeWorkflowAmount(amount)),
+    storeWorkflowExchangeRate: rate => dispatch(storeWorkflowExchangeRate(rate)),
     storeWorkflowAmountType: type => dispatch(storeWorkflowAmountType(type)),
     storeWorkflowName: name => dispatch(storeWorkflowName(name)),
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),

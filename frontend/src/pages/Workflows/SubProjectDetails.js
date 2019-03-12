@@ -38,6 +38,7 @@ import {
 
 import GaugeChart from "../Common/GaugeChart";
 import strings from "../../localizeStrings";
+import _isEmpty from "lodash/isEmpty";
 
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 
@@ -200,7 +201,7 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
         <ListItemIcon>
           <AmountIcon />
         </ListItemIcon>
-        <ListItemText primary={amountString} secondary={strings.common.budget} />
+        <ListItemText primary={amountString} secondary={strings.common.projectedBudget} />
       </ListItem>
     </div>
   );
@@ -224,8 +225,8 @@ const subProjectCloseButtonTooltip = (userIsAllowedToClose, subProjectCanBeClose
 const SubProjectDetails = ({
   displayName,
   description,
-  amount,
   currency,
+  // amount,
   id,
   status,
   roles,
@@ -243,7 +244,6 @@ const SubProjectDetails = ({
   canCloseSubproject,
   ...props
 }) => {
-  // const amountString = toAmountString(amount, currency);
   const amountString = displaySubprojectBudget(props.projectedBudgets);
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
@@ -262,20 +262,35 @@ const SubProjectDetails = ({
 
   const allowedToEdit = false;
 
-  const allocatedBudgetRatio = !_isFinite(amount) || amount === 0 ? 0 : assignedBudget / amount;
-  const consumptionBudgetRatio = !_isFinite(amount) || assignedBudget === 0 ? 0 : currentDisbursement / assignedBudget;
-  const currentDisbursementRatio = !_isFinite(amount) || assignedBudget === 0 ? 0 : disbursedBudget / assignedBudget;
+  // const allocatedBudgetRatio = !_isFinite(amount) || amount === 0 ? 0 : assignedBudget / amount;
+  const consumptionBudgetRatio = assignedBudget === 0 ? 0 : currentDisbursement / assignedBudget;
+  const currentDisbursementRatio = assignedBudget === 0 ? 0 : disbursedBudget / assignedBudget;
 
   const containsRedactedWorkflowItems = workflowItems.find(w => w.data.displayName === null);
 
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <CardHeader
-          title={displayName}
-          subheader={description}
-          avatar={displayName ? <Avatar>{displayName[0]}</Avatar> : null}
-        />
+        <div style={{ display: "flex" }}>
+          <CardHeader
+            title={displayName}
+            subheader={description}
+            avatar={displayName ? <Avatar>{displayName[0]}</Avatar> : null}
+          />
+          <Tooltip title="Subproject currency">
+            <Typography
+              style={{
+                justifySelf: "flex-end",
+                alignSelf: "center",
+                marginLeft: "auto",
+                fontSize: "24px",
+                marginRight: "12px"
+              }}
+            >
+              {currency}
+            </Typography>
+          </Tooltip>
+        </div>
         <List>
           <Divider />
           {getNotEditableBudget(amountString, allowedToEdit, props)}
@@ -337,7 +352,7 @@ const SubProjectDetails = ({
           </div>
         ) : (
           <div>
-            <div style={styles.charts}>
+            {/* <div style={styles.charts}>
               <div style={styles.listItem}>
                 <ListItem style={styles.budgetDistListItem}>
                   <ListItemIcon>
@@ -354,7 +369,7 @@ const SubProjectDetails = ({
                 <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
               </div>
             </div>
-            <Divider />
+            <Divider /> */}
             <div style={styles.charts}>
               <div style={styles.listItem}>
                 <ListItem style={styles.budgetDistListItem}>

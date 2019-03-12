@@ -21,7 +21,7 @@ export default class Budget extends React.Component {
   getMenuItems(currencies) {
     return currencies.map((currency, index) => {
       return (
-        <MenuItem key={index} value={currency.value} disabled={currency.disabled}>
+        <MenuItem key={index} value={currency.value}>
           {currency.primaryText}
         </MenuItem>
       );
@@ -63,7 +63,7 @@ export default class Budget extends React.Component {
               <TableCell align="right">
                 <div style={{ display: "flex" }}>
                   <DropDown
-                    style={{ minWidth: 160, marginRight: "16px" }}
+                    style={{ minWidth: 200, marginRight: "16px" }}
                     value={this.state.currency}
                     floatingLabel={currencyTitle}
                     onChange={e => this.setState({ currency: e })}

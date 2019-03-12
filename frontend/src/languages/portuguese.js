@@ -43,6 +43,7 @@ const pt = {
     open: "Abrir",
     password: "Senha",
     project: "Portuguese: Project",
+    projectedBudget: "Portuguese: Projected Budget",
     revoke: "Portuguese: revoke",
     search: "Portuguese: Search",
     show_permissions: "Portuguese: Show Permissions",

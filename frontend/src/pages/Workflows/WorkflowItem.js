@@ -4,6 +4,7 @@ import { SortableElement } from "react-sortable-hoc";
 import Card from "@material-ui/core/Card";
 import Chip from "@material-ui/core/Chip";
 import Tooltip from "@material-ui/core/Tooltip";
+import SwapIcon from "@material-ui/icons/SwapCalls";
 import DoneIcon from "@material-ui/icons/Check";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
@@ -16,7 +17,7 @@ import Typography from "@material-ui/core/Typography";
 import green from "@material-ui/core/colors/lightGreen";
 import Checkbox from "@material-ui/core/Checkbox";
 
-import { toAmountString, amountTypes } from "../../helper.js";
+import { toAmountString, amountTypes, fromAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import {
   canViewWorkflowItemPermissions,
@@ -197,14 +198,19 @@ function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
   // a user must have assign permissions or all three permission handling permissions
   return allowedIntents.includes("workflowitem.assign") || intents.length === 3 ? true : false;
 }
-const editWorkflow = ({ id, displayName, amount, amountType, currency, description, status, documents }, props) => {
+const editWorkflow = (
+  { id, displayName, amount, exchangeRate, amountType, currency, description, status, documents },
+  props
+) => {
   // Otherwise we need to deal with undefined which causes errors in the editDialog
   const workflowitemAmount = amount ? amount : "";
   const workflowitemCurrency = currency ? currency : props.currency;
+  exchangeRate = parseFloat(exchangeRate);
   props.showEditDialog(
     id,
     displayName,
     toAmountString(workflowitemAmount),
+    exchangeRate,
     amountType,
     description,
     workflowitemCurrency,
@@ -229,14 +235,31 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
   return workflowSortEnabled ? workflowSortable : currentWorkflowSelectable;
 };
 
-const getAmountField = (amount, type) => {
+const getAmountField = (amount, type, exchangeRate) => {
   const noBudgetAllocated = type === "N/A";
-  const amountToShow = noBudgetAllocated ? amountTypes(type) : amount;
+  let amountToShow = amount;
+  if (noBudgetAllocated) {
+    amountToShow = amountTypes(type);
+  }
+  if (fromAmountString(exchangeRate) !== 1) {
+    amountToShow = fromAmountString(amount) * exchangeRate;
+  }
 
+  const amountExplTitle = amount + " x " + exchangeRate;
+  const amountExplaination = (
+    <Tooltip title={amountExplTitle}>
+      <SwapIcon />
+    </Tooltip>
+  );
   return (
     <div style={styles.chipDiv}>
       <div>{amountToShow}</div>
-      {noBudgetAllocated ? null : <Chip style={styles.amountChip} label={amountTypes(type)} />}
+      {noBudgetAllocated ? null : (
+        <div>
+          {fromAmountString(exchangeRate) !== 1 ? amountExplaination : null}
+          <Chip style={styles.amountChip} label={amountTypes(type)} />
+        </div>
+      )}
     </div>
   );
 };
@@ -352,11 +375,11 @@ const renderActionButtons = (
 
 export const WorkflowItem = SortableElement(
   ({ workflow, mapIndex, index, currentWorkflowSelectable, workflowSortEnabled, parentProject, users, ...props }) => {
-    const { storeWorkflowItemsSelected, selectedWorkflowItems } = props;
-    const { id, status, displayName, amountType, assignee, currency } = workflow.data;
+    const { storeWorkflowItemsSelected, selectedWorkflowItems, currency } = props;
+    const { id, status, displayName, amountType, assignee, exchangeRate } = workflow.data;
     const allowedIntents = workflow.allowedIntents;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
-    const amount = toAmountString(workflow.data.amount, currency);
+    const amount = toAmountString(workflow.data.amount * exchangeRate, currency);
     const tableStyle = styles[status];
     const subprojectId = props.id;
     const itemStyle = workflowSelectable
@@ -370,7 +393,6 @@ export const WorkflowItem = SortableElement(
     const infoButton = getInfoButton(props, status, workflowSortEnabled, workflow.data);
 
     const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
-
     return (
       <div style={styles.container}>
         {createLine(mapIndex === 0, workflowSelectable)}
@@ -395,7 +417,7 @@ export const WorkflowItem = SortableElement(
             </div>
             <div style={{ ...itemStyle, ...styles.listText, flex: 4 }}>
               <Typography variant="body2" component="div">
-                {getAmountField(amount, amountType)}
+                {getAmountField(amount, amountType, exchangeRate)}
               </Typography>
             </div>
             <div style={{ ...styles.listText, flex: 4 }}>

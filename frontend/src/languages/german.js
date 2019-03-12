@@ -41,6 +41,7 @@ const de = {
     open: "Open",
     password: "Passwort",
     project: "German: Project",
+    projectedBudget: "German: Projected Budget",
     revoke: "German: revoke",
     search: "German: Search",
     show_permissions: "German: Show Permissions",

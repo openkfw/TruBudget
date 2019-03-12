@@ -18,10 +18,11 @@ const styles = {
 };
 const handleCreate = props => {
   const { createWorkflowItem, onDialogCancel, workflowToAdd, storeSnackbarMessage } = props;
-  const { displayName, amount, amountType, currency, description, status, documents } = workflowToAdd;
+  const { displayName, amount, amountType, currency, description, status, documents, exchangeRate } = workflowToAdd;
   createWorkflowItem(
     displayName,
     fromAmountString(amount).toString(),
+    exchangeRate,
     amountType,
     currency,
     description,
@@ -33,25 +34,22 @@ const handleCreate = props => {
 };
 
 const handleEdit = props => {
-  const {
-    editWorkflowItem,
-    onDialogCancel,
-    workflowItems,
-    workflowToAdd,
-    location,
-    storeSnackbarMessage
-  } = props;
+  const { editWorkflowItem, onDialogCancel, workflowItems, workflowToAdd, location, storeSnackbarMessage } = props;
   const originalWorkflowItem = workflowItems.find(workflowItem => workflowItem.data.id === workflowToAdd.id).data;
+  // TODO handle change in state through actions
   if (workflowToAdd.amountType === "N/A") {
     if (workflowToAdd.amountType === originalWorkflowItem.amountType) {
       delete workflowToAdd.amount;
       delete workflowToAdd.currency;
+      delete workflowToAdd.exchangeRate;
     } else {
       workflowToAdd.amount = "";
       workflowToAdd.currency = "";
+      workflowToAdd.exchangeRate = 1;
     }
   }
   const changes = compareWorkflowItems(originalWorkflowItem, workflowToAdd);
+  console.log(changes);
   if (changes) {
     const projectId = location.pathname.split("/")[2];
     const subprojectId = location.pathname.split("/")[3];
@@ -86,6 +84,9 @@ const Content = props => {
         storeWorkflowAmountType={props.storeWorkflowAmountType}
         storeWorkflowCurrency={props.storeWorkflowCurrency}
         workflowAmount={props.workflowToAdd.amount}
+        storeWorkflowExchangeRate={props.storeWorkflowExchangeRate}
+        exchangeRate={props.workflowToAdd.exchangeRate}
+        subProjectCurrency={props.currency}
         workflowAmountType={props.workflowToAdd.amountType}
         workflowCurrency={props.workflowToAdd.currency}
       />
@@ -103,12 +104,15 @@ const WorkflowDialog = props => {
         handleSubmit: handleCreate,
         dialogShown: creationDialogShown
       };
-  const { displayName, amountType, amount } = workflowToAdd;
+  const { displayName, amountType, amount, exchangeRate } = workflowToAdd;
   const changes = compareObjects(workflowItems, workflowToAdd);
   const steps = [
     {
       title: strings.workflow.workflow_name,
-      nextDisabled: _isEmpty(displayName) || (amountType !== "N/A" && amount === ""),
+      nextDisabled:
+        _isEmpty(displayName) ||
+        (amountType !== "N/A" && amount === "") ||
+        (amountType !== "N/A" && !Number.isFinite(exchangeRate)),
       content: (
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Content {...props} />

@@ -165,7 +165,8 @@ class Api {
       ...payload,
       documents: payload.documents,
       currency: payload.amountType === "N/A" ? null : payload.currency,
-      amount: payload.amountType === "N/A" ? null : payload.amount
+      amount: payload.amountType === "N/A" ? null : payload.amount,
+      exchangeRate: payload.amountType === "N/A" ? null : payload.exchangeRate.toString()
     });
 
   listSubProjectPermissions = (projectId, subprojectId) =>
@@ -192,7 +193,8 @@ class Api {
       projectId,
       subprojectId,
       workflowitemId,
-      ...changes
+      ...changes,
+      exchangeRate: changes.exchangeRate.toString()
     });
 
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>

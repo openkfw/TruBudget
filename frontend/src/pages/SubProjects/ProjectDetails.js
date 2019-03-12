@@ -229,7 +229,7 @@ const ProjectDetails = ({
             </ListItemIcon>
             <ListItemText
               primary={<div aria-label="projectbudget"> {amountString} </div>}
-              secondary={strings.common.budget}
+              secondary={strings.common.projectedBudget}
             />
           </ListItem>
           <Divider />

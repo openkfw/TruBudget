@@ -54,7 +54,7 @@ const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectAdditionalDataShow
               primary={""}
               secondary={
                 subProjectForInfo && !subProjectForInfo.data.additionalData
-                  ? JSON.stringify(subProjectForInfo.data.additionalData)
+                  ? JSON.stringify((JSON.parse(subProjectForInfo.data.additionalData), null, `\t`))
                   : "No fields are added to this Subproject"
               }
             />

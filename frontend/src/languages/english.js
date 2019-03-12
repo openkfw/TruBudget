@@ -43,6 +43,7 @@ const en = {
     open: "Open",
     password: "Password",
     project: "Project",
+    projectedBudget: "Projected Budget",
     revoke: "revoke",
     search: "Search",
     show_permissions: "Show Permissions",
