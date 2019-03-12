@@ -4,19 +4,20 @@ import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
 import * as NodeRegistered from "./domain/network/node_registered";
-import * as UserCreated from "./domain/organization/user_created";
-import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
-import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as GroupCreated from "./domain/organization/group_created";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
+import * as UserCreated from "./domain/organization/user_created";
+import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
+import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
+import * as NotificationCreated from "./domain/workflow/notification_created";
+import * as NotificationRead from "./domain/workflow/notification_read";
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
 import * as ProjectPermissionsGranted from "./domain/workflow/project_permission_granted";
 import * as ProjectPermissionsRevoked from "./domain/workflow/project_permission_revoked";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
-import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import { Item } from "./liststreamitems";
@@ -230,6 +231,8 @@ const EVENT_PARSER_MAP = {
   group_member_added: GroupMemberAdded.validate,
   group_member_removed: GroupMemberRemoved.validate,
   node_registered: NodeRegistered.validate,
+  notification_created: NotificationCreated.validate,
+  notification_read: NotificationRead.validate,
   project_assigned: ProjectAssigned.validate,
   project_closed: ProjectClosed.validate,
   project_created: ProjectCreated.validate,
