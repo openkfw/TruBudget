@@ -1,5 +1,6 @@
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { Ctx } from "../../lib/ctx";
+import logger from "../../lib/logger";
 import { ConnToken } from "../../service/conn";
 import * as Notification from "../model/Notification";
 
@@ -13,6 +14,10 @@ export const getNotificationList = async (
   const limit: string | undefined = req.query.limit;
   const offset: string | undefined = req.query.offset;
   const notificationList = await Notification.get(multichain, req.user, offset, limit);
+  logger.fatal(
+    { notificationList },
+    `notifications for ${JSON.stringify(req.user)}, offset=${offset}, limit=${limit}`,
+  );
   const rawNotifications = notificationList.notifications;
   const unreadNotificationCount = notificationList.unreadNotificationCount;
 

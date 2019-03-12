@@ -1,24 +1,22 @@
+import { ResourceType } from "../lib/resourceTypes";
+import { NotificationResourceDescription } from "../notification/model/Notification";
+import * as NotificationCreated from "./domain/workflow/notification_created";
+import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
+import * as SubprojectClosed from "./domain/workflow/subproject_closed";
+import * as SubprojectCreated from "./domain/workflow/subproject_created";
+import * as SubprojectPermissionGranted from "./domain/workflow/subproject_permission_granted";
+import * as SubprojectPermissionRevoked from "./domain/workflow/subproject_permission_revoked";
+import * as SubprojectUpdated from "./domain/workflow/subproject_updated";
+import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
+import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
+import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
+import * as WorkflowitemPermissionGranted from "./domain/workflow/workflowitem_permission_granted";
+import * as WorkflowitemPermissionRevoked from "./domain/workflow/workflowitem_permission_revoked";
+import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
+import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import { Event } from "./event";
 
 // TODO: at the end implement notification
-import * as NotificationCreated from "./domain/workflow/notification_created";
-import * as NotificationRead from "./domain/workflow/notification_read";
-
-import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
-import * as SubprojectCreated from "./domain/workflow/subproject_created";
-import * as SubprojectUpdated from "./domain/workflow/subproject_updated";
-import * as SubprojectClosed from "./domain/workflow/subproject_closed";
-import * as SubprojectPermissionGranted from "./domain/workflow/subproject_permission_granted";
-import * as SubprojectPermissionRevoked from "./domain/workflow/subproject_permission_revoked";
-import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
-import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
-import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
-import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
-import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
-import * as WorkflowitemPermissionGranted from "./domain/workflow/workflowitem_permission_granted";
-import * as WorkflowitemPermissionRevoked from "./domain/workflow/workflowitem_permission_revoked";
-import logger from "../lib/logger";
-
 /**
  * What will not work anymout:
  *  Subproject.Update will not update amount
@@ -118,30 +116,42 @@ function handlePublishRequest(params: any[]): any[] {
   return matchPublishRequest(params, stream, key, event);
 }
 
+function getResourceId(
+  resources: NotificationResourceDescription[],
+  resourceType: ResourceType,
+): string | undefined {
+  return resources
+    .filter(x => x.type === resourceType)
+    .map(x => x.id)
+    .find(_ => true);
+}
+
 function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
   switch (event.intent) {
     case "notification.create":
-      // Check if it is an old notification event
-      // if (!event.intent) {
-      //   return params;
-      // }
+      // Check if it is an old notification event:
+      if (!event.intent) {
+        return params;
+      }
 
-      // if (!event.data || !event.data.resources) {
-      //   console.error("Error handling publish request for notification.create", params);
-      //   return params;
-      // }
-      // const notificationCreated: NotificationCreated.Event = NotificationCreated.createEvent(
-      //   event.data.notificationId,
-      //   "http",
-      //   event.createdBy,
-      //   event.key,
-      //   mapOldEventToBusinessEvent(event.data.originalEvent, event.data.resources),
-      //   event.data.resources[0] ? event.data.resources[0].id : undefined,
-      //   event.data.resources[1] ? event.data.resources[1].id : undefined,
-      //   event.data.resources[2] ? event.data.resources[2].id : undefined,
-      // );
-      // return [stream, key, { json: notificationCreated }];
-      return params;
+      if (!event.data || !event.data.resources) {
+        console.error("Error handling publish request for notification.create", params);
+        return params;
+      }
+      const resourceDescriptions = event.data.resources as NotificationResourceDescription[];
+      const projectId = getResourceId(resourceDescriptions, "project");
+      const subprojectId = getResourceId(resourceDescriptions, "subproject");
+      const workflowitemId = getResourceId(resourceDescriptions, "workflowitem");
+      const notificationCreated: NotificationCreated.Event = NotificationCreated.createEvent(
+        "http", // source
+        event.createdBy, // publisher
+        event.key, // recipient
+        mapOldEventToBusinessEvent(event.data.originalEvent, event.data.resources),
+        projectId,
+        subprojectId,
+        workflowitemId,
+      );
+      return [stream, key, { json: notificationCreated }];
     case "notification.markRead":
       return params;
     case "global.createProject":
@@ -447,28 +457,27 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
 
   switch (result.data.json.type) {
     case "notification_created": {
-      // const event: NotificationCreated.Event = result.data.json;
+      const event: NotificationCreated.Event = result.data.json;
 
-      // const oldEvent: Event = {
-      //   key: event.recipient,
-      //   intent: "notification.create",
-      //   createdBy: event.publisher,
-      //   createdAt: event.time,
-      //   dataVersion: 1,
-      //   data: {
-      //     notificationId: event.id,
-      //     resources: makeOldNotificationResources(
-      //       event.projectId,
-      //       event.subprojectId,
-      //       event.workflowitemId,
-      //     ),
-      //     time: event.time,
-      //     isRead: false,
-      //     originalEvent: event.businessEvent,
-      //   },
-      // };
-      // return { ...result, data: { json: oldEvent } };
-      return result;
+      const oldEvent: Event = {
+        key: event.recipient,
+        intent: "notification.create",
+        createdBy: event.publisher,
+        createdAt: event.time,
+        dataVersion: 1,
+        data: {
+          notificationId: event.notificationId,
+          resources: makeOldNotificationResources(
+            event.projectId,
+            event.subprojectId,
+            event.workflowitemId,
+          ),
+          time: event.time,
+          isRead: false,
+          originalEvent: event.businessEvent,
+        },
+      };
+      return { ...result, data: { json: oldEvent } };
     }
     case "project_created":
     case "project_permission_granted":

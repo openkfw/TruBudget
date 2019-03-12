@@ -60,7 +60,7 @@ export async function assignProject(
     return { newEvents: [], errors: [new InvalidCommand(ctx, projectAssigned, errors)] };
   }
 
-  // Create notification event
+  // Create notification events:
   const recipients = await repository.getUsersForIdentity(assignee);
   const notifications = recipients.map(recipient =>
     NotificationCreated.createEvent(ctx.source, issuer.id, recipient, projectAssigned, projectId),

@@ -4,10 +4,10 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
-import { Id } from "./workflowitem";
-import * as WorkflowitemClosed from "./workflowitem_closed";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
+import { Id } from "./workflowitem";
+import * as WorkflowitemClosed from "./workflowitem_closed";
 import { sourceWorkflowitems } from "./workflowitem_eventsourcing";
 import { sortWorkflowitems } from "./workflowitem_ordering";
 
