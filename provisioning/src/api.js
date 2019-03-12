@@ -43,14 +43,12 @@ const grantAllPermissionsToUser = async (axios, userId) => {
 };
 
 const createProject = async (axios, projectTemplate) => {
+  const args = { ...projectTemplate, }
+  delete args.permissions;
+  delete args.subprojects;
   await withRetry(() =>
     axios.post("/global.createProject", {
-      project: {
-        displayName: projectTemplate.displayName,
-        description: "FAILED UPDATE?",
-        projectedBudgets: projectTemplate.projectedBudgets,
-        thumbnail: projectTemplate.thumbnail
-      }
+      project: args
     })
   );
 };
