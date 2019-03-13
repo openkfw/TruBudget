@@ -282,13 +282,15 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
     }
   }
 
-  // Returns [seconds, nanoseconds]:
-  const hrtimeDiff = process.hrtime(startTime);
-  const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
-  logger.info(
-    cache.streamState,
-    `Project cache updated in ${elapsedMilliseconds} ms: total=${
-      projectStreams.length
-    }, updated=${nUpdatedProjects}, rebuilt:${nRebuiltProjects}`,
-  );
+  if (logger.isLevelEnabled("debug")) {
+    // Returns [seconds, nanoseconds]:
+    const hrtimeDiff = process.hrtime(startTime);
+    const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
+    logger.debug(
+      cache.streamState,
+      `Stream cache updated in ${elapsedMilliseconds} ms: ${
+        projectStreams.length
+      } projects (${nUpdatedProjects} updated, ${nRebuiltProjects} rebuilt)`,
+    );
+  }
 }

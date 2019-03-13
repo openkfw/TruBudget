@@ -29,6 +29,7 @@ import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./workflow/workflowitem_created";
 import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permission_revoked";
+import * as WorkflowitemUpdated from "./workflow/workflowitem_updated";
 
 export type BusinessEvent =
   | GlobalPermissionsGranted.Event
@@ -59,7 +60,8 @@ export type BusinessEvent =
   | WorkflowitemClosed.Event
   | WorkflowitemCreated.Event
   | WorkflowitemPermissionGranted.Event
-  | WorkflowitemPermissionRevoked.Event;
+  | WorkflowitemPermissionRevoked.Event
+  | WorkflowitemUpdated.Event;
 
 export const businessEventSchema = Joi.object({
   type: Joi.string().required(),

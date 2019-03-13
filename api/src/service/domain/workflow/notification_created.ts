@@ -1,4 +1,5 @@
 import Joi = require("joi");
+import uuid = require("uuid");
 import { VError } from "verror";
 
 import * as Result from "../../../result";
@@ -47,7 +48,6 @@ export const schema = Joi.object({
 export function createEvent(
   source: string,
   publisher: Identity,
-  notificationId: Notification.Id,
   recipient: UserRecord.Id,
   businessEvent: BusinessEvent,
   projectId?: Project.Id,
@@ -60,7 +60,7 @@ export function createEvent(
     source,
     time,
     publisher,
-    notificationId,
+    notificationId: uuid.v4(),
     recipient,
     businessEvent,
     projectId,
