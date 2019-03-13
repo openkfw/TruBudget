@@ -19,14 +19,15 @@ import * as ProjectUpdated from "./workflow/project_updated";
 import * as SubprojectAssigned from "./workflow/subproject_assigned";
 import * as SubprojectClosed from "./workflow/subproject_closed";
 import * as SubprojectCreated from "./workflow/subproject_created";
+import * as SubprojectPermissionGranted from "./workflow/subproject_permission_granted";
+import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_revoked";
 import * as SubprojectUpdated from "./workflow/subproject_updated";
 import * as WorkflowitemAssigned from "./workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./workflow/workflowitem_created";
 import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permission_granted";
-import * as SubprojectPermissionGranted from "./workflow/subproject_permission_granted";
-import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_revoked";
 import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permission_revoked";
+import * as WorkflowitemUpdated from "./workflow/workflowitem_updated";
 
 export type BusinessEvent =
   | GlobalPermissionsGranted.Event
@@ -55,7 +56,8 @@ export type BusinessEvent =
   | WorkflowitemClosed.Event
   | WorkflowitemCreated.Event
   | WorkflowitemPermissionGranted.Event
-  | WorkflowitemPermissionRevoked.Event;
+  | WorkflowitemPermissionRevoked.Event
+  | WorkflowitemUpdated.Event;
 
 export const businessEventSchema = Joi.object({
   type: Joi.string().required(),

@@ -5,6 +5,7 @@ import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as ProjectAssign from "./domain/workflow/project_assign";
+import * as GroupQuery from "./group_query";
 import { store } from "./store";
 
 export async function assignProject(
@@ -23,6 +24,9 @@ export async function assignProject(
       getProjectEvents: async () => {
         await Cache2.refresh(conn, projectId);
         return conn.cache2.eventsByStream.get(projectId) || [];
+      },
+      getUsersForIdentity: async identity => {
+        return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
     },
   );

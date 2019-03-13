@@ -9,6 +9,7 @@ import * as Group from "./domain/organization/group";
 import * as GroupGet from "./domain/organization/group_get";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
+import * as UserRecord from "./domain/organization/user_record";
 
 const GROUPS_STREAM = "groups";
 
@@ -62,4 +63,46 @@ export async function groupExists(
 ): Promise<boolean> {
   const groups = await getGroups(conn, ctx, serviceUser);
   return groups.find(x => x.id === groupId) !== undefined;
+}
+
+/**
+ * returns all users for given identity
+ *  if identity is an user return it,
+ *  else if identity is group resolve identities of the group
+ */
+export async function resolveUsers(
+  conn: ConnToken,
+  ctx: Ctx,
+  serviceUser: ServiceUser,
+  identity: Identity,
+  getGroupFn: typeof getGroup = getGroup,
+  groupSet: Set<Group.Id> = new Set(),
+): Promise<UserRecord.Id[]> {
+  const groupResult = await getGroupFn(conn, ctx, serviceUser, identity);
+
+  if (Result.isErr(groupResult)) {
+    return [identity];
+  }
+
+  const users: UserRecord.Id[] = [];
+  for (const member of groupResult.members) {
+    // prevent infinite loop, in case group contains itself, and group-member loops
+    if (!groupSet.has(member)) {
+      groupSet.add(member);
+      const resolvedUsers = await resolveUsers(
+        conn,
+        ctx,
+        serviceUser,
+        member,
+        getGroupFn,
+        groupSet,
+      );
+      users.push(...resolvedUsers);
+    }
+  }
+
+  // make entries in array unique
+  const userSet = new Set(users);
+
+  return [...userSet];
 }
