@@ -10,12 +10,9 @@ import * as Notification from "./service/domain/workflow/notification";
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "List notifications for the selected page " +
-      "for the user, given by the token in the " +
-      "request's `Authorization` header. ",
+    description: "List (a part of) an authenticated user's notifications.",
     tags: ["notification"],
-    summary: "List all notification of the authorized user",
+    summary: "List (a part of) an authenticated user's notifications.",
     security: [{ bearerToken: [] }],
     querystring: {
       type: "object",
@@ -39,6 +36,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
           data: {
             type: "object",
             properties: {
+              userId: { type: "string", example: "jdoe" },
               notifications: {
                 type: "array",
                 items: {
@@ -148,6 +146,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const body = {
         apiVersion: "1.0",
         data: {
+          userId: user.id,
           notifications: exposed,
         },
       };

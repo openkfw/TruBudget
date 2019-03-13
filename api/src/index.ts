@@ -14,15 +14,15 @@ import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
 import { registerNode } from "./network/controller/registerNode";
+import * as NotificationCountAPI from "./notification_count";
+import * as NotificationListAPI from "./notification_list";
 import { ensureOrganizationStream } from "./organization/organization";
 import * as ProjectAssignAPI from "./project_assign";
-import * as ProjectProjectedBudgetUpdateAPI from "./project_budget_update_projected";
 import * as ProjectProjectedBudgetDeleteAPI from "./project_budget_delete_projected";
+import * as ProjectProjectedBudgetUpdateAPI from "./project_budget_update_projected";
 import * as ProjectCloseAPI from "./project_close";
 import * as ProjectCreateAPI from "./project_create";
 import * as ProjectListAPI from "./project_list";
-import * as NotificationListAPI from "./notification_list";
-import * as NotificationListService from "./service/notification_list";
 import * as ProjectPermissionGrantAPI from "./project_permission_grant";
 import * as ProjectPermissionRevokeAPI from "./project_permission_revoke";
 import * as ProjectPermissionsListAPI from "./project_permissions_list";
@@ -42,9 +42,8 @@ import * as GroupMemberRemoveService from "./service/group_member_remove";
 import * as GroupQueryService from "./service/group_query";
 import { randomString } from "./service/hash";
 import * as HttpdMultichainAdapter from "./service/HttpdMultichainAdapter";
+import * as NotificationListService from "./service/notification_list";
 import * as ProjectAssignService from "./service/project_assign";
-import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
-import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
 import * as ProjectCloseService from "./service/project_close";
 import * as ProjectCreateService from "./service/project_create";
 import * as ProjectGetService from "./service/project_get";
@@ -52,6 +51,8 @@ import * as ProjectListService from "./service/project_list";
 import * as ProjectPermissionGrantService from "./service/project_permission_grant";
 import * as ProjectPermissionRevokeService from "./service/project_permission_revoke";
 import * as ProjectPermissionsListService from "./service/project_permissions_list";
+import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
+import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
 import * as UserAuthenticateService from "./service/user_authenticate";
@@ -253,6 +254,11 @@ GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
  */
 
 NotificationListAPI.addHttpHandler(server, URL_PREFIX, {
+  getNotificationsForUser: (ctx, user) =>
+    NotificationListService.getNotificationsForUser(db, ctx, user),
+});
+
+NotificationCountAPI.addHttpHandler(server, URL_PREFIX, {
   getNotificationsForUser: (ctx, user) =>
     NotificationListService.getNotificationsForUser(db, ctx, user),
 });
