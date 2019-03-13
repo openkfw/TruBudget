@@ -166,51 +166,51 @@ export async function issueNotification(
   recipient: string,
   resources: NotificationResourceDescription[],
 ): Promise<void> {
-  // const notificationId = uuid();
-  // // TODO message.key is working for projects
-  // // TODO but we need to access projectId subprojectid and workflowitemid and build data.resources
-  // // const projectId = message.key;
-  // // const resources: NotificationResourceDescription[] = [
-  // //   {
-  // //     id: projectId,
-  // //     type: notificationTypeFromIntent(message.intent),
-  // //   },
-  // // ];
-  // const intent = "notification.create";
-  // const event: Event = {
-  //   key: recipient,
-  //   intent,
-  //   createdBy: issuer.name,
-  //   createdAt: new Date().toISOString(),
-  //   dataVersion: 1,
-  //   data: {
-  //     notificationId,
-  //     resources,
-  //     isRead: false,
-  //     originalEvent: message,
+  const notificationId = uuid();
+  // TODO message.key is working for projects
+  // TODO but we need to access projectId subprojectid and workflowitemid and build data.resources
+  // const projectId = message.key;
+  // const resources: NotificationResourceDescription[] = [
+  //   {
+  //     id: projectId,
+  //     type: notificationTypeFromIntent(message.intent),
   //   },
-  // };
-  // const streamName = "notifications";
-  // const publishEvent = () => {
-  //   logger.debug(`Publishing ${intent} to ${streamName}/${recipient}`);
-  //   return conn.multichainClient.getRpcClient().invoke("publish", streamName, recipient, {
-  //     json: event,
-  //   });
-  // };
-  // return publishEvent().catch(err => {
-  //   if (err.code === -708) {
-  //     logger.debug(
-  //       `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
-  //     );
-  //     // The stream does not exist yet. Create the stream and try again:
-  //     return conn.multichainClient
-  //       .getOrCreateStream({ kind: "notifications", name: streamName })
-  //       .then(() => publishEvent());
-  //   } else {
-  //     logger.error({ error: err }, `Publishing ${intent} failed.`);
-  //     throw err;
-  //   }
-  // });
+  // ];
+  const intent = "notification.create";
+  const event: Event = {
+    key: recipient,
+    intent,
+    createdBy: issuer.name,
+    createdAt: new Date().toISOString(),
+    dataVersion: 1,
+    data: {
+      notificationId,
+      resources,
+      isRead: false,
+      originalEvent: message,
+    },
+  };
+  const streamName = "notifications";
+  const publishEvent = () => {
+    logger.debug(`Publishing ${intent} to ${streamName}/${recipient}`);
+    return conn.multichainClient.getRpcClient().invoke("publish", streamName, recipient, {
+      json: event,
+    });
+  };
+  return publishEvent().catch(err => {
+    if (err.code === -708) {
+      logger.debug(
+        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
+      );
+      // The stream does not exist yet. Create the stream and try again:
+      return conn.multichainClient
+        .getOrCreateStream({ kind: "notifications", name: streamName })
+        .then(() => publishEvent());
+    } else {
+      logger.error({ error: err }, `Publishing ${intent} failed.`);
+      throw err;
+    }
+  });
 }
 
 function notificationTypeFromIntent(intent: Intent): ResourceType {

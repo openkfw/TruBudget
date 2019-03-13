@@ -22,18 +22,18 @@ export async function createNotification(
   createdFor: UserId,
   originalEvent: Event,
 ): Promise<void> {
-  // const notificationId: string = uuid();
-  // const intent: Intent = "notification.create";
-  // const creationTimestamp = new Date();
-  // const dataVersion = 1;
-  // const data: Notification.EventData = {
-  //   notificationId,
-  //   resources,
-  //   isRead: false,
-  //   originalEvent,
-  // };
-  // const event = { intent, createdBy, creationTimestamp, dataVersion, data };
-  // return Notification.publish(multichain, createdFor, event);
+  const notificationId: string = uuid();
+  const intent: Intent = "notification.create";
+  const creationTimestamp = new Date();
+  const dataVersion = 1;
+  const data: Notification.EventData = {
+    notificationId,
+    resources,
+    isRead: false,
+    originalEvent,
+  };
+  const event = { intent, createdBy, creationTimestamp, dataVersion, data };
+  return Notification.publish(multichain, createdFor, event);
 }
 
 /**

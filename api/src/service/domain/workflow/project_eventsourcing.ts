@@ -9,6 +9,8 @@ import * as ProjectClosed from "./project_closed";
 import * as ProjectCreated from "./project_created";
 import * as ProjectPermissionGranted from "./project_permission_granted";
 import * as ProjectPermissionRevoked from "./project_permission_revoked";
+import * as ProjectProjectedBudgetDeleted from "./project_projected_budget_deleted";
+import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updated";
 import { ProjectTraceEvent } from "./project_trace_event";
 import * as ProjectUpdated from "./project_updated";
 
@@ -42,6 +44,10 @@ function apply(
     applyGrantPermission(ctx, projects, event, errors);
   } else if (event.type === "project_permission_revoked") {
     applyRevokePermission(ctx, projects, event, errors);
+  } else if (event.type === "project_projected_budget_updated") {
+    applyUpdateProjectedBudget(ctx, projects, event, errors);
+  } else if (event.type === "project_projected_budget_deleted") {
+    applyDeleteProjectedBudget(ctx, projects, event, errors);
   }
 }
 
@@ -116,7 +122,7 @@ function applyUpdate(
 
   const result = Project.validate(project);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, projectUpdated, result.message));
+    errors.push(new EventSourcingError(ctx, projectUpdated, result.message, project.id));
     return;
   }
 
@@ -146,7 +152,7 @@ function applyAssign(
 
   const result = Project.validate(project);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, projectAssigned, result.message));
+    errors.push(new EventSourcingError(ctx, projectAssigned, result.message, project.id));
     return;
   }
 
@@ -176,7 +182,7 @@ function applyClose(
 
   const result = Project.validate(project);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, projectClosed, result.message));
+    errors.push(new EventSourcingError(ctx, projectClosed, result.message, project.id));
     return;
   }
 
@@ -210,7 +216,7 @@ function applyGrantPermission(
 
   const result = Project.validate(project);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, permissionGranted, result.message));
+    errors.push(new EventSourcingError(ctx, permissionGranted, result.message, project.id));
     return;
   }
 
@@ -248,7 +254,7 @@ function applyRevokePermission(
 
   const result = Project.validate(project);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, permissionRevoked, result.message));
+    errors.push(new EventSourcingError(ctx, permissionRevoked, result.message, project.id));
     return;
   }
 
@@ -263,4 +269,124 @@ function applyRevokePermission(
   project.log.push(traceEvent);
 
   projects.set(permissionRevoked.projectId, project);
+}
+
+function applyUpdateProjectedBudget(
+  ctx: Ctx,
+  projects: Map<Project.Id, Project.Project>,
+  budgetUpdated: ProjectProjectedBudgetUpdated.Event,
+  errors: EventSourcingError[],
+) {
+  const project = deepcopy(projects.get(budgetUpdated.projectId));
+  if (project === undefined) return;
+
+  // An organization may have multiple budgets, but any two budgets of the same
+  // organization always have a different currency. The reasoning: if an organization
+  // makes two financial commitments in the same currency, they can represented by one
+  // commitment with the same currency and the sum of both commitments as its value.
+  const targetBudget = project.projectedBudgets.find(
+    x =>
+      x.organization === budgetUpdated.organization &&
+      x.currencyCode === budgetUpdated.currencyCode,
+  );
+
+  if (targetBudget !== undefined) {
+    // Update an existing budget:
+    targetBudget.value = budgetUpdated.value;
+  } else {
+    // Add a new budget:
+    project.projectedBudgets.push({
+      organization: budgetUpdated.organization,
+      currencyCode: budgetUpdated.currencyCode,
+      value: budgetUpdated.value,
+    });
+  }
+
+  const result = Project.validate(project);
+  if (Result.isErr(result)) {
+    errors.push(new EventSourcingError(ctx, budgetUpdated, result.message, project.id));
+    return;
+  }
+
+  const traceEvent: ProjectTraceEvent = {
+    entityId: budgetUpdated.projectId,
+    entityType: "project",
+    businessEvent: budgetUpdated,
+    snapshot: {
+      displayName: project.displayName,
+    },
+  };
+  project.log.push(traceEvent);
+
+  projects.set(budgetUpdated.projectId, project);
+}
+
+function applyDeleteProjectedBudget(
+  ctx: Ctx,
+  projects: Map<Project.Id, Project.Project>,
+  budgetDeleted: ProjectProjectedBudgetDeleted.Event,
+  errors: EventSourcingError[],
+) {
+  const project = deepcopy(projects.get(budgetDeleted.projectId));
+  if (project === undefined) return;
+
+  // An organization may have multiple budgets, but any two budgets of the same
+  // organization always have a different currency. The reasoning: if an organization
+  // makes two financial commitments in the same currency, they can represented by one
+  // commitment with the same currency and the sum of both commitments as its value.
+  const newBudgets = project.projectedBudgets.filter(
+    x =>
+      x.organization !== budgetDeleted.organization ||
+      x.currencyCode !== budgetDeleted.currencyCode,
+  );
+
+  if (newBudgets.length === project.projectedBudgets.length) {
+    errors.push(
+      new EventSourcingError(
+        ctx,
+        budgetDeleted,
+        `no projected budget found for the given organization and currencyCode`,
+        project.id,
+      ),
+    );
+    return;
+  }
+
+  if (newBudgets.length !== project.projectedBudgets.length - 1) {
+    errors.push(
+      new EventSourcingError(
+        ctx,
+        budgetDeleted,
+        `more than one budget found for organization ${budgetDeleted.organization} and currency ${
+          budgetDeleted.currencyCode
+        }: ${JSON.stringify(newBudgets)} of length ${
+          newBudgets.length
+        } should have exactly one less element than ${JSON.stringify(
+          project.projectedBudgets,
+        )} of length ${project.projectedBudgets.length}`,
+        project.id,
+      ),
+    );
+    return;
+  }
+
+  project.projectedBudgets = newBudgets;
+
+  const result = Project.validate(project);
+  if (Result.isErr(result)) {
+    errors.push(new EventSourcingError(ctx, budgetDeleted, result.message, project.id));
+    return;
+  }
+
+  const traceEvent: ProjectTraceEvent = {
+    entityId: budgetDeleted.projectId,
+    entityType: "project",
+    businessEvent: budgetDeleted,
+    snapshot: {
+      displayName: project.displayName,
+    },
+  };
+  project.log.push(traceEvent);
+
+  projects.set(budgetDeleted.projectId, project);
 }

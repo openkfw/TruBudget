@@ -1,7 +1,5 @@
 import strings from "../../localizeStrings";
-import {
-  formatString
-} from "../../helper";
+import { formatString } from "../../helper";
 
 function findDisplayName(intent, resources) {
   const resourceType = intent.substring(0, intent.indexOf("."));
@@ -14,10 +12,7 @@ function translate(intent) {
   return strings.notification[intent.split(".").join("_")];
 }
 
-export const intentMapping = ({
-  originalEvent,
-  resources
-}) => {
+export const intentMapping = ({ originalEvent, resources }) => {
   const translation = translate(originalEvent.intent);
   if (!translation) return `${originalEvent.intent} (missing intent translation)`;
 
@@ -27,15 +22,37 @@ export const intentMapping = ({
   return `${text} ${displayName ? "" : strings.notification.no_permissions}`;
 };
 
-export const parseURI = ({
-  resources
-}) => {
+export const newIntentMapping = ({ businessEvent, resources }) => {
+  // const translation = translate(businessEvent.type);
+  // TODO: current translation not in line with business types
+  const translation = strings.notification[businessEvent.type];
+  if (!translation) return `${businessEvent.type} (missing intent translation)`;
+
+  // For now: displayname is not displayed in notification
+  // const displayName = findDisplayName(businessEvent.type, resources);
+  const displayName = " ";
+
+  const text = formatString(translation, displayName);
+  return `${text} ${displayName ? "" : strings.notification.no_permissions}`;
+};
+
+export const parseURI = ({ resources }) => {
   const project = resources.find(resource => resource.type === "project");
   const subproject = resources.find(resource => resource.type === "subproject");
   if (subproject) {
     return `/projects/${project.id}/${subproject.id}`;
   } else {
     return `/projects/${project.id}`;
+  }
+};
+
+export const newParseURI = ({ projectId, subprojectId }) => {
+  if (projectId && !subprojectId) {
+    return `/projects/${projectId}`;
+  } else if (projectId && subprojectId) {
+    return `/projects/${projectId}/${subprojectId}`;
+  } else {
+    //ERROR?
   }
 };
 

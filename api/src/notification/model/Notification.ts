@@ -119,6 +119,7 @@ export async function get(
         throw err;
       }
     });
+  logger.fatal({ streamItems }, `notification streamitems for ${token.userId}`);
   const notificationsById = new Map<NotificationId, Notification>();
   for (const streamItem of streamItems) {
     const event = streamItem.data.json as Event;

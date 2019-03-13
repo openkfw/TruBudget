@@ -156,8 +156,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchUser: () => dispatch(fetchUser(true)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
-    showEditDialog: (id, displayName, amount, amountType, description, currency, documents) =>
-      dispatch(showEditDialog(id, displayName, amount, amountType, description, currency, documents)),
+    showEditDialog: (id, displayName, amount, exchangeRate, amountType, description, currency, documents) =>
+      dispatch(showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents)),
     saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
     addDocument: (payload, name) => dispatch(addDocument(payload, name)),
     storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems))

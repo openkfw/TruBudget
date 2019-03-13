@@ -14,8 +14,13 @@ import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
 import { registerNode } from "./network/controller/registerNode";
+import * as NotificationCountAPI from "./notification_count";
+import * as NotificationListAPI from "./notification_list";
+import * as NotificationMarkReadAPI from "./notification_mark_read";
 import { ensureOrganizationStream } from "./organization/organization";
 import * as ProjectAssignAPI from "./project_assign";
+import * as ProjectProjectedBudgetDeleteAPI from "./project_budget_delete_projected";
+import * as ProjectProjectedBudgetUpdateAPI from "./project_budget_update_projected";
 import * as ProjectCloseAPI from "./project_close";
 import * as ProjectCreateAPI from "./project_create";
 import * as ProjectListAPI from "./project_list";
@@ -38,6 +43,8 @@ import * as GroupMemberRemoveService from "./service/group_member_remove";
 import * as GroupQueryService from "./service/group_query";
 import { randomString } from "./service/hash";
 import * as HttpdMultichainAdapter from "./service/HttpdMultichainAdapter";
+import * as NotificationListService from "./service/notification_list";
+import * as NotificationMarkReadService from "./service/notification_mark_read";
 import * as ProjectAssignService from "./service/project_assign";
 import * as ProjectCloseService from "./service/project_close";
 import * as ProjectCreateService from "./service/project_create";
@@ -46,12 +53,18 @@ import * as ProjectListService from "./service/project_list";
 import * as ProjectPermissionGrantService from "./service/project_permission_grant";
 import * as ProjectPermissionRevokeService from "./service/project_permission_revoke";
 import * as ProjectPermissionsListService from "./service/project_permissions_list";
+import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
+import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
+import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
+import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
 import * as OldSubprojectModel from "./subproject/model/Subproject";
+import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
+import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
@@ -243,6 +256,25 @@ GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 /*
+ * APIs related to Notifications
+ */
+
+NotificationListAPI.addHttpHandler(server, URL_PREFIX, {
+  getNotificationsForUser: (ctx, user) =>
+    NotificationListService.getNotificationsForUser(db, ctx, user),
+});
+
+NotificationCountAPI.addHttpHandler(server, URL_PREFIX, {
+  getNotificationsForUser: (ctx, user) =>
+    NotificationListService.getNotificationsForUser(db, ctx, user),
+});
+
+NotificationMarkReadAPI.addHttpHandler(server, URL_PREFIX, {
+  markRead: (ctx, user, notificationId) =>
+    NotificationMarkReadService.markRead(db, ctx, user, notificationId),
+});
+
+/*
  * APIs related to Projects
  */
 
@@ -383,6 +415,62 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
     }
     return newSubprojects;
   },
+});
+
+ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateProjectedBudget: (ctx, user, projectId, orga, amount, currencyCode) =>
+    ProjectProjectedBudgetUpdateService.updateProjectedBudget(
+      db,
+      ctx,
+      user,
+      projectId,
+      orga,
+      amount,
+      currencyCode,
+    ),
+});
+
+ProjectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
+  deleteProjectedBudget: (ctx, user, projectId, orga, currencyCode) =>
+    ProjectProjectedBudgetDeleteService.deleteProjectedBudget(
+      db,
+      ctx,
+      user,
+      projectId,
+      orga,
+      currencyCode,
+    ),
+});
+
+/*
+ * APIs related to Subprojects
+ */
+
+SubprojectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateProjectedBudget: (ctx, user, projectId, subprojectId, orga, amount, currencyCode) =>
+    SubprojectProjectedBudgetUpdateService.updateProjectedBudget(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      orga,
+      amount,
+      currencyCode,
+    ),
+});
+
+SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
+  deleteProjectedBudget: (ctx, user, projectId, subprojectId, orga, currencyCode) =>
+    SubprojectProjectedBudgetDeleteService.deleteProjectedBudget(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      orga,
+      currencyCode,
+    ),
 });
 
 /*

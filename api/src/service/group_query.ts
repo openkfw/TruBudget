@@ -2,7 +2,6 @@ import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache2 from "./cache2";
 import { ConnToken } from "./conn";
 import { NotFound } from "./domain/errors/not_found";
 import * as Group from "./domain/organization/group";
@@ -10,6 +9,7 @@ import * as GroupGet from "./domain/organization/group_get";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserRecord from "./domain/organization/user_record";
+import { loadGroupEvents } from "./load";
 
 const GROUPS_STREAM = "groups";
 
@@ -20,10 +20,7 @@ export async function getGroups(
 ): Promise<Group.Group[]> {
   try {
     const groups = await GroupGet.getAllGroups(ctx, serviceUser, {
-      getGroupEvents: async () => {
-        await Cache2.refresh(conn);
-        return conn.cache2.eventsByStream.get(GROUPS_STREAM) || [];
-      },
+      getGroupEvents: async () => loadGroupEvents(conn),
     });
     return groups;
   } catch (err) {

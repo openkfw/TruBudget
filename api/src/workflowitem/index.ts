@@ -110,9 +110,10 @@ export async function update(
     inheritDefinedProperties(updatedWorkflowitemData, theUpdate, [
       "displayName",
       "description",
+      "amountType",
       "amount",
       "currency",
-      "amountType",
+      "exchangeRate",
     ]);
     if (!isUserAllowedTo(allowedIntent, workflowitemToBeUpdated, updatingUser)) {
       return Promise.reject("User is not allowed to update workflowitem");
@@ -124,6 +125,7 @@ export async function update(
       updatedCurrencyAndAmount = true;
       delete updatedWorkflowitemData.amount;
       delete updatedWorkflowitemData.currency;
+      delete updatedWorkflowitemData.exchangeRate;
     }
     if (isEmpty(updatedWorkflowitemData)) {
       return Promise.resolve();
@@ -142,6 +144,9 @@ export async function update(
       currency: updatedCurrencyAndAmount
         ? updatedWorkflowitemData.currency
         : workflowitemToBeUpdated.currency,
+      exchangeRate: updatedCurrencyAndAmount
+        ? updatedWorkflowitemData.exchangeRate
+        : workflowitemToBeUpdated.exchangeRate,
       amountType: updatedCurrencyAndAmount
         ? updatedWorkflowitemData.amountType
         : workflowitemToBeUpdated.amountType,

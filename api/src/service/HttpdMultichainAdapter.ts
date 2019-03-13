@@ -194,9 +194,8 @@ export function updateWorkflowitem(conn: Multichain.ConnToken): HTTP.Workflowite
       );
       return workflowitemList.map(Workflowitem.validateWorkflowitem);
     };
-    const multichainUpdater: Workflowitem.Updater = async (workflowitem, data) => {
+    const multichainUpdater: Workflowitem.Updater = async (workflowitem, data) =>
       Multichain.updateWorkflowitem(conn, issuer, projectId, subprojectId, workflowitem, data);
-    };
 
     const multichainNotifier: Workflowitem.UpdateNotifier = async (workflowitem, updatedData) => {
       const notificationResource = Multichain.generateResources(

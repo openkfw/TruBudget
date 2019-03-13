@@ -43,7 +43,9 @@ import {
   SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
-  SUBMIT_BATCH_FOR_WORKFLOW
+  SUBMIT_BATCH_FOR_WORKFLOW,
+  WORKFLOW_EXCHANGERATE,
+  DEFAULT_WORKFLOW_EXCHANGERATE
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -56,7 +58,7 @@ const defaultState = fromJS({
   description: "",
   status: "open",
   amount: 0,
-  currency: "EUR",
+  currency: "",
   projectedBudgets: [],
   created: 0,
   allowedIntents: [],
@@ -67,6 +69,7 @@ const defaultState = fromJS({
     id: "",
     displayName: "",
     amount: "",
+    exchangeRate: 1,
     amountType: "N/A",
     currency: "",
     description: "",
@@ -130,6 +133,7 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("id", action.id)
           .set("displayName", action.displayName)
           .set("amount", action.amount)
+          .set("exchangeRate", action.exchangeRate)
           .set("amountType", action.amountType)
           .set("description", action.description)
           .set("currency", action.currency)
@@ -187,12 +191,20 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "displayName"], action.name);
     case WORKFLOW_AMOUNT:
       return state.setIn(["workflowToAdd", "amount"], action.amount);
+    case WORKFLOW_EXCHANGERATE:
+      return state.setIn(["workflowToAdd", "exchangeRate"], action.exchangeRate);
     case WORKFLOW_AMOUNT_TYPE:
       return state.setIn(["workflowToAdd", "amountType"], action.amountType);
     case WORKFLOW_PURPOSE:
       return state.setIn(["workflowToAdd", "description"], action.description);
     case WORKFLOW_CURRENCY:
-      return state.setIn(["workflowToAdd", "currency"], action.currency);
+      return state.merge({
+        workflowToAdd: state.getIn(["workflowToAdd"]).set("currency", action.currency)
+      });
+    case DEFAULT_WORKFLOW_EXCHANGERATE:
+      return state.merge({
+        workflowToAdd: state.getIn(["workflowToAdd"]).set("exchangeRate", 1)
+      });
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);
     case WORKFLOW_DOCUMENT:

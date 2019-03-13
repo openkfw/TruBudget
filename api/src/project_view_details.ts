@@ -44,18 +44,9 @@ function mkSwaggerSchema(server: FastifyInstance) {
             properties: {
               project: {
                 type: "object",
-                required: ["data", "log", "allowedIntents"],
                 properties: {
                   data: {
                     type: "object",
-                    required: [
-                      "id",
-                      "creationUnixTs",
-                      "status",
-                      "displayName",
-                      "description",
-                      "projectedBudgets",
-                    ],
                     properties: {
                       id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                       creationUnixTs: { type: "string", example: "1536154645775" },
@@ -68,7 +59,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         type: "array",
                         items: {
                           type: "object",
-                          required: ["organization", "value", "currencyCode"],
                           properties: {
                             organization: { type: "string", example: "ACME Corp." },
                             value: { type: "string", example: "1000000" },
@@ -86,13 +76,11 @@ function mkSwaggerSchema(server: FastifyInstance) {
                     type: "array",
                     items: {
                       type: "object",
-                      required: ["entityId", "entityType", "businessEvent", "snapshot"],
                       properties: {
                         entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                         entityType: { type: "string", example: "project" },
                         businessEvent: {
                           type: "object",
-                          required: ["type", "source", "time", "publisher"],
                           properties: {
                             type: { type: "string" },
                             source: { type: "string" },
@@ -108,7 +96,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         },
                         snapshot: {
                           type: "object",
-                          required: ["displayName"],
                           properties: {
                             displayName: { type: "string", example: "Build a town-project" },
                           },

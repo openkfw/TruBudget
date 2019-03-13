@@ -34,12 +34,22 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
     case "project_closed":
     case "project_permission_granted":
     case "project_permission_revoked":
+    case "project_projected_budget_updated":
+    case "project_projected_budget_deleted":
       return writeTo(conn, ctx, { stream: event.projectId, keys: ["self"], event });
 
     case "subproject_created":
       return writeTo(conn, ctx, {
         stream: event.projectId,
         keys: ["subprojects", event.subproject.id],
+        event,
+      });
+
+    case "subproject_projected_budget_updated":
+    case "subproject_projected_budget_deleted":
+      return writeTo(conn, ctx, {
+        stream: event.projectId,
+        keys: ["subprojects", event.subprojectId],
         event,
       });
 
@@ -52,11 +62,10 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
 
     case "notification_created":
       await ensureStreamExists(conn, ctx, "notifications", "notifications");
-      return writeTo(conn, ctx, {
-        stream: "notifications",
-        keys: [event.recipient],
-        event,
-      });
+      return writeTo(conn, ctx, { stream: "notifications", keys: [event.recipient], event });
+
+    case "notification_marked_read":
+      return writeTo(conn, ctx, { stream: "notifications", keys: [event.recipient], event });
 
     default:
       return Promise.reject(Error(`Not implemented: store(${JSON.stringify(event)})`));

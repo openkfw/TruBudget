@@ -3,13 +3,17 @@ import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
+import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
+import * as UserRecord from "../organization/user_record";
+import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as ProjectClosed from "./project_closed";
 import { sourceProjects } from "./project_eventsourcing";
 
 interface Repository {
   getProjectEvents(): Promise<BusinessEvent[]>;
+  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
 }
 
 export async function closeProject(
@@ -24,6 +28,11 @@ export async function closeProject(
   const project = projects.find(x => x.id === projectId);
   if (project === undefined) {
     return { newEvents: [], errors: [new NotFound(ctx, "project", projectId)] };
+  }
+
+  if (project.status === "closed") {
+    // The project is already closed.
+    return { newEvents: [], errors: [] };
   }
 
   // TODO make sure all subprojects are closed (and with them all workflowitems)
@@ -47,5 +56,14 @@ export async function closeProject(
     return { newEvents: [], errors: [new InvalidCommand(ctx, projectClosed, errors)] };
   }
 
-  return { newEvents: [projectClosed], errors: [] };
+  // Create notification events:
+  let notifications: NotificationCreated.Event[] = [];
+  if (project.assignee !== undefined && project.assignee !== issuer.id) {
+    const recipients = await repository.getUsersForIdentity(project.assignee);
+    notifications = recipients.map(recipient =>
+      NotificationCreated.createEvent(ctx.source, issuer.id, recipient, projectClosed, projectId),
+    );
+  }
+
+  return { newEvents: [projectClosed, ...notifications], errors: [] };
 }

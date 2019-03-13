@@ -2,10 +2,8 @@ import { fromJS, Set } from "immutable";
 
 import {
   PROJECT_NAME,
-  PROJECT_AMOUNT,
-  ADD_PROJECT_BUDGET,
+  PROJECT_PROJECTED_BUDGET,
   PROJECT_COMMENT,
-  PROJECT_CURRENCY,
   PROJECT_ORGANIZATION,
   CREATE_PROJECT_SUCCESS,
   PROJECT_CREATION_STEP,
@@ -16,7 +14,8 @@ import {
   SHOW_PROJECT_PERMISSIONS,
   HIDE_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
-  HIDE_PROJECT_DIALOG
+  HIDE_PROJECT_DIALOG,
+  PROJECT_DELETED_PROJECTED_BUDGET
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import strings from "../../localizeStrings";
@@ -28,11 +27,10 @@ const defaultState = fromJS({
   projectToAdd: {
     id: "",
     displayName: "",
-    amount: "",
     description: "",
     thumbnail: "/Thumbnail_0001.jpg",
-    currency: "",
     projectedBudgets: [],
+    deletedProjectedBudgets: [],
     organization: ""
   },
   idForPermissions: "",
@@ -58,11 +56,10 @@ export default function overviewReducer(state = defaultState, action) {
         projectToAdd: state
           .getIn(["projectToAdd"])
           .set("id", action.id)
-          .set("currency", action.currency)
           .set("displayName", action.displayName)
-          .set("amount", action.amount)
           .set("description", action.description)
-          .set("thumbnail", action.thumbnail),
+          .set("thumbnail", action.thumbnail)
+          .set("projectedBudgets", fromJS(action.projectedBudgets)),
         currentStep: action.currentStep,
         editDialogShown: true
       });
@@ -86,20 +83,31 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set("permissions", fromJS(action.permissions));
     case PROJECT_NAME:
       return state.setIn(["projectToAdd", "displayName"], action.name);
-    case PROJECT_AMOUNT:
-      return state.setIn(["projectToAdd", "amount"], action.amount);
-    case ADD_PROJECT_BUDGET:
+    case PROJECT_PROJECTED_BUDGET:
       return state.merge({
         projectToAdd: state
           .getIn(["projectToAdd"])
-          .update("projectedBudgets", budgets => [...budgets, action.projectedBudget])
-          .set("amount", "")
+          .set("projectedBudgets", fromJS(action.projectedBudgets))
           .set("organization", "")
       });
+    case PROJECT_DELETED_PROJECTED_BUDGET:
+      console.log(state.getIn(["projectToAdd", "projectedBudgets"]));
+      const projectedBudgets = state.getIn(["projectToAdd", "projectedBudgets"]).toJS();
+      const projectedBudgetsToDelete = action.projectedBudgets;
+      const newState = state.merge({
+        projectToAdd: state.get("projectToAdd").merge({
+          deletedProjectedBudgets: projectedBudgetsToDelete,
+          projectedBudgets: projectedBudgets.filter(
+            b =>
+              projectedBudgetsToDelete.find(
+                d => d.organization === b.organization && d.currencyCode === b.currencyCode
+              ) === undefined
+          )
+        })
+      });
+      return newState;
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
-    case PROJECT_CURRENCY:
-      return state.setIn(["projectToAdd", "currency"], action.currency);
     case PROJECT_ORGANIZATION:
       return state.setIn(["projectToAdd", "organization"], action.organization);
     case PROJECT_THUMBNAIL:

@@ -2,14 +2,12 @@ import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache2 from "./cache2";
 import { ConnToken } from "./conn";
 import { NotFound } from "./domain/errors/not_found";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserGet from "./domain/organization/user_get";
 import * as UserRecord from "./domain/organization/user_record";
-
-const USERS_STREAM = "users";
+import { loadUserEvents } from "./load";
 
 export async function getUsers(
   conn: ConnToken,
@@ -18,10 +16,7 @@ export async function getUsers(
 ): Promise<UserRecord.UserRecord[]> {
   try {
     const users = await UserGet.getAllUsers(ctx, serviceUser, {
-      getUserEvents: async () => {
-        await Cache2.refresh(conn);
-        return conn.cache2.eventsByStream.get(USERS_STREAM) || [];
-      },
+      getUserEvents: async () => loadUserEvents(conn),
     });
     return users;
   } catch (err) {

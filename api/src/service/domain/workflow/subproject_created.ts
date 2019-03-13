@@ -5,6 +5,7 @@ import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
+import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
@@ -18,7 +19,7 @@ interface InitialData {
   displayName: string;
   description: string;
   assignee?: Identity;
-  currency: string;
+  currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
@@ -35,7 +36,7 @@ const initialDataSchema = Joi.object({
     .allow("")
     .required(),
   assignee: Joi.string(),
-  currency: Joi.string().required(),
+  currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),

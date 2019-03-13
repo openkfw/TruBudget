@@ -103,7 +103,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                     },
                   },
                 ],
-                additionalData: { type: "object" },
+                additionalData: { type: "object", additionalProperties: true },
               },
             },
           },

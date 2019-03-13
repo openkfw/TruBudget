@@ -44,6 +44,8 @@ const requiredPermissions = new Map<EventType, Intent[]>([
   ["subproject_updated", ["subproject.viewDetails"]],
   ["subproject_closed", ["subproject.viewSummary", "subproject.viewDetails"]],
   ["subproject_archived", ["subproject.viewSummary", "subproject.viewDetails"]],
+  ["subproject_projected_budget_updated", ["subproject.viewDetails"]],
+  ["subproject_projected_budget_deleted", ["subproject.viewDetails"]],
 ]);
 
 function dropHiddenHistoryEvents(

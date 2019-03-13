@@ -47,11 +47,19 @@ function mkSwaggerSchema(server: FastifyInstance) {
         projectId: {
           type: "string",
         },
-        offset: {
-          type: "string",
-        },
         limit: {
           type: "string",
+          description: "Limit to the number of events to return.",
+          example: "10",
+        },
+        offset: {
+          type: "string",
+          description:
+            "The index of the first event; any events that follow" +
+            "have happened after that first event. The `offset` may also " +
+            "be negative. For example, an `offset` of `-10` with limit `10` requests " +
+            "the 10 most recent events.",
+          example: "0",
         },
       },
     },
@@ -151,25 +159,27 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
 
-      const offset: number = request.query.offset || 0;
-      if (isNaN(offset) || offset < 0) {
+      const offset = parseInt(request.query.offset || 0, 10);
+      if (isNaN(offset)) {
         reply.status(400).send({
           apiVersion: "1.0",
           error: {
             code: 400,
-            message: "query parameter `offset` must be a number greater than, or equal to, zero",
+            message: "if present, the query parameter `offset` must be an integer",
           },
         });
         return;
       }
 
-      const limit: number = request.query.limit || 99999;
-      if (isNaN(limit) || limit <= 0) {
+      let limit: number | undefined = parseInt(request.query.limit, 10);
+      if (isNaN(limit)) {
+        limit = undefined;
+      } else if (limit <= 0) {
         reply.status(400).send({
           apiVersion: "1.0",
           error: {
             code: 400,
-            message: "query parameter `limit` must be a number greater than zero",
+            message: "if present, the query parameter `limit` must be a positive integer",
           },
         });
         return;
@@ -189,13 +199,20 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         for (const subproject of subprojects) {
           events.push(...subproject.log);
         }
-        events.sort(compareEvents);
+
+        events.sort(byEventTime);
+
+        const offsetIndex = offset < 0 ? Math.max(0, events.length + offset) : offset;
+        const slice = events.slice(
+          offsetIndex,
+          limit === undefined ? undefined : offsetIndex + limit,
+        );
 
         const code = 200;
         const body = {
           apiVersion: "1.0",
           data: {
-            events: events.slice(offset, offset + limit),
+            events: slice,
             historyItemsCount: events.length,
           },
         };
@@ -208,10 +225,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
   );
 }
 
-function compareEvents(a: ExposedEvent, b: ExposedEvent): number {
-  const tsA = new Date(a.businessEvent.time);
-  const tsB = new Date(b.businessEvent.time);
-  if (tsA < tsB) return 1;
-  if (tsA > tsB) return -1;
+function byEventTime(a: ExposedEvent, b: ExposedEvent): -1 | 0 | 1 {
+  const timeA = new Date(a.businessEvent.time);
+  const timeB = new Date(b.businessEvent.time);
+  if (timeA < timeB) return -1;
+  if (timeA > timeB) return 1;
   return 0;
 }

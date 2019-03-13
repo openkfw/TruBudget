@@ -3,7 +3,13 @@ import { Ctx } from "../../../lib/ctx";
 export class NotFound extends Error {
   constructor(
     private readonly ctx: Ctx,
-    private readonly entityType: "project" | "subproject" | "workflowitem" | "group" | "user",
+    private readonly entityType:
+      | "project"
+      | "subproject"
+      | "workflowitem"
+      | "group"
+      | "user"
+      | "notification",
     private readonly entityId: string,
   ) {
     super(`Not found: ${entityType} ${entityId}`);

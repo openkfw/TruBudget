@@ -5,6 +5,7 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectList from "./domain/workflow/subproject_list";
+import { loadSubprojectEvents } from "./load";
 
 export async function listSubprojects(
   conn: ConnToken,
@@ -13,10 +14,7 @@ export async function listSubprojects(
   projectId: Project.Id,
 ): Promise<Subproject.Subproject[]> {
   const visibleSubprojects = await SubprojectList.getAllVisible(ctx, serviceUser, {
-    getAllSubprojectEvents: async () => {
-      await Cache2.refresh(conn, projectId);
-      return conn.cache2.eventsByStream.get(projectId) || [];
-    },
+    getAllSubprojectEvents: async () => loadSubprojectEvents(conn, projectId),
   });
   return visibleSubprojects;
 }

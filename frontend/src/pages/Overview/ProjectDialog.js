@@ -8,16 +8,13 @@ import ProjectDialogContent from "./ProjectDialogContent";
 import { compareObjects, fromAmountString } from "../../helper";
 
 const handleCreate = props => {
-  const { createProject, onDialogCancel, projectToAdd, location, storeSnackbarMessage } = props;
-  const { displayName, amount, description, currency, thumbnail, projectedBudgets } = projectToAdd;
+  const { createProject, onDialogCancel, projectToAdd, storeSnackbarMessage } = props;
+  const { displayName, description, thumbnail, projectedBudgets } = projectToAdd;
   createProject(
     displayName,
-    fromAmountString(amount).toString(),
     description,
-    currency,
-    location.pathname.split("/")[2],
     thumbnail,
-    projectedBudgets
+    projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) }))
   );
   onDialogCancel();
   storeSnackbarMessage(strings.common.added + " " + strings.common.project + " " + displayName);
@@ -30,11 +27,16 @@ const handleEdit = props => {
 
   if (!_isEmpty(changes)) {
     // TODO: Fix changes object when editing projectedBudget is enabled
-    editProject(projectToAdd.id, {
-      displayName: changes.displayName,
-      description: changes.description,
-      thumbnail: changes.thumbnail
-    });
+    editProject(
+      projectToAdd.id,
+      {
+        displayName: changes.displayName,
+        description: changes.description,
+        thumbnail: changes.thumbnail,
+        projectedBudgets: changes.projectedBudgets
+      },
+      changes.deletedProjectedBudgets
+    );
     storeSnackbarMessage(strings.common.edited + " " + strings.common.project + " " + projectToAdd.displayName);
   }
   onDialogCancel();

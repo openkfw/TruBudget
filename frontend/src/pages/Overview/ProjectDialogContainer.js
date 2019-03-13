@@ -5,17 +5,16 @@ import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { storeSnackbarMessage } from "../Notifications/actions";
 import {
-  addProjectedBudget,
   createProject,
   editProject,
   hideProjectDialog,
   setCurrentStep,
-  storeProjectAmount,
   storeProjectComment,
-  storeProjectCurrency,
   storeProjectName,
   storeProjectThumbnail,
-  storeProjectOrganization
+  storeProjectOrganization,
+  storeProjectedBudget,
+  storeDeletedProjectedBudget
 } from "./actions";
 import ProjectDialog from "./ProjectDialog";
 
@@ -39,19 +38,17 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createProject: (name, amount, comment, currency, _, thumbnail, projectedBudgets) =>
-      dispatch(createProject(name, amount, comment, currency, thumbnail, projectedBudgets)),
-    editProject: (id, changes) => dispatch(editProject(id, changes)),
+    createProject: (name, comment, thumbnail, projectedBudgets) =>
+      dispatch(createProject(name, comment, thumbnail, projectedBudgets)),
+    editProject: (id, changes, deletedProjectedBudgets) => dispatch(editProject(id, changes, deletedProjectedBudgets)),
     hideProjectDialog: () => dispatch(hideProjectDialog()),
     storeProjectName: name => dispatch(storeProjectName(name)),
-    storeProjectAmount: amount => dispatch(storeProjectAmount(amount)),
     storeProjectComment: comment => dispatch(storeProjectComment(comment)),
-    storeProjectCurrency: currency => dispatch(storeProjectCurrency(currency)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
-    addProjectedBudget: projectedBudget => dispatch(addProjectedBudget(projectedBudget)),
+    storeProjectedBudget: projectedBudgets => dispatch(storeProjectedBudget(projectedBudgets)),
     storeProjectOrganization: organization => dispatch(storeProjectOrganization(organization)),
-
+    storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };

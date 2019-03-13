@@ -2,10 +2,8 @@ import { fromJS } from "immutable";
 
 import {
   SUBPROJECT_NAME,
-  SUBPROJECT_AMOUNT,
   SUBPROJECT_COMMENT,
   SUBPROJECT_CURRENCY,
-  SUBPROJECT_ORGANIZATION,
   SUBPROJECT_PROJECTED_BUDGETS,
   CREATE_SUBPROJECT_SUCCESS,
   HIDE_SUBPROJECT_DIALOG,
@@ -16,8 +14,8 @@ import {
   FETCH_PROJECT_HISTORY_SUCCESS,
   HIDE_SUBPROJECT_PERMISSIONS,
   SHOW_SUBPROJECT_PERMISSIONS,
-  SHOW_SUBPROJECT_INFO,
-  HIDE_SUBPROJECT_INFO,
+  SHOW_SUBPROJECT_ADDITIONAL_DATA,
+  HIDE_SUBPROJECT_ADDITIONAL_DATA,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   SHOW_SUBPROJECT_CREATE,
   SHOW_SUBPROJECT_EDIT,
@@ -41,10 +39,8 @@ const defaultState = fromJS({
   subprojectToAdd: {
     id: "",
     displayName: "",
-    amount: "",
     description: "",
     currency: "",
-    organization: "",
     projectedBudgets: []
   },
   creationDialogShown: false,
@@ -59,7 +55,7 @@ const defaultState = fromJS({
   limit: 30,
   allowedIntents: [],
   showSubProjectPermissions: false,
-  isSubProjectInfoShown: false,
+  isSubProjectAdditionalDataShown: false,
   idForInfo: "",
   permissions: [],
   idForPermissions: "",
@@ -80,7 +76,7 @@ export default function detailviewReducer(state = defaultState, action) {
         projectStatus: action.project.data.status,
         projectTS: action.project.data.creationUnixTs,
         projectAssignee: action.project.data.assignee,
-        projectProjectedBudgets: action.project.data.projectedBudgets,
+        projectProjectedBudgets: fromJS(action.project.data.projectedBudgets),
         allowedIntents: fromJS(action.project.allowedIntents),
         logs: fromJS(action.project.log),
         subProjects: fromJS(action.subprojects)
@@ -92,10 +88,10 @@ export default function detailviewReducer(state = defaultState, action) {
         idForPermissions: action.id,
         showSubProjectPermissions: true
       });
-    case SHOW_SUBPROJECT_INFO:
+    case SHOW_SUBPROJECT_ADDITIONAL_DATA:
       return state.merge({
         idForInfo: fromJS(action.id),
-        isSubProjectInfoShown: true
+        isSubProjectAdditionalDataShown: true
       });
     case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
       return state.set("permissions", fromJS(action.permissions));
@@ -105,30 +101,20 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({ creationDialogShown: true, dialogTitle: strings.subproject.subproject_add_title });
     case SUBPROJECT_NAME:
       return state.setIn(["subprojectToAdd", "displayName"], action.name);
-    case SUBPROJECT_ORGANIZATION:
-      return state.setIn(["subprojectToAdd", "organization"], action.organization);
-    case SUBPROJECT_AMOUNT:
-      return state.setIn(["subprojectToAdd", "amount"], action.amount);
     case SUBPROJECT_COMMENT:
       return state.setIn(["subprojectToAdd", "description"], action.description);
     case SUBPROJECT_CURRENCY:
       return state.setIn(["subprojectToAdd", "currency"], action.currency);
     case SUBPROJECT_PROJECTED_BUDGETS:
-      return state.merge({
-        subprojectToAdd: state
-          .getIn(["subprojectToAdd"])
-          .update("projectedBudgets", budgets => [...budgets, action.projectedBudgets])
-          .set("amount", "")
-          .set("organization", "")
-      });
+      return state.setIn(["subprojectToAdd", "projectedBudgets"], fromJS(action.projectedBudgets));
     case CREATE_SUBPROJECT_SUCCESS:
       return state.set("subprojectToAdd", defaultState.getIn(["subprojectToAdd"]));
     case SHOW_PROJECT_ASSIGNEES:
       return state.set("showProjectAssignees", true);
     case HIDE_PROJECT_ASSIGNEES:
       return state.set("showProjectAssignees", false);
-    case HIDE_SUBPROJECT_INFO:
-      return state.set("isSubProjectInfoShown", false);
+    case HIDE_SUBPROJECT_ADDITIONAL_DATA:
+      return state.set("isSubProjectAdditionalDataShown", false);
     case SET_HISTORY_OFFSET:
       return state.set("offset", action.offset);
     case FETCH_PROJECT_HISTORY:
@@ -146,9 +132,9 @@ export default function detailviewReducer(state = defaultState, action) {
           .getIn(["subprojectToAdd"])
           .set("id", action.id)
           .set("displayName", action.name)
-          .set("amount", action.amount)
           .set("description", action.description)
-          .set("currency", action.currency),
+          .set("currency", action.currency)
+          .set("projectedBudgets", fromJS(action.projectedBudgets)),
         editDialogShown: true,
         dialogTitle: strings.subproject.subproject_edit_title
       });

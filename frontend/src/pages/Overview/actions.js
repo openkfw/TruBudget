@@ -14,10 +14,9 @@ export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
 export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
 
 export const PROJECT_NAME = "PROJECT_NAME";
-export const PROJECT_AMOUNT = "PROJECT_AMOUNT";
-export const ADD_PROJECT_BUDGET = "ADD_PROJECT_BUDGET";
+export const PROJECT_PROJECTED_BUDGET = "PROJECT_PROJECTED_BUDGET";
+export const PROJECT_DELETED_PROJECTED_BUDGET = "PROJECT_DELETED_PROJECTED_BUDGET";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
-export const PROJECT_CURRENCY = "PROJECT_CURRENCY";
 export const PROJECT_ORGANIZATION = "PROJECT_ORGANIZATION";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
@@ -43,23 +42,22 @@ export function fetchAllProjects(showLoading = false) {
   };
 }
 
-export function createProject(name, amount, comment, currency, thumbnail, projectedBudgets) {
+export function createProject(name, comment, thumbnail, projectedBudgets) {
   return {
     type: CREATE_PROJECT,
     name,
-    amount,
     comment,
-    currency,
     thumbnail,
     projectedBudgets
   };
 }
 
-export function editProject(projectId, changes) {
+export function editProject(projectId, changes, deletedProjectedBudgets) {
   return {
     type: EDIT_PROJECT,
     projectId,
-    changes
+    changes,
+    deletedProjectedBudgets
   };
 }
 
@@ -95,15 +93,14 @@ export function hideProjectDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, amount, currency, description, thumbnail) {
+export function showEditDialog(id, displayName, description, thumbnail, projectedBudgets) {
   return {
     type: SHOW_EDIT_DIALOG,
     id,
     displayName,
-    amount,
-    currency,
     description,
-    thumbnail
+    thumbnail,
+    projectedBudgets
   };
 }
 
@@ -114,24 +111,17 @@ export function storeProjectName(name) {
   };
 }
 
-export function storeProjectAmount(amount) {
+export function storeProjectedBudget(projectedBudgets) {
   return {
-    type: PROJECT_AMOUNT,
-    amount: amount
+    type: PROJECT_PROJECTED_BUDGET,
+    projectedBudgets: projectedBudgets
   };
 }
 
-export function addProjectedBudget(projectedBudget) {
+export function storeDeletedProjectedBudget(projectedBudgets) {
   return {
-    type: ADD_PROJECT_BUDGET,
-    projectedBudget: projectedBudget
-  };
-}
-
-export function storeProjectCurrency(currency) {
-  return {
-    type: PROJECT_CURRENCY,
-    currency: currency
+    type: PROJECT_DELETED_PROJECTED_BUDGET,
+    projectedBudgets: projectedBudgets
   };
 }
 

@@ -3,17 +3,23 @@ import { VError } from "verror";
 
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
-import * as Notification from "./notification";
+import { CurrencyCode, currencyCodeSchema, MoneyAmount, moneyAmountSchema } from "./money";
+import * as Project from "./project";
+import * as Subproject from "./subproject";
 
-type eventTypeType = "notification_read";
-const eventType: eventTypeType = "notification_read";
+type eventTypeType = "subproject_projected_budget_updated";
+const eventType: eventTypeType = "subproject_projected_budget_updated";
 
 export interface Event {
   type: eventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;
-  notificationId: Notification.Id;
+  projectId: Project.Id;
+  subprojectId: Subproject.Id;
+  organization: string;
+  value: MoneyAmount;
+  currencyCode: CurrencyCode;
 }
 
 export const schema = Joi.object({
@@ -25,14 +31,21 @@ export const schema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
-  recipient: Joi.string().required(),
-  notificationId: Notification.idSchema.required(),
+  projectId: Project.idSchema.required(),
+  subprojectId: Subproject.idSchema.required(),
+  organization: Joi.string().required(),
+  value: moneyAmountSchema.required(),
+  currencyCode: currencyCodeSchema.required(),
 });
 
 export function createEvent(
   source: string,
   publisher: Identity,
-  notificationId: Notification.Id,
+  projectId: Project.Id,
+  subprojectId: Subproject.Id,
+  organization: string,
+  value: string,
+  currencyCode: CurrencyCode,
   time: string = new Date().toISOString(),
 ): Event {
   const event = {
@@ -40,9 +53,12 @@ export function createEvent(
     source,
     time,
     publisher,
-    notificationId,
+    projectId,
+    subprojectId,
+    organization,
+    value,
+    currencyCode,
   };
-
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     throw new VError(validationResult, `not a valid ${eventType} event`);

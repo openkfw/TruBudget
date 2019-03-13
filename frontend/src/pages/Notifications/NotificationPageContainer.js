@@ -18,8 +18,6 @@ class NotificationPageContainer extends Component {
     this.props.fetchNotifications(this.props.notificationOffset, this.props.notificationsPerPage);
   }
 
-
-
   render() {
     return (
       <div style={globalStyles.innerContainer}>
@@ -34,7 +32,7 @@ const mapDispatchToProps = (dispatch, props) => {
     fetchNotifications: (offset, limit) => dispatch(fetchNotifications(true, offset, limit)),
     markNotificationAsRead: (notificationId, offset, limit) =>
       dispatch(markNotificationAsRead(notificationId, offset, limit)),
-      markMultipleNotificationsAsRead: (notificationIds, offset, limit) =>
+    markMultipleNotificationsAsRead: (notificationIds, offset, limit) =>
       dispatch(markMultipleNotificationsAsRead(notificationIds, offset, limit)),
     setNotifcationsPerPage: limit => dispatch(setNotifcationsPerPage(limit)),
     setNotificationOffset: offset => dispatch(setNotificationOffset(offset))
