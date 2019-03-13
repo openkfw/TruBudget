@@ -208,15 +208,17 @@ async function updateCache(conn: ConnToken, onlyStreamName?: string): Promise<vo
     }
   }
 
-  // Returns [seconds, nanoseconds]:
-  const hrtimeDiff = process.hrtime(startTime);
-  const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
-  logger.info(
-    cache.streamState,
-    `Stream cache updated in ${elapsedMilliseconds} ms: total=${
-      streams.length
-    }, updated=${nUpdatedStreams}, rebuilt:${nRebuiltStreams}`,
-  );
+  if (logger.isLevelEnabled("debug")) {
+    // Returns [seconds, nanoseconds]:
+    const hrtimeDiff = process.hrtime(startTime);
+    const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
+    logger.debug(
+      cache.streamState,
+      `Stream cache updated in ${elapsedMilliseconds} ms: ${
+        streams.length
+      } streams (${nUpdatedStreams} updated, ${nRebuiltStreams} rebuilt)`,
+    );
+  }
 }
 
 function addEventsToCache(cache: Cache2, streamName: string, newEvents: BusinessEvent[]) {
