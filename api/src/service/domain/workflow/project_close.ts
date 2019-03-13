@@ -30,6 +30,11 @@ export async function closeProject(
     return { newEvents: [], errors: [new NotFound(ctx, "project", projectId)] };
   }
 
+  if (project.status === "closed") {
+    // The project is already closed.
+    return { newEvents: [], errors: [] };
+  }
+
   // TODO make sure all subprojects are closed (and with them all workflowitems)
 
   // Create the new event:
@@ -53,7 +58,7 @@ export async function closeProject(
 
   // Create notification events:
   let notifications: NotificationCreated.Event[] = [];
-  if (project.assignee !== undefined) {
+  if (project.assignee !== undefined && project.assignee !== issuer.id) {
     const recipients = await repository.getUsersForIdentity(project.assignee);
     notifications = recipients.map(recipient =>
       NotificationCreated.createEvent(ctx.source, issuer.id, recipient, projectClosed, projectId),

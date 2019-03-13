@@ -6,7 +6,10 @@ import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
+import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
+import * as UserRecord from "../organization/user_record";
+import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import { sourceProjects } from "./project_eventsourcing";
 import * as ProjectUpdated from "./project_updated";
@@ -30,6 +33,7 @@ export function validate(input: any): Result.Type<RequestData> {
 
 interface Repository {
   getProjectEvents(): Promise<BusinessEvent[]>;
+  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
 }
 
 export async function updateProject(
@@ -66,5 +70,14 @@ export async function updateProject(
     return { newEvents: [], errors: [new InvalidCommand(ctx, projectUpdated, errors)] };
   }
 
-  return { newEvents: [projectUpdated], errors: [] };
+  // Create notification events:
+  let notifications: NotificationCreated.Event[] = [];
+  if (project.assignee !== undefined && project.assignee !== issuer.id) {
+    const recipients = await repository.getUsersForIdentity(project.assignee);
+    notifications = recipients.map(recipient =>
+      NotificationCreated.createEvent(ctx.source, issuer.id, recipient, projectUpdated, projectId),
+    );
+  }
+
+  return { newEvents: [projectUpdated, ...notifications], errors: [] };
 }

@@ -32,17 +32,13 @@ export async function assignProject(
     return { newEvents: [], errors: [new NotFound(ctx, "project", projectId)] };
   }
 
+  if (project.assignee === assignee) {
+    // The project is already assigned to that user.
+    return { newEvents: [], errors: [] };
+  }
+
   // Create the new event:
   const projectAssigned = ProjectAssigned.createEvent(ctx.source, issuer.id, projectId, assignee);
-
-  if (project.assignee === assignee) {
-    return {
-      newEvents: [],
-      errors: [
-        new PreconditionError(ctx, projectAssigned, `project already assigned to ${assignee}`),
-      ],
-    };
-  }
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
