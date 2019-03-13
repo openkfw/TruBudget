@@ -16,6 +16,7 @@ import * as Project from "./project";
 import * as ProjectCreated from "./project_created";
 import { sourceProjects } from "./project_eventsourcing";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+import logger from "../../../lib/logger";
 
 /**
  * Initial data for the new project as given in the request.
@@ -74,6 +75,9 @@ export async function createProject(
     permissions: newDefaultPermissionsFor(creatingUser),
     additionalData: data.additionalData || {},
   });
+  if (data.displayName === "Additional-Data Test") {
+    logger.fatal({ ctx, data, createEvent }, "XXX");
+  }
 
   if (await repository.projectExists(createEvent.project.id)) {
     return {

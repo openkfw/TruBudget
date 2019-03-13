@@ -2,32 +2,22 @@
  * DEPRECATED - see index.ts
  */
 import { isArray } from "util";
+import { VError } from "verror";
 
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthToken } from "../../authz/token";
 import { Permissions } from "../../authz/types";
-import { SubprojectIdAlreadyExistsError } from "../../error";
 import { HttpResponse, throwParseError, throwParseErrorIfUndefined } from "../../httpd/lib";
-import { isEmpty } from "../../lib/emptyChecks";
-import {
-  isDate,
-  isNonemptyString,
-  isNumber,
-  isUserOrUndefined,
-  value,
-  isObject,
-} from "../../lib/validation";
-import { MultichainClient } from "../../service/Client.h";
-import { randomString } from "../../service/hash";
-import * as Subproject from "../../subproject/model/Subproject";
-import * as Project from "../model/Project";
-import * as ProjectGet from "../../service/project_get";
-import { ConnToken } from "../../service/conn";
 import { Ctx } from "../../lib/ctx";
-import { ServiceUser } from "../../service/domain/organization/service_user";
+import { isEmpty } from "../../lib/emptyChecks";
+import { isNonemptyString, isObject, isUserOrUndefined, value } from "../../lib/validation";
 import * as Result from "../../result";
-import { VError } from "verror";
+import { ConnToken } from "../../service/conn";
+import { ServiceUser } from "../../service/domain/organization/service_user";
+import { randomString } from "../../service/hash";
+import * as ProjectGet from "../../service/project_get";
+import * as Subproject from "../../subproject/model/Subproject";
 import logger from "../../lib/logger";
 
 export async function createSubproject(
@@ -64,6 +54,7 @@ export async function createSubproject(
 
   throwParseErrorIfUndefined(data, ["subproject"]);
   const subprojectArgs = data.subproject;
+  logger.fatal({ subprojectArgs }, "XXX");
 
   const subprojectId = value("id", subprojectArgs.id, isNonemptyString, randomString());
 
@@ -84,7 +75,7 @@ export async function createSubproject(
     displayName: value("displayName", subprojectArgs.displayName, isNonemptyString),
     description: value("description", subprojectArgs.description, isNonemptyString),
     currency: value("currency", subprojectArgs.currency, isNonemptyString),
-    projectedBudgets: value("projectedBudgets", subprojectArgs.projectedBudgets, isArray),
+    projectedBudgets: value("projectedBudgets", subprojectArgs.projectedBudgets, isArray, []),
     assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.user.userId),
     additionalData: value("additionalData", subprojectArgs.additionalData, isObject, {}),
   };

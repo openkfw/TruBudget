@@ -13,7 +13,6 @@ import * as ProjectProjectedBudgetDeleted from "./project_projected_budget_delet
 import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updated";
 import { ProjectTraceEvent } from "./project_trace_event";
 import * as ProjectUpdated from "./project_updated";
-import logger from "../../../lib/logger";
 
 export function sourceProjects(
   ctx: Ctx,
