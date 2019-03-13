@@ -199,10 +199,11 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "description"], action.description);
     case WORKFLOW_CURRENCY:
       return state.merge({
-        workflowToAdd: state
-          .getIn(["workflowToAdd"])
-          .set("currency", action.currency)
-          .set("exchangeRate", defaultState.getIn(["workflowToAdd", "exchangeRate"]))
+        workflowToAdd: state.getIn(["workflowToAdd"]).set("currency", action.currency)
+      });
+    case WORKFLOW_EXCHANGERATE:
+      return state.merge({
+        workflowToAdd: state.getIn(["workflowToAdd"]).set("exchangeRate", action.exchangeRate)
       });
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);

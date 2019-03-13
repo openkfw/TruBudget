@@ -2,6 +2,7 @@ const en = {
   common: {
     action: "Action",
     actions: "Actions",
+    add: "Add", // TODO: other langs
     added: "Added",
     approver: "Approver",
     assign: "assign",
@@ -144,6 +145,7 @@ const en = {
     add_item: "Create Workflow item",
     approval_required: "Approval Required",
     edit_item: "Edit Workflow item",
+    exchange_rate: "Exchange rate", // TODO other langs
     non_approval: "Non-Approval",
     workflow_action_in_review: "Pending for review of",
     workflow_action_open_in_progress: "Pending on ",

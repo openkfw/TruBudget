@@ -114,7 +114,8 @@ const mapDispatchToProps = dispatch => {
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name))
+    storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name)),
+    storeWorkflowExchangeRate: exchangeRate => dispatch(storeWorkflowExchangeRate(exchangeRate))
   };
 };
 

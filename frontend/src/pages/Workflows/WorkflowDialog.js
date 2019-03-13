@@ -112,7 +112,7 @@ const WorkflowDialog = props => {
       nextDisabled:
         _isEmpty(displayName) ||
         (amountType !== "N/A" && amount === "") ||
-        (amountType !== "N/A" && !Number.isFinite(exchangeRate)),
+        (amountType !== "N/A" && (!Number.isFinite(exchangeRate) || exchangeRate === 0)),
       content: (
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Content {...props} />

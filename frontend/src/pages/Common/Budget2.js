@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 import MenuItem from "@material-ui/core/MenuItem";
+import strings from "../../localizeStrings";
 
 import { toAmountString, fromAmountString, getCurrencies } from "../../helper";
 
@@ -52,7 +53,7 @@ export default class Budget extends React.Component {
             <TableRow key={`pb-row-add`}>
               <TableCell>
                 <TextField
-                  label="Organization"
+                  label={strings.users.organization}
                   value={this.state.organization}
                   onChange={e => this.setState({ organization: e.target.value })}
                   type="text"
@@ -65,14 +66,14 @@ export default class Budget extends React.Component {
                   <DropDown
                     style={{ minWidth: 200, marginRight: "16px" }}
                     value={this.state.currency}
-                    floatingLabel={currencyTitle}
+                    floatingLabel={strings.project.project_currency}
                     onChange={e => this.setState({ currency: e })}
                     id="currencies"
                   >
                     {this.getMenuItems(currencies)}
                   </DropDown>
                   <TextField
-                    label={budgetLabel}
+                    label={strings.common.projectedBudget}
                     value={this.state.budgetAmount}
                     onChange={v => {
                       if (/^[0-9,.-]*$/.test(v.target.value)) this.setState({ budgetAmount: v.target.value });
@@ -81,8 +82,8 @@ export default class Budget extends React.Component {
                     onFocus={() => this.setState({ budgetAmount: fromAmountString(this.state.budgetAmount) })}
                     type="text"
                     multiline={false}
-                    aria-label="amount"
-                    id="amountinput"
+                    aria-label="projectedbudget"
+                    id="projectedbudgetinput"
                     style={{
                       width: "60%"
                     }}
@@ -108,7 +109,7 @@ export default class Budget extends React.Component {
                       });
                     }}
                   >
-                    Add
+                    {strings.common.add}
                   </Button>
                 }
               </TableCell>

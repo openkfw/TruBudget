@@ -67,6 +67,7 @@ const SubprojectDialog = props => {
         _isEmpty(subprojectToAdd.displayName) ||
         _isEmpty(subprojectToAdd.description) ||
         _isEmpty(subprojectToAdd.projectedBudgets) ||
+        _isEmpty(subprojectToAdd.currency) ||
         _isEmpty(changes)
     }
   ];

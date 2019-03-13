@@ -34,7 +34,13 @@ const styles = {
 
 class WorkflowDialogAmount extends Component {
   componentWillMount() {
-    preselectCurrency(this.props.subProjectCurrency, this.props.storeWorkflowCurrency);
+    preselectCurrency(
+      this.props.workflowCurrency ? this.props.workflowCurrency : this.props.subProjectCurrency,
+      this.props.storeWorkflowCurrency
+    );
+    this.props.exchangeRate
+      ? this.props.storeWorkflowExchangeRate(this.props.exchangeRate)
+      : this.props.storeWorkflowExchangeRate(1);
   }
 
   getMenuItems(currencies) {
@@ -63,6 +69,7 @@ class WorkflowDialogAmount extends Component {
     const floatingLabelText = strings.workflow.workflow_budget;
     const hintText = strings.workflow.workflow_budget_description;
     const budgetDisabled = workflowAmountType === "N/A";
+    console.log(workflowCurrency);
     return (
       <div style={styles.container}>
         <div>
@@ -127,8 +134,8 @@ class WorkflowDialogAmount extends Component {
             />
             <Typography style={{ alignSelf: "center", marginRight: "16px" }}>x</Typography>
             <TextField
-              label={"todo"}
-              helperText={"todo"}
+              label={strings.workflow.exchange_rate}
+              helperText={strings.workflow.workflow_budget_description + "1.1586"}
               value={exchangeRate ? exchangeRate : ""}
               onChange={e => storeWorkflowExchangeRate(parseFloat(e.target.value))}
               type="number"
