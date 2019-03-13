@@ -3,6 +3,7 @@ import { VError } from "verror";
 
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import * as UserRecord from "../organization/user_record";
 import * as Notification from "./notification";
 
 type eventTypeType = "notification_read";
@@ -14,6 +15,9 @@ export interface Event {
   time: string; // ISO timestamp
   publisher: Identity;
   notificationId: Notification.Id;
+  // Not strictly required, also storing the recipient allows to filter the
+  // notification-stream's events by user ID:
+  recipient: UserRecord.Id;
 }
 
 export const schema = Joi.object({
@@ -25,14 +29,15 @@ export const schema = Joi.object({
     .iso()
     .required(),
   publisher: Joi.string().required(),
-  recipient: Joi.string().required(),
   notificationId: Notification.idSchema.required(),
+  recipient: UserRecord.idSchema,
 });
 
 export function createEvent(
   source: string,
   publisher: Identity,
   notificationId: Notification.Id,
+  recipient: UserRecord.Id,
   time: string = new Date().toISOString(),
 ): Event {
   const event = {
@@ -41,6 +46,7 @@ export function createEvent(
     time,
     publisher,
     notificationId,
+    recipient,
   };
 
   const validationResult = validate(event);

@@ -15,6 +15,7 @@ import * as WorkflowitemPermissionRevoked from "./domain/workflow/workflowitem_p
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import { Event } from "./event";
+import { isArray } from "util";
 
 // TODO: at the end implement notification
 /**
@@ -44,12 +45,31 @@ function isOldEvent(event) {
   );
 }
 
-function mapOldEventToBusinessEvent(event, resources) {
-  const stream = resources[0] ? resources[0].id : undefined;
-  const key = [
-    `${resources[1] ? resources[1].id : undefined}_workflows`,
-    resources[2] ? resources[2].id : undefined,
-  ];
+function mapOldEventToBusinessEvent(
+  event,
+  projectId?: string,
+  subprojectId?: string,
+  workflowitemId?: string,
+) {
+  const stream = projectId;
+
+  let key: string[];
+  if (projectId === undefined) {
+    // No idea what this is..
+    throw Error(
+      `cannot map old event to business event (projectId is undefined): ${JSON.stringify(event)}`,
+    );
+  } else if (subprojectId === undefined) {
+    // This is a project event:
+    key = ["self"];
+  } else if (workflowitemId === undefined) {
+    // This is a subproject event:
+    key = ["subprojects", subprojectId];
+  } else {
+    // This is a workflowitem event:
+    key = [`${subprojectId}_workflows`, workflowitemId];
+  }
+
   const data: Event = event;
 
   const params = [stream, key, data];
@@ -127,10 +147,39 @@ function getResourceId(
 }
 
 function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
+  let projectId: string | undefined;
+  let subprojectId: string | undefined;
+  let workflowitemId: string | undefined;
+  if (event.intent === "subproject.reorderWorkflowitems") {
+    projectId = stream;
+    subprojectId = /^(.*)_workflowitem_ordering$/.exec(isArray(key) ? key[0] : key)![1];
+  } else if (
+    event.intent.startsWith("workflowitem.") ||
+    event.intent === "subproject.createWorkflowitem"
+  ) {
+    if (key.length !== 2 || !key[0].endsWith("_workflows")) {
+      throw Error(`bug: "${event.intent}" but keys=${JSON.stringify(key)}`);
+    }
+    projectId = stream;
+    subprojectId = extractSubprojectFromKey(key[0]);
+    workflowitemId = key[1];
+  } else if (
+    event.intent.startsWith("subproject.") ||
+    event.intent === "project.createSubproject"
+  ) {
+    if (key.length !== 2 || key[0] !== "subprojects") {
+      throw Error(`bug: "${event.intent}" but keys=${JSON.stringify(key)}`);
+    }
+    projectId = stream;
+    subprojectId = key[1];
+  } else if (event.intent.startsWith("project.")) {
+    projectId = stream;
+  }
+
   switch (event.intent) {
-    case "notification.create":
-      // Check if it is an old notification event:
+    case "notification.create": {
       if (!event.intent) {
+        // This already a BusinessEvent - no need to convert anything.
         return params;
       }
 
@@ -139,19 +188,25 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
         return params;
       }
       const resourceDescriptions = event.data.resources as NotificationResourceDescription[];
-      const projectId = getResourceId(resourceDescriptions, "project");
-      const subprojectId = getResourceId(resourceDescriptions, "subproject");
-      const workflowitemId = getResourceId(resourceDescriptions, "workflowitem");
+      projectId = getResourceId(resourceDescriptions, "project");
+      subprojectId = getResourceId(resourceDescriptions, "subproject");
+      workflowitemId = getResourceId(resourceDescriptions, "workflowitem");
       const notificationCreated: NotificationCreated.Event = NotificationCreated.createEvent(
         "http", // source
         event.createdBy, // publisher
         event.key, // recipient
-        mapOldEventToBusinessEvent(event.data.originalEvent, event.data.resources),
+        mapOldEventToBusinessEvent(
+          event.data.originalEvent,
+          projectId,
+          subprojectId,
+          workflowitemId,
+        ),
         projectId,
         subprojectId,
         workflowitemId,
       );
       return [stream, key, { json: notificationCreated }];
+    }
     case "notification.markRead":
       return params;
     case "global.createProject":
@@ -177,7 +232,7 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const spCreated: SubprojectCreated.Event = SubprojectCreated.createEvent(
         "http",
         event.createdBy,
-        stream,
+        projectId!,
         {
           id: event.data.subproject.id,
           status: event.data.subproject.status,
@@ -200,8 +255,8 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const spUpdated: SubprojectUpdated.Event = SubprojectUpdated.createEvent(
         "http",
         event.createdBy,
-        stream,
-        key[1],
+        projectId!,
+        subprojectId!,
         {
           displayName: event.data.displayName,
           description: event.data.description,
@@ -221,8 +276,8 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const spAssigned: SubprojectAssigned.Event = SubprojectAssigned.createEvent(
         "http",
         event.createdBy,
-        stream,
-        key[1],
+        projectId!,
+        subprojectId!,
         event.data.identity,
       );
       return [stream, key, { json: spAssigned }];
@@ -236,8 +291,8 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const spClosed: SubprojectClosed.Event = SubprojectClosed.createEvent(
         "http",
         event.createdBy,
-        stream,
-        key[1],
+        projectId!,
+        subprojectId!,
       );
       return [stream, key, { json: spClosed }];
     }
@@ -253,8 +308,8 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const spGranted: SubprojectPermissionGranted.Event = SubprojectPermissionGranted.createEvent(
         "http",
         event.createdBy,
-        stream,
-        key[1],
+        projectId!,
+        subprojectId!,
         event.data.intent,
         event.data.identity,
       );
@@ -272,8 +327,8 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const spRevoked: SubprojectPermissionRevoked.Event = SubprojectPermissionRevoked.createEvent(
         "http",
         event.createdBy,
-        stream,
-        key[1],
+        projectId!,
+        subprojectId!,
         event.data.intent,
         event.data.identity,
       );
@@ -287,24 +342,22 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const wfReordered: WorkflowitemsReordered.Event = WorkflowitemsReordered.createEvent(
         "http",
         event.createdBy,
-        stream,
-        event.key,
+        projectId!,
+        subprojectId!,
         event.data ? event.data : [],
       );
       return [stream, key, { json: wfReordered }];
     }
     case "subproject.createWorkflowitem": {
-      const subProjectId = extractSubprojectFromKey(key[0]);
-
-      if (!subProjectId || !event.data.workflowitem) {
+      if (!event.data.workflowitem) {
         console.error("Error handling publish request for subproject.createWorkflowitem", params);
         return params;
       }
       const wfiCreated: WorkflowitemCreated.Event = WorkflowitemCreated.createEvent(
         "http",
         event.createdBy,
-        stream,
-        subProjectId,
+        projectId!,
+        subprojectId!,
         {
           id: event.data.workflowitem.id,
           status: event.data.workflowitem.status,
@@ -325,9 +378,7 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       return [stream, key, { json: wfiCreated }];
     }
     case "workflowitem.update": {
-      const subProjectId = extractSubprojectFromKey(key[0]);
-
-      if (!subProjectId || !event.data) {
+      if (!event.data) {
         console.error(
           "Error handling publish request for workflowitem.update",
           JSON.stringify(params, null, 2),
@@ -338,9 +389,9 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const wfiUpdated: WorkflowitemUpdated.Event = WorkflowitemUpdated.createEvent(
         "http",
         event.createdBy,
-        stream,
-        subProjectId,
-        key[1],
+        projectId!,
+        subprojectId!,
+        workflowitemId!,
         {
           displayName: event.data.displayName,
           description: event.data.description,
@@ -358,9 +409,7 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       return [stream, key, { json: wfiUpdated }];
     }
     case "workflowitem.assign": {
-      const subProjectId = extractSubprojectFromKey(key[0]);
-
-      if (!subProjectId || !event.data.identity) {
+      if (!event.data.identity) {
         console.error("Error handling publish request for workflowitem.assign", params);
         return params;
       }
@@ -368,17 +417,15 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const wfiAssigned: WorkflowitemAssigned.Event = WorkflowitemAssigned.createEvent(
         "http",
         event.createdBy,
-        stream,
-        subProjectId,
-        key[1],
+        projectId!,
+        subprojectId!,
+        workflowitemId!,
         event.data.identity,
       );
       return [stream, key, { json: wfiAssigned }];
     }
     case "workflowitem.close": {
-      const subProjectId = extractSubprojectFromKey(key[0]);
-
-      if (!subProjectId || !event.data) {
+      if (!event.data) {
         console.error("Error handling publish request for workflowitem.close", params);
         return params;
       }
@@ -386,16 +433,14 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const wfiClosed: WorkflowitemClosed.Event = WorkflowitemClosed.createEvent(
         "http",
         event.createdBy,
-        stream,
-        subProjectId,
-        key[1],
+        projectId!,
+        subprojectId!,
+        workflowitemId!,
       );
       return [stream, key, { json: wfiClosed }];
     }
     case "workflowitem.intent.grantPermission": {
-      const subProjectId = extractSubprojectFromKey(key[0]);
-
-      if (!subProjectId || !event.data) {
+      if (!event.data) {
         console.error("Error handling publish request for workflowitem.close", params);
         return params;
       }
@@ -403,18 +448,16 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const wfiGranted: WorkflowitemPermissionGranted.Event = WorkflowitemPermissionGranted.createEvent(
         "http",
         event.createdBy,
-        stream,
-        subProjectId,
-        key[1],
+        projectId!,
+        subprojectId!,
+        workflowitemId!,
         event.data.intent,
         event.data.identity,
       );
       return [stream, key, { json: wfiGranted }];
     }
     case "workflowitem.intent.revokePermission": {
-      const subProjectId = extractSubprojectFromKey(key[0]);
-
-      if (!subProjectId || !event.data) {
+      if (!event.data) {
         console.error("Error handling publish request for workflowitem.close", params);
         return params;
       }
@@ -422,9 +465,9 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       const wfiGranted: WorkflowitemPermissionRevoked.Event = WorkflowitemPermissionRevoked.createEvent(
         "http",
         event.createdBy,
-        stream,
-        subProjectId,
-        key[1],
+        projectId!,
+        subprojectId!,
+        workflowitemId!,
         event.data.intent,
         event.data.identity,
       );
@@ -456,29 +499,30 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
   }
 
   switch (result.data.json.type) {
-    case "notification_created": {
-      const event: NotificationCreated.Event = result.data.json;
+    case "notification_created":
+    // {
+    //   const event: NotificationCreated.Event = result.data.json;
 
-      const oldEvent: Event = {
-        key: event.recipient,
-        intent: "notification.create",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          notificationId: event.notificationId,
-          resources: makeOldNotificationResources(
-            event.projectId,
-            event.subprojectId,
-            event.workflowitemId,
-          ),
-          time: event.time,
-          isRead: false,
-          originalEvent: event.businessEvent,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
+    //   const oldEvent: Event = {
+    //     key: event.recipient,
+    //     intent: "notification.create",
+    //     createdBy: event.publisher,
+    //     createdAt: event.time,
+    //     dataVersion: 1,
+    //     data: {
+    //       notificationId: event.notificationId,
+    //       resources: makeOldNotificationResources(
+    //         event.projectId,
+    //         event.subprojectId,
+    //         event.workflowitemId,
+    //       ),
+    //       time: event.time,
+    //       isRead: false,
+    //       originalEvent: event.businessEvent,
+    //     },
+    //   };
+    //   return { ...result, data: { json: oldEvent } };
+    // }
     case "project_created":
     case "project_permission_granted":
     case "project_permission_revoked":

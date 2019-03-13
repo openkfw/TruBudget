@@ -21,6 +21,8 @@ import * as ProjectProjectedBudgetDeleteAPI from "./project_budget_delete_projec
 import * as ProjectCloseAPI from "./project_close";
 import * as ProjectCreateAPI from "./project_create";
 import * as ProjectListAPI from "./project_list";
+import * as NotificationListAPI from "./notification_list";
+import * as NotificationListService from "./service/notification_list";
 import * as ProjectPermissionGrantAPI from "./project_permission_grant";
 import * as ProjectPermissionRevokeAPI from "./project_permission_revoke";
 import * as ProjectPermissionsListAPI from "./project_permissions_list";
@@ -244,6 +246,15 @@ GroupMemberAddAPI.addHttpHandler(server, URL_PREFIX, {
 GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
   removeGroupMember: (ctx, issuer, groupId, newMember) =>
     GroupMemberRemoveService.removeMember(db, ctx, issuer, groupId, newMember),
+});
+
+/*
+ * APIs related to Notifications
+ */
+
+NotificationListAPI.addHttpHandler(server, URL_PREFIX, {
+  getNotificationsForUser: (ctx, user) =>
+    NotificationListService.getNotificationsForUser(db, ctx, user),
 });
 
 /*

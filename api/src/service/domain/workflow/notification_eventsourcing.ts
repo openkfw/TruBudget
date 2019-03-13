@@ -11,7 +11,7 @@ import { NotificationTraceEvent } from "./notification_trace_event";
 
 type NotificationsById = Map<Notification.Id, Notification.Notification>;
 
-export function sourceNotificationsByUser(
+export function sourceNotifications(
   ctx: Ctx,
   events: BusinessEvent[],
 ): { notificationsById: NotificationsById; errors: EventSourcingError[] } {

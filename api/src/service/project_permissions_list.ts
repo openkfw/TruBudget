@@ -15,6 +15,8 @@ export async function getProjectPermissions(
   serviceUser: ServiceUser,
   projectId: Project.Id,
 ): Promise<Result.Type<Permissions>> {
+  // TODO This should be modeled on the domain layer, similar to global_permissions_get.
+  // TODO There, authorization for project.intent.listPermissions should be checked.
   const projectResult = await ProjectGet.getProject(ctx, serviceUser, projectId, {
     getProjectEvents: async () => {
       await Cache2.refresh(conn, projectId);

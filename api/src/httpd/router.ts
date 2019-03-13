@@ -1,49 +1,42 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance } from 'fastify';
 
-import {
-  AllWorkflowitemsReader,
-  ProjectAssigner,
-  WorkflowitemAssigner,
-  WorkflowitemCloser,
-  WorkflowitemUpdater,
-} from ".";
-import { Ctx } from "../lib/ctx";
-import logger from "../lib/logger";
-import { isReady } from "../lib/readiness";
-import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
-import { approveNewOrganization } from "../network/controller/approveNewOrganization";
-import { getNodeList } from "../network/controller/list";
-import { getActiveNodes } from "../network/controller/listActive";
-import { registerNode } from "../network/controller/registerNode";
-import { voteForNetworkPermission } from "../network/controller/vote";
-import { getNotificationCounts } from "../notification/controller/count";
-import { getNotificationList } from "../notification/controller/list";
-import { markMultipleRead } from "../notification/controller/markMultipleRead";
-import { markNotificationRead } from "../notification/controller/markRead";
-import { getNewestNotifications } from "../notification/controller/poll";
-import { createSubproject } from "../project/controller/createSubproject";
-import { ConnToken } from "../service/conn";
-import { ServiceUser } from "../service/domain/organization/service_user";
-import { assignSubproject } from "../subproject/controller/assign";
-import { closeSubproject } from "../subproject/controller/close";
-import { createWorkflowitem } from "../subproject/controller/createWorkflowitem";
-import { grantSubprojectPermission } from "../subproject/controller/intent.grantPermission";
-import { getSubprojectPermissions } from "../subproject/controller/intent.listPermissions";
-import { revokeSubprojectPermission } from "../subproject/controller/intent.revokePermission";
-import { getSubprojectList } from "../subproject/controller/list";
-import { reorderWorkflowitems } from "../subproject/controller/reorderWorkflowitems";
-import { updateSubproject } from "../subproject/controller/update";
-import { getSubprojectDetails } from "../subproject/controller/viewDetails";
-import { getSubprojectHistory } from "../subproject/controller/viewHistory";
-import { createBackup } from "../system/createBackup";
-import { getVersion } from "../system/getVersion";
-import { restoreBackup } from "../system/restoreBackup";
-import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
-import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
-import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
-import { validateDocument } from "../workflowitem/controller/validateDocument";
-import { AuthenticatedRequest, HttpResponse } from "./lib";
-import { getSchema, getSchemaWithoutAuth } from "./schema";
+import { AllWorkflowitemsReader, WorkflowitemAssigner, WorkflowitemCloser, WorkflowitemUpdater } from '.';
+import { Ctx } from '../lib/ctx';
+import logger from '../lib/logger';
+import { isReady } from '../lib/readiness';
+import { approveNewNodeForExistingOrganization } from '../network/controller/approveNewNodeForExistingOrganization';
+import { approveNewOrganization } from '../network/controller/approveNewOrganization';
+import { getNodeList } from '../network/controller/list';
+import { getActiveNodes } from '../network/controller/listActive';
+import { registerNode } from '../network/controller/registerNode';
+import { voteForNetworkPermission } from '../network/controller/vote';
+import { getNotificationCounts } from '../notification/controller/count';
+import { markMultipleRead } from '../notification/controller/markMultipleRead';
+import { markNotificationRead } from '../notification/controller/markRead';
+import { getNewestNotifications } from '../notification/controller/poll';
+import { createSubproject } from '../project/controller/createSubproject';
+import { ConnToken } from '../service/conn';
+import { ServiceUser } from '../service/domain/organization/service_user';
+import { assignSubproject } from '../subproject/controller/assign';
+import { closeSubproject } from '../subproject/controller/close';
+import { createWorkflowitem } from '../subproject/controller/createWorkflowitem';
+import { grantSubprojectPermission } from '../subproject/controller/intent.grantPermission';
+import { getSubprojectPermissions } from '../subproject/controller/intent.listPermissions';
+import { revokeSubprojectPermission } from '../subproject/controller/intent.revokePermission';
+import { getSubprojectList } from '../subproject/controller/list';
+import { reorderWorkflowitems } from '../subproject/controller/reorderWorkflowitems';
+import { updateSubproject } from '../subproject/controller/update';
+import { getSubprojectDetails } from '../subproject/controller/viewDetails';
+import { getSubprojectHistory } from '../subproject/controller/viewHistory';
+import { createBackup } from '../system/createBackup';
+import { getVersion } from '../system/getVersion';
+import { restoreBackup } from '../system/restoreBackup';
+import { grantWorkflowitemPermission } from '../workflowitem/controller/intent.grantPermission';
+import { getWorkflowitemPermissions } from '../workflowitem/controller/intent.listPermissions';
+import { revokeWorkflowitemPermission } from '../workflowitem/controller/intent.revokePermission';
+import { validateDocument } from '../workflowitem/controller/validateDocument';
+import { AuthenticatedRequest, HttpResponse } from './lib';
+import { getSchema, getSchemaWithoutAuth } from './schema';
 
 const send = (res, httpResponse: HttpResponse) => {
   const [code, body] = httpResponse;
@@ -560,16 +553,6 @@ export const registerRoutes = (
   // ------------------------------------------------------------
   //       notification
   // ------------------------------------------------------------
-
-  server.get(
-    `${urlPrefix}/notification.list`,
-    getSchema(server, "notificationList"),
-    (request, reply) => {
-      getNotificationList(conn, ctx(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
 
   server.get(
     `${urlPrefix}/notification.poll`,
