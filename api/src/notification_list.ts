@@ -104,7 +104,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       reply.status(400).send({
         apiVersion: "1.0",
         error: {
-          code: 404,
+          code: 400,
           message: "if present, the query parameter `offset` must be an integer",
         },
       });
@@ -118,7 +118,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       reply.status(400).send({
         apiVersion: "1.0",
         error: {
-          code: 404,
+          code: 400,
           message: "if present, the query parameter `limit` must be a positive integer",
         },
       });
@@ -130,12 +130,15 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         ctx,
         user,
       );
+
       notifications.sort(byEventTime);
+
       const offsetIndex = offset < 0 ? Math.max(0, notifications.length + offset) : offset;
       const slice = notifications.slice(
         offsetIndex,
         limit === undefined ? undefined : offsetIndex + limit,
       );
+
       const exposed: ExposedNotification[] = slice.map(notification => ({
         id: notification.id,
         isRead: notification.isRead,
