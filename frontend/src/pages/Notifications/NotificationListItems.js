@@ -10,7 +10,7 @@ import Divider from "@material-ui/core/Divider";
 
 import moment from "moment";
 
-import { intentMapping, parseURI, fetchResourceName, hasAccess } from "./helper";
+import { intentMapping, newIntentMapping, parseURI, newParseURI, fetchResourceName, hasAccess } from "./helper";
 import { withStyles } from "@material-ui/core";
 
 const styles = theme => ({
@@ -89,6 +89,68 @@ const NotificationListItems = ({
             className={classes.author}
             component="div"
             primary={originalEvent.createdBy}
+            secondary={createdAt}
+          />
+          <div className={classes.button}>
+            <Fab
+              size="small"
+              disabled={!hasAccess(resources)}
+              color="primary"
+              onClick={() => history.push(redirectUri)}
+            >
+              <LaunchIcon />
+            </Fab>
+          </div>
+        </ListItem>
+      </div>
+    );
+  });
+
+const NewNotificationListItems = ({
+  classes,
+  notifications,
+  history,
+  markNotificationAsRead,
+  notificationsPerPage,
+  notificationOffset
+}) =>
+  notifications.map((notification, index) => {
+    const message = newIntentMapping(notification);
+    const { businessEvent, id, isRead, projectId, subprojectId, workflowitemId } = notification;
+    const createdAt = moment(businessEvent.time).fromNow();
+    const redirectUri = newParseURI(notification);
+    const testLabel = `notification-${isRead ? "read" : "unread"}-${index}`;
+    return (
+      <div key={index}>
+        <Divider />
+        <ListItem
+          component="div"
+          className={classes.row}
+          key={index}
+          button={isRead ? false : true}
+          data-test={testLabel}
+          onClick={isRead ? undefined : () => markNotificationAsRead(id, notificationOffset, notificationsPerPage)}
+        >
+          <div className={isRead ? classes.read : classes.unread}>
+            <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
+          </div>
+          <ListItemText
+            className={classes.projectMetadata}
+            component="div"
+            primary={}
+            secondary={}
+          />
+
+          <ListItemText
+            data-test={`${testLabel}-message`}
+            className={classes.title}
+            component="div"
+            primary={message}
+          />
+          <ListItemText
+            className={classes.author}
+            component="div"
+            primary={businessEvent.publisher}
             secondary={createdAt}
           />
           <div className={classes.button}>
