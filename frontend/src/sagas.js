@@ -494,7 +494,8 @@ export function* fetchLatestNotificationSaga({ showLoading }) {
 
 export function* commonfetchNotifications(showLoading, offset, limit, type) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications, offset, limit);
+    // Get most recent items with negative offset
+    const { data } = yield callApi(api.fetchNotifications, 0 - offset - limit, limit);
     yield put({
       type,
       notifications: data.notifications

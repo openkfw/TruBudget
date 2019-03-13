@@ -113,8 +113,9 @@ const NotificationListItems = ({
   markNotificationAsRead,
   notificationsPerPage,
   notificationOffset
-}) =>
-  notifications.map((notification, index) => {
+}) => {
+  notifications.reverse();
+  return notifications.map((notification, index) => {
     const message = newIntentMapping(notification);
     const { businessEvent, id, isRead, projectId, subprojectId, workflowitemId } = notification;
     const createdAt = moment(businessEvent.time).fromNow();
@@ -163,5 +164,6 @@ const NotificationListItems = ({
       </div>
     );
   });
+};
 
 export default withStyles(styles)(NotificationListItems);
