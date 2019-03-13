@@ -6,7 +6,7 @@ import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as UserRecord from "../organization/user_record";
 import * as Notification from "./notification";
 import * as NotificationCreated from "./notification_created";
-import * as NotificationRead from "./notification_read";
+import * as NotificationMarkedRead from "./notification_marked_read";
 import { NotificationTraceEvent } from "./notification_trace_event";
 
 type NotificationsById = Map<Notification.Id, Notification.Notification>;
@@ -31,7 +31,7 @@ function apply(
 ) {
   if (event.type === "notification_created") {
     handleCreate(ctx, notificationsById, event, errors);
-  } else if (event.type === "notification_read") {
+  } else if (event.type === "notification_marked_read") {
     applyRead(ctx, notificationsById, event, errors);
   }
 }
@@ -83,7 +83,7 @@ function handleCreate(
 function applyRead(
   ctx: Ctx,
   notificationsById: NotificationsById,
-  notificationRead: NotificationRead.Event,
+  notificationRead: NotificationMarkedRead.Event,
   errors: EventSourcingError[],
 ) {
   const notification = deepcopy(notificationsById.get(notificationRead.notificationId));

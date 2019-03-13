@@ -54,11 +54,10 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
 
     case "notification_created":
       await ensureStreamExists(conn, ctx, "notifications", "notifications");
-      return writeTo(conn, ctx, {
-        stream: "notifications",
-        keys: [event.recipient],
-        event,
-      });
+      return writeTo(conn, ctx, { stream: "notifications", keys: [event.recipient], event });
+
+    case "notification_marked_read":
+      return writeTo(conn, ctx, { stream: "notifications", keys: [event.recipient], event });
 
     default:
       return Promise.reject(Error(`Not implemented: store(${JSON.stringify(event)})`));

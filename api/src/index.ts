@@ -16,6 +16,7 @@ import timeout from "./lib/timeout";
 import { registerNode } from "./network/controller/registerNode";
 import * as NotificationCountAPI from "./notification_count";
 import * as NotificationListAPI from "./notification_list";
+import * as NotificationMarkReadAPI from "./notification_mark_read";
 import { ensureOrganizationStream } from "./organization/organization";
 import * as ProjectAssignAPI from "./project_assign";
 import * as ProjectProjectedBudgetDeleteAPI from "./project_budget_delete_projected";
@@ -43,6 +44,7 @@ import * as GroupQueryService from "./service/group_query";
 import { randomString } from "./service/hash";
 import * as HttpdMultichainAdapter from "./service/HttpdMultichainAdapter";
 import * as NotificationListService from "./service/notification_list";
+import * as NotificationMarkReadService from "./service/notification_mark_read";
 import * as ProjectAssignService from "./service/project_assign";
 import * as ProjectCloseService from "./service/project_close";
 import * as ProjectCreateService from "./service/project_create";
@@ -261,6 +263,11 @@ NotificationListAPI.addHttpHandler(server, URL_PREFIX, {
 NotificationCountAPI.addHttpHandler(server, URL_PREFIX, {
   getNotificationsForUser: (ctx, user) =>
     NotificationListService.getNotificationsForUser(db, ctx, user),
+});
+
+NotificationMarkReadAPI.addHttpHandler(server, URL_PREFIX, {
+  markRead: (ctx, user, notificationId) =>
+    NotificationMarkReadService.markRead(db, ctx, user, notificationId),
 });
 
 /*

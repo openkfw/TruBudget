@@ -9,7 +9,7 @@ import * as UserCreated from "./organization/user_created";
 import * as GlobalPermissionsGranted from "./workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./workflow/global_permission_revoked";
 import * as NotificationCreated from "./workflow/notification_created";
-import * as NotificationRead from "./workflow/notification_read";
+import * as NotificationMarkedRead from "./workflow/notification_marked_read";
 import * as ProjectAssigned from "./workflow/project_assigned";
 import * as ProjectClosed from "./workflow/project_closed";
 import * as ProjectCreated from "./workflow/project_created";
@@ -40,7 +40,7 @@ export type BusinessEvent =
   | GroupPermissionGranted.Event
   | GroupPermissionRevoked.Event
   | NotificationCreated.Event
-  | NotificationRead.Event
+  | NotificationMarkedRead.Event
   | ProjectAssigned.Event
   | ProjectClosed.Event
   | ProjectCreated.Event

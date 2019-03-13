@@ -6,8 +6,8 @@ import { Identity } from "../organization/identity";
 import * as UserRecord from "../organization/user_record";
 import * as Notification from "./notification";
 
-type eventTypeType = "notification_read";
-const eventType: eventTypeType = "notification_read";
+type eventTypeType = "notification_marked_read";
+const eventType: eventTypeType = "notification_marked_read";
 
 export interface Event {
   type: eventTypeType;

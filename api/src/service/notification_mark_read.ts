@@ -6,20 +6,30 @@ import { BusinessEvent } from "./domain/business_event";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserRecord from "./domain/organization/user_record";
 import * as Notification from "./domain/workflow/notification";
-import * as NotificationList from "./domain/workflow/notification_list";
+import * as NotificationMarkRead from "./domain/workflow/notification_mark_read";
+import { store } from "./store";
 
-export async function getNotificationsForUser(
+export async function markRead(
   conn: ConnToken,
   ctx: Ctx,
   user: ServiceUser,
-): Promise<Notification.Notification[]> {
-  const userNotifications = await NotificationList.getUserNotifications(ctx, user, {
+  notificationId: Notification.Id,
+): Promise<void> {
+  const { newEvents, errors } = await NotificationMarkRead.markRead(ctx, user, notificationId, {
     getUserNotificationEvents: async (userId: UserRecord.Id) => {
       await Cache2.refresh(conn);
       return (conn.cache2.eventsByStream.get("notifications") || []).filter(byUser(userId));
     },
   });
-  return userNotifications;
+
+  if (errors.length > 0) return Promise.reject(errors);
+  if (!newEvents.length) {
+    return Promise.reject(`Generating events failed: ${JSON.stringify(newEvents)}`);
+  }
+
+  for (const event of newEvents) {
+    await store(conn, ctx, event);
+  }
 }
 
 function byUser(userId: UserRecord.Id): (event: BusinessEvent) => boolean {

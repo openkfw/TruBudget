@@ -11,7 +11,7 @@ import * as UserCreated from "./domain/organization/user_created";
 import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as NotificationCreated from "./domain/workflow/notification_created";
-import * as NotificationRead from "./domain/workflow/notification_read";
+import * as NotificationMarkedRead from "./domain/workflow/notification_marked_read";
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
@@ -236,7 +236,7 @@ const EVENT_PARSER_MAP = {
   group_member_removed: GroupMemberRemoved.validate,
   node_registered: NodeRegistered.validate,
   notification_created: NotificationCreated.validate,
-  notification_read: NotificationRead.validate,
+  notification_marked_read: NotificationMarkedRead.validate,
   project_assigned: ProjectAssigned.validate,
   project_closed: ProjectClosed.validate,
   project_created: ProjectCreated.validate,
