@@ -568,26 +568,6 @@ export const registerRoutes = (
     },
   );
 
-  server.post(
-    `${urlPrefix}/notification.markRead`,
-    getSchema(server, "markRead"),
-    (request, reply) => {
-      markNotificationRead(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/notification.markMultipleRead`,
-    getSchema(server, "markMultipleRead"),
-    (request, reply) => {
-      markMultipleRead(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
   // ------------------------------------------------------------
   //       network
   // ------------------------------------------------------------

@@ -19,10 +19,16 @@ function mkSwaggerSchema(server: FastifyInstance) {
       properties: {
         limit: {
           type: "string",
+          description: "Limit to the number of notifications to return.",
           example: "10",
         },
         offset: {
           type: "string",
+          description:
+            "The index of the first notification; all other notifications are for " +
+            "events that happened after that first notification. The `offset` may also " +
+            "be negative. For example, an `offset` of `-10` with limit `10` requests " +
+            "the 10 most recent notifications.",
           example: "0",
         },
       },
@@ -94,12 +100,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     };
 
     const offset = parseInt(request.query.offset || 0, 10);
-    if (isNaN(offset) || offset < 0) {
+    if (isNaN(offset)) {
       reply.status(400).send({
         apiVersion: "1.0",
         error: {
           code: 404,
-          message: "if present, the query parameter `offset` must be a non-negative integer",
+          message: "if present, the query parameter `offset` must be an integer",
         },
       });
       return;
@@ -125,9 +131,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         user,
       );
       notifications.sort(byEventTime);
+      const offsetIndex = offset < 0 ? Math.max(0, notifications.length + offset) : offset;
       const slice = notifications.slice(
-        offset,
-        limit === undefined ? notifications.length : offset + limit,
+        offsetIndex,
+        limit === undefined ? undefined : offsetIndex + limit,
       );
       const exposed: ExposedNotification[] = slice.map(notification => ({
         id: notification.id,
