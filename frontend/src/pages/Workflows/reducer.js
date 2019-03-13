@@ -44,7 +44,8 @@ import {
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   SUBMIT_BATCH_FOR_WORKFLOW,
-  WORKFLOW_EXCHANGERATE
+  WORKFLOW_EXCHANGERATE,
+  DEFAULT_WORKFLOW_EXCHANGERATE
 } from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -204,6 +205,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_EXCHANGERATE:
       return state.merge({
         workflowToAdd: state.getIn(["workflowToAdd"]).set("exchangeRate", action.exchangeRate)
+      });
+    case DEFAULT_WORKFLOW_EXCHANGERATE:
+      return state.merge({
+        workflowToAdd: state.getIn(["workflowToAdd"]).set("exchangeRate", 1)
       });
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);

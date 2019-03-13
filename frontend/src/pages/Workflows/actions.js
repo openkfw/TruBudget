@@ -28,6 +28,7 @@ export const WORKFLOW_TYPE = "WORKFLOW_TYPE";
 export const WORKFLOW_APPROVAL_REQUIRED = "WORKFLOW_APPROVAL_REQUIRED";
 export const WORKFLOW_AMOUNT = "WORKFLOW_AMOUNT";
 export const WORKFLOW_EXCHANGERATE = "WORKFLOW_EXCHANGERATE";
+export const DEFAULT_WORKFLOW_EXCHANGERATE = "DEFAULT_WORKFLOW_EXCHANGERATE";
 
 export const WORKFLOW_AMOUNT_TYPE = "WORKFLOW_AMOUNT_TYPE";
 export const WORKFLOW_PURPOSE = "WORKFLOW_PURPOSE";
@@ -406,6 +407,12 @@ export function storeWorkflowExchangeRate(exchangeRate) {
   return {
     type: WORKFLOW_EXCHANGERATE,
     exchangeRate
+  };
+}
+
+export function defaultWorkflowExchangeRate() {
+  return {
+    type: DEFAULT_WORKFLOW_EXCHANGERATE
   };
 }
 

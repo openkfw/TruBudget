@@ -134,12 +134,7 @@ const NewNotificationListItems = ({
           <div className={isRead ? classes.read : classes.unread}>
             <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
           </div>
-          <ListItemText
-            className={classes.projectMetadata}
-            component="div"
-            primary={}
-            secondary={}
-          />
+          <ListItemText className={classes.projectMetadata} component="div" primary={""} secondary={""} />
 
           <ListItemText
             data-test={`${testLabel}-message`}
@@ -156,7 +151,8 @@ const NewNotificationListItems = ({
           <div className={classes.button}>
             <Fab
               size="small"
-              disabled={!hasAccess(resources)}
+              // TODO: hasAccess
+              // disabled={!hasAccess()}
               color="primary"
               onClick={() => history.push(redirectUri)}
             >

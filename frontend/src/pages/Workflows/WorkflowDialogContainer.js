@@ -17,7 +17,8 @@ import {
   storeWorkflowDocument,
   storeWorkflowName,
   storeWorkflowStatus,
-  storeWorkflowExchangeRate
+  storeWorkflowExchangeRate,
+  defaultWorkflowExchangeRate
 } from "./actions";
 import WorkflowDialog from "./WorkflowDialog";
 
@@ -115,7 +116,7 @@ const mapDispatchToProps = dispatch => {
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name)),
-    storeWorkflowExchangeRate: exchangeRate => dispatch(storeWorkflowExchangeRate(exchangeRate))
+    defaultWorkflowExchangeRate: exchangeRate => dispatch(defaultWorkflowExchangeRate(exchangeRate))
   };
 };
 

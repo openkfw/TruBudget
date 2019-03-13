@@ -50,7 +50,7 @@ export const newParseURI = ({ projectId, subprojectId }) => {
   if (projectId && !subprojectId) {
     return `/projects/${projectId}`;
   } else if (projectId && subprojectId) {
-    return `/projects/${project.id}/${subproject.id}`;
+    return `/projects/${projectId}/${subprojectId}`;
   } else {
     //ERROR?
   }

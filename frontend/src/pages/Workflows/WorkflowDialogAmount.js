@@ -38,9 +38,6 @@ class WorkflowDialogAmount extends Component {
       this.props.workflowCurrency ? this.props.workflowCurrency : this.props.subProjectCurrency,
       this.props.storeWorkflowCurrency
     );
-    this.props.exchangeRate
-      ? this.props.storeWorkflowExchangeRate(this.props.exchangeRate)
-      : this.props.storeWorkflowExchangeRate(1);
   }
 
   getMenuItems(currencies) {
@@ -69,7 +66,6 @@ class WorkflowDialogAmount extends Component {
     const floatingLabelText = strings.workflow.workflow_budget;
     const hintText = strings.workflow.workflow_budget_description;
     const budgetDisabled = workflowAmountType === "N/A";
-    console.log(workflowCurrency);
     return (
       <div style={styles.container}>
         <div>
@@ -109,7 +105,12 @@ class WorkflowDialogAmount extends Component {
               style={{ minWidth: 160 }}
               floatingLabel={strings.project.project_currency}
               value={workflowCurrency}
-              onChange={storeWorkflowCurrency}
+              onChange={value => {
+                if (value === this.props.subProjectCurrency) {
+                  this.props.defaultWorkflowExchangeRate();
+                }
+                return storeWorkflowCurrency(value);
+              }}
               id="currencies"
             >
               {this.getMenuItems(currencies)}
@@ -137,7 +138,9 @@ class WorkflowDialogAmount extends Component {
               label={strings.workflow.exchange_rate}
               helperText={strings.workflow.workflow_budget_description + "1.1586"}
               value={exchangeRate ? exchangeRate : ""}
-              onChange={e => storeWorkflowExchangeRate(parseFloat(e.target.value))}
+              onChange={e => {
+                if (/^[0-9,.]*$/.test(e.target.value)) storeWorkflowExchangeRate(parseFloat(e.target.value));
+              }}
               type="number"
               aria-label="rate"
               id="rateinput"
