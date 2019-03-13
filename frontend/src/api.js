@@ -276,10 +276,10 @@ class Api {
 
   markNotificationAsRead = notificationId =>
     instance.post(`/notification.markRead`, {
-      notificationId
+      notifications: [notificationId]
     });
   markMultipleNotificationsAsRead = notificationIds =>
-    instance.post(`/notification.markMultipleRead`, { notificationIds });
+    instance.post(`/notification.markRead`, { notifications: notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {
