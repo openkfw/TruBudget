@@ -53,8 +53,8 @@ const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectAdditionalDataShow
               data-test="workflowitemInfoDisplayName"
               primary={""}
               secondary={
-                subProjectForInfo && !subProjectForInfo.data.additionalData ? (
-                  <pre>{JSON.stringify((JSON.parse(subProjectForInfo.data.additionalData), null, `\t`))}</pre>
+                subProjectForInfo && subProjectForInfo.data.additionalData ? (
+                  <pre>{JSON.stringify(subProjectForInfo.data.additionalData, null, `\t`)}</pre>
                 ) : (
                   "No fields are added to this Subproject"
                 )
