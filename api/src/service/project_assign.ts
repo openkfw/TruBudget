@@ -29,9 +29,6 @@ export async function assignProject(
   );
 
   if (errors.length > 0) return Promise.reject(errors);
-  if (!newEvents.length) {
-    return Promise.reject(`Generating events failed: ${JSON.stringify(newEvents)}`);
-  }
 
   for (const event of newEvents) {
     await store(conn, ctx, event);

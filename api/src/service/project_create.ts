@@ -1,13 +1,13 @@
 import { Ctx } from "../lib/ctx";
-import * as Cache2 from "./cache2";
+import logger from "../lib/logger";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as ProjectCreate from "./domain/workflow/project_create";
 import * as ProjectCreated from "./domain/workflow/project_created";
 import { getGlobalPermissions } from "./global_permissions_get";
-import { store } from "./store";
 import { loadProjectEvents } from "./load";
+import { store } from "./store";
 
 export { RequestData } from "./domain/workflow/project_create";
 
@@ -26,7 +26,9 @@ export async function createProject(
   });
   if (errors.length > 0) return Promise.reject(errors);
   if (!newEvents.length) {
-    return Promise.reject(`Generating events failed: ${JSON.stringify(newEvents)}`);
+    const msg = "failed to create project";
+    logger.error({ ctx, serviceUser, requestData }, msg);
+    throw new Error(msg);
   }
 
   for (const event of newEvents) {

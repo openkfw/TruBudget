@@ -1,5 +1,5 @@
 import { Ctx } from "../lib/ctx";
-import * as Cache2 from "./cache2";
+import logger from "../lib/logger";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import { Id } from "./domain/workflow/subproject";
@@ -20,7 +20,9 @@ export async function createSubproject(
   });
   if (errors) return Promise.reject(errors);
   if (!newEvents.length) {
-    return Promise.reject(`Generating events failed: ${JSON.stringify(newEvents)}`);
+    const msg = "failed to create subproject";
+    logger.error({ ctx, serviceUser, requestData }, msg);
+    throw new Error(msg);
   }
 
   const subprojectEvent = newEvents.find(x => (x as any).subprojectId !== undefined);
