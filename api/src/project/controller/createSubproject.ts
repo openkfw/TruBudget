@@ -54,7 +54,6 @@ export async function createSubproject(
 
   throwParseErrorIfUndefined(data, ["subproject"]);
   const subprojectArgs = data.subproject;
-  logger.fatal({ subprojectArgs }, "XXX");
 
   const subprojectId = value("id", subprojectArgs.id, isNonemptyString, randomString());
 

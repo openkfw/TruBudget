@@ -75,9 +75,6 @@ export async function createProject(
     permissions: newDefaultPermissionsFor(creatingUser),
     additionalData: data.additionalData || {},
   });
-  if (data.displayName === "Additional-Data Test") {
-    logger.fatal({ ctx, data, createEvent }, "XXX");
-  }
 
   if (await repository.projectExists(createEvent.project.id)) {
     return {
