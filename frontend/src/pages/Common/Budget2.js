@@ -57,7 +57,6 @@ export default class Budget extends React.Component {
       deletedProjectedBudgets = [],
       parentCurrency,
       storeProjectedBudget,
-      editDialogShown,
       disabled
     } = this.props;
     const currencies = getCurrencies(parentCurrency);

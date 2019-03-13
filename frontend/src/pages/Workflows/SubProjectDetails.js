@@ -1,45 +1,37 @@
-import React from "react";
-
-import _isFinite from "lodash/isFinite";
-import _isUndefined from "lodash/isUndefined";
-
-import AmountIcon from "@material-ui/icons/AccountBalance";
-import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import DateIcon from "@material-ui/icons/DateRange";
+import Chip from "@material-ui/core/Chip";
 import Divider from "@material-ui/core/Divider";
-import Tooltip from "@material-ui/core/Tooltip";
-import DoneIcon from "@material-ui/icons/Check";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import NotAssignedIcon from "@material-ui/icons/SpaceBar";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import DoneIcon from "@material-ui/icons/Check";
+import DateIcon from "@material-ui/icons/DateRange";
+import AssigneeIcon from "@material-ui/icons/Group";
 import OpenIcon from "@material-ui/icons/Remove";
 import SpentIcon from "@material-ui/icons/RemoveCircle";
-import Typography from "@material-ui/core/Typography";
-import UnspentIcon from "@material-ui/icons/AddCircle";
-
+import NotAssignedIcon from "@material-ui/icons/SpaceBar";
+import _isUndefined from "lodash/isUndefined";
+import React from "react";
 import { Doughnut } from "react-chartjs-2";
 
 import {
-  toAmountString,
+  calculateWorkflowBudget,
   createTaskData,
+  getProgressInformation,
   statusIconMapping,
   statusMapping,
-  tsToString,
-  calculateWorkflowBudget,
-  getProgressInformation
+  toAmountString,
+  tsToString
 } from "../../helper.js";
-
-import GaugeChart from "../Common/GaugeChart";
 import strings from "../../localizeStrings";
-import _isEmpty from "lodash/isEmpty";
-
+import GaugeChart from "../Common/GaugeChart";
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 
 const styles = {
@@ -255,14 +247,12 @@ const SubProjectDetails = ({
   );
 
   const disbursedBudgetString = toAmountString(disbursedBudget, currency);
-  const unSpendBudgetString = toAmountString(assignedBudget, currency);
   const spendBudgetString = toAmountString(currentDisbursement, currency);
 
   const statusDetails = getProgressInformation(workflowItems);
 
   const allowedToEdit = false;
 
-  // const allocatedBudgetRatio = !_isFinite(amount) || amount === 0 ? 0 : assignedBudget / amount;
   const consumptionBudgetRatio = assignedBudget === 0 ? 0 : currentDisbursement / assignedBudget;
   const currentDisbursementRatio = assignedBudget === 0 ? 0 : disbursedBudget / assignedBudget;
 

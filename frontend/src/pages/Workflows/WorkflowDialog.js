@@ -86,7 +86,6 @@ const Content = props => {
         workflowAmount={props.workflowToAdd.amount}
         storeWorkflowExchangeRate={props.storeWorkflowExchangeRate}
         exchangeRate={props.workflowToAdd.exchangeRate}
-        subProjectCurrency={props.currency}
         workflowAmountType={props.workflowToAdd.amountType}
         workflowCurrency={props.workflowToAdd.currency}
         defaultWorkflowExchangeRate={props.defaultWorkflowExchangeRate}

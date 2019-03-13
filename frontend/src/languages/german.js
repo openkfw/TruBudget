@@ -2,6 +2,7 @@ const de = {
   common: {
     action: "German: Action",
     actions: "Actions",
+    add: "hinzufügen",
     added: "German: Added",
     approver: "Approver",
     assign: "German: assign",
@@ -118,6 +119,7 @@ const de = {
     add_item: "German: Create Workflow item",
     approval_required: "German: Approval Required",
     edit_item: "German: Edit Workflow item",
+    exchange_rate: "Wechselkurs",
     non_approval: "German: Non-Approval",
     workflow_action_in_review: "Pending for review of",
     workflow_action_open_in_progress: "Pending on ",

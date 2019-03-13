@@ -53,7 +53,7 @@ const SubprojectDialogContent = props => {
           parentCurrency={props.projectCurrency}
           budgetLabel={strings.subproject.subproject_budget_amount}
           projectedBudgets={props.subprojectToAdd.projectedBudgets}
-          storeProjectedBudget={props.addSubProjectProjectedBudgets}
+          storeProjectedBudget={props.storeSubProjectProjectedBudgets}
           disabled={props.editDialogShown}
         />
       </div>

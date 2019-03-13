@@ -2,6 +2,7 @@ const fr = {
   common: {
     action: "French: Action",
     actions: "Actions",
+    add: "Ajouter",
     added: "Ajouté",
     approver: "Approbateur",
     assign: "French: assign",
@@ -120,6 +121,7 @@ const fr = {
     add_item: "Creer un élément du workflow",
     approval_required: "Approbation exigée",
     edit_item: "Modifier l'élément du workflow",
+    exchange_rate: "taux de change",
     non_approval: "Non-approbation",
     workflow_action_in_review: "En attente d'approbation de ",
     workflow_action_open_in_progress: "En attente sur ",

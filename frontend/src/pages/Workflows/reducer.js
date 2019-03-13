@@ -127,7 +127,6 @@ export default function detailviewReducer(state = defaultState, action) {
         projectedBudgets: fromJS(subproject.data.projectedBudgets)
       });
     case SHOW_WORKFLOW_EDIT:
-      console.log(action.exchangeRate);
       return state.merge({
         workflowToAdd: state
           .getIn(["workflowToAdd"])
@@ -201,10 +200,6 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_CURRENCY:
       return state.merge({
         workflowToAdd: state.getIn(["workflowToAdd"]).set("currency", action.currency)
-      });
-    case WORKFLOW_EXCHANGERATE:
-      return state.merge({
-        workflowToAdd: state.getIn(["workflowToAdd"]).set("exchangeRate", action.exchangeRate)
       });
     case DEFAULT_WORKFLOW_EXCHANGERATE:
       return state.merge({

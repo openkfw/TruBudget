@@ -2,6 +2,7 @@ const pt = {
   common: {
     action: "Portuguese: Action",
     actions: "Ações",
+    add: "adicionar",
     added: "Adicionado",
     approver: "Aprovador",
     assign: "Portuguese: assign",
@@ -145,6 +146,7 @@ const pt = {
     add_item: "Criar workflow",
     approval_required: "Aprovação necessária",
     edit_item: "Editar workflow",
+    exchange_rate: "taxa de câmbio",
     non_approval: "Aprovação desnecessária",
     workflow_action_in_review: "Aguardando revisão de ",
     workflow_action_open_in_progress: "Aguardando ação de ",

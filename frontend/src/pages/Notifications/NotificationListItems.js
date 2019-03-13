@@ -1,17 +1,16 @@
-import React from "react";
+import { withStyles } from "@material-ui/core";
+import Divider from "@material-ui/core/Divider";
+import Fab from "@material-ui/core/Fab";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import Unread from "@material-ui/icons/Email";
 import Read from "@material-ui/icons/MailOutline";
-import ListItemText from "@material-ui/core/ListItemText";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
-import Fab from "@material-ui/core/Fab";
-import Divider from "@material-ui/core/Divider";
-
 import moment from "moment";
+import React from "react";
 
-import { intentMapping, newIntentMapping, parseURI, newParseURI, fetchResourceName, hasAccess } from "./helper";
-import { withStyles } from "@material-ui/core";
+import { newIntentMapping, newParseURI } from "./helper";
 
 const styles = theme => ({
   row: {
@@ -42,69 +41,69 @@ const styles = theme => ({
   }
 });
 
-const OldNotificationListItems = ({
-  classes,
-  notifications,
-  history,
-  markNotificationAsRead,
-  notificationsPerPage,
-  notificationOffset
-}) =>
-  notifications.map((notification, index) => {
-    const message = intentMapping(notification);
-    const { originalEvent, notificationId, isRead, resources } = notification;
-    const createdAt = moment(originalEvent.createdAt).fromNow();
-    const redirectUri = parseURI(notification);
-    const testLabel = `notification-${isRead ? "read" : "unread"}-${index}`;
-    return (
-      <div key={index}>
-        <Divider />
-        <ListItem
-          component="div"
-          className={classes.row}
-          key={index}
-          button={isRead ? false : true}
-          data-test={testLabel}
-          onClick={
-            isRead ? undefined : () => markNotificationAsRead(notificationId, notificationOffset, notificationsPerPage)
-          }
-        >
-          <div className={isRead ? classes.read : classes.unread}>
-            <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
-          </div>
-          <ListItemText
-            className={classes.projectMetadata}
-            component="div"
-            primary={fetchResourceName(resources, "project")}
-            secondary={fetchResourceName(resources, "subproject")}
-          />
+// const OldNotificationListItems = ({
+//   classes,
+//   notifications,
+//   history,
+//   markNotificationAsRead,
+//   notificationsPerPage,
+//   notificationOffset
+// }) =>
+//   notifications.map((notification, index) => {
+//     const message = intentMapping(notification);
+//     const { originalEvent, notificationId, isRead, resources } = notification;
+//     const createdAt = moment(originalEvent.createdAt).fromNow();
+//     const redirectUri = parseURI(notification);
+//     const testLabel = `notification-${isRead ? "read" : "unread"}-${index}`;
+//     return (
+//       <div key={index}>
+//         <Divider />
+//         <ListItem
+//           component="div"
+//           className={classes.row}
+//           key={index}
+//           button={isRead ? false : true}
+//           data-test={testLabel}
+//           onClick={
+//             isRead ? undefined : () => markNotificationAsRead(notificationId, notificationOffset, notificationsPerPage)
+//           }
+//         >
+//           <div className={isRead ? classes.read : classes.unread}>
+//             <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
+//           </div>
+//           <ListItemText
+//             className={classes.projectMetadata}
+//             component="div"
+//             primary={fetchResourceName(resources, "project")}
+//             secondary={fetchResourceName(resources, "subproject")}
+//           />
 
-          <ListItemText
-            data-test={`${testLabel}-message`}
-            className={classes.title}
-            component="div"
-            primary={message}
-          />
-          <ListItemText
-            className={classes.author}
-            component="div"
-            primary={originalEvent.createdBy}
-            secondary={createdAt}
-          />
-          <div className={classes.button}>
-            <Fab
-              size="small"
-              disabled={!hasAccess(resources)}
-              color="primary"
-              onClick={() => history.push(redirectUri)}
-            >
-              <LaunchIcon />
-            </Fab>
-          </div>
-        </ListItem>
-      </div>
-    );
-  });
+//           <ListItemText
+//             data-test={`${testLabel}-message`}
+//             className={classes.title}
+//             component="div"
+//             primary={message}
+//           />
+//           <ListItemText
+//             className={classes.author}
+//             component="div"
+//             primary={originalEvent.createdBy}
+//             secondary={createdAt}
+//           />
+//           <div className={classes.button}>
+//             <Fab
+//               size="small"
+//               disabled={!hasAccess(resources)}
+//               color="primary"
+//               onClick={() => history.push(redirectUri)}
+//             >
+//               <LaunchIcon />
+//             </Fab>
+//           </div>
+//         </ListItem>
+//       </div>
+//     );
+//   });
 
 const NotificationListItems = ({
   classes,
@@ -117,7 +116,7 @@ const NotificationListItems = ({
   notifications.reverse();
   return notifications.map((notification, index) => {
     const message = newIntentMapping(notification);
-    const { businessEvent, id, isRead, projectId, subprojectId, workflowitemId } = notification;
+    const { businessEvent, id, isRead } = notification;
     const createdAt = moment(businessEvent.time).fromNow();
     const redirectUri = newParseURI(notification);
     const testLabel = `notification-${isRead ? "read" : "unread"}-${index}`;
