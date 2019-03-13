@@ -42,7 +42,7 @@ const styles = theme => ({
   }
 });
 
-const NotificationListItems = ({
+const OldNotificationListItems = ({
   classes,
   notifications,
   history,
@@ -106,7 +106,7 @@ const NotificationListItems = ({
     );
   });
 
-const NewNotificationListItems = ({
+const NotificationListItems = ({
   classes,
   notifications,
   history,

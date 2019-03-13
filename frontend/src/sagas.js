@@ -481,8 +481,8 @@ export function* fetchNotificationCountsSaga({ showLoading }) {
     const { data } = yield callApi(api.fetchNotificationCounts);
     yield put({
       type: FETCH_NOTIFICATION_COUNTS_SUCCESS,
-      unreadNotificationCount: data.unreadNotificationCount,
-      notificationCount: data.notificationCount
+      unreadNotificationCount: data.unread,
+      notificationCount: data.total
     });
   }, showLoading);
 }

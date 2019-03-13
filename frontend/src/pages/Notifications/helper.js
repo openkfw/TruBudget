@@ -25,12 +25,12 @@ export const intentMapping = ({ originalEvent, resources }) => {
 export const newIntentMapping = ({ businessEvent, resources }) => {
   // const translation = translate(businessEvent.type);
   // TODO: current translation not in line with business types
-  const translation = businessEvent.type;
+  const translation = strings.notification[businessEvent.type];
   if (!translation) return `${businessEvent.type} (missing intent translation)`;
 
   // For now: displayname is not displayed in notification
   // const displayName = findDisplayName(businessEvent.type, resources);
-  const displayName = "";
+  const displayName = " ";
 
   const text = formatString(translation, displayName);
   return `${text} ${displayName ? "" : strings.notification.no_permissions}`;

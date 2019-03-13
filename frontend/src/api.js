@@ -271,7 +271,7 @@ class Api {
   };
 
   fetchNotificationCounts = () => {
-    return instance.get(`/notification.counts`);
+    return instance.get(`/notification.count`);
   };
 
   markNotificationAsRead = notificationId =>
