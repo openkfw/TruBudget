@@ -45,6 +45,14 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
         event,
       });
 
+    case "subproject_projected_budget_updated":
+    case "subproject_projected_budget_deleted":
+      return writeTo(conn, ctx, {
+        stream: event.projectId,
+        keys: ["subprojects", event.subprojectId],
+        event,
+      });
+
     case "workflowitem_created":
       return writeTo(conn, ctx, {
         stream: event.projectId,

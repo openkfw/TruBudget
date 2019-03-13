@@ -57,10 +57,14 @@ import * as ProjectProjectedBudgetDeleteService from "./service/project_projecte
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
+import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
+import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
 import * as OldSubprojectModel from "./subproject/model/Subproject";
+import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
+import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
@@ -433,6 +437,37 @@ ProjectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
       ctx,
       user,
       projectId,
+      orga,
+      currencyCode,
+    ),
+});
+
+/*
+ * APIs related to Subprojects
+ */
+
+SubprojectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateProjectedBudget: (ctx, user, projectId, subprojectId, orga, amount, currencyCode) =>
+    SubprojectProjectedBudgetUpdateService.updateProjectedBudget(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      orga,
+      amount,
+      currencyCode,
+    ),
+});
+
+SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
+  deleteProjectedBudget: (ctx, user, projectId, subprojectId, orga, currencyCode) =>
+    SubprojectProjectedBudgetDeleteService.deleteProjectedBudget(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
       orga,
       currencyCode,
     ),

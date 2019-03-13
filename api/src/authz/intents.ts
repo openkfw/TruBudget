@@ -35,6 +35,8 @@ type Intent =
   | "subproject.createWorkflowitem"
   | "subproject.reorderWorkflowitems"
   | "subproject.viewHistory"
+  | "subproject.budget.updateProjected"
+  | "subproject.budget.deleteProjected"
   | "workflowitem.intent.listPermissions"
   | "workflowitem.intent.grantPermission"
   | "workflowitem.intent.revokePermission"
@@ -130,6 +132,8 @@ export const subprojectIntents: Intent[] = [
   "subproject.createWorkflowitem",
   "subproject.reorderWorkflowitems",
   "subproject.viewHistory",
+  "subproject.budget.updateProjected",
+  "subproject.budget.deleteProjected",
 ];
 
 export const workflowitemIntents: Intent[] = [
@@ -180,6 +184,8 @@ export const allIntents: Intent[] = [
   "subproject.createWorkflowitem",
   "subproject.reorderWorkflowitems",
   "subproject.viewHistory",
+  "subproject.budget.updateProjected",
+  "subproject.budget.deleteProjected",
   "workflowitem.intent.listPermissions",
   "workflowitem.intent.grantPermission",
   "workflowitem.intent.revokePermission",

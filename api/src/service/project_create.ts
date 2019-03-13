@@ -7,6 +7,7 @@ import * as ProjectCreate from "./domain/workflow/project_create";
 import * as ProjectCreated from "./domain/workflow/project_created";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { store } from "./store";
+import { loadProjectEvents } from "./load";
 
 export { RequestData } from "./domain/workflow/project_create";
 
@@ -19,8 +20,8 @@ export async function createProject(
   const { newEvents, errors } = await ProjectCreate.createProject(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
     projectExists: async projectId => {
-      await Cache2.refresh(conn, projectId);
-      return (conn.cache2.eventsByStream.get(projectId) || []).length > 0;
+      const projectEvents = await loadProjectEvents(conn, projectId);
+      return projectEvents.length > 0;
     },
   });
   if (errors.length > 0) return Promise.reject(errors);

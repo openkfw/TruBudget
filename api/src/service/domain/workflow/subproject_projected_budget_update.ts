@@ -6,12 +6,13 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
-import { sourceProjects } from "./project_eventsourcing";
-import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updated";
 import { ProjectedBudget } from "./projected_budget";
+import * as Subproject from "./subproject";
+import { sourceSubprojects } from "./subproject_eventsourcing";
+import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget_updated";
 
 interface Repository {
-  getProjectEvents(): Promise<BusinessEvent[]>;
+  getSubprojectEvents(): Promise<BusinessEvent[]>;
 }
 
 type State = ProjectedBudget[];
@@ -25,24 +26,26 @@ export async function updateProjectedBudget(
   ctx: Ctx,
   issuer: ServiceUser,
   projectId: Project.Id,
+  subprojectId: Subproject.Id,
   organization: string,
   value: string,
   currencyCode: string,
   repository: Repository,
 ): Promise<ReturnType> {
-  const projectEvents = await repository.getProjectEvents();
-  const { projects } = sourceProjects(ctx, projectEvents);
+  const subprojectEvents = await repository.getSubprojectEvents();
+  const { subprojects } = sourceSubprojects(ctx, subprojectEvents);
 
-  const project = projects.find(x => x.id === projectId);
-  if (project === undefined) {
-    return withError(new NotFound(ctx, "project", projectId));
+  const subproject = subprojects.find(x => x.id === subprojectId);
+  if (subproject === undefined) {
+    return withError(new NotFound(ctx, "subproject", subprojectId));
   }
 
   // Create the new event:
-  const budgetUpdated = ProjectProjectedBudgetUpdated.createEvent(
+  const budgetUpdated = SubprojectProjectedBudgetUpdated.createEvent(
     ctx.source,
     issuer.id,
     projectId,
+    subprojectId,
     organization,
     value,
     currencyCode,
@@ -50,32 +53,32 @@ export async function updateProjectedBudget(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Project.permits(project, issuer, ["project.budget.updateProjected"])) {
+    if (!Subproject.permits(subproject, issuer, ["subproject.budget.updateProjected"])) {
       return withError(new NotAuthorized(ctx, issuer.id, budgetUpdated));
     }
   }
 
   // Check that the new event is indeed valid:
-  const { projects: projectsAfterUpdate, errors } = sourceProjects(
+  const { subprojects: subprojectsAfterUpdate, errors } = sourceSubprojects(
     ctx,
-    projectEvents.concat([budgetUpdated]),
+    subprojectEvents.concat([budgetUpdated]),
   );
   if (errors.length > 0) {
     return withError(new InvalidCommand(ctx, budgetUpdated, errors));
   }
 
-  const projectAfterUpdate = projectsAfterUpdate.find(x => x.id === projectId);
-  if (projectAfterUpdate === undefined) {
+  const subprojectAfterUpdate = subprojectsAfterUpdate.find(x => x.id === subprojectId);
+  if (subprojectAfterUpdate === undefined) {
     logger.fatal(
-      { ctx, issuer, projectId, projects, budgetUpdated },
-      `panic: failed to source project ${projectId} after updating a projected budget`,
+      { ctx, issuer, projectId, subprojectId, subprojects, budgetUpdated },
+      `panic: failed to source subproject ${subprojectId} after updating a projected budget`,
     );
     process.exit(1);
   }
 
   return {
     newEvents: [budgetUpdated],
-    newState: projectAfterUpdate!.projectedBudgets,
+    newState: subprojectAfterUpdate!.projectedBudgets,
     errors: [],
   };
 }

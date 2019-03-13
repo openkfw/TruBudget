@@ -3,11 +3,12 @@ import { VError } from "verror";
 
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
-import { CurrencyCode, currencyCodeSchema } from "./money";
+import { CurrencyCode, currencyCodeSchema, MoneyAmount, moneyAmountSchema } from "./money";
 import * as Project from "./project";
+import * as Subproject from "./subproject";
 
-type eventTypeType = "project_projected_budget_deleted";
-const eventType: eventTypeType = "project_projected_budget_deleted";
+type eventTypeType = "subproject_projected_budget_updated";
+const eventType: eventTypeType = "subproject_projected_budget_updated";
 
 export interface Event {
   type: eventTypeType;
@@ -15,7 +16,9 @@ export interface Event {
   time: string; // ISO timestamp
   publisher: Identity;
   projectId: Project.Id;
+  subprojectId: Subproject.Id;
   organization: string;
+  value: MoneyAmount;
   currencyCode: CurrencyCode;
 }
 
@@ -29,7 +32,9 @@ export const schema = Joi.object({
     .required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
+  subprojectId: Subproject.idSchema.required(),
   organization: Joi.string().required(),
+  value: moneyAmountSchema.required(),
   currencyCode: currencyCodeSchema.required(),
 });
 
@@ -37,7 +42,9 @@ export function createEvent(
   source: string,
   publisher: Identity,
   projectId: Project.Id,
+  subprojectId: Subproject.Id,
   organization: string,
+  value: string,
   currencyCode: CurrencyCode,
   time: string = new Date().toISOString(),
 ): Event {
@@ -47,7 +54,9 @@ export function createEvent(
     time,
     publisher,
     projectId,
+    subprojectId,
     organization,
+    value,
     currencyCode,
   };
   const validationResult = validate(event);

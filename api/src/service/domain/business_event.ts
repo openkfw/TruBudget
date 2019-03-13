@@ -23,6 +23,8 @@ import * as SubprojectClosed from "./workflow/subproject_closed";
 import * as SubprojectCreated from "./workflow/subproject_created";
 import * as SubprojectPermissionGranted from "./workflow/subproject_permission_granted";
 import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_revoked";
+import * as SubprojectProjectedBudgetDeleted from "./workflow/subproject_projected_budget_deleted";
+import * as SubprojectProjectedBudgetUpdated from "./workflow/subproject_projected_budget_updated";
 import * as SubprojectUpdated from "./workflow/subproject_updated";
 import * as WorkflowitemAssigned from "./workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
@@ -54,6 +56,8 @@ export type BusinessEvent =
   | SubprojectCreated.Event
   | SubprojectPermissionGranted.Event
   | SubprojectPermissionRevoked.Event
+  | SubprojectProjectedBudgetDeleted.Event
+  | SubprojectProjectedBudgetUpdated.Event
   | SubprojectUpdated.Event
   | UserCreated.Event
   | WorkflowitemAssigned.Event
