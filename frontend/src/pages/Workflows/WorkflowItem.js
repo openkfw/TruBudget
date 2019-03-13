@@ -235,17 +235,10 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
   return workflowSortEnabled ? workflowSortable : currentWorkflowSelectable;
 };
 
-const getAmountField = (amount, type, exchangeRate) => {
-  const noBudgetAllocated = type === "N/A";
-  let amountToShow = amount;
-  if (noBudgetAllocated) {
-    amountToShow = amountTypes(type);
-  }
-  if (fromAmountString(exchangeRate) !== 1) {
-    amountToShow = fromAmountString(amount) * exchangeRate;
-  }
+const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurrency) => {
+  let amountToShow = toAmountString(amount * exchangeRate, targetCurrency);
 
-  const amountExplTitle = amount + " x " + exchangeRate;
+  const amountExplTitle = toAmountString(amount, sourceCurrency) + " x " + exchangeRate;
   const amountExplaination = (
     <Tooltip title={amountExplTitle}>
       <SwapIcon />
@@ -254,12 +247,17 @@ const getAmountField = (amount, type, exchangeRate) => {
   return (
     <div style={styles.chipDiv}>
       <div>{amountToShow}</div>
-      {noBudgetAllocated ? null : (
-        <div>
-          {fromAmountString(exchangeRate) !== 1 ? amountExplaination : null}
-          <Chip style={styles.amountChip} label={amountTypes(type)} />
-        </div>
-      )}
+      <div
+        style={{
+          paddingTop: "4px",
+          paddingLeft: "4px"
+        }}
+      >
+        {fromAmountString(exchangeRate) !== 1 ? amountExplaination : null}
+      </div>
+      <div>
+        <Chip style={styles.amountChip} label={amountTypes(type)} />
+      </div>
     </div>
   );
 };
@@ -375,11 +373,19 @@ const renderActionButtons = (
 
 export const WorkflowItem = SortableElement(
   ({ workflow, mapIndex, index, currentWorkflowSelectable, workflowSortEnabled, parentProject, users, ...props }) => {
-    const { storeWorkflowItemsSelected, selectedWorkflowItems, currency } = props;
-    const { id, status, displayName, amountType, assignee, exchangeRate } = workflow.data;
+    const { storeWorkflowItemsSelected, selectedWorkflowItems, currency: targetCurrency } = props;
+    const {
+      id,
+      status,
+      displayName,
+      amountType,
+      amount,
+      assignee,
+      exchangeRate,
+      currency: sourceCurrency
+    } = workflow.data;
     const allowedIntents = workflow.allowedIntents;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
-    const amount = toAmountString(workflow.data.amount * exchangeRate, currency);
     const tableStyle = styles[status];
     const subprojectId = props.id;
     const itemStyle = workflowSelectable
@@ -417,7 +423,9 @@ export const WorkflowItem = SortableElement(
             </div>
             <div style={{ ...itemStyle, ...styles.listText, flex: 4 }}>
               <Typography variant="body2" component="div">
-                {getAmountField(amount, amountType, exchangeRate)}
+                {amountType === "N/A"
+                  ? amountTypes(amountType)
+                  : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
               </Typography>
             </div>
             <div style={{ ...styles.listText, flex: 4 }}>

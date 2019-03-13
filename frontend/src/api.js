@@ -175,14 +175,23 @@ class Api {
       currencyCode
     });
 
-  createWorkflowItem = payload =>
-    instance.post(`/subproject.createWorkflowitem`, {
-      ...payload,
-      documents: payload.documents,
-      currency: payload.amountType === "N/A" ? null : payload.currency,
-      amount: payload.amountType === "N/A" ? null : payload.amount,
-      exchangeRate: payload.amountType === "N/A" ? null : payload.exchangeRate.toString()
+  createWorkflowItem = payload => {
+    const { currency, amount, exchangeRate, ...minimalPayload } = payload;
+
+    const payloadToSend =
+      payload.amountType === "N/A"
+        ? minimalPayload
+        : {
+            ...minimalPayload,
+            currency,
+            amount,
+            exchangeRate: exchangeRate.toString()
+          };
+
+    return instance.post(`/subproject.createWorkflowitem`, {
+      ...payloadToSend
     });
+  };
 
   listSubProjectPermissions = (projectId, subprojectId) =>
     instance.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`);
@@ -203,14 +212,26 @@ class Api {
       identity
     });
 
-  editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) =>
-    instance.post(`/workflowitem.update`, {
+  editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) => {
+    const { currency, amount, exchangeRate, ...minimalChanges } = changes;
+
+    const changesToSend =
+      changes.amountType === "N/A"
+        ? minimalChanges
+        : {
+            ...minimalChanges,
+            currency,
+            amount,
+            exchangeRate: exchangeRate.toString()
+          };
+
+    return instance.post(`/workflowitem.update`, {
       projectId,
       subprojectId,
       workflowitemId,
-      ...changes,
-      exchangeRate: changes.exchangeRate.toString()
+      ...changesToSend
     });
+  };
 
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
     instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });

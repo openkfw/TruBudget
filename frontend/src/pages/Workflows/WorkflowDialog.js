@@ -49,7 +49,6 @@ const handleEdit = props => {
     }
   }
   const changes = compareWorkflowItems(originalWorkflowItem, workflowToAdd);
-  console.log(changes);
   if (changes) {
     const projectId = location.pathname.split("/")[2];
     const subprojectId = location.pathname.split("/")[3];

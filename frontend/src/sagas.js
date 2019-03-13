@@ -339,7 +339,6 @@ export function* createProjectSaga(action) {
 
 export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets = [] }) {
   yield execute(function*() {
-    console.log(deletedProjectedBudgets);
     const { projectedBudgets = [], ...rest } = changes;
 
     // const thingsToChange = Object.keys(rest)
