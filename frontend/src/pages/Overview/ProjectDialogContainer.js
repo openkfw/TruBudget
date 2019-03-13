@@ -5,7 +5,6 @@ import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { storeSnackbarMessage } from "../Notifications/actions";
 import {
-  addProjectedBudget,
   createProject,
   editProject,
   hideProjectDialog,
@@ -13,7 +12,9 @@ import {
   storeProjectComment,
   storeProjectName,
   storeProjectThumbnail,
-  storeProjectOrganization
+  storeProjectOrganization,
+  storeProjectedBudget,
+  storeDeletedProjectedBudget
 } from "./actions";
 import ProjectDialog from "./ProjectDialog";
 
@@ -39,15 +40,15 @@ const mapDispatchToProps = dispatch => {
   return {
     createProject: (name, comment, thumbnail, projectedBudgets) =>
       dispatch(createProject(name, comment, thumbnail, projectedBudgets)),
-    editProject: (id, changes) => dispatch(editProject(id, changes)),
+    editProject: (id, changes, deletedProjectedBudgets) => dispatch(editProject(id, changes, deletedProjectedBudgets)),
     hideProjectDialog: () => dispatch(hideProjectDialog()),
     storeProjectName: name => dispatch(storeProjectName(name)),
     storeProjectComment: comment => dispatch(storeProjectComment(comment)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
-    addProjectedBudget: projectedBudget => dispatch(addProjectedBudget(projectedBudget)),
+    storeProjectedBudget: projectedBudgets => dispatch(storeProjectedBudget(projectedBudgets)),
     storeProjectOrganization: organization => dispatch(storeProjectOrganization(organization)),
-
+    storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };
 };

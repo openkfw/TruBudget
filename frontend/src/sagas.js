@@ -337,9 +337,35 @@ export function* createProjectSaga(action) {
   }, true);
 }
 
-export function* editProjectSaga({ projectId, changes }) {
+export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets = [] }) {
   yield execute(function*() {
-    yield callApi(api.editProject, projectId, changes);
+    console.log(deletedProjectedBudgets);
+    const { projectedBudgets = [], ...rest } = changes;
+
+    // const thingsToChange = Object.keys(rest)
+    //   .filter(k => rest[k] !== undefined)
+    //   .reduce((acc, next) => {
+    //     acc[next] = rest[next];
+    //     return acc;
+    //   }, {});
+
+    if (Object.values(rest).some(value => value !== undefined)) {
+      yield callApi(api.editProject, projectId, rest);
+    }
+
+    // if(projectedBudgets !== undefined){
+    for (const budget of projectedBudgets) {
+      yield callApi(
+        api.updateProjectBudgetProjected,
+        projectId,
+        budget.organization,
+        budget.currencyCode,
+        budget.value
+      );
+    }
+    for (const budget of deletedProjectedBudgets) {
+      yield callApi(api.deleteProjectBudgetProjected, projectId, budget.organization, budget.currencyCode);
+    }
     yield showSnackbarSuccess();
     yield put({
       type: EDIT_PROJECT_SUCCESS

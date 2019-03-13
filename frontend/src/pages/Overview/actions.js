@@ -14,7 +14,8 @@ export const SHOW_EDIT_DIALOG = "SHOW_EDIT_DIALOG";
 export const HIDE_EDIT_DIALOG = "HIDE_EDIT_DIALOG";
 
 export const PROJECT_NAME = "PROJECT_NAME";
-export const ADD_PROJECT_BUDGET = "ADD_PROJECT_BUDGET";
+export const PROJECT_PROJECTED_BUDGET = "PROJECT_PROJECTED_BUDGET";
+export const PROJECT_DELETED_PROJECTED_BUDGET = "PROJECT_DELETED_PROJECTED_BUDGET";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
 export const PROJECT_ORGANIZATION = "PROJECT_ORGANIZATION";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
@@ -51,11 +52,12 @@ export function createProject(name, comment, thumbnail, projectedBudgets) {
   };
 }
 
-export function editProject(projectId, changes) {
+export function editProject(projectId, changes, deletedProjectedBudgets) {
   return {
     type: EDIT_PROJECT,
     projectId,
-    changes
+    changes,
+    deletedProjectedBudgets
   };
 }
 
@@ -109,10 +111,17 @@ export function storeProjectName(name) {
   };
 }
 
-export function addProjectedBudget(projectedBudget) {
+export function storeProjectedBudget(projectedBudgets) {
   return {
-    type: ADD_PROJECT_BUDGET,
-    projectedBudget: projectedBudget
+    type: PROJECT_PROJECTED_BUDGET,
+    projectedBudgets: projectedBudgets
+  };
+}
+
+export function storeDeletedProjectedBudget(projectedBudgets) {
+  return {
+    type: PROJECT_DELETED_PROJECTED_BUDGET,
+    projectedBudgets: projectedBudgets
   };
 }
 

@@ -4,7 +4,7 @@ import {
   SUBPROJECT_NAME,
   SUBPROJECT_COMMENT,
   SUBPROJECT_CURRENCY,
-  ADD_SUBPROJECT_PROJECTED_BUDGETS,
+  SUBPROJECT_PROJECTED_BUDGETS,
   CREATE_SUBPROJECT_SUCCESS,
   HIDE_SUBPROJECT_DIALOG,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
@@ -76,7 +76,7 @@ export default function detailviewReducer(state = defaultState, action) {
         projectStatus: action.project.data.status,
         projectTS: action.project.data.creationUnixTs,
         projectAssignee: action.project.data.assignee,
-        projectProjectedBudgets: action.project.data.projectedBudgets,
+        projectProjectedBudgets: fromJS(action.project.data.projectedBudgets),
         allowedIntents: fromJS(action.project.allowedIntents),
         logs: fromJS(action.project.log),
         subProjects: fromJS(action.subprojects)
@@ -105,12 +105,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["subprojectToAdd", "description"], action.description);
     case SUBPROJECT_CURRENCY:
       return state.setIn(["subprojectToAdd", "currency"], action.currency);
-    case ADD_SUBPROJECT_PROJECTED_BUDGETS:
-      return state.merge({
-        subprojectToAdd: state
-          .getIn(["subprojectToAdd"])
-          .update("projectedBudgets", budgets => fromJS([...budgets, action.projectedBudgets]))
-      });
+    case SUBPROJECT_PROJECTED_BUDGETS:
+      return state.setIn(["subprojectToAdd", "projectedBudgets"], fromJS(action.projectedBudgets));
     case CREATE_SUBPROJECT_SUCCESS:
       return state.set("subprojectToAdd", defaultState.getIn(["subprojectToAdd"]));
     case SHOW_PROJECT_ASSIGNEES:
@@ -138,7 +134,7 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("displayName", action.name)
           .set("description", action.description)
           .set("currency", action.currency)
-          .set("projectedBudgets", action.projectedBudgets),
+          .set("projectedBudgets", fromJS(action.projectedBudgets)),
         editDialogShown: true,
         dialogTitle: strings.subproject.subproject_edit_title
       });

@@ -35,11 +35,14 @@ const ProjectDialogContent = props => {
           budgetHintText={strings.project.project_budget_amount_description + " " + toAmountString(99999.99)}
           budget={props.projectToAdd.amount}
           storeBudget={props.storeProjectAmount}
-          addProjectedBudget={props.addProjectedBudget}
+          storeProjectedBudget={props.storeProjectedBudget}
           organization={props.projectToAdd.organization}
           storeOrganization={props.storeProjectOrganization}
           projectedBudgets={props.projectToAdd.projectedBudgets}
+          deletedProjectedBudgets={props.projectToAdd.deletedProjectedBudgets}
           editDialogShown={props.editDialogShown}
+          storeDeletedProjectedBudget={props.storeDeletedProjectedBudget}
+          disabled={props.editDialogShown}
         />
       </div>
     </div>

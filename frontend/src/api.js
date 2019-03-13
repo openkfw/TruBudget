@@ -160,6 +160,21 @@ class Api {
       `/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
     );
 
+  updateProjectBudgetProjected = (projectId, organization, currencyCode, value) =>
+    instance.post(`/project.budget.updateProjected`, {
+      projectId,
+      organization,
+      currencyCode,
+      value: value.toString()
+    });
+
+  deleteProjectBudgetProjected = (projectId, organization, currencyCode) =>
+    instance.post(`/project.budget.deleteProjected`, {
+      projectId,
+      organization,
+      currencyCode
+    });
+
   createWorkflowItem = payload =>
     instance.post(`/subproject.createWorkflowitem`, {
       ...payload,

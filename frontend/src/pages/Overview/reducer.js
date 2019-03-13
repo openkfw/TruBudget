@@ -2,7 +2,7 @@ import { fromJS, Set } from "immutable";
 
 import {
   PROJECT_NAME,
-  ADD_PROJECT_BUDGET,
+  PROJECT_PROJECTED_BUDGET,
   PROJECT_COMMENT,
   PROJECT_ORGANIZATION,
   CREATE_PROJECT_SUCCESS,
@@ -14,7 +14,8 @@ import {
   SHOW_PROJECT_PERMISSIONS,
   HIDE_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
-  HIDE_PROJECT_DIALOG
+  HIDE_PROJECT_DIALOG,
+  PROJECT_DELETED_PROJECTED_BUDGET
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import strings from "../../localizeStrings";
@@ -29,6 +30,7 @@ const defaultState = fromJS({
     description: "",
     thumbnail: "/Thumbnail_0001.jpg",
     projectedBudgets: [],
+    deletedProjectedBudgets: [],
     organization: ""
   },
   idForPermissions: "",
@@ -81,13 +83,29 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set("permissions", fromJS(action.permissions));
     case PROJECT_NAME:
       return state.setIn(["projectToAdd", "displayName"], action.name);
-    case ADD_PROJECT_BUDGET:
+    case PROJECT_PROJECTED_BUDGET:
       return state.merge({
         projectToAdd: state
           .getIn(["projectToAdd"])
-          .update("projectedBudgets", budgets => fromJS([...budgets, action.projectedBudget]))
+          .set("projectedBudgets", fromJS(action.projectedBudgets))
           .set("organization", "")
       });
+    case PROJECT_DELETED_PROJECTED_BUDGET:
+      console.log(state.getIn(["projectToAdd", "projectedBudgets"]));
+      const projectedBudgets = state.getIn(["projectToAdd", "projectedBudgets"]).toJS();
+      const projectedBudgetsToDelete = action.projectedBudgets;
+      const newState = state.merge({
+        projectToAdd: state.get("projectToAdd").merge({
+          deletedProjectedBudgets: projectedBudgetsToDelete,
+          projectedBudgets: projectedBudgets.filter(
+            b =>
+              projectedBudgetsToDelete.find(
+                d => d.organization === b.organization && d.currencyCode === b.currencyCode
+              ) === undefined
+          )
+        })
+      });
+      return newState;
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
     case PROJECT_ORGANIZATION:

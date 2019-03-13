@@ -27,11 +27,16 @@ const handleEdit = props => {
 
   if (!_isEmpty(changes)) {
     // TODO: Fix changes object when editing projectedBudget is enabled
-    editProject(projectToAdd.id, {
-      displayName: changes.displayName,
-      description: changes.description,
-      thumbnail: changes.thumbnail
-    });
+    editProject(
+      projectToAdd.id,
+      {
+        displayName: changes.displayName,
+        description: changes.description,
+        thumbnail: changes.thumbnail,
+        projectedBudgets: changes.projectedBudgets
+      },
+      changes.deletedProjectedBudgets
+    );
     storeSnackbarMessage(strings.common.edited + " " + strings.common.project + " " + projectToAdd.displayName);
   }
   onDialogCancel();
