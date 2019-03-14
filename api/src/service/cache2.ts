@@ -136,7 +136,7 @@ async function updateCache(conn: ConnToken, onlyStreamName?: string): Promise<vo
 
   for (const { name: streamName, items: nStreamItems } of streams) {
     if (nStreamItems === 0) {
-      if (logger.isLevelEnabled("debug")) {
+      if (logger.levelVal >= logger.levels.values.debug) {
         const stream = streams.find(x => x.name === streamName);
         logger.debug({ stream }, `Found empty stream ${streamName}`);
       }
@@ -207,12 +207,12 @@ async function updateCache(conn: ConnToken, onlyStreamName?: string): Promise<vo
     }
     addEventsToCache(cache, streamName, businessEvents);
 
-    if (logger.isLevelEnabled("warn")) {
+    if (logger.levelVal >= logger.levels.values.warn) {
       parsedEvents.filter(Result.isErr).forEach(x => logger.warn(x));
     }
   }
 
-  if (logger.isLevelEnabled("debug")) {
+  if (logger.levelVal >= logger.levels.values.debug) {
     // Returns [seconds, nanoseconds]:
     const hrtimeDiff = process.hrtime(startTime);
     const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
