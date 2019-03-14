@@ -62,9 +62,8 @@ const ProjectDialog = props => {
       content: <ProjectDialogContent {...props} />,
       nextDisabled:
         _isEmpty(displayName) ||
-        _isEmpty(description) ||
+        // _isEmpty(description) ||
         ((projectedBudgets.length === 0 && !editDialogShown) || _isEmpty(changes))
-      // ((_isEmpty(amount) && isNaN(parseFloat(amount)) && projectedBudgets.length === 0) || _isEmpty(changes))
     }
   ];
 
