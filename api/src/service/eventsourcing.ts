@@ -148,7 +148,7 @@ function applyWorkflowitemEvent(project: Project, subprojectId: string, item: It
 }
 
 export function applyStreamItems(streamItems: Item[], project?: Project): Project | undefined {
-  if (logger.isLevelEnabled("trace")) {
+  if (logger.levelVal >= logger.levels.values.trace) {
     const action = project ? "Applying" : "Sourcing";
     const target = project ? ` to project ${project.id}` : "";
     logger.trace(`${action} ${streamItems.length} stream items${target}`);

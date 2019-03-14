@@ -203,7 +203,7 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
 
   for (const { name: streamName, items: nStreamItems } of projectStreams) {
     if (nStreamItems === 0) {
-      if (logger.isLevelEnabled("debug")) {
+      if (logger.levelVal >= logger.levels.values.debug) {
         const stream = projectStreams.find(x => x.name === streamName);
         logger.debug({ stream }, `Found empty stream ${streamName}`);
       }
@@ -282,7 +282,7 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
     }
   }
 
-  if (logger.isLevelEnabled("debug")) {
+  if (logger.levelVal >= logger.levels.values.debug) {
     // Returns [seconds, nanoseconds]:
     const hrtimeDiff = process.hrtime(startTime);
     const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
