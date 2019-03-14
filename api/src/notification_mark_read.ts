@@ -1,0 +1,109 @@
+import { FastifyInstance } from "fastify";
+import Joi = require("joi");
+import { VError } from "verror";
+
+import { toHttpError } from "./http_errors";
+import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
+import { Ctx } from "./lib/ctx";
+import * as Result from "./result";
+import { ServiceUser } from "./service/domain/organization/service_user";
+import * as Notification from "./service/domain/workflow/notification";
+
+interface RequestBodyV1 {
+  apiVersion: "1.0";
+  data: {
+    notifications: Notification.Id[];
+  };
+}
+
+const requestBodyV1Schema = Joi.object({
+  apiVersion: Joi.valid("1.0").required(),
+  data: Joi.object({
+    notifications: Joi.array()
+      .items(Notification.idSchema)
+      .required(),
+  }).required(),
+});
+
+type RequestBody = RequestBodyV1;
+const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
+
+function validateRequestBody(body: any): Result.Type<RequestBody> {
+  const { error, value } = Joi.validate(body, requestBodySchema);
+  return !error ? value : error;
+}
+
+function mkSwaggerSchema(server: FastifyInstance) {
+  return {
+    beforeHandler: [(server as any).authenticate],
+    description: `Mark a set of notifications as "read".`,
+    tags: ["notification"],
+    summary: `Mark a set of notifications as "read".`,
+    security: [{ bearerToken: [] }],
+    body: {
+      type: "object",
+      required: ["apiVersion", "data"],
+      properties: {
+        apiVersion: { type: "string", example: "1.0" },
+        data: {
+          type: "object",
+          required: ["notifications"],
+          properties: {
+            notifications: {
+              type: "array",
+              items: {
+                type: "string",
+                description: "Notification ID",
+                example: "fff7242a-cd42-45e7-9719-8e41c219d8ee",
+              },
+            },
+          },
+        },
+      },
+    },
+    response: {
+      204: { description: "successful response" },
+      401: NotAuthenticated.schema,
+    },
+  };
+}
+
+interface Service {
+  markRead(ctx: Ctx, user: ServiceUser, notificationId: Notification.Id): Promise<void>;
+}
+
+export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+  server.post(
+    `${urlPrefix}/notification.markRead`,
+    mkSwaggerSchema(server),
+    async (request, reply) => {
+      const ctx: Ctx = { requestId: request.id, source: "http" };
+
+      const user: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+      };
+
+      const bodyResult = validateRequestBody(request.body);
+
+      if (Result.isErr(bodyResult)) {
+        const { code, body } = toHttpError(new VError(bodyResult, "failed to mark notification"));
+        reply.status(code).send(body);
+        return;
+      }
+
+      const { notifications } = bodyResult.data;
+
+      try {
+        for (const id of notifications) {
+          await service.markRead(ctx, user, id);
+        }
+        reply.status(204).send();
+      } catch (err) {
+        const { code, body } = toHttpError(err);
+        reply.status(code).send(body);
+      }
+    },
+  );
+}

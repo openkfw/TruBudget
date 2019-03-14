@@ -1,43 +1,37 @@
-import React from "react";
-
-import _isFinite from "lodash/isFinite";
-import _isUndefined from "lodash/isUndefined";
-
-import AmountIcon from "@material-ui/icons/AccountBalance";
-import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import DateIcon from "@material-ui/icons/DateRange";
+import Chip from "@material-ui/core/Chip";
 import Divider from "@material-ui/core/Divider";
-import Tooltip from "@material-ui/core/Tooltip";
-import DoneIcon from "@material-ui/icons/Check";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import NotAssignedIcon from "@material-ui/icons/SpaceBar";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import DoneIcon from "@material-ui/icons/Check";
+import DateIcon from "@material-ui/icons/DateRange";
+import AssigneeIcon from "@material-ui/icons/Group";
 import OpenIcon from "@material-ui/icons/Remove";
 import SpentIcon from "@material-ui/icons/RemoveCircle";
-import Typography from "@material-ui/core/Typography";
-import UnspentIcon from "@material-ui/icons/AddCircle";
-
+import NotAssignedIcon from "@material-ui/icons/SpaceBar";
+import _isUndefined from "lodash/isUndefined";
+import React from "react";
 import { Doughnut } from "react-chartjs-2";
 
 import {
-  toAmountString,
+  calculateWorkflowBudget,
   createTaskData,
+  getProgressInformation,
   statusIconMapping,
   statusMapping,
-  tsToString,
-  calculateWorkflowBudget,
-  getProgressInformation
+  toAmountString,
+  tsToString
 } from "../../helper.js";
-
-import GaugeChart from "../Common/GaugeChart";
 import strings from "../../localizeStrings";
-
+import GaugeChart from "../Common/GaugeChart";
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 
 const styles = {
@@ -173,6 +167,25 @@ const styles = {
   }
 };
 
+const displaySubprojectBudget = budgets => {
+  return (
+    <div>
+      {budgets.map((b, i) => {
+        return (
+          <div key={`subprojectedBudget-wf-${i}`} style={styles.budgets}>
+            <Tooltip title={b.organization}>
+              <Chip
+                avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
+                label={toAmountString(b.value, b.currencyCode)}
+              />
+            </Tooltip>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
   return (
     <div style={styles.budget}>
@@ -180,7 +193,7 @@ const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
         <ListItemIcon>
           <AmountIcon />
         </ListItemIcon>
-        <ListItemText primary={amountString} secondary={strings.common.budget} />
+        <ListItemText primary={amountString} secondary={strings.common.projectedBudget} />
       </ListItem>
     </div>
   );
@@ -204,8 +217,8 @@ const subProjectCloseButtonTooltip = (userIsAllowedToClose, subProjectCanBeClose
 const SubProjectDetails = ({
   displayName,
   description,
-  amount,
   currency,
+  // amount,
   id,
   status,
   roles,
@@ -223,14 +236,7 @@ const SubProjectDetails = ({
   canCloseSubproject,
   ...props
 }) => {
-  // const amountString = toAmountString(amount, currency);
-  const amountString = props.projectedBudgets
-    ? props.projectedBudgets.map(budget => {
-        let string = toAmountString(budget.value, budget.currencyCode);
-        string += "\n";
-        return string;
-      })
-    : "";
+  const amountString = displaySubprojectBudget(props.projectedBudgets);
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = tsToString(created);
@@ -241,27 +247,40 @@ const SubProjectDetails = ({
   );
 
   const disbursedBudgetString = toAmountString(disbursedBudget, currency);
-  const unSpendBudgetString = toAmountString(assignedBudget, currency);
   const spendBudgetString = toAmountString(currentDisbursement, currency);
 
   const statusDetails = getProgressInformation(workflowItems);
 
   const allowedToEdit = false;
 
-  const allocatedBudgetRatio = !_isFinite(amount) || amount === 0 ? 0 : assignedBudget / amount;
-  const consumptionBudgetRatio = !_isFinite(amount) || assignedBudget === 0 ? 0 : currentDisbursement / assignedBudget;
-  const currentDisbursementRatio = !_isFinite(amount) || assignedBudget === 0 ? 0 : disbursedBudget / assignedBudget;
+  const consumptionBudgetRatio = assignedBudget === 0 ? 0 : currentDisbursement / assignedBudget;
+  const currentDisbursementRatio = assignedBudget === 0 ? 0 : disbursedBudget / assignedBudget;
 
   const containsRedactedWorkflowItems = workflowItems.find(w => w.data.displayName === null);
 
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <CardHeader
-          title={displayName}
-          subheader={description}
-          avatar={displayName ? <Avatar>{displayName[0]}</Avatar> : null}
-        />
+        <div style={{ display: "flex" }}>
+          <CardHeader
+            title={displayName}
+            subheader={description}
+            avatar={displayName ? <Avatar>{displayName[0]}</Avatar> : null}
+          />
+          <Tooltip title="Subproject currency">
+            <Typography
+              style={{
+                justifySelf: "flex-end",
+                alignSelf: "center",
+                marginLeft: "auto",
+                fontSize: "24px",
+                marginRight: "12px"
+              }}
+            >
+              {currency}
+            </Typography>
+          </Tooltip>
+        </div>
         <List>
           <Divider />
           {getNotEditableBudget(amountString, allowedToEdit, props)}
@@ -323,7 +342,7 @@ const SubProjectDetails = ({
           </div>
         ) : (
           <div>
-            <div style={styles.charts}>
+            {/* <div style={styles.charts}>
               <div style={styles.listItem}>
                 <ListItem style={styles.budgetDistListItem}>
                   <ListItemIcon>
@@ -340,7 +359,7 @@ const SubProjectDetails = ({
                 <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
               </div>
             </div>
-            <Divider />
+            <Divider /> */}
             <div style={styles.charts}>
               <div style={styles.listItem}>
                 <ListItem style={styles.budgetDistListItem}>

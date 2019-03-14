@@ -6,6 +6,7 @@ import _isUndefined from "lodash/isUndefined";
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
 import Tooltip from "@material-ui/core/Tooltip";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -144,19 +145,36 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     paddingLeft: "12px"
+  },
+  budgets: {
+    marginBottom: "8px"
   }
+};
+
+const displayProjectBudget = budgets => {
+  return (
+    <div>
+      {budgets.map((b, i) => {
+        return (
+          <div key={`projectedBudget-sp-${i}`} style={styles.budgets}>
+            <Tooltip title={b.organization}>
+              <Chip
+                avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
+                label={toAmountString(b.value, b.currencyCode)}
+              />
+            </Tooltip>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 const calculateMetrics = (subProjects, projectAmount, projectCurrency, projectProjectedBudgets) => {
   const spentAmount = calculateUnspentAmount(subProjects);
   return {
     spentAmount,
-    // amountString: toAmountString(projectAmount, projectCurrency),
-    amountString: projectProjectedBudgets.map(budget => {
-      let string = toAmountString(budget.value, budget.currencyCode);
-      string += "\n";
-      return string;
-    }),
+    amountString: displayProjectBudget(projectProjectedBudgets),
     completionRatio: getCompletionRatio(subProjects),
     completionString: getCompletionString(subProjects),
     spentAmountString: toAmountString(spentAmount.toString(), projectCurrency),
@@ -211,7 +229,7 @@ const ProjectDetails = ({
             </ListItemIcon>
             <ListItemText
               primary={<div aria-label="projectbudget"> {amountString} </div>}
-              secondary={strings.common.budget}
+              secondary={strings.common.projectedBudget}
             />
           </ListItem>
           <Divider />

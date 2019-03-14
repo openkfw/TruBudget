@@ -8,6 +8,7 @@ import { BusinessEvent } from "./domain/business_event";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as ProjectGet from "./domain/workflow/project_get";
+import { loadProjectEvents } from "./load";
 
 export async function getProject(
   conn: ConnToken,
@@ -16,11 +17,7 @@ export async function getProject(
   projectId: Project.Id,
 ): Promise<Result.Type<Project.Project>> {
   const projectResult = await ProjectGet.getProject(ctx, serviceUser, projectId, {
-    getProjectEvents: async () => {
-      await Cache2.refresh(conn, projectId);
-      const allEvents: BusinessEvent[] = [];
-      return conn.cache2.eventsByStream.get(projectId) || [];
-    },
+    getProjectEvents: async () => loadProjectEvents(conn, projectId),
   });
   return Result.mapErr(
     projectResult,

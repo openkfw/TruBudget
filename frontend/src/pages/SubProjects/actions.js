@@ -18,7 +18,7 @@ export const SUBPROJECT_COMMENT = "SUBPROJECT_COMMENT";
 export const SUBPROJECT_CURRENCY = "SUBPROJECT_CURRENCY";
 export const SUBPROJECT_ORGANIZATION = "SUBPROJECT_ORGANIZATION";
 
-export const SUBPROJECT_PROJECTED_BUDGETS = "SUBPROJECT_PROJECTED_BUDGETS";
+export const SUBPROJECT_PROJECTED_BUDGETS = "ADD_SUBPROJECT_PROJECTED_BUDGETS";
 
 export const FETCH_ALL_PROJECT_DETAILS = "FETCH_ALL_PROJECT_DETAILS";
 export const FETCH_ALL_PROJECT_DETAILS_SUCCESS = "FETCH_ALL_PROJECT_DETAILS_SUCCESS";
@@ -37,8 +37,8 @@ export const FETCH_PROJECT_HISTORY_SUCCESS = "FETCH_PROJECT_HISTORY_SUCCESS";
 export const CLOSE_PROJECT = "CLOSE_PROJECT";
 export const CLOSE_PROJECT_SUCCESS = "CLOSE_PROJECT_SUCCESS";
 export const SHOW_SUBPROJECT_PERMISSIONS = "SHOW_SUBPROJECT_PERMISSIONS";
-export const SHOW_SUBPROJECT_INFO = "SHOW_SUBPROJECT_INFO";
-export const HIDE_SUBPROJECT_INFO = "HIDE_SUBPROJECT_INFO";
+export const SHOW_SUBPROJECT_ADDITIONAL_DATA = "SHOW_SUBPROJECT_ADDITIONAL_DATA";
+export const HIDE_SUBPROJECT_ADDITIONAL_DATA = "HIDE_SUBPROJECT_ADDITIONAL_DATA";
 export const HIDE_SUBPROJECT_PERMISSIONS = "HIDE_SUBPROJECT_PERMISSIONS";
 
 export const GRANT_SUBPROJECT_PERMISSION = "GRANT_SUBPROJECT_PERMISSION";
@@ -135,20 +135,11 @@ export function assignProject(projectId, assigneeId) {
   };
 }
 
-export function createSubProject(
-  projectId,
-  name,
-  amount,
-  description,
-  currency,
-  projectedBudgets,
-  showLoading = false
-) {
+export function createSubProject(projectId, name, description, currency, projectedBudgets, showLoading = false) {
   return {
     type: CREATE_SUBPROJECT,
     projectId,
     name,
-    amount,
     description,
     currency,
     projectedBudgets,
@@ -183,13 +174,6 @@ export function hideSubprojectDialog() {
   };
 }
 
-export function storeSubProjectAmount(amount) {
-  return {
-    type: SUBPROJECT_AMOUNT,
-    amount: amount
-  };
-}
-
 export function storeSubProjectCurrency(currency) {
   return {
     type: SUBPROJECT_CURRENCY,
@@ -197,14 +181,7 @@ export function storeSubProjectCurrency(currency) {
   };
 }
 
-export function storeSubProjectOrganization(organization) {
-  return {
-    type: SUBPROJECT_ORGANIZATION,
-    organization: organization
-  };
-}
-
-export function addSubProjectProjectedBudgets(projectedBudgets) {
+export function storeSubProjectProjectedBudgets(projectedBudgets) {
   return {
     type: SUBPROJECT_PROJECTED_BUDGETS,
     projectedBudgets: projectedBudgets
@@ -218,14 +195,14 @@ export function storeSubProjectComment(description) {
   };
 }
 
-export function showEditDialog(id, name, description, amount, currency) {
+export function showEditDialog(id, name, description, currency, projectedBudgets) {
   return {
     type: SHOW_SUBPROJECT_EDIT,
     id,
     name,
     description,
-    amount,
-    currency
+    currency,
+    projectedBudgets
   };
 }
 export function showSubProjectPermissions(id) {
@@ -235,16 +212,16 @@ export function showSubProjectPermissions(id) {
   };
 }
 
-export function showSubProjectInfo(id) {
+export function showSubProjectAdditionalData(id) {
   return {
-    type: SHOW_SUBPROJECT_INFO,
+    type: SHOW_SUBPROJECT_ADDITIONAL_DATA,
     id
   };
 }
 
-export function hideSubProjectInfo() {
+export function hideSubProjectAdditionalData() {
   return {
-    type: HIDE_SUBPROJECT_INFO
+    type: HIDE_SUBPROJECT_ADDITIONAL_DATA
   };
 }
 

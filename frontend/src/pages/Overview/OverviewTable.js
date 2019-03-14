@@ -5,6 +5,8 @@ import _isEmpty from "lodash/isEmpty";
 import { withStyles } from "@material-ui/core/styles";
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import Fab from "@material-ui/core/Fab";
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -60,7 +62,29 @@ const styles = {
     whiteSpace: "nowrap",
     paddingTop: "10px",
     overflow: "hidden"
+  },
+  budgets: {
+    marginBottom: "8px"
   }
+};
+
+const displayProjectBudget = budgets => {
+  return (
+    <div>
+      {budgets.map((b, i) => {
+        return (
+          <div key={`projectedBudget-${i}`} style={styles.budgets}>
+            <Tooltip title={b.organization}>
+              <Chip
+                avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
+                label={toAmountString(b.value, b.currencyCode)}
+              />
+            </Tooltip>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 const getTableEntries = ({ projects, history, classes, showEditDialog, showProjectPermissions }) => {
@@ -68,18 +92,13 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
     const {
       displayName,
       id,
-      amount,
       description,
       status,
       thumbnail = "/Thumbnail_0008.jpg",
       creationUnixTs,
       projectedBudgets
     } = data;
-    const amountString = projectedBudgets.map(budget => {
-      let string = toAmountString(budget.value, budget.currencyCode);
-      string += "\n";
-      return string;
-    });
+    const budgets = displayProjectBudget(projectedBudgets);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = unixTsToString(creationUnixTs);
@@ -128,7 +147,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
               <ListItemIcon>
                 <AmountIcon />
               </ListItemIcon>
-              <ListItemText data-test="projectbudget" primary={amountString} secondary={strings.common.budget} />
+              <ListItemText data-test="projectbudget" primary={budgets} secondary={strings.common.budget} />
             </ListItem>
             <ListItem className={classes.listItem} disabled={true}>
               <ListItemIcon>
@@ -159,7 +178,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
                       className={classes.editIcon}
                       disabled={editDisabled}
                       onClick={() => {
-                        showEditDialog(id, displayName, toAmountString(amount), "EUR", description, thumbnail);
+                        showEditDialog(id, displayName, description, thumbnail, projectedBudgets);
                       }}
                     >
                       <EditIcon />

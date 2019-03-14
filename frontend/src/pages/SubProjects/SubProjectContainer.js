@@ -10,8 +10,8 @@ import {
   closeProject,
   showSubProjectPermissions,
   liveUpdateProject,
-  showSubProjectInfo,
-  hideSubProjectInfo
+  showSubProjectAdditionalData,
+  hideSubProjectAdditionalData
 } from "./actions";
 
 import SubProjects from "./SubProjects";
@@ -95,13 +95,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideHistory: () => dispatch(hideHistory()),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     showProjectAssignees: () => dispatch(showProjectAssignees()),
-    showEditDialog: (id, displayName, description, amount, currency) =>
-      dispatch(showEditDialog(id, displayName, description, amount, currency)),
+    showEditDialog: (id, displayName, description, currency, projectedBudgets) =>
+      dispatch(showEditDialog(id, displayName, description, currency, projectedBudgets)),
     fetchUser: () => dispatch(fetchUser(true)),
     closeProject: pId => dispatch(closeProject(pId, true)),
     showSubProjectPermissions: id => dispatch(showSubProjectPermissions(id)),
-    showSubProjectInfo: id => dispatch(showSubProjectInfo(id)),
-    hideSubProjectInfo: () => dispatch(hideSubProjectInfo())
+    showSubProjectAdditionalData: id => dispatch(showSubProjectAdditionalData(id)),
+    hideSubProjectAdditionalData: () => dispatch(hideSubProjectAdditionalData())
   };
 };
 
@@ -128,7 +128,7 @@ const mapStateToProps = state => {
     offset: state.getIn(["detailview", "offset"]),
     limit: state.getIn(["detailview", "limit"]),
     projectedBudgets: state.getIn(["detailview", "projectedBudgets"]),
-    isSubProjectInfoShown: state.getIn(["detailview", "isSubProjectInfoShown"]),
+    isSubProjectAdditionalDataShown: state.getIn(["detailview", "isSubProjectAdditionalDataShown"]),
     idForInfo: state.getIn(["detailview", "idForInfo"])
   };
 };

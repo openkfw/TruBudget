@@ -3,10 +3,13 @@ import React, { Component } from "react";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import MenuItem from "@material-ui/core/MenuItem";
+import DropwDown from "../Common/NewDropdown";
+import TextField from "@material-ui/core/TextField";
 
 import strings from "../../localizeStrings";
-import { preselectCurrency, toAmountString } from "../../helper";
-import Budget from "../Common/Budget";
+import { getCurrencies, preselectCurrency, toAmountString, fromAmountString } from "../../helper";
+import { Typography } from "@material-ui/core";
 
 const styles = {
   container: {
@@ -31,7 +34,20 @@ const styles = {
 
 class WorkflowDialogAmount extends Component {
   componentWillMount() {
-    preselectCurrency(this.props.subProjectCurrency, this.props.storeWorkflowCurrency);
+    preselectCurrency(
+      this.props.workflowCurrency ? this.props.workflowCurrency : this.props.subProjectCurrency,
+      this.props.storeWorkflowCurrency
+    );
+  }
+
+  getMenuItems(currencies) {
+    return currencies.map((currency, index) => {
+      return (
+        <MenuItem key={index} value={currency.value}>
+          {currency.primaryText}
+        </MenuItem>
+      );
+    });
   }
 
   render() {
@@ -42,9 +58,11 @@ class WorkflowDialogAmount extends Component {
       workflowCurrency,
       workflowAmount,
       workflowAmountType,
-      subProjectCurrency
+      subProjectCurrency,
+      storeWorkflowExchangeRate,
+      exchangeRate
     } = this.props;
-
+    const currencies = getCurrencies(subProjectCurrency);
     const floatingLabelText = strings.workflow.workflow_budget;
     const hintText = strings.workflow.workflow_budget_description;
     const budgetDisabled = workflowAmountType === "N/A";
@@ -83,18 +101,61 @@ class WorkflowDialogAmount extends Component {
               justifyContent: "center"
             }}
           >
-            <Budget
-              currencyTitle={strings.project.project_currency}
-              currency={workflowCurrency}
-              storeCurrency={storeWorkflowCurrency}
-              parentCurrency={subProjectCurrency}
-              budgetLabel={floatingLabelText}
-              budgetHintText={hintText + " " + toAmountString(99999.99)}
-              budget={workflowAmount}
-              storeBudget={storeWorkflowAmount}
-              disabled={budgetDisabled}
-              hideAddButton={true}
+            <DropwDown
+              style={{ minWidth: 160 }}
+              floatingLabel={strings.project.project_currency}
+              value={workflowCurrency}
+              onChange={value => {
+                if (value === this.props.subProjectCurrency) {
+                  this.props.defaultWorkflowExchangeRate();
+                }
+                return storeWorkflowCurrency(value);
+              }}
+              id="currencies"
+            >
+              {this.getMenuItems(currencies)}
+            </DropwDown>
+            <TextField
+              label={floatingLabelText}
+              helperText={hintText + " " + toAmountString(99999.99)}
+              value={workflowAmount}
+              onChange={v => {
+                if (/^[0-9,.-]*$/.test(v.target.value)) storeWorkflowAmount(v.target.value);
+              }}
+              onBlur={e => storeWorkflowAmount(toAmountString(e.target.value))}
+              onFocus={() => storeWorkflowAmount(fromAmountString(workflowAmount))}
+              type="text"
+              multiline={false}
+              aria-label="amount"
+              id="amountinput"
+              style={{
+                width: "20%",
+                paddingRight: 20
+              }}
             />
+            <Typography style={{ alignSelf: "center", marginRight: "16px" }}>x</Typography>
+            <TextField
+              label={strings.workflow.exchange_rate}
+              helperText={strings.workflow.workflow_budget_description + "1.1586"}
+              value={exchangeRate ? exchangeRate : ""}
+              onChange={e => {
+                if (/^[0-9,.]*$/.test(e.target.value)) storeWorkflowExchangeRate(parseFloat(e.target.value));
+              }}
+              type="number"
+              aria-label="rate"
+              id="rateinput"
+              disabled={workflowCurrency === subProjectCurrency}
+              style={{
+                width: "20%",
+                paddingRight: 20
+              }}
+            />
+            <div style={{ alignSelf: "center", marginRight: "16px", display: "flex" }}>
+              <Typography style={{ alignSelf: "center", marginRight: "16px", fontSize: "16px" }}>
+                {"= " + subProjectCurrency + " "}
+                {exchangeRate ? toAmountString(fromAmountString(workflowAmount) * exchangeRate) : "-"}
+              </Typography>
+            </div>
           </div>
         ) : null}
       </div>

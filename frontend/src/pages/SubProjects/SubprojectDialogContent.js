@@ -3,11 +3,24 @@ import React from "react";
 import Divider from "@material-ui/core/Divider";
 
 import strings from "../../localizeStrings";
-import Budget from "../Common/Budget";
+import Budget from "../Common/Budget2";
 import Identifier from "../Common/Identifier";
-import { toAmountString } from "../../helper";
+import Dropdown from "../Common/NewDropdown";
+import { getCurrencies } from "../../helper";
+import MenuItem from "@material-ui/core/MenuItem";
+
+function getMenuItems(currencies) {
+  return currencies.map((currency, index) => {
+    return (
+      <MenuItem key={index} value={currency.value}>
+        {currency.primaryText}
+      </MenuItem>
+    );
+  });
+}
 
 const SubprojectDialogContent = props => {
+  const currencies = getCurrencies(props.projectCurrency);
   return (
     <div>
       <div>
@@ -21,23 +34,27 @@ const SubprojectDialogContent = props => {
           comment={props.subprojectToAdd.description}
           commentOnChange={props.storeSubProjectComment}
         />
+        {!props.editDialogShown ? (
+          <Dropdown
+            style={{ minWidth: 200, marginRight: "16px", marginBottom: "32px" }}
+            value={props.subprojectToAdd.currency}
+            floatingLabel={strings.subproject.subproject_currency}
+            onChange={v => props.storeSubProjectCurrency(v)}
+            id="sp-dialog-currencies"
+          >
+            {getMenuItems(currencies)}
+          </Dropdown>
+        ) : null}
       </div>
       <Divider />
       <div>
         <Budget
           currencyTitle={strings.subproject.subproject_currency}
-          currency={props.subprojectToAdd.currency}
-          organization={props.subprojectToAdd.organization}
-          storeCurrency={props.storeSubProjectCurrency}
           parentCurrency={props.projectCurrency}
           budgetLabel={strings.subproject.subproject_budget_amount}
-          budgetHintText={strings.subproject.subproject_budget_amount_description + " " + toAmountString(99999.99)}
-          budget={props.subprojectToAdd.amount}
-          storeBudget={props.storeSubProjectAmount}
-          storeOrganization={props.storeSubProjectOrganization}
           projectedBudgets={props.subprojectToAdd.projectedBudgets}
-          addProjectedBudget={props.addSubProjectProjectedBudgets}
-          editDialogShown={props.editDialogShown}
+          storeProjectedBudget={props.storeSubProjectProjectedBudgets}
+          disabled={props.editDialogShown}
         />
       </div>
     </div>

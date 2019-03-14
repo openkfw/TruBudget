@@ -11,13 +11,17 @@ import * as UserCreated from "./domain/organization/user_created";
 import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as NotificationCreated from "./domain/workflow/notification_created";
-import * as NotificationRead from "./domain/workflow/notification_read";
+import * as NotificationMarkedRead from "./domain/workflow/notification_marked_read";
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
 import * as ProjectPermissionsGranted from "./domain/workflow/project_permission_granted";
 import * as ProjectPermissionsRevoked from "./domain/workflow/project_permission_revoked";
+import * as ProjectProjectedBudgetDeleted from "./domain/workflow/project_projected_budget_deleted";
+import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
+import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
+import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import { Item } from "./liststreamitems";
@@ -234,14 +238,17 @@ const EVENT_PARSER_MAP = {
   group_member_removed: GroupMemberRemoved.validate,
   node_registered: NodeRegistered.validate,
   notification_created: NotificationCreated.validate,
-  notification_read: NotificationRead.validate,
+  notification_marked_read: NotificationMarkedRead.validate,
   project_assigned: ProjectAssigned.validate,
   project_closed: ProjectClosed.validate,
   project_created: ProjectCreated.validate,
   project_permission_granted: ProjectPermissionsGranted.validate,
   project_permission_revoked: ProjectPermissionsRevoked.validate,
+  project_projected_budget_deleted: ProjectProjectedBudgetDeleted.validate,
+  project_projected_budget_updated: ProjectProjectedBudgetUpdated.validate,
   project_updated: ProjectUpdated.validate,
-  // subproject_created: SubprojectCreated.validate,
+  subproject_projected_budget_deleted: SubprojectProjectedBudgetDeleted.validate,
+  subproject_projected_budget_updated: SubprojectProjectedBudgetUpdated.validate,
   user_created: UserCreated.validate,
   workflowitem_closed: WorkflowitemClosed.validate,
   workflowitem_created: WorkflowitemCreated.validate,

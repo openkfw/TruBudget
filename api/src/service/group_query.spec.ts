@@ -36,8 +36,7 @@ describe("group_query.resolveUsers()", () => {
         ctx,
         issuer,
         identityToResolve,
-        async (_1, _2, _3, groupId): Promise<Result.Type<Group.Group>> =>
-          new NotFound(_2, "group", groupId),
+        async (_1, _2, _3, groupId) => new NotFound(_2, "group", groupId),
       );
 
       assert.sameMembers(resolvedUsers, ["Alice"]);
@@ -53,7 +52,7 @@ describe("group_query.resolveUsers()", () => {
         ctx,
         issuer,
         identityToResolve.id,
-        async (_1, _2, _3, groupId): Promise<Result.Type<Group.Group>> => {
+        async (_1, _2, _3, groupId) => {
           if (groupId === "identityToResolve") return identityToResolve;
           return new NotFound(_2, "group", groupId);
         },
@@ -73,7 +72,7 @@ describe("group_query.resolveUsers()", () => {
         ctx,
         issuer,
         identityToResolve.id,
-        async (_1, _2, _3, groupId): Promise<Result.Type<Group.Group>> => {
+        async (_1, _2, _3, groupId) => {
           if (groupId === "identityToResolve") return identityToResolve;
           if (groupId === "groupSub") return groupSub;
           return new NotFound(_2, "group", groupId);
@@ -94,7 +93,7 @@ describe("group_query.resolveUsers()", () => {
         ctx,
         issuer,
         identityToResolve.id,
-        async (_1, _2, _3, groupId): Promise<Result.Type<Group.Group>> => {
+        async (_1, _2, _3, groupId) => {
           if (groupId === "identityToResolve") return identityToResolve;
           if (groupId === "groupSub") return groupSub;
           return new NotFound(_2, "group", groupId);
@@ -116,7 +115,7 @@ describe("group_query.resolveUsers()", () => {
         ctx,
         issuer,
         identityToResolve.id,
-        async (_1, _2, _3, groupId): Promise<Result.Type<Group.Group>> => {
+        async (_1, _2, _3, groupId) => {
           if (groupId === "identityToResolve") return identityToResolve;
           if (groupId === "groupSubA") return groupSubA;
           if (groupId === "groupSubB") return groupSubB;
@@ -137,7 +136,7 @@ describe("group_query.resolveUsers()", () => {
         ctx,
         issuer,
         identityToResolve.id,
-        async (_1, _2, _3, groupId): Promise<Result.Type<Group.Group>> => {
+        async (_1, _2, _3, groupId) => {
           if (groupId === "identityToResolve") return identityToResolve;
           return new NotFound(_2, "group", groupId);
         },

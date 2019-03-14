@@ -9,18 +9,22 @@ import * as UserCreated from "./organization/user_created";
 import * as GlobalPermissionsGranted from "./workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./workflow/global_permission_revoked";
 import * as NotificationCreated from "./workflow/notification_created";
-import * as NotificationRead from "./workflow/notification_read";
+import * as NotificationMarkedRead from "./workflow/notification_marked_read";
 import * as ProjectAssigned from "./workflow/project_assigned";
 import * as ProjectClosed from "./workflow/project_closed";
 import * as ProjectCreated from "./workflow/project_created";
 import * as ProjectPermissionGranted from "./workflow/project_permission_granted";
 import * as ProjectPermissionRevoked from "./workflow/project_permission_revoked";
+import * as ProjectProjectedBudgetDeleted from "./workflow/project_projected_budget_deleted";
+import * as ProjectProjectedBudgetUpdated from "./workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./workflow/project_updated";
 import * as SubprojectAssigned from "./workflow/subproject_assigned";
 import * as SubprojectClosed from "./workflow/subproject_closed";
 import * as SubprojectCreated from "./workflow/subproject_created";
 import * as SubprojectPermissionGranted from "./workflow/subproject_permission_granted";
 import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_revoked";
+import * as SubprojectProjectedBudgetDeleted from "./workflow/subproject_projected_budget_deleted";
+import * as SubprojectProjectedBudgetUpdated from "./workflow/subproject_projected_budget_updated";
 import * as SubprojectUpdated from "./workflow/subproject_updated";
 import * as WorkflowitemAssigned from "./workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
@@ -38,18 +42,22 @@ export type BusinessEvent =
   | GroupPermissionGranted.Event
   | GroupPermissionRevoked.Event
   | NotificationCreated.Event
-  | NotificationRead.Event
+  | NotificationMarkedRead.Event
   | ProjectAssigned.Event
   | ProjectClosed.Event
   | ProjectCreated.Event
   | ProjectPermissionGranted.Event
   | ProjectPermissionRevoked.Event
+  | ProjectProjectedBudgetDeleted.Event
+  | ProjectProjectedBudgetUpdated.Event
   | ProjectUpdated.Event
   | SubprojectAssigned.Event
   | SubprojectClosed.Event
   | SubprojectCreated.Event
   | SubprojectPermissionGranted.Event
   | SubprojectPermissionRevoked.Event
+  | SubprojectProjectedBudgetDeleted.Event
+  | SubprojectProjectedBudgetUpdated.Event
   | SubprojectUpdated.Event
   | UserCreated.Event
   | WorkflowitemAssigned.Event

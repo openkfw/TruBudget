@@ -7,6 +7,7 @@ import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
+import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
@@ -22,11 +23,12 @@ interface RequestBodyV1 {
       description?: string;
       assignee?: string;
       thumbnail?: string;
-      projectedBudgets: Array<{
+      projectedBudgets?: Array<{
         organization: string;
         value: string;
         currencyCode: string;
       }>;
+      additionalData?: object;
     };
   };
 }
@@ -42,6 +44,7 @@ const requestBodyV1Schema = Joi.object({
       assignee: Joi.string(),
       thumbnail: Joi.string(),
       projectedBudgets: projectedBudgetListSchema,
+      additionalData: AdditionalData.schema,
     }).required(),
   }).required(),
 });
@@ -98,6 +101,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                     },
                   },
                 },
+                additionalData: { type: "object", additionalProperties: true },
               },
             },
           },

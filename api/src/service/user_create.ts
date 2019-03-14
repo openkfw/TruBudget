@@ -1,4 +1,5 @@
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import { encrypt } from "../lib/symmetricCrypto";
 import { getOrganizationAddress } from "../organization/organization";
 import { ConnToken } from "./conn";
@@ -29,7 +30,9 @@ export async function createUser(
   });
   if (errors.length > 0) return Promise.reject(errors);
   if (!newEvents.length) {
-    return Promise.reject(`Generating events failed: ${JSON.stringify(newEvents)}`);
+    const msg = "failed to create user";
+    logger.error({ ctx, serviceUser, requestData }, msg);
+    throw new Error(msg);
   }
 
   for (const event of newEvents) {

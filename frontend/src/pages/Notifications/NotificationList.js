@@ -23,7 +23,7 @@ const styles = {
 };
 
 const markPageAsRead = (markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage) => {
-  const notificationIds = notifications.map(notification => notification.notificationId);
+  const notificationIds = notifications.map(notification => notification.id);
   markMultipleNotificationsAsRead(notificationIds, notificationOffset, notificationsPerPage);
 };
 
@@ -96,7 +96,9 @@ const NotificationsList = props => {
         action={
           <Button
             variant="outlined"
-            onClick={() => markPageAsRead(markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage)}
+            onClick={() =>
+              markPageAsRead(markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage)
+            }
             color="primary"
             className={classes.button}
             data-test="read-multiple-notifications"

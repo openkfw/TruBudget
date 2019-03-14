@@ -1,0 +1,174 @@
+{
+  "displayName": "Multiple Donors II",
+  "description": "Financed by a multiple organizations, each using their own currency. Disbursements always use the (local) contract currency.",
+  "projectedBudgets": [{
+      "organization": "ACME Bank",
+      "value": "10000000",
+      "currencyCode": "EUR"
+    },
+    {
+      "organization": "Other Bank",
+      "value": "2000000",
+      "currencyCode": "USD"
+    },
+    {
+      "organization": "The Country",
+      "value": "300000000",
+      "currencyCode": "KES"
+    }
+  ],
+  "subprojects": [{
+      "displayName": "Contract A",
+      "currency": "EUR",
+      "workflows": [{
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "2000000",
+          "currency": "EUR",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Disbursement",
+          "status": "closed",
+          "amountType": "disbursed",
+          "amount": "2000000",
+          "currency": "EUR",
+          "billingDate": "2020-01-01T01:01:00+00:00"
+        }
+      ]
+    },
+    {
+      "displayName": "Contract B",
+      "currency": "USD",
+      "workflows": [{
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "1500000",
+          "currency": "USD",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Disbursement",
+          "status": "closed",
+          "amountType": "disbursed",
+          "amount": "1500000",
+          "currency": "USD",
+          "billingDate": "2020-01-01T01:01:00+00:00"
+        }
+      ]
+    },
+    {
+      "displayName": "Contract C",
+      "currency": "KES",
+      "workflows": [{
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "200000000",
+          "currency": "KES",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Disbursement",
+          "status": "closed",
+          "amountType": "disbursed",
+          "amount": "200000000",
+          "currency": "KES",
+          "billingDate": "2020-01-01T01:01:00+00:00"
+        }
+      ]
+    },
+    {
+      "displayName": "Contract D",
+      "currency": "EUR",
+      "workflows": [{
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "7047154",
+          "currency": "EUR",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Disbursement",
+          "status": "closed",
+          "amountType": "disbursed",
+          "amount": "7047154",
+          "currency": "EUR",
+          "billingDate": "2020-01-01T01:01:00+00:00"
+        }
+      ]
+    },
+    {
+      "displayName": "Contract E",
+      "currency": "KES",
+      "workflows": [{
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "1000000",
+          "currency": "EUR",
+          "exchangeRate": "112,945",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "50000000",
+          "currency": "KES",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Disbursement",
+          "status": "closed",
+          "amountType": "disbursed",
+          "amount": "162945000",
+          "currency": "KES",
+          "billingDate": "2020-01-01T01:01:00+00:00"
+        }
+      ]
+    },
+    {
+      "displayName": "Contract F",
+      "currency": "KES",
+      "workflows": [{
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "200000",
+          "currency": "EUR",
+          "exchangeRate": "113,666",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "500000",
+          "currency": "USD",
+          "exchangeRate": "102,153",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Allocation",
+          "status": "closed",
+          "amountType": "allocated",
+          "amount": "50000000",
+          "currency": "KES",
+          "billingDate": "2020-01-01T01:00:00+00:00"
+        },
+        {
+          "displayName": "Disbursement",
+          "status": "closed",
+          "amountType": "disbursed",
+          "amount": "123809700",
+          "currency": "KES",
+          "billingDate": "2020-01-01T01:01:00+00:00"
+        }
+      ]
+    }
+  ]
+}

@@ -98,7 +98,7 @@ class Api {
     });
   listProjects = () => instance.get(`/project.list`);
 
-  createProject = (displayName, amount, description, currency, thumbnail, projectedBudgets) =>
+  createProject = (displayName, description, thumbnail, projectedBudgets) =>
     instance.post(`/global.createProject`, {
       project: {
         displayName,
@@ -134,12 +134,11 @@ class Api {
       identity
     });
 
-  createSubProject = (projectId, name, amount, description, currency, projectedBudgets) =>
+  createSubProject = (projectId, name, description, currency, projectedBudgets) =>
     instance.post(`/project.createSubproject`, {
       projectId,
       subproject: {
         displayName: name,
-        amount,
         description,
         currency,
         projectedBudgets
@@ -161,13 +160,38 @@ class Api {
       `/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
     );
 
-  createWorkflowItem = payload =>
-    instance.post(`/subproject.createWorkflowitem`, {
-      ...payload,
-      documents: payload.documents,
-      currency: payload.amountType === "N/A" ? null : payload.currency,
-      amount: payload.amountType === "N/A" ? null : payload.amount
+  updateProjectBudgetProjected = (projectId, organization, currencyCode, value) =>
+    instance.post(`/project.budget.updateProjected`, {
+      projectId,
+      organization,
+      currencyCode,
+      value: value.toString()
     });
+
+  deleteProjectBudgetProjected = (projectId, organization, currencyCode) =>
+    instance.post(`/project.budget.deleteProjected`, {
+      projectId,
+      organization,
+      currencyCode
+    });
+
+  createWorkflowItem = payload => {
+    const { currency, amount, exchangeRate, ...minimalPayload } = payload;
+
+    const payloadToSend =
+      payload.amountType === "N/A"
+        ? minimalPayload
+        : {
+            ...minimalPayload,
+            currency,
+            amount,
+            exchangeRate: exchangeRate.toString()
+          };
+
+    return instance.post(`/subproject.createWorkflowitem`, {
+      ...payloadToSend
+    });
+  };
 
   listSubProjectPermissions = (projectId, subprojectId) =>
     instance.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`);
@@ -188,13 +212,26 @@ class Api {
       identity
     });
 
-  editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) =>
-    instance.post(`/workflowitem.update`, {
+  editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) => {
+    const { currency, amount, exchangeRate, ...minimalChanges } = changes;
+
+    const changesToSend =
+      changes.amountType === "N/A"
+        ? minimalChanges
+        : {
+            ...minimalChanges,
+            currency,
+            amount,
+            exchangeRate: exchangeRate.toString()
+          };
+
+    return instance.post(`/workflowitem.update`, {
       projectId,
       subprojectId,
       workflowitemId,
-      ...changes
+      ...changesToSend
     });
+  };
 
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
     instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
@@ -270,15 +307,15 @@ class Api {
   };
 
   fetchNotificationCounts = () => {
-    return instance.get(`/notification.counts`);
+    return instance.get(`/notification.count`);
   };
 
   markNotificationAsRead = notificationId =>
     instance.post(`/notification.markRead`, {
-      notificationId
+      notifications: [notificationId]
     });
   markMultipleNotificationsAsRead = notificationIds =>
-    instance.post(`/notification.markMultipleRead`, { notificationIds });
+    instance.post(`/notification.markRead`, { notifications: notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {

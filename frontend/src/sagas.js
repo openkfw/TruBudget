@@ -325,15 +325,7 @@ export function* fetchVersionsSaga() {
 
 export function* createProjectSaga(action) {
   yield execute(function*() {
-    yield callApi(
-      api.createProject,
-      action.name,
-      action.amount,
-      action.comment,
-      action.currency,
-      action.thumbnail,
-      action.projectedBudgets
-    );
+    yield callApi(api.createProject, action.name, action.comment, action.thumbnail, action.projectedBudgets);
     yield showSnackbarSuccess();
     yield put({
       type: CREATE_PROJECT_SUCCESS
@@ -345,9 +337,34 @@ export function* createProjectSaga(action) {
   }, true);
 }
 
-export function* editProjectSaga({ projectId, changes }) {
+export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets = [] }) {
   yield execute(function*() {
-    yield callApi(api.editProject, projectId, changes);
+    const { projectedBudgets = [], ...rest } = changes;
+
+    // const thingsToChange = Object.keys(rest)
+    //   .filter(k => rest[k] !== undefined)
+    //   .reduce((acc, next) => {
+    //     acc[next] = rest[next];
+    //     return acc;
+    //   }, {});
+
+    if (Object.values(rest).some(value => value !== undefined)) {
+      yield callApi(api.editProject, projectId, rest);
+    }
+
+    // if(projectedBudgets !== undefined){
+    for (const budget of projectedBudgets) {
+      yield callApi(
+        api.updateProjectBudgetProjected,
+        projectId,
+        budget.organization,
+        budget.currencyCode,
+        budget.value
+      );
+    }
+    for (const budget of deletedProjectedBudgets) {
+      yield callApi(api.deleteProjectBudgetProjected, projectId, budget.organization, budget.currencyCode);
+    }
     yield showSnackbarSuccess();
     yield put({
       type: EDIT_PROJECT_SUCCESS
@@ -359,17 +376,9 @@ export function* editProjectSaga({ projectId, changes }) {
   }, true);
 }
 
-export function* createSubProjectSaga({
-  projectId,
-  name,
-  amount,
-  description,
-  currency,
-  projectedBudgets,
-  showLoading
-}) {
+export function* createSubProjectSaga({ projectId, name, description, currency, projectedBudgets, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.createSubProject, projectId, name, `${amount}`, description, currency, projectedBudgets);
+    yield callApi(api.createSubProject, projectId, name, description, currency, projectedBudgets);
     yield showSnackbarSuccess();
     yield put({
       type: CREATE_SUBPROJECT_SUCCESS
@@ -484,7 +493,8 @@ export function* fetchLatestNotificationSaga({ showLoading }) {
 
 export function* commonfetchNotifications(showLoading, offset, limit, type) {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchNotifications, offset, limit);
+    // Get most recent items with negative offset
+    const { data } = yield callApi(api.fetchNotifications, 0 - offset - limit, limit);
     yield put({
       type,
       notifications: data.notifications
@@ -497,8 +507,8 @@ export function* fetchNotificationCountsSaga({ showLoading }) {
     const { data } = yield callApi(api.fetchNotificationCounts);
     yield put({
       type: FETCH_NOTIFICATION_COUNTS_SUCCESS,
-      unreadNotificationCount: data.unreadNotificationCount,
-      notificationCount: data.notificationCount
+      unreadNotificationCount: data.unread,
+      notificationCount: data.total
     });
   }, showLoading);
 }

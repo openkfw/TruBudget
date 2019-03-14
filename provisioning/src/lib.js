@@ -26,7 +26,7 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       await timeout(timeoutMs);
       return await withRetry(cb, --maxTimes);
     } else if (err.response && err.response.status >= 400 && err.response.status < 500) {
-      console.log("The request had no effect: a precondition was not fulfilled.");
+      console.log(`The request had no effect: a precondition was not fulfilled:`, err.response.data);
     } else {
       console.error(err);
       process.exit(1);

@@ -96,11 +96,15 @@ const provisionFromData = async projectTemplate => {
 
     const project = await findProject(axios, projectTemplate);
 
-    console.log("Grant permissions");
-    await grantPermissions(axios, projectTemplate.permissions, project.data.id);
+    if (projectTemplate.permissions !== undefined) {
+      console.log("Granting permissions..");
+      await grantPermissions(axios, projectTemplate.permissions, project.data.id);
+    }
 
-    // Testing updates:
-    await updateProject(axios, project.data.id, projectTemplate.description);
+    if (projectTemplate.description !== undefined) {
+      console.log("Testing project update..");
+      await updateProject(axios, project.data.id, projectTemplate.description);
+    }
 
     for (const subprojectTemplate of projectTemplate.subprojects) {
       console.log(`Provision Subproject ${subprojectTemplate.displayName}`);
