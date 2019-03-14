@@ -60,10 +60,7 @@ const ProjectDialog = props => {
     {
       title: strings.project.project_details,
       content: <ProjectDialogContent {...props} />,
-      nextDisabled:
-        _isEmpty(displayName) ||
-        // _isEmpty(description) ||
-        ((projectedBudgets.length === 0 && !editDialogShown) || _isEmpty(changes))
+      nextDisabled: _isEmpty(displayName) || ((projectedBudgets.length === 0 && !editDialogShown) || _isEmpty(changes))
     }
   ];
 
