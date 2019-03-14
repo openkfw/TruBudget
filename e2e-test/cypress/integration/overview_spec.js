@@ -16,9 +16,9 @@ describe("Overview Page", function() {
       .eq(0)
       .then($card => {
         console.log($card.find("[data-test=projectheader] span"));
-        expect($card.find("[data-test=projectheader] span").eq(0)).to.have.text(
-          this.data.displayName
-        );
+        expect(
+          $card.find("[data-test=projectheader] span").eq(0)
+        ).to.contains.text(this.data.displayName);
         expect($card.find("[data-test=projectheader] span").eq(2)).to.have.text(
           "Status: Open"
         );
@@ -27,7 +27,7 @@ describe("Overview Page", function() {
             .find("[data-test=projectbudget]")
             .children()
             .first()
-        ).to.have.text("R$ 32,000,000.00\n");
+        ).to.contains.text("KR$ 32,000,000.00");
         expect(
           $card
             .find("[data-test=projectcreation]")
