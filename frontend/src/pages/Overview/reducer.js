@@ -91,7 +91,6 @@ export default function overviewReducer(state = defaultState, action) {
           .set("organization", "")
       });
     case PROJECT_DELETED_PROJECTED_BUDGET:
-      console.log(state.getIn(["projectToAdd", "projectedBudgets"]));
       const projectedBudgets = state.getIn(["projectToAdd", "projectedBudgets"]).toJS();
       const projectedBudgetsToDelete = action.projectedBudgets;
       const newState = state.merge({
