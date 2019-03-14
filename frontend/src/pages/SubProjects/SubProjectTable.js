@@ -91,11 +91,12 @@ const getTableEntries = (
   showSubProjectAdditionalData
 ) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
-    const { currency, status, description, displayName, id, projectedBudgets } = data;
+    const { currency, status, description, displayName, id, projectedBudgets, additionalData } = data;
     const isOpen = status !== "closed";
     const editDisabled = !(canEditSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
     const redacted = displayName === null && _isEmpty(projectedBudgets);
+    const additionalDataEmpty = _isEmpty(additionalData);
 
     if (!redacted) {
       const amountString = displaySubprojectBudget(projectedBudgets);
@@ -114,6 +115,7 @@ const getTableEntries = (
                       onClick={() => {
                         showSubProjectAdditionalData(id);
                       }}
+                      disabled={additionalDataEmpty}
                     >
                       <MoreIcon />
                     </IconButton>

@@ -7,6 +7,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import React from "react";
+import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 
@@ -53,7 +54,7 @@ const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectAdditionalDataShow
               data-test="workflowitemInfoDisplayName"
               primary={""}
               secondary={
-                subProjectForInfo && subProjectForInfo.data.additionalData ? (
+                subProjectForInfo && !_isEmpty(subProjectForInfo.data.additionalData) ? (
                   <pre>{JSON.stringify(subProjectForInfo.data.additionalData, null, `\t`)}</pre>
                 ) : (
                   "No fields are added to this Subproject"
