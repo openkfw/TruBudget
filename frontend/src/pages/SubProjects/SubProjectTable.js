@@ -1,26 +1,25 @@
-import React from "react";
-
+import { withStyles } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
+import IconButton from "@material-ui/core/IconButton";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { withStyles } from "@material-ui/core";
-import PermissionIcon from "@material-ui/icons/LockOpen";
+import Tooltip from "@material-ui/core/Tooltip";
 import EditIcon from "@material-ui/icons/Edit";
-import LaunchIcon from "@material-ui/icons/ZoomIn";
+import PermissionIcon from "@material-ui/icons/LockOpen";
 import MoreIcon from "@material-ui/icons/MoreHoriz";
-
-import { toAmountString, statusMapping } from "../../helper";
-import strings from "../../localizeStrings";
-import { canViewSubProjectDetails, canEditSubProject, canViewSubProjectPermissions } from "../../permissions";
+import LaunchIcon from "@material-ui/icons/ZoomIn";
 import _isEmpty from "lodash/isEmpty";
+import React from "react";
+
+import { statusMapping, toAmountString } from "../../helper";
+import strings from "../../localizeStrings";
+import { canEditSubProject, canViewSubProjectDetails, canViewSubProjectPermissions } from "../../permissions";
 
 const styles = {
   tableText: {

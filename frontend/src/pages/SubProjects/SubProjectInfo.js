@@ -3,11 +3,8 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import React from "react";
 import _isEmpty from "lodash/isEmpty";
+import React from "react";
 
 import strings from "../../localizeStrings";
 
@@ -48,21 +45,11 @@ const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectAdditionalDataShow
     <Dialog open={isSubProjectAdditionalDataShown} style={styles.dialog} onClose={hideSubProjectAdditionalData}>
       <DialogTitle>Additional Data</DialogTitle>
       <DialogContent style={styles.dialogContent}>
-        <List>
-          <ListItem>
-            <ListItemText
-              data-test="workflowitemInfoDisplayName"
-              primary={""}
-              secondary={
-                subProjectForInfo && !_isEmpty(subProjectForInfo.data.additionalData) ? (
-                  <pre>{JSON.stringify(subProjectForInfo.data.additionalData, null, `\t`)}</pre>
-                ) : (
-                  "No fields are added to this Subproject"
-                )
-              }
-            />
-          </ListItem>
-        </List>
+        {subProjectForInfo && !_isEmpty(subProjectForInfo.data.additionalData) ? (
+          <pre>{JSON.stringify(subProjectForInfo.data.additionalData, null, `\t`)}</pre>
+        ) : (
+          "No fields are added to this Subproject"
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={hideSubProjectAdditionalData}>{strings.common.close}</Button>
