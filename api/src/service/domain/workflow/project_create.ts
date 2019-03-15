@@ -64,6 +64,7 @@ export async function createProject(
 ): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
   const source = ctx.source;
   const publisher = creatingUser.id;
+
   const createEvent = ProjectCreated.createEvent(source, publisher, {
     id: data.id || randomString(),
     status: data.status || "open",
@@ -75,6 +76,17 @@ export async function createProject(
     permissions: newDefaultPermissionsFor(creatingUser),
     additionalData: data.additionalData || {},
   });
+
+  // Make sure for each organization and currency there is only one entry:
+  const badEntry = findDuplicateBudgetEntry(createEvent.project.projectedBudgets);
+  if (badEntry !== undefined) {
+    const error = new Error(
+      `more than one projected budget for organization ${badEntry.organization} and currency ${
+        badEntry.currencyCode
+      }`,
+    );
+    return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, [error])] };
+  }
 
   if (await repository.projectExists(createEvent.project.id)) {
     return {
@@ -106,4 +118,17 @@ function newDefaultPermissionsFor(user: ServiceUser): Permissions {
 
   const intents: Intent[] = projectIntents;
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [user.id] }), {});
+}
+
+function findDuplicateBudgetEntry(
+  projectedBudgets: ProjectedBudget[],
+): { organization: string; currencyCode: string } | undefined {
+  const budgetSet = new Set<string>();
+  for (const { organization, currencyCode } of projectedBudgets) {
+    const key = `${organization}_${currencyCode}`;
+    if (budgetSet.has(key)) {
+      return { organization, currencyCode };
+    }
+    budgetSet.add(key);
+  }
 }
