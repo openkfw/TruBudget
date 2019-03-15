@@ -1,7 +1,7 @@
 /**
  * DEPRECATED - see index.ts
  */
-import { isArray } from "util";
+import { isArray, isString } from "util";
 import { VError } from "verror";
 
 import { throwIfUnauthorized } from "../../authz";
@@ -18,7 +18,6 @@ import { ServiceUser } from "../../service/domain/organization/service_user";
 import { randomString } from "../../service/hash";
 import * as ProjectGet from "../../service/project_get";
 import * as Subproject from "../../subproject/model/Subproject";
-import logger from "../../lib/logger";
 
 export async function createSubproject(
   conn: ConnToken,
@@ -61,7 +60,8 @@ export async function createSubproject(
   const subprojects = await Subproject.get(conn.multichainClient, req.user, projectId);
   if (!isEmpty(subprojects.filter(s => s.data.id === subprojectId))) {
     throw new Error(
-      `cannot add subproject ${subprojectId} to project ${projectId}: the project already contains a subproject with that ID`,
+      `cannot add subproject ${subprojectId} to project ${projectId}:
+       the project already contains a subproject with that ID`,
     );
   }
 
@@ -72,7 +72,7 @@ export async function createSubproject(
     creationUnixTs: ctime.getTime().toString(),
     status: value("status", subprojectArgs.status, x => ["open", "closed"].includes(x), "open"),
     displayName: value("displayName", subprojectArgs.displayName, isNonemptyString),
-    description: value("description", subprojectArgs.description, isNonemptyString),
+    description: value("description", subprojectArgs.description, isString),
     currency: value("currency", subprojectArgs.currency, isNonemptyString),
     projectedBudgets: value("projectedBudgets", subprojectArgs.projectedBudgets, isArray, []),
     assignee: value("assignee", subprojectArgs.assignee, isUserOrUndefined, req.user.userId),
