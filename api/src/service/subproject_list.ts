@@ -1,11 +1,10 @@
 import { Ctx } from "../lib/ctx";
-import * as Cache2 from "./cache2";
+import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectList from "./domain/workflow/subproject_list";
-import { loadSubprojectEvents } from "./load";
 
 export async function listSubprojects(
   conn: ConnToken,
@@ -13,8 +12,12 @@ export async function listSubprojects(
   serviceUser: ServiceUser,
   projectId: Project.Id,
 ): Promise<Subproject.Subproject[]> {
-  const visibleSubprojects = await SubprojectList.getAllVisible(ctx, serviceUser, {
-    getAllSubprojectEvents: async () => loadSubprojectEvents(conn, projectId),
-  });
+  const visibleSubprojects = await Cache.withCache(conn, ctx, async cache =>
+    SubprojectList.getAllVisible(ctx, serviceUser, {
+      getAllSubprojectEvents: async () => {
+        return cache.getSubprojectEvents(projectId);
+      },
+    }),
+  );
   return visibleSubprojects;
 }

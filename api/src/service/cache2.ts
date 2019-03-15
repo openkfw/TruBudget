@@ -1,8 +1,10 @@
+import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import * as Result from "../result";
 import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
+import { NotFound } from "./domain/errors/not_found";
 import * as NodeRegistered from "./domain/network/node_registered";
 import * as GroupCreated from "./domain/organization/group_created";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
@@ -12,18 +14,24 @@ import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_g
 import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as NotificationCreated from "./domain/workflow/notification_created";
 import * as NotificationMarkedRead from "./domain/workflow/notification_marked_read";
+import * as Project from "./domain/workflow/project";
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
+import { sourceProjects } from "./domain/workflow/project_eventsourcing";
 import * as ProjectPermissionsGranted from "./domain/workflow/project_permission_granted";
 import * as ProjectPermissionsRevoked from "./domain/workflow/project_permission_revoked";
 import * as ProjectProjectedBudgetDeleted from "./domain/workflow/project_projected_budget_deleted";
 import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
+import * as Subproject from "./domain/workflow/subproject";
+import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
+import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
+import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
 import { Item } from "./liststreamitems";
 
 const STREAM_BLACKLIST = [
@@ -51,6 +59,217 @@ export function initCache(): Cache2 {
   };
 }
 
+export interface CacheInstance {
+  getGlobalEvents(): BusinessEvent[];
+  getUserEvents(userId?: string): BusinessEvent[];
+  getGroupEvents(groupId?: string): BusinessEvent[];
+  getNotificationEvents(userId: string): BusinessEvent[];
+
+  // Project:
+
+  getProjectEvents(projectId?: string): BusinessEvent[];
+  getProject(projectId: string): Promise<Result.Type<Project.Project>>;
+  updateCachedProject(project: Project.Project): void;
+
+  // Subproject:
+
+  getSubprojectEvents(projectId: string, subprojectId?: string): BusinessEvent[];
+  getSubproject(
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Subproject.Subproject>>;
+  updateCachedSubproject(subproject: Subproject.Subproject): void;
+
+  // Workflowitem:
+
+  getWorkflowitemEvents(
+    projectId: string,
+    subprojectId: string,
+    workflowitemId?: string,
+  ): BusinessEvent[];
+  getWorkflowitem(
+    projectId: string,
+    subprojectId: string,
+    workflowitemId: string,
+  ): Promise<Result.Type<Workflowitem.Workflowitem>>;
+  updateCachedWorkflowitem(workflowitem: Workflowitem.Workflowitem): void;
+}
+
+export type TransactionFn<T> = (cache: CacheInstance) => Promise<T>;
+
+export async function withCache<T>(
+  conn: ConnToken,
+  ctx: Ctx,
+  transaction: TransactionFn<T>,
+  doRefresh: boolean = true,
+): Promise<T> {
+  const cache = conn.cache2;
+
+  const cacheInstance: CacheInstance = {
+    getGlobalEvents: (): BusinessEvent[] => {
+      return cache.eventsByStream.get("global") || [];
+    },
+
+    getUserEvents: (_userId?: string): BusinessEvent[] => {
+      // userId currently not leveraged
+      return cache.eventsByStream.get("users") || [];
+    },
+
+    getGroupEvents: (_groupId?: string): BusinessEvent[] => {
+      // groupId currently not leveraged
+      return cache.eventsByStream.get("groups") || [];
+    },
+
+    getNotificationEvents: (userId: string): BusinessEvent[] => {
+      const userFilter = event => {
+        if (!event.type.startsWith("notification_")) {
+          logger.debug(`Unexpected event type in "notifications" stream: ${event.type}`);
+          return false;
+        }
+
+        switch (event.type) {
+          case "notification_created":
+            return event.recipient === userId;
+          case "notification_marked_read":
+            return event.recipient === userId;
+          default:
+            throw Error(`not implemented: notification event of type ${event.type}`);
+        }
+      };
+
+      return (cache.eventsByStream.get("notifications") || []).filter(userFilter);
+    },
+
+    getProjectEvents: (projectId?: string): BusinessEvent[] => {
+      if (projectId === undefined) {
+        // Load events for all projects:
+        const allEvents: BusinessEvent[] = [];
+        for (const projectEvents of cache.eventsByStream.values()) {
+          allEvents.push(...projectEvents);
+        }
+        return allEvents;
+      } else {
+        // Load events for a single project:
+        return cache.eventsByStream.get(projectId) || [];
+      }
+    },
+
+    getSubprojectEvents: (projectId: string, subprojectId?: string): BusinessEvent[] => {
+      const subprojectFilter = event => {
+        if (!event.type.startsWith("subproject_")) {
+          return false;
+        }
+
+        if (subprojectId === undefined) {
+          return true;
+        }
+
+        switch (event.type) {
+          case "subproject_created":
+            return event.subproject.id === subprojectId;
+          case "subproject_updated":
+            return event.subprojectId === subprojectId;
+          case "subproject_assigned":
+            return event.subprojectId === subprojectId;
+          case "subproject_closed":
+            return event.subprojectId === subprojectId;
+          case "subproject_permission_granted":
+            return event.subprojectId === subprojectId;
+          case "subproject_permission_revoked":
+            return event.subprojectId === subprojectId;
+          case "subproject_projected_budget_updated":
+            return event.subprojectId === subprojectId;
+          case "subproject_projected_budget_deleted":
+            return event.subprojectId === subprojectId;
+          default:
+            throw Error(`not implemented: notification event of type ${event.type}`);
+        }
+      };
+
+      return (cache.eventsByStream.get(projectId) || []).filter(subprojectFilter);
+    },
+
+    getWorkflowitemEvents: (
+      projectId: string,
+      subprojectId: string,
+      workflowitemId?: string,
+    ): BusinessEvent[] => {
+      throw Error("not implemented: retrieving subproject events from cache");
+    },
+
+    getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
+      // TODO should be cached here: source only if not in cache
+      const projectEvents = cache.eventsByStream.get(projectId) || [];
+      const { projects } = sourceProjects(ctx, projectEvents);
+      const project = projects.find(x => x.id === projectId);
+      if (project === undefined) {
+        return new NotFound(ctx, "project", projectId);
+      }
+      return project;
+    },
+
+    updateCachedProject: (project: Project.Project): void => {
+      // TODO not implemented
+      return;
+    },
+
+    getSubproject: async (
+      projectId: string,
+      subprojectId: string,
+    ): Promise<Result.Type<Subproject.Subproject>> => {
+      // TODO should be cached here: source only if not in cache
+      const projectEvents = cache.eventsByStream.get(projectId) || [];
+      const { subprojects } = sourceSubprojects(ctx, projectEvents);
+      const subproject = subprojects.find(x => x.id === subprojectId);
+      if (subproject === undefined) {
+        return new NotFound(ctx, "subproject", subprojectId);
+      }
+      return subproject;
+    },
+
+    updateCachedSubproject: (subproject: Subproject.Subproject): void => {
+      // TODO not implemented
+      return;
+    },
+
+    getWorkflowitem: async (
+      projectId: string,
+      _subprojectId: string,
+      workflowitemId: string,
+    ): Promise<Result.Type<Workflowitem.Workflowitem>> => {
+      // TODO should be cached here: source only if not in cache
+      const projectEvents = cache.eventsByStream.get(projectId) || [];
+      const { workflowitems } = sourceWorkflowitems(ctx, projectEvents);
+      const workflowitem = workflowitems.find(x => x.id === workflowitemId);
+      if (workflowitem === undefined) {
+        return new NotFound(ctx, "workflowitem", workflowitemId);
+      }
+      return workflowitem;
+    },
+
+    updateCachedWorkflowitem: (workflowitem: Workflowitem.Workflowitem): void => {
+      // TODO not implemented
+      return;
+    },
+  };
+
+  try {
+    // Make sure we're the only thread-of-execution:
+    await grabWriteLock(cache);
+
+    // The cache is updated only once, before running the user code.
+    // Currently, this simply fetches new items for _all_ streams; when the number of
+    // streams grows large, it might make sense to do this more fine-grained here.
+    if (doRefresh) {
+      await updateCache(conn);
+    }
+
+    return transaction(cacheInstance);
+  } finally {
+    releaseWriteLock(cache);
+  }
+}
+
 async function grabWriteLock(cache: Cache2) {
   while (cache.isWriteLocked) {
     await new Promise(res => setTimeout(res, 1));
@@ -62,7 +281,7 @@ function releaseWriteLock(cache: Cache2) {
   cache.isWriteLocked = false;
 }
 
-export async function refresh(conn: ConnToken, streamName?: string): Promise<void> {
+async function refresh(conn: ConnToken, streamName?: string): Promise<void> {
   const { cache2: cache } = conn;
   try {
     // Make sure we're the only thread-of-execution that updates the cache:

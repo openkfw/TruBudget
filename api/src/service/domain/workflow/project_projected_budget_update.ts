@@ -11,7 +11,7 @@ import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updat
 import { ProjectedBudget } from "./projected_budget";
 
 interface Repository {
-  getProjectEvents(): Promise<BusinessEvent[]>;
+  getProjectEvents(projectId: string): Promise<BusinessEvent[]>;
 }
 
 type State = ProjectedBudget[];
@@ -30,7 +30,7 @@ export async function updateProjectedBudget(
   currencyCode: string,
   repository: Repository,
 ): Promise<ReturnType> {
-  const projectEvents = await repository.getProjectEvents();
+  const projectEvents = await repository.getProjectEvents(projectId);
   const { projects } = sourceProjects(ctx, projectEvents);
 
   const project = projects.find(x => x.id === projectId);

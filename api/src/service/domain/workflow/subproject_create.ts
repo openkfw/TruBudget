@@ -18,6 +18,9 @@ import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
 import * as SubprojectCreated from "./subproject_created";
 import { sourceSubprojects } from "./subproject_eventsourcing";
+import { PreconditionError } from "../errors/precondition_error";
+import * as Result from "../../../result";
+import * as AuthToken from "../organization/auth_token";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -49,8 +52,8 @@ export function validate(input: any): RequestData {
 }
 
 interface Repository {
-  // If there is no such project, the promise should resolve to an empty array:
-  getProjectEvents(projectId: string): Promise<BusinessEvent[]>;
+  subprojectExists(projectId: string, subprojectId: string): Promise<boolean>;
+  projectPermissions(projectId: string): Promise<Result.Type<Permissions>>;
 }
 
 export async function createSubproject(
@@ -61,42 +64,66 @@ export async function createSubproject(
 ): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
   const publisher = creatingUser.id;
 
+  const projectId = reqData.projectId;
   const subprojectId = reqData.subprojectId || randomString();
-  const subprojectCreated = SubprojectCreated.createEvent(
-    ctx.source,
-    publisher,
-    reqData.projectId,
-    {
-      id: subprojectId,
-      status: reqData.status || "open",
-      displayName: reqData.displayName,
-      description: reqData.description || "",
-      assignee: reqData.assignee || creatingUser.id,
-      currency: reqData.currency,
-      projectedBudgets: reqData.projectedBudgets || [],
-      permissions: newDefaultPermissionsFor(creatingUser.id),
-      additionalData: reqData.additionalData || {},
-    },
-  );
+  const subprojectCreated = SubprojectCreated.createEvent(ctx.source, publisher, projectId, {
+    id: subprojectId,
+    status: reqData.status || "open",
+    displayName: reqData.displayName,
+    description: reqData.description || "",
+    assignee: reqData.assignee || creatingUser.id,
+    currency: reqData.currency,
+    projectedBudgets: reqData.projectedBudgets || [],
+    permissions: newDefaultPermissionsFor(creatingUser.id),
+    additionalData: reqData.additionalData || {},
+  });
 
-  const projectEvents = await repository.getProjectEvents(reqData.projectId);
-  const { projects } = sourceProjects(ctx, projectEvents);
-  const project = projects.find(x => x.id === reqData.projectId);
-  if (project === undefined) {
-    return { newEvents: [], errors: [new NotFound(ctx, "project", reqData.projectId)] };
+  // Make sure for each organization and currency there is only one entry:
+  const badEntry = findDuplicateBudgetEntry(subprojectCreated.subproject.projectedBudgets);
+  if (badEntry !== undefined) {
+    const error = new Error(
+      `more than one projected budget for organization ${badEntry.organization} and currency ${
+        badEntry.currencyCode
+      }`,
+    );
+    return { newEvents: [], errors: [new InvalidCommand(ctx, subprojectCreated, [error])] };
+  }
+
+  if (
+    await repository.subprojectExists(subprojectCreated.projectId, subprojectCreated.subproject.id)
+  ) {
+    return {
+      newEvents: [],
+      errors: [new PreconditionError(ctx, subprojectCreated, "subproject already exists")],
+    };
+  }
+
+  const projectPermissionsResult = await repository.projectPermissions(projectId);
+  if (Result.isErr(projectPermissionsResult)) {
+    const error = new PreconditionError(
+      ctx,
+      subprojectCreated,
+      `cannot get project permissions for project ${projectId}: ${
+        projectPermissionsResult.message
+      }`,
+    );
+    return { newEvents: [], errors: [error] };
   }
 
   // Check authorization (if not root):
-  if (creatingUser.id !== "root") {
-    const isAuthorized = (project.permissions["project.createSubproject"] || []).some(identity =>
-      canAssumeIdentity(creatingUser, identity),
-    );
-    if (!isAuthorized) {
-      return {
-        newEvents: [],
-        errors: [new NotAuthorized(ctx, creatingUser.id, subprojectCreated)],
-      };
-    }
+  const projectPermissions = await repository.projectPermissions(projectId);
+  if (Result.isErr(projectPermissions)) {
+    return { newEvents: [], errors: [new NotFound(ctx, "project", projectId)] };
+  }
+
+  if (
+    creatingUser.id !== "root" &&
+    !AuthToken.permits(projectPermissions, creatingUser, ["project.createSubproject"])
+  ) {
+    return {
+      newEvents: [],
+      errors: [new NotAuthorized(ctx, creatingUser.id, subprojectCreated)],
+    };
   }
 
   // Check that the event is valid by trying to "apply" it:
@@ -124,4 +151,17 @@ function newDefaultPermissionsFor(userId: string): Permissions {
     "subproject.archive",
   ];
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
+}
+
+function findDuplicateBudgetEntry(
+  projectedBudgets: ProjectedBudget[],
+): { organization: string; currencyCode: string } | undefined {
+  const budgetSet = new Set<string>();
+  for (const { organization, currencyCode } of projectedBudgets) {
+    const key = `${organization}_${currencyCode}`;
+    if (budgetSet.has(key)) {
+      return { organization, currencyCode };
+    }
+    budgetSet.add(key);
+  }
 }

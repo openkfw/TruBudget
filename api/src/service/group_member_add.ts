@@ -1,12 +1,10 @@
 import { Ctx } from "../lib/ctx";
+import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import * as Group from "./domain/organization/group";
 import * as GroupMemberAdd from "./domain/organization/group_member_add";
 import { ServiceUser } from "./domain/organization/service_user";
-import { loadGroupEvents } from "./load";
 import { store } from "./store";
-
-const GROUPS_STREAM = "groups";
 
 export async function addMember(
   conn: ConnToken,
@@ -15,14 +13,12 @@ export async function addMember(
   groupId: Group.Id,
   newMember: Group.Member,
 ): Promise<void> {
-  const { newEvents, errors } = await GroupMemberAdd.addMember(
-    ctx,
-    serviceUser,
-    groupId,
-    newMember,
-    {
-      getGroupEvents: async () => loadGroupEvents(conn),
-    },
+  const { newEvents, errors } = await Cache.withCache(conn, ctx, cache =>
+    GroupMemberAdd.addMember(ctx, serviceUser, groupId, newMember, {
+      getGroupEvents: async () => {
+        return cache.getGroupEvents();
+      },
+    }),
   );
   if (errors.length > 0) return Promise.reject(errors);
 

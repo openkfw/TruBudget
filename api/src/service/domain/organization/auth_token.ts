@@ -1,6 +1,8 @@
 import Intent, { globalIntents } from "../../../authz/intents";
+import { Permissions } from "../permissions";
 import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_permissions";
 import { Identity } from "./identity";
+import { ServiceUser } from "./service_user";
 import * as UserRecord from "./user_record";
 
 export interface AuthToken {
@@ -49,4 +51,19 @@ export async function fromUserRecord(
     organizationAddress,
     allowedIntents,
   };
+}
+
+export function permits(
+  permissions: Permissions,
+  actingUser: ServiceUser,
+  intents: Intent[],
+): boolean {
+  const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
+    const eligibles = permissions[intent] || [];
+    return acc.concat(eligibles);
+  }, []);
+  const hasPermission = eligibleIdentities.some(identity =>
+    canAssumeIdentity(actingUser, identity),
+  );
+  return hasPermission;
 }
