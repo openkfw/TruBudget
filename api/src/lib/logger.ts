@@ -11,7 +11,7 @@ const prettyPrintInput = process.env.PRETTY_PRINT || "";
 const prettyPrint = prettyPrintOptions.includes(prettyPrintInput.toLowerCase())
   ? false
   : {
-      colorize: "true",
+      colorize: true,
       levelFirst: false,
       messageKey: "message",
       translateTime: true,
@@ -25,7 +25,6 @@ const level = logLevels.includes(levelInputLowerCase) ? levelInputLowerCase : "i
 const redact = {
   paths: ["rpcSettings.password", "password", "*.passwordDigest", "passwordDigest"],
 };
-const crlf = false;
 const messageKey = "message";
 const useLevelLabels = true;
 
@@ -42,7 +41,6 @@ const logger = pino({
   // @ts-ignore
   redact,
   useLevelLabels,
-  crlf,
   messageKey,
 });
 

@@ -1,7 +1,9 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
+import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
@@ -60,4 +62,25 @@ export function createEvent(
 export function validate(input: any): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function apply(
+  ctx: Ctx,
+  event: Event,
+  project: Project.Project,
+): Result.Type<Project.Project> {
+  // An organization may have multiple budgets, but any two budgets of the same
+  // organization always have a different currency. The reasoning: if an organization
+  // makes two financial commitments in the same currency, they can represented by one
+  // commitment with the same currency and the sum of both commitments as its value.
+  project.projectedBudgets = project.projectedBudgets.filter(
+    x => x.organization === event.organization && x.currencyCode === event.currencyCode,
+  );
+
+  const result = Project.validate(project);
+  if (Result.isErr(result)) {
+    return new EventSourcingError(ctx, event, result.message, project.id);
+  }
+
+  return project;
 }

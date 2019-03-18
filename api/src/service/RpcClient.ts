@@ -14,7 +14,7 @@ const count = new Map();
 const durations = new Map();
 const nTopCalls = 3;
 const topCallWindowSizeInSeconds = 30;
-if (logger.isLevelEnabled("debug")) {
+if (logger.levelVal >= logger.levels.values.debug) {
   const intervalTimer = setInterval(() => {
     if (!count.size) return;
     const topCalls = [...count.entries()]
@@ -95,7 +95,7 @@ export class RpcClient {
           // this is only on Response code 2xx
           logger.trace({ data: resp.data }, "Received valid response.");
 
-          if (logger.isLevelEnabled("debug")) {
+          if (logger.levelVal >= logger.levels.values.debug) {
             const countKey = `${method}(${params.map(x => JSON.stringify(x)).join(", ")})`;
             const hrtimeDiff = process.hrtime(startTime);
             const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
