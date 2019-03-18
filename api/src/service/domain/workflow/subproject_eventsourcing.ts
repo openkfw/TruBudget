@@ -9,8 +9,13 @@ import { SubprojectTraceEvent } from "./subproject_trace_event";
 export function sourceSubprojects(
   ctx: Ctx,
   events: BusinessEvent[],
+  origin?: Map<Subproject.Id, Subproject.Subproject>,
 ): { subprojects: Subproject.Subproject[]; errors: EventSourcingError[] } {
-  const subprojects = new Map<Subproject.Id, Subproject.Subproject>();
+  const subprojects =
+    origin === undefined
+      ? new Map<Subproject.Id, Subproject.Subproject>()
+      : new Map<Subproject.Id, Subproject.Subproject>(origin);
+
   const errors: EventSourcingError[] = [];
   for (const event of events) {
     apply(ctx, subprojects, event, errors);
@@ -35,13 +40,14 @@ function handleCreate(
   subprojectCreated: SubprojectCreated.Event,
   errors: EventSourcingError[],
 ) {
-  const { subproject: initialData } = subprojectCreated;
+  const { projectId, subproject: initialData } = subprojectCreated;
 
   let subproject = subprojects.get(initialData.id);
   if (subproject !== undefined) return;
 
   subproject = {
     ...initialData,
+    projectId,
     createdAt: subprojectCreated.time,
     log: [],
   };

@@ -8,7 +8,7 @@ import { sourceProjects } from "./project_eventsourcing";
 import { ProjectTraceEvent } from "./project_trace_event";
 
 interface Repository {
-  getAllProjectEvents(): Promise<BusinessEvent[]>;
+  getAllProjects(): Promise<Project.Project[]>;
 }
 
 export async function getAllVisible(
@@ -16,8 +16,7 @@ export async function getAllVisible(
   user: ServiceUser,
   repository: Repository,
 ): Promise<Project.Project[]> {
-  const allProjectsEvents = await repository.getAllProjectEvents();
-  const { projects: allProjects } = sourceProjects(ctx, allProjectsEvents);
+  const allProjects = await repository.getAllProjects();
 
   const isVisible =
     user.id === "root"

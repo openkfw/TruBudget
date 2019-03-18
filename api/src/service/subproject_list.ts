@@ -14,8 +14,8 @@ export async function listSubprojects(
 ): Promise<Subproject.Subproject[]> {
   const visibleSubprojects = await Cache.withCache(conn, ctx, async cache =>
     SubprojectList.getAllVisible(ctx, serviceUser, {
-      getAllSubprojectEvents: async () => {
-        return cache.getSubprojectEvents(projectId);
+      getAllSubprojects: async () => {
+        return cache.getSubprojects(projectId);
       },
     }),
   );

@@ -343,6 +343,7 @@ ProjectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
       );
       newSubprojects.push({
         id: x.data.id,
+        projectId: projectId,
         createdAt: new Date(x.data.creationUnixTs).toISOString(),
         status: x.data.status,
         displayName: x.data.displayName,
@@ -390,6 +391,7 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
       );
       newSubprojects.push({
         id: x.data.id,
+        projectId: projectId,
         createdAt: new Date(x.data.creationUnixTs).toISOString(),
         status: x.data.status,
         displayName: x.data.displayName,

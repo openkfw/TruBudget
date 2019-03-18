@@ -49,6 +49,10 @@ export type Cache2 = {
   streamState: Map<StreamName, StreamCursor>;
   // The cached content:
   eventsByStream: Map<StreamName, BusinessEvent[]>;
+
+  // Cached Aggregates:
+  cachedProjects: Map<Project.Id, Project.Project>;
+  cachedSubprojects: Map<Subproject.Id, Subproject.Subproject>;
 };
 
 export function initCache(): Cache2 {
@@ -56,6 +60,8 @@ export function initCache(): Cache2 {
     isWriteLocked: false,
     streamState: new Map(),
     eventsByStream: new Map(),
+    cachedProjects: new Map(),
+    cachedSubprojects: new Map(),
   };
 }
 
@@ -68,16 +74,15 @@ export interface CacheInstance {
   // Project:
 
   getProjectEvents(projectId?: string): BusinessEvent[];
+  getProjects(): Promise<Project.Project[]>;
   getProject(projectId: string): Promise<Result.Type<Project.Project>>;
   updateCachedProject(project: Project.Project): void;
 
   // Subproject:
 
   getSubprojectEvents(projectId: string, subprojectId?: string): BusinessEvent[];
-  getSubproject(
-    projectId: string,
-    subprojectId: string,
-  ): Promise<Result.Type<Subproject.Subproject>>;
+  getSubprojects(projectId: string): Subproject.Subproject[];
+  getSubproject(projectId: string, subprojectId: string): Result.Type<Subproject.Subproject>;
   updateCachedSubproject(subproject: Subproject.Subproject): void;
 
   // Workflowitem:
@@ -197,10 +202,12 @@ export async function withCache<T>(
       throw Error("not implemented: retrieving subproject events from cache");
     },
 
+    getProjects: async (): Promise<Project.Project[]> => {
+      return [...cache.cachedProjects.values()];
+    },
+
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
-      // TODO should be cached here: source only if not in cache
-      const projectEvents = cache.eventsByStream.get(projectId) || [];
-      const { projects } = sourceProjects(ctx, projectEvents);
+      const projects = [...cache.cachedProjects.values()];
       const project = projects.find(x => x.id === projectId);
       if (project === undefined) {
         return new NotFound(ctx, "project", projectId);
@@ -213,13 +220,15 @@ export async function withCache<T>(
       return;
     },
 
-    getSubproject: async (
+    getSubprojects: (projectId: string): Subproject.Subproject[] => {
+      return [...cache.cachedSubprojects.values()].filter(sp => sp.projectId === projectId);
+    },
+
+    getSubproject: (
       projectId: string,
       subprojectId: string,
-    ): Promise<Result.Type<Subproject.Subproject>> => {
-      // TODO should be cached here: source only if not in cache
-      const projectEvents = cache.eventsByStream.get(projectId) || [];
-      const { subprojects } = sourceSubprojects(ctx, projectEvents);
+    ): Result.Type<Subproject.Subproject> => {
+      const subprojects = this.getSubprojects(projectId);
       const subproject = subprojects.find(x => x.id === subprojectId);
       if (subproject === undefined) {
         return new NotFound(ctx, "subproject", subprojectId);
@@ -261,7 +270,7 @@ export async function withCache<T>(
     // Currently, this simply fetches new items for _all_ streams; when the number of
     // streams grows large, it might make sense to do this more fine-grained here.
     if (doRefresh) {
-      await updateCache(conn);
+      await updateCache(ctx, conn);
     }
 
     return transaction(cacheInstance);
@@ -281,12 +290,12 @@ function releaseWriteLock(cache: Cache2) {
   cache.isWriteLocked = false;
 }
 
-async function refresh(conn: ConnToken, streamName?: string): Promise<void> {
+async function refresh(ctx: Ctx, conn: ConnToken, streamName?: string): Promise<void> {
   const { cache2: cache } = conn;
   try {
     // Make sure we're the only thread-of-execution that updates the cache:
     await grabWriteLock(cache);
-    await updateCache(conn, streamName);
+    await updateCache(ctx, conn, streamName);
   } finally {
     releaseWriteLock(cache);
   }
@@ -337,7 +346,7 @@ async function fetchItems(
   return items;
 }
 
-async function updateCache(conn: ConnToken, onlyStreamName?: string): Promise<void> {
+async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): Promise<void> {
   // Let's gather some statistics:
   let nUpdatedStreams = 0;
   let nRebuiltStreams = 0;
@@ -425,6 +434,7 @@ async function updateCache(conn: ConnToken, onlyStreamName?: string): Promise<vo
       cache.eventsByStream.delete(streamName);
     }
     addEventsToCache(cache, streamName, businessEvents);
+    updateAggregates(ctx, cache, businessEvents);
 
     if (logger.levelVal >= logger.levels.values.warn) {
       parsedEvents.filter(Result.isErr).forEach(x => logger.warn(x));
@@ -447,6 +457,21 @@ async function updateCache(conn: ConnToken, onlyStreamName?: string): Promise<vo
 function addEventsToCache(cache: Cache2, streamName: string, newEvents: BusinessEvent[]) {
   const eventsSoFar = cache.eventsByStream.get(streamName) || [];
   cache.eventsByStream.set(streamName, eventsSoFar.concat(newEvents));
+}
+
+function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
+  // we ignore the errors
+  const { projects } = sourceProjects(ctx, newEvents, cache.cachedProjects);
+
+  for (const project of projects) {
+    cache.cachedProjects.set(project.id, project);
+  }
+
+  const { subprojects } = sourceSubprojects(ctx, newEvents, cache.cachedSubprojects);
+
+  for (const subproject of subprojects) {
+    cache.cachedSubprojects.set(subproject.id, subproject);
+  }
 }
 
 const EVENT_PARSER_MAP = {
