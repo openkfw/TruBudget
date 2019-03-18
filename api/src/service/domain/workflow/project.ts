@@ -42,9 +42,7 @@ const schema = Joi.object({
     .allow("")
     .required(),
   assignee: Joi.string(),
-  thumbnail: Joi.string()
-    .allow("")
-    .required(),
+  thumbnail: Joi.string().allow(""),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
   log: Joi.array()
