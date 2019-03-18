@@ -1,4 +1,5 @@
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
@@ -15,10 +16,10 @@ export async function assignProject(
   projectId: Project.Id,
   assignee: Identity,
 ): Promise<void> {
-  const { newEvents, errors } = await Cache.withCache(conn, ctx, async cache =>
+  const result = await Cache.withCache(conn, ctx, async cache =>
     ProjectAssign.assignProject(ctx, serviceUser, projectId, assignee, {
-      getProjectEvents: async () => {
-        return cache.getProjectEvents(projectId);
+      getProject: async () => {
+        return cache.getProject(projectId);
       },
       getUsersForIdentity: async identity => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
@@ -26,7 +27,8 @@ export async function assignProject(
     }),
   );
 
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(result)) throw result;
+  const { newEvents } = result;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);
