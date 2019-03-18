@@ -129,11 +129,10 @@ const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH, env
 /*
  * Run the app:
  */
-// server.register(require('./'), { prefix: '/api' })
 
 // Enable useful traces of unhandled-promise warnings:
 process.on("unhandledRejection", err => {
-  logger.fatal(err, "UNHANDLED PROMISE REJECTION");
+  logger.fatal({ err }, "UNHANDLED PROMISE REJECTION");
   process.exit(1);
 });
 
