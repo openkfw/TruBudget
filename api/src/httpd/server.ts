@@ -51,7 +51,7 @@ const addLogging = (server: fastify.FastifyInstance) => {
       id: req.id,
       status: reply.res.statusCode,
       message: reply.res.statusMessage,
-      payload,
+      payload: JSON.parse(payload),
     });
     done();
   });

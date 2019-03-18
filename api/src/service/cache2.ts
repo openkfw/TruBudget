@@ -25,6 +25,7 @@ import * as ProjectProjectedBudgetDeleted from "./domain/workflow/project_projec
 import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
 import * as Subproject from "./domain/workflow/subproject";
+import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
@@ -471,6 +472,7 @@ const EVENT_PARSER_MAP = {
   project_projected_budget_deleted: ProjectProjectedBudgetDeleted.validate,
   project_projected_budget_updated: ProjectProjectedBudgetUpdated.validate,
   project_updated: ProjectUpdated.validate,
+  subproject_created: SubprojectCreated.validate,
   subproject_projected_budget_deleted: SubprojectProjectedBudgetDeleted.validate,
   subproject_projected_budget_updated: SubprojectProjectedBudgetUpdated.validate,
   user_created: UserCreated.validate,

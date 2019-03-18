@@ -59,6 +59,8 @@ import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
+import * as SubprojectListAPI from "./subproject_list";
+import * as SubprojectListService from "./service/subproject_list";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
@@ -328,96 +330,100 @@ ProjectListAPI.addHttpHandler(server, URL_PREFIX, {
 
 ProjectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
   getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
-  getSubprojects: async (
-    ctx: Ctx,
-    user: ServiceUser,
-    projectId: string,
-  ): Promise<Subproject.Subproject[]> => {
-    const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
-      db.multichainClient,
-      { userId: user.id, groups: user.groups },
-      projectId,
-    );
-    const newSubprojects: Subproject.Subproject[] = [];
-    for (const x of subprojects) {
-      const permissions = await OldSubprojectModel.getPermissions(
-        db.multichainClient,
-        projectId,
-        x.data.id,
-      );
-      newSubprojects.push({
-        id: x.data.id,
-        createdAt: new Date(x.data.creationUnixTs).toISOString(),
-        status: x.data.status,
-        displayName: x.data.displayName,
-        description: x.data.description,
-        assignee: x.data.assignee,
-        currency: x.data.currency,
-        projectedBudgets: x.data.projectedBudgets,
-        additionalData: x.data.additionalData,
-        permissions,
-        log: x.log.map(l => ({
-          entityId: l.key,
-          entityType: "subproject" as "subproject",
-          businessEvent: {
-            type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
-            source: "",
-            time: l.createdAt,
-            publisher: l.createdBy,
-          } as BusinessEvent,
-          snapshot: l.snapshot,
-        })),
-      });
-    }
-    return newSubprojects;
-  },
+  getSubprojects: (ctx, user, projectId) =>
+    SubprojectListService.listSubprojects(db, ctx, user, projectId),
+  // getSubprojects: async (
+  //   ctx: Ctx,
+  //   user: ServiceUser,
+  //   projectId: string,
+  // ): Promise<Subproject.Subproject[]> => {
+  //   const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
+  //     db.multichainClient,
+  //     { userId: user.id, groups: user.groups },
+  //     projectId,
+  //   );
+  //   const newSubprojects: Subproject.Subproject[] = [];
+  //   for (const x of subprojects) {
+  //     const permissions = await OldSubprojectModel.getPermissions(
+  //       db.multichainClient,
+  //       projectId,
+  //       x.data.id,
+  //     );
+  //     newSubprojects.push({
+  //       id: x.data.id,
+  //       createdAt: new Date(x.data.creationUnixTs).toISOString(),
+  //       status: x.data.status,
+  //       displayName: x.data.displayName,
+  //       description: x.data.description,
+  //       assignee: x.data.assignee,
+  //       currency: x.data.currency,
+  //       projectedBudgets: x.data.projectedBudgets,
+  //       additionalData: x.data.additionalData,
+  //       permissions,
+  //       log: x.log.map(l => ({
+  //         entityId: l.key,
+  //         entityType: "subproject" as "subproject",
+  //         businessEvent: {
+  //           type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
+  //           source: "",
+  //           time: l.createdAt,
+  //           publisher: l.createdBy,
+  //         } as BusinessEvent,
+  //         snapshot: l.snapshot,
+  //       })),
+  //     });
+  //   }
+  //   return newSubprojects;
+  // },
 });
 
 ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
   getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
-  getSubprojects: async (
-    ctx: Ctx,
-    user: ServiceUser,
-    projectId: string,
-  ): Promise<Subproject.Subproject[]> => {
-    const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
-      db.multichainClient,
-      { userId: user.id, groups: user.groups },
-      projectId,
-    );
-    const newSubprojects: Subproject.Subproject[] = [];
-    for (const x of subprojects) {
-      const permissions = await OldSubprojectModel.getPermissions(
-        db.multichainClient,
-        projectId,
-        x.data.id,
-      );
-      newSubprojects.push({
-        id: x.data.id,
-        createdAt: new Date(x.data.creationUnixTs).toISOString(),
-        status: x.data.status,
-        displayName: x.data.displayName,
-        description: x.data.description,
-        assignee: x.data.assignee,
-        currency: x.data.currency,
-        projectedBudgets: x.data.projectedBudgets,
-        additionalData: x.data.additionalData,
-        permissions,
-        log: x.log.map(l => ({
-          entityId: l.key,
-          entityType: "subproject" as "subproject",
-          businessEvent: {
-            type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
-            source: "",
-            time: l.createdAt,
-            publisher: l.createdBy,
-          } as BusinessEvent,
-          snapshot: l.snapshot,
-        })),
-      });
-    }
-    return newSubprojects;
-  },
+  getSubprojects: (ctx, user, projectId) =>
+    SubprojectListService.listSubprojects(db, ctx, user, projectId),
+  // getSubprojects: async (
+  //   ctx: Ctx,
+  //   user: ServiceUser,
+  //   projectId: string,
+  // ): Promise<Subproject.Subproject[]> => {
+  //   const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
+  //     db.multichainClient,
+  //     { userId: user.id, groups: user.groups },
+  //     projectId,
+  //   );
+  //   const newSubprojects: Subproject.Subproject[] = [];
+  //   for (const x of subprojects) {
+  //     const permissions = await OldSubprojectModel.getPermissions(
+  //       db.multichainClient,
+  //       projectId,
+  //       x.data.id,
+  //     );
+  //     newSubprojects.push({
+  //       id: x.data.id,
+  //       createdAt: new Date(x.data.creationUnixTs).toISOString(),
+  //       status: x.data.status,
+  //       displayName: x.data.displayName,
+  //       description: x.data.description,
+  //       assignee: x.data.assignee,
+  //       currency: x.data.currency,
+  //       projectedBudgets: x.data.projectedBudgets,
+  //       additionalData: x.data.additionalData,
+  //       permissions,
+  //       log: x.log.map(l => ({
+  //         entityId: l.key,
+  //         entityType: "subproject" as "subproject",
+  //         businessEvent: {
+  //           type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
+  //           source: "",
+  //           time: l.createdAt,
+  //           publisher: l.createdBy,
+  //         } as BusinessEvent,
+  //         snapshot: l.snapshot,
+  //       })),
+  //     });
+  //   }
+  //   return newSubprojects;
+  // },
 });
 
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
@@ -448,6 +454,11 @@ ProjectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
 /*
  * APIs related to Subprojects
  */
+
+SubprojectListAPI.addHttpHandler(server, URL_PREFIX, {
+  listSubprojects: (ctx, user, projectId) =>
+    SubprojectListService.listSubprojects(db, ctx, user, projectId),
+});
 
 SubprojectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, subprojectId, orga, amount, currencyCode) =>

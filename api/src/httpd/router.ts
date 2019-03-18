@@ -299,16 +299,6 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.get(
-    `${urlPrefix}/subproject.list`,
-    getSchema(server, "subprojectList"),
-    (request, reply) => {
-      getSubprojectList(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
     `${urlPrefix}/subproject.viewDetails`,
     getSchema(server, "subprojectViewDetails"),
     (request, reply) => {

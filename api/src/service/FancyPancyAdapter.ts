@@ -514,32 +514,32 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
     case "project_assigned":
     case "project_updated":
     case "project_closed":
+    case "subproject_created":
       return result;
-    case "subproject_created": {
-      const event: SubprojectCreated.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.subproject.id,
-        intent: "project.createSubproject",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          subproject: {
-            id: event.subproject.id,
-            creationUnixTs: new Date(event.time).getTime(),
-            status: event.subproject.status,
-            displayName: event.subproject.displayName,
-            description: event.subproject.description,
-            assignee: event.subproject.assignee,
-            currency: event.subproject.currency,
-            projectedBudgets: event.subproject.projectedBudgets,
-            additionalData: event.subproject.additionalData,
-          },
-          permissions: event.subproject.permissions,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
+    //   const event: SubprojectCreated.Event = result.data.json;
+    //   const oldEvent: Event = {
+    //     key: event.subproject.id,
+    //     intent: "project.createSubproject",
+    //     createdBy: event.publisher,
+    //     createdAt: event.time,
+    //     dataVersion: 1,
+    //     data: {
+    //       subproject: {
+    //         id: event.subproject.id,
+    //         creationUnixTs: new Date(event.time).getTime(),
+    //         status: event.subproject.status,
+    //         displayName: event.subproject.displayName,
+    //         description: event.subproject.description,
+    //         assignee: event.subproject.assignee,
+    //         currency: event.subproject.currency,
+    //         projectedBudgets: event.subproject.projectedBudgets,
+    //         additionalData: event.subproject.additionalData,
+    //       },
+    //       permissions: event.subproject.permissions,
+    //     },
+    //   };
+    //   return { ...result, data: { json: oldEvent } };
+    // }
     case "subproject_updated": {
       const event: SubprojectUpdated.Event = result.data.json;
       const oldEvent: Event = {
