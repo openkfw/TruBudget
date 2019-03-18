@@ -62,12 +62,14 @@ import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_pr
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
+import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as OldSubprojectModel from "./subproject/model/Subproject";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
+import * as WorkflowitemListAPI from "./workflowitem_list";
 
 const URL_PREFIX = "/api";
 
@@ -470,6 +472,15 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
       orga,
       currencyCode,
     ),
+});
+
+/*
+ * APIs related to Workflowitem
+ */
+
+WorkflowitemListAPI.addHttpHandler(server, URL_PREFIX, {
+  listWorkflowitems: (ctx, user, projectId, subprojectId) =>
+    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
 });
 
 /*

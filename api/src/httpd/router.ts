@@ -412,28 +412,6 @@ export const registerRoutes = (
   //       workflowitem
   // ------------------------------------------------------------
 
-  server.get(
-    `${urlPrefix}/workflowitem.list`,
-    getSchema(server, "workflowitemList"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      return workflowitemLister(req.user, req.query.projectId, req.query.subprojectId)
-        .then(
-          (workflowitems): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: {
-                workflowitems,
-              },
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
   server.post(
     `${urlPrefix}/workflowitem.assign`,
     getSchema(server, "workflowitemAssign"),

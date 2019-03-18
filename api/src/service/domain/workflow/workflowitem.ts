@@ -1,7 +1,11 @@
 import Joi = require("joi");
 
+import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { canAssumeIdentity } from "../organization/auth_token";
+import { Identity } from "../organization/identity";
+import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
@@ -54,6 +58,7 @@ export interface RedactedWorkflowitem {
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
 
 const schema = Joi.object().keys({
+  isRedacted: Joi.boolean().required(),
   id: Joi.string().required(),
   createdAt: Joi.date()
     .iso()
@@ -115,4 +120,19 @@ const schema = Joi.object().keys({
 export function validate(input: any): Result.Type<Workflowitem> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function permits(
+  workflowitem: Workflowitem,
+  actingUser: ServiceUser,
+  intents: Intent[],
+): boolean {
+  const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
+    const eligibles = workflowitem.permissions[intent] || [];
+    return acc.concat(eligibles);
+  }, []);
+  const hasPermission = eligibleIdentities.some(identity =>
+    canAssumeIdentity(actingUser, identity),
+  );
+  return hasPermission;
 }
