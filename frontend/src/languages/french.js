@@ -44,7 +44,7 @@ const fr = {
     open: "Ouvert",
     password: "Mot de passe",
     project: "Projet",
-    projectedBudget: "French: Projected Budget",
+    projectedBudget: "Budget estimé",
     revoke: "French: revoke",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",
@@ -108,7 +108,7 @@ const fr = {
     subproject_close_not_allowed: "Vous n'êtes pas autorisé à fermer le sous-projet",
     subproject_comment: "Commentaire du sous-projet",
     subproject_completion_string: "{0} cal {1} van",
-    subproject_currency: "Devise du sous-projet",
+    subproject_currency: "Devise",
     subproject_edit_title: "Modifier le sous-projet",
     subproject_permissions_title: "Définir les autorisations pour le sous-projet",
     subproject_preview: "French: Subproject Preview",
@@ -153,7 +153,7 @@ const fr = {
     workflow_none: "blub",
     workflow_permissions_title: "Définir les autorisations pour l'élement du workflow",
     workflow_redacted: "Expurgé",
-    workflow_selection: "French: You have selected {0} workflows",
+    workflow_selection: "Vous avez sélectionné {0} éléments du workflow",
     workflow_submit_for_review: "Soumettre pour examen",
     workflow_table_title: "Liste des étapes",
     workflow_title: "Titre du workflow",
@@ -324,7 +324,7 @@ const fr = {
 
   permissions: {
     admin: "Autorisations d'administrateur",
-    project_assign: "Attribuer un projet à d'autres",
+    project_assign: "Changer le responsable projet",
     project_close: "Fermer le projet",
     project_createSubproject: "Créer des sous-projets",
     project_intent_grantPermission: "Accorder des autorisations",
@@ -362,7 +362,7 @@ const fr = {
     global_revokePermission: "Révoquer  des autorisations globales à autres",
     network_list: "Afficher tous les noeuds connectés",
     network_voteForPermission: "Voter si un noeud peut joindre le réseau",
-    project_update: "French: Modifier le projet"
+    project_update: "Mettre à jour"
   },
 
   language: {
