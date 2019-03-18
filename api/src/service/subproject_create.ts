@@ -7,6 +7,7 @@ import { ServiceUser } from "./domain/organization/service_user";
 import { Id } from "./domain/workflow/subproject";
 import * as Subproject from "./domain/workflow/subproject_create";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
+import { store } from "./store";
 
 export { RequestData } from "./domain/workflow/subproject_create";
 
@@ -26,14 +27,19 @@ export async function createSubproject(
       },
     });
   });
-  if (errors) return Promise.reject(errors);
+
+  if (errors.length > 0) return Promise.reject(errors);
   if (!newEvents.length) {
     const msg = "failed to create subproject";
     logger.error({ ctx, serviceUser, requestData }, msg);
     throw new Error(msg);
   }
 
-  const subprojectEvent = newEvents.find(x => (x as any).subprojectId !== undefined);
+  for (const event of newEvents) {
+    await store(conn, ctx, event);
+  }
+
+  const subprojectEvent = newEvents.find(x => (x as any).subproject.id !== undefined);
   if (subprojectEvent === undefined) throw Error(`Assertion: This is a bug.`);
   return (subprojectEvent as SubprojectCreated.Event).subproject.id;
 }

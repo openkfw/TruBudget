@@ -186,7 +186,6 @@ export async function withCache<T>(
             throw Error(`not implemented: notification event of type ${event.type}`);
         }
       };
-
       return (cache.eventsByStream.get(projectId) || []).filter(subprojectFilter);
     },
 

@@ -38,7 +38,8 @@ interface RequestBodyV1 {
 const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
-    project: Joi.object({
+    projectId: Joi.string().required(),
+    subproject: Joi.object({
       id: Subproject.idSchema,
       status: Joi.valid("open", "closed"),
       displayName: Joi.string().required(),

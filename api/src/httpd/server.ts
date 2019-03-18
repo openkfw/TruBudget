@@ -47,11 +47,19 @@ const addLogging = (server: fastify.FastifyInstance) => {
     done();
   });
   server.addHook("onSend", (req, reply, payload, done) => {
+    let jsonPayload;
+    try {
+      jsonPayload = JSON.parse(payload);
+    } catch (e) {
+      logger.warn(e, "Error during parsing of payload");
+      jsonPayload = payload;
+    }
+
     logger.debug({
       id: req.id,
       status: reply.res.statusCode,
       message: reply.res.statusMessage,
-      payload: JSON.parse(payload),
+      payload: jsonPayload,
     });
     done();
   });

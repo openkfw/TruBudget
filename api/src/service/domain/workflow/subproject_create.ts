@@ -2,25 +2,23 @@ import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
-import { canAssumeIdentity } from "../organization/auth_token";
+import { PreconditionError } from "../errors/precondition_error";
+import * as AuthToken from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
-import { sourceProjects } from "./project_eventsourcing";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
 import * as SubprojectCreated from "./subproject_created";
 import { sourceSubprojects } from "./subproject_eventsourcing";
-import { PreconditionError } from "../errors/precondition_error";
-import * as Result from "../../../result";
-import * as AuthToken from "../organization/auth_token";
 
 export interface RequestData {
   projectId: Project.Id;

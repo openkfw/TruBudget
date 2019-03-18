@@ -8,7 +8,6 @@ import * as GroupMemberAddAPI from "./group_member_add";
 import * as GroupMemberRemoveAPI from "./group_member_remove";
 import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
-import { Ctx } from "./lib/ctx";
 import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -31,9 +30,6 @@ import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
 import * as Multichain from "./service";
-import { BusinessEvent } from "./service/domain/business_event";
-import { ServiceUser } from "./service/domain/organization/service_user";
-import * as Subproject from "./service/domain/workflow/subproject";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
 import * as GlobalPermissionsGetService from "./service/global_permissions_get";
@@ -57,18 +53,19 @@ import * as ProjectProjectedBudgetDeleteService from "./service/project_projecte
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
+import * as SubprojectCreateService from "./service/subproject_create";
+import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
-import * as SubprojectListAPI from "./subproject_list";
-import * as SubprojectListService from "./service/subproject_list";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemListService from "./service/workflowitem_list";
-import * as OldSubprojectModel from "./subproject/model/Subproject";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
+import * as SubprojectCreateAPI from "./subproject_create";
+import * as SubprojectListAPI from "./subproject_list";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
@@ -454,6 +451,11 @@ ProjectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
 /*
  * APIs related to Subprojects
  */
+
+SubprojectCreateAPI.addHttpHandler(server, URL_PREFIX, {
+  createSubproject: (ctx, user, body) =>
+    SubprojectCreateService.createSubproject(db, ctx, user, body),
+});
 
 SubprojectListAPI.addHttpHandler(server, URL_PREFIX, {
   listSubprojects: (ctx, user, projectId) =>
