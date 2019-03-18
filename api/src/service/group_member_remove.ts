@@ -1,12 +1,10 @@
 import { Ctx } from "../lib/ctx";
+import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import * as Group from "./domain/organization/group";
 import * as GroupMemberRemove from "./domain/organization/group_member_remove";
 import { ServiceUser } from "./domain/organization/service_user";
-import { loadGroupEvents } from "./load";
 import { store } from "./store";
-
-const GROUPS_STREAM = "groups";
 
 export async function removeMember(
   conn: ConnToken,
@@ -15,14 +13,12 @@ export async function removeMember(
   groupId: Group.Id,
   newMember: Group.Member,
 ): Promise<void> {
-  const { newEvents, errors } = await GroupMemberRemove.removeMember(
-    ctx,
-    serviceUser,
-    groupId,
-    newMember,
-    {
-      getGroupEvents: async () => loadGroupEvents(conn),
-    },
+  const { newEvents, errors } = await Cache.withCache(conn, ctx, cache =>
+    GroupMemberRemove.removeMember(ctx, serviceUser, groupId, newMember, {
+      getGroupEvents: async () => {
+        return cache.getGroupEvents();
+      },
+    }),
   );
   if (errors.length > 0) return Promise.reject(errors);
 

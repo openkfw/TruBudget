@@ -237,13 +237,15 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           },
         }));
 
+        const data: ExposedProjectDetails = {
+          project: exposedProject,
+          subprojects: exposedSubprojects,
+        };
+
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: {
-            project: exposedProject,
-            subprojects: exposedSubprojects,
-          },
+          data,
         };
         reply.status(code).send(body);
       } catch (err) {

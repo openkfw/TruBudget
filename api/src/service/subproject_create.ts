@@ -1,11 +1,12 @@
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
+import * as Result from "../result";
+import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import { Id } from "./domain/workflow/subproject";
 import * as Subproject from "./domain/workflow/subproject_create";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
-import { loadProjectEvents } from "./load";
 
 export { RequestData } from "./domain/workflow/subproject_create";
 
@@ -15,8 +16,15 @@ export async function createSubproject(
   serviceUser: ServiceUser,
   requestData: Subproject.RequestData,
 ): Promise<Id> {
-  const { newEvents, errors } = await Subproject.createSubproject(ctx, serviceUser, requestData, {
-    getProjectEvents: async projectId => loadProjectEvents(conn, projectId),
+  const { newEvents, errors } = await Cache.withCache(conn, ctx, cache => {
+    return Subproject.createSubproject(ctx, serviceUser, requestData, {
+      subprojectExists: async (projectId, subprojectId) => {
+        return cache.getSubprojectEvents(projectId, subprojectId).length > 0;
+      },
+      projectPermissions: async projectId => {
+        return cache.getProject(projectId).then(result => Result.map(result, p => p.permissions));
+      },
+    });
   });
   if (errors) return Promise.reject(errors);
   if (!newEvents.length) {
@@ -27,6 +35,5 @@ export async function createSubproject(
 
   const subprojectEvent = newEvents.find(x => (x as any).subprojectId !== undefined);
   if (subprojectEvent === undefined) throw Error(`Assertion: This is a bug.`);
-  const subprojectId = (subprojectEvent as SubprojectCreated.Event).subproject.id;
-  return subprojectId;
+  return (subprojectEvent as SubprojectCreated.Event).subproject.id;
 }

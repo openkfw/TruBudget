@@ -33,7 +33,6 @@ export async function authenticate(
   userId: string,
   password: string,
 ): Promise<AuthToken.AuthToken> {
-  const multichain = conn.multichainClient;
   let token: AuthToken.AuthToken;
 
   // The special "root" user is not on the chain:

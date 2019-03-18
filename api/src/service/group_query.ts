@@ -2,6 +2,7 @@ import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
+import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { NotFound } from "./domain/errors/not_found";
 import * as Group from "./domain/organization/group";
@@ -9,9 +10,8 @@ import * as GroupGet from "./domain/organization/group_get";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserRecord from "./domain/organization/user_record";
-import { loadGroupEvents } from "./load";
 
-const GROUPS_STREAM = "groups";
+// TODO move groups handling to domain layer + make sure the cache is only refreshed _once_
 
 export async function getGroups(
   conn: ConnToken,
@@ -19,9 +19,13 @@ export async function getGroups(
   serviceUser: ServiceUser,
 ): Promise<Group.Group[]> {
   try {
-    const groups = await GroupGet.getAllGroups(ctx, serviceUser, {
-      getGroupEvents: async () => loadGroupEvents(conn),
-    });
+    const groups = await Cache.withCache(conn, ctx, cache =>
+      GroupGet.getAllGroups(ctx, serviceUser, {
+        getGroupEvents: async () => {
+          return cache.getGroupEvents();
+        },
+      }),
+    );
     return groups;
   } catch (err) {
     throw new VError(err, "failed to fetch groups");

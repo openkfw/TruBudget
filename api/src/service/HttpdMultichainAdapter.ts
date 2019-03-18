@@ -18,40 +18,6 @@ import * as Multichain from "../service";
 import * as Group from "../service/groups";
 import * as Workflowitem from "../workflowitem";
 
-export function assignProject(conn: Multichain.ConnToken): HTTP.ProjectAssigner {
-  return async (token: AuthToken, projectId: string, assignee: string) => {
-    const issuer: Multichain.Issuer = { name: token.userId, address: token.address };
-    const actingUser: Project.User = { id: token.userId, groups: token.groups };
-
-    return Project.assign(actingUser, projectId, assignee, {
-      getProject: async id => Project.validateProject(await Multichain.getProject(conn, id)),
-      saveProjectAssignment: (id, selectedAssignee) =>
-        Multichain.writeProjectAssignedToChain(conn, issuer, id, selectedAssignee),
-      notify: async (project, user) => {
-        const assignmentNotification: Notification.ProjectAssignment = {
-          projectId: project.id,
-          actingUser: user,
-          assignee: project.assignee,
-        };
-
-        await Notification.projectAssigned(assignmentNotification, {
-          send: (message, recipient) => {
-            const notificationResource = Multichain.generateResources(project.id);
-            return Multichain.issueNotification(
-              conn,
-              issuer,
-              message,
-              recipient,
-              notificationResource,
-            );
-          },
-          resolveGroup: groupId => Group.getUsers(conn, groupId),
-        });
-      },
-    });
-  };
-}
-
 export function getWorkflowitemList(conn: Multichain.ConnToken): HTTP.AllWorkflowitemsReader {
   return async (token: AuthToken, projectId: string, subprojectId: string) => {
     const user: Workflowitem.User = { id: token.userId, groups: token.groups };
