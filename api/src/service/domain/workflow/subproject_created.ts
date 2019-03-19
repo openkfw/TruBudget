@@ -106,6 +106,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Subproject.Subpr
     assignee: initialData.assignee,
     currency: initialData.currency,
     projectedBudgets: initialData.projectedBudgets,
+    workflowitemOrdering: [],
     permissions: initialData.permissions,
     log: [],
     additionalData: initialData.additionalData,

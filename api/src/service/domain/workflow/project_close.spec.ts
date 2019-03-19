@@ -37,6 +37,7 @@ const baseSubproject: Subproject = {
   description: "dummy",
   currency: "EUR",
   projectedBudgets: [],
+  workflowitemOrdering: [],
   permissions: {},
   log: [],
   additionalData: {},

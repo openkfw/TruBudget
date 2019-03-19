@@ -2,13 +2,13 @@ import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
-import * as Project from "./project";
 import * as AdditionalData from "../additional_data";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { CurrencyCode, currencyCodeSchema } from "./money";
+import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import { SubprojectTraceEvent, subprojectTraceEventSchema } from "./subproject_trace_event";
 
@@ -26,6 +26,9 @@ export interface Subproject {
   assignee?: string;
   currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
+  // The ordering doesn't need to include all workflowitems; any items not included here
+  // are simply ordered by their creation time:
+  workflowitemOrdering: string[];
   permissions: Permissions;
   log: SubprojectTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
@@ -48,6 +51,9 @@ const schema = Joi.object({
   assignee: Joi.string(),
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
+  workflowitemOrdering: Joi.array()
+    .items(Joi.string())
+    .required(),
   permissions: Joi.object()
     .pattern(/.*/, Joi.array().items(Joi.string()))
     .required(),

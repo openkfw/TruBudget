@@ -3,19 +3,16 @@ import { isArray } from "util";
 import { ResourceType } from "../lib/resourceTypes";
 import { NotificationResourceDescription } from "../notification/model/Notification";
 import * as NotificationCreated from "./domain/workflow/notification_created";
-import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "./domain/workflow/subproject_closed";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
+import * as WorkflowitemsReordered from "./domain/workflow/subproject_items_reordered";
 import * as SubprojectPermissionGranted from "./domain/workflow/subproject_permission_granted";
 import * as SubprojectPermissionRevoked from "./domain/workflow/subproject_permission_revoked";
 import * as SubprojectUpdated from "./domain/workflow/subproject_updated";
-import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
-import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import * as WorkflowitemPermissionGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
-import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import { Event } from "./event";
 
 // TODO: at the end implement notification
