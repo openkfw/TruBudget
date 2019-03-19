@@ -63,10 +63,9 @@ describe("cache_updateAggregates", () => {
         projectId,
         testAssignee,
       );
+      if (Result.isErr(projectAssignedEvent)) throw projectAssignedEvent;
       const projectCloseEvent = ProjectClosed.createEvent("http", "test", projectId);
-      if (Result.isErr(projectAssignedEvent)) {
-        return assert.fail(undefined, undefined, "Project assgined event failed");
-      }
+      if (Result.isErr(projectCloseEvent)) throw projectCloseEvent;
       updateAggregates(defaultCtx, cache, [projectAssignedEvent, projectCloseEvent]);
 
       const projectUnderTest = cache.cachedProjects.get(projectId);
