@@ -1,6 +1,4 @@
-const {
-  withRetry
-} = require("./lib");
+const { withRetry } = require("./lib");
 
 const authenticate = async (axios, userId, password) => {
   const response = await withRetry(() =>
@@ -46,15 +44,15 @@ const grantAllPermissionsToUser = async (axios, userId) => {
 
 const createProject = async (axios, projectTemplate) => {
   const args = {
-    ...projectTemplate,
-  }
+    ...projectTemplate
+  };
   delete args.permissions;
   delete args.subprojects;
   await withRetry(() =>
     axios.post("/global.createProject", {
       project: {
         ...args,
-        status: "open", // otherwise we won't be able to add subprojects
+        status: "open" // otherwise we won't be able to add subprojects
       }
     })
   );
@@ -70,17 +68,17 @@ const closeProject = async (axios, project) => {
 
 const createSubproject = async (axios, project, subprojectTemplate) => {
   const args = {
-    ...subprojectTemplate,
-  }
+    ...subprojectTemplate
+  };
   delete args.permissions;
-  delete args.workflowitems;
+  delete args.workflows;
   await withRetry(() =>
     axios.post("/project.createSubproject", {
       projectId: project.data.id,
       subproject: {
         ...args,
         description: "FAILED UPDATE?",
-        status: "open", // otherwise we won't be able to add workflowitems
+        status: "open" // otherwise we won't be able to add workflowitems
       }
     })
   );
@@ -156,28 +154,28 @@ const closeWorkflowitem = async (
 const findProject = async (axios, projectTemplate) => {
   return await withRetry(() =>
     axios
-    .get("/project.list")
-    .then(res => res.data.data.items)
-    .then(projects =>
-      projects.find(p => p.data.displayName === projectTemplate.displayName)
-    )
-    .catch(err => {
-      console.error(err);
-      process.exit(1);
-    })
+      .get("/project.list")
+      .then(res => res.data.data.items)
+      .then(projects =>
+        projects.find(p => p.data.displayName === projectTemplate.displayName)
+      )
+      .catch(err => {
+        console.error(err);
+        process.exit(1);
+      })
   );
 };
 
 const findSubproject = async (axios, project, subprojectTemplate) => {
   return await withRetry(() =>
     axios
-    .get(`/subproject.list?projectId=${project.data.id}`)
-    .then(res => res.data.data.items)
-    .then(subprojects =>
-      subprojects.find(
-        x => x.data.displayName === subprojectTemplate.displayName
+      .get(`/subproject.list?projectId=${project.data.id}`)
+      .then(res => res.data.data.items)
+      .then(subprojects =>
+        subprojects.find(
+          x => x.data.displayName === subprojectTemplate.displayName
+        )
       )
-    )
   );
 };
 
@@ -189,17 +187,17 @@ const findWorkflowitem = async (
 ) => {
   return await withRetry(() =>
     axios
-    .get(
-      `/workflowitem.list?projectId=${project.data.id}&subprojectId=${
+      .get(
+        `/workflowitem.list?projectId=${project.data.id}&subprojectId=${
           subproject.data.id
         }`
-    )
-    .then(res => res.data.data.workflowitems)
-    .then(items =>
-      items.find(
-        item => item.data.displayName === workflowitemTemplate.displayName
       )
-    )
+      .then(res => res.data.data.workflowitems)
+      .then(items =>
+        items.find(
+          item => item.data.displayName === workflowitemTemplate.displayName
+        )
+      )
   );
 };
 const grantPermissions = async (
@@ -235,6 +233,7 @@ const grantPermissions = async (
     throw Error("not even projectId is given..");
   }
 
+  console.log("... check permissions before granting");
   for (const [intent, users] of Object.entries(permissions)) {
     for (const userId of users) {
       await withRetry(() =>
