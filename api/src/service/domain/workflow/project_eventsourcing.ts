@@ -1,7 +1,6 @@
 import { produce as withCopy } from "immer";
 
 import { Ctx } from "../../../lib/ctx";
-import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";

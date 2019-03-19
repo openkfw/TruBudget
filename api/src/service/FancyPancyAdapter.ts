@@ -1,3 +1,5 @@
+import { isArray } from "util";
+
 import { ResourceType } from "../lib/resourceTypes";
 import { NotificationResourceDescription } from "../notification/model/Notification";
 import * as NotificationCreated from "./domain/workflow/notification_created";
@@ -15,7 +17,6 @@ import * as WorkflowitemPermissionRevoked from "./domain/workflow/workflowitem_p
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import { Event } from "./event";
-import { isArray } from "util";
 
 // TODO: at the end implement notification
 /**
@@ -73,7 +74,7 @@ function mapOldEventToBusinessEvent(
   const data: Event = event;
 
   const params = [stream, key, data];
-  const [a = undefined, b = undefined, request] = matchPublishRequest(params, stream, key, data);
+  const [a, b, request] = matchPublishRequest(params, stream, key, data);
 
   // TODO: will not work until all events are translated or new
   return request.json;
@@ -111,7 +112,7 @@ function mapBusinessEventToOldEvent(event) {
 function extractSubprojectFromKey(key) {
   const captured = /([^_]+)_workflows/.exec(key);
 
-  if (!captured || captured.length != 2) {
+  if (!captured || captured.length !== 2) {
     return undefined;
   }
 
@@ -408,22 +409,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
 
       return [stream, key, { json: wfiUpdated }];
     }
-    case "workflowitem.assign": {
-      if (!event.data.identity) {
-        console.error("Error handling publish request for workflowitem.assign", params);
-        return params;
-      }
-
-      const wfiAssigned: WorkflowitemAssigned.Event = WorkflowitemAssigned.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        workflowitemId!,
-        event.data.identity,
-      );
-      return [stream, key, { json: wfiAssigned }];
-    }
     case "workflowitem.close": {
       if (!event.data) {
         console.error("Error handling publish request for workflowitem.close", params);
@@ -628,62 +613,15 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
       };
       return { ...result, data: { json: oldEvent } };
     }
-    case "subproject_permission_revoked":
-    case "workflowitems_reordered":
-      {
-        const event: WorkflowitemsReordered.Event = result.data.json;
-        const oldEvent: Event = {
-          key: event.subprojectId,
-          intent: "subproject.reorderWorkflowitems",
-          createdBy: event.publisher,
-          createdAt: event.time,
-          dataVersion: 1,
-          data: event.ordering ? event.ordering : [],
-        };
-        return { ...result, data: { json: oldEvent } };
-      }
-
-      return result;
-    case "workflowitem_assigned": {
-      const event: WorkflowitemAssigned.Event = result.data.json;
+    case "workflowitems_reordered": {
+      const event: WorkflowitemsReordered.Event = result.data.json;
       const oldEvent: Event = {
-        key: event.workflowitemId,
-        intent: "workflowitem.assign",
+        key: event.subprojectId,
+        intent: "subproject.reorderWorkflowitems",
         createdBy: event.publisher,
         createdAt: event.time,
         dataVersion: 1,
-        data: {
-          identity: event.assignee,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
-    case "workflowitem_created": {
-      const event: WorkflowitemCreated.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.workflowitem.id,
-        intent: "subproject.createWorkflowitem",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          workflowitem: {
-            id: event.workflowitem.id,
-            creationUnixTs: new Date(event.time).getTime(),
-            displayName: event.workflowitem.displayName,
-            exchangeRate: event.workflowitem.exchangeRate,
-            billingDate: event.workflowitem.billingDate,
-            amount: event.workflowitem.amount,
-            currency: event.workflowitem.currency,
-            amountType: event.workflowitem.amountType,
-            description: event.workflowitem.description,
-            status: event.workflowitem.status,
-            assignee: event.workflowitem.assignee,
-            documents: event.workflowitem.documents,
-            additionalData: event.workflowitem.additionalData,
-          },
-          permissions: event.workflowitem.permissions,
-        },
+        data: event.ordering ? event.ordering : [],
       };
       return { ...result, data: { json: oldEvent } };
     }

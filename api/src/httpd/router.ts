@@ -411,35 +411,6 @@ export const registerRoutes = (
   // ------------------------------------------------------------
   //       workflowitem
   // ------------------------------------------------------------
-
-  server.post(
-    `${urlPrefix}/workflowitem.assign`,
-    getSchema(server, "workflowitemAssign"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const body = req.body.data;
-      // assignWorkflowitem(multichainClient, request as AuthenticatedRequest)
-      workflowitemAssigner(
-        req.user,
-        body.projectId,
-        body.subprojectId,
-        body.workflowitemId,
-        body.identity,
-      )
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
   server.post(
     `${urlPrefix}/workflowitem.update`,
     getSchema(server, "workflowitemUpdate"),

@@ -194,7 +194,12 @@ export async function withCache<T>(
       subprojectId: string,
       workflowitemId?: string,
     ): BusinessEvent[] => {
-      throw Error("not implemented: retrieving subproject events from cache");
+      const workflowitemFilter = event => {
+        if (event.type.startsWith("workflowitem_") || workflowitemId === undefined) {
+          return true;
+        }
+      };
+      return (cache.eventsByStream.get(projectId) || []).filter(workflowitemFilter);
     },
 
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {

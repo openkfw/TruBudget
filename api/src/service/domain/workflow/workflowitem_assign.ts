@@ -16,7 +16,7 @@ import { sourceWorkflowitems } from "./workflowitem_eventsourcing";
 
 // do we source all the time or can we pass the workflow to close into this function?
 
-export function assignWorkflowItem(
+export function assignWorkflowitem(
   ctx: Ctx,
   assigningUser: ServiceUser,
   assignee: UserRecord.Id,

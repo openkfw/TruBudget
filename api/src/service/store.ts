@@ -60,6 +60,13 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
         event,
       });
 
+    case "workflowitem_assigned":
+      return writeTo(conn, ctx, {
+        stream: event.projectId,
+        keys: [`${event.subprojectId}_workflows`, event.workflowitemId],
+        event,
+      });
+
     case "notification_created":
       await ensureStreamExists(conn, ctx, "notifications", "notifications");
       return writeTo(conn, ctx, { stream: "notifications", keys: [event.recipient], event });
