@@ -12,8 +12,8 @@ export async function listProjects(
 ): Promise<Project.Project[]> {
   const visibleProjects = await Cache.withCache(conn, ctx, async cache =>
     ProjectList.getAllVisible(ctx, serviceUser, {
-      getAllProjectEvents: async () => {
-        return cache.getProjectEvents();
+      getAllProjects: async () => {
+        return cache.getProjects();
       },
     }),
   );

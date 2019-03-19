@@ -8,7 +8,7 @@ import { sourceSubprojects } from "./subproject_eventsourcing";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 
 interface Repository {
-  getAllSubprojectEvents(): Promise<BusinessEvent[]>;
+  getAllSubprojects(): Promise<Subproject.Subproject[]>;
 }
 
 export async function getAllVisible(
@@ -16,8 +16,7 @@ export async function getAllVisible(
   user: ServiceUser,
   repository: Repository,
 ): Promise<Subproject.Subproject[]> {
-  const allSubprojectsEvents = await repository.getAllSubprojectEvents();
-  const { subprojects: allSubprojects } = sourceSubprojects(ctx, allSubprojectsEvents);
+  const allSubprojects = await repository.getAllSubprojects();
 
   const isVisible =
     user.id === "root"
