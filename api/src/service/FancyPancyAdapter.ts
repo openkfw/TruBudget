@@ -500,9 +500,9 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
         createdAt: event.time,
         dataVersion: 1,
         data: {
-          displayName: event.subproject.displayName,
-          description: event.subproject.description,
-          additionalData: event.subproject.additionalData,
+          displayName: event.update.displayName,
+          description: event.update.description,
+          additionalData: event.update.additionalData,
         },
       };
       return { ...result, data: { json: oldEvent } };
@@ -570,15 +570,15 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
         createdAt: event.time,
         dataVersion: 1,
         data: {
-          displayName: event.workflowitem.displayName,
-          exchangeRate: event.workflowitem.exchangeRate,
-          billingDate: event.workflowitem.billingDate,
-          amount: event.workflowitem.amount,
-          currency: event.workflowitem.currency,
-          amountType: event.workflowitem.amountType,
-          description: event.workflowitem.description,
-          documents: event.workflowitem.documents,
-          additionalData: event.workflowitem.additionalData,
+          displayName: event.update.displayName,
+          exchangeRate: event.update.exchangeRate,
+          billingDate: event.update.billingDate,
+          amount: event.update.amount,
+          currency: event.update.currency,
+          amountType: event.update.amountType,
+          description: event.update.description,
+          documents: event.update.documents,
+          additionalData: event.update.additionalData,
         },
       };
       return { ...result, data: { json: oldEvent } };

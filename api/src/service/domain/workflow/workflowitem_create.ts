@@ -1,8 +1,8 @@
-import * as crypto from "crypto";
 import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
@@ -13,12 +13,11 @@ import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
-import { StoredDocument, UploadedDocument, uploadedDocumentSchema } from "./document";
+import { hashDocument, StoredDocument, UploadedDocument, uploadedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
-import logger from "../../../lib/logger";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -140,21 +139,6 @@ export async function createWorkflowitem(
   }
 
   return { newEvents: [workflowitemCreated], errors: [] };
-}
-
-async function hashDocument(document: UploadedDocument): Promise<StoredDocument> {
-  return hashBase64String(document.base64).then(hashValue => ({
-    id: document.id,
-    hash: hashValue,
-  }));
-}
-
-async function hashBase64String(base64String: string): Promise<string> {
-  return new Promise<string>(resolve => {
-    const hash = crypto.createHash("sha256");
-    hash.update(Buffer.from(base64String, "base64"));
-    resolve(hash.digest("hex"));
-  });
 }
 
 function newDefaultPermissionsFor(userId: string): Permissions {

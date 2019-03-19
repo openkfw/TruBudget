@@ -8,8 +8,8 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
-import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
 import * as Subproject from "./subproject";
+import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
 
 export type Id = string;
 

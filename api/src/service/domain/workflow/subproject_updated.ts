@@ -26,7 +26,7 @@ export interface Event {
   publisher: Identity;
   projectId: Project.Id;
   subprojectId: Subproject.Id;
-  subproject: UpdatedData;
+  update: UpdatedData;
 }
 
 const updatedDataSchema = Joi.object({
@@ -50,7 +50,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
-  subproject: updatedDataSchema.required(),
+  update: updatedDataSchema.required(),
 });
 
 export function createEvent(
@@ -58,7 +58,7 @@ export function createEvent(
   publisher: Identity,
   projectId: Project.Id,
   subprojectId: Subproject.Id,
-  subproject: UpdatedData,
+  update: UpdatedData,
   time: string = new Date().toISOString(),
 ): Event {
   const event = {
@@ -67,7 +67,7 @@ export function createEvent(
     publisher,
     projectId,
     subprojectId,
-    subproject,
+    update,
     time,
   };
 
@@ -88,7 +88,7 @@ export function apply(
   event: Event,
   subproject: Subproject.Subproject,
 ): Result.Type<Subproject.Subproject> {
-  const update = event.subproject;
+  const update = event.update;
   if (update.displayName !== undefined) {
     subproject.displayName = update.displayName;
   }
