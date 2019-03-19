@@ -258,8 +258,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
         {
           displayName: event.data.displayName,
           description: event.data.description,
-          assignee: event.data.assignee,
-          currency: event.data.currency,
           additionalData: event.data.additionalData,
         },
       );
@@ -504,7 +502,6 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
         data: {
           displayName: event.subproject.displayName,
           description: event.subproject.description,
-          currency: event.subproject.currency,
           additionalData: event.subproject.additionalData,
         },
       };

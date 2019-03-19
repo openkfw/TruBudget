@@ -7,7 +7,7 @@ import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
-import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+import { projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
 
 type eventTypeType = "subproject_updated";
@@ -16,10 +16,6 @@ const eventType: eventTypeType = "subproject_updated";
 interface UpdatedData {
   displayName?: string;
   description?: string;
-  assignee?: Identity;
-  currency?: string;
-  projectedBudgets?: ProjectedBudget[];
-  // Additional information (key-value store), e.g. external IDs:
   additionalData?: object;
 }
 
