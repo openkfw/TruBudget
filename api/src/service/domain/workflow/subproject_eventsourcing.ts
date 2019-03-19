@@ -1,66 +1,118 @@
+import { produce as withCopy } from "immer";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as Subproject from "./subproject";
+import * as SubprojectAssigned from "./subproject_assigned";
+import * as SubprojectClosed from "./subproject_closed";
 import * as SubprojectCreated from "./subproject_created";
+import * as SubprojectPermissionGranted from "./subproject_permission_granted";
+import * as SubprojectPermissionRevoked from "./subproject_permission_revoked";
+import * as SubprojectProjectedBudgetDeleted from "./subproject_projected_budget_deleted";
+import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget_updated";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
+import * as SubprojectUpdated from "./subproject_updated";
 
 export function sourceSubprojects(
   ctx: Ctx,
   events: BusinessEvent[],
-): { subprojects: Subproject.Subproject[]; errors: EventSourcingError[] } {
-  const subprojects = new Map<Subproject.Id, Subproject.Subproject>();
-  const errors: EventSourcingError[] = [];
+): { subprojects: Subproject.Subproject[]; errors: Error[] } {
+  const subprojectsMap = new Map<Subproject.Id, Subproject.Subproject>();
+  const errors: Error[] = [];
   for (const event of events) {
-    apply(ctx, subprojects, event, errors);
+    if (!event.type.startsWith("subproject_")) {
+      continue;
+    }
+
+    const result = applySubprojectEvent(ctx, subprojectsMap, event);
+    if (Result.isErr(result)) {
+      errors.push(result);
+    } else {
+      result.log.push(newTraceEvent(result, event));
+      subprojectsMap.set(result.id, result);
+    }
   }
-  return { subprojects: [...subprojects.values()], errors };
+  const projects = [...subprojectsMap.values()];
+  return { subprojects: projects, errors };
 }
 
-function apply(
+function applySubprojectEvent(
   ctx: Ctx,
   subprojects: Map<Subproject.Id, Subproject.Subproject>,
   event: BusinessEvent,
-  errors: EventSourcingError[],
-) {
-  if (event.type === "subproject_created") {
-    handleCreate(ctx, subprojects, event, errors);
+): Result.Type<Subproject.Subproject> {
+  switch (event.type) {
+    case "subproject_created":
+      return SubprojectCreated.createFrom(ctx, event);
+
+    case "subproject_updated":
+      return apply(ctx, event, subprojects, event.subprojectId, SubprojectUpdated);
+
+    case "subproject_assigned":
+      return apply(ctx, event, subprojects, event.subprojectId, SubprojectAssigned);
+
+    case "subproject_closed":
+      return apply(ctx, event, subprojects, event.subprojectId, SubprojectClosed);
+
+    case "subproject_permission_granted":
+      return apply(ctx, event, subprojects, event.subprojectId, SubprojectPermissionGranted);
+
+    case "subproject_permission_revoked":
+      return apply(ctx, event, subprojects, event.subprojectId, SubprojectPermissionRevoked);
+
+    case "subproject_projected_budget_updated":
+      return apply(ctx, event, subprojects, event.subprojectId, SubprojectProjectedBudgetUpdated);
+
+    case "subproject_projected_budget_deleted":
+      return apply(ctx, event, subprojects, event.subprojectId, SubprojectProjectedBudgetDeleted);
+
+    default:
+      throw Error(`not implemented: ${event.type}`);
   }
 }
 
-function handleCreate(
-  ctx: Ctx,
-  subprojects: Map<Subproject.Id, Subproject.Subproject>,
-  subprojectCreated: SubprojectCreated.Event,
-  errors: EventSourcingError[],
-) {
-  const { subproject: initialData } = subprojectCreated;
-
-  let subproject = subprojects.get(initialData.id);
-  if (subproject !== undefined) return;
-
-  subproject = {
-    ...initialData,
-    createdAt: subprojectCreated.time,
-    log: [],
-  };
-
-  const result = Subproject.validate(subproject);
-  if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, subprojectCreated, result.message));
-    return;
-  }
-
-  const traceEvent: SubprojectTraceEvent = {
+function newTraceEvent(
+  subproject: Subproject.Subproject,
+  event: BusinessEvent,
+): SubprojectTraceEvent {
+  return {
     entityId: subproject.id,
     entityType: "subproject",
-    businessEvent: subprojectCreated,
+    businessEvent: event,
     snapshot: {
       displayName: subproject.displayName,
     },
   };
-  subproject.log.push(traceEvent);
+}
 
-  subprojects.set(subproject.id, subproject);
+type ApplyFn = (
+  ctx: Ctx,
+  event: BusinessEvent,
+  subproject: Subproject.Subproject,
+) => Result.Type<Subproject.Subproject>;
+function apply(
+  ctx: Ctx,
+  event: BusinessEvent,
+  subprojects: Map<Subproject.Id, Subproject.Subproject>,
+  subprojectId: string,
+  eventModule: { apply: ApplyFn },
+) {
+  const subproject = subprojects.get(subprojectId);
+  if (subproject === undefined) {
+    return new EventSourcingError(ctx, event, "not found", subprojectId);
+  }
+
+  try {
+    return withCopy(subproject, draft => {
+      const result = eventModule.apply(ctx, event, draft);
+      if (Result.isErr(result)) {
+        throw result;
+      }
+      return result;
+    });
+  } catch (err) {
+    return err;
+  }
 }

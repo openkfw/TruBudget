@@ -278,39 +278,9 @@ export const registerRoutes = (
   //       project
   // ------------------------------------------------------------
 
-  // server.post(
-  //   `${urlPrefix}/project.createSubproject`,
-  //   getSchema(server, "createSubproject"),
-  //   (request, reply) => {
-  //     createSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-  //       .then(response => send(reply, response))
-  //       .catch(err => handleError(request, reply, err));
-  //   },
-  // );
-
   // ------------------------------------------------------------
   //       subproject
   // ------------------------------------------------------------
-
-  // server.get(
-  //   `${urlPrefix}/subproject.viewDetails`,
-  //   getSchema(server, "subprojectViewDetails"),
-  //   (request, reply) => {
-  //     getSubprojectDetails(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-  //       .then(response => send(reply, response))
-  //       .catch(err => handleError(request, reply, err));
-  //   },
-  // );
-
-  server.post(
-    `${urlPrefix}/subproject.assign`,
-    getSchema(server, "subprojectAssign"),
-    (request, reply) => {
-      assignSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
 
   server.post(
     `${urlPrefix}/subproject.update`,

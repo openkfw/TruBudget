@@ -53,6 +53,7 @@ import * as ProjectProjectedBudgetDeleteService from "./service/project_projecte
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
+import * as SubprojectAssignService from "./service/subproject_assign";
 import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
 import * as SubprojectListService from "./service/subproject_list";
@@ -64,6 +65,7 @@ import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemListService from "./service/workflowitem_list";
+import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as SubprojectCreateAPI from "./subproject_create";
@@ -370,6 +372,11 @@ ProjectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
 /*
  * APIs related to Subprojects
  */
+
+SubprojectAssignAPI.addHttpHandler(server, URL_PREFIX, {
+  assignSubproject: (ctx, user, projectId, subprojectId, assignee) =>
+    SubprojectAssignService.assignSubproject(db, ctx, user, projectId, subprojectId, assignee),
+});
 
 SubprojectCreateAPI.addHttpHandler(server, URL_PREFIX, {
   createSubproject: (ctx, user, body) =>

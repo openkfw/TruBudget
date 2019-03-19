@@ -26,6 +26,7 @@ import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projec
 import * as ProjectUpdated from "./domain/workflow/project_updated";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
+import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
 import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
@@ -230,6 +231,7 @@ export async function withCache<T>(
       subprojectId: string,
     ): Promise<Result.Type<Subproject.Subproject>> => {
       // TODO should be cached here: source only if not in cache
+      console.log("IM HERE");
       const projectEvents = cache.eventsByStream.get(projectId) || [];
       const { subprojects } = sourceSubprojects(ctx, projectEvents);
       const subproject = subprojects.find(x => x.id === subprojectId);
@@ -479,6 +481,7 @@ const EVENT_PARSER_MAP = {
   project_projected_budget_updated: ProjectProjectedBudgetUpdated.validate,
   project_updated: ProjectUpdated.validate,
   subproject_created: SubprojectCreated.validate,
+  subproject_assigned: SubprojectAssigned.validate,
   subproject_projected_budget_deleted: SubprojectProjectedBudgetDeleted.validate,
   subproject_projected_budget_updated: SubprojectProjectedBudgetUpdated.validate,
   user_created: UserCreated.validate,

@@ -1,8 +1,10 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import { CurrencyCode, currencyCodeSchema } from "./money";
@@ -89,4 +91,29 @@ export function createEvent(
 export function validate(input: any): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function createFrom(ctx: Ctx, event: Event): Result.Type<Subproject.Subproject> {
+  const initialData = event.subproject;
+
+  const subproject: Subproject.Subproject = {
+    id: initialData.id,
+    createdAt: event.time,
+    status: initialData.status,
+    displayName: initialData.displayName,
+    description: initialData.description,
+    assignee: initialData.assignee,
+    currency: initialData.currency,
+    projectedBudgets: initialData.projectedBudgets,
+    permissions: initialData.permissions,
+    log: [],
+    additionalData: initialData.additionalData,
+  };
+
+  const result = Subproject.validate(subproject);
+  if (Result.isErr(result)) {
+    return new EventSourcingError(ctx, event, result.message);
+  }
+
+  return subproject;
 }

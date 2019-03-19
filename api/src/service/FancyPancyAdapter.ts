@@ -268,21 +268,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       );
       return [stream, key, { json: spUpdated }];
     }
-    case "subproject.assign": {
-      if (!event.data.identity) {
-        console.error("Error handling publish request for subproject.assign", params);
-        return params;
-      }
-
-      const spAssigned: SubprojectAssigned.Event = SubprojectAssigned.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        event.data.identity,
-      );
-      return [stream, key, { json: spAssigned }];
-    }
     case "subproject.close": {
       if (!event.data) {
         console.error("Error handling publish request for subproject.close", params);
@@ -524,20 +509,6 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
           description: event.subproject.description,
           currency: event.subproject.currency,
           additionalData: event.subproject.additionalData,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
-    case "subproject_assigned": {
-      const event: SubprojectAssigned.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.subprojectId,
-        intent: "subproject.assign",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          identity: event.assignee,
         },
       };
       return { ...result, data: { json: oldEvent } };
