@@ -18,24 +18,29 @@ import * as SubprojectUpdated from "./subproject_updated";
 export function sourceSubprojects(
   ctx: Ctx,
   events: BusinessEvent[],
+  origin?: Map<Subproject.Id, Subproject.Subproject>,
 ): { subprojects: Subproject.Subproject[]; errors: Error[] } {
-  const subprojectsMap = new Map<Subproject.Id, Subproject.Subproject>();
+  const subprojects =
+    origin === undefined
+      ? new Map<Subproject.Id, Subproject.Subproject>()
+      : new Map<Subproject.Id, Subproject.Subproject>(origin);
+
   const errors: Error[] = [];
   for (const event of events) {
     if (!event.type.startsWith("subproject_")) {
       continue;
     }
 
-    const result = applySubprojectEvent(ctx, subprojectsMap, event);
+    const result = applySubprojectEvent(ctx, subprojects, event);
     if (Result.isErr(result)) {
       errors.push(result);
     } else {
       result.log.push(newTraceEvent(result, event));
-      subprojectsMap.set(result.id, result);
+      subprojects.set(result.id, result);
     }
   }
-  const projects = [...subprojectsMap.values()];
-  return { subprojects: projects, errors };
+
+  return { subprojects: [...subprojects.values()], errors };
 }
 
 function applySubprojectEvent(

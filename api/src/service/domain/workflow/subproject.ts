@@ -2,6 +2,7 @@ import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
+import * as Project from "./project";
 import * as AdditionalData from "../additional_data";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
@@ -17,6 +18,7 @@ export const idSchema = Joi.string().max(32);
 
 export interface Subproject {
   id: Id;
+  projectId: Project.Id;
   createdAt: string;
   status: "open" | "closed";
   displayName: string;
@@ -32,6 +34,7 @@ export interface Subproject {
 
 const schema = Joi.object({
   id: idSchema.required(),
+  projectId: Project.idSchema.required(),
   createdAt: Joi.date()
     .iso()
     .required(),

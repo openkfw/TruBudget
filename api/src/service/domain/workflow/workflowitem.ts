@@ -9,6 +9,7 @@ import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
+import * as Subproject from "./subproject";
 
 export type Id = string;
 
@@ -17,6 +18,7 @@ export const idSchema = Joi.string().max(32);
 export interface Workflowitem {
   isRedacted: false;
   id: Id;
+  subprojectId: Subproject.Id;
   createdAt: string;
   dueDate?: string;
   displayName: string;
@@ -38,6 +40,7 @@ export interface Workflowitem {
 export interface RedactedWorkflowitem {
   isRedacted: true;
   id: Id;
+  subprojectId: Subproject.Id;
   createdAt: string;
   dueDate?: null;
   displayName: null;
@@ -60,6 +63,7 @@ export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
 const schema = Joi.object().keys({
   isRedacted: Joi.boolean().required(),
   id: Joi.string().required(),
+  subprojectId: Subproject.idSchema.required(),
   createdAt: Joi.date()
     .iso()
     .required(),

@@ -98,6 +98,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Subproject.Subpr
 
   const subproject: Subproject.Subproject = {
     id: initialData.id,
+    projectId: event.projectId,
     createdAt: event.time,
     status: initialData.status,
     displayName: initialData.displayName,

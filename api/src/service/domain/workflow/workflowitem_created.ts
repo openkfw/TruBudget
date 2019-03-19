@@ -115,6 +115,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
   const workflowitem: Workflowitem.Workflowitem = {
     isRedacted: false,
     id: initialData.id,
+    subprojectId: event.subprojectId,
     createdAt: event.time,
     dueDate: initialData.dueDate,
     displayName: initialData.displayName,

@@ -11,8 +11,13 @@ import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 export function sourceWorkflowitems(
   ctx: Ctx,
   events: BusinessEvent[],
+  origin?: Map<Workflowitem.Id, Workflowitem.Workflowitem>,
 ): { workflowitems: Workflowitem.Workflowitem[]; errors: EventSourcingError[] } {
-  const items = new Map<Workflowitem.Id, Workflowitem.Workflowitem>();
+  const items =
+    origin === undefined
+      ? new Map<Workflowitem.Id, Workflowitem.Workflowitem>()
+      : new Map<Workflowitem.Id, Workflowitem.Workflowitem>(origin);
+
   const errors: EventSourcingError[] = [];
   for (const event of events) {
     apply(ctx, items, event, errors);
@@ -43,13 +48,14 @@ function handleCreate(
   workflowitemCreated: WorkflowitemCreated.Event,
   errors: EventSourcingError[],
 ) {
-  const { workflowitem: initialData } = workflowitemCreated;
+  const { subprojectId, workflowitem: initialData } = workflowitemCreated;
 
   let workflowitem = items.get(initialData.id);
   if (workflowitem !== undefined) return;
 
   workflowitem = {
     ...initialData,
+    subprojectId,
     isRedacted: false,
     createdAt: workflowitemCreated.time,
     log: [],

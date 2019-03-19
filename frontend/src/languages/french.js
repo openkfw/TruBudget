@@ -1,11 +1,11 @@
 const fr = {
   common: {
-    action: "French: Action",
+    action: "Action",
     actions: "Actions",
     add: "Ajouter",
     added: "Ajouté",
     approver: "Approbateur",
-    assign: "French: assign",
+    assign: "Allouer",
     assigned: "Alloué",
     assigned_budget: "Budget alloué",
     assignee: "Responsable",
@@ -29,7 +29,7 @@ const fr = {
     edit: "Modifier",
     edited: "Modifié",
     finish: "Terminer",
-    grant: "French: grant",
+    grant: "Accorder",
     history: "Historique",
     id: "Id",
     in_progress: "En cours d'exécution",
@@ -45,7 +45,7 @@ const fr = {
     password: "Mot de passe",
     project: "Projet",
     projectedBudget: "Budget estimé",
-    revoke: "French: revoke",
+    revoke: "Revoquer",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",
     status: "Statut",
@@ -54,7 +54,7 @@ const fr = {
     subprojects: "Sous-projets",
     task_status: "Etat de la tâche",
     thumbnail: "Vignette",
-    update: "French: Update",
+    update: "Mettre à jour",
     username: "Nom d'utilisateur",
     view: "Vue",
     workflowItem: "Élement de workflow"
@@ -87,7 +87,7 @@ const fr = {
     project_disbursement_authority_role: "Sélectionnez le rôle d'autorité de décaissement",
     project_disbursement_authority_role_description:
       "Les autorités ont autorisé l'approbation des transactions financières",
-    project_edit_title: "modifier un projet",
+    project_edit_title: "Modifier un projet",
     project_implementing_authority_role: "Rôle de l'autorité chargée de la mise en œuvre",
     project_implementing_authority_role_description:
       "Les autorités ont permis de créer et de modifier des sous-projets, de définir et d'exécuter des activités de workflow",
@@ -111,7 +111,7 @@ const fr = {
     subproject_currency: "Devise",
     subproject_edit_title: "Modifier le sous-projet",
     subproject_permissions_title: "Définir les autorisations pour le sous-projet",
-    subproject_preview: "French: Subproject Preview",
+    subproject_preview: "Aperçu du sous-project",
     subproject_select_button: "Sélectionnez",
     subproject_title: "Sous-projet",
     subproject_title_description: "Titre du sous-projet"
@@ -191,13 +191,13 @@ const fr = {
   },
 
   preview: {
-    preview: "French: Preview",
-    assign_action_text: "French: assign {0}",
-    grant_permission_action_text: "French: grant {0} to {1}",
-    revoke_permission_action_text: "French: revoke {0} to {1}",
-    possible_action: "French: Possible actions",
-    not_possible_action: "French: Not possible actions",
-    actions_done: "French: {0} from {1} actions done"
+    preview: "Aperçu",
+    assign_action_text: "Donner la responsabilité à {0}",
+    grant_permission_action_text: "Autoriser {1} à {0}",
+    revoke_permission_action_text: "Revoquer {0} de {1}",
+    possible_action: "Actions possibles",
+    not_possible_action: "Actions impossibles",
+    actions_done: "{0} de {1} actions realisées"
   },
 
   navigation: {
@@ -318,7 +318,7 @@ const fr = {
     to: "{0} à {1}",
     workflowitem_assign: "{0} a assigné l'élément de workflow {1} à {2}",
     workflowitem_close: "{0} a terminé l'élément de workflow {1}",
-    workflowitem_grantPermission: "{0} a modifier l'autorisation {1} à {2} de {3}",
+    workflowitem_grantPermission: "{0} a modifié l'autorisation {1} à {2} de {3}",
     workflowitem_revokePermission: "{0} a révoqué l'autorisation {1} à {3} de {2}"
   },
 
@@ -344,7 +344,7 @@ const fr = {
     subproject_update: "Mettre à jour le sous-projet",
     subproject_viewDetails: "Voir les détails du sous-projet",
     subproject_viewSummary: "Voir la vue d'ensemble du sous-projet",
-    view: "Afficher les autorisations",
+    view: "Autorisations de lecture",
     workflowitem_archive: "Archiver un élément de workflow",
     workflowitem_assign: "Attribuer un élément de workflow",
     workflowitem_close: "Fermer un élément de workflow",
@@ -362,7 +362,7 @@ const fr = {
     global_revokePermission: "Révoquer  des autorisations globales à autres",
     network_list: "Afficher tous les noeuds connectés",
     network_voteForPermission: "Voter si un noeud peut joindre le réseau",
-    project_update: "Mettre à jour"
+    project_update: "Modifier le projet"
   },
 
   language: {

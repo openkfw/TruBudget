@@ -40,7 +40,7 @@ describe("assign project", () => {
       },
     });
 
-    assert.isTrue(Result.isOk(result));
+    assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
   it("A user can assign a project to someone else.", async () => {
@@ -55,7 +55,7 @@ describe("assign project", () => {
       },
     });
 
-    assert.isTrue(Result.isOk(result));
+    assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
   it("Assigning an already assigned user works (but is a no-op).", async () => {
@@ -69,7 +69,7 @@ describe("assign project", () => {
       },
     });
 
-    assert.isTrue(Result.isOk(result));
+    assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
   it("A user can assign a project to a group.", async () => {
@@ -85,7 +85,7 @@ describe("assign project", () => {
       },
     });
 
-    assert.isTrue(Result.isOk(result));
+    assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
   it("Without the project.assign permission, a user cannot change a project's assignee.", async () => {
@@ -105,7 +105,7 @@ describe("assign project", () => {
     assert.instanceOf(result, NotAuthorized);
   });
 
-  it("The root user doesn't need permission to change a project's assignee", async () => {
+  it("The root user doesn't need permission to change a project's assignee.", async () => {
     const assigner = root;
     const assignee = bob;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
@@ -118,10 +118,10 @@ describe("assign project", () => {
     });
 
     // No errors, despite the missing permissions:
-    assert.isTrue(Result.isOk(result));
+    assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
-  it("When a user assigns a project to someone else, a notification is issued for the new assignee.", async () => {
+  it("When a user assigns a project to someone else, a notification is issued to the new assignee.", async () => {
     const assigner = alice;
     const assignee = bob;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
@@ -134,7 +134,7 @@ describe("assign project", () => {
     });
 
     // A notification has been issued to the assignee:
-    assert.isTrue(Result.isOk(result));
+    assert.isTrue(Result.isOk(result), (result as Error).message);
     // Make TypeScript happy:
     if (Result.isErr(result)) {
       throw result;
@@ -159,7 +159,7 @@ describe("assign project", () => {
     });
 
     // There is an event representing the assignment, but no notification:
-    assert.isTrue(Result.isOk(result));
+    assert.isTrue(Result.isOk(result), (result as Error).message);
     // Make TypeScript happy:
     if (Result.isErr(result)) {
       throw result;
@@ -184,7 +184,7 @@ describe("assign project", () => {
           throw Error(`unexpected identity: ${identity}`);
         },
       });
-      assert.isTrue(Result.isOk(result));
+      assert.isTrue(Result.isOk(result), (result as Error).message);
       // Make TypeScript happy:
       if (Result.isErr(result)) {
         throw result;

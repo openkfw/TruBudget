@@ -18,8 +18,12 @@ import * as ProjectUpdated from "./project_updated";
 export function sourceProjects(
   ctx: Ctx,
   events: BusinessEvent[],
+  origin?: Map<Project.Id, Project.Project>,
 ): { projects: Project.Project[]; errors: Error[] } {
-  const projectsMap = new Map<Project.Id, Project.Project>();
+  const projectsMap =
+    origin === undefined
+      ? new Map<Project.Id, Project.Project>()
+      : new Map<Project.Id, Project.Project>(origin);
   const errors: Error[] = [];
   for (const event of events) {
     if (!event.type.startsWith("project_")) {
