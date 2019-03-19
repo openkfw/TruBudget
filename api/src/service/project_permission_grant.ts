@@ -1,5 +1,7 @@
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
+
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
@@ -18,16 +20,16 @@ export async function grantProjectPermission(
   grantee: Identity,
   intent: Intent,
 ): Promise<void> {
-  const { newEvents, errors } = await Cache.withCache(conn, ctx, async cache =>
+  const result = await Cache.withCache(conn, ctx, async cache =>
     ProjectPermissionGrant.grantProjectPermission(ctx, serviceUser, projectId, grantee, intent, {
-      getProjectEvents: async () => {
-        return cache.getProjectEvents(projectId);
+      getProject: async projectId => {
+        return cache.getProject(projectId);
       },
     }),
   );
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(result)) return Promise.reject(result);
 
-  for (const event of newEvents) {
+  for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
 }

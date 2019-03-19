@@ -16,8 +16,8 @@ export async function getProject(
 ): Promise<Result.Type<Project.Project>> {
   const projectResult = await Cache.withCache(conn, ctx, async cache =>
     ProjectGet.getProject(ctx, serviceUser, projectId, {
-      getProjectEvents: async () => {
-        return cache.getProjectEvents(projectId);
+      getProject: async projectId => {
+        return cache.getProject(projectId);
       },
     }),
   );

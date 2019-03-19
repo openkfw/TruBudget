@@ -1,17 +1,16 @@
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
-import { sourceProjects } from "./project_eventsourcing";
 import { ProjectTraceEvent } from "./project_trace_event";
 
 interface Repository {
-  getProjectEvents(): Promise<BusinessEvent[]>;
+  getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
 }
 
 export async function getProject(
@@ -20,12 +19,9 @@ export async function getProject(
   projectId: Project.Id,
   repository: Repository,
 ): Promise<Result.Type<Project.Project>> {
-  const projectsEvents = await repository.getProjectEvents();
-  const { projects } = sourceProjects(ctx, projectsEvents);
+  const project = await repository.getProject(projectId);
 
-  const project = projects.find(x => x.id === projectId);
-
-  if (project === undefined) {
+  if (Result.isErr(project)) {
     return new NotFound(ctx, "project", projectId);
   }
 
