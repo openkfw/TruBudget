@@ -383,10 +383,8 @@ SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
   getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
   getSubproject: (ctx, user, projectId, subprojectId) =>
     SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
-  getWorkflowitems: (ctx, user, projectId) => {
-    return Promise.resolve([]);
-  },
-  // WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId),
+  getWorkflowitems: (ctx, user, projectId, subprojectId) =>
+    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
 });
 
 SubprojectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {

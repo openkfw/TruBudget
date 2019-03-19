@@ -8,9 +8,10 @@ import { ServiceUser } from "../organization/service_user";
 import * as Subproject from "./subproject";
 import { sourceSubprojects } from "./subproject_eventsourcing";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
+import { NotAuthorized } from "../errors/not_authorized";
 
 interface Repository {
-  getSubprojectEvents(): Promise<BusinessEvent[]>;
+  getSubproject(): Promise<Result.Type<Subproject.Subproject>>;
 }
 
 export async function getSubproject(
@@ -19,19 +20,19 @@ export async function getSubproject(
   subprojectId: string,
   repository: Repository,
 ): Promise<Result.Type<Subproject.Subproject>> {
-  const subprojectsEvents = await repository.getSubprojectEvents();
-  const { subprojects: allSubprojects } = sourceSubprojects(ctx, subprojectsEvents);
+  const subprojectResult = await repository.getSubproject();
 
-  const subproject = allSubprojects.find(x => x.id === subprojectId);
-
-  if (subproject === undefined) {
+  if (Result.isErr(subprojectResult)) {
     return new NotFound(ctx, "subproject", subprojectId);
   }
+  const subproject = subprojectResult;
 
-  const isVisible =
-    user.id === "root"
-      ? () => true
-      : Subproject.permits(subproject, user, ["subproject.viewSummary", "subproject.viewDetails"]);
+  if (
+    user.id !== "root" &&
+    !Subproject.permits(subproject, user, ["subproject.viewSummary", "subproject.viewDetails"])
+  ) {
+    return new NotAuthorized(ctx, user.id, undefined, "subproject.viewDetails");
+  }
 
   return dropHiddenHistoryEvents(subproject, user);
 }

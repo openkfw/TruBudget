@@ -18,8 +18,8 @@ export async function getSubproject(
 ): Promise<Result.Type<Subproject.Subproject>> {
   const subprojectResult = await Cache.withCache(conn, ctx, async cache =>
     SubprojectGet.getSubproject(ctx, serviceUser, subprojectId, {
-      getSubprojectEvents: async () => {
-        return cache.getSubprojectEvents(projectId, subprojectId);
+      getSubproject: async () => {
+        return cache.getSubproject(projectId, subprojectId);
       },
     }),
   );

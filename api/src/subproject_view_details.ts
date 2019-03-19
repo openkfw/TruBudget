@@ -11,7 +11,6 @@ import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
-import { ProjectTraceEvent } from "./service/domain/workflow/project_trace_event";
 import * as Subproject from "./service/domain/workflow/subproject";
 import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
