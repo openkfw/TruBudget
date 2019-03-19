@@ -1,4 +1,5 @@
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
@@ -18,7 +19,7 @@ export async function assignWorkflowitem(
   workflowitemId: Workflowitem.Id,
   assignee: Identity,
 ): Promise<void> {
-  const { newEvents, errors } = await Cache.withCache(conn, ctx, async cache => {
+  const result = await Cache.withCache(conn, ctx, async cache => {
     return WorkflowitemAssign.assignWorkflowitem(
       ctx,
       serviceUser,
@@ -26,11 +27,17 @@ export async function assignWorkflowitem(
       projectId,
       subprojectId,
       workflowitemId,
-      await cache.getWorkflowitemEvents(projectId, subprojectId, workflowitemId),
+      {
+        getWorkflowitem: async id => {
+          return cache.getWorkflowitem(projectId, subprojectId, id);
+        },
+      },
     );
   });
 
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(result)) throw result;
+
+  const { newEvents } = result;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);
