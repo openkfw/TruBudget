@@ -350,7 +350,8 @@ export async function getPermissions(
   for (const item of streamItems) {
     const event = item.data.json;
     if (permissions === undefined) {
-      const result = handleCreate(event);
+      const result = event.workflowitem;
+      // handleCreate(event);
       if (result !== undefined) {
         permissions = result.permissions;
       } else {

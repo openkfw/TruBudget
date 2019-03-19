@@ -23,7 +23,7 @@ interface RequestBodyV1 {
     displayName: string;
     description?: string;
     assignee?: string;
-    currency: string;
+    currency?: string;
     amount?: string;
     amountType: "N/A" | "disbursed" | "allocated";
     billingDate?: string;
@@ -42,7 +42,7 @@ const requestBodyV1Schema = Joi.object({
     displayName: Joi.string().required(),
     description: Joi.string().allow(""),
     assignee: Joi.string(),
-    currency: Joi.string().required(),
+    currency: Joi.string(),
     amount: Joi.string(),
     amountType: Joi.string().required(),
     billingDate: Joi.string(),
@@ -81,6 +81,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
         data: {
           type: "object",
           additionalProperties: false,
+          required: ["projectId", "subprojectId", "displayName", "amountType"],
           properties: {
             projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
             subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },

@@ -80,20 +80,20 @@ export interface RedactedWorkflowitem {
 
 const schema = Joi.object().keys({
   id: Joi.string().required(),
-  creationUnixTs: Joi.date()
-    .timestamp("unix")
-    .required(),
+  creationUnixTs: Joi.date().timestamp("unix"),
   displayName: Joi.string().required(),
-  exchangeRate: Joi.string().when("status", {
-    is: Joi.valid("closed"),
-    then: Joi.required(),
-    otherwise: Joi.optional(),
-  }),
-  billingDate: Joi.date().when("status", {
-    is: Joi.valid("closed"),
-    then: Joi.required(),
-    otherwise: Joi.optional(),
-  }),
+  // exchangeRate: Joi.string().when("status", {
+  //   is: Joi.valid("closed"),
+  //   then: Joi.required(),
+  //   otherwise: Joi.optional(),
+  // }),
+  exchangeRate: Joi.string(),
+  // billingDate: Joi.date().when("status", {
+  //   is: Joi.valid("closed"),
+  //   then: Joi.required(),
+  //   otherwise: Joi.optional(),
+  // }),
+  billingDate: Joi.date(),
   amount: Joi.string()
     .when("amountType", {
       is: Joi.valid("disbursed", "allocated"),

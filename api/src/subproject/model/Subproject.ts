@@ -196,33 +196,28 @@ export async function get(
 }
 
 function handleCreate(
-  event: Event,
+  event,
 ): { resource: SubprojectResource; permissions: Permissions } | undefined {
-  if (event.intent !== "project.createSubproject") return undefined;
-  switch (event.dataVersion) {
-    case 1: {
-      const { subproject, permissions } = event.data;
-      return {
-        resource: {
-          data: {
-            id: subproject.id,
-            creationUnixTs: subproject.creationUnixTs,
-            status: subproject.status,
-            displayName: subproject.displayName,
-            description: subproject.description,
-            currency: subproject.currency,
-            projectedBudgets: deepcopy(subproject.projectedBudgets),
-            assignee: subproject.assignee,
-            additionalData: deepcopy(subproject.additionalData),
-          },
-          log: [], // event is added later
-          allowedIntents: [], // is set later using permissionsMap
-        },
-        permissions: deepcopy(permissions),
-      };
-    }
-  }
-  throwUnsupportedEventVersion(event);
+  if (event.type !== "subproject_created") return undefined;
+  const { subproject } = event;
+  return {
+    resource: {
+      data: {
+        id: subproject.id,
+        creationUnixTs: subproject.creationUnixTs,
+        status: subproject.status,
+        displayName: subproject.displayName,
+        description: subproject.description,
+        currency: subproject.currency,
+        projectedBudgets: deepcopy(subproject.projectedBudgets),
+        assignee: subproject.assignee,
+        additionalData: deepcopy(subproject.additionalData),
+      },
+      log: [], // event is added later
+      allowedIntents: [], // is set later using permissionsMap
+    },
+    permissions: deepcopy(subproject.permissions),
+  };
 }
 
 function applyUpdate(event: Event, resource: SubprojectResource): true | undefined {
@@ -313,7 +308,8 @@ export async function getPermissions(
   for (const item of streamItems) {
     const event = item.data.json;
     if (permissions === undefined) {
-      const result = handleCreate(event);
+      const result = event.subproject;
+      // handleCreate(event);
       if (result !== undefined) {
         permissions = result.permissions;
       } else {
