@@ -195,9 +195,16 @@ export async function withCache<T>(
       workflowitemId?: string,
     ): BusinessEvent[] => {
       const workflowitemFilter = event => {
-        if (event.type.startsWith("workflowitem_") || workflowitemId === undefined) {
-          return true;
+        if (event.type.startsWith("workflowitem_")) {
+          if (workflowitemId === undefined) {
+            return true;
+          } else {
+            if (workflowitemId === event.workflowitemId) {
+              return true;
+            }
+          }
         }
+        return false;
       };
       return (cache.eventsByStream.get(projectId) || []).filter(workflowitemFilter);
     },

@@ -62,6 +62,7 @@ import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
+import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
@@ -72,6 +73,7 @@ import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
+import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 
 // import * as OldSubprojectModel from "./subproject/model/Subproject";
@@ -421,6 +423,11 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
 WorkflowitemListAPI.addHttpHandler(server, URL_PREFIX, {
   listWorkflowitems: (ctx, user, projectId, subprojectId) =>
     WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+WorkflowitemCreateAPI.addHttpHandler(server, URL_PREFIX, {
+  createWorkflowitem: (ctx, user, requestData) =>
+    WorkflowitemCreateService.createWorkflowitem(db, ctx, user, requestData),
 });
 
 WorkflowitemAssignAPI.addHttpHandler(server, URL_PREFIX, {

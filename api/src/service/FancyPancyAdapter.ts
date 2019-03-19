@@ -349,35 +349,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       );
       return [stream, key, { json: wfReordered }];
     }
-    case "subproject.createWorkflowitem": {
-      if (!event.data.workflowitem) {
-        console.error("Error handling publish request for subproject.createWorkflowitem", params);
-        return params;
-      }
-      const wfiCreated: WorkflowitemCreated.Event = WorkflowitemCreated.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        {
-          id: event.data.workflowitem.id,
-          status: event.data.workflowitem.status,
-          displayName: event.data.workflowitem.displayName,
-          description: event.data.workflowitem.description,
-          amountType: event.data.workflowitem.amountType,
-          documents: event.data.workflowitem.documents,
-          permissions: event.data.permissions,
-          assignee: event.data.workflowitem.assignee,
-          amount: event.data.workflowitem.amount,
-          currency: event.data.workflowitem.currency,
-          exchangeRate: event.data.workflowitem.exchangeRate,
-          billingDate: event.data.workflowitem.billingDate,
-          dueDate: event.data.workflowitem.dueDate,
-          additionalData: event.data.workflowitem.additionalData,
-        },
-      );
-      return [stream, key, { json: wfiCreated }];
-    }
     case "workflowitem.update": {
       if (!event.data) {
         console.error(
