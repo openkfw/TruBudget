@@ -33,6 +33,7 @@ import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
 import { Item } from "./liststreamitems";
+import { lookup } from "dns";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -53,6 +54,11 @@ export type Cache2 = {
   // Cached Aggregates:
   cachedProjects: Map<Project.Id, Project.Project>;
   cachedSubprojects: Map<Subproject.Id, Subproject.Subproject>;
+  cachedWorkflowItems: Map<Workflowitem.Id, Workflowitem.Workflowitem>;
+
+  // Lookup Tables for Aggregates
+  cachedSubprojectLookup: Map<Project.Id, Set<Subproject.Id>>;
+  cachedWorkflowItemLookup: Map<Subproject.Id, Set<Workflowitem.Id>>;
 };
 
 export function initCache(): Cache2 {
@@ -62,6 +68,9 @@ export function initCache(): Cache2 {
     eventsByStream: new Map(),
     cachedProjects: new Map(),
     cachedSubprojects: new Map(),
+    cachedWorkflowItems: new Map(),
+    cachedSubprojectLookup: new Map(),
+    cachedWorkflowItemLookup: new Map(),
   };
 }
 
@@ -459,7 +468,7 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
   cache.eventsByStream.set(streamName, eventsSoFar.concat(newEvents));
 }
 
-function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
+export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
   // we ignore the errors
   const { projects } = sourceProjects(ctx, newEvents, cache.cachedProjects);
 
@@ -471,6 +480,11 @@ function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
 
   for (const subproject of subprojects) {
     cache.cachedSubprojects.set(subproject.id, subproject);
+
+    const lookUp = cache.cachedSubprojectLookup.get(subproject.projectId);
+    lookUp === undefined
+      ? cache.cachedSubprojectLookup.set(subproject.projectId, new Set([subproject.id]))
+      : lookUp.add(subproject.id);
   }
 }
 

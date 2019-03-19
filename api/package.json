@@ -85,6 +85,7 @@
     "eslint-config-airbnb-base": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-promise": "^4.0.1",
+    "lodash.isempty": "^4.4.0",
     "mocha": "^6.0.0",
     "nodemon": "*",
     "nyc": "*",
