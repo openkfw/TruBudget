@@ -169,6 +169,7 @@ interface ExposedProjectDetails {
 
 interface Service {
   getProject(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Result.Type<Project.Project>>;
+  // TODO: add Result.Type for subprojects
   getSubprojects(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Subproject.Subproject[]>;
 }
 

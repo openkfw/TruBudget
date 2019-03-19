@@ -54,6 +54,7 @@ import * as ProjectProjectedBudgetUpdateService from "./service/project_projecte
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
 import * as SubprojectCreateService from "./service/subproject_create";
+import * as SubprojectGetService from "./service/subproject_get";
 import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
@@ -66,12 +67,14 @@ import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as SubprojectCreateAPI from "./subproject_create";
 import * as SubprojectListAPI from "./subproject_list";
+import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 
+// import * as OldSubprojectModel from "./subproject/model/Subproject";
 const URL_PREFIX = "/api";
 
 /*
@@ -329,98 +332,12 @@ ProjectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
   getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
   getSubprojects: (ctx, user, projectId) =>
     SubprojectListService.listSubprojects(db, ctx, user, projectId),
-  // getSubprojects: async (
-  //   ctx: Ctx,
-  //   user: ServiceUser,
-  //   projectId: string,
-  // ): Promise<Subproject.Subproject[]> => {
-  //   const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
-  //     db.multichainClient,
-  //     { userId: user.id, groups: user.groups },
-  //     projectId,
-  //   );
-  //   const newSubprojects: Subproject.Subproject[] = [];
-  //   for (const x of subprojects) {
-  //     const permissions = await OldSubprojectModel.getPermissions(
-  //       db.multichainClient,
-  //       projectId,
-  //       x.data.id,
-  //     );
-  //     newSubprojects.push({
-  //       id: x.data.id,
-  //       createdAt: new Date(x.data.creationUnixTs).toISOString(),
-  //       status: x.data.status,
-  //       displayName: x.data.displayName,
-  //       description: x.data.description,
-  //       assignee: x.data.assignee,
-  //       currency: x.data.currency,
-  //       projectedBudgets: x.data.projectedBudgets,
-  //       additionalData: x.data.additionalData,
-  //       permissions,
-  //       log: x.log.map(l => ({
-  //         entityId: l.key,
-  //         entityType: "subproject" as "subproject",
-  //         businessEvent: {
-  //           type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
-  //           source: "",
-  //           time: l.createdAt,
-  //           publisher: l.createdBy,
-  //         } as BusinessEvent,
-  //         snapshot: l.snapshot,
-  //       })),
-  //     });
-  //   }
-  //   return newSubprojects;
-  // },
 });
 
 ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
   getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
   getSubprojects: (ctx, user, projectId) =>
     SubprojectListService.listSubprojects(db, ctx, user, projectId),
-  // getSubprojects: async (
-  //   ctx: Ctx,
-  //   user: ServiceUser,
-  //   projectId: string,
-  // ): Promise<Subproject.Subproject[]> => {
-  //   const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
-  //     db.multichainClient,
-  //     { userId: user.id, groups: user.groups },
-  //     projectId,
-  //   );
-  //   const newSubprojects: Subproject.Subproject[] = [];
-  //   for (const x of subprojects) {
-  //     const permissions = await OldSubprojectModel.getPermissions(
-  //       db.multichainClient,
-  //       projectId,
-  //       x.data.id,
-  //     );
-  //     newSubprojects.push({
-  //       id: x.data.id,
-  //       createdAt: new Date(x.data.creationUnixTs).toISOString(),
-  //       status: x.data.status,
-  //       displayName: x.data.displayName,
-  //       description: x.data.description,
-  //       assignee: x.data.assignee,
-  //       currency: x.data.currency,
-  //       projectedBudgets: x.data.projectedBudgets,
-  //       additionalData: x.data.additionalData,
-  //       permissions,
-  //       log: x.log.map(l => ({
-  //         entityId: l.key,
-  //         entityType: "subproject" as "subproject",
-  //         businessEvent: {
-  //           type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
-  //           source: "",
-  //           time: l.createdAt,
-  //           publisher: l.createdBy,
-  //         } as BusinessEvent,
-  //         snapshot: l.snapshot,
-  //       })),
-  //     });
-  //   }
-  //   return newSubprojects;
-  // },
 });
 
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
@@ -460,6 +377,16 @@ SubprojectCreateAPI.addHttpHandler(server, URL_PREFIX, {
 SubprojectListAPI.addHttpHandler(server, URL_PREFIX, {
   listSubprojects: (ctx, user, projectId) =>
     SubprojectListService.listSubprojects(db, ctx, user, projectId),
+});
+
+SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
+  getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
+  getSubproject: (ctx, user, projectId, subprojectId) =>
+    SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
+  getWorkflowitems: (ctx, user, projectId) => {
+    return Promise.resolve([]);
+  },
+  // WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId),
 });
 
 SubprojectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
@@ -518,6 +445,7 @@ WorkflowitemAssignAPI.addHttpHandler(server, URL_PREFIX, {
 server.listen(port, "0.0.0.0", async err => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
+    console.trace();
     process.exit(1);
   }
 
