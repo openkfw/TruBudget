@@ -92,7 +92,7 @@ export interface CacheInstance {
   // Subproject:
 
   getSubprojectEvents(projectId: string, subprojectId?: string): BusinessEvent[];
-  getSubprojects(projectId: string): Subproject.Subproject[];
+  getSubprojects(projectId: string): Promise<Result.Type<Subproject.Subproject[]>>;
   getSubproject(projectId: string, subprojectId: string): Result.Type<Subproject.Subproject>;
   updateCachedSubproject(subproject: Subproject.Subproject): void;
 
@@ -103,6 +103,10 @@ export interface CacheInstance {
     subprojectId: string,
     workflowitemId?: string,
   ): BusinessEvent[];
+  getWorkflowitems(
+    _projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
   getWorkflowitem(
     projectId: string,
     subprojectId: string,
@@ -229,7 +233,7 @@ export async function withCache<T>(
     },
 
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
-      const projects = [...cache.cachedProjects.values()];
+      const projects = await this.getProjects();
       const project = projects.find(x => x.id === projectId);
       if (project === undefined) {
         return new NotFound(ctx, "project", projectId);
@@ -242,16 +246,31 @@ export async function withCache<T>(
       return;
     },
 
-    getSubprojects: (projectId: string): Subproject.Subproject[] => {
-      return [...cache.cachedSubprojects.values()].filter(sp => sp.projectId === projectId);
+    getSubprojects: async (projectId: string): Promise<Result.Type<Subproject.Subproject[]>> => {
+      // Look up subproject ids
+      const subprojectIDs = cache.cachedSubprojectLookup.get(projectId);
+      if (subprojectIDs === undefined) {
+        // Check if the project exists. If yes, it simply contains no subprojects
+        const project = cache.cachedProjects.get(projectId);
+        return project === undefined ? new NotFound(ctx, "project", projectId) : [];
+      }
+
+      const subprojects: Subproject.Subproject[] = [];
+      for (const id of subprojectIDs) {
+        const sp = cache.cachedSubprojects.get(id);
+        if (sp === undefined) {
+          return new NotFound(ctx, "subproject", id);
+        }
+        subprojects.push(sp);
+      }
+      return subprojects;
     },
 
     getSubproject: (
-      projectId: string,
+      _projectId: string,
       subprojectId: string,
     ): Result.Type<Subproject.Subproject> => {
-      const subprojects = this.getSubprojects(projectId);
-      const subproject = subprojects.find(x => x.id === subprojectId);
+      const subproject = cache.cachedSubprojects.get(subprojectId);
       if (subproject === undefined) {
         return new NotFound(ctx, "subproject", subprojectId);
       }
@@ -263,15 +282,34 @@ export async function withCache<T>(
       return;
     },
 
+    getWorkflowitems: async (
+      _projectId: string,
+      subprojectId: string,
+    ): Promise<Result.Type<Workflowitem.Workflowitem[]>> => {
+      const workflowitemIDs = cache.cachedWorkflowitemLookup.get(subprojectId);
+      const workflowitems: Workflowitem.Workflowitem[] = [];
+      if (workflowitemIDs === undefined) {
+        // Check if the subproject exists. If yes, it simply contains no workflowitems
+        const subproject = cache.cachedSubprojects.get(subprojectId);
+        return subproject === undefined ? new NotFound(ctx, "subproject", subprojectId) : [];
+      }
+
+      for (const id of workflowitemIDs) {
+        const wf = cache.cachedWorkflowItems.get(id);
+        if (wf === undefined) {
+          return new NotFound(ctx, "workflowitem", id);
+        }
+        workflowitems.push(wf);
+      }
+      return workflowitems;
+    },
+
     getWorkflowitem: async (
-      projectId: string,
+      _projectId: string,
       _subprojectId: string,
       workflowitemId: string,
     ): Promise<Result.Type<Workflowitem.Workflowitem>> => {
-      // TODO should be cached here: source only if not in cache
-      const projectEvents = cache.eventsByStream.get(projectId) || [];
-      const { workflowitems } = sourceWorkflowitems(ctx, projectEvents);
-      const workflowitem = workflowitems.find(x => x.id === workflowitemId);
+      const workflowitem = cache.cachedWorkflowItems.get(workflowitemId);
       if (workflowitem === undefined) {
         return new NotFound(ctx, "workflowitem", workflowitemId);
       }

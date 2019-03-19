@@ -1,14 +1,14 @@
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
-import { BusinessEvent } from "../business_event";
+import * as Result from "../../../result";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import * as Subproject from "./subproject";
-import { sourceSubprojects } from "./subproject_eventsourcing";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 
 interface Repository {
-  getAllSubprojects(): Promise<Subproject.Subproject[]>;
+  getAllSubprojects(): Promise<Result.Type<Subproject.Subproject[]>>;
 }
 
 export async function getAllVisible(
@@ -17,6 +17,10 @@ export async function getAllVisible(
   repository: Repository,
 ): Promise<Subproject.Subproject[]> {
   const allSubprojects = await repository.getAllSubprojects();
+
+  if (Result.isErr(allSubprojects)) {
+    throw new VError(allSubprojects, "couldn't get all subprojects");
+  }
 
   const isVisible =
     user.id === "root"
