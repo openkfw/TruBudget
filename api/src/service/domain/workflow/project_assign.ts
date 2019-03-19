@@ -42,10 +42,8 @@ export async function assignProject(
   }
 
   // Check authorization (if not root):
-  if (issuer.id !== "root") {
-    if (!Project.permits(project, issuer, ["project.assign"])) {
-      return new NotAuthorized(ctx, issuer.id, projectAssigned);
-    }
+  if (issuer.id !== "root" && !Project.permits(project, issuer, ["project.assign"])) {
+    return new NotAuthorized(ctx, issuer.id, projectAssigned);
   }
 
   // Check that the new event is indeed valid:

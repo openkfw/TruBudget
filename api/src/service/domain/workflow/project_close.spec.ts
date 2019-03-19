@@ -1,0 +1,198 @@
+import { assert } from "chai";
+
+import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
+import { BusinessEvent } from "../business_event";
+import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
+import { PreconditionError } from "../errors/precondition_error";
+import { ServiceUser } from "../organization/service_user";
+import { Project } from "./project";
+import { closeProject } from "./project_close";
+import { Subproject } from "./subproject";
+
+const ctx: Ctx = { requestId: "", source: "test" };
+const root: ServiceUser = { id: "root", groups: [] };
+const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
+const bob: ServiceUser = { id: "bob", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
+const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charlie"] };
+const projectId = "dummy-project";
+const baseProject: Project = {
+  id: projectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  displayName: "dummy",
+  description: "dummy",
+  projectedBudgets: [],
+  permissions: { "project.close": [alice, bob, charlie].map(x => x.id) },
+  log: [],
+  additionalData: {},
+};
+const baseSubproject: Subproject = {
+  id: "dummy-subproject",
+  projectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  displayName: "dummy",
+  description: "dummy",
+  currency: "EUR",
+  projectedBudgets: [],
+  permissions: {},
+  log: [],
+  additionalData: {},
+};
+const baseRepository = {
+  getSubprojects: async _projectId => [],
+  getUsersForIdentity: async identity => {
+    if (identity === "alice") return ["alice"];
+    if (identity === "bob") return ["bob"];
+    if (identity === "charlie") return ["charlie"];
+    if (identity === "alice_and_bob") return ["alice", "bob"];
+    if (identity === "alice_and_bob_and_charlie") return ["alice", "bob", "charlie"];
+    if (identity === "root") return ["root"];
+    throw Error(`unexpected identity: ${identity}`);
+  },
+};
+
+describe("close project", () => {
+  it("A project may not be closed if there is at least one non-closed subproject.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => ({ ...baseProject, status: "open" }),
+      getSubprojects: async _projectId => [{ ...baseSubproject, status: "open" }],
+    });
+
+    // PreconditionError due to open subproject:
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, PreconditionError);
+  });
+
+  it("Without the project.close permission, a user cannot close a project.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => ({ ...baseProject, permissions: {} }),
+    });
+
+    // NotAuthorized error due to the missing permissions:
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotAuthorized);
+  });
+
+  it("The root user doesn't need permission to close a project.", async () => {
+    const result = await closeProject(ctx, root, projectId, {
+      ...baseRepository,
+      getProject: async () => ({ ...baseProject, permissions: {} }),
+    });
+
+    // No errors, despite the missing permissions:
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+
+  it("When a user closes a project, a notification is issued to the assignee.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => ({ ...baseProject, status: "open", assignee: bob.id }),
+    });
+
+    // A notification has been issued to the assignee:
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    // Make TypeScript happy:
+    if (Result.isErr(result)) {
+      throw result;
+    }
+    const { newEvents } = result;
+
+    assert.isTrue(
+      newEvents.some(event => event.type === "notification_created" && event.recipient === bob.id),
+    );
+  });
+
+  it("Closing an already closed project works, but nothing happens and no notifications are issued.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => ({ ...baseProject, status: "closed", assignee: bob.id }),
+    });
+
+    // It worked:
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    // Make TypeScript happy:
+    if (Result.isErr(result)) throw result;
+    const { newEvents } = result;
+
+    // It's a no-op:
+    assert.lengthOf(newEvents, 0);
+  });
+
+  it("If there is no assignee when closing a project, no notifications are issued.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => ({ ...baseProject, status: "open", assignee: undefined }),
+    });
+
+    // There is an event representing the operation, but no notification:
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    // Make TypeScript happy:
+    if (Result.isErr(result)) {
+      throw result;
+    }
+    const { newEvents } = result;
+    assert.isTrue(newEvents.length > 0);
+    assert.isFalse(newEvents.some(event => event.type === "notification_created"));
+  });
+
+  it("If the user that closes a project is assigned to the project herself, no notifications are issued.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => ({ ...baseProject, status: "open", assignee: alice.id }),
+    });
+
+    // There is an event representing the operation, but no notification:
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    // Make TypeScript happy:
+    if (Result.isErr(result)) {
+      throw result;
+    }
+    const { newEvents } = result;
+    assert.isTrue(newEvents.length > 0);
+    assert.isFalse(newEvents.some(event => event.type === "notification_created"));
+  });
+
+  it(
+    "If a project is assigned to a group when closing it, " +
+      "each member, except for the user that closes it, receives a notificaton.",
+    async () => {
+      const group = "alice_and_bob_and_charlie";
+      const result = await closeProject(ctx, alice, projectId, {
+        ...baseRepository,
+        getProject: async () => ({ ...baseProject, status: "open", assignee: group }),
+      });
+      assert.isTrue(Result.isOk(result), (result as Error).message);
+      // Make TypeScript happy:
+      if (Result.isErr(result)) {
+        throw result;
+      }
+      const { newEvents } = result;
+
+      // A notification has been issued to both Bob and Charlie, but not to Alice, as she
+      // is the user who closed the project:
+      function isNotificationFor(userId: string): (e: BusinessEvent) => boolean {
+        return event => event.type === "notification_created" && event.recipient === userId;
+      }
+
+      assert.isFalse(newEvents.some(isNotificationFor("alice")));
+      assert.isTrue(newEvents.some(isNotificationFor("bob")));
+      assert.isTrue(newEvents.some(isNotificationFor("charlie")));
+    },
+  );
+
+  it("Closing a project fails if the project cannot be found.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => new Error("some error"),
+    });
+
+    // NotFound error as the project cannot be fetched:
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotFound);
+  });
+});
