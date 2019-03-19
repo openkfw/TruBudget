@@ -8,8 +8,8 @@ import * as ProjectCreated from "../service/domain/workflow/project_created";
 import * as ProjectClosed from "../service/domain/workflow/project_closed";
 import * as ProjectAssigned from "../service/domain/workflow/project_assigned";
 import * as SubprojectCreated from "../service/domain/workflow/subproject_created";
-import * as SubprojectClosed from "../service/domain/workflow/subproject_closed";
-import * as SubprojectAssigned from "../service/domain/workflow/subproject_assigned";
+import * as WorkflowitemCreated from "../service/domain/workflow/workflowitem_created";
+
 import { BusinessEvent } from "./domain/business_event";
 
 describe("cache_updateAggregates", () => {
@@ -106,7 +106,8 @@ describe("cache_updateAggregates", () => {
       assert.isFalse(isEmpty(cache.cachedSubprojects.get(subprojectId)));
     });
 
-    // TODO: add as soon as Subproject is implemented
+    // TODO: add as soon as Subproject.assign & Subproject.close is implemented
+    //
     // it("from preexisting state", async () => {
     //   // Prefill cache
     //   const cache = initCache();
@@ -197,6 +198,65 @@ describe("cache_updateAggregates", () => {
         return assert.fail(undefined, undefined, "Lookup for second project not found");
       assert.isFalse(isEmpty(lookUpForSecondProject));
       assert.hasAllKeys(lookUpForSecondProject, ["s-id1", "s-id3"]);
+    });
+  });
+  context("aggregate workflowitems", async () => {
+    const defaultCtx: Ctx = {
+      requestId: "",
+      source: "http",
+    };
+
+    it("generates lookup", async () => {
+      const cache = initCache();
+
+      const events: BusinessEvent[] = [];
+
+      // Generate 5 Workflowitems linked to 2 Subprojects
+      // s-id0 -> w-id0 | s-id0 -> w-id2 | s-id0 -> w-id4
+      // and
+      // s-id1 -> w-id1 | s-id1 -> w-id3
+      for (let i = 0; i <= 4; i++) {
+        const projectId = "p-id";
+        const subprojectId = `s-id${i % 2}`;
+        const workflowitemId = `w-id${i}`;
+        const wfCreationEvent = WorkflowitemCreated.createEvent(
+          "http",
+          "test",
+          projectId,
+          subprojectId,
+          {
+            id: workflowitemId,
+            status: "open",
+            displayName: "name",
+            description: "description",
+            amountType: "N/A",
+            permissions: {},
+            documents: [],
+            additionalData: {},
+          },
+        );
+        events.push(wfCreationEvent);
+      }
+
+      updateAggregates(defaultCtx, cache, events);
+
+      // Check if lookup was generated
+      const lookUp = cache.cachedWorkflowitemLookup;
+      if (!lookUp) return assert.fail(undefined, undefined, "Lookup not found");
+
+      // Check if lookup for the first subproject is correct
+      const lookUpForFirstSubproject = lookUp.get("s-id0");
+      if (!lookUpForFirstSubproject)
+        return assert.fail(undefined, undefined, "Lookup for first Subproject not found");
+      assert.isFalse(isEmpty(lookUpForFirstSubproject));
+      assert.hasAllKeys(lookUpForFirstSubproject, ["w-id0", "w-id2", "w-id4"]);
+
+      // Check if lookup for the second subproject is correct
+      const lookUpForSecondSubproject = lookUp.get("s-id1");
+      if (!lookUpForSecondSubproject)
+        return assert.fail(undefined, undefined, "Lookup for second Subproject not found");
+      assert.isFalse(isEmpty(lookUpForSecondSubproject));
+      assert.hasAllKeys(lookUpForSecondSubproject, ["w-id1", "w-id3"]);
     });
   });
 });

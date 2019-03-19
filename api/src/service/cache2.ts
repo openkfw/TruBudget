@@ -58,7 +58,7 @@ export type Cache2 = {
 
   // Lookup Tables for Aggregates
   cachedSubprojectLookup: Map<Project.Id, Set<Subproject.Id>>;
-  cachedWorkflowItemLookup: Map<Subproject.Id, Set<Workflowitem.Id>>;
+  cachedWorkflowitemLookup: Map<Subproject.Id, Set<Workflowitem.Id>>;
 };
 
 export function initCache(): Cache2 {
@@ -70,7 +70,7 @@ export function initCache(): Cache2 {
     cachedSubprojects: new Map(),
     cachedWorkflowItems: new Map(),
     cachedSubprojectLookup: new Map(),
-    cachedWorkflowItemLookup: new Map(),
+    cachedWorkflowitemLookup: new Map(),
   };
 }
 
@@ -485,6 +485,16 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
     lookUp === undefined
       ? cache.cachedSubprojectLookup.set(subproject.projectId, new Set([subproject.id]))
       : lookUp.add(subproject.id);
+  }
+
+  const { workflowitems, errors } = sourceWorkflowitems(ctx, newEvents, cache.cachedWorkflowItems);
+
+  for (const workflowitem of workflowitems) {
+    cache.cachedWorkflowItems.set(workflowitem.id, workflowitem);
+    const lookUp = cache.cachedWorkflowitemLookup.get(workflowitem.subprojectId);
+    lookUp === undefined
+      ? cache.cachedWorkflowitemLookup.set(workflowitem.subprojectId, new Set([workflowitem.id]))
+      : lookUp.add(workflowitem.id);
   }
 }
 
