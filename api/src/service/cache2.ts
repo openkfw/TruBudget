@@ -25,12 +25,13 @@ import * as ProjectProjectedBudgetDeleted from "./domain/workflow/project_projec
 import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
 import * as Subproject from "./domain/workflow/subproject";
-import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
+import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
 import * as Workflowitem from "./domain/workflow/workflowitem";
+import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
@@ -573,6 +574,7 @@ const EVENT_PARSER_MAP = {
   user_created: UserCreated.validate,
   workflowitem_closed: WorkflowitemClosed.validate,
   workflowitem_created: WorkflowitemCreated.validate,
+  workflowitem_assigned: WorkflowitemAssigned.validate,
 };
 
 function parseBusinessEvents(items: Item[], streamName: string): Array<Result.Type<BusinessEvent>> {
