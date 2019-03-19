@@ -362,7 +362,7 @@ const fr = {
     global_revokePermission: "Révoquer  des autorisations globales à autres",
     network_list: "Afficher tous les noeuds connectés",
     network_voteForPermission: "Voter si un noeud peut joindre le réseau",
-    project_update: "Mettre à jour"
+    project_update: "Modifier le projet"
   },
 
   language: {
