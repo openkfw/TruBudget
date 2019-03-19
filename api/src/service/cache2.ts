@@ -231,7 +231,6 @@ export async function withCache<T>(
       subprojectId: string,
     ): Promise<Result.Type<Subproject.Subproject>> => {
       // TODO should be cached here: source only if not in cache
-      console.log("IM HERE");
       const projectEvents = cache.eventsByStream.get(projectId) || [];
       const { subprojects } = sourceSubprojects(ctx, projectEvents);
       const subproject = subprojects.find(x => x.id === subprojectId);

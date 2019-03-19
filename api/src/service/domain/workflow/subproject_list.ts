@@ -17,7 +17,6 @@ export async function getAllVisible(
   repository: Repository,
 ): Promise<Subproject.Subproject[]> {
   const allSubprojectsEvents = await repository.getAllSubprojectEvents();
-  console.log(allSubprojectsEvents);
   const { subprojects: allSubprojects } = sourceSubprojects(ctx, allSubprojectsEvents);
 
   const isVisible =
