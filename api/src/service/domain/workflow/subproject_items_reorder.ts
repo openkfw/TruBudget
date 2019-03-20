@@ -1,24 +1,17 @@
-import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
-import { PreconditionError } from "../errors/precondition_error";
-import { Identity } from "../organization/identity";
-import { ServiceUser } from "../organization/service_user";
-import * as UserRecord from "../organization/user_record";
-import * as NotificationCreated from "./notification_created";
-import * as Project from "./project";
-import * as ProjectClosed from "./project_closed";
-import * as SubprojectItemsReordered from "./subproject_items_reordered";
-import * as Subproject from "./subproject";
-import { getWorkflowitemFromList } from "../../../workflowitem";
-import * as WorkflowitemOrdering from "./workflowitem_ordering";
-import isEqual = require("lodash.isequal");
 import { canAssumeIdentity } from "../organization/auth_token";
+import { ServiceUser } from "../organization/service_user";
+import * as Project from "./project";
+import * as Subproject from "./subproject";
+import * as SubprojectItemsReordered from "./subproject_items_reordered";
+import * as WorkflowitemOrdering from "./workflowitem_ordering";
+
+import isEqual = require("lodash.isequal");
 
 interface Repository {
   getWorkflowitemOrdering(projectId: string, subprojectId: string): Promise<Result.Type<string[]>>;
