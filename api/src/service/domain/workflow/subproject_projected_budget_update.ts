@@ -10,17 +10,16 @@ import { ProjectedBudget } from "./projected_budget";
 import * as Subproject from "./subproject";
 import { sourceSubprojects } from "./subproject_eventsourcing";
 import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget_updated";
+import * as Result from "../../../result";
 
 interface Repository {
-  getSubprojectEvents(): Promise<BusinessEvent[]>;
+  getSubproject(
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Subproject.Subproject>>;
 }
 
 type State = ProjectedBudget[];
-type ReturnType = { newEvents: BusinessEvent[]; newState: State; errors: Error[] };
-
-function withError(error: Error): ReturnType {
-  return { newEvents: [], newState: [], errors: [error] };
-}
 
 export async function updateProjectedBudget(
   ctx: Ctx,
@@ -31,15 +30,11 @@ export async function updateProjectedBudget(
   value: string,
   currencyCode: string,
   repository: Repository,
-): Promise<ReturnType> {
-  const subprojectEvents = await repository.getSubprojectEvents();
-  const { subprojects } = sourceSubprojects(ctx, subprojectEvents);
-
-  const subproject = subprojects.find(x => x.id === subprojectId);
-  if (subproject === undefined) {
-    return withError(new NotFound(ctx, "subproject", subprojectId));
+): Promise<Result.Type<{ newEvents: BusinessEvent[]; newState: State }>> {
+  const subproject = await repository.getSubproject(projectId, subprojectId);
+  if (Result.isErr(subproject)) {
+    return new NotFound(ctx, "subproject", subprojectId);
   }
-
   // Create the new event:
   const budgetUpdated = SubprojectProjectedBudgetUpdated.createEvent(
     ctx.source,
@@ -54,31 +49,20 @@ export async function updateProjectedBudget(
   // Check authorization (if not root):
   if (issuer.id !== "root") {
     if (!Subproject.permits(subproject, issuer, ["subproject.budget.updateProjected"])) {
-      return withError(new NotAuthorized(ctx, issuer.id, budgetUpdated));
+      return new NotAuthorized(ctx, issuer.id, budgetUpdated);
     }
   }
 
   // Check that the new event is indeed valid:
-  const { subprojects: subprojectsAfterUpdate, errors } = sourceSubprojects(
-    ctx,
-    subprojectEvents.concat([budgetUpdated]),
-  );
-  if (errors.length > 0) {
-    return withError(new InvalidCommand(ctx, budgetUpdated, errors));
-  }
 
-  const subprojectAfterUpdate = subprojectsAfterUpdate.find(x => x.id === subprojectId);
-  if (subprojectAfterUpdate === undefined) {
-    logger.fatal(
-      { ctx, issuer, projectId, subprojectId, subprojects, budgetUpdated },
-      `panic: failed to source subproject ${subprojectId} after updating a projected budget`,
-    );
-    process.exit(1);
+  const result = SubprojectProjectedBudgetUpdated.apply(ctx, budgetUpdated, subproject);
+
+  if (Result.isErr(result)) {
+    return new InvalidCommand(ctx, budgetUpdated, [result]);
   }
 
   return {
     newEvents: [budgetUpdated],
-    newState: subprojectAfterUpdate!.projectedBudgets,
-    errors: [],
+    newState: result.projectedBudgets,
   };
 }

@@ -17,10 +17,11 @@ export async function createSubproject(
   serviceUser: ServiceUser,
   requestData: Subproject.RequestData,
 ): Promise<Id> {
-  const { newEvents, errors } = await Cache.withCache(conn, ctx, cache => {
+  const result = await Cache.withCache(conn, ctx, cache => {
     return Subproject.createSubproject(ctx, serviceUser, requestData, {
       subprojectExists: async (projectId, subprojectId) => {
-        return cache.getSubprojectEvents(projectId, subprojectId).length > 0;
+        const subproject = cache.getSubproject(projectId, subprojectId);
+        return Result.isOk(subproject);
       },
       projectPermissions: async projectId => {
         return cache.getProject(projectId).then(result => Result.map(result, p => p.permissions));
@@ -28,18 +29,23 @@ export async function createSubproject(
     });
   });
 
-  if (errors.length > 0) return Promise.reject(errors);
-  if (!newEvents.length) {
+  if (Result.isErr(result)) return Promise.reject(result);
+
+  // TODO: Do we still need this, since we are already checking the result
+  if (!result.newEvents.length) {
     const msg = "failed to create subproject";
     logger.error({ ctx, serviceUser, requestData }, msg);
     throw new Error(msg);
   }
 
-  for (const event of newEvents) {
+  for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
 
-  const subprojectEvent = newEvents.find(x => (x as any).subproject.id !== undefined);
-  if (subprojectEvent === undefined) throw Error(`Assertion: This is a bug.`);
+  const subprojectEvent = result.newEvents.find(x => (x as any).subproject.id !== undefined);
+  if (subprojectEvent === undefined)
+    throw Error(
+      `Assertion: This is a bug. Created subproject but couldn't find its creation Event`,
+    );
   return (subprojectEvent as SubprojectCreated.Event).subproject.id;
 }

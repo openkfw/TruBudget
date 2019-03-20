@@ -8,6 +8,7 @@ import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectProjectedBudgetUpdate from "./domain/workflow/subproject_projected_budget_update";
 import { store } from "./store";
+import * as Result from "../result";
 
 export async function updateProjectedBudget(
   conn: ConnToken,
@@ -19,30 +20,27 @@ export async function updateProjectedBudget(
   value: MoneyAmount,
   currencyCode: CurrencyCode,
 ): Promise<ProjectedBudget[]> {
-  const { newEvents, newState: projectedBudgets, errors } = await Cache.withCache(
-    conn,
-    ctx,
-    async cache =>
-      SubprojectProjectedBudgetUpdate.updateProjectedBudget(
-        ctx,
-        serviceUser,
-        projectId,
-        subprojectId,
-        organization,
-        value,
-        currencyCode,
-        {
-          getSubprojectEvents: async () => {
-            return cache.getSubprojectEvents(projectId, subprojectId);
-          },
+  const result = await Cache.withCache(conn, ctx, async cache =>
+    SubprojectProjectedBudgetUpdate.updateProjectedBudget(
+      ctx,
+      serviceUser,
+      projectId,
+      subprojectId,
+      organization,
+      value,
+      currencyCode,
+      {
+        getSubproject: async (projectId, subprojectId) => {
+          return cache.getSubproject(projectId, subprojectId);
         },
-      ),
+      },
+    ),
   );
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(result)) return Promise.reject(result);
 
-  for (const event of newEvents) {
+  for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
 
-  return projectedBudgets;
+  return result.newState;
 }

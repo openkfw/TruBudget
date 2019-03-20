@@ -6,6 +6,7 @@ import { CurrencyCode } from "./domain/workflow/money";
 import * as Project from "./domain/workflow/project";
 import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import * as Subproject from "./domain/workflow/subproject";
+import * as Result from "../result";
 import * as SubprojectProjectedBudgetDelete from "./domain/workflow/subproject_projected_budget_delete";
 import { store } from "./store";
 
@@ -18,29 +19,26 @@ export async function deleteProjectedBudget(
   organization: string,
   currencyCode: CurrencyCode,
 ): Promise<ProjectedBudget[]> {
-  const { newEvents, newState: projectedBudgets, errors } = await Cache.withCache(
-    conn,
-    ctx,
-    async cache =>
-      SubprojectProjectedBudgetDelete.deleteProjectedBudget(
-        ctx,
-        serviceUser,
-        projectId,
-        subprojectId,
-        organization,
-        currencyCode,
-        {
-          getSubprojectEvents: async () => {
-            return cache.getSubprojectEvents(projectId, subprojectId);
-          },
+  const result = await Cache.withCache(conn, ctx, async cache =>
+    SubprojectProjectedBudgetDelete.deleteProjectedBudget(
+      ctx,
+      serviceUser,
+      projectId,
+      subprojectId,
+      organization,
+      currencyCode,
+      {
+        getSubproject: async (projectId, subprojectId) => {
+          return cache.getSubproject(projectId, subprojectId);
         },
-      ),
+      },
+    ),
   );
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(result)) return Promise.reject(result);
 
-  for (const event of newEvents) {
+  for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
 
-  return projectedBudgets;
+  return result.newState;
 }

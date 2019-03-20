@@ -59,7 +59,7 @@ export async function createSubproject(
   creatingUser: ServiceUser,
   reqData: RequestData,
   repository: Repository,
-): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
+): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
   const publisher = creatingUser.id;
 
   const projectId = reqData.projectId;
@@ -84,16 +84,13 @@ export async function createSubproject(
         badEntry.currencyCode
       }`,
     );
-    return { newEvents: [], errors: [new InvalidCommand(ctx, subprojectCreated, [error])] };
+    return new InvalidCommand(ctx, subprojectCreated, [error]);
   }
 
   if (
     await repository.subprojectExists(subprojectCreated.projectId, subprojectCreated.subproject.id)
   ) {
-    return {
-      newEvents: [],
-      errors: [new PreconditionError(ctx, subprojectCreated, "subproject already exists")],
-    };
+    return new PreconditionError(ctx, subprojectCreated, "subproject already exists");
   }
 
   const projectPermissionsResult = await repository.projectPermissions(projectId);
@@ -105,32 +102,29 @@ export async function createSubproject(
         projectPermissionsResult.message
       }`,
     );
-    return { newEvents: [], errors: [error] };
+    return error;
   }
 
   // Check authorization (if not root):
   const projectPermissions = await repository.projectPermissions(projectId);
   if (Result.isErr(projectPermissions)) {
-    return { newEvents: [], errors: [new NotFound(ctx, "project", projectId)] };
+    return new NotFound(ctx, "project", projectId);
   }
 
   if (
     creatingUser.id !== "root" &&
     !AuthToken.permits(projectPermissions, creatingUser, ["project.createSubproject"])
   ) {
-    return {
-      newEvents: [],
-      errors: [new NotAuthorized(ctx, creatingUser.id, subprojectCreated)],
-    };
+    return new NotAuthorized(ctx, creatingUser.id, subprojectCreated);
   }
 
   // Check that the event is valid by trying to "apply" it:
   const { errors } = sourceSubprojects(ctx, [subprojectCreated]);
   if (errors.length > 0) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, subprojectCreated, errors)] };
+    return new InvalidCommand(ctx, subprojectCreated, errors);
   }
 
-  return { newEvents: [subprojectCreated], errors: [] };
+  return { newEvents: [subprojectCreated] };
 }
 
 function newDefaultPermissionsFor(userId: string): Permissions {
