@@ -110,7 +110,6 @@ export async function createWorkflowitem(
   );
 
   // Check if workflowitemId already exists
-  logger.warn(workflowitemId);
   if (
     await repository.workflowitemExists(reqData.projectId, reqData.subprojectId, workflowitemId)
   ) {

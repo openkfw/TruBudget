@@ -23,11 +23,11 @@ export async function createWorkflowitem(
         subprojectId: string,
         workflowitemId: string,
       ) => {
-        const item = cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
+        const item = await cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
         return Result.isOk(item);
       },
       getSubproject: async (projectId: string, subprojectId: string) =>
-        cache.getSubproject(projectId, subprojectId),
+        await cache.getSubproject(projectId, subprojectId),
     });
   });
 

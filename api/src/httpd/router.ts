@@ -374,16 +374,6 @@ export const registerRoutes = (
     },
   );
 
-  server.get(
-    `${urlPrefix}/workflowitem.intent.listPermissions`,
-    getSchema(server, "workflowitemListPermissionsSchema"),
-    (request, reply) => {
-      getWorkflowitemPermissions(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
   server.post(
     `${urlPrefix}/workflowitem.intent.grantPermission`,
     getSchema(server, "workflowitemGrantPermissions"),

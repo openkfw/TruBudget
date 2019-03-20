@@ -34,7 +34,7 @@ export async function grantWorkflowitemPermission(
       intent,
       {
         getWorkflowitem: async (pId, spId, wId) => {
-          return cache.getWorkflowitem(pId, spId, wId);
+          return await cache.getWorkflowitem(pId, spId, wId);
         },
       },
     ),
