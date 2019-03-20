@@ -202,13 +202,16 @@ interface ExposedWorkflowitem {
     id: string;
     creationUnixTs: string;
     displayName: string;
-    exchangeRate: string;
-    billingDate: string;
+    exchangeRate: string | undefined;
+    billingDate: string | undefined;
     amountType: string;
     description: string;
     status: string;
-    assignee: string;
-    documents: any[];
+    assignee: string | undefined;
+    documents: Array<{
+      id: string;
+      hash: string;
+    }>;
     additionalData: object;
   };
   allowedIntents: Intent[];
@@ -310,7 +313,38 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           displayName: project.displayName,
         };
 
-        const workflowitems = [];
+        const workflowitemsResult = await service.getWorkflowitems(
+          ctx,
+          user,
+          projectId,
+          subprojectId,
+        );
+        if (Result.isErr(workflowitemsResult)) {
+          workflowitemsResult.message = `subproject.viewDetails failed: ${
+            workflowitemsResult.message
+          }`;
+          throw workflowitemsResult;
+        }
+
+        const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map(workflowitem => ({
+          allowedIntents: getAllowedIntents(
+            [user.id].concat(user.groups),
+            workflowitem.permissions,
+          ),
+          data: {
+            id: workflowitem.id,
+            creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),
+            displayName: workflowitem.displayName,
+            exchangeRate: workflowitem.exchangeRate,
+            billingDate: workflowitem.billingDate,
+            amountType: workflowitem.amountType,
+            description: workflowitem.description,
+            status: workflowitem.status,
+            assignee: workflowitem.assignee,
+            documents: workflowitem.documents,
+            additionalData: workflowitem.additionalData,
+          },
+        }));
 
         const data: ExposedSubprojectDetails = {
           parentProject,
