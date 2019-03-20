@@ -65,6 +65,8 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
       });
 
     case "workflowitem_assigned":
+    case "workflowitem_permission_granted":
+    case "workflowitem_permission_revoked":
       return writeTo(conn, ctx, {
         stream: event.projectId,
         keys: [`${event.subprojectId}_workflows`, event.workflowitemId],

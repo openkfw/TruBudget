@@ -68,6 +68,8 @@ import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemListService from "./service/workflowitem_list";
+import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
+import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
@@ -84,6 +86,8 @@ import * as UserListAPI from "./user_list";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemListAPI from "./workflowitem_list";
+import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
+import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 
 // import * as OldSubprojectModel from "./subproject/model/Subproject";
@@ -503,6 +507,50 @@ WorkflowitemAssignAPI.addHttpHandler(server, URL_PREFIX, {
       subprojectId,
       workflowitemId,
       assignee,
+    ),
+});
+
+WorkflowitemPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
+  grantWorkflowitemPermission: (
+    ctx,
+    user,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    grantee,
+    intent,
+  ) =>
+    WorkflowitemPermissionGrantService.grantWorkflowitemPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      grantee,
+      intent,
+    ),
+});
+
+WorkflowitemPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
+  revokeWorkflowitemPermission: (
+    ctx,
+    user,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    revokee,
+    intent,
+  ) =>
+    WorkflowitemPermissionRevokeService.revokeWorkflowitemPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      revokee,
+      intent,
     ),
 });
 

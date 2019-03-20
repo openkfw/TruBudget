@@ -374,28 +374,28 @@ export const registerRoutes = (
     },
   );
 
-  server.post(
-    `${urlPrefix}/workflowitem.intent.grantPermission`,
-    getSchema(server, "workflowitemGrantPermissions"),
-    (request, reply) => {
-      grantWorkflowitemPermission(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
+  // server.post(
+  //   `${urlPrefix}/workflowitem.intent.grantPermission`,
+  //   getSchema(server, "workflowitemGrantPermissions"),
+  //   (request, reply) => {
+  //     grantWorkflowitemPermission(multichainClient, request as AuthenticatedRequest)
+  //       .then(response => send(reply, response))
+  //       .catch(err => handleError(request, reply, err));
+  //   },
+  // );
 
-  server.post(
-    `${urlPrefix}/workflowitem.intent.revokePermission`,
-    getSchema(server, "workflowitemRevokePermissions"),
-    (request, reply) => {
-      revokeWorkflowitemPermission(
-        multichainClient,
-        (request as AuthenticatedRequest) as AuthenticatedRequest,
-      )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
+  // server.post(
+  //   `${urlPrefix}/workflowitem.intent.revokePermission`,
+  //   getSchema(server, "workflowitemRevokePermissions"),
+  //   (request, reply) => {
+  //     revokeWorkflowitemPermission(
+  //       multichainClient,
+  //       (request as AuthenticatedRequest) as AuthenticatedRequest,
+  //     )
+  //       .then(response => send(reply, response))
+  //       .catch(err => handleError(request, reply, err));
+  //   },
+  // );
 
   server.post(
     `${urlPrefix}/workflowitem.validateDocument`,

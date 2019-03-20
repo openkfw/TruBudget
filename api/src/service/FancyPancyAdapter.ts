@@ -378,40 +378,40 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
     //   );
     //   return [stream, key, { json: wfiClosed }];
     // }
-    case "workflowitem.intent.grantPermission": {
-      if (!event.data) {
-        console.error("Error handling publish request for workflowitem.close", params);
-        return params;
-      }
+    // case "workflowitem.intent.grantPermission": {
+    //   if (!event.data) {
+    //     console.error("Error handling publish request for workflowitem.close", params);
+    //     return params;
+    //   }
 
-      const wfiGranted: WorkflowitemPermissionGranted.Event = WorkflowitemPermissionGranted.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        workflowitemId!,
-        event.data.intent,
-        event.data.identity,
-      );
-      return [stream, key, { json: wfiGranted }];
-    }
-    case "workflowitem.intent.revokePermission": {
-      if (!event.data) {
-        console.error("Error handling publish request for workflowitem.close", params);
-        return params;
-      }
+    //   const wfiGranted: WorkflowitemPermissionGranted.Event = WorkflowitemPermissionGranted.createEvent(
+    //     "http",
+    //     event.createdBy,
+    //     projectId!,
+    //     subprojectId!,
+    //     workflowitemId!,
+    //     event.data.intent,
+    //     event.data.identity,
+    //   );
+    //   return [stream, key, { json: wfiGranted }];
+    // }
+    // case "workflowitem.intent.revokePermission": {
+    //   if (!event.data) {
+    //     console.error("Error handling publish request for workflowitem.close", params);
+    //     return params;
+    //   }
 
-      const wfiGranted: WorkflowitemPermissionRevoked.Event = WorkflowitemPermissionRevoked.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        workflowitemId!,
-        event.data.intent,
-        event.data.identity,
-      );
-      return [stream, key, { json: wfiGranted }];
-    }
+    //   const wfiGranted: WorkflowitemPermissionRevoked.Event = WorkflowitemPermissionRevoked.createEvent(
+    //     "http",
+    //     event.createdBy,
+    //     projectId!,
+    //     subprojectId!,
+    //     workflowitemId!,
+    //     event.data.intent,
+    //     event.data.identity,
+    //   );
+    //   return [stream, key, { json: wfiGranted }];
+    // }
     default:
       return params;
   }
@@ -598,36 +598,36 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
     //   };
     //   return { ...result, data: { json: oldEvent } };
     // }
-    case "workflowitem_permission_granted": {
-      const event: WorkflowitemPermissionGranted.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.workflowitemId,
-        intent: "workflowitem.intent.grantPermission",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          intent: event.permission,
-          identity: event.grantee,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
-    case "workflowitem_permission_revoked": {
-      const event: WorkflowitemPermissionRevoked.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.workflowitemId,
-        intent: "workflowitem.intent.revokePermission",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          intent: event.permission,
-          identity: event.revokee,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
+    // case "workflowitem_permission_granted": {
+    //   const event: WorkflowitemPermissionGranted.Event = result.data.json;
+    //   const oldEvent: Event = {
+    //     key: event.workflowitemId,
+    //     intent: "workflowitem.intent.grantPermission",
+    //     createdBy: event.publisher,
+    //     createdAt: event.time,
+    //     dataVersion: 1,
+    //     data: {
+    //       intent: event.permission,
+    //       identity: event.grantee,
+    //     },
+    //   };
+    //   return { ...result, data: { json: oldEvent } };
+    // }
+    // case "workflowitem_permission_revoked": {
+    //   const event: WorkflowitemPermissionRevoked.Event = result.data.json;
+    //   const oldEvent: Event = {
+    //     key: event.workflowitemId,
+    //     intent: "workflowitem.intent.revokePermission",
+    //     createdBy: event.publisher,
+    //     createdAt: event.time,
+    //     dataVersion: 1,
+    //     data: {
+    //       intent: event.permission,
+    //       identity: event.revokee,
+    //     },
+    //   };
+    //   return { ...result, data: { json: oldEvent } };
+    // }
     default:
       return result;
   }

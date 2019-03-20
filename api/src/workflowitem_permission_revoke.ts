@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 import Joi = require("joi");
 import { VError } from "verror";
 
-import Intent, { projectIntents } from "./authz/intents";
+import Intent, { workflowitemIntents } from "./authz/intents";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
@@ -32,7 +32,7 @@ const requestBodyV1Schema = Joi.object({
     subprojectId: Subproject.idSchema.required(),
     workflowitemId: Workflowitem.idSchema.required(),
     identity: Joi.string().required(),
-    intent: Joi.valid(projectIntents).required(),
+    intent: Joi.valid(workflowitemIntents).required(),
   }).required(),
 });
 
@@ -92,7 +92,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  grantWorkflowitemPermission(
+  revokeWorkflowitemPermission(
     ctx: Ctx,
     user: ServiceUser,
     projectId: Project.Id,
@@ -134,7 +134,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       } = bodyResult.data;
 
       service
-        .grantWorkflowitemPermission(
+        .revokeWorkflowitemPermission(
           ctx,
           user,
           projectId,

@@ -34,6 +34,9 @@ import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
+import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
+import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
+
 import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
 import { Item } from "./liststreamitems";
 
@@ -583,6 +586,8 @@ const EVENT_PARSER_MAP = {
   workflowitem_closed: WorkflowitemClosed.validate,
   workflowitem_created: WorkflowitemCreated.validate,
   workflowitem_assigned: WorkflowitemAssigned.validate,
+  workflowitem_permission_granted: WorkflowitemPermissionsGranted.validate,
+  workflowitem_permission_revoked: WorkflowitemPermissionsRevoked.validate,
 };
 
 function parseBusinessEvents(items: Item[], streamName: string): Array<Result.Type<BusinessEvent>> {

@@ -85,12 +85,13 @@ export function apply(
     eligibleIdentities.push(event.grantee);
   }
 
-  workflowitem.permissions[event.permission] = eligibleIdentities;
-
   const result = Workflowitem.validate(workflowitem);
   if (Result.isErr(result)) {
     return new EventSourcingError(ctx, event, result.message, workflowitem.id);
   }
 
-  return workflowitem;
+  return {
+    ...workflowitem,
+    permissions: { ...workflowitem.permissions, [event.permission]: eligibleIdentities },
+  };
 }
