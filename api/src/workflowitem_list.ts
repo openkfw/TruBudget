@@ -127,7 +127,7 @@ function sendErrorIfEmpty(reply, resourceId) {
       apiVersion: "1.0",
       error: {
         code: 404,
-        message: "required query parameter `resourceId` not present (must be non-empty string)",
+        message: `required query parameter ${resourceId} not present (must be non-empty string)`,
       },
     });
     return true;
