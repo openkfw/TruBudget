@@ -9,8 +9,8 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-type eventTypeType = "workflowitems_reordered";
-const eventType: eventTypeType = "workflowitems_reordered";
+type eventTypeType = "subproject_items_reordered";
+const eventType: eventTypeType = "subproject_items_reordered";
 
 export interface Event {
   type: eventTypeType;

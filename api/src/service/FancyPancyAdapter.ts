@@ -549,7 +549,7 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
       };
       return { ...result, data: { json: oldEvent } };
     }
-    case "workflowitems_reordered": {
+    case "subproject_items_reordered": {
       const event: WorkflowitemsReordered.Event = result.data.json;
       const oldEvent: Event = {
         key: event.subprojectId,
