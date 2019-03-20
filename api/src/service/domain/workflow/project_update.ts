@@ -14,19 +14,8 @@ import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as ProjectUpdated from "./project_updated";
 
-export interface RequestData {
-  displayName?: string;
-  description?: string;
-  thumbnail?: string;
-  additionalData?: object;
-}
-
-const requestDataSchema = Joi.object({
-  displayName: Joi.string(),
-  description: Joi.string().allow(""),
-  thumbnail: Joi.string().allow(""),
-  additionalData: AdditionalData.schema,
-}).or("displayName", "description", "thumbnail", "additionalData");
+export type RequestData = ProjectUpdated.Modification;
+export const requestDataSchema = ProjectUpdated.modificationSchema;
 
 export function validate(input: any): Result.Type<RequestData> {
   const { value, error } = Joi.validate(input, requestDataSchema);

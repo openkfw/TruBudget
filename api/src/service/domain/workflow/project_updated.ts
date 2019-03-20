@@ -17,14 +17,14 @@ const eventType: eventTypeType = "project_updated";
  * way are not quite clear, plus we want such a change to be explicit by causing a
  * dedicated event.
  */
-interface Modification {
+export interface Modification {
   displayName?: string;
   description?: string;
   thumbnail?: string;
   additionalData?: object;
 }
 
-const modificationSchema = Joi.object({
+export const modificationSchema = Joi.object({
   displayName: Joi.string(),
   description: Joi.string().allow(""),
   thumbnail: Joi.string().allow(""),
