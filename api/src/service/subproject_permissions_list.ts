@@ -8,7 +8,7 @@ import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectPermissionsList from "./domain/workflow/subproject_permissions_list";
 
-export async function getSubprojectPermissions(
+export async function listSubprojectPermissions(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,

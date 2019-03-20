@@ -59,6 +59,7 @@ import * as SubprojectGetService from "./service/subproject_get";
 import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
+import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
@@ -74,6 +75,7 @@ import * as SubprojectCreateAPI from "./subproject_create";
 import * as SubprojectListAPI from "./subproject_list";
 import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
 import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
+import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
@@ -398,6 +400,17 @@ SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
     SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
   getWorkflowitems: (ctx, user, projectId, subprojectId) =>
     WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+SubprojectPermissionListAPI.addHttpHandler(server, URL_PREFIX, {
+  listSubprojectPermissions: (ctx, user, projectId, subprojectId) =>
+    SubprojectPermissionListService.listSubprojectPermissions(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+    ),
 });
 
 SubprojectPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
