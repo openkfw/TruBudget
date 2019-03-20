@@ -270,40 +270,30 @@ export const registerRoutes = (
   //       subproject
   // ------------------------------------------------------------
 
-  server.post(
-    `${urlPrefix}/subproject.reorderWorkflowitems`,
-    getSchema(server, "reorderWorkflowitems"),
-    (request, reply) => {
-      reorderWorkflowitems(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
   // ------------------------------------------------------------
   //       workflowitem
   // ------------------------------------------------------------
 
-  server.post(
-    `${urlPrefix}/workflowitem.close`,
-    getSchema(server, "workflowitemClose"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const body = req.body.data;
-      workflowitemCloser(req.user, body.projectId, body.subprojectId, body.workflowitemId)
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
+  // server.post(
+  //   `${urlPrefix}/workflowitem.close`,
+  //   getSchema(server, "workflowitemClose"),
+  //   (request, reply) => {
+  //     const req = request as AuthenticatedRequest;
+  //     const body = req.body.data;
+  //     workflowitemCloser(req.user, body.projectId, body.subprojectId, body.workflowitemId)
+  //       .then(
+  //         (): HttpResponse => [
+  //           200,
+  //           {
+  //             apiVersion: "1.0",
+  //             data: "OK",
+  //           },
+  //         ],
+  //       )
+  //       .then(response => send(reply, response))
+  //       .catch(err => handleError(request, reply, err));
+  //   },
+  // );
 
   // server.post(
   //   `${urlPrefix}/workflowitem.intent.grantPermission`,

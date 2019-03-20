@@ -17,6 +17,7 @@ import { Id } from "./workflowitem";
 import * as WorkflowitemClosed from "./workflowitem_closed";
 import { sortWorkflowitems } from "./workflowitem_ordering";
 import { VError } from "verror";
+import logger from "../../../lib/logger";
 
 interface Repository {
   getWorkflowitems(
@@ -24,7 +25,10 @@ interface Repository {
     subprojectId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
   getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
-  getWorkflowitemOrdering(projectId: string, subprojectId: string): Promise<Result.Type<string[]>>;
+  getSubproject(
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Subproject.Subproject>>;
 }
 
 export async function closeWorkflowitem(
@@ -37,16 +41,16 @@ export async function closeWorkflowitem(
 ): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
   const workflowitems = await repository.getWorkflowitems(projectId, subprojectId);
   if (Result.isErr(workflowitems)) {
+    logger.warn(workflowitems);
     return new NotFound(ctx, "subproject", subprojectId);
   }
 
-  const workflowitemOrdering = await repository.getWorkflowitemOrdering(projectId, subprojectId);
-  if (Result.isErr(workflowitemOrdering)) {
-    return new VError(
-      `Couldn't get workflowitem ordering for ${subprojectId}`,
-      workflowitemOrdering,
-    );
+  const subproject = await repository.getSubproject(projectId, subprojectId);
+  if (Result.isErr(subproject)) {
+    return new VError(`Couldn't get workflowitem ordering for ${subprojectId}`, subproject);
   }
+
+  const { workflowitemOrdering } = subproject;
 
   const sortedWorkflowitems = sortWorkflowitems(workflowitems, workflowitemOrdering);
   const workflowitemToClose = sortedWorkflowitems.find(item => item.id === workflowitemId);

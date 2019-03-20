@@ -21,10 +21,11 @@ export async function closeWorkflowitem(
   const result = await Cache.withCache(conn, ctx, async cache =>
     WorkflowitemClose.closeWorkflowitem(ctx, serviceUser, projectId, subprojectId, workflowitemId, {
       getWorkflowitems: async (projectId, subprojectId) => {
-        return cache.getWorkflowitems(projectId, workflowitemId);
+        return cache.getWorkflowitems(projectId, subprojectId);
       },
-      getWorkflowitemOrdering: async (projectId, subprojectId) =>
-        cache.getWorkflowitemsOrdering(projectId, subprojectId),
+      getSubproject: async (projectId, subprojectId) => {
+        return cache.getSubproject(projectId, subprojectId);
+      },
       getUsersForIdentity: async identity => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },

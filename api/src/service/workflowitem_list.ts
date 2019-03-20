@@ -1,10 +1,10 @@
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemList from "./domain/workflow/workflowitem_list";
-import * as Result from "../result";
 
 export async function listWorkflowitems(
   conn: ConnToken,
@@ -18,6 +18,8 @@ export async function listWorkflowitems(
       getWorkflowitems: async (projectId, subprojectId) => {
         return cache.getWorkflowitems(projectId, subprojectId);
       },
+      getSubproject: async (projectId, subprojectId) =>
+        cache.getSubproject(projectId, subprojectId),
     }),
   );
 

@@ -14,8 +14,10 @@ import * as WorkflowitemOrdering from "./workflowitem_ordering";
 import isEqual = require("lodash.isequal");
 
 interface Repository {
-  getWorkflowitemOrdering(projectId: string, subprojectId: string): Promise<Result.Type<string[]>>;
-  getSubproject(subprojectId: string): Promise<Result.Type<Subproject.Subproject>>;
+  getSubproject(
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Subproject.Subproject>>;
 }
 
 export async function reorderSubprojectItems(
@@ -26,11 +28,11 @@ export async function reorderSubprojectItems(
   ordering: WorkflowitemOrdering.WorkflowitemOrdering,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
-  const currentOrder = await repository.getWorkflowitemOrdering(projectId, subprojectId);
-
-  if (Result.isErr(currentOrder)) {
+  const subproject = await repository.getSubproject(projectId, subprojectId);
+  if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
   }
+  const currentOrder = subproject.workflowitemOrdering;
 
   if (isEqual(currentOrder, ordering)) {
     // Ordering hasn't changed, therefore do nothing
@@ -44,11 +46,6 @@ export async function reorderSubprojectItems(
     subprojectId,
     ordering,
   );
-
-  const subproject = await repository.getSubproject(subprojectId);
-  if (Result.isErr(subproject)) {
-    return new NotFound(ctx, "subproject", subprojectId);
-  }
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {

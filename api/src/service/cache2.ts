@@ -29,6 +29,7 @@ import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "./domain/workflow/subproject_closed";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
+import * as SubprojectItemsReordered from "./domain/workflow/subproject_items_reordered";
 import * as SubprojectPermissionsGranted from "./domain/workflow/subproject_permission_granted";
 import * as SubprojectPermissionsRevoked from "./domain/workflow/subproject_permission_revoked";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
@@ -119,7 +120,6 @@ export interface CacheInstance {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getWorkflowitemsOrdering(_projectId: string, subprojectId: string);
   updateCachedWorkflowitem(workflowitem: Workflowitem.Workflowitem): void;
 }
 
@@ -310,14 +310,6 @@ export async function withCache<T>(
         workflowitems.push(wf);
       }
       return workflowitems;
-    },
-
-    getWorkflowitemsOrdering: async (
-      _projectId: string,
-      _subprojectId: string,
-    ): Promise<Result.Type<Workflowitem.Id[]>> => {
-      // TODO: implement
-      return [];
     },
 
     getWorkflowitem: async (
@@ -588,6 +580,7 @@ const EVENT_PARSER_MAP = {
   subproject_created: SubprojectCreated.validate,
   subproject_permission_granted: SubprojectPermissionsGranted.validate,
   subproject_permission_revoked: SubprojectPermissionsRevoked.validate,
+  subproject_items_reordered: SubprojectItemsReordered.validate,
   subproject_projected_budget_deleted: SubprojectProjectedBudgetDeleted.validate,
   subproject_projected_budget_updated: SubprojectProjectedBudgetUpdated.validate,
   subproject_updated: SubprojectUpdated.validate,

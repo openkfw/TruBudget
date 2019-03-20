@@ -52,6 +52,7 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
     case "subproject_permission_revoked":
     case "subproject_projected_budget_updated":
     case "subproject_projected_budget_deleted":
+    case "subproject_items_reordered":
       return writeTo(conn, ctx, {
         stream: event.projectId,
         keys: ["subprojects", event.subprojectId],
@@ -61,11 +62,12 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
     case "workflowitem_created":
       return writeTo(conn, ctx, {
         stream: event.projectId,
-        keys: [`${event.subprojectId}_workflows`, event.workflowitem.id],
+        keys: [`${event.subprojectId}_workflowitem_ordering`],
         event,
       });
 
     case "workflowitem_assigned":
+    case "workflowitem_closed":
     case "workflowitem_permission_granted":
     case "workflowitem_permission_revoked":
     case "workflowitem_updated":

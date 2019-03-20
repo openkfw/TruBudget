@@ -246,20 +246,7 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       );
       return [stream, key, { json: spCreated }];
     }
-    case "subproject.reorderWorkflowitems": {
-      if (!event.data) {
-        console.error("Error handling publish request for subproject.reorderWorkflowitems", params);
-        return params;
-      }
-      const wfReordered: WorkflowitemsReordered.Event = WorkflowitemsReordered.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        event.data ? event.data : [],
-      );
-      return [stream, key, { json: wfReordered }];
-    }
+
     // case "workflowitem.close": {
     //   if (!event.data) {
     //     console.error("Error handling publish request for workflowitem.close", params);
@@ -336,29 +323,6 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
 
   switch (result.data.json.type) {
     case "notification_created":
-    // {
-    //   const event: NotificationCreated.Event = result.data.json;
-
-    //   const oldEvent: Event = {
-    //     key: event.recipient,
-    //     intent: "notification.create",
-    //     createdBy: event.publisher,
-    //     createdAt: event.time,
-    //     dataVersion: 1,
-    //     data: {
-    //       notificationId: event.notificationId,
-    //       resources: makeOldNotificationResources(
-    //         event.projectId,
-    //         event.subprojectId,
-    //         event.workflowitemId,
-    //       ),
-    //       time: event.time,
-    //       isRead: false,
-    //       originalEvent: event.businessEvent,
-    //     },
-    //   };
-    //   return { ...result, data: { json: oldEvent } };
-    // }
     case "project_created":
     case "project_permission_granted":
     case "project_permission_revoked":
@@ -367,42 +331,6 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
     case "project_closed":
     case "subproject_created":
       return result;
-    //   const event: SubprojectCreated.Event = result.data.json;
-    //   const oldEvent: Event = {
-    //     key: event.subproject.id,
-    //     intent: "project.createSubproject",
-    //     createdBy: event.publisher,
-    //     createdAt: event.time,
-    //     dataVersion: 1,
-    //     data: {
-    //       subproject: {
-    //         id: event.subproject.id,
-    //         creationUnixTs: new Date(event.time).getTime(),
-    //         status: event.subproject.status,
-    //         displayName: event.subproject.displayName,
-    //         description: event.subproject.description,
-    //         assignee: event.subproject.assignee,
-    //         currency: event.subproject.currency,
-    //         projectedBudgets: event.subproject.projectedBudgets,
-    //         additionalData: event.subproject.additionalData,
-    //       },
-    //       permissions: event.subproject.permissions,
-    //     },
-    //   };
-    //   return { ...result, data: { json: oldEvent } };
-    // }
-    case "subproject_items_reordered": {
-      const event: WorkflowitemsReordered.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.subprojectId,
-        intent: "subproject.reorderWorkflowitems",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: event.ordering ? event.ordering : [],
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
     // case "workflowitem_closed": {
     //   const event: WorkflowitemClosed.Event = result.data.json;
     //   const oldEvent: Event = {

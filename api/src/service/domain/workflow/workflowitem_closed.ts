@@ -8,6 +8,7 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import logger from "../../../lib/logger";
 
 type eventTypeType = "workflowitem_closed";
 const eventType: eventTypeType = "workflowitem_closed";
@@ -70,12 +71,20 @@ export function apply(
   event: Event,
   workflowitem: Workflowitem.Workflowitem,
 ): Result.Type<Workflowitem.Workflowitem> {
-  workflowitem.status = "closed";
+  const billingDate =
+    workflowitem.billingDate === undefined ? event.time : workflowitem.billingDate;
 
-  const result = Workflowitem.validate(workflowitem);
+  // TODO: handle amount type N/A
+  const nextState: Workflowitem.Workflowitem = {
+    ...workflowitem,
+    status: "closed",
+    billingDate,
+  };
+
+  const result = Workflowitem.validate(nextState);
   if (Result.isErr(result)) {
     return new EventSourcingError(ctx, event, result.message, workflowitem.id);
   }
 
-  return workflowitem;
+  return nextState;
 }

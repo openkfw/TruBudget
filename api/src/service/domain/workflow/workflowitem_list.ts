@@ -5,29 +5,39 @@ import { NotFound } from "../errors/not_found";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
-import * as Subroject from "./subproject";
+import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import { sortWorkflowitems } from "./workflowitem_ordering";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
+import logger from "../../../lib/logger";
 
 interface Repository {
   getWorkflowitems(
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
+  getSubproject(
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Subproject.Subproject>>;
 }
 
 export async function getAllVisible(
   ctx: Ctx,
   user: ServiceUser,
   projectId: Project.Id,
-  subprojectId: Subroject.Id,
+  subprojectId: Subproject.Id,
   repository: Repository,
 ): Promise<Result.Type<Workflowitem.Workflowitem[]>> {
   const workflowitems = await repository.getWorkflowitems(projectId, subprojectId);
+  const subproject = await repository.getSubproject(projectId, subprojectId);
 
-  if (Result.isErr(workflowitems)) {
+  if (Result.isErr(workflowitems) || Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
   }
+
+  const { workflowitemOrdering = [] } = subproject;
+  const sortedWorkflowitems = sortWorkflowitems(workflowitems, workflowitemOrdering);
 
   const isVisible =
     user.id === "root"
@@ -38,7 +48,7 @@ export async function getAllVisible(
   const removeNonvisibleHistory = (workflowitem: Workflowitem.Workflowitem) =>
     dropHiddenHistoryEvents(workflowitem, user);
 
-  const visibleWorkflowitems = workflowitems.filter(isVisible).map(removeNonvisibleHistory);
+  const visibleWorkflowitems = sortedWorkflowitems.filter(isVisible).map(removeNonvisibleHistory);
   return visibleWorkflowitems;
 }
 

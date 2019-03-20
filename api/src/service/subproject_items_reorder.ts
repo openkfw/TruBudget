@@ -25,11 +25,8 @@ export async function reorderSubprojectItems(
       subprojectId,
       ordering,
       {
-        getSubproject: async subprojectId => {
-          return cache.getSubproject(projectId, subprojectId);
-        },
-        getWorkflowitemOrdering: async (projectId, subprojectId) =>
-          cache.getWorkflowitemsOrdering(projectId, subprojectId),
+        getSubproject: async (projectId, subprojectId) =>
+          cache.getSubproject(projectId, subprojectId),
       },
     ),
   );

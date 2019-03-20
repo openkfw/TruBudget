@@ -57,6 +57,7 @@ import * as SubprojectAssignService from "./service/subproject_assign";
 import * as SubprojectCloseService from "./service/subproject_close";
 import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
+import * as SubprojectItemsReorderService from "./service/subproject_items_reorder";
 import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
@@ -68,6 +69,7 @@ import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
+import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
@@ -79,6 +81,7 @@ import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as SubprojectCloseAPI from "./subproject_close";
 import * as SubprojectCreateAPI from "./subproject_create";
+import * as SubprojectItemsReorderAPI from "./subproject_items_reorder";
 import * as SubprojectListAPI from "./subproject_list";
 import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
 import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
@@ -90,6 +93,7 @@ import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
+import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
@@ -489,6 +493,17 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
       currencyCode,
     ),
 });
+SubprojectItemsReorderAPI.addHttpHandler(server, URL_PREFIX, {
+  reorderSubprojectItems: (ctx, user, projectId, subprojectId, ordering) =>
+    SubprojectItemsReorderService.reorderSubprojectItems(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      ordering,
+    ),
+});
 
 SubprojectUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateSubproject: (ctx, user, projectId, subprojectId, requestData) =>
@@ -507,6 +522,18 @@ WorkflowitemListAPI.addHttpHandler(server, URL_PREFIX, {
 WorkflowitemPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
   listWorkflowitemPermissions: (ctx, user, projectId, subprojectId, workflowitemId) =>
     WorkflowitemPermissionsListService.listWorkflowitemPermissions(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+    ),
+});
+
+WorkflowitemCloseAPI.addHttpHandler(server, URL_PREFIX, {
+  closeWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId) =>
+    WorkflowitemCloseService.closeWorkflowitem(
       db,
       ctx,
       user,

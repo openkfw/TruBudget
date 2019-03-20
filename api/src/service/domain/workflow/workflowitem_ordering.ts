@@ -1,5 +1,4 @@
 import { AssertionError } from "assert";
-
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemClosed from "./workflowitem_closed";
 
@@ -11,14 +10,13 @@ export function sortWorkflowitems(
 ): Workflowitem.Workflowitem[] {
   const indexedItems = items.map((item, index) => {
     // tslint:disable-next-line:no-string-literal
-    item["_index"] = index;
-    return item;
+    return { ...item, _index: index };
   });
   const sortedItems = indexedItems.sort((a, b) => byOrderingCriteria(a, b, ordering));
   return sortedItems.map(item => {
     // tslint:disable-next-line:no-string-literal
-    delete item["_index"];
-    return item;
+    const { _index, ...rest } = item;
+    return rest;
   });
 }
 

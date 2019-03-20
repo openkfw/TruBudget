@@ -73,12 +73,12 @@ export function apply(
   event: Event,
   subproject: Subproject.Subproject,
 ): Result.Type<Subproject.Subproject> {
-  subproject.workflowitemOrdering = event.ordering;
+  const nextState = { ...subproject, workflowitemOrdering: event.ordering };
 
-  const result = Subproject.validate(subproject);
+  const result = Subproject.validate(nextState);
   if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, subproject.id);
+    return new EventSourcingError(ctx, event, result.message, nextState.id);
   }
 
-  return subproject;
+  return nextState;
 }
