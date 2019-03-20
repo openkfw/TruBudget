@@ -1,11 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import {
-  AllWorkflowitemsReader,
-  WorkflowitemAssigner,
-  WorkflowitemCloser,
-  WorkflowitemUpdater,
-} from ".";
+import { AllWorkflowitemsReader, WorkflowitemAssigner, WorkflowitemCloser } from ".";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
@@ -18,11 +13,7 @@ import { voteForNetworkPermission } from "../network/controller/vote";
 import { getNewestNotifications } from "../notification/controller/poll";
 import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
-import { assignSubproject } from "../subproject/controller/assign";
 import { closeSubproject } from "../subproject/controller/close";
-import { grantSubprojectPermission } from "../subproject/controller/intent.grantPermission";
-import { getSubprojectPermissions } from "../subproject/controller/intent.listPermissions";
-import { revokeSubprojectPermission } from "../subproject/controller/intent.revokePermission";
 import { reorderWorkflowitems } from "../subproject/controller/reorderWorkflowitems";
 import { updateSubproject } from "../subproject/controller/update";
 import { getSubprojectHistory } from "../subproject/controller/viewHistory";
@@ -30,7 +21,6 @@ import { createBackup } from "../system/createBackup";
 import { getVersion } from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
 import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
-import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
 import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
@@ -237,12 +227,10 @@ export const registerRoutes = (
   {
     workflowitemLister,
     workflowitemCloser,
-    workflowitemUpdater,
     workflowitemAssigner,
   }: {
     workflowitemLister: AllWorkflowitemsReader;
     workflowitemCloser: WorkflowitemCloser;
-    workflowitemUpdater: WorkflowitemUpdater;
     workflowitemAssigner: WorkflowitemAssigner;
   },
 ) => {
@@ -325,33 +313,6 @@ export const registerRoutes = (
   // ------------------------------------------------------------
   //       workflowitem
   // ------------------------------------------------------------
-  server.post(
-    `${urlPrefix}/workflowitem.update`,
-    getSchema(server, "workflowitemUpdate"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const body = req.body.data;
-
-      workflowitemUpdater(
-        req.user,
-        body.projectId,
-        body.subprojectId,
-        body.workflowitemId,
-        req.body.data,
-      )
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
 
   server.post(
     `${urlPrefix}/workflowitem.close`,

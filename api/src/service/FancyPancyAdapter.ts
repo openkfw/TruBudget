@@ -278,39 +278,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       );
       return [stream, key, { json: wfReordered }];
     }
-    case "workflowitem.update": {
-      if (!event.data) {
-        console.error(
-          "Error handling publish request for workflowitem.update",
-          JSON.stringify(params, null, 2),
-        );
-        return params;
-      }
-
-      const wfiUpdated: WorkflowitemUpdated.Event = Result.unwrap(
-        WorkflowitemUpdated.createEvent(
-          "http",
-          event.createdBy,
-          projectId!,
-          subprojectId!,
-          workflowitemId!,
-          {
-            displayName: event.data.displayName,
-            description: event.data.description,
-            amountType: event.data.amountType,
-            documents: event.data.documents,
-            amount: event.data.amount,
-            currency: event.data.currency,
-            exchangeRate: event.data.exchangeRate,
-            billingDate: event.data.billingDate,
-            dueDate: event.data.dueDate,
-            additionalData: event.data.additionalData,
-          },
-        ),
-      );
-
-      return [stream, key, { json: wfiUpdated }];
-    }
     // case "workflowitem.close": {
     //   if (!event.data) {
     //     console.error("Error handling publish request for workflowitem.close", params);
@@ -467,28 +434,6 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
         createdAt: event.time,
         dataVersion: 1,
         data: event.ordering ? event.ordering : [],
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
-    case "workflowitem_updated": {
-      const event: WorkflowitemUpdated.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.workflowitemId,
-        intent: "workflowitem.update",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          displayName: event.update.displayName,
-          exchangeRate: event.update.exchangeRate,
-          billingDate: event.update.billingDate,
-          amount: event.update.amount,
-          currency: event.update.currency,
-          amountType: event.update.amountType,
-          description: event.update.description,
-          documents: event.update.documents,
-          additionalData: event.update.additionalData,
-        },
       };
       return { ...result, data: { json: oldEvent } };
     }

@@ -90,6 +90,8 @@ import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
+import * as WorkflowitemUpdateAPI from "./workflowitem_update";
+import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 
 // import * as OldSubprojectModel from "./subproject/model/Subproject";
@@ -193,7 +195,6 @@ registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, {
   workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(db),
   workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(db),
   workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(db),
-  workflowitemUpdater: HttpdMultichainAdapter.updateWorkflowitem(db),
 });
 
 /*
@@ -558,6 +559,19 @@ WorkflowitemPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
       workflowitemId,
       revokee,
       intent,
+    ),
+});
+
+WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>
+    WorkflowitemUpdateService.updateWorkflowitem(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      data,
     ),
 });
 

@@ -37,10 +37,10 @@ import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
+import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
 import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
-
-import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
+import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import { Item } from "./liststreamitems";
 
 const STREAM_BLACKLIST = [
@@ -582,19 +582,20 @@ const EVENT_PARSER_MAP = {
   project_projected_budget_deleted: ProjectProjectedBudgetDeleted.validate,
   project_projected_budget_updated: ProjectProjectedBudgetUpdated.validate,
   project_updated: ProjectUpdated.validate,
-  subproject_created: SubprojectCreated.validate,
-  subproject_closed: SubprojectClosed.validate,
   subproject_assigned: SubprojectAssigned.validate,
+  subproject_closed: SubprojectClosed.validate,
+  subproject_created: SubprojectCreated.validate,
   subproject_permission_granted: SubprojectPermissionsGranted.validate,
   subproject_permission_revoked: SubprojectPermissionsRevoked.validate,
   subproject_projected_budget_deleted: SubprojectProjectedBudgetDeleted.validate,
   subproject_projected_budget_updated: SubprojectProjectedBudgetUpdated.validate,
   user_created: UserCreated.validate,
+  workflowitem_assigned: WorkflowitemAssigned.validate,
   workflowitem_closed: WorkflowitemClosed.validate,
   workflowitem_created: WorkflowitemCreated.validate,
-  workflowitem_assigned: WorkflowitemAssigned.validate,
   workflowitem_permission_granted: WorkflowitemPermissionsGranted.validate,
   workflowitem_permission_revoked: WorkflowitemPermissionsRevoked.validate,
+  workflowitem_updated: WorkflowitemUpdated.validate,
 };
 
 function parseBusinessEvents(items: Item[], streamName: string): Array<Result.Type<BusinessEvent>> {
