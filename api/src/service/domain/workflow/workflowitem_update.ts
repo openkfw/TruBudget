@@ -22,11 +22,7 @@ export type RequestData = WorkflowitemUpdated.Modification;
 export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
 
 interface Repository {
-  getWorkflowitem(
-    projectId: Project.Id,
-    subprojectId: Subproject.Id,
-    workflowitemId: Workflowitem.Id,
-  ): Promise<Result.Type<Workflowitem.Workflowitem>>;
+  getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
 }
 
@@ -36,10 +32,10 @@ export async function updateWorkflowitem(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
-  data: RequestData,
+  modification: RequestData,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; workflowitem: Workflowitem.Workflowitem }>> {
-  let workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
+  let workflowitem = await repository.getWorkflowitem(workflowitemId);
 
   if (Result.isErr(workflowitem)) {
     return new NotFound(ctx, "workflowitem", workflowitemId);
@@ -51,7 +47,7 @@ export async function updateWorkflowitem(
     projectId,
     subprojectId,
     workflowitemId,
-    data,
+    modification,
   );
   if (Result.isErr(newEvent)) {
     return new VError(newEvent, "failed to create event");

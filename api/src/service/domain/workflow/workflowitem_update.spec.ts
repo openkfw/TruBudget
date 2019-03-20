@@ -6,8 +6,6 @@ import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
-import { Project } from "./project";
-import { Subproject } from "./subproject";
 import { Workflowitem } from "./workflowitem";
 import { updateWorkflowitem } from "./workflowitem_update";
 
@@ -19,31 +17,6 @@ const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charli
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
-const baseProject: Project = {
-  id: projectId,
-  createdAt: new Date().toISOString(),
-  status: "open",
-  displayName: "dummy",
-  description: "dummy",
-  projectedBudgets: [],
-  permissions: {},
-  log: [],
-  additionalData: {},
-};
-const baseSubproject: Subproject = {
-  id: subprojectId,
-  projectId,
-  createdAt: new Date().toISOString(),
-  status: "open",
-  displayName: "dummy",
-  description: "dummy",
-  currency: "EUR",
-  projectedBudgets: [],
-  workflowitemOrdering: [],
-  permissions: {},
-  log: [],
-  additionalData: {},
-};
 const baseWorkflowitem: Workflowitem = {
   isRedacted: false,
   id: workflowitemId,
@@ -59,7 +32,6 @@ const baseWorkflowitem: Workflowitem = {
   additionalData: {},
 };
 const baseRepository = {
-  getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => new Error("not found"),
   getUsersForIdentity: async identity => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
@@ -83,7 +55,7 @@ describe("update workflowitem: authorization", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           permissions: {},
         }),
@@ -103,7 +75,7 @@ describe("update workflowitem: authorization", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           permissions: {},
         }),
@@ -125,7 +97,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
         }),
       },
@@ -153,7 +125,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           displayName: "Foo",
           description: "A description.",
@@ -182,7 +154,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           displayName: "Foo",
           description: "A description.",
@@ -211,7 +183,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           displayName: "Foo",
           description: "A description.",
@@ -237,7 +209,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           status: "closed",
           billingDate: "2019-03-20T10:33:18.856Z",
@@ -269,7 +241,7 @@ describe("update workflowitem: how modifications are applied", () => {
         modification,
         {
           ...baseRepository,
-          getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+          getWorkflowitem: async _workflowitemId => ({
             ...baseWorkflowitem,
             amountType: "N/A",
           }),
@@ -298,7 +270,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           documents: [{ id: "a", hash: "hashA" }],
         }),
@@ -323,7 +295,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           documents: [{ id: "A", hash: "old hash for A" }],
         }),
@@ -354,7 +326,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           additionalData: {
             a: "old value",
@@ -384,8 +356,7 @@ describe("update workflowitem: how modifications are applied", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) =>
-          new Error("some error"),
+        getWorkflowitem: async _workflowitemId => new Error("some error"),
       },
     );
 
@@ -409,7 +380,7 @@ describe("update workflowitem: notifications", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           description: "A description.",
           assignee: bob.id,
@@ -438,7 +409,7 @@ describe("update workflowitem: notifications", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
           description: "A description.",
           assignee: undefined,
@@ -466,7 +437,7 @@ describe("update workflowitem: notifications", () => {
       modification,
       {
         ...baseRepository,
-        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+        getWorkflowitem: async _workflowitemId => ({
           ...baseWorkflowitem,
         }),
       },
@@ -496,7 +467,7 @@ describe("update workflowitem: notifications", () => {
         modification,
         {
           ...baseRepository,
-          getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+          getWorkflowitem: async _workflowitemId => ({
             ...baseWorkflowitem,
             description: "A description.",
             assignee: "alice_and_bob_and_charlie",
