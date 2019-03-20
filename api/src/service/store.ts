@@ -47,6 +47,7 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
 
     case "subproject_assigned":
     case "subproject_closed":
+    case "subproject_updated":
     case "subproject_permission_granted":
     case "subproject_permission_revoked":
     case "subproject_projected_budget_updated":

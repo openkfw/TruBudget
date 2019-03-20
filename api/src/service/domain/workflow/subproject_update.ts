@@ -2,7 +2,6 @@ import Joi = require("joi");
 
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -13,7 +12,6 @@ import * as UserRecord from "../organization/user_record";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
-import * as ProjectUpdated from "./project_updated";
 import * as SubprojectUpdated from "./subproject_updated";
 
 export type RequestData = SubprojectUpdated.UpdatedData;
