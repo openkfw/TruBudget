@@ -18,8 +18,14 @@ export async function createWorkflowitem(
 ): Promise<Map<Id, string>> {
   const result = await Cache.withCache(conn, ctx, cache => {
     return Workflowitem.createWorkflowitem(ctx, serviceUser, requestData, {
-      workflowitemExists: async (projectId: string, subprojectId: string, workflowitemId: string) =>
-        cache.getWorkflowitemEvents(projectId, subprojectId, workflowitemId).length > 0,
+      workflowitemExists: async (
+        projectId: string,
+        subprojectId: string,
+        workflowitemId: string,
+      ) => {
+        const item = cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
+        return Result.isOk(item);
+      },
       getSubproject: async (projectId: string, subprojectId: string) =>
         cache.getSubproject(projectId, subprojectId),
     });

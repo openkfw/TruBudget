@@ -6,18 +6,30 @@ import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
 import { sourceWorkflowitems } from "./workflowitem_eventsourcing";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
+import * as Result from "../../../result";
+import * as Project from "./project";
+import * as Subroject from "./subproject";
+import { NotFound } from "../errors/not_found";
 
 interface Repository {
-  getAllWorkflowitemEvents(): Promise<BusinessEvent[]>;
+  getWorkflowitems(
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
 }
 
 export async function getAllVisible(
   ctx: Ctx,
   user: ServiceUser,
+  projectId: Project.Id,
+  subprojectId: Subroject.Id,
   repository: Repository,
-): Promise<Workflowitem.Workflowitem[]> {
-  const allWorkflowitemEvents = await repository.getAllWorkflowitemEvents();
-  const { workflowitems: allWorkflowitems } = sourceWorkflowitems(ctx, allWorkflowitemEvents);
+): Promise<Result.Type<Workflowitem.Workflowitem[]>> {
+  const workflowitems = await repository.getWorkflowitems(projectId, subprojectId);
+
+  if (Result.isErr(workflowitems)) {
+    return new NotFound(ctx, "subproject", subprojectId);
+  }
 
   const isVisible =
     user.id === "root"
@@ -28,7 +40,7 @@ export async function getAllVisible(
   const removeNonvisibleHistory = (workflowitem: Workflowitem.Workflowitem) =>
     dropHiddenHistoryEvents(workflowitem, user);
 
-  const visibleWorkflowitems = allWorkflowitems.filter(isVisible).map(removeNonvisibleHistory);
+  const visibleWorkflowitems = workflowitems.filter(isVisible).map(removeNonvisibleHistory);
   return visibleWorkflowitems;
 }
 
