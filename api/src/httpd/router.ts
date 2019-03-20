@@ -322,16 +322,6 @@ export const registerRoutes = (
     },
   );
 
-  // server.get(
-  //   `${urlPrefix}/subproject.intent.listPermissions`,
-  //   getSchema(server, "subprojectListPermissions"),
-  //   (request, reply) => {
-  //     getSubprojectPermissions(multichainClient, request as AuthenticatedRequest)
-  //       .then(response => send(reply, response))
-  //       .catch(err => handleError(request, reply, err));
-  //   },
-  // );
-
   // ------------------------------------------------------------
   //       workflowitem
   // ------------------------------------------------------------
