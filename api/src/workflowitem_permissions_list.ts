@@ -93,9 +93,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         groups: (request as AuthenticatedRequest).user.groups,
       };
 
-      const projectId = request.query.projectId;
-      const subprojectId = request.query.subprojectId;
-      const workflowitemId = request.query.workflowitemId;
+      const { projectId, subprojectId, workflowitemId } = request.query;
 
       if (
         sendErrorIfEmpty(reply, projectId) ||
