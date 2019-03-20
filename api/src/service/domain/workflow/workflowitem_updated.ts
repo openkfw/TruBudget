@@ -14,7 +14,7 @@ import * as Workflowitem from "./workflowitem";
 type eventTypeType = "workflowitem_updated";
 const eventType: eventTypeType = "workflowitem_updated";
 
-interface Modification {
+export interface Modification {
   displayName?: string;
   description?: string;
   amount?: string;
@@ -24,10 +24,10 @@ interface Modification {
   billingDate?: string;
   dueDate?: string;
   documents?: StoredDocument[];
-  additionalData?: {};
+  additionalData?: object;
 }
 
-const modificationSchema = Joi.object({
+export const modificationSchema = Joi.object({
   displayName: Joi.string(),
   description: Joi.string().allow(""),
   amount: Joi.string(),

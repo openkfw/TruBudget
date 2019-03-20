@@ -2,6 +2,7 @@ import Joi = require("joi");
 
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
+import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -17,13 +18,15 @@ export interface RequestData {
   displayName?: string;
   description?: string;
   thumbnail?: string;
+  additionalData?: object;
 }
 
 const requestDataSchema = Joi.object({
   displayName: Joi.string(),
   description: Joi.string().allow(""),
   thumbnail: Joi.string().allow(""),
-}).or("displayName", "description", "thumbnail");
+  additionalData: AdditionalData.schema,
+}).or("displayName", "description", "thumbnail", "additionalData");
 
 export function validate(input: any): Result.Type<RequestData> {
   const { value, error } = Joi.validate(input, requestDataSchema);
