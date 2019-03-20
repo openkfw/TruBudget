@@ -73,6 +73,7 @@ import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
+import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
@@ -84,6 +85,7 @@ import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
 import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
 import * as SubprojectUpdateAPI from "./subproject_update";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
+import * as SubprojectViewHistoryAPI from "./subproject_view_history";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
@@ -92,9 +94,8 @@ import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
-import * as WorkflowitemUpdateAPI from "./workflowitem_update";
-import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
+import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 
 // import * as OldSubprojectModel from "./subproject/model/Subproject";
 const URL_PREFIX = "/api";
@@ -412,6 +413,13 @@ SubprojectListAPI.addHttpHandler(server, URL_PREFIX, {
 
 SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
   getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
+  getSubproject: (ctx, user, projectId, subprojectId) =>
+    SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
+  getWorkflowitems: (ctx, user, projectId, subprojectId) =>
+    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+SubprojectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
   getSubproject: (ctx, user, projectId, subprojectId) =>
     SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
   getWorkflowitems: (ctx, user, projectId, subprojectId) =>

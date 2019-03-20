@@ -280,16 +280,6 @@ export const registerRoutes = (
     },
   );
 
-  server.get(
-    `${urlPrefix}/subproject.viewHistory`,
-    getSchema(server, "subprojectViewHistory"),
-    (request, reply) => {
-      getSubprojectHistory(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
   // ------------------------------------------------------------
   //       workflowitem
   // ------------------------------------------------------------
