@@ -1,15 +1,13 @@
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
-import { BusinessEvent } from "../business_event";
+import * as Result from "../../../result";
+import { NotFound } from "../errors/not_found";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
-import * as Workflowitem from "./workflowitem";
-import { sourceWorkflowitems } from "./workflowitem_eventsourcing";
-import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
-import * as Result from "../../../result";
 import * as Project from "./project";
 import * as Subroject from "./subproject";
-import { NotFound } from "../errors/not_found";
+import * as Workflowitem from "./workflowitem";
+import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 
 interface Repository {
   getWorkflowitems(
