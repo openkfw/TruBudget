@@ -48,7 +48,7 @@ const requestBodyV1Schema = Joi.object({
     exchangeRate: Joi.string(),
     billingDate: Joi.date().iso(),
     dueDate: Joi.date().iso(),
-    documents: uploadedDocumentSchema,
+    documents: Joi.array().items(uploadedDocumentSchema),
     additionalData: AdditionalData.schema,
   }).required(),
 });

@@ -3,11 +3,13 @@
   "description": "Projects in 2018",
   "status": "open",
   "assignee": "jxavier",
-  "projectedBudgets": [{
-    "organization": "ACMECorp",
-    "value": "30000000",
-    "currencyCode": "EUR"
-  }],
+  "projectedBudgets": [
+    {
+      "organization": "ACMECorp",
+      "value": "30000000",
+      "currencyCode": "EUR"
+    }
+  ],
   "permissions": {
     "project.viewDetails": ["mstein", "jxavier"],
     "project.viewSummary": ["mstein", "jxavier"],
@@ -16,22 +18,26 @@
     "project.intent.grantPermission": ["mstein", "jxavier"],
     "project.intent.revokePermission": ["mstein", "jxavier"]
   },
-  "subprojects": [{
+  "subprojects": [
+    {
       "displayName": "Design studies",
       "description": "No description",
       "status": "closed",
       "currency": "EUR",
-      "projectedBudgets": [{
-        "organization": "ACMECorp",
-        "value": "500000",
-        "currencyCode": "EUR"
-      }],
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "500000",
+          "currencyCode": "EUR"
+        }
+      ],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [{
+      "workflows": [
+        {
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -65,6 +71,7 @@
           "amount": 500000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -85,6 +92,7 @@
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -96,6 +104,7 @@
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -107,6 +116,7 @@
           "amount": 300000,
           "currency": "EUR",
           "amountType": "disbursed",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -118,17 +128,20 @@
       "description": "No description",
       "status": "open",
       "currency": "EUR",
-      "projectedBudgets": [{
-        "organization": "ACMECorp",
-        "value": "1500000",
-        "currencyCode": "EUR"
-      }],
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "1500000",
+          "currencyCode": "EUR"
+        }
+      ],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [{
+      "workflows": [
+        {
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -160,6 +173,7 @@
           "amount": 1500000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -170,6 +184,7 @@
           "amount": 500000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -180,6 +195,7 @@
           "amount": 500000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -198,6 +214,7 @@
           "amount": 500000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -208,17 +225,20 @@
       "displayName": "Construction lot 1",
       "description": "No description",
       "currency": "EUR",
-      "projectedBudgets": [{
-        "organization": "ACMECorp",
-        "value": "15000000",
-        "currencyCode": "EUR"
-      }],
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "15000000",
+          "currencyCode": "EUR"
+        }
+      ],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [{
+      "workflows": [
+        {
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -250,6 +270,7 @@
           "amount": 15000000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -260,6 +281,7 @@
           "amount": 5000000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -270,6 +292,7 @@
           "amount": 5000000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -280,6 +303,7 @@
           "amount": 10000000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -298,17 +322,20 @@
       "displayName": "Construction lot 2",
       "description": "No description",
       "currency": "EUR",
-      "projectedBudgets": [{
-        "organization": "ACMECorp",
-        "value": "8000000",
-        "currencyCode": "EUR"
-      }],
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "8000000",
+          "currencyCode": "EUR"
+        }
+      ],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [{
+      "workflows": [
+        {
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -340,6 +367,7 @@
           "amount": 8000000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -350,6 +378,7 @@
           "amount": 3000000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -360,6 +389,7 @@
           "currency": "EUR",
           "amount": 3000000,
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -370,6 +400,7 @@
           "amount": 5000000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -380,17 +411,20 @@
       "displayName": "Equipment",
       "description": "No description",
       "currency": "EUR",
-      "projectedBudgets": [{
-        "organization": "ACMECorp",
-        "value": "3000000",
-        "currencyCode": "EUR"
-      }],
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "3000000",
+          "currencyCode": "EUR"
+        }
+      ],
       "assignee": "jxavier",
       "permissions": {
         "subproject.viewSummary": ["jxavier"],
         "subproject.viewDetails": ["jxavier"]
       },
-      "workflows": [{
+      "workflows": [
+        {
           "displayName": "Budget allocation",
           "status": "closed",
           "assignee": "jxavier",
@@ -430,6 +464,7 @@
           "amount": 1500000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }
@@ -448,6 +483,7 @@
           "amount": 1500000,
           "currency": "EUR",
           "amountType": "allocated",
+          "exchangeRate": "1.0",
           "permissions": {
             "workflowitem.view": ["jxavier"]
           }

@@ -117,7 +117,13 @@ const closeSubproject = async (axios, projectId, subprojectId) => {
 };
 
 const createWorkflowitem = async (axios, data) => {
-  await withRetry(() => axios.post("/subproject.createWorkflowitem", data));
+  await withRetry(() =>
+    axios.post("/subproject.createWorkflowitem", {
+      ...data,
+      status: "open"
+      // otherwise we won't be able to add workflowitems
+    })
+  );
 };
 
 const updateWorkflowitem = async (
