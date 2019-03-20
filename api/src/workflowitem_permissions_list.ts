@@ -58,7 +58,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  getWorkflowPermissions(
+  listWorkflowitemPermissions(
     ctx: Ctx,
     user: ServiceUser,
     projectId: string,
@@ -103,7 +103,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
       try {
-        const workflowitemPermissions = await service.getWorkflowPermissions(
+        const workflowitemPermissions = await service.listWorkflowitemPermissions(
           ctx,
           user,
           projectId,
