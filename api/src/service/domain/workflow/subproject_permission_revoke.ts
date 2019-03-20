@@ -9,18 +9,18 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
-import * as SubprojectPermissionGranted from "./subproject_permission_granted";
+import * as SubprojectPermissionRevoked from "./subproject_permission_revoked";
 
 interface Repository {
   getSubproject(subprojectId: Subproject.Id): Promise<Result.Type<Subproject.Subproject>>;
 }
 
-export async function grantSubprojectPermission(
+export async function revokeSubprojectPermission(
   ctx: Ctx,
   issuer: ServiceUser,
   projectId: Project.Id,
   subprojectId: Subproject.Id,
-  grantee: Identity,
+  revokee: Identity,
   intent: Intent,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
@@ -31,27 +31,27 @@ export async function grantSubprojectPermission(
   }
 
   // Create the new event:
-  const permissionGranted = SubprojectPermissionGranted.createEvent(
+  const permissionRevoked = SubprojectPermissionRevoked.createEvent(
     ctx.source,
     issuer.id,
     projectId,
     subprojectId,
     intent,
-    grantee,
+    revokee,
   );
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Subproject.permits(subproject, issuer, ["subproject.intent.grantPermission"])) {
-      return new NotAuthorized(ctx, issuer.id, permissionGranted);
+    if (!Subproject.permits(subproject, issuer, ["project.intent.revokePermission"])) {
+      return new NotAuthorized(ctx, issuer.id, permissionRevoked);
     }
   }
 
   // Check that the new event is indeed valid:
-  const next = SubprojectPermissionGranted.apply(ctx, permissionGranted, subproject);
+  const next = SubprojectPermissionRevoked.apply(ctx, permissionRevoked, subproject);
   if (Result.isErr(next)) {
-    return new InvalidCommand(ctx, permissionGranted, [next]);
+    return new InvalidCommand(ctx, permissionRevoked, [next]);
   }
 
-  return { newEvents: [permissionGranted] };
+  return { newEvents: [permissionRevoked] };
 }
