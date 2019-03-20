@@ -360,21 +360,21 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
 
       return [stream, key, { json: wfiUpdated }];
     }
-    case "workflowitem.close": {
-      if (!event.data) {
-        console.error("Error handling publish request for workflowitem.close", params);
-        return params;
-      }
+    // case "workflowitem.close": {
+    //   if (!event.data) {
+    //     console.error("Error handling publish request for workflowitem.close", params);
+    //     return params;
+    //   }
 
-      const wfiClosed: WorkflowitemClosed.Event = WorkflowitemClosed.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        workflowitemId!,
-      );
-      return [stream, key, { json: wfiClosed }];
-    }
+    //   const wfiClosed: WorkflowitemClosed.Event = WorkflowitemClosed.createEvent(
+    //     "http",
+    //     event.createdBy,
+    //     projectId!,
+    //     subprojectId!,
+    //     workflowitemId!,
+    //   );
+    //   return [stream, key, { json: wfiClosed }];
+    // }
     case "workflowitem.intent.grantPermission": {
       if (!event.data) {
         console.error("Error handling publish request for workflowitem.close", params);
@@ -583,18 +583,18 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
       };
       return { ...result, data: { json: oldEvent } };
     }
-    case "workflowitem_closed": {
-      const event: WorkflowitemClosed.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.workflowitemId,
-        intent: "workflowitem.close",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {},
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
+    // case "workflowitem_closed": {
+    //   const event: WorkflowitemClosed.Event = result.data.json;
+    //   const oldEvent: Event = {
+    //     key: event.workflowitemId,
+    //     intent: "workflowitem.close",
+    //     createdBy: event.publisher,
+    //     createdAt: event.time,
+    //     dataVersion: 1,
+    //     data: {},
+    //   };
+    //   return { ...result, data: { json: oldEvent } };
+    // }
     case "workflowitem_permission_granted": {
       const event: WorkflowitemPermissionGranted.Event = result.data.json;
       const oldEvent: Event = {
