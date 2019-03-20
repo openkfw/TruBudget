@@ -46,6 +46,7 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
       });
 
     case "subproject_assigned":
+    case "subproject_permission_granted":
     case "subproject_projected_budget_updated":
     case "subproject_projected_budget_deleted":
       return writeTo(conn, ctx, {

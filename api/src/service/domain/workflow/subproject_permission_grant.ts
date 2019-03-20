@@ -12,7 +12,10 @@ import * as Subproject from "./subproject";
 import * as SubprojectPermissionGranted from "./subproject_permission_granted";
 
 interface Repository {
-  getSubproject(subprojectId: Subproject.Id): Promise<Result.Type<Subproject.Subproject>>;
+  getSubproject(
+    projectId: Project.Id,
+    subprojectId: Subproject.Id,
+  ): Promise<Result.Type<Subproject.Subproject>>;
 }
 
 export async function grantSubprojectPermission(
@@ -24,7 +27,7 @@ export async function grantSubprojectPermission(
   intent: Intent,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
-  const subproject = await repository.getSubproject(subprojectId);
+  const subproject = await repository.getSubproject(projectId, subprojectId);
 
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);

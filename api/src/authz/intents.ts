@@ -26,6 +26,7 @@ type Intent =
   | "subproject.intent.listPermissions"
   | "subproject.intent.grantPermission"
   | "subproject.intent.revokePermission"
+  // TODO: rename to subproject.list
   | "subproject.viewSummary"
   | "subproject.viewDetails"
   | "subproject.assign"
