@@ -292,15 +292,15 @@ export const registerRoutes = (
     },
   );
 
-  server.post(
-    `${urlPrefix}/subproject.close`,
-    getSchema(server, "subprojectClose"),
-    (request, reply) => {
-      closeSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
+  // server.post(
+  //   `${urlPrefix}/subproject.close`,
+  //   getSchema(server, "subprojectClose"),
+  //   (request, reply) => {
+  //     closeSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
+  //       .then(response => send(reply, response))
+  //       .catch(err => handleError(request, reply, err));
+  //   },
+  // );
 
   server.post(
     `${urlPrefix}/subproject.reorderWorkflowitems`,

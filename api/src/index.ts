@@ -54,6 +54,7 @@ import * as ProjectProjectedBudgetUpdateService from "./service/project_projecte
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
 import * as SubprojectAssignService from "./service/subproject_assign";
+import * as SubprojectCloseService from "./service/subproject_close";
 import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
 import * as SubprojectListService from "./service/subproject_list";
@@ -74,6 +75,7 @@ import * as WorkflowitemPermissionsListService from "./service/workflowitem_perm
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
+import * as SubprojectCloseAPI from "./subproject_close";
 import * as SubprojectCreateAPI from "./subproject_create";
 import * as SubprojectListAPI from "./subproject_list";
 import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
@@ -388,6 +390,11 @@ ProjectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
 SubprojectAssignAPI.addHttpHandler(server, URL_PREFIX, {
   assignSubproject: (ctx, user, projectId, subprojectId, assignee) =>
     SubprojectAssignService.assignSubproject(db, ctx, user, projectId, subprojectId, assignee),
+});
+
+SubprojectCloseAPI.addHttpHandler(server, URL_PREFIX, {
+  closeSubproject: (ctx, user, projectId, subprojectId) =>
+    SubprojectCloseService.closeSubproject(db, ctx, user, projectId, subprojectId),
 });
 
 SubprojectCreateAPI.addHttpHandler(server, URL_PREFIX, {

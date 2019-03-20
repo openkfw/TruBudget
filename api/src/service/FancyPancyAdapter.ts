@@ -264,58 +264,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       );
       return [stream, key, { json: spUpdated }];
     }
-    case "subproject.close": {
-      if (!event.data) {
-        console.error("Error handling publish request for subproject.close", params);
-        return params;
-      }
-
-      const spClosed: SubprojectClosed.Event = SubprojectClosed.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-      );
-      return [stream, key, { json: spClosed }];
-    }
-    case "subproject.intent.grantPermission": {
-      if (!event.data) {
-        console.error(
-          "Error handling publish request for subproject.intent.grantPermission",
-          params,
-        );
-        return params;
-      }
-
-      const spGranted: SubprojectPermissionGranted.Event = SubprojectPermissionGranted.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        event.data.intent,
-        event.data.identity,
-      );
-      return [stream, key, { json: spGranted }];
-    }
-    case "subproject.intent.revokePermission": {
-      if (!event.data) {
-        console.error(
-          "Error handling publish request for subproject.intent.revokePermission",
-          params,
-        );
-        return params;
-      }
-
-      const spRevoked: SubprojectPermissionRevoked.Event = SubprojectPermissionRevoked.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        event.data.intent,
-        event.data.identity,
-      );
-      return [stream, key, { json: spRevoked }];
-    }
     case "subproject.reorderWorkflowitems": {
       if (!event.data) {
         console.error("Error handling publish request for subproject.reorderWorkflowitems", params);
@@ -506,48 +454,6 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
           displayName: event.update.displayName,
           description: event.update.description,
           additionalData: event.update.additionalData,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
-    case "subproject_closed": {
-      const event: SubprojectClosed.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.subprojectId,
-        intent: "subproject.close",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {},
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
-    case "subproject_permission_granted": {
-      const event: SubprojectPermissionGranted.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.subprojectId,
-        intent: "subproject.intent.grantPermission",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          intent: event.permission,
-          identity: event.grantee,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
-    case "subproject_permission_revoked": {
-      const event: SubprojectPermissionRevoked.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.subprojectId,
-        intent: "subproject.intent.revokePermission",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          intent: event.permission,
-          identity: event.revokee,
         },
       };
       return { ...result, data: { json: oldEvent } };

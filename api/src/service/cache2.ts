@@ -26,8 +26,11 @@ import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projec
 import * as ProjectUpdated from "./domain/workflow/project_updated";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
+import * as SubprojectClosed from "./domain/workflow/subproject_closed";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
+import * as SubprojectPermissionsGranted from "./domain/workflow/subproject_permission_granted";
+import * as SubprojectPermissionsRevoked from "./domain/workflow/subproject_permission_revoked";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
 import * as Workflowitem from "./domain/workflow/workflowitem";
@@ -506,6 +509,7 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
       cache.eventsByStream.delete(streamName);
     }
     addEventsToCache(cache, streamName, businessEvents);
+
     updateAggregates(ctx, cache, businessEvents);
 
     if (logger.levelVal >= logger.levels.values.warn) {
@@ -579,7 +583,10 @@ const EVENT_PARSER_MAP = {
   project_projected_budget_updated: ProjectProjectedBudgetUpdated.validate,
   project_updated: ProjectUpdated.validate,
   subproject_created: SubprojectCreated.validate,
+  subproject_closed: SubprojectClosed.validate,
   subproject_assigned: SubprojectAssigned.validate,
+  subproject_permission_granted: SubprojectPermissionsGranted.validate,
+  subproject_permission_revoked: SubprojectPermissionsRevoked.validate,
   subproject_projected_budget_deleted: SubprojectProjectedBudgetDeleted.validate,
   subproject_projected_budget_updated: SubprojectProjectedBudgetUpdated.validate,
   user_created: UserCreated.validate,

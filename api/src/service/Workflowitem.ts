@@ -173,7 +173,6 @@ export function applyRevokePermission(event: Event, workflowitem: Workflowitem):
 }
 
 export function handleCreate(event): Workflowitem | undefined {
-  console.log(event);
   if (event.type !== "workflowitem_created") return undefined;
   const { workflowitem } = event;
   const values = {
