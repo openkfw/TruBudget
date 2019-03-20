@@ -1,9 +1,8 @@
 import { assert } from "chai";
 
-import * as Result from "../../../result";
 import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
@@ -28,7 +27,42 @@ const baseProject: Project = {
   additionalData: {},
 };
 
-describe("assign project", () => {
+describe("assign project: authorization", () => {
+  it("Without the project.assign permission, a user cannot change a project's assignee.", async () => {
+    const assigner = alice;
+    const assignee = bob;
+    const result = await assignProject(ctx, assigner, dummy, assignee.id, {
+      getProject: async () => ({ ...baseProject, permissions: {} }),
+      getUsersForIdentity: async identity => {
+        if (identity === "alice") return ["alice"];
+        if (identity === "bob") return ["bob"];
+        throw Error(`unexpected identity: ${identity}`);
+      },
+    });
+
+    // NotAuthorized error due to the missing permissions:
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotAuthorized);
+  });
+
+  it("The root user doesn't need permission to change a project's assignee.", async () => {
+    const assigner = root;
+    const assignee = bob;
+    const result = await assignProject(ctx, assigner, dummy, assignee.id, {
+      getProject: async () => ({ ...baseProject, permissions: {} }),
+      getUsersForIdentity: async identity => {
+        if (identity === "alice") return ["alice"];
+        if (identity === "bob") return ["bob"];
+        throw Error(`unexpected identity: ${identity}`);
+      },
+    });
+
+    // No errors, despite the missing permissions:
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+});
+
+describe("assign project: preconditions", () => {
   it("A user can assign a project to herself.", async () => {
     const assigner = alice;
     const assignee = alice;
@@ -88,39 +122,45 @@ describe("assign project", () => {
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
-  it("Without the project.assign permission, a user cannot change a project's assignee.", async () => {
+  it("Assigning a user fails if the project cannot be found.", async () => {
     const assigner = alice;
-    const assignee = bob;
+    const assignee = alice;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
-      getProject: async () => ({ ...baseProject, permissions: {} }),
+      getProject: async () => new Error("some error"),
       getUsersForIdentity: async identity => {
         if (identity === "alice") return ["alice"];
-        if (identity === "bob") return ["bob"];
         throw Error(`unexpected identity: ${identity}`);
       },
     });
 
-    // NotAuthorized error due to the missing permissions:
+    // NotFound error as the project cannot be fetched:
     assert.isTrue(Result.isErr(result));
-    assert.instanceOf(result, NotAuthorized);
+    assert.instanceOf(result, NotFound);
   });
 
-  it("The root user doesn't need permission to change a project's assignee.", async () => {
-    const assigner = root;
-    const assignee = bob;
-    const result = await assignProject(ctx, assigner, dummy, assignee.id, {
-      getProject: async () => ({ ...baseProject, permissions: {} }),
+  it("The assignee must not be empty.", async () => {
+    const assigner = alice;
+    const assignee = ""; // <- not a valid user ID
+    const result = await assignProject(ctx, assigner, dummy, assignee, {
+      getProject: async () => ({ ...baseProject }),
       getUsersForIdentity: async identity => {
         if (identity === "alice") return ["alice"];
-        if (identity === "bob") return ["bob"];
         throw Error(`unexpected identity: ${identity}`);
       },
     });
 
-    // No errors, despite the missing permissions:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-  });
+    // InvalidCommand error as the user ID is not valid:
+    assert.isTrue(Result.isErr(result));
+    // Make TypeScript happy:
+    if (Result.isOk(result)) {
+      throw result;
+    }
 
+    assert.match(result.message, /assignee.*\s+.*empty/);
+  });
+});
+
+describe("assign project: notifications", () => {
   it("When a user assigns a project to someone else, a notification is issued to the new assignee.", async () => {
     const assigner = alice;
     const assignee = bob;
@@ -202,41 +242,4 @@ describe("assign project", () => {
       assert.isTrue(newEvents.some(isNotificationFor("charlie")));
     },
   );
-
-  it("Assigning a user fails if the project cannot be found.", async () => {
-    const assigner = alice;
-    const assignee = alice;
-    const result = await assignProject(ctx, assigner, dummy, assignee.id, {
-      getProject: async () => new Error("some error"),
-      getUsersForIdentity: async identity => {
-        if (identity === "alice") return ["alice"];
-        throw Error(`unexpected identity: ${identity}`);
-      },
-    });
-
-    // NotFound error as the project cannot be fetched:
-    assert.isTrue(Result.isErr(result));
-    assert.instanceOf(result, NotFound);
-  });
-
-  it("The assignee must not be empty.", async () => {
-    const assigner = alice;
-    const assignee = ""; // <- not a valid user ID
-    const result = await assignProject(ctx, assigner, dummy, assignee, {
-      getProject: async () => ({ ...baseProject }),
-      getUsersForIdentity: async identity => {
-        if (identity === "alice") return ["alice"];
-        throw Error(`unexpected identity: ${identity}`);
-      },
-    });
-
-    // InvalidCommand error as the user ID is not valid:
-    assert.isTrue(Result.isErr(result));
-    // Make TypeScript happy:
-    if (Result.isOk(result)) {
-      throw result;
-    }
-
-    assert.match(result.message, /assignee.*\s+.*empty/);
-  });
 });

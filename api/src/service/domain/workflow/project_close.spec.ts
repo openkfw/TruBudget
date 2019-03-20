@@ -55,19 +55,7 @@ const baseRepository = {
   },
 };
 
-describe("close project", () => {
-  it("A project may not be closed if there is at least one non-closed subproject.", async () => {
-    const result = await closeProject(ctx, alice, projectId, {
-      ...baseRepository,
-      getProject: async () => ({ ...baseProject, status: "open" }),
-      getSubprojects: async _projectId => [{ ...baseSubproject, status: "open" }],
-    });
-
-    // PreconditionError due to open subproject:
-    assert.isTrue(Result.isErr(result));
-    assert.instanceOf(result, PreconditionError);
-  });
-
+describe("close project: authorization", () => {
   it("Without the project.close permission, a user cannot close a project.", async () => {
     const result = await closeProject(ctx, alice, projectId, {
       ...baseRepository,
@@ -88,7 +76,34 @@ describe("close project", () => {
     // No errors, despite the missing permissions:
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
+});
 
+describe("close project: preconditions", () => {
+  it("A project may not be closed if there is at least one non-closed subproject.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => ({ ...baseProject, status: "open" }),
+      getSubprojects: async _projectId => [{ ...baseSubproject, status: "open" }],
+    });
+
+    // PreconditionError due to open subproject:
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, PreconditionError);
+  });
+
+  it("Closing a project fails if the project cannot be found.", async () => {
+    const result = await closeProject(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => new Error("some error"),
+    });
+
+    // NotFound error as the project cannot be fetched:
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotFound);
+  });
+});
+
+describe("close project: notifications", () => {
   it("When a user closes a project, a notification is issued to the assignee.", async () => {
     const result = await closeProject(ctx, alice, projectId, {
       ...baseRepository,
@@ -185,15 +200,4 @@ describe("close project", () => {
       assert.isTrue(newEvents.some(isNotificationFor("charlie")));
     },
   );
-
-  it("Closing a project fails if the project cannot be found.", async () => {
-    const result = await closeProject(ctx, alice, projectId, {
-      ...baseRepository,
-      getProject: async () => new Error("some error"),
-    });
-
-    // NotFound error as the project cannot be fetched:
-    assert.isTrue(Result.isErr(result));
-    assert.instanceOf(result, NotFound);
-  });
 });

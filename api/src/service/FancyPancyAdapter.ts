@@ -1,4 +1,5 @@
 import { isArray } from "util";
+import * as Result from "../result";
 
 import { ResourceType } from "../lib/resourceTypes";
 import { NotificationResourceDescription } from "../notification/model/Notification";
@@ -338,24 +339,26 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
         return params;
       }
 
-      const wfiUpdated: WorkflowitemUpdated.Event = WorkflowitemUpdated.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        workflowitemId!,
-        {
-          displayName: event.data.displayName,
-          description: event.data.description,
-          amountType: event.data.amountType,
-          documents: event.data.documents,
-          amount: event.data.amount,
-          currency: event.data.currency,
-          exchangeRate: event.data.exchangeRate,
-          billingDate: event.data.billingDate,
-          dueDate: event.data.dueDate,
-          additionalData: event.data.additionalData,
-        },
+      const wfiUpdated: WorkflowitemUpdated.Event = Result.unwrap(
+        WorkflowitemUpdated.createEvent(
+          "http",
+          event.createdBy,
+          projectId!,
+          subprojectId!,
+          workflowitemId!,
+          {
+            displayName: event.data.displayName,
+            description: event.data.description,
+            amountType: event.data.amountType,
+            documents: event.data.documents,
+            amount: event.data.amount,
+            currency: event.data.currency,
+            exchangeRate: event.data.exchangeRate,
+            billingDate: event.data.billingDate,
+            dueDate: event.data.dueDate,
+            additionalData: event.data.additionalData,
+          },
+        ),
       );
 
       return [stream, key, { json: wfiUpdated }];

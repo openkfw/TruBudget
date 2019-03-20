@@ -1,4 +1,7 @@
+import { produce as withCopy } from "immer";
 import Joi = require("joi");
+import isEqual = require("lodash.isequal");
+import { VError } from "verror";
 
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -41,7 +44,7 @@ export async function updateWorkflowitem(
   data: RequestData,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; workflowitem: Workflowitem.Workflowitem }>> {
-  const workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
+  let workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
 
   if (Result.isErr(workflowitem)) {
     return new NotFound(ctx, "workflowitem", workflowitemId);
@@ -55,19 +58,37 @@ export async function updateWorkflowitem(
     workflowitemId,
     data,
   );
-
-  // Check authorization (if not root):
-  if (issuer.id !== "root") {
-    if (!Workflowitem.permits(workflowitem, issuer, ["project.update"])) {
-      return new NotAuthorized(ctx, issuer.id, newEvent);
-    }
+  if (Result.isErr(newEvent)) {
+    return new VError(newEvent, "failed to create event");
   }
 
-  // Check that the new event is indeed valid:
+  // Check authorization (if not root):
+  if (
+    issuer.id !== "root" &&
+    !Workflowitem.permits(workflowitem, issuer, ["workflowitem.update"])
+  ) {
+    return new NotAuthorized(ctx, issuer.id, newEvent);
+  }
 
-  const result = WorkflowitemUpdated.apply(ctx, newEvent, workflowitem);
-  if (Result.isErr(result)) {
-    return new InvalidCommand(ctx, newEvent, [result]);
+  try {
+    // Update a draft/copy of the workflowitem, leaving the original workflowitem
+    // unchanged for comparison:
+    workflowitem = withCopy(workflowitem, draft => {
+      // Check that the new event is indeed valid:
+      const result = WorkflowitemUpdated.apply(ctx, newEvent, draft);
+      if (Result.isErr(result)) {
+        throw new InvalidCommand(ctx, newEvent, [result]);
+      }
+
+      // Ignore the update if it doesn't change anything:
+      if (isEqual(workflowitem, result)) {
+        throw { newEvents: [], workflowitem };
+      }
+
+      return result;
+    });
+  } catch (result) {
+    return result;
   }
 
   // Create notification events:

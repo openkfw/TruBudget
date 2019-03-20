@@ -74,7 +74,7 @@ export function createEvent(
   workflowitemId: Workflowitem.Id,
   update: Modification,
   time: string = new Date().toISOString(),
-): Event {
+): Result.Type<Event> {
   const event = {
     type: eventType,
     source,
@@ -88,7 +88,7 @@ export function createEvent(
 
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
-    throw new VError(validationResult, `not a valid ${eventType} event`);
+    return new VError(validationResult, `not a valid ${eventType} event`);
   }
   return event;
 }
@@ -103,6 +103,15 @@ export function apply(
   event: Event,
   workflowitem: Workflowitem.Workflowitem,
 ): Result.Type<Workflowitem.Workflowitem> {
+  if (workflowitem.status === "closed") {
+    return new EventSourcingError(
+      ctx,
+      event,
+      "updating a closed workflowitem is not allowed",
+      workflowitem.id,
+    );
+  }
+
   const update = event.update;
 
   if (update.displayName !== undefined) {
@@ -111,31 +120,35 @@ export function apply(
   if (update.description !== undefined) {
     workflowitem.description = update.description;
   }
-  if (update.amount !== undefined) {
-    workflowitem.amount = update.amount;
-  }
-  if (update.currency !== undefined) {
-    workflowitem.currency = update.currency;
-  }
-  if (update.amountType !== undefined) {
-    workflowitem.amountType = update.amountType;
-  }
-  if (update.exchangeRate !== undefined) {
-    workflowitem.exchangeRate = update.exchangeRate;
-  }
   if (update.billingDate !== undefined) {
     workflowitem.billingDate = update.billingDate;
   }
   if (update.dueDate !== undefined) {
     workflowitem.dueDate = update.dueDate;
   }
+
+  if (update.amountType !== undefined) {
+    workflowitem.amountType = update.amountType;
+  }
+  if (workflowitem.amountType !== "N/A") {
+    if (update.amount !== undefined) {
+      workflowitem.amount = update.amount;
+    }
+    if (update.currency !== undefined) {
+      workflowitem.currency = update.currency;
+    }
+    if (update.exchangeRate !== undefined) {
+      workflowitem.exchangeRate = update.exchangeRate;
+    }
+  }
+
   if (update.documents !== undefined) {
     // Attention, funny behavior: if a document has an ID that is already present in the
     // documents list IT IS SILENTLY IGNORED:
     const currentDocuments = workflowitem.documents || [];
     const currentDocumentIds = currentDocuments.map(x => x.id);
     workflowitem.documents = update.documents
-      .filter(x => currentDocumentIds.includes(x.id))
+      .filter(x => !currentDocumentIds.includes(x.id))
       .concat(currentDocuments);
   }
   if (update.additionalData) {

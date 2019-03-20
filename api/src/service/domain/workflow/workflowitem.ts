@@ -30,7 +30,7 @@ export interface Workflowitem {
   description: string;
   status: "open" | "closed";
   assignee?: string;
-  documents?: StoredDocument[];
+  documents: StoredDocument[];
   permissions: Permissions;
   log: WorkflowitemTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
@@ -52,7 +52,7 @@ export interface RedactedWorkflowitem {
   description: null;
   status: "open" | "closed";
   assignee?: null;
-  documents?: null;
+  documents: null;
   permissions: null;
   log: null;
   additionalData: null;
@@ -69,11 +69,18 @@ const schema = Joi.object().keys({
     .required(),
   dueDate: Joi.date().iso(),
   displayName: Joi.string().required(),
-  exchangeRate: Joi.string().when("status", {
-    is: Joi.valid("closed"),
-    then: Joi.required(),
-    otherwise: Joi.optional(),
-  }),
+  exchangeRate: Joi.string()
+    .when("amountType", {
+      is: Joi.valid("disbursed", "allocated"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .when("status", {
+      is: Joi.valid("closed"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
   billingDate: Joi.date()
     .iso()
     .when("status", {
@@ -95,7 +102,8 @@ const schema = Joi.object().keys({
       then: Joi.required(),
       otherwise: Joi.forbidden(),
     })
-    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() }),
+    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() })
+    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
   amountType: Joi.string()
     .valid("N/A", "disbursed", "allocated")
     .required(),
