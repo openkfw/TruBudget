@@ -70,7 +70,7 @@ const baseRepository = {
   },
 };
 
-describe.only("update workflowitem: authorization", () => {
+describe("update workflowitem: authorization", () => {
   it("Without the workflowitem.update permission, a user cannot update a workflowitem", async () => {
     const modification = {};
     const result = await updateWorkflowitem(
@@ -112,7 +112,7 @@ describe.only("update workflowitem: authorization", () => {
   });
 });
 
-describe.only("update workflowitem: how modifications are applied", () => {
+describe("update workflowitem: how modifications are applied", () => {
   it("An empty update is ignored", async () => {
     const modification = {};
     const result = await updateWorkflowitem(
