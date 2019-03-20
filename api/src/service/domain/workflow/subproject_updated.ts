@@ -13,7 +13,7 @@ import * as Subproject from "./subproject";
 type eventTypeType = "subproject_updated";
 const eventType: eventTypeType = "subproject_updated";
 
-interface UpdatedData {
+export interface UpdatedData {
   displayName?: string;
   description?: string;
   additionalData?: object;
@@ -29,7 +29,7 @@ export interface Event {
   update: UpdatedData;
 }
 
-const updatedDataSchema = Joi.object({
+export const updatedDataSchema = Joi.object({
   status: Joi.string().valid("open", "closed"),
   displayName: Joi.string(),
   description: Joi.string().allow(""),
