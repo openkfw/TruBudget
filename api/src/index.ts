@@ -58,6 +58,7 @@ import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
 import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
+import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
@@ -72,6 +73,7 @@ import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_
 import * as SubprojectCreateAPI from "./subproject_create";
 import * as SubprojectListAPI from "./subproject_list";
 import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
+import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
@@ -398,6 +400,31 @@ SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
     WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
 });
 
+SubprojectPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
+  grantSubprojectPermission: (ctx, user, projectId, subprojectId, grantee, intent) =>
+    SubprojectPermissionGrantService.grantSubprojectPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      grantee,
+      intent,
+    ),
+});
+
+SubprojectPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
+  revokeSubprojectPermission: (ctx, user, projectId, subprojectId, revokeee, intent) =>
+    SubprojectPermissionRevokeService.revokeSubprojectPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      revokeee,
+      intent,
+    ),
+});
 SubprojectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, subprojectId, orga, amount, currencyCode) =>
     SubprojectProjectedBudgetUpdateService.updateProjectedBudget(
@@ -422,19 +449,6 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
       subprojectId,
       orga,
       currencyCode,
-    ),
-});
-
-SubprojectPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
-  grantSubprojectPermission: (ctx, user, projectId, subprojectId, grantee, intent) =>
-    SubprojectPermissionGrantService.grantSubprojectPermission(
-      db,
-      ctx,
-      user,
-      projectId,
-      subprojectId,
-      grantee,
-      intent,
     ),
 });
 

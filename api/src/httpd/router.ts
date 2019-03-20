@@ -332,16 +332,6 @@ export const registerRoutes = (
     },
   );
 
-  server.post(
-    `${urlPrefix}/subproject.intent.revokePermission`,
-    getSchema(server, "subprojectRevokePermission"),
-    (request, reply) => {
-      revokeSubprojectPermission(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
   // ------------------------------------------------------------
   //       workflowitem
   // ------------------------------------------------------------
