@@ -113,6 +113,7 @@ export interface CacheInstance {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
+  getWorkflowitemsOrdering(_projectId: string, subprojectId: string);
   updateCachedWorkflowitem(workflowitem: Workflowitem.Workflowitem): void;
 }
 
@@ -303,6 +304,14 @@ export async function withCache<T>(
         workflowitems.push(wf);
       }
       return workflowitems;
+    },
+
+    getWorkflowitemsOrdering: async (
+      _projectId: string,
+      _subprojectId: string,
+    ): Promise<Result.Type<Workflowitem.Id[]>> => {
+      // TODO: implement
+      return [];
     },
 
     getWorkflowitem: async (

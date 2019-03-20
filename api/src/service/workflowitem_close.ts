@@ -1,10 +1,40 @@
-// import { Ctx } from "../lib/ctx";
-// import { Id } from "./domain/workflow/subproject";
-// import { Id } from "./domain/workflow/workflowitem";
+import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
+import * as Cache from "./cache2";
+import { ConnToken } from "./conn";
+import { ServiceUser } from "./domain/organization/service_user";
+import * as Project from "./domain/workflow/project";
+import * as WorkflowitemClose from "./domain/workflow/workflowitem_close";
+import * as Subproject from "./domain/workflow/subproject";
+import * as GroupQuery from "./group_query";
+import { store } from "./store";
+import * as Workflowitem from "./domain/workflow/workflowitem";
 
-// export async function closeWorkflowitem(ctx: Ctx, subprojectId: Id, workflowitemId: Id) {
-//   // TODO fetch all subproject's workflowitem events (from cache)
-//   // TODO fetch the subproject's workflowitem ordering
-//   // TODO call the domain logic
-//   // TODO return the updated aggregate
-// }
+export async function closeWorkflowitem(
+  conn: ConnToken,
+  ctx: Ctx,
+  serviceUser: ServiceUser,
+  projectId: Project.Id,
+  subprojectId: Subproject.Id,
+  workflowitemId: Workflowitem.Id,
+): Promise<void> {
+  const result = await Cache.withCache(conn, ctx, async cache =>
+    WorkflowitemClose.closeWorkflowitem(ctx, serviceUser, projectId, subprojectId, workflowitemId, {
+      getWorkflowitems: async (projectId, subprojectId) => {
+        return cache.getWorkflowitems(projectId, workflowitemId);
+      },
+      getWorkflowitemOrdering: async (projectId, subprojectId) =>
+        cache.getWorkflowitemsOrdering(projectId, subprojectId),
+      getUsersForIdentity: async identity => {
+        return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
+      },
+    }),
+  );
+
+  if (Result.isErr(result)) throw result;
+  const { newEvents } = result;
+
+  for (const event of newEvents) {
+    await store(conn, ctx, event);
+  }
+}
