@@ -21,11 +21,6 @@ import * as WorkflowitemUpdated from "./workflowitem_updated";
 export type RequestData = WorkflowitemUpdated.Modification;
 export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
 
-export function validate(input: any): Result.Type<RequestData> {
-  const { value, error } = Joi.validate(input, requestDataSchema);
-  return !error ? value : error;
-}
-
 interface Repository {
   getWorkflowitem(
     projectId: Project.Id,
@@ -92,13 +87,15 @@ export async function updateWorkflowitem(
   }
 
   // Create notification events:
-  let notifications: NotificationCreated.Event[] = [];
-  if (workflowitem.assignee !== undefined && workflowitem.assignee !== issuer.id) {
-    const recipients = await repository.getUsersForIdentity(workflowitem.assignee);
-    notifications = recipients.map(recipient =>
+  const recipients = workflowitem.assignee
+    ? await repository.getUsersForIdentity(workflowitem.assignee)
+    : [];
+  const notifications = recipients
+    // The issuer doesn't receive a notification:
+    .filter(userId => userId !== issuer.id)
+    .map(recipient =>
       NotificationCreated.createEvent(ctx.source, issuer.id, recipient, newEvent, projectId),
     );
-  }
 
   return { newEvents: [newEvent, ...notifications], workflowitem };
 }

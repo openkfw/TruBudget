@@ -1,14 +1,15 @@
 import { assert } from "chai";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { InvalidCommand } from "../errors/invalid_command";
-import { ServiceUser } from "../organization/service_user";
-import * as SubprojectCreate from "./subproject_create";
-import { Workflowitem } from "./workflowitem";
-import { Subproject } from "./subproject";
-import { Project } from "./project";
-import { updateWorkflowitem } from "./workflowitem_update";
+import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
+import { ServiceUser } from "../organization/service_user";
+import { Project } from "./project";
+import { Subproject } from "./subproject";
+import { Workflowitem } from "./workflowitem";
+import { updateWorkflowitem } from "./workflowitem_update";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const root: ServiceUser = { id: "root", groups: [] };
@@ -369,18 +370,152 @@ describe("update workflowitem: how modifications are applied", () => {
       b: "new value",
     });
   });
+
+  it("Updating fails for an invalid workflowitem ID", async () => {
+    const modification = {
+      description: "Some update",
+    };
+    const result = await updateWorkflowitem(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      modification,
+      {
+        ...baseRepository,
+        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) =>
+          new Error("some error"),
+      },
+    );
+
+    // NotFound error as the workflowitem cannot be fetched:
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotFound);
+  });
 });
 
 describe("update workflowitem: notifications", () => {
-  it("When a user closes an assigned workflowitem, a notification is issued to the assignee", async () => {});
+  it("When a user updates an assigned workflowitem, a notification is issued to the assignee", async () => {
+    const modification = {
+      description: "New description.",
+    };
+    const result = await updateWorkflowitem(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      modification,
+      {
+        ...baseRepository,
+        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+          ...baseWorkflowitem,
+          description: "A description.",
+          assignee: bob.id,
+        }),
+      },
+    );
 
-  it("When a user closes an unassigned workflowitem, no notifications are issued", async () => {});
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    const { newEvents } = Result.unwrap(result);
 
-  it("When an update is ignored, no notifications are issued", async () => {});
+    assert.isTrue(
+      newEvents.some(event => event.type === "notification_created" && event.recipient === bob.id),
+    );
+  });
+
+  it("When a user updates an unassigned workflowitem, no notifications are issued", async () => {
+    const modification = {
+      description: "New description.",
+    };
+    const result = await updateWorkflowitem(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      modification,
+      {
+        ...baseRepository,
+        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+          ...baseWorkflowitem,
+          description: "A description.",
+          assignee: undefined,
+        }),
+      },
+    );
+
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    const { newEvents } = Result.unwrap(result);
+
+    assert.isFalse(
+      newEvents.some(event => event.type === "notification_created" && event.recipient === bob.id),
+    );
+  });
+
+  it("When an update is ignored, no notifications are issued", async () => {
+    // An empty modification is always ignored:
+    const modification = {};
+    const result = await updateWorkflowitem(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      modification,
+      {
+        ...baseRepository,
+        getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+          ...baseWorkflowitem,
+        }),
+      },
+    );
+
+    // It works:
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    const { newEvents } = Result.unwrap(result);
+
+    // But no notifications have been issued (in fact there are no new events at all):
+    assert.lengthOf(newEvents, 0);
+  });
 
   it(
     "When a user updates a workflowitem that is assigned to a group, " +
       "each member, except for the user that invoked the update, receives a notification",
-    async () => {},
+    async () => {
+      const modification = {
+        description: "New description.",
+      };
+      const result = await updateWorkflowitem(
+        ctx,
+        alice,
+        projectId,
+        subprojectId,
+        workflowitemId,
+        modification,
+        {
+          ...baseRepository,
+          getWorkflowitem: async (_projectId, _subprojectId, _workflowitemId) => ({
+            ...baseWorkflowitem,
+            description: "A description.",
+            assignee: "alice_and_bob_and_charlie",
+          }),
+        },
+      );
+
+      assert.isTrue(Result.isOk(result), (result as Error).message);
+      const { newEvents } = Result.unwrap(result);
+
+      // A notification has been issued to both Bob and Charlie, but not to Alice, as she
+      // is the user who has updated the workflowitem:
+      function isNotificationFor(userId: string): (e: BusinessEvent) => boolean {
+        return event => event.type === "notification_created" && event.recipient === userId;
+      }
+
+      assert.isFalse(newEvents.some(isNotificationFor("alice")));
+      assert.isTrue(newEvents.some(isNotificationFor("bob")));
+      assert.isTrue(newEvents.some(isNotificationFor("charlie")));
+    },
   );
 });
