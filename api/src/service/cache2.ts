@@ -36,7 +36,6 @@ import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
 import { Item } from "./liststreamitems";
-import { lookup } from "dns";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -235,7 +234,7 @@ export async function withCache<T>(
     },
 
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
-      const projects = await this.getProjects();
+      const projects = [...cache.cachedProjects.values()];
       const project = projects.find(x => x.id === projectId);
       if (project === undefined) {
         return new NotFound(ctx, "project", projectId);

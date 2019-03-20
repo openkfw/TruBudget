@@ -333,16 +333,6 @@ export const registerRoutes = (
   );
 
   server.post(
-    `${urlPrefix}/subproject.intent.grantPermission`,
-    getSchema(server, "subprojectGrantPermission"),
-    (request, reply) => {
-      grantSubprojectPermission(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
     `${urlPrefix}/subproject.intent.revokePermission`,
     getSchema(server, "subprojectRevokePermission"),
     (request, reply) => {
