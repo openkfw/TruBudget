@@ -271,26 +271,6 @@ export const registerRoutes = (
   // ------------------------------------------------------------
 
   server.post(
-    `${urlPrefix}/subproject.update`,
-    getSchema(server, "subprojectUpdate"),
-    (request, reply) => {
-      updateSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  // server.post(
-  //   `${urlPrefix}/subproject.close`,
-  //   getSchema(server, "subprojectClose"),
-  //   (request, reply) => {
-  //     closeSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-  //       .then(response => send(reply, response))
-  //       .catch(err => handleError(request, reply, err));
-  //   },
-  // );
-
-  server.post(
     `${urlPrefix}/subproject.reorderWorkflowitems`,
     getSchema(server, "reorderWorkflowitems"),
     (request, reply) => {

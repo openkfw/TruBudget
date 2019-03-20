@@ -63,6 +63,7 @@ import * as SubprojectPermissionRevokeService from "./service/subproject_permiss
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
+import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
@@ -81,6 +82,7 @@ import * as SubprojectListAPI from "./subproject_list";
 import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
 import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
 import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
+import * as SubprojectUpdateAPI from "./subproject_update";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
@@ -478,6 +480,11 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
       orga,
       currencyCode,
     ),
+});
+
+SubprojectUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateSubproject: (ctx, user, projectId, subprojectId, requestData) =>
+    SubprojectUpdateService.updateSubproject(db, ctx, user, projectId, subprojectId, requestData),
 });
 
 /*

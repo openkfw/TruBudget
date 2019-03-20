@@ -246,24 +246,6 @@ function matchPublishRequest(params: any[], stream, key, event: Event): any[] {
       );
       return [stream, key, { json: spCreated }];
     }
-    case "subproject.update": {
-      if (!event.data) {
-        console.error("Error handling publish request for subproject.update", params);
-        return params;
-      }
-      const spUpdated: SubprojectUpdated.Event = SubprojectUpdated.createEvent(
-        "http",
-        event.createdBy,
-        projectId!,
-        subprojectId!,
-        {
-          displayName: event.data.displayName,
-          description: event.data.description,
-          additionalData: event.data.additionalData,
-        },
-      );
-      return [stream, key, { json: spUpdated }];
-    }
     case "subproject.reorderWorkflowitems": {
       if (!event.data) {
         console.error("Error handling publish request for subproject.reorderWorkflowitems", params);
@@ -409,22 +391,6 @@ function handleListStreamKeyItemsResponse(method: string, params: any[], result:
     //   };
     //   return { ...result, data: { json: oldEvent } };
     // }
-    case "subproject_updated": {
-      const event: SubprojectUpdated.Event = result.data.json;
-      const oldEvent: Event = {
-        key: event.subprojectId,
-        intent: "subproject.update",
-        createdBy: event.publisher,
-        createdAt: event.time,
-        dataVersion: 1,
-        data: {
-          displayName: event.update.displayName,
-          description: event.update.description,
-          additionalData: event.update.additionalData,
-        },
-      };
-      return { ...result, data: { json: oldEvent } };
-    }
     case "subproject_items_reordered": {
       const event: WorkflowitemsReordered.Event = result.data.json;
       const oldEvent: Event = {

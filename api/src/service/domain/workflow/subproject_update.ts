@@ -1,4 +1,7 @@
+import { produce as withCopy } from "immer";
 import Joi = require("joi");
+import isEqual = require("lodash.isequal");
+import { VError } from "verror";
 
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -38,7 +41,7 @@ export async function updateSubproject(
   data: RequestData,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
-  const subproject = await repository.getSubproject(subprojectId, subprojectId);
+  let subproject = await repository.getSubproject(subprojectId, subprojectId);
 
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
@@ -52,6 +55,9 @@ export async function updateSubproject(
     subprojectId,
     data,
   );
+  if (Result.isErr(subprojectUpdated)) {
+    return new VError(subprojectUpdated, "failed to create event");
+  }
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
@@ -61,17 +67,31 @@ export async function updateSubproject(
   }
 
   // Check that the new event is indeed valid:
+  try {
+    subproject = withCopy(subproject, draft => {
+      const result = SubprojectUpdated.apply(ctx, subprojectUpdated, draft);
+      if (Result.isErr(result)) {
+        throw new InvalidCommand(ctx, subprojectUpdated, [result]);
+      }
 
-  const result = SubprojectUpdated.apply(ctx, subprojectUpdated, subproject);
-  if (Result.isErr(result)) {
-    return new InvalidCommand(ctx, subprojectUpdated, [result]);
+      if (isEqual(subproject, result)) {
+        throw { subprojectUpdated: [], subproject };
+      }
+
+      return result;
+    });
+  } catch (result) {
+    return result;
   }
 
   // Create notification events:
-  let notifications: NotificationCreated.Event[] = [];
-  if (subproject.assignee !== undefined && subproject.assignee !== issuer.id) {
-    const recipients = await repository.getUsersForIdentity(subproject.assignee);
-    notifications = recipients.map(recipient =>
+  const recipients = subproject.assignee
+    ? await repository.getUsersForIdentity(subproject.assignee)
+    : [];
+  const notifications = recipients
+    // The issuer doesn't receive a notification:
+    .filter(userId => userId !== issuer.id)
+    .map(recipient =>
       NotificationCreated.createEvent(
         ctx.source,
         issuer.id,
@@ -81,7 +101,6 @@ export async function updateSubproject(
         subprojectId,
       ),
     );
-  }
 
   return { newEvents: [subprojectUpdated, ...notifications] };
 }

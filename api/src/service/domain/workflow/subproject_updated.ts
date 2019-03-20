@@ -88,7 +88,17 @@ export function apply(
   event: Event,
   subproject: Subproject.Subproject,
 ): Result.Type<Subproject.Subproject> {
+  if (subproject.status === "closed") {
+    return new EventSourcingError(
+      ctx,
+      event,
+      "updating a closed subproject is not allowed",
+      subproject.id,
+    );
+  }
+
   const update = event.update;
+
   if (update.displayName !== undefined) {
     subproject.displayName = update.displayName;
   }

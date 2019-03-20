@@ -90,7 +90,15 @@ export async function updateWorkflowitem(
     // The issuer doesn't receive a notification:
     .filter(userId => userId !== issuer.id)
     .map(recipient =>
-      NotificationCreated.createEvent(ctx.source, issuer.id, recipient, newEvent, projectId),
+      NotificationCreated.createEvent(
+        ctx.source,
+        issuer.id,
+        recipient,
+        newEvent,
+        projectId,
+        subprojectId,
+        workflowitemId,
+      ),
     );
 
   return { newEvents: [newEvent, ...notifications], workflowitem };
