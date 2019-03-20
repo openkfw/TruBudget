@@ -212,6 +212,7 @@ interface ExposedWorkflowitem {
       id: string;
       hash: string;
     }>;
+    amount?: string;
     additionalData: object;
   };
   allowedIntents: Intent[];
@@ -342,6 +343,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             status: workflowitem.status,
             assignee: workflowitem.assignee,
             documents: workflowitem.documents,
+            amount: workflowitem.amount,
             additionalData: workflowitem.additionalData,
           },
         }));
