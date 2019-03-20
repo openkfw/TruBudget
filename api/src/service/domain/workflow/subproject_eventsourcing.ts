@@ -8,6 +8,7 @@ import * as Subproject from "./subproject";
 import * as SubprojectAssigned from "./subproject_assigned";
 import * as SubprojectClosed from "./subproject_closed";
 import * as SubprojectCreated from "./subproject_created";
+import * as SubprojectItemsReordered from "./subproject_items_reordered";
 import * as SubprojectPermissionGranted from "./subproject_permission_granted";
 import * as SubprojectPermissionRevoked from "./subproject_permission_revoked";
 import * as SubprojectProjectedBudgetDeleted from "./subproject_projected_budget_deleted";
@@ -60,6 +61,9 @@ function applySubprojectEvent(
 
     case "subproject_closed":
       return apply(ctx, event, subprojects, event.subprojectId, SubprojectClosed);
+
+    case "subproject_items_reordered":
+      return apply(ctx, event, subprojects, event.subprojectId, SubprojectItemsReordered);
 
     case "subproject_permission_granted":
       return apply(ctx, event, subprojects, event.subprojectId, SubprojectPermissionGranted);
