@@ -452,6 +452,7 @@ SubprojectPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
       intent,
     ),
 });
+
 SubprojectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, subprojectId, orga, amount, currencyCode) =>
     SubprojectProjectedBudgetUpdateService.updateProjectedBudget(

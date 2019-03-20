@@ -1,4 +1,5 @@
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
@@ -8,7 +9,6 @@ import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectProjectedBudgetUpdate from "./domain/workflow/subproject_projected_budget_update";
 import { store } from "./store";
-import * as Result from "../result";
 
 export async function updateProjectedBudget(
   conn: ConnToken,
@@ -30,17 +30,17 @@ export async function updateProjectedBudget(
       value,
       currencyCode,
       {
-        getSubproject: async (projectId, subprojectId) => {
-          return cache.getSubproject(projectId, subprojectId);
+        getSubproject: async (pId, spId) => {
+          return cache.getSubproject(pId, spId);
         },
       },
     ),
   );
-  if (Result.isErr(result)) return Promise.reject(result);
+  if (Result.isErr(result)) throw result;
 
   for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
 
-  return result.newState;
+  return result.projectedBudgets;
 }

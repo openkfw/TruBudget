@@ -17,8 +17,6 @@ interface Repository {
   ): Promise<Result.Type<Subproject.Subproject>>;
 }
 
-type State = ProjectedBudget[];
-
 export async function deleteProjectedBudget(
   ctx: Ctx,
   issuer: ServiceUser,
@@ -27,7 +25,7 @@ export async function deleteProjectedBudget(
   organization: string,
   currencyCode: string,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[]; newState: State }>> {
+): Promise<Result.Type<{ newEvents: BusinessEvent[]; projectedBudgets: ProjectedBudget[] }>> {
   const subproject = await repository.getSubproject(projectId, subprojectId);
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
@@ -44,21 +42,21 @@ export async function deleteProjectedBudget(
   );
 
   // Check authorization (if not root):
-  if (issuer.id !== "root") {
-    if (!Subproject.permits(subproject, issuer, ["subproject.budget.deleteProjected"])) {
-      return new NotAuthorized(ctx, issuer.id, budgetDeleted);
-    }
+  if (
+    issuer.id !== "root" &&
+    !Subproject.permits(subproject, issuer, ["subproject.budget.deleteProjected"])
+  ) {
+    return new NotAuthorized(ctx, issuer.id, budgetDeleted);
   }
 
   // Check that the new event is indeed valid:
   const result = SubprojectProjectedBudgetDeleted.apply(ctx, budgetDeleted, subproject);
-
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, budgetDeleted, [result]);
   }
 
   return {
     newEvents: [budgetDeleted],
-    newState: result.projectedBudgets,
+    projectedBudgets: result.projectedBudgets,
   };
 }
