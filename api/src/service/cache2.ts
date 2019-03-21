@@ -91,26 +91,14 @@ export interface CacheInstance {
   getNotificationEvents(userId: string): BusinessEvent[];
 
   // Project:
-
-  getProjectEvents(projectId?: string): BusinessEvent[];
   getProjects(): Promise<Project.Project[]>;
   getProject(projectId: string): Promise<Result.Type<Project.Project>>;
-  updateCachedProject(project: Project.Project): void;
 
   // Subproject:
-
-  getSubprojectEvents(projectId: string, subprojectId?: string): BusinessEvent[];
   getSubprojects(projectId: string): Promise<Result.Type<Subproject.Subproject[]>>;
   getSubproject(projectId: string, subprojectId: string): Result.Type<Subproject.Subproject>;
-  updateCachedSubproject(subproject: Subproject.Subproject): void;
 
   // Workflowitem:
-
-  getWorkflowitemEvents(
-    projectId: string,
-    subprojectId: string,
-    workflowitemId?: string,
-  ): BusinessEvent[];
   getWorkflowitems(
     _projectId: string,
     subprojectId: string,
@@ -120,7 +108,6 @@ export interface CacheInstance {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  updateCachedWorkflowitem(workflowitem: Workflowitem.Workflowitem): void;
 }
 
 export type TransactionFn<T> = (cache: CacheInstance) => Promise<T>;
@@ -161,74 +148,6 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       return (cache.eventsByStream.get("notifications") || []).filter(userFilter);
     },
 
-    getProjectEvents: (projectId?: string): BusinessEvent[] => {
-      if (projectId === undefined) {
-        // Load events for all projects:
-        const allEvents: BusinessEvent[] = [];
-        for (const projectEvents of cache.eventsByStream.values()) {
-          allEvents.push(...projectEvents);
-        }
-        return allEvents;
-      } else {
-        // Load events for a single project:
-        return cache.eventsByStream.get(projectId) || [];
-      }
-    },
-
-    getSubprojectEvents: (projectId: string, subprojectId?: string): BusinessEvent[] => {
-      const subprojectFilter = event => {
-        if (!event.type.startsWith("subproject_")) {
-          return false;
-        }
-
-        if (subprojectId === undefined) {
-          return true;
-        }
-
-        switch (event.type) {
-          case "subproject_created":
-            return event.subproject.id === subprojectId;
-          case "subproject_updated":
-            return event.subprojectId === subprojectId;
-          case "subproject_assigned":
-            return event.subprojectId === subprojectId;
-          case "subproject_closed":
-            return event.subprojectId === subprojectId;
-          case "subproject_permission_granted":
-            return event.subprojectId === subprojectId;
-          case "subproject_permission_revoked":
-            return event.subprojectId === subprojectId;
-          case "subproject_projected_budget_updated":
-            return event.subprojectId === subprojectId;
-          case "subproject_projected_budget_deleted":
-            return event.subprojectId === subprojectId;
-          default:
-            throw Error(`not implemented: notification event of type ${event.type}`);
-        }
-      };
-      return (cache.eventsByStream.get(projectId) || []).filter(subprojectFilter);
-    },
-
-    getWorkflowitemEvents: (
-      projectId: string,
-      subprojectId: string,
-      workflowitemId?: string,
-    ): BusinessEvent[] => {
-      const workflowitemFilter = event => {
-        if (event.type.startsWith("workflowitem_")) {
-          if (workflowitemId === undefined) {
-            return true;
-          } else {
-            if (workflowitemId === event.workflowitemId) {
-              return true;
-            }
-          }
-        }
-        return false;
-      };
-      return (cache.eventsByStream.get(projectId) || []).filter(workflowitemFilter);
-    },
-
     getProjects: async (): Promise<Project.Project[]> => {
       return [...cache.cachedProjects.values()];
     },
@@ -240,11 +159,6 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         return new NotFound(ctx, "project", projectId);
       }
       return project;
-    },
-
-    updateCachedProject: (project: Project.Project): void => {
-      // TODO not implemented
-      return;
     },
 
     getSubprojects: async (projectId: string): Promise<Result.Type<Subproject.Subproject[]>> => {
@@ -276,11 +190,6 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         return new NotFound(ctx, "subproject", subprojectId);
       }
       return subproject;
-    },
-
-    updateCachedSubproject: (subproject: Subproject.Subproject): void => {
-      // TODO not implemented
-      return;
     },
 
     getWorkflowitems: async (
@@ -315,11 +224,6 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         return new NotFound(ctx, "workflowitem", workflowitemId);
       }
       return workflowitem;
-    },
-
-    updateCachedWorkflowitem: (workflowitem: Workflowitem.Workflowitem): void => {
-      // TODO not implemented
-      return;
     },
   };
 }
@@ -528,8 +432,19 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
 }
 
 function addEventsToCache(cache: Cache2, streamName: string, newEvents: BusinessEvent[]) {
-  const eventsSoFar = cache.eventsByStream.get(streamName) || [];
-  cache.eventsByStream.set(streamName, eventsSoFar.concat(newEvents));
+  switch (streamName) {
+    case "global":
+    case "users":
+    case "groups":
+    case "notifications":
+      const eventsSoFar = cache.eventsByStream.get(streamName) || [];
+      cache.eventsByStream.set(streamName, eventsSoFar.concat(newEvents));
+      break;
+
+    default:
+      // Do nothing, becaue informations will be reflected in aggregates
+      break;
+  }
 }
 
 export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
