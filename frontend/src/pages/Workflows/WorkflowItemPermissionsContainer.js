@@ -16,7 +16,7 @@ import { workflowItemIntentOrder } from "../../permissions";
 class WorkflowItemPermissionsContainer extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.show && nextProps.show) {
-      this.props.fetchWorkflowItemPermissions(nextProps.projectId, nextProps.wId, true);
+      this.props.fetchWorkflowItemPermissions(nextProps.projectId, nextProps.subProjectId, nextProps.wId, true);
       this.props.fetchUser();
     }
   }
@@ -66,8 +66,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(grantWorkflowItemPermission(pId, sId, wId, permission, user, true)),
     revoke: (pId, sId, wId, permission, user) =>
       dispatch(revokeWorkflowItemPermission(pId, sId, wId, permission, user, true)),
-    fetchWorkflowItemPermissions: (pId, wId, showLoading) =>
-      dispatch(fetchWorkflowItemPermissions(pId, wId, showLoading)),
+    fetchWorkflowItemPermissions: (pId, spId, wId, showLoading) =>
+      dispatch(fetchWorkflowItemPermissions(pId, spId, wId, showLoading)),
     fetchUser: () => dispatch(fetchUser(true))
   };
 };

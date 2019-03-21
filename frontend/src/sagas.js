@@ -269,6 +269,7 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
       }
     }
     // add grant permission actions next
+    // TODO: add subprojectId
     const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, r.data.id);
     const permissionsForResource = data;
     for (const intent in permissions) {
@@ -806,9 +807,9 @@ export function* fetchSubProjectPermissionsSaga({ projectId, subprojectId, showL
   }, showLoading);
 }
 
-export function* fetchWorkflowItemPermissionsSaga({ projectId, workflowitemId, showLoading }) {
+export function* fetchWorkflowItemPermissionsSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, workflowitemId);
+    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, subprojectId, workflowitemId);
     yield put({
       type: FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
       permissions: data || {}
