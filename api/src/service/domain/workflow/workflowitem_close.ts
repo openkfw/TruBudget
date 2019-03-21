@@ -108,7 +108,15 @@ export async function closeWorkflowitem(
     // The issuer doesn't receive a notification:
     .filter(userId => userId !== closingUser.id)
     .map(recipient =>
-      NotificationCreated.createEvent(ctx.source, closingUser.id, recipient, closeEvent, projectId),
+      NotificationCreated.createEvent(
+        ctx.source,
+        closingUser.id,
+        recipient,
+        closeEvent,
+        projectId,
+        subprojectId,
+        workflowitemId,
+      ),
     );
 
   return { newEvents: [closeEvent, ...notifications] };

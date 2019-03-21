@@ -75,6 +75,7 @@ export async function assignSubproject(
         recipient,
         subprojectAssigned,
         projectId,
+        subprojectId,
       ),
     );
 
