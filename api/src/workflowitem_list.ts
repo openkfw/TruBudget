@@ -123,10 +123,10 @@ interface Service {
 
 function sendErrorIfEmpty(reply, resourceId) {
   if (!isNonemptyString(resourceId)) {
-    reply.status(404).send({
+    reply.status(400).send({
       apiVersion: "1.0",
       error: {
-        code: 404,
+        code: 400,
         message: `required query parameter ${resourceId} not present (must be non-empty string)`,
       },
     });
