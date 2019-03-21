@@ -1,4 +1,6 @@
+import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -16,8 +18,6 @@ import * as Workflowitem from "./workflowitem";
 import { Id } from "./workflowitem";
 import * as WorkflowitemClosed from "./workflowitem_closed";
 import { sortWorkflowitems } from "./workflowitem_ordering";
-import { VError } from "verror";
-import logger from "../../../lib/logger";
 
 interface Repository {
   getWorkflowitems(

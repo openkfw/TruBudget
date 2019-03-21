@@ -118,7 +118,7 @@ interface Service {
     user: ServiceUser,
     projectId: string,
     subprojectId: string,
-  ): Promise<Workflowitem.Workflowitem[]>;
+  ): Promise<Workflowitem.ScrubbedWorkflowitem[]>;
 }
 
 function sendErrorIfEmpty(reply, resourceId) {
@@ -152,13 +152,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .listWorkflowitems(ctx, user, projectId, subprojectId)
-      .then((workflowitems: Workflowitem.Workflowitem[]) => {
+      .then((workflowitems: Workflowitem.ScrubbedWorkflowitem[]) => {
         return workflowitems.map(workflowitem => {
           return {
-            allowedIntents: getAllowedIntents(
-              [user.id].concat(user.groups),
-              workflowitem.permissions,
-            ),
+            allowedIntents: workflowitem.isRedacted
+              ? []
+              : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
             data: {
               id: workflowitem.id,
               creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),

@@ -10,6 +10,7 @@ import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
+import { BusinessEvent } from "../business_event";
 
 export type Id = string;
 
@@ -52,10 +53,10 @@ export interface RedactedWorkflowitem {
   description: null;
   status: "open" | "closed";
   assignee?: null;
-  documents: null;
-  permissions: null;
-  log: null;
-  additionalData: null;
+  documents: [];
+  permissions: {};
+  log: WorkflowitemTraceEvent[];
+  additionalData: {};
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -148,4 +149,47 @@ export function permits(
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;
+}
+
+export function redact(workflowitem: Workflowitem): RedactedWorkflowitem {
+  return {
+    isRedacted: true,
+    id: workflowitem.id,
+    subprojectId: workflowitem.subprojectId,
+    createdAt: workflowitem.createdAt,
+    dueDate: null,
+    displayName: null,
+    exchangeRate: null,
+    billingDate: null,
+    amount: null,
+    currency: null,
+    amountType: null,
+    description: null,
+    status: workflowitem.status,
+    assignee: null,
+    documents: [],
+    permissions: {},
+    log: redactLog(workflowitem.log),
+    additionalData: {},
+  };
+}
+
+function redactLog(events: WorkflowitemTraceEvent[]): WorkflowitemTraceEvent[] {
+  return (
+    events
+      // We only keep close events for now:
+      .filter(x => x.businessEvent.type === "workflowitem_closed")
+      // We only keep the info needed to sort workflowitems:
+      .map(x => ({
+        entityId: x.entityId,
+        entityType: x.entityType,
+        businessEvent: {
+          type: x.businessEvent.type,
+          source: "REDACTED",
+          time: x.businessEvent.time,
+          publisher: "REDACTED",
+        } as BusinessEvent,
+        snapshot: {},
+      }))
+  );
 }

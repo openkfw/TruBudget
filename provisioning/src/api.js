@@ -1,4 +1,6 @@
-const { withRetry } = require("./lib");
+const {
+  withRetry
+} = require("./lib");
 
 const authenticate = async (axios, userId, password) => {
   const response = await withRetry(() =>
@@ -117,13 +119,7 @@ const closeSubproject = async (axios, projectId, subprojectId) => {
 };
 
 const createWorkflowitem = async (axios, data) => {
-  await withRetry(() =>
-    axios.post("/subproject.createWorkflowitem", {
-      ...data,
-      status: "open"
-      // otherwise we won't be able to add workflowitems
-    })
-  );
+  await withRetry(() => axios.post("/subproject.createWorkflowitem", data));
 };
 
 const updateWorkflowitem = async (
@@ -160,28 +156,28 @@ const closeWorkflowitem = async (
 const findProject = async (axios, projectTemplate) => {
   return await withRetry(() =>
     axios
-      .get("/project.list")
-      .then(res => res.data.data.items)
-      .then(projects =>
-        projects.find(p => p.data.displayName === projectTemplate.displayName)
-      )
-      .catch(err => {
-        console.error(err);
-        process.exit(1);
-      })
+    .get("/project.list")
+    .then(res => res.data.data.items)
+    .then(projects =>
+      projects.find(p => p.data.displayName === projectTemplate.displayName)
+    )
+    .catch(err => {
+      console.error(err);
+      process.exit(1);
+    })
   );
 };
 
 const findSubproject = async (axios, project, subprojectTemplate) => {
   return await withRetry(() =>
     axios
-      .get(`/subproject.list?projectId=${project.data.id}`)
-      .then(res => res.data.data.items)
-      .then(subprojects =>
-        subprojects.find(
-          x => x.data.displayName === subprojectTemplate.displayName
-        )
+    .get(`/subproject.list?projectId=${project.data.id}`)
+    .then(res => res.data.data.items)
+    .then(subprojects =>
+      subprojects.find(
+        x => x.data.displayName === subprojectTemplate.displayName
       )
+    )
   );
 };
 
@@ -193,17 +189,17 @@ const findWorkflowitem = async (
 ) => {
   return await withRetry(() =>
     axios
-      .get(
-        `/workflowitem.list?projectId=${project.data.id}&subprojectId=${
+    .get(
+      `/workflowitem.list?projectId=${project.data.id}&subprojectId=${
           subproject.data.id
         }`
+    )
+    .then(res => res.data.data.workflowitems)
+    .then(items =>
+      items.find(
+        item => item.data.displayName === workflowitemTemplate.displayName
       )
-      .then(res => res.data.data.workflowitems)
-      .then(items =>
-        items.find(
-          item => item.data.displayName === workflowitemTemplate.displayName
-        )
-      )
+    )
   );
 };
 const grantPermissions = async (

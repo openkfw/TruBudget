@@ -92,7 +92,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  reorderSubprojectItems(
+  setWorkflowitemOrdering(
     ctx: Ctx,
     user: ServiceUser,
     projectId: Project.Id,
@@ -126,7 +126,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const { projectId, subprojectId, ordering } = bodyResult.data;
 
       service
-        .reorderSubprojectItems(ctx, user, projectId, subprojectId, ordering)
+        .setWorkflowitemOrdering(ctx, user, projectId, subprojectId, ordering)
         .then(() => {
           const code = 200;
           const body = {

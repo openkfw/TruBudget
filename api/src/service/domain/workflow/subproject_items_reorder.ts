@@ -20,7 +20,7 @@ interface Repository {
   ): Promise<Result.Type<Subproject.Subproject>>;
 }
 
-export async function reorderSubprojectItems(
+export async function setWorkflowitemOrdering(
   ctx: Ctx,
   issuer: ServiceUser,
   projectId: Project.Id,
@@ -39,6 +39,8 @@ export async function reorderSubprojectItems(
     return { newEvents: [] };
   }
 
+  // TODO(kevin): Check that each ID refers to an existing workflowitem
+
   const reorderEvent = SubprojectItemsReordered.createEvent(
     ctx.source,
     issuer.id,
@@ -48,13 +50,11 @@ export async function reorderSubprojectItems(
   );
 
   // Check authorization (if not root):
-  if (issuer.id !== "root") {
-    const isAuthorized = (subproject.permissions["subproject.reorderWorkflowitems"] || []).some(
-      identity => canAssumeIdentity(issuer, identity),
-    );
-    if (!isAuthorized) {
-      return new NotAuthorized(ctx, issuer.id, reorderEvent);
-    }
+  if (
+    issuer.id !== "root" &&
+    !Subproject.permits(subproject, issuer, ["subproject.reorderWorkflowitems"])
+  ) {
+    return new NotAuthorized(ctx, issuer.id, reorderEvent);
   }
 
   // Check that the new event is indeed valid:

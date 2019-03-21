@@ -9,7 +9,7 @@ import * as SubprojectItemsReorder from "./domain/workflow/subproject_items_reor
 import { WorkflowitemOrdering } from "./domain/workflow/workflowitem_ordering";
 import { store } from "./store";
 
-export async function reorderSubprojectItems(
+export async function setWorkflowitemOrdering(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
@@ -18,15 +18,14 @@ export async function reorderSubprojectItems(
   ordering: WorkflowitemOrdering,
 ): Promise<void> {
   const result = await Cache.withCache(conn, ctx, async cache =>
-    SubprojectItemsReorder.reorderSubprojectItems(
+    SubprojectItemsReorder.setWorkflowitemOrdering(
       ctx,
       serviceUser,
       projectId,
       subprojectId,
       ordering,
       {
-        getSubproject: async (projectId, subprojectId) =>
-          cache.getSubproject(projectId, subprojectId),
+        getSubproject: async (pId, spId) => cache.getSubproject(pId, spId),
       },
     ),
   );

@@ -489,8 +489,8 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
     ),
 });
 SubprojectItemsReorderAPI.addHttpHandler(server, URL_PREFIX, {
-  reorderSubprojectItems: (ctx, user, projectId, subprojectId, ordering) =>
-    SubprojectItemsReorderService.reorderSubprojectItems(
+  setWorkflowitemOrdering: (ctx, user, projectId, subprojectId, ordering) =>
+    SubprojectItemsReorderService.setWorkflowitemOrdering(
       db,
       ctx,
       user,

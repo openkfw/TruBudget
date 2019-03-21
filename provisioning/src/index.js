@@ -228,8 +228,8 @@ const provisionWorkflowitem = async (
   }
 
   // Testing updates:
-  console.log(`Updating workflowitem "${workflowitemTemplate.displayName}"`);
-  if (workflowitem.status === "open") {
+  if (workflowitem.data.status === "open") {
+    console.log(`Updating workflowitem "${workflowitemTemplate.displayName}"`);
     await updateWorkflowitem(
       axios,
       project.data.id,
@@ -347,6 +347,10 @@ async function testWorkflowitemUpdate(folder) {
     subproject,
     workflowitemTemplate
   );
+
+  if (workflowitem.data.documents.length !== 0) {
+    throw new Error(`workflowitem ${workflowitem.data.id} is not expected to already have documents attached. Note that the provisioning script shouldn't run more than once.`)
+  }
 
   const { amountType, amount, currency } = workflowitem.data;
   if (amountType === "N/A" || !amount || !currency) {
@@ -553,7 +557,7 @@ async function testWorkflowitemReordering(folder) {
       "The final installment workflowitem should have moved to an earlier position." +
         ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${
           changedOrdering[finalInstName]
-        }`
+        }. original ordering = ${JSON.stringify(originalOrdering)}; changed ordering = ${JSON.stringify(changedOrdering)}`
     );
   }
   if (changedOrdering[finalInstName] >= changedOrdering[interimInstName]) {

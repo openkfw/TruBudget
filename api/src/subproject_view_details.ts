@@ -201,19 +201,19 @@ interface ExposedWorkflowitem {
   data: {
     id: string;
     creationUnixTs: string;
-    displayName: string;
-    exchangeRate: string | undefined;
-    billingDate: string | undefined;
-    amountType: string;
-    description: string;
+    displayName: string | null;
+    exchangeRate: string | undefined | null;
+    billingDate: string | undefined | null;
+    amountType: string | null;
+    description: string | null;
     status: string;
-    assignee: string | undefined;
+    assignee: string | undefined | null;
     documents: Array<{
       id: string;
       hash: string;
-    }>;
-    amount?: string;
-    additionalData: object;
+    }> | null;
+    amount?: string | null;
+    additionalData: object | null;
   };
   allowedIntents: Intent[];
 }
@@ -237,7 +237,7 @@ interface Service {
     user: ServiceUser,
     projectId: string,
     subprojectId: string,
-  ): Promise<Workflowitem.Workflowitem[]>;
+  ): Promise<Workflowitem.ScrubbedWorkflowitem[]>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -328,10 +328,9 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         }
 
         const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map(workflowitem => ({
-          allowedIntents: getAllowedIntents(
-            [user.id].concat(user.groups),
-            workflowitem.permissions,
-          ),
+          allowedIntents: workflowitem.isRedacted
+            ? []
+            : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
           data: {
             id: workflowitem.id,
             creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),

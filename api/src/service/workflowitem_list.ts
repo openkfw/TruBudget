@@ -12,20 +12,20 @@ export async function listWorkflowitems(
   serviceUser: ServiceUser,
   projectId: string,
   subprojectId: string,
-): Promise<Workflowitem.Workflowitem[]> {
+): Promise<Workflowitem.ScrubbedWorkflowitem[]> {
   const result = await Cache.withCache(conn, ctx, async cache =>
     WorkflowitemList.getAllVisible(ctx, serviceUser, projectId, subprojectId, {
-      getWorkflowitems: async (projectId, subprojectId) => {
-        return cache.getWorkflowitems(projectId, subprojectId);
+      getWorkflowitems: async (pId, spId) => {
+        return cache.getWorkflowitems(pId, spId);
       },
-      getSubproject: async (projectId, subprojectId) =>
-        cache.getSubproject(projectId, subprojectId),
+      getWorkflowitemOrdering: async (pId, spId) => {
+        const subproject = await cache.getSubproject(pId, spId);
+        return Result.map(subproject, x => x.workflowitemOrdering);
+      },
     }),
   );
 
-  if (Result.isErr(result)) {
-    return Promise.reject(result);
-  }
+  if (Result.isErr(result)) throw result;
 
   return result;
 }

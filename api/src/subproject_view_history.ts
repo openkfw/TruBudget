@@ -145,7 +145,7 @@ interface Service {
     user: ServiceUser,
     projectId: Project.Id,
     subprojectId: Subproject.Id,
-  ): Promise<Workflowitem.Workflowitem[]>;
+  ): Promise<Workflowitem.ScrubbedWorkflowitem[]>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -233,11 +233,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         //   }`;
         //   throw workflowitemsResult;
         // }
-        const workflowitems: Workflowitem.Workflowitem[] = workflowitemsResult;
+        const workflowitems: Workflowitem.ScrubbedWorkflowitem[] = workflowitemsResult;
 
         const events: ExposedEvent[] = subproject.log;
         for (const workflowitem of workflowitems) {
-          events.push(...workflowitem.log);
+          if (!workflowitem.isRedacted) {
+            events.push(...workflowitem.log);
+          }
         }
 
         events.sort(byEventTime);
