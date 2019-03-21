@@ -543,7 +543,7 @@ async function testWorkflowitemReordering(folder) {
     ordering: [finalInstallment.data.id, interimInstallment.data.id]
   });
   const changedOrdering = await getOrderingAsMap();
-  if (changedOrdering[finalInstName] === 0) {
+  if (changedOrdering[finalInstName] !== 0) {
     throw Error(
       "The ordering seems to affect closed items too, which shouldn't happen"
     );
