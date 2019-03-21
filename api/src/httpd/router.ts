@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 
-import { AllWorkflowitemsReader, WorkflowitemAssigner, WorkflowitemCloser } from ".";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
@@ -13,15 +12,9 @@ import { voteForNetworkPermission } from "../network/controller/vote";
 import { getNewestNotifications } from "../notification/controller/poll";
 import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
-import { closeSubproject } from "../subproject/controller/close";
-import { reorderWorkflowitems } from "../subproject/controller/reorderWorkflowitems";
-import { updateSubproject } from "../subproject/controller/update";
-import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { createBackup } from "../system/createBackup";
 import { getVersion } from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
-import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
-import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
@@ -224,15 +217,6 @@ export const registerRoutes = (
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
-  {
-    workflowitemLister,
-    workflowitemCloser,
-    workflowitemAssigner,
-  }: {
-    workflowitemLister: AllWorkflowitemsReader;
-    workflowitemCloser: WorkflowitemCloser;
-    workflowitemAssigner: WorkflowitemAssigner;
-  },
 ) => {
   const multichainClient = conn.multichainClient;
 
@@ -263,60 +247,8 @@ export const registerRoutes = (
   });
 
   // ------------------------------------------------------------
-  //       project
-  // ------------------------------------------------------------
-
-  // ------------------------------------------------------------
-  //       subproject
-  // ------------------------------------------------------------
-
-  // ------------------------------------------------------------
   //       workflowitem
   // ------------------------------------------------------------
-
-  // server.post(
-  //   `${urlPrefix}/workflowitem.close`,
-  //   getSchema(server, "workflowitemClose"),
-  //   (request, reply) => {
-  //     const req = request as AuthenticatedRequest;
-  //     const body = req.body.data;
-  //     workflowitemCloser(req.user, body.projectId, body.subprojectId, body.workflowitemId)
-  //       .then(
-  //         (): HttpResponse => [
-  //           200,
-  //           {
-  //             apiVersion: "1.0",
-  //             data: "OK",
-  //           },
-  //         ],
-  //       )
-  //       .then(response => send(reply, response))
-  //       .catch(err => handleError(request, reply, err));
-  //   },
-  // );
-
-  // server.post(
-  //   `${urlPrefix}/workflowitem.intent.grantPermission`,
-  //   getSchema(server, "workflowitemGrantPermissions"),
-  //   (request, reply) => {
-  //     grantWorkflowitemPermission(multichainClient, request as AuthenticatedRequest)
-  //       .then(response => send(reply, response))
-  //       .catch(err => handleError(request, reply, err));
-  //   },
-  // );
-
-  // server.post(
-  //   `${urlPrefix}/workflowitem.intent.revokePermission`,
-  //   getSchema(server, "workflowitemRevokePermissions"),
-  //   (request, reply) => {
-  //     revokeWorkflowitemPermission(
-  //       multichainClient,
-  //       (request as AuthenticatedRequest) as AuthenticatedRequest,
-  //     )
-  //       .then(response => send(reply, response))
-  //       .catch(err => handleError(request, reply, err));
-  //   },
-  // );
 
   server.post(
     `${urlPrefix}/workflowitem.validateDocument`,

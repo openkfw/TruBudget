@@ -101,7 +101,6 @@ import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revo
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 
-// import * as OldSubprojectModel from "./subproject/model/Subproject";
 const URL_PREFIX = "/api";
 
 /*
@@ -198,11 +197,7 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, {
-  workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(db),
-  workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(db),
-  workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(db),
-});
+registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort);
 
 /*
  * APIs related to Global Permissions
