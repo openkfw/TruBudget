@@ -397,6 +397,112 @@ describe("The cache", () => {
       assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
     });
   });
+  context("workflowitem aggregates", async () => {
+    it("returns an existing workflowitem", async () => {
+      // Setting up an example workflowitem
+      const cache = initCache();
+      const projectId = "pid";
+      const subprojectId = "sid";
+      const workflowitemId = "wid";
+      addExampleProject(defaultCtx, cache, projectId);
+      addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
+      const { workflowitem: example } = addExampleWorkflowitem(
+        defaultCtx,
+        cache,
+        projectId,
+        subprojectId,
+        workflowitemId,
+      );
+
+      const cacheInstance = getCacheInstance(defaultCtx, cache);
+
+      // Check if workflowitem in cache matches the created one
+      const responseFromCache = await cacheInstance.getWorkflowitem(
+        projectId,
+        subprojectId,
+        example.id,
+      );
+      assert.isOk(Result.isOk(responseFromCache));
+
+      const workflowitem = Result.unwrap(responseFromCache);
+
+      const actual = { workflowitemId: example.id, displayName: example.displayName };
+      const expected = { workflowitemId: workflowitem.id, displayName: workflowitem.displayName };
+      assert.deepEqual(
+        actual,
+        expected,
+        `Workflowitem from cache doesn't match project that has been added: ${JSON.stringify(
+          actual,
+          null,
+          2,
+        )} !== ${JSON.stringify(expected, null, 2)}`,
+      );
+    });
+    it("fails if workflowitem can't be found", async () => {
+      // Setup test with a workflowitem (it will be ignored)
+      const cache = initCache();
+      const projectId = "pid";
+      const subprojectId = "sid";
+      const workflowitemId = "wid";
+
+      addExampleProject(defaultCtx, cache, projectId);
+      addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
+      addExampleWorkflowitem(defaultCtx, cache, projectId, subprojectId, workflowitemId);
+
+      const cacheInstance = getCacheInstance(defaultCtx, cache);
+
+      // Get a non-existing workflowitem and check if it fails
+      const responseFromCache = await cacheInstance.getWorkflowitem(
+        projectId,
+        subprojectId,
+        "otherid",
+      );
+      assert.isNotOk(Result.isOk(responseFromCache));
+      assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
+    });
+    it("returns a list of workflowitems", async () => {
+      // Setup test with a project containing a subproject containing 4 workflowitems
+      const cache = initCache();
+      const projectId = "pid";
+      const subprojectId = "sid";
+      addExampleProject(defaultCtx, cache, projectId);
+      addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
+      const amountOfWorkflowitems = 4;
+      for (let i = 0; i < amountOfWorkflowitems; i++) {
+        addExampleWorkflowitem(defaultCtx, cache, projectId, subprojectId, `wid${i}`);
+      }
+
+      const cacheInstance = getCacheInstance(defaultCtx, cache);
+
+      // Check if 4 workflowitems are in the list
+      const responseFromCache = await cacheInstance.getWorkflowitems(projectId, subprojectId);
+      assert.isOk(Result.isOk(responseFromCache));
+      const list = Result.unwrap(responseFromCache);
+      assert.lengthOf(list, amountOfWorkflowitems);
+    });
+    it("fails to return list if subproject doesnt exist", async () => {
+      // Setup test with a project containing a subproject containing 4 workflowitems
+      const cache = initCache();
+      const projectId = "pid";
+      const subprojectId = "sid";
+      addExampleProject(defaultCtx, cache, projectId);
+      addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
+      const amountOfWorkflowitems = 4;
+      for (let i = 0; i < amountOfWorkflowitems; i++) {
+        addExampleWorkflowitem(defaultCtx, cache, projectId, subprojectId, `wid${i}`);
+      }
+
+      const cacheInstance = getCacheInstance(defaultCtx, cache);
+
+      // Check that trying to list workflowitems from an non-existing subproject fails
+      const responseFromCache = await cacheInstance.getWorkflowitems(
+        "non_existing_project",
+        "non_existing_subproject",
+      );
+      assert.isNotOk(Result.isOk(responseFromCache));
+      assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
+    });
+  });
 });
 
 // Helper functions
