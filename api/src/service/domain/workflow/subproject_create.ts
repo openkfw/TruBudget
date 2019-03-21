@@ -142,6 +142,7 @@ function newDefaultPermissionsFor(userId: string): Permissions {
     "subproject.close",
     "subproject.archive",
     "subproject.reorderWorkflowitems",
+    "subproject.createWorkflowitem",
   ];
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
 }

@@ -126,7 +126,7 @@ export async function createWorkflowitem(
       return new NotFound(ctx, "subproject", reqData.subprojectId);
     }
     const subproject = subprojectResult;
-    if (Subproject.permits(subproject, creatingUser, ["subproject.createWorkflowitem"])) {
+    if (!Subproject.permits(subproject, creatingUser, ["subproject.createWorkflowitem"])) {
       return new NotAuthorized(ctx, creatingUser.id, workflowitemCreated);
     }
   }
