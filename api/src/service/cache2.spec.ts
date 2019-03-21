@@ -11,6 +11,8 @@ import * as SubprojectCreated from "../service/domain/workflow/subproject_create
 import * as SubprojectAssigned from "../service/domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "../service/domain/workflow/subproject_closed";
 import * as WorkflowitemCreated from "../service/domain/workflow/workflowitem_created";
+import * as WorkflowitemAssigned from "../service/domain/workflow/workflowitem_assigned";
+import * as WorkflowitemClosed from "../service/domain/workflow/workflowitem_closed";
 
 import { BusinessEvent } from "./domain/business_event";
 import { NotFound } from "./domain/errors/not_found";
@@ -23,24 +25,22 @@ describe("The cache updates", () => {
     };
 
     it("from scratch", async () => {
+      // Setup test with empty cache
       const cache = initCache();
-
       assert.isTrue(isEmpty(cache.cachedProjects));
 
+      // Add project and check if it in the aggregate
       const projectId = "id";
-      const projectCreationEvent = addExampleProject(defaultCtx, cache, projectId);
-
-      updateAggregates(defaultCtx, cache, [projectCreationEvent]);
+      addExampleProject(defaultCtx, cache, projectId);
       assert.isFalse(isEmpty(cache.cachedProjects));
       assert.isFalse(isEmpty(cache.cachedProjects.get(projectId)));
     });
 
     it("from preexisting state", async () => {
-      // Prefill cache
+      // Setup test by prefilling cache with a project
       const cache = initCache();
       const projectId = "id";
-      const projectCreationEvent = addExampleProject(defaultCtx, cache, projectId);
-      updateAggregates(defaultCtx, cache, [projectCreationEvent]);
+      addExampleProject(defaultCtx, cache, projectId);
 
       // Apply events to existing cache
       const testAssignee = "shiba";
@@ -56,6 +56,7 @@ describe("The cache updates", () => {
       if (Result.isErr(projectCloseEvent)) throw projectCloseEvent;
       updateAggregates(defaultCtx, cache, [projectAssignedEvent, projectCloseEvent]);
 
+      // Test if events have been reflected on the aggregate
       const projectUnderTest = cache.cachedProjects.get(projectId);
       if (!projectUnderTest) {
         return assert.fail(undefined, undefined, "Project not found");
@@ -72,33 +73,25 @@ describe("The cache updates", () => {
     };
 
     it("from scratch", async () => {
+      // Setup test with empty cache
       const cache = initCache();
       assert.isTrue(isEmpty(cache.cachedSubprojects));
 
+      // Add subproject and check if it in the aggregate
       const projectId = "p-id";
       const subprojectId = "s-id";
-      const subProjectCreationEvent = addExampleSubproject(
-        defaultCtx,
-        cache,
-        projectId,
-        subprojectId,
-      );
+      addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
 
-      updateAggregates(defaultCtx, cache, [subProjectCreationEvent]);
       assert.isFalse(isEmpty(cache.cachedSubprojects));
       assert.isFalse(isEmpty(cache.cachedSubprojects.get(subprojectId)));
     });
 
     it("from preexisting state", async () => {
-      // Prefill cache
+      // Setup test by prefilling cache with a subproject
       const cache = initCache();
-      assert.isTrue(isEmpty(cache.cachedSubprojects));
-
       const projectId = "p-id";
       const subprojectId = "s-id";
-      const spCreationEvent = addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
-
-      updateAggregates(defaultCtx, cache, [spCreationEvent]);
+      addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
 
       // Apply events to existing cache
       const testAssignee = "shiba";
@@ -115,6 +108,7 @@ describe("The cache updates", () => {
       }
       updateAggregates(defaultCtx, cache, [spAssginedEvent, spCloseEvent]);
 
+      // Test if events have been reflected on the aggregate
       const spUnderTest = cache.cachedSubprojects.get(subprojectId);
       if (!spUnderTest) {
         return assert.fail(undefined, undefined, "Subproject not found");
@@ -127,22 +121,16 @@ describe("The cache updates", () => {
       );
     });
     it("and generates lookup", async () => {
-      const cache = initCache();
-
-      const events: BusinessEvent[] = [];
-
-      // Generate 5 Subprojects linked to 2 Projects
+      // Setup test with 5 Subprojects linked to 2 Projects
       // p-id0 -> s-id0 | p-id0 -> s-id2 | p-id0 -> s-id4
       // and
       // p-id1 -> s-id1 | p-id1 -> s-id3
+      const cache = initCache();
       for (let i = 0; i <= 4; i++) {
         const projectId = `p-id${i % 2}`;
         const subprojectId = `s-id${i}`;
         const spCreationEvent = addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
-        events.push(spCreationEvent);
       }
-
-      updateAggregates(defaultCtx, cache, events);
 
       // Check if lookup was generated
       const lookUp = cache.cachedSubprojectLookup;
@@ -169,39 +157,76 @@ describe("The cache updates", () => {
       source: "http",
     };
 
-    it("and generates lookup", async () => {
+    it("from scratch", async () => {
+      // Setup test with empty cache
       const cache = initCache();
 
-      const events: BusinessEvent[] = [];
+      // Add workflowitem and check if it in the aggregate
+      const projectId = "p-id";
+      const subprojectId = "s-id";
+      const workflowitemId = "w-id";
+      addExampleWorkflowitem(defaultCtx, cache, projectId, subprojectId, workflowitemId);
 
-      // Generate 5 Workflowitems linked to 2 Subprojects
+      assert.isFalse(isEmpty(cache.cachedWorkflowItems));
+      assert.isFalse(isEmpty(cache.cachedWorkflowItems.get(workflowitemId)));
+    });
+
+    it("from preexisting state", async () => {
+      // Setup test by prefilling cache with a subproject
+      const cache = initCache();
+      const projectId = "p-id";
+      const subprojectId = "s-id";
+      const workflowitemId = "w-id";
+      addExampleWorkflowitem(defaultCtx, cache, projectId, subprojectId, workflowitemId);
+
+      // Apply events to existing cache
+      const testAssignee = "shiba";
+      const wfAssginedEvent = WorkflowitemAssigned.createEvent(
+        "http",
+        "test",
+        projectId,
+        subprojectId,
+        workflowitemId,
+        testAssignee,
+      );
+      const wfCloseEvent = WorkflowitemClosed.createEvent(
+        "http",
+        "test",
+        projectId,
+        subprojectId,
+        workflowitemId,
+      );
+      if (Result.isErr(wfAssginedEvent)) {
+        return assert.fail(undefined, undefined, "Workflowitem assigned event failed");
+      }
+      updateAggregates(defaultCtx, cache, [wfAssginedEvent, wfCloseEvent]);
+
+      // Test if events have been reflected on the aggregate
+      const wfUnderTest = cache.cachedWorkflowItems.get(workflowitemId);
+      if (!wfUnderTest) {
+        return assert.fail(undefined, undefined, "Workflowitem not found");
+      }
+      assert.isTrue(!isEmpty(wfUnderTest));
+      assert.strictEqual(
+        wfUnderTest.status,
+        "closed",
+        `Workflowitem should be closed: ${JSON.stringify(wfUnderTest, null, 2)}`,
+      );
+    });
+
+    it("and generates lookup", async () => {
+      // Setup test with 5 Workflowitems linked to 2 Subprojects
       // s-id0 -> w-id0 | s-id0 -> w-id2 | s-id0 -> w-id4
       // and
       // s-id1 -> w-id1 | s-id1 -> w-id3
+      const cache = initCache();
+
       for (let i = 0; i <= 4; i++) {
         const projectId = "p-id";
         const subprojectId = `s-id${i % 2}`;
         const workflowitemId = `w-id${i}`;
-        const wfCreationEvent = WorkflowitemCreated.createEvent(
-          "http",
-          "test",
-          projectId,
-          subprojectId,
-          {
-            id: workflowitemId,
-            status: "open",
-            displayName: "name",
-            description: "description",
-            amountType: "N/A",
-            permissions: {},
-            documents: [],
-            additionalData: {},
-          },
-        );
-        events.push(wfCreationEvent);
+        addExampleWorkflowitem(defaultCtx, cache, projectId, subprojectId, workflowitemId);
       }
-
-      updateAggregates(defaultCtx, cache, events);
 
       // Check if lookup was generated
       const lookUp = cache.cachedWorkflowitemLookup;
@@ -231,11 +256,12 @@ describe("The cache", () => {
   };
   context("for project aggregates", async () => {
     it("returns an existing project", async () => {
+      // Setting up the test with an example project
       const cache = initCache();
       const { project: exampleProject } = addExampleProject(defaultCtx, cache, "pid");
-
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
+      // Test if added project can be retrieved
       const responseFromCache = await cacheInstance.getProject(exampleProject.id);
       assert.isOk(Result.isOk(responseFromCache));
 
@@ -254,21 +280,25 @@ describe("The cache", () => {
       );
     });
     it("fails if project can't be found", async () => {
+      // Setting up test with example project
       const cache = initCache();
       addExampleProject(defaultCtx, cache, "pid");
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
+      // Checking that getting a non-existant project return a "NotFound"-Error
       const responseFromCache = await cacheInstance.getProject("otherid");
       assert.isNotOk(Result.isOk(responseFromCache));
       assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
     });
 
     it("returns a list of existing projects", async () => {
+      // Setting up thest with 2 projects
       const cache = initCache();
       addExampleProject(defaultCtx, cache, "pid");
       addExampleProject(defaultCtx, cache, "pid2");
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
+      // Checking if list contains the 2 projects
       const responseFromCache = await cacheInstance.getProjects();
       assert.isOk(Result.isOk(responseFromCache));
       const projectList = Result.unwrap(responseFromCache);
@@ -276,9 +306,11 @@ describe("The cache", () => {
     });
 
     it("returns an empty list if no project exist", async () => {
+      // Setting up test with an empty cache
       const cache = initCache();
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
+      // Check that an empty list is returned
       const responseFromCache = await cacheInstance.getProjects();
       assert.isOk(Result.isOk(responseFromCache));
       const projectList = Result.unwrap(responseFromCache);
@@ -287,7 +319,7 @@ describe("The cache", () => {
   });
   context("for subproject aggregates", async () => {
     it("returns an existing subproject", async () => {
-      // Setup test data
+      // Setting up an example project containing a single subproject
       const cache = initCache();
       const projectId = "pid";
       addExampleProject(defaultCtx, cache, projectId);
@@ -296,6 +328,7 @@ describe("The cache", () => {
 
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
+      // Check if subproject in cache matches the created one
       const responseFromCache = await cacheInstance.getSubproject(projectId, example.id);
       assert.isOk(Result.isOk(responseFromCache));
 
@@ -314,7 +347,7 @@ describe("The cache", () => {
       );
     });
     it("fails if subproject can't be found", async () => {
-      // Setup test data
+      // Setup test with a project containing some subprojects (they will be ignored)
       const cache = initCache();
       const projectId = "pid";
       addExampleProject(defaultCtx, cache, projectId);
@@ -323,13 +356,13 @@ describe("The cache", () => {
 
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
-      // Get with a non-existing ID should fail
+      // Get a non-existing subproject and check if it fails
       const responseFromCache = await cacheInstance.getSubproject(projectId, "otherid");
       assert.isNotOk(Result.isOk(responseFromCache));
       assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
     });
     it("returns a list of subprojects", async () => {
-      // setup test with 4 subprojects
+      // Setup test with a project containing 4 subprojects
       const cache = initCache();
       const projectId = "pid";
       addExampleProject(defaultCtx, cache, projectId);
@@ -340,14 +373,14 @@ describe("The cache", () => {
 
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
-      // Check if 4 subprojects are returned
+      // Check if 4 subprojects are in the list
       const responseFromCache = await cacheInstance.getSubprojects(projectId);
       assert.isOk(Result.isOk(responseFromCache));
       const list = Result.unwrap(responseFromCache);
       assert.lengthOf(list, amountOfSubprojects);
     });
     it("fails to return list if project doesnt exist", async () => {
-      // setup test with 4 subprojects
+      // Setup test with a project containing 4 subprojects
       const cache = initCache();
       const projectId = "pid";
       addExampleProject(defaultCtx, cache, projectId);
@@ -358,7 +391,7 @@ describe("The cache", () => {
 
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
-      // Try to list subprojects from an non-existing project
+      // Check that trying to list subprojects from an non-existing project fails
       const responseFromCache = await cacheInstance.getSubprojects("non_existing_project");
       assert.isNotOk(Result.isOk(responseFromCache));
       assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
@@ -403,4 +436,27 @@ function addExampleSubproject(
   updateAggregates(ctx, cache, [spCreationEvent]);
 
   return spCreationEvent;
+}
+
+function addExampleWorkflowitem(
+  ctx: Ctx,
+  cache: Cache2,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+): WorkflowitemCreated.Event {
+  const wfCreationEvent = WorkflowitemCreated.createEvent("http", "test", projectId, subprojectId, {
+    id: workflowitemId,
+    status: "open",
+    displayName: "name",
+    description: "description",
+    amountType: "N/A",
+    permissions: {},
+    documents: [],
+    additionalData: {},
+  });
+
+  updateAggregates(ctx, cache, [wfCreationEvent]);
+
+  return wfCreationEvent;
 }
