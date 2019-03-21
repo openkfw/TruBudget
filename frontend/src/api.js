@@ -222,7 +222,7 @@ class Api {
             ...minimalChanges,
             currency,
             amount,
-            exchangeRate: exchangeRate.toString()
+            exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
           };
 
     return instance.post(`/workflowitem.update`, {
