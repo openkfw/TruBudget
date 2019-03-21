@@ -125,15 +125,8 @@ export interface CacheInstance {
 
 export type TransactionFn<T> = (cache: CacheInstance) => Promise<T>;
 
-export async function withCache<T>(
-  conn: ConnToken,
-  ctx: Ctx,
-  transaction: TransactionFn<T>,
-  doRefresh: boolean = true,
-): Promise<T> {
-  const cache = conn.cache2;
-
-  const cacheInstance: CacheInstance = {
+export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
+  return {
     getGlobalEvents: (): BusinessEvent[] => {
       return cache.eventsByStream.get("global") || [];
     },
@@ -329,6 +322,17 @@ export async function withCache<T>(
       return;
     },
   };
+}
+
+export async function withCache<T>(
+  conn: ConnToken,
+  ctx: Ctx,
+  transaction: TransactionFn<T>,
+  doRefresh: boolean = true,
+): Promise<T> {
+  const cache = conn.cache2;
+
+  const cacheInstance: CacheInstance = getCacheInstance(ctx, cache);
 
   try {
     // Make sure we're the only thread-of-execution:
