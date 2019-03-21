@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\"",
-    "sonar": "node sonar-project.js"
+    "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\""
   },
   "nyc": {
     "include": [
