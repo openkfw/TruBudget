@@ -241,7 +241,7 @@ function* handleLoading(showLoading) {
   }
 }
 
-function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee, permissions) {
+function* getBatchFromSubprojectTemplate(projectId, subprojectId, resources, selectedAssignee, permissions) {
   if (_isEmpty(selectedAssignee) && _isEmpty(permissions)) {
     return;
   }
@@ -270,7 +270,7 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
     }
     // add grant permission actions next
     // TODO: add subprojectId
-    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, r.data.id);
+    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, subprojectId, r.data.id);
     const permissionsForResource = data;
     for (const intent in permissions) {
       if (_isEmpty(permissions[intent])) {
@@ -981,9 +981,22 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
   }, showLoading);
 }
 
-export function* fetchWorkflowActionsSaga({ projectId, ressources, selectedAssignee, permissions, showLoading }) {
+export function* fetchWorkflowActionsSaga({
+  projectId,
+  subprojectId,
+  ressources,
+  selectedAssignee,
+  permissions,
+  showLoading
+}) {
   yield execute(function*() {
-    const actions = yield getBatchFromSubprojectTemplate(projectId, ressources, selectedAssignee, permissions);
+    const actions = yield getBatchFromSubprojectTemplate(
+      projectId,
+      subprojectId,
+      ressources,
+      selectedAssignee,
+      permissions
+    );
     yield put({
       type: STORE_WORKFLOWACTIONS,
       actions
