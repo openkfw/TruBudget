@@ -87,7 +87,6 @@ const en = {
   },
 
   login: {
-    accenture_tag: "Developed by Emerging Technologies & Innovation @ Accenture",
     environment: "Environment",
     loading: "Loading ...",
     login_button_title: "Login",
