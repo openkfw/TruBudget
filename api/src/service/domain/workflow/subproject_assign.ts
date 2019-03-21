@@ -51,7 +51,7 @@ export async function assignSubproject(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Subproject.permits(subproject, issuer, ["project.assign"])) {
+    if (!Subproject.permits(subproject, issuer, ["subproject.assign"])) {
       return new NotAuthorized(ctx, issuer.id, subprojectAssigned);
     }
   }
