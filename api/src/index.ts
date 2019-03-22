@@ -56,6 +56,7 @@ import * as SubprojectAssignService from "./service/subproject_assign";
 import * as SubprojectCloseService from "./service/subproject_close";
 import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
+import * as WorkflowitemGetService from "./service/workflowitem_get";
 import * as SubprojectItemsReorderService from "./service/subproject_items_reorder";
 import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
@@ -287,6 +288,20 @@ GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
 NotificationListAPI.addHttpHandler(server, URL_PREFIX, {
   getNotificationsForUser: (ctx, user) =>
     NotificationListService.getNotificationsForUser(db, ctx, user),
+    getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
+    getSubproject: (
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+    ) => SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
+    getWorkflowitem: (
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+    ) => WorkflowitemGetService.getWorkflowitem(db, ctx, user, projectId, subprojectId, workflowitemId),
 });
 
 NotificationCountAPI.addHttpHandler(server, URL_PREFIX, {

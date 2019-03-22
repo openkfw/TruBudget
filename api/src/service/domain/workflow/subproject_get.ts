@@ -1,14 +1,12 @@
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { BusinessEvent } from "../business_event";
+import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import * as Subproject from "./subproject";
-import { sourceSubprojects } from "./subproject_eventsourcing";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
-import { NotAuthorized } from "../errors/not_authorized";
 
 interface Repository {
   getSubproject(): Promise<Result.Type<Subproject.Subproject>>;

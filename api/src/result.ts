@@ -47,3 +47,11 @@ export function unwrap_err<T>(result: Result<T>, message?: string): Error | neve
     throw new Error((message ? `${message}: ` : "") + `expected error, got value: ${result}`);
   }
 }
+
+export function unwrap_or<T, U>(result: Result<T>, defaultValue: U): T | U {
+  if (result instanceof Error) {
+    return defaultValue;
+  } else {
+    return result;
+  }
+}
