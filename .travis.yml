@@ -1,0 +1,47 @@
+stages:
+  - test
+  - name: dockerbuild
+    if: branch = master
+
+# provide PROJECT_NAME environment variable if you extend this template
+.node-unit-test: &node-unit-test
+  stage: test
+  language: node_js
+  node_js:
+    - "10"
+  cache: npm
+  script:
+    - cd $PROJECT_NAME
+    - npm ci
+    - npm test
+
+# provide PROJECT_NAME environment variable if you extend this template
+.docker-build: &docker-build
+  stage: dockerbuild
+  language: minimal
+  services:
+    - docker
+  before_script:
+    - export BUILDTIMESTAMP=$(date -Iseconds)
+    - export TAG=trubudget/$PROJECT_NAME:$TRAVIS_BRANCH
+    # - docker pull $TAG|| true
+  script:
+    - cd $PROJECT_NAME
+    - docker build --build-arg BUILDTIMESTAMP=$BUILDTIMESTAMP --build-arg CI_COMMIT_SHA=$TRAVIS_COMMIT --tag $TAG -f Dockerfile .
+    # - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    # - docker push $TAG
+
+jobs:
+  include:
+    - <<: *node-unit-test
+      env: PROJECT_NAME=blockchain
+    - <<: *node-unit-test
+      env: PROJECT_NAME=api
+    - <<: *node-unit-test
+      env: PROJECT_NAME=frontend
+    - <<: *docker-build
+      env: PROJECT_NAME=blockchain
+    - <<: *docker-build
+      env: PROJECT_NAME=api
+    - <<: *docker-build
+      env: PROJECT_NAME=frontend

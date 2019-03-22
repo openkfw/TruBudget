@@ -7,7 +7,7 @@
     "url": "https://github.com/openkfw/TruBudget"
   },
   "license": "GPL-3.0-or-later",
-  "author": "Jure Zakotnik <Jure.Zakotnik@ACMECorp.de>",
+  "author": "Jure Zakotnik <Jure.Zakotnik@kfw.de>",
   "contributors": [
     "Stefan Ziffer <stefan.ziffer@accenture.com>",
     "Mathias Höld <mathias.hoeld@accenture.com>",
@@ -64,5 +64,10 @@
     "check-translations": "node scripts/check-translations.js"
   },
   "proxy": "http://localhost:8080",
-  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

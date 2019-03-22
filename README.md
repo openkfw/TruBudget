@@ -1,5 +1,8 @@
 # TruBudget-App
 
+[![build status](https://travis-ci.com/openkfw/TruBudget.svg?branch=master)](https://travis-ci.com/openkfw/TruBudget)
+[![gitter chat](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/Tru-Community/community)
+
 ## Getting Started
 
 There are two options to run TruBudget either using the local sources or running the latest stable docker images.
@@ -42,7 +45,7 @@ Check out our [**Trubudget-Wiki**](./doc/README.md) to find out how Trubudget wo
 
 ## FAQ
 
-| Description           | Link                                                                                                                                 |
-| :-------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| Description           | Link                                                                                                              |
+| :-------------------- | :---------------------------------------------------------------------------------------------------------------- |
 | How to run e2e-tests? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributer-Guide/Contributer-Guide.md#end-to-end-tests |
 | How to run unit-test? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributer-Guide/Contributer-Guide.md#unit-tests       |
