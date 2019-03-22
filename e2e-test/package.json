@@ -2,7 +2,6 @@
   "name": "trubudget-e2e-test",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://openACMECorp.github.io/trubudget-website",
   "repository": {
     "type": "git",
     "url": "https://github.com/openkfw/TruBudget"

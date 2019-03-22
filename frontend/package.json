@@ -2,7 +2,6 @@
   "name": "trubudget-frontend",
   "version": "1.0.0-beta.5",
   "private": true,
-  "homepage": "https://openACMECorp.github.io/trubudget-website",
   "repository": {
     "type": "git",
     "url": "https://github.com/openkfw/TruBudget"
@@ -65,10 +64,5 @@
     "check-translations": "node scripts/check-translations.js"
   },
   "proxy": "http://localhost:8080",
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
 }
