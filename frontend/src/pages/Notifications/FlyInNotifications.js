@@ -9,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
 import Typography from "@material-ui/core/Typography";
 
-import { intentMapping, getResourceName, parseURI, hasAccess } from "./helper";
+import { intentMapping, getDisplayName, parseURI, isAllowedToSee } from "./helper";
 
 const styles = {
   notification: {
@@ -26,9 +26,10 @@ const styles = {
 
 export default class FlyInNotification extends Component {
   getMessages = history => {
-    return this.props.notifications.map(({ id, businessEvent, projectId, subprojectId, workflowitemId }) => {
+    return this.props.notifications.map(notification => {
+      const { id, businessEvent, projectId, subprojectId } = notification;
       const { publisher } = businessEvent;
-      const message = intentMapping({ businessEvent });
+      const message = intentMapping(notification);
       return (
         <Card
           key={id + "flyin"}
@@ -41,14 +42,14 @@ export default class FlyInNotification extends Component {
             avatar={<Avatar>{publisher ? publisher[0].toString().toUpperCase() : "?"}</Avatar>}
             action={
               <IconButton
-                disabled={!hasAccess(projectId, subprojectId, workflowitemId)}
+                disabled={!isAllowedToSee(notification)}
                 color="primary"
                 onClick={() => history.push(parseURI({ projectId, subprojectId }))}
               >
                 <LaunchIcon />
               </IconButton>
             }
-            title={getResourceName(projectId, subprojectId, workflowitemId)}
+            title={getDisplayName(notification)}
           />
           <CardContent>
             <Typography component="p">{message}</Typography>

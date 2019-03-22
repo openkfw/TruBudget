@@ -1,26 +1,29 @@
 import strings from "../../localizeStrings";
 import { formatString } from "../../helper";
 
-export function getResourceName(projectId, subprojectId, workflowitemId) {
-  let resourceName = "";
-  if (projectId !== undefined) {
-    resourceName = strings.common.project;
+// get hierarchic deepest displayName
+export function getDisplayName(notification) {
+  const metadata = notification.metadata;
+  if (metadata !== undefined) {
+    if (metadata.workflowitem !== undefined && metadata.workflowitem.hasViewPermissions === true) {
+      return metadata.workflowitem.displayName;
+    }
+    if (metadata.subproject !== undefined && metadata.subproject.hasViewPermissions === true) {
+      return metadata.subproject.displayName;
+    }
+    if (metadata.project !== undefined && metadata.project.hasViewPermissions === true) {
+      return metadata.project.displayName;
+    }
   }
-  if (subprojectId !== undefined) {
-    resourceName = strings.common.subproject;
-  }
-  if (workflowitemId !== undefined) {
-    resourceName = strings.common.workflowItem;
-  }
-  return resourceName;
+  return "cannot fond displayname";
 }
 
-export const intentMapping = ({ businessEvent, projectId, subprojectId, workflowitemId }) => {
+export const intentMapping = notification => {
+  const businessEvent = notification.businessEvent;
   const translation = strings.notification[businessEvent.type];
-  // displayname is not displayed in notification because businessEvent does not return a displayname
-  const displayName = "";
+  const displayName = getDisplayName(notification);
   const text = formatString(translation, displayName);
-  return `${text} ${hasAccess(projectId, subprojectId, workflowitemId) ? "" : strings.notification.no_permissions}`;
+  return `${text} ${isAllowedToSee(notification) ? "" : strings.notification.no_permissions}`;
 };
 
 export const parseURI = ({ projectId, subprojectId }) => {
@@ -29,15 +32,22 @@ export const parseURI = ({ projectId, subprojectId }) => {
   } else if (projectId && subprojectId) {
     return `/projects/${projectId}/${subprojectId}`;
   } else {
-    //ERROR?
+    throw new Error("not implemented");
   }
 };
 
-export const hasAccess = (projectId, subprojectId, workflowitemId) => {
-  const resourceId = workflowitemId || subprojectId || projectId;
-  if (resourceId === undefined) {
-    return undefined;
+export const isAllowedToSee = notification => {
+  const metadata = notification.metadata;
+  if (metadata !== undefined) {
+    if (metadata.workflowitem !== undefined) {
+      return metadata.workflowitem.hasViewPermissions;
+    }
+    if (metadata.subproject !== undefined) {
+      return metadata.subproject.hasViewPermissions;
+    }
+    if (metadata.project !== undefined) {
+      return metadata.project.hasViewPermissions;
+    }
   }
-
   return false;
 };

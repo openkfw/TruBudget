@@ -10,7 +10,7 @@ import LaunchIcon from "@material-ui/icons/ZoomIn";
 import moment from "moment";
 import React from "react";
 
-import { intentMapping, parseURI, hasAccess } from "./helper";
+import { intentMapping, parseURI, isAllowedToSee } from "./helper";
 
 const styles = theme => ({
   row: {
@@ -52,9 +52,12 @@ const NotificationListItems = ({
   notifications.reverse();
   return notifications.map((notification, index) => {
     const message = intentMapping(notification);
-    const { businessEvent, id, isRead } = notification;
+    const { businessEvent, id, isRead, metadata } = notification;
     const createdAt = moment(businessEvent.time).fromNow();
-    const redirectUri = parseURI(notification);
+    const redirectUri = parseURI({
+      projectId: metadata.project ? metadata.project.id : undefined,
+      subprojectId: metadata.subproject ? metadata.subproject.id : undefined
+    });
     const testLabel = `notification-${isRead ? "read" : "unread"}-${index}`;
     return (
       <div key={index}>
@@ -87,7 +90,7 @@ const NotificationListItems = ({
           <div className={classes.button}>
             <Fab
               size="small"
-              disabled={!hasAccess(businessEvent.projectId, businessEvent.subprojectId, businessEvent.workflowitemId)}
+              disabled={isAllowedToSee(notification)}
               color="primary"
               onClick={() => history.push(redirectUri)}
             >
