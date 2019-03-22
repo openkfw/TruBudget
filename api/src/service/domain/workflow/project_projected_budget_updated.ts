@@ -94,7 +94,7 @@ export function apply(
     });
   }
 
-  project.projectedBudgets = projectedBudgets;
+  project = { ...project, projectedBudgets };
 
   const result = Project.validate(project);
   if (Result.isErr(result)) {

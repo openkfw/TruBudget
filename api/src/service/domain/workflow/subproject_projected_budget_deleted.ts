@@ -78,9 +78,10 @@ export function apply(
   // organization always have a different currency. The reasoning: if an organization
   // makes two financial commitments in the same currency, they can represented by one
   // commitment with the same currency and the sum of both commitments as its value.
-  subproject.projectedBudgets = subproject.projectedBudgets.filter(
+  const projectedBudgets = subproject.projectedBudgets.filter(
     x => x.organization === event.organization && x.currencyCode === event.currencyCode,
   );
+  subproject = { ...subproject, projectedBudgets };
 
   const result = Subproject.validate(subproject);
   if (Result.isErr(result)) {

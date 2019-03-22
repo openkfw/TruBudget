@@ -99,7 +99,7 @@ export function apply(
     });
   }
 
-  subproject.projectedBudgets = projectedBudgets;
+  subproject = { ...subproject, projectedBudgets };
 
   const result = Subproject.validate(subproject);
   if (Result.isErr(result)) {
