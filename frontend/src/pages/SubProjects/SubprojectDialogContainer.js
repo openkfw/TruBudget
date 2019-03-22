@@ -10,7 +10,8 @@ import {
   editSubproject,
   storeSubProjectComment,
   storeSubProjectCurrency,
-  storeSubProjectProjectedBudgets
+  storeSubProjectProjectedBudgets,
+  storeDeletedProjectedBudget
 } from "./actions";
 import { storeSnackbarMessage } from "../Notifications/actions";
 
@@ -42,7 +43,8 @@ const mapDispatchToProps = dispatch => {
     storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),
     storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
     storeSubProjectProjectedBudgets: projectedBudgets => dispatch(storeSubProjectProjectedBudgets(projectedBudgets)),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
+    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
+    storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets))
   };
 };
 
