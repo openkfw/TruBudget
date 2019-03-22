@@ -52,7 +52,13 @@ export default class Budget extends React.Component {
   }
 
   render() {
-    const { projectedBudgets = [], deletedProjectedBudgets = [], parentCurrency, storeProjectedBudget } = this.props;
+    const {
+      projectedBudgets = [],
+      deletedProjectedBudgets = [],
+      parentCurrency,
+      storeProjectedBudget,
+      disabled
+    } = this.props;
     const currencies = getCurrencies(parentCurrency);
     return (
       <div>
@@ -70,81 +76,85 @@ export default class Budget extends React.Component {
                 <TableCell>{budget.organization}</TableCell>
                 <TableCell align="right">{toAmountString(budget.value, budget.currencyCode)}</TableCell>
                 <TableCell align="right">
-                  {
+                  {!disabled ? (
                     <Button
                       aria-label="Delete"
                       onClick={() => this.deleteBudgetFromList(projectedBudgets, deletedProjectedBudgets, budget)}
                     >
                       <DeleteIcon />
                     </Button>
-                  }
+                  ) : null}
                 </TableCell>
               </TableRow>
             ))}
-            <TableRow key={`pb-row-add`}>
-              <TableCell>
-                <TextField
-                  label={strings.users.organization}
-                  value={this.state.organization}
-                  onChange={e => this.setState({ organization: e.target.value })}
-                  type="text"
-                  aria-label="organization"
-                  id="organizationinput"
-                />
-              </TableCell>
-              <TableCell align="right">
-                <div style={{ display: "flex" }}>
-                  <DropDown
-                    style={{ minWidth: 200, marginRight: "16px" }}
-                    value={this.state.currency}
-                    floatingLabel={strings.project.project_currency}
-                    onChange={e => this.setState({ currency: e })}
-                    id="currencies"
-                  >
-                    {this.getMenuItems(currencies)}
-                  </DropDown>
+            {!disabled ? (
+              <TableRow key={`pb-row-add`}>
+                <TableCell>
                   <TextField
-                    label={strings.common.projectedBudget}
-                    value={this.state.budgetAmount}
-                    onChange={v => {
-                      if (/^[0-9,.-]*$/.test(v.target.value)) this.setState({ budgetAmount: v.target.value });
-                    }}
-                    onBlur={e => this.setState({ budgetAmount: toAmountString(e.target.value) })}
-                    onFocus={() => this.setState({ budgetAmount: fromAmountString(this.state.budgetAmount) })}
+                    label={strings.users.organization}
+                    value={this.state.organization}
+                    onChange={e => this.setState({ organization: e.target.value })}
                     type="text"
-                    multiline={false}
-                    aria-label="projectedbudget"
-                    id="projectedbudgetinput"
-                    style={{
-                      width: "60%"
-                    }}
+                    aria-label="organization"
+                    id="organizationinput"
                   />
-                </div>
-              </TableCell>
-              <TableCell align="right">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disabled={!this.state.budgetAmount || !this.state.currency || !this.state.organization}
-                  onClick={() => {
-                    const projectedBudgetsCopy = projectedBudgets;
-                    projectedBudgetsCopy.push({
-                      value: fromAmountString(this.state.budgetAmount).toString(10),
-                      currencyCode: this.state.currency,
-                      organization: this.state.organization
-                    });
-                    storeProjectedBudget(projectedBudgetsCopy);
-                    this.setState({
-                      budgetAmount: "",
-                      organization: "",
-                      currency: ""
-                    });
-                  }}
-                >
-                  {strings.common.add}
-                </Button>
-              </TableCell>
-            </TableRow>
+                </TableCell>
+                <TableCell align="right">
+                  <div style={{ display: "flex" }}>
+                    <DropDown
+                      style={{ minWidth: 200, marginRight: "16px" }}
+                      value={this.state.currency}
+                      floatingLabel={strings.project.project_currency}
+                      onChange={e => this.setState({ currency: e })}
+                      id="currencies"
+                    >
+                      {this.getMenuItems(currencies)}
+                    </DropDown>
+                    <TextField
+                      label={strings.common.projectedBudget}
+                      value={this.state.budgetAmount}
+                      onChange={v => {
+                        if (/^[0-9,.-]*$/.test(v.target.value)) this.setState({ budgetAmount: v.target.value });
+                      }}
+                      onBlur={e => this.setState({ budgetAmount: toAmountString(e.target.value) })}
+                      onFocus={() => this.setState({ budgetAmount: fromAmountString(this.state.budgetAmount) })}
+                      type="text"
+                      multiline={false}
+                      aria-label="projectedbudget"
+                      id="projectedbudgetinput"
+                      style={{
+                        width: "60%"
+                      }}
+                    />
+                  </div>
+                </TableCell>
+                <TableCell align="right">
+                  {
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      disabled={!this.state.budgetAmount || !this.state.currency || !this.state.organization}
+                      onClick={() => {
+                        const projectedBudgetsCopy = projectedBudgets;
+                        projectedBudgetsCopy.push({
+                          value: fromAmountString(this.state.budgetAmount).toString(10),
+                          currencyCode: this.state.currency,
+                          organization: this.state.organization
+                        });
+                        storeProjectedBudget(projectedBudgetsCopy);
+                        this.setState({
+                          budgetAmount: "",
+                          organization: "",
+                          currency: ""
+                        });
+                      }}
+                    >
+                      {strings.common.add}
+                    </Button>
+                  }
+                </TableCell>
+              </TableRow>
+            ) : null}
           </TableBody>
         </Table>
       </div>
