@@ -189,6 +189,9 @@ describe("The cache updates", () => {
         workflowitemId,
         testAssignee,
       );
+      if (Result.isErr(wfAssginedEvent)) {
+        return assert.fail(undefined, undefined, "Workflowitem assigned event failed");
+      }
       const wfCloseEvent = WorkflowitemClosed.createEvent(
         "http",
         "test",
@@ -196,8 +199,8 @@ describe("The cache updates", () => {
         subprojectId,
         workflowitemId,
       );
-      if (Result.isErr(wfAssginedEvent)) {
-        return assert.fail(undefined, undefined, "Workflowitem assigned event failed");
+      if (Result.isErr(wfCloseEvent)) {
+        return assert.fail(undefined, undefined, "Workflowitem closed event failed");
       }
       updateAggregates(defaultCtx, cache, [wfAssginedEvent, wfCloseEvent]);
 

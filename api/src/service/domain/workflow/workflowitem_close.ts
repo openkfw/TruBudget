@@ -41,7 +41,6 @@ export async function closeWorkflowitem(
 ): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
   const workflowitems = await repository.getWorkflowitems(projectId, subprojectId);
   if (Result.isErr(workflowitems)) {
-    logger.warn(workflowitems);
     return new NotFound(ctx, "subproject", subprojectId);
   }
 
@@ -72,15 +71,15 @@ export async function closeWorkflowitem(
     subprojectId,
     workflowitemId,
   );
+  if (Result.isErr(closeEvent)) {
+    return new VError(closeEvent, "failed to create event");
+  }
 
-  // Check authorization (if not root):
-  if (closingUser.id !== "root") {
-    const isAuthorized = (workflowitemToClose.permissions["workflowitem.close"] || []).some(
-      identity => canAssumeIdentity(closingUser, identity),
-    );
-    if (!isAuthorized) {
-      return new NotAuthorized(ctx, closingUser.id, closeEvent);
-    }
+  if (
+    closingUser.id !== "root" &&
+    !Workflowitem.permits(workflowitemToClose, closingUser, ["workflowitem.close"])
+  ) {
+    return new NotAuthorized(ctx, closingUser.id, closeEvent);
   }
 
   // Make sure all previous items (wrt. the ordering) are already closed:
@@ -95,7 +94,6 @@ export async function closeWorkflowitem(
 
   // Check that the new event is indeed valid:
   const result = WorkflowitemClosed.apply(ctx, closeEvent, workflowitemToClose);
-
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, closeEvent, [result]);
   }

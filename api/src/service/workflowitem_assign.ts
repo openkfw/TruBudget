@@ -8,6 +8,7 @@ import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemAssign from "./domain/workflow/workflowitem_assign";
+import * as GroupQuery from "./group_query";
 import { store } from "./store";
 
 export async function assignWorkflowitem(
@@ -30,6 +31,9 @@ export async function assignWorkflowitem(
       {
         getWorkflowitem: async id => {
           return cache.getWorkflowitem(projectId, subprojectId, id);
+        },
+        getUsersForIdentity: async identity => {
+          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
       },
     );

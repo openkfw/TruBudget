@@ -3,23 +3,17 @@ import { assert } from "chai";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { NotAuthorized } from "../errors/not_authorized";
-import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
-import { updateWorkflowitem } from "./workflowitem_update";
-import { sortWorkflowitems } from "./workflowitem_ordering";
 import * as WorkflowitemClosed from "./workflowitem_closed";
+import { sortWorkflowitems } from "./workflowitem_ordering";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 
 const OPEN = "open" as "open";
 const CLOSED = "closed" as "closed";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
 const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const bob: ServiceUser = { id: "bob", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charlie"] };
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
@@ -128,13 +122,15 @@ describe.only("reorder workflowitem", () => {
         log: [
           newTraceEvent(
             "b",
-            WorkflowitemClosed.createEvent(
-              ctx.source,
-              alice.id,
-              projectId,
-              subprojectId,
-              "b",
-              "2019-01-01T14:00:00.000Z",
+            Result.unwrap(
+              WorkflowitemClosed.createEvent(
+                ctx.source,
+                alice.id,
+                projectId,
+                subprojectId,
+                "b",
+                "2019-01-01T14:00:00.000Z",
+              ),
             ),
           ),
         ],
@@ -153,14 +149,16 @@ describe.only("reorder workflowitem", () => {
         log: [
           newTraceEvent(
             "d",
-            WorkflowitemClosed.createEvent(
-              ctx.source,
-              alice.id,
-              projectId,
-              subprojectId,
-              "d",
-              // b is created before d, but d is closed earlier:
-              "2019-01-01T13:00:00.000Z",
+            Result.unwrap(
+              WorkflowitemClosed.createEvent(
+                ctx.source,
+                alice.id,
+                projectId,
+                subprojectId,
+                "d",
+                // b is created before d, but d is closed earlier:
+                "2019-01-01T13:00:00.000Z",
+              ),
             ),
           ),
         ],
@@ -202,13 +200,15 @@ describe.only("reorder workflowitem", () => {
       log: [
         newTraceEvent(
           "b",
-          WorkflowitemClosed.createEvent(
-            ctx.source,
-            alice.id,
-            projectId,
-            subprojectId,
-            "b",
-            "2019-01-01T14:00:00.000Z",
+          Result.unwrap(
+            WorkflowitemClosed.createEvent(
+              ctx.source,
+              alice.id,
+              projectId,
+              subprojectId,
+              "b",
+              "2019-01-01T14:00:00.000Z",
+            ),
           ),
         ),
       ],
