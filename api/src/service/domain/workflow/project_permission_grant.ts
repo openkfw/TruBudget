@@ -1,4 +1,5 @@
-import { VError } from "verror";
+import isEqual = require("lodash.isequal");
+
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -46,10 +47,15 @@ export async function grantProjectPermission(
   }
 
   // Check that the new event is indeed valid:
-  const next = ProjectPermissionGranted.apply(ctx, permissionGranted, project);
-  if (Result.isErr(next)) {
-    return new InvalidCommand(ctx, permissionGranted, [next]);
+  const updatedProject = ProjectPermissionGranted.apply(ctx, permissionGranted, project);
+  if (Result.isErr(updatedProject)) {
+    return new InvalidCommand(ctx, permissionGranted, [updatedProject]);
   }
 
-  return { newEvents: [permissionGranted] };
+  // Only emit the event if it causes any changes to the permissions:
+  if (isEqual(project.permissions, updatedProject.permissions)) {
+    return { newEvents: [] };
+  } else {
+    return { newEvents: [permissionGranted] };
+  }
 }

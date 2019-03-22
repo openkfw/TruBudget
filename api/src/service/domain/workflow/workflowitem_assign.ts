@@ -37,8 +37,8 @@ export async function assignWorkflowitem(
     );
   }
 
-  // Dont re-assign to the same user:
   if (assignee === workflowitem.assignee) {
+    // This is already assigned to that user.
     return { newEvents: [], workflowitem };
   }
 

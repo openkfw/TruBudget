@@ -1,3 +1,5 @@
+import isEqual = require("lodash.isequal");
+
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -10,7 +12,6 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-
 import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoked";
 
 interface Repository {
@@ -56,10 +57,19 @@ export async function revokeWorkflowitemPermission(
   }
 
   // Check that the new event is indeed valid:
-  const next = WorkflowitemPermissionRevoked.apply(ctx, permissionRevoked, workflowitem);
-  if (Result.isErr(next)) {
-    return new InvalidCommand(ctx, permissionRevoked, [next]);
+  const updatedWorkflowitem = WorkflowitemPermissionRevoked.apply(
+    ctx,
+    permissionRevoked,
+    workflowitem,
+  );
+  if (Result.isErr(updatedWorkflowitem)) {
+    return new InvalidCommand(ctx, permissionRevoked, [updatedWorkflowitem]);
   }
 
-  return { newEvents: [permissionRevoked] };
+  // Only emit the event if it causes any changes to the permissions:
+  if (isEqual(workflowitem.permissions, updatedWorkflowitem.permissions)) {
+    return { newEvents: [] };
+  } else {
+    return { newEvents: [permissionRevoked] };
+  }
 }

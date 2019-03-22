@@ -31,7 +31,7 @@ export async function assignProject(
   }
 
   if (project.assignee === assignee) {
-    // The project is already assigned to that user.
+    // This is already assigned to that user.
     return { newEvents: [], project };
   }
 

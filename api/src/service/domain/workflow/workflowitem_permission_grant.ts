@@ -1,3 +1,5 @@
+import isEqual = require("lodash.isequal");
+
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -10,7 +12,6 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-
 import * as WorkflowitemPermissionGranted from "./workflowitem_permission_granted";
 
 interface Repository {
@@ -32,7 +33,6 @@ export async function grantWorkflowitemPermission(
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
   const workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
-
   if (Result.isErr(workflowitem)) {
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
@@ -48,18 +48,27 @@ export async function grantWorkflowitemPermission(
     grantee,
   );
 
-  // Check authorization (if not root):
-  if (issuer.id !== "root") {
-    if (!Workflowitem.permits(workflowitem, issuer, ["workflowitem.intent.grantPermission"])) {
-      return new NotAuthorized(ctx, issuer.id, permissionGranted);
-    }
+  if (
+    issuer.id !== "root" &&
+    !Workflowitem.permits(workflowitem, issuer, ["workflowitem.intent.grantPermission"])
+  ) {
+    return new NotAuthorized(ctx, issuer.id, permissionGranted);
   }
 
   // Check that the new event is indeed valid:
-  const next = WorkflowitemPermissionGranted.apply(ctx, permissionGranted, workflowitem);
-  if (Result.isErr(next)) {
-    return new InvalidCommand(ctx, permissionGranted, [next]);
+  const updatedWorkflowitem = WorkflowitemPermissionGranted.apply(
+    ctx,
+    permissionGranted,
+    workflowitem,
+  );
+  if (Result.isErr(updatedWorkflowitem)) {
+    return new InvalidCommand(ctx, permissionGranted, [updatedWorkflowitem]);
   }
 
-  return { newEvents: [permissionGranted] };
+  // Only emit the event if it causes any changes to the permissions:
+  if (isEqual(workflowitem.permissions, updatedWorkflowitem.permissions)) {
+    return { newEvents: [] };
+  } else {
+    return { newEvents: [permissionGranted] };
+  }
 }
