@@ -70,12 +70,13 @@ export function apply(
   event: Event,
   subproject: Subproject.Subproject,
 ): Result.Type<Subproject.Subproject> {
-  subproject.assignee = event.assignee;
+  // subproject.assignee = event.assignee;
+  const newState: Subproject.Subproject = { ...subproject, assignee: event.assignee };
 
-  const result = Subproject.validate(subproject);
+  const result = Subproject.validate(newState);
   if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, subproject.id);
+    return new EventSourcingError(ctx, event, result.message, newState.id);
   }
 
-  return subproject;
+  return newState;
 }
