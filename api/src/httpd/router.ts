@@ -9,7 +9,6 @@ import { getNodeList } from "../network/controller/list";
 import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
-import { getNewestNotifications } from "../notification/controller/poll";
 import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
 import { createBackup } from "../system/createBackup";
@@ -255,20 +254,6 @@ export const registerRoutes = (
     getSchema(server, "validateDocument"),
     (request, reply) => {
       validateDocument(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  // ------------------------------------------------------------
-  //       notification
-  // ------------------------------------------------------------
-
-  server.get(
-    `${urlPrefix}/notification.poll`,
-    getSchema(server, "notificationPoll"),
-    (request, reply) => {
-      getNewestNotifications(conn, ctx(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

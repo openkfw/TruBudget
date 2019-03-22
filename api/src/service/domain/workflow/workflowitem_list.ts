@@ -10,8 +10,6 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import { sortWorkflowitems } from "./workflowitem_ordering";
-import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
-import { redactHistoryEvent } from "../../../workflowitem";
 
 interface Repository {
   getWorkflowitems(

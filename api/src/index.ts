@@ -38,7 +38,6 @@ import * as GroupMemberAddService from "./service/group_member_add";
 import * as GroupMemberRemoveService from "./service/group_member_remove";
 import * as GroupQueryService from "./service/group_query";
 import { randomString } from "./service/hash";
-import * as HttpdMultichainAdapter from "./service/HttpdMultichainAdapter";
 import * as NotificationListService from "./service/notification_list";
 import * as NotificationMarkReadService from "./service/notification_mark_read";
 import * as ProjectAssignService from "./service/project_assign";

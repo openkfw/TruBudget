@@ -52,7 +52,7 @@ const baseRedactedItem: Workflowitem.RedactedWorkflowitem = {
   additionalData: {},
 };
 
-describe.only("reorder workflowitem", () => {
+describe("reorder workflowitem", () => {
   it("With an empty ordering, items are sorted by their creation time", async () => {
     const a = { ...baseWorkflowitem, id: "a", status: OPEN, createdAt: "2019-01-01T01:00:00.000Z" };
     const b = { ...baseWorkflowitem, id: "b", status: OPEN, createdAt: "2019-01-01T02:00:00.000Z" };

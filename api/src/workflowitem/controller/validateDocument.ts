@@ -1,7 +1,8 @@
+import * as crypto from "crypto";
+
 import { HttpResponse } from "../../httpd/lib";
 import { value } from "../../lib/validation";
 import { MultichainClient } from "../../service/Client.h";
-import { hashBase64String } from "../../subproject/controller/createWorkflowitem";
 
 export async function validateDocument(multichain: MultichainClient, req): Promise<HttpResponse> {
   const input = value("data", req.body.data, x => x !== undefined);
@@ -16,4 +17,12 @@ export async function validateDocument(multichain: MultichainClient, req): Promi
       },
     },
   ];
+}
+
+async function hashBase64String(base64String: string): Promise<string> {
+  return new Promise<string>(resolve => {
+    const hash = crypto.createHash("sha256");
+    hash.update(Buffer.from(base64String, "base64"));
+    resolve(hash.digest("hex"));
+  });
 }
