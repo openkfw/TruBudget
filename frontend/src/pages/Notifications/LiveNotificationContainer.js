@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import _isEmpty from "lodash/isEmpty";
 
 import LiveNotification from "./LiveNotification";
-import { hideSnackbar, fetchNotificationCounts, updateNotification, fetchLatestNotification } from "./actions.js";
+import { hideSnackbar, fetchNotificationCounts, updateNotification } from "./actions.js";
 import { toJS } from "../../helper";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 
@@ -13,17 +12,14 @@ import LiveUpdates from "../LiveUpdates/LiveUpdates";
 class LiveNotificationContainer extends Component {
   componentWillMount() {
     this.props.fetchNotificationCounts();
-    this.props.fetchLatestNotification();
   }
 
   // If there are no notifications yet, set the latestFlyInId to "0"
   // to tell the API to return all new notifications
 
   fetch() {
-    const { fetchFlyInNotifications, latestFlyInId } = this.props;
-    if (!_isEmpty(latestFlyInId) || latestFlyInId === "0") {
-      fetchFlyInNotifications(latestFlyInId);
-    }
+    const { fetchFlyInNotifications, notificationCount } = this.props;
+    fetchFlyInNotifications(notificationCount);
   }
 
   render() {
@@ -38,9 +34,8 @@ class LiveNotificationContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchFlyInNotifications: beforeId => dispatch(updateNotification(false, beforeId)),
+    fetchFlyInNotifications: offset => dispatch(updateNotification(false, offset)),
     fetchNotificationCounts: () => dispatch(fetchNotificationCounts()),
-    fetchLatestNotification: () => dispatch(fetchLatestNotification()),
     closeSnackbar: () => dispatch(hideSnackbar())
   };
 };
@@ -52,6 +47,7 @@ const mapStateToProps = state => {
     snackbarMessage: state.getIn(["notifications", "snackbarMessage"]),
     snackbarError: state.getIn(["notifications", "snackbarError"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
+    notificationCount: state.getIn(["notifications", "notificationCount"]),
     notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
     latestFlyInId: state.getIn(["notifications", "latestFlyInId"])
   };

@@ -300,10 +300,6 @@ class Api {
       workflowitemId
     });
 
-  pollNewNotifications = beforeId => {
-    return instance.get(`/notification.poll?beforeId=${beforeId}`);
-  };
-
   fetchNotifications = (offset, limit) => {
     return instance.get(`/notification.list?offset=${offset}&limit=${limit}`);
   };

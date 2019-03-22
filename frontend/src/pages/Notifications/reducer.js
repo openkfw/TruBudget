@@ -11,8 +11,7 @@ import {
   SET_NOTIFICATIONS_PER_PAGE,
   LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
   SET_NOTIFICATION_OFFSET,
-  TIME_OUT_FLY_IN,
-  FETCH_LATEST_NOTIFICATION_SUCCESS
+  TIME_OUT_FLY_IN
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -27,35 +26,26 @@ const defaultState = fromJS({
   unreadNotificationCount: 0,
   notificationCount: 0,
   notificationsPerPage: 20,
-  notificationOffset: 0,
-  latestFlyInId: undefined
+  notificationOffset: 0
 });
 
 export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_NOTIFICATIONS_SUCCESS:
       return state.merge({
-        notifications: fromJS(action.notifications)
+        notifications: fromJS(action.notifications),
+        notificationCount: action.notifications.length
       });
-    case FETCH_LATEST_NOTIFICATION_SUCCESS: {
-      const { notifications } = action;
-      const count = notifications.length;
-      // If there are no notifications yet, set the latestFlyInId to "0"
-      // to tell the API to return all new notifications
-      const latestFlyInId = count > 0 ? notifications[count - 1].notificationId : "0";
-      return state.merge({
-        latestFlyInId: latestFlyInId
-      });
-    }
 
     case LIVE_UPDATE_NOTIFICATIONS_SUCCESS: {
       const { newNotifications } = action;
       const count = newNotifications.length;
-      const latestFlyInId = count > 0 ? newNotifications[count - 1].notificationId : state.get("latestFlyInId");
+      const notificationCount =
+        count > 0 ? state.get("notificationCount") + newNotifications.length : state.get("notificationCount");
       const unreadNotificationCount = state.get("unreadNotificationCount") + count;
       return state.merge({
         newNotifications: fromJS(newNotifications),
-        latestFlyInId: latestFlyInId,
+        notificationCount: notificationCount,
         unreadNotificationCount
       });
     }

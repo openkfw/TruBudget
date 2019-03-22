@@ -53,9 +53,7 @@ import {
   FETCH_NOTIFICATION_COUNTS,
   LIVE_UPDATE_NOTIFICATIONS,
   LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
-  TIME_OUT_FLY_IN,
-  FETCH_LATEST_NOTIFICATION,
-  FETCH_LATEST_NOTIFICATION_SUCCESS
+  TIME_OUT_FLY_IN
 } from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
@@ -486,10 +484,6 @@ export function* getEnvironmentSaga() {
 
 export function* fetchNotificationsSaga({ showLoading, offset, limit }) {
   yield commonfetchNotifications(showLoading, offset, limit, FETCH_ALL_NOTIFICATIONS_SUCCESS);
-}
-
-export function* fetchLatestNotificationSaga({ showLoading }) {
-  yield commonfetchNotifications(showLoading, 0, 1, FETCH_LATEST_NOTIFICATION_SUCCESS);
 }
 
 export function* commonfetchNotifications(showLoading, offset, limit, type) {
@@ -1181,9 +1175,9 @@ export function* liveUpdateSubProjectSaga({ projectId, subprojectId }) {
   }, false);
 }
 
-export function* liveUpdateNotificationsSaga({ showLoading, beforeId }) {
+export function* liveUpdateNotificationsSaga({ showLoading, offset }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.pollNewNotifications, beforeId);
+    const { data } = yield callApi(api.fetchNotifications, offset);
     yield put({
       type: LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
       newNotifications: data.notifications
@@ -1261,7 +1255,6 @@ export default function* rootSaga() {
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),
-      yield takeEvery(FETCH_LATEST_NOTIFICATION, fetchLatestNotificationSaga),
       yield takeEvery(FETCH_NOTIFICATION_COUNTS, fetchNotificationCountsSaga),
       yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga),
       yield takeEvery(MARK_MULTIPLE_NOTIFICATION_AS_READ, markMultipleNotificationsAsReadSaga),

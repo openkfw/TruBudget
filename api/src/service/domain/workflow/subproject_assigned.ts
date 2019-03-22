@@ -70,7 +70,6 @@ export function apply(
   event: Event,
   subproject: Subproject.Subproject,
 ): Result.Type<Subproject.Subproject> {
-  // subproject.assignee = event.assignee;
   const newState: Subproject.Subproject = { ...subproject, assignee: event.assignee };
 
   const result = Subproject.validate(newState);
