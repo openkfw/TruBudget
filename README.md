@@ -3,6 +3,10 @@
 [![build status](https://travis-ci.com/openkfw/TruBudget.svg?branch=master)](https://travis-ci.com/openkfw/TruBudget)
 [![gitter chat](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/Tru-Community/community)
 
+## Introduction
+
+TruBudget - a trusted public expenditure tool. A collaborative workflow tool and secured platform to track and coordinate the implementation of donor-funded investment projects.
+
 ## Getting Started
 
 There are two options to run TruBudget either using the local sources or running the latest stable docker images.
