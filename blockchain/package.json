@@ -1,12 +1,25 @@
 {
-  "name": "ACMECorp-chain-bc",
+  "name": "trubudget-blockchain",
   "version": "1.0.0-beta.5",
-  "description": "",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openkfw/TruBudget"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Jure Zakotnik <Jure.Zakotnik@ACMECorp.de>",
+  "contributors": [
+    "Stefan Ziffer <stefan.ziffer@accenture.com>",
+    "Mathias Höld <mathias.hoeld@accenture.com>",
+    "Kevin Bader <kevin.bader@accenture.com>",
+    "Sascha Kerbler <sascha.kerbler@accenture.com>",
+    "Roman Schiefer <roman.schiefer@accenture.com>",
+    "Philip Pai <philip.pai@accenture.com>"
+  ],
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\"",
-    "sonar": "node sonar-project.js"
+    "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\""
   },
   "nyc": {
     "include": [
@@ -16,12 +29,6 @@
       "src/**/*.spec.js"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git@104.40.176.22:trubudget/ACMECorp-chain-bc.git"
-  },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@kubernetes/client-node": "^0.8.1",
     "async-each": "^1.0.1",
@@ -29,7 +36,7 @@
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "express": "^4.16.3",
-    "js-yaml": "^3.12.0",
+    "js-yaml": "^3.13.0",
     "md5-file": "^4.0.0",
     "mocha": "^5.2.0",
     "shelljs": "^0.8.2",

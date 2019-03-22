@@ -6,6 +6,7 @@ import * as Project from "./domain/workflow/project";
 import * as ProjectUpdate from "./domain/workflow/project_update";
 import * as GroupQuery from "./group_query";
 import { store } from "./store";
+import * as Result from "../result";
 
 export async function updateProject(
   conn: ConnToken,
@@ -14,19 +15,19 @@ export async function updateProject(
   projectId: Project.Id,
   requestData: ProjectUpdate.RequestData,
 ): Promise<void> {
-  const { newEvents, errors } = await Cache.withCache(conn, ctx, async cache =>
+  const result = await Cache.withCache(conn, ctx, async cache =>
     ProjectUpdate.updateProject(ctx, serviceUser, projectId, requestData, {
-      getProjectEvents: async () => {
-        return cache.getProjectEvents(projectId);
+      getProject: async projectId => {
+        return cache.getProject(projectId);
       },
       getUsersForIdentity: async identity => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
     }),
   );
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(result)) return Promise.reject(result);
 
-  for (const event of newEvents) {
+  for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
 }

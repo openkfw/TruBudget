@@ -214,10 +214,11 @@ export function hideWorkflowItemPermissions() {
   };
 }
 
-export function fetchWorkflowItemPermissions(projectId, workflowitemId, showLoading = false) {
+export function fetchWorkflowItemPermissions(projectId, subprojectId, workflowitemId, showLoading = false) {
   return {
     type: FETCH_WORKFLOWITEM_PERMISSIONS,
     projectId,
+    subprojectId,
     workflowitemId,
     showLoading
   };

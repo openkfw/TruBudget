@@ -1,8 +1,8 @@
-import * as crypto from "crypto";
 import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
@@ -10,23 +10,15 @@ import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
-import { canAssumeIdentity } from "../organization/auth_token";
+import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
-import { StoredDocument, UploadedDocument, uploadedDocumentSchema } from "./document";
+import { hashDocument, StoredDocument, UploadedDocument, uploadedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
-import { sourceSubprojects } from "./subproject_eventsourcing";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
-import { sourceWorkflowitems } from "./workflowitem_eventsourcing";
 
-/**
- * Initial data for the new project as given in the request.
- *
- * Looks a lot like `InitialData` in the domain layer's `project_created.ts`, except
- * that there are more optional fields that get initialized using default values.
- */
 export interface RequestData {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
@@ -68,12 +60,24 @@ export function validate(input: any): Result.Type<RequestData> {
   return !error ? value : error;
 }
 
+interface Repository {
+  workflowitemExists(
+    projectId: string,
+    subprojectId: string,
+    workflowitemId: string,
+  ): Promise<boolean>;
+  getSubproject(
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Subproject.Subproject>>;
+}
+
 export async function createWorkflowitem(
   ctx: Ctx,
   creatingUser: ServiceUser,
-  subprojectEvents: BusinessEvent[],
   reqData: RequestData,
-): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
+  repository: Repository,
+): Promise<Result.Type<{ newEvents: BusinessEvent[]; errors: Error[] }>> {
   const documents: StoredDocument[] = [];
   for (const doc of reqData.documents || []) {
     documents.push(await hashDocument(doc));
@@ -105,46 +109,35 @@ export async function createWorkflowitem(
     },
   );
 
-  const { subprojects } = sourceSubprojects(ctx, subprojectEvents);
-  const subproject = subprojects.find(x => x.id === reqData.subprojectId);
-  if (subproject === undefined) {
-    return { newEvents: [], errors: [new NotFound(ctx, "subproject", reqData.subprojectId)] };
+  // Check if workflowitemId already exists
+  if (
+    await repository.workflowitemExists(reqData.projectId, reqData.subprojectId, workflowitemId)
+  ) {
+    return new PreconditionError(ctx, workflowitemCreated, "workflowitem already exists");
   }
 
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
-    const isAuthorized = (subproject.permissions["subproject.createWorkflowitem"] || []).some(
-      identity => canAssumeIdentity(creatingUser, identity),
+    const subprojectResult = await repository.getSubproject(
+      reqData.projectId,
+      reqData.subprojectId,
     );
-    if (!isAuthorized) {
-      return {
-        newEvents: [],
-        errors: [new NotAuthorized(ctx, creatingUser.id, workflowitemCreated)],
-      };
+    if (Result.isErr(subprojectResult)) {
+      return new NotFound(ctx, "subproject", reqData.subprojectId);
+    }
+    const subproject = subprojectResult;
+    if (!Subproject.permits(subproject, creatingUser, ["subproject.createWorkflowitem"])) {
+      return new NotAuthorized(ctx, creatingUser.id, workflowitemCreated);
     }
   }
 
-  const { errors } = sourceWorkflowitems(ctx, [workflowitemCreated]);
-  if (errors.length > 0) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, workflowitemCreated, errors)] };
+  // Check that the event is valid by trying to "apply" it:
+  const result = WorkflowitemCreated.createFrom(ctx, workflowitemCreated);
+  if (Result.isErr(result)) {
+    return new InvalidCommand(ctx, workflowitemCreated, [result]);
   }
 
   return { newEvents: [workflowitemCreated], errors: [] };
-}
-
-async function hashDocument(document: UploadedDocument): Promise<StoredDocument> {
-  return hashBase64String(document.base64).then(hashValue => ({
-    id: document.id,
-    hash: hashValue,
-  }));
-}
-
-async function hashBase64String(base64String: string): Promise<string> {
-  return new Promise<string>(resolve => {
-    const hash = crypto.createHash("sha256");
-    hash.update(Buffer.from(base64String, "base64"));
-    resolve(hash.digest("hex"));
-  });
 }
 
 function newDefaultPermissionsFor(userId: string): Permissions {

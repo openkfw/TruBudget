@@ -8,7 +8,6 @@ import * as GroupMemberAddAPI from "./group_member_add";
 import * as GroupMemberRemoveAPI from "./group_member_remove";
 import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
-import { Ctx } from "./lib/ctx";
 import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -31,9 +30,6 @@ import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
 import * as Multichain from "./service";
-import { BusinessEvent } from "./service/domain/business_event";
-import { ServiceUser } from "./service/domain/organization/service_user";
-import * as Subproject from "./service/domain/workflow/subproject";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
 import * as GlobalPermissionsGetService from "./service/global_permissions_get";
@@ -42,7 +38,6 @@ import * as GroupMemberAddService from "./service/group_member_add";
 import * as GroupMemberRemoveService from "./service/group_member_remove";
 import * as GroupQueryService from "./service/group_query";
 import { randomString } from "./service/hash";
-import * as HttpdMultichainAdapter from "./service/HttpdMultichainAdapter";
 import * as NotificationListService from "./service/notification_list";
 import * as NotificationMarkReadService from "./service/notification_mark_read";
 import * as ProjectAssignService from "./service/project_assign";
@@ -57,17 +52,54 @@ import * as ProjectProjectedBudgetDeleteService from "./service/project_projecte
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
+import * as SubprojectAssignService from "./service/subproject_assign";
+import * as SubprojectCloseService from "./service/subproject_close";
+import * as SubprojectCreateService from "./service/subproject_create";
+import * as SubprojectGetService from "./service/subproject_get";
+import * as WorkflowitemGetService from "./service/workflowitem_get";
+import * as SubprojectItemsReorderService from "./service/subproject_items_reorder";
+import * as SubprojectListService from "./service/subproject_list";
+import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
+import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
+import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
+import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserQueryService from "./service/user_query";
-import * as OldSubprojectModel from "./subproject/model/Subproject";
+import * as WorkflowitemAssignService from "./service/workflowitem_assign";
+import * as WorkflowitemCloseService from "./service/workflowitem_close";
+import * as WorkflowitemCreateService from "./service/workflowitem_create";
+import * as WorkflowitemListService from "./service/workflowitem_list";
+import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
+import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
+import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
+import * as WorkflowitemUpdateService from "./service/workflowitem_update";
+import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
+import * as SubprojectCloseAPI from "./subproject_close";
+import * as SubprojectCreateAPI from "./subproject_create";
+import * as SubprojectItemsReorderAPI from "./subproject_items_reorder";
+import * as SubprojectListAPI from "./subproject_list";
+import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
+import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
+import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
+import * as SubprojectUpdateAPI from "./subproject_update";
+import * as SubprojectViewDetailsAPI from "./subproject_view_details";
+import * as SubprojectViewHistoryAPI from "./subproject_view_history";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
+import * as WorkflowitemAssignAPI from "./workflowitem_assign";
+import * as WorkflowitemCloseAPI from "./workflowitem_close";
+import * as WorkflowitemCreateAPI from "./workflowitem_create";
+import * as WorkflowitemListAPI from "./workflowitem_list";
+import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
+import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
+import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
+import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 
 const URL_PREFIX = "/api";
 
@@ -165,12 +197,7 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, {
-  workflowitemAssigner: HttpdMultichainAdapter.assignWorkflowitem(db),
-  workflowitemCloser: HttpdMultichainAdapter.closeWorkflowitem(db),
-  workflowitemLister: HttpdMultichainAdapter.getWorkflowitemList(db),
-  workflowitemUpdater: HttpdMultichainAdapter.updateWorkflowitem(db),
-});
+registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort);
 
 /*
  * APIs related to Global Permissions
@@ -261,6 +288,20 @@ GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
 NotificationListAPI.addHttpHandler(server, URL_PREFIX, {
   getNotificationsForUser: (ctx, user) =>
     NotificationListService.getNotificationsForUser(db, ctx, user),
+    getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
+    getSubproject: (
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+    ) => SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
+    getWorkflowitem: (
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+    ) => WorkflowitemGetService.getWorkflowitem(db, ctx, user, projectId, subprojectId, workflowitemId),
 });
 
 NotificationCountAPI.addHttpHandler(server, URL_PREFIX, {
@@ -324,98 +365,14 @@ ProjectListAPI.addHttpHandler(server, URL_PREFIX, {
 
 ProjectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
   getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
-  getSubprojects: async (
-    ctx: Ctx,
-    user: ServiceUser,
-    projectId: string,
-  ): Promise<Subproject.Subproject[]> => {
-    const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
-      db.multichainClient,
-      { userId: user.id, groups: user.groups },
-      projectId,
-    );
-    const newSubprojects: Subproject.Subproject[] = [];
-    for (const x of subprojects) {
-      const permissions = await OldSubprojectModel.getPermissions(
-        db.multichainClient,
-        projectId,
-        x.data.id,
-      );
-      newSubprojects.push({
-        id: x.data.id,
-        projectId: projectId,
-        createdAt: new Date(x.data.creationUnixTs).toISOString(),
-        status: x.data.status,
-        displayName: x.data.displayName,
-        description: x.data.description,
-        assignee: x.data.assignee,
-        currency: x.data.currency,
-        projectedBudgets: x.data.projectedBudgets,
-        additionalData: x.data.additionalData,
-        permissions,
-        log: x.log.map(l => ({
-          entityId: l.key,
-          entityType: "subproject" as "subproject",
-          businessEvent: {
-            type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
-            source: "",
-            time: l.createdAt,
-            publisher: l.createdBy,
-          } as BusinessEvent,
-          snapshot: l.snapshot,
-        })),
-      });
-    }
-    return newSubprojects;
-  },
+  getSubprojects: (ctx, user, projectId) =>
+    SubprojectListService.listSubprojects(db, ctx, user, projectId),
 });
 
 ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
   getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
-  getSubprojects: async (
-    ctx: Ctx,
-    user: ServiceUser,
-    projectId: string,
-  ): Promise<Subproject.Subproject[]> => {
-    const subprojects: OldSubprojectModel.SubprojectResource[] = await OldSubprojectModel.get(
-      db.multichainClient,
-      { userId: user.id, groups: user.groups },
-      projectId,
-    );
-    const newSubprojects: Subproject.Subproject[] = [];
-    for (const x of subprojects) {
-      const permissions = await OldSubprojectModel.getPermissions(
-        db.multichainClient,
-        projectId,
-        x.data.id,
-      );
-      newSubprojects.push({
-        id: x.data.id,
-        projectId: projectId,
-        createdAt: new Date(x.data.creationUnixTs).toISOString(),
-        status: x.data.status,
-        displayName: x.data.displayName,
-        description: x.data.description,
-        assignee: x.data.assignee,
-        currency: x.data.currency,
-        projectedBudgets: x.data.projectedBudgets,
-        additionalData: x.data.additionalData,
-        permissions,
-        log: x.log.map(l => ({
-          entityId: l.key,
-          entityType: "subproject" as "subproject",
-          businessEvent: {
-            type: l.intent.replace(".", "_").concat(l.intent.endsWith("e") ? "d" : "ed"),
-            source: "",
-            time: l.createdAt,
-            publisher: l.createdBy,
-          } as BusinessEvent,
-          snapshot: l.snapshot,
-        })),
-      });
-    }
-    return newSubprojects;
-  },
+  getSubprojects: (ctx, user, projectId) =>
+    SubprojectListService.listSubprojects(db, ctx, user, projectId),
 });
 
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
@@ -447,6 +404,78 @@ ProjectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
  * APIs related to Subprojects
  */
 
+SubprojectAssignAPI.addHttpHandler(server, URL_PREFIX, {
+  assignSubproject: (ctx, user, projectId, subprojectId, assignee) =>
+    SubprojectAssignService.assignSubproject(db, ctx, user, projectId, subprojectId, assignee),
+});
+
+SubprojectCloseAPI.addHttpHandler(server, URL_PREFIX, {
+  closeSubproject: (ctx, user, projectId, subprojectId) =>
+    SubprojectCloseService.closeSubproject(db, ctx, user, projectId, subprojectId),
+});
+
+SubprojectCreateAPI.addHttpHandler(server, URL_PREFIX, {
+  createSubproject: (ctx, user, body) =>
+    SubprojectCreateService.createSubproject(db, ctx, user, body),
+});
+
+SubprojectListAPI.addHttpHandler(server, URL_PREFIX, {
+  listSubprojects: (ctx, user, projectId) =>
+    SubprojectListService.listSubprojects(db, ctx, user, projectId),
+});
+
+SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
+  getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
+  getSubproject: (ctx, user, projectId, subprojectId) =>
+    SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
+  getWorkflowitems: (ctx, user, projectId, subprojectId) =>
+    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+SubprojectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
+  getSubproject: (ctx, user, projectId, subprojectId) =>
+    SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
+  getWorkflowitems: (ctx, user, projectId, subprojectId) =>
+    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+SubprojectPermissionListAPI.addHttpHandler(server, URL_PREFIX, {
+  listSubprojectPermissions: (ctx, user, projectId, subprojectId) =>
+    SubprojectPermissionListService.listSubprojectPermissions(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+    ),
+});
+
+SubprojectPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
+  grantSubprojectPermission: (ctx, user, projectId, subprojectId, grantee, intent) =>
+    SubprojectPermissionGrantService.grantSubprojectPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      grantee,
+      intent,
+    ),
+});
+
+SubprojectPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
+  revokeSubprojectPermission: (ctx, user, projectId, subprojectId, revokeee, intent) =>
+    SubprojectPermissionRevokeService.revokeSubprojectPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      revokeee,
+      intent,
+    ),
+});
+
 SubprojectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, subprojectId, orga, amount, currencyCode) =>
     SubprojectProjectedBudgetUpdateService.updateProjectedBudget(
@@ -473,6 +502,130 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
       currencyCode,
     ),
 });
+SubprojectItemsReorderAPI.addHttpHandler(server, URL_PREFIX, {
+  setWorkflowitemOrdering: (ctx, user, projectId, subprojectId, ordering) =>
+    SubprojectItemsReorderService.setWorkflowitemOrdering(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      ordering,
+    ),
+});
+
+SubprojectUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateSubproject: (ctx, user, projectId, subprojectId, requestData) =>
+    SubprojectUpdateService.updateSubproject(db, ctx, user, projectId, subprojectId, requestData),
+});
+
+/*
+ * APIs related to Workflowitem
+ */
+
+WorkflowitemListAPI.addHttpHandler(server, URL_PREFIX, {
+  listWorkflowitems: (ctx, user, projectId, subprojectId) =>
+    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+WorkflowitemPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
+  listWorkflowitemPermissions: (ctx, user, projectId, subprojectId, workflowitemId) =>
+    WorkflowitemPermissionsListService.listWorkflowitemPermissions(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+    ),
+});
+
+WorkflowitemCloseAPI.addHttpHandler(server, URL_PREFIX, {
+  closeWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId) =>
+    WorkflowitemCloseService.closeWorkflowitem(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+    ),
+});
+
+WorkflowitemCreateAPI.addHttpHandler(server, URL_PREFIX, {
+  createWorkflowitem: (ctx, user, requestData) =>
+    WorkflowitemCreateService.createWorkflowitem(db, ctx, user, requestData),
+});
+
+WorkflowitemAssignAPI.addHttpHandler(server, URL_PREFIX, {
+  assignWorkflowItem: (ctx, user, projectId, subprojectId, workflowitemId, assignee) =>
+    WorkflowitemAssignService.assignWorkflowitem(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      assignee,
+    ),
+});
+
+WorkflowitemPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
+  grantWorkflowitemPermission: (
+    ctx,
+    user,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    grantee,
+    intent,
+  ) =>
+    WorkflowitemPermissionGrantService.grantWorkflowitemPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      grantee,
+      intent,
+    ),
+});
+
+WorkflowitemPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
+  revokeWorkflowitemPermission: (
+    ctx,
+    user,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    revokee,
+    intent,
+  ) =>
+    WorkflowitemPermissionRevokeService.revokeWorkflowitemPermission(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      revokee,
+      intent,
+    ),
+});
+
+WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>
+    WorkflowitemUpdateService.updateWorkflowitem(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      data,
+    ),
+});
 
 /*
  * Run the server.
@@ -481,6 +634,7 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
 server.listen(port, "0.0.0.0", async err => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
+    console.trace();
     process.exit(1);
   }
 

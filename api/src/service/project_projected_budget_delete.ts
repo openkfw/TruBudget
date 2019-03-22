@@ -1,11 +1,12 @@
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import { CurrencyCode } from "./domain/workflow/money";
 import * as Project from "./domain/workflow/project";
-import * as ProjectProjectedBudgetDelete from "./domain/workflow/project_projected_budget_delete";
 import { ProjectedBudget } from "./domain/workflow/projected_budget";
+import * as ProjectProjectedBudgetDelete from "./domain/workflow/project_projected_budget_delete";
 import { store } from "./store";
 
 export async function deleteProjectedBudget(
@@ -16,28 +17,25 @@ export async function deleteProjectedBudget(
   organization: string,
   currencyCode: CurrencyCode,
 ): Promise<ProjectedBudget[]> {
-  const { newEvents, newState: projectedBudgets, errors } = await Cache.withCache(
-    conn,
-    ctx,
-    async cache =>
-      ProjectProjectedBudgetDelete.deleteProjectedBudget(
-        ctx,
-        serviceUser,
-        projectId,
-        organization,
-        currencyCode,
-        {
-          getProjectEvents: async () => {
-            return cache.getProjectEvents(projectId);
-          },
+  const result = await Cache.withCache(conn, ctx, async cache =>
+    ProjectProjectedBudgetDelete.deleteProjectedBudget(
+      ctx,
+      serviceUser,
+      projectId,
+      organization,
+      currencyCode,
+      {
+        getProject: async projectId => {
+          return cache.getProject(projectId);
         },
-      ),
+      },
+    ),
   );
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(result)) return Promise.reject(result);
 
-  for (const event of newEvents) {
+  for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
 
-  return projectedBudgets;
+  return result.newState;
 }

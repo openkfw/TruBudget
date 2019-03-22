@@ -8,9 +8,7 @@ import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import * as Project from "./project";
-import { ProjectTraceEvent } from "./project_trace_event";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
-import logger from "../../../lib/logger";
 
 type eventTypeType = "project_created";
 const eventType: eventTypeType = "project_created";

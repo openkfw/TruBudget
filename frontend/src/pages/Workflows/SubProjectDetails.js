@@ -28,7 +28,7 @@ import {
   statusIconMapping,
   statusMapping,
   toAmountString,
-  tsToString
+  unixTsToString
 } from "../../helper.js";
 import strings from "../../localizeStrings";
 import GaugeChart from "../Common/GaugeChart";
@@ -239,7 +239,7 @@ const SubProjectDetails = ({
   const amountString = displaySubprojectBudget(props.projectedBudgets);
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
-  const date = tsToString(created);
+  const date = unixTsToString(created);
 
   const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
   const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(

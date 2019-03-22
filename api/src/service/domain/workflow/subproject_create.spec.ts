@@ -1,6 +1,6 @@
 import { assert } from "chai";
-
 import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
 import { InvalidCommand } from "../errors/invalid_command";
 import { ServiceUser } from "../organization/service_user";
 import * as SubprojectCreate from "./subproject_create";
@@ -20,12 +20,12 @@ describe("create subproject & projected budgets", () => {
       ],
     };
 
-    const { errors } = await SubprojectCreate.createSubproject(ctx, user, data, {
+    const result = await SubprojectCreate.createSubproject(ctx, user, data, {
       subprojectExists: async (_projectId, _subprojectId) => false,
       projectPermissions: async _projectId => ({ "project.createSubproject": [user.id] }),
     });
 
-    assert.lengthOf(errors, 0);
+    assert.isOk(Result.isOk(result));
   });
 
   it("allows more than one projected budget for the same organization if the currencies are different.", async () => {
@@ -39,12 +39,12 @@ describe("create subproject & projected budgets", () => {
       ],
     };
 
-    const { errors } = await SubprojectCreate.createSubproject(ctx, user, data, {
+    const result = await SubprojectCreate.createSubproject(ctx, user, data, {
       subprojectExists: async (_projectId, _subprojectId) => false,
       projectPermissions: async _projectId => ({ "project.createSubproject": [user.id] }),
     });
 
-    assert.lengthOf(errors, 0);
+    assert.isOk(Result.isOk(result));
   });
 
   it("rejects more than one projected budgets for the same organization if the currencies are the same.", async () => {
@@ -58,17 +58,16 @@ describe("create subproject & projected budgets", () => {
       ],
     };
 
-    const { newEvents, errors } = await SubprojectCreate.createSubproject(ctx, user, data, {
+    const result = await SubprojectCreate.createSubproject(ctx, user, data, {
       subprojectExists: async (_projectId, _subprojectId) => false,
       projectPermissions: async _projectId => ({ "project.createSubproject": [user.id] }),
     });
 
     // No new events:
-    assert.isEmpty(newEvents);
+    assert.isNotOk(Result.isOk(result));
 
     // And an InvalidCommand error that refers to "projected budget":
-    assert.lengthOf(errors, 1);
-    assert.instanceOf(errors[0], InvalidCommand);
-    assert.include(errors[0].message, "projected budget");
+    assert.instanceOf(result, InvalidCommand);
+    assert.include((result as InvalidCommand).message, "projected budget");
   });
 });

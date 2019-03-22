@@ -5,6 +5,7 @@ import {
   SUBPROJECT_COMMENT,
   SUBPROJECT_CURRENCY,
   SUBPROJECT_PROJECTED_BUDGETS,
+  SUBPROJECT_DELETED_PROJECTED_BUDGET,
   CREATE_SUBPROJECT_SUCCESS,
   HIDE_SUBPROJECT_DIALOG,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
@@ -107,6 +108,21 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["subprojectToAdd", "currency"], action.currency);
     case SUBPROJECT_PROJECTED_BUDGETS:
       return state.setIn(["subprojectToAdd", "projectedBudgets"], fromJS(action.projectedBudgets));
+    case SUBPROJECT_DELETED_PROJECTED_BUDGET:
+      const projectedBudgets = state.getIn(["subprojectToAdd", "projectedBudgets"]).toJS();
+      const projectedBudgetsToDelete = action.projectedBudgets;
+      const newState = state.merge({
+        subprojectToAdd: state.get("subprojectToAdd").merge({
+          deletedProjectedBudgets: projectedBudgetsToDelete,
+          projectedBudgets: projectedBudgets.filter(
+            b =>
+              projectedBudgetsToDelete.find(
+                d => d.organization === b.organization && d.currencyCode === b.currencyCode
+              ) === undefined
+          )
+        })
+      });
+      return newState;
     case CREATE_SUBPROJECT_SUCCESS:
       return state.set("subprojectToAdd", defaultState.getIn(["subprojectToAdd"]));
     case SHOW_PROJECT_ASSIGNEES:

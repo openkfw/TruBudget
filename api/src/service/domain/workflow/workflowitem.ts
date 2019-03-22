@@ -1,11 +1,16 @@
 import Joi = require("joi");
 
+import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { canAssumeIdentity } from "../organization/auth_token";
+import { Identity } from "../organization/identity";
+import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
-import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
 import * as Subproject from "./subproject";
+import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
+import { BusinessEvent } from "../business_event";
 
 export type Id = string;
 
@@ -26,7 +31,7 @@ export interface Workflowitem {
   description: string;
   status: "open" | "closed";
   assignee?: string;
-  documents?: StoredDocument[];
+  documents: StoredDocument[];
   permissions: Permissions;
   log: WorkflowitemTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
@@ -48,10 +53,10 @@ export interface RedactedWorkflowitem {
   description: null;
   status: "open" | "closed";
   assignee?: null;
-  documents?: null;
-  permissions: null;
-  log: null;
-  additionalData: null;
+  documents: [];
+  permissions: {};
+  log: WorkflowitemTraceEvent[];
+  additionalData: {};
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -65,11 +70,19 @@ const schema = Joi.object().keys({
     .required(),
   dueDate: Joi.date().iso(),
   displayName: Joi.string().required(),
-  exchangeRate: Joi.string().when("status", {
-    is: Joi.valid("closed"),
-    then: Joi.required(),
-    otherwise: Joi.optional(),
-  }),
+  exchangeRate: Joi.string()
+    .when("amountType", {
+      is: Joi.valid("disbursed", "allocated"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .when("status", {
+      is: Joi.valid("closed"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    })
+    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+  // TODO: we should also check the amount type
   billingDate: Joi.date()
     .iso()
     .when("status", {
@@ -91,7 +104,8 @@ const schema = Joi.object().keys({
       then: Joi.required(),
       otherwise: Joi.forbidden(),
     })
-    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() }),
+    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() })
+    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
   amountType: Joi.string()
     .valid("N/A", "disbursed", "allocated")
     .required(),
@@ -120,4 +134,62 @@ const schema = Joi.object().keys({
 export function validate(input: any): Result.Type<Workflowitem> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function permits(
+  workflowitem: Workflowitem,
+  actingUser: ServiceUser,
+  intents: Intent[],
+): boolean {
+  const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
+    const eligibles = workflowitem.permissions[intent] || [];
+    return acc.concat(eligibles);
+  }, []);
+  const hasPermission = eligibleIdentities.some(identity =>
+    canAssumeIdentity(actingUser, identity),
+  );
+  return hasPermission;
+}
+
+export function redact(workflowitem: Workflowitem): RedactedWorkflowitem {
+  return {
+    isRedacted: true,
+    id: workflowitem.id,
+    subprojectId: workflowitem.subprojectId,
+    createdAt: workflowitem.createdAt,
+    dueDate: null,
+    displayName: null,
+    exchangeRate: null,
+    billingDate: null,
+    amount: null,
+    currency: null,
+    amountType: null,
+    description: null,
+    status: workflowitem.status,
+    assignee: null,
+    documents: [],
+    permissions: {},
+    log: redactLog(workflowitem.log),
+    additionalData: {},
+  };
+}
+
+function redactLog(events: WorkflowitemTraceEvent[]): WorkflowitemTraceEvent[] {
+  return (
+    events
+      // We only keep close events for now:
+      .filter(x => x.businessEvent.type === "workflowitem_closed")
+      // We only keep the info needed to sort workflowitems:
+      .map(x => ({
+        entityId: x.entityId,
+        entityType: x.entityType,
+        businessEvent: {
+          type: x.businessEvent.type,
+          source: "REDACTED",
+          time: x.businessEvent.time,
+          publisher: "REDACTED",
+        } as BusinessEvent,
+        snapshot: {},
+      }))
+  );
 }

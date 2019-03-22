@@ -222,7 +222,7 @@ class Api {
             ...minimalChanges,
             currency,
             amount,
-            exchangeRate: exchangeRate.toString()
+            exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
           };
 
     return instance.post(`/workflowitem.update`, {
@@ -238,8 +238,10 @@ class Api {
 
   validateDocument = (base64String, hash) => instance.post(`/workflowitem.validateDocument`, { base64String, hash });
 
-  listWorkflowItemPermissions = (projectId, workflowitemId) =>
-    instance.get(`/workflowitem.intent.listPermissions?projectId=${projectId}&workflowitemId=${workflowitemId}`);
+  listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
+    instance.get(
+      `/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
+    );
 
   grantWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, identity) =>
     instance.post(`/workflowitem.intent.grantPermission`, {
@@ -297,10 +299,6 @@ class Api {
       subprojectId,
       workflowitemId
     });
-
-  pollNewNotifications = beforeId => {
-    return instance.get(`/notification.poll?beforeId=${beforeId}`);
-  };
 
   fetchNotifications = (offset, limit) => {
     return instance.get(`/notification.list?offset=${offset}&limit=${limit}`);

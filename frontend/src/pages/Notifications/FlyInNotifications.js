@@ -9,9 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
 import Typography from "@material-ui/core/Typography";
 
-import _isEmpty from "lodash/isEmpty";
-
-import { intentMapping, parseURI, fetchResourceName, hasAccess } from "./helper";
+import { intentMapping, getDisplayName, parseURI, isAllowedToSee } from "./helper";
 
 const styles = {
   notification: {
@@ -28,30 +26,30 @@ const styles = {
 
 export default class FlyInNotification extends Component {
   getMessages = history => {
-    return this.props.notifications.map(({ notificationId, originalEvent, resources }) => {
-      const { createdBy } = originalEvent;
-      const message = intentMapping({ originalEvent, resources });
+    return this.props.notifications.map(notification => {
+      const { id, businessEvent, projectId, subprojectId } = notification;
+      const { publisher } = businessEvent;
+      const message = intentMapping(notification);
       return (
         <Card
-          key={notificationId + "flyin"}
+          key={id + "flyin"}
           style={{
             width: "300px",
             marginBottom: "8px"
           }}
         >
           <CardHeader
-            avatar={<Avatar>{createdBy ? createdBy[0].toString().toUpperCase() : "?"}</Avatar>}
+            avatar={<Avatar>{publisher ? publisher[0].toString().toUpperCase() : "?"}</Avatar>}
             action={
               <IconButton
-                disabled={!hasAccess(resources)}
+                disabled={!isAllowedToSee(notification)}
                 color="primary"
-                onClick={() => history.push(parseURI({ resources }))}
+                onClick={() => history.push(parseURI({ projectId, subprojectId }))}
               >
                 <LaunchIcon />
               </IconButton>
             }
-            title={fetchResourceName(resources, "project")}
-            subheader={fetchResourceName(resources, "subproject")}
+            title={getDisplayName(notification)}
           />
           <CardContent>
             <Typography component="p">{message}</Typography>
@@ -62,7 +60,6 @@ export default class FlyInNotification extends Component {
   };
 
   render() {
-    let show = !_isEmpty(this.props.notifications) && !_isEmpty(this.props.latestFlyInId);
     return (
       <div
         style={{
@@ -72,7 +69,7 @@ export default class FlyInNotification extends Component {
           zIndex: 2000
         }}
       >
-        <Transition in={show} timeout={{ enter: 500, exit: 500 }}>
+        <Transition in={this.props.show} timeout={{ enter: 500, exit: 500 }}>
           {state => (
             <div
               style={{

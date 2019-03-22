@@ -91,17 +91,24 @@ const provisionFromData = async projectTemplate => {
       await createProject(axios, projectTemplate);
     }
 
-    console.log(`Create suprojects....`);
+    console.log(`Create subprojects....`);
     const isToBeClosed = projectTemplate.status === "closed";
 
     const project = await findProject(axios, projectTemplate);
 
     if (projectTemplate.permissions !== undefined) {
       console.log("Granting permissions..");
-      await grantPermissions(axios, projectTemplate.permissions, project.data.id);
+      await grantPermissions(
+        axios,
+        projectTemplate.permissions,
+        project.data.id
+      );
     }
 
-    if (projectTemplate.description !== undefined) {
+    if (
+      projectTemplate.description !== undefined &&
+      project.status === "open"
+    ) {
       console.log("Testing project update..");
       await updateProject(axios, project.data.id, projectTemplate.description);
     }
@@ -149,13 +156,17 @@ const provisionSubproject = async (project, subprojectTemplate) => {
     project.data.id,
     subproject.data.id
   );
-
-  await updateSubproject(
-    axios,
-    project.data.id,
-    subproject.data.id,
-    subprojectTemplate.description
-  );
+  if (
+    subprojectTemplate.description !== undefined &&
+    subproject.status === "open"
+  ) {
+    await updateSubproject(
+      axios,
+      project.data.id,
+      subproject.data.id,
+      subprojectTemplate.description
+    );
+  }
 
   for (const workflowitemTemplate of subprojectTemplate.workflows) {
     console.log(
@@ -195,7 +206,8 @@ const provisionWorkflowitem = async (
       description: "FAILED UPDATE?",
       amountType: workflowitemTemplate.amountType,
       status: "open",
-      assignee: workflowitemTemplate.assignee
+      assignee: workflowitemTemplate.assignee,
+      exchangeRate: workflowitemTemplate.exchangeRate
     };
     const amount = workflowitemTemplate.amount
       ? workflowitemTemplate.amount.toString()
@@ -216,31 +228,31 @@ const provisionWorkflowitem = async (
   }
 
   // Testing updates:
-  console.log(`Updating workflowitem "${workflowitemTemplate.displayName}"`);
-  await updateWorkflowitem(
-    axios,
-    project.data.id,
-    subproject.data.id,
-    workflowitem.data.id,
-    workflowitemTemplate.description
-  );
-
-  await grantPermissions(
-    axios,
-    workflowitemTemplate.permissions,
-    project.data.id,
-    subproject.data.id,
-    workflowitem.data.id
-  );
-
-  if (isToBeClosed) {
-    console.log(`Closing workflowitem "${workflowitemTemplate.displayName}"`);
-    await closeWorkflowitem(
+  if (workflowitem.data.status === "open") {
+    console.log(`Updating workflowitem "${workflowitemTemplate.displayName}"`);
+    await updateWorkflowitem(
       axios,
+      project.data.id,
+      subproject.data.id,
+      workflowitem.data.id,
+      workflowitemTemplate.description
+    );
+    await grantPermissions(
+      axios,
+      workflowitemTemplate.permissions,
       project.data.id,
       subproject.data.id,
       workflowitem.data.id
     );
+    if (isToBeClosed) {
+      console.log(`Closing workflowitem "${workflowitemTemplate.displayName}"`);
+      await closeWorkflowitem(
+        axios,
+        project.data.id,
+        subproject.data.id,
+        workflowitem.data.id
+      );
+    }
   }
 };
 
@@ -336,6 +348,10 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
 
+  if (workflowitem.data.documents.length !== 0) {
+    throw new Error(`workflowitem ${workflowitem.data.id} is not expected to already have documents attached. Note that the provisioning script shouldn't run more than once.`)
+  }
+
   const { amountType, amount, currency } = workflowitem.data;
   if (amountType === "N/A" || !amount || !currency) {
     throw Error(
@@ -343,16 +359,21 @@ async function testWorkflowitemUpdate(folder) {
     );
   }
 
-  // Setting the amountType to N/A should remove the amount and currency fields from the
+  // Setting the amountType to N/A and passing a currency should cause an error
   // response:
-  await axios.post("/workflowitem.update", {
-    projectId: project.data.id,
-    subprojectId: subproject.data.id,
-    workflowitemId: workflowitem.data.id,
-    amountType: "N/A",
-    amount: amount + 1,
-    currency
-  });
+  try {
+    await axios.post("/workflowitem.update", {
+      projectId: project.data.id,
+      subprojectId: subproject.data.id,
+      workflowitemId: workflowitem.data.id,
+      amountType: "N/A",
+      amount: amount + 1,
+      currency
+    });
+    throw Error("This should not happen");
+  } catch (error) {
+    // ignoring
+  }
 
   const updatedWorkflowitem = await findWorkflowitem(
     axios,
@@ -360,17 +381,15 @@ async function testWorkflowitemUpdate(folder) {
     subproject,
     workflowitemTemplate
   );
+
+  // workflowitem should not have been updated
   if (
-    updatedWorkflowitem.data.amountType !== "N/A" ||
-    updatedWorkflowitem.data.amount !== undefined ||
-    updatedWorkflowitem.data.currency !== undefined
+    updatedWorkflowitem.data.amountType !== amountType ||
+    updatedWorkflowitem.data.amount !== amount ||
+    updatedWorkflowitem.data.currency !== currency
   ) {
     throw Error(
-      `Setting amountType to N/A did not remove amount and currency fields!\n${JSON.stringify(
-        updatedWorkflowitem,
-        null,
-        2
-      )}`
+      "The update should not have had any effect on the workflowitem"
     );
   }
 
@@ -497,10 +516,12 @@ async function testWorkflowitemReordering(folder) {
       )
       .then(res => res.data.data.workflowitems)
       .then(items =>
-        items.map(x => x.data).reduce((acc, x, index) => {
-          acc[x.displayName] = index;
-          return acc;
-        }, {})
+        items
+          .map(x => x.data)
+          .reduce((acc, x, index) => {
+            acc[x.displayName] = index;
+            return acc;
+          }, {})
       );
 
   const originalOrdering = await getOrderingAsMap();
@@ -536,7 +557,7 @@ async function testWorkflowitemReordering(folder) {
       "The final installment workflowitem should have moved to an earlier position." +
         ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${
           changedOrdering[finalInstName]
-        }`
+        }. original ordering = ${JSON.stringify(originalOrdering)}; changed ordering = ${JSON.stringify(changedOrdering)}`
     );
   }
   if (changedOrdering[finalInstName] >= changedOrdering[interimInstName]) {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { isEmpty } from "lodash";
 
 import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup, fetchVersions } from "./actions";
 import { logout } from "../Login/actions";
@@ -11,18 +12,20 @@ import { toJS } from "../../helper";
 
 class NavbarContainer extends Component {
   componentDidMount() {
-    this.props.getPeers()
-    this.props.fetchVersions()
+    this.props.getPeers();
+    this.props.fetchVersions();
   }
 
   render() {
     return (
       <div>
-        <Navbar
-          {...this.props}
-          unreadNotifications={this.props.unreadNotificationCount}
+        <Navbar {...this.props} unreadNotifications={this.props.unreadNotificationCount} />
+        <FlyInNotifications
+          history={this.props.history}
+          notifications={this.props.newNotifications}
+          latestFlyInId={this.props.latestFlyInId}
+          show={!isEmpty(this.props.newNotifications)}
         />
-        <FlyInNotifications history={this.props.history} notifications={this.props.newNotifications} latestFlyInId={this.props.latestFlyInId}/>
       </div>
     );
   }
@@ -34,7 +37,7 @@ const mapDispatchToProps = dispatch => {
     logout: () => dispatch(logout()),
     getPeers: () => dispatch(fetchActivePeers()),
     createBackup: () => dispatch(createBackup()),
-    restoreBackup: (file) => dispatch(restoreBackup(file)),
+    restoreBackup: file => dispatch(restoreBackup(file)),
     fetchVersions: () => dispatch(fetchVersions())
   };
 };
@@ -60,7 +63,7 @@ const mapStateToProps = state => {
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     groups: state.getIn(["login", "groups"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
-    latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
+    latestFlyInId: state.getIn(["notifications", "latestFlyInId"])
   };
 };
 

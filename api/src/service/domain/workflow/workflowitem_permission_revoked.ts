@@ -2,7 +2,9 @@ import Joi = require("joi");
 import { VError } from "verror";
 
 import Intent, { workflowitemIntents } from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
+import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -71,4 +73,32 @@ export function createEvent(
 export function validate(input: any): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function apply(
+  ctx: Ctx,
+  event: Event,
+  workflowitem: Workflowitem.Workflowitem,
+): Result.Type<Workflowitem.Workflowitem> {
+  const eligibleIdentities = workflowitem.permissions[event.permission];
+  if (eligibleIdentities === undefined) {
+    // Nothing to do here..
+    return workflowitem;
+  }
+
+  const foundIndex = eligibleIdentities.indexOf(event.revokee);
+  const hasPermission = foundIndex !== -1;
+  if (hasPermission) {
+    // Remove the user from the array:
+    eligibleIdentities.splice(foundIndex, 1);
+  }
+
+  workflowitem.permissions[event.permission] = eligibleIdentities;
+
+  const result = Workflowitem.validate(workflowitem);
+  if (Result.isErr(result)) {
+    return new EventSourcingError(ctx, event, result.message, workflowitem.id);
+  }
+
+  return workflowitem;
 }

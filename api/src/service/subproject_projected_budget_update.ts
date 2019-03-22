@@ -1,4 +1,5 @@
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
@@ -19,30 +20,27 @@ export async function updateProjectedBudget(
   value: MoneyAmount,
   currencyCode: CurrencyCode,
 ): Promise<ProjectedBudget[]> {
-  const { newEvents, newState: projectedBudgets, errors } = await Cache.withCache(
-    conn,
-    ctx,
-    async cache =>
-      SubprojectProjectedBudgetUpdate.updateProjectedBudget(
-        ctx,
-        serviceUser,
-        projectId,
-        subprojectId,
-        organization,
-        value,
-        currencyCode,
-        {
-          getSubprojectEvents: async () => {
-            return cache.getSubprojectEvents(projectId, subprojectId);
-          },
+  const result = await Cache.withCache(conn, ctx, async cache =>
+    SubprojectProjectedBudgetUpdate.updateProjectedBudget(
+      ctx,
+      serviceUser,
+      projectId,
+      subprojectId,
+      organization,
+      value,
+      currencyCode,
+      {
+        getSubproject: async (pId, spId) => {
+          return cache.getSubproject(pId, spId);
         },
-      ),
+      },
+    ),
   );
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(result)) throw result;
 
-  for (const event of newEvents) {
+  for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
 
-  return projectedBudgets;
+  return result.projectedBudgets;
 }

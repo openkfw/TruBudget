@@ -53,9 +53,7 @@ import {
   FETCH_NOTIFICATION_COUNTS,
   LIVE_UPDATE_NOTIFICATIONS,
   LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
-  TIME_OUT_FLY_IN,
-  FETCH_LATEST_NOTIFICATION,
-  FETCH_LATEST_NOTIFICATION_SUCCESS
+  TIME_OUT_FLY_IN
 } from "./pages/Notifications/actions";
 import {
   CREATE_WORKFLOW,
@@ -241,7 +239,7 @@ function* handleLoading(showLoading) {
   }
 }
 
-function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee, permissions) {
+function* getBatchFromSubprojectTemplate(projectId, subprojectId, resources, selectedAssignee, permissions) {
   if (_isEmpty(selectedAssignee) && _isEmpty(permissions)) {
     return;
   }
@@ -269,7 +267,8 @@ function* getBatchFromSubprojectTemplate(projectId, resources, selectedAssignee,
       }
     }
     // add grant permission actions next
-    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, r.data.id);
+    // TODO: add subprojectId
+    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, subprojectId, r.data.id);
     const permissionsForResource = data;
     for (const intent in permissions) {
       if (_isEmpty(permissions[intent])) {
@@ -485,10 +484,6 @@ export function* getEnvironmentSaga() {
 
 export function* fetchNotificationsSaga({ showLoading, offset, limit }) {
   yield commonfetchNotifications(showLoading, offset, limit, FETCH_ALL_NOTIFICATIONS_SUCCESS);
-}
-
-export function* fetchLatestNotificationSaga({ showLoading }) {
-  yield commonfetchNotifications(showLoading, 0, 1, FETCH_LATEST_NOTIFICATION_SUCCESS);
 }
 
 export function* commonfetchNotifications(showLoading, offset, limit, type) {
@@ -806,9 +801,9 @@ export function* fetchSubProjectPermissionsSaga({ projectId, subprojectId, showL
   }, showLoading);
 }
 
-export function* fetchWorkflowItemPermissionsSaga({ projectId, workflowitemId, showLoading }) {
+export function* fetchWorkflowItemPermissionsSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, workflowitemId);
+    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, subprojectId, workflowitemId);
     yield put({
       type: FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
       permissions: data || {}
@@ -980,9 +975,22 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
   }, showLoading);
 }
 
-export function* fetchWorkflowActionsSaga({ projectId, ressources, selectedAssignee, permissions, showLoading }) {
+export function* fetchWorkflowActionsSaga({
+  projectId,
+  subprojectId,
+  ressources,
+  selectedAssignee,
+  permissions,
+  showLoading
+}) {
   yield execute(function*() {
-    const actions = yield getBatchFromSubprojectTemplate(projectId, ressources, selectedAssignee, permissions);
+    const actions = yield getBatchFromSubprojectTemplate(
+      projectId,
+      subprojectId,
+      ressources,
+      selectedAssignee,
+      permissions
+    );
     yield put({
       type: STORE_WORKFLOWACTIONS,
       actions
@@ -1167,9 +1175,9 @@ export function* liveUpdateSubProjectSaga({ projectId, subprojectId }) {
   }, false);
 }
 
-export function* liveUpdateNotificationsSaga({ showLoading, beforeId }) {
+export function* liveUpdateNotificationsSaga({ showLoading, offset }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.pollNewNotifications, beforeId);
+    const { data } = yield callApi(api.fetchNotifications, offset);
     yield put({
       type: LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
       newNotifications: data.notifications
@@ -1247,7 +1255,6 @@ export default function* rootSaga() {
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),
-      yield takeEvery(FETCH_LATEST_NOTIFICATION, fetchLatestNotificationSaga),
       yield takeEvery(FETCH_NOTIFICATION_COUNTS, fetchNotificationCountsSaga),
       yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga),
       yield takeEvery(MARK_MULTIPLE_NOTIFICATION_AS_READ, markMultipleNotificationsAsReadSaga),

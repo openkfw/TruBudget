@@ -17,8 +17,8 @@ export async function getProjectPermissions(
   // TODO There, authorization for project.intent.listPermissions should be checked.
   const projectResult = await Cache.withCache(conn, ctx, async cache =>
     ProjectGet.getProject(ctx, serviceUser, projectId, {
-      getProjectEvents: async () => {
-        return cache.getProjectEvents(projectId);
+      getProject: async projectId => {
+        return cache.getProject(projectId);
       },
     }),
   );

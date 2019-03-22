@@ -110,7 +110,8 @@ Cypress.Commands.add(
           amountType: amountType,
           description: description,
           status: status,
-          documents: documents
+          documents: documents,
+          exchangeRate: "1.0"
         }
       }
     })

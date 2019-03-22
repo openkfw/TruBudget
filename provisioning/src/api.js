@@ -46,15 +46,15 @@ const grantAllPermissionsToUser = async (axios, userId) => {
 
 const createProject = async (axios, projectTemplate) => {
   const args = {
-    ...projectTemplate,
-  }
+    ...projectTemplate
+  };
   delete args.permissions;
   delete args.subprojects;
   await withRetry(() =>
     axios.post("/global.createProject", {
       project: {
         ...args,
-        status: "open", // otherwise we won't be able to add subprojects
+        status: "open" // otherwise we won't be able to add subprojects
       }
     })
   );
@@ -70,17 +70,17 @@ const closeProject = async (axios, project) => {
 
 const createSubproject = async (axios, project, subprojectTemplate) => {
   const args = {
-    ...subprojectTemplate,
-  }
+    ...subprojectTemplate
+  };
   delete args.permissions;
-  delete args.workflowitems;
+  delete args.workflows;
   await withRetry(() =>
     axios.post("/project.createSubproject", {
       projectId: project.data.id,
       subproject: {
         ...args,
         description: "FAILED UPDATE?",
-        status: "open", // otherwise we won't be able to add workflowitems
+        status: "open" // otherwise we won't be able to add workflowitems
       }
     })
   );
@@ -235,6 +235,7 @@ const grantPermissions = async (
     throw Error("not even projectId is given..");
   }
 
+  console.log("... check permissions before granting");
   for (const [intent, users] of Object.entries(permissions)) {
     for (const userId of users) {
       await withRetry(() =>

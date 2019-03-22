@@ -1,11 +1,5 @@
 import { FastifyInstance } from "fastify";
 
-import {
-  AllWorkflowitemsReader,
-  WorkflowitemAssigner,
-  WorkflowitemCloser,
-  WorkflowitemUpdater,
-} from ".";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
@@ -15,29 +9,11 @@ import { getNodeList } from "../network/controller/list";
 import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
-import { markMultipleRead } from "../notification/controller/markMultipleRead";
-import { markNotificationRead } from "../notification/controller/markRead";
-import { getNewestNotifications } from "../notification/controller/poll";
-import { createSubproject } from "../project/controller/createSubproject";
 import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
-import { assignSubproject } from "../subproject/controller/assign";
-import { closeSubproject } from "../subproject/controller/close";
-import { createWorkflowitem } from "../subproject/controller/createWorkflowitem";
-import { grantSubprojectPermission } from "../subproject/controller/intent.grantPermission";
-import { getSubprojectPermissions } from "../subproject/controller/intent.listPermissions";
-import { revokeSubprojectPermission } from "../subproject/controller/intent.revokePermission";
-import { getSubprojectList } from "../subproject/controller/list";
-import { reorderWorkflowitems } from "../subproject/controller/reorderWorkflowitems";
-import { updateSubproject } from "../subproject/controller/update";
-import { getSubprojectDetails } from "../subproject/controller/viewDetails";
-import { getSubprojectHistory } from "../subproject/controller/viewHistory";
 import { createBackup } from "../system/createBackup";
 import { getVersion } from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
-import { grantWorkflowitemPermission } from "../workflowitem/controller/intent.grantPermission";
-import { getWorkflowitemPermissions } from "../workflowitem/controller/intent.listPermissions";
-import { revokeWorkflowitemPermission } from "../workflowitem/controller/intent.revokePermission";
 import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
@@ -240,17 +216,6 @@ export const registerRoutes = (
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
-  {
-    workflowitemLister,
-    workflowitemCloser,
-    workflowitemUpdater,
-    workflowitemAssigner,
-  }: {
-    workflowitemLister: AllWorkflowitemsReader;
-    workflowitemCloser: WorkflowitemCloser;
-    workflowitemUpdater: WorkflowitemUpdater;
-    workflowitemAssigner: WorkflowitemAssigner;
-  },
 ) => {
   const multichainClient = conn.multichainClient;
 
@@ -281,288 +246,14 @@ export const registerRoutes = (
   });
 
   // ------------------------------------------------------------
-  //       project
-  // ------------------------------------------------------------
-
-  server.post(
-    `${urlPrefix}/project.createSubproject`,
-    getSchema(server, "createSubproject"),
-    (request, reply) => {
-      createSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  // ------------------------------------------------------------
-  //       subproject
-  // ------------------------------------------------------------
-
-  server.get(
-    `${urlPrefix}/subproject.list`,
-    getSchema(server, "subprojectList"),
-    (request, reply) => {
-      getSubprojectList(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
-    `${urlPrefix}/subproject.viewDetails`,
-    getSchema(server, "subprojectViewDetails"),
-    (request, reply) => {
-      getSubprojectDetails(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/subproject.assign`,
-    getSchema(server, "subprojectAssign"),
-    (request, reply) => {
-      assignSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/subproject.update`,
-    getSchema(server, "subprojectUpdate"),
-    (request, reply) => {
-      updateSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/subproject.close`,
-    getSchema(server, "subprojectClose"),
-    (request, reply) => {
-      closeSubproject(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/subproject.reorderWorkflowitems`,
-    getSchema(server, "reorderWorkflowitems"),
-    (request, reply) => {
-      reorderWorkflowitems(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/subproject.createWorkflowitem`,
-    getSchema(server, "createWorkflowitem"),
-    (request, reply) => {
-      createWorkflowitem(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
-    `${urlPrefix}/subproject.viewHistory`,
-    getSchema(server, "subprojectViewHistory"),
-    (request, reply) => {
-      getSubprojectHistory(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
-    `${urlPrefix}/subproject.intent.listPermissions`,
-    getSchema(server, "subprojectListPermissions"),
-    (request, reply) => {
-      getSubprojectPermissions(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/subproject.intent.grantPermission`,
-    getSchema(server, "subprojectGrantPermission"),
-    (request, reply) => {
-      grantSubprojectPermission(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/subproject.intent.revokePermission`,
-    getSchema(server, "subprojectRevokePermission"),
-    (request, reply) => {
-      revokeSubprojectPermission(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  // ------------------------------------------------------------
   //       workflowitem
   // ------------------------------------------------------------
-
-  server.get(
-    `${urlPrefix}/workflowitem.list`,
-    getSchema(server, "workflowitemList"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      return workflowitemLister(req.user, req.query.projectId, req.query.subprojectId)
-        .then(
-          (workflowitems): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: {
-                workflowitems,
-              },
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/workflowitem.assign`,
-    getSchema(server, "workflowitemAssign"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const body = req.body.data;
-      // assignWorkflowitem(multichainClient, request as AuthenticatedRequest)
-      workflowitemAssigner(
-        req.user,
-        body.projectId,
-        body.subprojectId,
-        body.workflowitemId,
-        body.identity,
-      )
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/workflowitem.update`,
-    getSchema(server, "workflowitemUpdate"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const body = req.body.data;
-
-      workflowitemUpdater(
-        req.user,
-        body.projectId,
-        body.subprojectId,
-        body.workflowitemId,
-        req.body.data,
-      )
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/workflowitem.close`,
-    getSchema(server, "workflowitemClose"),
-    (request, reply) => {
-      const req = request as AuthenticatedRequest;
-      const body = req.body.data;
-      workflowitemCloser(req.user, body.projectId, body.subprojectId, body.workflowitemId)
-        .then(
-          (): HttpResponse => [
-            200,
-            {
-              apiVersion: "1.0",
-              data: "OK",
-            },
-          ],
-        )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
-    `${urlPrefix}/workflowitem.intent.listPermissions`,
-    getSchema(server, "workflowitemListPermissionsSchema"),
-    (request, reply) => {
-      getWorkflowitemPermissions(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/workflowitem.intent.grantPermission`,
-    getSchema(server, "workflowitemGrantPermissions"),
-    (request, reply) => {
-      grantWorkflowitemPermission(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/workflowitem.intent.revokePermission`,
-    getSchema(server, "workflowitemRevokePermissions"),
-    (request, reply) => {
-      revokeWorkflowitemPermission(
-        multichainClient,
-        (request as AuthenticatedRequest) as AuthenticatedRequest,
-      )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
 
   server.post(
     `${urlPrefix}/workflowitem.validateDocument`,
     getSchema(server, "validateDocument"),
     (request, reply) => {
       validateDocument(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
-
-  // ------------------------------------------------------------
-  //       notification
-  // ------------------------------------------------------------
-
-  server.get(
-    `${urlPrefix}/notification.poll`,
-    getSchema(server, "notificationPoll"),
-    (request, reply) => {
-      getNewestNotifications(conn, ctx(request), request as AuthenticatedRequest)
         .then(response => send(reply, response))
         .catch(err => handleError(request, reply, err));
     },

@@ -172,14 +172,13 @@ export function applyRevokePermission(event: Event, workflowitem: Workflowitem):
   throwUnsupportedEventVersion(event);
 }
 
-export function handleCreate(event: Event): Workflowitem | undefined {
-  if (event.intent !== "subproject.createWorkflowitem") return undefined;
-  switch (event.dataVersion) {
-    case 1: {
-      const { workflowitem, permissions } = event.data;
-      const values = { ...deepcopy(workflowitem), permissions: deepcopy(permissions), log: [] };
-      return values as Workflowitem;
-    }
-  }
-  throwUnsupportedEventVersion(event);
+export function handleCreate(event): Workflowitem | undefined {
+  if (event.type !== "workflowitem_created") return undefined;
+  const { workflowitem } = event;
+  const values = {
+    ...deepcopy(workflowitem),
+    permissions: deepcopy(workflowitem.permissions),
+    log: [],
+  };
+  return values as Workflowitem;
 }

@@ -1,8 +1,10 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import { StoredDocument, storedDocumentSchema } from "./document";
@@ -105,4 +107,37 @@ export function createEvent(
 export function validate(input: any): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Workflowitem> {
+  const initialData = event.workflowitem;
+
+  const workflowitem: Workflowitem.Workflowitem = {
+    isRedacted: false,
+    id: initialData.id,
+    subprojectId: event.subprojectId,
+    createdAt: event.time,
+    dueDate: initialData.dueDate,
+    displayName: initialData.displayName,
+    exchangeRate: initialData.exchangeRate,
+    billingDate: initialData.billingDate,
+    amount: initialData.amount,
+    currency: initialData.currency,
+    amountType: initialData.amountType,
+    description: initialData.description,
+    status: initialData.status,
+    assignee: initialData.assignee,
+    documents: initialData.documents,
+    permissions: initialData.permissions,
+    log: [],
+    // Additional information (key-value store), e.g. external IDs:
+    additionalData: initialData.additionalData,
+  };
+
+  const result = Workflowitem.validate(workflowitem);
+  if (Result.isErr(result)) {
+    return new EventSourcingError(ctx, event, result.message);
+  }
+
+  return workflowitem;
 }

@@ -28,9 +28,6 @@ export const SET_NOTIFICATION_OFFSET = "SET_NOTIFICATION_OFFSET";
 
 export const TIME_OUT_FLY_IN = "TIME_OUT_FLY_IN";
 
-export const FETCH_LATEST_NOTIFICATION = "FETCH_LATEST_NOTIFICATION";
-export const FETCH_LATEST_NOTIFICATION_SUCCESS = "FETCH_LATEST_NOTIFICATION_SUCCESS";
-
 export function showSnackbar(isError = false) {
   return {
     type: SHOW_SNACKBAR,
@@ -53,11 +50,11 @@ export function storeSnackbarMessage(message) {
   };
 }
 
-export function updateNotification(showLoading = false, beforeId) {
+export function updateNotification(showLoading = false, offset) {
   return {
     type: LIVE_UPDATE_NOTIFICATIONS,
-    beforeId,
-    showLoading
+    showLoading,
+    offset
   };
 }
 export function fetchNotifications(showLoading = false, offset, limit) {
@@ -66,13 +63,6 @@ export function fetchNotifications(showLoading = false, offset, limit) {
     showLoading,
     offset,
     limit
-  };
-}
-
-export function fetchLatestNotification(showLoading = false) {
-  return {
-    type: FETCH_LATEST_NOTIFICATION,
-    showLoading
   };
 }
 

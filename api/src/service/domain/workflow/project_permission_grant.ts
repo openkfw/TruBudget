@@ -1,5 +1,8 @@
+import isEqual = require("lodash.isequal");
+
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -7,11 +10,10 @@ import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
-import { sourceProjects } from "./project_eventsourcing";
 import * as ProjectPermissionGranted from "./project_permission_granted";
 
 interface Repository {
-  getProjectEvents(): Promise<BusinessEvent[]>;
+  getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
 }
 
 export async function grantProjectPermission(
@@ -21,13 +23,11 @@ export async function grantProjectPermission(
   grantee: Identity,
   intent: Intent,
   repository: Repository,
-): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
-  const projectEvents = await repository.getProjectEvents();
-  const { projects } = sourceProjects(ctx, projectEvents);
+): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+  const project = await repository.getProject(projectId);
 
-  const project = projects.find(x => x.id === projectId);
-  if (project === undefined) {
-    return { newEvents: [], errors: [new NotFound(ctx, "project", projectId)] };
+  if (Result.isErr(project)) {
+    return new NotFound(ctx, "project", projectId);
   }
 
   // Create the new event:
@@ -42,18 +42,20 @@ export async function grantProjectPermission(
   // Check authorization (if not root):
   if (issuer.id !== "root") {
     if (!Project.permits(project, issuer, ["project.intent.grantPermission"])) {
-      return {
-        newEvents: [],
-        errors: [new NotAuthorized(ctx, issuer.id, permissionGranted)],
-      };
+      return new NotAuthorized(ctx, issuer.id, permissionGranted);
     }
   }
 
   // Check that the new event is indeed valid:
-  const { errors } = sourceProjects(ctx, projectEvents.concat([permissionGranted]));
-  if (errors.length > 0) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, permissionGranted, errors)] };
+  const updatedProject = ProjectPermissionGranted.apply(ctx, permissionGranted, project);
+  if (Result.isErr(updatedProject)) {
+    return new InvalidCommand(ctx, permissionGranted, [updatedProject]);
   }
 
-  return { newEvents: [permissionGranted], errors: [] };
+  // Only emit the event if it causes any changes to the permissions:
+  if (isEqual(project.permissions, updatedProject.permissions)) {
+    return { newEvents: [] };
+  } else {
+    return { newEvents: [permissionGranted] };
+  }
 }

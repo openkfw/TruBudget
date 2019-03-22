@@ -4,8 +4,12 @@ import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
+import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Notification from "./service/domain/workflow/notification";
+import * as Project from "./service/domain/workflow/project";
+import * as Subproject from "./service/domain/workflow/subproject";
+import * as Workflowitem from "./service/domain/workflow/workflowitem";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -73,6 +77,59 @@ function mkSwaggerSchema(server: FastifyInstance) {
   };
 }
 
+interface ProjectWithoutViewPermissions {
+  id: string;
+  hasViewPermissions: false;
+}
+
+interface ProjectWithViewPermissions {
+  id: string;
+  hasViewPermissions: true;
+  displayName: string;
+}
+
+interface ProjectNotificationMetadata {
+  project: ProjectWithViewPermissions | ProjectWithoutViewPermissions;
+}
+
+interface SubprojectWithoutViewPermissions {
+  id: string;
+  hasViewPermissions: false;
+}
+
+interface SubprojectWithViewPermissions {
+  id: string;
+  hasViewPermissions: true;
+  displayName: string;
+}
+
+interface SubprojectNotificationMetadata {
+  project: ProjectWithViewPermissions | ProjectWithoutViewPermissions;
+  subproject: SubprojectWithViewPermissions | SubprojectWithoutViewPermissions;
+}
+
+interface WorkflowitemWithoutViewPermissions {
+  id: string;
+  hasViewPermissions: false;
+}
+
+interface WorkflowitemWithViewPermissions {
+  id: string;
+  hasViewPermissions: true;
+  displayName: string;
+}
+
+interface WorkflowitemNotificationMetadata {
+  project: ProjectWithViewPermissions | ProjectWithoutViewPermissions;
+  subproject: SubprojectWithViewPermissions | SubprojectWithoutViewPermissions;
+  workflowitem: WorkflowitemWithViewPermissions | WorkflowitemWithoutViewPermissions;
+}
+
+type NotificationMetadata =
+  | ProjectNotificationMetadata
+  | SubprojectNotificationMetadata
+  | WorkflowitemNotificationMetadata;
+
 interface ExposedNotification {
   id: string;
   isRead: boolean;
@@ -81,13 +138,124 @@ interface ExposedNotification {
     time: string; // ISO timestamp
     publisher: string;
   };
-  projectId?: string;
-  subprojectId?: string;
-  workflowitemId?: string;
+  metadata?: NotificationMetadata;
 }
 
 interface Service {
   getNotificationsForUser(ctx: Ctx, user: ServiceUser): Promise<Notification.Notification[]>;
+  getProject(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Result.Type<Project.Project>>;
+  getSubproject(
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Subproject.Subproject>>;
+  getWorkflowitem(
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: string,
+    subprojectId: string,
+    workflowitemId: string,
+  ): Promise<Result.Type<Workflowitem.Workflowitem>>;
+}
+
+// C'mon, TypeScript!
+const TRUE = true as true;
+const FALSE = false as false;
+
+async function getProjectMetadata(
+  ctx: Ctx,
+  user: ServiceUser,
+  service: Service,
+  projectId: string,
+): Promise<ProjectWithViewPermissions | ProjectWithoutViewPermissions> {
+  const project = await service.getProject(ctx, user, projectId);
+  return Result.unwrap_or(
+    Result.map(project, x => ({
+      id: x.id,
+      hasViewPermissions: TRUE,
+      displayName: x.displayName,
+    })),
+    { id: projectId, hasViewPermissions: FALSE },
+  );
+}
+
+async function getSubprojectMetadata(
+  ctx: Ctx,
+  user: ServiceUser,
+  service: Service,
+  projectId: string,
+  subprojectId: string,
+): Promise<SubprojectWithViewPermissions | SubprojectWithoutViewPermissions> {
+  const subproject = await service.getSubproject(ctx, user, projectId, subprojectId);
+  return Result.unwrap_or(
+    Result.map(subproject, x => ({
+      id: x.id,
+      hasViewPermissions: TRUE,
+      displayName: x.displayName,
+    })),
+    { id: subprojectId, hasViewPermissions: FALSE },
+  );
+}
+
+async function getWorkflowitemMetadata(
+  ctx: Ctx,
+  user: ServiceUser,
+  service: Service,
+  projectId: string,
+  subprojectId: string,
+  workflowitemId: string,
+): Promise<WorkflowitemWithViewPermissions | WorkflowitemWithoutViewPermissions> {
+  const workflowitem = await service.getWorkflowitem(
+    ctx,
+    user,
+    projectId,
+    subprojectId,
+    workflowitemId,
+  );
+  return Result.unwrap_or(
+    Result.map(workflowitem, x => ({
+      id: x.id,
+      hasViewPermissions: TRUE,
+      displayName: x.displayName,
+    })),
+    { id: workflowitemId, hasViewPermissions: FALSE },
+  );
+}
+
+async function getMetadata(
+  ctx: Ctx,
+  user: ServiceUser,
+  notification: Notification.Notification,
+  service: Service,
+): Promise<NotificationMetadata | undefined> {
+  const { projectId, subprojectId, workflowitemId } = notification;
+
+  if (projectId !== undefined && subprojectId !== undefined && workflowitemId !== undefined) {
+    return {
+      project: await getProjectMetadata(ctx, user, service, projectId),
+      subproject: await getSubprojectMetadata(ctx, user, service, projectId, subprojectId),
+      workflowitem: await getWorkflowitemMetadata(
+        ctx,
+        user,
+        service,
+        projectId,
+        subprojectId,
+        workflowitemId,
+      ),
+    };
+  } else if (projectId !== undefined && subprojectId !== undefined) {
+    return {
+      project: await getProjectMetadata(ctx, user, service, projectId),
+      subproject: await getSubprojectMetadata(ctx, user, service, projectId, subprojectId),
+    };
+  } else if (projectId !== undefined) {
+    return {
+      project: await getProjectMetadata(ctx, user, service, projectId),
+    };
+  } else {
+    return undefined;
+  }
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -139,25 +307,27 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         limit === undefined ? undefined : offsetIndex + limit,
       );
 
-      const exposed: ExposedNotification[] = slice.map(notification => ({
-        id: notification.id,
-        isRead: notification.isRead,
-        businessEvent: {
-          type: notification.businessEvent.type,
-          time: notification.businessEvent.time,
-          publisher: notification.businessEvent.publisher,
-        },
-        projectId: notification.projectId,
-        subprojectId: notification.subprojectId,
-        workflowitemId: notification.workflowitemId,
-      }));
+      const exposedNotifications: ExposedNotification[] = [];
+      for (const notification of slice) {
+        const metadata = await getMetadata(ctx, user, notification, service);
+        exposedNotifications.push({
+          id: notification.id,
+          isRead: notification.isRead,
+          businessEvent: {
+            type: notification.businessEvent.type,
+            time: notification.businessEvent.time,
+            publisher: notification.businessEvent.publisher,
+          },
+          metadata,
+        });
+      }
 
       const code = 200;
       const body = {
         apiVersion: "1.0",
         data: {
           userId: user.id,
-          notifications: exposed,
+          notifications: exposedNotifications,
         },
       };
       reply.status(code).send(body);
