@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-beta.6] - 2019-03-22
+
+### Changed
+
+- Make comment field not mandatory for project / subproject creation
+- Notification.list API response format
+
+### Removed
+
+- Notification.poll
+
+### Fixed
+
+- Notifications include displayname of resource, show redaction
+
 ## [1.0.0-beta.5] - 2019-03-14
 
 ### Added
@@ -20,12 +35,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Pretty print Additional Data
 - Add Additional Data to test projects
 - Notifications are shown (but not in full functionality)
-
-### Known Issues (Subjects to be fixed in the upcoming releases)
-
-- Updating Projected Budgets on project/subproject level is going to be enabled in the next release
-- Multiple Projected Budgets lead to hiding Assignee field on Detailsview of project/subproject
-- Notifications do not include displayname of resource, do not show redaction and are not flyin in from the side
 
 ## [1.0.0-beta.4] - 2019-03-08
 
@@ -47,10 +56,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show loading indicator for "Read All" button [#223](https://github.com/openkfw/TruBudget/issues/223)
 - Increase RPC timeout [#220](https://github.com/openkfw/TruBudget/issues/220)
 - Improve french translations [#376](https://github.com/openkfw/TruBudget/issues/376)
-
-### Resolved
-
-### Removed
 
 ### Fixed
 
