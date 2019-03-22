@@ -1,7 +1,22 @@
 {
-  "name": "ACMECorp-chain-frontend",
+  "name": "trubudget-frontend",
   "version": "1.0.0-beta.5",
   "private": true,
+  "homepage": "https://openACMECorp.github.io/trubudget-website",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openkfw/TruBudget"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Jure Zakotnik <Jure.Zakotnik@ACMECorp.de>",
+  "contributors": [
+    "Stefan Ziffer <stefan.ziffer@accenture.com>",
+    "Mathias Höld <mathias.hoeld@accenture.com>",
+    "Kevin Bader <kevin.bader@accenture.com>",
+    "Sascha Kerbler <sascha.kerbler@accenture.com>",
+    "Roman Schiefer <roman.schiefer@accenture.com>",
+    "Philip Pai <philip.pai@accenture.com>"
+  ],
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",

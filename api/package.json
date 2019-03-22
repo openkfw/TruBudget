@@ -1,6 +1,22 @@
 {
-  "name": "trubudget",
+  "name": "trubudget-api",
   "version": "1.0.0-beta.5",
+  "private": true,
+  "homepage": "https://openACMECorp.github.io/trubudget-website",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openkfw/TruBudget"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Jure Zakotnik <Jure.Zakotnik@ACMECorp.de>",
+  "contributors": [
+    "Stefan Ziffer <stefan.ziffer@accenture.com>",
+    "Mathias Höld <mathias.hoeld@accenture.com>",
+    "Kevin Bader <kevin.bader@accenture.com>",
+    "Sascha Kerbler <sascha.kerbler@accenture.com>",
+    "Roman Schiefer <roman.schiefer@accenture.com>",
+    "Philip Pai <philip.pai@accenture.com>"
+  ],
   "description": "",
   "apidoc": {
     "name": "TruBudget",
@@ -50,8 +66,6 @@
     "instrument": true
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
