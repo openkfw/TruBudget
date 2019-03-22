@@ -1,0 +1,14 @@
+# requirements.yaml
+dependencies:
+- alias: blockchain-prod
+  name: blockchain
+  version: "0.1.0"
+  repository: file://../blockchain
+- alias: api-prod
+  name: api
+  version: "0.1.0"
+  repository: file://../api
+- alias: frontend
+  name: frontend
+  version: "0.1.0"
+  repository: file://../frontend

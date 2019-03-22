@@ -1,0 +1,22 @@
+version: "3"
+services:
+  blockchain:
+    image: index.docker.io/trubudget/v1/blockchain:master
+    environment:
+      RPC_PORT: 8000
+      ORGANIZATION: UmbrellaCorp
+    ports:
+      - "8000:8000"
+  api:
+    image: index.docker.io/trubudget/v1/api:master
+    ports:
+      - "8080:8080"
+    environment:
+      ORGANIZATION: ACMECorp
+      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      RPC_HOST: blockchain
+      RPC_PORT: 8000
+      PORT: 8080
+      ROOT_SECRET: "asdf"
+    links:
+      - blockchain

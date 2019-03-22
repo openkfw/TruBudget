@@ -1,0 +1,40 @@
+# Default values for trubudget-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+global:
+  image:
+    tag: master
+  exposeType: NodePort
+  imageCredentials:
+    name: regsecret
+
+
+image:
+  repository: index.docker.io/trubudget/v1/api
+  tag: master
+  pullPolicy: Always
+
+api:
+  ingressPort: 31235
+  env:
+    PORT: 8080
+    JWT_SECRET: jwt-secret
+    ROOT_SECRET: root-secret
+    RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+    ORGANIZATION: ACMECorp
+    ORGANIZATION_VAULT_SECRET: ker5Ecet
+    ENVIRONMENT_TYPE: TEST
+    PRETTY_PRINT: false
+    LOG_LEVEL: info
+  resources:
+      memRequest: 150Mi
+      memLimit: 200Mi
+      cpuRequest: 100m
+      cpuLimit: 150m
+
+service:
+  name: api
+  type: ClusterIP
+  monitoring: monitoring

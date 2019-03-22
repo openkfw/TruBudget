@@ -1,0 +1,33 @@
+dependencies:
+- name: blockchain
+  repository: file://../blockchain
+  version: 0.1.0
+- name: blockchain
+  repository: file://../blockchain
+  version: 0.1.0
+- name: blockchain
+  repository: file://../blockchain
+  version: 0.1.0
+- name: blockchain
+  repository: file://../blockchain
+  version: 0.1.0
+- name: api
+  repository: file://../api
+  version: 0.1.0
+- name: api
+  repository: file://../api
+  version: 0.1.0
+- name: api
+  repository: file://../api
+  version: 0.1.0
+- name: api
+  repository: file://../api
+  version: 0.1.0
+- name: frontend
+  repository: file://../frontend
+  version: 0.1.0
+- name: frontend
+  repository: file://../frontend
+  version: 0.1.0
+digest: sha256:88142e71dab4c9dcd540a58155603891607d1a8f32b820a3752bc23ecc802384
+generated: 2019-03-12T17:29:01.642386+01:00

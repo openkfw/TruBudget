@@ -1,0 +1,12 @@
+dependencies:
+- name: blockchain
+  repository: file://../blockchain
+  version: 0.1.0
+- name: api
+  repository: file://../api
+  version: 0.1.0
+- name: frontend
+  repository: file://../frontend
+  version: 0.1.0
+digest: sha256:6672b45d297f852585bb2f0cfa0a691114dd55c602617f0a41f9a330da716908
+generated: 2019-01-09T18:18:59.285879+01:00

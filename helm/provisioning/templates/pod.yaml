@@ -1,0 +1,35 @@
+{{ if .Values.provisioning.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: provisioning
+  labels:
+    app: {{ template "provisioning.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    vcsbranch: {{ .Values.global.branch }}
+spec:
+  containers:
+    {{- if .Values.provisioning.prod.isRequired }}
+    - name: provision-prod
+      image: "{{ .Values.provisioning.prod.image.repository }}:{{ .Values.global.image.tag }}"
+      command: ["npm", "start"]
+      env:
+      {{- range $key, $value := .Values.provisioning.prod.env }}
+      - name: {{ $key }}
+        value: {{ $value | quote }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.provisioning.test.isRequired }}
+    - name: provision-test
+      image: "{{ .Values.provisioning.test.image.repository }}:{{ .Values.global.image.tag }}"
+      command: ["npm", "start"]
+      env:
+      {{- range $key, $value := .Values.provisioning.test.env }}
+      - name: {{ $key }}
+        value: {{ $value | quote }}
+      {{- end }}
+    {{- end }}
+  restartPolicy: Never
+ {{- end }}

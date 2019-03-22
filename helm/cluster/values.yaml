@@ -1,0 +1,203 @@
+# Default values for trubudget-cluster.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  imageCredentials:
+    name: regsecret
+  imageTag: master
+  fqdn: my-trubudget.url
+  env:
+    ENVIRONMENT_TYPE: DEV
+    EXPOSE_MC: false
+
+tags:
+  blockchain: false
+  api: false
+  frontend: false
+  blockchainSecond: false
+  apiSecond: false
+  frontendSecond: false
+
+blockchain-prod-1:
+  service:
+    name: blockchain-prod-1
+    type: ClusterIP
+  externalService:
+    enabled: true
+  replicaCount: 1
+  bc:
+    isMaster: true
+    name: blockchain-prod-1
+    env:
+      ORGANIZATION: ACMECorp
+      CHAINNAME: TrubudgetChain
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+  persistentVolume:
+    name: blockchain-prod-1-data
+    storageSize: 5Gi
+    volumeAccessMode: ReadWriteOnce
+
+blockchain-prod-2:
+  service:
+    name: blockchain-prod-2
+  replicaCount: 1
+  bc:
+    name: blockchain-prod-2
+    env:
+      ORGANIZATION: ACMECorp
+      CHAINNAME: TrubudgetChain
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      P2P_HOST: blockchain-prod-1
+      API_PROTO: http
+      API_HOST: api-prod-1
+  persistentVolume:
+    name: blockchain-prod-2-data
+    storageSize: 5Gi
+    volumeAccessMode: ReadWriteOnce
+
+blockchain-test-1:
+  service:
+    name: blockchain-test-1
+    type: ClusterIP
+  externalService:
+    enabled: true
+  replicaCount: 1
+  bc:
+    isMaster: true
+    name: blockchain-test-1
+    env:
+      ORGANIZATION: ACMECorp
+      CHAINNAME: TrubudgetChain
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+  persistentVolume:
+    name: blockchain-test-1-data
+    storageSize: 5Gi
+    volumeAccessMode: ReadWriteOnce
+
+blockchain-test-2:
+  service:
+    name: blockchain-test-2
+  replicaCount: 1
+  bc:
+    name: blockchain-test-2
+    env:
+      ORGANIZATION: ACMECorp
+      CHAINNAME: TrubudgetChain
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      P2P_HOST: blockchain-test-1
+      API_PROTO: http
+      API_HOST: api-test-1
+  persistentVolume:
+    name: blockchain-test-2-data
+    storageSize: 5Gi
+    volumeAccessMode: ReadWriteOnce
+
+api-prod-1:
+  service:
+    name: api-prod-1
+    type: LoadBalancer
+  api:
+    env:
+      RPC_HOST: blockchain-prod-1
+      JWT_SECRET: jwt-secret
+      ROOT_SECRET: root-secret
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      ORGANIZATION: ACMECorp
+      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      SWAGGER_BASEPATH: /prod
+
+api-prod-2:
+  service:
+    name: api-prod-2
+  api:
+    env:
+      RPC_HOST: blockchain-prod-2
+      JWT_SECRET: jwt-secret
+      ROOT_SECRET: root-secret
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      ORGANIZATION: ACMECorp
+      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      SWAGGER_BASEPATH: /prod
+
+api-test-1:
+  service:
+    name: api-test-1
+    type: LoadBalancer
+  api:
+    env:
+      RPC_HOST: blockchain-test-1
+      JWT_SECRET: jwt-secret
+      ROOT_SECRET: root-secret
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      ORGANIZATION: ACMECorp
+      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      SWAGGER_BASEPATH: /test
+
+api-test-2:
+  service:
+    name: api-test-2
+  api:
+    env:
+      RPC_HOST: blockchain-test-2
+      JWT_SECRET: jwt-secret
+      ROOT_SECRET: root-secret
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      ORGANIZATION: ACMECorp
+      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      SWAGGER_BASEPATH: /test
+
+frontend-1:
+  initContainer: "false"
+  service:
+    name: frontend-1
+  frontend:
+    env:
+      PROD_API_HOST: api-prod-1
+      TEST_API_HOST: api-test-1
+  ingress:
+    enabled: true
+    fqdnPrefix: a
+    hosts:
+      - name: frontend
+        path: /
+        serviceName: frontend-1
+        servicePort: 80
+    ingressClass: nginx-test
+  provisioningProd:
+    isRequired: "true"
+    image:
+      repository: index.docker.io/trubudget/v1/provisioning
+    env:
+      API_HOST: api-prod-1
+      API_PORT: 8080
+      ENVIRONMENT_TYPE: PROD
+      ROOT_SECRET: "root-secret"
+      ORGANIZATION: ACMECorp
+  provisioningTest:
+    isRequired: "true"
+    image:
+      repository: index.docker.io/trubudget/v1/provisioning
+    env:
+      API_HOST: api-test-1
+      API_PORT: 8080
+      ENVIRONMENT_TYPE: PROD
+      ROOT_SECRET: "root-secret"
+      ORGANIZATION: ACMECorp
+
+frontend-2:
+  initContainer: "false"
+  service:
+    name: frontend-2
+  frontend:
+    env:
+      PROD_API_HOST: api-prod-2
+      TEST_API_HOST: api-test-2
+  ingress:
+    enabled: true
+    fqdnPrefix: b
+    hosts:
+      - name: frontend
+        path: /
+        serviceName: frontend-2
+        servicePort: 80
+    ingressClass: nginx-test

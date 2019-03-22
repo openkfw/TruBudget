@@ -1,0 +1,31 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.service.name }}
+  labels:
+    app: {{ template "blockchain.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    project: "TruBudget"
+    prometheus-monitoring: {{ .Values.service.monitoring}}
+spec:
+  selector:
+    app: {{ template "blockchain.name" . }}
+    release: {{ .Release.Name }}
+    service: {{ .Chart.Name }}
+  type: {{ .Values.service.type }}
+  ports:
+  - name: rpc-port
+    protocol: TCP
+    port: {{ .Values.bc.env.RPC_PORT }} 
+    targetPort: {{ .Values.bc.env.RPC_PORT }} 
+  - name: node-port
+    protocol: TCP
+    port: {{ .Values.bc.env.P2P_PORT }} 
+    targetPort: {{ .Values.bc.env.P2P_PORT }} 
+  - name: backup-port
+    protocol: TCP
+    port: {{ .Values.bc.env.BACKUP_API_PORT }} 
+    targetPort: {{ .Values.bc.env.BACKUP_API_PORT }} 
+

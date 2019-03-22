@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: e2e-tests
+spec:
+  hostPID: true
+  hostIPC: true
+  containers:
+    - name: e2e-tests
+      image: "{{ .Values.e2e.image.registry }}:{{ .Values.global.image.tag }}"
+      imagePullPolicy: Always
+      command: ["sh", "-c", "while true; do sleep 1; done;"]
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "500m"
+        limits:
+          memory: "1G"
+          cpu: "1000m"

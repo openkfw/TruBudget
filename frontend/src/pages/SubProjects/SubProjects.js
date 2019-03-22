@@ -17,7 +17,6 @@ const SubProjects = props => {
     >
       <Card>
         <SubProjectTable {...props} />
-        {/* <ChangeLog {...props} /> */}
       </Card>
       <div
         style={{

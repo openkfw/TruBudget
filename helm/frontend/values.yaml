@@ -1,0 +1,66 @@
+# Default values for frontend.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+global:
+  imageCredentials:
+    name: regsecret
+  image:
+    tag: frontend-deployment
+image:
+  repository: index.docker.io/trubudget/v1/frontend
+  pullPolicy: Always
+
+frontend:
+  initContainer: "false"
+  ingressPort: 31237
+  port: 80
+  env:
+    PROD_API_HOST: api
+    PROD_API_PORT: 8080
+    TEST_API_HOST: api
+    TEST_API_PORT: 8080
+  resources:
+    memRequest: 60Mi
+    memLimit: 80Mi
+    cpuRequest: 15m
+    cpuLimit: 25m
+
+ingress:
+  enabled: false
+  hosts:
+    - name: frontend
+      path: /
+      serviceName: frontend
+      servicePort: 80
+  fqdnPrefix: pre
+  ingressClass: nginx-test
+  tlsSecret: tls-secret
+
+service:
+  name: frontend
+  type: ClusterIP
+  port: 80
+  monitoring: monitoring
+
+provisioningProd:
+  image:
+    repository: index.docker.io/trubudget/v1/provisioning
+  env:
+    API_HOST: api
+    API_PORT: 8080
+    ENVIRONMENT_TYPE: TEST
+    ROOT_SECRET: "root-secret"
+    ORGANIZATION: ACMECorp
+
+provisioningTest:
+  image:
+    repository: index.docker.io/trubudget/v1/provisioning
+  env:
+    API_HOST: api
+    API_PORT: 8080
+    ENVIRONMENT_TYPE: TEST
+    ROOT_SECRET: "root-secret"
+    ORGANIZATION: ACMECorp

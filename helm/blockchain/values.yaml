@@ -1,0 +1,50 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+global:
+  image:
+    tag: master
+  branch: master
+  exposeType: NodePort
+  imageCredentials:
+    name: regsecret
+  env:
+    ENVIRONMENT_TYPE: PROD
+
+backup:
+  connectionString:
+
+image:
+  repository: index.docker.io/trubudget/v1/blockchain
+  pullPolicy: Always
+
+bc:
+  isMaster: false
+  ingressPort: 31234
+  env:
+    CHAINNAME: TrubudgetChain
+    RPC_PORT: 8000
+    P2P_PORT: 7447
+    BACKUP_API_PORT: 8085
+  resources:
+    memRequest: 300Mi
+    memLimit: 400Mi
+    cpuRequest: 350m
+    cpuLimit: 400m
+
+
+persistentVolume:
+  name: bc-data
+  storageSize: 10Gi
+  volumeAccessMode: ReadWriteOnce
+
+service:
+  name: blockchain
+  type: ClusterIP
+  monitoring: monitoring
+
+externalService:
+  enabled: false
+  type: LoadBalancer
+

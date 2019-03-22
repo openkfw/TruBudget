@@ -1,0 +1,54 @@
+version: "3"
+services:
+  blockchain-master:
+    image: index.docker.io/trubudget/v1/blockchain:master
+    environment:
+      RPC_PORT: 8000
+      ORGANIZATION: ACMECorp
+    ports:
+      - "4000:8000"
+  blockchain-slave:
+    image: index.docker.io/trubudget/v1/blockchain:master
+    environment:
+      RPC_PORT: 8000
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      P2P_HOST: blockchain-master
+      API_PROTO: http
+      API_HOST: masterapi
+      ORGANIZATION: ACMECorp
+    ports:
+      - "8001:8000"
+
+  provisioning:
+    image: index.docker.io/trubudget/v1/provisioning:master
+    command: ["npm", "start"]
+    environment:
+      API_HOST: masterapi
+      ENVIRONMENT_TYPE: PROD
+      API_PORT: 8080
+      ROOT_SECRET: asdf
+      ORGANIZATION: ACMECorp
+    links:
+      - masterapi
+
+  masterapi:
+    image: index.docker.io/trubudget/v1/api:master
+    ports:
+      - "8080:8080"
+    environment:
+      APP_NAME: Trubudget
+      NODE_LOCATION_LAT: "30.11"
+      NODE_LOCATION_LNG: "4.68"
+      NODE_COUNTRY: Germany
+      NODE_DESCRIPTION: ACMECorp
+      ORGANIZATION: ACMECorp
+      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      RPC_HOST: blockchain-master
+      RPC_PORT: 8000
+      IS_MASTER: 1
+      # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
+      BC_ADDRESS_VERIFICATION: "false"
+      PORT: 8080
+      ROOT_SECRET: asdf
+    links:
+      - blockchain-master

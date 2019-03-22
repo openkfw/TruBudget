@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.service.name }}
+  labels:
+    app: {{ template "api.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    project: "TruBudget"
+    prometheus-monitoring: {{ .Values.service.monitoring}}
+spec:
+  selector:
+    app: {{ template "api.name" . }}
+    release: {{ .Release.Name }}
+    service: {{ .Chart.Name }}
+  type: {{- if (eq .Values.global.env.ENVIRONMENT_TYPE "PROD") }} {{ .Values.service.type }} {{- else }} ClusterIP {{- end }}
+  ports:
+  - name: api-port
+    protocol: TCP
+    port: {{ .Values.api.env.PORT }} 
+    targetPort: {{ .Values.api.env.PORT }} 

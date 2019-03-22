@@ -1,0 +1,12 @@
+version: "3"
+services:
+  blockchain-master:
+    build:
+      context: ../blockchain
+    environment:
+      RPC_PORT: 8000
+      ORGANIZATION: ACMECorp
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+    ports:
+      - "8000:8000"
+      - "8085:8085"

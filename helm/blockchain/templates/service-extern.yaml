@@ -1,0 +1,25 @@
+{{- if and (eq .Values.global.env.ENVIRONMENT_TYPE "PROD") (.Values.externalService.enabled ) }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.service.name }}-external
+  labels:
+    app: {{ template "blockchain.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    project: "TruBudget"
+    prometheus-monitoring: {{ .Values.service.monitoring}}
+spec:
+  selector:
+    app: {{ template "blockchain.name" . }}
+    release: {{ .Release.Name }}
+    service: {{ .Chart.Name }}
+  type: {{ .Values.externalService.type }}
+  ports:
+  - name: node-port
+    protocol: TCP
+    port: {{ .Values.bc.env.P2P_PORT }} 
+    targetPort: {{ .Values.bc.env.P2P_PORT }} 
+{{- end}}
+

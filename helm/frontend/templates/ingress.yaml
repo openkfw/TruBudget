@@ -1,0 +1,33 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fqdn := (printf "%v-%v" .Values.ingress.fqdnPrefix .Values.global.fqdn) -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fqdn }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: {{ $fqdn }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.ingressClass }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 1000m
+{{- with .Values.ingress.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  tls:
+    - secretName: {{ .Values.ingress.tlsSecret }}
+      hosts:
+        - {{ $fqdn }}
+  rules:
+    {{- range $host := .Values.ingress.hosts }}
+    - host: {{ $fqdn }}
+      http:
+        paths:
+          - path: {{ $host.path }}
+            backend:
+              serviceName: {{ $host.serviceName }}
+              servicePort: {{ $host.servicePort }}
+    {{- end -}}
+{{- end -}}
