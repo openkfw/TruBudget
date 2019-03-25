@@ -11,7 +11,7 @@ provisioning:
   prod:
     isRequired: true
     image:
-      repository: index.docker.io/trubudget/v1/provisioning
+      repository: trubudget/provisioning
     env:
       API_HOST: api-prod-1
       API_PORT: 8080
@@ -21,7 +21,7 @@ provisioning:
   test:
     isRequired: true
     image:
-      repository: index.docker.io/trubudget/v1/provisioning
+      repository: trubudget/provisioning
     env:
       API_HOST: api-test-1
       API_PORT: 8080

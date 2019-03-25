@@ -1,14 +1,14 @@
 version: "3"
 services:
   blockchain:
-    image: index.docker.io/trubudget/v1/blockchain:master
+    image: trubudget/blockchain:master
     environment:
       RPC_PORT: 8000
       ORGANIZATION: UmbrellaCorp
     ports:
       - "8000:8000"
   api:
-    image: index.docker.io/trubudget/v1/api:master
+    image: trubudget/api:master
     ports:
       - "8080:8080"
     environment:

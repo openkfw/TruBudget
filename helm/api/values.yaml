@@ -10,9 +10,8 @@ global:
   imageCredentials:
     name: regsecret
 
-
 image:
-  repository: index.docker.io/trubudget/v1/api
+  repository: trubudget/api
   tag: master
   pullPolicy: Always
 
@@ -29,10 +28,10 @@ api:
     PRETTY_PRINT: false
     LOG_LEVEL: info
   resources:
-      memRequest: 150Mi
-      memLimit: 200Mi
-      cpuRequest: 100m
-      cpuLimit: 150m
+    memRequest: 150Mi
+    memLimit: 200Mi
+    cpuRequest: 100m
+    cpuLimit: 150m
 
 service:
   name: api

@@ -1,7 +1,7 @@
-version: '3.2'
+version: "3.2"
 services:
   api:
-    image: index.docker.io/trubudget/v1/api:${TAG}
+    image: trubudget/api:${TAG}
     environment:
       RPC_HOST: master
       RPC_PORT: ${RPC_PORT}
@@ -17,14 +17,14 @@ services:
       - master
 
   master:
-    image: index.docker.io/trubudget/v1/blockchain:${TAG}
+    image: trubudget/blockchain:${TAG}
     environment:
       RPC_PORT: ${RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
 
   frontend:
-    image: index.docker.io/trubudget/v1/frontend:${TAG}
+    image: trubudget/frontend:${TAG}
     ports:
       - "80:80" # Mapping the nginx port
     environment:
@@ -36,7 +36,7 @@ services:
       - api
 
   provisioning:
-    image: index.docker.io/trubudget/v1/provisioning:${TAG}
+    image: trubudget/provisioning:${TAG}
     command: ["npm", "start"]
     environment:
       API_HOST: api
@@ -47,12 +47,10 @@ services:
 
   e2etest:
     build:
-      context: '../../e2e-test'
+      context: "../../e2e-test"
     links:
       - frontend
     depends_on:
       - frontend
       - master
       - api
-
-  

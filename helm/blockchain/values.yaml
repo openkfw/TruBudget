@@ -16,7 +16,7 @@ backup:
   connectionString:
 
 image:
-  repository: index.docker.io/trubudget/v1/blockchain
+  repository: trubudget/blockchain
   pullPolicy: Always
 
 bc:
@@ -33,7 +33,6 @@ bc:
     cpuRequest: 350m
     cpuLimit: 400m
 
-
 persistentVolume:
   name: bc-data
   storageSize: 10Gi
@@ -47,4 +46,3 @@ service:
 externalService:
   enabled: false
   type: LoadBalancer
-
