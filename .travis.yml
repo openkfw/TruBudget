@@ -31,7 +31,7 @@ stages:
     - docker build --build-arg BUILDTIMESTAMP=$BUILDTIMESTAMP --build-arg CI_COMMIT_SHA=$TRAVIS_COMMIT --tag $TAG -f Dockerfile .
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - docker push $TAG
-    - if [ -n "$TRAVIS_TAG" ]; docker tag $TAG $TAG_LATEST && docker push $TAG_LATEST; fi
+    - if [ -n "$TRAVIS_TAG" ]; docker tag "$TAG" "$TAG_LATEST" && docker push "$TAG_LATEST"; fi
 
 jobs:
   include:
