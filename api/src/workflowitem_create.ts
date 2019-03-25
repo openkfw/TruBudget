@@ -8,6 +8,7 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { ResourceMap } from "./service/domain/ResourceMap";
 import { UploadedDocument } from "./service/domain/workflow/document";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
@@ -118,10 +119,24 @@ function mkSwaggerSchema(server: FastifyInstance) {
           data: {
             type: "object",
             properties: {
-              created: { type: "boolean", example: "true" },
-              projectId: { type: "string" },
-              subprojectId: { type: "string" },
-              workflowitemId: { type: "string" },
+              project: {
+                type: "object",
+                properties: {
+                  id: { type: "string" },
+                },
+              },
+              subproject: {
+                type: "object",
+                properties: {
+                  id: { type: "string" },
+                },
+              },
+              workflowitem: {
+                type: "object",
+                properties: {
+                  id: { type: "string" },
+                },
+              },
             },
           },
         },
@@ -136,7 +151,7 @@ interface Service {
     ctx: Ctx,
     user: ServiceUser,
     createRequest: WorkflowitemCreate.RequestData,
-  ): Promise<Map<Id, string>>;
+  ): Promise<ResourceMap>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -176,15 +191,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .createWorkflowitem(ctx, user, reqData)
-        .then(resourceIds => {
-          const code = 201;
+        .then((resourceIds: ResourceMap) => {
+          const code = 200;
           const body = {
             apiVersion: "1.0",
             data: {
-              created: true,
-              projectId: resourceIds.get("projectId"),
-              subprojectId: resourceIds.get("subprojectId"),
-              workflowitemId: resourceIds.get("workflowitemId"),
+              ...resourceIds,
             },
           };
           reply.status(code).send(body);

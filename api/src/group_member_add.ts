@@ -68,9 +68,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
-            properties: {
-              added: { type: "boolean", example: "true" },
-            },
           },
         },
       },
@@ -116,9 +113,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: {
-            added: true,
-          },
+          data: {},
         };
         reply.status(code).send(body);
       })

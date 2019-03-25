@@ -9,11 +9,11 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/workflow/document";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import * as WorkflowitemUpdate from "./service/workflowitem_update";
-import { uploadedDocumentSchema, UploadedDocument } from "./service/domain/workflow/document";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -121,7 +121,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
+            type: "object",
           },
         },
       },
@@ -166,7 +166,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: "OK",
+          data: {},
         };
         reply.status(code).send(body);
       })

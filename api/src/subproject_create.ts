@@ -9,9 +9,9 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { ResourceMap } from "./service/domain/ResourceMap";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as Subproject from "./service/domain/workflow/subproject";
-import { Id } from "./service/domain/workflow/subproject";
 import * as SubprojectCreate from "./service/subproject_create";
 
 interface RequestBodyV1 {
@@ -119,9 +119,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
-            properties: {
-              created: { type: "boolean", example: "true" },
-            },
           },
         },
       },
@@ -135,7 +132,7 @@ interface Service {
     ctx: Ctx,
     user: ServiceUser,
     createRequest: SubprojectCreate.RequestData,
-  ): Promise<Id>;
+  ): Promise<ResourceMap>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -172,16 +169,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .createSubproject(ctx, user, reqData)
-        .then((subprojectId: Id) => {
-          const code = 201;
+        .then((resourceIds: ResourceMap) => {
+          const code = 200;
           const body = {
             apiVersion: "1.0",
-            data: {
-              created: true,
-              subproject: {
-                id: subprojectId,
-              },
-            },
+            data: { ...resourceIds },
           };
           reply.status(code).send(body);
         })
