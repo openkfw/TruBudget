@@ -10,37 +10,39 @@ import * as Notification from "./service/domain/workflow/notification";
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Counts the number of notifications for the authenticated user. Returns the " +
-      "total as well as the number of unread notifications.",
-    tags: ["notification"],
-    summary: "Notification count for the authenticated user.",
-    security: [{ bearerToken: [] }],
-    response: {
-      200: {
-        description: "Notification count for the authenticated user.",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              userId: { type: "string", example: "jdoe" },
-              unread: {
-                type: "integer",
-                description: "The number of unread notifications for this user.",
-                example: 0,
-              },
-              total: {
-                type: "integer",
-                description: "The total number of notifications for this user.",
-                example: 0,
+    schema: {
+      description:
+        "Counts the number of notifications for the authenticated user. Returns the " +
+        "total as well as the number of unread notifications.",
+      tags: ["notification"],
+      summary: "Notification count for the authenticated user.",
+      security: [{ bearerToken: [] }],
+      response: {
+        200: {
+          description: "Notification count for the authenticated user.",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                userId: { type: "string", example: "jdoe" },
+                unread: {
+                  type: "integer",
+                  description: "The number of unread notifications for this user.",
+                  example: 0,
+                },
+                total: {
+                  type: "integer",
+                  description: "The total number of notifications for this user.",
+                  example: 0,
+                },
               },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }

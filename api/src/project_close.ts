@@ -35,42 +35,44 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Set a project's status to 'closed' if, and only if, all associated " +
-      "subprojects are already set to 'closed'.",
-    tags: ["project"],
-    summary: "Close a project",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["projectId"],
-          properties: {
-            projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-          },
+    schema: {
+      description:
+        "Set a project's status to 'closed' if, and only if, all associated " +
+        "subprojects are already set to 'closed'.",
+      tags: ["project"],
+      summary: "Close a project",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
+            type: "object",
+            required: ["projectId"],
+            properties: {
+              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+            },
           },
         },
       },
-      401: NotAuthenticated.schema,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "string",
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }

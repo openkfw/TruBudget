@@ -44,49 +44,51 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Set a new workflowitem ordering. Workflowitems not included in the list " +
-      "will be ordered by their creation time and placed after all explicitly ordered workflowitems.",
-    tags: ["subproject"],
-    summary: "Reorder the workflowitems of the given subproject",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-            subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-            ordering: {
-              type: "array",
-              items: {
-                type: "string",
-                example: "56z9ki1ca780434a58b0752f3470301",
+    schema: {
+      description:
+        "Set a new workflowitem ordering. Workflowitems not included in the list " +
+        "will be ordered by their creation time and placed after all explicitly ordered workflowitems.",
+      tags: ["subproject"],
+      summary: "Reorder the workflowitems of the given subproject",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      body: {
+        type: "object",
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
+              ordering: {
+                type: "array",
+                items: {
+                  type: "string",
+                  example: "56z9ki1ca780434a58b0752f3470301",
+                },
               },
             },
           },
         },
       },
-    },
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "string",
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "string",
+            },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }

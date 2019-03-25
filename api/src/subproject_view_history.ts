@@ -40,86 +40,88 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "View the history of a given project (filtered by what the user is allowed to see).",
-    tags: ["project"],
-    summary: "View history",
-    querystring: {
-      type: "object",
-      properties: {
-        projectId: {
-          type: "string",
-        },
-        limit: {
-          type: "string",
-          description: "Limit to the number of events to return.",
-          example: "10",
-        },
-        offset: {
-          type: "string",
-          description:
-            "The index of the first event; any events that follow" +
-            "have happened after that first event. The `offset` may also " +
-            "be negative. For example, an `offset` of `-10` with limit `10` requests " +
-            "the 10 most recent events.",
-          example: "0",
-        },
-      },
-    },
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    response: {
-      200: {
-        description: "successful response",
+    schema: {
+      description:
+        "View the history of a given project (filtered by what the user is allowed to see).",
+      tags: ["project"],
+      summary: "View history",
+      querystring: {
         type: "object",
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              events: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    key: { type: "string" },
-                    intent: { type: "string", example: "global.createProject" },
-                    createdBy: { type: "string", example: "aSmith" },
-                    createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
-                    dataVersion: { type: "string", example: "1" },
-                    data: {
-                      type: "object",
-                      additionalProperties: true,
-                      example: { identity: "aSmith", intent: "subproject.viewDetails" },
-                      properties: {
-                        permissions: {
-                          type: "object",
-                          additionalProperties: true,
-                          example: { "subproject.intent.listPermissions": ["aSmith", "jDoe"] },
+          projectId: {
+            type: "string",
+          },
+          limit: {
+            type: "string",
+            description: "Limit to the number of events to return.",
+            example: "10",
+          },
+          offset: {
+            type: "string",
+            description:
+              "The index of the first event; any events that follow" +
+              "have happened after that first event. The `offset` may also " +
+              "be negative. For example, an `offset` of `-10` with limit `10` requests " +
+              "the 10 most recent events.",
+            example: "0",
+          },
+        },
+      },
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                events: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      key: { type: "string" },
+                      intent: { type: "string", example: "global.createProject" },
+                      createdBy: { type: "string", example: "aSmith" },
+                      createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                      dataVersion: { type: "string", example: "1" },
+                      data: {
+                        type: "object",
+                        additionalProperties: true,
+                        example: { identity: "aSmith", intent: "subproject.viewDetails" },
+                        properties: {
+                          permissions: {
+                            type: "object",
+                            additionalProperties: true,
+                            example: { "subproject.intent.listPermissions": ["aSmith", "jDoe"] },
+                          },
                         },
                       },
-                    },
-                    snapshot: {
-                      type: "object",
-                      properties: {
-                        displayName: { type: "string", example: "townproject" },
+                      snapshot: {
+                        type: "object",
+                        properties: {
+                          displayName: { type: "string", example: "townproject" },
+                        },
                       },
                     },
                   },
                 },
-              },
-              historyItemsCount: {
-                type: "number",
-                example: 10,
+                historyItemsCount: {
+                  type: "number",
+                  example: 10,
+                },
               },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }

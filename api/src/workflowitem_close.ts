@@ -41,43 +41,45 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Set a workflowitem's status to 'closed' if, and only if, it is the next item to be closed ",
-    tags: ["workflowitem"],
-    summary: "Close a workflowitem",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["workflowitemId", "subprojectId", "projectId"],
-          properties: {
-            projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
-            subprojectId: { type: "string", example: "er28c69eg298c87e3899119e025eff1f" },
-            workflowitemId: { type: "string", example: "5z28c69eg298c87e3899119e025eff1f" },
-          },
+    schema: {
+      description:
+        "Set a workflowitem's status to 'closed' if, and only if, it is the next item to be closed ",
+      tags: ["workflowitem"],
+      summary: "Close a workflowitem",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
+            type: "object",
+            required: ["workflowitemId", "subprojectId", "projectId"],
+            properties: {
+              projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+              subprojectId: { type: "string", example: "er28c69eg298c87e3899119e025eff1f" },
+              workflowitemId: { type: "string", example: "5z28c69eg298c87e3899119e025eff1f" },
+            },
           },
         },
       },
-      401: NotAuthenticated.schema,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "string",
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }

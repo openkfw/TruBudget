@@ -11,33 +11,35 @@ import * as UserRecord from "./service/domain/organization/user_record";
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: "List all user groups.",
-    tags: ["group"],
-    summary: "List all existing groups",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              groups: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    groupId: { type: "string", example: "Manager" },
-                    displayName: { type: "string", example: "All Manager Group" },
-                    users: {
-                      type: "array",
-                      items: { type: "string", example: "aSmith" },
+    schema: {
+      description: "List all user groups.",
+      tags: ["group"],
+      summary: "List all existing groups",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                groups: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      groupId: { type: "string", example: "Manager" },
+                      displayName: { type: "string", example: "All Manager Group" },
+                      users: {
+                        type: "array",
+                        items: { type: "string", example: "aSmith" },
+                      },
                     },
                   },
                 },
@@ -45,8 +47,8 @@ function mkSwaggerSchema(server: FastifyInstance) {
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }

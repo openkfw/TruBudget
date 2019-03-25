@@ -37,44 +37,46 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: "Remove user from a group",
-    tags: ["group"],
-    summary: "Remove a user from a group",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["groupId", "userId"],
-          properties: {
-            groupId: { type: "string", example: "Manager" },
-            userId: { type: "string", example: "aSmith" },
-          },
+    schema: {
+      description: "Remove user from a group",
+      tags: ["group"],
+      summary: "Remove a user from a group",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
+            required: ["groupId", "userId"],
             properties: {
-              deleted: { type: "boolean", example: "true" },
+              groupId: { type: "string", example: "Manager" },
+              userId: { type: "string", example: "aSmith" },
             },
           },
         },
       },
-      401: NotAuthenticated.schema,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                deleted: { type: "boolean", example: "true" },
+              },
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }

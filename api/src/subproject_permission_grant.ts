@@ -44,44 +44,46 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Grant a permission to a user. After this call has returned, the " +
-      "user will be allowed to execute the given intent.",
-    tags: ["subproject"],
-    summary: "Grant a permission to a user or group",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["identity", "intent", "projectId", "subprojectId"],
-          properties: {
-            identity: { type: "string", example: "aSmith" },
-            intent: { type: "string", example: "global.createProject" },
-            projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
-            subprojectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
-          },
+    schema: {
+      description:
+        "Grant a permission to a user. After this call has returned, the " +
+        "user will be allowed to execute the given intent.",
+      tags: ["subproject"],
+      summary: "Grant a permission to a user or group",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
+            type: "object",
+            required: ["identity", "intent", "projectId", "subprojectId"],
+            properties: {
+              identity: { type: "string", example: "aSmith" },
+              intent: { type: "string", example: "global.createProject" },
+              projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+              subprojectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
+            },
           },
         },
       },
-      401: NotAuthenticated.schema,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "string",
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }

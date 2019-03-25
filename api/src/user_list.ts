@@ -11,46 +11,48 @@ import * as UserRecord from "./service/domain/organization/user_record";
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "List all registered users and groups.\n" +
-      "In case of a user the 'organization' property exists" +
-      "In case of a group the 'isGroup' property exists with value 'true",
-    tags: ["user"],
-    summary: "List all registered users",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        required: ["apiVersion", "data"],
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            required: ["items"],
-            properties: {
-              items: {
-                type: "array",
+    schema: {
+      description:
+        "List all registered users and groups.\n" +
+        "In case of a user the 'organization' property exists" +
+        "In case of a group the 'isGroup' property exists with value 'true",
+      tags: ["user"],
+      summary: "List all registered users",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          required: ["apiVersion", "data"],
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              required: ["items"],
+              properties: {
                 items: {
-                  type: "object",
-                  required: ["id", "displayName", "isGroup"],
-                  properties: {
-                    id: { type: "string", example: "aSmith" },
-                    displayName: { type: "string", example: "Alice Smith" },
-                    organization: { type: "string", example: "Alice's Solutions & Co" },
-                    isGroup: { type: "boolean", example: true },
+                  type: "array",
+                  items: {
+                    type: "object",
+                    required: ["id", "displayName", "isGroup"],
+                    properties: {
+                      id: { type: "string", example: "aSmith" },
+                      displayName: { type: "string", example: "Alice Smith" },
+                      organization: { type: "string", example: "Alice's Solutions & Co" },
+                      isGroup: { type: "boolean", example: true },
+                    },
                   },
                 },
               },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }

@@ -60,69 +60,71 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Create a new project.\n.\n" +
-      "Note that the only possible values for 'status' are: 'open' and 'closed'",
-    tags: ["global"],
-    summary: "Create a new project",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["project"],
-          properties: {
-            project: {
-              type: "object",
-              required: ["displayName"],
-              properties: {
-                id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                status: { type: "string", example: "open" },
-                displayName: { type: "string", example: "Build a town-project" },
-                description: { type: "string", example: "A town should be built" },
-                assignee: { type: "string", example: "aSmith" },
-                thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
-                projectedBudgets: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    required: ["organization", "value", "currencyCode"],
-                    properties: {
-                      organization: { type: "string", example: "My Goverment Bank" },
-                      value: { type: "string", example: "1000000" },
-                      currencyCode: { type: "string", example: "EUR" },
+    schema: {
+      description:
+        "Create a new project.\n.\n" +
+        "Note that the only possible values for 'status' are: 'open' and 'closed'",
+      tags: ["global"],
+      summary: "Create a new project",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      body: {
+        type: "object",
+        required: ["apiVersion", "data"],
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            required: ["project"],
+            properties: {
+              project: {
+                type: "object",
+                required: ["displayName"],
+                properties: {
+                  id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                  status: { type: "string", example: "open" },
+                  displayName: { type: "string", example: "Build a town-project" },
+                  description: { type: "string", example: "A town should be built" },
+                  assignee: { type: "string", example: "aSmith" },
+                  thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                  projectedBudgets: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      required: ["organization", "value", "currencyCode"],
+                      properties: {
+                        organization: { type: "string", example: "My Goverment Bank" },
+                        value: { type: "string", example: "1000000" },
+                        currencyCode: { type: "string", example: "EUR" },
+                      },
                     },
                   },
+                  additionalData: { type: "object", additionalProperties: true },
                 },
-                additionalData: { type: "object", additionalProperties: true },
               },
             },
           },
         },
       },
-    },
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              created: { type: "boolean", example: "true" },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                created: { type: "boolean", example: "true" },
+              },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }

@@ -14,106 +14,108 @@ import { ProjectTraceEvent } from "./service/domain/workflow/project_trace_event
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: "Retrieve all projects the user is allowed to see.",
-    tags: ["project"],
-    summary: "List all projects",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        required: ["apiVersion", "data"],
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            required: ["items"],
-            properties: {
-              items: {
-                type: "array",
+    schema: {
+      description: "Retrieve all projects the user is allowed to see.",
+      tags: ["project"],
+      summary: "List all projects",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          required: ["apiVersion", "data"],
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              required: ["items"],
+              properties: {
                 items: {
-                  type: "object",
-                  required: ["data", "log", "allowedIntents"],
-                  properties: {
-                    data: {
-                      type: "object",
-                      required: [
-                        "id",
-                        "creationUnixTs",
-                        "status",
-                        "displayName",
-                        "description",
-                        "projectedBudgets",
-                      ],
-                      properties: {
-                        id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                        creationUnixTs: { type: "string", example: "1536154645775" },
-                        status: { type: "string", example: "open" },
-                        displayName: { type: "string", example: "Build a town-project" },
-                        description: { type: "string", example: "A town should be built" },
-                        assignee: { type: "string", example: "aSmith" },
-                        thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
-                        projectedBudget: {
-                          type: "array",
-                          items: {
-                            type: "object",
-                            required: ["organization", "value", "currencyCode"],
-                            properties: {
-                              organization: { type: "string", example: "ACME Corp." },
-                              value: { type: "string", example: "1000000" },
-                              currencyCode: { type: "string", example: "EUR" },
-                            },
-                          },
-                        },
-                      },
-                    },
-                    log: {
-                      type: "array",
-                      items: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    required: ["data", "log", "allowedIntents"],
+                    properties: {
+                      data: {
                         type: "object",
-                        required: ["entityId", "entityType", "businessEvent", "snapshot"],
+                        required: [
+                          "id",
+                          "creationUnixTs",
+                          "status",
+                          "displayName",
+                          "description",
+                          "projectedBudgets",
+                        ],
                         properties: {
-                          entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                          entityType: { type: "string", example: "project" },
-                          businessEvent: {
-                            type: "object",
-                            required: ["type", "source", "time", "publisher"],
-                            properties: {
-                              type: { type: "string" },
-                              source: { type: "string" },
-                              time: { type: "string" },
-                              publisher: { type: "string" },
-                            },
-                            example: {
-                              type: "project_closed",
-                              source: "http",
-                              time: "2018-09-05T13:37:25.775Z",
-                              publisher: "jdoe",
-                            },
-                          },
-                          snapshot: {
-                            type: "object",
-                            required: ["displayName"],
-                            properties: {
-                              displayName: { type: "string", example: "Build a town-project" },
+                          id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                          creationUnixTs: { type: "string", example: "1536154645775" },
+                          status: { type: "string", example: "open" },
+                          displayName: { type: "string", example: "Build a town-project" },
+                          description: { type: "string", example: "A town should be built" },
+                          assignee: { type: "string", example: "aSmith" },
+                          thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                          projectedBudget: {
+                            type: "array",
+                            items: {
+                              type: "object",
+                              required: ["organization", "value", "currencyCode"],
+                              properties: {
+                                organization: { type: "string", example: "ACME Corp." },
+                                value: { type: "string", example: "1000000" },
+                                currencyCode: { type: "string", example: "EUR" },
+                              },
                             },
                           },
                         },
                       },
+                      log: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          required: ["entityId", "entityType", "businessEvent", "snapshot"],
+                          properties: {
+                            entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                            entityType: { type: "string", example: "project" },
+                            businessEvent: {
+                              type: "object",
+                              required: ["type", "source", "time", "publisher"],
+                              properties: {
+                                type: { type: "string" },
+                                source: { type: "string" },
+                                time: { type: "string" },
+                                publisher: { type: "string" },
+                              },
+                              example: {
+                                type: "project_closed",
+                                source: "http",
+                                time: "2018-09-05T13:37:25.775Z",
+                                publisher: "jdoe",
+                              },
+                            },
+                            snapshot: {
+                              type: "object",
+                              required: ["displayName"],
+                              properties: {
+                                displayName: { type: "string", example: "Build a town-project" },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      allowedIntents: { type: "array", items: { type: "string" } },
                     },
-                    allowedIntents: { type: "array", items: { type: "string" } },
                   },
                 },
               },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }
