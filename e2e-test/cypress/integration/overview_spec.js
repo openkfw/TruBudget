@@ -27,7 +27,7 @@ describe("Overview Page", function() {
             .find("[data-test=projectbudget]")
             .children()
             .first()
-        ).to.contains.text("KR$ 32,000,000.00");
+        ).to.contains.text("AR$ 32,000,000.00");
         expect(
           $card
             .find("[data-test=projectcreation]")
