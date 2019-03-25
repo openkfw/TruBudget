@@ -2,6 +2,7 @@
 
 [![build status](https://travis-ci.com/openkfw/TruBudget.svg?branch=master)](https://travis-ci.com/openkfw/TruBudget)
 [![gitter chat](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/Tru-Community/community)
+[![Coverage Status](https://coveralls.io/repos/github/openkfw/TruBudget/badge.svg)](https://coveralls.io/github/openkfw/TruBudget)
 
 # Table of Contents <!-- omit in TOC -->
 
