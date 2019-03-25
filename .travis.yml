@@ -1,7 +1,7 @@
 stages:
   - test
   - name: dockerbuild
-    if: branch = master
+    if: branch = master OR tag IS present
 
 # provide PROJECT_NAME environment variable if you extend this template
 .node-unit-test: &node-unit-test
@@ -24,12 +24,12 @@ stages:
   before_script:
     - export BUILDTIMESTAMP=$(date -Iseconds)
     - export TAG=trubudget/$PROJECT_NAME:$TRAVIS_BRANCH
-    # - docker pull $TAG|| true
+    - docker pull $TAG|| true
   script:
     - cd $PROJECT_NAME
     - docker build --build-arg BUILDTIMESTAMP=$BUILDTIMESTAMP --build-arg CI_COMMIT_SHA=$TRAVIS_COMMIT --tag $TAG -f Dockerfile .
-    # - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    # - docker push $TAG
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker push $TAG
 
 jobs:
   include:
@@ -45,3 +45,5 @@ jobs:
       env: PROJECT_NAME=api
     - <<: *docker-build
       env: PROJECT_NAME=frontend
+    - <<: *docker-build
+      env: PROJECT_NAME=provisioning
