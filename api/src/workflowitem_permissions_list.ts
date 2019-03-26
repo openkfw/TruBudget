@@ -12,47 +12,49 @@ import { Permissions } from "./service/domain/permissions";
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: "See the permissions for a given workflowitem.",
-    tags: ["workflowitem"],
-    summary: "List all permissions",
-    querystring: {
-      type: "object",
-      properties: {
-        projectId: {
-          type: "string",
-          example: "4j28c69eg298c87e3899119e025eff1f",
-        },
-        subprojectId: {
-          type: "string",
-          example: "5t28c69eg298c87e3899119e025eff1f",
-        },
-        workflowitemId: {
-          type: "string",
-          example: "6z28c69eg298c87e3899119e025eff1f",
-        },
-      },
-    },
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    response: {
-      200: {
-        description: "successful response",
+    schema: {
+      description: "See the permissions for a given workflowitem.",
+      tags: ["workflowitem"],
+      summary: "List all permissions",
+      querystring: {
         type: "object",
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            additionalProperties: true,
-            example: {
-              "project.viewDetails": ["aSmith", "jDoe"],
-            },
+          projectId: {
+            type: "string",
+            example: "4j28c69eg298c87e3899119e025eff1f",
+          },
+          subprojectId: {
+            type: "string",
+            example: "5t28c69eg298c87e3899119e025eff1f",
+          },
+          workflowitemId: {
+            type: "string",
+            example: "6z28c69eg298c87e3899119e025eff1f",
           },
         },
       },
-      401: NotAuthenticated,
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              additionalProperties: true,
+              example: {
+                "project.viewDetails": ["aSmith", "jDoe"],
+              },
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }
@@ -114,7 +116,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         if (Result.isErr(workflowitemPermissions)) {
           workflowitemPermissions.message = `could not list project permissions: ${
             workflowitemPermissions.message
-          }`;
+            }`;
           throw workflowitemPermissions;
         }
 

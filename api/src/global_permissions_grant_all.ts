@@ -71,10 +71,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
           type: "object",
           properties: {
             apiVersion: { type: "string", example: "1.0" },
-            data: {
-              type: "string",
-              example: "OK",
-            },
+            data: { type: "object" },
           },
         },
         401: NotAuthenticated.schema,
@@ -134,7 +131,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: "OK",
+          data: {},
         };
         reply.status(code).send(body);
       } catch (err) {

@@ -9,6 +9,7 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { ResourceMap } from "./service/domain/ResourceMap";
 import * as Project from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as ProjectCreate from "./service/project_create";
@@ -118,19 +119,22 @@ function mkSwaggerSchema(server: FastifyInstance) {
             data: {
               type: "object",
               properties: {
-                created: { type: "boolean", example: "true" },
+                project: {
+                  type: "object",
+                  properties: { id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" } },
+                },
               },
             },
           },
+          401: NotAuthenticated.schema,
         },
-        401: NotAuthenticated.schema,
       },
     },
   };
 }
 
 interface Service {
-  createProject(ctx: Ctx, user: ServiceUser, createRequest: any): Promise<Project.Id>;
+  createProject(ctx: Ctx, user: ServiceUser, createRequest: any): Promise<ResourceMap>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -154,15 +158,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .createProject(ctx, user, reqData)
-      .then((projectId: Project.Id) => {
-        const code = 201;
+      .then((resourceIds: ResourceMap) => {
+        const code = 200;
         const body = {
           apiVersion: "1.0",
           data: {
-            created: true,
-            project: {
-              id: projectId,
-            },
+            ...resourceIds,
           },
         };
         reply.status(code).send(body);

@@ -3,7 +3,7 @@ import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
-import { Id } from "./domain/workflow/subproject";
+import { ResourceMap } from "./domain/ResourceMap";
 import * as Workflowitem from "./domain/workflow/workflowitem_create";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import { store } from "./store";
@@ -15,7 +15,7 @@ export async function createWorkflowitem(
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: Workflowitem.RequestData,
-): Promise<Map<Id, string>> {
+): Promise<ResourceMap> {
   const result = await Cache.withCache(conn, ctx, cache => {
     return Workflowitem.createWorkflowitem(ctx, serviceUser, requestData, {
       workflowitemExists: async (
@@ -41,8 +41,11 @@ export async function createWorkflowitem(
   const workflowitemEvent = newEvents.find(x => (x as any).workflowitem.id !== undefined);
   if (workflowitemEvent === undefined) throw Error(`Assertion: This is a bug.`);
 
-  return new Map()
-    .set("projectId", (workflowitemEvent as WorkflowitemCreated.Event).projectId)
-    .set("subprojectId", (workflowitemEvent as WorkflowitemCreated.Event).subprojectId)
-    .set("workflowitemId", (workflowitemEvent as WorkflowitemCreated.Event).workflowitem.id);
+  const resourceIds: ResourceMap = {
+    project: { id: (workflowitemEvent as WorkflowitemCreated.Event).projectId },
+    subproject: { id: (workflowitemEvent as WorkflowitemCreated.Event).subprojectId },
+    workflowitem: { id: (workflowitemEvent as WorkflowitemCreated.Event).workflowitem.id },
+  };
+
+  return resourceIds;
 }

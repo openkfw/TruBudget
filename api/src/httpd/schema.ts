@@ -41,8 +41,7 @@ function getAuthErrorSchema() {
 function getSuccessfulSchema() {
   return {
     description: "successful response",
-    type: "string",
-    example: "OK",
+    type: "object",
   };
 }
 
