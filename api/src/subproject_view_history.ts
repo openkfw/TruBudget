@@ -43,12 +43,15 @@ function mkSwaggerSchema(server: FastifyInstance) {
     schema: {
       description:
         "View the history of a given project (filtered by what the user is allowed to see).",
-      tags: ["project"],
+      tags: ["subproject"],
       summary: "View history",
       querystring: {
         type: "object",
         properties: {
           projectId: {
+            type: "string",
+          },
+          subprojectId: {
             type: "string",
           },
           limit: {

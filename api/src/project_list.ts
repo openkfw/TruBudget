@@ -58,7 +58,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           description: { type: "string", example: "A town should be built" },
                           assignee: { type: "string", example: "aSmith" },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
-                          projectedBudget: {
+                          projectedBudgets: {
                             type: "array",
                             items: {
                               type: "object",
