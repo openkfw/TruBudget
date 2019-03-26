@@ -1,7 +1,7 @@
 stages:
   - test
   - name: dockerbuild
-    if: branch = master OR tag IS present
+    if: fork = false AND NOT type = pull_request AND (branch = master OR tag IS present)
 
 # provide PROJECT_NAME environment variable if you extend this template
 .node-unit-test: &node-unit-test
