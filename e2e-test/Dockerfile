@@ -2,7 +2,7 @@ FROM cypress/base:10
 
 # copy test fixtures into the container
 COPY package*.json ./
-RUN npm ci
+RUN CI=true npm ci
 
 RUN $(npm bin)/cypress verify
 

@@ -31,21 +31,19 @@ stages:
 jobs:
   include:
     - <<: *node-unit-test
-      env: PROJECT_NAME=blockchain
-    - <<: *node-unit-test
-      env: PROJECT_NAME=api
-    - <<: *node-unit-test
-      env: PROJECT_NAME=frontend
+      env:
+        matrix:
+          - PROJECT_NAME=blockchain
+          - PROJECT_NAME=api
+          - PROJECT_NAME=frontend
     - <<: *docker-build
-      env: PROJECT_NAME=blockchain
-    - <<: *docker-build
-      env: PROJECT_NAME=api
-    - <<: *docker-build
-      env: PROJECT_NAME=frontend
-    - <<: *docker-build
-      env: PROJECT_NAME=provisioning
-    - <<: *docker-build
-      env: PROJECT_NAME=e2e-test
+      env:
+        matrix:
+          - PROJECT_NAME=blockchain
+          - PROJECT_NAME=api
+          - PROJECT_NAME=frontend
+          - PROJECT_NAME=provisioning
+          - PROJECT_NAME=e2e-test
     - stage: notification
       language: minimal
       script:
@@ -58,4 +56,5 @@ jobs:
           -F "variables[TRAVIS_PULL_REQUEST_BRANCH]=$TRAVIS_PULL_REQUEST_BRANCH" \
           -F "variables[TRAVIS_BRANCH]=$TRAVIS_BRANCH" \
           -F "variables[TRAVIS_BUILD_ID]=t_$TRAVIS_BUILD_ID" \
+          -F "variables[TRAVIS_EVENT_TYPE_FOR_BRANCH]=$TRAVIS_EVENT_TYPE-$TRAVIS_BRANCH" \
           "$WEBHOOK_URL"
