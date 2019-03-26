@@ -1,7 +1,7 @@
 stages:
-  - test
+  - name: test
   - name: dockerbuild
-    if: fork = false AND NOT type = pull_request AND (branch = master OR tag IS present)
+  - name: notification
 
 # provide PROJECT_NAME environment variable if you extend this template
 .node-unit-test: &node-unit-test
@@ -22,25 +22,17 @@ stages:
   services:
     - docker
   before_script:
-    - export BUILDTIMESTAMP=$(date -Iseconds)
-    - export TAG=trubudget/$PROJECT_NAME:$TRAVIS_BRANCH
-    - export TAG_LATEST=trubudget/$PROJECT_NAME:latest
-    # - docker pull $TAG|| true
-  script:
     - cd $PROJECT_NAME
-    - docker build --build-arg BUILDTIMESTAMP=$BUILDTIMESTAMP --build-arg CI_COMMIT_SHA=$TRAVIS_COMMIT --tag $TAG -f Dockerfile .
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker push $TAG
-    - if [ -n "$TRAVIS_TAG" ];then docker tag "$TAG" "$TAG_LATEST" && docker push "$TAG_LATEST"; fi
+  script: ../scripts/pipeline/publish-docker-images.sh
 
 jobs:
   include:
-    - <<: *node-unit-test
-      env: PROJECT_NAME=blockchain
-    - <<: *node-unit-test
-      env: PROJECT_NAME=api
-    - <<: *node-unit-test
-      env: PROJECT_NAME=frontend
+    # - <<: *node-unit-test
+    #   env: PROJECT_NAME=blockchain
+    # - <<: *node-unit-test
+    #   env: PROJECT_NAME=api
+    # - <<: *node-unit-test
+    #   env: PROJECT_NAME=frontend
     - <<: *docker-build
       env: PROJECT_NAME=blockchain
     - <<: *docker-build
@@ -49,3 +41,16 @@ jobs:
       env: PROJECT_NAME=frontend
     - <<: *docker-build
       env: PROJECT_NAME=provisioning
+    - stage: notification
+      language: minimal
+      script:
+        - echo "$TRAVIS_PULL_REQUEST_BRANCH"
+        - echo "$TRAVIS_BRANCH"
+        - |
+          curl -X POST \
+          -F token=$WEBHOOK_TOKEN \
+          -F ref=$WEBHOOK_REF \
+          -F "variables[TRAVIS_PULL_REQUEST_BRANCH]=$TRAVIS_PULL_REQUEST_BRANCH" \
+          -F "variables[TRAVIS_BRANCH]=$TRAVIS_BRANCH" \
+          -F "variables[TRAVIS_BUILD_ID]=$TRAVIS_BUILD_ID" \
+          "$WEBHOOK_URL"
