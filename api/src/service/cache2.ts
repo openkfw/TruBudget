@@ -456,8 +456,8 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
     cache.cachedProjects.set(project.id, project);
   }
 
-  const { subprojects } = sourceSubprojects(ctx, newEvents, cache.cachedSubprojects);
-
+  const { subprojects, errors = [] } = sourceSubprojects(ctx, newEvents, cache.cachedSubprojects);
+  logger.fatal(errors);
   for (const subproject of subprojects) {
     cache.cachedSubprojects.set(subproject.id, subproject);
 
@@ -467,7 +467,7 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
       : lookUp.add(subproject.id);
   }
 
-  const { workflowitems, errors } = sourceWorkflowitems(ctx, newEvents, cache.cachedWorkflowItems);
+  const { workflowitems } = sourceWorkflowitems(ctx, newEvents, cache.cachedWorkflowItems);
 
   for (const workflowitem of workflowitems) {
     cache.cachedWorkflowItems.set(workflowitem.id, workflowitem);

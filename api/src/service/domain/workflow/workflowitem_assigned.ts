@@ -75,12 +75,12 @@ export function apply(
   event: Event,
   workflowitem: Workflowitem.Workflowitem,
 ): Result.Type<Workflowitem.Workflowitem> {
-  workflowitem.assignee = event.assignee;
+  const newState = { ...workflowitem, assignee: event.assignee };
 
-  const result = Workflowitem.validate(workflowitem);
+  const result = Workflowitem.validate(newState);
   if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, workflowitem.id);
+    return new EventSourcingError(ctx, event, result.message, newState.id);
   }
 
-  return workflowitem;
+  return newState;
 }

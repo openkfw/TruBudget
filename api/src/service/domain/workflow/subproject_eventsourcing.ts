@@ -15,6 +15,7 @@ import * as SubprojectProjectedBudgetDeleted from "./subproject_projected_budget
 import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget_updated";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 import * as SubprojectUpdated from "./subproject_updated";
+import logger from "../../../lib/logger";
 
 export function sourceSubprojects(
   ctx: Ctx,
@@ -31,9 +32,13 @@ export function sourceSubprojects(
     if (!event.type.startsWith("subproject_")) {
       continue;
     }
-
+    if (event.type === "subproject_permission_granted") {
+      logger.fatal("granted");
+      logger.fatal(event);
+    }
     const result = applySubprojectEvent(ctx, subprojects, event);
     if (Result.isErr(result)) {
+      logger.warn(result);
       errors.push(result);
     } else {
       result.log.push(newTraceEvent(result, event));
@@ -78,7 +83,7 @@ function applySubprojectEvent(
       return apply(ctx, event, subprojects, event.subprojectId, SubprojectProjectedBudgetDeleted);
 
     default:
-      throw Error(`not implemented: ${event.type}`);
+      return Error(`not implemented!!!!!!!!!!!!!!!: ${event.type}`);
   }
 }
 

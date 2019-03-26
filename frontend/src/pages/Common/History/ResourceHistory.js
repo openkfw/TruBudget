@@ -64,8 +64,9 @@ export default ({
   mapIntent
 }) => {
   let items = [];
-  resourceHistory.map((i, index) =>
-    items.push(
+  resourceHistory.map((i, index) => {
+    if (i.businessEvent.type === "project_assigned") console.log(i);
+    return items.push(
       <ListItem key={index}>
         <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
         <ListItemText
@@ -77,7 +78,7 @@ export default ({
                   intent: i.businessEvent.type,
                   data: {
                     intent: i.businessEvent.permission || "",
-                    identity: i.businessEvent.grantee || i.businessEvent.revokee || ""
+                    identity: i.businessEvent.grantee || i.businessEvent.revokee || i.businessEvent.assignee || ""
                   },
                   snapshot: i.snapshot
                 })
@@ -85,8 +86,8 @@ export default ({
           secondary={creationTimeExists(i)}
         />
       </ListItem>
-    )
-  );
+    );
+  });
   const hasMore = offset + limit >= historyItemsCount && historyItemsCount !== 0 ? false : true;
   if (!hasMore && !isLoading) {
     items.push(

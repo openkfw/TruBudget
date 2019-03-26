@@ -1,8 +1,9 @@
+import { produce } from "immer";
 import isEqual = require("lodash.isequal");
 
-import { produce } from "immer";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -61,10 +62,12 @@ export async function grantSubprojectPermission(
     return new InvalidCommand(ctx, permissionGranted, [updatedSubproject]);
   }
 
+  logger.fatal("domain level");
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(subproject.permissions, updatedSubproject.permissions)) {
     return { newEvents: [] };
   } else {
+    logger.fatal("domain level2");
     return { newEvents: [permissionGranted] };
   }
 }

@@ -12,6 +12,7 @@ import { Identity } from "./service/domain/organization/identity";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
+import logger from "./lib/logger";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -122,7 +123,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       const { projectId, subprojectId, identity: grantee, intent } = bodyResult.data;
-
+      logger.fatal("call service");
       service
         .grantSubprojectPermission(ctx, user, projectId, subprojectId, grantee, intent)
         .then(() => {

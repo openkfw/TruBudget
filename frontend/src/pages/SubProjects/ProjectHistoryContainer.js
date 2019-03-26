@@ -21,39 +21,35 @@ const calculateHistory = items => {
 
 const mapIntent = ({ createdBy, intent, data, snapshot }) => {
   switch (intent) {
-    // check old and new intents
     case "project_created":
-    case "global.createProject":
       return formatString(strings.history.project_create, createdBy, snapshot.displayName);
-    case "project_permission_granted":
-    case "project.intent.grantPermission":
-      return formatString(strings.history.project_grantPermission, createdBy, formatPermission(data), data.identity);
-    case "project_permission_revoked":
-    case "project.intent.revokePermission":
-      return formatString(strings.history.project_revokePermission, createdBy, formatPermission(data), data.identity);
-    case "project_createSubprojected":
-    case "project.createSubproject":
-      return formatString(strings.history.project_createSubproject, createdBy, snapshot.displayName);
+    case "project_updated":
+      return strings.formatString(strings.history.project_update, createdBy, snapshot.displayName);
     case "project_assigned":
-    case "project.assign":
       return formatString(strings.history.project_assign, createdBy, snapshot.displayName, data.identity);
+    case "project_closed":
+      return formatString(strings.history.project_close, createdBy, snapshot.displayName);
+    case "project_permission_granted": // TODO: missing history Event
+      return formatString(strings.history.project_grantPermission, createdBy, formatPermission(data), data.identity);
+    case "project_permission_revoked": // TODO: missing history Event
+      return formatString(strings.history.project_revokePermission, createdBy, formatPermission(data), data.identity);
+    case "subproject_created":
+      return formatString(strings.history.subproject_create, createdBy, snapshot.displayName);
+    case "subproject_updated":
+      return formatString(strings.history.subproject_update, createdBy, snapshot.displayName);
     case "subproject_assigned":
-    case "subproject.assign":
       return formatString(strings.history.subproject_assign, createdBy, snapshot.displayName, data.identity);
     case "subproject_closed":
-    case "subproject.close":
       return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
     case "subproject_intent.grantPermissioned":
-    case "subproject.intent.grantPermission":
-      return formatString(strings.history.project_grantPermission, createdBy, "", "subproject");
-    case "project_updated":
-    case "project.update":
-      return strings.formatString(strings.history.changed_by, snapshot.displayName, createdBy);
-    case "subproject_updated":
-    case "subproject.update":
-      return strings.formatString(strings.history.changed_by, snapshot.displayName, createdBy);
+      return formatString(
+        strings.history.project_grantPermission_details,
+        createdBy,
+        formatPermission(data),
+        data.identity,
+        snapshot.displayName
+      );
     case "subproject_intent.revokePermissioned":
-    case "subproject.intent.revokePermission":
       return formatString(
         strings.history.subproject_revokePermission_details,
         createdBy,

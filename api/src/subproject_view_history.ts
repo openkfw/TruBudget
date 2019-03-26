@@ -12,6 +12,7 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import logger from "./lib/logger";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -223,7 +224,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           throw subprojectResult;
         }
         const subproject: Subproject.Subproject = subprojectResult;
-
         // Add subprojects' logs to the project log and sort by creation time:
         const workflowitemsResult = await service.getWorkflowitems(
           ctx,

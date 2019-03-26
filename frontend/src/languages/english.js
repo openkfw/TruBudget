@@ -284,7 +284,6 @@ const en = {
   },
 
   history: {
-    changed_by: "{0} changed by {1} ",
     created_project: "Project created ",
     created_subproject: "Subproject {0} created",
     created_workflow: "Workflow {0} created ",
@@ -299,24 +298,29 @@ const en = {
     edit_workflowName: "Name of workflow item {0} changed to {1} ",
     first_sort: "Moved {0} to first position",
     project_assign: "{0} assigned project {1} to {2}",
+    project_close: "{0} closed project {1}",
     project_create: "{0} created project {1}",
     project_createSubproject: "{0} created subproject {1}",
     project_grantPermission: "{0} granted permission {1} to {2}",
     project_revokePermission: "{0} revoked permission {1} from {2}",
+    project_update: "{0} changed project {1} ",
     sort: "Moved {0} after {1}",
     subproject_assign: "{0} assigned subproject {1} to {2}",
-    subproject_close: "{0} closed subproject {1}",
+    subproject_close: "{0} closed subproject {1}",
+    subproject_create: "{0} created subproject {1}",
     subproject_createWorkflowitem: "{0} created workflowitem {1}",
     subproject_grantPermission: "{0} granted permission {1} to {2}",
     subproject_grantPermission_details: "{0} granted permission {1} to {2} on {3}",
     subproject_reorderWorkflowitems: "{0} changed the workflowitem ordering",
     subproject_revokePermission: "{0} revoked permission {1} from {2}",
     subproject_revokePermission_details: "{0} revoked permission {1} of {3} from {2}",
+    subproject_update: "{0} changed subproject {1} ",
     to: "{0} to {1}",
     workflowitem_assign: "{0} assigned workflowitem {1} to {2}",
     workflowitem_close: "{0} closed workflowitem {1}",
     workflowitem_grantPermission: "{0} granted permission {1} to {2} on {3}",
-    workflowitem_revokePermission: "{0} revoked permission {1} of {3} from {2}"
+    workflowitem_revokePermission: "{0} revoked permission {1} of {3} from {2}",
+    workflowitem_update: "{0} changed workflowitem {1} "
   },
 
   permissions: {

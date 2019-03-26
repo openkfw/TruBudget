@@ -11,6 +11,7 @@ import * as ProjectPermissionGrant from "./domain/workflow/project_permission_gr
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectPermissionGrant from "./domain/workflow/subproject_permission_grant";
 import { store } from "./store";
+import logger from "../lib/logger";
 
 export { RequestData } from "./domain/workflow/project_create";
 
@@ -39,8 +40,10 @@ export async function grantSubprojectPermission(
     ),
   );
   if (Result.isErr(result)) return Promise.reject(result);
-
+  logger.fatal("before store");
   for (const event of result.newEvents) {
+    logger.fatal("store");
+    logger.fatal(event);
     await store(conn, ctx, event);
   }
 }
