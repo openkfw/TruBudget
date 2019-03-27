@@ -56,8 +56,6 @@ import * as SubprojectAssignService from "./service/subproject_assign";
 import * as SubprojectCloseService from "./service/subproject_close";
 import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
-import * as WorkflowitemGetService from "./service/workflowitem_get";
-import * as SubprojectItemsReorderService from "./service/subproject_items_reorder";
 import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
@@ -71,17 +69,18 @@ import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
+import * as WorkflowitemGetService from "./service/workflowitem_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
+import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as SubprojectCloseAPI from "./subproject_close";
 import * as SubprojectCreateAPI from "./subproject_create";
-import * as SubprojectItemsReorderAPI from "./subproject_items_reorder";
 import * as SubprojectListAPI from "./subproject_list";
 import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
 import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
@@ -100,6 +99,7 @@ import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
+import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
 
 const URL_PREFIX = "/api";
 
@@ -288,20 +288,11 @@ GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
 NotificationListAPI.addHttpHandler(server, URL_PREFIX, {
   getNotificationsForUser: (ctx, user) =>
     NotificationListService.getNotificationsForUser(db, ctx, user),
-    getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
-    getSubproject: (
-      ctx,
-      user,
-      projectId,
-      subprojectId,
-    ) => SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
-    getWorkflowitem: (
-      ctx,
-      user,
-      projectId,
-      subprojectId,
-      workflowitemId,
-    ) => WorkflowitemGetService.getWorkflowitem(db, ctx, user, projectId, subprojectId, workflowitemId),
+  getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
+  getSubproject: (ctx, user, projectId, subprojectId) =>
+    SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
+  getWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId) =>
+    WorkflowitemGetService.getWorkflowitem(db, ctx, user, projectId, subprojectId, workflowitemId),
 });
 
 NotificationCountAPI.addHttpHandler(server, URL_PREFIX, {
@@ -502,9 +493,9 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
       currencyCode,
     ),
 });
-SubprojectItemsReorderAPI.addHttpHandler(server, URL_PREFIX, {
+WorkflowitemsReorderAPI.addHttpHandler(server, URL_PREFIX, {
   setWorkflowitemOrdering: (ctx, user, projectId, subprojectId, ordering) =>
-    SubprojectItemsReorderService.setWorkflowitemOrdering(
+    WorkflowitemsReorderService.setWorkflowitemOrdering(
       db,
       ctx,
       user,
