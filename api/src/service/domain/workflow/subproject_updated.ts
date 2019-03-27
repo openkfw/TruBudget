@@ -9,6 +9,7 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import { projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
+import deepcopy from "../../../lib/deepcopy";
 
 type eventTypeType = "subproject_updated";
 const eventType: eventTypeType = "subproject_updated";
@@ -97,24 +98,17 @@ export function apply(
     );
   }
 
-  const update = event.update;
+  const update = deepcopy(event.update);
 
-  if (update.displayName !== undefined) {
-    subproject.displayName = update.displayName;
-  }
-  if (update.description !== undefined) {
-    subproject.description = update.description;
-  }
-  if (update.additionalData) {
-    for (const key of Object.keys(update.additionalData)) {
-      subproject.additionalData[key] = update.additionalData[key];
-    }
-  }
+  const nextState = {
+    ...subproject,
+    ...update,
+  };
 
-  const result = Subproject.validate(subproject);
+  const result = Subproject.validate(nextState);
   if (Result.isErr(result)) {
     return new EventSourcingError(ctx, event, result.message, subproject.id);
   }
 
-  return subproject;
+  return nextState;
 }

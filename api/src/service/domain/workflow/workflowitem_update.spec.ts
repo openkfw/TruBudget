@@ -223,39 +223,39 @@ describe("update workflowitem: how modifications are applied", () => {
     assert.match(error.message, /closed/);
   });
 
-  it(
-    "Updates to a workflowitem's amount, currency and exchangeRate fields " +
-      'are ignored if the amountType is set to "N/A"',
-    async () => {
-      const modification = {
-        amount: "123",
-        currency: "EUR",
-        exchangeRate: "1.234",
-      };
-      const result = await updateWorkflowitem(
-        ctx,
-        alice,
-        projectId,
-        subprojectId,
-        workflowitemId,
-        modification,
-        {
-          ...baseRepository,
-          getWorkflowitem: async _workflowitemId => ({
-            ...baseWorkflowitem,
-            amountType: "N/A",
-          }),
-        },
-      );
+  // it(
+  //   "Updates to a workflowitem's amount, currency and exchangeRate fields " +
+  //     'are ignored if the amountType is set to "N/A"',
+  //   async () => {
+  //     const modification = {
+  //       amount: "123",
+  //       currency: "EUR",
+  //       exchangeRate: "1.234",
+  //     };
+  //     const result = await updateWorkflowitem(
+  //       ctx,
+  //       alice,
+  //       projectId,
+  //       subprojectId,
+  //       workflowitemId,
+  //       modification,
+  //       {
+  //         ...baseRepository,
+  //         getWorkflowitem: async _workflowitemId => ({
+  //           ...baseWorkflowitem,
+  //           amountType: "N/A",
+  //         }),
+  //       },
+  //     );
 
-      // It works:
-      assert.isTrue(Result.isOk(result), (result as Error).message);
-      const { newEvents } = Result.unwrap(result);
+  //     // It works:
+  //     assert.isTrue(Result.isOk(result), (result as Error).message);
+  //     const { newEvents } = Result.unwrap(result);
 
-      // But there are no new events:
-      assert.lengthOf(newEvents, 0);
-    },
-  );
+  //     // But there are no new events:
+  //     assert.lengthOf(newEvents, 0);
+  //   },
+  // );
 
   it("Updating documents with an empty list doesn't change existing documents", async () => {
     const modification = {

@@ -61,10 +61,8 @@ export async function updateWorkflowitem(
   }
 
   // Check that the new event is indeed valid:
-  const result = withCopy(
-    workflowitem,
-    draft => void WorkflowitemUpdated.apply(ctx, newEvent, draft),
-  );
+  const result = withCopy(workflowitem, draft => WorkflowitemUpdated.apply(ctx, newEvent, draft));
+
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, newEvent, [result]);
   }
