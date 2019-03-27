@@ -69,7 +69,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
           type: "object",
           properties: {
             apiVersion: { type: "string", example: "1.0" },
-            data: {},
+            data: { type: "object" },
           },
         },
         401: NotAuthenticated.schema,
