@@ -500,7 +500,7 @@ const EVENT_PARSER_MAP = {
   subproject_created: SubprojectCreated.validate,
   subproject_permission_granted: SubprojectPermissionsGranted.validate,
   subproject_permission_revoked: SubprojectPermissionsRevoked.validate,
-  subproject_items_reordered: SubprojectItemsReordered.validate,
+  workflowitems_reordered: SubprojectItemsReordered.validate,
   subproject_projected_budget_deleted: SubprojectProjectedBudgetDeleted.validate,
   subproject_projected_budget_updated: SubprojectProjectedBudgetUpdated.validate,
   subproject_updated: SubprojectUpdated.validate,
