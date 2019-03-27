@@ -65,7 +65,7 @@ const requiredPermissions = new Map<EventType, Intent[]>([
   ["workflowitem_assigned", ["workflowitem.view"]],
   ["workflowitem_updated", ["workflowitem.view"]],
   ["workflowitem_closed", ["workflowitem.view"]],
-  ["workflowitem_reordered", ["workflowitem.view"]],
+  ["workflowitems_reordered", ["workflowitem.view"]],
 ]);
 
 function traceEventsVisibleTo(workflowitem: Workflowitem.Workflowitem, user: ServiceUser) {

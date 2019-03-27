@@ -28,7 +28,7 @@ export function sourceSubprojects(
 
   const errors: Error[] = [];
   for (const event of events) {
-    if (!event.type.startsWith("subproject_")) {
+    if (!event.type.startsWith("subproject_") && event.type !== "workflowitems_reordered") {
       continue;
     }
 
@@ -62,7 +62,7 @@ function applySubprojectEvent(
     case "subproject_closed":
       return apply(ctx, event, subprojects, event.subprojectId, SubprojectClosed);
 
-    case "subproject_items_reordered":
+    case "workflowitems_reordered":
       return apply(ctx, event, subprojects, event.subprojectId, SubprojectItemsReordered);
 
     case "subproject_permission_granted":
