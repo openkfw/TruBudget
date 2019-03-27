@@ -36,6 +36,7 @@ jobs:
           - PROJECT_NAME=blockchain
           - PROJECT_NAME=api
           - PROJECT_NAME=frontend
+      after_success: npm run coverage
     - <<: *docker-build
       env:
         matrix:
@@ -58,3 +59,6 @@ jobs:
           -F "variables[TRAVIS_BUILD_ID]=t_$TRAVIS_BUILD_ID" \
           -F "variables[TRAVIS_EVENT_TYPE_FOR_BRANCH]=$TRAVIS_EVENT_TYPE-$TRAVIS_BRANCH" \
           "$WEBHOOK_URL"
+
+notifications:
+  webhooks: https://coveralls.io/webhook
