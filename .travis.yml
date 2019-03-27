@@ -37,8 +37,10 @@ jobs:
   include:
     - <<: *node-unit-test
       env: PROJECT_NAME=blockchain
+      after_success: npm run coverage
     - <<: *node-unit-test
       env: PROJECT_NAME=api
+      after_success: npm run coverage
     - <<: *node-unit-test
       env: PROJECT_NAME=frontend
     - <<: *docker-build
@@ -49,3 +51,6 @@ jobs:
       env: PROJECT_NAME=frontend
     - <<: *docker-build
       env: PROJECT_NAME=provisioning
+
+notifications:
+  webhooks: https://coveralls.io/webhook
