@@ -11,14 +11,16 @@ import * as Result from "./result";
 import * as GroupCreate from "./service/domain/organization/group_create";
 import { ServiceUser } from "./service/domain/organization/service_user";
 
+interface Group {
+  id: string;
+  displayName: string;
+  users: string[];
+}
+
 interface RequestBodyV1 {
   apiVersion: "1.0";
   data: {
-    group: {
-      id: string;
-      displayName: string;
-      users: string[];
-    };
+    group: Group;
   };
 }
 
@@ -87,6 +89,16 @@ function mkSwaggerSchema(server: FastifyInstance) {
             apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
+              properties: {
+                group: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                    displayName: { type: "string", example: "mstein" },
+                    users: { type: "array", items: { type: "string" } },
+                  },
+                },
+              },
             },
           },
         },
@@ -111,7 +123,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  createGroup(ctx: Ctx, user: ServiceUser, group: GroupCreate.RequestData): Promise<void>;
+  createGroup(ctx: Ctx, user: ServiceUser, group: GroupCreate.RequestData): Promise<Group>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -143,11 +155,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     }
 
     invokeService
-      .then(() => {
+      .then(group => {
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: {},
+          data: {
+            group,
+          },
         };
         reply.status(code).send(body);
       })
