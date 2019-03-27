@@ -1,13 +1,12 @@
+import { produce } from "immer";
 import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
-import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
-import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
@@ -93,7 +92,9 @@ export async function closeWorkflowitem(
   }
 
   // Check that the new event is indeed valid:
-  const result = WorkflowitemClosed.apply(ctx, closeEvent, workflowitemToClose);
+  const result = produce(workflowitemToClose, draft =>
+    WorkflowitemClosed.apply(ctx, closeEvent, draft),
+  );
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, closeEvent, [result]);
   }

@@ -1,5 +1,5 @@
+import { produce } from "immer";
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -57,7 +57,9 @@ export async function assignSubproject(
   }
 
   // Check that the new event is indeed valid:
-  const result = SubprojectAssigned.apply(ctx, subprojectAssigned, subproject);
+  const result = produce(subproject, draft =>
+    SubprojectAssigned.apply(ctx, subprojectAssigned, draft),
+  );
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, subprojectAssigned, [result]);
   }

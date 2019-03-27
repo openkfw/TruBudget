@@ -101,7 +101,8 @@ type ApplyFn = (
   event: BusinessEvent,
   subproject: Subproject.Subproject,
 ) => Result.Type<Subproject.Subproject>;
-function apply(
+
+export function apply(
   ctx: Ctx,
   event: BusinessEvent,
   subprojects: Map<Subproject.Id, Subproject.Subproject>,
