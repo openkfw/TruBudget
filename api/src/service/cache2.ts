@@ -29,7 +29,7 @@ import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "./domain/workflow/subproject_closed";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
-import * as SubprojectItemsReordered from "./domain/workflow/subproject_items_reordered";
+import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import * as SubprojectPermissionsGranted from "./domain/workflow/subproject_permission_granted";
 import * as SubprojectPermissionsRevoked from "./domain/workflow/subproject_permission_revoked";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
@@ -499,7 +499,7 @@ const EVENT_PARSER_MAP = {
   subproject_created: SubprojectCreated.validate,
   subproject_permission_granted: SubprojectPermissionsGranted.validate,
   subproject_permission_revoked: SubprojectPermissionsRevoked.validate,
-  workflowitems_reordered: SubprojectItemsReordered.validate,
+  workflowitems_reordered: WorkflowitemsReordered.validate,
   subproject_projected_budget_deleted: SubprojectProjectedBudgetDeleted.validate,
   subproject_projected_budget_updated: SubprojectProjectedBudgetUpdated.validate,
   subproject_updated: SubprojectUpdated.validate,
