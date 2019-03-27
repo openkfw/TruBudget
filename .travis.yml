@@ -31,25 +31,26 @@ stages:
 jobs:
   include:
     - <<: *node-unit-test
-      env:
-        matrix:
-          - PROJECT_NAME=blockchain
-          - PROJECT_NAME=api
-          - PROJECT_NAME=frontend
+      env: PROJECT_NAME=blockchain
       after_success: npm run coverage
+    - <<: *node-unit-test
+      env: PROJECT_NAME=api
+      after_success: npm run coverage
+    - <<: *node-unit-test
+      env: PROJECT_NAME=frontend
     - <<: *docker-build
-      env:
-        matrix:
-          - PROJECT_NAME=blockchain
-          - PROJECT_NAME=api
-          - PROJECT_NAME=frontend
-          - PROJECT_NAME=provisioning
-          - PROJECT_NAME=e2e-test
+      env: PROJECT_NAME=blockchain
+    - <<: *docker-build
+      env: PROJECT_NAME=api
+    - <<: *docker-build
+      env: PROJECT_NAME=frontend
+    - <<: *docker-build
+      env: PROJECT_NAME=provisioning
+    - <<: *docker-build
+      env: PROJECT_NAME=e2e-test
     - stage: notification
       language: minimal
       script:
-        - echo "$TRAVIS_PULL_REQUEST_BRANCH"
-        - echo "$TRAVIS_BRANCH"
         - |
           curl -X POST \
           -F token=$WEBHOOK_TOKEN \
