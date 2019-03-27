@@ -94,8 +94,8 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   type: "object",
                   properties: {
                     id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                    displayName: { type: "string", example: "mstein" },
-                    users: { type: "array", items: { type: "string" } },
+                    displayName: { type: "string", example: "admins" },
+                    users: { type: "array", items: { type: "string", example: "mstein" } },
                   },
                 },
               },
