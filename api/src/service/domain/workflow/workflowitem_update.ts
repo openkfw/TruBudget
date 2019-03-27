@@ -1,4 +1,4 @@
-import { produce as withCopy } from "immer";
+import { produce } from "immer";
 import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -61,7 +61,7 @@ export async function updateWorkflowitem(
   }
 
   // Check that the new event is indeed valid:
-  const result = withCopy(workflowitem, draft => WorkflowitemUpdated.apply(ctx, newEvent, draft));
+  const result = produce(workflowitem, draft => WorkflowitemUpdated.apply(ctx, newEvent, draft));
 
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, newEvent, [result]);
