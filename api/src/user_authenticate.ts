@@ -218,6 +218,6 @@ function createJWT(token: AuthToken, secret: string): string {
       groups: token.groups,
     },
     secret,
-    { expiresIn: "1h" },
+    { expiresIn: "8h" },
   );
 }
