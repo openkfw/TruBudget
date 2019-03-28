@@ -1,5 +1,6 @@
 import { fromJS } from "immutable";
 import sortBy from "lodash/sortBy";
+import isEmpty from "lodash/isEmpty";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
@@ -30,7 +31,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "subproject_closed":
       return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
     case "subproject_items_reordered":
-      return formatString(strings.history.subproject_reorderWorkflowitems, createdBy);
+      return formatString(strings.history.subproject_reorderWorkflowitems, createdBy, snapshot.displayName);
     case "subproject_permission_granted":
       return formatString(
         strings.history.subproject_grantPermission_details,
@@ -50,14 +51,16 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "workflowitem_created":
       return formatString(strings.history.subproject_createWorkflowitem, createdBy, snapshot.displayName);
     case "workflowitem_updated":
-      return formatString(strings.history.workflowitem_update, createdBy, snapshot.displayName);
+      return isEmpty(data.update)
+        ? formatString(strings.history.workflowitem_update, createdBy, snapshot.displayName)
+        : formatString(strings.history.workflowitem_update_docs, createdBy, snapshot.displayName);
     case "workflowitem_assigned":
       return formatString(strings.history.workflowitem_assign, createdBy, snapshot.displayName, data.identity);
     case "workflowitem_closed":
       return formatString(strings.history.workflowitem_close, createdBy, snapshot.displayName);
     case "workflowitem_permission_granted":
       return formatString(
-        strings.history.workflowitem_grantPermission,
+        strings.history.workflowitem_grantPermission_details,
         createdBy,
         formatPermission(data),
         data.identity,
@@ -65,7 +68,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
       );
     case "workflowitem_permission_revoked":
       return formatString(
-        strings.history.workflowitem_revokePermission,
+        strings.history.workflowitem_revokePermission_details,
         createdBy,
         formatPermission(data),
         data.identity,
@@ -102,8 +105,12 @@ class SubProjectHistoryContainer extends Component {
   }
 
   fetchNextHistoryItems = () => {
-    const newOffset = this.props.offset + this.props.limit;
-    this.props.fetchSubProjectHistory(this.props.projectId, this.props.subprojectId, newOffset, this.props.limit);
+    this.props.fetchSubProjectHistory(
+      this.props.projectId,
+      this.props.subprojectId,
+      this.props.offset,
+      this.props.limit
+    );
   };
 
   render() {
@@ -112,6 +119,7 @@ class SubProjectHistoryContainer extends Component {
         resourceHistory={this.state.resourceHistory}
         fetchNextHistoryItems={this.fetchNextHistoryItems}
         mapIntent={mapIntent}
+        userDisplayNameMap={this.state.userDisplayNameMap}
         {...this.props}
       />
     );
@@ -122,7 +130,8 @@ const mapStateToProps = state => {
   return {
     items: state.getIn(["workflow", "historyItems"]),
     historyItemsCount: state.getIn(["workflow", "historyItemsCount"]),
-    show: state.getIn(["notifications", "showHistory"])
+    show: state.getIn(["notifications", "showHistory"]),
+    userDisplayNameMap: state.getIn(["login", "userDisplayNameMap"])
   };
 };
 const mapDispatchToProps = dispatch => {

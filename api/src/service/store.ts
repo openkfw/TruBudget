@@ -53,7 +53,6 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
     case "subproject_projected_budget_updated":
     case "subproject_projected_budget_deleted":
     case "subproject_items_reordered":
-      logger.fatal(event.type);
       return writeTo(conn, ctx, {
         stream: event.projectId,
         keys: ["subprojects", event.subprojectId],

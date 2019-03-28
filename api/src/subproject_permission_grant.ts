@@ -123,7 +123,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       const { projectId, subprojectId, identity: grantee, intent } = bodyResult.data;
-      logger.fatal("call service");
       service
         .grantSubprojectPermission(ctx, user, projectId, subprojectId, grantee, intent)
         .then(() => {

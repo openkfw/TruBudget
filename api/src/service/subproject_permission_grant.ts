@@ -40,10 +40,7 @@ export async function grantSubprojectPermission(
     ),
   );
   if (Result.isErr(result)) return Promise.reject(result);
-  logger.fatal("before store");
   for (const event of result.newEvents) {
-    logger.fatal("store");
-    logger.fatal(event);
     await store(conn, ctx, event);
   }
 }

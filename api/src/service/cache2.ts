@@ -443,21 +443,27 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
       break;
 
     default:
-      // Do nothing, becaue informations will be reflected in aggregates
+      // Do nothing, because informations will be reflected in aggregates
       break;
   }
 }
 
 export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
   // we ignore the errors
-  const { projects } = sourceProjects(ctx, newEvents, cache.cachedProjects);
+  const { projects, errors: pErrors = [] } = sourceProjects(ctx, newEvents, cache.cachedProjects);
+  if (pErrors !== []) logger.warn(pErrors);
 
   for (const project of projects) {
     cache.cachedProjects.set(project.id, project);
   }
 
-  const { subprojects, errors = [] } = sourceSubprojects(ctx, newEvents, cache.cachedSubprojects);
-  logger.fatal(errors);
+  const { subprojects, errors: spErrors = [] } = sourceSubprojects(
+    ctx,
+    newEvents,
+    cache.cachedSubprojects,
+  );
+  if (spErrors !== []) logger.warn(spErrors);
+
   for (const subproject of subprojects) {
     cache.cachedSubprojects.set(subproject.id, subproject);
 
@@ -467,7 +473,12 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
       : lookUp.add(subproject.id);
   }
 
-  const { workflowitems } = sourceWorkflowitems(ctx, newEvents, cache.cachedWorkflowItems);
+  const { workflowitems, errors: wErrors = [] } = sourceWorkflowitems(
+    ctx,
+    newEvents,
+    cache.cachedWorkflowItems,
+  );
+  if (wErrors !== []) logger.warn(wErrors);
 
   for (const workflowitem of workflowitems) {
     cache.cachedWorkflowItems.set(workflowitem.id, workflowitem);

@@ -33,8 +33,6 @@ export function sourceSubprojects(
       continue;
     }
     if (event.type === "subproject_permission_granted") {
-      logger.fatal("granted");
-      logger.fatal(event);
     }
     const result = applySubprojectEvent(ctx, subprojects, event);
     if (Result.isErr(result)) {

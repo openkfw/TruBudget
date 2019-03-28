@@ -61,11 +61,11 @@ export default ({
   show,
   close,
   resourceHistory,
-  mapIntent
+  mapIntent,
+  userDisplayNameMap
 }) => {
   let items = [];
   resourceHistory.map((i, index) => {
-    if (i.businessEvent.type === "project_assigned") console.log(i);
     return items.push(
       <ListItem key={index}>
         <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
@@ -74,11 +74,12 @@ export default ({
             i.intent
               ? mapIntent(i)
               : mapIntent({
-                  createdBy: i.businessEvent.publisher,
+                  createdBy: userDisplayNameMap[i.businessEvent.publisher],
                   intent: i.businessEvent.type,
                   data: {
                     intent: i.businessEvent.permission || "",
-                    identity: i.businessEvent.grantee || i.businessEvent.revokee || i.businessEvent.assignee || ""
+                    identity: i.businessEvent.grantee || i.businessEvent.revokee || i.businessEvent.assignee || "",
+                    update: i.businessEvent.update || {}
                   },
                   snapshot: i.snapshot
                 })
@@ -88,7 +89,8 @@ export default ({
       </ListItem>
     );
   });
-  const hasMore = offset + limit >= historyItemsCount && historyItemsCount !== 0 ? false : true;
+  // limit is set to 0 by saga when fetching the last items
+  const hasMore = limit !== 0 ? true : false;
   if (!hasMore && !isLoading) {
     items.push(
       <ListItem key={historyItemsCount + 1}>

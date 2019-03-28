@@ -38,7 +38,8 @@ export const defaultState = fromJS({
   jwt: "",
   adminLoginFailed: false,
   language: "en-gb",
-  user: []
+  user: [],
+  userDisplayNameMap: {}
 });
 
 export const changeLanguage = state => {
@@ -54,7 +55,11 @@ export default function loginReducer(state = defaultState, action) {
     case STORE_PASSWORD:
       return state.set("password", action.password);
     case FETCH_USER_SUCCESS:
-      return state.set("user", fromJS(action.user));
+      const userMap = {};
+      action.user.forEach(user => {
+        userMap[user.id] = user.displayName;
+      });
+      return state.merge({ user: fromJS(action.user), userDisplayNameMap: fromJS(userMap) });
     case FETCH_ADMIN_USER_SUCCESS:
       return state.merge({
         loggedInAdminUser: action.user,
