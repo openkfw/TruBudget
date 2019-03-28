@@ -1,3 +1,5 @@
+import { isEqual } from "lodash";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -8,9 +10,8 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import { ProjectedBudget } from "./projected_budget";
 import * as Subproject from "./subproject";
-import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget_updated";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
-import { isEqual } from "lodash";
+import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget_updated";
 
 interface Repository {
   getSubproject(

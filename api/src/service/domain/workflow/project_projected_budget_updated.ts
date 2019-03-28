@@ -5,6 +5,7 @@ import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import { CurrencyCode, currencyCodeSchema, MoneyAmount, moneyAmountSchema } from "./money";
 import * as Project from "./project";
+import deepcopy from "../../../lib/deepcopy";
 
 type eventTypeType = "project_projected_budget_updated";
 const eventType: eventTypeType = "project_projected_budget_updated";
@@ -85,14 +86,16 @@ export function mutate(project: Project.Project, event: Event): Result.Type<void
   // organization always have a different currency. The reasoning: if an organization
   // makes two financial commitments in the same currency, they can represented by one
   // commitment with the same currency and the sum of both commitments as its value.
-  const projectedBudgets = project.projectedBudgets;
-  const targetBudget = projectedBudgets.find(
+  const projectedBudgets = deepcopy(project.projectedBudgets);
+  const budgetToUpdateIndex = projectedBudgets.findIndex(
     x => x.organization === event.organization && x.currencyCode === event.currencyCode,
   );
 
-  if (targetBudget !== undefined) {
+  const budgetAlreadyExists = budgetToUpdateIndex !== -1;
+
+  if (budgetAlreadyExists) {
     // Update an existing budget:
-    targetBudget.value = event.value;
+    projectedBudgets[budgetToUpdateIndex].value = event.value;
   } else {
     // Add a new budget:
     projectedBudgets.push({

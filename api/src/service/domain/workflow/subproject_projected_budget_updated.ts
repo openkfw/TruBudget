@@ -91,13 +91,14 @@ export function mutate(subproject: Subproject.Subproject, event: Event): Result.
   // makes two financial commitments in the same currency, they can represented by one
   // commitment with the same currency and the sum of both commitments as its value.
   const projectedBudgets = subproject.projectedBudgets;
-  const targetBudget = projectedBudgets.find(
+  const budgetToUpdateIndex = projectedBudgets.findIndex(
     x => x.organization === event.organization && x.currencyCode === event.currencyCode,
   );
+  const budgetAlreadyExists = budgetToUpdateIndex !== -1;
 
-  if (targetBudget !== undefined) {
+  if (budgetAlreadyExists) {
     // Update an existing budget:
-    targetBudget.value = event.value;
+    projectedBudgets[budgetToUpdateIndex].value = event.value;
   } else {
     // Add a new budget:
     projectedBudgets.push({

@@ -76,7 +76,7 @@ export default class Budget extends React.Component {
                 <TableCell>{budget.organization}</TableCell>
                 <TableCell align="right">{toAmountString(budget.value, budget.currencyCode)}</TableCell>
                 <TableCell align="right">
-                  {!disabled ? (
+                  {true ? (
                     <Button
                       aria-label="Delete"
                       onClick={() => this.deleteBudgetFromList(projectedBudgets, deletedProjectedBudgets, budget)}
@@ -87,7 +87,7 @@ export default class Budget extends React.Component {
                 </TableCell>
               </TableRow>
             ))}
-            {!disabled ? (
+            {true ? (
               <TableRow key={`pb-row-add`}>
                 <TableCell>
                   <TextField
