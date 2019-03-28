@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -50,7 +51,9 @@ export async function deleteProjectedBudget(
   }
 
   // Check that the new event is indeed valid:
-  const result = SubprojectProjectedBudgetDeleted.apply(ctx, budgetDeleted, subproject);
+  const result = produce(subproject, draft =>
+    SubprojectProjectedBudgetDeleted.apply(ctx, budgetDeleted, draft),
+  );
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, budgetDeleted, [result]);
   }

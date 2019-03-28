@@ -1,8 +1,5 @@
-import { produce as withCopy } from "immer";
-import Joi = require("joi");
-import isEqual = require("lodash.isequal");
+import { produce } from "immer";
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -17,6 +14,8 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import Joi = require("joi");
+import isEqual = require("lodash.isequal");
 
 export type RequestData = WorkflowitemUpdated.Modification;
 export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
@@ -61,25 +60,16 @@ export async function updateWorkflowitem(
     return new NotAuthorized(ctx, issuer.id, newEvent);
   }
 
-  try {
-    // Update a draft/copy of the workflowitem, leaving the original workflowitem
-    // unchanged for comparison:
-    workflowitem = withCopy(workflowitem, draft => {
-      // Check that the new event is indeed valid:
-      const result = WorkflowitemUpdated.apply(ctx, newEvent, draft);
-      if (Result.isErr(result)) {
-        throw new InvalidCommand(ctx, newEvent, [result]);
-      }
+  // Check that the new event is indeed valid:
+  const result = produce(workflowitem, draft => WorkflowitemUpdated.apply(ctx, newEvent, draft));
 
-      // Ignore the update if it doesn't change anything:
-      if (isEqual(workflowitem, result)) {
-        throw { newEvents: [], workflowitem };
-      }
+  if (Result.isErr(result)) {
+    return new InvalidCommand(ctx, newEvent, [result]);
+  }
 
-      return result;
-    });
-  } catch (result) {
-    return result;
+  // Ignore the update if it doesn't change anything:
+  if (isEqual(workflowitem, result)) {
+    return { newEvents: [], workflowitem };
   }
 
   // Create notification events:
@@ -101,5 +91,5 @@ export async function updateWorkflowitem(
       ),
     );
 
-  return { newEvents: [newEvent, ...notifications], workflowitem };
+  return { newEvents: [newEvent, ...notifications], workflowitem: result };
 }

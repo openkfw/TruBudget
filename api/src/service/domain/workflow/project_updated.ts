@@ -7,6 +7,7 @@ import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
+import deepcopy from "../../../lib/deepcopy";
 
 type eventTypeType = "project_updated";
 const eventType: eventTypeType = "project_updated";
@@ -85,26 +86,17 @@ export function apply(
   event: Event,
   project: Project.Project,
 ): Result.Type<Project.Project> {
-  const update = event.update;
-  if (update.displayName !== undefined) {
-    project.displayName = update.displayName;
-  }
-  if (update.description !== undefined) {
-    project.description = update.description;
-  }
-  if (update.thumbnail !== undefined) {
-    project.thumbnail = update.thumbnail;
-  }
-  if (update.additionalData) {
-    for (const key of Object.keys(update.additionalData)) {
-      project.additionalData[key] = update.additionalData[key];
-    }
-  }
+  const update = deepcopy(event.update);
 
-  const result = Project.validate(project);
+  const nextState = {
+    ...project,
+    ...update,
+  };
+
+  const result = Project.validate(nextState);
   if (Result.isErr(result)) {
     return new EventSourcingError(ctx, event, result.message, project.id);
   }
 
-  return project;
+  return nextState;
 }

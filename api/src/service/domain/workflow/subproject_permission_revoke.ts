@@ -1,5 +1,6 @@
 import isEqual = require("lodash.isequal");
 
+import { produce } from "immer";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -53,7 +54,9 @@ export async function revokeSubprojectPermission(
   }
 
   // Check that the new event is indeed valid:
-  const updatedSubproject = SubprojectPermissionRevoked.apply(ctx, permissionRevoked, subproject);
+  const updatedSubproject = produce(subproject, draft =>
+    SubprojectPermissionRevoked.apply(ctx, permissionRevoked, draft),
+  );
   if (Result.isErr(updatedSubproject)) {
     return new InvalidCommand(ctx, permissionRevoked, [updatedSubproject]);
   }

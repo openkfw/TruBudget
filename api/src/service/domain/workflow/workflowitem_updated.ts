@@ -10,6 +10,8 @@ import { StoredDocument, storedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import deepcopy from "../../../lib/deepcopy";
+import logger from "../../../lib/logger";
 
 type eventTypeType = "workflowitem_updated";
 const eventType: eventTypeType = "workflowitem_updated";
@@ -112,55 +114,43 @@ export function apply(
     );
   }
 
-  const update = event.update;
-
-  if (update.displayName !== undefined) {
-    workflowitem.displayName = update.displayName;
-  }
-  if (update.description !== undefined) {
-    workflowitem.description = update.description;
-  }
-  if (update.billingDate !== undefined) {
-    workflowitem.billingDate = update.billingDate;
-  }
-  if (update.dueDate !== undefined) {
-    workflowitem.dueDate = update.dueDate;
-  }
-
-  if (update.amountType !== undefined) {
-    workflowitem.amountType = update.amountType;
-  }
-  if (workflowitem.amountType !== "N/A") {
-    if (update.amount !== undefined) {
-      workflowitem.amount = update.amount;
-    }
-    if (update.currency !== undefined) {
-      workflowitem.currency = update.currency;
-    }
-    if (update.exchangeRate !== undefined) {
-      workflowitem.exchangeRate = update.exchangeRate;
-    }
-  }
+  // deep copy and remove undefined fields of object
+  const update = deepcopy(event.update);
+  const currentDocuments = workflowitem.documents ? deepcopy(workflowitem.documents) : [];
 
   if (update.documents !== undefined) {
-    // Attention, funny behavior: if a document has an ID that is already present in the
-    // documents list IT IS SILENTLY IGNORED:
-    const currentDocuments = workflowitem.documents || [];
     const currentDocumentIds = currentDocuments.map(x => x.id);
-    workflowitem.documents = update.documents
-      .filter(x => !currentDocumentIds.includes(x.id))
-      .concat(currentDocuments);
-  }
-  if (update.additionalData) {
-    for (const key of Object.keys(update.additionalData)) {
-      workflowitem.additionalData[key] = update.additionalData[key];
+    const newDocuments = update.documents.filter(x => !currentDocumentIds.includes(x.id));
+    for (const newDocument of newDocuments) {
+      currentDocuments.push(newDocument);
     }
   }
 
-  const result = Workflowitem.validate(workflowitem);
+  let nextState: Workflowitem.Workflowitem;
+
+  if (
+    (update.amountType && update.amountType === "N/A") ||
+    (update.amountType === undefined && workflowitem.amountType === "N/A")
+  ) {
+    const { amount, currency, exchangeRate, ...workflowitemWOAmounts } = workflowitem;
+
+    nextState = {
+      ...workflowitemWOAmounts,
+      ...update,
+      documents: currentDocuments,
+    };
+  } else {
+    nextState = {
+      ...workflowitem,
+      ...update,
+      documents: currentDocuments,
+    };
+  }
+
+  const result = Workflowitem.validate(nextState);
   if (Result.isErr(result)) {
     return new EventSourcingError(ctx, event, result.message, workflowitem.id);
   }
 
-  return workflowitem;
+  return nextState;
 }

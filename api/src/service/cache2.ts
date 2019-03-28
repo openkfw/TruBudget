@@ -1,5 +1,6 @@
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
+import deepcopy from "../lib/deepcopy";
 import * as Result from "../result";
 import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
@@ -115,17 +116,17 @@ export type TransactionFn<T> = (cache: CacheInstance) => Promise<T>;
 export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
   return {
     getGlobalEvents: (): BusinessEvent[] => {
-      return cache.eventsByStream.get("global") || [];
+      return deepcopy(cache.eventsByStream.get("global")) || [];
     },
 
     getUserEvents: (_userId?: string): BusinessEvent[] => {
       // userId currently not leveraged
-      return cache.eventsByStream.get("users") || [];
+      return deepcopy(cache.eventsByStream.get("users")) || [];
     },
 
     getGroupEvents: (_groupId?: string): BusinessEvent[] => {
       // groupId currently not leveraged
-      return cache.eventsByStream.get("groups") || [];
+      return deepcopy(cache.eventsByStream.get("groups")) || [];
     },
 
     getNotificationEvents: (userId: string): BusinessEvent[] => {
@@ -145,11 +146,11 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         }
       };
 
-      return (cache.eventsByStream.get("notifications") || []).filter(userFilter);
+      return (deepcopy(cache.eventsByStream.get("notifications")) || []).filter(userFilter);
     },
 
     getProjects: async (): Promise<Project.Project[]> => {
-      return [...cache.cachedProjects.values()];
+      return deepcopy([...cache.cachedProjects.values()]);
     },
 
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
@@ -158,7 +159,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       if (project === undefined) {
         return new NotFound(ctx, "project", projectId);
       }
-      return project;
+      return deepcopy(project);
     },
 
     getSubprojects: async (projectId: string): Promise<Result.Type<Subproject.Subproject[]>> => {
@@ -178,7 +179,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         }
         subprojects.push(sp);
       }
-      return subprojects;
+      return deepcopy(subprojects);
     },
 
     getSubproject: (
@@ -189,7 +190,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       if (subproject === undefined) {
         return new NotFound(ctx, "subproject", subprojectId);
       }
-      return subproject;
+      return deepcopy(subproject);
     },
 
     getWorkflowitems: async (
@@ -211,7 +212,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         }
         workflowitems.push(wf);
       }
-      return workflowitems;
+      return deepcopy(workflowitems);
     },
 
     getWorkflowitem: async (
@@ -223,7 +224,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       if (workflowitem === undefined) {
         return new NotFound(ctx, "workflowitem", workflowitemId);
       }
-      return workflowitem;
+      return deepcopy(workflowitem);
     },
   };
 }

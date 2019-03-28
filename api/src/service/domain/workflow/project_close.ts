@@ -1,5 +1,5 @@
+import { produce } from "immer";
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -63,7 +63,7 @@ export async function closeProject(
   }
 
   // Check that the new event is indeed valid:
-  const result = ProjectClosed.apply(ctx, projectClosed, project);
+  const result = produce(project, draft => ProjectClosed.apply(ctx, projectClosed, draft));
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, projectClosed, [result]);
   }

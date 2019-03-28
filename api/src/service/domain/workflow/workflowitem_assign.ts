@@ -1,5 +1,5 @@
+import { produce } from "immer";
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -63,7 +63,9 @@ export async function assignWorkflowitem(
   }
 
   // Check that the new event is indeed valid:
-  const result = WorkflowitemAssigned.apply(ctx, assignEvent, workflowitem);
+  const result = produce(workflowitem, draft =>
+    WorkflowitemAssigned.apply(ctx, assignEvent, draft),
+  );
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, assignEvent, [result]);
   }

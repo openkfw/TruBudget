@@ -1,8 +1,7 @@
-import { produce as withCopy } from "immer";
 import Joi = require("joi");
 import isEqual = require("lodash.isequal");
+import { produce } from "immer";
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -67,21 +66,15 @@ export async function updateSubproject(
   }
 
   // Check that the new event is indeed valid:
-  try {
-    subproject = withCopy(subproject, draft => {
-      const result = SubprojectUpdated.apply(ctx, subprojectUpdated, draft);
-      if (Result.isErr(result)) {
-        throw new InvalidCommand(ctx, subprojectUpdated, [result]);
-      }
+  const result = produce(subproject, draft =>
+    SubprojectUpdated.apply(ctx, subprojectUpdated, draft),
+  );
+  if (Result.isErr(result)) {
+    return new InvalidCommand(ctx, subprojectUpdated, [result]);
+  }
 
-      if (isEqual(subproject, result)) {
-        throw { subprojectUpdated: [], subproject };
-      }
-
-      return result;
-    });
-  } catch (result) {
-    return result;
+  if (isEqual(subproject, result)) {
+    return { newEvents: [] };
   }
 
   // Create notification events:

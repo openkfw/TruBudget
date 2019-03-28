@@ -1,5 +1,4 @@
-import { produce as withCopy } from "immer";
-
+import { produce } from "immer";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -106,7 +105,7 @@ function apply(
   }
 
   try {
-    return withCopy(project, draft => {
+    return produce(project, draft => {
       const result = eventModule.apply(ctx, event, draft);
       if (Result.isErr(result)) {
         throw result;

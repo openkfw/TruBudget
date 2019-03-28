@@ -1,6 +1,7 @@
+import { produce } from "immer";
 import { Ctx } from "../../../lib/ctx";
-import { BusinessEvent } from "../business_event";
 import * as Result from "../../../result";
+import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -49,7 +50,9 @@ export async function updateProjectedBudget(
 
   // Check that the new event is indeed valid:
 
-  const result = ProjectProjectedBudgetUpdated.apply(ctx, budgetUpdated, project);
+  const result = produce(project, draft =>
+    ProjectProjectedBudgetUpdated.apply(ctx, budgetUpdated, draft),
+  );
 
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, budgetUpdated, [result]);

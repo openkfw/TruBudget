@@ -1,4 +1,4 @@
-import { produce as withCopy } from "immer";
+import { produce } from "immer";
 
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -101,7 +101,8 @@ type ApplyFn = (
   event: BusinessEvent,
   subproject: Subproject.Subproject,
 ) => Result.Type<Subproject.Subproject>;
-function apply(
+
+export function apply(
   ctx: Ctx,
   event: BusinessEvent,
   subprojects: Map<Subproject.Id, Subproject.Subproject>,
@@ -114,7 +115,7 @@ function apply(
   }
 
   try {
-    return withCopy(subproject, draft => {
+    return produce(subproject, draft => {
       const result = eventModule.apply(ctx, event, draft);
       if (Result.isErr(result)) {
         throw result;
