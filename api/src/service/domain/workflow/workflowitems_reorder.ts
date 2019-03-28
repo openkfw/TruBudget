@@ -61,7 +61,6 @@ export async function setWorkflowitemOrdering(
   const result = produce(subproject, draft =>
     WorkflowitemsReordered.apply(ctx, reorderEvent, draft),
   );
-  // const result = WorkflowitemsReordered.apply(ctx, reorderEvent, subproject);
 
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, reorderEvent, [result]);
