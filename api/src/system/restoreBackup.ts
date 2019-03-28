@@ -34,7 +34,7 @@ export const restoreBackup = async (
     200,
     {
       apiVersion: "1.0",
-      data: "OK",
+      data: {},
     },
   ];
 };

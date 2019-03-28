@@ -54,73 +54,75 @@ interface ResponseUserRecord {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: "Create a new user.",
-    tags: ["global"],
-    summary: "Create a user",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["user"],
-          properties: {
-            user: {
-              type: "object",
-              required: ["id", "displayName", "organization", "password"],
-              properties: {
-                id: { type: "string", example: "aSmith" },
-                displayName: { type: "string", example: "Alice Smith" },
-                organization: { type: "string", example: "Alice's Solutions & Co" },
-                address: { type: "string", example: "ab2354defa123c01275a83bc1d" },
-              },
-            },
-          },
+    schema: {
+      description: "Create a new user.",
+      tags: ["global"],
+      summary: "Create a user",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
+            required: ["user"],
             properties: {
               user: {
                 type: "object",
+                required: ["id", "displayName", "organization", "password"],
                 properties: {
-                  id: { type: "string", example: "myId" },
+                  id: { type: "string", example: "aSmith" },
                   displayName: { type: "string", example: "Alice Smith" },
                   organization: { type: "string", example: "Alice's Solutions & Co" },
-                  address: {
-                    type: "string",
-                    example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
-                  },
+                  address: { type: "string", example: "ab2354defa123c01275a83bc1d" },
                 },
               },
             },
           },
         },
       },
-      401: NotAuthenticated.schema,
-      409: {
-        description: "User already exists",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          error: {
-            type: "object",
-            properties: {
-              code: { type: "string", example: "409" },
-              message: { type: "string", example: "User already exists." },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                user: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "myId" },
+                    displayName: { type: "string", example: "Alice Smith" },
+                    organization: { type: "string", example: "Alice's Solutions & Co" },
+                    address: {
+                      type: "string",
+                      example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+        409: {
+          description: "User already exists",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            error: {
+              type: "object",
+              properties: {
+                code: { type: "string", example: "409" },
+                message: { type: "string", example: "User already exists." },
+              },
             },
           },
         },

@@ -4,7 +4,7 @@ import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
-import { Id } from "./domain/workflow/subproject";
+import { ResourceMap } from "./domain/ResourceMap";
 import * as Subproject from "./domain/workflow/subproject_create";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import { store } from "./store";
@@ -16,7 +16,7 @@ export async function createSubproject(
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: Subproject.RequestData,
-): Promise<Id> {
+): Promise<ResourceMap> {
   const result = await Cache.withCache(conn, ctx, cache => {
     return Subproject.createSubproject(ctx, serviceUser, requestData, {
       subprojectExists: async (projectId, subprojectId) => {
@@ -43,9 +43,14 @@ export async function createSubproject(
   }
 
   const subprojectEvent = result.newEvents.find(x => (x as any).subproject.id !== undefined);
-  if (subprojectEvent === undefined)
+  if (subprojectEvent === undefined) {
     throw Error(
       `Assertion: This is a bug. Created subproject but couldn't find its creation Event`,
     );
-  return (subprojectEvent as SubprojectCreated.Event).subproject.id;
+  }
+  const resourceIds: ResourceMap = {
+    project: { id: (subprojectEvent as SubprojectCreated.Event).projectId },
+    subproject: { id: (subprojectEvent as SubprojectCreated.Event).subproject.id },
+  };
+  return resourceIds;
 }
