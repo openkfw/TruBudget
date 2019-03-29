@@ -1,6 +1,7 @@
 import { Ctx } from "../lib/ctx";
-import logger from "../lib/logger";
 import deepcopy from "../lib/deepcopy";
+import { isEmpty } from "../lib/emptyChecks";
+import logger from "../lib/logger";
 import * as Result from "../result";
 import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
@@ -449,9 +450,8 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
 }
 
 export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
-  // we ignore the errors
   const { projects, errors: pErrors = [] } = sourceProjects(ctx, newEvents, cache.cachedProjects);
-  if (pErrors !== []) logger.warn(pErrors);
+  if (!isEmpty(pErrors)) logger.warn("sourceProject caused error: ", pErrors);
 
   for (const project of projects) {
     cache.cachedProjects.set(project.id, project);
@@ -462,7 +462,7 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
     newEvents,
     cache.cachedSubprojects,
   );
-  if (spErrors !== []) logger.warn(spErrors);
+  if (!isEmpty(spErrors)) logger.warn("sourceSubproject caused error: ", spErrors);
 
   for (const subproject of subprojects) {
     cache.cachedSubprojects.set(subproject.id, subproject);
@@ -478,7 +478,7 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
     newEvents,
     cache.cachedWorkflowItems,
   );
-  if (wErrors !== []) logger.warn(wErrors);
+  if (!isEmpty(wErrors)) logger.warn("sourceWorkflowitems caused error: ", wErrors);
 
   for (const workflowitem of workflowitems) {
     cache.cachedWorkflowItems.set(workflowitem.id, workflowitem);

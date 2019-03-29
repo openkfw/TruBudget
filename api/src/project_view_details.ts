@@ -77,11 +77,13 @@ function mkSwaggerSchema(server: FastifyInstance) {
                       type: "array",
                       items: {
                         type: "object",
+                        additionalProperties: true,
                         properties: {
                           entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                           entityType: { type: "string", example: "project" },
                           businessEvent: {
                             type: "object",
+                            additionalProperties: true,
                             properties: {
                               type: { type: "string" },
                               source: { type: "string" },
@@ -97,6 +99,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           },
                           snapshot: {
                             type: "object",
+                            additionalProperties: true,
                             properties: {
                               displayName: { type: "string", example: "Build a town-project" },
                             },

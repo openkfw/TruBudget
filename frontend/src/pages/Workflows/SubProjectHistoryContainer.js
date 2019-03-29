@@ -51,7 +51,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "workflowitem_created":
       return formatString(strings.history.subproject_createWorkflowitem, createdBy, snapshot.displayName);
     case "workflowitem_updated":
-      return isEmpty(data.update)
+      return isEmpty(data.update.documents)
         ? formatString(strings.history.workflowitem_update, createdBy, snapshot.displayName)
         : formatString(strings.history.workflowitem_update_docs, createdBy, snapshot.displayName);
     case "workflowitem_assigned":

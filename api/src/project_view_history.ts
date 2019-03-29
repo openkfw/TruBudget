@@ -84,25 +84,27 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   items: {
                     type: "object",
                     properties: {
-                      key: { type: "string" },
-                      intent: { type: "string", example: "global.createProject" },
-                      createdBy: { type: "string", example: "aSmith" },
-                      createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
-                      dataVersion: { type: "string", example: "1" },
-                      data: {
+                      entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                      entityType: { type: "string", example: "project" },
+                      businessEvent: {
                         type: "object",
                         additionalProperties: true,
-                        example: { identity: "aSmith", intent: "subproject.viewDetails" },
                         properties: {
-                          permissions: {
-                            type: "object",
-                            additionalProperties: true,
-                            example: { "subproject.intent.listPermissions": ["aSmith", "jDoe"] },
-                          },
+                          type: { type: "string" },
+                          source: { type: "string" },
+                          time: { type: "string" },
+                          publisher: { type: "string" },
+                        },
+                        example: {
+                          type: "project_closed",
+                          source: "http",
+                          time: "2018-09-05T13:37:25.775Z",
+                          publisher: "jdoe",
                         },
                       },
                       snapshot: {
                         type: "object",
+                        additionalProperties: true,
                         properties: {
                           displayName: { type: "string", example: "townproject" },
                         },

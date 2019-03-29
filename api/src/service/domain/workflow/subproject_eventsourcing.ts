@@ -1,6 +1,7 @@
 import { produce } from "immer";
 
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -15,7 +16,6 @@ import * as SubprojectProjectedBudgetDeleted from "./subproject_projected_budget
 import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget_updated";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 import * as SubprojectUpdated from "./subproject_updated";
-import logger from "../../../lib/logger";
 
 export function sourceSubprojects(
   ctx: Ctx,
@@ -31,8 +31,6 @@ export function sourceSubprojects(
   for (const event of events) {
     if (!event.type.startsWith("subproject_")) {
       continue;
-    }
-    if (event.type === "subproject_permission_granted") {
     }
     const result = applySubprojectEvent(ctx, subprojects, event);
     if (Result.isErr(result)) {
@@ -81,7 +79,7 @@ function applySubprojectEvent(
       return apply(ctx, event, subprojects, event.subprojectId, SubprojectProjectedBudgetDeleted);
 
     default:
-      return Error(`not implemented!!!!!!!!!!!!!!!: ${event.type}`);
+      return Error(`not implemented: ${event.type}`);
   }
 }
 

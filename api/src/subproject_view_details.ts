@@ -91,63 +91,31 @@ function mkSwaggerSchema(server: FastifyInstance) {
                       type: "array",
                       items: {
                         type: "object",
+                        additionalProperties: true,
                         properties: {
-                          key: { type: "string" },
-                          intent: { type: "string", example: "global.createProject" },
-                          createdBy: { type: "string", example: "aSmith" },
-                          createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
-                          dataVersion: { type: "string", example: "1" },
-                          data: {
+                          entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                          entityType: { type: "string", example: "subproject" },
+                          businessEvent: {
                             type: "object",
+                            additionalProperties: true,
                             properties: {
-                              subproject: {
-                                type: "object",
-                                properties: {
-                                  id: {
-                                    type: "string",
-                                    example: "d0e8c69eg298c87e3899119e025eff1f",
-                                  },
-                                  creationUnixTs: { type: "string", example: "1536154645775" },
-                                  status: { type: "string", example: "open" },
-                                  displayName: { type: "string", example: "school" },
-                                  description: {
-                                    type: "string",
-                                    example: "school should be built",
-                                  },
-                                  billingDate: {
-                                    type: "string",
-                                    example: "2018-12-11T00:00:00.000Z",
-                                  },
-                                  exchangeRate: { type: "string", example: "1.0" },
-                                  assignee: { type: "string", example: "aSmith" },
-                                  currency: { type: "string", example: "EUR" },
-                                  projectedBudgets: {
-                                    type: "array",
-                                    items: {
-                                      type: "object",
-                                      properties: {
-                                        organization: { type: "string", example: "MyOrga" },
-                                        value: { type: "string", example: "1234" },
-                                        currencyCode: { type: "string", example: "EUR" },
-                                      },
-                                    },
-                                  },
-                                  thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
-                                },
-                              },
-                              permissions: {
-                                type: "object",
-                                additionalProperties: true,
-                                example: {
-                                  "subproject.intent.listPermissions": ["aSmith", "jDoe"],
-                                },
-                              },
-                              snapshot: {
-                                type: "object",
-                                properties: {
-                                  displayName: { type: "string", example: "school" },
-                                },
-                              },
+                              type: { type: "string" },
+                              source: { type: "string" },
+                              time: { type: "string" },
+                              publisher: { type: "string" },
+                            },
+                            example: {
+                              type: "subproject_closed",
+                              source: "http",
+                              time: "2018-09-05T13:37:25.775Z",
+                              publisher: "jdoe",
+                            },
+                          },
+                          snapshot: {
+                            type: "object",
+                            additionalProperties: true,
+                            properties: {
+                              displayName: { type: "string", example: "townproject" },
                             },
                           },
                         },
@@ -325,7 +293,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         if (Result.isErr(workflowitemsResult)) {
           workflowitemsResult.message = `subproject.viewDetails failed: ${
             workflowitemsResult.message
-            }`;
+          }`;
           throw workflowitemsResult;
         }
 

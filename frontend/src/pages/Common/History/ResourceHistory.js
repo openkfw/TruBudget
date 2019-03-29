@@ -70,20 +70,16 @@ export default ({
       <ListItem key={index}>
         <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
         <ListItemText
-          primary={
-            i.intent
-              ? mapIntent(i)
-              : mapIntent({
-                  createdBy: userDisplayNameMap[i.businessEvent.publisher],
-                  intent: i.businessEvent.type,
-                  data: {
-                    intent: i.businessEvent.permission || "",
-                    identity: i.businessEvent.grantee || i.businessEvent.revokee || i.businessEvent.assignee || "",
-                    update: i.businessEvent.update || {}
-                  },
-                  snapshot: i.snapshot
-                })
-          }
+          primary={mapIntent({
+            createdBy: userDisplayNameMap[i.businessEvent.publisher],
+            intent: i.businessEvent.type,
+            data: {
+              intent: i.businessEvent.permission || "",
+              identity: i.businessEvent.grantee || i.businessEvent.revokee || i.businessEvent.assignee || "",
+              update: i.businessEvent.update || {}
+            },
+            snapshot: i.snapshot
+          })}
           secondary={creationTimeExists(i)}
         />
       </ListItem>
