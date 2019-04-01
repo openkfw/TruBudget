@@ -9,11 +9,11 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/workflow/document";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import * as WorkflowitemUpdate from "./service/workflowitem_update";
-import { uploadedDocumentSchema, UploadedDocument } from "./service/domain/workflow/document";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -64,68 +64,70 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Partially update a workflowitem. Only properties mentioned in the request body are touched, " +
-      "others are not affected. The assigned user will be notified about the change.\n" +
-      "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
-      "The only possible values for 'status' are: 'open' and 'closed'",
-    tags: ["workflowitem"],
-    summary: "Update a workflowitem",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["workflowitemId", "subprojectId", "projectId"],
-          properties: {
-            displayName: { type: "string", example: "classroom" },
-            description: { type: "string", example: "build a classroom" },
-            amountType: { type: "string", example: "disbursed" },
-            amount: { type: "string", example: "500" },
-            currency: { type: "string", example: "EUR" },
-            exchangeRate: { type: "string", example: "1.0" },
-            billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-            dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-            projectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
-            subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
-            workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
-            documents: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  id: { type: "string", example: "myId" },
-                  base64: {
-                    type: "string",
-                    example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
-                  },
-                },
-              },
-            },
-            additionalData: { type: "object" },
-          },
+    schema: {
+      description:
+        "Partially update a workflowitem. Only properties mentioned in the request body are touched, " +
+        "others are not affected. The assigned user will be notified about the change.\n" +
+        "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
+        "The only possible values for 'status' are: 'open' and 'closed'",
+      tags: ["workflowitem"],
+      summary: "Update a workflowitem",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
+            type: "object",
+            required: ["workflowitemId", "subprojectId", "projectId"],
+            properties: {
+              displayName: { type: "string", example: "classroom" },
+              description: { type: "string", example: "build a classroom" },
+              amountType: { type: "string", example: "disbursed" },
+              amount: { type: "string", example: "500" },
+              currency: { type: "string", example: "EUR" },
+              exchangeRate: { type: "string", example: "1.0" },
+              billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+              dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+              projectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
+              subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
+              workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+              documents: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "myId" },
+                    base64: {
+                      type: "string",
+                      example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
+                    },
+                  },
+                },
+              },
+              additionalData: { type: "object" },
+            },
           },
         },
       },
-      401: NotAuthenticated.schema,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+            },
+          },
+          401: NotAuthenticated.schema,
+        },
+      },
     },
   };
 }
@@ -166,7 +168,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: "OK",
+          data: {},
         };
         reply.status(code).send(body);
       })

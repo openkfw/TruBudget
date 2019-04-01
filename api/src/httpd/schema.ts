@@ -41,8 +41,7 @@ function getAuthErrorSchema() {
 function getSuccessfulSchema() {
   return {
     description: "successful response",
-    type: "string",
-    example: "OK",
+    type: "object",
   };
 }
 
@@ -2986,7 +2985,7 @@ const schemas = {
           properties: {
             apiVersion: { type: "string", example: "1.0" },
             data: {
-              type: "string",
+              type: "object",
             },
           },
         },
@@ -3030,7 +3029,7 @@ const schemas = {
           properties: {
             apiVersion: { type: "string", example: "1.0" },
             data: {
-              type: "string",
+              type: "object",
             },
           },
         },
@@ -3069,7 +3068,7 @@ const schemas = {
           properties: {
             apiVersion: { type: "string", example: "1.0" },
             data: {
-              type: "string",
+              type: "object",
             },
           },
         },
@@ -3110,7 +3109,7 @@ const schemas = {
           properties: {
             apiVersion: { type: "string", example: "1.0" },
             data: {
-              type: "string",
+              type: "object",
             },
           },
         },
@@ -3276,8 +3275,7 @@ const schemas = {
           properties: {
             apiVersion: { type: "string", example: "1.0" },
             data: {
-              type: "string",
-              example: "OK",
+              type: "object",
             },
           },
         },

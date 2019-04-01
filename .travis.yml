@@ -1,9 +1,20 @@
 stages:
+  - name: audit
+    if: type = cron
   - test
   - name: dockerbuild
     if: fork = false AND NOT type = pull_request AND (branch = master OR tag IS present)
 
-# provide PROJECT_NAME environment variable if you extend this template
+.audit: &audit
+  stage: audit
+  language: node_js
+  node_js:
+    - "10"
+  cache: npm
+  script:
+    - cd $PROJECT_NAME
+    - npm audit
+
 .node-unit-test: &node-unit-test
   stage: test
   language: node_js
@@ -15,7 +26,6 @@ stages:
     - npm ci
     - npm test
 
-# provide PROJECT_NAME environment variable if you extend this template
 .docker-build: &docker-build
   stage: dockerbuild
   language: minimal
@@ -35,6 +45,12 @@ stages:
 
 jobs:
   include:
+    - <<: *audit
+      env: PROJECT_NAME=blockchain
+    - <<: *audit
+      env: PROJECT_NAME=api
+    - <<: *audit
+      env: PROJECT_NAME=frontend
     - <<: *node-unit-test
       env: PROJECT_NAME=blockchain
       after_success: npm run coverage

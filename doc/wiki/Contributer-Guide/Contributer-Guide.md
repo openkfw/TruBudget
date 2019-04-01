@@ -86,7 +86,7 @@ The blockchain works as data layer for the Trubudget application. Therefore, we 
 <br />
 First, navigate to the `/blockchain` folder, install all the npm packages and then start the blockchain via a shellscript:
 
-1. Navigate to the trubudget-app/blockchain folder and start your favourite shell.
+1. Navigate to the ./blockchain folder and start your favourite shell.
 
 ```bash
 cd blockchain

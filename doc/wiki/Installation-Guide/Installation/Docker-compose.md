@@ -28,10 +28,10 @@ Start with checking out the repository:
 
 ```bash
 git clone https://github.com/openkfw/TruBudget
-cd trubudget-app
+cd TruBudget
 ```
 
-This will create a local copy of the source code in a folder called `trubudget-app` (= your local checkout).
+This will create a local copy of the source code in a folder called `TruBudget` (= your local checkout).
 
 If you work with an existing checkout, make sure you have the latest changes:
 
@@ -77,7 +77,7 @@ volumes:
 ```
 
 The next step is to set all required environment properties, otherwise Docker will not receive the required parameters to start the deployment.
-In the `trubudget-app` folder, copy the `.env_example` file and rename it to `.env`:
+In the `TruBudget` folder, copy the `.env_example` file and rename it to `.env`:
 
 ```bash
 cp .env_example .env
@@ -167,7 +167,7 @@ volumes:
 _Windows users_: With Docker for Windows it's not possible to mount the volumes with this configuration. To be able do use the Docker-Compose installation you need to comment (or remove) the lines with the `volumes` configuration.
 
 The next step is to set all required environment properties, otherwise Docker will not receive the required parameters to start the deployment.
-In the `trubudget-app` folder, copy the `.env_example` file and rename it to `.env`:
+In the `TruBudget` folder, copy the `.env_example` file and rename it to `.env`:
 
 ```bash
 cp .env_example .env

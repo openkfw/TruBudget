@@ -14,81 +14,83 @@ import * as Workflowitem from "./service/domain/workflow/workflowitem";
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Retrieve all workflowitems of a given subproject. Those items the " +
-      "user is not allowed to see will be redacted, that is, most of their values will be " +
-      "set to null.",
-    tags: ["workflowitem"],
-    summary: "List all workflowitems of a given subproject",
-    querystring: {
-      type: "object",
-      properties: {
-        projectId: {
-          type: "string",
-        },
-        subprojectId: {
-          type: "string",
-        },
-      },
-    },
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    response: {
-      200: {
-        description: "successful response",
+    schema: {
+      description:
+        "Retrieve all workflowitems of a given subproject. Those items the " +
+        "user is not allowed to see will be redacted, that is, most of their values will be " +
+        "set to null.",
+      tags: ["workflowitem"],
+      summary: "List all workflowitems of a given subproject",
+      querystring: {
         type: "object",
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              workflowitems: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    data: {
-                      type: "object",
-                      properties: {
-                        id: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
-                        creationUnixTs: { type: "string", example: "1536154645775" },
-                        status: { type: "string", example: "open" },
-                        amountType: { type: "string", example: "disbursed" },
-                        displayName: { type: "string", example: "classroom" },
-                        description: { type: "string", example: "build a classroom" },
-                        amount: { type: "string", example: "500" },
-                        assignee: { type: "string", example: "aSmith" },
-                        currency: { type: "string", example: "EUR" },
-                        billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-                        exchangeRate: { type: "string", example: "1.0" },
-                        documents: {
-                          type: "array",
-                          items: {
-                            type: "object",
-                            properties: {
-                              id: { type: "string", example: "classroom-contract" },
-                              hash: {
-                                type: "string",
-                                example:
-                                  "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
+          projectId: {
+            type: "string",
+          },
+          subprojectId: {
+            type: "string",
+          },
+        },
+      },
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                workflowitems: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+                          creationUnixTs: { type: "string", example: "1536154645775" },
+                          status: { type: "string", example: "open" },
+                          amountType: { type: "string", example: "disbursed" },
+                          displayName: { type: "string", example: "classroom" },
+                          description: { type: "string", example: "build a classroom" },
+                          amount: { type: "string", example: "500" },
+                          assignee: { type: "string", example: "aSmith" },
+                          currency: { type: "string", example: "EUR" },
+                          billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+                          exchangeRate: { type: "string", example: "1.0" },
+                          documents: {
+                            type: "array",
+                            items: {
+                              type: "object",
+                              properties: {
+                                id: { type: "string", example: "classroom-contract" },
+                                hash: {
+                                  type: "string",
+                                  example:
+                                    "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
+                                },
                               },
                             },
                           },
                         },
                       },
+                      allowedIntents: { type: "array", items: { type: "string" } },
                     },
-                    allowedIntents: { type: "array", items: { type: "string" } },
                   },
                 },
               },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated,
     },
   };
 }

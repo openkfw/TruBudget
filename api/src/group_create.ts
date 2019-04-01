@@ -11,14 +11,16 @@ import * as Result from "./result";
 import * as GroupCreate from "./service/domain/organization/group_create";
 import { ServiceUser } from "./service/domain/organization/service_user";
 
+interface Group {
+  id: string;
+  displayName: string;
+  users: string[];
+}
+
 interface RequestBodyV1 {
   apiVersion: "1.0";
   data: {
-    group: {
-      id: string;
-      displayName: string;
-      users: string[];
-    };
+    group: Group;
   };
 }
 
@@ -46,63 +48,72 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: "Create a new group.",
-    tags: ["global"],
-    summary: "Create a new group",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          additionalProperties: false,
-          required: ["group"],
-          properties: {
-            group: {
-              type: "object",
-              required: ["id", "displayName", "users"],
-              properties: {
-                additionalProperties: false,
-                id: { type: "string", example: "Manager" },
-                displayName: { type: "string", example: "All Manager Group" },
-                users: { type: "array", items: { type: "string" } },
+    schema: {
+      description: "Create a new group.",
+      tags: ["global"],
+      summary: "Create a new group",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      body: {
+        type: "object",
+        required: ["apiVersion", "data"],
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            additionalProperties: false,
+            required: ["group"],
+            properties: {
+              group: {
+                type: "object",
+                required: ["id", "displayName", "users"],
+                properties: {
+                  additionalProperties: false,
+                  id: { type: "string", example: "Manager" },
+                  displayName: { type: "string", example: "All Manager Group" },
+                  users: { type: "array", items: { type: "string" } },
+                },
               },
             },
           },
         },
       },
-    },
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              created: { type: "boolean", example: "true" },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                group: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                    displayName: { type: "string", example: "admins" },
+                    users: { type: "array", items: { type: "string", example: "mstein" } },
+                  },
+                },
+              },
             },
           },
         },
-      },
-      401: NotAuthenticated.schema,
-      409: {
-        description: "Group already exists",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          error: {
-            type: "object",
-            properties: {
-              code: { type: "string", example: "409" },
-              message: { type: "string", example: "User already exists." },
+        401: NotAuthenticated.schema,
+        409: {
+          description: "Group already exists",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            error: {
+              type: "object",
+              properties: {
+                code: { type: "string", example: "409" },
+                message: { type: "string", example: "User already exists." },
+              },
             },
           },
         },
@@ -112,7 +123,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  createGroup(ctx: Ctx, user: ServiceUser, group: GroupCreate.RequestData): Promise<void>;
+  createGroup(ctx: Ctx, user: ServiceUser, group: GroupCreate.RequestData): Promise<Group>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -144,12 +155,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     }
 
     invokeService
-      .then(() => {
+      .then(group => {
         const code = 200;
         const body = {
           apiVersion: "1.0",
           data: {
-            created: true,
+            group,
           },
         };
         reply.status(code).send(body);

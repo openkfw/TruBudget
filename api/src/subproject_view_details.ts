@@ -18,156 +18,158 @@ import * as Workflowitem from "./service/domain/workflow/workflowitem";
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: "Retrieve details about a specific subproject.",
-    tags: ["subproject"],
-    summary: "View details",
-    querystring: {
-      type: "object",
-      properties: {
-        projectId: {
-          type: "string",
-          example: "d0e8c69eg298c87e3899119e025eff1f",
-        },
-        subprojectId: {
-          type: "string",
-          example: "rfe8er9eg298c87e3899119e025eff1f",
-        },
-      },
-    },
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    response: {
-      200: {
-        description: "successful response",
+    schema: {
+      description: "Retrieve details about a specific subproject.",
+      tags: ["subproject"],
+      summary: "View details",
+      querystring: {
         type: "object",
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              parentProject: {
-                type: "object",
-                properties: {
-                  id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                  displayName: { type: "string", example: "townproject" },
-                },
-              },
-              subproject: {
-                type: "object",
-                properties: {
-                  data: {
-                    type: "object",
-                    properties: {
-                      id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                      creationUnixTs: { type: "string", example: "1536154645775" },
-                      status: { type: "string", example: "open" },
-                      displayName: { type: "string", example: "school" },
-                      description: { type: "string", example: "school should be built" },
-                      assignee: { type: "string", example: "aSmith" },
-                      currency: {
-                        type: "string",
-                        description: "contract currency",
-                        example: "EUR",
-                      },
-                      projectedBudgets: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            organization: { type: "string", example: "MyOrga" },
-                            value: { type: "string", example: "1234" },
-                            currencyCode: { type: "string", example: "EUR" },
-                          },
-                        },
-                      },
-                      additionalData: { type: "object", additionalProperties: true },
-                    },
+          projectId: {
+            type: "string",
+            example: "d0e8c69eg298c87e3899119e025eff1f",
+          },
+          subprojectId: {
+            type: "string",
+            example: "rfe8er9eg298c87e3899119e025eff1f",
+          },
+        },
+      },
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                parentProject: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                    displayName: { type: "string", example: "townproject" },
                   },
-                  log: {
-                    type: "array",
-                    items: {
+                },
+                subproject: {
+                  type: "object",
+                  properties: {
+                    data: {
                       type: "object",
                       properties: {
-                        key: { type: "string" },
-                        intent: { type: "string", example: "global.createProject" },
-                        createdBy: { type: "string", example: "aSmith" },
-                        createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
-                        dataVersion: { type: "string", example: "1" },
-                        data: {
-                          type: "object",
-                          properties: {
-                            subproject: {
-                              type: "object",
-                              properties: {
-                                id: {
-                                  type: "string",
-                                  example: "d0e8c69eg298c87e3899119e025eff1f",
-                                },
-                                creationUnixTs: { type: "string", example: "1536154645775" },
-                                status: { type: "string", example: "open" },
-                                displayName: { type: "string", example: "school" },
-                                description: {
-                                  type: "string",
-                                  example: "school should be built",
-                                },
-                                billingDate: {
-                                  type: "string",
-                                  example: "2018-12-11T00:00:00.000Z",
-                                },
-                                exchangeRate: { type: "string", example: "1.0" },
-                                assignee: { type: "string", example: "aSmith" },
-                                currency: { type: "string", example: "EUR" },
-                                projectedBudgets: {
-                                  type: "array",
-                                  items: {
-                                    type: "object",
-                                    properties: {
-                                      organization: { type: "string", example: "MyOrga" },
-                                      value: { type: "string", example: "1234" },
-                                      currencyCode: { type: "string", example: "EUR" },
+                        id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                        creationUnixTs: { type: "string", example: "1536154645775" },
+                        status: { type: "string", example: "open" },
+                        displayName: { type: "string", example: "school" },
+                        description: { type: "string", example: "school should be built" },
+                        assignee: { type: "string", example: "aSmith" },
+                        currency: {
+                          type: "string",
+                          description: "contract currency",
+                          example: "EUR",
+                        },
+                        projectedBudgets: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              organization: { type: "string", example: "MyOrga" },
+                              value: { type: "string", example: "1234" },
+                              currencyCode: { type: "string", example: "EUR" },
+                            },
+                          },
+                        },
+                        additionalData: { type: "object", additionalProperties: true },
+                      },
+                    },
+                    log: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          key: { type: "string" },
+                          intent: { type: "string", example: "global.createProject" },
+                          createdBy: { type: "string", example: "aSmith" },
+                          createdAt: { type: "string", example: "2018-09-05T13:37:25.775Z" },
+                          dataVersion: { type: "string", example: "1" },
+                          data: {
+                            type: "object",
+                            properties: {
+                              subproject: {
+                                type: "object",
+                                properties: {
+                                  id: {
+                                    type: "string",
+                                    example: "d0e8c69eg298c87e3899119e025eff1f",
+                                  },
+                                  creationUnixTs: { type: "string", example: "1536154645775" },
+                                  status: { type: "string", example: "open" },
+                                  displayName: { type: "string", example: "school" },
+                                  description: {
+                                    type: "string",
+                                    example: "school should be built",
+                                  },
+                                  billingDate: {
+                                    type: "string",
+                                    example: "2018-12-11T00:00:00.000Z",
+                                  },
+                                  exchangeRate: { type: "string", example: "1.0" },
+                                  assignee: { type: "string", example: "aSmith" },
+                                  currency: { type: "string", example: "EUR" },
+                                  projectedBudgets: {
+                                    type: "array",
+                                    items: {
+                                      type: "object",
+                                      properties: {
+                                        organization: { type: "string", example: "MyOrga" },
+                                        value: { type: "string", example: "1234" },
+                                        currencyCode: { type: "string", example: "EUR" },
+                                      },
                                     },
                                   },
+                                  thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                                 },
-                                thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                               },
-                            },
-                            permissions: {
-                              type: "object",
-                              additionalProperties: true,
-                              example: {
-                                "subproject.intent.listPermissions": ["aSmith", "jDoe"],
+                              permissions: {
+                                type: "object",
+                                additionalProperties: true,
+                                example: {
+                                  "subproject.intent.listPermissions": ["aSmith", "jDoe"],
+                                },
                               },
-                            },
-                            snapshot: {
-                              type: "object",
-                              properties: {
-                                displayName: { type: "string", example: "school" },
+                              snapshot: {
+                                type: "object",
+                                properties: {
+                                  displayName: { type: "string", example: "school" },
+                                },
                               },
                             },
                           },
                         },
                       },
                     },
+                    allowedIntents: { type: "array", items: { type: "string" } },
                   },
-                  allowedIntents: { type: "array", items: { type: "string" } },
                 },
-              },
-              workflowitems: {
-                type: "array",
-                items: {
-                  type: "object",
-                  additionalProperties: true,
-                  example: { myWorkflowItems: {} },
+                workflowitems: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    additionalProperties: true,
+                    example: { myWorkflowItems: {} },
+                  },
                 },
               },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }
@@ -323,7 +325,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         if (Result.isErr(workflowitemsResult)) {
           workflowitemsResult.message = `subproject.viewDetails failed: ${
             workflowitemsResult.message
-          }`;
+            }`;
           throw workflowitemsResult;
         }
 
