@@ -338,20 +338,14 @@ export function* createProjectSaga(action) {
 
 export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets = [] }) {
   yield execute(function*() {
+    // TODO: Change call format
+    // const { deletedProjectedBudgets = [], projectedBudgets = [], ...rest } = changes;
     const { projectedBudgets = [], ...rest } = changes;
-
-    // const thingsToChange = Object.keys(rest)
-    //   .filter(k => rest[k] !== undefined)
-    //   .reduce((acc, next) => {
-    //     acc[next] = rest[next];
-    //     return acc;
-    //   }, {});
 
     if (Object.values(rest).some(value => value !== undefined)) {
       yield callApi(api.editProject, projectId, rest);
     }
 
-    // if(projectedBudgets !== undefined){
     for (const budget of projectedBudgets) {
       yield callApi(
         api.updateProjectBudgetProjected,
@@ -390,9 +384,35 @@ export function* createSubProjectSaga({ projectId, name, description, currency, 
   }, showLoading);
 }
 
-export function* editSubProjectSaga({ projectId, subprojectId, changes }) {
+export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedProjectedBudgets = [] }) {
   yield execute(function*() {
-    yield callApi(api.editSubProject, projectId, subprojectId, changes);
+    const { projectedBudgets = [], ...rest } = changes;
+
+    if (Object.values(rest).some(value => value !== undefined)) {
+      yield callApi(api.editSubProject, projectId, subprojectId, rest);
+    }
+
+    for (const budget of projectedBudgets) {
+      yield callApi(
+        api.updateSubprojectBudgetProjected,
+        projectId,
+        subprojectId,
+        budget.organization,
+        budget.currencyCode,
+        budget.value
+      );
+    }
+
+    for (const budget of deletedProjectedBudgets) {
+      yield callApi(
+        api.deleteSubprojectBudgetProjected,
+        projectId,
+        subprojectId,
+        budget.organization,
+        budget.currencyCode
+      );
+    }
+
     yield showSnackbarSuccess();
     yield put({
       type: EDIT_SUBPROJECT_SUCCESS

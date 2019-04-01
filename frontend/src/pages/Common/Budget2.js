@@ -8,6 +8,7 @@ import DropDown from "./NewDropdown";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 import MenuItem from "@material-ui/core/MenuItem";
 import strings from "../../localizeStrings";
@@ -18,7 +19,8 @@ export default class Budget extends React.Component {
   state = {
     budgetAmount: "",
     organization: "",
-    currency: ""
+    currency: "",
+    edit: false
   };
   getMenuItems(currencies) {
     return currencies.map((currency, index) => {
@@ -46,19 +48,22 @@ export default class Budget extends React.Component {
     return budgets;
   }
 
+  editProjectedBudget(budget) {
+    this.setState({
+      edit: true,
+      organization: budget.organization,
+      currency: budget.currencyCode,
+      budgetAmount: budget.value
+    });
+  }
+
   addBudget(budgets, budgetToAdd) {
     budgets.push(budgetToAdd);
     return budgets;
   }
 
   render() {
-    const {
-      projectedBudgets = [],
-      deletedProjectedBudgets = [],
-      parentCurrency,
-      storeProjectedBudget,
-      disabled
-    } = this.props;
+    const { projectedBudgets = [], deletedProjectedBudgets = [], parentCurrency, storeProjectedBudget } = this.props;
     const currencies = getCurrencies(parentCurrency);
     return (
       <div>
@@ -72,10 +77,15 @@ export default class Budget extends React.Component {
           </TableHead>
           <TableBody>
             {projectedBudgets.map((budget, i) => (
-              <TableRow key={`pb-row-${budget.organization}-${budget.value}`}>
+              <TableRow key={`pb-row-${budget.organization}-${budget.value}-${i}`}>
                 <TableCell>{budget.organization}</TableCell>
                 <TableCell align="right">{toAmountString(budget.value, budget.currencyCode)}</TableCell>
                 <TableCell align="right">
+                  {true ? (
+                    <Button aria-label="Edit" onClick={() => this.editProjectedBudget(budget)}>
+                      <EditIcon />
+                    </Button>
+                  ) : null}
                   {true ? (
                     <Button
                       aria-label="Delete"
@@ -135,6 +145,7 @@ export default class Budget extends React.Component {
                       color="secondary"
                       disabled={!this.state.budgetAmount || !this.state.currency || !this.state.organization}
                       onClick={() => {
+                        this.setState({ edit: false });
                         const projectedBudgetsCopy = projectedBudgets;
                         projectedBudgetsCopy.push({
                           value: fromAmountString(this.state.budgetAmount).toString(10),
@@ -149,7 +160,7 @@ export default class Budget extends React.Component {
                         });
                       }}
                     >
-                      {strings.common.add}
+                      {this.state.edit ? "Edit" : `${strings.common.add}`}
                     </Button>
                   }
                 </TableCell>

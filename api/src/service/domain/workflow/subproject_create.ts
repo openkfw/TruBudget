@@ -1,6 +1,6 @@
 import Joi = require("joi");
 
-import Intent from "../../../authz/intents";
+import Intent, { subprojectIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
@@ -136,19 +136,7 @@ function newDefaultPermissionsFor(userId: string): Permissions {
   // The user can always do anything anyway:
   if (userId === "root") return {};
 
-  const intents: Intent[] = [
-    "subproject.intent.listPermissions",
-    "subproject.intent.grantPermission",
-    "subproject.intent.revokePermission",
-    "subproject.viewSummary",
-    "subproject.viewDetails",
-    "subproject.assign",
-    "subproject.update",
-    "subproject.close",
-    "subproject.archive",
-    "subproject.reorderWorkflowitems",
-    "subproject.createWorkflowitem",
-  ];
+  const intents: Intent[] = subprojectIntents;
   return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
 }
 
