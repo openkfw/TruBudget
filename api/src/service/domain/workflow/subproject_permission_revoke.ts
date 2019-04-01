@@ -48,8 +48,9 @@ export async function revokeSubprojectPermission(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Subproject.permits(subproject, issuer, ["subproject.intent.revokePermission"])) {
-      return new NotAuthorized(ctx, issuer.id, permissionRevoked);
+    const revokeIntent = "subproject.intent.revokePermission";
+    if (!Subproject.permits(subproject, issuer, [revokeIntent])) {
+      return new NotAuthorized(ctx, issuer.id, revokeIntent, subproject);
     }
   }
 

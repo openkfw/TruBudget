@@ -96,9 +96,13 @@ export async function createProject(
 
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
+    const intent = "global.createProject";
     const permissions = await repository.getGlobalPermissions();
-    if (!GlobalPermissions.permits(permissions, creatingUser, ["global.createProject"])) {
-      return { newEvents: [], errors: [new NotAuthorized(ctx, creatingUser.id, createEvent)] };
+    if (!GlobalPermissions.permits(permissions, creatingUser, [intent])) {
+      return {
+        newEvents: [],
+        errors: [new NotAuthorized(ctx, creatingUser.id, intent, permissions)],
+      };
     }
   }
 

@@ -58,8 +58,9 @@ export async function closeProject(
   }
 
   // Check authorization (if not root):
-  if (issuer.id !== "root" && !Project.permits(project, issuer, ["project.close"])) {
-    return new NotAuthorized(ctx, issuer.id, projectClosed);
+  const intent = "project.close";
+  if (issuer.id !== "root" && !Project.permits(project, issuer, [intent])) {
+    return new NotAuthorized(ctx, issuer.id, intent, project);
   }
 
   // Check that the new event is indeed valid:

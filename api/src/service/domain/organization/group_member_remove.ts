@@ -32,10 +32,11 @@ export async function removeMember(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Group.permits(group, issuer, ["group.removeUser"])) {
+    const intent = "group.removeUser";
+    if (!Group.permits(group, issuer, [intent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, issuer.id, memberRemoved)],
+        errors: [new NotAuthorized(ctx, issuer.id, intent, group)],
       };
     }
   }

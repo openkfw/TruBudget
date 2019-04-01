@@ -25,11 +25,11 @@ export async function getSubproject(
   }
   const subproject = subprojectResult;
 
-  if (
-    user.id !== "root" &&
-    !Subproject.permits(subproject, user, ["subproject.viewSummary", "subproject.viewDetails"])
-  ) {
-    return new NotAuthorized(ctx, user.id, undefined, "subproject.viewDetails");
+  if (user.id !== "root") {
+    const intents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
+    if (!Subproject.permits(subproject, user, intents)) {
+      return new NotAuthorized(ctx, user.id, intents, subproject);
+    }
   }
 
   return dropHiddenHistoryEvents(subproject, user);

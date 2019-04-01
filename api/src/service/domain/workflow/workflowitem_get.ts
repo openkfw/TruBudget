@@ -23,8 +23,11 @@ export async function getWorkflowitem(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  if (user.id !== "root" && !Workflowitem.permits(workflowitem, user, ["workflowitem.view"])) {
-    return new NotAuthorized(ctx, user.id, undefined, "workflowitem.view");
+  if (user.id !== "root") {
+    const intent = "workflowitem.view";
+    if (!Workflowitem.permits(workflowitem, user, [intent])) {
+      return new NotAuthorized(ctx, user.id, intent, workflowitem);
+    }
   }
 
   return dropHiddenHistoryEvents(workflowitem, user);

@@ -40,8 +40,9 @@ export async function deleteProjectedBudget(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Project.permits(project, issuer, ["project.budget.deleteProjected"])) {
-      return new NotAuthorized(ctx, issuer.id, budgetDeleted);
+    const intent = "project.budget.deleteProjected";
+    if (!Project.permits(project, issuer, [intent])) {
+      return new NotAuthorized(ctx, issuer.id, intent, project);
     }
   }
 

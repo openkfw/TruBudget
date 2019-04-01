@@ -42,8 +42,9 @@ export async function grantProjectPermission(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Project.permits(project, issuer, ["project.intent.grantPermission"])) {
-      return new NotAuthorized(ctx, issuer.id, permissionGranted);
+    const grantIntent = "project.intent.grantPermission";
+    if (!Project.permits(project, issuer, [grantIntent])) {
+      return new NotAuthorized(ctx, issuer.id, grantIntent, project);
     }
   }
 

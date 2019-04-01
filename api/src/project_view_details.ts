@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { VError } from "verror";
 
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
@@ -202,8 +203,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       try {
         const projectResult = await service.getProject(ctx, user, projectId);
         if (Result.isErr(projectResult)) {
-          projectResult.message = `project.viewDetails failed: ${projectResult.message}`;
-          throw projectResult;
+          throw new VError(projectResult, "project.viewDetails failed");
         }
         const project: Project.Project = projectResult;
 

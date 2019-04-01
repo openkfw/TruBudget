@@ -1,4 +1,3 @@
-import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -25,11 +24,9 @@ export async function getProject(
     return new NotFound(ctx, "project", projectId);
   }
 
-  if (
-    user.id !== "root" &&
-    !Project.permits(project, user, ["project.viewSummary", "project.viewDetails"])
-  ) {
-    return new NotAuthorized(ctx, user.id, undefined, "project.viewSummary");
+  const intents: Intent[] = ["project.viewSummary", "project.viewDetails"];
+  if (user.id !== "root" && !Project.permits(project, user, intents)) {
+    return new NotAuthorized(ctx, user.id, intents, project);
   }
 
   return dropHiddenHistoryEvents(project, user);

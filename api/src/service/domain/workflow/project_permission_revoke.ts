@@ -42,8 +42,9 @@ export async function revokeProjectPermission(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Project.permits(project, issuer, ["project.intent.revokePermission"])) {
-      return new NotAuthorized(ctx, issuer.id, permissionRevoked);
+    const revokeIntent = "project.intent.revokePermission";
+    if (!Project.permits(project, issuer, [revokeIntent])) {
+      return new NotAuthorized(ctx, issuer.id, revokeIntent, project);
     }
   }
 
