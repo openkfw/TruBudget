@@ -13,7 +13,7 @@ docker tag "$TAG" "$TAG_BUILD_PRIVATE"
 echo "Pushing [private]/trubudget/$PROJECT_NAME:$TRAVIS_BUILD_ID"
 docker push "$TAG_BUILD_PRIVATE" >/dev/null 2>&1
 
-if [ "$TRAVIS_BRANCH" = "master" ];
+if [ "$TRAVIS_BRANCH" = "master" ] && [ "$TRAVIS_EVENT_TYPE" = "push" ];
 then
   echo "Enter Master Path"
   echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
