@@ -287,7 +287,7 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("isHistoryLoading", true);
     case FETCH_SUBPROJECT_HISTORY_SUCCESS:
       return state.merge({
-        historyItems: [...fromJS(action.events), ...state.get("historyItems")],
+        historyItems: fromJS(action.events).concat(state.get("historyItems")),
         historyItemsCount: action.historyItemsCount,
         isHistoryLoading: false,
         offset: action.offset,

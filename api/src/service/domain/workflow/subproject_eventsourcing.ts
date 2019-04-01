@@ -34,7 +34,6 @@ export function sourceSubprojects(
     }
     const result = applySubprojectEvent(ctx, subprojects, event);
     if (Result.isErr(result)) {
-      logger.warn(result);
       errors.push(result);
     } else {
       result.log.push(newTraceEvent(result, event));

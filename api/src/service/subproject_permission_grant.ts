@@ -40,6 +40,7 @@ export async function grantSubprojectPermission(
     ),
   );
   if (Result.isErr(result)) return Promise.reject(result);
+
   for (const event of result.newEvents) {
     await store(conn, ctx, event);
   }
