@@ -100,10 +100,10 @@ Then locate the line `include /etc/nginx/sites-enabled/*` and disable it by putt
 include /etc/nginx/conf.d/*.conf;
 ```
 
-### Node JS Permission Issue 
+### Node JS Permission Issue
 
+If you receive an error running `npm install`, that looks like the following:
 
-If you receive an error running `npm install`, that looks like the following: 
 ```bash
 726 verbose stack Error: sodium-native@2.1.6 install: `node-gyp-build "node preinstall.js" "node postinstall.js"`
 726 verbose stack spawn ENOENT
@@ -112,7 +112,7 @@ If you receive an error running `npm install`, that looks like the following:
 726 verbose stack     at maybeClose (internal/child_process.js:936:16)
 726 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:220:5)
 727 verbose pkgid sodium-native@2.1.6
-728 verbose cwd /root/trubudget-app/api
+728 verbose cwd /root/trubudget/api
 729 verbose Linux 4.15.0-1025-azure
 730 verbose argv "/usr/bin/node" "/usr/bin/npm" "install"
 731 verbose node v9.11.2
@@ -127,22 +127,24 @@ If you receive an error running `npm install`, that looks like the following:
 738 error This is probably not a problem with npm. There is likely additional logging output above.
 739 verbose exit [ 1, true ]
 ```
-Check the global node_modules (`usr/lib/node_modules/`) permissions. 
 
+Check the global node_modules (`usr/lib/node_modules/`) permissions.
 
 ### Unable to lock the administration direcectory
 
 If you see the following error message
+
 ```bash
 E: Unable to lock the administration directory (/var/lib/dpkg/), is another process using it?
 ```
-you need to delete the lock files (as root): 
+
+you need to delete the lock files (as root):
+
 ```bash
 rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
 rm /var/lib/dpkg/lock
 ```
-
 
 ## Issues during Developer Setup
 
@@ -177,23 +179,24 @@ You can find a detailed solution on [Stackoverflow](https://stackoverflow.com/a/
 
 ### Port 80 used by PID 4
 
-This means that there is a system process blocking port 80. If you want to use TruBudget in production, you should find and disable that process. If you want to test TruBudget on your machine, an easy way to fix it is to set the exposed ports in the Yaml file to a different one. Locate the file `docker-compose/local/master-node.yml` (or the one in the `master` folder) and change the following part 
-```yml
-frontend:
-    build:
-      context: ../../frontend
-    ports:
-      - "80:80" # Mapping the nginx port 
-```
-
-to 
+This means that there is a system process blocking port 80. If you want to use TruBudget in production, you should find and disable that process. If you want to test TruBudget on your machine, an easy way to fix it is to set the exposed ports in the Yaml file to a different one. Locate the file `docker-compose/local/master-node.yml` (or the one in the `master` folder) and change the following part
 
 ```yml
 frontend:
-    build:
-      context: ../../frontend
-    ports:
-      - "90:80" # Mapping the nginx port 
+  build:
+    context: ../../frontend
+  ports:
+    - "80:80" # Mapping the nginx port
 ```
 
-Then you can access the frontend via `localhost:90` after start. 
+to
+
+```yml
+frontend:
+  build:
+    context: ../../frontend
+  ports:
+    - "90:80" # Mapping the nginx port
+```
+
+Then you can access the frontend via `localhost:90` after start.

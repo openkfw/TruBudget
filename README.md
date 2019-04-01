@@ -1,4 +1,4 @@
-# TruBudget-App <!-- omit in TOC -->
+# TruBudget <!-- omit in TOC -->
 
 [![build status](https://travis-ci.com/openkfw/TruBudget.svg?branch=master)](https://travis-ci.com/openkfw/TruBudget)
 [![gitter chat](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/Tru-Community/community)
@@ -35,7 +35,7 @@ For more detailed information about the installation and the environment variabl
 Setting required environment variables via `.env` file
 
 ```bash
-cd path/to/trubudget-app
+cd path/to/trubudget
 cp .env_example .env
 ```
 

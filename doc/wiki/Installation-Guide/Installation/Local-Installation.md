@@ -55,7 +55,7 @@ Clone the repository:
 
 ```
 git clone https://github.com/openkfw/TruBudget.git
-cd trubudget-app
+cd TruBudget
 ```
 
 If you work with an existing checkout, make sure you have the latest changes:
@@ -112,7 +112,7 @@ npm start > startup.log 2>&1 &
 If you have decided to create a new Blockchain network the information within `startup.log` should look similar to:
 
 ```bash
-> ACMECorp-chain-bc@0.1.0 start /[MULTICHAIN_DIR]/trubudget-app/blockchain
+> ACMECorp-chain-bc@0.1.0 start /[MULTICHAIN_DIR]/TruBudget/blockchain
 > node src/index.js
 
 Provisioning mc

@@ -1,5 +1,5 @@
 stages:
-  - audit
+  - name: audit
     if: type = cron
   - test
   - name: dockerbuild
@@ -17,7 +17,6 @@ stages:
     - cd $PROJECT_NAME
     - npm audit
 
-# provide PROJECT_NAME environment variable if you extend this template
 .node-unit-test: &node-unit-test
   stage: test
   language: node_js
@@ -29,7 +28,6 @@ stages:
     - npm ci
     - npm test
 
-# provide PROJECT_NAME environment variable if you extend this template
 .docker-build: &docker-build
   stage: dockerbuild
   language: minimal
