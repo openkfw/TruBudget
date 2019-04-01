@@ -1,5 +1,6 @@
 import isEqual = require("lodash.isequal");
 
+import { produce } from "immer";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -56,10 +57,8 @@ export async function grantWorkflowitemPermission(
   }
 
   // Check that the new event is indeed valid:
-  const updatedWorkflowitem = WorkflowitemPermissionGranted.apply(
-    ctx,
-    permissionGranted,
-    workflowitem,
+  const updatedWorkflowitem = produce(workflowitem, draft =>
+    WorkflowitemPermissionGranted.apply(ctx, permissionGranted, draft),
   );
   if (Result.isErr(updatedWorkflowitem)) {
     return new InvalidCommand(ctx, permissionGranted, [updatedWorkflowitem]);

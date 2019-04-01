@@ -90,8 +90,5 @@ export function apply(
     return new EventSourcingError(ctx, event, result.message, workflowitem.id);
   }
 
-  return {
-    ...workflowitem,
-    permissions: { ...workflowitem.permissions, [event.permission]: eligibleIdentities },
-  };
+  return workflowitem;
 }

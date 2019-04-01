@@ -14,65 +14,67 @@ import * as Workflowitem from "./service/domain/workflow/workflowitem";
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: "List (a part of) an authenticated user's notifications.",
-    tags: ["notification"],
-    summary: "List (a part of) an authenticated user's notifications.",
-    security: [{ bearerToken: [] }],
-    querystring: {
-      type: "object",
-      properties: {
-        limit: {
-          type: "string",
-          description: "Limit to the number of notifications to return.",
-          example: "10",
-        },
-        offset: {
-          type: "string",
-          description:
-            "The index of the first notification; all other notifications are for " +
-            "events that happened after that first notification. The `offset` may also " +
-            "be negative. For example, an `offset` of `-10` with limit `10` requests " +
-            "the 10 most recent notifications.",
-          example: "0",
-        },
-      },
-    },
-    response: {
-      200: {
-        description: "Notifications for the authenticated user.",
+    schema: {
+      description: "List (a part of) an authenticated user's notifications.",
+      tags: ["notification"],
+      summary: "List (a part of) an authenticated user's notifications.",
+      security: [{ bearerToken: [] }],
+      querystring: {
         type: "object",
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              userId: { type: "string", example: "jdoe" },
-              notifications: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    id: { type: "string", example: "fff7242a-cd42-45e7-9719-8e41c219d8ee" },
-                    isRead: { type: "boolean", example: false },
-                    businessEvent: {
-                      type: "object",
-                      properties: {
-                        type: { type: "string", example: "project_assigned" },
-                        time: { type: "string", example: "2019-03-13T10:18:31.800Z" },
-                        publisher: { type: "string", example: "jdoe" },
+          limit: {
+            type: "string",
+            description: "Limit to the number of notifications to return.",
+            example: "10",
+          },
+          offset: {
+            type: "string",
+            description:
+              "The index of the first notification; all other notifications are for " +
+              "events that happened after that first notification. The `offset` may also " +
+              "be negative. For example, an `offset` of `-10` with limit `10` requests " +
+              "the 10 most recent notifications.",
+            example: "0",
+          },
+        },
+      },
+      response: {
+        200: {
+          description: "Notifications for the authenticated user.",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                userId: { type: "string", example: "jdoe" },
+                notifications: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", example: "fff7242a-cd42-45e7-9719-8e41c219d8ee" },
+                      isRead: { type: "boolean", example: false },
+                      businessEvent: {
+                        type: "object",
+                        properties: {
+                          type: { type: "string", example: "project_assigned" },
+                          time: { type: "string", example: "2019-03-13T10:18:31.800Z" },
+                          publisher: { type: "string", example: "jdoe" },
+                        },
                       },
+                      projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                      subprojectId: { type: "string", example: "d0e8c69eg298c87e389923413451234f" },
+                      workflowitemId: { type: "string", example: "d0e8c69eg298c87234534115045eff1f" },
                     },
-                    projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                    subprojectId: { type: "string", example: "d0e8c69eg298c87e389923413451234f" },
-                    workflowitemId: { type: "string", example: "d0e8c69eg298c87234534115045eff1f" },
                   },
                 },
               },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }

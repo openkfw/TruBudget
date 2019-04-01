@@ -37,34 +37,43 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description: `Mark a set of notifications as "read".`,
-    tags: ["notification"],
-    summary: `Mark a set of notifications as "read".`,
-    security: [{ bearerToken: [] }],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["notifications"],
-          properties: {
-            notifications: {
-              type: "array",
-              items: {
-                type: "string",
-                description: "Notification ID",
-                example: "fff7242a-cd42-45e7-9719-8e41c219d8ee",
+    schema: {
+      description: `Mark a set of notifications as "read".`,
+      tags: ["notification"],
+      summary: `Mark a set of notifications as "read".`,
+      security: [{ bearerToken: [] }],
+      body: {
+        type: "object",
+        required: ["apiVersion", "data"],
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            required: ["notifications"],
+            properties: {
+              notifications: {
+                type: "array",
+                items: {
+                  type: "string",
+                  description: "Notification ID",
+                  example: "fff7242a-cd42-45e7-9719-8e41c219d8ee",
+                },
               },
             },
           },
         },
       },
-    },
-    response: {
-      204: { description: "successful response" },
-      401: NotAuthenticated.schema,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: { type: "object" },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }
@@ -99,7 +108,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         for (const id of notifications) {
           await service.markRead(ctx, user, id);
         }
-        reply.status(204).send();
+        const code = 200;
+        const body = {
+          apiVersion: "1.0",
+          data: {},
+        };
+        reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);

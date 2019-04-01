@@ -9,9 +9,9 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { ResourceMap } from "./service/domain/ResourceMap";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as Subproject from "./service/domain/workflow/subproject";
-import { Id } from "./service/domain/workflow/subproject";
 import * as SubprojectCreate from "./service/subproject_create";
 
 interface RequestBodyV1 {
@@ -63,69 +63,83 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Create a subproject and associate it to the given project.\n.\n" +
-      "Note that the only possible values for 'status' are: 'open' and 'closed'",
-    tags: ["project"],
-    summary: "Create a subproject",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["projectId", "subproject"],
-          properties: {
-            projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-            subproject: {
-              type: "object",
-              required: ["displayName", "currency"],
-              properties: {
-                id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                status: { type: "string", example: "open" },
-                displayName: { type: "string", example: "townproject" },
-                description: { type: "string", example: "A town should be built" },
-                assignee: { type: "string", example: "aSmith" },
-                currency: { type: "string", example: "EUR" },
-                projectedBudgets: [
-                  {
-                    type: "object",
-                    required: ["organization", "value", "currencyCode"],
-                    properties: {
-                      organization: { type: "string", example: "Central-Bank" },
-                      value: { type: "string", example: "1000000" },
-                      currencyCode: { type: "string", example: "EUR" },
+    schema: {
+      description:
+        "Create a subproject and associate it to the given project.\n.\n" +
+        "Note that the only possible values for 'status' are: 'open' and 'closed'",
+      tags: ["project"],
+      summary: "Create a subproject",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      body: {
+        type: "object",
+        required: ["apiVersion", "data"],
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            required: ["projectId", "subproject"],
+            properties: {
+              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              subproject: {
+                type: "object",
+                required: ["displayName", "currency"],
+                properties: {
+                  id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                  status: { type: "string", example: "open" },
+                  displayName: { type: "string", example: "townproject" },
+                  description: { type: "string", example: "A town should be built" },
+                  assignee: { type: "string", example: "aSmith" },
+                  currency: { type: "string", example: "EUR" },
+                  projectedBudgets: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      required: ["organization", "value", "currencyCode"],
+                      properties: {
+                        organization: { type: "string", example: "My Goverment Bank" },
+                        value: { type: "string", example: "1000000" },
+                        currencyCode: { type: "string", example: "EUR" },
+                      },
                     },
                   },
-                ],
-                additionalData: { type: "object", additionalProperties: true },
+                  additionalData: { type: "object", additionalProperties: true },
+                },
               },
             },
           },
         },
       },
-    },
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              created: { type: "boolean", example: "true" },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                project: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                  },
+                },
+                subproject: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                  },
+                },
+              },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }
@@ -135,7 +149,7 @@ interface Service {
     ctx: Ctx,
     user: ServiceUser,
     createRequest: SubprojectCreate.RequestData,
-  ): Promise<Id>;
+  ): Promise<ResourceMap>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -172,16 +186,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .createSubproject(ctx, user, reqData)
-        .then((subprojectId: Id) => {
-          const code = 201;
+        .then((resourceIds: ResourceMap) => {
+          const code = 200;
           const body = {
             apiVersion: "1.0",
-            data: {
-              created: true,
-              subproject: {
-                id: subprojectId,
-              },
-            },
+            data: { ...resourceIds },
           };
           reply.status(code).send(body);
         })

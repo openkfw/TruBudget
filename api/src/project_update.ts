@@ -45,46 +45,48 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Partially update a project. Only properties mentioned in the request body are touched, " +
-      "others are not affected. The assigned user will be notified about the change.",
-    tags: ["project"],
-    summary: "Update a project",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["projectId"],
-          properties: {
-            projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-            displayName: { type: "string", example: "townproject" },
-            description: { type: "string", example: "A town should be built" },
-            thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
-            additionalData: { type: "object" },
-          },
+    schema: {
+      description:
+        "Partially update a project. Only properties mentioned in the request body are touched, " +
+        "others are not affected. The assigned user will be notified about the change.",
+      tags: ["project"],
+      summary: "Update a project",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
+            type: "object",
+            required: ["projectId"],
+            properties: {
+              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              displayName: { type: "string", example: "townproject" },
+              description: { type: "string", example: "A town should be built" },
+              thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+              additionalData: { type: "object" },
+            },
           },
         },
       },
-      401: NotAuthenticated.schema,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }
@@ -129,7 +131,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: "OK",
+          data: {},
         };
         reply.status(code).send(body);
       })

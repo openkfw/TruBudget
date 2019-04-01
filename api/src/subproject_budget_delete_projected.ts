@@ -44,55 +44,57 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Remove a projected budget (i.e., a financial commitment) from a given subproject.",
-    tags: ["subproject"],
-    summary: "For a given subproject, remove a projected budget.",
-    security: [{ bearerToken: [] }],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["projectId", "organization", "value", "currencyCode"],
-          properties: {
-            projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-            subprojectId: { type: "string", example: "d0e8c69e213459013899119e025eff1f" },
-            organization: { type: "string", example: "My Goverment Bank" },
-            currencyCode: { type: "string", example: "EUR" },
-          },
-        },
-      },
-    },
-    response: {
-      200: {
-        description: "Updated projected budgets.",
+    schema: {
+      description:
+        "Remove a projected budget (i.e., a financial commitment) from a given subproject.",
+      tags: ["subproject"],
+      summary: "For a given subproject, remove a projected budget.",
+      security: [{ bearerToken: [] }],
+      body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
+            required: ["projectId", "organization", "value", "currencyCode"],
             properties: {
               projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               subprojectId: { type: "string", example: "d0e8c69e213459013899119e025eff1f" },
-              projectedBudgets: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    organization: { type: "string", example: "My Goverment Bank" },
-                    value: { type: "string", example: "1000500" },
-                    currencyCode: { type: "string", example: "EUR" },
+              organization: { type: "string", example: "My Goverment Bank" },
+              currencyCode: { type: "string", example: "EUR" },
+            },
+          },
+        },
+      },
+      response: {
+        200: {
+          description: "Updated projected budgets.",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                subprojectId: { type: "string", example: "d0e8c69e213459013899119e025eff1f" },
+                projectedBudgets: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      organization: { type: "string", example: "My Goverment Bank" },
+                      value: { type: "string", example: "1000500" },
+                      currencyCode: { type: "string", example: "EUR" },
+                    },
                   },
                 },
               },
             },
           },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }

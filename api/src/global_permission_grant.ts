@@ -38,40 +38,42 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Grant the right to execute a specific intent on the Global scope to a given user.",
-    tags: ["global"],
-    summary: "Grant a permission to a group or user",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["identity", "intent"],
-          properties: {
-            identity: { type: "string", example: "aSmith" },
-            intent: { type: "string", enum: globalIntents, example: "global.createProject" },
+    schema: {
+      description:
+        "Grant the right to execute a specific intent on the Global scope to a given user.",
+      tags: ["global"],
+      summary: "Grant a permission to a group or user",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      body: {
+        type: "object",
+        required: ["apiVersion", "data"],
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            required: ["identity", "intent"],
+            properties: {
+              identity: { type: "string", example: "aSmith" },
+              intent: { type: "string", enum: globalIntents, example: "global.createProject" },
+            },
           },
         },
       },
-    },
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: { type: "string", example: "OK" },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: { type: "object" },
+          },
         },
+        401: NotAuthenticated.schema,
       },
-      401: NotAuthenticated.schema,
     },
   };
 }
@@ -112,7 +114,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: "OK",
+          data: {},
         };
         reply.status(code).send(body);
       })

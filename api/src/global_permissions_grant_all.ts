@@ -41,42 +41,41 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Grant all available permissions to a user. Useful as a shorthand for creating admin users.",
-    tags: ["global"],
-    summary: "Grant all permission to a group or user",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["identity"],
-          properties: {
-            identity: { type: "string", example: "aSmith" },
-          },
+    schema: {
+      description:
+        "Grant all available permissions to a user. Useful as a shorthand for creating admin users.",
+      tags: ["global"],
+      summary: "Grant all permission to a group or user",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
+        required: ["apiVersion", "data"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
-            example: "OK",
+            type: "object",
+            required: ["identity"],
+            properties: {
+              identity: { type: "string", example: "aSmith" },
+            },
           },
         },
       },
-      401: NotAuthenticated.schema,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: { type: "object" },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }
@@ -132,7 +131,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: "OK",
+          data: {},
         };
         reply.status(code).send(body);
       } catch (err) {

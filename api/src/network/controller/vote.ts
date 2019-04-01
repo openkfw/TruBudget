@@ -47,7 +47,7 @@ export async function voteForNetworkPermission(
     logger.debug("No action required.");
   }
 
-  return [200, { apiVersion: "1.0", data: "OK" }];
+  return [200, { apiVersion: "1.0", data: {} }];
 }
 
 export async function getCurrentVote(

@@ -53,88 +53,90 @@ interface LoginResponse {
 
 const swaggerSchema = {
   beforeHandler: [],
-  description:
-    "Authenticate and retrieve a token in return. This token can then be supplied in the " +
-    "HTTP Authorization header, which is expected by most of the other. " +
-    "\nIf a token is required write 'Bearer' into the 'API Token' field of an endpoint " +
-    "you want to test and copy the token afterwards like in the following example:\n " +
-    ".\n" +
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  tags: ["user"],
-  summary: "Authenticate with user and password",
-  body: {
-    type: "object",
-    required: ["apiVersion", "data"],
-    properties: {
-      apiVersion: { type: "string", example: "1.0" },
-      data: {
-        type: "object",
-        required: ["user"],
-        properties: {
-          user: {
-            type: "object",
-            required: ["id", "password"],
-            properties: {
-              id: { type: "string", example: "aSmith" },
-              password: { type: "string", example: "mySecretPassword" },
-            },
-          },
-        },
-      },
-    },
-  },
-  response: {
-    200: {
-      description: "successful response",
+  schema: {
+    description:
+      "Authenticate and retrieve a token in return. This token can then be supplied in the " +
+      "HTTP Authorization header, which is expected by most of the other. " +
+      "\nIf a token is required write 'Bearer' into the 'API Token' field of an endpoint " +
+      "you want to test and copy the token afterwards like in the following example:\n " +
+      ".\n" +
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    tags: ["user"],
+    summary: "Authenticate with user and password",
+    body: {
       type: "object",
+      required: ["apiVersion", "data"],
       properties: {
         apiVersion: { type: "string", example: "1.0" },
         data: {
           type: "object",
+          required: ["user"],
           properties: {
             user: {
               type: "object",
+              required: ["id", "password"],
               properties: {
                 id: { type: "string", example: "aSmith" },
-                displayName: { type: "string", example: "Alice Smith" },
-                organization: { type: "string", example: "Alice's Solutions & Co" },
-                allowedIntents: { type: "array", items: { type: "string" } },
-                groups: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      groupId: { type: "string", example: "Manager" },
-                      displayName: { type: "string", example: "All Manager Group" },
-                    },
-                  },
-                },
-                token: {
-                  type: "string",
-                  example:
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJyb290IiwiYWRkcm" +
-                    "VzcyI6IjFIVXF2dHE5WU1QaXlMZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwib3JnYW" +
-                    "5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFIVXF2dHE5WU1QaXl" +
-                    "MZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwiZ3JvdXBzIjpbXSwiaWF0IjoxNTM2ODI2M" +
-                    "TkyLCJleHAiOjE1MzY4Mjk3OTJ9.PZbjTpsgnIHjNaDHos9LVwwrckYhpWjv1DDiojskylI",
-                },
+                password: { type: "string", example: "mySecretPassword" },
               },
             },
           },
         },
       },
     },
-    400: {
-      description: "Authentication failed",
-      type: "object",
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        error: {
-          type: "object",
-          properties: {
-            message: {
-              type: "string",
-              example: "Authentication failed.",
+    response: {
+      200: {
+        description: "successful response",
+        type: "object",
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            properties: {
+              user: {
+                type: "object",
+                properties: {
+                  id: { type: "string", example: "aSmith" },
+                  displayName: { type: "string", example: "Alice Smith" },
+                  organization: { type: "string", example: "Alice's Solutions & Co" },
+                  allowedIntents: { type: "array", items: { type: "string" } },
+                  groups: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        groupId: { type: "string", example: "Manager" },
+                        displayName: { type: "string", example: "All Manager Group" },
+                      },
+                    },
+                  },
+                  token: {
+                    type: "string",
+                    example:
+                      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJyb290IiwiYWRkcm" +
+                      "VzcyI6IjFIVXF2dHE5WU1QaXlMZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwib3JnYW" +
+                      "5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFIVXF2dHE5WU1QaXl" +
+                      "MZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwiZ3JvdXBzIjpbXSwiaWF0IjoxNTM2ODI2M" +
+                      "TkyLCJleHAiOjE1MzY4Mjk3OTJ9.PZbjTpsgnIHjNaDHos9LVwwrckYhpWjv1DDiojskylI",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      400: {
+        description: "Authentication failed",
+        type: "object",
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          error: {
+            type: "object",
+            properties: {
+              message: {
+                type: "string",
+                example: "Authentication failed.",
+              },
             },
           },
         },
@@ -218,6 +220,6 @@ function createJWT(token: AuthToken, secret: string): string {
       groups: token.groups,
     },
     secret,
-    { expiresIn: "1h" },
+    { expiresIn: "8h" },
   );
 }

@@ -4,7 +4,7 @@ import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
-import * as Project from "./domain/workflow/project";
+import { ResourceMap } from "./domain/ResourceMap";
 import * as ProjectCreate from "./domain/workflow/project_create";
 import * as ProjectCreated from "./domain/workflow/project_created";
 import { getGlobalPermissions } from "./global_permissions_get";
@@ -17,7 +17,7 @@ export async function createProject(
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: ProjectCreate.RequestData,
-): Promise<Project.Id> {
+): Promise<ResourceMap> {
   const { newEvents, errors } = await Cache.withCache(conn, ctx, async cache =>
     ProjectCreate.createProject(ctx, serviceUser, requestData, {
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
@@ -39,5 +39,8 @@ export async function createProject(
 
   const creationEvent = newEvents.find(x => x.type === "project_created") as ProjectCreated.Event;
   if (creationEvent === undefined) throw Error(`Assertion: This is a bug.`);
-  return creationEvent.project.id;
+  const resourceIds: ResourceMap = {
+    project: { id: creationEvent.project.id },
+  };
+  return resourceIds;
 }

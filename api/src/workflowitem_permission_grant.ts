@@ -47,46 +47,48 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Grant a permission to a user. After this call has returned, the " +
-      "user will be allowed to execute the given intent.",
-    tags: ["workflowitem"],
-    summary: "Grant a permission to a user or group",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      additionalProperties: false,
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          properties: {
-            identity: { type: "string", example: "aSmith" },
-            intent: { type: "string", example: "global.createProject" },
-            projectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
-            subprojectId: { type: "string", example: "6z28c69eg298c87e3899119e025eff1f" },
-            workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
-          },
-          required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
+    schema: {
+      description:
+        "Grant a permission to a user. After this call has returned, the " +
+        "user will be allowed to execute the given intent.",
+      tags: ["workflowitem"],
+      summary: "Grant a permission to a user or group",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
+        additionalProperties: false,
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
-            type: "string",
+            type: "object",
+            properties: {
+              identity: { type: "string", example: "aSmith" },
+              intent: { type: "string", example: "global.createProject" },
+              projectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
+              subprojectId: { type: "string", example: "6z28c69eg298c87e3899119e025eff1f" },
+              workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+            },
+            required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
           },
         },
       },
-      401: NotAuthenticated,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }
@@ -147,7 +149,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           const code = 200;
           const body = {
             apiVersion: "1.0",
-            data: "OK",
+            data: {},
           };
           reply.status(code).send(body);
         })

@@ -45,7 +45,6 @@ export default class DocumentUpload extends Component {
             label={strings.workflow.workflow_document_name}
             value={this.state.name}
             id="documentnameinput"
-
             onChange={event => this.setState({ name: event.target.value })}
           />
           <Button
@@ -53,6 +52,7 @@ export default class DocumentUpload extends Component {
             disabled={
               _isEmpty(this.state.name) || workflowDocuments.filter(doc => doc.id === this.state.name).length > 0
             }
+            component="div"
           >
             {strings.workflow.workflow_upload_document}
             {_isEmpty(this.state.name) ? null : (

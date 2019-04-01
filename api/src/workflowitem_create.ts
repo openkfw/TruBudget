@@ -8,6 +8,7 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { ResourceMap } from "./service/domain/ResourceMap";
 import { UploadedDocument } from "./service/domain/workflow/document";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
@@ -63,70 +64,86 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
-    description:
-      "Create a workflowitem and associate it to the given subproject.\n.\n" +
-      "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
-      "The only possible values for 'status' are: 'open' and 'closed'",
-    tags: ["subproject"],
-    summary: "Create a workflowitem",
-    security: [
-      {
-        bearerToken: [],
-      },
-    ],
-    body: {
-      type: "object",
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          additionalProperties: false,
-          required: ["projectId", "subprojectId", "displayName", "amountType"],
-          properties: {
-            projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-            subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-            status: { type: "string", example: "open" },
-            displayName: { type: "string", example: "classroom" },
-            description: { type: "string", example: "build classroom" },
-            amount: { type: ["string", "null"], example: "500" },
-            assignee: { type: "string", example: "aSmith" },
-            currency: { type: ["string", "null"], example: "EUR" },
-            amountType: { type: "string", example: "disbursed" },
-            billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-            exchangeRate: { type: "string", example: "1.0" },
-            documents: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  id: { type: "string", example: "classroom-contract" },
-                  base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
-                },
-              },
-            },
-            additionalData: { type: "object", additionalProperties: true },
-          },
+    schema: {
+      description:
+        "Create a workflowitem and associate it to the given subproject.\n.\n" +
+        "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
+        "The only possible values for 'status' are: 'open' and 'closed'",
+      tags: ["subproject"],
+      summary: "Create a workflowitem",
+      security: [
+        {
+          bearerToken: [],
         },
-      },
-    },
-    response: {
-      200: {
-        description: "successful response",
+      ],
+      body: {
         type: "object",
         properties: {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
+            additionalProperties: false,
+            required: ["projectId", "subprojectId", "displayName", "amountType"],
             properties: {
-              created: { type: "boolean", example: "true" },
-              projectId: { type: "string" },
-              subprojectId: { type: "string" },
-              workflowitemId: { type: "string" },
+              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
+              status: { type: "string", example: "open" },
+              displayName: { type: "string", example: "classroom" },
+              description: { type: "string", example: "build classroom" },
+              amount: { type: ["string", "null"], example: "500" },
+              assignee: { type: "string", example: "aSmith" },
+              currency: { type: ["string", "null"], example: "EUR" },
+              amountType: { type: "string", example: "disbursed" },
+              billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+              exchangeRate: { type: "string", example: "1.0" },
+              documents: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", example: "classroom-contract" },
+                    base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
+                  },
+                },
+              },
+              additionalData: { type: "object", additionalProperties: true },
             },
           },
         },
       },
-      401: NotAuthenticated,
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                project: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                  },
+                },
+                subproject: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                  },
+                },
+                workflowitem: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        401: NotAuthenticated.schema,
+      },
     },
   };
 }
@@ -136,7 +153,7 @@ interface Service {
     ctx: Ctx,
     user: ServiceUser,
     createRequest: WorkflowitemCreate.RequestData,
-  ): Promise<Map<Id, string>>;
+  ): Promise<ResourceMap>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -176,15 +193,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .createWorkflowitem(ctx, user, reqData)
-        .then(resourceIds => {
-          const code = 201;
+        .then((resourceIds: ResourceMap) => {
+          const code = 200;
           const body = {
             apiVersion: "1.0",
             data: {
-              created: true,
-              projectId: resourceIds.get("projectId"),
-              subprojectId: resourceIds.get("subprojectId"),
-              workflowitemId: resourceIds.get("workflowitemId"),
+              ...resourceIds,
             },
           };
           reply.status(code).send(body);
