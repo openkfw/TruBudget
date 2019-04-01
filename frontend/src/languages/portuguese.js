@@ -285,7 +285,6 @@ const pt = {
   },
 
   history: {
-    changed_by: "Portuguese: {0} changed by {1}: ",
     created_project: "Projeto criado ",
     created_subproject: "Subprojeto {0} criado",
     created_workflow: "Workflow {0} criado ",

@@ -286,7 +286,6 @@ const fr = {
   },
 
   history: {
-    changed_by: "{0} changé by {1}: ",
     created_project: "Projet créé ",
     created_subproject: "Sous-projet {0} créé",
     created_workflow: "Workflow {0} créé ",
