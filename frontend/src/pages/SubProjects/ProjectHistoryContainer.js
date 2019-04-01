@@ -69,7 +69,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
         data.identity,
         snapshot.displayName
       );
-    case "subproject_items_reordered":
+    case "workflowitems_reordered":
       return formatString(strings.history.subproject_reorderWorkflowitems, createdBy, snapshot.displayName);
     default:
       console.log("WARN: Intent not defined:", intent);

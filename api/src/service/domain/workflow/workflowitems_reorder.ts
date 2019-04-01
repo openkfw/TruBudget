@@ -8,7 +8,7 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
-import * as SubprojectItemsReordered from "./subproject_items_reordered";
+import * as WorkflowitemsReordered from "./workflowitems_reordered";
 import * as WorkflowitemOrdering from "./workflowitem_ordering";
 
 import isEqual = require("lodash.isequal");
@@ -41,7 +41,7 @@ export async function setWorkflowitemOrdering(
 
   // TODO(kevin): Check that each ID refers to an existing workflowitem
 
-  const reorderEvent = SubprojectItemsReordered.createEvent(
+  const reorderEvent = WorkflowitemsReordered.createEvent(
     ctx.source,
     issuer.id,
     projectId,
@@ -59,7 +59,7 @@ export async function setWorkflowitemOrdering(
 
   // Check that the new event is indeed valid:
   const result = produce(subproject, draft =>
-    SubprojectItemsReordered.apply(ctx, reorderEvent, draft),
+    WorkflowitemsReordered.apply(ctx, reorderEvent, draft),
   );
 
   if (Result.isErr(result)) {

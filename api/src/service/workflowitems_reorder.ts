@@ -5,7 +5,7 @@ import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
-import * as SubprojectItemsReorder from "./domain/workflow/subproject_items_reorder";
+import * as WorkflowitemsReorder from "./domain/workflow/workflowitems_reorder";
 import { WorkflowitemOrdering } from "./domain/workflow/workflowitem_ordering";
 import { store } from "./store";
 
@@ -18,7 +18,7 @@ export async function setWorkflowitemOrdering(
   ordering: WorkflowitemOrdering,
 ): Promise<void> {
   const result = await Cache.withCache(conn, ctx, async cache =>
-    SubprojectItemsReorder.setWorkflowitemOrdering(
+    WorkflowitemsReorder.setWorkflowitemOrdering(
       ctx,
       serviceUser,
       projectId,

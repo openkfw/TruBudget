@@ -30,7 +30,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
       return formatString(strings.history.subproject_update, createdBy, snapshot.displayName);
     case "subproject_closed":
       return formatString(strings.history.subproject_close, createdBy, snapshot.displayName);
-    case "subproject_items_reordered":
+    case "workflowitems_reordered":
       return formatString(strings.history.subproject_reorderWorkflowitems, createdBy, snapshot.displayName);
     case "subproject_permission_granted":
       return formatString(
