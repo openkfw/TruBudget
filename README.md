@@ -35,32 +35,32 @@ These instructions will get you a copy of the project up and running on your loc
 The recommended option to get started with TruBudget is to use the latest stable docker images via docker-compose.
 For more detailed information about the installation and the environment variables or alternative ways to setup TruBudget check out the [Installation Guide](./doc/wiki/Installation-Guide/Installation-Guide.md).
 
-Setting required environment variables via `.env` file. If you want to use the standard setup, simply copy the `.env_example` file: 
+Setting required environment variables via `.env` file. If you want to use the standard setup, simply copy the `.env_example` file:
 
 ```bash
 cd path/to/trubudget
 cp .env_example .env
 ```
 
->Tip: If you want to checkout a certain version of TruBudget change the `TAG` environment variable. By default it is set to `TAG=master`. 
+>Tip: If you want to checkout a certain version of TruBudget change the `TAG` environment variable. By default it is set to `TAG=master`.
 
 Before you start with the standard configuration, please make sure that the port `80` (used by the frontend) is free.
 
-To run TruBudget, run the following script: 
+To run TruBudget, run the following script:
 
 ```bash
 sh scripts/master/start-and-provision-master-node.sh
 ```
 
-This will start a prod and test instance of TruBudget (blockchain, api, frontend) with a standard set of projects and users (i.e. 'provisioned blockchain'). 
+This will start a prod and test instance of TruBudget (blockchain, api, frontend) with a standard set of projects and users (i.e. 'provisioned blockchain').
 > Caution: The process of provisioning may take several minutes (depending on your CPU) and can slow down your computer during the execution of the script.
 
-If you want to start with an empty blockchain (i.e. without any users but `root` and without any projects), you can run: 
+If you want to start with an empty blockchain (i.e. without any users but `root` and without any projects), you can run:
 ```
 sh scripts/master/start-master-node.sh
 ```
 
-Use `docker ps` to check on the running containers: 
+Use `docker ps` to check on the running containers:
 
 ```bash
 ➜ docker ps
@@ -86,10 +86,10 @@ Passwort: root-secret
 ```
 With this user you can see the provisioned projects and users, if you started with a provisioned blockchain.
 
-The blockchain data is persisted on your hard drive. The standard location on Linux and OS X for this is: 
+The blockchain data is persisted on your hard drive. The standard location on Linux and OS X for this is:
 ```
-/tmp/bcMasterVolume 
-``` 
+/tmp/bcMasterVolume
+```
 
 
 # Build and Develop from Local Sources

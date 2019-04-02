@@ -12,12 +12,7 @@ metadata:
 spec:
   type: {{ default "LoadBalancer" .Values.service.type }}
   ports:
-    {{- if eq .Values.service.type "NodePort" }}
-    - port: {{ .Values.frontend.ingressPort }}
-      nodePort: {{ .Values.frontend.ingressPort }}
-    {{- else }}
     - port: {{ .Values.frontend.port }}
-    {{- end }}
       targetPort: {{ .Values.frontend.port }}
       protocol: TCP
       name: {{ .Values.service.name }}

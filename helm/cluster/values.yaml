@@ -1,11 +1,10 @@
 # Default values for trubudget-cluster.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+
 global:
-  imageCredentials:
-    name: regsecret
-  imageTag: master
-  fqdn: my-trubudget.url
+  branch: my-branch
+  image:
+    tag: master
+  fqdn: my-trubudget-url.com
   env:
     ENVIRONMENT_TYPE: DEV
     EXPOSE_MC: false
@@ -17,6 +16,7 @@ tags:
   blockchainSecond: false
   apiSecond: false
   frontendSecond: false
+  minimal: false
 
 blockchain-prod-1:
   service:
@@ -155,7 +155,7 @@ frontend-1:
       PROD_API_HOST: api-prod-1
       TEST_API_HOST: api-test-1
   ingress:
-    enabled: true
+    enabled: false
     fqdnPrefix: a
     hosts:
       - name: frontend
@@ -163,6 +163,7 @@ frontend-1:
         serviceName: frontend-1
         servicePort: 80
     ingressClass: nginx-test
+    tlsSecret: tls-secret
   provisioningProd:
     isRequired: "true"
     image:
@@ -193,7 +194,7 @@ frontend-2:
       PROD_API_HOST: api-prod-2
       TEST_API_HOST: api-test-2
   ingress:
-    enabled: true
+    enabled: false
     fqdnPrefix: b
     hosts:
       - name: frontend
@@ -201,3 +202,4 @@ frontend-2:
         serviceName: frontend-2
         servicePort: 80
     ingressClass: nginx-test
+    tlsSecret: tls-secret

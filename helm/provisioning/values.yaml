@@ -3,8 +3,9 @@
 # Declare variables to be passed into your templates.
 
 global:
+  branch: my-branch
   image:
-    tag: provisioning-deployment
+    tag: master
 
 provisioning:
   enabled: true

@@ -1,11 +1,9 @@
-# Default values for trubudget-cluster.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Default values for e2e tests
+
 global:
+  branch: my-branch
   image:
     tag: master
-  imageCredentials:
-    name: regsecret
   env:
     ENVIRONMENT_TYPE: TEST
 

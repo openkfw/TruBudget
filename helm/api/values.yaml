@@ -3,20 +3,11 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 
-global:
-  image:
-    tag: master
-  exposeType: NodePort
-  imageCredentials:
-    name: regsecret
-
 image:
   repository: trubudget/api
-  tag: master
   pullPolicy: Always
 
 api:
-  ingressPort: 31235
   env:
     PORT: 8080
     JWT_SECRET: jwt-secret

@@ -1,19 +1,6 @@
-# Default values for helm.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-replicaCount: 1
-global:
-  image:
-    tag: master
-  branch: master
-  exposeType: NodePort
-  imageCredentials:
-    name: regsecret
-  env:
-    ENVIRONMENT_TYPE: PROD
+# Default values for blockchain.
 
-backup:
-  connectionString:
+replicaCount: 1
 
 image:
   repository: trubudget/blockchain
@@ -21,7 +8,6 @@ image:
 
 bc:
   isMaster: false
-  ingressPort: 31234
   env:
     CHAINNAME: TrubudgetChain
     RPC_PORT: 8000
