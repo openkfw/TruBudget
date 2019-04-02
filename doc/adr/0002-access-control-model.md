@@ -30,7 +30,7 @@ their point of view the implications of re-using a role are not always clear.
 Conversely, intents are always specific to a use case (examples: "create project" or
 "list a project's subprojects" rather than "admin" or "user").
 
-While roles _could_ be used to bundle intent-execution rights (e.g., have one role
+While roles _could_ be used to bundle intent-execution rights (e.g. have one role
 that is allowed to execute all "view" intents), we think that those roles would have
 to be managed by organizations themselves (as it will depend on their structure).
 Since in most cases this would mean a 1:1 mapping from role to user group, we skip

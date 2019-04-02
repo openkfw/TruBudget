@@ -1,13 +1,13 @@
 # Local Installation - Debian/Ubuntu/Fedora
 
-The following section describes how to setup a trubudget on Debian/Ubuntu/Fedora machines.
+The following section describes how to setup TruBudget on Debian/Ubuntu/Fedora machines.
 This guide will setup the following components:
 
 - **Blockchain**: a MultiChain Blockchain node
 - **API**: a microservice serving as interface to connect to the Blockchain
 - **Frontend**: a web application connected to the API displaying the data of the Blockchain
 
-If you decide to use more than one virtual machine execute the commands only on the machine where the component is supposed to run.
+If you decide to use more than one virtual machines, execute the commands only on the machine where the component is supposed to run.
 
 ## Prepare
 
@@ -88,7 +88,7 @@ export RPC_ALLOW_IP="0.0.0.0/0";
 export MULTICHAIN_DIR="/root"
 export EXTERNAL_IP = [external IP here];
 export P2P_HOST = [IP of seed node];
-export P2P_PORT = [multichain port of seed node];
+export P2P_PORT = [MultiChain port of seed node];
 
 export API_PROTO="http";
 export API_HOST=[IP of seed API];
@@ -97,9 +97,9 @@ export API_PORT=[port of seed API];
 
 where
 
-- P2P_HOST / P2P_PORT contains the IP and port where the multichain of the master node can be reached
+- P2P_HOST / P2P_PORT contains the IP and port where the MultiChain of the master node can be reached
 - API_HOST / API_PORT contains the IP and port where the API of the master node can be reached
-- EXTERNAL_IP: The public IP of the slave node
+- EXTERNAL_IP: The public IP address of the slave node
 
 Navigate into the `blockchain` directory and install the node packages defined in the `package.json` and start the Blockchain with:
 
@@ -325,8 +325,8 @@ This is just an example. Please refer to the [official documentation](http://pm2
 
 ### Provisioning
 
-The Provisioning fill the blockchain with test-data.
-To start the provisioning open your favorite shell, navigate to your provisioning folder and follow these instructions:
+The Provisioning fills the blockchain with test-data.
+To start the provisioning, open your favorite shell, navigate to your provisioning folder and follow these instructions:
 
 ```bash
 cd ../provisioning
@@ -410,7 +410,7 @@ If you see matching entries, simply run
 nginx -s stop
 ```
 
-to stopp all running processes.
+to stop all running processes.
 
 To start the frontend, run the following command:
 
@@ -418,7 +418,7 @@ To start the frontend, run the following command:
 /bin/bash configureServer.sh
 ```
 
-As soon as the step above is done the frontend should be available on port 80. Make sure that port 80 is exposed and not blocked by any firewall.
+As soon as the step above is done, the frontend should be available on port 80. Make sure that port 80 is exposed and not blocked by any firewall.
 
 ## Known Issues
 

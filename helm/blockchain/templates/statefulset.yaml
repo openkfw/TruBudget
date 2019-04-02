@@ -41,8 +41,6 @@ spec:
       {{- else}}
       serviceAccountName: blockchain-sa
       {{- end}}
-      imagePullSecrets:
-      - name: {{ .Values.global.imageCredentials.name | default "regsecret" }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.global.image.tag }}"

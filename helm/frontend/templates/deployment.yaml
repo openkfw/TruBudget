@@ -75,5 +75,3 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.frontend.port }}
-      imagePullSecrets:
-        - name:  {{ .Values.global.imageCredentials.name | default "regsecret"}}

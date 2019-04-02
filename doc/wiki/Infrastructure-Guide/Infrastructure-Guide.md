@@ -3,11 +3,11 @@
 
 When running the full setup of Trubudget following components are deployed:
 
-| Component name | number | Description                                                                                                                                                                                                                    |
-| :------------- | :----- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Frontend       | 1      | Deploys the Trubudget userinterface connecting to the test/prod API                                                                                                                                                            |
-| API            | 2      | Deploys two API's, each connected to an own blockchain-node (test, prod).<br>An API can be accessed through a connected frontend or                                                       directly using the API-documentation |
-| Blockchain     | 2      | Deploys two blockchain nodes in their own networks, so each node uses its own multichain instance                                                                                                                              |
+| Component name | number | Description                                                                                                                                                                                                                      |
+| :------------- | :----- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend       | 1      | Deploys the Trubudget user interface connecting to the test/prod API                                                                                                                                                             |
+| API            | 2      | Deploys two APIs, each connected to their own blockchain-node (test, prod).<br>An API can be accessed through a connected frontend or                                                       directly using the API-documentation |
+| Blockchain     | 2      | Deploys two blockchain nodes in their own networks, so each node uses its own multichain instance                                                                                                                                |
 
 ## Setup
 The connection between previous listed components is shown in the graphic below.

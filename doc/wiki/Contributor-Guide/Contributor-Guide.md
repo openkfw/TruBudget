@@ -1,4 +1,4 @@
-# Contributer Guide
+# Contributor Guide
 
 This document describes how to set up your environment to start developing and debugging the TruBudget application. The first section describes the recommended tools for development, the second part is dedicated to the installation on your local machine for development and debugging.
 
@@ -316,3 +316,10 @@ Following command executes a specific test group (e.g. "Updating a project") def
 cd api
 npm run test:here <folderName> <describeString>
 ```
+
+# FAQ
+
+| Description           | Link                                                                                                              |
+| :-------------------- | :---------------------------------------------------------------------------------------------------------------- |
+| How to run e2e-tests? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#end-to-end-tests |
+| How to run unit-test? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#unit-tests       |

@@ -1,6 +1,6 @@
 This section describes how to deploy the TruBudget components with the usage of Docker Compose.
 
-We distinguish between two types of deployments. On the hand side we have the **local** deployment type which will deploy your local copy of the source code, along with any changes you might have done; on the other hand we have the **master** deployment type that will deploy Docker images out of the ACMECorp Docker registry.
+We distinguish between two types of deployments. On the one hand side we have the **local** deployment type which will deploy your local copy of the source code, along with any changes you might have done; on the other hand we have the **master** deployment type that will deploy Docker images out of the ACMECorp Docker registry.
 
 The deployments are abstracted through shell scripts. We expect you to have a UNIX-like operating system which can execute shell scripts, e.g. Ubuntu. If not, take a look at the scripts and port them according to your operating system.
 
@@ -294,4 +294,4 @@ api_1            | [2018-08-10T08:42:37.445Z] DEBUG (TruBudget/1 on e0fdf1eb41e2
 testapi_1        | [2018-08-10T08:42:37.474Z] DEBUG (TruBudget/1 on 14d2111cc40d): Created stream users:TheOrganiz with options {"kind":"users","name":"users:TheOrganiz"}
 ```
 
-You are now successfully connected to the network and should be to access the frontend via port 80 on the server that it is running on. Use the **root** user and the password that was defined in the .env file to initially login to the frontend and to create users of your organization.
+You are now successfully connected to the network and should be able to access the frontend via port 80 on the server that it is running on. Use the **root** user and the password that was defined in the .env file to initially login to the frontend and to create users of your organization.

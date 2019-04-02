@@ -32,26 +32,28 @@ Scenario: A subproject must only be closed when 2 people A & B (e.g. different d
 Prereqs: Closing right is given to an administrative person and not to the people signing off
 
 Approach:
+
 1. Subproject is executed as usual, then for sign-off is assigned to Person A
 2. Sign-Off Person A enters a Workflow-Item validating the state and assigns Person B
 3. Sign-Off Person B enters a Workflow-Item validating the state and assigns to administrative personell that has the close-rights
 4. Administrative person checks whether all required sign-offs are there and then finally closes; otherwise assigns back
 
 ### Impact to child resources
-A resource hierarchically describes a node in a tree-like structure. Therefore we need to look at impact of a closed resource to other nodes in the tree. 
 
-If a resource has no childs, there is no impact on other resources.
+A resource hierarchically describes a node in a tree-like structure. Therefore we need to look at impact of a closed resource to other nodes in the tree.
 
-If a resource has childs (e.g. subprojects / workflows), **the resource cannot be closed**. All childs need to be in state closed before a parent can be closed.
+If a resource has no children, there is no impact on other resources.
+
+If a resource has children (e.g. subprojects / workflowitems), **the resource cannot be closed**. All children need to be in state closed before a parent can be closed.
 
 ```mermaid
 graph TD;
-    Project-->SubProject_A;
-    Project-->SubProject_B;
-    SubProject_A-->WorkflowItem_A;
-    SubProject_A-->WorkflowItem_B;
-    SubProject_B-->WorkflowItem_C;
-    SubProject_B-->WorkflowItem_D;
+    Project-->Subproject_A;
+    Project-->Subproject_B;
+    Subproject_A-->Workflowitem_A;
+    Subproject_A-->Workflowitem_B;
+    Subproject_B-->Workflowitem_C;
+    Subproject_B-->Workflowitem_D;
 ```
 
 ## Implementation
@@ -62,7 +64,7 @@ This ADR is desigend to enable a MVP implementation. Implementation consists of 
 
 - Re-opening is not supported
 - No automatic closing in hierarchy for now
-- System blocks closing if there are open childs
+- System blocks closing if there are open children
 - No system-support for specific usage patterns
 
 This approach is on-purpose very lightweight and agnostic to usage pattern. Once needs are understood better system support for scenarios like 4-eyes-principle can be established through a new / updated ADR and formally manifested in the ledger in machine-readable format.

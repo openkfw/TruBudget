@@ -60,6 +60,4 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 10
-      imagePullSecrets:
-      - name:  {{ .Values.global.imageCredentials.name | default "regsecret"}}
 

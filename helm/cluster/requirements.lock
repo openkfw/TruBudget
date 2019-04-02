@@ -29,5 +29,5 @@ dependencies:
 - name: frontend
   repository: file://../frontend
   version: 0.1.0
-digest: sha256:88142e71dab4c9dcd540a58155603891607d1a8f32b820a3752bc23ecc802384
-generated: 2019-03-12T17:29:01.642386+01:00
+digest: sha256:8769c07591bc4b1cb9496b15a24804a6b2e7395d396477c3e740ffac231481dc
+generated: 2019-04-02T13:56:30.303353+02:00
