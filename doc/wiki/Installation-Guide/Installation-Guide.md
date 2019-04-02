@@ -4,12 +4,12 @@ This document describes how to set up your environment to start developing and d
 
 ## Requirements
 
-| Component        |    Minimum Requirement |
-| ---------------- | ---------------------: |
-| CPU              |           2 x x86 2GHz |
-| RAM              |                   8 GB |
-| Disk space       |                  50 GB |
-| Operating system | Ubuntu 16.04 and above |
+| Component        |   Minimum Requirement |
+| ---------------- | --------------------: |
+| CPU              |          2 x x86 2GHz |
+| RAM              |                  8 GB |
+| Disk space       |                 50 GB |
+| Operating system | Ubuntu 16.04 or above |
 
 ## Installation
 

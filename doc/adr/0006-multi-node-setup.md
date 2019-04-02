@@ -16,7 +16,7 @@ This ADR discusses terminology and setup of the TruBudget network.
 
 ### Terminology
 
-Each *node* is associated to a single *organization* (e.g., ACMECorp, UmbrellaCorp), including the special *origin node*, which mines the first block in the network. Nodes that belong to the same organization are called *internal peers*; nodes that belong to other organizations are called *external peers*.
+Each _node_ is associated to a single _organization_ (e.g. ACMECorp, UmbrellaCorp), including the special _origin node_, which mines the first block in the network. Nodes that belong to the same organization are called _internal peers_; nodes that belong to other organizations are called _external peers_.
 
 ### Blockchain Addresses
 
@@ -24,22 +24,22 @@ User authenticate themselves using username and password, but internally every u
 
 With Multichain, each node owns a unique address, generated when started the first time (its wallet address). In day-to-day operations, those addresses are not used and only the address of the first node of an organization is put on the chain (and thus propagated among nodes).
 
-By mining the genesis block (that is, the first block in the network), the origin node gets *full* permissions on *everything*, which includes exclusive access to the `root` stream. The permissions are bound to the origin-node's address; we call the associated key *origin root key* (ORK). The ORK is not put on the chain and should be backed up by the administrator; it is also not used in day-to-day operations. Instead, the ORK is used to create another node address that holds necessary permissions; that key is called *organization key*.
+By mining the genesis block (that is, the first block in the network), the origin node gets _full_ permissions on _everything_, which includes exclusive access to the `root` stream. The permissions are bound to the origin-node's address; we call the associated key _origin root key_ (ORK). The ORK is not put on the chain and should be backed up by the administrator; it is also not used in day-to-day operations. Instead, the ORK is used to create another node address that holds necessary permissions; that key is called _organization key_.
 
 ### Distributing secret keys
 
-The organization key is put on the chain, into a stream-item on the organization's stream, called the *vault*. The vault holds the private keys of all (technical and non-technical) users of the organization. In order to prevent other organizations from using them, the vault needs to be encrypted. The encryption key is a shared secret known to all internal peers, called the *organization vault secret* (OVS). Whenever ~~the vault is updated, all internal peers import new keys into their wallet (using a walletnotify script)~~ a user logs in, the user's private key is read from the vault and imported into the node's wallet, which allows users to move freely between their organization's nodes.
+The organization key is put on the chain, into a stream-item on the organization's stream, called the _vault_. The vault holds the private keys of all (technical and non-technical) users of the organization. In order to prevent other organizations from using them, the vault needs to be encrypted. The encryption key is a shared secret known to all internal peers, called the _organization vault secret_ (OVS). Whenever ~~the vault is updated, all internal peers import new keys into their wallet (using a walletnotify script)~~ a user logs in, the user's private key is read from the vault and imported into the node's wallet, which allows users to move freely between their organization's nodes.
 
 ### Joining the network
 
 There are two ways an organization can join the network:
 
 1. The organization maintains the origin node, in which case the ORK is used to create the organization key (see above).
-1. For all other organizations, the first node needs to connect to any node of an organization that has *trusted access* (see below).
+1. For all other organizations, the first node needs to connect to any node of an organization that has _trusted access_ (see below).
 
 #### Trusted vs. managed access
 
-In the TruBudget network, there are two types of organizational access to the network: *admin* and *basic*. The main difference is that with admin the node can also _mine_ and write to so-called "admin" streams. In TruBudget, each organization should have exactly one address (the *organization address*) with admin permissions; all other node addresses should have basic access only. This ensures that a single organization cannot manipulate the network without other organizations noticing.
+In the TruBudget network, there are two types of organizational access to the network: _admin_ and _basic_. The main difference is that with admin the node can also _mine_ and write to so-called "admin" streams. In TruBudget, each organization should have exactly one address (the _organization address_) with admin permissions; all other node addresses should have basic access only. This ensures that a single organization cannot manipulate the network without other organizations noticing.
 
 In other words, connecting as a new organization **B** to an existing TruBudget network of organization **A** works as follows:
 

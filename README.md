@@ -10,6 +10,10 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
+- [Build and Develop from Local Sources](#build-and-develop-from-local-sources)
+- [Troubleshooting](#troubleshooting)
+- [More Information](#more-information)
+- [FAQ](#faq)
 
 # Introduction
 
@@ -19,7 +23,7 @@ TruBudget - a trusted public expenditure tool. A collaborative workflow tool and
 
 These instructions will get you a copy of the project up and running on your local machine.
 
->_Caution_: This guide works well wil Linux and OS X operating systems. For Windows, we recommend using the Git Bash (or something similar) to perform the commands listed below. 
+>_Caution_: This guide works well wil Linux and OS X operating systems. For Windows, we recommend using the Git Bash (or something similar) to perform the commands listed below, but there could still be issues while performing some of the commands.
 
 ## Prerequisites
 
@@ -38,23 +42,23 @@ cd path/to/trubudget
 cp .env_example .env
 ```
 
->Tip: If you want to checkout a certain version of TruBudget change the `TAG` environment variable. By default it is set to `TAG=master`.
+>Tip: If you want to checkout a certain version of TruBudget change the `TAG` environment variable. By default it is set to `TAG=master`. 
 
 Before you start with the standard configuration, please make sure that the port `80` (used by the frontend) is free.
 
 To run TruBudget, run the following script: 
 
 ```bash
+sh scripts/master/start-and-provision-master-node.sh
+```
+
+This will start a prod and test instance of TruBudget (blockchain, api, frontend) with a standard set of projects and users (i.e. 'provisioned blockchain'). 
+> Caution: The process of provisioning may take several minutes (depending on your CPU) and can slow down your computer during the execution of the script.
+
+If you want to start with an empty blockchain (i.e. without any users but `root` and without any projects), you can run: 
+```
 sh scripts/master/start-master-node.sh
 ```
-
-This will start a prod and test instance of TruBudget (blockchain, api, frontend) and test data provisioning. The provisioning will add test data to your blockchain and it can take several minutes to finish. 
-
-If you want to start with an empty blockchain and skip provisioning, you can use the following command: 
-```
-TBD
-```
-
 
 Use `docker ps` to check on the running containers: 
 
@@ -70,7 +74,7 @@ c6426a0ee5f5        trubudget/api:master            "/bin/sh -c 'npm sta…"   5
 a8b3442490b5        trubudget/blockchain:master     "npm start"              5 minutes ago       Up 5 minutes        7447/tcp, 8000/tcp   trubudget_testmaster_1
 ```
 
-Once the application and the provisioning is done, you can visit the application at:
+Once the application is started (and the provisioning is done), you can visit the application at:
 ```
 http://localhost:80
 ```
@@ -80,20 +84,20 @@ To log in, use the following standard login (as defined in the `.env` file)
 User: root
 Passwort: root-secret
 ```
-With this user you can see the provisioned projects and users.
+With this user you can see the provisioned projects and users, if you started with a provisioned blockchain.
 
 The blockchain data is persisted on your hard drive. The standard location on Linux and OS X for this is: 
 ```
 /tmp/bcMasterVolume 
-``On Windows, the folder location is: 
-```
-%USERPROFILE%\AppData\Local\
-```
+``` 
 
 
 # Build and Develop from Local Sources
 
 Checkout the [Contributor Guide](https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
+
+# Troubleshooting
+TBD
 
 # More Information
 
@@ -101,7 +105,5 @@ Check out our [**Trubudget-Wiki**](./doc/README.md) to find out how Trubudget wo
 
 # FAQ
 
-| Description           | Link                                                                                                              |
-| :-------------------- | :---------------------------------------------------------------------------------------------------------------- |
-| How to run e2e-tests? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#end-to-end-tests |
-| How to run unit-test? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#unit-tests       |
+| Description | Link |
+| :---------- | :--- |
