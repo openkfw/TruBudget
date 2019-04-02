@@ -23,12 +23,12 @@ class LiveNotificationContainer extends Component {
   }
 
   render() {
-    return (
+    return this.props.showLiveUpdates ? (
       <div>
         <LiveUpdates update={() => this.fetch()} interval={15000} />
         <LiveNotification {...this.props} />;
       </div>
-    );
+    ) : null;
   }
 }
 
@@ -49,7 +49,8 @@ const mapStateToProps = state => {
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
     notificationCount: state.getIn(["notifications", "notificationCount"]),
     notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
-    latestFlyInId: state.getIn(["notifications", "latestFlyInId"])
+    latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
+    showLiveUpdates: state.getIn(["notifications", "showLiveUpdates"])
   };
 };
 

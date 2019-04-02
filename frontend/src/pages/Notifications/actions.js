@@ -8,6 +8,8 @@ export const MARK_NOTIFICATION_AS_READ_SUCCESS = "MARK_NOTIFICATION_AS_READ_SUCC
 export const OPEN_HISTORY = "OPEN_HISTORY";
 export const HIDE_HISTORY = "HIDE_HISTORY";
 
+export const SET_LIVE_UPDATES = "SET_LIVE_UPDATES";
+
 export const FETCH_HISTORY = "FETCH_HISTORY";
 export const FETCH_HISTORY_SUCCESS = "FETCH_HISTORY_SUCCESS";
 
@@ -122,5 +124,12 @@ export function setNotificationOffset(offset) {
   return {
     type: SET_NOTIFICATION_OFFSET,
     offset
+  };
+}
+
+export function enableLiveUpdates(isEnabled) {
+  return {
+    type: SET_LIVE_UPDATES,
+    isEnabled
   };
 }
