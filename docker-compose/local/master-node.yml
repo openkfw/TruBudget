@@ -27,6 +27,8 @@ services:
       EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
+    ports:
+      - "7447:${RPC_PORT}"
 
   testapi:
     build:
@@ -55,6 +57,8 @@ services:
       EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcTestMasterVolume:/root/.multichain
+    ports:
+      - "7448:${RPC_PORT}"
 
   frontend:
     build:
