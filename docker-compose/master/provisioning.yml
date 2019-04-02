@@ -1,0 +1,26 @@
+# This file intended to be merged into the master-node.yml inside the same directory
+version: "3.2"
+services:
+  provision-prod:
+    image: trubudget/provisioning:${TAG}
+    command: ["npm", "start"]
+    environment:
+      API_HOST: api
+      API_PORT: ${API_PORT}
+      ENVIRONMENT_TYPE: PROD
+      ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
+    links:
+      - api
+
+  provision-test:
+    image: trubudget/provisioning:${TAG}
+    command: ["npm", "start"]
+    environment:
+      API_HOST: testapi
+      API_PORT: ${API_PORT}
+      ENVIRONMENT_TYPE: PROD
+      ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
+    links:
+      - testapi
