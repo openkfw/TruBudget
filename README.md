@@ -142,7 +142,7 @@ To proceed from here let's jump to the next step and grant the newly created nod
 
 ## Granting access for new nodes
 
-TruBudget creates a private network. This means new nodes have to ask already registered nodes for permissions to join. When granting access we are using a democratic aproach to do so, by requiring at least half of the current network to approve a new node. In our case, we only have one node (the one you created in the first step), which has currently 100% of the voting power.
+TruBudget creates a private network. This means new nodes have to ask already registered nodes for permissions to join. When granting access we are using a democratic aproach to do so, by requiring at least half of the current organizations to approve a new node. In our case, we only have one organization (the one you created in the first step), which has currently 100% of the voting power.
 
 To grant permissions, simply log in on the first TruBudget node (the one you created in the first step) and follow the instructions in the [Node-Guide](./doc/wiki/User-Guide/Network/Nodes.md).
 

@@ -15,17 +15,18 @@ The easiest way to setup the application on your machine is via Docker and Docke
 
 Follow the official instructions on how to setup [node.js/npm](https://nodejs.org/en/download/)
 
-## Clone gitlab repository
+## Clone Repository
 
-Clone the repository from Gitlab:
+Clone the repository from Github:
 
 - SSH:
+
+Follow the instructions on how to setup your [SSH-connection](https://help.github.com/en/articles/connecting-to-github-with-ssh)
 
 ```bash
 git clone https://github.com/openkfw/TruBudget.git
 ```
 
-Follow the instructions on how to setup your [SSH-connection](https://docs.gitlab.com/ee/ssh/)
 
 - HTTPS:
 
@@ -81,7 +82,7 @@ If you want to start developing on Trubudget, you need to setup the application 
 
 ### Blockchain
 
-The blockchain works as data layer for the Trubudget application. Therefore, we start by creating an instance of the blockchain. To login to the docker registry, obtain a password from one of the administrators and then save it to `DOCKER_REGISTRY_PASSWORD`
+The blockchain works as data layer for the Trubudget application. Therefore, we start by creating an instance of the blockchain. 
 
 <br />
 First, navigate to the `/blockchain` folder, install all the npm packages and then start the blockchain via a shellscript:
@@ -92,29 +93,15 @@ First, navigate to the `/blockchain` folder, install all the npm packages and th
 cd blockchain
 ```
 
-2. Save the password to the docker registry in the file `DOCKER_REGISTRY_PASSWORD` (the value 'password' below is just an example)
+2. Start docker if it is not running already
 
-```bash
-echo 'password' > DOCKER_REGISTRY_PASSWORD
-```
-
-Alternatively, login to the docker registry via
-
-```bash
-docker login http://index.docker.io -u username -p password
-```
-
-To obtain the password to the docker registry, please contact one of the administrators.
-
-3. Start docker if it is not running already
-
-4. Install node-modules
+3. Install node-modules
 
 ```bash
 npm install
 ```
 
-5. Create a blockchain instance
+4. Create a blockchain instance
 
 ```bash
 sh startDev.sh
@@ -127,6 +114,8 @@ If you are developing on Windows, we recommend using the Git Bash to run the `st
 ### API
 
 The API takes care of the communication between the blockchain and the frontend and basically serves as backend. The proper setting of environment variables is crucial, so the API can communicate with the blockchain correctly.
+
+The `/api/src` folder contains README files on each level which describe the layout and architecture of the API. You can start reading [here](https://github.com/openkfw/TruBudget/blob/master/api/src/README.md)
 
 To start the api open your favorite shell, navigate to your api folder and follow these instructions:
 
@@ -189,7 +178,7 @@ nodemon dist
 
 to start the api.
 
-The API-Documentation should then be available at http://localhost:8080/api/documentation
+The API-Documentation should then be available at http://localhost:8080/api/documentation/index.html
 
 ### Provisioning (Optional)
 
@@ -317,9 +306,10 @@ cd api
 npm run test:here <folderName> <describeString>
 ```
 
+<!--
 # FAQ
-
 | Description           | Link                                                                                                              |
 | :-------------------- | :---------------------------------------------------------------------------------------------------------------- |
 | How to run e2e-tests? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#end-to-end-tests |
 | How to run unit-test? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#unit-tests       |
+-->

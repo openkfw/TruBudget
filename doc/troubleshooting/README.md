@@ -1,6 +1,6 @@
-# Known Issues
+# Known Issues & Troubleshooting
 
-This page is dedicated to known issues that may occur during installation of the Trubudget setup.
+This page is dedicated to known issues that may occur during installation or start of the Trubudget setup.
 
 ## Errors during Local Installation
 
@@ -43,7 +43,7 @@ Then shutdown the process with the `kill` command with the first number after "r
 kill 17272
 ```
 
-After this, start the blockchain again using the steps above (including the exports of the variables!).
+After this, start the blockchain again using the steps described in the guide (including the exports of the variables!).
 
 ### Cannot start nginx
 
