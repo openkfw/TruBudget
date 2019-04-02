@@ -20,7 +20,7 @@ suggestions by simply [creating a GitHub issue]. Also, feel free to reach out to
 
 [creating a github issue]: https://github.com/openkfw/TruBudget/issues/new
 
-### Design Decisions
+## Architecture Decisions
 
 When we make a significant decision in how to write code, or how to maintain the
 project and what we can or cannot support, we will document it using [Architecture
@@ -29,6 +29,11 @@ existings ADRs. If you have a question around how we do things, check to see if 
 documented there. If it is _not_ documented there, please ask us - chances are you're
 not the only one wondering. Of course, also feel free to challenge the decisions by
 starting a discussion on [Gitter] or by opening a [new GitHub issue].
+
+## Source Layout
+
+Best practices and layout is documented in README files next to the source files they
+describe. For example, take a look at [api/src/](api/src/) to get started.
 
 [new github issue]: https://github.com/openkfw/TruBudget/issues/new
 [code of conduct]: CODE_OF_CONDUCT.md
