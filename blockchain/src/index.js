@@ -126,7 +126,10 @@ function initMultichain() {
   }
 }
 
-let externalIpArg = "";
+let externalIpArg =
+  process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== ""
+    ? `-externalip=${EXTERNAL_IP}`
+    : "";
 
 if (EXPOSE_MC) {
   const kc = new k8s.KubeConfig();
@@ -144,11 +147,8 @@ if (EXPOSE_MC) {
     console.log(`externalIp: ${response}`);
     if (response) {
       externalIpArg = `-externalip=${response}`;
-    } else {
-      externalIpArg = process.env.EXTERNAL_IP
-        ? `-externalip=${EXTERNAL_IP}`
-        : "";
     }
+
     initMultichain();
   });
 } else {
@@ -199,12 +199,12 @@ app.get("/chain", async (req, res) => {
 });
 
 app.get("/version", (req, res) => {
-    const content =  {
-      release: process.env.npm_package_version,
-      commit: process.env.CI_COMMIT_SHA,
-      buildTimeStamp: process.env.BUILDTIMESTAMP
-    };
-    res.send(content);
+  const content = {
+    release: process.env.npm_package_version,
+    commit: process.env.CI_COMMIT_SHA,
+    buildTimeStamp: process.env.BUILDTIMESTAMP,
+  };
+  res.send(content);
 });
 
 const loadConfig = path => {

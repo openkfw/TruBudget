@@ -1,7 +1,7 @@
-version: '3.2'
+version: "3.2"
 services:
   api:
-    build: 
+    build:
       context: ../../api
     environment:
       RPC_HOST: master
@@ -13,9 +13,10 @@ services:
       LOG_LEVEL: ${LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       SWAGGER_BASEPATH: /prod
-    links: 
+    links:
       - master
-   
+    ports:
+      - "8080:${API_PORT}"
 
   master:
     build:
@@ -23,13 +24,12 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-       #EXTERNAL_IP: ${EXTERNAL_IP}
+      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
 
-
   testapi:
-    build: 
+    build:
       context: ../../api
     environment:
       RPC_HOST: testmaster
@@ -41,8 +41,10 @@ services:
       LOG_LEVEL: ${LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       SWAGGER_BASEPATH: /test
-    links: 
+    links:
       - testmaster
+    ports:
+      - "8081:${API_PORT}"
 
   testmaster:
     build:
@@ -50,15 +52,13 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-       #EXTERNAL_IP: ${EXTERNAL_IP}
+      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcTestMasterVolume:/root/.multichain
 
   frontend:
     build:
       context: ../../frontend
-    ports:
-      - "80:80" # Mapping the nginx port 
     environment:
       PROD_API_HOST: api
       PROD_API_PORT: ${API_PORT}
@@ -67,29 +67,5 @@ services:
     links:
       - api
       - testapi
-
-  provision-prod:
-    build:
-      context: ../../provisioning
-    command: ["npm", "start"]
-    environment:
-      API_HOST: api
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: PROD
-      ROOT_SECRET: ${ROOT_SECRET}
-      ORGANIZATION: ${ORGANIZATION}
-    links: 
-      - api
-
-  provision-test:
-    build:
-      context: ../../provisioning
-    command: ["npm", "start"]
-    environment:
-      API_HOST: testapi
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: PROD
-      ROOT_SECRET: ${ROOT_SECRET}
-      ORGANIZATION: ${ORGANIZATION}
-    links:
-      - testapi
+    ports:
+      - "80:80"

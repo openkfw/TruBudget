@@ -21,7 +21,7 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-    #     EXTERNAL_IP: ${EXTERNAL_IP}
+      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
 
@@ -45,7 +45,7 @@ services:
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-    #      EXTERNAL_IP: ${EXTERNAL_IP}
+      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcTestMasterVolume:/root/.multichain
 
@@ -60,28 +60,4 @@ services:
       TEST_API_PORT: ${API_PORT}
     links:
       - api
-      - testapi
-
-  provision-prod:
-    image: trubudget/provisioning:${TAG}
-    command: ["npm", "start"]
-    environment:
-      API_HOST: api
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: PROD
-      ROOT_SECRET: ${ROOT_SECRET}
-      ORGANIZATION: ${ORGANIZATION}
-    links:
-      - api
-
-  provision-test:
-    image: trubudget/provisioning:${TAG}
-    command: ["npm", "start"]
-    environment:
-      API_HOST: testapi
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: PROD
-      ROOT_SECRET: ${ROOT_SECRET}
-      ORGANIZATION: ${ORGANIZATION}
-    links:
       - testapi
