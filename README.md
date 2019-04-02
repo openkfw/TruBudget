@@ -11,9 +11,7 @@
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
 - [Build and Develop from Local Sources](#build-and-develop-from-local-sources)
-- [Troubleshooting](#troubleshooting)
 - [More Information](#more-information)
-- [FAQ](#faq)
 
 # Introduction
 
@@ -96,14 +94,15 @@ The blockchain data is persisted on your hard drive. The standard location on Li
 
 Checkout the [Contributor Guide](https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
 
-# Troubleshooting
-TBD
+<!-- # Troubleshooting
+TBD -->
 
 # More Information
 
 Check out our [**Trubudget-Wiki**](./doc/README.md) to find out how Trubudget works.
 
-# FAQ
+<!--# FAQ
 
 | Description | Link |
 | :---------- | :--- |
+-->
