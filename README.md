@@ -21,12 +21,12 @@ TruBudget - a trusted public expenditure tool. A collaborative workflow tool and
 
 These instructions will get you a copy of the project up and running on your local machine.
 
->_Caution_: This guide works well wil Linux and OS X operating systems. For Windows, we recommend using the Git Bash (or something similar) to perform the commands listed below, but there could still be issues while performing some of the commands.
+>_Caution_: This guide is tested against Linux and OS X operating systems. For Windows, we recommend using the Git Bash (or something similar) to perform the commands listed below, but there could still be issues while performing some of the commands.
 
 ## Prerequisites
 
 - [Docker](https://www.docker.com/) (Version 17.03.0+)
-- [Docker-Compose](https://docs.docker.com/compose/) (Version 3+)
+- [Docker-Compose](https://docs.docker.com/compose/)
 
 ## Installing
 
@@ -54,7 +54,7 @@ This will start a prod and test instance of TruBudget (blockchain, api, frontend
 > Caution: The process of provisioning may take several minutes (depending on your CPU) and can slow down your computer during the execution of the script.
 
 If you want to start with an empty blockchain (i.e. without any users but `root` and without any projects), you can run:
-```
+```bash
 sh scripts/master/start-master-node.sh
 ```
 
@@ -92,7 +92,7 @@ The blockchain data is persisted on your hard drive. The standard location on Li
 
 # Build and Develop from Local Sources
 
-Checkout the [Contributor Guide](https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
+Checkout the [Contributor Guide](./doc/wiki/Contributor-Guide/Contributor-Guide.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
 
 <!-- # Troubleshooting
 TBD -->
