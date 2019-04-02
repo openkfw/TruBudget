@@ -32,10 +32,11 @@ export async function addMember(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Group.permits(group, issuer, ["group.addUser"])) {
+    const intent = "group.addUser";
+    if (!Group.permits(group, issuer, [intent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, issuer.id, memberAdded)],
+        errors: [new NotAuthorized(ctx, issuer.id, intent, group)],
       };
     }
   }

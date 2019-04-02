@@ -1,4 +1,6 @@
 import { produce } from "immer";
+import isEqual = require("lodash.isequal");
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -8,10 +10,8 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
-import * as WorkflowitemsReordered from "./workflowitems_reordered";
 import * as WorkflowitemOrdering from "./workflowitem_ordering";
-
-import isEqual = require("lodash.isequal");
+import * as WorkflowitemsReordered from "./workflowitems_reordered";
 
 interface Repository {
   getSubproject(
@@ -50,11 +50,11 @@ export async function setWorkflowitemOrdering(
   );
 
   // Check authorization (if not root):
-  if (
-    issuer.id !== "root" &&
-    !Subproject.permits(subproject, issuer, ["subproject.reorderWorkflowitems"])
-  ) {
-    return new NotAuthorized(ctx, issuer.id, reorderEvent);
+  if (issuer.id !== "root") {
+    const intent = "subproject.reorderWorkflowitems";
+    if (!Subproject.permits(subproject, issuer, [intent])) {
+      return new NotAuthorized(ctx, issuer.id, intent, subproject);
+    }
   }
 
   // Check that the new event is indeed valid:

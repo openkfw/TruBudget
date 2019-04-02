@@ -1,15 +1,14 @@
 import Joi = require("joi");
+import { VError } from "verror";
 
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
-import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
-import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
@@ -118,16 +117,20 @@ export async function createWorkflowitem(
 
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
-    const subprojectResult = await repository.getSubproject(
-      reqData.projectId,
-      reqData.subprojectId,
+    const authorizationResult = Result.map(
+      await repository.getSubproject(reqData.projectId, reqData.subprojectId),
+      subproject => {
+        const intent = "subproject.createWorkflowitem";
+        if (!Subproject.permits(subproject, creatingUser, [intent])) {
+          return new NotAuthorized(ctx, creatingUser.id, intent, subproject);
+        }
+      },
     );
-    if (Result.isErr(subprojectResult)) {
-      return new NotFound(ctx, "subproject", reqData.subprojectId);
-    }
-    const subproject = subprojectResult;
-    if (!Subproject.permits(subproject, creatingUser, ["subproject.createWorkflowitem"])) {
-      return new NotAuthorized(ctx, creatingUser.id, workflowitemCreated);
+    if (Result.isErr(authorizationResult)) {
+      return new VError(
+        authorizationResult,
+        "failed to create workflowitem, permission check failed",
+      );
     }
   }
 

@@ -7,7 +7,6 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import * as Subproject from "./subproject";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
-import logger from "../../../lib/logger";
 
 interface Repository {
   getSubproject(): Promise<Result.Type<Subproject.Subproject>>;
@@ -24,11 +23,12 @@ export async function getSubproject(
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
   }
-  if (
-    user.id !== "root" &&
-    !Subproject.permits(subproject, user, ["subproject.viewSummary", "subproject.viewDetails"])
-  ) {
-    return new NotAuthorized(ctx, user.id, undefined, "subproject.viewDetails");
+
+  if (user.id !== "root") {
+    const intents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
+    if (!Subproject.permits(subproject, user, intents)) {
+      return new NotAuthorized(ctx, user.id, intents, subproject);
+    }
   }
 
   return dropHiddenHistoryEvents(subproject, user);

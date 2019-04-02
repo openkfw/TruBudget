@@ -32,8 +32,9 @@ export async function getAll(
   const workflowitem: Workflowitem.Workflowitem = result;
 
   if (user.id !== "root") {
-    if (!Workflowitem.permits(workflowitem, user, ["workflowitem.intent.listPermissions"])) {
-      return new NotAuthorized(ctx, user.id, undefined, "workflowitem.intent.listPermissions");
+    const intent = "workflowitem.intent.listPermissions";
+    if (!Workflowitem.permits(workflowitem, user, [intent])) {
+      return new NotAuthorized(ctx, user.id, intent, workflowitem);
     }
   }
 

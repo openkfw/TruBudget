@@ -60,8 +60,9 @@ export async function updateSubproject(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Subproject.permits(subproject, issuer, ["subproject.update"])) {
-      return new NotAuthorized(ctx, issuer.id, subprojectUpdated);
+    const intent = "subproject.update";
+    if (!Subproject.permits(subproject, issuer, [intent])) {
+      return new NotAuthorized(ctx, issuer.id, intent, subproject);
     }
   }
 

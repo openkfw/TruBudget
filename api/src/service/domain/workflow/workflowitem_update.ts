@@ -1,5 +1,7 @@
 import { produce } from "immer";
+import isEqual = require("lodash.isequal");
 import { VError } from "verror";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -14,8 +16,6 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import Joi = require("joi");
-import isEqual = require("lodash.isequal");
 
 export type RequestData = WorkflowitemUpdated.Modification;
 export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
@@ -53,11 +53,11 @@ export async function updateWorkflowitem(
   }
 
   // Check authorization (if not root):
-  if (
-    issuer.id !== "root" &&
-    !Workflowitem.permits(workflowitem, issuer, ["workflowitem.update"])
-  ) {
-    return new NotAuthorized(ctx, issuer.id, newEvent);
+  if (issuer.id !== "root") {
+    const intent = "workflowitem.update";
+    if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
+      return new NotAuthorized(ctx, issuer.id, intent, workflowitem);
+    }
   }
 
   // Check that the new event is indeed valid:

@@ -43,8 +43,9 @@ export async function updateProjectedBudget(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Project.permits(project, issuer, ["project.budget.updateProjected"])) {
-      return new NotAuthorized(ctx, issuer.id, budgetUpdated);
+    const intent = "project.budget.updateProjected";
+    if (!Project.permits(project, issuer, [intent])) {
+      return new NotAuthorized(ctx, issuer.id, intent, project);
     }
   }
 

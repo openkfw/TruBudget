@@ -1,10 +1,22 @@
-Dear reader!
+# Hacking TruBudget
 
-Welcome to the **TruBudget API Source Directory**. The source code is organized in _layers_.
-There are three of them, each with its own _language_ (related to the idea of Ubiquitous Language in Domain-Driven Design): **application**, **service**, and **domain**. The following diagram describes their relationships and also shows some of their vocabulary:
+Welcome to the **TruBudget API Source Directory**. This readme file offers an introduction into how the code here is organized. It also mentions some best practices along the way.
+
+Contents:
+
+- [Layout](#layout)
+  - [Overview](#overview)
+  - [This Directory](#this-directory)
+- [Error Handling](#error-handling)
+
+## Layout
+
+### Overview
+
+The source code is organized in _layers_. There are three of them, each with its own _language_ (related to the idea of Ubiquitous Language in Domain-Driven Design): **application**, **service**, and **domain**. The following diagram describes their relationships and also shows some of their vocabulary:
 
 ```plain
-+--src-----------------------------------+
++--application---------------------------+
 |                                        |
 |  App                                   |
 |  API                                   |
@@ -54,6 +66,144 @@ Some more practical rules:
 - Write unit tests for the domain layer. Write integration tests for the other layers that test the layer itself plus the layers below. For example, it makes little sense to replace business logic by a mock and test that the database works. Of course, there may be exceptions.
 - Put tests into a `.spec.ts` file next to the code under test. For example, code that tests code in `project_update.ts` should go into `project_update.spec.ts`.
 
-# This Directory
+### This Directory
 
 This directory defines the **application** context. If you're interested in the general setup, including environment variables and connection setup, take a look at `app.ts`. Most other files are named after the user intent they implement; for example, if a user wants to update a project, the corresponding intent would be `project.update`, with the API implemented in `project_update.ts`. Note that, the intents for creating a project, a subproject and a workflowitem are called `global.createProject`, `project.createSubproject` and `subproject.createWorkflowitem`, respectively.
+
+## Error Handling
+
+### Define custom error types
+
+Generally, errors are defined in the lowest layer they can occur. For example, an event-sourcing error is defined in the domain layer, whereas an HTTP related error is defined in the application layer.
+
+Errors must subclass `Error` and should contain as many additional properties as required in order to allow a caller to find out what happened. For example, an event-sourcing error must include the event that caused the error. Equally important, errors must set their `name`; this allows an error handler to select the root cause out of a `VError` later on (see below).
+
+### Using `VError` to add context
+
+Each caller can either handle the error or pass the error up the call stack. To do the latter, the error should be wrapped using [`VError`](https://github.com/joyent/node-verror/), adding additional context information.
+
+Example:
+
+```typescript
+// `NotAuthorized` error as defined in the domain layer (simplified version):
+class NotAuthorized extends Error {
+  constructor(
+    private readonly userId: string,
+    private readonly intent: Intent,
+  ) {
+    super(`user ${userId} is not authorized for ${intent}.`);
+
+    // This allows us to identify this error in a chain of errors later on:
+    this.name = "NotAuthorized";
+
+    // Maintains proper stack trace for where our error was thrown:
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, NotAuthorized);
+    }
+  }
+}
+
+function dropSomeTable(userId: string) {
+  // do stuff..
+
+  throw new NotAuthorized(userId, "table.drop");
+}
+
+function deleteAllData(userId: string) {
+  // do stuff..
+
+  try {
+    dropSomeTable(userId);
+  } catch (err) {
+    // `err` says that the table could not be dropped, but what were we dropping the
+    // table for in the first place? By wrapping `err` with `VError`, we can easily give
+    // the low-level error additional, high-level context:
+    throw new VError(err, "failed to delete all data");
+  }
+}
+```
+
+When handling a `VError`, we can ask for the root cause by name:
+
+```typescript
+try {
+  deleteAllData("alice");
+} catch (error) {
+  // This will log out the error message (which concatenates all `message` fields in the
+  // error chain), the full stack of all errors and all fields attached to any errors in
+  // the chain:
+  logger.debug({ error }, error.message);
+
+  if (VError.hasCauseWithName(error, "NotAuthorized")) {
+    // handle NotAuthorized error, e.g. by using a specific status code for the response
+  } else {
+    // handle other errors..
+  }
+}
+```
+
+### Use [`Result<T>`](./result.ts) to return expected errors
+
+In the previous example, the authorization could be seen as an integral part of the business logic behind `dropSomeTable`. To make that apparent, we typically model that using the [`Result.Type<T>`](./result.ts).
+
+**Use `Result<T>` whenever a function may fail for non-technical reasons.**
+
+Technical reasons refer to disk or network failures, and so on. Non-technical reasons are insufficient permissions, missing entities, values that are out-of-range, etc.
+
+For example, consider the good old divide-by-zero example:
+
+```typescript
+// Without Result, using throw/catch:
+
+function divide_or_throw(a: number, b: number): number {
+  if (b === 0) throw new Error("division by zero");
+  return a / b;
+}
+
+try {
+  const res = divide_or_throw(1, 0);
+} catch (error) {
+  console.error(error);
+}
+
+// With Result, you return the error instead of throwing it:
+
+function divide(a: number, b: number): Result.Type<number> {
+  return b === 0 ? new Error("division by zero") : a / b;
+}
+
+const res = divide(1, 0);
+if (Result.isErr(res)) {
+  console.error(res);
+}
+```
+
+Note how the function signature makes it very clear what to expect in the second case, while the first signature is quite misleading - it suggests you pass it two numbers and get back a number in return, while in fact it does so for most, but not for _all_ numbers. Also, the try/catch approach makes it easy to catch errors you didn't anticipate and, because of this, didn't mean to catch.
+
+With that in mind, we can rewrite the previous example:
+
+```typescript
+// Simplified version of the `NotAuthorized` error defined in the domain layer:
+class NotAuthorized extends Error {
+  ...
+}
+
+function dropSomeTable(userId: string): Result.Type<undefined> {
+  // do stuff..
+
+  // Instead of `throw`ing the error, we `return` it here:
+  return new NotAuthorized(userId, "table.drop");
+}
+
+function deleteAllData(userId: string): Result.Type<undefined> {
+  // do stuff..
+
+  // The result is either a value (`undefined` in this case) or an Error:
+  const result = dropSomeTable(userId);
+  // If it is an Error, we wrap it using `VError` like before:
+  return Result.mapErr(
+    result,
+    err => new VError(err, "failed to delete all data"),
+  );
+}
+```

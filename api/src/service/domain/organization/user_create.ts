@@ -77,15 +77,15 @@ export async function createUser(
 
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
+    const intent = "global.createUser";
     const permissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(permissions, "global.createUser").some(identity =>
+    const isAuthorized = identitiesAuthorizedFor(permissions, intent).some(identity =>
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {
-      const unfinishedBusinessEvent = UserCreated.createEvent(source, publisher, eventTemplate);
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, creatingUser.id, unfinishedBusinessEvent)],
+        errors: [new NotAuthorized(ctx, creatingUser.id, intent)],
       };
     }
   }
