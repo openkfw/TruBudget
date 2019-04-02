@@ -3,9 +3,9 @@ stages:
     if: type = cron
   - test
   - name: dockerbuild
-    if: branch = master OR tag IS present OR type IN (pull_request)
+    if: type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
   - name: notification
-    if: branch = master OR tag IS present OR type IN (pull_request)
+    if: type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
 
 .audit: &audit
   stage: audit
