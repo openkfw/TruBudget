@@ -12,7 +12,8 @@ import {
   LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
   SET_NOTIFICATION_OFFSET,
   TIME_OUT_FLY_IN,
-  SET_LIVE_UPDATES
+  ENABLE_LIVE_UPDATES,
+  DISABLE_LIVE_UPDATES
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -28,7 +29,7 @@ const defaultState = fromJS({
   notificationCount: 0,
   notificationsPerPage: 20,
   notificationOffset: 0,
-  showLiveUpdates: true
+  isLiveUpdatesEnabled: true
 });
 
 export default function navbarReducer(state = defaultState, action) {
@@ -39,8 +40,12 @@ export default function navbarReducer(state = defaultState, action) {
         notificationCount: action.notifications.length
       });
 
-    case SET_LIVE_UPDATES: {
-      return state.set("showLiveUpdates", action.isEnabled);
+    case ENABLE_LIVE_UPDATES: {
+      return state.set("isLiveUpdatesEnabled", true);
+    }
+
+    case DISABLE_LIVE_UPDATES: {
+      return state.set("isLiveUpdatesEnabled", false);
     }
 
     case LIVE_UPDATE_NOTIFICATIONS_SUCCESS: {

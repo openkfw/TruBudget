@@ -8,7 +8,8 @@ export const MARK_NOTIFICATION_AS_READ_SUCCESS = "MARK_NOTIFICATION_AS_READ_SUCC
 export const OPEN_HISTORY = "OPEN_HISTORY";
 export const HIDE_HISTORY = "HIDE_HISTORY";
 
-export const SET_LIVE_UPDATES = "SET_LIVE_UPDATES";
+export const ENABLE_LIVE_UPDATES = "ENABLE_LIVE_UPDATES";
+export const DISABLE_LIVE_UPDATES = "DISABLE_LIVE_UPDATES";
 
 export const FETCH_HISTORY = "FETCH_HISTORY";
 export const FETCH_HISTORY_SUCCESS = "FETCH_HISTORY_SUCCESS";
@@ -127,9 +128,14 @@ export function setNotificationOffset(offset) {
   };
 }
 
-export function enableLiveUpdates(isEnabled) {
+export function enableLiveUpdates() {
   return {
-    type: SET_LIVE_UPDATES,
-    isEnabled
+    type: ENABLE_LIVE_UPDATES
+  };
+}
+
+export function disableLiveUpdates() {
+  return {
+    type: DISABLE_LIVE_UPDATES
   };
 }

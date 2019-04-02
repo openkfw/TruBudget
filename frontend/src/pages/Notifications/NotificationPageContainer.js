@@ -8,7 +8,8 @@ import {
   setNotificationOffset,
   markMultipleNotificationsAsRead,
   enableLiveUpdates,
-  fetchNotificationCounts
+  fetchNotificationCounts,
+  disableLiveUpdates
 } from "./actions";
 import NotificationPage from "./NotificationPage";
 
@@ -18,11 +19,11 @@ import { toJS } from "../../helper";
 class NotificationPageContainer extends Component {
   componentWillMount() {
     this.props.fetchNotifications(this.props.notificationOffset, this.props.notificationsPerPage);
-    this.props.enableLiveUpdates(false);
+    this.props.disableLiveUpdates();
   }
 
   componentWillUnmount() {
-    this.props.enableLiveUpdates(true);
+    this.props.enableLiveUpdates();
     this.props.fetchNotificationCounts();
   }
 
@@ -44,7 +45,8 @@ const mapDispatchToProps = (dispatch, props) => {
       dispatch(markMultipleNotificationsAsRead(notificationIds, offset, limit)),
     setNotifcationsPerPage: limit => dispatch(setNotifcationsPerPage(limit)),
     setNotificationOffset: offset => dispatch(setNotificationOffset(offset)),
-    enableLiveUpdates: isEnabled => dispatch(enableLiveUpdates(isEnabled)),
+    enableLiveUpdates: () => dispatch(enableLiveUpdates()),
+    disableLiveUpdates: () => dispatch(disableLiveUpdates()),
     fetchNotificationCounts: () => dispatch(fetchNotificationCounts())
   };
 };
