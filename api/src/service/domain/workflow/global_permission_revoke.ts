@@ -30,11 +30,12 @@ export async function revokeGlobalPermission(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
+    const revokeIntent = "global.revokePermission";
     const currentGlobalPermissions = await repository.getGlobalPermissions();
-    if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, ["global.revokePermission"])) {
+    if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, [revokeIntent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, issuer.id, globalPermissionRevoked)],
+        errors: [new NotAuthorized(ctx, issuer.id, revokeIntent, currentGlobalPermissions)],
       };
     }
   }

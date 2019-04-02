@@ -16,13 +16,13 @@ export async function getProject(
 ): Promise<Result.Type<Project.Project>> {
   const projectResult = await Cache.withCache(conn, ctx, async cache =>
     ProjectGet.getProject(ctx, serviceUser, projectId, {
-      getProject: async projectId => {
-        return cache.getProject(projectId);
+      getProject: async pId => {
+        return cache.getProject(pId);
       },
     }),
   );
   return Result.mapErr(
     projectResult,
-    err => new VError(err, `could not read project ${projectId} from chain`),
+    err => new VError(err, `could not fetch project ${projectId}`),
   );
 }

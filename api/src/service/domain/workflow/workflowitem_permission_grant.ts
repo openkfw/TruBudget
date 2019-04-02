@@ -49,11 +49,11 @@ export async function grantWorkflowitemPermission(
     grantee,
   );
 
-  if (
-    issuer.id !== "root" &&
-    !Workflowitem.permits(workflowitem, issuer, ["workflowitem.intent.grantPermission"])
-  ) {
-    return new NotAuthorized(ctx, issuer.id, permissionGranted);
+  if (issuer.id !== "root") {
+    const grantIntent = "workflowitem.intent.grantPermission";
+    if (!Workflowitem.permits(workflowitem, issuer, [grantIntent])) {
+      return new NotAuthorized(ctx, issuer.id, grantIntent, workflowitem);
+    }
   }
 
   // Check that the new event is indeed valid:

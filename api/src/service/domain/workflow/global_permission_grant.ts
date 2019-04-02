@@ -30,11 +30,12 @@ export async function grantGlobalPermission(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
+    const grantIntent = "global.grantPermission";
     const currentGlobalPermissions = await repository.getGlobalPermissions();
-    if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, ["global.grantPermission"])) {
+    if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, [grantIntent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, issuer.id, globalPermissionGranted)],
+        errors: [new NotAuthorized(ctx, issuer.id, grantIntent, currentGlobalPermissions)],
       };
     }
   }

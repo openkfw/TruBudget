@@ -52,8 +52,9 @@ export async function revokeWorkflowitemPermission(
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    if (!Workflowitem.permits(workflowitem, issuer, ["workflowitem.intent.revokePermission"])) {
-      return new NotAuthorized(ctx, issuer.id, permissionRevoked);
+    const revokeIntent = "workflowitem.intent.revokePermission";
+    if (!Workflowitem.permits(workflowitem, issuer, [revokeIntent])) {
+      return new NotAuthorized(ctx, issuer.id, revokeIntent, workflowitem);
     }
   }
 

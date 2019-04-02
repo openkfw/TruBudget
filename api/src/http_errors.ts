@@ -1,5 +1,6 @@
+import { VError } from "verror";
+
 import logger from "./lib/logger";
-import { NotAuthorized } from "./service/domain/errors/not_authorized";
 import { NotFound } from "./service/domain/errors/not_found";
 import { PreconditionError } from "./service/domain/errors/precondition_error";
 
@@ -26,7 +27,7 @@ function convertError(error: any): { code: number; message: string } {
   if (error instanceof PreconditionError) {
     logger.debug({ error }, error.message);
     return { code: 400, message: error.message };
-  } else if (error instanceof NotAuthorized) {
+  } else if (VError.hasCauseWithName(error, "NotAuthorized")) {
     logger.debug({ error }, error.message);
     return { code: 403, message: error.message };
   } else if (error instanceof NotFound) {

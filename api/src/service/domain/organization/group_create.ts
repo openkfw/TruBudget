@@ -71,12 +71,13 @@ export async function createGroup(
 
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
+    const intent = "global.createGroup";
     const permissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(permissions, "global.createGroup").some(identity =>
+    const isAuthorized = identitiesAuthorizedFor(permissions, intent).some(identity =>
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {
-      return { newEvents: [], errors: [new NotAuthorized(ctx, creatingUser.id, createEvent)] };
+      return { newEvents: [], errors: [new NotAuthorized(ctx, creatingUser.id, intent)] };
     }
   }
 

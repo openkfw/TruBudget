@@ -111,11 +111,11 @@ export async function createSubproject(
     return new NotFound(ctx, "project", projectId);
   }
 
-  if (
-    creatingUser.id !== "root" &&
-    !AuthToken.permits(projectPermissions, creatingUser, ["project.createSubproject"])
-  ) {
-    return new NotAuthorized(ctx, creatingUser.id, subprojectCreated);
+  if (creatingUser.id !== "root") {
+    const intent = "project.createSubproject";
+    if (!AuthToken.permits(projectPermissions, creatingUser, [intent])) {
+      return new NotAuthorized(ctx, creatingUser.id, intent, { projectId, projectPermissions });
+    }
   }
 
   // Check that the event is valid by trying to "apply" it:

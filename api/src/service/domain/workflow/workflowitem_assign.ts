@@ -55,11 +55,11 @@ export async function assignWorkflowitem(
   }
 
   // Check authorization:
-  if (
-    publisher.id !== "root" &&
-    !Workflowitem.permits(workflowitem, publisher, ["workflowitem.assign"])
-  ) {
-    return new NotAuthorized(ctx, publisher.id, assignEvent);
+  if (publisher.id !== "root") {
+    const intent = "workflowitem.assign";
+    if (!Workflowitem.permits(workflowitem, publisher, [intent])) {
+      return new NotAuthorized(ctx, publisher.id, intent, workflowitem);
+    }
   }
 
   // Check that the new event is indeed valid:

@@ -43,11 +43,11 @@ export async function updateProjectedBudget(
   );
 
   // Check authorization (if not root):
-  if (
-    issuer.id !== "root" &&
-    !Subproject.permits(subproject, issuer, ["subproject.budget.updateProjected"])
-  ) {
-    return new NotAuthorized(ctx, issuer.id, budgetUpdated);
+  if (issuer.id !== "root") {
+    const intent = "subproject.budget.updateProjected";
+    if (!Subproject.permits(subproject, issuer, [intent])) {
+      return new NotAuthorized(ctx, issuer.id, intent, subproject);
+    }
   }
 
   // Check that the new event is indeed valid:
