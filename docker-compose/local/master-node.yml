@@ -28,7 +28,7 @@ services:
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
     ports:
-      - "7447:${RPC_PORT}"
+      - "7447:7447"
 
   testapi:
     build:
@@ -58,7 +58,7 @@ services:
     volumes:
       - /tmp/bcTestMasterVolume:/root/.multichain
     ports:
-      - "7448:${RPC_PORT}"
+      - "7448:7447"
 
   frontend:
     build:
