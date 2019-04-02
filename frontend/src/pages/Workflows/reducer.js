@@ -287,15 +287,17 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("isHistoryLoading", true);
     case FETCH_SUBPROJECT_HISTORY_SUCCESS:
       return state.merge({
-        historyItems: [...state.get("historyItems"), ...fromJS(action.events)],
+        historyItems: fromJS(action.events).concat(state.get("historyItems")),
         historyItemsCount: action.historyItemsCount,
         isHistoryLoading: false,
-        offset: action.offset
+        offset: action.offset,
+        limit: action.limit
       });
     case HIDE_HISTORY:
       return state.merge({
         historyItems: fromJS([]),
-        offset: 0
+        offset: defaultState.get("offset"),
+        limit: defaultState.get("limit")
       });
     case STORE_WORKFLOWACTIONS:
       return state.set("workflowActions", fromJS(action.actions));

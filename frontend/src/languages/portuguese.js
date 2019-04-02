@@ -285,7 +285,6 @@ const pt = {
   },
 
   history: {
-    changed_by: "Portuguese: {0} changed by {1}: ",
     created_project: "Projeto criado ",
     created_subproject: "Subprojeto {0} criado",
     created_workflow: "Workflow {0} criado ",
@@ -300,24 +299,34 @@ const pt = {
     edit_workflowName: "Nome do workflow {0} mudou para {1} ",
     first_sort: "{0} foi movido para a primeira posição",
     project_assign: "Portuguese: {0} assigned project {1} to {2}",
+    project_close: "fechar projeto",
     project_create: "Portuguese: {0} created project {1}",
     project_createSubproject: "Portuguese: {0} created subproject {1}",
     project_grantPermission: "Portuguese: {0} granted permission {1} to {2}",
+    project_grantPermission_details: "Portuguese: {0} granted permission {1} to {2} on {3}",
     project_revokePermission: "Portuguese: {0} revoked permission {1} from {2}",
+    project_revokePermission_details: "Portuguese: {0} revoked permission {1} of {3} from {2}",
+    project_update: "{0} modificou o projeto {1} ",
     sort: "{0} foi movido após {1}",
     subproject_assign: "Portuguese: {0} assigned project {1} to {2}",
     subproject_close: "Portuguese: {0} closed subproject {1}",
+    subproject_create: "{0} criou o projeto {1}",
     subproject_createWorkflowitem: "Portuguese: {0} created workflowitem {1}",
     subproject_grantPermission: "Portuguese: {0} granted permission {1} to {2}",
     subproject_grantPermission_details: "Portuguese: {0} granted permission {1} to {2} on {3}",
     subproject_reorderWorkflowitems: "Portuguese: {0} changed the workflowitem ordering",
     subproject_revokePermission: "Portuguese: {0} revoked permission {1} from {2}",
     subproject_revokePermission_details: "Portuguese: {0} revoked permission {1} of {3} from {2}",
+    subproject_update: "{0} modificou o subprojeto {1} ",
     to: "Portuguese: {0} to {1}",
     workflowitem_assign: "Portuguese: {0} assigned workflowitem {1} to {2}",
     workflowitem_close: "Portuguese: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "Portuguese: {0} granted permission {1} to {2} on {3}",
-    workflowitem_revokePermission: "Portuguese: {0} revoked permission {1} of {3} from {2}"
+    workflowitem_grantPermission_details: "Portuguese: {0} granted permission {1} to {2} on {3}",
+    workflowitem_revokePermission: "Portuguese: {0} revoked permission {1} of {3} from {2}",
+    workflowitem_revokePermission_details: "Portuguese: {0} revoked permission {1} of {3} from {2}",
+    workflowitem_update: "{0} modificou o workflow {1} ",
+    workflowitem_update_docs: "{0} adicionou documentos ao {1} "
   },
 
   permissions: {

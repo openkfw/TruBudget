@@ -11,6 +11,7 @@ import * as ProjectPermissionGrant from "./domain/workflow/project_permission_gr
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectPermissionGrant from "./domain/workflow/subproject_permission_grant";
 import { store } from "./store";
+import logger from "../lib/logger";
 
 export { RequestData } from "./domain/workflow/project_create";
 

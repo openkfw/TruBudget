@@ -1,8 +1,9 @@
+import { produce } from "immer";
 import isEqual = require("lodash.isequal");
 
-import { produce } from "immer";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";

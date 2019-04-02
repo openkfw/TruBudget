@@ -749,10 +749,16 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
 
 export function* fetchProjectHistorySaga({ projectId, offset, limit, showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.viewProjectHistory, projectId, offset, limit);
+    if (limit <= 0) {
+      return;
+    }
+    const { data } = yield callApi(api.viewProjectHistory, projectId, offset - limit, limit);
+    const newOffset = offset === 0 ? data.historyItemsCount - limit : offset - limit;
+    const newLimit = newOffset > 0 ? Math.min(newOffset, limit) : 0;
     yield put({
       type: FETCH_PROJECT_HISTORY_SUCCESS,
-      offset,
+      offset: newOffset,
+      limit: newLimit,
       ...data
     });
   }, showLoading);
@@ -770,10 +776,16 @@ export function* fetchAllSubprojectDetailsSaga({ projectId, subprojectId, showLo
 
 export function* fetchSubprojectHistorySaga({ projectId, subprojectId, offset, limit, showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId, offset, limit);
+    if (limit <= 0) {
+      return;
+    }
+    const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId, offset - limit, limit);
+    const newOffset = offset === 0 ? data.historyItemsCount - limit : offset - limit;
+    const newLimit = newOffset > 0 ? Math.min(newOffset, limit) : 0;
     yield put({
       type: FETCH_SUBPROJECT_HISTORY_SUCCESS,
-      offset,
+      offset: newOffset,
+      limit: newLimit,
       ...data
     });
   }, showLoading);

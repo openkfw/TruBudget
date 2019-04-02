@@ -18,12 +18,11 @@ export async function getSubproject(
   subprojectId: string,
   repository: Repository,
 ): Promise<Result.Type<Subproject.Subproject>> {
-  const subprojectResult = await repository.getSubproject();
+  const subproject = await repository.getSubproject();
 
-  if (Result.isErr(subprojectResult)) {
+  if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
   }
-  const subproject = subprojectResult;
 
   if (user.id !== "root") {
     const intents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
@@ -46,6 +45,7 @@ const requiredPermissions = new Map<EventType, Intent[]>([
   ["subproject_archived", ["subproject.viewSummary", "subproject.viewDetails"]],
   ["subproject_projected_budget_updated", ["subproject.viewDetails"]],
   ["subproject_projected_budget_deleted", ["subproject.viewDetails"]],
+  ["workflowitems_reordered", ["subproject.reorderWorkflowitems"]],
 ]);
 
 function dropHiddenHistoryEvents(

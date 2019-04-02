@@ -284,7 +284,6 @@ const de = {
   },
 
   history: {
-    changed_by: "German: {0} changed by {1}: ",
     created_project: "Project created ",
     created_subproject: "Subproject {0} created",
     created_workflow: "Workflow {0} created ",
@@ -299,24 +298,34 @@ const de = {
     edit_workflowName: "Name of workflow item {0} changed to {1} ",
     first_sort: "Moved {0} to first position",
     project_assign: "German: {0} assigned project {1} to {2}",
+    project_close: "Schließe Project",
     project_create: "German: {0} created project {1}",
     project_createSubproject: "German: {0} created subproject {1}",
     project_grantPermission: "German: {0} granted permission {1} to {2}",
+    project_grantPermission_details: "{0} gab Rechte {1} an {2} für {3}",
     project_revokePermission: "German: {0} revoked permission {1} from {2}",
+    project_revokePermission_details: "{0} entzog Rechte {1} von {2} für {3}",
+    project_update: "{0} veränderte Projekt {1} ",
     sort: "Moved {0} after {1}",
     subproject_assign: "German: {0} assigned project {1} to {2}",
     subproject_close: "German: {0} closed subproject {1}",
+    subproject_create: "{0} erstellte Subprojekt {1}",
     subproject_createWorkflowitem: "German: {0} created workflowitem {1}",
     subproject_grantPermission: "German: {0} granted permission {1} to {2}",
     subproject_grantPermission_details: "German: {0} granted permission {1} to {2} on {3}",
     subproject_reorderWorkflowitems: "German: {0} changed the workflowitem ordering",
     subproject_revokePermission: "German: {0} revoked permission {1} from {2}",
     subproject_revokePermission_details: "German: {0} revoked permission {1} of {3} from {2}",
+    subproject_update: "{0} veränderte Subprojekt {1} ",
     to: "German: {0} to {1}",
     workflowitem_assign: "German: {0} assigned workflowitem {1} to {2}",
     workflowitem_close: "German: {0} closed workflowitem {1}",
     workflowitem_grantPermission: "German: {0} granted permission {1} to {2} on {3}",
-    workflowitem_revokePermission: "German: {0} revoked permission {1} of {3} from {2}"
+    workflowitem_grantPermission_details: "German: {0} granted permission {1} to {2} on {3}",
+    workflowitem_revokePermission: "German: {0} revoked permission {1} of {3} from {2}",
+    workflowitem_revokePermission_details: "German: {0} revoked permission {1} to {2} on {3}",
+    workflowitem_update: "{0} veränderte Workflowitem {1} ",
+    workflowitem_update_docs: "{0} fügte Dokumente zu Workflowitem {1} hinzu "
   },
 
   permissions: {

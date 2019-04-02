@@ -1,6 +1,7 @@
 import { produce } from "immer";
 
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -31,7 +32,6 @@ export function sourceSubprojects(
     if (!event.type.startsWith("subproject_") && event.type !== "workflowitems_reordered") {
       continue;
     }
-
     const result = applySubprojectEvent(ctx, subprojects, event);
     if (Result.isErr(result)) {
       errors.push(result);
@@ -78,7 +78,7 @@ function applySubprojectEvent(
       return apply(ctx, event, subprojects, event.subprojectId, SubprojectProjectedBudgetDeleted);
 
     default:
-      throw Error(`not implemented: ${event.type}`);
+      return Error(`not implemented: ${event.type}`);
   }
 }
 

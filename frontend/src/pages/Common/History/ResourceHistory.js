@@ -61,33 +61,32 @@ export default ({
   show,
   close,
   resourceHistory,
-  mapIntent
+  mapIntent,
+  userDisplayNameMap
 }) => {
   let items = [];
-  resourceHistory.map((i, index) =>
-    items.push(
+  resourceHistory.map((i, index) => {
+    return items.push(
       <ListItem key={index}>
         <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
         <ListItemText
-          primary={
-            i.intent
-              ? mapIntent(i)
-              : mapIntent({
-                  createdBy: i.businessEvent.publisher,
-                  intent: i.businessEvent.type,
-                  data: {
-                    intent: i.businessEvent.permission || "",
-                    identity: i.businessEvent.grantee || i.businessEvent.revokee || ""
-                  },
-                  snapshot: i.snapshot
-                })
-          }
+          primary={mapIntent({
+            createdBy: userDisplayNameMap[i.businessEvent.publisher],
+            intent: i.businessEvent.type,
+            data: {
+              intent: i.businessEvent.permission || "",
+              identity: i.businessEvent.grantee || i.businessEvent.revokee || i.businessEvent.assignee || "",
+              update: i.businessEvent.update || {}
+            },
+            snapshot: i.snapshot
+          })}
           secondary={creationTimeExists(i)}
         />
       </ListItem>
-    )
-  );
-  const hasMore = offset + limit >= historyItemsCount && historyItemsCount !== 0 ? false : true;
+    );
+  });
+  // limit is set to 0 by saga when fetching the last items
+  const hasMore = limit !== 0 ? true : false;
   if (!hasMore && !isLoading) {
     items.push(
       <ListItem key={historyItemsCount + 1}>

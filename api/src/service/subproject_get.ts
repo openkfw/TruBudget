@@ -1,6 +1,7 @@
 import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
@@ -23,7 +24,6 @@ export async function getSubproject(
       },
     }),
   );
-  // return subproject;
   return Result.mapErr(
     subprojectResult,
     err => new VError(err, `could not read subproject ${subprojectId} from chain`),
