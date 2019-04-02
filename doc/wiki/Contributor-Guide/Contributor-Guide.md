@@ -1,4 +1,4 @@
-# Contributer Guide
+# Contributor Guide
 
 This document describes how to set up your environment to start developing and debugging the TruBudget application. The first section describes the recommended tools for development, the second part is dedicated to the installation on your local machine for development and debugging.
 
