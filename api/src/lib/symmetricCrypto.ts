@@ -1,8 +1,20 @@
 import * as sodium from "sodium-native";
+import { VError } from "verror";
+
+import * as Result from "../result";
 import logger from "./logger";
 
+class DecryptionFailed extends VError {
+  constructor() {
+    super({ name: "DecryptionFailed" }, "decryption failed");
+  }
+}
+
 /** Decrypts a hex-encoded ciphertext and returns the resulting string. */
-export function decrypt(organizationSecret: string, hexEncodedCiphertext: string): string {
+export function decrypt(
+  organizationSecret: string,
+  hexEncodedCiphertext: string,
+): Result.Type<string> {
   // The nonce/salt is prepended to the actual ciphertext:
   const dataBuffer = Buffer.from(hexEncodedCiphertext, "hex");
   const nonceBuffer = dataBuffer.slice(0, sodium.crypto_secretbox_NONCEBYTES);
@@ -12,7 +24,7 @@ export function decrypt(organizationSecret: string, hexEncodedCiphertext: string
 
   const plaintextBuffer = Buffer.alloc(cipherBuffer.length - sodium.crypto_secretbox_MACBYTES);
   if (!sodium.crypto_secretbox_open_easy(plaintextBuffer, cipherBuffer, nonceBuffer, keyBuffer)) {
-    throw { kind: "decryption failed", hexEncodedCiphertext };
+    return new DecryptionFailed();
   }
 
   return plaintextBuffer.toString();

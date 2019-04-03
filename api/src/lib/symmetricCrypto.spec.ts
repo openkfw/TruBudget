@@ -20,6 +20,6 @@ describe("Symmetric Crypto", () => {
     const encodedEncrypted =
       "2ba6a3a892b89f4422db9f7a39b1279b7db7c93144dd7e58946dc59aec21d22168c0255db6921f7b0c0ffb7213a095eb4bfbb670eb";
 
-    expect(() => SUT.decrypt("wrong secret", encodedEncrypted)).to.throw();
+    expect(SUT.decrypt("wrong secret", encodedEncrypted)).to.be.instanceOf(Error);
   });
 });
