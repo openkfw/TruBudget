@@ -4,7 +4,5 @@ echo "Building and Starting TruBudget"
 COMPOSE="docker-compose -f docker-compose/local/master-node.yml -p trubudget"
 
 $COMPOSE down
-docker rm $(docker ps -q --filter status=exited --filter label=com.docker.compose.project=trubudget)
-
 $COMPOSE build --pull
 $COMPOSE up
