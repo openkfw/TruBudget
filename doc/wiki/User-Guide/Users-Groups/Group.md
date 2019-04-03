@@ -66,7 +66,7 @@ Create a new group.
    - "Name": Name of group
 6. Type the user's ID into the field at the bottom of the dialog. After one or more characters are entered, a dropdown menu with suggested users will appear. Click the user in the dropdown to instantly add the user to the group. Note that the dropdown lists max. 6 user-suggestions - if the user you want to add is not visible in the dropdown, please enter more characters to search for the user. To remove any of the users that were already added, click the "X" next to the user's ID.
 
-Once a group is created you can grant and revoke administrator permissions for the group, more details can be found at [admin-permissions](./doc/wiki/User-Guide/Permissions.md#admin-permissions). 
+Once a group is created you can grant and revoke administrator permissions for the group, more details can be found at [admin-permissions](../Permissions.md#admin-permissions).
 
 ## Edit a Group
 

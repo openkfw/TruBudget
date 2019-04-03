@@ -26,7 +26,7 @@ View all projects where the current user has view-permissions on.
 **Notes:**
 
 - An alternative way to view the projects site is to click on the Main Button in the upper left corner.
-- To view the project's details take a look at the [View project details section](<./#View project details>) below.
+- To view the project's details take a look at the [View project details section](#view-project-details) below.
 
 **Instructions:**
 
@@ -161,7 +161,7 @@ Close a project when all subprojects are closed.
 
 **Description:**
 
-The history contains all activities done directly refer to the current project and it's subprojects.
+The history contains all activities done directly refer to the current project and its subprojects.
 
 **Notes:**
 

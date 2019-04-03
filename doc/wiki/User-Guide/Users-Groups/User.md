@@ -1,6 +1,6 @@
 # User
 
-With **Users** an organization can grant an entity access to the Trubudget-application. New users only have access to the Trubudget-application without permissions to see any project. All permissions (e.g. view a project, view a subproject,...) have to be granted separately by the administrator. More details about the permission model can be found in the [Permissions section](<User guide/Users-Groups/Permissions>)
+With **Users** an organization can grant an entity access to the Trubudget-application. New users only have access to the Trubudget-application without permissions to see any project. All permissions (e.g. view a project, view a subproject,...) have to be granted separately by the administrator. More details about the permission model can be found in the [Permissions section](../Permissions.md)
 
 Users and Groups can be viewed and created in the "Users" section which can be found in the sidebar navigation.
 
@@ -48,5 +48,4 @@ Create a new User.
 
 5. Click the "Submit"-button to create and save the new user.
 
-
-Once a user is created you can grant and revoke administrator permissions for the user, more details can be found at [admin-permissions](./doc/wiki/User-Guide/Permissions.md#admin-permissions). 
+Once a user is created you can grant and revoke administrator permissions for the user, more details can be found at [admin-permissions](../Permissions.md#admin-permissions).
