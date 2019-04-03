@@ -46,9 +46,8 @@ function handleCreate(
   if (notification !== undefined) {
     errors.push(
       new EventSourcingError(
-        ctx,
-        notificationCreated,
-        `cannot "create" a notification more than once`,
+        { ctx, event: notificationCreated, target: notification },
+        "notification already exists",
       ),
     );
     return;
@@ -73,7 +72,7 @@ function handleCreate(
 
   const result = Notification.validate(notification);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, notificationCreated, result.message));
+    errors.push(new EventSourcingError({ ctx, event: notificationCreated }, result));
     return;
   }
 
@@ -88,7 +87,7 @@ function applyRead(
 ) {
   const notification = deepcopy(notificationsById.get(notificationRead.notificationId));
   if (notification === undefined) {
-    errors.push(new EventSourcingError(ctx, notificationRead, `notification not found`));
+    errors.push(new EventSourcingError({ ctx, event: notificationRead }, `notification not found`));
     return;
   }
 
@@ -96,7 +95,7 @@ function applyRead(
 
   const result = Notification.validate(notification);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, notificationRead, result.message));
+    errors.push(new EventSourcingError({ ctx, event: notificationRead }, result));
     return;
   }
 

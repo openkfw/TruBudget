@@ -75,10 +75,8 @@ export function apply(
 ): Result.Type<Subproject.Subproject> {
   const nextState = { ...subproject, workflowitemOrdering: event.ordering };
 
-  const result = Subproject.validate(nextState);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, nextState.id);
-  }
-
-  return nextState;
+  return Result.mapErr(
+    Subproject.validate(nextState),
+    error => new EventSourcingError({ ctx, event, target: subproject }, error),
+  );
 }

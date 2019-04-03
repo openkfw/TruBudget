@@ -78,10 +78,8 @@ export function apply(
   );
   project = { ...project, projectedBudgets };
 
-  const result = Project.validate(project);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, project.id);
-  }
-
-  return project;
+  return Result.mapErr(
+    Project.validate(project),
+    error => new EventSourcingError({ ctx, event, target: project }, error),
+  );
 }

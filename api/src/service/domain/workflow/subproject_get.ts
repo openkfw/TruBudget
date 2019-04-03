@@ -27,7 +27,7 @@ export async function getSubproject(
   if (user.id !== "root") {
     const intents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
     if (!Subproject.permits(subproject, user, intents)) {
-      return new NotAuthorized(ctx, user.id, intents, subproject);
+      return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: subproject });
     }
   }
 

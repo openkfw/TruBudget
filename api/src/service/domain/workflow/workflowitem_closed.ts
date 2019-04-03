@@ -81,10 +81,8 @@ export function apply(
     billingDate,
   };
 
-  const result = Workflowitem.validate(nextState);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, workflowitem.id);
-  }
-
-  return nextState;
+  return Result.mapErr(
+    Workflowitem.validate(nextState),
+    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
+  );
 }

@@ -34,8 +34,7 @@ export async function updateWorkflowitem(
   modification: RequestData,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; workflowitem: Workflowitem.Workflowitem }>> {
-  let workflowitem = await repository.getWorkflowitem(workflowitemId);
-
+  const workflowitem = await repository.getWorkflowitem(workflowitemId);
   if (Result.isErr(workflowitem)) {
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
@@ -49,20 +48,19 @@ export async function updateWorkflowitem(
     modification,
   );
   if (Result.isErr(newEvent)) {
-    return new VError(newEvent, "failed to create event");
+    return new VError(newEvent, "cannot update workflowitem");
   }
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
     const intent = "workflowitem.update";
     if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
-      return new NotAuthorized(ctx, issuer.id, intent, workflowitem);
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: workflowitem });
     }
   }
 
   // Check that the new event is indeed valid:
   const result = produce(workflowitem, draft => WorkflowitemUpdated.apply(ctx, newEvent, draft));
-
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, newEvent, [result]);
   }

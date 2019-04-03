@@ -83,10 +83,8 @@ export function apply(
   );
   subproject = { ...subproject, projectedBudgets };
 
-  const result = Subproject.validate(subproject);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, subproject.id);
-  }
-
-  return subproject;
+  return Result.mapErr(
+    Subproject.validate(subproject),
+    error => new EventSourcingError({ ctx, event, target: subproject }, error),
+  );
 }

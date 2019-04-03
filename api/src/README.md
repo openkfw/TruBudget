@@ -76,75 +76,63 @@ This directory defines the **application** context. If you're interested in the 
 
 Generally, errors are defined in the lowest layer they can occur. For example, an event-sourcing error is defined in the domain layer, whereas an HTTP related error is defined in the application layer.
 
-Errors must subclass `Error` and should contain as many additional properties as required in order to allow a caller to find out what happened. For example, an event-sourcing error must include the event that caused the error. Equally important, errors must set their `name`; this allows an error handler to select the root cause out of a `VError` later on (see below).
+Custom errors should:
 
-### Using `VError` to add context
+- subclass `VError`,
+- take an `info` object as first parameter that is specific to the error type and contains enough information to allow a caller to find out what happened,
+- take a `cause` as second parameter, which may be an `Error` or, optionally, a `string`,
+- set their `name` using the `name` property in their call to `super`.
 
-Each caller can either handle the error or pass the error up the call stack. To do the latter, the error should be wrapped using [`VError`](https://github.com/joyent/node-verror/), adding additional context information.
+### Adding context at the call site
+
+Each caller can either handle the error directly or pass the error up the call stack. To do the latter, the error should always be wrapped using [`VError`](https://github.com/joyent/node-verror/), adding additional context information.
 
 Example:
 
 ```typescript
-// `NotAuthorized` error as defined in the domain layer (simplified version):
-class NotAuthorized extends Error {
-  constructor(
-    private readonly userId: string,
-    private readonly intent: Intent,
-  ) {
-    super(`user ${userId} is not authorized for ${intent}.`);
-
-    // This allows us to identify this error in a chain of errors later on:
-    this.name = "NotAuthorized";
-
-    // Maintains proper stack trace for where our error was thrown:
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, NotAuthorized);
-    }
+// `NotAuthorized` error as defined in the domain layer (`mkInfo` and `mkMessage` omitted here):
+class NotAuthorized extends VError {
+  constructor(info: Info, cause?: Error) {
+    super(
+      {
+        name: "NotAuthorized",
+        cause,
+        info: mkInfo(info),
+      },
+      mkMessage(info),
+    );
   }
 }
 
-function dropSomeTable(userId: string) {
+// Low-level function that fails:
+function dropSomeTable(ctx: Ctx, userId: string) {
   // do stuff..
 
-  throw new NotAuthorized(userId, "table.drop");
+  const intent = "drop the table";
+  throw new NotAuthorized({ ctx, userId, intent });
 }
 
-function deleteAllData(userId: string) {
+// High-level function that calls failing low-level function:
+function deleteAllData(ctx: Ctx, userId: string) {
   // do stuff..
 
   try {
-    dropSomeTable(userId);
+    dropSomeTable(ctx, userId);
   } catch (err) {
-    // `err` says that the table could not be dropped, but what were we dropping the
-    // table for in the first place? By wrapping `err` with `VError`, we can easily give
-    // the low-level error additional, high-level context:
+    // `err` says that the table could not be dropped, but if we'd pass on the error to
+    // the caller without adding any context, information on why the operation has been
+    // attempted in the first place is lost. By wrapping `err` with `VError`, we can
+    // easily add this context information:
     throw new VError(err, "failed to delete all data");
   }
 }
 ```
 
-When handling a `VError`, we can ask for the root cause by name:
-
-```typescript
-try {
-  deleteAllData("alice");
-} catch (error) {
-  // This will log out the error message (which concatenates all `message` fields in the
-  // error chain), the full stack of all errors and all fields attached to any errors in
-  // the chain:
-  logger.debug({ error }, error.message);
-
-  if (VError.hasCauseWithName(error, "NotAuthorized")) {
-    // handle NotAuthorized error, e.g. by using a specific status code for the response
-  } else {
-    // handle other errors..
-  }
-}
-```
+When handling an error, we can traverse the chain of errors and relate to the errors' names - see [`http_errors.ts`](./http_errors.ts) for details.
 
 ### Use [`Result<T>`](./result.ts) to return expected errors
 
-In the previous example, the authorization could be seen as an integral part of the business logic behind `dropSomeTable`. To make that apparent, we typically model that using the [`Result.Type<T>`](./result.ts).
+In the previous example, the authorization could be seen as an integral part of the business logic behind `dropSomeTable`. We can model this using the [`Result.Type<T>`](./result.ts).
 
 **Use `Result<T>` whenever a function may fail for non-technical reasons.**
 
@@ -188,6 +176,8 @@ class NotAuthorized extends Error {
   ...
 }
 
+// In this case, the `T` in `Result<T>` is `undefined` because the function doesn't
+// return a value; instead it returns either `undefined` or an `Error`.
 function dropSomeTable(userId: string): Result.Type<undefined> {
   // do stuff..
 

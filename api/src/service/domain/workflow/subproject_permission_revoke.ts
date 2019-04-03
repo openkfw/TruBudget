@@ -50,7 +50,12 @@ export async function revokeSubprojectPermission(
   if (issuer.id !== "root") {
     const revokeIntent = "subproject.intent.revokePermission";
     if (!Subproject.permits(subproject, issuer, [revokeIntent])) {
-      return new NotAuthorized(ctx, issuer.id, revokeIntent, subproject);
+      return new NotAuthorized({
+        ctx,
+        userId: issuer.id,
+        intent: revokeIntent,
+        target: subproject,
+      });
     }
   }
 

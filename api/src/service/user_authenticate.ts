@@ -1,3 +1,5 @@
+import { VError } from "verror";
+
 import { ConnToken } from ".";
 import { globalIntents } from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -37,9 +39,9 @@ export async function authenticate(
 
   // The special "root" user is not on the chain:
   if (userId === "root") {
-    token = await authenticateRoot(conn, organization, rootSecret, password);
+    token = await authenticateRoot(conn, ctx, organization, rootSecret, password);
   } else {
-    token = await authenticateUser(conn, ctx, organizationSecret, userId, password);
+    token = await authenticateUser(conn, ctx, organization, organizationSecret, userId, password);
   }
 
   return token;
@@ -47,6 +49,7 @@ export async function authenticate(
 
 async function authenticateRoot(
   conn: ConnToken,
+  ctx: Ctx,
   organization: string,
   rootSecret: string,
   password: string,
@@ -55,36 +58,41 @@ async function authenticateRoot(
   // instead of simple string comparison:
   const rootSecretHash = await hashPassword(rootSecret);
   if (!(await isPasswordMatch(password, rootSecretHash))) {
-    throw new AuthenticationFailed();
+    throw new AuthenticationFailed({ ctx, organization, userId: "root" });
   }
 
-  const organizationAddress = await getOrganizationAddressOrThrow(conn, organization);
+  try {
+    const organizationAddress = await getOrganizationAddressOrThrow(conn, ctx, organization);
 
-  return {
-    userId: "root",
-    displayName: "root",
-    address: organizationAddress,
-    groups: [],
-    organization,
-    organizationAddress,
-    allowedIntents: globalIntents,
-  };
+    return {
+      userId: "root",
+      displayName: "root",
+      address: organizationAddress,
+      groups: [],
+      organization,
+      organizationAddress,
+      allowedIntents: globalIntents,
+    };
+  } catch (error) {
+    throw new AuthenticationFailed({ ctx, organization, userId: "root" }, error);
+  }
 }
 
 async function authenticateUser(
   conn: ConnToken,
   ctx: Ctx,
+  organization: string,
   organizationSecret: string,
   userId: string,
   password: string,
 ): Promise<AuthToken.AuthToken> {
   const userRecord = await UserQuery.getUser(conn, ctx, rootUser, userId);
   if (Result.isErr(userRecord)) {
-    throw new AuthenticationFailed(userRecord.message);
+    throw new AuthenticationFailed({ ctx, organization, userId }, userRecord);
   }
 
   if (!(await isPasswordMatch(password, userRecord.passwordHash))) {
-    throw new AuthenticationFailed();
+    throw new AuthenticationFailed({ ctx, organization, userId });
   }
 
   // Every user has an address and an associated private key. Importing the private key
@@ -96,21 +104,29 @@ async function authenticateUser(
     userRecord.id,
   );
 
-  return AuthToken.fromUserRecord(userRecord, {
-    getGroupsForUser: async id =>
-      getGroupsForUser(conn, ctx, rootUser, id).then(groups => groups.map(x => x.id)),
-    getOrganizationAddress: async organization => getOrganizationAddressOrThrow(conn, organization),
-    getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, rootUser),
-  });
+  try {
+    return AuthToken.fromUserRecord(userRecord, {
+      getGroupsForUser: async id =>
+        getGroupsForUser(conn, ctx, rootUser, id).then(groups => groups.map(x => x.id)),
+      getOrganizationAddress: async orga => getOrganizationAddressOrThrow(conn, ctx, orga),
+      getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, rootUser),
+    });
+  } catch (error) {
+    throw new AuthenticationFailed({ ctx, organization, userId }, error);
+  }
 }
 
 async function getOrganizationAddressOrThrow(
   conn: ConnToken,
+  ctx: Ctx,
   organization: string,
 ): Promise<string> {
   const organizationAddress = await getOrganizationAddress(conn.multichainClient, organization);
   if (!organizationAddress) {
-    throw new AuthenticationFailed(`No organization address found for ${organization}`);
+    throw new VError(
+      { info: { ctx, organization } },
+      `No organization address found for ${organization}`,
+    );
   }
   return organizationAddress;
 }

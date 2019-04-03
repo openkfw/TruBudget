@@ -26,7 +26,7 @@ export async function getProject(
 
   const intents: Intent[] = ["project.viewSummary", "project.viewDetails"];
   if (user.id !== "root" && !Project.permits(project, user, intents)) {
-    return new NotAuthorized(ctx, user.id, intents, project);
+    return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: project });
   }
 
   return dropHiddenHistoryEvents(project, user);

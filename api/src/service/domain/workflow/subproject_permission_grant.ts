@@ -51,7 +51,7 @@ export async function grantSubprojectPermission(
   if (issuer.id !== "root") {
     const grantIntent = "subproject.intent.grantPermission";
     if (!Subproject.permits(subproject, issuer, [grantIntent])) {
-      return new NotAuthorized(ctx, issuer.id, grantIntent, subproject);
+      return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: subproject });
     }
   }
 

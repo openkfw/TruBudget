@@ -52,7 +52,12 @@ export async function grantWorkflowitemPermission(
   if (issuer.id !== "root") {
     const grantIntent = "workflowitem.intent.grantPermission";
     if (!Workflowitem.permits(workflowitem, issuer, [grantIntent])) {
-      return new NotAuthorized(ctx, issuer.id, grantIntent, workflowitem);
+      return new NotAuthorized({
+        ctx,
+        userId: issuer.id,
+        intent: grantIntent,
+        target: workflowitem,
+      });
     }
   }
 

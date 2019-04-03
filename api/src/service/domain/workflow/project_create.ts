@@ -101,7 +101,7 @@ export async function createProject(
     if (!GlobalPermissions.permits(permissions, creatingUser, [intent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, creatingUser.id, intent, permissions)],
+        errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: permissions })],
       };
     }
   }

@@ -77,10 +77,8 @@ export function apply(
 ): Result.Type<Workflowitem.Workflowitem> {
   const newState = { ...workflowitem, assignee: event.assignee };
 
-  const result = Workflowitem.validate(newState);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, newState.id);
-  }
-
-  return newState;
+  return Result.mapErr(
+    Workflowitem.validate(newState),
+    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
+  );
 }

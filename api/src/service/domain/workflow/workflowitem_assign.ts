@@ -58,7 +58,7 @@ export async function assignWorkflowitem(
   if (publisher.id !== "root") {
     const intent = "workflowitem.assign";
     if (!Workflowitem.permits(workflowitem, publisher, [intent])) {
-      return new NotAuthorized(ctx, publisher.id, intent, workflowitem);
+      return new NotAuthorized({ ctx, userId: publisher.id, intent, target: workflowitem });
     }
   }
 

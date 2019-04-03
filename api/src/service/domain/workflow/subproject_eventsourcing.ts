@@ -111,7 +111,7 @@ export function apply(
 ) {
   const subproject = subprojects.get(subprojectId);
   if (subproject === undefined) {
-    return new EventSourcingError(ctx, event, "not found", subprojectId);
+    return new EventSourcingError({ ctx, event, target: { subprojectId } }, "not found");
   }
 
   try {

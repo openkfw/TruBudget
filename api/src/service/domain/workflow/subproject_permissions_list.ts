@@ -32,7 +32,7 @@ export async function getSubprojectPermissions(
   if (user.id !== "root") {
     const intent = "subproject.intent.listPermissions";
     if (!Subproject.permits(subproject, user, [intent])) {
-      return new NotAuthorized(ctx, user.id, intent, subproject);
+      return new NotAuthorized({ ctx, userId: user.id, intent, target: subproject });
     }
   }
   return subproject.permissions;

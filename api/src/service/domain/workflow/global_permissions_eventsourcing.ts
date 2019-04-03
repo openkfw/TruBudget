@@ -47,7 +47,7 @@ function applyGrantPermission(
 
   const result = GlobalPermissions.validate(globalPerms);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, permissionGranted, result.message));
+    errors.push(new EventSourcingError({ ctx, event: permissionGranted }, result));
     return;
   }
 
@@ -79,7 +79,7 @@ function applyRevokePermission(
 
   const result = GlobalPermissions.validate(globalPerms);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, permissionRevoked, result.message));
+    errors.push(new EventSourcingError({ ctx, event: permissionRevoked }, result));
     return;
   }
 

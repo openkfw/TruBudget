@@ -54,7 +54,12 @@ export async function revokeWorkflowitemPermission(
   if (issuer.id !== "root") {
     const revokeIntent = "workflowitem.intent.revokePermission";
     if (!Workflowitem.permits(workflowitem, issuer, [revokeIntent])) {
-      return new NotAuthorized(ctx, issuer.id, revokeIntent, workflowitem);
+      return new NotAuthorized({
+        ctx,
+        userId: issuer.id,
+        intent: revokeIntent,
+        target: workflowitem,
+      });
     }
   }
 

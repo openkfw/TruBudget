@@ -35,7 +35,14 @@ export async function revokeGlobalPermission(
     if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, [revokeIntent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, issuer.id, revokeIntent, currentGlobalPermissions)],
+        errors: [
+          new NotAuthorized({
+            ctx,
+            userId: issuer.id,
+            intent: revokeIntent,
+            target: currentGlobalPermissions,
+          }),
+        ],
       };
     }
   }
