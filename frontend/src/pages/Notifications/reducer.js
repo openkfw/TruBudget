@@ -11,7 +11,9 @@ import {
   SET_NOTIFICATIONS_PER_PAGE,
   LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
   SET_NOTIFICATION_OFFSET,
-  TIME_OUT_FLY_IN
+  TIME_OUT_FLY_IN,
+  ENABLE_LIVE_UPDATES,
+  DISABLE_LIVE_UPDATES
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 
@@ -26,7 +28,8 @@ const defaultState = fromJS({
   unreadNotificationCount: 0,
   notificationCount: 0,
   notificationsPerPage: 20,
-  notificationOffset: 0
+  notificationOffset: 0,
+  isLiveUpdatesEnabled: true
 });
 
 export default function navbarReducer(state = defaultState, action) {
@@ -36,6 +39,14 @@ export default function navbarReducer(state = defaultState, action) {
         notifications: fromJS(action.notifications),
         notificationCount: action.notifications.length
       });
+
+    case ENABLE_LIVE_UPDATES: {
+      return state.set("isLiveUpdatesEnabled", true);
+    }
+
+    case DISABLE_LIVE_UPDATES: {
+      return state.set("isLiveUpdatesEnabled", false);
+    }
 
     case LIVE_UPDATE_NOTIFICATIONS_SUCCESS: {
       const { newNotifications } = action;
@@ -50,9 +61,7 @@ export default function navbarReducer(state = defaultState, action) {
       });
     }
     case TIME_OUT_FLY_IN: {
-      return state.merge({
-        newNotifications: fromJS([])
-      });
+      return state.set("newNotifications", defaultState.get("newNotifications"));
     }
     case FETCH_NOTIFICATION_COUNTS_SUCCESS:
       return state.merge({

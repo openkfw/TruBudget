@@ -63,9 +63,35 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           publisher: { type: "string", example: "jdoe" },
                         },
                       },
-                      projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                      subprojectId: { type: "string", example: "d0e8c69eg298c87e389923413451234f" },
-                      workflowitemId: { type: "string", example: "d0e8c69eg298c87234534115045eff1f" },
+                      metadata: {
+                        type: "object",
+                        properties: {
+                          project: {
+                            type: "object",
+                            properties: {
+                              displayName: { type: "string", example: "Building a School" },
+                              hasViewPermissions: { type: "boolean", example: true },
+                              id: { type: "string", example: "er3t469eg298c87e3899119e025eff1f" },
+                            },
+                          },
+                          subproject: {
+                            type: "object",
+                            properties: {
+                              displayName: { type: "string", example: "Organize Furniture" },
+                              hasViewPermissions: { type: "boolean", example: true },
+                              id: { type: "string", example: "er3t469eg298c87e3899119e025eff1f" },
+                            },
+                          },
+                          workflowitem: {
+                            type: "object",
+                            properties: {
+                              displayName: { type: "string", example: "Deliver Furniture" },
+                              hasViewPermissions: { type: "boolean", example: true },
+                              id: { type: "string", example: "er3t469eg298c87e3899119e025eff1f" },
+                            },
+                          },
+                        },
+                      },
                     },
                   },
                 },
