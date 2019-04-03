@@ -220,7 +220,7 @@ Close a workflowitem when the work is done.
 
 **Description:**
 
-The [history of subprojects](<../Projects/Subproject#View the history of a subproject>) contains all activities refering to all it's workflowitems.
+The [history of subprojects](../Projects/Subproject#view-the-history-of-a-subproject) contains all activities refering to all it's workflowitems.
 
 ## Reorder Workflowitems
 

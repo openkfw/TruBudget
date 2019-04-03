@@ -28,7 +28,7 @@ View all subprojects where the current user has view-permissions on.
 
 **Notes:**
 
-- To view the subproject's details take a look at the [View subproject details section](<./#View subproject details>) below.
+- To view the subproject's details take a look at the [View subproject details section](#view-subproject-details) below.
 
 **Instructions:**
 
@@ -86,9 +86,8 @@ Create a new subproject defining title, comment, currency and budget.
    - "Comment": A little description or comment refering to the subproject
    - "Organization": Organization that the budget belongs to
    - "Currency": The currency of the organization's budget
-   - "Amount": The amount of the organization's budget
 
-6. Add the budget of the organization by clicking the "+" symbol
+6. Add the projected budget of the organization by clicking the "+" symbol
    ![create a  project](../../uploads/Screenshots/add_subproject_2.jpeg)
    After this, the entered budget will appear on the screen
    ![create a  project](../../uploads/Screenshots/add_subproject_3.jpeg)
@@ -118,7 +117,6 @@ Update details like budget amount or title of a subproject.
    - "Subproject Title": Title of the subproject
    - "Comment": A little description or comment refering to the subproject
    - "Currency": Currency of the subproject
-   - "Subproject budget amount": Assigned budget to the subproject
 
 6. Click the "Submit"-button to update the subproject.
 
@@ -192,11 +190,12 @@ The additional data is a free field that can be used to extend the subproject da
 
 **Instructions:**
 
-1. Click the "i" button on the right side of the subproject
+1. Click the "..." button on the right side of the subproject
 2. A window appears containing the additional information on the subproject
 3. Close the window by clicking "close"
 
-![show subproject history](../../uploads/Screenshots/subproject_info.jpeg)
+![show subproject additional data](../../uploads/Screenshots/subproject_info.jpeg)
+![show subproject additional data screen](../../uploads/Screenshots/subproject_info_2.jpeg)
 
 ## [Permissions on subproject](../Permissions.md)
 
