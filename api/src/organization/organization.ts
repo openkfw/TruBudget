@@ -1,6 +1,9 @@
+import { VError } from "verror";
+
 import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { Organization, WalletAddress } from "../network/model/Nodes";
+import * as Result from "../result";
 import { MultichainClient } from "../service/Client.h";
 import { organizationStreamName } from "./streamNames";
 
@@ -48,12 +51,14 @@ async function ensureOrganizationAddress(
     // The organization already has its address set -> no need to use the local wallet
     // address.
     logger.debug(`Organization address already set: ${addressFromStream.address}`);
-    await multichain
-      .getRpcClient()
-      .invoke(
-        "importprivkey",
-        SymmetricCrypto.decrypt(organizationVaultSecret, addressFromStream.privkey),
+    const privkey = SymmetricCrypto.decrypt(organizationVaultSecret, addressFromStream.privkey);
+    if (Result.isErr(privkey)) {
+      throw new VError(
+        { cause: privkey, info: { organization } },
+        "organization setup: cannot decrypt organization key",
       );
+    }
+    await multichain.getRpcClient().invoke("importprivkey", privkey);
     organizationAddress = addressFromStream.address;
   } else {
     // Find the local wallet address and use it as the organization address:
@@ -68,9 +73,10 @@ async function ensureOrganizationAddress(
           .find(_ => true),
       );
     if (!addressFromWallet) {
-      const message = "Could not obtain wallet address!";
-      logger.fatal({ multichain, organization }, message);
-      throw Error(message);
+      throw new VError(
+        { info: { organization } },
+        "organization address not yet set, but local wallet address could not be retrieved either",
+      );
     }
 
     const privkeyCiphertext = await multichain

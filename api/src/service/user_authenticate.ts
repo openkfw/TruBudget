@@ -98,11 +98,16 @@ async function authenticateUser(
   // Every user has an address and an associated private key. Importing the private key
   // when authenticating a user allows users to roam freely between nodes of their
   // organization.
-  await importprivkey(
-    conn.multichainClient,
-    SymmetricCrypto.decrypt(organizationSecret, userRecord.encryptedPrivKey),
-    userRecord.id,
-  );
+  const privkey = SymmetricCrypto.decrypt(organizationSecret, userRecord.encryptedPrivKey);
+  if (Result.isErr(privkey)) {
+    const cause = new VError(
+      privkey,
+      "failed to decrypt the user's private key with the given organization secret " +
+        `(does "${userId}" belong to "${organization}"?)`,
+    );
+    throw new AuthenticationFailed({ ctx, organization, userId }, cause);
+  }
+  await importprivkey(conn.multichainClient, privkey, userRecord.id);
 
   try {
     return AuthToken.fromUserRecord(userRecord, {
