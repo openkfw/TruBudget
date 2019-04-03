@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [1.0.0-beta.7] - 2019-04-03
+
+### Added
+
+- [Code of conduct](./CODE_OF_CONDUCT.md) and [contributing guidelines](./CONTRIBUTING.md) [#156](https://github.com/openkfw/TruBudget/issues/174)
+- Refined [getting-started guide](./README.md) [#185](https://github.com/openkfw/TruBudget/pull/185) and installation guides [#180](https://github.com/openkfw/TruBudget/pull/180)
+
+### Changed
+
+- Error message for user logging in on another organization's node [#174](https://github.com/openkfw/TruBudget/issues/174)
+- JWT validity set to 8 hours [#160](https://github.com/openkfw/TruBudget/issue/160)
+
+### Fixed
+
+- notifications do not work according to wrong notification.list schema [#182](https://github.com/openkfw/TruBudget/issues/182) [#183](https://github.com/openkfw/TruBudget/issues/183)
+- uploading document does not produce history output [#85](https://github.com/openkfw/TruBudget/issues/85)
+- display of user names in history [#87](https://github.com/openkfw/TruBudget/issues/87)
+- not authorized HTTP status code [#177](https://github.com/openkfw/TruBudget/pull/177)
+- Swagger documentation [#146](https://github.com/openkfw/TruBudget/issue/146)
+- upload documents using Firefox [#121](https://github.com/openkfw/TruBudget/issue/121)
+- provisioning script [#149](https://github.com/openkfw/TruBudget/issue/149)
+- e2e test for updated display of organization [#145](https://github.com/openkfw/TruBudget/issue/145)
+
 ## [1.0.0-beta.6] - 2019-03-22
 
 ### Changed
@@ -150,7 +175,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.6...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...master
+[1.0.0-beta.7]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.6...v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.5...v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.4...v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.3...v1.0.0-beta.4
