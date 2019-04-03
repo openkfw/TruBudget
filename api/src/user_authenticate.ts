@@ -133,6 +133,7 @@ const swaggerSchema = {
           error: {
             type: "object",
             properties: {
+              code: { type: "number" },
               message: {
                 type: "string",
                 example: "Authentication failed.",
