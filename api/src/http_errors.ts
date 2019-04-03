@@ -1,8 +1,6 @@
 import { VError } from "verror";
 
 import logger from "./lib/logger";
-import { NotFound } from "./service/domain/errors/not_found";
-import { PreconditionError } from "./service/domain/errors/precondition_error";
 
 interface ErrorBody {
   apiVersion: "1.0";
@@ -22,24 +20,46 @@ export function toHttpError(error: any | any[]): { code: number; body: ErrorBody
   return { code: httpError.code, body: toErrorBody(httpError) };
 }
 
-// Converts internal to HTTP errors. Please sort by error code, ascending :)
 function convertError(error: any): { code: number; message: string } {
-  if (error instanceof PreconditionError) {
+  if (error instanceof Error) {
     logger.debug({ error }, error.message);
-    return { code: 400, message: error.message };
-  } else if (VError.hasCauseWithName(error, "NotAuthorized")) {
-    logger.debug({ error }, error.message);
-    return { code: 403, message: error.message };
-  } else if (error instanceof NotFound) {
-    logger.debug({ error }, error.message);
-    return { code: 404, message: error.message };
-  } else if (error instanceof Error) {
-    logger.warn({ error }, error.message);
-    return { code: 500, message: error.message };
+    return handleError(error);
   } else {
     logger.fatal({ error }, "BUG: Caught a non-Error type");
     console.trace();
     return { code: 500, message: "Sorry, something went wrong :(" };
+  }
+}
+
+function handleError(error: Error): { code: number; message: string } {
+  // We select the outer-most error that makes sense to turn into a status code:
+  const name = selectHighLevelCause(error);
+
+  switch (name) {
+    case "BadRequest":
+    case "AuthenticationFailed":
+      return { code: 400, message: error.message };
+
+    case "NotAuthorized":
+      return { code: 403, message: error.message };
+
+    case "PreconditionError":
+      return { code: 409, message: error.message };
+
+    default:
+      return { code: 500, message: error.message };
+  }
+}
+
+function selectHighLevelCause(error: Error): string {
+  if (error.name !== "Error" && error.name !== "VError") {
+    return error.name;
+  }
+  const cause = VError.cause(error);
+  if (cause === null) {
+    return error.name;
+  } else {
+    return selectHighLevelCause(cause);
   }
 }
 

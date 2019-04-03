@@ -53,7 +53,7 @@ export async function setWorkflowitemOrdering(
   if (issuer.id !== "root") {
     const intent = "subproject.reorderWorkflowitems";
     if (!Subproject.permits(subproject, issuer, [intent])) {
-      return new NotAuthorized(ctx, issuer.id, intent, subproject);
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
     }
   }
 

@@ -55,7 +55,7 @@ function handleUserCreated(
 
   const result = UserRecord.validate(user);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, userCreated, result.message));
+    errors.push(new EventSourcingError({ ctx, event: userCreated }, result));
     return;
   }
 

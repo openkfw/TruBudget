@@ -114,7 +114,12 @@ export async function createSubproject(
   if (creatingUser.id !== "root") {
     const intent = "project.createSubproject";
     if (!AuthToken.permits(projectPermissions, creatingUser, [intent])) {
-      return new NotAuthorized(ctx, creatingUser.id, intent, { projectId, projectPermissions });
+      return new NotAuthorized({
+        ctx,
+        userId: creatingUser.id,
+        intent,
+        target: { projectId, projectPermissions },
+      });
     }
   }
 

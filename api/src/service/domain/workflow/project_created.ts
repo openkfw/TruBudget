@@ -104,10 +104,8 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Project.Project>
     additionalData: initialData.additionalData,
   };
 
-  const result = Project.validate(project);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message);
-  }
-
-  return project;
+  return Result.mapErr(
+    Project.validate(project),
+    error => new EventSourcingError({ ctx, event, target: project }, error),
+  );
 }

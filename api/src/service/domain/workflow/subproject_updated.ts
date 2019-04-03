@@ -89,26 +89,33 @@ export function apply(
   event: Event,
   subproject: Subproject.Subproject,
 ): Result.Type<Subproject.Subproject> {
-  if (subproject.status === "closed") {
+  if (subproject.status !== "open") {
     return new EventSourcingError(
-      ctx,
-      event,
-      "updating a closed subproject is not allowed",
-      subproject.id,
+      { ctx, event, target: subproject },
+      `a subproject may only be updated if its status is "open"`,
     );
   }
 
-  const update = deepcopy(event.update);
+  const update = event.update;
+
+  const additionalData = subproject.additionalData;
+  if (update.additionalData) {
+    for (const key of Object.keys(update.additionalData)) {
+      additionalData[key] = update.additionalData[key];
+    }
+  }
 
   const nextState = {
     ...subproject,
-    ...update,
+    // Only updated if defined in the `update`:
+    ...(update.displayName !== undefined && { displayName: update.displayName }),
+    // Only updated if defined in the `update`:
+    ...(update.description !== undefined && { description: update.description }),
+    additionalData,
   };
 
-  const result = Subproject.validate(nextState);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, subproject.id);
-  }
-
-  return nextState;
+  return Result.mapErr(
+    Subproject.validate(nextState),
+    error => new EventSourcingError({ ctx, event, target: subproject }, error),
+  );
 }

@@ -36,7 +36,7 @@ export async function addMember(
     if (!Group.permits(group, issuer, [intent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, issuer.id, intent, group)],
+        errors: [new NotAuthorized({ ctx, userId: issuer.id, intent, target: group })],
       };
     }
   }

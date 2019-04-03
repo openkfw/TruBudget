@@ -1,22 +1,40 @@
+import { VError } from "verror";
+
 import { Ctx } from "../../../lib/ctx";
 import { BusinessEvent } from "../business_event";
 
-export class EventSourcingError extends Error {
-  constructor(
-    private readonly ctx: Ctx,
-    private readonly businessEvent: BusinessEvent,
-    private readonly error: string,
-    private readonly entity?: any,
-  ) {
-    super(
-      `Failed to apply ${businessEvent.type} ${
-        entity === undefined ? "(no entity)" : `to ${JSON.stringify(entity)}`
-      } during event-sourcing: ${error}.`,
-    );
+interface Info {
+  ctx: Ctx;
+  event: BusinessEvent;
+  target?: any;
+}
 
-    // Maintains proper stack trace for where our error was thrown (only available on V8):
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, EventSourcingError);
-    }
+function mkMessage(info: Info, cause?: Error | string): string {
+  const msg = `failed to apply ${info.event.type}`;
+  if (cause === undefined || cause instanceof Error) {
+    return msg;
+  }
+  return `${msg}: ${cause}`;
+}
+
+function mkInfo(info: Info): Info {
+  // Removing trace events as they're not needed and spam the log output when printed:
+  if (info.target === undefined || info.target.log === undefined) {
+    return info;
+  }
+  const { target, log: _log } = info.target;
+  return target;
+}
+
+export class EventSourcingError extends VError {
+  constructor(info: Info, cause?: Error | string) {
+    super(
+      {
+        name: "EventSourcingError",
+        cause: cause instanceof Error ? cause : undefined,
+        info: mkInfo(info),
+      },
+      mkMessage(info, cause),
+    );
   }
 }

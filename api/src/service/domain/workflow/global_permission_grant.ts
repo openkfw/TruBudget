@@ -35,7 +35,14 @@ export async function grantGlobalPermission(
     if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, [grantIntent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, issuer.id, grantIntent, currentGlobalPermissions)],
+        errors: [
+          new NotAuthorized({
+            ctx,
+            userId: issuer.id,
+            intent: grantIntent,
+            target: currentGlobalPermissions,
+          }),
+        ],
       };
     }
   }

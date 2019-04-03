@@ -122,7 +122,7 @@ export async function createWorkflowitem(
       subproject => {
         const intent = "subproject.createWorkflowitem";
         if (!Subproject.permits(subproject, creatingUser, [intent])) {
-          return new NotAuthorized(ctx, creatingUser.id, intent, subproject);
+          return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });
         }
       },
     );

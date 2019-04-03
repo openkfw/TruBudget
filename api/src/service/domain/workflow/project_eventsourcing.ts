@@ -101,7 +101,7 @@ function apply(
 ) {
   const project = projects.get(projectId);
   if (project === undefined) {
-    return new EventSourcingError(ctx, event, "not found", projectId);
+    return new EventSourcingError({ ctx, event, target: { projectId } }, "not found");
   }
 
   try {

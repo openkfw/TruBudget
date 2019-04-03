@@ -2,6 +2,7 @@ import Joi = require("joi");
 import { VError } from "verror";
 
 import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -10,8 +11,6 @@ import { StoredDocument, storedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import deepcopy from "../../../lib/deepcopy";
-import logger from "../../../lib/logger";
 
 type eventTypeType = "workflowitem_updated";
 const eventType: eventTypeType = "workflowitem_updated";
@@ -105,52 +104,62 @@ export function apply(
   event: Event,
   workflowitem: Workflowitem.Workflowitem,
 ): Result.Type<Workflowitem.Workflowitem> {
-  if (workflowitem.status === "closed") {
+  if (workflowitem.status !== "open") {
     return new EventSourcingError(
-      ctx,
-      event,
-      "updating a closed workflowitem is not allowed",
-      workflowitem.id,
+      { ctx, event, target: workflowitem },
+      `a workflowitem may only be updated if its status is "open"`,
     );
   }
 
   // deep copy and remove undefined fields of object
-  const update = deepcopy(event.update);
-  const currentDocuments = workflowitem.documents ? deepcopy(workflowitem.documents) : [];
+  const update = event.update;
 
-  if (update.documents !== undefined) {
-    const currentDocumentIds = currentDocuments.map(x => x.id);
-    const newDocuments = update.documents.filter(x => !currentDocumentIds.includes(x.id));
-    for (const newDocument of newDocuments) {
-      currentDocuments.push(newDocument);
+  const nextState = {
+    ...workflowitem,
+    // Only updated if defined in the `update`:
+    ...(update.displayName !== undefined && { displayName: update.displayName }),
+    ...(update.description !== undefined && { description: update.description }),
+    ...(update.amount !== undefined && { amount: update.amount }),
+    ...(update.currency !== undefined && { currency: update.currency }),
+    ...(update.amountType !== undefined && { amountType: update.amountType }),
+    ...(update.billingDate !== undefined && { billingDate: update.billingDate }),
+    ...(update.dueDate !== undefined && { dueDate: update.dueDate }),
+    additionalData: updateAdditionalData(
+      deepcopy(workflowitem.additionalData),
+      update.additionalData,
+    ),
+    documents: updateDocuments(deepcopy(workflowitem.documents), update.documents),
+  };
+
+  // Setting the amount type to "N/A" removes fields that
+  // only make sense if amount type is _not_ "N/A":
+  if (update.amountType === "N/A") {
+    delete nextState.amount;
+    delete nextState.currency;
+    delete nextState.exchangeRate;
+    delete nextState.billingDate;
+  }
+
+  return Result.mapErr(
+    Workflowitem.validate(nextState),
+    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
+  );
+}
+
+function updateAdditionalData(additionalData: object, update?: object): object {
+  if (update) {
+    for (const key of Object.keys(update)) {
+      additionalData[key] = update[key];
     }
   }
+  return additionalData;
+}
 
-  let nextState: Workflowitem.Workflowitem;
-
-  if (
-    (update.amountType && update.amountType === "N/A") ||
-    (update.amountType === undefined && workflowitem.amountType === "N/A")
-  ) {
-    const { amount, currency, exchangeRate, ...workflowitemWOAmounts } = workflowitem;
-
-    nextState = {
-      ...workflowitemWOAmounts,
-      ...update,
-      documents: currentDocuments,
-    };
-  } else {
-    nextState = {
-      ...workflowitem,
-      ...update,
-      documents: currentDocuments,
-    };
+function updateDocuments(documents: StoredDocument[], update?: StoredDocument[]): StoredDocument[] {
+  if (update) {
+    // Any document with an ID that's already in use is silently ignored!
+    const currentIds = documents.map(x => x.id);
+    return update.filter(x => !currentIds.includes(x.id)).concat(documents);
   }
-
-  const result = Workflowitem.validate(nextState);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, workflowitem.id);
-  }
-
-  return nextState;
+  return documents;
 }

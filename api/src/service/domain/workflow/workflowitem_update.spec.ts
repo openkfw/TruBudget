@@ -220,42 +220,74 @@ describe("update workflowitem: how modifications are applied", () => {
 
     assert.isTrue(Result.isErr(result));
     const error = Result.unwrap_err(result);
-    assert.match(error.message, /closed/);
+    assert.match(error.message, /status/);
   });
 
-  // it(
-  //   "Updates to a workflowitem's amount, currency and exchangeRate fields " +
-  //     'are ignored if the amountType is set to "N/A"',
-  //   async () => {
-  //     const modification = {
-  //       amount: "123",
-  //       currency: "EUR",
-  //       exchangeRate: "1.234",
-  //     };
-  //     const result = await updateWorkflowitem(
-  //       ctx,
-  //       alice,
-  //       projectId,
-  //       subprojectId,
-  //       workflowitemId,
-  //       modification,
-  //       {
-  //         ...baseRepository,
-  //         getWorkflowitem: async _workflowitemId => ({
-  //           ...baseWorkflowitem,
-  //           amountType: "N/A",
-  //         }),
-  //       },
-  //     );
+  it(
+    "A workflowitem's amount, currency and exchangeRate fields " +
+      'are cleared if the amountType is set to "N/A" by the update',
+    async () => {
+      const modification = {
+        amountType: "N/A" as "N/A",
+      };
+      const result = await updateWorkflowitem(
+        ctx,
+        alice,
+        projectId,
+        subprojectId,
+        workflowitemId,
+        modification,
+        {
+          ...baseRepository,
+          getWorkflowitem: async _workflowitemId => ({
+            ...baseWorkflowitem,
+            amountType: "disbursed",
+            amount: "123",
+            currency: "EUR",
+            exchangeRate: "1.234",
+          }),
+        },
+      );
 
-  //     // It works:
-  //     assert.isTrue(Result.isOk(result), (result as Error).message);
-  //     const { newEvents } = Result.unwrap(result);
+      // It works:
+      assert.isTrue(Result.isOk(result), (result as Error).message);
+      const { workflowitem } = Result.unwrap(result);
 
-  //     // But there are no new events:
-  //     assert.lengthOf(newEvents, 0);
-  //   },
-  // );
+      // Setting the amount type to "N/A" has removed contradicting fields:
+      assert.isUndefined(workflowitem.amount);
+      assert.isUndefined(workflowitem.currency);
+      assert.isUndefined(workflowitem.exchangeRate);
+    },
+  );
+
+  it(
+    "Updates to a workflowitem's amount, currency and exchangeRate fields " +
+      'are forbidden if the amountType is already set to "N/A"',
+    async () => {
+      const modification = {
+        amount: "123",
+        currency: "EUR",
+        exchangeRate: "1.234",
+      };
+      const result = await updateWorkflowitem(
+        ctx,
+        alice,
+        projectId,
+        subprojectId,
+        workflowitemId,
+        modification,
+        {
+          ...baseRepository,
+          getWorkflowitem: async _workflowitemId => ({
+            ...baseWorkflowitem,
+            amountType: "N/A",
+          }),
+        },
+      );
+
+      assert.isTrue(Result.isErr(result));
+    },
+  );
 
   it("Updating documents with an empty list doesn't change existing documents", async () => {
     const modification = {

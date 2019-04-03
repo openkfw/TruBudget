@@ -86,17 +86,35 @@ export function apply(
   event: Event,
   project: Project.Project,
 ): Result.Type<Project.Project> {
-  const update = deepcopy(event.update);
+  if (project.status !== "open") {
+    return new EventSourcingError(
+      { ctx, event, target: project },
+      `a project may only be updated if its status is "open"`,
+    );
+  }
+
+  const update = event.update;
+
+  const additionalData = project.additionalData;
+  if (update.additionalData) {
+    for (const key of Object.keys(update.additionalData)) {
+      additionalData[key] = update.additionalData[key];
+    }
+  }
 
   const nextState = {
     ...project,
-    ...update,
+    // Only updated if defined in the `update`:
+    ...(update.displayName !== undefined && { displayName: update.displayName }),
+    // Only updated if defined in the `update`:
+    ...(update.description !== undefined && { description: update.description }),
+    // Only updated if defined in the `update`:
+    ...(update.thumbnail !== undefined && { thumbnail: update.thumbnail }),
+    additionalData,
   };
 
-  const result = Project.validate(nextState);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, project.id);
-  }
-
-  return nextState;
+  return Result.mapErr(
+    Project.validate(nextState),
+    error => new EventSourcingError({ ctx, event, target: project }, error),
+  );
 }

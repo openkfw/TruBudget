@@ -77,7 +77,10 @@ export async function createGroup(
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {
-      return { newEvents: [], errors: [new NotAuthorized(ctx, creatingUser.id, intent)] };
+      return {
+        newEvents: [],
+        errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent })],
+      };
     }
   }
 

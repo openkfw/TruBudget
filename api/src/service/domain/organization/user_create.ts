@@ -85,7 +85,7 @@ export async function createUser(
     if (!isAuthorized) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized(ctx, creatingUser.id, intent)],
+        errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent })],
       };
     }
   }

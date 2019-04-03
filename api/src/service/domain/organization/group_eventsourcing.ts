@@ -66,7 +66,7 @@ function handleGroupCreated(
 
   const result = Group.validate(group);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, groupCreated, result.message));
+    errors.push(new EventSourcingError({ ctx, event: groupCreated }, result));
     return;
   }
 
@@ -100,7 +100,7 @@ function applyMemberAdded(
 
   const result = Group.validate(group);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, memberAdded, result.message));
+    errors.push(new EventSourcingError({ ctx, event: memberAdded }, result));
     return;
   }
 
@@ -136,7 +136,7 @@ function applyMemberRemoved(
 
   const result = Group.validate(group);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, memberRemoved, result.message));
+    errors.push(new EventSourcingError({ ctx, event: memberRemoved }, result));
     return;
   }
 
@@ -170,7 +170,7 @@ function applyPermissionGranted(
 
   const result = Group.validate(group);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, permissionGranted, result.message));
+    errors.push(new EventSourcingError({ ctx, event: permissionGranted }, result));
     return;
   }
 
@@ -208,7 +208,7 @@ function applyPermissionRevoked(
 
   const result = Group.validate(group);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError(ctx, permissionRevoked, result.message));
+    errors.push(new EventSourcingError({ ctx, event: permissionRevoked }, result));
     return;
   }
 

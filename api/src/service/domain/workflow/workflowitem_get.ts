@@ -26,7 +26,7 @@ export async function getWorkflowitem(
   if (user.id !== "root") {
     const intent = "workflowitem.view";
     if (!Workflowitem.permits(workflowitem, user, [intent])) {
-      return new NotAuthorized(ctx, user.id, intent, workflowitem);
+      return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
     }
   }
 

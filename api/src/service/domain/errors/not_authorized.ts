@@ -1,35 +1,41 @@
 import { isArray } from "util";
+import { VError } from "verror";
 
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 
-export class NotAuthorized extends Error {
-  private readonly target?: object;
+interface Info {
+  ctx: Ctx;
+  userId: string;
+  intent: Intent | Intent[];
+  target?: any;
+}
 
-  constructor(
-    private readonly ctx: Ctx,
-    private readonly userId: string,
-    private readonly intent: Intent | Intent[],
-    target?: object,
-  ) {
+function mkMessage(info: Info): string {
+  const { userId, intent } = info;
+  return `user ${userId} is not authorized for ${
+    isArray(intent) ? `any of ${intent.join(", ")}` : intent
+  }`;
+}
+
+function mkInfo(info: Info): Info {
+  // Removing trace events as they're not needed and spam the log output when printed:
+  if (info.target === undefined || info.target.log === undefined) {
+    return info;
+  }
+  const { target, log: _log } = info.target;
+  return target;
+}
+
+export class NotAuthorized extends VError {
+  constructor(info: Info, cause?: Error) {
     super(
-      `user ${userId} is not authorized for ${
-        isArray(intent) ? `any of ${intent.join(", ")}` : intent
-      }`,
+      {
+        name: "NotAuthorized",
+        cause,
+        info: mkInfo(info),
+      },
+      mkMessage(info),
     );
-
-    // This allows us to identify this error in a chain of errors later on:
-    this.name = "NotAuthorized";
-
-    // Maintains proper stack trace for where our error was thrown (only available on V8):
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, NotAuthorized);
-    }
-
-    // Removing trace events as they're not needed and spam the log output when printed:
-    if (target !== undefined && (target as any).log !== undefined) {
-      delete (target as any).log;
-    }
-    this.target = target;
   }
 }

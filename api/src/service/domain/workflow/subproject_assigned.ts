@@ -72,10 +72,8 @@ export function apply(
 ): Result.Type<Subproject.Subproject> {
   const newState: Subproject.Subproject = { ...subproject, assignee: event.assignee };
 
-  const result = Subproject.validate(newState);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message, newState.id);
-  }
-
-  return newState;
+  return Result.mapErr(
+    Subproject.validate(newState),
+    error => new EventSourcingError({ ctx, event, target: subproject }, error),
+  );
 }

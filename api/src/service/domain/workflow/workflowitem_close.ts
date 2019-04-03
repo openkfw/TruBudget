@@ -77,7 +77,12 @@ export async function closeWorkflowitem(
   if (closingUser.id !== "root") {
     const intent = "workflowitem.close";
     if (!Workflowitem.permits(workflowitemToClose, closingUser, [intent])) {
-      return new NotAuthorized(ctx, closingUser.id, intent, workflowitemToClose);
+      return new NotAuthorized({
+        ctx,
+        userId: closingUser.id,
+        intent,
+        target: workflowitemToClose,
+      });
     }
   }
 

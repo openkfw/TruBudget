@@ -74,17 +74,17 @@ type ApplyFn = (
 function apply(
   ctx: Ctx,
   event: BusinessEvent,
-  projects: Map<Workflowitem.Id, Workflowitem.Workflowitem>,
-  projectId: string,
+  workflowitems: Map<Workflowitem.Id, Workflowitem.Workflowitem>,
+  workflowitemId: string,
   eventModule: { apply: ApplyFn },
 ) {
-  const project = projects.get(projectId);
-  if (project === undefined) {
-    return new EventSourcingError(ctx, event, "not found", projectId);
+  const workflowitem = workflowitems.get(workflowitemId);
+  if (workflowitem === undefined) {
+    return new EventSourcingError({ ctx, event, target: { workflowitemId } }, "not found");
   }
 
   try {
-    return produce(project, draft => {
+    return produce(workflowitem, draft => {
       const result = eventModule.apply(ctx, event, draft);
       if (Result.isErr(result)) {
         throw result;

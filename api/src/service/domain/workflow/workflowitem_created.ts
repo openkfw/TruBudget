@@ -134,10 +134,8 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
     additionalData: initialData.additionalData,
   };
 
-  const result = Workflowitem.validate(workflowitem);
-  if (Result.isErr(result)) {
-    return new EventSourcingError(ctx, event, result.message);
-  }
-
-  return workflowitem;
+  return Result.mapErr(
+    Workflowitem.validate(workflowitem),
+    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
+  );
 }
