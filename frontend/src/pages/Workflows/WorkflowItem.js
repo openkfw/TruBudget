@@ -79,8 +79,7 @@ const styles = {
 
   infoButton: {
     minWidth: "40px",
-    marginLeft: "5px",
-    marginRight: "5px"
+    marginLeft: "5px"
   },
   amountChip: {
     marginLeft: "16px"
@@ -102,25 +101,27 @@ const styles = {
     margin: 4
   },
   workflowContent: {
-    display: "block",
+    display: "flex",
+    justifyContent: "space-between",
     overflow: "hidden",
     padding: "4px 8px 4px 4px"
   },
   infoCell: {
-    width: "6.66%",
-    float: "left",
-    minHeight: "48px"
+    width: "8%",
+    display: "flex",
+    alignItems: "center"
   },
   workflowCell: {
-    width: "26.65%",
-    float: "left",
-    minHeight: "48px"
+    width: "25%",
+    display: "flex",
+    alignItems: "center"
   },
   actionCell: {
-    width: "13.33%",
-    float: "left"
+    width: "15%",
+    display: "flex",
+    alignItems: "center"
   },
-  centerTypographs: { marginTop: "14px" },
+  centerTypographs: {},
   card: {
     marginLeft: "50px",
     marginRight: "10px",
@@ -440,7 +441,7 @@ export const WorkflowItem = SortableElement(
                   : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
               </Typography>
             </div>
-            <div style={{ ...styles.listText, ...styles.workflowCell }}>
+            <div style={{ ...styles.listText, ...styles.workflowCell }} data-test="outside">
               <WorkflowAssigneeContainer
                 projectId={parentProject ? parentProject.id : ""}
                 subprojectId={subprojectId}

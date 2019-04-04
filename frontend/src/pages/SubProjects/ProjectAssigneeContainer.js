@@ -33,4 +33,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(ProjectAssigneeContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(ProjectAssigneeContainer));
