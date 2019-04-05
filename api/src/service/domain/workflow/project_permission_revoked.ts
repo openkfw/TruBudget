@@ -64,15 +64,25 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
-export function apply(
-  ctx: Ctx,
-  event: Event,
-  project: Project.Project,
-): Result.Type<Project.Project> {
+/**
+ * Applies the event to the given project, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified project
+ * is automatically validated when obtained using
+ * `project_eventsourcing.ts`:`withMutation`.
+ */
+export function mutate(project: Project.Project, event: Event): Result.Type<void> {
+  if (event.type !== "project_permission_revoked") {
+    throw new VError(`illegal event type: ${event.type}`);
+  }
+
   const eligibleIdentities = project.permissions[event.permission];
   if (eligibleIdentities === undefined) {
     // Nothing to do here..
-    return project;
+    return;
   }
 
   const foundIndex = eligibleIdentities.indexOf(event.revokee);
@@ -83,9 +93,4 @@ export function apply(
   }
 
   project.permissions[event.permission] = eligibleIdentities;
-
-  return Result.mapErr(
-    Project.validate(project),
-    error => new EventSourcingError({ ctx, event, target: project }, error),
-  );
 }

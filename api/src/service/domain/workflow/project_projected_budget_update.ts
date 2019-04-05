@@ -1,4 +1,5 @@
-import { produce } from "immer";
+import { isEqual } from "lodash";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -7,8 +8,9 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
-import { ProjectedBudget } from "./projected_budget";
+import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updated";
+import { ProjectedBudget } from "./projected_budget";
 
 interface Repository {
   getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
@@ -50,17 +52,18 @@ export async function updateProjectedBudget(
   }
 
   // Check that the new event is indeed valid:
-
-  const result = produce(project, draft =>
-    ProjectProjectedBudgetUpdated.apply(ctx, budgetUpdated, draft),
-  );
-
+  const result = ProjectEventSourcing.newProjectFromEvent(ctx, project, budgetUpdated);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, budgetUpdated, [result]);
   }
 
-  return {
-    newEvents: [budgetUpdated],
-    newState: result.projectedBudgets,
-  };
+  // Only emit the event if it causes any changes:
+  if (isEqual(project.projectedBudgets, result.projectedBudgets)) {
+    return { newEvents: [], newState: result.projectedBudgets };
+  } else {
+    return {
+      newEvents: [budgetUpdated],
+      newState: result.projectedBudgets,
+    };
+  }
 }

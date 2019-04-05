@@ -14,7 +14,6 @@ import { Permissions } from "../permissions";
 import * as GlobalPermissions from "./global_permissions";
 import * as Project from "./project";
 import * as ProjectCreated from "./project_created";
-import { sourceProjects } from "./project_eventsourcing";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 
 /**
@@ -106,10 +105,10 @@ export async function createProject(
     }
   }
 
-  // Check that the event is valid by trying to "apply" it:
-  const { errors } = sourceProjects(ctx, [createEvent]);
-  if (errors.length > 0) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, errors)] };
+  // Check that the event is valid:
+  const result = ProjectCreated.createFrom(ctx, createEvent);
+  if (Result.isErr(result)) {
+    return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, [result])] };
   }
 
   return { newEvents: [createEvent], errors: [] };

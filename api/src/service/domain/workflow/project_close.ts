@@ -1,5 +1,5 @@
-import { produce } from "immer";
 import { VError } from "verror";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -13,6 +13,7 @@ import * as UserRecord from "../organization/user_record";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as ProjectClosed from "./project_closed";
+import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as Subproject from "./subproject";
 
 interface Repository {
@@ -64,11 +65,11 @@ export async function closeProject(
   }
 
   // Check that the new event is indeed valid:
-  const result = produce(project, draft => ProjectClosed.apply(ctx, projectClosed, draft));
-  if (Result.isErr(result)) {
-    return new InvalidCommand(ctx, projectClosed, [result]);
+  const validationResult = ProjectEventSourcing.newProjectFromEvent(ctx, project, projectClosed);
+  if (Result.isErr(validationResult)) {
+    return new InvalidCommand(ctx, projectClosed, [validationResult]);
   }
-  project = result;
+  project = validationResult;
 
   // Create notification events:
   const recipients = project.assignee ? await repository.getUsersForIdentity(project.assignee) : [];

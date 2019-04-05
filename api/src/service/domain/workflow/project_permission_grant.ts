@@ -1,6 +1,5 @@
 import isEqual = require("lodash.isequal");
 
-import { produce } from "immer";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -11,6 +10,7 @@ import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
+import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectPermissionGranted from "./project_permission_granted";
 
 interface Repository {
@@ -49,9 +49,7 @@ export async function grantProjectPermission(
   }
 
   // Check that the new event is indeed valid:
-  const updatedProject = produce(project, draft =>
-    ProjectPermissionGranted.apply(ctx, permissionGranted, draft),
-  );
+  const updatedProject = ProjectEventSourcing.newProjectFromEvent(ctx, project, permissionGranted);
   if (Result.isErr(updatedProject)) {
     return new InvalidCommand(ctx, permissionGranted, [updatedProject]);
   }
