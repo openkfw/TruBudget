@@ -1,9 +1,7 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { CurrencyCode, currencyCodeSchema, MoneyAmount, moneyAmountSchema } from "./money";
 import * as Project from "./project";
@@ -68,11 +66,21 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
-export function apply(
-  ctx: Ctx,
-  event: Event,
-  project: Project.Project,
-): Result.Type<Project.Project> {
+/**
+ * Applies the event to the given project, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified project
+ * is automatically validated when obtained using
+ * `project_eventsourcing.ts`:`newProjectFromEvent`.
+ */
+export function mutate(project: Project.Project, event: Event): Result.Type<void> {
+  if (event.type !== "project_projected_budget_updated") {
+    throw new VError(`illegal event type: ${event.type}`);
+  }
+
   // An organization may have multiple budgets, but any two budgets of the same
   // organization always have a different currency. The reasoning: if an organization
   // makes two financial commitments in the same currency, they can represented by one
@@ -93,11 +101,4 @@ export function apply(
       value: event.value,
     });
   }
-
-  project = { ...project, projectedBudgets };
-
-  return Result.mapErr(
-    Project.validate(project),
-    error => new EventSourcingError({ ctx, event, target: project }, error),
-  );
 }

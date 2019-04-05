@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- [API] Increased the stability of the event sourcing code by replacing the "immer" dependency with a custom implementation.
+
 ## [1.0.0-beta.7] - 2019-04-03
 
 ### Added

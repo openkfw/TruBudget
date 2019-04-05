@@ -1,6 +1,5 @@
 import isEqual = require("lodash.isequal");
 
-import { produce } from "immer";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -13,6 +12,7 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemPermissionGranted from "./workflowitem_permission_granted";
 
 interface Repository {
@@ -62,8 +62,10 @@ export async function grantWorkflowitemPermission(
   }
 
   // Check that the new event is indeed valid:
-  const updatedWorkflowitem = produce(workflowitem, draft =>
-    WorkflowitemPermissionGranted.apply(ctx, permissionGranted, draft),
+  const updatedWorkflowitem = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
+    ctx,
+    workflowitem,
+    permissionGranted,
   );
   if (Result.isErr(updatedWorkflowitem)) {
     return new InvalidCommand(ctx, permissionGranted, [updatedWorkflowitem]);

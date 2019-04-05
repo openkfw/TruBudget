@@ -82,7 +82,6 @@ const schema = Joi.object().keys({
       otherwise: Joi.optional(),
     })
     .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
-  // TODO: we should also check the amount type
   billingDate: Joi.date()
     .iso()
     .when("amountType", {

@@ -123,10 +123,10 @@ export async function createSubproject(
     }
   }
 
-  // Check that the event is valid by trying to "apply" it:
-  const { errors } = sourceSubprojects(ctx, [subprojectCreated]);
-  if (errors.length > 0) {
-    return new InvalidCommand(ctx, subprojectCreated, errors);
+  // Check that the event is valid:
+  const result = SubprojectCreated.createFrom(ctx, subprojectCreated);
+  if (Result.isErr(result)) {
+    return new InvalidCommand(ctx, subprojectCreated, [result]);
   }
 
   return { newEvents: [subprojectCreated] };

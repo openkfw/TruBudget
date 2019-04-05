@@ -5,8 +5,8 @@ import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import { CurrencyCode, MoneyAmount } from "./domain/workflow/money";
 import * as Project from "./domain/workflow/project";
-import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import * as ProjectProjectedBudgetUpdate from "./domain/workflow/project_projected_budget_update";
+import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import { store } from "./store";
 
 export async function updateProjectedBudget(
@@ -27,8 +27,8 @@ export async function updateProjectedBudget(
       value,
       currencyCode,
       {
-        getProject: async projectId => {
-          return cache.getProject(projectId);
+        getProject: async pId => {
+          return cache.getProject(pId);
         },
       },
     ),
@@ -39,5 +39,5 @@ export async function updateProjectedBudget(
     await store(conn, ctx, event);
   }
 
-  return result.newState;
+  return result.projectedBudgets;
 }
