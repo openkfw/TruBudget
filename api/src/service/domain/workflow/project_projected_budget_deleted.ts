@@ -1,9 +1,7 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
@@ -72,7 +70,7 @@ export function validate(input: any): Result.Type<Event> {
  *
  * This function is not expected to validate its changes; instead, the modified project
  * is automatically validated when obtained using
- * `project_eventsourcing.ts`:`withMutation`.
+ * `project_eventsourcing.ts`:`newProjectFromEvent`.
  */
 export function mutate(project: Project.Project, event: Event): Result.Type<void> {
   if (event.type !== "project_projected_budget_deleted") {
@@ -84,6 +82,6 @@ export function mutate(project: Project.Project, event: Event): Result.Type<void
   // makes two financial commitments in the same currency, they can represented by one
   // commitment with the same currency and the sum of both commitments as its value.
   project.projectedBudgets = project.projectedBudgets.filter(
-    x => x.organization === event.organization && x.currencyCode === event.currencyCode,
+    x => !(x.organization === event.organization && x.currencyCode === event.currencyCode),
   );
 }

@@ -5,8 +5,8 @@ import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import { CurrencyCode } from "./domain/workflow/money";
 import * as Project from "./domain/workflow/project";
-import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import * as ProjectProjectedBudgetDelete from "./domain/workflow/project_projected_budget_delete";
+import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import { store } from "./store";
 
 export async function deleteProjectedBudget(
@@ -25,8 +25,8 @@ export async function deleteProjectedBudget(
       organization,
       currencyCode,
       {
-        getProject: async projectId => {
-          return cache.getProject(projectId);
+        getProject: async pId => {
+          return cache.getProject(pId);
         },
       },
     ),
@@ -37,5 +37,5 @@ export async function deleteProjectedBudget(
     await store(conn, ctx, event);
   }
 
-  return result.newState;
+  return result.projectedBudgets;
 }

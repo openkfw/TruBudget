@@ -25,7 +25,7 @@ export async function deleteProjectedBudget(
   organization: string,
   currencyCode: string,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[]; newState: State }>> {
+): Promise<Result.Type<{ newEvents: BusinessEvent[]; projectedBudgets: State }>> {
   const project = await repository.getProject(projectId);
 
   if (Result.isErr(project)) {
@@ -57,11 +57,11 @@ export async function deleteProjectedBudget(
 
   // Only emit the event if it causes any changes:
   if (isEqual(project.projectedBudgets, result.projectedBudgets)) {
-    return { newEvents: [], newState: result.projectedBudgets };
+    return { newEvents: [], projectedBudgets: result.projectedBudgets };
   } else {
     return {
       newEvents: [budgetDeleted],
-      newState: result.projectedBudgets,
+      projectedBudgets: result.projectedBudgets,
     };
   }
 }

@@ -1,9 +1,7 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
 
@@ -67,7 +65,7 @@ export function validate(input: any): Result.Type<Event> {
  *
  * This function is not expected to validate its changes; instead, the modified project
  * is automatically validated when obtained using
- * `project_eventsourcing.ts`:`withMutation`.
+ * `project_eventsourcing.ts`:`newProjectFromEvent`.
  */
 export function mutate(project: Project.Project, event: Event): Result.Type<void> {
   if (event.type !== "project_assigned") {

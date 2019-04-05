@@ -2,9 +2,7 @@ import Joi = require("joi");
 import { VError } from "verror";
 
 import Intent, { workflowitemIntents } from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -75,18 +73,25 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
-export function apply(
-  ctx: Ctx,
-  event: Event,
-  workflowitem: Workflowitem.Workflowitem,
-): Result.Type<Workflowitem.Workflowitem> {
+/**
+ * Applies the event to the given workflowitem, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified
+ * workflowitem is automatically validated when obtained using
+ * `workflowitem_eventsourcing.ts`:`newWorkflowitemFromEvent`.
+ */
+export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
+  if (event.type !== "workflowitem_permission_granted") {
+    throw new VError(`illegal event type: ${event.type}`);
+  }
+
   const eligibleIdentities = workflowitem.permissions[event.permission] || [];
   if (!eligibleIdentities.includes(event.grantee)) {
     eligibleIdentities.push(event.grantee);
   }
 
-  return Result.mapErr(
-    Workflowitem.validate(workflowitem),
-    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
-  );
+  workflowitem.permissions[event.permission] = eligibleIdentities;
 }

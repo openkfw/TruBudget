@@ -1,15 +1,12 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import { projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
-import deepcopy from "../../../lib/deepcopy";
 
 type eventTypeType = "subproject_updated";
 const eventType: eventTypeType = "subproject_updated";
@@ -84,38 +81,36 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
-export function apply(
-  ctx: Ctx,
-  event: Event,
-  subproject: Subproject.Subproject,
-): Result.Type<Subproject.Subproject> {
+/**
+ * Applies the event to the given subproject, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified
+ * subproject is automatically validated when obtained using
+ * `subproject_eventsourcing.ts`:`newSubprojectFromEvent`.
+ */
+export function mutate(subproject: Subproject.Subproject, event: Event): Result.Type<void> {
+  if (event.type !== "subproject_updated") {
+    throw new VError(`illegal event type: ${event.type}`);
+  }
+
   if (subproject.status !== "open") {
-    return new EventSourcingError(
-      { ctx, event, target: subproject },
-      `a subproject may only be updated if its status is "open"`,
-    );
+    return new VError('a subproject may only be updated if its status is "open"');
   }
 
   const update = event.update;
 
-  const additionalData = subproject.additionalData;
+  ["displayName", "description"].forEach(propname => {
+    if (update[propname] !== undefined) {
+      subproject[propname] = update[propname];
+    }
+  });
+
   if (update.additionalData) {
     for (const key of Object.keys(update.additionalData)) {
-      additionalData[key] = update.additionalData[key];
+      subproject.additionalData[key] = update.additionalData[key];
     }
   }
-
-  const nextState = {
-    ...subproject,
-    // Only updated if defined in the `update`:
-    ...(update.displayName !== undefined && { displayName: update.displayName }),
-    // Only updated if defined in the `update`:
-    ...(update.description !== undefined && { description: update.description }),
-    additionalData,
-  };
-
-  return Result.mapErr(
-    Subproject.validate(nextState),
-    error => new EventSourcingError({ ctx, event, target: subproject }, error),
-  );
 }

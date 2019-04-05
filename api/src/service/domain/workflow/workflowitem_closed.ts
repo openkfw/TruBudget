@@ -1,14 +1,11 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import logger from "../../../lib/logger";
 
 type eventTypeType = "workflowitem_closed";
 const eventType: eventTypeType = "workflowitem_closed";
@@ -66,23 +63,29 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
-export function apply(
-  ctx: Ctx,
-  event: Event,
-  workflowitem: Workflowitem.Workflowitem,
-): Result.Type<Workflowitem.Workflowitem> {
-  const billingDate =
-    workflowitem.billingDate === undefined ? event.time : workflowitem.billingDate;
+/**
+ * Applies the event to the given workflowitem, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified
+ * workflowitem is automatically validated when obtained using
+ * `workflowitem_eventsourcing.ts`:`newWorkflowitemFromEvent`.
+ */
+export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
+  if (event.type !== "workflowitem_closed") {
+    throw new VError(`illegal event type: ${event.type}`);
+  }
 
-  // TODO: handle amount type N/A
-  const nextState: Workflowitem.Workflowitem = {
-    ...workflowitem,
-    status: "closed",
-    billingDate,
-  };
+  // Set billing date to the event timestamp if it makes sense for the amount type and
+  // isn't set already:
+  if (
+    workflowitem.billingDate === undefined &&
+    (workflowitem.amountType === "allocated" || workflowitem.amountType === "disbursed")
+  ) {
+    workflowitem.billingDate = event.time;
+  }
 
-  return Result.mapErr(
-    Workflowitem.validate(nextState),
-    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
-  );
+  workflowitem.status = "closed";
 }

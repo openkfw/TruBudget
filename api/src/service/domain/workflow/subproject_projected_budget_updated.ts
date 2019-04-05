@@ -1,9 +1,7 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { CurrencyCode, currencyCodeSchema, MoneyAmount, moneyAmountSchema } from "./money";
 import * as Project from "./project";
@@ -73,11 +71,21 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
-export function apply(
-  ctx: Ctx,
-  event: Event,
-  subproject: Subproject.Subproject,
-): Result.Type<Subproject.Subproject> {
+/**
+ * Applies the event to the given subproject, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified
+ * subproject is automatically validated when obtained using
+ * `subproject_eventsourcing.ts`:`newSubprojectFromEvent`.
+ */
+export function mutate(subproject: Subproject.Subproject, event: Event): Result.Type<void> {
+  if (event.type !== "subproject_projected_budget_updated") {
+    throw new VError(`illegal event type: ${event.type}`);
+  }
+
   // An organization may have multiple budgets, but any two budgets of the same
   // organization always have a different currency. The reasoning: if an organization
   // makes two financial commitments in the same currency, they can represented by one
@@ -98,11 +106,4 @@ export function apply(
       value: event.value,
     });
   }
-
-  subproject = { ...subproject, projectedBudgets };
-
-  return Result.mapErr(
-    Subproject.validate(subproject),
-    error => new EventSourcingError({ ctx, event, target: subproject }, error),
-  );
 }

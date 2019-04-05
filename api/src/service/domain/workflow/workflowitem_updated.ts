@@ -1,11 +1,8 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
-import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { StoredDocument, storedDocumentSchema } from "./document";
 import * as Project from "./project";
@@ -99,67 +96,60 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
-export function apply(
-  ctx: Ctx,
-  event: Event,
-  workflowitem: Workflowitem.Workflowitem,
-): Result.Type<Workflowitem.Workflowitem> {
-  if (workflowitem.status !== "open") {
-    return new EventSourcingError(
-      { ctx, event, target: workflowitem },
-      `a workflowitem may only be updated if its status is "open"`,
-    );
+/**
+ * Applies the event to the given workflowitem, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified
+ * workflowitem is automatically validated when obtained using
+ * `workflowitem_eventsourcing.ts`:`newWorkflowitemFromEvent`.
+ */
+export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
+  if (event.type !== "workflowitem_updated") {
+    throw new VError(`illegal event type: ${event.type}`);
   }
 
-  // deep copy and remove undefined fields of object
+  if (workflowitem.status !== "open") {
+    return new VError(`a workflowitem may only be updated if its status is "open"`);
+  }
+
   const update = event.update;
 
-  const nextState = {
-    ...workflowitem,
-    // Only updated if defined in the `update`:
-    ...(update.displayName !== undefined && { displayName: update.displayName }),
-    ...(update.description !== undefined && { description: update.description }),
-    ...(update.amount !== undefined && { amount: update.amount }),
-    ...(update.currency !== undefined && { currency: update.currency }),
-    ...(update.amountType !== undefined && { amountType: update.amountType }),
-    ...(update.billingDate !== undefined && { billingDate: update.billingDate }),
-    ...(update.dueDate !== undefined && { dueDate: update.dueDate }),
-    additionalData: updateAdditionalData(
-      deepcopy(workflowitem.additionalData),
-      update.additionalData,
-    ),
-    documents: updateDocuments(deepcopy(workflowitem.documents), update.documents),
-  };
+  [
+    "displayName",
+    "description",
+    "amount",
+    "currency",
+    "amountType",
+    "billingDate",
+    "dueDate",
+  ].forEach(propname => {
+    if (update[propname] !== undefined) {
+      workflowitem[propname] = update[propname];
+    }
+  });
+
+  if (update.additionalData) {
+    for (const key of Object.keys(update.additionalData)) {
+      workflowitem.additionalData[key] = update.additionalData[key];
+    }
+  }
+
+  if (update.documents) {
+    // Any document with an ID that's already in use is silently ignored.
+    const currentIds = workflowitem.documents.map(x => x.id);
+    const newDocuments = update.documents.filter(x => !currentIds.includes(x.id));
+    workflowitem.documents.push(...newDocuments);
+  }
 
   // Setting the amount type to "N/A" removes fields that
   // only make sense if amount type is _not_ "N/A":
   if (update.amountType === "N/A") {
-    delete nextState.amount;
-    delete nextState.currency;
-    delete nextState.exchangeRate;
-    delete nextState.billingDate;
+    delete workflowitem.amount;
+    delete workflowitem.currency;
+    delete workflowitem.exchangeRate;
+    delete workflowitem.billingDate;
   }
-
-  return Result.mapErr(
-    Workflowitem.validate(nextState),
-    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
-  );
-}
-
-function updateAdditionalData(additionalData: object, update?: object): object {
-  if (update) {
-    for (const key of Object.keys(update)) {
-      additionalData[key] = update[key];
-    }
-  }
-  return additionalData;
-}
-
-function updateDocuments(documents: StoredDocument[], update?: StoredDocument[]): StoredDocument[] {
-  if (update) {
-    // Any document with an ID that's already in use is silently ignored!
-    const currentIds = documents.map(x => x.id);
-    return update.filter(x => !currentIds.includes(x.id)).concat(documents);
-  }
-  return documents;
 }

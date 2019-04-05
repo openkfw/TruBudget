@@ -134,10 +134,10 @@ export async function createWorkflowitem(
     }
   }
 
-  // Check that the event is valid by trying to "apply" it:
+  // Check that the event is valid:
   const result = WorkflowitemCreated.createFrom(ctx, workflowitemCreated);
   if (Result.isErr(result)) {
-    return new InvalidCommand(ctx, workflowitemCreated, [result]);
+    return { newEvents: [], errors: [new InvalidCommand(ctx, workflowitemCreated, [result])] };
   }
 
   return { newEvents: [workflowitemCreated], errors: [] };
