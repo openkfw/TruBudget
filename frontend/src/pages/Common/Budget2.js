@@ -42,19 +42,20 @@ export default class Budget extends React.Component {
         budgets[index].organization === budgetToDelete.organization &&
         budgets[index].currencyCode === budgetToDelete.currencyCode
       ) {
-        budgets.slice(index, 1);
+        budgets.splice(index, 1);
       }
     }
     return budgets;
   }
 
-  editProjectedBudget(budget) {
+  editProjectedBudget(budgets, budget) {
     this.setState({
       edit: true,
       organization: budget.organization,
       currency: budget.currencyCode,
       budgetAmount: budget.value
     });
+    this.deleteBudget(budgets, budget);
   }
 
   addBudget(budgets, budgetToAdd) {
@@ -81,8 +82,8 @@ export default class Budget extends React.Component {
                 <TableCell>{budget.organization}</TableCell>
                 <TableCell align="right">{toAmountString(budget.value, budget.currencyCode)}</TableCell>
                 <TableCell align="right">
-                  {true ? (
-                    <Button aria-label="Edit" onClick={() => this.editProjectedBudget(budget)}>
+                  {false ? (
+                    <Button aria-label="Edit" onClick={() => this.editProjectedBudget(projectedBudgets, budget)}>
                       <EditIcon />
                     </Button>
                   ) : null}
