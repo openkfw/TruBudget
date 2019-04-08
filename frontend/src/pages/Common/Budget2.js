@@ -82,7 +82,7 @@ export default class Budget extends React.Component {
                 <TableCell>{budget.organization}</TableCell>
                 <TableCell align="right">{toAmountString(budget.value, budget.currencyCode)}</TableCell>
                 <TableCell align="right">
-                  {false ? (
+                  {true ? (
                     <Button aria-label="Edit" onClick={() => this.editProjectedBudget(projectedBudgets, budget)}>
                       <EditIcon />
                     </Button>
@@ -108,6 +108,7 @@ export default class Budget extends React.Component {
                     type="text"
                     aria-label="organization"
                     id="organizationinput"
+                    disabled={this.edit}
                   />
                 </TableCell>
                 <TableCell align="right">
