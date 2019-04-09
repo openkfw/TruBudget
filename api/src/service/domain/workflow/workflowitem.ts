@@ -3,6 +3,7 @@ import Joi = require("joi");
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { BusinessEvent } from "../business_event";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
@@ -10,7 +11,6 @@ import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
-import { BusinessEvent } from "../business_event";
 
 export type Id = string;
 
@@ -85,11 +85,19 @@ const schema = Joi.object().keys({
   // TODO: we should also check the amount type
   billingDate: Joi.date()
     .iso()
-    .when("status", {
-      is: Joi.valid("closed"),
-      then: Joi.required(),
-      otherwise: Joi.optional(),
-    }),
+    .when("amountType", {
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
+    })
+    .concat(
+      Joi.date()
+        .iso()
+        .when("status", {
+          is: Joi.valid("closed"),
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
+    ),
   amount: Joi.string()
     .when("amountType", {
       is: Joi.valid("disbursed", "allocated"),

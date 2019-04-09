@@ -483,9 +483,11 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
   for (const workflowitem of workflowitems) {
     cache.cachedWorkflowItems.set(workflowitem.id, workflowitem);
     const lookUp = cache.cachedWorkflowitemLookup.get(workflowitem.subprojectId);
-    lookUp === undefined
-      ? cache.cachedWorkflowitemLookup.set(workflowitem.subprojectId, new Set([workflowitem.id]))
-      : lookUp.add(workflowitem.id);
+    if (lookUp === undefined) {
+      cache.cachedWorkflowitemLookup.set(workflowitem.subprojectId, new Set([workflowitem.id]));
+    } else {
+      lookUp.add(workflowitem.id);
+    }
   }
 }
 
