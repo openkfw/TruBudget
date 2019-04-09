@@ -42,6 +42,7 @@ import Workflow from "./Workflow";
 import WorkflowBatchEditContainer from "./WorkflowBatchEditContainer";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
+import { openAnalyticsDialog } from "../Analytics/actions";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -160,7 +161,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents)),
     saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
     addDocument: (payload, name) => dispatch(addDocument(payload, name)),
-    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems))
+    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
+    openAnalyticsDialog: () => dispatch(openAnalyticsDialog())
   };
 };
 

@@ -142,6 +142,7 @@ import {
   RESTORE_BACKUP_SUCCESS,
   RESTORE_BACKUP
 } from "./pages/Navbar/actions.js";
+import { GET_SUBPROJECT_KPIS, GET_SUBPROJECT_KPIS_SUCCESS } from "./pages/Analytics/actions.js";
 
 const api = new Api();
 
@@ -1221,6 +1222,46 @@ export function* liveUpdateNotificationsSaga({ showLoading, offset }) {
   }, showLoading);
 }
 
+export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = false }) {
+  yield execute(function*() {
+    const {
+      data: {
+        workflowitems = [],
+        subproject: {
+          data: { projectedBudgets = [], currency = "EUR" }
+        }
+      }
+    } = yield callApi(api.viewSubProjectDetails, projectId, subProjectId);
+    const workflowBudgets = workflowitems.reduce(
+      (acc, next) => {
+        const { amountType, status, amount } = next.data;
+        if (status === "closed" && amountType === "allocated" && amount) {
+          return { ...acc, assignedBudget: acc.assignedBudget + amount };
+        }
+
+        if (status === "closed" && amountType === "disbursed" && amount) {
+          return { ...acc, disbursedBudget: acc.disbursedBudget + amount };
+        }
+
+        return acc;
+      },
+      { assignedBudget: 0, disbursedBudget: 0 }
+    );
+
+    const response = {
+      subProjectCurrency: currency,
+      projectedBudgets: projectedBudgets,
+      assignedBudget: workflowBudgets.assignedBudget,
+      disbursedBudget: workflowBudgets.disbursedBudget
+    };
+
+    yield put({
+      type: GET_SUBPROJECT_KPIS_SUCCESS,
+      ...response
+    });
+  }, showLoading);
+}
+
 export default function* rootSaga() {
   try {
     yield all([
@@ -1297,7 +1338,10 @@ export default function* rootSaga() {
       // System
       yield takeLatest(CREATE_BACKUP, createBackupSaga),
       yield takeLatest(RESTORE_BACKUP, restoreBackupSaga),
-      yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga)
+      yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga),
+
+      // Analytics
+      yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs)
     ]);
   } catch (error) {
     console.log(error);

@@ -145,7 +145,7 @@ export const roleMapper = {
   assignee: strings.common.assignee
 };
 
-const createDoughnutData = (labels, data, colors = statusColors) => ({
+export const createDoughnutData = (labels, data, colors = statusColors) => ({
   labels,
   datasets: [
     {

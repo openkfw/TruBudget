@@ -1,38 +1,29 @@
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import Chip from "@material-ui/core/Chip";
-import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import AmountIcon from "@material-ui/icons/AccountBalance";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 import DoneIcon from "@material-ui/icons/Check";
 import DateIcon from "@material-ui/icons/DateRange";
 import AssigneeIcon from "@material-ui/icons/Group";
-import OpenIcon from "@material-ui/icons/Remove";
-import SpentIcon from "@material-ui/icons/RemoveCircle";
-import NotAssignedIcon from "@material-ui/icons/SpaceBar";
+import BarChartIcon from "@material-ui/icons/BarChart";
 import _isUndefined from "lodash/isUndefined";
 import React from "react";
-import { Doughnut } from "react-chartjs-2";
 
-import {
-  calculateWorkflowBudget,
-  createTaskData,
-  getProgressInformation,
-  statusIconMapping,
-  statusMapping,
-  toAmountString,
-  unixTsToString
-} from "../../helper.js";
+import { statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
-import GaugeChart from "../Common/GaugeChart";
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
+import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
 
 const styles = {
   container: {
@@ -45,161 +36,20 @@ const styles = {
     justifyContent: "space-between"
   },
   card: {
-    width: "31%"
-  },
-  permissionContainer: {
-    display: "flex",
-    justifyContent: "space-around"
-  },
-  text: {
-    fontSize: "14px"
-  },
-
-  tasksChart: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  taskChartItem: {
-    width: "33%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  comment: {
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    overflow: "hidden"
-  },
-  iconButton: {
-    padding: "0px",
-    height: "0px"
-  },
-  tooltip: {
-    top: "12px"
-  },
-  budget: {
-    display: "flex",
-    flexDirection: "row",
-    height: "100%"
-  },
-  cardMedia: {
-    marginBottom: "10px"
-  },
-  icon: {
-    width: "16px",
-    height: "20px"
-  },
-  editIcon: {
-    marginLeft: "5px",
-    marginTop: "11px"
-  },
-
-  doneIcon: {
-    marginLeft: "9px",
-    marginTop: "22px"
-  },
-  textfield: {
-    width: "60%",
-    marginLeft: "-15px",
-    marginTop: "-10px"
-  },
-  charts: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: "10px",
-    marginBottom: "10px",
-    marginRight: "10px",
-    width: "100%",
-    whiteSpace: "nowrap",
-    flexWrap: "wrap"
-  },
-
-  assingeeIcon: {
-    marginRight: "30px"
-  },
-  statusText: {
-    marginLeft: 15
-  },
-  statusContainer: {
     width: "100%",
     display: "flex",
-    alignItems: "center",
     justifyContent: "space-between"
   },
-  assigneeContainer: {
+  projectedBudget: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    width: "100%"
-  },
-  assigneeText: {
-    marginLeft: "-13px",
-    paddingTop: "6px"
-  },
-  listItem: {
-    minWidth: "65%"
-  },
-  budgetDistListItem: {
-    paddingRight: "0px",
-    fontSize: "14px"
-  },
-  chart: {
-    marginRight: 20,
-    maxWidth: "55%",
-    display: "flex",
-    justifyContent: "center",
-    paddingLeft: "12px"
-  },
-  distributionPlaceholder: {
-    height: "70%",
-    padding: "16px",
-    justifyContent: "center",
     alignItems: "center",
-    display: "flex",
-    flexDirection: "column"
+    paddingTop: "18px"
+  },
+  analytics: {
+    padding: "12px 0 "
   }
 };
-
-const displaySubprojectBudget = budgets => {
-  return (
-    <div>
-      {budgets.map((b, i) => {
-        return (
-          <div key={`subprojectedBudget-wf-${i}`} style={styles.budgets}>
-            <Tooltip title={b.organization}>
-              <Chip
-                avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
-                label={toAmountString(b.value, b.currencyCode)}
-              />
-            </Tooltip>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-const getNotEditableBudget = (amountString, allowedToEdit, { ...props }) => {
-  return (
-    <div style={styles.budget}>
-      <ListItem disabled={false}>
-        <ListItemIcon>
-          <AmountIcon />
-        </ListItemIcon>
-        <ListItemText primary={amountString} secondary={strings.common.projectedBudget} />
-      </ListItem>
-    </div>
-  );
-};
-
-const createRatio = ratio => ratio * 100;
 
 const subProjectCanBeClosed = (subProjectIsClosed, userIsAllowedToClose, workflowItems) =>
   !subProjectIsClosed && userIsAllowedToClose && _isUndefined(workflowItems.find(i => i.data.status !== "closed"));
@@ -234,94 +84,90 @@ const SubProjectDetails = ({
   showSubProjectAssignee,
   closeSubproject,
   canCloseSubproject,
+  openAnalyticsDialog,
   ...props
 }) => {
-  const amountString = displaySubprojectBudget(props.projectedBudgets);
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = unixTsToString(created);
 
   const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
-  const { assigned: assignedBudget, disbursed: disbursedBudget, currentDisbursement } = calculateWorkflowBudget(
-    workflowItems
-  );
-
-  const disbursedBudgetString = toAmountString(disbursedBudget, currency);
-  const spendBudgetString = toAmountString(currentDisbursement, currency);
-
-  const statusDetails = getProgressInformation(workflowItems);
-
-  const allowedToEdit = false;
-
-  const consumptionBudgetRatio = assignedBudget === 0 ? 0 : currentDisbursement / assignedBudget;
-  const currentDisbursementRatio = assignedBudget === 0 ? 0 : disbursedBudget / assignedBudget;
-
-  const containsRedactedWorkflowItems = workflowItems.find(w => w.data.displayName === null);
-
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <div style={{ display: "flex" }}>
-          <CardHeader
-            title={displayName}
-            subheader={description}
-            avatar={displayName ? <Avatar>{displayName[0]}</Avatar> : null}
-          />
-          <Tooltip title="Subproject currency">
-            <Typography
-              style={{
-                justifySelf: "flex-end",
-                alignSelf: "center",
-                marginLeft: "auto",
-                fontSize: "24px",
-                marginRight: "12px"
-              }}
-            >
-              {currency}
-            </Typography>
-          </Tooltip>
-        </div>
         <List>
-          <Divider />
-          {getNotEditableBudget(amountString, allowedToEdit, props)}
-          <Divider />
           <ListItem>
-            <ListItemIcon>{statusIcon}</ListItemIcon>
-            <div style={styles.statusContainer}>
-              <ListItemText style={styles.statusText} primary={mappedStatus} secondary={strings.common.status} />
-              {status !== "closed" ? (
-                <Tooltip
-                  id="tooltip-sclose"
-                  title={subProjectCloseButtonTooltip(canCloseSubproject, closingOfSubProjectAllowed)}
-                >
-                  <div>
-                    <IconButton
-                      color="primary"
-                      data-test="spc-button"
-                      disabled={!closingOfSubProjectAllowed}
-                      onClick={closeSubproject}
-                    >
-                      <DoneIcon />
-                    </IconButton>
-                  </div>
-                </Tooltip>
-              ) : null}
-            </div>
+            {displayName ? <Avatar>{displayName[0]}</Avatar> : null}
+            <ListItemText primary={displayName} secondary={description} />
           </ListItem>
-          <Divider />
-          <ListItem disabled={false}>
-            <ListItemIcon>
+          <ListItem>
+            <Avatar>
               <DateIcon />
-            </ListItemIcon>
+            </Avatar>
             <ListItemText primary={date} secondary={strings.common.created} />
           </ListItem>
-          <Divider />
-          <ListItem disabled={false}>
-            <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-              <ListItemIcon style={styles.assingeeIcon}>
-                <AssigneeIcon />
-              </ListItemIcon>
-              <div style={{ ...styles.assigneeContainer, width: "80%" }}>
+          <ListItem>
+            <Avatar>
+              <AmountIcon />
+            </Avatar>
+            <ListItemText primary={currency} secondary="Subproject currency" />
+          </ListItem>
+        </List>
+        <div style={styles.projectedBudget}>
+          <Typography variant="body1">{strings.common.projectedBudget}</Typography>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Organization</TableCell>
+                <TableCell align="right">Amount</TableCell>
+                <TableCell align="right">Currency</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {props.projectedBudgets.map(budget => (
+                <TableRow key={budget.organization + budget.currencyCode}>
+                  <TableCell>{budget.organization}</TableCell>
+                  <TableCell align="right">{toAmountString(budget.value)}</TableCell>
+                  <TableCell align="right">{budget.currencyCode}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <div style={styles.analytics}>
+            <Button variant="outlined" color="primary" onClick={openAnalyticsDialog}>
+              <BarChartIcon />
+              {strings.project.project_details}
+            </Button>
+          </div>
+        </div>
+        <List>
+          <ListItem>
+            <Avatar>{statusIcon}</Avatar>
+            <ListItemText primary={mappedStatus} secondary={strings.common.status} />
+            {status !== "closed" ? (
+              <Tooltip
+                id="tooltip-sclose"
+                title={subProjectCloseButtonTooltip(canCloseSubproject, closingOfSubProjectAllowed)}
+              >
+                <div>
+                  <IconButton
+                    color="primary"
+                    data-test="spc-button"
+                    disabled={!closingOfSubProjectAllowed}
+                    onClick={closeSubproject}
+                  >
+                    <DoneIcon />
+                  </IconButton>
+                </div>
+              </Tooltip>
+            ) : null}
+          </ListItem>
+          <ListItem>
+            <Avatar>
+              <AssigneeIcon />
+            </Avatar>
+            <ListItemText
+              primary={
                 <SubProjectAssigneeContainer
                   projectId={parentProject ? parentProject.id : ""}
                   subprojectId={id}
@@ -329,109 +175,13 @@ const SubProjectDetails = ({
                   disabled={!canAssignSubproject}
                   assignee={assignee}
                 />
-                <ListItemText style={styles.assigneeText} secondary={strings.common.assignee} />
-              </div>
-            </div>
+              }
+              secondary={strings.common.assignee}
+            />
           </ListItem>
         </List>
       </Card>
-      <Card style={styles.card}>
-        <CardHeader title={strings.common.budget_distribution} />
-        <Divider />
-        {containsRedactedWorkflowItems ? (
-          <div style={styles.distributionPlaceholder}>
-            <Typography variant="caption">{strings.common.no_budget_distribution}</Typography>
-          </div>
-        ) : (
-          <div>
-            {/* <div style={styles.charts}>
-              <div style={styles.listItem}>
-                <ListItem style={styles.budgetDistListItem}>
-                  <ListItemIcon>
-                    <UnspentIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={unSpendBudgetString}
-                    secondary={strings.common.assigned_budget}
-                    style={styles.budgetDistListItem}
-                  />
-                </ListItem>
-              </div>
-              <div style={styles.chart}>
-                <GaugeChart size={0.2} responsive={false} value={createRatio(allocatedBudgetRatio)} />
-              </div>
-            </div>
-            <Divider /> */}
-            <div style={styles.charts}>
-              <div style={styles.listItem}>
-                <ListItem style={styles.budgetDistListItem}>
-                  <ListItemIcon>
-                    <SpentIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={spendBudgetString}
-                    secondary={strings.common.disbursed_budget}
-                    style={styles.budgetDistListItem}
-                  />
-                </ListItem>
-              </div>
-              <div style={styles.chart}>
-                <GaugeChart size={0.2} responsive={false} value={createRatio(consumptionBudgetRatio)} />
-              </div>
-            </div>
-            <Divider />
-            <div style={styles.charts}>
-              <div style={styles.listItem}>
-                <ListItem style={styles.budgetDistListItem}>
-                  <ListItemIcon>
-                    <NotAssignedIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={disbursedBudgetString}
-                    secondary={strings.common.disbursement}
-                    style={styles.budgetDistListItem}
-                  />
-                </ListItem>
-              </div>
-              <div style={styles.chart}>
-                <GaugeChart size={0.2} responsive={false} value={createRatio(currentDisbursementRatio)} />
-              </div>
-            </div>
-          </div>
-        )}
-        <Divider />
-      </Card>
-      <Card style={styles.card}>
-        <CardHeader title={strings.common.task_status} />
-        <Divider />
-        <ListItem style={styles.cardMedia}>
-          <Doughnut data={createTaskData(workflowItems, "workflows")} />
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <div style={styles.tasksChart}>
-            <div style={styles.taskChartItem}>
-              <Typography>{statusDetails.open.toString()}</Typography>
-              <div>
-                <IconButton disabled>
-                  <OpenIcon />
-                </IconButton>
-              </div>
-              <Typography variant="caption">{strings.common.open}</Typography>
-            </div>
-            <div style={styles.taskChartItem}>
-              <Typography>{statusDetails.closed.toString()}</Typography>
-              <div>
-                <IconButton disabled>
-                  <DoneIcon />
-                </IconButton>
-              </div>
-              <Typography variant="caption">{strings.common.closed}</Typography>
-            </div>
-          </div>
-        </ListItem>
-        <Divider />
-      </Card>
+      <SubProjectAnalyticsDialog projectId={parentProject.id} subProjectId={id} />
     </div>
   );
 };
