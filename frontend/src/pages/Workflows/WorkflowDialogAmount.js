@@ -7,6 +7,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import DropwDown from "../Common/NewDropdown";
 import TextField from "@material-ui/core/TextField";
 
+import { applyNumberFormat } from "../Common/NumberFormat";
 import strings from "../../localizeStrings";
 import { getCurrencies, preselectCurrency, toAmountString, fromAmountString } from "../../helper";
 import { Typography } from "@material-ui/core";
@@ -125,7 +126,7 @@ class WorkflowDialogAmount extends Component {
           helperText={hintText + " " + toAmountString(99999.99)}
           value={workflowAmount}
           onChange={v => {
-            if (/^[0-9,.-]*$/.test(v.target.value)) storeWorkflowAmount(v.target.value);
+            storeWorkflowAmount(v.target.value);
           }}
           onBlur={e => storeWorkflowAmount(toAmountString(e.target.value))}
           onFocus={() => storeWorkflowAmount(fromAmountString(workflowAmount))}
@@ -137,6 +138,9 @@ class WorkflowDialogAmount extends Component {
             width: "20%",
             paddingRight: 20
           }}
+          InputProps={{
+            inputComponent: applyNumberFormat
+          }}
         />
         <Typography style={{ alignSelf: "center", marginRight: "16px" }}>x</Typography>
         <TextField
@@ -144,15 +148,18 @@ class WorkflowDialogAmount extends Component {
           helperText={strings.workflow.workflow_budget_description + "1.1586"}
           value={exchangeRate ? exchangeRate : ""}
           onChange={e => {
-            if (/^[0-9,.]*$/.test(e.target.value)) storeWorkflowExchangeRate(parseFloat(e.target.value));
+            storeWorkflowExchangeRate(parseFloat(e.target.value));
           }}
-          type="number"
+          type="text"
           aria-label="rate"
           id="rateinput"
           disabled={workflowCurrency === subProjectCurrency}
           style={{
             width: "20%",
             paddingRight: 20
+          }}
+          InputProps={{
+            inputComponent: applyNumberFormat
           }}
         />
         <div style={{ alignSelf: "center", marginRight: "16px", display: "flex" }}>

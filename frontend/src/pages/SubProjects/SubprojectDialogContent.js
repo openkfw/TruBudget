@@ -3,7 +3,7 @@ import React from "react";
 import Divider from "@material-ui/core/Divider";
 
 import strings from "../../localizeStrings";
-import Budget from "../Common/Budget2";
+import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
 import { getCurrencies } from "../../helper";

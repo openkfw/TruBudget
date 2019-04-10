@@ -1,10 +1,10 @@
+import { withStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
+import { toJS } from "../../helper";
 import AssigneeSelection from "../Common/AssigneeSelection";
 import { assignWorkflowItem } from "./actions";
-import withInitialLoading from "../Loading/withInitialLoading";
-import { toJS } from "../../helper";
-import { withStyles } from "@material-ui/core";
 
 const styles = {
   assigneeContainer: {
