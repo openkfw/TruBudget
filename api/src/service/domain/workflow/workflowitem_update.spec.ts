@@ -225,7 +225,7 @@ describe("update workflowitem: how modifications are applied", () => {
 
   it(
     "A workflowitem's amount, currency and exchangeRate fields " +
-      'are cleared if the amountType is set to "N/A" by the update',
+    'are cleared if the amountType is set to "N/A" by the update',
     async () => {
       const modification = {
         amountType: "N/A" as "N/A",
@@ -262,7 +262,7 @@ describe("update workflowitem: how modifications are applied", () => {
 
   it(
     "Updates to a workflowitem's amount, currency and exchangeRate fields " +
-      'are forbidden if the amountType is already set to "N/A"',
+    'are forbidden if the amountType is already set to "N/A"',
     async () => {
       const modification = {
         amount: "123",
@@ -314,9 +314,38 @@ describe("update workflowitem: how modifications are applied", () => {
     assert.deepEqual(workflowitem.documents, [{ id: "a", hash: "hashA" }]);
   });
 
-  it("An update to documents adds new documents and ignores updates to existing ones by ID", async () => {
+  it("An update to documents adds new documents", async () => {
     const modification = {
-      documents: [{ id: "A", hash: "new hash for A" }, { id: "B", hash: "hash for B" }],
+      documents: [{ id: "B", hash: "hash for B" }, { id: "C", hash: "hash for C" }],
+    };
+    const result = await updateWorkflowitem(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      modification,
+      {
+        ...baseRepository,
+        getWorkflowitem: async _workflowitemId => ({
+          ...baseWorkflowitem,
+          documents: [{ id: "A", hash: "hash for A" }],
+        }),
+      },
+    );
+
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    const { workflowitem } = Result.unwrap(result);
+    assert.sameDeepMembers(workflowitem.documents, [
+      { id: "A", hash: "hash for A" },
+      { id: "B", hash: "hash for B" },
+      { id: "C", hash: "hash for C" },
+    ]);
+  });
+
+  it("An update to existing documents is ignored if the update doesn't change the documents' hashes", async () => {
+    const modification = {
+      documents: [{ id: "A", hash: "old hash for A" }],
     };
     const result = await updateWorkflowitem(
       ctx,
@@ -338,8 +367,30 @@ describe("update workflowitem: how modifications are applied", () => {
     const { workflowitem } = Result.unwrap(result);
     assert.sameDeepMembers(workflowitem.documents, [
       { id: "A", hash: "old hash for A" },
-      { id: "B", hash: "hash for B" },
     ]);
+  });
+
+  it("An update to existing documents fails if the update would change the documents' hashes", async () => {
+    const modification = {
+      documents: [{ id: "A", hash: "new hash for A" }],
+    };
+    const result = await updateWorkflowitem(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      modification,
+      {
+        ...baseRepository,
+        getWorkflowitem: async _workflowitemId => ({
+          ...baseWorkflowitem,
+          documents: [{ id: "A", hash: "old hash for A" }],
+        }),
+      },
+    );
+
+    assert.isTrue(Result.isErr(result));
   });
 
   it("An update to additional data adds new items and replaces existing ones", async () => {
@@ -485,7 +536,7 @@ describe("update workflowitem: notifications", () => {
 
   it(
     "When a user updates a workflowitem that is assigned to a group, " +
-      "each member, except for the user that invoked the update, receives a notification",
+    "each member, except for the user that invoked the update, receives a notification",
     async () => {
       const modification = {
         description: "New description.",
