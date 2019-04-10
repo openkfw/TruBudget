@@ -174,7 +174,7 @@ function* handleError(error) {
   console.error(error);
 
   // which status should we use?
-  if (error.response.status === 401) {
+  if (error.response.status === 401 || error.response.status === 400) {
     yield call(logoutSaga);
   } else if (error.response && error.response.data) {
     yield put({
