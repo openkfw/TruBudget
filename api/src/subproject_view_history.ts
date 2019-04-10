@@ -57,7 +57,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
           limit: {
             type: "string",
             description: "Limit to the number of events to return.",
-            example: "10",
           },
           offset: {
             type: "string",
@@ -66,7 +65,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
               "have happened after that first event. The `offset` may also " +
               "be negative. For example, an `offset` of `-10` with limit `10` requests " +
               "the 10 most recent events.",
-            example: "0",
           },
         },
       },

@@ -21,11 +21,9 @@ function mkSwaggerSchema(server: FastifyInstance) {
         properties: {
           projectId: {
             type: "string",
-            example: "er58c69eg298c87e3899119e025eff1f",
           },
           subprojectId: {
             type: "string",
-            example: "4j28c69eg298c87e3899119e025eff1f",
           },
         },
       },
@@ -112,7 +110,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         if (Result.isErr(subprojectPermissions)) {
           subprojectPermissions.message = `could not list subproject permissions: ${
             subprojectPermissions.message
-            }`;
+          }`;
           throw subprojectPermissions;
         }
 

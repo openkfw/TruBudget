@@ -21,15 +21,12 @@ function mkSwaggerSchema(server: FastifyInstance) {
         properties: {
           projectId: {
             type: "string",
-            example: "4j28c69eg298c87e3899119e025eff1f",
           },
           subprojectId: {
             type: "string",
-            example: "5t28c69eg298c87e3899119e025eff1f",
           },
           workflowitemId: {
             type: "string",
-            example: "6z28c69eg298c87e3899119e025eff1f",
           },
         },
       },
@@ -116,7 +113,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         if (Result.isErr(workflowitemPermissions)) {
           workflowitemPermissions.message = `could not list project permissions: ${
             workflowitemPermissions.message
-            }`;
+          }`;
           throw workflowitemPermissions;
         }
 

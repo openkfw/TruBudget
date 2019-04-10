@@ -2,10 +2,9 @@ import * as Ajv from "ajv";
 import * as fastify from "fastify";
 import * as metricsPlugin from "fastify-metrics";
 import { IncomingMessage, Server, ServerResponse } from "http";
+import rawBody = require("raw-body");
 
 import logger from "../lib/logger";
-
-const rawBody = require("raw-body");
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -97,6 +96,17 @@ const registerSwagger = (
           in: "header",
         },
       },
+      tags: [
+        { name: "global" },
+        { name: "group" },
+        { name: "network" },
+        { name: "notification" },
+        { name: "project" },
+        { name: "subproject" },
+        { name: "system" },
+        { name: "user" },
+        { name: "workflowitem" },
+      ],
     },
     exposeRoute: true,
   });
