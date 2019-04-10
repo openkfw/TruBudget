@@ -1,5 +1,5 @@
-import { produce } from "immer";
 import { VError } from "verror";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -14,6 +14,7 @@ import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as SubprojectClosed from "./subproject_closed";
+import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as Workflowitem from "./workflowitem";
 
 interface Repository {
@@ -82,7 +83,7 @@ export async function closeSubproject(
   }
 
   // Check that the new event is indeed valid:
-  const result = produce(subproject, draft => SubprojectClosed.apply(ctx, subprojectClosed, draft));
+  const result = SubprojectEventSourcing.newSubprojectFromEvent(ctx, subproject, subprojectClosed);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, subprojectClosed, [result]);
   }

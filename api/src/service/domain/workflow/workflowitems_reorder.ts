@@ -1,4 +1,3 @@
-import { produce } from "immer";
 import isEqual = require("lodash.isequal");
 
 import { Ctx } from "../../../lib/ctx";
@@ -10,6 +9,7 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
+import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as WorkflowitemOrdering from "./workflowitem_ordering";
 import * as WorkflowitemsReordered from "./workflowitems_reordered";
 
@@ -39,8 +39,6 @@ export async function setWorkflowitemOrdering(
     return { newEvents: [] };
   }
 
-  // TODO(kevin): Check that each ID refers to an existing workflowitem
-
   const reorderEvent = WorkflowitemsReordered.createEvent(
     ctx.source,
     issuer.id,
@@ -58,13 +56,15 @@ export async function setWorkflowitemOrdering(
   }
 
   // Check that the new event is indeed valid:
-  const result = produce(subproject, draft =>
-    WorkflowitemsReordered.apply(ctx, reorderEvent, draft),
-  );
-
+  const result = SubprojectEventSourcing.newSubprojectFromEvent(ctx, subproject, reorderEvent);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, reorderEvent, [result]);
   }
 
-  return { newEvents: [reorderEvent] };
+  // Only emit the event if it causes any changes:
+  if (isEqual(subproject.workflowitemOrdering, result.workflowitemOrdering)) {
+    return { newEvents: [] };
+  } else {
+    return { newEvents: [reorderEvent] };
+  }
 }

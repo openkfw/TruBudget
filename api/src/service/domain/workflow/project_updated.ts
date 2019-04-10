@@ -1,13 +1,10 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
-import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
-import deepcopy from "../../../lib/deepcopy";
 
 type eventTypeType = "project_updated";
 const eventType: eventTypeType = "project_updated";
@@ -81,40 +78,36 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
-export function apply(
-  ctx: Ctx,
-  event: Event,
-  project: Project.Project,
-): Result.Type<Project.Project> {
+/**
+ * Applies the event to the given project, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified project
+ * is automatically validated when obtained using
+ * `project_eventsourcing.ts`:`newProjectFromEvent`.
+ */
+export function mutate(project: Project.Project, event: Event): Result.Type<void> {
+  if (event.type !== "project_updated") {
+    throw new VError(`illegal event type: ${event.type}`);
+  }
+
   if (project.status !== "open") {
-    return new EventSourcingError(
-      { ctx, event, target: project },
-      `a project may only be updated if its status is "open"`,
-    );
+    return new VError('a project may only be updated if its status is "open"');
   }
 
   const update = event.update;
 
-  const additionalData = project.additionalData;
+  ["displayName", "description", "thumbnail"].forEach(propname => {
+    if (update[propname] !== undefined) {
+      project[propname] = update[propname];
+    }
+  });
+
   if (update.additionalData) {
     for (const key of Object.keys(update.additionalData)) {
-      additionalData[key] = update.additionalData[key];
+      project.additionalData[key] = update.additionalData[key];
     }
   }
-
-  const nextState = {
-    ...project,
-    // Only updated if defined in the `update`:
-    ...(update.displayName !== undefined && { displayName: update.displayName }),
-    // Only updated if defined in the `update`:
-    ...(update.description !== undefined && { description: update.description }),
-    // Only updated if defined in the `update`:
-    ...(update.thumbnail !== undefined && { thumbnail: update.thumbnail }),
-    additionalData,
-  };
-
-  return Result.mapErr(
-    Project.validate(nextState),
-    error => new EventSourcingError({ ctx, event, target: project }, error),
-  );
 }

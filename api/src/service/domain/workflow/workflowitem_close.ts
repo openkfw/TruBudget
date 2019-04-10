@@ -1,4 +1,3 @@
-import { produce } from "immer";
 import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -16,6 +15,7 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import { Id } from "./workflowitem";
 import * as WorkflowitemClosed from "./workflowitem_closed";
+import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import { sortWorkflowitems } from "./workflowitem_ordering";
 
 interface Repository {
@@ -97,8 +97,10 @@ export async function closeWorkflowitem(
   }
 
   // Check that the new event is indeed valid:
-  const result = produce(workflowitemToClose, draft =>
-    WorkflowitemClosed.apply(ctx, closeEvent, draft),
+  const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
+    ctx,
+    workflowitemToClose,
+    closeEvent,
   );
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, closeEvent, [result]);

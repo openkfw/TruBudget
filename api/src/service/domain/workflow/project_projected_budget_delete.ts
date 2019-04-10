@@ -1,3 +1,5 @@
+import { isEqual } from "lodash";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -6,8 +8,9 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
-import { ProjectedBudget } from "./projected_budget";
+import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectProjectedBudgetDeleted from "./project_projected_budget_deleted";
+import { ProjectedBudget } from "./projected_budget";
 
 interface Repository {
   getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
@@ -22,7 +25,7 @@ export async function deleteProjectedBudget(
   organization: string,
   currencyCode: string,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[]; newState: State }>> {
+): Promise<Result.Type<{ newEvents: BusinessEvent[]; projectedBudgets: State }>> {
   const project = await repository.getProject(projectId);
 
   if (Result.isErr(project)) {
@@ -47,13 +50,18 @@ export async function deleteProjectedBudget(
   }
 
   // Check that the new event is indeed valid:
-  const result = ProjectProjectedBudgetDeleted.apply(ctx, budgetDeleted, project);
+  const result = ProjectEventSourcing.newProjectFromEvent(ctx, project, budgetDeleted);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, budgetDeleted, [result]);
   }
 
-  return {
-    newEvents: [budgetDeleted],
-    newState: result.projectedBudgets,
-  };
+  // Only emit the event if it causes any changes:
+  if (isEqual(project.projectedBudgets, result.projectedBudgets)) {
+    return { newEvents: [], projectedBudgets: result.projectedBudgets };
+  } else {
+    return {
+      newEvents: [budgetDeleted],
+      projectedBudgets: result.projectedBudgets,
+    };
+  }
 }
