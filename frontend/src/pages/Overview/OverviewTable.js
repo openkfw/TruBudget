@@ -143,12 +143,14 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
             subheader={mappedStatus}
           />
           <List>
-            <ListItem className={classes.listItem} disabled={true}>
-              <ListItemIcon>
-                <AmountIcon />
-              </ListItemIcon>
-              <ListItemText data-test="projectbudget" primary={budgets} secondary={strings.common.budget} />
-            </ListItem>
+            {projectedBudgets.length === 0 ? null : (
+              <ListItem className={classes.listItem} disabled={true}>
+                <ListItemIcon>
+                  <AmountIcon />
+                </ListItemIcon>
+                <ListItemText data-test="projectbudget" primary={budgets} secondary={strings.common.budget} />
+              </ListItem>
+            )}
             <ListItem className={classes.listItem} disabled={true}>
               <ListItemIcon>
                 <DateIcon />

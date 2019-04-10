@@ -43,7 +43,7 @@ const handleEdit = props => {
 
 const ProjectDialog = props => {
   const { projects, projectToAdd, editDialogShown, creationDialogShown } = props;
-  const { displayName, projectedBudgets } = projectToAdd;
+  const { displayName } = projectToAdd;
   const changes = compareObjects(projects, projectToAdd);
   const specificProps = props.editDialogShown
     ? {
@@ -59,7 +59,7 @@ const ProjectDialog = props => {
     {
       title: strings.project.project_details,
       content: <ProjectDialogContent {...props} />,
-      nextDisabled: _isEmpty(displayName) || ((projectedBudgets.length === 0 && !editDialogShown) || _isEmpty(changes))
+      nextDisabled: _isEmpty(displayName) || _isEmpty(changes)
     }
   ];
 

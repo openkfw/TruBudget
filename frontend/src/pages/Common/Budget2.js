@@ -6,11 +6,11 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TextField from "@material-ui/core/TextField";
+import DoneIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import React from "react";
 
-import DoneIcon from "@material-ui/icons/Check";
 import { fromAmountString, getCurrencies, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
 import DropDown from "./NewDropdown";
@@ -22,7 +22,8 @@ export default class Budget extends React.Component {
     organization: "",
     currency: "",
     edit: false,
-    editIndex: -1
+    editIndex: -1,
+    isSaveable: true
   };
   getMenuItems(currencies) {
     return currencies.map((currency, index) => {
@@ -36,6 +37,33 @@ export default class Budget extends React.Component {
 
   deleteBudgetFromList(projectedBudgets, deletedProjectedBudgets, budgetToDelete) {
     this.props.storeDeletedProjectedBudget(this.addBudget(deletedProjectedBudgets, budgetToDelete));
+    this.setCurrency(this.state.currency);
+    this.setOrganization(this.state.organization);
+  }
+
+  updateSavable(organization, currency) {
+    const isSaveable = !this.props.projectedBudgets.some(
+      x => x.organization === organization && x.currencyCode === currency
+    );
+
+    if (
+      this.state.isSaveable !== isSaveable ||
+      this.state.organization !== organization ||
+      this.state.currency !== currency
+    ) {
+      this.setState({
+        organization: organization,
+        currency: currency,
+        isSaveable
+      });
+    }
+  }
+  setOrganization(organization) {
+    this.updateSavable(organization, this.state.currency);
+  }
+
+  setCurrency(currency) {
+    this.updateSavable(this.state.organization, currency);
   }
 
   editProjectedBudget(budgets, budget, budgetAmountEdit) {
@@ -57,6 +85,7 @@ export default class Budget extends React.Component {
   }
 
   render() {
+    this.updateSavable(this.state.organization, this.state.currency);
     const { projectedBudgets = [], deletedProjectedBudgets = [], parentCurrency, storeProjectedBudget } = this.props;
     const currencies = getCurrencies(parentCurrency);
     return (
@@ -118,7 +147,7 @@ export default class Budget extends React.Component {
                 <TextField
                   label={strings.users.organization}
                   value={this.state.organization}
-                  onChange={e => this.setState({ organization: e.target.value })}
+                  onChange={e => this.setOrganization(e.target.value)}
                   type="text"
                   aria-label="organization"
                   id="organizationinput"
@@ -131,7 +160,7 @@ export default class Budget extends React.Component {
                     style={{ minWidth: 200, marginRight: "16px" }}
                     value={this.state.currency}
                     floatingLabel={strings.project.project_currency}
-                    onChange={e => this.setState({ currency: e })}
+                    onChange={e => this.setCurrency(e)}
                     id="currencies"
                     disabled={this.state.edit}
                   >
@@ -160,7 +189,12 @@ export default class Budget extends React.Component {
                   <Button
                     variant="contained"
                     color="secondary"
-                    disabled={!this.state.budgetAmount || !this.state.currency || !this.state.organization}
+                    disabled={
+                      !this.state.budgetAmount ||
+                      !this.state.currency ||
+                      !this.state.organization ||
+                      !this.state.isSaveable
+                    }
                     onClick={() => {
                       this.setState({ edit: false });
                       const projectedBudgetsCopy = projectedBudgets;
@@ -177,7 +211,7 @@ export default class Budget extends React.Component {
                       });
                     }}
                   >
-                    {this.state.edit ? `${strings.common.edit}` : `${strings.common.add}`}
+                    {`${strings.common.add}`}
                   </Button>
                 }
               </TableCell>
