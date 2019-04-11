@@ -72,47 +72,45 @@ const schema = Joi.object().keys({
   displayName: Joi.string().required(),
   exchangeRate: Joi.string()
     .when("amountType", {
-      is: Joi.valid("disbursed", "allocated"),
-      then: Joi.required(),
-      otherwise: Joi.optional(),
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
     })
     .when("status", {
       is: Joi.valid("closed"),
       then: Joi.required(),
       otherwise: Joi.optional(),
-    })
-    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+    }),
   billingDate: Joi.date()
     .iso()
     .when("amountType", {
       is: Joi.valid("N/A"),
       then: Joi.forbidden(),
     })
-    .concat(
-      Joi.date()
-        .iso()
-        .when("status", {
-          is: Joi.valid("closed"),
-          then: Joi.required(),
-          otherwise: Joi.optional(),
-        }),
-    ),
-  amount: Joi.string()
-    .when("amountType", {
-      is: Joi.valid("disbursed", "allocated"),
+    .when("status", {
+      is: Joi.valid("closed"),
       then: Joi.required(),
       otherwise: Joi.optional(),
+    }),
+  amount: Joi.string()
+    .when("amountType", {
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
     })
-    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() })
-    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+    .when("status", {
+      is: Joi.valid("closed"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
   currency: Joi.string()
     .when("amountType", {
-      is: Joi.valid("disbursed", "allocated"),
-      then: Joi.required(),
-      otherwise: Joi.forbidden(),
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
     })
-    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() })
-    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+    .when("status", {
+      is: Joi.valid("closed"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
   amountType: Joi.string()
     .valid("N/A", "disbursed", "allocated")
     .required(),

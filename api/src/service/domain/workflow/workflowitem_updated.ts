@@ -28,11 +28,19 @@ export interface Modification {
 export const modificationSchema = Joi.object({
   displayName: Joi.string(),
   description: Joi.string().allow(""),
-  amount: Joi.string(),
-  currency: Joi.string(),
+  exchangeRate: Joi.string().when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+  billingDate: Joi.date()
+    .iso()
+    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+  amount: Joi.string().when("amountType", {
+    is: Joi.valid("N/A"),
+    then: Joi.forbidden(),
+  }),
+  currency: Joi.string().when("amountType", {
+    is: Joi.valid("N/A"),
+    then: Joi.forbidden(),
+  }),
   amountType: Joi.valid("N/A", "disbursed", "allocated"),
-  exchangeRate: Joi.string(),
-  billingDate: Joi.date().iso(),
   dueDate: Joi.date().iso(),
   documents: Joi.array().items(storedDocumentSchema),
   additionalData: AdditionalData.schema,
@@ -172,8 +180,10 @@ function updateDocuments(workflowitem: Workflowitem.Workflowitem, documents?: St
     } else {
       // We already know a document with the same ID.
       if (existingDocument.hash !== document.hash) {
-        throw new VError(`cannot update document ${document.id}, ` +
-          `as changing existing documents is not allowed`);
+        throw new VError(
+          `cannot update document ${document.id}, ` +
+            `as changing existing documents is not allowed`,
+        );
       }
     }
   });
