@@ -1,55 +1,10 @@
-# Local Installation - Debian/Ubuntu/Fedora
+# Connect to an Existing Network Directly from Machine
 
-The following section describes how to setup TruBudget on Debian/Ubuntu/Fedora machines.
-This guide will setup the following components:
+This guide describes how to connect to an existing network without the use of Docker, Docker-Compose or Kubernetes. Before starting the network make sure to [install the necessary software on your machine.](../bare-metal-installation.md)
 
-- **Blockchain**: a MultiChain Blockchain node
-- **API**: a microservice serving as interface to connect to the Blockchain
-- **Frontend**: a web application connected to the API displaying the data of the Blockchain
+## Get the repository
 
-If you decide to use more than one virtual machines, execute the commands only on the machine where the component is supposed to run.
-
-## Prepare
-
-### Install software
-
-Execute the following commands as administrator to install Node.js, Multichain, curl, nginx and git:
-
-Debian/Ubuntu:
-
-```bash
-sudo su
-apt-get update
-
-apt-get install -y wget git nginx curl && curl -sL https://deb.nodesource.com/setup_9.x | bash - && apt-get install -y nodejs \
-    && cd /tmp \
-    && wget --no-check-certificate https://www.multichain.com/download/multichain-2.0-alpha-6.tar.gz\
-    && tar -xvzf multichain-2.0-alpha-6.tar.gz \
-    && cd multichain-2.0-alpha-6 \
-    && mv multichaind multichain-cli multichain-util /usr/bin \
-    && cd /tmp \
-    && rm -Rf multichain* \
-    && apt-get clean \
-    && cd
-```
-
-Fedora:
-
-```bash
-yum install -y wget git nginx curl && curl --silent --location https://rpm.nodesource.com/setup_8.x | bash - && yum install -y nodejs \
-    && cd /tmp \
-    && wget --no-check-certificate https://www.multichain.com/download/multichain-2.0-alpha-6.tar.gz\
-    && tar -xvzf multichain-2.0-alpha-6.tar.gz \
-    && cd multichain-2.0-alpha-6 \
-    && mv multichaind multichain-cli multichain-util /usr/bin \
-    && cd /tmp \
-    && rm -Rf multichain* \
-    && cd
-```
-
-### Get the repository
-
-Clone the gitlab repositories of the components onto the designated machines.
+Clone the Github repository of the components onto the designated machines.
 
 Clone the repository:
 
@@ -66,17 +21,6 @@ git pull
 
 ## Blockchain
 
-Set the following environment variables to deploy a new Blockchain network:
-
-```bash
-export P2P_PORT=7447
-export RPC_PORT=8000
-export RPC_USER="multichainrpc"
-export RPC_PASSWORD="password"
-export RPC_ALLOW_IP=0.0.0.0/0.0.0.0
-export MULTICHAIN_DIR="/root"
-```
-
 To connect to an already existing Blockchain network **adapt** and set the following environment parameters:
 
 ```bash
@@ -87,19 +31,15 @@ export RPC_PASSWORD="password";
 export RPC_ALLOW_IP="0.0.0.0/0";
 export MULTICHAIN_DIR="/root"
 export EXTERNAL_IP = [external IP here];
-export P2P_HOST = [IP of seed node];
-export P2P_PORT = [MultiChain port of seed node];
-
-export API_PROTO="http";
-export API_HOST=[IP of seed API];
-export API_PORT=[port of seed API];
+export P2P_PROD_HOST = [IP of prod instance of seed node];
+export P2P_PROD_PORT = [MultiChain port of prod instance of seed node];
+export P2P_TEST_HOST = [IP of test instance of seed node];
+export P2P_TEST_PORT = [MultiChain port of test instance of seed node];
+export API_PROD_HOST=[IP of seed API (prod)];
+export API_PROD_PORT=[port of seed API (prod)];
+export API_TEST_HOST=[IP of seed API (test)];
+export API_TEST_PORT=[port of seed API (test)];
 ```
-
-where
-
-- P2P_HOST / P2P_PORT contains the IP and port where the MultiChain of the master node can be reached
-- API_HOST / API_PORT contains the IP and port where the API of the master node can be reached
-- EXTERNAL_IP: The public IP address of the slave node
 
 Navigate into the `blockchain` directory and install the node packages defined in the `package.json` and start the Blockchain with:
 
@@ -109,34 +49,7 @@ npm install
 npm start > startup.log 2>&1 &
 ```
 
-If you have decided to create a new Blockchain network the information within `startup.log` should look similar to:
-
-```bash
-> ACMECorp-chain-bc@0.1.0 start /[MULTICHAIN_DIR]/TruBudget/blockchain
-> node src/index.js
-
-Provisioning mc
-
-MultiChain 2.0 alpha 2 Utilities (latest protocol 20002)
-
-Blockchain parameter set was successfully generated.
-You can edit it in /[MULTICHAIN_DIR]/.multichain/TrubudgetChain/params.dat before running multichaind for the first time.
-
-To generate blockchain please run "multichaind TrubudgetChain -daemon".
-App listening on 8085
-stdout: Looking for genesis block...
-
-stdout: Genesis block found
-
-
-stdout: Other nodes can connect to this node using:
-multichaind TrubudgetChain@172.17.0.3:7447
-
-
-stdout: Node ready.
-```
-
-If you decided to connect to an already existing Blockchain network the node has to be approved by a master node.
+Since you are trying to connect to an already existing Blockchain network the node has to be approved by a master node.
 Before the approval, the `startup.log` should look similar to:
 
 ```bash
@@ -195,20 +108,6 @@ multichaind  | Node ready.
 
 ## API
 
-If you have decided to provision a new Blockchain network **adapt** and set the environment parameters listed below on the machine:
-
-```bash
-export ORGANIZATION="MyOrga"
-export P2P_PORT=7447
-export RPC_PORT=8000
-export PORT=8080
-export RPC_HOST=127.0.0.1
-export RPC_USER="multichainrpc"
-export RPC_PASSWORD="password"
-export ORGANIZATION_VAULT_SECRET="asdf"
-export ROOT_SECRET="asdf"
-```
-
 If you provisioned a Blockchain of the type "Connect to an existing network" set the following environment parameters:
 
 ```bash
@@ -235,37 +134,7 @@ You can then check the api log via
 cat api.log
 ```
 
-The `api.log` for a new Blockchain network should look similar to:
-
-```bash
-[2018-10-03T09:36:08.872Z] INFO (TruBudget/4858 on 0a18bc69cac8): Connecting to MultiChain node
-    protocol: "http"
-    host: "127.0.0.1"
-    port: 8000
-    username: "multichainrpc"
-    password: "password"
-Register fastify endpoint
-schema id ignored er58c69eg298c87e3899119e025eff1f
-schema id ignored fe9c2b24ade9a92360b3a898665678ac
-[2018-10-03T09:36:09.193Z] INFO (TruBudget/4858 on 0a18bc69cac8): server is listening on 8080
-[2018-10-03T09:36:09.224Z] INFO (TruBudget/4858 on 0a18bc69cac8): MultiChain connection established
-[2018-10-03T09:36:09.228Z] DEBUG (TruBudget/4858 on 0a18bc69cac8): Created stream org:MyOrga with options {"kind":"organization","name":"org:MyOrga"}
-[2018-10-03T09:36:09.232Z] TRACE (TruBudget/4858 on 0a18bc69cac8):
-    addressFromWallet: "[redacted]"
-    privkey: "[redacted]"
-[2018-10-03T09:36:09.237Z] TRACE (TruBudget/4858 on 0a18bc69cac8): wrote hex string to chain: 282 bytes
-[2018-10-03T09:36:09.237Z] INFO (TruBudget/4858 on 0a18bc69cac8): Initializing organization address to local wallet address: [redacted]
-[2018-10-03T09:36:09.238Z] DEBUG (TruBudget/4858 on 0a18bc69cac8): Publishing wallet address to org:MyOrga/"address"
-[2018-10-03T09:36:09.241Z] INFO (TruBudget/4858 on 0a18bc69cac8): organization address: [redacted]
-[2018-10-03T09:36:09.244Z] DEBUG (TruBudget/4858 on 0a18bc69cac8): Created stream users:MyOrga with options {"kind":"users","name":"users:MyOrga"}
-[2018-10-03T09:36:09.244Z] INFO (TruBudget/4858 on 0a18bc69cac8): organization stream present
-[2018-10-03T09:36:09.247Z] INFO (TruBudget/4858 on 0a18bc69cac8): node registered in nodes stream
-Publishing network.registerNode to nodes/"[redacted]"
-[2018-10-03T09:36:09.257Z] DEBUG (TruBudget/4858 on 0a18bc69cac8): Created stream nodes with options {"kind":"nodes","name":"nodes"}
-Publishing network.registerNode to nodes/"[redacted]"
-```
-
-The `api.log` of the type "Connect to an existing network" should look similar to
+The `api.log` should look similar to:
 (the log includes entries from before and after the node is approved by the master node, that's why you see errors here):
 
 ```bash
@@ -323,47 +192,6 @@ pm2 start dist/index.js
 
 This is just an example. Please refer to the [official documentation](http://pm2.keymetrics.io/) for more information.
 
-### Provisioning
-
-The Provisioning fills the blockchain with test-data.
-To start the provisioning, open your favorite shell, navigate to your provisioning folder and follow these instructions:
-
-```bash
-cd ../provisioning
-```
-
-#### 1. Set environment variables
-
-"API_PORT", "ROOT_SECRET" and "ORGANIZATION" variables have to be the same as when starting the api.
-
-- Terminal Mac/Git Bash
-
-```bash
-export API_PORT=8080
-export ORGANIZATION="MyOrga"
-export ROOT_SECRET=test
-```
-
-- Terminal Windows/Command Shell
-
-```bash
-SET API_PORT = 8080
-SET ORGANIZATION = "MyOrga"
-SET ROOT_SECRET = test
-```
-
-#### 2. Install node-modules
-
-```
-npm install
-```
-
-#### 3. Start the provisioning
-
-```
-npm start
-```
-
 ## Frontend
 
 The first step to deploy the frontend is to **adapt** and set the environment parameters. If you plan to deploy only one API set PROD and TEST parameters, so that it points to the single API.
@@ -419,7 +247,3 @@ To start the frontend, run the following command:
 ```
 
 As soon as the step above is done, the frontend should be available on port 80. Make sure that port 80 is exposed and not blocked by any firewall.
-
-## Known Issues
-
-For the solution to known issues, please see the [Known Issues page](Known-Issues.md).
