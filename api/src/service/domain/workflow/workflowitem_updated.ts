@@ -115,8 +115,21 @@ export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): R
     return new VError(`a workflowitem may only be updated if its status is "open"`);
   }
 
-  const update = event.update;
+  updateProps(workflowitem, event.update);
+  updateAdditionalData(workflowitem, event.update.additionalData);
+  updateDocuments(workflowitem, event.update.documents);
 
+  // Setting the amount type to "N/A" removes fields that
+  // only make sense if amount type is _not_ "N/A":
+  if (event.update.amountType === "N/A") {
+    delete workflowitem.amount;
+    delete workflowitem.currency;
+    delete workflowitem.exchangeRate;
+    delete workflowitem.billingDate;
+  }
+}
+
+function updateProps(workflowitem: Workflowitem.Workflowitem, update: Modification) {
   [
     "displayName",
     "description",
@@ -131,26 +144,37 @@ export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): R
       workflowitem[propname] = update[propname];
     }
   });
+}
 
-  if (update.additionalData) {
-    for (const key of Object.keys(update.additionalData)) {
-      workflowitem.additionalData[key] = update.additionalData[key];
+function updateAdditionalData(workflowitem: Workflowitem.Workflowitem, additionalData?: object) {
+  if (additionalData === undefined) {
+    return;
+  }
+
+  for (const key of Object.keys(additionalData)) {
+    workflowitem.additionalData[key] = additionalData[key];
+  }
+}
+
+function updateDocuments(workflowitem: Workflowitem.Workflowitem, documents?: StoredDocument[]) {
+  if (documents === undefined) {
+    return;
+  }
+
+  // Existing documents are never overwritten. They are only allowed in the update if
+  // they are equal to their existing record.
+
+  documents.forEach(document => {
+    const existingDocument = workflowitem.documents.find(x => x.id === document.id);
+    if (existingDocument === undefined) {
+      // This is a new document.
+      workflowitem.documents.push(document);
+    } else {
+      // We already know a document with the same ID.
+      if (existingDocument.hash !== document.hash) {
+        throw new VError(`cannot update document ${document.id}, ` +
+          `as changing existing documents is not allowed`);
+      }
     }
-  }
-
-  if (update.documents) {
-    // Any document with an ID that's already in use is silently ignored.
-    const currentIds = workflowitem.documents.map(x => x.id);
-    const newDocuments = update.documents.filter(x => !currentIds.includes(x.id));
-    workflowitem.documents.push(...newDocuments);
-  }
-
-  // Setting the amount type to "N/A" removes fields that
-  // only make sense if amount type is _not_ "N/A":
-  if (update.amountType === "N/A") {
-    delete workflowitem.amount;
-    delete workflowitem.currency;
-    delete workflowitem.exchangeRate;
-    delete workflowitem.billingDate;
-  }
+  });
 }
