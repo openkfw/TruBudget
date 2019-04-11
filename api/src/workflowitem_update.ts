@@ -7,12 +7,12 @@ import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
-import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/workflow/document";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import * as WorkflowitemUpdated from "./service/domain/workflow/workflowitem_updated";
 import * as WorkflowitemUpdate from "./service/workflowitem_update";
 
 interface RequestBodyV1 {
@@ -40,17 +40,10 @@ const requestBodyV1Schema = Joi.object({
     projectId: Project.idSchema.required(),
     subprojectId: Subproject.idSchema.required(),
     workflowitemId: Workflowitem.idSchema.required(),
-    displayName: Joi.string(),
-    description: Joi.string().allow(""),
-    amountType: Joi.string().valid("N/A", "disbursed", "allocated"),
-    amount: Joi.string(),
-    currency: Joi.string(),
-    exchangeRate: Joi.string(),
-    billingDate: Joi.date().iso(),
-    dueDate: Joi.date().iso(),
-    documents: Joi.array().items(uploadedDocumentSchema),
-    additionalData: AdditionalData.schema,
-  }).required(),
+  })
+    .concat(WorkflowitemUpdated.modificationSchema)
+    .keys({ documents: Joi.array().items(uploadedDocumentSchema) })
+    .required(),
 });
 
 type RequestBody = RequestBodyV1;
