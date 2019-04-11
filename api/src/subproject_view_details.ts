@@ -27,11 +27,9 @@ function mkSwaggerSchema(server: FastifyInstance) {
         properties: {
           projectId: {
             type: "string",
-            example: "d0e8c69eg298c87e3899119e025eff1f",
           },
           subprojectId: {
             type: "string",
-            example: "rfe8er9eg298c87e3899119e025eff1f",
           },
         },
       },
