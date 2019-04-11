@@ -79,8 +79,7 @@ const styles = {
 
   infoButton: {
     minWidth: "40px",
-    marginLeft: "5px",
-    marginRight: "5px"
+    marginLeft: "5px"
   },
   amountChip: {
     marginLeft: "16px"
@@ -101,15 +100,31 @@ const styles = {
   chip: {
     margin: 4
   },
-
   workflowContent: {
     display: "flex",
-
-    alignItems: "center",
+    justifyContent: "space-between",
+    overflow: "hidden",
     padding: "4px 8px 4px 4px"
   },
+  infoCell: {
+    width: "8%",
+    display: "flex",
+    alignItems: "center"
+  },
   workflowCell: {
-    flex: 1
+    width: "25%",
+    display: "flex",
+    alignItems: "center"
+  },
+  actionCell: {
+    width: "15%",
+    display: "flex",
+    alignItems: "center"
+  },
+  typographs: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    width: "100%"
   },
   card: {
     marginLeft: "50px",
@@ -297,7 +312,7 @@ const renderActionButtons = (
   status
 ) => {
   return (
-    <div style={{ flex: 2 }}>
+    <div style={styles.actionCell}>
       <div style={styles.actions}>
         <div style={styles.actionButton}>
           {status !== "closed" ? (
@@ -417,18 +432,20 @@ export const WorkflowItem = SortableElement(
           style={{ ...getCardStyle(workflowSortEnabled, status), ...styles.card }}
         >
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
-            <div style={{ flex: 1 }}>{infoButton}</div>
-            <div style={{ ...itemStyle, ...styles.text, flex: 4 }}>
-              <Typography variant="body2">{displayName}</Typography>
+            <div style={styles.infoCell}>{infoButton}</div>
+            <div style={{ ...itemStyle, ...styles.text, ...styles.workflowCell }}>
+              <Typography variant="body2" style={styles.typographs}>
+                {displayName}
+              </Typography>
             </div>
-            <div style={{ ...itemStyle, ...styles.listText, flex: 4 }}>
-              <Typography variant="body2" component="div">
+            <div style={{ ...itemStyle, ...styles.listText, ...styles.workflowCell }}>
+              <Typography variant="body2" style={styles.typographs} component="div">
                 {amountType === "N/A"
                   ? amountTypes(amountType)
                   : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
               </Typography>
             </div>
-            <div style={{ ...styles.listText, flex: 4 }}>
+            <div style={{ ...styles.listText, ...styles.workflowCell }} data-test="outside">
               <WorkflowAssigneeContainer
                 projectId={parentProject ? parentProject.id : ""}
                 subprojectId={subprojectId}

@@ -23,20 +23,26 @@ const createTableHeader = props => (
     <CardHeader title={strings.workflow.workflow_table_title} />
     <CardContent style={style}>
       <div style={{ position: "relative" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div
+          style={{
+            display: "inline-block",
+            position: "absolute"
+          }}
+        >
           <div>{!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}</div>
-          <div style={{ flex: 1 }} />
-
-          <div style={{ flex: 4 }}>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", paddingLeft: "50px", justifyContent: "space-between" }}>
+          <div style={{ width: "8%", paddingLeft: "4px" }}>-</div>
+          <div style={{ width: "25%" }}>
             <Typography variant="body1">{strings.workflow.workflow_type_workflow}</Typography>
           </div>
-          <div style={{ flex: 4 }}>
+          <div style={{ width: "25%" }}>
             <Typography variant="body1">{strings.common.budget}</Typography>
           </div>
-          <div style={{ flex: 4 }}>
+          <div style={{ width: "25%" }}>
             <Typography variant="body1">{strings.common.assignee}</Typography>
           </div>
-          <div style={{ flex: 2 }}>
+          <div style={{ width: "15%", textAlign: "center" }}>
             <Typography variant="body1">{strings.common.actions}</Typography>
           </div>
         </div>

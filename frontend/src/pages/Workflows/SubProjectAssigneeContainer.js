@@ -1,10 +1,11 @@
+import { withStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
+import { toJS } from "../../helper";
 import AssigneeSelection from "../Common/AssigneeSelection";
 import { assignSubproject } from "./actions";
-import withInitialLoading from "../Loading/withInitialLoading";
-import { toJS } from "../../helper";
-import { withStyles } from "@material-ui/core";
+
 const styles = {};
 
 class SubProjectAssigneeContainer extends Component {
@@ -25,10 +26,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    assignSubproject: (projectId, subprojectId, identity) => dispatch(assignSubproject(projectId, subprojectId, identity))
+    assignSubproject: (projectId, subprojectId, identity) =>
+      dispatch(assignSubproject(projectId, subprojectId, identity))
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withInitialLoading(toJS(withStyles(styles)(SubProjectAssigneeContainer)))
-);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(withStyles(styles)(SubProjectAssigneeContainer)));

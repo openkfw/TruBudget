@@ -36,6 +36,10 @@ const styles = {
       cursor: "-webkit-grab"
     }
   },
+  assigneeTypography: {
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  },
   disabled: {}
 };
 
@@ -129,14 +133,13 @@ class AssigneeSelection extends Component {
         <Select
           data-test="assignee-selection"
           classes={{
-            selectMenu: classes.selectMenu,
             ...getSortClasses()
           }}
           value={this.renderTitle(assignee)}
           renderValue={s => (
             <div style={{ ...styles.selectValue }}>
               <Checkbox style={{ ...styles.checkbox }} disabled={disabled} checked={true} />
-              <Typography disabled={disabled} variant="body1">
+              <Typography disabled={disabled} variant="body1" style={styles.assigneeTypography}>
                 {s}
               </Typography>
             </div>

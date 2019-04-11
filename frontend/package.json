@@ -39,6 +39,7 @@
     "react-leaflet": "^1.1.6",
     "react-liquid-gauge": "^1.2.2",
     "react-localization": "^0.1.1",
+    "react-number-format": "^4.0.7",
     "react-redux": "^5.0.3",
     "react-router": "^4.0.0",
     "react-router-redux": "^5.0.0-alpha.4",

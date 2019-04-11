@@ -269,7 +269,7 @@ const ProjectDetails = ({
             <ListItemIcon style={styles.assingeeIcon}>
               <AssigneeIcon />
             </ListItemIcon>
-            <div style={styles.assigneeContainer}>
+            <div style={{ ...styles.assigneeContainer, width: "80%" }}>
               <ProjectAssigneeContainer
                 users={users}
                 projectId={projectId}

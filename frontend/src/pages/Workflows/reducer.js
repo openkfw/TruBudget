@@ -133,7 +133,7 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("id", action.id)
           .set("displayName", action.displayName)
           .set("amount", action.amount)
-          .set("exchangeRate", action.exchangeRate)
+          .set("exchangeRate", action.exchangeRate || state.getIn(["workflowToAdd", "exchangeRate"]))
           .set("amountType", action.amountType)
           .set("description", action.description)
           .set("currency", action.currency)

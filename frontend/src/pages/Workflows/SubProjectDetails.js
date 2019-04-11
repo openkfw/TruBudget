@@ -317,18 +317,20 @@ const SubProjectDetails = ({
           </ListItem>
           <Divider />
           <ListItem disabled={false}>
-            <ListItemIcon style={styles.assingeeIcon}>
-              <AssigneeIcon />
-            </ListItemIcon>
-            <div style={styles.assigneeContainer}>
-              <SubProjectAssigneeContainer
-                projectId={parentProject ? parentProject.id : ""}
-                subprojectId={id}
-                users={users}
-                disabled={!canAssignSubproject}
-                assignee={assignee}
-              />
-              <ListItemText style={styles.assigneeText} secondary={strings.common.assignee} />
+            <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+              <ListItemIcon style={styles.assingeeIcon}>
+                <AssigneeIcon />
+              </ListItemIcon>
+              <div style={{ ...styles.assigneeContainer, width: "80%" }}>
+                <SubProjectAssigneeContainer
+                  projectId={parentProject ? parentProject.id : ""}
+                  subprojectId={id}
+                  users={users}
+                  disabled={!canAssignSubproject}
+                  assignee={assignee}
+                />
+                <ListItemText style={styles.assigneeText} secondary={strings.common.assignee} />
+              </div>
             </div>
           </ListItem>
         </List>

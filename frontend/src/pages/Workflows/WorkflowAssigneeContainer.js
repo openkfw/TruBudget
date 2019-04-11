@@ -1,14 +1,14 @@
+import { withStyles } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
+import { toJS } from "../../helper";
 import AssigneeSelection from "../Common/AssigneeSelection";
 import { assignWorkflowItem } from "./actions";
-import withInitialLoading from "../Loading/withInitialLoading";
-import { toJS } from "../../helper";
-import { withStyles } from "@material-ui/core";
 
 const styles = {
   assigneeContainer: {
-    width: "80%",
+    width: "100%",
     cursor: "-webkit-grab"
   }
 };
@@ -31,7 +31,7 @@ class WorkflowAssigneeContainer extends Component {
     const { workflowItems, workflowitemId, users, title, classes, disabled, workflowSortEnabled, status } = this.props;
     const assignee = this.getWorkflowAssignee(workflowItems, workflowitemId);
     return (
-      <div className={classes.assigneeContainer}>
+      <div className={classes.assigneeContainer} data-test="inside">
         <AssigneeSelection
           assigneeId={assignee}
           disabled={disabled || workflowSortEnabled}
@@ -60,6 +60,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withInitialLoading(toJS(withStyles(styles)(WorkflowAssigneeContainer)))
-);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(withStyles(styles)(WorkflowAssigneeContainer)));
