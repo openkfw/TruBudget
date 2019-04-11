@@ -32,7 +32,6 @@ const requestBodyV1Schema = Joi.object({
     subprojectId: Subproject.idSchema.required(),
     displayName: Joi.string(),
     description: Joi.string().allow(""),
-    currency: Joi.string(),
     additionalData: AdditionalData.schema,
   }).required(),
 });
@@ -70,7 +69,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
             properties: {
               displayName: { type: "string", example: "school" },
               description: { type: "string", example: "school should be built" },
-              currency: { type: "string", example: "EUR" },
               additionalData: { type: "object" },
               projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
@@ -127,7 +125,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       displayName: bodyResult.data.displayName,
       description: bodyResult.data.description,
       additionalData: bodyResult.data.additionalData,
-      currency: bodyResult.data.currency,
     };
 
     service

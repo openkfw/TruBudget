@@ -175,6 +175,23 @@ class Api {
       currencyCode
     });
 
+  updateSubprojectBudgetProjected = (projectId, subprojectId, organization, currencyCode, value) =>
+    instance.post(`/subproject.budget.updateProjected`, {
+      projectId,
+      subprojectId,
+      organization,
+      currencyCode,
+      value: value.toString()
+    });
+
+  deleteSubprojectBudgetProjected = (projectId, subprojectId, organization, currencyCode) =>
+    instance.post(`/subproject.budget.deleteProjected`, {
+      projectId,
+      subprojectId,
+      organization,
+      currencyCode
+    });
+
   createWorkflowItem = payload => {
     const { currency, amount, exchangeRate, ...minimalPayload } = payload;
 

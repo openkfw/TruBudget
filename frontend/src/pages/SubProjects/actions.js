@@ -147,12 +147,13 @@ export function createSubProject(projectId, name, description, currency, project
     showLoading
   };
 }
-export function editSubproject(projectId, subprojectId, changes) {
+export function editSubproject(projectId, subprojectId, changes, deletedProjectedBudgets) {
   return {
     type: EDIT_SUBPROJECT,
     projectId,
     subprojectId,
-    changes
+    changes,
+    deletedProjectedBudgets
   };
 }
 

@@ -53,7 +53,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
-            required: ["projectId", "organization", "value", "currencyCode"],
+            required: ["projectId", "organization", "currencyCode"],
             properties: {
               projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               organization: { type: "string", example: "My Goverment Bank" },
