@@ -143,6 +143,7 @@ import {
   RESTORE_BACKUP
 } from "./pages/Navbar/actions.js";
 import { GET_SUBPROJECT_KPIS, GET_SUBPROJECT_KPIS_SUCCESS } from "./pages/Analytics/actions.js";
+import { fromAmountString } from "./helper.js";
 
 const api = new Api();
 
@@ -1232,15 +1233,21 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = fals
         }
       }
     } = yield callApi(api.viewSubProjectDetails, projectId, subProjectId);
+    let assignedBudgetbyCurrency = {};
     const workflowBudgets = workflowitems.reduce(
       (acc, next) => {
-        const { amountType, status, amount } = next.data;
+        const { amountType, status, amount, exchangeRate } = next.data;
         if (status === "closed" && amountType === "allocated" && amount) {
-          return { ...acc, assignedBudget: acc.assignedBudget + amount };
+          assignedBudgetbyCurrency = { ...assignedBudgetbyCurrency };
+          return {
+            ...acc,
+            assignedBudget: acc.assignedBudget + fromAmountString(amount) * exchangeRate,
+            assignedBudgetbyCurrency
+          };
         }
 
         if (status === "closed" && amountType === "disbursed" && amount) {
-          return { ...acc, disbursedBudget: acc.disbursedBudget + amount };
+          return { ...acc, disbursedBudget: acc.disbursedBudget + fromAmountString(amount) * exchangeRate };
         }
 
         return acc;
