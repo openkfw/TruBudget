@@ -19,7 +19,9 @@
 
 # Introduction
 
-TruBudget - a trusted public expenditure tool. A collaborative workflow tool and secured platform to track and coordinate the implementation of donor-funded investment projects.
+TruBudget - a trusted public expenditure tool. A collaborative workflow tool and secured platform to track and coordinate the implementation of donor-funded investment projects. 
+
+If you have questions or just want to talk to us, find us on [Gitter](https://gitter.im/Tru-Community/community)!
 
 # Getting Started
 
