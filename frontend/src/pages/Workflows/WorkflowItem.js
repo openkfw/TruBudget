@@ -121,7 +121,11 @@ const styles = {
     display: "flex",
     alignItems: "center"
   },
-  centerTypographs: {},
+  typographs: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    width: "100%"
+  },
   card: {
     marginLeft: "50px",
     marginRight: "10px",
@@ -430,12 +434,12 @@ export const WorkflowItem = SortableElement(
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={styles.infoCell}>{infoButton}</div>
             <div style={{ ...itemStyle, ...styles.text, ...styles.workflowCell }}>
-              <Typography variant="body2" style={styles.centerTypographs}>
+              <Typography variant="body2" style={styles.typographs}>
                 {displayName}
               </Typography>
             </div>
             <div style={{ ...itemStyle, ...styles.listText, ...styles.workflowCell }}>
-              <Typography variant="body2" style={styles.centerTypographs} component="div">
+              <Typography variant="body2" style={styles.typographs} component="div">
                 {amountType === "N/A"
                   ? amountTypes(amountType)
                   : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}

@@ -47,6 +47,9 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     alignItems: "center"
+  },
+  displayName: {
+    wordBreak: "break-word"
   }
 };
 
@@ -91,7 +94,12 @@ const WorkflowDetails = ({
         <List>
           <ListItem>
             <Avatar>{displayName ? displayName[0] : "?"}</Avatar>
-            <ListItemText data-test="workflowitemInfoDisplayName" primary={displayName} secondary={trimmedComment} />
+            <ListItemText
+              data-test="workflowitemInfoDisplayName"
+              primary={displayName}
+              secondary={trimmedComment}
+              style={styles.displayName}
+            />
           </ListItem>
           <ListItem>
             <Avatar>
