@@ -7,15 +7,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
+## [1.0.0-beta.8] - 2019-04-11
+
+### Added
+
+- Digit grouping when typing amount of projected budgets [#159](https://github.com/openkfw/TruBudget/issue/159)
+- Edit projected budgets of projects and subprojects [#129](https://github.com/openkfw/TruBudget/issue/129)
+- External Webhook [#158](https://github.com/openkfw/TruBudget/pull/158)
+
+### Changed
+
+- Reject workflowitem update when document would be overwritten [#205](https://github.com/openkfw/TruBudget/pull/205)
+
 ### Fixed
 
-- [API] Increased the stability of the event sourcing code by replacing the "immer" dependency with a custom implementation.
+- Schema for workflowitem_update [#212](https://github.com/openkfw/TruBudget/pull/212)
+- Sorting of Swagger documentation [#207](https://github.com/openkfw/TruBudget/issues/207)
+- Editing of workflowitem when amount type is changed to allocated/disbursed [#171](https://github.com/openkfw/TruBudget/issues/171)
+- Alignment of columns in workflowitem table [#141](https://github.com/openkfw/TruBudget/issues/141)
+- Display of error snackbar after failed login [#170](https://github.com/openkfw/TruBudget/issues/170)
+- Increased the stability of the event sourcing code by replacing the "immer" dependency with a custom implementation. [#196](https://github.com/openkfw/TruBudget/pull/196)
+- Provisioning error related to readiness of blockchain/api [#193](https://github.com/openkfw/TruBudget/issue/193)
 
 ## [1.0.0-beta.7] - 2019-04-03
 
 ### Added
 
-- [Code of conduct](./CODE_OF_CONDUCT.md) and [contributing guidelines](./CONTRIBUTING.md) [#156](https://github.com/openkfw/TruBudget/issues/174)
+- [Code of conduct](./CODE_OF_CONDUCT.md) and [contributing guidelines](./CONTRIBUTING.md) [#156](https://github.com/openkfw/TruBudget/issues/156)
 - Refined [getting-started guide](./README.md) [#185](https://github.com/openkfw/TruBudget/pull/185) and installation guides [#180](https://github.com/openkfw/TruBudget/pull/180)
 
 ### Changed
@@ -179,7 +198,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.8...master
+[1.0.0-beta.8]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...v1.0.0-beta.8
 [1.0.0-beta.7]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.6...v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.5...v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.4...v1.0.0-beta.5
