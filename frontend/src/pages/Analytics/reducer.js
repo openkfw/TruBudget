@@ -46,8 +46,8 @@ export default function detailviewReducer(state = defaultState, action) {
         projectedBudgets: fromJS(action.projectedBudgets),
         assignedBudget: action.assignedBudget,
         disbursedBudget: action.disbursedBudget,
-        indicatedAssignedBudget: 0,
-        indicatedDisbursedBudget: action.assignedBudget ? action.disbursedBudget / action.assignedBudget : 0,
+        indicatedAssignedBudget: action.indicatedAssignedBudget,
+        indicatedDisbursedBudget: action.indicatedDisbursedBudget,
         totalBudget
       });
     case STORE_EXCHANGE_RATE:

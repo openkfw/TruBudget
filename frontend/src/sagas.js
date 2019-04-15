@@ -1233,33 +1233,39 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = fals
         }
       }
     } = yield callApi(api.viewSubProjectDetails, projectId, subProjectId);
-    let assignedBudgetbyCurrency = {};
     const workflowBudgets = workflowitems.reduce(
       (acc, next) => {
         const { amountType, status, amount, exchangeRate } = next.data;
-        if (status === "closed" && amountType === "allocated" && amount) {
-          assignedBudgetbyCurrency = { ...assignedBudgetbyCurrency };
+        if (amountType === "allocated" && amount) {
           return {
             ...acc,
-            assignedBudget: acc.assignedBudget + fromAmountString(amount) * exchangeRate,
-            assignedBudgetbyCurrency
+            assignedBudget:
+              status === "closed" ? acc.assignedBudget + fromAmountString(amount) * exchangeRate : acc.assignedBudget,
+            indicatedAssignedBudget: acc.indicatedAssignedBudget + fromAmountString(amount) * exchangeRate
           };
         }
 
-        if (status === "closed" && amountType === "disbursed" && amount) {
-          return { ...acc, disbursedBudget: acc.disbursedBudget + fromAmountString(amount) * exchangeRate };
+        if (amountType === "disbursed" && amount) {
+          return {
+            ...acc,
+            disbursedBudget:
+              status === "closed" ? acc.disbursedBudget + fromAmountString(amount) * exchangeRate : acc.disbursedBudget,
+            indicatedDisbursedBudget: acc.indicatedDisbursedBudget + fromAmountString(amount) * exchangeRate
+          };
         }
 
         return acc;
       },
-      { assignedBudget: 0, disbursedBudget: 0 }
+      { assignedBudget: 0, disbursedBudget: 0, indicatedAssignedBudget: 0, indicatedDisbursedBudget: 0 }
     );
 
     const response = {
       subProjectCurrency: currency,
       projectedBudgets: projectedBudgets,
       assignedBudget: workflowBudgets.assignedBudget,
-      disbursedBudget: workflowBudgets.disbursedBudget
+      disbursedBudget: workflowBudgets.disbursedBudget,
+      indicatedAssignedBudget: workflowBudgets.indicatedAssignedBudget,
+      indicatedDisbursedBudget: workflowBudgets.indicatedDisbursedBudget
     };
 
     yield put({
