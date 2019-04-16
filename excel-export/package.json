@@ -5,7 +5,8 @@
   "description": "Export TruBudget data to Excel ",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -30,5 +31,8 @@
     "pino-pretty": "^2.6.0",
     "verror": "^1.10.0",
     "xlsx": "^0.14.2"
+  },
+  "devDependencies": {
+    "typescript": "^3.4.3"
   }
 }
