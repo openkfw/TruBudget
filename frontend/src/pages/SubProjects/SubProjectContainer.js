@@ -28,6 +28,7 @@ import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import SubprojectDialogContainer from "./SubprojectDialogContainer";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import SubProjectInfo from "./SubProjectInfo";
+import { openAnalyticsDialog } from "../Analytics/actions";
 
 class SubProjectContainer extends Component {
   constructor(props) {
@@ -101,7 +102,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     closeProject: pId => dispatch(closeProject(pId, true)),
     showSubProjectPermissions: id => dispatch(showSubProjectPermissions(id)),
     showSubProjectAdditionalData: id => dispatch(showSubProjectAdditionalData(id)),
-    hideSubProjectAdditionalData: () => dispatch(hideSubProjectAdditionalData())
+    hideSubProjectAdditionalData: () => dispatch(hideSubProjectAdditionalData()),
+    openAnalyticsDialog: () => dispatch(openAnalyticsDialog())
   };
 };
 

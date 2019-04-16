@@ -68,7 +68,6 @@ const SubProjectDetails = ({
   displayName,
   description,
   currency,
-  // amount,
   id,
   status,
   roles,

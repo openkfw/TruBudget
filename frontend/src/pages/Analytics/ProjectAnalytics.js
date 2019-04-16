@@ -1,4 +1,3 @@
-import { TextField } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -9,15 +8,14 @@ import { HorizontalBar } from "react-chartjs-2";
 import { connect } from "react-redux";
 
 import { toAmountString, toJS } from "../../helper";
-import strings from "../../localizeStrings";
-import { getSubProjectKPIs, resetKPIs, storeExchangeRate } from "./actions";
+import { getProjectKPIs, resetKPIs } from "./actions";
 
 /**
- * SubprojectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Subproject
+ * ProjectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Project
  * - Projected Budget: Planned budget according to agreements and other budget planning documents.
- * - Assigned Budget: "Calculation : Sum of assigned budgets of subproject (only of closed workflow items).
+ * - Assigned Budget: "Calculation : Sum of assigned budgets of all subprojects (only of closed workflow items).
  *   May exceed (projected) budget (subproject) Definition : Budget reserved for one specific activity as fixed in contract with subcontrator."
- * - Disbursed Budget: Sum of payments of subproject (only of closed workflow items). Not allowed to exceed assigned budget.
+ * - Disbursed Budget: Sum of payments of project (only of closed workflow items). Not allowed to exceed assigned budget.
  * - Indication Assigned Budget: Assigned budget / projected budget
  * - Indication Disbursed Budget:  Disbursed budget / assigned budget
  */
@@ -52,13 +50,7 @@ const seperateOverflow = (amount, maxAmount) => {
 };
 
 const getTotalChart = (props, totalBudget) => {
-  const {
-    assignedBudget = 0,
-    disbursedBudget = 0,
-    subProjectCurrency = "EUR",
-    indicatedAssignedBudget = 0,
-    indicatedDisbursedBudget = 0
-  } = props;
+  const { assignedBudget = 0, disbursedBudget = 0, indicatedAssignedBudget = 0, indicatedDisbursedBudget = 0 } = props;
   const { amount: seperatedAssignedBudget, overflow: overAssignedBudget } = seperateOverflow(
     assignedBudget,
     disbursedBudget
@@ -123,9 +115,7 @@ const getTotalChart = (props, totalBudget) => {
                       ": " +
                       data.datasets[item.datasetIndex].data[item.index]
                         .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ".") +
-                      " " +
-                      subProjectCurrency;
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     return label;
                   }
                 }
@@ -152,7 +142,7 @@ const getTotalChart = (props, totalBudget) => {
                 },
                 ticks: {
                   callback: (value, index, values) => {
-                    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " " + subProjectCurrency;
+                    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                   },
                   beginAtZero: true,
                   max: Math.max(totalBudget, indicatedAssignedBudget, indicatedDisbursedBudget)
@@ -166,15 +156,15 @@ const getTotalChart = (props, totalBudget) => {
   );
 };
 
-class SubprojectAnalytics extends React.Component {
+class ProjectAnalytics extends React.Component {
   componentDidMount() {
-    this.props.getSubProjectKPIs(this.props.projectId, this.props.subProjectId);
+    this.props.getProjectKPIs(this.props.projectId);
   }
   componentWillUnmount() {
     this.props.resetKPIs();
   }
   render() {
-    const { storeExchangeRate, projectedBudgets, subProjectCurrency = "EUR", totalBudget } = this.props;
+    const { projectedBudgets, totalBudget, projectCurrency } = this.props;
     return (
       <div>
         <div style={styles.container}>
@@ -194,33 +184,13 @@ class SubprojectAnalytics extends React.Component {
                     <TableCell>{budget.organization}</TableCell>
                     <TableCell align="right">{toAmountString(budget.value)}</TableCell>
                     <TableCell align="right">{budget.currencyCode}</TableCell>
-                    {budget.currencyCode !== subProjectCurrency ? (
-                      <TableCell>
-                        <TextField
-                          label={strings.workflow.exchange_rate}
-                          onChange={e => {
-                            storeExchangeRate(budget.organization, budget.currencyCode, parseFloat(e.target.value));
-                          }}
-                          onBlur={e =>
-                            storeExchangeRate(budget.organization, budget.currencyCode, parseFloat(e.target.value))
-                          }
-                          onFocus={e =>
-                            storeExchangeRate(budget.organization, budget.currencyCode, parseFloat(e.target.value))
-                          }
-                          type="text"
-                          aria-label="rate"
-                          id="rateinput"
-                        />
-                      </TableCell>
-                    ) : (
-                      <TableCell>{1}</TableCell>
-                    )}
+                    <TableCell>{1}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
-          {totalBudget !== undefined ? getTotalChart(this.props, totalBudget) : null}
+          {totalBudget !== undefined && projectCurrency !== undefined ? getTotalChart(this.props, totalBudget) : null}
         </div>
       </div>
     );
@@ -229,23 +199,21 @@ class SubprojectAnalytics extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    subProjectCurrency: state.getIn(["analytics", "subProjectCurrency"]),
     projectedBudgets: state.getIn(["analytics", "projectedBudgets"]),
     assignedBudget: state.getIn(["analytics", "assignedBudget"]),
     disbursedBudget: state.getIn(["analytics", "disbursedBudget"]),
     totalBudget: state.getIn(["analytics", "totalBudget"]),
     indicatedAssignedBudget: state.getIn(["analytics", "indicatedAssignedBudget"]),
-    indicatedDisbursedBudget: state.getIn(["analytics", "indicatedDisbursedBudget"])
+    indicatedDisbursedBudget: state.getIn(["analytics", "indicatedDisbursedBudget"]),
+    projectCurrency: state.getIn(["analytics", "projectCurrency"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    getSubProjectKPIs: (projectId, subprojectId) => dispatch(getSubProjectKPIs(projectId, subprojectId)),
-    resetKPIs: () => dispatch(resetKPIs()),
-    storeExchangeRate: (organization, currency, exchnageRate) =>
-      dispatch(storeExchangeRate(organization, currency, exchnageRate))
+    getProjectKPIs: projectId => dispatch(getProjectKPIs(projectId)),
+    resetKPIs: () => dispatch(resetKPIs())
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubprojectAnalytics));
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(ProjectAnalytics));

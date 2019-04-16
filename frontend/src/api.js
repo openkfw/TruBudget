@@ -97,6 +97,7 @@ class Api {
       address
     });
   listProjects = () => instance.get(`/project.list`);
+  listSubprojects = projectId => instance.get(`/subproject.list?projectId=${projectId}`);
 
   createProject = (displayName, description, thumbnail, projectedBudgets) =>
     instance.post(`/global.createProject`, {

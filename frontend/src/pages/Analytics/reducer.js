@@ -2,10 +2,12 @@ import { fromJS } from "immutable";
 import { LOGOUT } from "../Login/actions";
 import {
   GET_SUBPROJECT_KPIS_SUCCESS,
+  GET_PROJECT_KPIS_SUCCESS,
   RESET_KPIS,
   OPEN_ANALYTICS_DIALOG,
   CLOSE_ANALYTICS_DIALOG,
-  STORE_EXCHANGE_RATE
+  STORE_EXCHANGE_RATE,
+  STORE_PROJECT_CURRENCY
 } from "./actions";
 
 /**
@@ -20,17 +22,28 @@ import {
 
 const defaultState = fromJS({
   subProjectCurrency: "EUR",
+  projectCurrency: undefined,
   projectedBudgets: [], // contains budget objects
   assignedBudget: 0,
   disbursedBudget: 0,
   indicatedAssignedBudget: 0,
   indicatedDisbursedBudget: 0,
   dialogOpen: false,
-  totalBudget: undefined
+  totalBudget: undefined,
+  exchangeRates: []
 });
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
+    case GET_PROJECT_KPIS_SUCCESS:
+      return state.merge({
+        projectedBudgets: fromJS(action.projectedBudgets),
+        assignedBudget: action.assignedBudget,
+        disbursedBudget: action.disbursedBudget,
+        indicatedAssignedBudget: action.indicatedAssignedBudget,
+        indicatedDisbursedBudget: action.indicatedDisbursedBudget,
+        totalBudget: action.totalBudget
+      });
     case GET_SUBPROJECT_KPIS_SUCCESS:
       let totalBudget = 0;
       for (let i = 0; i < action.projectedBudgets.length; i++) {
@@ -50,6 +63,8 @@ export default function detailviewReducer(state = defaultState, action) {
         indicatedDisbursedBudget: action.indicatedDisbursedBudget,
         totalBudget
       });
+    case STORE_PROJECT_CURRENCY:
+      return state.set("projectCurrency", action.currency);
     case STORE_EXCHANGE_RATE:
       let ableToSumTotalBudget = true;
       const projectedBudgets = state

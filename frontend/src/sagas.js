@@ -142,7 +142,12 @@ import {
   RESTORE_BACKUP_SUCCESS,
   RESTORE_BACKUP
 } from "./pages/Navbar/actions.js";
-import { GET_SUBPROJECT_KPIS, GET_SUBPROJECT_KPIS_SUCCESS } from "./pages/Analytics/actions.js";
+import {
+  GET_SUBPROJECT_KPIS,
+  GET_SUBPROJECT_KPIS_SUCCESS,
+  GET_PROJECT_KPIS,
+  GET_PROJECT_KPIS_SUCCESS
+} from "./pages/Analytics/actions.js";
 import { fromAmountString } from "./helper.js";
 
 const api = new Api();
@@ -1223,7 +1228,83 @@ export function* liveUpdateNotificationsSaga({ showLoading, offset }) {
   }, showLoading);
 }
 
-export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = false }) {
+export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
+  yield execute(function*() {
+    const {
+      data: {
+        project: {
+          data: { projectedBudgets }
+        },
+        subprojects
+      }
+    } = yield callApi(api.viewProjectDetails, projectId);
+
+    const subprojectDetailsArray = yield all(
+      subprojects.map(subproject => callApi(api.viewSubProjectDetails, projectId, subproject.data.id))
+    );
+    const responseArray = subprojectDetailsArray.map(subprojectDetails => {
+      const workflowBudgets = subprojectDetails.data.workflowitems.reduce(
+        (acc, next) => {
+          const { amountType, status, amount, exchangeRate } = next.data;
+          if (amountType === "allocated" && amount) {
+            return {
+              ...acc,
+              assignedBudget:
+                status === "closed"
+                  ? acc.assignedBudget + fromAmountString(amount) * (exchangeRate || 1)
+                  : acc.assignedBudget,
+              indicatedAssignedBudget: acc.indicatedAssignedBudget + fromAmountString(amount) * (exchangeRate || 1)
+            };
+          }
+
+          if (amountType === "disbursed" && amount) {
+            return {
+              ...acc,
+              disbursedBudget:
+                status === "closed"
+                  ? acc.disbursedBudget + fromAmountString(amount) * (exchangeRate || 1)
+                  : acc.disbursedBudget,
+              indicatedDisbursedBudget: acc.indicatedDisbursedBudget + fromAmountString(amount) * (exchangeRate || 1)
+            };
+          }
+
+          return acc;
+        },
+        { assignedBudget: 0, disbursedBudget: 0, indicatedAssignedBudget: 0, indicatedDisbursedBudget: 0 }
+      );
+      return {
+        supProjectId: subprojectDetails.data.subproject.data.id,
+        subProjectCurrency: subprojectDetails.data.subproject.data.currency,
+        projectedBudgets: subprojectDetails.data.subproject.data.projectedBudgets,
+        assignedBudget: workflowBudgets.assignedBudget,
+        disbursedBudget: workflowBudgets.disbursedBudget,
+        indicatedAssignedBudget: workflowBudgets.indicatedAssignedBudget,
+        indicatedDisbursedBudget: workflowBudgets.indicatedDisbursedBudget
+      };
+    });
+    const response = responseArray.reduce((acc, next) => {
+      return {
+        assignedBudget: acc.assignedBudget + next.assignedBudget,
+        disbursedBudget: acc.disbursedBudget + next.disbursedBudget,
+        indicatedAssignedBudget: acc.indicatedAssignedBudget + next.indicatedAssignedBudget,
+        indicatedDisbursedBudget: acc.indicatedDisbursedBudget + next.indicatedDisbursedBudget
+      };
+    });
+    response["projectedBudgets"] = projectedBudgets;
+    response["totalBudget"] = projectedBudgets.reduce(
+      (acc, next) => {
+        return { value: acc.value + fromAmountString(next.value) };
+      },
+      { value: 0 }
+    ).value;
+    yield put({
+      type: GET_PROJECT_KPIS_SUCCESS,
+      ...response
+    });
+  }, showLoading);
+}
+
+export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true }) {
   yield execute(function*() {
     const {
       data: {
@@ -1354,7 +1435,8 @@ export default function* rootSaga() {
       yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga),
 
       // Analytics
-      yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs)
+      yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),
+      yield takeLeading(GET_PROJECT_KPIS, getProjectKPIsSaga)
     ]);
   } catch (error) {
     console.log(error);

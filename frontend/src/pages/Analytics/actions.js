@@ -1,8 +1,12 @@
+export const GET_PROJECT_KPIS = "GET_PROJECT_KPIS";
+export const GET_PROJECT_KPIS_SUCCESS = "GET_PROJECT_KPIS_SUCCESS";
+export const GET_PROJECT_KPIS_FAIL = "GET_PROJECT_KPIS_FAIL";
 export const GET_SUBPROJECT_KPIS = "GET_SUBPROJECT_KPIS";
 export const GET_SUBPROJECT_KPIS_SUCCESS = "GET_SUBPROJECT_KPIS_SUCCESS";
 export const GET_SUBPROJECT_KPIS_FAIL = "GET_SUBPROJECT_KPIS_FAIL";
 
 export const STORE_EXCHANGE_RATE = "STORE_EXCHANGE_RATE";
+export const STORE_PROJECT_CURRENCY = "STORE_PROJECT_CURRENCY";
 
 export const OPEN_ANALYTICS_DIALOG = "OPEN_ANALYTICS_DIALOG";
 export const CLOSE_ANALYTICS_DIALOG = "CLOSE_ANALYTICS_DIALOG";
@@ -13,6 +17,13 @@ export function getSubProjectKPIs(projectId, subProjectId) {
     type: GET_SUBPROJECT_KPIS,
     projectId,
     subProjectId
+  };
+}
+
+export function getProjectKPIs(projectId) {
+  return {
+    type: GET_PROJECT_KPIS,
+    projectId
   };
 }
 
@@ -28,6 +39,13 @@ export function storeExchangeRate(organization, currency, exchangeRate) {
     organization,
     currency,
     exchangeRate
+  };
+}
+
+export function storeProjectCurrency(currency) {
+  return {
+    type: STORE_EXCHANGE_RATE,
+    currency
   };
 }
 
