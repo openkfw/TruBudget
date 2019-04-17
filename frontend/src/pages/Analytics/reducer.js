@@ -7,7 +7,8 @@ import {
   OPEN_ANALYTICS_DIALOG,
   CLOSE_ANALYTICS_DIALOG,
   STORE_EXCHANGE_RATE,
-  STORE_PROJECT_CURRENCY
+  STORE_PROJECT_CURRENCY,
+  GET_EXCHANGE_RATES_SUCCESS
 } from "./actions";
 
 /**
@@ -30,7 +31,7 @@ const defaultState = fromJS({
   indicatedDisbursedBudget: 0,
   dialogOpen: false,
   totalBudget: undefined,
-  exchangeRates: []
+  exchangeRates: {}
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -63,6 +64,8 @@ export default function detailviewReducer(state = defaultState, action) {
         indicatedDisbursedBudget: action.indicatedDisbursedBudget,
         totalBudget
       });
+    case GET_EXCHANGE_RATES_SUCCESS:
+      return state.set("exchangeRates", fromJS(action.exchangeRates));
     case STORE_PROJECT_CURRENCY:
       return state.set("projectCurrency", action.currency);
     case STORE_EXCHANGE_RATE:

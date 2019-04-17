@@ -146,9 +146,12 @@ import {
   GET_SUBPROJECT_KPIS,
   GET_SUBPROJECT_KPIS_SUCCESS,
   GET_PROJECT_KPIS,
-  GET_PROJECT_KPIS_SUCCESS
+  GET_PROJECT_KPIS_SUCCESS,
+  GET_EXCHANGE_RATES,
+  GET_EXCHANGE_RATES_SUCCESS
 } from "./pages/Analytics/actions.js";
 import { fromAmountString } from "./helper.js";
+import { getExchangeRates } from "./getExchangeRates";
 
 const api = new Api();
 
@@ -1290,16 +1293,22 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
         indicatedDisbursedBudget: acc.indicatedDisbursedBudget + next.indicatedDisbursedBudget
       };
     });
-    response["projectedBudgets"] = projectedBudgets;
-    response["totalBudget"] = projectedBudgets.reduce(
+    const totalBudget = projectedBudgets.reduce(
       (acc, next) => {
         return { value: acc.value + fromAmountString(next.value) };
       },
       { value: 0 }
     ).value;
     yield put({
+      type: GET_EXCHANGE_RATES,
+      baseCurrency: "EUR", //TODO dynamic
+      currencies: projectedBudgets.map(budget => budget.currencyCode)
+    });
+    yield put({
       type: GET_PROJECT_KPIS_SUCCESS,
-      ...response
+      ...response,
+      projectedBudgets,
+      totalBudget
     });
   }, showLoading);
 }
@@ -1348,10 +1357,15 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true
       indicatedAssignedBudget: workflowBudgets.indicatedAssignedBudget,
       indicatedDisbursedBudget: workflowBudgets.indicatedDisbursedBudget
     };
+  });
+}
 
+export function* getExchangeRatesSaga({ baseCurrency, currencies, showLoading = true }) {
+  yield execute(function*() {
+    const exchangeRates = yield getExchangeRates(baseCurrency, currencies);
     yield put({
-      type: GET_SUBPROJECT_KPIS_SUCCESS,
-      ...response
+      type: GET_EXCHANGE_RATES_SUCCESS,
+      exchangeRates
     });
   }, showLoading);
 }
@@ -1436,7 +1450,8 @@ export default function* rootSaga() {
 
       // Analytics
       yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),
-      yield takeLeading(GET_PROJECT_KPIS, getProjectKPIsSaga)
+      yield takeLeading(GET_PROJECT_KPIS, getProjectKPIsSaga),
+      yield takeLeading(GET_EXCHANGE_RATES, getExchangeRatesSaga)
     ]);
   } catch (error) {
     console.log(error);

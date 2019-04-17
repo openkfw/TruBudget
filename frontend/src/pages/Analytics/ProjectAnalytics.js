@@ -164,7 +164,7 @@ class ProjectAnalytics extends React.Component {
     this.props.resetKPIs();
   }
   render() {
-    const { projectedBudgets, totalBudget, projectCurrency } = this.props;
+    const { projectedBudgets, totalBudget, projectCurrency, exchangeRates } = this.props;
     return (
       <div>
         <div style={styles.container}>
@@ -175,7 +175,8 @@ class ProjectAnalytics extends React.Component {
                   <TableCell>Organization</TableCell>
                   <TableCell align="right">Amount</TableCell>
                   <TableCell align="right">Currency</TableCell>
-                  <TableCell>Exchange Rate</TableCell>
+                  <TableCell align="right">Exchange Rate</TableCell>
+                  <TableCell align="right">Amount in selected Currency</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -184,7 +185,10 @@ class ProjectAnalytics extends React.Component {
                     <TableCell>{budget.organization}</TableCell>
                     <TableCell align="right">{toAmountString(budget.value)}</TableCell>
                     <TableCell align="right">{budget.currencyCode}</TableCell>
-                    <TableCell>{1}</TableCell>
+                    <TableCell align="right">{exchangeRates[budget.currencyCode] || 1}</TableCell>
+                    <TableCell align="right">
+                      {toAmountString((exchangeRates[budget.currencyCode] || 1) * budget.value)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -205,7 +209,8 @@ const mapStateToProps = state => {
     totalBudget: state.getIn(["analytics", "totalBudget"]),
     indicatedAssignedBudget: state.getIn(["analytics", "indicatedAssignedBudget"]),
     indicatedDisbursedBudget: state.getIn(["analytics", "indicatedDisbursedBudget"]),
-    projectCurrency: state.getIn(["analytics", "projectCurrency"])
+    projectCurrency: state.getIn(["analytics", "projectCurrency"]),
+    exchangeRates: state.getIn(["analytics", "exchangeRates"])
   };
 };
 
