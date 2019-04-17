@@ -19,20 +19,12 @@
   },
   "homepage": "https://github.com/openkfw/TruBudget#readme",
   "dependencies": {
-    "@types/node": "^11.13.2",
     "axios": "^0.18.0",
     "exceljs": "^1.9.0",
-    "fastify": "^2.2.0",
-    "joi": "^14.3.1",
-    "js2excel": "^1.0.1",
-    "jsonwebtoken": "^8.5.1",
-    "os": "^0.1.1",
-    "pino": "^5.12.2",
-    "pino-pretty": "^2.6.0",
-    "verror": "^1.10.0",
-    "xlsx": "^0.14.2"
+    "jwt-decode": "^2.2.0"
   },
   "devDependencies": {
+    "@types/node": "^11.13.2",
     "typescript": "^3.4.3"
   }
 }
