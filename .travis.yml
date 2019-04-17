@@ -46,8 +46,8 @@ jobs:
       env: PROJECT_NAME=api
     - <<: *audit
       env: PROJECT_NAME=frontend
-    - <<: *excel-export
-      env: PROJECT_NAME=frontend
+    - <<: *audit
+      env: PROJECT_NAME=excel-export
     - <<: *node-unit-test
       env: PROJECT_NAME=blockchain
       after_success: npm run coverage
