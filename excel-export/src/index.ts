@@ -26,6 +26,11 @@ const transformRequest: AxiosTransformer = data => {
 axios.defaults.transformRequest = [transformRequest];
 
 const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Authorization");
+  if (req.method === "OPTIONS") {
+    return res.end();
+  }
   // readiness and health endpoint
   if (req.url === "/health" || req.url === "/readiness") {
     return res.end();
@@ -48,6 +53,7 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
       const base = isTest
         ? `http://${testApiHost}:${testApiPort}/api`
         : `http://${apiHost}:${apiPort}/api`;
+
       res.setHeader(
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

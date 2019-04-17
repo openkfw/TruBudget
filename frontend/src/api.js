@@ -345,6 +345,10 @@ class Api {
     });
     return response;
   };
+  export = () => {
+    const path = devMode ? "http://localhost:8888/test" : "/export/xlsx";
+    return instance.get(path, { responseType: "blob" });
+  };
 }
 
 export default Api;
