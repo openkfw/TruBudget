@@ -20,6 +20,7 @@ export async function writeXLS(
   axios: AxiosInstance,
   token: string,
   res: ServerResponse,
+  base: string,
 ): Promise<void> {
   try {
     const options = {
@@ -114,7 +115,7 @@ export async function writeXLS(
       { header: "Amount", key: "value", width: mediumWidth },
     ];
 
-    const projects: Project[] = await getProjects(axios, token);
+    const projects: Project[] = await getProjects(axios, token, base);
 
     for (const project of projects) {
       projectSheet
@@ -135,7 +136,7 @@ export async function writeXLS(
           .commit();
       });
 
-      const subprojects: Subproject[] = await getSubprojects(axios, project.id, token);
+      const subprojects: Subproject[] = await getSubprojects(axios, project.id, token, base);
       for (const subproject of subprojects) {
         subprojectSheet
           .addRow({
@@ -164,6 +165,7 @@ export async function writeXLS(
           project.id,
           subproject.id,
           token,
+          base,
         );
         for (const workflowitem of workflowitems) {
           workflowitemSheet

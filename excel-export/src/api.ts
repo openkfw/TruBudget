@@ -82,9 +82,13 @@ function getAuthHeader(token: string): AxiosRequestConfig {
   };
 }
 
-export async function getProjects(axios: AxiosInstance, token: string): Promise<Project[]> {
+export async function getProjects(
+  axios: AxiosInstance,
+  token: string,
+  base: string,
+): Promise<Project[]> {
   const response: AxiosResponse<ProjectResponse> = await axios.get(
-    "/project.list",
+    `${base}/project.list`,
     getAuthHeader(token),
   );
   const projectList: Project[] = response.data.data.items.map(i => i.data);
@@ -95,9 +99,10 @@ export async function getSubprojects(
   axios: AxiosInstance,
   projectId: string,
   token: string,
+  base: string,
 ): Promise<Subproject[]> {
   const response: AxiosResponse<SubprojectResponse> = await axios.get(
-    `/subproject.list?projectId=${projectId}`,
+    `${base}/subproject.list?projectId=${projectId}`,
     getAuthHeader(token),
   );
   const subprojectList: Subproject[] = response.data.data.items.map(i => i.data);
@@ -109,9 +114,10 @@ export async function getWorkflowitems(
   projectId: string,
   subprojectId: string,
   token: string,
+  base: string,
 ): Promise<Workflowitem[]> {
   const response: AxiosResponse<WorkflowitemResponse> = await axios.get(
-    `/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`,
+    `${base}/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`,
     getAuthHeader(token),
   );
   const workflowitemList: Workflowitem[] = response.data.data.workflowitems.map(i => i.data);

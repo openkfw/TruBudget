@@ -46,6 +46,8 @@ jobs:
       env: PROJECT_NAME=api
     - <<: *audit
       env: PROJECT_NAME=frontend
+    - <<: *excel-export
+      env: PROJECT_NAME=frontend
     - <<: *node-unit-test
       env: PROJECT_NAME=blockchain
       after_success: npm run coverage
@@ -64,6 +66,8 @@ jobs:
       env: PROJECT_NAME=provisioning
     - <<: *docker-build
       env: PROJECT_NAME=e2e-test
+    - <<: *docker-build
+      env: PROJECT_NAME=excel-export
     - stage: notification
       language: minimal
       script:
