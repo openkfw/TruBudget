@@ -52,6 +52,7 @@ services:
       ROOT_SECRET: asdf
     links:
       - blockchain-master
+
   excel-export:
     image: trubudget/excel-export:master
     ports:
