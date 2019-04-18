@@ -154,6 +154,8 @@ frontend-1:
     env:
       PROD_API_HOST: api-prod-1
       TEST_API_HOST: api-test-1
+      EXPORT_PORT: 8888
+      EXPORT_HOST: excel-export-1
   ingress:
     enabled: false
     fqdnPrefix: a
@@ -203,3 +205,14 @@ frontend-2:
         servicePort: 80
     ingressClass: nginx-test
     tlsSecret: tls-secret
+
+excel-export-1:
+  service:
+    name: excel-export-1
+  excelExport:
+    env:
+      PROD_API_HOST: api-prod-1
+      PROD_API_PORT: 8080
+      TEST_API_HOST: api-test-1
+      TEST_API_PORT: 8080
+      PORT: 8888

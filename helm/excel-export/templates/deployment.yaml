@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "excelExport.fullname" . }}
+  labels:
+    app: {{ template "excelExport.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: excel-export
+    app.kubernetes.io/instance: {{ .Values.global.branch }}
+    app.kubernetes.io/component: excel-export
+    app.kubernetes.io/managed-by: helm
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "excelExport.name" . }}
+      release: {{ .Release.Name }}
+      service: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "excelExport.name" . }}
+        release: {{ .Release.Name }}
+        service: {{ .Chart.Name }}
+        app.kubernetes.io/name: excel-export
+        app.kubernetes.io/instance: {{ .Values.global.branch }}
+        app.kubernetes.io/component: excel-export
+        app.kubernetes.io/managed-by: helm
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.global.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        {{- range $key, $value := .Values.excelExport.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- if .Values.excelExport.resources }}
+        resources:
+          requests:
+            memory: {{ .Values.excelExport.resources.memRequest }}
+            cpu: {{ .Values.excelExport.resources.cpuRequest }}
+          limits:
+            memory: {{ .Values.excelExport.resources.memLimit }}
+            cpu: {{ .Values.excelExport.resources.cpuLimit }}
+        {{- end }}
+        {{- if .Values.excelExport.probes.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.excelExport.env.PORT }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: {{ .Values.excelExport.env.PORT }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        {{- end }}
+
