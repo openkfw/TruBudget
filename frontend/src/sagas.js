@@ -140,7 +140,10 @@ import {
   CREATE_BACKUP_SUCCESS,
   CREATE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
-  RESTORE_BACKUP
+  RESTORE_BACKUP,
+  EXPORT_DATA,
+  EXPORT_DATA_SUCCESS,
+  EXPORT_DATA_FAILED
 } from "./pages/Navbar/actions.js";
 
 const api = new Api();
@@ -1221,6 +1224,34 @@ export function* liveUpdateNotificationsSaga({ showLoading, offset }) {
   }, showLoading);
 }
 
+function* exportDataSaga() {
+  yield execute(
+    function*() {
+      const data = yield callApi(api.export);
+      saveAs(data, "TruBudget_Export.xlsx");
+      yield put({
+        type: EXPORT_DATA_SUCCESS
+      });
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: EXPORT_DATA_FAILED,
+        error
+      });
+      yield put({
+        type: SNACKBAR_MESSAGE,
+        message: "Exporting data failed!"
+      });
+      yield put({
+        type: SHOW_SNACKBAR,
+        show: true,
+        isError: true
+      });
+    }
+  );
+}
+
 export default function* rootSaga() {
   try {
     yield all([
@@ -1297,7 +1328,8 @@ export default function* rootSaga() {
       // System
       yield takeLatest(CREATE_BACKUP, createBackupSaga),
       yield takeLatest(RESTORE_BACKUP, restoreBackupSaga),
-      yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga)
+      yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga),
+      yield takeLeading(EXPORT_DATA, exportDataSaga)
     ]);
   } catch (error) {
     console.log(error);

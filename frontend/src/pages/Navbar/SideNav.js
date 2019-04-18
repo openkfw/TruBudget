@@ -6,11 +6,11 @@ import SideNavCard from "./SideNavCard";
 import { canViewUserDashboard, canViewNodesDashboard } from "../../permissions";
 
 const SideNav = props => {
-  const { showSidebar, onToggleSidebar, allowedIntents, ...rest } = props;
+  const { showSidebar, toggleSidebar, allowedIntents, ...rest } = props;
   const userDashboardEnabled = canViewUserDashboard(allowedIntents);
   const nodeDashboardEnabled = canViewNodesDashboard(allowedIntents);
   return (
-    <Drawer anchor="left" open={showSidebar} onClose={onToggleSidebar}>
+    <Drawer anchor="left" open={showSidebar} onClose={toggleSidebar}>
       <SideNavCard nodeDashboardEnabled={nodeDashboardEnabled} userDashboardEnabled={userDashboardEnabled} {...rest} />
     </Drawer>
   );

@@ -209,6 +209,7 @@ const fr = {
     menu_item_notifications: "Notifications",
     menu_item_projects: "Projets",
     menu_item_users: "Utilisateurs",
+    menu_item_export: "Exporté",
     no_peers: "Pas de pairs",
     options: "Options",
     other_trustees: "Autres fiduciaires",

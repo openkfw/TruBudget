@@ -14,6 +14,10 @@ export const RESTORE_BACKUP_SUCCESS = "RESTORE_BACKUP_SUCCESS";
 export const FETCH_VERSIONS = "FETCH_VERSIONS";
 export const FETCH_VERSIONS_SUCCESS = "FETCH_VERSIONS_SUCCESS";
 
+export const EXPORT_DATA = "EXPORT_DATA";
+export const EXPORT_DATA_SUCCESS = "EXPORT_DATA_SUCCESS";
+export const EXPORT_DATA_FAILED = "EXPORT_DATA_FAILED";
+
 export function toggleSidebar() {
   return {
     type: TOGGLE_SIDEBAR
@@ -54,5 +58,11 @@ export function createBackup() {
 export function fetchVersions() {
   return {
     type: FETCH_VERSIONS
+  };
+}
+
+export function exportData() {
+  return {
+    type: EXPORT_DATA
   };
 }
