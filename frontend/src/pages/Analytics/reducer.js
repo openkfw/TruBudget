@@ -25,12 +25,17 @@ const defaultState = fromJS({
   subProjectCurrency: "EUR",
   projectCurrency: undefined,
   projectedBudgets: [], // contains budget objects
-  assignedBudget: 0,
-  disbursedBudget: 0,
-  indicatedAssignedBudget: 0,
-  indicatedDisbursedBudget: 0,
+  totalBudget: [],
+  projectedBudget: [],
+  assignedBudget: [],
+  disbursedBudget: [],
+  budget: {
+    allocatedCurrent: 0,
+    disbursedCurrent: 0,
+    allocatedPlaned: 0,
+    disbursedPlaned: 0
+  },
   dialogOpen: false,
-  totalBudget: undefined,
   exchangeRates: {}
 });
 
@@ -39,11 +44,17 @@ export default function detailviewReducer(state = defaultState, action) {
     case GET_PROJECT_KPIS_SUCCESS:
       return state.merge({
         projectedBudgets: fromJS(action.projectedBudgets),
-        assignedBudget: action.assignedBudget,
-        disbursedBudget: action.disbursedBudget,
-        indicatedAssignedBudget: action.indicatedAssignedBudget,
-        indicatedDisbursedBudget: action.indicatedDisbursedBudget,
-        totalBudget: action.totalBudget
+        disbursedBudget: fromJS(action.disbursedBudget),
+        assignedBudget: fromJS(action.assignedBudget),
+        totalBudget: fromJS(action.projectedBudgets),
+        projectedBudget: fromJS(action.projectedBudget),
+        budget: {
+          allocatedCurrent: action.allocatedCurrent,
+          disbursedCurrent: action.disbursedCurrent,
+          allocatedPlaned: action.allocatedPlaned,
+          disbursedPlaned: action.disbursedPlaned
+        },
+        projectCurrency: action.projectCurrency
       });
     case GET_SUBPROJECT_KPIS_SUCCESS:
       let totalBudget = 0;

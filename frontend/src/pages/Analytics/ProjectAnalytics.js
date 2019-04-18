@@ -8,7 +8,10 @@ import { HorizontalBar } from "react-chartjs-2";
 import { connect } from "react-redux";
 
 import { toAmountString, toJS } from "../../helper";
-import { getProjectKPIs, resetKPIs } from "./actions";
+import strings from "../../localizeStrings";
+import { getProjectKPIs, resetKPIs, storeProjectCurrency } from "./actions";
+import DropDown from "../Common/NewDropdown";
+import { MenuItem, Typography, Button } from "@material-ui/core";
 
 /**
  * ProjectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Project
@@ -37,6 +40,10 @@ const styles = {
   },
   statistics: {
     padding: "12px"
+  },
+  topContainer: {
+    display: "flex",
+    flexDirection: "row"
   }
 };
 
@@ -163,36 +170,51 @@ class ProjectAnalytics extends React.Component {
   componentWillUnmount() {
     this.props.resetKPIs();
   }
+
   render() {
     const { projectedBudgets, totalBudget, projectCurrency, exchangeRates } = this.props;
     return (
       <div>
         <div style={styles.container}>
-          <div style={styles.table}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Organization</TableCell>
-                  <TableCell align="right">Amount</TableCell>
-                  <TableCell align="right">Currency</TableCell>
-                  <TableCell align="right">Exchange Rate</TableCell>
-                  <TableCell align="right">Amount in selected Currency</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {projectedBudgets.map(budget => (
-                  <TableRow key={budget.organization + budget.currencyCode}>
-                    <TableCell>{budget.organization}</TableCell>
-                    <TableCell align="right">{toAmountString(budget.value)}</TableCell>
-                    <TableCell align="right">{budget.currencyCode}</TableCell>
-                    <TableCell align="right">{exchangeRates[budget.currencyCode] || 1}</TableCell>
-                    <TableCell align="right">
-                      {toAmountString((exchangeRates[budget.currencyCode] || 1) * budget.value)}
-                    </TableCell>
+          <div style={styles.topContainer}>
+            <div style={styles.table}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Organization</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                    <TableCell align="right">Currency</TableCell>
+                    <TableCell align="right">Exchange Rate</TableCell>
+                    <TableCell align="right">Amount in {projectCurrency}</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHead>
+                <TableBody>
+                  {projectedBudgets.map(budget => (
+                    <TableRow key={budget.organization + budget.currencyCode}>
+                      <TableCell>{budget.organization}</TableCell>
+                      <TableCell align="right">{toAmountString(budget.value)}</TableCell>
+                      <TableCell align="right">
+                        <Button onClick={event => console.log(event.value)}>{budget.currencyCode}</Button>
+                      </TableCell>
+                      <TableCell align="right">
+                        {exchangeRates[budget.currencyCode] ? exchangeRates[budget.currencyCode].toFixed(4) : 1}
+                      </TableCell>
+                      <TableCell align="right">
+                        {toAmountString((exchangeRates[budget.currencyCode] || 1) * budget.value)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  <TableRow>
+                    <TableCell />
+                    <TableCell />
+                    <TableCell />
+                    <TableCell />
+                    <TableCell align="right">{toAmountString(totalBudget)}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+            <div />
           </div>
           {totalBudget !== undefined && projectCurrency !== undefined ? getTotalChart(this.props, totalBudget) : null}
         </div>

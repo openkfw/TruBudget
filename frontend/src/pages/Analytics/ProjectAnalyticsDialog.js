@@ -6,22 +6,43 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import Slide from "@material-ui/core/Slide";
 
-import { closeAnalyticsDialog } from "./actions";
+import { closeAnalyticsDialog, storeProjectCurrency } from "./actions";
 import ProjectAnalytics from "./ProjectAnalytics";
+import DropDown from "../Common/NewDropdown";
+import { getCurrencies } from "../../helper";
+import { MenuItem, FormControl, Select } from "@material-ui/core";
 
 const styles = {
   container: {
     marginTop: "68px"
+  },
+  toolbar: {
+    display: "flex"
+  },
+  dropdown: {
+    marginLeft: "auto",
+    marginTop: "0"
   }
 };
+
+function getMenuItems(currencies) {
+  return currencies.map((currency, index) => {
+    return (
+      <MenuItem key={index} value={currency.value}>
+        {currency.primaryText}
+      </MenuItem>
+    );
+  });
+}
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-const ProjectAnalyticsDialog = ({ projectId, open, closeAnalyticsDialog }) => (
+const ProjectAnalyticsDialog = ({ projectId, open, projectCurrency, closeAnalyticsDialog, storeProjectCurrency }) => (
   <Dialog
     fullScreen
     open={open}
@@ -30,13 +51,29 @@ const ProjectAnalyticsDialog = ({ projectId, open, closeAnalyticsDialog }) => (
     TransitionComponent={Transition}
   >
     <AppBar>
-      <Toolbar>
+      <Toolbar style={styles.toolbar}>
         <IconButton color="inherit" onClick={closeAnalyticsDialog} aria-label="Close">
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" color="inherit">
           Project Analytics
         </Typography>
+        <form autoComplete="off" style={styles.dropdown}>
+          <FormControl>
+            <Select
+              value={projectCurrency || "EUR"}
+              onChange={e => storeProjectCurrency(e.target.value)}
+              inputProps={{
+                name: "currencies",
+                id: "currencies"
+              }}
+              IconComponent={props => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
+              style={{ color: "white" }}
+            >
+              {getMenuItems(getCurrencies())}
+            </Select>
+          </FormControl>
+        </form>
       </Toolbar>
     </AppBar>
     <div style={styles.container}>
@@ -46,9 +83,17 @@ const ProjectAnalyticsDialog = ({ projectId, open, closeAnalyticsDialog }) => (
 );
 
 const mapStateToProps = state => {
-  return { open: state.getIn(["analytics", "dialogOpen"]) };
+  return {
+    open: state.getIn(["analytics", "dialogOpen"]),
+    projectCurrency: state.getIn(["analytics", "projectCurrency"])
+  };
 };
 
-const mapDispatchToProps = { closeAnalyticsDialog };
+const mapDispatchToProps = dispatch => {
+  return {
+    closeAnalyticsDialog: () => dispatch(closeAnalyticsDialog()),
+    storeProjectCurrency: currency => dispatch(storeProjectCurrency(currency))
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectAnalyticsDialog);

@@ -46,7 +46,7 @@ export function storeExchangeRate(organization, currency, exchangeRate) {
 
 export function storeProjectCurrency(currency) {
   return {
-    type: STORE_EXCHANGE_RATE,
+    type: STORE_PROJECT_CURRENCY,
     currency
   };
 }

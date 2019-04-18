@@ -6,9 +6,9 @@ import Select from "@material-ui/core/Select";
 
 class Dropdown extends React.Component {
   render() {
-    const { value, children, id = "default", floatingLabel, onChange, style, disabled } = this.props;
+    const { value, children, id = "default", floatingLabel, onChange, style, disabled, formStyle } = this.props;
     return (
-      <form autoComplete="off">
+      <form autoComplete="off" style={formStyle}>
         <FormControl disabled={disabled} style={style} data-test={`dropdown-${id}`}>
           <InputLabel htmlFor={id}>{floatingLabel}</InputLabel>
           <Select
