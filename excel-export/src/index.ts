@@ -26,6 +26,7 @@ const transformRequest: AxiosTransformer = data => {
 axios.defaults.transformRequest = [transformRequest];
 
 const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
+  // enable cors
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "Authorization");
   if (req.method === "OPTIONS") {
@@ -43,9 +44,9 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
     res.write("Please provide authorization token");
     return res.end();
   }
-
-  const isTest = req.url === "/test";
-  const isProd = req.url === "/prod";
+  console.log(req.url);
+  const isTest = /^\/test/.test(String(req.url));
+  const isProd = /^\/prod/.test(String(req.url));
 
   if (isTest || isProd) {
     // create export
