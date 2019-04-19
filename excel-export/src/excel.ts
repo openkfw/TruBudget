@@ -16,7 +16,7 @@ const smallWidth = 20;
 const mediumWidth = 40;
 const largeWidth = 60;
 
-export async function writeXLS(
+export async function writeXLSX(
   axios: AxiosInstance,
   token: string,
   res: ServerResponse,
@@ -69,11 +69,11 @@ export async function writeXLS(
       { header: "Project Name", key: "parentProjectDisplayName", width: mediumWidth },
       { header: "Subproject ID", key: "parentSubprojectId", width: mediumWidth },
       { header: "Subproject Name", key: "parentSubprojectDisplayName", width: mediumWidth },
-      { header: "Subproject Currency", key: "parentSubprojectCurrency", width: mediumWidth },
+      { header: "Subproject Currency", key: "parentSubprojectCurrency", width: smallWidth },
       { header: "Workflowitem ID", key: "id", width: mediumWidth },
+      { header: "Workflowitem Name", key: "displayName", width: mediumWidth },
       { header: "Created", key: "creationUnixTs", width: mediumWidth },
       { header: "Status", key: "status", width: smallWidth },
-      { header: "Workflowitem", key: "displayName", width: mediumWidth },
       { header: "Description", key: "description", width: mediumWidth },
       { header: "Assignee", key: "assignee", width: smallWidth },
       { header: "Billing Date", key: "billingDate", width: mediumWidth },
@@ -90,7 +90,6 @@ export async function writeXLS(
       { header: "Subproject Name", key: "subprojectDisplayName", width: mediumWidth },
       { header: "Workflowitem ID", key: "workflowitemId", width: mediumWidth },
       { header: "Workflowitem Name", key: "workflowitemDisplayName", width: mediumWidth },
-      { header: "Index", key: "id", width: smallWidth },
       { header: "Name", key: "name", width: mediumWidth },
       { header: "Hash", key: "hash", width: largeWidth },
     ];
@@ -98,7 +97,6 @@ export async function writeXLS(
     projectProjectedBudgetsSheet.columns = [
       { header: "Project ID", key: "parentId", width: mediumWidth },
       { header: "Project Name", key: "parentDisplayName", width: mediumWidth },
-      { header: "Index", key: "id", width: smallWidth },
       { header: "Organization", key: "organization", width: mediumWidth },
       { header: "Currency", key: "currencyCode", width: smallWidth },
       { header: "Amount", key: "value", width: mediumWidth },
@@ -109,7 +107,6 @@ export async function writeXLS(
       { header: "Project Name", key: "parentProjectDisplayName", width: mediumWidth },
       { header: "Subproject ID", key: "parentSubprojectId", width: mediumWidth },
       { header: "Subproject Name", key: "parentSubprojectDisplayName", width: mediumWidth },
-      { header: "Index", key: "id", width: smallWidth },
       { header: "Organization", key: "organization", width: mediumWidth },
       { header: "Currency", key: "currencyCode", width: smallWidth },
       { header: "Amount", key: "value", width: mediumWidth },
@@ -125,11 +122,11 @@ export async function writeXLS(
         })
         .commit();
 
-      project.projectedBudgets.map((projectedBudget, index) => {
+      project.projectedBudgets.map(projectedBudget => {
         projectProjectedBudgetsSheet
           .addRow({
             ...projectedBudget,
-            id: index,
+            value: projectedBudget.value ? parseFloat(projectedBudget.value) : undefined,
             parentId: project.id,
             parentDisplayName: project.displayName,
           })
@@ -147,11 +144,11 @@ export async function writeXLS(
           })
           .commit();
 
-        subproject.projectedBudgets.map(async (projectedBudget, subindex) => {
+        subproject.projectedBudgets.map(async projectedBudget => {
           subprojectProjectedBudgetsSheet
             .addRow({
               ...projectedBudget,
-              id: subindex,
+              value: projectedBudget.value ? parseFloat(projectedBudget.value) : undefined,
               parentProjectId: project.id,
               parentProjectDisplayName: project.displayName,
               parentSubprojectId: subproject.id,
@@ -176,10 +173,14 @@ export async function writeXLS(
               parentSubprojectId: subproject.id,
               parentSubprojectDisplayName: subproject.displayName,
               parentSubprojectCurrency: subproject.currency,
+              amount: workflowitem.amount ? parseFloat(workflowitem.amount) : undefined,
+              exchangeRate: workflowitem.exchangeRate
+                ? parseFloat(workflowitem.exchangeRate)
+                : undefined,
               creationUnixTs: new Date(parseInt(workflowitem.creationUnixTs) * 1000).toISOString(),
             })
             .commit();
-          workflowitem.documents.map((doc, index) => {
+          workflowitem.documents.map(doc => {
             documentSheet
               .addRow({
                 projectId: project.id,
@@ -188,7 +189,6 @@ export async function writeXLS(
                 subprojectDisplayName: subproject.displayName,
                 workflowitemId: workflowitem.id,
                 workflowitemDisplayName: workflowitem.displayName,
-                id: index,
                 name: doc.id,
                 hash: doc.hash,
               })
