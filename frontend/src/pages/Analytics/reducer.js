@@ -11,28 +11,33 @@ import {
 } from "./actions";
 
 /**
- * SubprojectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Subproject
+ * Analytics should provide a dashboard which visualizes aggregate informations about the selected Project/Subproject
+ * Project:
+ * - Total Budget: Sum of projected budgets
+ * - Projected Budget: Sum of projected budgets of all subprojects
+ * - Assigned Budget: Sum of allocated budgets of all subprojects.
+ *   May exceed (projected) budget (subproject) Definition : Budget reserved for one specific activity as fixed in contract with subcontrator."
+ * - Disbursed Budget: Sum of payments(disbursed budgets) of project (only of closed workflow items). Not allowed to exceed assigned budget.
+ * Subproject:
  * - Projected Budget: Planned budget according to agreements and other budget planning documents.
  * - Assigned Budget: "Calculation : Sum of assigned budgets of subproject (only of closed workflow items).
  *   May exceed (projected) budget (subproject) Definition : Budget reserved for one specific activity as fixed in contract with subcontrator."
  * - Disbursed Budget: Sum of payments of subproject (only of closed workflow items). Not allowed to exceed assigned budget.
- * - Indication Assigned Budget: Assigned budget / projected budget
- * - Indication Disbursed Budget:  Disbursed budget / assigned budget
  */
 
 const defaultState = fromJS({
-  subProjectCurrency: "EUR",
-  projectCurrency: undefined,
-  projectedBudgets: [], // contains budget objects
-  totalBudget: [],
-  projectedBudget: [],
-  assignedBudget: [],
-  disbursedBudget: [],
-  budget: {
-    allocatedCurrent: 0,
-    disbursedCurrent: 0,
-    allocatedPlaned: 0,
-    disbursedPlaned: 0
+  project: {
+    currency: "EUR",
+    totalBudget: [],
+    projectedBudget: [],
+    assignedBudget: [],
+    disbursedBudget: []
+  },
+  subproject: {
+    currency: "EUR",
+    projectedBudgets: [], // contains budget objects
+    assignedBudget: 0,
+    disbursedBudget: 0
   },
   dialogOpen: false,
   exchangeRates: {}
@@ -42,34 +47,27 @@ export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case GET_PROJECT_KPIS_SUCCESS:
       return state.merge({
-        projectedBudgets: fromJS(action.projectedBudgets),
-        disbursedBudget: fromJS(action.disbursedBudget),
-        assignedBudget: fromJS(action.assignedBudget),
-        totalBudget: fromJS(action.projectedBudgets),
-        projectedBudget: fromJS(action.projectedBudget),
-        budget: {
-          allocatedCurrent: action.allocatedCurrent,
-          disbursedCurrent: action.disbursedCurrent,
-          allocatedPlaned: action.allocatedPlaned,
-          disbursedPlaned: action.disbursedPlaned
-        },
-        projectCurrency: action.projectCurrency
+        project: {
+          currency: action.projectCurrency,
+          totalBudget: fromJS(action.totalBudget),
+          projectedBudget: fromJS(action.projectedBudget),
+          assignedBudget: fromJS(action.assignedBudget),
+          disbursedBudget: fromJS(action.disbursedBudget)
+        }
       });
     case GET_SUBPROJECT_KPIS_SUCCESS:
       return state.merge({
-        subProjectCurrency: action.subProjectCurrency,
-        projectedBudgets: fromJS(action.projectedBudgets),
-        budget: {
-          allocatedCurrent: action.assignedBudget,
-          disbursedCurrent: action.disbursedBudget,
-          allocatedPlaned: action.indicatedAssignedBudget,
-          disbursedPlaned: action.indicatedDisbursedBudget
+        subproject: {
+          currency: action.subProjectCurrency,
+          projectedBudgets: fromJS(action.projectedBudgets),
+          assignedBudget: action.assignedBudget,
+          disbursedBudget: action.indicatedDisbursedBudget
         }
       });
     case GET_EXCHANGE_RATES_SUCCESS:
       return state.set("exchangeRates", fromJS(action.exchangeRates));
     case STORE_PROJECT_CURRENCY:
-      return state.set("projectCurrency", action.currency);
+      return state.setIn(["project", "projectCurrency"], action.currency);
     case OPEN_ANALYTICS_DIALOG:
       return state.set("dialogOpen", true);
     case CLOSE_ANALYTICS_DIALOG:

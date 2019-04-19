@@ -1,19 +1,18 @@
+import { FormControl, MenuItem, Select } from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import Dialog from "@material-ui/core/Dialog";
+import IconButton from "@material-ui/core/IconButton";
+import Slide from "@material-ui/core/Slide";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
 import { connect } from "react-redux";
-import Dialog from "@material-ui/core/Dialog";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import CloseIcon from "@material-ui/icons/Close";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import Slide from "@material-ui/core/Slide";
 
-import { closeAnalyticsDialog, storeProjectCurrency, getProjectKPIs, getExchangeRates } from "./actions";
-import ProjectAnalytics from "./ProjectAnalytics";
-import DropDown from "../Common/NewDropdown";
 import { getCurrencies } from "../../helper";
-import { MenuItem, FormControl, Select } from "@material-ui/core";
+import { closeAnalyticsDialog, getExchangeRates, storeProjectCurrency } from "./actions";
+import ProjectAnalytics from "./ProjectAnalytics";
 
 const styles = {
   container: {
@@ -95,7 +94,7 @@ const ProjectAnalyticsDialog = ({
 const mapStateToProps = state => {
   return {
     open: state.getIn(["analytics", "dialogOpen"]),
-    projectCurrency: state.getIn(["analytics", "projectCurrency"])
+    projectCurrency: state.getIn(["analytics", "project", "currency"])
   };
 };
 

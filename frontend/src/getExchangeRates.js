@@ -10,14 +10,12 @@ export async function getExchangeRates(baseCurrency = "EUR") {
     "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A?startPeriod=" + yesterday + "&endPeriod=" + today,
     { headers: {} }
   );
-  let index = 0;
   const series = response.data.dataSets[0].series;
   const exchangeRates = {};
-  for (const _key in series) {
+  for (let index = 0; index < Object.keys(series).length; index++) {
     const currency = response.data.structure.dimensions.series[1].values[index].id;
     const exchangeRate = series["0:" + index + ":0:0:0"].observations[0][0];
     exchangeRates[currency] = exchangeRate;
-    index += 1;
   }
   exchangeRates["EUR"] = 1;
   exchangeRates["XOF"] = 655.957;

@@ -1241,86 +1241,77 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
         subprojects
       }
     } = yield callApi(api.viewProjectDetails, projectId);
+
     const subprojectBudgets = (yield all(
       subprojects.map(subproject => callApi(api.viewSubProjectDetails, projectId, subproject.data.id))
     )).map(subprojectDetails => {
       const currency = subprojectDetails.data.subproject.data.currency;
-      const subprojectProjectedBudgets = subprojectDetails.data.subproject.data.projectedBudgets;
+      const projected = subprojectDetails.data.subproject.data.projectedBudgets;
       const workflowBudgets = subprojectDetails.data.workflowitems.reduce(
         (acc, next) => {
           const { amountType, status, amount, exchangeRate } = next.data;
           if (amountType === "allocated" && amount) {
             return {
               ...acc,
-              allocatedCurrent:
-                status === "closed"
-                  ? acc.allocatedCurrent + fromAmountString(amount) * (exchangeRate || 1)
-                  : acc.allocatedCurrent,
-              allocatedPlaned: acc.allocatedPlaned + fromAmountString(amount) * (exchangeRate || 1)
+              allocated: acc.allocated + fromAmountString(amount) * (exchangeRate || 1)
             };
           }
 
           if (amountType === "disbursed" && amount) {
             return {
               ...acc,
-              disbursedCurrent:
-                status === "closed"
-                  ? acc.disbursedCurrent + fromAmountString(amount) * (exchangeRate || 1)
-                  : acc.disbursedCurrent,
-              disbursedPlaned: acc.disbursedPlaned + fromAmountString(amount) * (exchangeRate || 1)
+              disbursed:
+                status === "closed" ? acc.disbursed + fromAmountString(amount) * (exchangeRate || 1) : acc.disbursed
             };
           }
 
           return acc;
         },
         {
-          allocatedCurrent: 0,
-          allocatedPlaned: 0,
-          disbursedCurrent: 0,
-          disbursedPlaned: 0
+          allocated: 0,
+          disbursed: 0
         }
       );
       return {
-        subprojectProjectedBudgets,
+        projected,
         currency,
-        allocatedCurrent: workflowBudgets.allocatedCurrent,
-        disbursedCurrent: workflowBudgets.disbursedCurrent,
-        allocatedPlaned: workflowBudgets.disbursedPlaned,
-        disbursedPlaned: workflowBudgets.allocatedPlaned
+        disbursed: workflowBudgets.disbursed,
+        allocated: workflowBudgets.allocated
       };
     });
     const projectBudgets = subprojectBudgets.reduce(
       (acc, next) => {
-        if (next.disbursedCurrent !== 0) {
-          acc.disbursedBudget.push({ budget: next.disbursedCurrent, currency: next.currency });
+        if (next.disbursed !== 0) {
+          acc.disbursed.push({ budget: next.disbursed, currency: next.currency });
         }
-        if (next.allocatedPlaned !== 0) {
-          acc.assignedBudget.push({ budget: next.allocatedPlaned, currency: next.currency });
+        if (next.allocated !== 0) {
+          acc.allocated.push({ budget: next.allocated, currency: next.currency });
         }
-        if (next.subprojectProjectedBudgets) {
-          acc.projectedBudget.push(next.subprojectProjectedBudgets);
+        if (next.projected.length !== 0) {
+          acc.projectedOfSubprojects.push(next.projected);
         }
         return {
-          allocatedCurrent: acc.allocatedCurrent + next.allocatedCurrent,
-          disbursedBudget: acc.disbursedBudget,
-          assignedBudget: acc.assignedBudget,
-          disbursedPlaned: acc.disbursedPlaned + next.disbursedPlaned,
-          projectedBudget: acc.projectedBudget
+          disbursed: acc.disbursed,
+          allocated: acc.allocated,
+          projectedOfSubprojects: acc.projectedOfSubprojects
         };
       },
-      { allocatedCurrent: 0, disbursedBudget: [], assignedBudget: [], disbursedPlaned: 0, projectedBudget: [] }
+      { disbursed: [], allocated: [], projectedOfSubprojects: [] }
     );
+
     if (projectedBudgets[0].currencyCode) {
       yield put({
         type: GET_EXCHANGE_RATES,
-        baseCurrency: projectedBudgets[0].currencyCode,
-        currencies: projectedBudgets.map(budget => budget.currencyCode)
+        baseCurrency: projectedBudgets[0].currencyCode
       });
     }
+
     yield put({
       type: GET_PROJECT_KPIS_SUCCESS,
-      ...projectBudgets,
-      projectedBudgets,
+      assignedBudget: projectBudgets.allocated,
+      disbursedBudget: projectBudgets.disbursed,
+      projectedBudget: projectBudgets.projectedOfSubprojects,
+      totalBudget: projectedBudgets,
       projectCurrency: projectedBudgets[0].currencyCode || undefined
     });
   }, showLoading);
@@ -1336,6 +1327,11 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true
         }
       }
     } = yield callApi(api.viewSubProjectDetails, projectId, subProjectId);
+    yield put({
+      type: GET_EXCHANGE_RATES,
+      baseCurrency: currency
+    });
+
     const workflowBudgets = workflowitems.reduce(
       (acc, next) => {
         const { amountType, status, amount, exchangeRate } = next.data;

@@ -35,15 +35,6 @@ export function resetKPIs() {
   };
 }
 
-export function storeExchangeRate(organization, currency, exchangeRate) {
-  return {
-    type: STORE_EXCHANGE_RATE,
-    organization,
-    currency,
-    exchangeRate
-  };
-}
-
 export function getExchangeRates(baseCurrency) {
   return {
     type: GET_EXCHANGE_RATES,
