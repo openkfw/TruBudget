@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.service.name }}
+  labels:
+    app: {{ template "excelExport.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    project: "TruBudget"
+    prometheus-monitoring: {{ .Values.service.monitoring}}
+spec:
+  selector:
+    app: {{ template "excelExport.name" . }}
+    release: {{ .Release.Name }}
+    service: {{ .Chart.Name }}
+  type: {{ .Values.service.type }}
+  ports:
+  - name: export
+    protocol: TCP
+    port: {{ .Values.excelExport.env.PORT }}
+    targetPort: {{ .Values.excelExport.env.PORT }}

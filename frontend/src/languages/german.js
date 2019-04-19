@@ -206,6 +206,7 @@ const de = {
     menu_item_network: "Network",
     menu_item_notifications: "Notifications",
     menu_item_projects: "Projects",
+    menu_item_export: "Exportieren",
     no_peers: "No peers",
     options: "Options",
     other_trustees: "Other Trustees",
