@@ -44,6 +44,13 @@ export function storeExchangeRate(organization, currency, exchangeRate) {
   };
 }
 
+export function getExchangeRates(baseCurrency) {
+  return {
+    type: GET_EXCHANGE_RATES,
+    baseCurrency
+  };
+}
+
 export function storeProjectCurrency(currency) {
   return {
     type: STORE_PROJECT_CURRENCY,

@@ -1,8 +1,6 @@
-import { default as supportedCurrencies } from "./currency";
 const axios = require("axios");
 
-export async function getExchangeRates(baseCurrency = "EUR", currencies = Object.keys(supportedCurrencies)) {
-  currencies = currencies.filter(currency => currency in supportedCurrencies);
+export async function getExchangeRates(baseCurrency = "EUR") {
   const date = new Date();
   const today = date.toISOString().split("T")[0];
   const yesterday = new Date(date - 86400000).toISOString().split("T")[0];
@@ -18,13 +16,12 @@ export async function getExchangeRates(baseCurrency = "EUR", currencies = Object
   for (const _key in series) {
     const currency = response.data.structure.dimensions.series[1].values[index].id;
     const exchangeRate = series["0:" + index + ":0:0:0"].observations[0][0];
-    if (currencies.includes(currency)) {
-      exchangeRates[currency] = exchangeRate;
-    }
+    exchangeRates[currency] = exchangeRate;
     index += 1;
   }
   exchangeRates["EUR"] = 1;
   exchangeRates["XOF"] = 655.957;
+  exchangeRates["KES"] = 114.882;
   if (baseCurrency !== "EUR") {
     const baseRate = exchangeRates[baseCurrency];
     for (const key in exchangeRates) {

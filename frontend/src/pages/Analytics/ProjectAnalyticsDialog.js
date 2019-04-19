@@ -9,7 +9,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import Slide from "@material-ui/core/Slide";
 
-import { closeAnalyticsDialog, storeProjectCurrency } from "./actions";
+import { closeAnalyticsDialog, storeProjectCurrency, getProjectKPIs, getExchangeRates } from "./actions";
 import ProjectAnalytics from "./ProjectAnalytics";
 import DropDown from "../Common/NewDropdown";
 import { getCurrencies } from "../../helper";
@@ -42,7 +42,14 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-const ProjectAnalyticsDialog = ({ projectId, open, projectCurrency, closeAnalyticsDialog, storeProjectCurrency }) => (
+const ProjectAnalyticsDialog = ({
+  projectId,
+  open,
+  projectCurrency,
+  closeAnalyticsDialog,
+  storeProjectCurrency,
+  getExchangeRates
+}) => (
   <Dialog
     fullScreen
     open={open}
@@ -62,7 +69,10 @@ const ProjectAnalyticsDialog = ({ projectId, open, projectCurrency, closeAnalyti
           <FormControl>
             <Select
               value={projectCurrency || "EUR"}
-              onChange={e => storeProjectCurrency(e.target.value)}
+              onChange={e => {
+                storeProjectCurrency(e.target.value);
+                getExchangeRates(e.target.value);
+              }}
               inputProps={{
                 name: "currencies",
                 id: "currencies"
@@ -92,7 +102,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     closeAnalyticsDialog: () => dispatch(closeAnalyticsDialog()),
-    storeProjectCurrency: currency => dispatch(storeProjectCurrency(currency))
+    storeProjectCurrency: currency => dispatch(storeProjectCurrency(currency)),
+    getExchangeRates: currency => dispatch(getExchangeRates(currency))
   };
 };
 

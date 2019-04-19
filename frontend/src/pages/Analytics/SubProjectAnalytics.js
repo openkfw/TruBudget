@@ -231,11 +231,11 @@ const mapStateToProps = state => {
   return {
     subProjectCurrency: state.getIn(["analytics", "subProjectCurrency"]),
     projectedBudgets: state.getIn(["analytics", "projectedBudgets"]),
-    assignedBudget: state.getIn(["analytics", "assignedBudget"]),
-    disbursedBudget: state.getIn(["analytics", "disbursedBudget"]),
+    assignedBudget: state.getIn(["analytics", "budget", "allocatedCurrent"]),
+    disbursedBudget: state.getIn(["analytics", "budget", "disbursedCurrent"]),
     totalBudget: state.getIn(["analytics", "totalBudget"]),
-    indicatedAssignedBudget: state.getIn(["analytics", "indicatedAssignedBudget"]),
-    indicatedDisbursedBudget: state.getIn(["analytics", "indicatedDisbursedBudget"])
+    indicatedAssignedBudget: state.getIn(["analytics", "budget", "allocatedPlaned"]),
+    indicatedDisbursedBudget: state.getIn(["analytics", "budget", "disbursedPlaned"])
   };
 };
 

@@ -1370,12 +1370,16 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true
       indicatedAssignedBudget: workflowBudgets.indicatedAssignedBudget,
       indicatedDisbursedBudget: workflowBudgets.indicatedDisbursedBudget
     };
-  });
+    yield put({
+      type: GET_SUBPROJECT_KPIS_SUCCESS,
+      ...response
+    });
+  }, showLoading);
 }
 
-export function* getExchangeRatesSaga({ baseCurrency, currencies, showLoading = true }) {
+export function* getExchangeRatesSaga({ baseCurrency, showLoading = true }) {
   yield execute(function*() {
-    const exchangeRates = yield getExchangeRates(baseCurrency, currencies);
+    const exchangeRates = yield getExchangeRates(baseCurrency);
     yield put({
       type: GET_EXCHANGE_RATES_SUCCESS,
       exchangeRates

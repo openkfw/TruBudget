@@ -43,7 +43,7 @@ const styles = {
   },
   topContainer: {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "column"
   }
 };
 
@@ -177,27 +177,50 @@ class ProjectAnalytics extends React.Component {
     return sourceExchangeRate && targetExchangeRate ? targetExchangeRate / sourceExchangeRate * parseFloat(amount) : 0;
   }
 
-  convertProjectedBudgets() {
-    return this.props.projectedBudgets.map(pb => {
+  convertTotalBudget() {
+    return this.props.totalBudget.map(pb => {
       return {
         ...pb,
         convertedAmount: this.convertToSelectedCurrency(pb.value, pb.currencyCode)
       };
     });
   }
+  convertProjectedBudget() {
+    return this.props.projectedBudget.map(pb =>
+      pb.map(pb => {
+        return {
+          ...pb,
+          convertedAmount: this.convertToSelectedCurrency(pb.value, pb.currencyCode)
+        };
+      })
+    );
+  }
 
   render() {
-    const { totalBudget, projectCurrency, exchangeRates } = this.props;
-    const projectedBudgets = this.convertProjectedBudgets();
+    const { projectCurrency, exchangeRates } = this.props;
+    const convertedTotalBudget = this.convertTotalBudget();
+    const totalBudget = this.convertTotalBudget().reduce((acc, next) => {
+      return acc + next.convertedAmount;
+    }, 0);
+    const projectedBudget = this.convertProjectedBudget().reduce((acc, next) => {
+      return (
+        acc +
+        next.reduce((acc, next) => {
+          return acc + next.convertedAmount;
+        }, 0)
+      );
+    }, 0);
     const assignedBudget = this.props.assignedBudget.reduce((acc, next) => {
       return acc + this.convertToSelectedCurrency(next.budget, next.currency);
     }, 0);
     const disbursedBudget = this.props.disbursedBudget.reduce((acc, next) => {
       return acc + this.convertToSelectedCurrency(next.budget, next.currency);
     }, 0);
-    console.log(this.props);
-    console.log(assignedBudget);
-    console.log(disbursedBudget);
+    console.log(this.props.totalBudget);
+    // console.log(this.props.projectedBudget);
+    // console.log(projectedBudget);
+    // console.log(assignedBudget);
+    // console.log(disbursedBudget);
     return (
       <div>
         <div style={styles.container}>
@@ -210,23 +233,19 @@ class ProjectAnalytics extends React.Component {
                     <TableCell align="right">Amount</TableCell>
                     <TableCell align="right">Currency</TableCell>
                     <TableCell align="right">Exchange Rate</TableCell>
-                    <TableCell align="right">Amount in {projectCurrency}</TableCell>
+                    <TableCell align="right">Converted Amount</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {projectedBudgets.map(budget => (
+                  {convertedTotalBudget.map(budget => (
                     <TableRow key={budget.organization + budget.currencyCode}>
                       <TableCell>{budget.organization}</TableCell>
                       <TableCell align="right">{toAmountString(budget.value)}</TableCell>
-                      <TableCell align="right">
-                        <Button onClick={event => console.log(event.value)}>{budget.currencyCode}</Button>
-                      </TableCell>
+                      <TableCell align="right">{budget.currencyCode}</TableCell>
                       <TableCell align="right">
                         {exchangeRates[budget.currencyCode] ? exchangeRates[budget.currencyCode].toFixed(4) : 1}
                       </TableCell>
-                      <TableCell align="right">
-                        {toAmountString(budget.convertedAmount, this.props.projectCurrency)}
-                      </TableCell>
+                      <TableCell align="right">{toAmountString(budget.convertedAmount, projectCurrency)}</TableCell>
                     </TableRow>
                   ))}
                   <TableRow>
@@ -239,9 +258,29 @@ class ProjectAnalytics extends React.Component {
                 </TableBody>
               </Table>
             </div>
+            <div style={styles.table}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>TotalBudget</TableCell>
+                    <TableCell align="right">Projected Budget</TableCell>
+                    <TableCell align="right">Assigned Budget</TableCell>
+                    <TableCell align="right">Disbursed Budget</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{toAmountString(totalBudget)}</TableCell>
+                    <TableCell align="right">{toAmountString(projectedBudget)}</TableCell>
+                    <TableCell align="right">{toAmountString(assignedBudget)}</TableCell>
+                    <TableCell align="right">{toAmountString(disbursedBudget)}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
             <div />
           </div>
-          {totalBudget !== undefined && projectCurrency !== undefined ? getTotalChart(this.props, totalBudget) : null}
+          {/* {totalBudget !== undefined && projectCurrency !== undefined ? getTotalChart(this.props, totalBudget) : null} */}
         </div>
       </div>
     );
@@ -251,6 +290,7 @@ class ProjectAnalytics extends React.Component {
 const mapStateToProps = state => {
   return {
     projectedBudgets: state.getIn(["analytics", "projectedBudgets"]),
+    projectedBudget: state.getIn(["analytics", "projectedBudget"]),
     assignedBudget: state.getIn(["analytics", "assignedBudget"]),
     disbursedBudget: state.getIn(["analytics", "disbursedBudget"]),
     totalBudget: state.getIn(["analytics", "totalBudget"]),
