@@ -8,6 +8,8 @@ export function isAmountOfMoney(value: string): boolean {
   return error === null;
 }
 
+export const conversionRateSchema = Joi.string().regex(/^[0-9]+(\.[0-9]+)?$/, "conversion rate");
+
 const isoCurrencyCodes = [
   "AFN",
   "EUR",

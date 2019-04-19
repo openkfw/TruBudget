@@ -9,6 +9,7 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
+import { moneyAmountSchema } from "./money";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
 
@@ -70,6 +71,7 @@ const schema = Joi.object().keys({
     .required(),
   dueDate: Joi.date().iso(),
   displayName: Joi.string().required(),
+  // This should use exchangeRateSchema but can't, because of backward compatibility:
   exchangeRate: Joi.string()
     .when("amountType", {
       is: Joi.valid("N/A"),
@@ -91,7 +93,7 @@ const schema = Joi.object().keys({
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-  amount: Joi.string()
+  amount: moneyAmountSchema
     .when("amountType", {
       is: Joi.valid("N/A"),
       then: Joi.forbidden(),
