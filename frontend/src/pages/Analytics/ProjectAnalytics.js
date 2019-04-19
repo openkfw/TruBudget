@@ -171,8 +171,33 @@ class ProjectAnalytics extends React.Component {
     this.props.resetKPIs();
   }
 
+  convertToSelectedCurrency(amount, sourceCurrency) {
+    const sourceExchangeRate = this.props.exchangeRates[sourceCurrency];
+    const targetExchangeRate = this.props.exchangeRates[this.props.projectCurrency];
+    return sourceExchangeRate && targetExchangeRate ? targetExchangeRate / sourceExchangeRate * parseFloat(amount) : 0;
+  }
+
+  convertProjectedBudgets() {
+    return this.props.projectedBudgets.map(pb => {
+      return {
+        ...pb,
+        convertedAmount: this.convertToSelectedCurrency(pb.value, pb.currencyCode)
+      };
+    });
+  }
+
   render() {
-    const { projectedBudgets, totalBudget, projectCurrency, exchangeRates } = this.props;
+    const { totalBudget, projectCurrency, exchangeRates } = this.props;
+    const projectedBudgets = this.convertProjectedBudgets();
+    const assignedBudget = this.props.assignedBudget.reduce((acc, next) => {
+      return acc + this.convertToSelectedCurrency(next.budget, next.currency);
+    }, 0);
+    const disbursedBudget = this.props.disbursedBudget.reduce((acc, next) => {
+      return acc + this.convertToSelectedCurrency(next.budget, next.currency);
+    }, 0);
+    console.log(this.props);
+    console.log(assignedBudget);
+    console.log(disbursedBudget);
     return (
       <div>
         <div style={styles.container}>
@@ -200,7 +225,7 @@ class ProjectAnalytics extends React.Component {
                         {exchangeRates[budget.currencyCode] ? exchangeRates[budget.currencyCode].toFixed(4) : 1}
                       </TableCell>
                       <TableCell align="right">
-                        {toAmountString((exchangeRates[budget.currencyCode] || 1) * budget.value)}
+                        {toAmountString(budget.convertedAmount, this.props.projectCurrency)}
                       </TableCell>
                     </TableRow>
                   ))}
