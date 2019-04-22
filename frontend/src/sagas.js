@@ -1312,6 +1312,7 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
       disbursedBudget: projectBudgets.disbursed,
       projectedBudget: projectBudgets.projectedOfSubprojects,
       totalBudget: projectedBudgets,
+      // TODO: ?????
       projectCurrency: projectedBudgets[0].currencyCode || undefined
     });
   }, showLoading);
@@ -1335,36 +1336,30 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true
     const workflowBudgets = workflowitems.reduce(
       (acc, next) => {
         const { amountType, status, amount, exchangeRate } = next.data;
-        if (amountType === "allocated" && amount) {
+        if (amountType === "allocated" && status === "closed" && amount) {
           return {
             ...acc,
-            assignedBudget:
-              status === "closed" ? acc.assignedBudget + fromAmountString(amount) * exchangeRate : acc.assignedBudget,
-            indicatedAssignedBudget: acc.indicatedAssignedBudget + fromAmountString(amount) * exchangeRate
+            assignedBudget: acc.assignedBudget + fromAmountString(amount) * exchangeRate
           };
         }
 
-        if (amountType === "disbursed" && amount) {
+        if (amountType === "disbursed" && status === "closed" && amount) {
           return {
             ...acc,
-            disbursedBudget:
-              status === "closed" ? acc.disbursedBudget + fromAmountString(amount) * exchangeRate : acc.disbursedBudget,
-            indicatedDisbursedBudget: acc.indicatedDisbursedBudget + fromAmountString(amount) * exchangeRate
+            disbursedBudget: acc.disbursedBudget + fromAmountString(amount) * exchangeRate
           };
         }
 
         return acc;
       },
-      { assignedBudget: 0, disbursedBudget: 0, indicatedAssignedBudget: 0, indicatedDisbursedBudget: 0 }
+      { assignedBudget: 0, disbursedBudget: 0 }
     );
 
     const response = {
       subProjectCurrency: currency,
       projectedBudgets: projectedBudgets,
       assignedBudget: workflowBudgets.assignedBudget,
-      disbursedBudget: workflowBudgets.disbursedBudget,
-      indicatedAssignedBudget: workflowBudgets.indicatedAssignedBudget,
-      indicatedDisbursedBudget: workflowBudgets.indicatedDisbursedBudget
+      disbursedBudget: workflowBudgets.disbursedBudget
     };
     yield put({
       type: GET_SUBPROJECT_KPIS_SUCCESS,

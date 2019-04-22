@@ -52,7 +52,7 @@ class ProjectAnalytics extends React.Component {
 
   convertToSelectedCurrency(amount, sourceCurrency) {
     const sourceExchangeRate = this.props.exchangeRates[sourceCurrency];
-    const targetExchangeRate = this.props.exchangeRates[this.props.projectCurrency];
+    const targetExchangeRate = this.props.exchangeRates[this.props.indicatedCurrency];
     return sourceExchangeRate && targetExchangeRate ? targetExchangeRate / sourceExchangeRate * parseFloat(amount) : 0;
   }
 
@@ -76,7 +76,7 @@ class ProjectAnalytics extends React.Component {
   }
 
   render() {
-    const { projectCurrency, exchangeRates } = this.props;
+    const { indicatedCurrency } = this.props;
     const convertedTotalBudget = this.convertTotalBudget();
     const totalBudgets = this.convertTotalBudget();
     const totalBudget = totalBudgets.reduce((acc, next) => {
@@ -118,9 +118,9 @@ class ProjectAnalytics extends React.Component {
                       <TableCell align="right">{toAmountString(budget.value)}</TableCell>
                       <TableCell align="right">{budget.currencyCode}</TableCell>
                       <TableCell align="right">
-                        {exchangeRates[budget.currencyCode] ? exchangeRates[budget.currencyCode].toFixed(4) : 1}
+                        {this.convertToSelectedCurrency(1, budget.currencyCode).toFixed(4)}
                       </TableCell>
-                      <TableCell align="right">{toAmountString(budget.convertedAmount, projectCurrency)}</TableCell>
+                      <TableCell align="right">{toAmountString(budget.convertedAmount, indicatedCurrency)}</TableCell>
                     </TableRow>
                   ))}
                   <TableRow>
@@ -128,14 +128,14 @@ class ProjectAnalytics extends React.Component {
                     <TableCell />
                     <TableCell />
                     <TableCell align="right">Total:</TableCell>
-                    <TableCell align="right">{toAmountString(totalBudget, projectCurrency)}</TableCell>
+                    <TableCell align="right">{toAmountString(totalBudget, indicatedCurrency)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </div>
           </div>
           <Dashboard
-            projectCurrency={this.props.projectCurrency}
+            indicatedCurrency={this.props.indicatedCurrency}
             projectedBudget={projectedBudget}
             totalBudgets={totalBudgets}
             totalBudget={totalBudget}
@@ -216,7 +216,7 @@ const Chart = ({ title, chart }) => (
 );
 
 const Dashboard = ({
-  projectCurrency,
+  indicatedCurrency,
   totalBudgets,
   totalBudget,
   projectedBudget,
@@ -225,10 +225,10 @@ const Dashboard = ({
 }) => {
   return (
     <div style={dashboardStyles.container}>
-      <NumberChart title="Total budget" budget={totalBudget} currency={projectCurrency} />
-      <NumberChart title="Projected budget" budget={projectedBudget} currency={projectCurrency} />
-      <NumberChart title="Assigned budget" budget={assignedBudget} currency={projectCurrency} />
-      <NumberChart title="Disbursed budget" budget={disbursedBudget} currency={projectCurrency} />
+      <NumberChart title="Total budget" budget={totalBudget} currency={indicatedCurrency} />
+      <NumberChart title="Projected budget" budget={projectedBudget} currency={indicatedCurrency} />
+      <NumberChart title="Assigned budget" budget={assignedBudget} currency={indicatedCurrency} />
+      <NumberChart title="Disbursed budget" budget={disbursedBudget} currency={indicatedCurrency} />
       <Chart
         title="Total Budget Distribution"
         chart={
@@ -253,7 +253,7 @@ const Dashboard = ({
               tooltips: {
                 callbacks: {
                   label: (item, data) => {
-                    return toAmountString(data.datasets[item.datasetIndex].data[item.index], projectCurrency);
+                    return toAmountString(data.datasets[item.datasetIndex].data[item.index], indicatedCurrency);
                   }
                 }
               }
@@ -291,7 +291,7 @@ const Dashboard = ({
               tooltips: {
                 callbacks: {
                   label: (item, data) => {
-                    return toAmountString(data.datasets[item.datasetIndex].data[item.index], projectCurrency);
+                    return toAmountString(data.datasets[item.datasetIndex].data[item.index], indicatedCurrency);
                   }
                 }
               }
@@ -309,7 +309,7 @@ const mapStateToProps = state => {
     assignedBudget: state.getIn(["analytics", "project", "assignedBudget"]),
     disbursedBudget: state.getIn(["analytics", "project", "disbursedBudget"]),
     totalBudget: state.getIn(["analytics", "project", "totalBudget"]),
-    projectCurrency: state.getIn(["analytics", "currency"]),
+    indicatedCurrency: state.getIn(["analytics", "currency"]),
     exchangeRates: state.getIn(["analytics", "exchangeRates"])
   };
 };

@@ -57,9 +57,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case GET_SUBPROJECT_KPIS_SUCCESS:
       return state.merge({
         subproject: {
+          currency: action.subProjectCurrency,
           projectedBudgets: fromJS(action.projectedBudgets),
           assignedBudget: action.assignedBudget,
-          disbursedBudget: action.indicatedDisbursedBudget
+          disbursedBudget: action.disbursedBudget
         }
       });
     case GET_EXCHANGE_RATES_SUCCESS:
