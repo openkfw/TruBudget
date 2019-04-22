@@ -94,16 +94,14 @@ const ProjectAnalyticsDialog = ({
 const mapStateToProps = state => {
   return {
     open: state.getIn(["analytics", "dialogOpen"]),
-    projectCurrency: state.getIn(["analytics", "project", "currency"])
+    projectCurrency: state.getIn(["analytics", "currency"])
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    closeAnalyticsDialog: () => dispatch(closeAnalyticsDialog()),
-    storeProjectCurrency: currency => dispatch(storeProjectCurrency(currency)),
-    getExchangeRates: currency => dispatch(getExchangeRates(currency))
-  };
+const mapDispatchToProps = {
+  closeAnalyticsDialog,
+  storeProjectCurrency,
+  getExchangeRates
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectAnalyticsDialog);

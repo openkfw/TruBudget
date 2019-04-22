@@ -8,6 +8,12 @@ import { connect } from "react-redux";
 
 import { toAmountString, toJS } from "../../helper";
 import { getProjectKPIs, resetKPIs } from "./actions";
+import { Doughnut } from "react-chartjs-2";
+
+import Typography from "@material-ui/core/Typography";
+
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 
 /**
  * ProjectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Project
@@ -23,8 +29,7 @@ import { getProjectKPIs, resetKPIs } from "./actions";
 const styles = {
   container: {
     display: "flex",
-    flexDirection: "column",
-    height: "-webkit-fill-available"
+    flexDirection: "column"
   },
   table: {
     width: "80%",
@@ -32,7 +37,8 @@ const styles = {
   },
   topContainer: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    marginBottom: "24px"
   }
 };
 
@@ -72,7 +78,8 @@ class ProjectAnalytics extends React.Component {
   render() {
     const { projectCurrency, exchangeRates } = this.props;
     const convertedTotalBudget = this.convertTotalBudget();
-    const totalBudget = this.convertTotalBudget().reduce((acc, next) => {
+    const totalBudgets = this.convertTotalBudget();
+    const totalBudget = totalBudgets.reduce((acc, next) => {
       return acc + next.convertedAmount;
     }, 0);
     const projectedBudget = this.convertProjectedBudget().reduce((acc, next) => {
@@ -120,39 +127,181 @@ class ProjectAnalytics extends React.Component {
                     <TableCell />
                     <TableCell />
                     <TableCell />
-                    <TableCell />
-                    <TableCell align="right">{toAmountString(totalBudget)}</TableCell>
+                    <TableCell align="right">Total:</TableCell>
+                    <TableCell align="right">{toAmountString(totalBudget, projectCurrency)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </div>
-            <div style={styles.table}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>TotalBudget</TableCell>
-                    <TableCell align="right">Projected Budget</TableCell>
-                    <TableCell align="right">Assigned Budget</TableCell>
-                    <TableCell align="right">Disbursed Budget</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>{toAmountString(totalBudget)}</TableCell>
-                    <TableCell align="right">{toAmountString(projectedBudget)}</TableCell>
-                    <TableCell align="right">{toAmountString(assignedBudget)}</TableCell>
-                    <TableCell align="right">{toAmountString(disbursedBudget)}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-            <div />
           </div>
+          <Dashboard
+            projectCurrency={this.props.projectCurrency}
+            projectedBudget={projectedBudget}
+            totalBudgets={totalBudgets}
+            totalBudget={totalBudget}
+            disbursedBudget={disbursedBudget}
+            assignedBudget={assignedBudget}
+          />
         </div>
       </div>
     );
   }
 }
+
+const dashboardStyles = {
+  container: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center"
+  },
+  card: {
+    width: "300px",
+    height: "300px",
+    margin: "12px"
+  },
+  ratioContent: {
+    height: "87%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  numberContent: {
+    height: "87%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  chartContent: {
+    height: "87%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  }
+};
+
+const onlyPositive = number => (number < 0 ? 0 : number);
+
+const NumberChart = ({ title, budget, currency }) => (
+  <Card style={dashboardStyles.card}>
+    <CardContent style={dashboardStyles.numberContent}>
+      <Typography style={{ flex: 1 }} variant="overline">
+        {title}
+      </Typography>
+      <Typography style={{ flex: 1 }} variant="h6">
+        {toAmountString(budget, currency)}
+      </Typography>
+    </CardContent>
+  </Card>
+);
+const RatioChart = ({ title, budget }) => (
+  <Card style={dashboardStyles.card}>
+    <CardContent style={dashboardStyles.ratioContent}>
+      <Typography style={{ flex: 1 }} variant="overline">
+        {title}
+      </Typography>
+      <Typography style={{ flex: 1 }} variant="h6">
+        {budget ? `${(budget * 100).toFixed(2)}%` : "-"}
+      </Typography>
+    </CardContent>
+  </Card>
+);
+
+const Chart = ({ title, chart }) => (
+  <Card style={dashboardStyles.card}>
+    <CardContent style={dashboardStyles.chartContent}>
+      <Typography variant="overline">{title}</Typography>
+      <div style={{ flex: 1 }}>{chart}</div>
+    </CardContent>
+  </Card>
+);
+
+const Dashboard = ({
+  projectCurrency,
+  totalBudgets,
+  totalBudget,
+  projectedBudget,
+  assignedBudget,
+  disbursedBudget
+}) => {
+  return (
+    <div style={dashboardStyles.container}>
+      <NumberChart title="Total budget" budget={totalBudget} currency={projectCurrency} />
+      <NumberChart title="Projected budget" budget={projectedBudget} currency={projectCurrency} />
+      <NumberChart title="Assigned budget" budget={assignedBudget} currency={projectCurrency} />
+      <NumberChart title="Disbursed budget" budget={disbursedBudget} currency={projectCurrency} />
+      <Chart
+        title="Total Budget Distribution"
+        chart={
+          <Doughnut
+            data={{
+              labels: totalBudgets.map(tb => tb.organization),
+              datasets: [
+                {
+                  data: totalBudgets.map(tb => tb.convertedAmount),
+                  backgroundColor: [
+                    "rgba(255, 99, 132, 0.8)",
+                    "rgba(54, 162, 235, 0.8)",
+                    "rgba(255, 206, 86, 0.8)",
+                    "rgba(75, 192, 192, 0.8)",
+                    "rgba(153, 102, 255, 0.8)",
+                    "rgba(255, 159, 64, 0.8)"
+                  ]
+                }
+              ]
+            }}
+            options={{
+              tooltips: {
+                callbacks: {
+                  label: (item, data) => {
+                    return toAmountString(data.datasets[item.datasetIndex].data[item.index], projectCurrency);
+                  }
+                }
+              }
+            }}
+          />
+        }
+      />
+      <RatioChart title={"Assigned Budget Ratio"} budget={assignedBudget / projectedBudget} />
+      <RatioChart title={"Disbursed Budget Ratio"} budget={disbursedBudget / assignedBudget} />
+      <Chart
+        title={"Available Unspent Budget"}
+        chart={
+          <Doughnut
+            data={{
+              labels: ["Not projected", "Not assigned", "Not disbursed"],
+              datasets: [
+                {
+                  data: [
+                    onlyPositive(totalBudget - projectedBudget),
+                    onlyPositive(projectedBudget - assignedBudget),
+                    onlyPositive(assignedBudget - disbursedBudget)
+                  ],
+                  backgroundColor: [
+                    "rgba(255, 99, 132, 0.8)",
+                    "rgba(54, 162, 235, 0.8)",
+                    "rgba(255, 206, 86, 0.8)",
+                    "rgba(75, 192, 192, 0.8)",
+                    "rgba(153, 102, 255, 0.8)",
+                    "rgba(255, 159, 64, 0.8)"
+                  ]
+                }
+              ]
+            }}
+            options={{
+              tooltips: {
+                callbacks: {
+                  label: (item, data) => {
+                    return toAmountString(data.datasets[item.datasetIndex].data[item.index], projectCurrency);
+                  }
+                }
+              }
+            }}
+          />
+        }
+      />
+    </div>
+  );
+};
 
 const mapStateToProps = state => {
   return {
@@ -160,7 +309,7 @@ const mapStateToProps = state => {
     assignedBudget: state.getIn(["analytics", "project", "assignedBudget"]),
     disbursedBudget: state.getIn(["analytics", "project", "disbursedBudget"]),
     totalBudget: state.getIn(["analytics", "project", "totalBudget"]),
-    projectCurrency: state.getIn(["analytics", "project", "currency"]),
+    projectCurrency: state.getIn(["analytics", "currency"]),
     exchangeRates: state.getIn(["analytics", "exchangeRates"])
   };
 };

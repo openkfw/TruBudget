@@ -1,20 +1,30 @@
 const axios = require("axios");
 
+const getRate = series => {
+  // catch non existing series
+  if (!series) return 0;
+
+  const observations = series.observations ? Object.values(series.observations) : [];
+  const rateObservations = observations.find(obs => obs.length);
+  if (!rateObservations) return 0;
+  const rate = rateObservations.find(rObs => typeof rObs === "number");
+
+  return rate ? rate : 0;
+};
+
 export async function getExchangeRates(baseCurrency = "EUR") {
-  const date = new Date();
-  const today = date.toISOString().split("T")[0];
-  const yesterday = new Date(date - 86400000).toISOString().split("T")[0];
   const instance = axios.create();
   delete instance.defaults.headers.common["Authorization"];
   const response = await instance.get(
-    "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A?startPeriod=" + yesterday + "&endPeriod=" + today,
+    "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A?lastNObservations=1",
     { headers: {} }
   );
   const series = response.data.dataSets[0].series;
   const exchangeRates = {};
   for (let index = 0; index < Object.keys(series).length; index++) {
+    // TODO: what happens if you the currency is not where we expect it to be?
     const currency = response.data.structure.dimensions.series[1].values[index].id;
-    const exchangeRate = series["0:" + index + ":0:0:0"].observations[0][0];
+    const exchangeRate = getRate(series["0:" + index + ":0:0:0"]);
     exchangeRates[currency] = exchangeRate;
   }
   exchangeRates["EUR"] = 1;
@@ -29,7 +39,5 @@ export async function getExchangeRates(baseCurrency = "EUR") {
   }
   return exchangeRates;
 }
-
-// getExchangeRates("BRL").then(a => console.log(a));
 
 export default getExchangeRates;

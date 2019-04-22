@@ -26,8 +26,8 @@ import {
  */
 
 const defaultState = fromJS({
+  currency: "EUR",
   project: {
-    currency: "EUR",
     totalBudget: [],
     projectedBudget: [],
     assignedBudget: [],
@@ -48,7 +48,6 @@ export default function detailviewReducer(state = defaultState, action) {
     case GET_PROJECT_KPIS_SUCCESS:
       return state.merge({
         project: {
-          currency: action.projectCurrency,
           totalBudget: fromJS(action.totalBudget),
           projectedBudget: fromJS(action.projectedBudget),
           assignedBudget: fromJS(action.assignedBudget),
@@ -58,7 +57,6 @@ export default function detailviewReducer(state = defaultState, action) {
     case GET_SUBPROJECT_KPIS_SUCCESS:
       return state.merge({
         subproject: {
-          currency: action.subProjectCurrency,
           projectedBudgets: fromJS(action.projectedBudgets),
           assignedBudget: action.assignedBudget,
           disbursedBudget: action.indicatedDisbursedBudget
@@ -67,7 +65,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case GET_EXCHANGE_RATES_SUCCESS:
       return state.set("exchangeRates", fromJS(action.exchangeRates));
     case STORE_PROJECT_CURRENCY:
-      return state.setIn(["project", "projectCurrency"], action.currency);
+      return state.setIn(["currency"], action.currency);
     case OPEN_ANALYTICS_DIALOG:
       return state.set("dialogOpen", true);
     case CLOSE_ANALYTICS_DIALOG:
