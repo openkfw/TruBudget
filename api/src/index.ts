@@ -30,6 +30,7 @@ import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
 import * as Multichain from "./service";
+import * as DocumentValidationService from "./service/document_validation";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
 import * as GlobalPermissionsGetService from "./service/global_permissions_get";
@@ -99,6 +100,7 @@ import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
+import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
 
 const URL_PREFIX = "/api";
@@ -616,6 +618,11 @@ WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
       workflowitemId,
       data,
     ),
+});
+
+WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
+  matches: (documentBase64: string, expectedSHA256: string) =>
+    DocumentValidationService.isSameDocument(documentBase64, expectedSHA256),
 });
 
 /*
