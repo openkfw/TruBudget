@@ -4,6 +4,7 @@ const fr = {
     actions: "Actions",
     add: "Ajouter",
     added: "Ajouté",
+    amount: "Montant",
     approver: "Approbateur",
     assign: "Allouer",
     assigned: "Alloué",
@@ -40,11 +41,13 @@ const fr = {
     next: "Suivant",
     not_assigned: "Non-alloué",
     not_assigned_budget: "Budget non-alloué",
+    not_projected: "Non projeté",
+    not_disbursed: "Non décaissé",
     not_ok: "Pas OK",
     open: "Ouvert",
     password: "Mot de passe",
     project: "Projet",
-    projectedBudget: "Budget estimé",
+    projected_budget: "Budget estimé",
     revoke: "Revoquer",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",
@@ -53,6 +56,7 @@ const fr = {
     subproject: "Sous-projet",
     subprojects: "Sous-projets",
     task_status: "Etat de la tâche",
+    total_budget: "budget total",
     thumbnail: "Vignette",
     update: "Mettre à jour",
     username: "Nom d'utilisateur",
@@ -197,6 +201,17 @@ const fr = {
     possible_action: "Actions possibles",
     not_possible_action: "Actions impossibles",
     actions_done: "{0} de {1} actions realisées"
+  },
+
+  analytics: {
+    assigned_budget_ratio: "Ratio budgétaire attribué",
+    available_unspent_budget: "Budget non dépensé disponible",
+    converted_amount: "Montant converti",
+    disbursed_budget_ratio: "Ratio du budget décaissé",
+    project_analytics: "Analyse de projet",
+    subproject_analytics: "Analyse de sous-projet",
+    total: "Total:",
+    total_budget_distribution: "Répartition du budget total"
   },
 
   navigation: {

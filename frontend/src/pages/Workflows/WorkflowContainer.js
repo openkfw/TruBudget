@@ -28,7 +28,6 @@ import {
   showEditDialog,
   showSubProjectAssignee,
   showWorkflowDetails,
-  storeSubProjectAmount,
   storeWorkflowItemsSelected,
   storeWorkflowType,
   updateWorkflowOrderOnState,
@@ -42,6 +41,7 @@ import Workflow from "./Workflow";
 import WorkflowBatchEditContainer from "./WorkflowBatchEditContainer";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
+import { openAnalyticsDialog } from "../Analytics/actions";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -150,7 +150,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowType: value => dispatch(storeWorkflowType(value)),
     enableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(true)),
     disableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(false)),
-    storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     postSubProjectEdit: (parent, streamName, status, amount) =>
       dispatch(postSubProjectEdit(parent, streamName, status, amount)),
     fetchUser: () => dispatch(fetchUser(true)),
@@ -160,7 +159,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents)),
     saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
     addDocument: (payload, name) => dispatch(addDocument(payload, name)),
-    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems))
+    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
+    openAnalyticsDialog: () => dispatch(openAnalyticsDialog())
   };
 };
 
@@ -184,7 +184,6 @@ const mapStateToProps = state => {
     subProjects: state.getIn(["detailview", "subProjects"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"]),
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),
-    subProjectAmount: state.getIn(["workflow", "subProjectAmount"]),
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
     users: state.getIn(["login", "user"]),

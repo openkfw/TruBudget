@@ -18,6 +18,7 @@ import documentsReducer from "./pages/Documents/reducer";
 import loadingReducer from "./pages/Loading/reducer";
 import userDashboardReducer from "./pages/Users/reducer";
 import nodeDashboardReducer from "./pages/Nodes/reducer";
+import analyticsReducer from "./pages/Analytics/reducer";
 
 /*
  * routeReducer
@@ -79,6 +80,7 @@ export default function createReducer(asyncReducers) {
     loading: loadingReducer,
     users: userDashboardReducer,
     nodes: nodeDashboardReducer,
+    analytics: analyticsReducer,
     ...asyncReducers
   });
 }

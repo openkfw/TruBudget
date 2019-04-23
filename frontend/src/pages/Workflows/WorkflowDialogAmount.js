@@ -95,7 +95,7 @@ class WorkflowDialogAmount extends Component {
       storeWorkflowExchangeRate,
       exchangeRate
     } = props;
-    const currencies = getCurrencies(subProjectCurrency);
+    const currencies = getCurrencies();
     const floatingLabelText = strings.workflow.workflow_budget;
     const hintText = strings.workflow.workflow_budget_description;
     return (

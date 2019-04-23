@@ -17,7 +17,6 @@ export const PROJECT_NAME = "PROJECT_NAME";
 export const PROJECT_PROJECTED_BUDGET = "PROJECT_PROJECTED_BUDGET";
 export const PROJECT_DELETED_PROJECTED_BUDGET = "PROJECT_DELETED_PROJECTED_BUDGET";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
-export const PROJECT_ORGANIZATION = "PROJECT_ORGANIZATION";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
 
@@ -122,13 +121,6 @@ export function storeDeletedProjectedBudget(projectedBudgets) {
   return {
     type: PROJECT_DELETED_PROJECTED_BUDGET,
     projectedBudgets: projectedBudgets
-  };
-}
-
-export function storeProjectOrganization(organization) {
-  return {
-    type: PROJECT_ORGANIZATION,
-    organization: organization
   };
 }
 

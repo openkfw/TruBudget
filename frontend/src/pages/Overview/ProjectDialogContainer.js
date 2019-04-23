@@ -12,7 +12,6 @@ import {
   storeProjectComment,
   storeProjectName,
   storeProjectThumbnail,
-  storeProjectOrganization,
   storeProjectedBudget,
   storeDeletedProjectedBudget
 } from "./actions";
@@ -47,7 +46,6 @@ const mapDispatchToProps = dispatch => {
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
     storeProjectedBudget: projectedBudgets => dispatch(storeProjectedBudget(projectedBudgets)),
-    storeProjectOrganization: organization => dispatch(storeProjectOrganization(organization)),
     storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
   };

@@ -28,7 +28,6 @@ const mapStateToProps = state => {
     editDialogShown: state.getIn(["detailview", "editDialogShown"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
     dialogTitle: state.getIn(["detailview", "dialogTitle"]),
-    projectCurrency: state.getIn(["detailview", "projectCurrency"]),
     projectProjectedBudgets: state.getIn(["detailview", "projectProjectedBudgets"])
   };
 };

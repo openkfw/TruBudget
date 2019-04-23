@@ -30,7 +30,6 @@ const Main = props => {
         minHeight: "100vh"
       }}
     >
-
       <div
         style={{
           backgroundImage: 'url("/navbar_back5edit.jpeg")',

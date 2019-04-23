@@ -362,13 +362,6 @@ export function showEditDialog(id, displayName, amount, exchangeRate, amountType
   };
 }
 
-export function storeSubProjectAmount(amount) {
-  return {
-    type: SUBPROJECT_AMOUNT,
-    amount: amount
-  };
-}
-
 export function storeWorkflowName(name) {
   return {
     type: WORKFLOW_NAME,

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Export all visible data for a certain user into an excel sheet [#67](https://github.com/openkfw/TruBudget/issues/67)
+- Analytics dashboard on project/subproject level [#202](https://github.com/openkfw/TruBudget/pull/202)
 
 ### Changed
 
