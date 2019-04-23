@@ -43,7 +43,6 @@ const getCurrencyFormat = currency => ({
   ...currencies[currency]
 });
 
-// TODO: come up with a better solution for the amount not requiring to parse every time
 export const compareObjects = (items, itemToAdd) => {
   if (!_isEmpty(items)) {
     const itemToAddClone = _cloneDeep(itemToAdd);

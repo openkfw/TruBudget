@@ -35,7 +35,6 @@ const ProjectDialogContent = props => {
           budget={props.projectToAdd.amount}
           storeProjectedBudget={props.storeProjectedBudget}
           organization={props.projectToAdd.organization}
-          storeOrganization={props.storeProjectOrganization}
           projectedBudgets={props.projectToAdd.projectedBudgets}
           deletedProjectedBudgets={props.projectToAdd.deletedProjectedBudgets}
           editDialogShown={props.editDialogShown}

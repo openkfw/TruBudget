@@ -1302,7 +1302,7 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
       { disbursed: [], allocated: [], projectedOfSubprojects: [] }
     );
 
-    if (projectedBudgets[0].currencyCode) {
+    if (projectedBudgets[0] && projectedBudgets[0].currencyCode) {
       yield put({
         type: GET_EXCHANGE_RATES,
         baseCurrency: projectedBudgets[0].currencyCode
@@ -1315,7 +1315,7 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
       disbursedBudget: projectBudgets.disbursed,
       projectedBudget: projectBudgets.projectedOfSubprojects,
       totalBudget: projectedBudgets,
-      displayCurrency: projectedBudgets[0].currencyCode || undefined
+      displayCurrency: projectedBudgets[0] ? projectedBudgets[0].currencyCode : undefined
     });
   }, showLoading);
 }
