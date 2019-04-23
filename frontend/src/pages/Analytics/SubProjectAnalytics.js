@@ -1,20 +1,18 @@
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 import React from "react";
+import { Doughnut } from "react-chartjs-2";
 import { connect } from "react-redux";
 
 import { toAmountString, toJS } from "../../helper";
-import { Doughnut } from "react-chartjs-2";
-
-import Typography from "@material-ui/core/Typography";
-
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-
 import { getSubProjectKPIs, resetKPIs } from "./actions";
+import strings from "../../localizeStrings";
 
 /**
  * SubprojectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Subproject
@@ -89,11 +87,11 @@ class SubprojectAnalytics extends React.Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Organization</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Currency</TableCell>
-                    <TableCell align="right">Exchange Rate</TableCell>
-                    <TableCell align="right">Converted Amount</TableCell>
+                    <TableCell>{strings.users.organization}</TableCell>
+                    <TableCell align="right">{strings.amount}</TableCell>
+                    <TableCell align="right">{strings.common.currency}</TableCell>
+                    <TableCell align="right">{strings.workflow.exchange_rate}</TableCell>
+                    <TableCell align="right">{strings.analytics.convertedAmount}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -197,14 +195,7 @@ const Chart = ({ title, chart }) => (
   </Card>
 );
 
-const Dashboard = ({
-  indicatedCurrency,
-  projectedBudgets,
-  totalBudget,
-  projectedBudget,
-  assignedBudget,
-  disbursedBudget
-}) => {
+const Dashboard = ({ indicatedCurrency, projectedBudgets, projectedBudget, assignedBudget, disbursedBudget }) => {
   return (
     <div style={dashboardStyles.container}>
       <Chart
@@ -239,11 +230,11 @@ const Dashboard = ({
           />
         }
       />
-      <NumberChart title="Projected budget" budget={projectedBudget} currency={indicatedCurrency} />
-      <NumberChart title="Assigned budget" budget={assignedBudget} currency={indicatedCurrency} />
-      <NumberChart title="Disbursed budget" budget={disbursedBudget} currency={indicatedCurrency} />
-      <RatioChart title={"Assigned Budget Ratio"} budget={assignedBudget / projectedBudget} />
-      <RatioChart title={"Disbursed Budget Ratio"} budget={disbursedBudget / assignedBudget} />
+      <NumberChart title={strings.common.projected_budget} budget={projectedBudget} currency={indicatedCurrency} />
+      <NumberChart title={strings.common.assigned_budget} budget={assignedBudget} currency={indicatedCurrency} />
+      <NumberChart title={strings.common.disbursed_budget} budget={disbursedBudget} currency={indicatedCurrency} />
+      <RatioChart title={strings.analytics.assigned_budget_ratio} budget={assignedBudget / projectedBudget} />
+      <RatioChart title={strings.analytics.disbursed_budget_ratio} budget={disbursedBudget / assignedBudget} />
     </div>
   );
 };

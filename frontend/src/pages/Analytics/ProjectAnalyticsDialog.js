@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { getCurrencies } from "../../helper";
 import { closeAnalyticsDialog, getExchangeRates, storeDisplayCurrency } from "./actions";
 import ProjectAnalytics from "./ProjectAnalytics";
+import strings from "../../localizeStrings";
 
 const styles = {
   container: {
@@ -62,7 +63,7 @@ const ProjectAnalyticsDialog = ({
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" color="inherit">
-          Project Analytics
+          {strings.analytics.project_analytics}
         </Typography>
         <form autoComplete="off" style={styles.dropdown}>
           <FormControl>

@@ -85,9 +85,9 @@ const ProjectDetails = props => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Organization</TableCell>
-                <TableCell align="right">Amount</TableCell>
-                <TableCell align="right">Currency</TableCell>
+                <TableCell>{strings.users.organization}</TableCell>
+                <TableCell align="right">{strings.common.amount}</TableCell>
+                <TableCell align="right">{strings.common.currency}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -101,7 +101,12 @@ const ProjectDetails = props => {
             </TableBody>
           </Table>
           <div style={styles.analytics}>
-            <Button variant="outlined" color="primary" onClick={openAnalyticsDialog}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={openAnalyticsDialog}
+              disabled={projectProjectedBudgets.length === 0}
+            >
               <BarChartIcon />
               {strings.project.project_details}
             </Button>

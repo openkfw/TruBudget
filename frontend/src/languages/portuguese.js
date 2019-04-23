@@ -4,6 +4,7 @@ const pt = {
     actions: "Ações",
     add: "adicionar",
     added: "Adicionado",
+    amount: "montante",
     approver: "Aprovador",
     assign: "Portuguese: assign",
     assigned: "Atribuído",
@@ -40,11 +41,13 @@ const pt = {
     next: "Próximo",
     not_assigned: "Não atribuído",
     not_assigned_budget: "Orçamento não atribuído",
+    not_projected: "Não projetado",
+    not_disbursed: "Não desembolsado",
     not_ok: "Não OK",
     open: "Abrir",
     password: "Senha",
     project: "Portuguese: Project",
-    projectedBudget: "Portuguese: Projected Budget",
+    projected_budget: "Portuguese: Projected Budget",
     revoke: "Portuguese: revoke",
     search: "Portuguese: Search",
     show_permissions: "Portuguese: Show Permissions",
@@ -53,6 +56,7 @@ const pt = {
     subproject: "Subprojeto",
     subprojects: "Subprojetos",
     task_status: "Status da tarefa",
+    total_budget: "orçamento total",
     thumbnail: "Portuguese: Thumbnail",
     update: "Portuguese: Update",
     username: "Usuário",
@@ -196,6 +200,17 @@ const pt = {
     possible_action: "Portuguese: Possible actions",
     not_possible_action: "Portuguese: Not possible actions",
     actions_done: "Portuguese: {0} from {1} actions done"
+  },
+
+  analytics: {
+    assigned_budget_ratio: "Proporção do orçamento atribuído",
+    available_unspent_budget: "Orçamento Disponível",
+    converted_amount: "quantidade convertida",
+    disbursed_budget_ratio: "Rácio do Orçamento Desembolsado",
+    project_analytics: "Project Analytics",
+    subproject_analytics: "Subproject Analytics",
+    total: "Total:",
+    total_budget_distribution: "Distribuição Orçamental Total"
   },
 
   navigation: {

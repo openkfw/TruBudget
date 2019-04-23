@@ -79,7 +79,6 @@ const SubProjectDetails = ({
   canAssignSubproject,
   parentProject,
   users,
-
   showSubProjectAssignee,
   closeSubproject,
   canCloseSubproject,
@@ -117,9 +116,9 @@ const SubProjectDetails = ({
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Organization</TableCell>
-                <TableCell align="right">Amount</TableCell>
-                <TableCell align="right">Currency</TableCell>
+                <TableCell>{strings.users.organization}</TableCell>
+                <TableCell align="right">{strings.common.amount}</TableCell>
+                <TableCell align="right">{strings.common.currency}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -133,7 +132,12 @@ const SubProjectDetails = ({
             </TableBody>
           </Table>
           <div style={styles.analytics}>
-            <Button variant="outlined" color="primary" onClick={openAnalyticsDialog}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={openAnalyticsDialog}
+              disabled={props.projectedBudgets.length === 0}
+            >
               <BarChartIcon />
               {strings.project.project_details}
             </Button>

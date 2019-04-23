@@ -1,19 +1,18 @@
+import React from "react";
+import { connect } from "react-redux";
+import { Doughnut } from "react-chartjs-2";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import React from "react";
-import { connect } from "react-redux";
+import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 
 import { toAmountString, toJS } from "../../helper";
 import { getProjectKPIs, resetKPIs } from "./actions";
-import { Doughnut } from "react-chartjs-2";
-
-import Typography from "@material-ui/core/Typography";
-
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import strings from "../../localizeStrings";
 
 /**
  * ProjectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Project
@@ -65,8 +64,10 @@ class ProjectAnalytics extends React.Component {
     });
   }
   convertProjectedBudget() {
+    console.log(this.props.projectedBudget);
     return this.props.projectedBudget.map(pb =>
       pb.map(pb => {
+        console.log(pb.value, pb.currencyCode);
         return {
           ...pb,
           convertedAmount: this.convertToSelectedCurrency(pb.value, pb.currencyCode)
@@ -90,6 +91,7 @@ class ProjectAnalytics extends React.Component {
         }, 0)
       );
     }, 0);
+    console.log(projectedBudget);
     const assignedBudget = this.props.assignedBudget.reduce((acc, next) => {
       return acc + this.convertToSelectedCurrency(next.budget, next.currency);
     }, 0);
@@ -104,11 +106,11 @@ class ProjectAnalytics extends React.Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Organization</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Currency</TableCell>
-                    <TableCell align="right">Exchange Rate</TableCell>
-                    <TableCell align="right">Converted Amount</TableCell>
+                    <TableCell>{strings.users.organization}</TableCell>
+                    <TableCell align="right">{strings.amount}</TableCell>
+                    <TableCell align="right">{strings.common.currency}</TableCell>
+                    <TableCell align="right">{strings.workflow.exchange_rate}</TableCell>
+                    <TableCell align="right">{strings.analytics.converted_amount}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -127,7 +129,7 @@ class ProjectAnalytics extends React.Component {
                     <TableCell />
                     <TableCell />
                     <TableCell />
-                    <TableCell align="right">Total:</TableCell>
+                    <TableCell align="right">{strings.analytics.total}</TableCell>
                     <TableCell align="right">{toAmountString(totalBudget, indicatedCurrency)}</TableCell>
                   </TableRow>
                 </TableBody>
@@ -225,12 +227,12 @@ const Dashboard = ({
 }) => {
   return (
     <div style={dashboardStyles.container}>
-      <NumberChart title="Total budget" budget={totalBudget} currency={indicatedCurrency} />
-      <NumberChart title="Projected budget" budget={projectedBudget} currency={indicatedCurrency} />
-      <NumberChart title="Assigned budget" budget={assignedBudget} currency={indicatedCurrency} />
-      <NumberChart title="Disbursed budget" budget={disbursedBudget} currency={indicatedCurrency} />
+      <NumberChart title={strings.common.total_budget} budget={totalBudget} currency={indicatedCurrency} />
+      <NumberChart title={strings.common.projected_budget} budget={projectedBudget} currency={indicatedCurrency} />
+      <NumberChart title={strings.common.assigned_budget} budget={assignedBudget} currency={indicatedCurrency} />
+      <NumberChart title={strings.common.disbursed_budget} budget={disbursedBudget} currency={indicatedCurrency} />
       <Chart
-        title="Total Budget Distribution"
+        title={strings.analytics.total_budget_distribution}
         chart={
           <Doughnut
             data={{
@@ -261,14 +263,14 @@ const Dashboard = ({
           />
         }
       />
-      <RatioChart title={"Assigned Budget Ratio"} budget={assignedBudget / projectedBudget} />
-      <RatioChart title={"Disbursed Budget Ratio"} budget={disbursedBudget / assignedBudget} />
+      <RatioChart title={strings.analytics.assigned_budget_ratio} budget={assignedBudget / projectedBudget} />
+      <RatioChart title={strings.analytics.disbursed_budget_ratio} budget={disbursedBudget / assignedBudget} />
       <Chart
-        title={"Available Unspent Budget"}
+        title={strings.analytics.available_unspent_budget}
         chart={
           <Doughnut
             data={{
-              labels: ["Not projected", "Not assigned", "Not disbursed"],
+              labels: [strings.common.not_projected, strings.common.not_assigned, strings.common.not_disbursed],
               datasets: [
                 {
                   data: [
