@@ -78,11 +78,9 @@ export const formatAmountString = (amount, currency) => {
   }
   return amount;
 };
-export const getCurrencies = parentCurrency => {
+export const getCurrencies = () => {
   return Object.keys(currencies).map(currency => {
-    const disabled = !_isEmpty(parentCurrency) && !(parentCurrency === currency);
     return {
-      disabled,
       primaryText: currency,
       value: currency
     };
@@ -197,10 +195,6 @@ export const formatUpdateString = (identifier, createdBy, data) => {
   return string.concat(changes);
 };
 
-export const getAllocationRatio = (spentAmount, projectAmount) => {
-  const allocationRatio = spentAmount / projectAmount * 100;
-  return allocationRatio > 0 ? allocationRatio : 0;
-};
 export const calculateWorkflowBudget = workflows => {
   return workflows.reduce(
     (acc, workflow) => {

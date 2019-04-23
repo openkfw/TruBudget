@@ -6,7 +6,7 @@ import {
   RESET_KPIS,
   OPEN_ANALYTICS_DIALOG,
   CLOSE_ANALYTICS_DIALOG,
-  STORE_PROJECT_CURRENCY,
+  STORE_DISPLAY_CURRENCY,
   GET_EXCHANGE_RATES_SUCCESS
 } from "./actions";
 
@@ -65,7 +65,7 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case GET_EXCHANGE_RATES_SUCCESS:
       return state.set("exchangeRates", fromJS(action.exchangeRates));
-    case STORE_PROJECT_CURRENCY:
+    case STORE_DISPLAY_CURRENCY:
       return state.setIn(["currency"], action.currency);
     case OPEN_ANALYTICS_DIALOG:
       return state.set("dialogOpen", true);

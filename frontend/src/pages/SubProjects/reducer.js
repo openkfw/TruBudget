@@ -1,37 +1,34 @@
 import { fromJS } from "immutable";
 
+import strings from "../../localizeStrings";
+import { LOGOUT } from "../Login/actions";
+import { HIDE_HISTORY } from "../Notifications/actions";
 import {
-  SUBPROJECT_NAME,
-  SUBPROJECT_COMMENT,
-  SUBPROJECT_CURRENCY,
-  SUBPROJECT_PROJECTED_BUDGETS,
-  SUBPROJECT_DELETED_PROJECTED_BUDGET,
   CREATE_SUBPROJECT_SUCCESS,
-  HIDE_SUBPROJECT_DIALOG,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
-  SHOW_PROJECT_ASSIGNEES,
-  HIDE_PROJECT_ASSIGNEES,
   FETCH_PROJECT_HISTORY,
   FETCH_PROJECT_HISTORY_SUCCESS,
-  HIDE_SUBPROJECT_PERMISSIONS,
-  SHOW_SUBPROJECT_PERMISSIONS,
-  SHOW_SUBPROJECT_ADDITIONAL_DATA,
-  HIDE_SUBPROJECT_ADDITIONAL_DATA,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
+  HIDE_PROJECT_ASSIGNEES,
+  HIDE_SUBPROJECT_ADDITIONAL_DATA,
+  HIDE_SUBPROJECT_DIALOG,
+  HIDE_SUBPROJECT_PERMISSIONS,
+  SET_HISTORY_OFFSET,
+  SHOW_PROJECT_ASSIGNEES,
+  SHOW_SUBPROJECT_ADDITIONAL_DATA,
   SHOW_SUBPROJECT_CREATE,
   SHOW_SUBPROJECT_EDIT,
-  SET_HISTORY_OFFSET
+  SHOW_SUBPROJECT_PERMISSIONS,
+  SUBPROJECT_COMMENT,
+  SUBPROJECT_CURRENCY,
+  SUBPROJECT_DELETED_PROJECTED_BUDGET,
+  SUBPROJECT_NAME,
+  SUBPROJECT_PROJECTED_BUDGETS
 } from "./actions";
-import { LOGOUT } from "../Login/actions";
-import strings from "../../localizeStrings";
-import { fromAmountString } from "../../helper";
-import { HIDE_HISTORY } from "../Notifications/actions";
 
 const defaultState = fromJS({
   id: "",
   projectName: "",
-  projectAmount: "",
-  projectCurrency: "",
   projectComment: "Default Comment",
   projectStatus: "open",
   projectProjectedBudgets: [],
@@ -71,8 +68,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         id: action.project.data.id,
         projectName: action.project.data.displayName,
-        projectAmount: fromAmountString(action.project.data.amount),
-        projectCurrency: action.project.data.currency,
         projectComment: action.project.data.description,
         projectStatus: action.project.data.status,
         projectTS: action.project.data.creationUnixTs,

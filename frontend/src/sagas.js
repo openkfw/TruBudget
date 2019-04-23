@@ -1315,8 +1315,7 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
       disbursedBudget: projectBudgets.disbursed,
       projectedBudget: projectBudgets.projectedOfSubprojects,
       totalBudget: projectedBudgets,
-      // TODO: ?????
-      projectCurrency: projectedBudgets[0].currencyCode || undefined
+      displayCurrency: projectedBudgets[0].currencyCode || undefined
     });
   }, showLoading);
 }

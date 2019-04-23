@@ -30,11 +30,9 @@ const ProjectDialogContent = props => {
         <Budget
           currencyTitle={strings.project.project_currency}
           currency={props.projectToAdd.currency}
-          storeCurrency={props.storeProjectCurrency}
           budgetLabel={strings.project.project_budget_amount}
           budgetHintText={strings.project.project_budget_amount_description + " " + toAmountString(99999.99)}
           budget={props.projectToAdd.amount}
-          storeBudget={props.storeProjectAmount}
           storeProjectedBudget={props.storeProjectedBudget}
           organization={props.projectToAdd.organization}
           storeOrganization={props.storeProjectOrganization}

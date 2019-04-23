@@ -86,8 +86,8 @@ export default class Budget extends React.Component {
 
   render() {
     this.updateSavable(this.state.organization, this.state.currency);
-    const { projectedBudgets = [], deletedProjectedBudgets = [], parentCurrency, storeProjectedBudget } = this.props;
-    const currencies = getCurrencies(parentCurrency);
+    const { projectedBudgets = [], deletedProjectedBudgets = [], storeProjectedBudget } = this.props;
+    const currencies = getCurrencies();
     return (
       <div>
         <Table>

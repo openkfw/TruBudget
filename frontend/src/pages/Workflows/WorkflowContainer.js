@@ -28,7 +28,6 @@ import {
   showEditDialog,
   showSubProjectAssignee,
   showWorkflowDetails,
-  storeSubProjectAmount,
   storeWorkflowItemsSelected,
   storeWorkflowType,
   updateWorkflowOrderOnState,
@@ -151,7 +150,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowType: value => dispatch(storeWorkflowType(value)),
     enableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(true)),
     disableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(false)),
-    storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     postSubProjectEdit: (parent, streamName, status, amount) =>
       dispatch(postSubProjectEdit(parent, streamName, status, amount)),
     fetchUser: () => dispatch(fetchUser(true)),
@@ -186,7 +184,6 @@ const mapStateToProps = state => {
     subProjects: state.getIn(["detailview", "subProjects"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"]),
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),
-    subProjectAmount: state.getIn(["workflow", "subProjectAmount"]),
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
     users: state.getIn(["login", "user"]),

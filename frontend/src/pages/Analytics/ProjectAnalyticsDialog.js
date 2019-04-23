@@ -11,7 +11,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { getCurrencies } from "../../helper";
-import { closeAnalyticsDialog, getExchangeRates, storeProjectCurrency } from "./actions";
+import { closeAnalyticsDialog, getExchangeRates, storeDisplayCurrency } from "./actions";
 import ProjectAnalytics from "./ProjectAnalytics";
 
 const styles = {
@@ -44,9 +44,9 @@ function Transition(props) {
 const ProjectAnalyticsDialog = ({
   projectId,
   open,
-  projectCurrency,
+  displayCurrency,
   closeAnalyticsDialog,
-  storeProjectCurrency,
+  storeDisplayCurrency,
   getExchangeRates
 }) => (
   <Dialog
@@ -67,9 +67,9 @@ const ProjectAnalyticsDialog = ({
         <form autoComplete="off" style={styles.dropdown}>
           <FormControl>
             <Select
-              value={projectCurrency || "EUR"}
+              value={displayCurrency || "EUR"}
               onChange={e => {
-                storeProjectCurrency(e.target.value);
+                storeDisplayCurrency(e.target.value);
                 getExchangeRates(e.target.value);
               }}
               inputProps={{
@@ -94,13 +94,13 @@ const ProjectAnalyticsDialog = ({
 const mapStateToProps = state => {
   return {
     open: state.getIn(["analytics", "dialogOpen"]),
-    projectCurrency: state.getIn(["analytics", "currency"])
+    displayCurrency: state.getIn(["analytics", "currency"])
   };
 };
 
 const mapDispatchToProps = {
   closeAnalyticsDialog,
-  storeProjectCurrency,
+  storeDisplayCurrency,
   getExchangeRates
 };
 
