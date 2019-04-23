@@ -14,7 +14,6 @@ import { ServiceUser } from "../service/domain/organization/service_user";
 import { createBackup } from "../system/createBackup";
 import { getVersion } from "../system/getVersion";
 import { restoreBackup } from "../system/restoreBackup";
-import { validateDocument } from "../workflowitem/controller/validateDocument";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
 
@@ -244,20 +243,6 @@ export const registerRoutes = (
       .then(response => send(reply, response))
       .catch(err => handleError(request, reply, err));
   });
-
-  // ------------------------------------------------------------
-  //       workflowitem
-  // ------------------------------------------------------------
-
-  server.post(
-    `${urlPrefix}/workflowitem.validateDocument`,
-    getSchema(server, "validateDocument"),
-    (request, reply) => {
-      validateDocument(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
-    },
-  );
 
   // ------------------------------------------------------------
   //       network
