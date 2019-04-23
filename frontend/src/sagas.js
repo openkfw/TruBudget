@@ -151,7 +151,9 @@ import {
   GET_PROJECT_KPIS,
   GET_PROJECT_KPIS_SUCCESS,
   GET_EXCHANGE_RATES,
-  GET_EXCHANGE_RATES_SUCCESS
+  GET_EXCHANGE_RATES_SUCCESS,
+  GET_SUBPROJECT_KPIS_FAIL,
+  GET_PROJECT_KPIS_FAIL
 } from "./pages/Analytics/actions.js";
 import { fromAmountString } from "./helper.js";
 import { getExchangeRates } from "./getExchangeRates";
@@ -1245,76 +1247,92 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
       }
     } = yield callApi(api.viewProjectDetails, projectId);
 
-    const subprojectBudgets = (yield all(
-      subprojects.map(subproject => callApi(api.viewSubProjectDetails, projectId, subproject.data.id))
-    )).map(subprojectDetails => {
-      const currency = subprojectDetails.data.subproject.data.currency;
-      const projected = subprojectDetails.data.subproject.data.projectedBudgets;
-      const workflowBudgets = subprojectDetails.data.workflowitems.reduce(
-        (acc, next) => {
-          const { amountType, status, amount, exchangeRate } = next.data;
-          if (amountType === "allocated" && amount) {
-            return {
-              ...acc,
-              allocated: acc.allocated + fromAmountString(amount) * (exchangeRate || 1)
-            };
-          }
+    try {
+      const subprojectBudgets = (yield all(
+        subprojects.map(subproject => callApi(api.viewSubProjectDetails, projectId, subproject.data.id))
+      )).map(subprojectDetails => {
+        const currency = subprojectDetails.data.subproject.data.currency;
+        const projected = subprojectDetails.data.subproject.data.projectedBudgets;
+        const workflowBudgets = subprojectDetails.data.workflowitems.reduce(
+          (acc, next) => {
+            if (!next.data.amountType) {
+              const error = new Error("redacted");
+              error.name = "redacted";
+              throw error;
+            }
+            const { amountType, status, amount, exchangeRate } = next.data;
+            if (amountType === "allocated" && amount) {
+              return {
+                ...acc,
+                allocated: acc.allocated + fromAmountString(amount) * (exchangeRate || 1)
+              };
+            }
 
-          if (amountType === "disbursed" && amount) {
-            return {
-              ...acc,
-              disbursed:
-                status === "closed" ? acc.disbursed + fromAmountString(amount) * (exchangeRate || 1) : acc.disbursed
-            };
-          }
+            if (amountType === "disbursed" && amount) {
+              return {
+                ...acc,
+                disbursed:
+                  status === "closed" ? acc.disbursed + fromAmountString(amount) * (exchangeRate || 1) : acc.disbursed
+              };
+            }
 
-          return acc;
-        },
-        {
-          allocated: 0,
-          disbursed: 0
-        }
-      );
-      return {
-        projected,
-        currency,
-        disbursed: workflowBudgets.disbursed,
-        allocated: workflowBudgets.allocated
-      };
-    });
-    const projectBudgets = subprojectBudgets.reduce(
-      (acc, next) => {
-        if (next.disbursed !== 0) {
-          acc.disbursed.push({ budget: next.disbursed, currency: next.currency });
-        }
-        if (next.allocated !== 0) {
-          acc.allocated.push({ budget: next.allocated, currency: next.currency });
-        }
-        if (next.projected.length !== 0) {
-          acc.projectedOfSubprojects.push(next.projected);
-        }
+            return acc;
+          },
+          {
+            allocated: 0,
+            disbursed: 0
+          }
+        );
         return {
-          disbursed: acc.disbursed,
-          allocated: acc.allocated,
-          projectedOfSubprojects: acc.projectedOfSubprojects
+          projected,
+          currency,
+          disbursed: workflowBudgets.disbursed,
+          allocated: workflowBudgets.allocated
         };
-      },
-      { disbursed: [], allocated: [], projectedOfSubprojects: [] }
-    );
+      });
+      const projectBudgets = subprojectBudgets.reduce(
+        (acc, next) => {
+          if (next.disbursed !== 0) {
+            acc.disbursed.push({ budget: next.disbursed, currency: next.currency });
+          }
+          if (next.allocated !== 0) {
+            acc.allocated.push({ budget: next.allocated, currency: next.currency });
+          }
+          if (next.projected.length !== 0) {
+            acc.projectedOfSubprojects.push(next.projected);
+          }
+          return {
+            disbursed: acc.disbursed,
+            allocated: acc.allocated,
+            projectedOfSubprojects: acc.projectedOfSubprojects
+          };
+        },
+        { disbursed: [], allocated: [], projectedOfSubprojects: [] }
+      );
 
-    yield put({
-      type: GET_EXCHANGE_RATES,
-      baseCurrency: projectedBudgets[0] ? projectedBudgets[0].currencyCode : "EUR"
-    });
+      yield put({
+        type: GET_EXCHANGE_RATES,
+        baseCurrency: projectedBudgets[0] ? projectedBudgets[0].currencyCode : "EUR"
+      });
 
-    yield put({
-      type: GET_PROJECT_KPIS_SUCCESS,
-      assignedBudget: projectBudgets.allocated,
-      disbursedBudget: projectBudgets.disbursed,
-      projectedBudget: projectBudgets.projectedOfSubprojects,
-      totalBudget: projectedBudgets,
-      displayCurrency: projectedBudgets[0] ? projectedBudgets[0].currencyCode : "EUR"
-    });
+      yield put({
+        type: GET_PROJECT_KPIS_SUCCESS,
+        assignedBudget: projectBudgets.allocated,
+        disbursedBudget: projectBudgets.disbursed,
+        projectedBudget: projectBudgets.projectedOfSubprojects,
+        totalBudget: projectedBudgets,
+        displayCurrency: projectedBudgets[0] ? projectedBudgets[0].currencyCode : "EUR"
+      });
+    } catch (error) {
+      if (error.name === "redacted") {
+        yield put({
+          type: GET_PROJECT_KPIS_FAIL,
+          reason: "redacted"
+        });
+      } else {
+        throw error;
+      }
+    }
   }, showLoading);
 }
 
@@ -1332,39 +1350,54 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true
       type: GET_EXCHANGE_RATES,
       baseCurrency: currency
     });
+    try {
+      const workflowBudgets = workflowitems.reduce(
+        (acc, next) => {
+          if (!next.data.amountType) {
+            const error = new Error("redacted");
+            error.name = "redacted";
+            throw error;
+          }
+          const { amountType, status, amount, exchangeRate } = next.data;
+          if (amountType === "allocated" && status === "closed" && amount) {
+            return {
+              ...acc,
+              assignedBudget: acc.assignedBudget + fromAmountString(amount) * exchangeRate
+            };
+          }
 
-    const workflowBudgets = workflowitems.reduce(
-      (acc, next) => {
-        const { amountType, status, amount, exchangeRate } = next.data;
-        if (amountType === "allocated" && status === "closed" && amount) {
-          return {
-            ...acc,
-            assignedBudget: acc.assignedBudget + fromAmountString(amount) * exchangeRate
-          };
-        }
+          if (amountType === "disbursed" && status === "closed" && amount) {
+            return {
+              ...acc,
+              disbursedBudget: acc.disbursedBudget + fromAmountString(amount) * exchangeRate
+            };
+          }
 
-        if (amountType === "disbursed" && status === "closed" && amount) {
-          return {
-            ...acc,
-            disbursedBudget: acc.disbursedBudget + fromAmountString(amount) * exchangeRate
-          };
-        }
+          return acc;
+        },
+        { assignedBudget: 0, disbursedBudget: 0 }
+      );
 
-        return acc;
-      },
-      { assignedBudget: 0, disbursedBudget: 0 }
-    );
-
-    const response = {
-      subProjectCurrency: currency,
-      projectedBudgets: projectedBudgets,
-      assignedBudget: workflowBudgets.assignedBudget,
-      disbursedBudget: workflowBudgets.disbursedBudget
-    };
-    yield put({
-      type: GET_SUBPROJECT_KPIS_SUCCESS,
-      ...response
-    });
+      const response = {
+        subProjectCurrency: currency,
+        projectedBudgets: projectedBudgets,
+        assignedBudget: workflowBudgets.assignedBudget,
+        disbursedBudget: workflowBudgets.disbursedBudget
+      };
+      yield put({
+        type: GET_SUBPROJECT_KPIS_SUCCESS,
+        ...response
+      });
+    } catch (error) {
+      if (error.name === "redacted") {
+        yield put({
+          type: GET_SUBPROJECT_KPIS_FAIL,
+          reason: "redacted"
+        });
+      } else {
+        throw error;
+      }
+    }
   }, showLoading);
 }
 

@@ -1,18 +1,18 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Doughnut } from "react-chartjs-2";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import React from "react";
+import { Doughnut } from "react-chartjs-2";
+import { connect } from "react-redux";
 
 import { toAmountString, toJS } from "../../helper";
-import { getProjectKPIs, resetKPIs } from "./actions";
 import strings from "../../localizeStrings";
+import { getProjectKPIs, resetKPIs } from "./actions";
 
 /**
  * ProjectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Project
@@ -64,10 +64,8 @@ class ProjectAnalytics extends React.Component {
     });
   }
   convertProjectedBudget() {
-    console.log(this.props.projectedBudget);
     return this.props.projectedBudget.map(pb =>
       pb.map(pb => {
-        console.log(pb.value, pb.currencyCode);
         return {
           ...pb,
           convertedAmount: this.convertToSelectedCurrency(pb.value, pb.currencyCode)
@@ -91,14 +89,13 @@ class ProjectAnalytics extends React.Component {
         }, 0)
       );
     }, 0);
-    console.log(projectedBudget);
     const assignedBudget = this.props.assignedBudget.reduce((acc, next) => {
       return acc + this.convertToSelectedCurrency(next.budget, next.currency);
     }, 0);
     const disbursedBudget = this.props.disbursedBudget.reduce((acc, next) => {
       return acc + this.convertToSelectedCurrency(next.budget, next.currency);
     }, 0);
-    return (
+    return this.props.canShowAnalytics ? (
       <div>
         <div style={styles.container}>
           <div style={styles.topContainer}>
@@ -146,6 +143,8 @@ class ProjectAnalytics extends React.Component {
           />
         </div>
       </div>
+    ) : this.props.canShowAnalytics === undefined ? null : (
+      <div>Insufficient permissions.</div>
     );
   }
 }
@@ -312,7 +311,8 @@ const mapStateToProps = state => {
     disbursedBudget: state.getIn(["analytics", "project", "disbursedBudget"]),
     totalBudget: state.getIn(["analytics", "project", "totalBudget"]),
     indicatedCurrency: state.getIn(["analytics", "currency"]),
-    exchangeRates: state.getIn(["analytics", "exchangeRates"])
+    exchangeRates: state.getIn(["analytics", "exchangeRates"]),
+    canShowAnalytics: state.getIn(["analytics", "canShowAnalytics"])
   };
 };
 

@@ -132,12 +132,7 @@ const SubProjectDetails = ({
             </TableBody>
           </Table>
           <div style={styles.analytics}>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={openAnalyticsDialog}
-              disabled={props.projectedBudgets.length === 0}
-            >
+            <Button variant="outlined" color="primary" onClick={openAnalyticsDialog}>
               <BarChartIcon />
               {strings.project.project_details}
             </Button>

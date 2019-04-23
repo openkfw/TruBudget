@@ -101,12 +101,7 @@ const ProjectDetails = props => {
             </TableBody>
           </Table>
           <div style={styles.analytics}>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={openAnalyticsDialog}
-              disabled={projectProjectedBudgets.length === 0}
-            >
+            <Button variant="outlined" color="primary" onClick={openAnalyticsDialog}>
               <BarChartIcon />
               {strings.project.project_details}
             </Button>

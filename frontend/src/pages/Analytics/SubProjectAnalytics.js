@@ -79,7 +79,7 @@ class SubprojectAnalytics extends React.Component {
     }, 0);
     const convertedAssignedBudget = this.convertToSelectedCurrency(assignedBudget, subProjectCurrency);
     const convertedDisbursedBudget = this.convertToSelectedCurrency(disbursedBudget, subProjectCurrency);
-    return (
+    return this.props.canShowAnalytics ? (
       <div>
         <div style={styles.container}>
           <div style={styles.topContainer}>
@@ -126,6 +126,8 @@ class SubprojectAnalytics extends React.Component {
           />
         </div>
       </div>
+    ) : this.props.canShowAnalytics === undefined ? null : (
+      <div>Insufficient permissions.</div>
     );
   }
 }
@@ -246,7 +248,8 @@ const mapStateToProps = state => {
     projectedBudgets: state.getIn(["analytics", "subproject", "projectedBudgets"]),
     assignedBudget: state.getIn(["analytics", "subproject", "assignedBudget"]),
     disbursedBudget: state.getIn(["analytics", "subproject", "disbursedBudget"]),
-    exchangeRates: state.getIn(["analytics", "exchangeRates"])
+    exchangeRates: state.getIn(["analytics", "exchangeRates"]),
+    canShowAnalytics: state.getIn(["analytics", "canShowAnalytics"])
   };
 };
 
