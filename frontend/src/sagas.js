@@ -140,7 +140,10 @@ import {
   CREATE_BACKUP_SUCCESS,
   CREATE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
-  RESTORE_BACKUP
+  RESTORE_BACKUP,
+  EXPORT_DATA,
+  EXPORT_DATA_SUCCESS,
+  EXPORT_DATA_FAILED
 } from "./pages/Navbar/actions.js";
 import {
   GET_SUBPROJECT_KPIS,
@@ -1378,6 +1381,34 @@ export function* getExchangeRatesSaga({ baseCurrency, showLoading = true }) {
   }, showLoading);
 }
 
+function* exportDataSaga() {
+  yield execute(
+    function*() {
+      const data = yield callApi(api.export);
+      saveAs(data, "TruBudget_Export.xlsx");
+      yield put({
+        type: EXPORT_DATA_SUCCESS
+      });
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: EXPORT_DATA_FAILED,
+        error
+      });
+      yield put({
+        type: SNACKBAR_MESSAGE,
+        message: "Exporting data failed!"
+      });
+      yield put({
+        type: SHOW_SNACKBAR,
+        show: true,
+        isError: true
+      });
+    }
+  );
+}
+
 export default function* rootSaga() {
   try {
     yield all([
@@ -1459,7 +1490,8 @@ export default function* rootSaga() {
       // Analytics
       yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),
       yield takeLeading(GET_PROJECT_KPIS, getProjectKPIsSaga),
-      yield takeLeading(GET_EXCHANGE_RATES, getExchangeRatesSaga)
+      yield takeLeading(GET_EXCHANGE_RATES, getExchangeRatesSaga),
+      yield takeLeading(EXPORT_DATA, exportDataSaga)
     ]);
   } catch (error) {
     console.log(error);

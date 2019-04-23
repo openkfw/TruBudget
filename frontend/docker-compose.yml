@@ -52,3 +52,17 @@ services:
       ROOT_SECRET: asdf
     links:
       - blockchain-master
+
+  excel-export:
+    image: trubudget/excel-export:master
+    ports:
+      - "8888:8888"
+    environment:
+      TEST_API_PORT: 8080
+      PROD_API_PORT: 8080
+      TEST_API_HOST: testapi
+      PROD_API_HOST: masterapi
+      PORT: 8888
+    depends_on:
+      - testapi
+      - masterapi

@@ -5,6 +5,7 @@ import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
 import { StoredDocument, storedDocumentSchema } from "./document";
+import { conversionRateSchema, moneyAmountSchema } from "./money";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
@@ -28,18 +29,21 @@ export interface Modification {
 export const modificationSchema = Joi.object({
   displayName: Joi.string(),
   description: Joi.string().allow(""),
-  exchangeRate: Joi.string().when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+  exchangeRate: conversionRateSchema
+    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
   billingDate: Joi.date()
     .iso()
     .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
-  amount: Joi.string().when("amountType", {
-    is: Joi.valid("N/A"),
-    then: Joi.forbidden(),
-  }),
-  currency: Joi.string().when("amountType", {
-    is: Joi.valid("N/A"),
-    then: Joi.forbidden(),
-  }),
+  amount: moneyAmountSchema
+    .when("amountType", {
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
+    }),
+  currency: Joi.string()
+    .when("amountType", {
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
+    }),
   amountType: Joi.valid("N/A", "disbursed", "allocated"),
   dueDate: Joi.date().iso(),
   documents: Joi.array().items(storedDocumentSchema),
@@ -182,7 +186,7 @@ function updateDocuments(workflowitem: Workflowitem.Workflowitem, documents?: St
       if (existingDocument.hash !== document.hash) {
         throw new VError(
           `cannot update document ${document.id}, ` +
-            `as changing existing documents is not allowed`,
+          `as changing existing documents is not allowed`,
         );
       }
     }

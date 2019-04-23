@@ -208,6 +208,7 @@ const pt = {
     menu_item_notifications: "Notificações",
     menu_item_projects: "Projetos",
     menu_item_users: "Portuguese: Users",
+    menu_item_export: "Exportar",
     no_peers: "Desconectado",
     options: "Opções",
     other_trustees: "Outros administradores",

@@ -207,6 +207,7 @@ const en = {
     menu_item_notifications: "Notifications",
     menu_item_projects: "Projects",
     menu_item_users: "Users",
+    menu_item_export: "Export",
     no_peers: "No peers",
     options: "Options",
     other_trustees: "Other Trustees",

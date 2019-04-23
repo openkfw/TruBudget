@@ -9,6 +9,7 @@ import ProjectIcon from "@material-ui/icons/Business";
 import NodesIcon from "@material-ui/icons/DesktopWindows";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import UsersIcon from "@material-ui/icons/PeopleOutline";
+import ExportIcon from "@material-ui/icons/ListAlt";
 import React from "react";
 
 import strings from "../../localizeStrings";
@@ -28,7 +29,8 @@ const SideNavCard = ({
   userId,
   createBackup,
   restoreBackup,
-  versions
+  versions,
+  exportData
 }) => (
   <div
     style={{
@@ -100,6 +102,12 @@ const SideNavCard = ({
           <ListItemText primary={strings.nodesDashboard.nodes} />
         </ListItem>
       ) : null}
+      <ListItem button onClick={exportData}>
+        <ListItemIcon>
+          <ExportIcon />
+        </ListItemIcon>
+        <ListItemText primary={strings.navigation.menu_item_export} />
+      </ListItem>
     </List>
     <Divider />
     {userId === "root" ? (

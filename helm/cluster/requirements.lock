@@ -23,11 +23,14 @@ dependencies:
 - name: api
   repository: file://../api
   version: 0.1.0
-- name: frontend
-  repository: file://../frontend
+- name: excel-export
+  repository: file://../excel-export
   version: 0.1.0
 - name: frontend
   repository: file://../frontend
   version: 0.1.0
-digest: sha256:8769c07591bc4b1cb9496b15a24804a6b2e7395d396477c3e740ffac231481dc
-generated: 2019-04-02T13:56:30.303353+02:00
+- name: frontend
+  repository: file://../frontend
+  version: 0.1.0
+digest: sha256:5bd866e4609c629cb30586e351be78431874836803448e27e97a94f9a8a3a4d8
+generated: 2019-04-18T11:29:35.42539+02:00

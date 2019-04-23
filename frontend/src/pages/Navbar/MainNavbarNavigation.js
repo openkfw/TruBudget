@@ -94,7 +94,7 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
   });
 };
 
-const MainNavbarNavigation = ({ onToggleSidebar, history, route, environment, currentProject, currentSubProject }) => {
+const MainNavbarNavigation = ({ toggleSidebar, history, route, environment, currentProject, currentSubProject }) => {
   const productionActive = environment === "Prod";
   const navbarTitle = productionActive ? "TruBudget" : "TruBudget (Test)";
   return (
