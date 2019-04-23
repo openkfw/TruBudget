@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Only allow the point character as the decimal sign for a workflowitems' amount and exchangeRate fields. While we generally try to avoid interpreting amounts, this change is important to ensure that values on the chain can be read without knowing the author's locale settings. [#216](https://github.com/openkfw/TruBudget/issues/216)
 
+### Fixed
+
+- `subproject.list` did not return `additionalData` [#214](https://github.com/openkfw/TruBudget/issues/214)
+
 ## [1.0.0-beta.8] - 2019-04-11
 
 ### Added
