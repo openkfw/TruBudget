@@ -2,6 +2,27 @@
 
 This document describes how to set up your environment to start developing and debugging the TruBudget application. The first section describes the recommended tools for development, the second part is dedicated to the installation on your local machine for development and debugging.
 
+## Table of Contents 
+- [Contributor Guide](#contributor-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Software components](#software-components)
+    - [Docker/Docker-Compose](#dockerdocker-compose)
+    - [Node.js / npm](#nodejs--npm)
+  - [Clone Repository](#clone-repository)
+    - [IDE](#ide)
+    - [Chrome Developer Tools](#chrome-developer-tools)
+  - [Developer Setup](#developer-setup)
+    - [Blockchain](#blockchain)
+      - [Developing on Windows:](#developing-on-windows)
+    - [API](#api)
+    - [Provisioning (Optional)](#provisioning-optional)
+    - [Excel-Export (Optional)](#excel-export-optional)
+    - [Frontend](#frontend)
+  - [Tests](#tests)
+    - [End-to-end Tests](#end-to-end-tests)
+    - [Unit Tests](#unit-tests)
+- [FAQ](#faq)
+
 ## Software components
 
 ### Docker/Docker-Compose
@@ -68,13 +89,6 @@ If you are testing and debugging in Google Chrome, we recommend the following ex
 
 - [Redux Developer Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
 
-<!-- ## Software-architecture
-
-That should be an image of the software architecture of Trubudget
-
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Software Architecture Trubudget")
-
-frontend <-> api <-> blockchain -->
 
 ## Developer Setup
 
@@ -215,6 +229,51 @@ npm install
 ```bash
 npm start
 ```
+
+### Excel-Export (Optional)
+
+There is a service that exports TruBudget data into an Excel sheet. The service is a node package and needs to be started separately. To start the service, follow these commands: 
+
+```bash
+cd ../excel-export
+```
+
+1. Set environment variables
+
+- Terminal Mac/Git Bash
+
+```bash
+export PROD_API_PORT=8080
+export TEST_API_PORT=8080
+export PROD_API_HOST="localhost"
+export TEST_API_HOST="localhost"
+export PORT=8888
+```
+
+- Windows Command Prompt / PowerShell
+
+```bash
+SET PROD_API_PORT=8080
+SET TEST_API_PORT=8080
+SET PROD_API_HOST="localhost"
+SET TEST_API_HOST="localhost"
+SET PORT=8888
+```
+
+2. Install node-modules
+
+```bash
+npm install
+```
+
+3. Start the provisioning
+
+```bash
+npm start
+```
+
+The service is then available either on the host and port set by the environment variable or `localhost:8888` by default. 
+
 
 ### Frontend
 

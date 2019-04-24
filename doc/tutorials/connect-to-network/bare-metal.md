@@ -2,6 +2,19 @@
 
 This guide describes how to connect to an existing network without the use of Docker, Docker-Compose or Kubernetes. Before starting the network make sure to [install the necessary software on your machine.](../bare-metal-installation.md)
 
+## Table of Contents
+- [Connect to an Existing Network Directly from Machine](#connect-to-an-existing-network-directly-from-machine)
+  - [Table of Contents](#table-of-contents)
+  - [Get the repository](#get-the-repository)
+  - [Blockchain](#blockchain)
+  - [API](#api)
+      - [Log-Rotation](#log-rotation)
+  - [Excel Export](#excel-export)
+    - [Set Environment Variables](#set-environment-variables)
+    - [Install Node Modules](#install-node-modules)
+    - [Start the Service](#start-the-service)
+  - [Frontend](#frontend)
+
 ## Get the repository
 
 Clone the Github repository of the components onto the designated machines.
@@ -191,6 +204,53 @@ pm2 start dist/index.js
 ```
 
 This is just an example. Please refer to the [official documentation](http://pm2.keymetrics.io/) for more information.
+
+## Excel Export
+
+To enable the export of TruBudget data into Excel files, a separate service needs to be started. To start that service, first change the directory to the `excel-export` folder:
+
+```bash
+cd ../excel-export
+```
+
+### Set Environment Variables
+
+The following environment variables need to be set: 
+
+- Terminal Mac/Git Bash
+
+```bash
+export PROD_API_HOST=127.0.0.1
+export TEST_API_HOST=127.0.0.1
+export PROD_API_PORT=8080
+export TEST_API_PORT=8081
+export PORT=8888
+export ACCESS_CONTROL_ALLOW_ORIGIN="*"
+```
+
+- Terminal Windows/Command Shell
+```bash
+SET PROD_API_HOST=127.0.0.1
+SET TEST_API_HOST=127.0.0.1
+SET PROD_API_PORT=8080
+SET TEST_API_PORT=8081
+SET PORT=8888
+SET ACCESS_CONTROL_ALLOW_ORIGIN="*"
+```
+
+### Install Node Modules
+
+Install the node modules via 
+
+```bash
+npm install
+```
+
+### Start the Service
+
+```bash
+npm start
+```
 
 ## Frontend
 

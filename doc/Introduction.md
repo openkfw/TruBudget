@@ -46,6 +46,8 @@ The following environment variables are used either in the development mode or f
 - SWAGGER_BASEPATH (deprecated): This variable was used to choose which environment (prod or test) is used for testing the requests. The variable is deprecated now, as the Swagger documentation can be used for the prod and test environment separately.
 - MULTICHAIN_DIR (default: "/root"): The path to the multichain folder where the blockchain data is persisted. For installations via `docker-compose`, this refers to the path within the docker container of the blockchain. For bare metal installations, this refers to the path on the machine the blockchain is running on.
 - EXTERNAL_IP: The IP address with which the current node can be reached. Example: If you have a VM running on 52.52.52.52 and you want to start a slave node from this VM to connect to a master running on 53.53.53.53, you set the `EXTERNAL_IP` to 52.52.52.52 on this node.
+- ACCESS_CONTROL_ALLOW_ORIGIN: This environment variable is needed for the feature "Export to Excel". Since the export service uses CORS (Cross Origin Resource Sharing), the domain by which it can be called needs to be set. Setting this value to `"*"` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
+- PORT: This variable sets the port on which the service that exports TruBudget data to Excel is exposed. Caution: This currently only works for local setups and **not** for setups via `docker-compose`.
 
 ## Organizations and Nodes in TruBudget
 
