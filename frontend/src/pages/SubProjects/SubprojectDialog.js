@@ -69,7 +69,6 @@ const SubprojectDialog = props => {
       content: <SubprojectDialogContent {...props} />,
       nextDisabled:
         _isEmpty(subprojectToAdd.displayName) ||
-        _isEmpty(subprojectToAdd.projectedBudgets) ||
         _isEmpty(subprojectToAdd.currency) ||
         _isEmpty(changes)
     }
