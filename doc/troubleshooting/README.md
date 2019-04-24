@@ -1,6 +1,10 @@
 # Known Issues & Troubleshooting
 
-This page is dedicated to known issues that may occur during installation or start of the Trubudget setup.
+This page is dedicated to known issues that may occur during installation or start of the Trubudget setup. 
+
+## Gitter
+
+If you experience any issues that are not described here, please contact us [on Gitter](https://gitter.im/Tru-Community/community). 
 
 ## Errors during Local Installation
 
