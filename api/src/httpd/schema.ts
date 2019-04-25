@@ -3263,10 +3263,11 @@ const schemas = {
       ],
       consumes: ["application/gzip"],
       body: {
-        description: "binary gzip file",
-        type: "string",
-        // format: "binary",
-        example: "backup.gz (send a backup-file as binary via an API-Testing-Tool like postman)",
+        // type=string + format=binary is not supported by fastify-swagger.
+        // Instead, we use the `AnyValue` schema, which allows anything.
+        AnyValue: {
+          description: "backup.gz (binary gzip file)",
+        },
       },
       response: {
         200: {

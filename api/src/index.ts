@@ -30,6 +30,7 @@ import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
 import * as Multichain from "./service";
+import * as Cache from "./service/cache2";
 import * as DocumentValidationService from "./service/document_validation";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
@@ -199,7 +200,9 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort);
+registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, () =>
+  Cache.invalidateCache(db),
+);
 
 /*
  * APIs related to Global Permissions

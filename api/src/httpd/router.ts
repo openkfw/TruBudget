@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 
+import { toHttpError } from "../http_errors";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
@@ -186,15 +187,8 @@ const handleError = (req, res, err: any) => {
           },
         ]);
       } else {
-        const message = "INTERNAL SERVER ERROR";
-        logger.error({ error: err }, message);
-        send(res, [
-          500,
-          {
-            apiVersion: "1.0",
-            error: { code: 500, message },
-          },
-        ]);
+        const { code, body } = toHttpError(err);
+        res.status(code).send(body);
       }
     }
   }
@@ -215,6 +209,7 @@ export const registerRoutes = (
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
+  invalidateCache: () => void,
 ) => {
   const multichainClient = conn.multichainClient;
 
@@ -327,10 +322,12 @@ export const registerRoutes = (
   server.post(
     `${urlPrefix}/system.restoreBackup`,
     getSchema(server, "restoreBackup"),
-    (req: AuthenticatedRequest, reply) => {
-      restoreBackup(multichainHost, backupApiPort, req)
+    async (req: AuthenticatedRequest, reply) => {
+      await restoreBackup(multichainHost, backupApiPort, req)
         .then(response => send(reply, response))
         .catch(err => handleError(req, reply, err));
+      // Invalidate the cache, regardless of the outcome:
+      await invalidateCache();
     },
   );
 
