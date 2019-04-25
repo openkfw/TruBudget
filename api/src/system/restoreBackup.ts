@@ -1,4 +1,6 @@
 import axios from "axios";
+import { VError } from "verror";
+
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 
@@ -22,13 +24,10 @@ export const restoreBackup = async (
   };
   try {
     await axios.post(`http://${multichainHost}:${backupApiPort}/chain/`, data, config);
-  } catch (err) {
-    if (err.response.status === 400) {
-      throw { kind: "CorruptFileError" };
-    } else {
-      logger.error({ error: err }, "An error occured while restoring the backup");
-      throw new Error(err.message);
-    }
+    logger.info("backup restored successfully");
+  } catch (error) {
+    const cause = error.response.status === 400 ? new Error(error.response.data) : error;
+    throw new VError(cause, "failed to restore backup");
   }
   return [
     200,

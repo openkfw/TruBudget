@@ -85,7 +85,17 @@ export function initCache(): Cache2 {
   };
 }
 
-export interface CacheInstance {
+function clearCache(cache: Cache2): void {
+  cache.streamState.clear();
+  cache.eventsByStream.clear();
+  cache.cachedProjects.clear();
+  cache.cachedSubprojects.clear();
+  cache.cachedWorkflowItems.clear();
+  cache.cachedSubprojectLookup.clear();
+  cache.cachedWorkflowitemLookup.clear();
+}
+
+interface CacheInstance {
   getGlobalEvents(): BusinessEvent[];
   getUserEvents(userId?: string): BusinessEvent[];
   getGroupEvents(groupId?: string): BusinessEvent[];
@@ -110,8 +120,6 @@ export interface CacheInstance {
     workflowitemId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
 }
-
-export type TransactionFn<T> = (cache: CacheInstance) => Promise<T>;
 
 export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
   return {
@@ -229,6 +237,8 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
   };
 }
 
+export type TransactionFn<T> = (cache: CacheInstance) => Promise<T>;
+
 export async function withCache<T>(
   conn: ConnToken,
   ctx: Ctx,
@@ -256,6 +266,18 @@ export async function withCache<T>(
   }
 }
 
+export async function invalidateCache(conn: ConnToken): Promise<void> {
+  const cache = conn.cache2;
+  try {
+    // Make sure we're the only thread-of-execution:
+    await grabWriteLock(cache);
+    // Invalidate the cache by removing all of its data:
+    clearCache(cache);
+  } finally {
+    releaseWriteLock(cache);
+  }
+}
+
 async function grabWriteLock(cache: Cache2) {
   while (cache.isWriteLocked) {
     await new Promise(res => setTimeout(res, 1));
@@ -265,17 +287,6 @@ async function grabWriteLock(cache: Cache2) {
 
 function releaseWriteLock(cache: Cache2) {
   cache.isWriteLocked = false;
-}
-
-async function refresh(ctx: Ctx, conn: ConnToken, streamName?: string): Promise<void> {
-  const { cache2: cache } = conn;
-  try {
-    // Make sure we're the only thread-of-execution that updates the cache:
-    await grabWriteLock(cache);
-    await updateCache(ctx, conn, streamName);
-  } finally {
-    releaseWriteLock(cache);
-  }
 }
 
 async function findStartIndex(
