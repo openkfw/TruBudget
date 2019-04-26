@@ -1,0 +1,12 @@
+[
+  {
+    "id": "admins",
+    "displayName": "Admins",
+    "users": ["mstein", "jdoe"]
+  },
+  {
+    "id": "reviewers",
+    "displayName": "Reviewers",
+    "users": []
+  }
+]

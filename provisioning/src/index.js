@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { provisionUsers } = require("./users");
+const { provisionUsers, provisionGroups } = require("./users_and_groups");
 const { readDirectory, readJsonFile } = require("./files");
 const {
   authenticate,
@@ -22,7 +22,9 @@ const {
 
 const DEFAULT_API_VERSION = "1.0";
 
-const projectBlacklist = ["users.json", "close_test.json"];
+// List all files here that do not contain project data
+const projectBlacklist = ["users.json", "close_test.json", "groups.json"];
+
 axios.defaults.transformRequest = [
   (data, headers) => {
     if (typeof data === "object") {
@@ -56,6 +58,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     await impersonate("root", rootSecret);
     console.log("Start to provision users");
     await provisionUsers(axios, folder, organization);
+    await provisionGroups(axios, folder);
 
     console.log("Starting to provision projects");
     await impersonate("mstein", "test");
@@ -349,7 +352,11 @@ async function testWorkflowitemUpdate(folder) {
   );
 
   if (workflowitem.data.documents.length !== 0) {
-    throw new Error(`workflowitem ${workflowitem.data.id} is not expected to already have documents attached. Note that the provisioning script shouldn't run more than once.`)
+    throw new Error(
+      `workflowitem ${
+        workflowitem.data.id
+      } is not expected to already have documents attached. Note that the provisioning script shouldn't run more than once.`
+    );
   }
 
   const { amountType, amount, currency } = workflowitem.data;
@@ -557,7 +564,9 @@ async function testWorkflowitemReordering(folder) {
       "The final installment workflowitem should have moved to an earlier position." +
         ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${
           changedOrdering[finalInstName]
-        }. original ordering = ${JSON.stringify(originalOrdering)}; changed ordering = ${JSON.stringify(changedOrdering)}`
+        }. original ordering = ${JSON.stringify(
+          originalOrdering
+        )}; changed ordering = ${JSON.stringify(changedOrdering)}`
     );
   }
   if (changedOrdering[finalInstName] >= changedOrdering[interimInstName]) {
