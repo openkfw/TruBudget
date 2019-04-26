@@ -209,6 +209,7 @@ const fr = {
     converted_amount: "Montant converti",
     disbursed_budget_ratio: "Ratio du budget décaissé",
     project_analytics: "Analyse de projet",
+    projected_budget_ratio: "Ratio du budget estimé",
     subproject_analytics: "Analyse de sous-projet",
     total: "Total:",
     total_budget_distribution: "Répartition du budget total"

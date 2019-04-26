@@ -207,6 +207,7 @@ const de = {
     converted_amount: "Umgerechneter Betrag",
     disbursed_budget_ratio: "Ausgezahlte Budgetquote",
     project_analytics: "Projekt Analyse",
+    projected_budget_ratio: "Projezierte Budgetquote",
     subproject_analytics: "Subprojekt Analyse",
     total: "Gesamt:",
     total_budget_distribution: "Gesamte Budget Verteilung"
