@@ -1,7 +1,7 @@
 DOCKER_REGISTRY_PASSWORD
 *.orig
 .DS_Store
-.env
+/.env
 *~
 *-audit.json
 .vscode/*
