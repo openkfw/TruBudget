@@ -7,7 +7,6 @@ COPY package*.json ./
 #RUN sed -i '/"cypress"/d' package.json
 RUN npm ci
 
-COPY .env_example .env
 COPY . ./
 RUN npm run build
 
