@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-<!-- ### Added -->
+### Added
+
+- Projected budget ratio on project analytics screen [#242](https://github.com/openkfw/TruBudget/pull/242)
 
 ### Changed
 
@@ -17,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed line of YAML file for master deployments via docker-compose, so that image of excel export service is pulled correctly [#223](https://github.com/openkfw/TruBudget/issues/223)
 - Backup/restore works again. [#237](https://github.com/openkfw/TruBudget/issues/237)
+- Budgets on project analytics do not contain open workflow items [#230](https://github.com/openkfw/TruBudget/issues/230)
 
 ## [1.0.0-beta.9] - 2019-04-23
 
