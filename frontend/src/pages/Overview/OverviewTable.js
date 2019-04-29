@@ -22,6 +22,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import MoreIcon from "@material-ui/icons/MoreHoriz";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 
 import { toAmountString, statusMapping, unixTsToString } from "../../helper";
@@ -87,7 +88,14 @@ const displayProjectBudget = budgets => {
   );
 };
 
-const getTableEntries = ({ projects, history, classes, showEditDialog, showProjectPermissions }) => {
+const getTableEntries = ({
+  projects,
+  history,
+  classes,
+  showEditDialog,
+  showProjectPermissions,
+  showProjectAdditionalData
+}) => {
   return projects.map(({ data, allowedIntents }, index) => {
     const {
       displayName,
@@ -96,7 +104,8 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
       status,
       thumbnail = "/Thumbnail_0008.jpg",
       creationUnixTs,
-      projectedBudgets
+      projectedBudgets,
+      additionalData
     } = data;
     const budgets = displayProjectBudget(projectedBudgets);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
@@ -105,6 +114,7 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
     const isOpen = status !== "closed";
     const editDisabled = !(canEditProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
+    const additionalDataEmpty = _isEmpty(additionalData);
     return (
       <Card aria-label="project" key={index} className={classes.card} data-test={`projectcard-${index}`}>
         <CardMedia className={classes.media} image={imagePath} />
@@ -158,6 +168,21 @@ const getTableEntries = ({ projects, history, classes, showEditDialog, showProje
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
             <div className={classes.editContainer}>
+              {!additionalDataEmpty ? (
+                <Tooltip id="tooltip-additionalData" title="Additional Data">
+                  <div>
+                    <IconButton
+                      data-test={`adata-button-${index}`}
+                      onClick={() => {
+                        showProjectAdditionalData(id);
+                      }}
+                      disabled={false}
+                    >
+                      <MoreIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
               {canViewPermissions ? (
                 <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
                   <div>

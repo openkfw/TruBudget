@@ -21,6 +21,7 @@ import {
   HIDE_WORKFLOW_DIALOG,
   HIDE_WORKFLOW_PREVIEW,
   HIDE_WORKFLOWITEM_PERMISSIONS,
+  HIDE_WORKFLOWITEM_ADDITIONAL_DATA,
   RESET_SUCCEEDED_WORKFLOWITEMS,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   SAVE_WORKFLOW_ITEM_BEFORE_SORT,
@@ -32,6 +33,7 @@ import {
   SHOW_WORKFLOW_EDIT,
   SHOW_WORKFLOW_PREVIEW,
   SHOW_WORKFLOWITEM_PERMISSIONS,
+  SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
   STORE_WORKFLOW_ASSIGNEE,
   STORE_WORKFLOWACTIONS,
   SUBMIT_BATCH_FOR_WORKFLOW,
@@ -103,7 +105,9 @@ const defaultState = fromJS({
   submittedWorkflowItems: [],
   failedWorkflowItem: {},
   submitDone: false,
-  submitInProgress: false
+  submitInProgress: false,
+  idForInfo: "",
+  isWorkflowitemAdditionalDataShown: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -179,6 +183,14 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowItemReference: defaultState.getIn(["workflowItemReference"]),
         showWorkflowPermissions: false
       });
+
+    case SHOW_WORKFLOWITEM_ADDITIONAL_DATA:
+      return state.merge({
+        idForInfo: fromJS(action.wId),
+        isWorkflowitemAdditionalDataShown: true
+      });
+    case HIDE_WORKFLOWITEM_ADDITIONAL_DATA:
+      return state.set("isWorkflowitemAdditionalDataShown", false);
 
     case FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS:
       return state.set("permissions", fromJS(action.permissions));

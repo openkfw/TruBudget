@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - When adding subprojects, projected budgets are not mandatory anymore [#229](https://github.com/openkfw/TruBudget/issues/229)
 - In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/openkfw/TruBudget/issues/176)
+- The `additional data` button is now available on all levels and is only displayed if additional data is available [#91](https://github.com/openkfw/TruBudget/issues/91)
+- In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/openkfw/TruBudget/issues/176)
 
 ### Fixed
 

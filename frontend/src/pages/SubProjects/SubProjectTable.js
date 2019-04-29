@@ -107,19 +107,21 @@ const getTableEntries = (
           <TableCell>
             <div className={classes.buttonContainer}>
               <div className={classes.button}>
-                <Tooltip id="tooltip-additionalData" title="Additional Data">
-                  <div>
-                    <IconButton
-                      data-test={`adata-button-${index}`}
-                      onClick={() => {
-                        showSubProjectAdditionalData(id);
-                      }}
-                      disabled={additionalDataEmpty}
-                    >
-                      <MoreIcon />
-                    </IconButton>
-                  </div>
-                </Tooltip>
+                {!additionalDataEmpty ? (
+                  <Tooltip id="tooltip-additionalData" title="Additional Data">
+                    <div>
+                      <IconButton
+                        data-test={`adata-button-${index}`}
+                        onClick={() => {
+                          showSubProjectAdditionalData(id);
+                        }}
+                        disabled={false}
+                      >
+                        <MoreIcon />
+                      </IconButton>
+                    </div>
+                  </Tooltip>
+                ) : null}
               </div>
               <div className={classes.button}>
                 {isOpen && !editDisabled ? (

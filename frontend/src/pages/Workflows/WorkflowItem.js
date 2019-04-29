@@ -1,29 +1,30 @@
+import Card from "@material-ui/core/Card";
+import Checkbox from "@material-ui/core/Checkbox";
+import Chip from "@material-ui/core/Chip";
+import green from "@material-ui/core/colors/lightGreen";
+import IconButton from "@material-ui/core/IconButton";
+import Paper from "@material-ui/core/Paper";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import DoneIcon from "@material-ui/icons/Check";
+import EditIcon from "@material-ui/icons/Edit";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
+import PermissionIcon from "@material-ui/icons/LockOpen";
+import MoreIcon from "@material-ui/icons/MoreHoriz";
+import OpenIcon from "@material-ui/icons/Remove";
+import SwapIcon from "@material-ui/icons/SwapCalls";
+import HiddenIcon from "@material-ui/icons/VisibilityOff";
+import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
 
-import Card from "@material-ui/core/Card";
-import Chip from "@material-ui/core/Chip";
-import Tooltip from "@material-ui/core/Tooltip";
-import SwapIcon from "@material-ui/icons/SwapCalls";
-import DoneIcon from "@material-ui/icons/Check";
-import HiddenIcon from "@material-ui/icons/VisibilityOff";
-import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/InfoOutlined";
-import EditIcon from "@material-ui/icons/Edit";
-import OpenIcon from "@material-ui/icons/Remove";
-import Paper from "@material-ui/core/Paper";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-import Typography from "@material-ui/core/Typography";
-import green from "@material-ui/core/colors/lightGreen";
-import Checkbox from "@material-ui/core/Checkbox";
-
-import { toAmountString, amountTypes, fromAmountString } from "../../helper.js";
+import { amountTypes, fromAmountString, toAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import {
-  canViewWorkflowItemPermissions,
-  canUpdateWorkflowItem,
+  canAssignWorkflowItem,
   canCloseWorkflowItem,
-  canAssignWorkflowItem
+  canUpdateWorkflowItem,
+  canViewWorkflowItemPermissions
 } from "../../permissions.js";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
@@ -245,6 +246,7 @@ const getInfoButton = ({ openWorkflowDetails }, status, workflowSortEnabled, wor
     </IconButton>
   );
 };
+
 const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, status) => {
   const workflowSortable = status === "open";
   return workflowSortEnabled ? workflowSortable : currentWorkflowSelectable;
@@ -309,11 +311,24 @@ const renderActionButtons = (
   close,
   selectable,
   workflowSortEnabled,
-  status
+  status,
+  showAdditionalData,
+  additionalData
 ) => {
   return (
     <div style={styles.actionCell}>
       <div style={styles.actions}>
+        <div style={styles.actionButton}>
+          {!_isEmpty(additionalData) ? (
+            <Tooltip id="tooltip-additionalData" title="Additional Data">
+              <div>
+                <IconButton data-test={`adata-button`} onClick={showAdditionalData} disabled={false}>
+                  <MoreIcon />
+                </IconButton>
+              </div>
+            </Tooltip>
+          ) : null}
+        </div>
         <div style={styles.actionButton}>
           {status !== "closed" ? (
             <Tooltip
@@ -397,7 +412,8 @@ export const WorkflowItem = SortableElement(
       amount,
       assignee,
       exchangeRate,
-      currency: sourceCurrency
+      currency: sourceCurrency,
+      additionalData
     } = workflow.data;
     const allowedIntents = workflow.allowedIntents;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
@@ -465,7 +481,9 @@ export const WorkflowItem = SortableElement(
               () => props.closeWorkflowItem(id),
               currentWorkflowSelectable,
               workflowSortEnabled,
-              status
+              status,
+              () => props.showWorkflowitemAdditionalData(id),
+              additionalData
             )}
           </div>
         </Card>
