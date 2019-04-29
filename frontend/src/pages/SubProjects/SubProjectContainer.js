@@ -1,34 +1,33 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import {
-  fetchAllProjectDetails,
-  showSubprojectDialog,
-  showProjectAssignees,
-  fetchProjectHistory,
-  showEditDialog,
-  closeProject,
-  showSubProjectPermissions,
-  liveUpdateProject,
-  showSubProjectAdditionalData,
-  hideSubProjectAdditionalData
-} from "./actions";
-
-import SubProjects from "./SubProjects";
-import { showHistory, hideHistory } from "../Notifications/actions";
-import { setSelectedView } from "../Navbar/actions";
-import ProjectDetails from "./ProjectDetails";
-import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
-import { fetchUser } from "../Login/actions";
-import ProjectHistoryContainer from "./ProjectHistoryContainer";
-import { canCreateSubProject, canAssignProject, canCloseProject } from "../../permissions";
-import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
-import SubprojectDialogContainer from "./SubprojectDialogContainer";
-import LiveUpdates from "../LiveUpdates/LiveUpdates";
-import SubProjectInfo from "./SubProjectInfo";
+import { canAssignProject, canCloseProject, canCreateSubProject } from "../../permissions";
+import globalStyles from "../../styles";
 import { openAnalyticsDialog } from "../Analytics/actions";
+import AdditionalInfo from "../Common/AdditionalInfo";
+import LiveUpdates from "../LiveUpdates/LiveUpdates";
+import { fetchUser } from "../Login/actions";
+import { setSelectedView } from "../Navbar/actions";
+import { hideHistory, showHistory } from "../Notifications/actions";
+import {
+  closeProject,
+  fetchAllProjectDetails,
+  fetchProjectHistory,
+  hideSubProjectAdditionalData,
+  liveUpdateProject,
+  showEditDialog,
+  showProjectAssignees,
+  showSubProjectAdditionalData,
+  showSubprojectDialog,
+  showSubProjectPermissions
+} from "./actions";
+import ProjectDetails from "./ProjectDetails";
+import ProjectHistoryContainer from "./ProjectHistoryContainer";
+import SubprojectDialogContainer from "./SubprojectDialogContainer";
+import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
+import SubProjects from "./SubProjects";
 
 class SubProjectContainer extends Component {
   constructor(props) {
@@ -74,8 +73,12 @@ class SubProjectContainer extends Component {
             subProjects={this.props.subProjects}
             title={strings.subproject.subproject_permissions_title}
           />
-          {/* // TODO: put SubProjectInfo in separate container */}
-          <SubProjectInfo {...this.props} />
+          <AdditionalInfo
+            resources={this.props.subProjects}
+            isAdditionalDataShown={this.props.isSubProjectAdditionalDataShown}
+            hideAdditionalData={this.props.hideSubProjectAdditionalData}
+            {...this.props}
+          />
           <SubprojectDialogContainer location={this.props.location} />
         </div>
       </div>

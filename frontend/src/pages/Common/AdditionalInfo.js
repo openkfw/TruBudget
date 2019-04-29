@@ -39,23 +39,23 @@ const styles = {
   }
 };
 
-const SubProjectInfo = ({ subProjects, idForInfo, isSubProjectAdditionalDataShown, hideSubProjectAdditionalData }) => {
-  const subProjectForInfo = subProjects.find(item => item.data.id === idForInfo);
+const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAdditionalData }) => {
+  const resourceForInfo = resources.find(item => item.data.id === idForInfo);
   return (
-    <Dialog open={isSubProjectAdditionalDataShown} style={styles.dialog} onClose={hideSubProjectAdditionalData}>
+    <Dialog open={isAdditionalDataShown} style={styles.dialog} onClose={hideAdditionalData}>
       <DialogTitle>Additional Data</DialogTitle>
       <DialogContent style={styles.dialogContent}>
-        {subProjectForInfo && !_isEmpty(subProjectForInfo.data.additionalData) ? (
-          <pre>{JSON.stringify(subProjectForInfo.data.additionalData, null, `\t`)}</pre>
+        {resourceForInfo && !_isEmpty(resourceForInfo.data.additionalData) ? (
+          <pre>{JSON.stringify(resourceForInfo.data.additionalData, null, `\t`)}</pre>
         ) : (
-          "No fields are added to this Subproject"
+          "No fields are added to this Resource"
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={hideSubProjectAdditionalData}>{strings.common.close}</Button>
+        <Button onClick={hideAdditionalData}>{strings.common.close}</Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default SubProjectInfo;
+export default AdditionalInfo;
