@@ -15,6 +15,7 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import { Id } from "./service/domain/workflow/workflowitem";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
+import { AdditionalData } from "./service/domain/additional_data";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -189,6 +190,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         amountType: bodyResult.data.amountType,
         billingDate: bodyResult.data.billingDate,
         exchangeRate: bodyResult.data.exchangeRate,
+        additionalData: bodyResult.data.additionalData,
         documents: bodyResult.data.documents,
       };
 
