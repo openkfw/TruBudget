@@ -348,7 +348,7 @@ const renderActionButtons = (
     <div style={styles.actionCell}>
       <div style={styles.actions}>
         <ActionButton
-          notVisible={workflowSortEnabled || status === "closed"}
+          notVisible={additionalDataDisabled || status === "closed"}
           disabled={additionalDataDisabled}
           onClick={additionalDataDisabled ? undefined : showAdditionalData}
           icon={<MoreIcon />}
