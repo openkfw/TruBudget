@@ -13,9 +13,7 @@ import { UploadedDocument } from "./service/domain/workflow/document";
 import { conversionRateSchema, moneyAmountSchema } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import { Id } from "./service/domain/workflow/workflowitem";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
-import { AdditionalData } from "./service/domain/additional_data";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
