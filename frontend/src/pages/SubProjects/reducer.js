@@ -25,7 +25,6 @@ import {
   SUBPROJECT_NAME,
   SUBPROJECT_PROJECTED_BUDGETS
 } from "./actions";
-import { GET_PROJECT_KPIS_FAIL, GET_PROJECT_KPIS_SUCCESS } from "../Analytics/actions";
 
 const defaultState = fromJS({
   id: "",

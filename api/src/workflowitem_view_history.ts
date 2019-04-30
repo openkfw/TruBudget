@@ -1,30 +1,34 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
-import * as Result from "./result";
-import { BusinessEvent } from "./service/domain/business_event";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
+import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import * as WorkflowitemTraceEvent from "./service/domain/workflow/workflowitem_trace_event";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
     schema: {
-      deprecated: true,
       description:
-        "View the history of a given project (filtered by what the user is allowed to see).",
-      tags: ["project"],
-      summary: "View history",
+        "View the history of a given workflowitem (filtered by what the user is allowed to see).",
+      tags: ["workflowitem"],
+      summary: "View workflowitem history",
       querystring: {
         type: "object",
         properties: {
           projectId: {
+            type: "string",
+          },
+          subprojectId: {
+            type: "string",
+          },
+          workflowitemId: {
             type: "string",
           },
           limit: {
@@ -48,49 +52,45 @@ function mkSwaggerSchema(server: FastifyInstance) {
       ],
       response: {
         200: {
-          description: "successful response",
+          description: "changes related to the given workflowitem in chronological order",
           type: "object",
           properties: {
-            apiVersion: { type: "string", example: "1.0" },
-            data: {
-              type: "object",
-              properties: {
-                events: {
-                  type: "array",
-                  items: {
+            historyItemsCount: {
+              type: "number",
+              description:
+                "Total number of history items (greater or equal to the number of returned items)",
+              example: 10,
+            },
+            events: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                  entityType: { type: "string", example: "subproject" },
+                  businessEvent: {
                     type: "object",
+                    additionalProperties: true,
                     properties: {
-                      entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                      entityType: { type: "string", example: "project" },
-                      businessEvent: {
-                        type: "object",
-                        additionalProperties: true,
-                        properties: {
-                          type: { type: "string" },
-                          source: { type: "string" },
-                          time: { type: "string" },
-                          publisher: { type: "string" },
-                        },
-                        example: {
-                          type: "project_closed",
-                          source: "http",
-                          time: "2018-09-05T13:37:25.775Z",
-                          publisher: "jdoe",
-                        },
-                      },
-                      snapshot: {
-                        type: "object",
-                        additionalProperties: true,
-                        properties: {
-                          displayName: { type: "string", example: "townproject" },
-                        },
-                      },
+                      type: { type: "string" },
+                      source: { type: "string" },
+                      time: { type: "string" },
+                      publisher: { type: "string" },
+                    },
+                    example: {
+                      type: "workflowitem_closed",
+                      source: "http",
+                      time: "2018-09-05T13:37:25.775Z",
+                      publisher: "jdoe",
                     },
                   },
-                },
-                historyItemsCount: {
-                  type: "number",
-                  example: 10,
+                  snapshot: {
+                    type: "object",
+                    additionalProperties: true,
+                    properties: {
+                      displayName: { type: "string", example: "Build a bridge" },
+                    },
+                  },
                 },
               },
             },
@@ -102,23 +102,19 @@ function mkSwaggerSchema(server: FastifyInstance) {
   };
 }
 
-interface ExposedEvent {
-  entityId: string;
-  entityType: "project" | "subproject";
-  businessEvent: BusinessEvent;
-  snapshot: {
-    displayName?: string;
-  };
-}
-
 interface Service {
-  getProject(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Result.Type<Project.Project>>;
-  getSubprojects(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Subproject.Subproject[]>;
+  getWorkflowitemTraceEvents(
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: Project.Id,
+    subprojectId: Subproject.Id,
+    workflowitemId: Workflowitem.Id,
+  ): Promise<WorkflowitemTraceEvent.WorkflowitemTraceEvent[]>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
   server.get(
-    `${urlPrefix}/project.viewHistory`,
+    `${urlPrefix}/workflowitem.viewHistory`,
     mkSwaggerSchema(server),
     async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
@@ -135,6 +131,32 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           error: {
             code: 404,
             message: "required query parameter `projectId` not present (must be non-empty string)",
+          },
+        });
+        return;
+      }
+
+      const subprojectId = request.query.subprojectId;
+      if (!isNonemptyString(subprojectId)) {
+        reply.status(404).send({
+          apiVersion: "1.0",
+          error: {
+            code: 404,
+            message:
+              "required query parameter `subprojectId` not present (must be non-empty string)",
+          },
+        });
+        return;
+      }
+
+      const workflowitemId = request.query.workflowitemId;
+      if (!isNonemptyString(workflowitemId)) {
+        reply.status(404).send({
+          apiVersion: "1.0",
+          error: {
+            code: 404,
+            message:
+              "required query parameter `workflowitemId` not present (must be non-empty string)",
           },
         });
         return;
@@ -167,21 +189,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       try {
-        const projectResult = await service.getProject(ctx, user, projectId);
-        if (Result.isErr(projectResult)) {
-          projectResult.message = `project.viewHistory failed: ${projectResult.message}`;
-          throw projectResult;
-        }
-        const project: Project.Project = projectResult;
-
-        // Add subprojects' logs to the project log and sort by creation time:
-        const subprojects = await service.getSubprojects(ctx, user, projectId);
-        const events: ExposedEvent[] = project.log;
-        for (const subproject of subprojects) {
-          events.push(...subproject.log);
-        }
-
-        events.sort(byEventTime);
+        const events = await service.getWorkflowitemTraceEvents(
+          ctx,
+          user,
+          projectId,
+          subprojectId,
+          workflowitemId,
+        );
 
         const offsetIndex = offset < 0 ? Math.max(0, events.length + offset) : offset;
         const slice = events.slice(
@@ -191,11 +205,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
         const code = 200;
         const body = {
-          apiVersion: "1.0",
-          data: {
-            events: slice,
-            historyItemsCount: events.length,
-          },
+          historyItemsCount: events.length,
+          events: slice,
         };
         reply.status(code).send(body);
       } catch (err) {
@@ -204,12 +215,4 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
     },
   );
-}
-
-function byEventTime(a: ExposedEvent, b: ExposedEvent): -1 | 0 | 1 {
-  const timeA = new Date(a.businessEvent.time);
-  const timeB = new Date(b.businessEvent.time);
-  if (timeA < timeB) return -1;
-  if (timeA > timeB) return 1;
-  return 0;
 }

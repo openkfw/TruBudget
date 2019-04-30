@@ -205,11 +205,12 @@ const pt = {
   },
 
   analytics: {
-    assigned_budget_ratio: "Proporção do orçamento atribuído",
+    assigned_budget_ratio: "Rácio do Orçamento Atribuído",
     available_unspent_budget: "Orçamento Disponível",
     converted_amount: "quantidade convertida",
     disbursed_budget_ratio: "Rácio do Orçamento Desembolsado",
     project_analytics: "Project Analytics",
+    projected_budget_ratio: "Rácio do Orçamento Projetado",
     subproject_analytics: "Subproject Analytics",
     total: "Total:",
     total_budget_distribution: "Distribuição Orçamental Total"

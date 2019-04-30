@@ -41,9 +41,9 @@ const fr = {
     name: "Nom",
     next: "Suivant",
     no_resources: "Aucun champ n'a été ajouté à cette ressource",
-    not_assigned: "Non-alloué",
+    not_assigned: "Non alloué",
     not_assigned_budget: "Budget non-alloué",
-    not_projected: "Non projeté",
+    not_projected: "Non estimé",
     not_disbursed: "Non décaissé",
     not_ok: "Pas OK",
     open: "Ouvert",
@@ -206,11 +206,12 @@ const fr = {
   },
 
   analytics: {
-    assigned_budget_ratio: "Ratio budgétaire attribué",
+    assigned_budget_ratio: "Taux d’allocation budgétaire(alloué/estimé)",
     available_unspent_budget: "Budget non dépensé disponible",
     converted_amount: "Montant converti",
-    disbursed_budget_ratio: "Ratio du budget décaissé",
+    disbursed_budget_ratio: "Taux de décaissement(décaissé/alloué)",
     project_analytics: "Analyse de projet",
+    projected_budget_ratio: "Taux d’estimation du budget(estimé/total)",
     subproject_analytics: "Analyse de sous-projet",
     total: "Total:",
     total_budget_distribution: "Répartition du budget total"

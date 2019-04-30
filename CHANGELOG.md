@@ -7,20 +7,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-<!-- ### Added -->
+### Added
+
+- Projected budget ratio on project analytics screen [#242](https://github.com/openkfw/TruBudget/pull/242)
+- New endpoint `/workflowitem.viewHistory` that returns all changes that have been applied to a particular workflowitem in chronological order. [#252](https://github.com/openkfw/TruBudget/issues/252)
 
 ### Changed
 
 - When adding subprojects, projected budgets are not mandatory anymore [#229](https://github.com/openkfw/TruBudget/issues/229)
+- Added groups to provisioning [#57](https://github.com/openkfw/TruBudget/issues/57)
 - In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/openkfw/TruBudget/issues/176)
 - The `additional data` button is now available on all levels and is only displayed if additional data is available [#91](https://github.com/openkfw/TruBudget/issues/91)
 - In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/openkfw/TruBudget/issues/176)
+
+### Deprecated
+
+- `/project.viewHistory` deprecated in favor of `/project.viewHistory.v2`. [#252](https://github.com/openkfw/TruBudget/issues/252)
+- `/subproject.viewHistory` deprecated in favor of `/subproject.viewHistory.v2`. [#252](https://github.com/openkfw/TruBudget/issues/252)
+
+<!-- ### Removed -->
 
 ### Fixed
 
 - Fixed line of YAML file for master deployments via docker-compose, so that image of excel export service is pulled correctly [#223](https://github.com/openkfw/TruBudget/issues/223)
 - Backup/restore works again. [#237](https://github.com/openkfw/TruBudget/issues/237)
+- Budgets on project analytics do not contain open workflow items [#230](https://github.com/openkfw/TruBudget/issues/230)
 - Fixed a bug where on smaller screens the action buttons (create & cancel) are hidden and no item could be created [#240](https://github.com/openkfw/TruBudget/issues/240)
+
+<!-- ### Security -->
 
 ## [1.0.0-beta.9] - 2019-04-23
 
