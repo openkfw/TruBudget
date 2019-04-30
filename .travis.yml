@@ -3,26 +3,32 @@ stages:
     if: type = cron
   - test
   - name: dockerbuild
-    if: type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
+    if: commit_message !~ /(skip-build|wip)/ AND type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
   - name: notification
-    if: type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
+    if: commit_message !~ /(skip-build|wip)/ AND type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
 
-.audit: &audit
-  stage: audit
+.node-env: &node-env
   language: node_js
   node_js:
     - "10"
   cache: npm
+
+.dangerjs: &dangerjs
+  stage: test
+  <<: *node-env
+  script:
+    - npm run danger ci
+
+.audit: &audit
+  stage: audit
+  <<: *node-env
   script:
     - cd $PROJECT_NAME
     - npm audit
 
 .node-unit-test: &node-unit-test
   stage: test
-  language: node_js
-  node_js:
-    - "10"
-  cache: npm
+  <<: *node-env
   script:
     - cd $PROJECT_NAME
     - npm ci
@@ -48,6 +54,9 @@ jobs:
       env: PROJECT_NAME=frontend
     - <<: *audit
       env: PROJECT_NAME=excel-export
+    - <<: *dangerjs
+      if: type = pull_request
+      env: NAME="Danger JS"
     - <<: *node-unit-test
       env: PROJECT_NAME=blockchain
       after_success: npm run coverage

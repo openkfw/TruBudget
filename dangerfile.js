@@ -2,24 +2,23 @@ import { danger, warn } from "danger";
 const { includes } = require("lodash");
 
 const docs = danger.git.fileMatch("**/*.md");
-const apiFiles = danger.git.fileMatch("api/src/**/*.ts");
-const blockchainFiles = danger.git.fileMatch("blockchain/src/*");
-const frontendFiles = danger.git.fileMatch("frontend/src/*");
-const provisioningFiles = danger.git.fileMatch("provisioning/src/*");
-const e2eTestFiles = danger.git.fileMatch("e2e-test/cypress/*");
+const apiSources = danger.git.fileMatch("api/src/**/*.ts");
+const blockchainSources = danger.git.fileMatch("blockchain/src/*");
+const frontendSources = danger.git.fileMatch("frontend/src/*");
+const provisioningSources = danger.git.fileMatch("provisioning/src/*");
+const e2eTestSources = danger.git.fileMatch("e2e-test/cypress/*");
 
 const title = danger.github.pr.title.toLowerCase();
-const trivialPR = title.includes("#trivial");
+const trivialPR = title.includes("refactor");
 const changelogChanges = includes(docs.modified_files, "CHANGELOG.md");
 
 // When there are app-changes and it's not a PR marked as trivial, expect there to be CHANGELOG changes.
-
 if (
-  (apiFiles.modified ||
-    blockchainFiles.modified ||
-    frontendFiles.modified ||
-    provisioningFiles.modified ||
-    e2eTestFiles.modified) &&
+  (apiSources.modified ||
+    blockchainSources.modified ||
+    frontendSources.modified ||
+    provisioningSources.modified ||
+    e2eTestSources.modified) &&
   !trivialPR &&
   !changelogChanges
 ) {
