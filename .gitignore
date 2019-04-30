@@ -6,3 +6,6 @@ DOCKER_REGISTRY_PASSWORD
 *-audit.json
 .vscode/*
 Untitled*
+node_modules
+yarn-error.log
+yarn.lock
