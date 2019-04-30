@@ -43,12 +43,12 @@ const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAddit
   const resourceForInfo = resources.find(item => item.data.id === idForInfo);
   return (
     <Dialog open={isAdditionalDataShown} style={styles.dialog} onClose={hideAdditionalData}>
-      <DialogTitle>Additional Data</DialogTitle>
+      <DialogTitle>{strings.common.additional_data}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
         {resourceForInfo && !_isEmpty(resourceForInfo.data.additionalData) ? (
           <pre>{JSON.stringify(resourceForInfo.data.additionalData, null, `\t`)}</pre>
         ) : (
-          "No fields are added to this Resource"
+          <div>{strings.common.no_resources}</div>
         )}
       </DialogContent>
       <DialogActions>

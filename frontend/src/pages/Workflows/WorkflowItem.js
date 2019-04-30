@@ -327,7 +327,9 @@ const renderActionButtons = (
                 </IconButton>
               </div>
             </Tooltip>
-          ) : null}
+          ) : (
+            <div>&nbsp;</div>
+          )}
         </div>
         <div style={styles.actionButton}>
           {status !== "closed" ? (

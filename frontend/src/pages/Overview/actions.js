@@ -91,10 +91,9 @@ export function hideProjectPermissions() {
   };
 }
 
-export function hideProjectAdditionalData(id) {
+export function hideProjectAdditionalData() {
   return {
-    type: HIDE_PROJECT_ADDITIONAL_DATA,
-    id
+    type: HIDE_PROJECT_ADDITIONAL_DATA
   };
 }
 
