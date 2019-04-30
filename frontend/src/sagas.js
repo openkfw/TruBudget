@@ -1261,18 +1261,17 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
               throw error;
             }
             const { amountType, status, amount, exchangeRate } = next.data;
-            if (amountType === "allocated" && amount) {
+            if (amountType === "allocated" && status === "closed" && amount) {
               return {
                 ...acc,
                 allocated: acc.allocated + fromAmountString(amount) * (exchangeRate || 1)
               };
             }
 
-            if (amountType === "disbursed" && amount) {
+            if (amountType === "disbursed" && status === "closed" && amount) {
               return {
                 ...acc,
-                disbursed:
-                  status === "closed" ? acc.disbursed + fromAmountString(amount) * (exchangeRate || 1) : acc.disbursed
+                disbursed: acc.disbursed + fromAmountString(amount) * (exchangeRate || 1)
               };
             }
 

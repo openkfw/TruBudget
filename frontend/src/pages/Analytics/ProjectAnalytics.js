@@ -262,6 +262,7 @@ const Dashboard = ({
           />
         }
       />
+      <RatioChart title={strings.analytics.projected_budget_ratio} budget={projectedBudget / totalBudget} />
       <RatioChart title={strings.analytics.assigned_budget_ratio} budget={assignedBudget / projectedBudget} />
       <RatioChart title={strings.analytics.disbursed_budget_ratio} budget={disbursedBudget / assignedBudget} />
       <Chart
