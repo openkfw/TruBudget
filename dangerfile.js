@@ -1,7 +1,6 @@
 import { danger, warn } from "danger";
 const { includes } = require("lodash");
 
-const docs = danger.git.fileMatch("**/*.md");
 const apiSources = danger.git.fileMatch("api/src/**/*.ts");
 const blockchainSources = danger.git.fileMatch("blockchain/src/*");
 const frontendSources = danger.git.fileMatch("frontend/src/*");
@@ -10,7 +9,7 @@ const e2eTestSources = danger.git.fileMatch("e2e-test/cypress/*");
 
 const title = danger.github.pr.title.toLowerCase();
 const trivialPR = title.includes("refactor");
-const changelogChanges = includes(docs.modified_files, "CHANGELOG.md");
+const changelogChanges = includes(danger.git.modified_files, "CHANGELOG.md");
 
 // When there are app-changes and it's not a PR marked as trivial, expect there to be CHANGELOG changes.
 if (
