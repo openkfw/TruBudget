@@ -58,7 +58,7 @@ const styles = {
     width: "100%"
   },
   actionButton: {
-    width: "33%"
+    width: "25%"
   },
   line: {
     position: "absolute",
@@ -79,7 +79,7 @@ const styles = {
   },
 
   infoButton: {
-    minWidth: "40px",
+    minWidth: "30px",
     marginLeft: "5px"
   },
   amountChip: {
@@ -118,7 +118,7 @@ const styles = {
     alignItems: "center"
   },
   actionCell: {
-    width: "15%",
+    width: "20%",
     display: "flex",
     alignItems: "center"
   },
@@ -302,6 +302,30 @@ const getCardStyle = (workflowSortEnabled, status) => {
   return style;
 };
 
+const ActionButton = ({ notVisible, disabled, onClick, icon, title, workflowSortEnabled, status }) => {
+  return (
+    <div style={styles.actionButton}>
+      <Tooltip
+        id={"tooltip-" + title}
+        title={title}
+        disableFocusListener={disabled}
+        disableHoverListener={disabled}
+        disableTouchListener={disabled}
+      >
+        <div>
+          <IconButton
+            onClick={onClick}
+            style={notVisible ? { ...styles.hide } : getButtonStyle(workflowSortEnabled, status)}
+            disabled={disabled}
+          >
+            {icon}
+          </IconButton>
+        </div>
+      </Tooltip>
+    </div>
+  );
+};
+
 const renderActionButtons = (
   canEditWorkflow,
   edit,
@@ -315,89 +339,50 @@ const renderActionButtons = (
   showAdditionalData,
   additionalData
 ) => {
+  const additionalDataDisabled = _isEmpty(additionalData) || workflowSortEnabled;
+  const editDisabled = !canEditWorkflow || workflowSortEnabled;
+  const permissionsDisabled = !canListWorkflowPermissions || workflowSortEnabled;
+
+  const closeDisabled = !canCloseWorkflow || workflowSortEnabled;
   return (
     <div style={styles.actionCell}>
       <div style={styles.actions}>
-        <div style={styles.actionButton}>
-          {!_isEmpty(additionalData) ? (
-            <Tooltip id="tooltip-additionalData" title="Additional Data">
-              <div>
-                <IconButton data-test={`adata-button`} onClick={showAdditionalData} disabled={false}>
-                  <MoreIcon />
-                </IconButton>
-              </div>
-            </Tooltip>
-          ) : (
-            <div>&nbsp;</div>
-          )}
-        </div>
-        <div style={styles.actionButton}>
-          {status !== "closed" ? (
-            <Tooltip
-              id="tooltip-wedit"
-              title={!canEditWorkflow || workflowSortEnabled ? "" : strings.common.edit}
-              // Otherwise the tooltip is shaking
-              PopperProps={{ style: { pointerEvents: "none" } }}
-              disableFocusListener={!canEditWorkflow || workflowSortEnabled}
-              disableHoverListener={!canEditWorkflow || workflowSortEnabled}
-              disableTouchListener={!canEditWorkflow || workflowSortEnabled}
-            >
-              <div>
-                <IconButton
-                  onClick={!canEditWorkflow || workflowSortEnabled ? undefined : edit}
-                  style={getButtonStyle(workflowSortEnabled, status)}
-                  disabled={!canEditWorkflow || workflowSortEnabled}
-                >
-                  <EditIcon />
-                </IconButton>
-              </div>
-            </Tooltip>
-          ) : null}
-        </div>
-        <div style={styles.actionButton}>
-          <Tooltip
-            id="tooltip-wpermissions"
-            title={!canListWorkflowPermissions || workflowSortEnabled ? "" : strings.common.show_permissions}
-            // Otherwise the tooltip is shaking
-            PopperProps={{ style: { pointerEvents: "none" } }}
-            disableFocusListener={!canListWorkflowPermissions || workflowSortEnabled}
-            disableHoverListener={!canListWorkflowPermissions || workflowSortEnabled}
-            disableTouchListener={!canListWorkflowPermissions || workflowSortEnabled}
-          >
-            <div>
-              <IconButton
-                onClick={!canListWorkflowPermissions || workflowSortEnabled ? undefined : showPerm}
-                style={getButtonStyle(workflowSortEnabled, status)}
-                disabled={!canListWorkflowPermissions || workflowSortEnabled}
-              >
-                <PermissionIcon />
-              </IconButton>
-            </div>
-          </Tooltip>
-        </div>
-        <div style={styles.actionButton}>
-          {status !== "closed" ? (
-            <Tooltip
-              id="tooltip-wclose"
-              title={!canCloseWorkflow || workflowSortEnabled ? "" : strings.common.close}
-              // Otherwise the tooltip is shaking
-              PopperProps={{ style: { pointerEvents: "none" } }}
-              disableFocusListener={!canCloseWorkflow || workflowSortEnabled}
-              disableHoverListener={!canCloseWorkflow || workflowSortEnabled}
-              disableTouchListener={!canCloseWorkflow || workflowSortEnabled}
-            >
-              <div>
-                <IconButton
-                  onClick={!canCloseWorkflow || workflowSortEnabled ? undefined : close}
-                  style={getButtonStyle(workflowSortEnabled, status)}
-                  disabled={!canCloseWorkflow || workflowSortEnabled}
-                >
-                  <DoneIcon />
-                </IconButton>
-              </div>
-            </Tooltip>
-          ) : null}
-        </div>
+        <ActionButton
+          notVisible={workflowSortEnabled || status === "closed"}
+          disabled={additionalDataDisabled}
+          onClick={additionalDataDisabled ? undefined : showAdditionalData}
+          icon={<MoreIcon />}
+          title={additionalDataDisabled ? "" : strings.common.additional_data}
+          workflowSortEnabled={workflowSortEnabled}
+          status={status}
+        />
+        <ActionButton
+          notVisible={editDisabled || status === "closed"}
+          disabled={editDisabled}
+          onClick={editDisabled ? undefined : edit}
+          icon={<EditIcon />}
+          title={editDisabled ? "" : strings.common.edit}
+          workflowSortEnabled={workflowSortEnabled}
+          status={status}
+        />
+        <ActionButton
+          notVisible={permissionsDisabled}
+          disabled={permissionsDisabled}
+          onClick={permissionsDisabled ? undefined : showPerm}
+          icon={<PermissionIcon />}
+          title={permissionsDisabled ? "" : strings.common.show_permissions}
+          workflowSortEnabled={workflowSortEnabled}
+          status={status}
+        />
+        <ActionButton
+          notVisible={status === "closed" || workflowSortEnabled}
+          disabled={closeDisabled}
+          onClick={closeDisabled ? undefined : close}
+          icon={<DoneIcon />}
+          title={closeDisabled ? "" : strings.common.close}
+          workflowSortEnabled={workflowSortEnabled}
+          status={status}
+        />
       </div>
     </div>
   );
