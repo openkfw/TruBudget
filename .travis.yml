@@ -1,6 +1,6 @@
 stages:
   - name: audit
-    if: type = cron
+    if: type IN (pull_request, cron)
   - test
   - name: dockerbuild
     if: commit_message !~ /(skip-build|wip)/ AND type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
@@ -22,9 +22,11 @@ stages:
 .audit: &audit
   stage: audit
   <<: *node-env
-  script:
+  before_script:
     - cd $PROJECT_NAME
-    - npm audit
+    - chmod +x ../scripts/pipeline/audit.sh
+  script:
+    - ../scripts/pipeline/audit.sh
 
 .node-unit-test: &node-unit-test
   stage: test
