@@ -26,6 +26,7 @@ const en = {
     created: "Created",
     disbursed_budget: "Disbursed Budget",
     disbursement: "Projected",
+    disconnected: "Offline",
     done: "Done",
     edit: "Edit",
     edited: "Edited",

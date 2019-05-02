@@ -183,8 +183,7 @@ export const getCompletionString = subprojects => {
 };
 
 export const formatString = (text, ...args) => {
-  const x = strings.formatString(text, ...args).join(" ");
-  return x;
+  return strings.formatString(text, ...args);
 };
 export const formatUpdateString = (identifier, createdBy, data) => {
   let string = strings.formatString(strings.history.changed_by, identifier, createdBy);

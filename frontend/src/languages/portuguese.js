@@ -26,6 +26,7 @@ const pt = {
     created: "Criado",
     disbursed_budget: "Desembolsado",
     disbursement: "Projetado",
+    disconnected: "Desligada",
     done: "Finalizado",
     edit: "Portuguese: Edit",
     edited: "Portuguese: Edited",
