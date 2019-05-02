@@ -12,8 +12,6 @@ import {
   initLanguage
 } from "./actions";
 import LoginPage from "./LoginPage";
-//import { fetchNodePermissions } from '../Admin/actions';
-//import { fetchUserWithToken } from '../Loading/actions';
 
 class LoginPageContainer extends Component {
   componentWillMount() {
@@ -52,8 +50,6 @@ const mapDispatchToProps = dispatch => {
     storeEnvironment: environment => dispatch(storeEnvironment(environment)),
     getEnvironment: () => dispatch(getEnvironment()),
     setLanguage: language => dispatch(setLanguage(language))
-    //fetchNodePermissions: () => dispatch(fetchNodePermissions()),
-    //fetchUserWithToken: (showLoading) => dispatch(fetchUserWithToken(showLoading))
   };
 };
 

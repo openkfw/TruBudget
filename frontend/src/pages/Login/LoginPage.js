@@ -13,8 +13,6 @@ import Password from "../Common/Password";
 import strings from "../../localizeStrings";
 import Dropdown from "../Common/NewDropdown";
 
-//import { isAdminNode } from '../../helper';
-
 const LoginPage = ({
   history,
   nodePermissions,
@@ -29,7 +27,6 @@ const LoginPage = ({
   language,
   setLanguage
 }) => {
-  //const connectedToAdminNode = isAdminNode(nodePermissions);
   const connectedToAdminNode = -1;
   return (
     <div

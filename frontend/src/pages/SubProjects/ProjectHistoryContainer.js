@@ -2,7 +2,6 @@ import { fromJS } from "immutable";
 import sortBy from "lodash/sortBy";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-// import { formatUpdateString } from "../../helper";
 import { formatString, toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { formatPermission } from "../Common/History/helper";
@@ -72,6 +71,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
     case "workflowitems_reordered":
       return formatString(strings.history.subproject_reorderWorkflowitems, createdBy, snapshot.displayName);
     default:
+      // eslint-disable-next-line no-console
       console.log("WARN: Intent not defined:", intent);
       return intent;
   }

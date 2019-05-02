@@ -10,7 +10,7 @@ import TextField from "@material-ui/core/TextField";
 import { applyNumberFormat } from "../Common/NumberFormat";
 import strings from "../../localizeStrings";
 import { getCurrencies, preselectCurrency, toAmountString, fromAmountString } from "../../helper";
-import { Typography } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 const styles = {
   container: {

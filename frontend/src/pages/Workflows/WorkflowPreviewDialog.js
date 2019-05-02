@@ -5,7 +5,7 @@ import Table from "@material-ui/core/Table";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import ErrorIcon from "@material-ui/icons/Close";
 import DoneIcon from "@material-ui/icons/Done";
 import LinearProgress from "@material-ui/core/LinearProgress";

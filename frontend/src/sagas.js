@@ -168,6 +168,7 @@ function* execute(fn, showLoading = false, errorCallback = undefined) {
     if (typeof errorCallback === "function") {
       yield errorCallback(error);
     } else {
+      // eslint-disable-next-line no-console
       console.error(error);
       yield handleError(error);
     }
@@ -185,7 +186,9 @@ function* showSnackbarSuccess() {
 }
 
 function* handleError(error) {
+  // eslint-disable-next-line no-console
   console.error("API-Error: ", error.response || "unknown");
+  // eslint-disable-next-line no-console
   console.error(error);
 
   // which status should we use?
@@ -1523,6 +1526,7 @@ export default function* rootSaga() {
       yield takeLeading(EXPORT_DATA, exportDataSaga)
     ]);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
   }
 }

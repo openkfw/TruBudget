@@ -1,8 +1,8 @@
 import React from "react";
 
 import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
 import Backup from "@material-ui/icons/CloudDownload";
-import { withStyles } from "@material-ui/core";
 import classNames from "classnames";
 
 import strings from "../../localizeStrings";
@@ -35,6 +35,5 @@ const DownloadBackupButton = ({ createBackup, classes }) => {
     </Button>
   );
 };
-
 
 export default withStyles(styles)(DownloadBackupButton);

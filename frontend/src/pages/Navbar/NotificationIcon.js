@@ -3,10 +3,10 @@ import React from "react";
 import Badge from "@material-ui/core/Badge";
 import BubbleIcon from "@material-ui/icons/ChatBubbleOutline";
 import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
 import strings from "../../localizeStrings";
-import { Typography } from "@material-ui/core";
 
 const styles = {
   badge: {
