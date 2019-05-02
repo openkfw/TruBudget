@@ -118,7 +118,7 @@ class Api {
 
   viewProjectDetails = projectId => instance.get(`/project.viewDetails?projectId=${projectId}`);
   viewProjectHistory = (projectId, offset, limit) =>
-    instance.get(`/project.viewHistory?projectId=${projectId}&offset=${offset}&limit=${limit}`);
+    instance.get(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
 
   listProjectIntents = projectId => instance.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
@@ -159,7 +159,12 @@ class Api {
 
   viewSubProjectHistory = (projectId, subprojectId, offset, limit) =>
     instance.get(
-      `/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
+      `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
+    );
+
+  viewWorkflowitemHistory = (projectId, subprojectId, workflowitemId, offset, limit) =>
+    instance.get(
+      `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`
     );
 
   updateProjectBudgetProjected = (projectId, organization, currencyCode, value) =>

@@ -1,77 +1,78 @@
-let projects = undefined;
-let subprojects = undefined;
-let openProject = undefined;
-let openSubproject = undefined;
-describe("Add workflowitem with document", function () {
+import "cypress-file-upload";
+
+let projectId;
+let subprojectId;
+
+describe("Attaching a document to a workflowitem.", function() {
   before(() => {
     cy.login();
-    cy.fetchProjects()
-      .then(p => (projects = p))
-      .then(() => {
-        cy.fetchSubprojects(projects[0].data.id).then(s => (subprojects = s));
+
+    cy.createProject("workflowitem history test project", "workflowitem history test", [])
+      .then(({ id }) => {
+        projectId = id;
+        return cy.createSubproject(projectId, "workflowitem history test");
+      })
+      .then(({ id }) => {
+        subprojectId = id;
+        return cy.createWorkflowitem(projectId, subprojectId, "workflowitem history test", { amountType: "N/A" });
       });
   });
-  beforeEach(function () {
+
+  beforeEach(function() {
     cy.login();
-    openProject = projects.find(project => project.data.status === "open").data;
-    openSubproject = subprojects.find(project => project.data.status === "open")
-      .data;
-    cy.visit(`/projects/${openProject.id}/${openSubproject.id}`);
-  });
-  it("Show subproject details page", function () {
-    cy.location("pathname").should(
-      "eq",
-      `/projects/${openProject.id}/${openSubproject.id}`
-    );
-  });
-  it("Create workflowItem", function () {
-    cy.get("#createWorkflowItem")
-      .should("be.visible")
-      .click();
-    cy.get("#nameinput")
-      .should("be.visible")
-      .type("E2E-WorkflowItem")
-      .should("have.value", "E2E-WorkflowItem");
-    cy.get("#commentinput")
-      .should("be.visible")
-      .type("E2E Comment")
-      .should("have.value", "E2E Comment");
-    cy.get("[data-test=next]")
-      .should("be.visible")
-      .click({ force: true });
-    cy.get("#documentnameinput")
-      .should("be.visible")
-      .type("E2E Test File")
-      .should("have.value", "E2E Test File");
-
-    const testDocument = [{ id: "E2E Test File", base64: "c29tZXRoaW5ns" }];
-    cy.createWorkflowItem(
-      openProject.id,
-      openSubproject.id,
-      "E2E-WorkflowItem",
-      "50",
-      "EUR",
-      "disbursed",
-      "",
-      "open",
-      testDocument
-    ).then(data => expect(data).to.not.be.empty);
-    cy.get("[data-test=cancel]").click();
+    cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("Check WorkflowDetails of added Workflowitem", function () {
-    cy.get("[data-test=workflowitemInfoButton]")
-      .last()
-      .should("be.visible")
-      .click({ force: true });
-    cy.get("[data-test=workflowInfoDialog]")
-      .scrollIntoView()
-      .should("be.visible");
-    cy.get("[data-test= workflowitemInfoDisplayName]").contains(
-      "E2E-WorkflowItem"
-    );
-    cy.get("[data-test= workflowitemDocumentId]")
-      .last()
-      .contains("E2E Test File");
+  it("After creating the attachment, the document can be verified.", function() {
+    // open edit dialog:
+    cy.get("div[title=Edit] > button").click();
+
+    // click "next" button:
+    cy.get("[data-test=next]").click();
+
+    // enter the file name:
+    const fileDisplayName = "my test file";
+    cy.get("#documentnameinput").type(fileDisplayName);
+
+    // "upload" the file:
+    const fileName = "example.json";
+    cy.fixture(fileName).then(fileContent => {
+      cy.get("#docupload").upload(
+        { fileContent: JSON.stringify(fileContent), fileName, mimeType: "application/json" },
+        { subjectType: "input" }
+      );
+    });
+    cy.get("[data-test=workflowitemDocumentId]").should("contain", fileDisplayName);
+
+    // submit and close the dialog:
+    cy.get("[data-test=submit]").click();
+
+    // open the info dialog window:
+    cy.get(".workflowitem-info-button").click();
+
+    // go to the documents tab:
+    cy.get("#workflowitem-documents-tab").click();
+
+    // upload the same file, for validation:
+    cy.fixture(fileName).then(fileContent => {
+      cy.get("#docvalidation").upload(
+        { fileContent: JSON.stringify(fileContent), fileName, mimeType: "application/json" },
+        { subjectType: "input" }
+      );
+    });
+
+    // make sure the validation was successful:
+    cy.get(`button[label="Validated!"] > span`).should("contain", "OK");
+
+    // make sure the validation fails with the wrong document
+    const wrongFileName = "testdata.json";
+    cy.fixture(wrongFileName).then(fileContent => {
+      cy.get("#docvalidation").upload(
+        { fileContent: JSON.stringify(fileContent), fileName: wrongFileName, mimeType: "application/json" },
+        { subjectType: "input" }
+      );
+    });
+
+    cy.get(`button[label="Changed!"] > span`).should("contain", "Not OK");
   });
 });

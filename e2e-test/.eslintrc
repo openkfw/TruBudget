@@ -1,0 +1,21 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "cypress/globals": true
+  },
+  "rules": {
+    "no-var": 1,
+    "no-console": 1,
+    "no-extra-semi": 1
+  },
+  "plugins": ["cypress", "mocha"]
+}

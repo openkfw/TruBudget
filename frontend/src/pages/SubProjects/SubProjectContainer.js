@@ -24,7 +24,7 @@ import {
   showSubProjectPermissions
 } from "./actions";
 import ProjectDetails from "./ProjectDetails";
-import ProjectHistoryContainer from "./ProjectHistoryContainer";
+import ProjectHistoryDrawer from "./ProjectHistoryDrawer";
 import SubprojectDialogContainer from "./SubprojectDialogContainer";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import SubProjects from "./SubProjects";
@@ -67,7 +67,7 @@ class SubProjectContainer extends Component {
             canClose={canClose}
           />
           <SubProjects {...this.props} canCreateSubProject={canCreateSubproject} />
-          <ProjectHistoryContainer projectId={this.projectId} offset={this.props.offset} limit={this.props.limit} />
+          <ProjectHistoryDrawer projectId={this.projectId} />
           <SubprojectPermissionsContainer
             projectId={this.projectId}
             subProjects={this.props.subProjects}

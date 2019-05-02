@@ -1,8 +1,4 @@
 // ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
 // For more comprehensive examples of custom
 // commands please read more here:
 // https://on.cypress.io/custom-commands
@@ -80,54 +76,30 @@ Cypress.Commands.add("fetchSubprojects", projectId => {
     .then(body => Promise.resolve(body.data.subprojects));
 });
 
-Cypress.Commands.add(
-  "createWorkflowItem",
-  (
-    projectId,
-    subprojectId,
-    displayName,
-    amount,
-    currency,
-    amountType,
-    description,
-    status,
-    documents
-  ) => {
-    cy.request({
-      url: `${baseUrl}/api/subproject.createWorkflowitem`,
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: {
-        apiVersion: "1.0",
-        data: {
-          projectId: projectId,
-          subprojectId: subprojectId,
-          displayName: displayName,
-          amount: amount,
-          currency: currency,
-          amountType: amountType,
-          description: description,
-          status: status,
-          documents: documents,
-          exchangeRate: "1.0"
-        }
+Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName, opts) => {
+  cy.request({
+    url: `${baseUrl}/api/subproject.createWorkflowitem`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId: projectId,
+        subprojectId: subprojectId,
+        displayName: displayName,
+        ...opts
       }
-    })
-      .its("body")
-      .then(body => Promise.resolve(body.data.created));
-  }
-);
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data.created));
+});
 
 Cypress.Commands.add(
   "createProject",
-  (
-    displayName,
-    description,
-    projectedBudgets,
-    thumbnail = "/Thumbnail_0001.jpg"
-  ) => {
+  (displayName, description, projectedBudgets, thumbnail = "/Thumbnail_0001.jpg") => {
     cy.request({
       url: `${baseUrl}/api/global.createProject`,
       method: "POST",
@@ -138,16 +110,18 @@ Cypress.Commands.add(
         apiVersion: "1.0",
         data: {
           project: {
-            displayName: displayName,
-            description: description,
-            projectedBudgets: projectedBudgets,
-            thumbnail: thumbnail
+            displayName,
+            description,
+            projectedBudgets,
+            thumbnail
           }
         }
       }
     })
       .its("body")
-      .then(body => Promise.resolve(body.data.created));
+      .then(body => ({
+        id: body.data.project.id
+      }));
   }
 );
 
@@ -161,8 +135,8 @@ Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
     body: {
       apiVersion: "1.0",
       data: {
-        projectId: projectId,
-        identity: identity
+        projectId,
+        identity
       }
     }
   })
@@ -170,25 +144,47 @@ Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
     .then(body => Promise.resolve(body.data));
 });
 
-Cypress.Commands.add(
-  "updateProjectPermissions",
-  (projectId, intent, identity) => {
-    cy.request({
-      url: `${baseUrl}/api/project.intent.grantPermission`,
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: {
-        apiVersion: "1.0",
-        data: {
-          projectId: projectId,
-          identity: identity,
-          intent: intent
+Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EUR", opts = {}) => {
+  cy.request({
+    url: `${baseUrl}/api/project.createSubproject`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subproject: {
+          displayName,
+          currency,
+          ...opts
         }
       }
-    })
-      .its("body")
-      .then(body => Promise.resolve(body.data));
-  }
-);
+    }
+  })
+    .its("body")
+    .then(body => ({
+      id: body.data.subproject.id
+    }));
+});
+
+Cypress.Commands.add("updateProjectPermissions", (projectId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/project.intent.grantPermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId: projectId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});

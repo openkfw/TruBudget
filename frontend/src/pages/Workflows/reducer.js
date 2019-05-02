@@ -25,7 +25,6 @@ import {
   RESET_SUCCEEDED_WORKFLOWITEMS,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   SAVE_WORKFLOW_ITEM_BEFORE_SORT,
-  SET_HISTORY_OFFSET,
   SET_WORKFLOW_DRAWER_PERMISSIONS,
   SHOW_SUBPROJECT_ASSIGNEES,
   SHOW_WORKFLOW_CREATE,
@@ -49,8 +48,11 @@ import {
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
   WORKFLOW_STATUS,
-  WORKFLOWITEMS_SELECTED
+  WORKFLOWITEMS_SELECTED,
+  OPEN_HISTORY
 } from "./actions";
+
+const initialLimit = 50;
 
 const defaultState = fromJS({
   id: "",
@@ -83,8 +85,9 @@ const defaultState = fromJS({
   showDetails: false,
   showDetailsItemId: "",
   showHistory: false,
-  offset: 0,
-  limit: 30,
+  hasMoreHistory: true,
+  offset: -initialLimit,
+  limit: initialLimit,
   currentStep: 0,
   workflowSortEnabled: false,
   workflowType: "workflow",
@@ -288,21 +291,21 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", false);
-    case SET_HISTORY_OFFSET:
-      return state.set("offset", action.offset);
     case FETCH_SUBPROJECT_HISTORY:
       return state.set("isHistoryLoading", true);
     case FETCH_SUBPROJECT_HISTORY_SUCCESS:
       return state.merge({
-        historyItems: fromJS(action.events).concat(state.get("historyItems")),
+        historyItems: state.get("historyItems").concat(fromJS(action.events).reverse()),
         historyItemsCount: action.historyItemsCount,
         isHistoryLoading: false,
         offset: action.offset,
-        limit: action.limit
+        limit: action.limit,
+        hasMoreHistory: action.hasMore
       });
     case HIDE_HISTORY:
       return state.merge({
         historyItems: fromJS([]),
+        showHistory: false,
         offset: defaultState.get("offset"),
         limit: defaultState.get("limit")
       });
@@ -317,6 +320,8 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case LOGOUT:
       return defaultState;
+    case OPEN_HISTORY:
+      return state.set("showHistory", true);
     default:
       return state;
   }

@@ -12,7 +12,9 @@ import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
 import { showHistory } from "../Notifications/actions";
+import SubprojectHistoryDrawer from "../SubProjects/SubprojectHistoryDrawer";
 import {
+  cleanupWorkflowitemDetailsState,
   closeSubproject,
   closeWorkflowItem,
   disableWorkflowEdit,
@@ -40,7 +42,6 @@ import {
   updateWorkflowOrderOnState
 } from "./actions";
 import SubProjectDetails from "./SubProjectDetails";
-import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
 import Workflow from "./Workflow";
 import WorkflowBatchEditContainer from "./WorkflowBatchEditContainer";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
@@ -113,18 +114,13 @@ class WorkflowContainer extends Component {
             closeWorkflowItem={this.closeWorkflowItem}
           />
           <WorkflowDialogContainer location={this.props.location} />
-          <SubProjectHistoryContainer
-            projectId={this.projectId}
-            subprojectId={this.subProjectId}
-            offset={this.props.offset}
-            limit={this.props.limit}
-          />
           <AdditionalInfo
             resources={this.props.workflowItems}
             isAdditionalDataShown={this.props.isWorkflowitemAdditionalDataShown}
             hideAdditionalData={this.props.hideWorkflowitemAdditionalData}
             {...this.props}
           />
+          <SubprojectHistoryDrawer projectId={this.projectId} subprojectId={this.subProjectId} />
           <WorkflowBatchEditContainer projectId={this.projectId} subProjectId={this.subProjectId} />
         </div>
       </div>
@@ -144,6 +140,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     openWorkflowDetails: id => dispatch(showWorkflowDetails(id)),
     hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
+    cleanupWorkflowitemDetailsState: () => dispatch(cleanupWorkflowitemDetailsState()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
 
@@ -203,7 +200,9 @@ const mapStateToProps = state => {
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
     idForInfo: state.getIn(["workflow", "idForInfo"]),
-    isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"])
+    isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"]),
+    historyItemsCount: state.getIn(["workflow", "historyItemsCount"]),
+    isLoading: state.getIn(["workflow", "isHistoryLoading"])
   };
 };
 

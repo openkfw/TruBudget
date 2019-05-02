@@ -64,7 +64,9 @@ const pt = {
     update: "Portuguese: Update",
     username: "Usuário",
     view: "Portuguese: View",
-    workflowItem: "Portuguese: WorkflowItem"
+    workflowItem: "Portuguese: WorkflowItem",
+    history_end: "Portuguese: Last event reached",
+    no_history: "Portuguese: No events"
   },
 
   users: {
@@ -192,7 +194,11 @@ const pt = {
     workflow_type: "Categoria",
     workflow_type_transaction: "Transação",
     workflow_type_workflow: "Workflow",
-    workflow_upload_document: "Autenticar"
+    workflow_upload_document: "Autenticar",
+    workflowitem_details: "PORTUGUESE: Workflowitem item details",
+    workflowitem_details_documents: "PORTUGUESE: Documents",
+    workflowitem_details_history: "PORTUGUESE: History",
+    workflowitem_details_overview: "PORTUGUESE: Overview"
   },
 
   preview: {
