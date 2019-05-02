@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Backup/restore works again. [#237](https://github.com/openkfw/TruBudget/issues/237)
 - Budgets on project analytics do not contain open workflow items [#230](https://github.com/openkfw/TruBudget/issues/230)
 - Fixed a bug where on smaller screens the action buttons (create & cancel) are hidden and no item could be created [#240](https://github.com/openkfw/TruBudget/issues/240)
+- Increase frontend stability[#263](https://github.com/openkfw/TruBudget/pull/263)
 
 ## [1.0.0-beta.9] - 2019-04-23
 
