@@ -7,7 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import CreationDialogStepper from "./CreationDialogStepper";
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   paperRoot: {
