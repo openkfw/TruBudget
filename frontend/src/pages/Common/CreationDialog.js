@@ -7,6 +7,14 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import CreationDialogStepper from "./CreationDialogStepper";
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = {
+  paperRoot: {
+    width: "100%",
+    overflow: "scrollable"
+  }
+};
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
   const { numberOfSteps, currentStep = 0, steps } = props;
@@ -82,9 +90,9 @@ const handleBack = props => props.setCurrentStep(props.currentStep - 1);
 const handleNext = props => props.setCurrentStep(props.currentStep + 1);
 
 const CreationDialog = props => {
-  const { dialogShown, title, handleSubmit } = props;
+  const { dialogShown, title, handleSubmit, classes } = props;
   return (
-    <Dialog open={dialogShown} maxWidth="md" data-test="creation-dialog">
+    <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown} maxWidth="md" data-test="creation-dialog">
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
       <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>
@@ -92,4 +100,4 @@ const CreationDialog = props => {
   );
 };
 
-export default CreationDialog;
+export default withStyles(styles)(CreationDialog);

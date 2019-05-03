@@ -201,7 +201,7 @@ const SubProjectTable = ({
         <TableHead>
           <TableRow>
             <TableCell className={classes.tableText}>{strings.common.subproject}</TableCell>
-            <TableCell className={classes.tableText}>{strings.common.projectedBudget}</TableCell>
+            <TableCell className={classes.tableText}>{strings.common.projected_budget}</TableCell>
             <TableCell className={classes.tableText}>{strings.common.status}</TableCell>
             <TableCell className={classes.tableText}> </TableCell>
           </TableRow>

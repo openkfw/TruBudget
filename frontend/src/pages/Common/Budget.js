@@ -93,9 +93,9 @@ export default class Budget extends React.Component {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Organization</TableCell>
-              <TableCell align="right">Projected Budget</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>{strings.common.organization}</TableCell>
+              <TableCell align="right">{strings.common.projected_budget}</TableCell>
+              <TableCell align="right">{strings.common.actions}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -105,7 +105,7 @@ export default class Budget extends React.Component {
                 <TableCell align="right">
                   {this.state.edit && this.state.editIndex === i ? (
                     <TextField
-                      label={strings.common.projectedBudget}
+                      label={strings.common.projected_budget}
                       value={this.state.budgetAmountEdit}
                       onChange={e => this.setState({ budgetAmountEdit: e.target.value })}
                       type="text"
@@ -167,7 +167,7 @@ export default class Budget extends React.Component {
                     {this.getMenuItems(currencies)}
                   </DropDown>
                   <TextField
-                    label={strings.common.projectedBudget}
+                    label={strings.common.projected_budget}
                     value={this.state.budgetAmount}
                     onChange={v => {
                       if (/^[0-9,.-]*$/.test(v.target.value)) this.setState({ budgetAmount: v.target.value });

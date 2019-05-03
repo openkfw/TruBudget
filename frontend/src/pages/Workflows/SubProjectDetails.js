@@ -112,7 +112,7 @@ const SubProjectDetails = ({
           </ListItem>
         </List>
         <div style={styles.projectedBudget}>
-          <Typography variant="body1">{strings.common.projectedBudget}</Typography>
+          <Typography variant="body1">{strings.common.projected_budget}</Typography>
           <Table>
             <TableHead>
               <TableRow>
