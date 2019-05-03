@@ -357,7 +357,7 @@ const renderActionButtons = (
           status={status}
         />
         <ActionButton
-          notVisible={editDisabled || status === "closed"}
+          notVisible={workflowSortEnabled || status === "closed"}
           disabled={editDisabled}
           onClick={editDisabled ? undefined : edit}
           icon={<EditIcon />}
@@ -366,7 +366,7 @@ const renderActionButtons = (
           status={status}
         />
         <ActionButton
-          notVisible={permissionsDisabled}
+          notVisible={workflowSortEnabled}
           disabled={permissionsDisabled}
           onClick={permissionsDisabled ? undefined : showPerm}
           icon={<PermissionIcon />}
@@ -375,7 +375,7 @@ const renderActionButtons = (
           status={status}
         />
         <ActionButton
-          notVisible={status === "closed" || workflowSortEnabled}
+          notVisible={workflowSortEnabled || status === "closed"}
           disabled={closeDisabled}
           onClick={closeDisabled ? undefined : close}
           icon={<DoneIcon />}
