@@ -92,7 +92,13 @@ const handleNext = props => props.setCurrentStep(props.currentStep + 1);
 const CreationDialog = props => {
   const { dialogShown, title, handleSubmit, classes } = props;
   return (
-    <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown} maxWidth="md" data-test="creation-dialog">
+    <Dialog
+      disableRestoreFocus
+      classes={{ paper: classes.paperRoot }}
+      open={dialogShown}
+      maxWidth="md"
+      data-test="creation-dialog"
+    >
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
       <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>
