@@ -58,6 +58,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           description: { type: "string", example: "A town should be built" },
                           assignee: { type: "string", example: "aSmith" },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                          additionalData: { type: "object", additionalProperties: true },
                           projectedBudgets: {
                             type: "array",
                             items: {
@@ -78,7 +79,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           type: "object",
                           required: ["entityId", "entityType", "businessEvent", "snapshot"],
                           properties: {
-                            entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                            entityId: {
+                              type: "string",
+                              example: "d0e8c69eg298c87e3899119e025eff1f",
+                            },
                             entityType: { type: "string", example: "project" },
                             businessEvent: {
                               type: "object",
@@ -131,6 +135,7 @@ interface ExposedProject {
     description: string;
     assignee?: string;
     thumbnail?: string;
+    additionalData?: object;
     projectedBudgets: Array<{
       organization: string;
       value: string;
@@ -168,6 +173,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
               description: project.description,
               thumbnail: project.thumbnail,
               projectedBudgets: project.projectedBudgets,
+              additionalData: project.additionalData,
             },
           };
         });

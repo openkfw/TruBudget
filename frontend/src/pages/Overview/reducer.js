@@ -16,7 +16,9 @@ import {
   PROJECT_THUMBNAIL,
   SHOW_CREATION_DIALOG,
   SHOW_EDIT_DIALOG,
-  SHOW_PROJECT_PERMISSIONS
+  SHOW_PROJECT_PERMISSIONS,
+  HIDE_PROJECT_ADDITIONAL_DATA,
+  SHOW_PROJECT_ADDITIONAL_DATA
 } from "./actions";
 
 const defaultState = fromJS({
@@ -41,7 +43,9 @@ const defaultState = fromJS({
   loading: false,
   logs: [],
   allowedIntents: [],
-  dialogTitle: strings.project.add_new_project
+  dialogTitle: strings.project.add_new_project,
+  idForInfo: "",
+  isProjectAdditionalDataShown: false
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -69,6 +73,13 @@ export default function overviewReducer(state = defaultState, action) {
         permissionDialogShown: false,
         permissions: fromJS({})
       });
+    case SHOW_PROJECT_ADDITIONAL_DATA:
+      return state.merge({
+        idForInfo: fromJS(action.id),
+        isProjectAdditionalDataShown: true
+      });
+    case HIDE_PROJECT_ADDITIONAL_DATA:
+      return state.set("isProjectAdditionalDataShown", false);
     case HIDE_PROJECT_DIALOG:
       return state.merge({
         projectToAdd: defaultState.getIn(["projectToAdd"]),

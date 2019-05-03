@@ -23,6 +23,9 @@ export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
 export const SHOW_PROJECT_PERMISSIONS = "SHOW_PROJECT_PERMISSIONS";
 export const HIDE_PROJECT_PERMISSIONS = "HIDE_PROJECT_PERMISSIONS";
 
+export const SHOW_PROJECT_ADDITIONAL_DATA = "SHOW_PROJECT_ADDITIONAL_DATA";
+export const HIDE_PROJECT_ADDITIONAL_DATA = "HIDE_PROJECT_ADDITIONAL_DATA";
+
 export const EDIT_PROJECT = "EDIT_PROJECT";
 export const EDIT_PROJECT_SUCCESS = "EDIT_PROJECT_SUCCESS";
 export const FETCH_PROJECT_PERMISSIONS = "FETCH_PROJECT_PERMISSIONS";
@@ -75,9 +78,22 @@ export function showProjectPermissions(id) {
   };
 }
 
+export function showProjectAdditionalData(id) {
+  return {
+    type: SHOW_PROJECT_ADDITIONAL_DATA,
+    id
+  };
+}
+
 export function hideProjectPermissions() {
   return {
     type: HIDE_PROJECT_PERMISSIONS
+  };
+}
+
+export function hideProjectAdditionalData() {
+  return {
+    type: HIDE_PROJECT_ADDITIONAL_DATA
   };
 }
 

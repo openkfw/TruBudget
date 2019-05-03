@@ -13,7 +13,6 @@ import { UploadedDocument } from "./service/domain/workflow/document";
 import { conversionRateSchema, moneyAmountSchema } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import { Id } from "./service/domain/workflow/workflowitem";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 
 interface RequestBodyV1 {
@@ -189,6 +188,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         amountType: bodyResult.data.amountType,
         billingDate: bodyResult.data.billingDate,
         exchangeRate: bodyResult.data.exchangeRate,
+        additionalData: bodyResult.data.additionalData,
         documents: bodyResult.data.documents,
       };
 
