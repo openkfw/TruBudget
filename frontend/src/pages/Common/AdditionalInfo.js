@@ -42,7 +42,7 @@ const styles = {
 const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAdditionalData }) => {
   const resourceForInfo = resources.find(item => item.data.id === idForInfo);
   return (
-    <Dialog open={isAdditionalDataShown} style={styles.dialog} onClose={hideAdditionalData}>
+    <Dialog disableRestoreFocus open={isAdditionalDataShown} style={styles.dialog} onClose={hideAdditionalData}>
       <DialogTitle>{strings.common.additional_data}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
         {resourceForInfo && !_isEmpty(resourceForInfo.data.additionalData) ? (
