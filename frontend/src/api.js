@@ -4,6 +4,7 @@ const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
 
+// eslint-disable-next-line no-console
 console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`);
 
 class Api {

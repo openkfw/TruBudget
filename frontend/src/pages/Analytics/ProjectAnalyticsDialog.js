@@ -1,5 +1,7 @@
-import { FormControl, MenuItem, Select } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
 import IconButton from "@material-ui/core/IconButton";
 import Slide from "@material-ui/core/Slide";
@@ -7,13 +9,14 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import CloseIcon from "@material-ui/icons/Close";
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { connect } from "react-redux";
 
 import { getCurrencies } from "../../helper";
 import { closeAnalyticsDialog, getExchangeRates, storeDisplayCurrency } from "./actions";
-import ProjectAnalytics from "./ProjectAnalytics";
 import strings from "../../localizeStrings";
+
+const ProjectAnalytics = lazy(() => import("./ProjectAnalytics"));
 
 const styles = {
   container: {
@@ -87,7 +90,9 @@ const ProjectAnalyticsDialog = ({
       </Toolbar>
     </AppBar>
     <div style={styles.container}>
-      <ProjectAnalytics projectId={projectId} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProjectAnalytics projectId={projectId} />
+      </Suspense>
     </div>
   </Dialog>
 );

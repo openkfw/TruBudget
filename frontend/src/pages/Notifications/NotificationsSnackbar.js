@@ -1,14 +1,12 @@
 import React from "react";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
+import IconButton from "@material-ui/core/IconButton";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorIcon from "@material-ui/icons/Error";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import { IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-// import green from "@material-ui/core/colors/green";
-// import red from "@material-ui/core/colors/red";
 
 const variantIcon = {
   success: CheckCircleIcon,

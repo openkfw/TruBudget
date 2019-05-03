@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment";
+import dayjs from "dayjs";
 
 import Card from "@material-ui/core/Card";
 import Drawer from "@material-ui/core/Drawer";
@@ -44,10 +44,10 @@ const loadFunc = (isLoading, fetchNextHistoryItems) => {
 
 function creationTimeExists(item) {
   if (item.createdAt) {
-    return moment(item.createdAt).fromNow();
+    return dayjs(item.createdAt).fromNow();
   }
   if (item.businessEvent.time) {
-    return moment(item.businessEvent.time).fromNow();
+    return dayjs(item.businessEvent.time).fromNow();
   }
   return "Processing ...";
 }

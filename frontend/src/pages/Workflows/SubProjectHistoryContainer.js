@@ -75,6 +75,7 @@ const mapIntent = ({ createdBy, intent, data, snapshot }) => {
         snapshot.displayName
       );
     default:
+      // eslint-disable-next-line no-console
       console.log("WARN: Intent not defined:", intent);
       return intent;
   }

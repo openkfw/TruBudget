@@ -65,7 +65,9 @@ export const persistState = state => {
         break;
     }
   } catch (error) {
-    console.log(error);
-    console.log("failed to persist state");
+    // eslint-disable-next-line no-console
+    console.error(error);
+    // eslint-disable-next-line no-console
+    console.error("failed to persist state");
   }
 };

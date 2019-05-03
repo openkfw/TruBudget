@@ -2,7 +2,7 @@ import React from "react";
 
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
 import strings from "../../localizeStrings";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
@@ -44,7 +44,7 @@ const GroupDialogContent = ({
     removeUserFromGroup(groupId, userId);
   };
   return (
-    <div >
+    <div>
       <div className={classes.textInputContainer}>
         <TextInputWithIcon
           className={classes.textInput}
@@ -73,7 +73,6 @@ const GroupDialogContent = ({
           handleDelete={editMode ? removeUser : removeInitialUserFromGroup}
         />
       </div>
-
     </div>
   );
 };

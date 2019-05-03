@@ -1,6 +1,6 @@
 import React from "react";
 import { Iterable } from "immutable";
-import moment from "moment";
+import dayjs from "dayjs";
 
 import OpenIcon from "@material-ui/icons/Remove";
 import DoneIcon from "@material-ui/icons/Check";
@@ -98,12 +98,12 @@ export const toAmountString = (amount, currency) => {
 };
 
 export const tsToString = ts => {
-  let dateString = moment(ts, "x").format("MMM D, YYYY");
+  let dateString = dayjs.unix(ts).format("MMM D, YYYY");
   return dateString;
 };
 
 export const unixTsToString = ts => {
-  let dateString = moment(new Date(ts * 1000)).format("MMM D, YYYY");
+  let dateString = dayjs.unix(ts).format("MMM D, YYYY");
   return dateString;
 };
 
@@ -183,8 +183,7 @@ export const getCompletionString = subprojects => {
 };
 
 export const formatString = (text, ...args) => {
-  const x = strings.formatString(text, ...args).join(" ");
-  return x;
+  return strings.formatString(text, ...args);
 };
 export const formatUpdateString = (identifier, createdBy, data) => {
   let string = strings.formatString(strings.history.changed_by, identifier, createdBy);

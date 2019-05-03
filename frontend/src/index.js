@@ -1,11 +1,12 @@
-import "babel-polyfill";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 import { Route, Switch } from "react-router";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import createHistory from "history/createBrowserHistory";
+import { createBrowserHistory } from "history";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 import red from "@material-ui/core/colors/deepOrange";
 import blue from "@material-ui/core/colors/indigo";
@@ -17,7 +18,12 @@ import PrivateRoute from "./pages/Login/PrivateRoute";
 import configureStore from "./store";
 import withInitialLoading from "./pages/Loading/withInitialLoading";
 
-const history = createHistory();
+// setup dayjs
+// if you need to add time to your charts you have to add a dayjs adapter
+// see: https://github.com/chartjs/Chart.js/pull/5960
+dayjs.extend(relativeTime);
+
+const history = createBrowserHistory();
 
 const initialState = {};
 const store = configureStore(initialState, history);

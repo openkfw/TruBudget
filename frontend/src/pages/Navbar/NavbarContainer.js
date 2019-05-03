@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { isEmpty } from "lodash";
+import isEmpty from "lodash/isEmpty";
 
 import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup, fetchVersions, exportData } from "./actions";
 import { logout } from "../Login/actions";

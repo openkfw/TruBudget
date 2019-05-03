@@ -168,6 +168,7 @@ function* execute(fn, showLoading = false, errorCallback = undefined) {
     if (typeof errorCallback === "function") {
       yield errorCallback(error);
     } else {
+      // eslint-disable-next-line no-console
       console.error(error);
       yield handleError(error);
     }
@@ -185,11 +186,11 @@ function* showSnackbarSuccess() {
 }
 
 function* handleError(error) {
-  console.error("API-Error: ", error.response || "unknown");
-  console.error(error);
+  // eslint-disable-next-line no-console
+  console.error("API-Error: ", error.response || "No response from API");
 
-  // which status should we use?
-  if (error.response.status === 401 || error.response.status === 400) {
+  if (error.respone && (error.response.status === 401 || error.response.status === 400)) {
+    // which status should we use?
     yield call(logoutSaga);
   } else if (error.response && error.response.data) {
     yield put({
@@ -204,7 +205,7 @@ function* handleError(error) {
   } else {
     yield put({
       type: SNACKBAR_MESSAGE,
-      message: "Disconnected!"
+      message: strings.common.disconnected
     });
     yield put({
       type: SHOW_SNACKBAR,
@@ -1523,6 +1524,9 @@ export default function* rootSaga() {
       yield takeLeading(EXPORT_DATA, exportDataSaga)
     ]);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
+
+    yield rootSaga();
   }
 }

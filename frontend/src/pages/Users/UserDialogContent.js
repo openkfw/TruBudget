@@ -2,7 +2,7 @@ import React from "react";
 
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import NameIcon from "@material-ui/icons/AssignmentInd";
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
 import strings from "../../localizeStrings";
 import Username from "../Common/Username";
@@ -41,37 +41,37 @@ const UserDialogContent = ({
   setOrganization,
   setUsername,
   setPassword,
-  organization,
+  organization
 }) => {
   const { displayName, password, username } = userToAdd;
-    return (
-      <div className={classes.container}>
-        <div className={classes.textInputContainer}>
-          <TextInputWithIcon
-            className={classes.textInput}
-            label={strings.users.full_name}
-            value={displayName}
-            error={false}
-            icon={<NameIcon />}
-            id="fullname"
-            onChange={event => setDisplayName(event.target.value)}
-          />
-          <TextInputWithIcon
-            className={classes.textInput}
-            label={strings.users.organization}
-            value={organization}
-            id="organization"
-            disabled={true}
-            error={false}
-            icon={<OrgaIcon />}
-            onChange={event => setOrganization(event.target.value)}
-          />
-        </div>
-        <div className={classes.textInputContainer}>
-          <Username username={username}  storeUsername={setUsername} failed={false} id="username" />
-          <Password password={password} storePassword={setPassword} failed={false}  id="password" />
-        </div>
+  return (
+    <div className={classes.container}>
+      <div className={classes.textInputContainer}>
+        <TextInputWithIcon
+          className={classes.textInput}
+          label={strings.users.full_name}
+          value={displayName}
+          error={false}
+          icon={<NameIcon />}
+          id="fullname"
+          onChange={event => setDisplayName(event.target.value)}
+        />
+        <TextInputWithIcon
+          className={classes.textInput}
+          label={strings.users.organization}
+          value={organization}
+          id="organization"
+          disabled={true}
+          error={false}
+          icon={<OrgaIcon />}
+          onChange={event => setOrganization(event.target.value)}
+        />
       </div>
-    );
-  }
+      <div className={classes.textInputContainer}>
+        <Username username={username} storeUsername={setUsername} failed={false} id="username" />
+        <Password password={password} storePassword={setPassword} failed={false} id="password" />
+      </div>
+    </div>
+  );
+};
 export default withStyles(styles)(UserDialogContent);

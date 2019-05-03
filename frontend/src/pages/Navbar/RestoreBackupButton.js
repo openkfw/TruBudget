@@ -2,7 +2,7 @@ import React from "react";
 
 import Button from "@material-ui/core/Button";
 import Upload from "@material-ui/icons/CloudUpload";
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import classNames from "classnames";
 
 import strings from "../../localizeStrings";
@@ -48,8 +48,7 @@ const RestoreBackupButton = ({ restoreBackup, classes }) => {
               }
             };
             reader.readAsArrayBuffer(file);
-            event.target.value = null
-
+            event.target.value = null;
           }
         }}
       />

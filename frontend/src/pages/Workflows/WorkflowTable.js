@@ -5,14 +5,10 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Typography from "@material-ui/core/Typography";
-import DoneIcon from "@material-ui/icons/Check";
-import Button from "@material-ui/core/Button";
 
 import WorkflowDetails from "./WorkflowDetails";
 import WorkflowList from "./WorkflowList";
 import strings from "../../localizeStrings";
-import { canReorderWorkflowItems } from "../../permissions.js";
-import _isEmpty from "lodash/isEmpty";
 
 const style = {
   paddingLeft: "0px"
@@ -23,16 +19,8 @@ const createTableHeader = props => (
     <CardHeader title={strings.workflow.workflow_table_title} />
     <CardContent style={style}>
       <div style={{ position: "relative" }}>
-        <div
-          style={{
-            display: "inline-block",
-            position: "absolute"
-          }}
-        >
-          <div>{!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}</div>
-        </div>
         <div style={{ display: "flex", alignItems: "center", paddingLeft: "50px", justifyContent: "space-between" }}>
-          <div style={{ width: "8%", paddingLeft: "4px" }}>-</div>
+          <div style={{ width: "8%", paddingLeft: "4px" }} />
           <div style={{ width: "25%" }}>
             <Typography variant="body1">{strings.workflow.workflow_type_workflow}</Typography>
           </div>
@@ -50,55 +38,6 @@ const createTableHeader = props => (
     </CardContent>
   </Card>
 );
-
-const renderSortButton = props => (
-  <Button
-    variant="contained"
-    color="primary"
-    disabled={
-      !canReorderWorkflowItems(props.allowedIntents) || props.status === "closed" || _isEmpty(props.workflowItems)
-    }
-    onClick={() => handleEnableWorkflowEdit(props)}
-    style={{
-      position: "relative",
-      left: "12px",
-      zIndex: 2
-    }}
-  >
-    {strings.common.edit}
-  </Button>
-);
-
-const renderSubmitSortButton = props => (
-  <Button
-    onClick={() => handleSubmitEdit(props)}
-    style={{
-      position: "relative",
-      left: "5px",
-      zIndex: 2
-    }}
-  >
-    <DoneIcon />
-  </Button>
-);
-
-const handleEnableWorkflowEdit = props => {
-  const workflowItemIds = [];
-  props.workflowItems.map(item => workflowItemIds.push(item.data.id));
-  props.saveWorkflowItemsBeforeSort(workflowItemIds);
-  props.enableWorkflowEdit();
-};
-
-const handleSubmitEdit = props => {
-  const currentWorkflowItemIds = [];
-  props.workflowItems.map(item => currentWorkflowItemIds.push(item.data.id));
-  const hasChanged =
-    currentWorkflowItemIds.find((id, index) => props.workflowItemsBeforeSort[index] !== id) !== undefined;
-  if (hasChanged) {
-    props.reorderWorkflowItems(props.projectId, props.subProjectId, props.workflowItems);
-  }
-  props.disableWorkflowEdit();
-};
 
 const createWorkflowItems = ({ workflowItems, ...props }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {

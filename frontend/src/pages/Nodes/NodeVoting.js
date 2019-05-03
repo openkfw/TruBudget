@@ -10,8 +10,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
-import { withStyles } from "@material-ui/core";
-
+import { withStyles } from "@material-ui/core/styles";
 import strings from "../../localizeStrings";
 import { canApproveNode } from "../../permissions";
 

@@ -60,9 +60,8 @@ services:
     environment:
       TEST_API_PORT: 8080
       PROD_API_PORT: 8080
-      TEST_API_HOST: testapi
+      TEST_API_HOST: masterapi
       PROD_API_HOST: masterapi
       PORT: 8888
     depends_on:
-      - testapi
       - masterapi
