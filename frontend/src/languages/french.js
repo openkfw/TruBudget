@@ -64,7 +64,9 @@ const fr = {
     update: "Mettre à jour",
     username: "Nom d'utilisateur",
     view: "Vue",
-    workflowItem: "Élement de workflow"
+    workflowItem: "Élement de workflow",
+    history_end: "French: Last event reached",
+    no_history: "French: No events"
   },
 
   login: {
@@ -167,7 +169,11 @@ const fr = {
     workflow_type: "Type du Workflow",
     workflow_type_transaction: "Transaction",
     workflow_type_workflow: "Workflow",
-    workflow_upload_document: "Télécharger"
+    workflow_upload_document: "Télécharger",
+    workflowitem_details: "FRENCH: Workflowitem item details",
+    workflowitem_details_documents: "FRENCH: Documents",
+    workflowitem_details_history: "FRENCH: History",
+    workflowitem_details_overview: "FRENCH: Overview"
   },
 
   users: {

@@ -53,6 +53,8 @@ export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSION
 
 export const LIVE_UPDATE_PROJECT = "LIVE_UPDATE_PROJECT";
 
+export const OPEN_HISTORY = "OPEN_HISTORY";
+
 export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_SUBPROJECT_PERMISSIONS,
@@ -252,5 +254,11 @@ export function liveUpdateProject(projectId) {
   return {
     type: LIVE_UPDATE_PROJECT,
     projectId
+  };
+}
+
+export function showHistory() {
+  return {
+    type: OPEN_HISTORY
   };
 }

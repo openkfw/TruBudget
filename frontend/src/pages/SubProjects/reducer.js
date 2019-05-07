@@ -23,8 +23,11 @@ import {
   SUBPROJECT_CURRENCY,
   SUBPROJECT_DELETED_PROJECTED_BUDGET,
   SUBPROJECT_NAME,
-  SUBPROJECT_PROJECTED_BUDGETS
+  SUBPROJECT_PROJECTED_BUDGETS,
+  OPEN_HISTORY
 } from "./actions";
+
+const initialLimit = 50;
 
 const defaultState = fromJS({
   id: "",
@@ -44,13 +47,14 @@ const defaultState = fromJS({
   creationDialogShown: false,
   editDialogShown: false,
   showHistory: false,
+  hasMoreHistory: true,
   roles: [],
   logs: [],
   historyItems: [],
   isHistoryLoading: false,
   historyItemsCount: 0,
-  offset: 0,
-  limit: 30,
+  offset: -initialLimit,
+  limit: initialLimit,
   allowedIntents: [],
   showSubProjectPermissions: false,
   isSubProjectAdditionalDataShown: false,
@@ -132,11 +136,21 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("isHistoryLoading", true);
     case FETCH_PROJECT_HISTORY_SUCCESS:
       return state.merge({
-        historyItems: fromJS(action.events).concat(state.get("historyItems")),
+        historyItems: state.get("historyItems").concat(fromJS(action.events).reverse()),
         historyItemsCount: action.historyItemsCount,
         isHistoryLoading: false,
         offset: action.offset,
-        limit: action.limit
+        limit: action.limit,
+        hasMoreHistory: action.hasMore
+      });
+    case OPEN_HISTORY:
+      return state.set("showHistory", true);
+    case HIDE_HISTORY:
+      return state.merge({
+        historyItems: fromJS([]),
+        offset: defaultState.get("offset"),
+        limit: defaultState.get("limit"),
+        showHistory: false
       });
     case SHOW_SUBPROJECT_EDIT: {
       return state.merge({
@@ -158,12 +172,6 @@ export default function detailviewReducer(state = defaultState, action) {
         subprojectToAdd: defaultState.getIn(["subprojectToAdd"])
       });
     }
-    case HIDE_HISTORY:
-      return state.merge({
-        historyItems: fromJS([]),
-        offset: defaultState.get("offset"),
-        limit: defaultState.get("limit")
-      });
     case LOGOUT:
       return defaultState;
     default:

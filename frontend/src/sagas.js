@@ -89,6 +89,8 @@ import {
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE
 } from "./pages/Workflows/actions";
 
+import { FETCH_WORKFLOWITEM_HISTORY, FETCH_WORKFLOWITEM_HISTORY_SUCCESS } from "./pages/WorkflowitemDetails/actions";
+
 import {
   LOGIN,
   LOGIN_SUCCESS,
@@ -788,14 +790,16 @@ export function* fetchProjectHistorySaga({ projectId, offset, limit, showLoading
     if (limit <= 0) {
       return;
     }
-    const { data } = yield callApi(api.viewProjectHistory, projectId, offset - limit, limit);
-    const newOffset = offset === 0 ? data.historyItemsCount - limit : offset - limit;
-    const newLimit = newOffset > 0 ? Math.min(newOffset, limit) : 0;
+    const { historyItemsCount, events } = yield callApi(api.viewProjectHistory, projectId, offset, limit);
+    offset -= limit;
+    const hasMore = offset + limit > -historyItemsCount;
     yield put({
       type: FETCH_PROJECT_HISTORY_SUCCESS,
-      offset: newOffset,
-      limit: newLimit,
-      ...data
+      offset,
+      limit,
+      historyItemsCount,
+      events,
+      hasMore
     });
   }, showLoading);
 }
@@ -815,14 +819,48 @@ export function* fetchSubprojectHistorySaga({ projectId, subprojectId, offset, l
     if (limit <= 0) {
       return;
     }
-    const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId, offset - limit, limit);
-    const newOffset = offset === 0 ? data.historyItemsCount - limit : offset - limit;
-    const newLimit = newOffset > 0 ? Math.min(newOffset, limit) : 0;
+    const { historyItemsCount, events } = yield callApi(
+      api.viewSubProjectHistory,
+      projectId,
+      subprojectId,
+      offset,
+      limit
+    );
+    offset -= limit;
+    const hasMore = offset + limit > -historyItemsCount;
     yield put({
       type: FETCH_SUBPROJECT_HISTORY_SUCCESS,
-      offset: newOffset,
-      limit: newLimit,
-      ...data
+      offset,
+      limit,
+      historyItemsCount,
+      events,
+      hasMore
+    });
+  }, showLoading);
+}
+
+export function* fetchWorkflowitemHistorySaga({ projectId, subprojectId, workflowitemId, offset, limit, showLoading }) {
+  yield execute(function*() {
+    if (limit <= 0) {
+      return;
+    }
+    const { historyItemsCount, events } = yield callApi(
+      api.viewWorkflowitemHistory,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      offset,
+      limit
+    );
+    offset -= limit;
+    const hasMore = offset + limit > -historyItemsCount;
+    yield put({
+      type: FETCH_WORKFLOWITEM_HISTORY_SUCCESS,
+      offset,
+      limit,
+      historyItemsCount,
+      events,
+      hasMore
     });
   }, showLoading);
 }
@@ -1502,6 +1540,7 @@ export default function* rootSaga() {
       yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga),
       yield takeEvery(SHOW_WORKFLOW_PREVIEW, fetchWorkflowActionsSaga),
       yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
+      yield takeEvery(FETCH_WORKFLOWITEM_HISTORY, fetchWorkflowitemHistorySaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),

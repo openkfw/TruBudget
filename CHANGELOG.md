@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Projected budget ratio on project analytics screen [#242](https://github.com/openkfw/TruBudget/pull/242)
 - New endpoint `/workflowitem.viewHistory` that returns all changes that have been applied to a particular workflowitem in chronological order. [#252](https://github.com/openkfw/TruBudget/issues/252)
+- Each workflowitem's history can now be displayed individually in the frontend. [#252](https://github.com/openkfw/TruBudget/issues/252)
 
 ### Changed
 
@@ -18,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added groups to provisioning [#57](https://github.com/openkfw/TruBudget/issues/57)
 - In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/openkfw/TruBudget/issues/176)
 - The `additional data` button is now available on all levels and is only displayed if additional data is available [#91](https://github.com/openkfw/TruBudget/issues/91)
-- In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/openkfw/TruBudget/issues/176)
+- The frontend no longer displays workflowitem history events in a subproject's history; similarly, a project's history no longer contains the historic events of its subprojects. [#252](https://github.com/openkfw/TruBudget/issues/252)
 
 ### Deprecated
 

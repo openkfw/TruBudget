@@ -13,6 +13,7 @@ import subProjectReducer from "./pages/SubProjects/reducer";
 import dashboardReducer from "./pages/Dashboard/reducer";
 import notificationsReducer from "./pages/Notifications/reducer";
 import workflowReducer from "./pages/Workflows/reducer";
+import workflowitemDetailsReducer from "./pages/WorkflowitemDetails/reducer";
 import loginReducer from "./pages/Login/reducer";
 import documentsReducer from "./pages/Documents/reducer";
 import loadingReducer from "./pages/Loading/reducer";
@@ -74,6 +75,7 @@ export default function createReducer(asyncReducers) {
     detailview: subProjectReducer,
     dashboard: dashboardReducer,
     workflow: workflowReducer,
+    workflowitemDetails: workflowitemDetailsReducer,
     notifications: notificationsReducer,
     login: loginReducer,
     documents: documentsReducer,

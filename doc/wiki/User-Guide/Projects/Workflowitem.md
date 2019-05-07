@@ -1,5 +1,19 @@
 # Workflowitems
 
+- [Workflowitems](#workflowitems)
+  - [View workflowitems](#view-workflowitems)
+  - [View workflowitem details](#view-workflowitem-details)
+  - [Create a workflowitem](#create-a-workflowitem)
+  - [Update a workflowitem](#update-a-workflowitem)
+  - [Update multiple workflowitems](#update-multiple-workflowitems)
+  - [Assign an User/Group to a workflowitem](#assign-an-usergroup-to-a-workflowitem)
+  - [Close workflowitem](#close-workflowitem)
+  - [View the history of a workflowitem](#view-the-history-of-a-workflowitem)
+  - [Reorder Workflowitems](#reorder-workflowitems)
+  - [Documents in TruBudget](#documents-in-trubudget)
+    - [Add document to workflowitem](#add-document-to-workflowitem)
+    - [Validate a document](#validate-a-document)
+
 Workflowitems are the lowest level of abstraction in TruBudget. Workflowitems are steps/task that need to be fulfilled to mark a suproject as done, like Budget allocation, Tender publication, Contract signature, Payment final installment,..
 
 There are some different permissions which affect workflowitems.
@@ -95,7 +109,7 @@ Create a new workflowitem defining title, comment, currency and budget. It is al
 7. [Optional] Click the "Next"-button to switch to the next dialog where documents can be uploaded
 8. [Optional] Fill in the required fields:
    - "Document Name": A unique name of the document
-9. [Optional] Click the "Upload"-button to open thge file selector.
+9. [Optional] Click the "Upload"-button to open the file selector.
 
 ![upload document](../../uploads/Screenshots/upload_document.jpg)
 
@@ -220,7 +234,14 @@ Close a workflowitem when the work is done.
 
 **Description:**
 
-The [history of subprojects](../Projects/Subproject#view-the-history-of-a-subproject) contains all activities refering to all it's workflowitems.
+The history for each workflowitem can be found in its details dialog. The history contains a chronological list of changes of the selected workflowitem, starting with the newest.
+
+**Instructions:**
+1. Click on the "i" (information) button of the workflowitem to [view the workflowitem details](#view-workflowitem-details)
+![view workflowitem details](../../uploads/Screenshots/view_details_workflowitem.jpg)
+2. Navigate to the "History" tab
+![view the history tab](../../uploads/Screenshots/history_tab.jpg)
+3. You can now view the history of the selected workflowitem
 
 ## Reorder Workflowitems
 
@@ -248,4 +269,33 @@ If workflowitems are not closed or redacted( user has no view permission) the us
 6. Click and pull a workflowitem to the new position in the workflowitem queue
 7. When finished reordering submit the change and exit "edit"-mode with a click on the "done"-icon at the same position the "edit" button has been before.
 
-## [Permissions on subproject](../Permissions.md)
+
+## Documents in TruBudget
+
+**Description:**
+
+TruBudget features validation of documents. If a file (like a contract, invoice, etc.) is part of the general workflow of a subproject, the document can be "added" to a workflowitem and later be validated by another user. The word "added" is written in quotes because the document itself is not uploaded in any way - instead, a fingerprint is computed and only that fingerprint is stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and compared to the original. 
+
+### Add document to workflowitem 
+
+Adding a document to a workflowitem can be done either when adding or when creating the document, in the second screen.
+
+1. Either [create a new workflowitem](#create-a-workflowitem) or [update an existing workflowitem](#update-a-workflowitem)
+2. After filling out the fields on the first page, click the "Next" button
+3. In the second screen, enter a name for the document. This name does not have to be the same as the filename! The name should be descriptive of the document that is being uploaded, e.g. "Invoice-Contractor" or "Contract-School". After typing a name, the button "Upload" gets activated
+4. Click the "Upload" button and select a file from your device 
+![upload document](../../uploads/Screenshots/upload_document.jpg)
+4. Click the "Submit" button to finish 
+
+### Validate a document 
+
+1. Click on the "i" (information) button of the workflowitem containing the document to [view the workflowitem details](#view-workflowitem-details)
+![view workflowitem details](../../uploads/Screenshots/view_details_workflowitem.jpg)
+2. Navigate to the "Documents" tab
+![view the documents tab](../../uploads/Screenshots/documents_tab.jpg)
+3. If you see the desired document, click the "Validate" button
+![validate the document](../../uploads/Screenshots/validate.jpg)
+4. Select the correct document from your drive
+5. If the documents match, the validation says "OK"
+![document ok](../../uploads/Screenshots/document_ok.jpg)
+6. [Optional] If the documents do not match, the label changes to "NOT OK". Click on the "NOT OK" button and upload another document to try again. 

@@ -64,7 +64,9 @@ const de = {
     id: "German: Id",
     name: "German: Name",
     view: "German: View",
-    workflowItem: "German: WorkflowItem"
+    workflowItem: "German: WorkflowItem",
+    history_end: "Keine weiteren Ereignisse",
+    no_history: "Keine Ereignisse"
   },
 
   login: {
@@ -165,7 +167,11 @@ const de = {
     workflow_type: "Type",
     workflow_type_transaction: "Transaction",
     workflow_type_workflow: "Workflow",
-    workflow_upload_document: "Upload"
+    workflow_upload_document: "Upload",
+    workflowitem_details: "Prozessschrittdetails",
+    workflowitem_details_documents: "Dokumente",
+    workflowitem_details_history: "Historie",
+    workflowitem_details_overview: "Übersicht"
   },
 
   users: {

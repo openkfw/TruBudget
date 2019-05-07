@@ -17,8 +17,6 @@ export const WORKFLOWITEMS_SELECTED = "WORKFLOWITEMS_SELECTED";
 
 export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
-export const SET_HISTORY_OFFSET = "SET_HISTORY_OFFSET";
-
 export const SUBMIT_BATCH_FOR_WORKFLOW = "SUBMIT_BATCH_FOR_WORKFLOW";
 export const SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS = "SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS";
 export const SUBMIT_BATCH_FOR_WORKFLOW_FAILURE = "SUBMIT_BATCH_FOR_WORKFLOW_FAILURE";
@@ -44,6 +42,7 @@ export const EDIT_WORKFLOW_ITEM_SUCCESS = "EDIT_WORKFLOW_ITEM_SUCCESS";
 export const WORKFLOW_EDIT = "WORKFLOW_EDIT";
 export const SHOW_WORKFLOW_DETAILS = "SHOW_WORKFLOW_DETAILS";
 export const HIDE_WORKFLOW_DETAILS = "HIDE_WORKFLOW_DETAILS";
+export const WORKFLOWITEM_DETAILS_CLEANUP_STATE = "WORKFLOWITEM_DETAILS_CLEANUP_STATE";
 
 export const ENABLE_WORKFLOW_EDIT = "ENABLE_WORKFLOW_EDIT";
 export const DISABLE_WORKFLOW_EDIT = "DISABLE_WORKFLOW_EDIT";
@@ -57,6 +56,7 @@ export const RESET_SUCCEEDED_WORKFLOWITEMS = "RESET_SUCCEEDED_WORKFLOWITEMS";
 
 export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
 export const OPEN_HISTORY = "OPEN_HISTORY";
+export const HIDE_HISTORY = "HIDE_HISTORY";
 export const OPEN_HISTORY_SUCCESS = "OPEN_HISTORY_SUCCESS";
 
 export const FETCH_SUBPROJECT_HISTORY = "FETCH_SUBPROJECT_HISTORY";
@@ -114,13 +114,6 @@ export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading =
     projectId,
     subprojectId,
     showLoading
-  };
-}
-
-export function setSubProjectHistoryOffset(offset) {
-  return {
-    type: SET_HISTORY_OFFSET,
-    offset
   };
 }
 
@@ -188,6 +181,12 @@ export function showWorkflowDetails(id) {
 export function hideWorkflowDetails() {
   return {
     type: HIDE_WORKFLOW_DETAILS
+  };
+}
+
+export function cleanupWorkflowitemDetailsState() {
+  return {
+    type: WORKFLOWITEM_DETAILS_CLEANUP_STATE
   };
 }
 
@@ -540,5 +539,16 @@ export function liveUpdateSubproject(projectId, subprojectId) {
     type: LIVE_UPDATE_SUBPROJECT,
     projectId,
     subprojectId
+  };
+}
+
+export function showHistory() {
+  return {
+    type: OPEN_HISTORY
+  };
+}
+export function hideHistory() {
+  return {
+    type: HIDE_HISTORY
   };
 }

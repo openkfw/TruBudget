@@ -77,10 +77,12 @@ class DocumentOverview extends Component {
         onChange={event => {
           if (event.target.files[0]) {
             const file = event.target.files[0];
+            console.log("File: ", file);
             const reader = new FileReader();
             reader.onloadend = e => {
               if (e.target.result !== undefined) {
                 const dataUrl = e.target.result.split(";base64,")[1];
+                console.log("dataUrl: ", dataUrl);
                 this.props.validateDocument(hash, dataUrl, id);
               }
             };
@@ -112,7 +114,9 @@ class DocumentOverview extends Component {
               <FingerPrint />
             </TableCell>
           ) : null}
-          <TableCell data-test="workflowitemDocumentId" style={{ paddingRight: "0px", paddingLeft: "0px" }}>{id}</TableCell>
+          <TableCell data-test="workflowitemDocumentId" style={{ paddingRight: "0px", paddingLeft: "0px" }}>
+            {id}
+          </TableCell>
           {validationActive ? <TableCell>{this.generateHashIcon(hash)}</TableCell> : null}
           {validationActive ? (
             <TableCell style={{ textAlign: "center", paddingLeft: "0px" }}>

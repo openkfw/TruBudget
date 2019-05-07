@@ -1,5 +1,4 @@
 describe("Project Permissions", function() {
-
   beforeEach(function() {
     cy.login();
     cy.visit(`/projects`);
@@ -21,8 +20,7 @@ describe("Project Permissions", function() {
     cy.get("[data-test=pp-button-0]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test='permission-select-project.intent.listPermissions']").click();
-    cy
-      .get("[data-test='permission-list']")
+    cy.get("[data-test='permission-list']")
       .should("be.visible")
       .then($list => {
         const checkedItems = $list.find("input:checked");
@@ -31,13 +29,11 @@ describe("Project Permissions", function() {
       .then($list => {
         const firstUnchecked = $list.find("input:not(:checked)").first();
         // Use timeout to wait for animation to finish
-        const options = { timeout: 60000 };
-        cy
-          .wrap(firstUnchecked, options)
+        const options = { force: true, timeout: 60000 };
+        cy.wrap(firstUnchecked, options)
           .click(options)
           .should("be.checked");
-        cy
-          .wrap(firstUnchecked, options)
+        cy.wrap(firstUnchecked, options)
           .click(options)
           .should("not.be.checked");
       });
