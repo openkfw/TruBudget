@@ -56,20 +56,23 @@ class SubProjectContainer extends Component {
     const canCreateSubproject = canCreateSubProject(this.props.allowedIntents);
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = canCloseProject(this.props.allowedIntents);
+    const projectId = this.projectId;
+
     return (
       <div>
         <LiveUpdates update={this.update} />
         <div style={globalStyles.innerContainer}>
           <ProjectDetails
             {...this.props}
+            projectId={projectId}
             canAssignProject={canAssign}
             closeProject={this.closeProject}
             canClose={canClose}
           />
-          <SubProjects {...this.props} canCreateSubProject={canCreateSubproject} />
-          <ProjectHistoryDrawer projectId={this.projectId} />
+          <SubProjects {...this.props} projectId={projectId} canCreateSubProject={canCreateSubproject} />
+          <ProjectHistoryDrawer projectId={projectId} />
           <SubprojectPermissionsContainer
-            projectId={this.projectId}
+            projectId={projectId}
             subProjects={this.props.subProjects}
             title={strings.subproject.subproject_permissions_title}
           />

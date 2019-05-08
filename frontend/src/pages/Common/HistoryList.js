@@ -60,7 +60,7 @@ function stringifyHistoryEvent(event, getUserDisplayname) {
   const businessEvent = event.get("businessEvent");
   const createdBy = getUserDisplayname(businessEvent.get("publisher"));
   const eventType = businessEvent.get("type");
-  const displayName = event.getIn(["snapshot", "displayName"]);
+  const displayName = event.getIn(["snapshot", "displayName"]) || "";
 
   switch (eventType) {
     case "project_created":

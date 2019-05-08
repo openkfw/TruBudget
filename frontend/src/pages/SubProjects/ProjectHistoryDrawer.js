@@ -40,7 +40,7 @@ function mapStateToProps(state) {
     nEventsTotal: state.getIn(["detailview", "historyItemsCount"]),
     hasMore: state.getIn(["detailview", "hasMoreHistory"]),
     isLoading: state.getIn(["detailview", "isHistoryLoading"]),
-    getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid])
+    getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
   };
 }
 

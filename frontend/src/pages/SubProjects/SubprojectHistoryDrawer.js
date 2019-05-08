@@ -41,7 +41,7 @@ function mapStateToProps(state) {
     nEventsTotal: state.getIn(["workflow", "historyItemsCount"]),
     hasMore: state.getIn(["workflow", "hasMoreHistory"]),
     isLoading: state.getIn(["workflow", "isHistoryLoading"]),
-    getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid])
+    getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
   };
 }
 
