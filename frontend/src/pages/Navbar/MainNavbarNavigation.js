@@ -44,11 +44,6 @@ const getStaticBreadcrumb = name => {
   }
 };
 
-// const getPathName = (name, streamNames) => {
-//   const breadcrumb = streamNames[name] ? streamNames[name] : getStaticBreadcrumb(name);
-//   return breadcrumb ? breadcrumb : '...';
-// };
-
 const short = (text, size = 12) =>
   text.length > size
     ? `${text.slice(0, Math.floor(size / 2))}...${text.slice(text.length - Math.floor(size / 2), text.length)}`
@@ -94,7 +89,7 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
   });
 };
 
-const MainNavbarNavigation = ({ onToggleSidebar, history, route, environment, currentProject, currentSubProject }) => {
+const MainNavbarNavigation = ({ toggleSidebar, history, route, environment, currentProject, currentSubProject }) => {
   const productionActive = environment === "Prod";
   const navbarTitle = productionActive ? "TruBudget" : "TruBudget (Test)";
   return (

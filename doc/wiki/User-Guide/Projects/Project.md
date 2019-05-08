@@ -1,5 +1,16 @@
 # Project
 
+- [Project](#project)
+  - [View projects](#view-projects)
+  - [View project details](#view-project-details)
+  - [Create a project](#create-a-project)
+  - [Update a project](#update-a-project)
+  - [Assign an User/Group to a project](#assign-an-usergroup-to-a-project)
+  - [Close project](#close-project)
+  - [View the history of a project](#view-the-history-of-a-project)
+  - [Permissions on project](#permissions-on-project)
+  - [Create a subproject](#create-a-subproject)
+
 Projects are currently the highest layer of abstraction in TruBudget. They represent the overall intention of what you trying to achieve, like building a school in Malawi.
 
 There are some different permissions which affect projects.
@@ -161,7 +172,7 @@ Close a project when all subprojects are closed.
 
 **Description:**
 
-The history contains all activities done directly refer to the current project and its subprojects.
+The history contains all activities done directly refer to the current project.
 
 **Notes:**
 

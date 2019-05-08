@@ -10,9 +10,9 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
 import { UploadedDocument } from "./service/domain/workflow/document";
+import { conversionRateSchema, moneyAmountSchema } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import { Id } from "./service/domain/workflow/workflowitem";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 
 interface RequestBodyV1 {
@@ -44,10 +44,10 @@ const requestBodyV1Schema = Joi.object({
     description: Joi.string().allow(""),
     assignee: Joi.string(),
     currency: Joi.string(),
-    amount: Joi.string(),
+    amount: moneyAmountSchema,
     amountType: Joi.string().required(),
     billingDate: Joi.string(),
-    exchangeRate: Joi.string(),
+    exchangeRate: conversionRateSchema,
     documents: Joi.array().items(Joi.object().keys({ id: Joi.string(), base64: Joi.string() })),
     additionalData: Joi.object(),
   }).required(),
@@ -188,6 +188,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         amountType: bodyResult.data.amountType,
         billingDate: bodyResult.data.billingDate,
         exchangeRate: bodyResult.data.exchangeRate,
+        additionalData: bodyResult.data.additionalData,
         documents: bodyResult.data.documents,
       };
 

@@ -3,14 +3,15 @@ import Joi = require("joi");
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { BusinessEvent } from "../business_event";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { StoredDocument } from "./document";
+import { moneyAmountSchema } from "./money";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
-import { BusinessEvent } from "../business_event";
 
 export type Id = string;
 
@@ -70,42 +71,48 @@ const schema = Joi.object().keys({
     .required(),
   dueDate: Joi.date().iso(),
   displayName: Joi.string().required(),
+  // This should use exchangeRateSchema but can't, because of backward compatibility:
   exchangeRate: Joi.string()
     .when("amountType", {
-      is: Joi.valid("disbursed", "allocated"),
-      then: Joi.required(),
-      otherwise: Joi.optional(),
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
     })
-    .when("status", {
-      is: Joi.valid("closed"),
-      then: Joi.required(),
-      otherwise: Joi.optional(),
-    })
-    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
-  // TODO: we should also check the amount type
-  billingDate: Joi.date()
-    .iso()
     .when("status", {
       is: Joi.valid("closed"),
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-  amount: Joi.string()
+  billingDate: Joi.date()
+    .iso()
     .when("amountType", {
-      is: Joi.valid("disbursed", "allocated"),
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
+    })
+    .when("status", {
+      is: Joi.valid("closed"),
       then: Joi.required(),
       otherwise: Joi.optional(),
+    }),
+  amount: moneyAmountSchema
+    .when("amountType", {
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
     })
-    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() })
-    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+    .when("status", {
+      is: Joi.valid("closed"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
   currency: Joi.string()
     .when("amountType", {
-      is: Joi.valid("disbursed", "allocated"),
-      then: Joi.required(),
-      otherwise: Joi.forbidden(),
+      is: Joi.valid("N/A"),
+      then: Joi.forbidden(),
     })
-    .when("status", { is: Joi.valid("closed"), then: Joi.required(), otherwise: Joi.optional() })
-    .when("amountType", { is: Joi.valid("N/A"), then: Joi.forbidden() }),
+    .when("status", {
+      is: Joi.valid("closed"),
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
   amountType: Joi.string()
     .valid("N/A", "disbursed", "allocated")
     .required(),

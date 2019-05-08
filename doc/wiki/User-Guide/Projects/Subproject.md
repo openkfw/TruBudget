@@ -1,6 +1,18 @@
 # Subproject
 
-A project is normally splitted into a fraction of sub-task and Trubudget calls them **Subprojects**.
+- [Subproject](#subproject)
+  - [View subprojects](#view-subprojects)
+  - [View subproject details](#view-subproject-details)
+  - [Create a subproject](#create-a-subproject)
+  - [Update a subproject](#update-a-subproject)
+  - [Assign an User/Group to a subproject](#assign-an-usergroup-to-a-subproject)
+  - [Close subproject](#close-subproject)
+  - [View the history of a subproject](#view-the-history-of-a-subproject)
+  - [View the additional data of a subproject](#view-the-additional-data-of-a-subproject)
+  - [Permissions on subproject](#permissions-on-subproject)
+  - [Create a workflowitem](#create-a-workflowitem)
+
+A project is normally split into a fraction of sub-task and Trubudget calls them **Subprojects**.
 In case of the school example the overall project would be the "School" having multiple subprojects like Design studies, Construction lot, Equipment...
 
 There are some different permissions which affect subprojects.
@@ -162,7 +174,7 @@ Close a subproject when all workflowitems are closed.
 
 **Description:**
 
-The history contains all activities done directly refer to the current subproject and it's workflowitems.
+The history contains all activities done directly refer to the current subproject.
 
 **Notes:**
 

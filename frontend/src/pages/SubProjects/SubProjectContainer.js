@@ -1,33 +1,33 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import {
-  fetchAllProjectDetails,
-  showSubprojectDialog,
-  showProjectAssignees,
-  fetchProjectHistory,
-  showEditDialog,
-  closeProject,
-  showSubProjectPermissions,
-  liveUpdateProject,
-  showSubProjectAdditionalData,
-  hideSubProjectAdditionalData
-} from "./actions";
-
-import SubProjects from "./SubProjects";
-import { showHistory, hideHistory } from "../Notifications/actions";
-import { setSelectedView } from "../Navbar/actions";
-import ProjectDetails from "./ProjectDetails";
-import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
-import { fetchUser } from "../Login/actions";
-import ProjectHistoryContainer from "./ProjectHistoryContainer";
-import { canCreateSubProject, canAssignProject, canCloseProject } from "../../permissions";
-import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
-import SubprojectDialogContainer from "./SubprojectDialogContainer";
+import { canAssignProject, canCloseProject, canCreateSubProject } from "../../permissions";
+import globalStyles from "../../styles";
+import { openAnalyticsDialog } from "../Analytics/actions";
+import AdditionalInfo from "../Common/AdditionalInfo";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
-import SubProjectInfo from "./SubProjectInfo";
+import { fetchUser } from "../Login/actions";
+import { setSelectedView } from "../Navbar/actions";
+import { hideHistory, showHistory } from "../Notifications/actions";
+import {
+  closeProject,
+  fetchAllProjectDetails,
+  fetchProjectHistory,
+  hideSubProjectAdditionalData,
+  liveUpdateProject,
+  showEditDialog,
+  showProjectAssignees,
+  showSubProjectAdditionalData,
+  showSubprojectDialog,
+  showSubProjectPermissions
+} from "./actions";
+import ProjectDetails from "./ProjectDetails";
+import ProjectHistoryDrawer from "./ProjectHistoryDrawer";
+import SubprojectDialogContainer from "./SubprojectDialogContainer";
+import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
+import SubProjects from "./SubProjects";
 
 class SubProjectContainer extends Component {
   constructor(props) {
@@ -56,25 +56,32 @@ class SubProjectContainer extends Component {
     const canCreateSubproject = canCreateSubProject(this.props.allowedIntents);
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = canCloseProject(this.props.allowedIntents);
+    const projectId = this.projectId;
+
     return (
       <div>
         <LiveUpdates update={this.update} />
         <div style={globalStyles.innerContainer}>
           <ProjectDetails
             {...this.props}
+            projectId={projectId}
             canAssignProject={canAssign}
             closeProject={this.closeProject}
             canClose={canClose}
           />
-          <SubProjects {...this.props} canCreateSubProject={canCreateSubproject} />
-          <ProjectHistoryContainer projectId={this.projectId} offset={this.props.offset} limit={this.props.limit} />
+          <SubProjects {...this.props} projectId={projectId} canCreateSubProject={canCreateSubproject} />
+          <ProjectHistoryDrawer projectId={projectId} />
           <SubprojectPermissionsContainer
-            projectId={this.projectId}
+            projectId={projectId}
             subProjects={this.props.subProjects}
             title={strings.subproject.subproject_permissions_title}
           />
-          {/* // TODO: put SubProjectInfo in separate container */}
-          <SubProjectInfo {...this.props} />
+          <AdditionalInfo
+            resources={this.props.subProjects}
+            isAdditionalDataShown={this.props.isSubProjectAdditionalDataShown}
+            hideAdditionalData={this.props.hideSubProjectAdditionalData}
+            {...this.props}
+          />
           <SubprojectDialogContainer location={this.props.location} />
         </div>
       </div>
@@ -101,7 +108,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     closeProject: pId => dispatch(closeProject(pId, true)),
     showSubProjectPermissions: id => dispatch(showSubProjectPermissions(id)),
     showSubProjectAdditionalData: id => dispatch(showSubProjectAdditionalData(id)),
-    hideSubProjectAdditionalData: () => dispatch(hideSubProjectAdditionalData())
+    hideSubProjectAdditionalData: () => dispatch(hideSubProjectAdditionalData()),
+    openAnalyticsDialog: () => dispatch(openAnalyticsDialog())
   };
 };
 
@@ -110,9 +118,7 @@ const mapStateToProps = state => {
     users: state.getIn(["login", "user"]),
     projectId: state.getIn(["detailview", "id"]),
     projectName: state.getIn(["detailview", "projectName"]),
-    projectAmount: state.getIn(["detailview", "projectAmount"]),
     projectComment: state.getIn(["detailview", "projectComment"]),
-    projectCurrency: state.getIn(["detailview", "projectCurrency"]),
     projectStatus: state.getIn(["detailview", "projectStatus"]),
     projectAssignee: state.getIn(["detailview", "projectAssignee"]),
     projectTS: state.getIn(["detailview", "projectTS"]),

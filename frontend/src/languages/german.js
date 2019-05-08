@@ -4,6 +4,8 @@ const de = {
     actions: "Actions",
     add: "hinzufügen",
     added: "German: Added",
+    additional_data: "Zusätzliche Daten",
+    amount: "Betrag",
     approver: "Approver",
     assign: "German: assign",
     assigned: "Assigned",
@@ -25,6 +27,7 @@ const de = {
     created: "Created",
     disbursed_budget: "Disbursed Budget",
     disbursement: "Disbursement",
+    disconnected: "Offline",
     done: "Done",
     edit: "German: Edit",
     edited: "German: Edited",
@@ -36,13 +39,16 @@ const de = {
     incorrect_password: "Falsches Passwort",
     incorrect_username: "Unbekannter Benutzername",
     next: "Next",
+    no_resources: "Keine Daten zu ausgewählter Ressource hinzugefügt",
     not_assigned: "Not assigned",
     not_assigned_budget: "Not Assigned Budget",
+    not_projected: "Nicht projiziert",
+    not_disbursed: "Nicht ausgezahlt",
     not_ok: "NOK",
     open: "Open",
     password: "Passwort",
     project: "German: Project",
-    projectedBudget: "German: Projected Budget",
+    projected_budget: "German: Projected Budget",
     revoke: "German: revoke",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
@@ -51,13 +57,16 @@ const de = {
     subproject: "Subproject",
     subprojects: "Subprojects",
     task_status: "Task status",
+    total_budget: "Gesamt Budget",
     thumbnail: "German: Thumbnail",
     update: "German: Update",
     username: "Username",
     id: "German: Id",
     name: "German: Name",
     view: "German: View",
-    workflowItem: "German: WorkflowItem"
+    workflowItem: "German: WorkflowItem",
+    history_end: "Keine weiteren Ereignisse",
+    no_history: "Keine Ereignisse"
   },
 
   login: {
@@ -158,7 +167,11 @@ const de = {
     workflow_type: "Type",
     workflow_type_transaction: "Transaction",
     workflow_type_workflow: "Workflow",
-    workflow_upload_document: "Upload"
+    workflow_upload_document: "Upload",
+    workflowitem_details: "Prozessschrittdetails",
+    workflowitem_details_documents: "Dokumente",
+    workflowitem_details_history: "Historie",
+    workflowitem_details_overview: "Übersicht"
   },
 
   users: {
@@ -197,6 +210,18 @@ const de = {
     actions_done: "German: {0} from {1} actions done"
   },
 
+  analytics: {
+    assigned_budget_ratio: "Zugewiesene Budgetquote",
+    available_unspent_budget: "Verfügbares Budget",
+    converted_amount: "Umgerechneter Betrag",
+    disbursed_budget_ratio: "Ausgezahlte Budgetquote",
+    project_analytics: "Projekt Analyse",
+    projected_budget_ratio: "Projezierte Budgetquote",
+    subproject_analytics: "Subprojekt Analyse",
+    total: "Gesamt:",
+    total_budget_distribution: "Gesamte Budget Verteilung"
+  },
+
   navigation: {
     admin_permission: "Admin",
     connected_peers: "Peers Verbunden",
@@ -206,6 +231,7 @@ const de = {
     menu_item_network: "Network",
     menu_item_notifications: "Notifications",
     menu_item_projects: "Projects",
+    menu_item_export: "Exportieren",
     no_peers: "No peers",
     options: "Options",
     other_trustees: "Other Trustees",

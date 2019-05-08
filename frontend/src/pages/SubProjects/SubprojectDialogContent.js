@@ -3,7 +3,7 @@ import React from "react";
 import Divider from "@material-ui/core/Divider";
 
 import strings from "../../localizeStrings";
-import Budget from "../Common/Budget2";
+import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
 import { getCurrencies } from "../../helper";
@@ -20,7 +20,7 @@ function getMenuItems(currencies) {
 }
 
 const SubprojectDialogContent = props => {
-  const currencies = getCurrencies(props.projectCurrency);
+  const currencies = getCurrencies();
   return (
     <div>
       <div>
@@ -50,7 +50,6 @@ const SubprojectDialogContent = props => {
       <div>
         <Budget
           currencyTitle={strings.subproject.subproject_currency}
-          parentCurrency={props.projectCurrency}
           budgetLabel={strings.subproject.subproject_budget_amount}
           projectedBudgets={props.subprojectToAdd.projectedBudgets}
           storeProjectedBudget={props.storeSubProjectProjectedBudgets}

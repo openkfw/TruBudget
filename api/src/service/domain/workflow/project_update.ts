@@ -1,8 +1,8 @@
 import Joi = require("joi");
+import { isEqual } from "lodash";
 
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -12,6 +12,7 @@ import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
+import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectUpdated from "./project_updated";
 
 export type RequestData = ProjectUpdated.Modification;
@@ -52,10 +53,14 @@ export async function updateProject(
   }
 
   // Check that the new event is indeed valid:
-
-  const result = ProjectUpdated.apply(ctx, projectUpdated, project);
+  const result = ProjectEventSourcing.newProjectFromEvent(ctx, project, projectUpdated);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, projectUpdated, [result]);
+  }
+
+  // Only emit the event if it causes any changes:
+  if (isEqualIgnoringLog(project, result)) {
+    return { newEvents: [] };
   }
 
   // Create notification events:
@@ -68,4 +73,10 @@ export async function updateProject(
   }
 
   return { newEvents: [projectUpdated, ...notifications] };
+}
+
+function isEqualIgnoringLog(projectA: Project.Project, projectB: Project.Project): boolean {
+  const { log: logA, ...a } = projectA;
+  const { log: logB, ...b } = projectB;
+  return isEqual(a, b);
 }

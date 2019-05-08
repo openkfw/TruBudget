@@ -5,20 +5,27 @@ import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { canAssignSubProject, canCloseSubProject, canViewSubProjectPermissions } from "../../permissions";
 import globalStyles from "../../styles";
+import { openAnalyticsDialog } from "../Analytics/actions";
+import AdditionalInfo from "../Common/AdditionalInfo";
 import { addDocument } from "../Documents/actions";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
 import { showHistory } from "../Notifications/actions";
+import SubprojectHistoryDrawer from "../SubProjects/SubprojectHistoryDrawer";
 import {
+  cleanupWorkflowitemDetailsState,
   closeSubproject,
   closeWorkflowItem,
+  disableWorkflowEdit,
   enableSubProjectBudgetEdit,
+  enableWorkflowEdit,
   fetchAllSubprojectDetails,
   fetchSubprojectHistory,
   fetchWorkflowItems,
   hideWorkflowDetails,
   hideWorkflowDialog,
+  hideWorkflowitemAdditionalData,
   isWorkflowApprovalRequired,
   liveUpdateSubproject,
   postSubProjectEdit,
@@ -28,16 +35,13 @@ import {
   showEditDialog,
   showSubProjectAssignee,
   showWorkflowDetails,
-  storeSubProjectAmount,
+  showWorkflowitemAdditionalData,
+  showWorkflowItemPermissions,
   storeWorkflowItemsSelected,
   storeWorkflowType,
-  updateWorkflowOrderOnState,
-  enableWorkflowEdit,
-  disableWorkflowEdit,
-  showWorkflowItemPermissions
+  updateWorkflowOrderOnState
 } from "./actions";
 import SubProjectDetails from "./SubProjectDetails";
-import SubProjectHistoryContainer from "./SubProjectHistoryContainer";
 import Workflow from "./Workflow";
 import WorkflowBatchEditContainer from "./WorkflowBatchEditContainer";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
@@ -110,12 +114,13 @@ class WorkflowContainer extends Component {
             closeWorkflowItem={this.closeWorkflowItem}
           />
           <WorkflowDialogContainer location={this.props.location} />
-          <SubProjectHistoryContainer
-            projectId={this.projectId}
-            subprojectId={this.subProjectId}
-            offset={this.props.offset}
-            limit={this.props.limit}
+          <AdditionalInfo
+            resources={this.props.workflowItems}
+            isAdditionalDataShown={this.props.isWorkflowitemAdditionalDataShown}
+            hideAdditionalData={this.props.hideWorkflowitemAdditionalData}
+            {...this.props}
           />
+          <SubprojectHistoryDrawer projectId={this.projectId} subprojectId={this.subProjectId} />
           <WorkflowBatchEditContainer projectId={this.projectId} subProjectId={this.subProjectId} />
         </div>
       </div>
@@ -135,6 +140,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     openWorkflowDetails: id => dispatch(showWorkflowDetails(id)),
     hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
+    cleanupWorkflowitemDetailsState: () => dispatch(cleanupWorkflowitemDetailsState()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
 
@@ -150,7 +156,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowType: value => dispatch(storeWorkflowType(value)),
     enableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(true)),
     disableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(false)),
-    storeSubProjectAmount: amount => dispatch(storeSubProjectAmount(amount)),
     postSubProjectEdit: (parent, streamName, status, amount) =>
       dispatch(postSubProjectEdit(parent, streamName, status, amount)),
     fetchUser: () => dispatch(fetchUser(true)),
@@ -160,7 +165,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents)),
     saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
     addDocument: (payload, name) => dispatch(addDocument(payload, name)),
-    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems))
+    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
+    openAnalyticsDialog: () => dispatch(openAnalyticsDialog()),
+    showWorkflowitemAdditionalData: wId => dispatch(showWorkflowitemAdditionalData(wId)),
+    hideWorkflowitemAdditionalData: () => dispatch(hideWorkflowitemAdditionalData())
   };
 };
 
@@ -184,14 +192,17 @@ const mapStateToProps = state => {
     subProjects: state.getIn(["detailview", "subProjects"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"]),
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),
-    subProjectAmount: state.getIn(["workflow", "subProjectAmount"]),
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
     users: state.getIn(["login", "user"]),
     offset: state.getIn(["workflow", "offset"]),
     limit: state.getIn(["workflow", "limit"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
-    projectedBudgets: state.getIn(["workflow", "projectedBudgets"])
+    projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
+    idForInfo: state.getIn(["workflow", "idForInfo"]),
+    isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"]),
+    historyItemsCount: state.getIn(["workflow", "historyItemsCount"]),
+    isLoading: state.getIn(["workflow", "isHistoryLoading"])
   };
 };
 

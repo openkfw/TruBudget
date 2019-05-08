@@ -1,5 +1,5 @@
-import { produce } from "immer";
 import { VError } from "verror";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -12,6 +12,7 @@ import * as UserRecord from "../organization/user_record";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as ProjectAssigned from "./project_assigned";
+import * as ProjectEventSourcing from "./project_eventsourcing";
 
 interface Repository {
   getProject(): Promise<Result.Type<Project.Project>>;
@@ -48,7 +49,7 @@ export async function assignProject(
   }
 
   // Check that the new event is indeed valid:
-  const result = produce(project, draft => ProjectAssigned.apply(ctx, projectAssigned, draft));
+  const result = ProjectEventSourcing.newProjectFromEvent(ctx, project, projectAssigned);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, projectAssigned, [result]);
   }

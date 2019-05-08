@@ -17,12 +17,14 @@ export const PROJECT_NAME = "PROJECT_NAME";
 export const PROJECT_PROJECTED_BUDGET = "PROJECT_PROJECTED_BUDGET";
 export const PROJECT_DELETED_PROJECTED_BUDGET = "PROJECT_DELETED_PROJECTED_BUDGET";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
-export const PROJECT_ORGANIZATION = "PROJECT_ORGANIZATION";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
 
 export const SHOW_PROJECT_PERMISSIONS = "SHOW_PROJECT_PERMISSIONS";
 export const HIDE_PROJECT_PERMISSIONS = "HIDE_PROJECT_PERMISSIONS";
+
+export const SHOW_PROJECT_ADDITIONAL_DATA = "SHOW_PROJECT_ADDITIONAL_DATA";
+export const HIDE_PROJECT_ADDITIONAL_DATA = "HIDE_PROJECT_ADDITIONAL_DATA";
 
 export const EDIT_PROJECT = "EDIT_PROJECT";
 export const EDIT_PROJECT_SUCCESS = "EDIT_PROJECT_SUCCESS";
@@ -76,9 +78,22 @@ export function showProjectPermissions(id) {
   };
 }
 
+export function showProjectAdditionalData(id) {
+  return {
+    type: SHOW_PROJECT_ADDITIONAL_DATA,
+    id
+  };
+}
+
 export function hideProjectPermissions() {
   return {
     type: HIDE_PROJECT_PERMISSIONS
+  };
+}
+
+export function hideProjectAdditionalData() {
+  return {
+    type: HIDE_PROJECT_ADDITIONAL_DATA
   };
 }
 
@@ -122,13 +137,6 @@ export function storeDeletedProjectedBudget(projectedBudgets) {
   return {
     type: PROJECT_DELETED_PROJECTED_BUDGET,
     projectedBudgets: projectedBudgets
-  };
-}
-
-export function storeProjectOrganization(organization) {
-  return {
-    type: PROJECT_ORGANIZATION,
-    organization: organization
   };
 }
 

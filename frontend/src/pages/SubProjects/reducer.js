@@ -1,37 +1,37 @@
 import { fromJS } from "immutable";
 
+import strings from "../../localizeStrings";
+import { LOGOUT } from "../Login/actions";
+import { HIDE_HISTORY } from "../Notifications/actions";
 import {
-  SUBPROJECT_NAME,
-  SUBPROJECT_COMMENT,
-  SUBPROJECT_CURRENCY,
-  SUBPROJECT_PROJECTED_BUDGETS,
-  SUBPROJECT_DELETED_PROJECTED_BUDGET,
   CREATE_SUBPROJECT_SUCCESS,
-  HIDE_SUBPROJECT_DIALOG,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
-  SHOW_PROJECT_ASSIGNEES,
-  HIDE_PROJECT_ASSIGNEES,
   FETCH_PROJECT_HISTORY,
   FETCH_PROJECT_HISTORY_SUCCESS,
-  HIDE_SUBPROJECT_PERMISSIONS,
-  SHOW_SUBPROJECT_PERMISSIONS,
-  SHOW_SUBPROJECT_ADDITIONAL_DATA,
-  HIDE_SUBPROJECT_ADDITIONAL_DATA,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
+  HIDE_PROJECT_ASSIGNEES,
+  HIDE_SUBPROJECT_ADDITIONAL_DATA,
+  HIDE_SUBPROJECT_DIALOG,
+  HIDE_SUBPROJECT_PERMISSIONS,
+  SET_HISTORY_OFFSET,
+  SHOW_PROJECT_ASSIGNEES,
+  SHOW_SUBPROJECT_ADDITIONAL_DATA,
   SHOW_SUBPROJECT_CREATE,
   SHOW_SUBPROJECT_EDIT,
-  SET_HISTORY_OFFSET
+  SHOW_SUBPROJECT_PERMISSIONS,
+  SUBPROJECT_COMMENT,
+  SUBPROJECT_CURRENCY,
+  SUBPROJECT_DELETED_PROJECTED_BUDGET,
+  SUBPROJECT_NAME,
+  SUBPROJECT_PROJECTED_BUDGETS,
+  OPEN_HISTORY
 } from "./actions";
-import { LOGOUT } from "../Login/actions";
-import strings from "../../localizeStrings";
-import { fromAmountString } from "../../helper";
-import { HIDE_HISTORY } from "../Notifications/actions";
+
+const initialLimit = 50;
 
 const defaultState = fromJS({
   id: "",
   projectName: "",
-  projectAmount: "",
-  projectCurrency: "",
   projectComment: "Default Comment",
   projectStatus: "open",
   projectProjectedBudgets: [],
@@ -47,13 +47,14 @@ const defaultState = fromJS({
   creationDialogShown: false,
   editDialogShown: false,
   showHistory: false,
+  hasMoreHistory: true,
   roles: [],
   logs: [],
   historyItems: [],
   isHistoryLoading: false,
   historyItemsCount: 0,
-  offset: 0,
-  limit: 30,
+  offset: -initialLimit,
+  limit: initialLimit,
   allowedIntents: [],
   showSubProjectPermissions: false,
   isSubProjectAdditionalDataShown: false,
@@ -71,8 +72,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         id: action.project.data.id,
         projectName: action.project.data.displayName,
-        projectAmount: fromAmountString(action.project.data.amount),
-        projectCurrency: action.project.data.currency,
         projectComment: action.project.data.description,
         projectStatus: action.project.data.status,
         projectTS: action.project.data.creationUnixTs,
@@ -137,24 +136,36 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("isHistoryLoading", true);
     case FETCH_PROJECT_HISTORY_SUCCESS:
       return state.merge({
-        historyItems: fromJS(action.events).concat(state.get("historyItems")),
+        historyItems: state.get("historyItems").concat(fromJS(action.events).reverse()),
         historyItemsCount: action.historyItemsCount,
         isHistoryLoading: false,
         offset: action.offset,
-        limit: action.limit
+        limit: action.limit,
+        hasMoreHistory: action.hasMore
+      });
+    case OPEN_HISTORY:
+      return state.set("showHistory", true);
+    case HIDE_HISTORY:
+      return state.merge({
+        historyItems: fromJS([]),
+        offset: defaultState.get("offset"),
+        limit: defaultState.get("limit"),
+        showHistory: false
       });
     case SHOW_SUBPROJECT_EDIT: {
-      return state.merge({
-        subprojectToAdd: state
-          .getIn(["subprojectToAdd"])
-          .set("id", action.id)
-          .set("displayName", action.name)
-          .set("description", action.description)
-          .set("currency", action.currency)
-          .set("projectedBudgets", fromJS(action.projectedBudgets)),
-        editDialogShown: true,
-        dialogTitle: strings.subproject.subproject_edit_title
-      });
+      return state
+        .updateIn(["subprojectToAdd"], subproject =>
+          subproject
+            .set("id", action.id)
+            .set("displayName", action.name)
+            .set("description", action.description)
+            .set("currency", action.currency)
+            .set("projectedBudgets", fromJS(action.projectedBudgets))
+        )
+        .merge({
+          editDialogShown: true,
+          dialogTitle: strings.subproject.subproject_edit_title
+        });
     }
     case HIDE_SUBPROJECT_DIALOG: {
       return state.merge({
@@ -163,12 +174,6 @@ export default function detailviewReducer(state = defaultState, action) {
         subprojectToAdd: defaultState.getIn(["subprojectToAdd"])
       });
     }
-    case HIDE_HISTORY:
-      return state.merge({
-        historyItems: fromJS([]),
-        offset: defaultState.get("offset"),
-        limit: defaultState.get("limit")
-      });
     case LOGOUT:
       return defaultState;
     default:

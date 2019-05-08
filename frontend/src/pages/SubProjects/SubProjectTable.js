@@ -1,4 +1,4 @@
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -107,19 +107,21 @@ const getTableEntries = (
           <TableCell>
             <div className={classes.buttonContainer}>
               <div className={classes.button}>
-                <Tooltip id="tooltip-additionalData" title="Additional Data">
-                  <div>
-                    <IconButton
-                      data-test={`adata-button-${index}`}
-                      onClick={() => {
-                        showSubProjectAdditionalData(id);
-                      }}
-                      disabled={additionalDataEmpty}
-                    >
-                      <MoreIcon />
-                    </IconButton>
-                  </div>
-                </Tooltip>
+                {!additionalDataEmpty ? (
+                  <Tooltip id="tooltip-additionalData" title="Additional Data">
+                    <div>
+                      <IconButton
+                        data-test={`adata-button-${index}`}
+                        onClick={() => {
+                          showSubProjectAdditionalData(id);
+                        }}
+                        disabled={false}
+                      >
+                        <MoreIcon />
+                      </IconButton>
+                    </div>
+                  </Tooltip>
+                ) : null}
               </div>
               <div className={classes.button}>
                 {isOpen && !editDisabled ? (
@@ -201,7 +203,7 @@ const SubProjectTable = ({
         <TableHead>
           <TableRow>
             <TableCell className={classes.tableText}>{strings.common.subproject}</TableCell>
-            <TableCell className={classes.tableText}>{strings.common.projectedBudget}</TableCell>
+            <TableCell className={classes.tableText}>{strings.common.projected_budget}</TableCell>
             <TableCell className={classes.tableText}>{strings.common.status}</TableCell>
             <TableCell className={classes.tableText}> </TableCell>
           </TableRow>

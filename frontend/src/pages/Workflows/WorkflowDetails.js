@@ -1,23 +1,23 @@
-import React from "react";
-
-import AmountIcon from "@material-ui/icons/AccountBalance";
-import AssigneeIcon from "@material-ui/icons/Group";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import Divider from "@material-ui/core/Divider";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import AssigneeIcon from "@material-ui/icons/Group";
 import _isEmpty from "lodash/isEmpty";
+import React, { useEffect, useState } from "react";
 
-import { toAmountString, statusMapping, statusIconMapping } from "../../helper";
-import DocumentOverviewContainer from "../Documents/DocumentOverviewContainer";
+import { statusIconMapping, statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
+import DocumentOverviewContainer from "../Documents/DocumentOverviewContainer";
+import WorkflowitemHistoryTab from "../WorkflowitemDetails/WorkflowHistoryTab";
 
 const styles = {
   textfield: {
@@ -47,6 +47,9 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     alignItems: "center"
+  },
+  displayName: {
+    wordBreak: "break-word"
   }
 };
 
@@ -70,65 +73,113 @@ const removeNewLines = text => {
   return formattedText;
 };
 
-const WorkflowDetails = ({
-  workflowItems,
-  subProjectDetails,
-  showWorkflowDetails,
-  showDetailsItemId,
-  hideWorkflowDetails,
-  users,
-  validateDocument,
-  validatedDocuments
-}) => {
-  const workflowItem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-  const { displayName, description, amountType, status, assignee, amount, currency, documents } = workflowItem.data;
+function Overview({ users, workflowitem }) {
+  const { displayName, description, amountType, status, assignee, amount, currency } = workflowitem.data;
   const trimmedComment = removeNewLines(description);
   const assignedUser = users.find(user => user.id === assignee);
   return (
-    <Dialog open={showWorkflowDetails} style={styles.dialog} onClose={hideWorkflowDetails}>
-      <DialogTitle data-test="workflowInfoDialog">{"Workflow details"}</DialogTitle>
+    <List>
+      <ListItem>
+        <Avatar>{displayName ? displayName[0] : "?"}</Avatar>
+        <ListItemText
+          data-test="workflowitemInfoDisplayName"
+          primary={displayName}
+          secondary={trimmedComment}
+          style={styles.displayName}
+        />
+      </ListItem>
+      <ListItem>
+        <Avatar>
+          <AmountIcon />
+        </Avatar>
+        <ListItemText
+          primary={amountType !== "N/A" ? toAmountString(amount, currency) : "N/A"}
+          secondary={strings.common.budget}
+        />
+      </ListItem>
+      <ListItem>
+        <Avatar>{statusIconMapping[status]}</Avatar>
+        <ListItemText primary={statusMapping(status)} secondary={strings.common.status} />
+      </ListItem>
+      <ListItem>
+        <Avatar>
+          <AssigneeIcon />
+        </Avatar>
+        <ListItemText primary={assignedUser ? assignedUser.displayName : ""} secondary={strings.common.assignee} />
+      </ListItem>
+    </List>
+  );
+}
+
+function Documents({ documents, validateDocument, validatedDocuments, showWorkflowDetails }) {
+  return (
+    <DocumentOverviewContainer
+      id={strings.workflow.workflow_documents}
+      documents={documents}
+      validateDocument={validateDocument}
+      validatedDocuments={validatedDocuments}
+      validationActive={showWorkflowDetails}
+    />
+  );
+}
+
+function WorkflowDetails({
+  workflowItems,
+  showWorkflowDetails,
+  showDetailsItemId,
+  hideWorkflowDetails,
+  cleanupWorkflowitemDetailsState,
+  users,
+  validateDocument,
+  validatedDocuments,
+  projectId,
+  subProjectId: subprojectId
+}) {
+  const [tabIndex, setTabIndex] = useState(0);
+  useEffect(
+    () => {
+      if (!showWorkflowDetails) {
+        setTabIndex(0);
+      }
+    },
+    [showWorkflowDetails]
+  );
+
+  const workflowitem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
+
+  let content;
+  if (tabIndex === 0) {
+    content = <Overview {...{ users, workflowitem }} />;
+  } else if (tabIndex === 1) {
+    content = (
+      <Documents
+        {...{ documents: workflowitem.data.documents, showWorkflowDetails, validateDocument, validatedDocuments }}
+      />
+    );
+  } else if (tabIndex === 2) {
+    content = (
+      <WorkflowitemHistoryTab subprojectId={subprojectId} projectId={projectId} workflowitemId={workflowitem.data.id} />
+    );
+  } else {
+    throw new Error(`bug: illegal tab index ${tabIndex}`);
+  }
+
+  return (
+    <Dialog open={showWorkflowDetails} style={styles.dialog} onExited={cleanupWorkflowitemDetailsState}>
+      <DialogTitle data-test="workflowInfoDialog">{strings.workflow.workflowitem_details}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
-        <List>
-          <ListItem>
-            <Avatar>{displayName ? displayName[0] : "?"}</Avatar>
-            <ListItemText data-test="workflowitemInfoDisplayName" primary={displayName} secondary={trimmedComment} />
-          </ListItem>
-          <ListItem>
-            <Avatar>
-              <AmountIcon />
-            </Avatar>
-            <ListItemText
-              primary={amountType !== "N/A" ? toAmountString(amount, currency) : "N/A"}
-              secondary={strings.common.budget}
-            />
-          </ListItem>
-          <ListItem>
-            <Avatar>{statusIconMapping[status]}</Avatar>
-            <ListItemText primary={statusMapping(status)} secondary={strings.common.status} />
-          </ListItem>
-          <ListItem>
-            <Avatar>
-              <AssigneeIcon />
-            </Avatar>
-            <ListItemText primary={assignedUser ? assignedUser.displayName : ""} secondary={strings.common.assignee} />
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <DocumentOverviewContainer
-              id={strings.workflow.workflow_documents}
-              documents={documents}
-              validateDocument={validateDocument}
-              validatedDocuments={validatedDocuments}
-              validationActive={showWorkflowDetails}
-            />
-          </ListItem>
-        </List>
+        <Tabs value={tabIndex} onChange={(_, index) => setTabIndex(index)}>
+          <Tab id="workflowitem-overview-tab" label={strings.workflow.workflowitem_details_overview} />
+          <Tab id="workflowitem-documents-tab" label={strings.workflow.workflowitem_details_documents} />
+          <Tab id="workflowitem-history-tab" label={strings.workflow.workflowitem_details_history} />
+        </Tabs>
+        {content}
       </DialogContent>
       <DialogActions>
         <Button onClick={hideWorkflowDetails}>{strings.common.close}</Button>
       </DialogActions>
     </Dialog>
   );
-};
+}
 
 export default WorkflowDetails;

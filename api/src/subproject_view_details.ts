@@ -12,7 +12,6 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 
 function mkSwaggerSchema(server: FastifyInstance) {
@@ -27,11 +26,9 @@ function mkSwaggerSchema(server: FastifyInstance) {
         properties: {
           projectId: {
             type: "string",
-            example: "d0e8c69eg298c87e3899119e025eff1f",
           },
           subprojectId: {
             type: "string",
-            example: "rfe8er9eg298c87e3899119e025eff1f",
           },
         },
       },
@@ -87,39 +84,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         additionalData: { type: "object", additionalProperties: true },
                       },
                     },
-                    log: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                          entityType: { type: "string", example: "subproject" },
-                          businessEvent: {
-                            type: "object",
-                            additionalProperties: true,
-                            properties: {
-                              type: { type: "string" },
-                              source: { type: "string" },
-                              time: { type: "string" },
-                              publisher: { type: "string" },
-                            },
-                            example: {
-                              type: "subproject_closed",
-                              source: "http",
-                              time: "2018-09-05T13:37:25.775Z",
-                              publisher: "jdoe",
-                            },
-                          },
-                          snapshot: {
-                            type: "object",
-                            additionalProperties: true,
-                            properties: {
-                              displayName: { type: "string", example: "townproject" },
-                            },
-                          },
-                        },
-                      },
-                    },
                     allowedIntents: { type: "array", items: { type: "string" } },
                   },
                 },
@@ -147,7 +111,6 @@ interface ExposedProject {
 }
 
 interface ExposedSubproject {
-  log: SubprojectTraceEvent[];
   allowedIntents: Intent[];
   data: {
     id: string;
@@ -255,7 +218,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const subproject: Subproject.Subproject = subprojectResult;
 
         const exposedSubproject: ExposedSubproject = {
-          log: subproject.log,
           allowedIntents: getAllowedIntents([user.id].concat(user.groups), subproject.permissions),
           data: {
             id: subproject.id,

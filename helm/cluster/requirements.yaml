@@ -75,3 +75,11 @@ dependencies:
     tags:
       - frontendSecond
       - master
+  - alias: excel-export-1
+    name: excel-export
+    version: "0.1.0"
+    repository: file://../excel-export
+    tags:
+      - excel-export
+      - master
+      - minimal

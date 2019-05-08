@@ -17,7 +17,7 @@ const styles = {
 };
 
 const Navbar = ({
-  onToggleSidebar,
+  toggleSidebar,
   numberOfActivePeers,
   peers,
   unreadNotificationCount,
@@ -40,12 +40,13 @@ const Navbar = ({
   createBackup,
   restoreBackup,
   classes,
-  versions
+  versions,
+  exportData
 }) => (
   <div>
     <AppBar classes={classes} position="absolute">
       <Toolbar>
-        <LeftNavbarNavigation onToggleSidebar={onToggleSidebar} />
+        <LeftNavbarNavigation toggleSidebar={toggleSidebar} />
         <MainNavbarNavigation
           productionActive={productionActive}
           history={history}
@@ -65,7 +66,7 @@ const Navbar = ({
       </Toolbar>
     </AppBar>
     <SideNav
-      onToggleSidebar={onToggleSidebar}
+      toggleSidebar={toggleSidebar}
       showSidebar={showSidebar}
       history={history}
       logout={logout}
@@ -79,6 +80,7 @@ const Navbar = ({
       createBackup={createBackup}
       restoreBackup={restoreBackup}
       versions={versions}
+      exportData={exportData}
     />
   </div>
 );

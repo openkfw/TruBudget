@@ -3,10 +3,10 @@ import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 
-const LeftNavbarNavigation = ({ onToggleSidebar }) => {
+const LeftNavbarNavigation = ({ toggleSidebar }) => {
   return (
     <div>
-      <IconButton onClick={onToggleSidebar} data-test="openSideNavbar">
+      <IconButton onClick={toggleSidebar} data-test="openSideNavbar">
         <MenuIcon color="primary" />
       </IconButton>
     </div>

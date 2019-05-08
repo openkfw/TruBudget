@@ -26,12 +26,16 @@ const handleEdit = props => {
   const changes = compareObjects(subProjects, subprojectToAdd);
   const projectId = location.pathname.split("/")[2];
   if (!_isEmpty(changes)) {
-    // TODO: Fix changes object if editing projectedBudgets is enabled
-    editSubproject(projectId, subprojectToAdd.id, {
-      displayName: changes.displayName,
-      description: changes.description,
-      projectedBudgets: changes.projectedBudgets
-    });
+    editSubproject(
+      projectId,
+      subprojectToAdd.id,
+      {
+        displayName: changes.displayName,
+        description: changes.description,
+        projectedBudgets: changes.projectedBudgets
+      },
+      changes.deletedProjectedBudgets
+    );
     storeSnackbarMessage(strings.common.edited + " " + strings.common.subproject + " " + subprojectToAdd.displayName);
   }
 
@@ -65,7 +69,6 @@ const SubprojectDialog = props => {
       content: <SubprojectDialogContent {...props} />,
       nextDisabled:
         _isEmpty(subprojectToAdd.displayName) ||
-        _isEmpty(subprojectToAdd.projectedBudgets) ||
         _isEmpty(subprojectToAdd.currency) ||
         _isEmpty(changes)
     }

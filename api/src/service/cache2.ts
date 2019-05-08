@@ -1,5 +1,4 @@
 import { Ctx } from "../lib/ctx";
-import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import * as Result from "../result";
@@ -31,7 +30,6 @@ import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "./domain/workflow/subproject_closed";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
 import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
-import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import * as SubprojectPermissionsGranted from "./domain/workflow/subproject_permission_granted";
 import * as SubprojectPermissionsRevoked from "./domain/workflow/subproject_permission_revoked";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
@@ -45,6 +43,7 @@ import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcin
 import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
+import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import { Item } from "./liststreamitems";
 
 const STREAM_BLACKLIST = [
@@ -86,7 +85,17 @@ export function initCache(): Cache2 {
   };
 }
 
-export interface CacheInstance {
+function clearCache(cache: Cache2): void {
+  cache.streamState.clear();
+  cache.eventsByStream.clear();
+  cache.cachedProjects.clear();
+  cache.cachedSubprojects.clear();
+  cache.cachedWorkflowItems.clear();
+  cache.cachedSubprojectLookup.clear();
+  cache.cachedWorkflowitemLookup.clear();
+}
+
+interface CacheInstance {
   getGlobalEvents(): BusinessEvent[];
   getUserEvents(userId?: string): BusinessEvent[];
   getGroupEvents(groupId?: string): BusinessEvent[];
@@ -112,22 +121,20 @@ export interface CacheInstance {
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
 }
 
-export type TransactionFn<T> = (cache: CacheInstance) => Promise<T>;
-
 export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
   return {
     getGlobalEvents: (): BusinessEvent[] => {
-      return deepcopy(cache.eventsByStream.get("global")) || [];
+      return cache.eventsByStream.get("global") || [];
     },
 
     getUserEvents: (_userId?: string): BusinessEvent[] => {
       // userId currently not leveraged
-      return deepcopy(cache.eventsByStream.get("users")) || [];
+      return cache.eventsByStream.get("users") || [];
     },
 
     getGroupEvents: (_groupId?: string): BusinessEvent[] => {
       // groupId currently not leveraged
-      return deepcopy(cache.eventsByStream.get("groups")) || [];
+      return cache.eventsByStream.get("groups") || [];
     },
 
     getNotificationEvents: (userId: string): BusinessEvent[] => {
@@ -147,11 +154,11 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         }
       };
 
-      return (deepcopy(cache.eventsByStream.get("notifications")) || []).filter(userFilter);
+      return (cache.eventsByStream.get("notifications") || []).filter(userFilter);
     },
 
     getProjects: async (): Promise<Project.Project[]> => {
-      return deepcopy([...cache.cachedProjects.values()]);
+      return [...cache.cachedProjects.values()];
     },
 
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
@@ -160,7 +167,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       if (project === undefined) {
         return new NotFound(ctx, "project", projectId);
       }
-      return deepcopy(project);
+      return project;
     },
 
     getSubprojects: async (projectId: string): Promise<Result.Type<Subproject.Subproject[]>> => {
@@ -180,7 +187,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         }
         subprojects.push(sp);
       }
-      return deepcopy(subprojects);
+      return subprojects;
     },
 
     getSubproject: (
@@ -191,7 +198,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       if (subproject === undefined) {
         return new NotFound(ctx, "subproject", subprojectId);
       }
-      return deepcopy(subproject);
+      return subproject;
     },
 
     getWorkflowitems: async (
@@ -213,7 +220,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         }
         workflowitems.push(wf);
       }
-      return deepcopy(workflowitems);
+      return workflowitems;
     },
 
     getWorkflowitem: async (
@@ -225,10 +232,12 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       if (workflowitem === undefined) {
         return new NotFound(ctx, "workflowitem", workflowitemId);
       }
-      return deepcopy(workflowitem);
+      return workflowitem;
     },
   };
 }
+
+export type TransactionFn<T> = (cache: CacheInstance) => Promise<T>;
 
 export async function withCache<T>(
   conn: ConnToken,
@@ -257,6 +266,18 @@ export async function withCache<T>(
   }
 }
 
+export async function invalidateCache(conn: ConnToken): Promise<void> {
+  const cache = conn.cache2;
+  try {
+    // Make sure we're the only thread-of-execution:
+    await grabWriteLock(cache);
+    // Invalidate the cache by removing all of its data:
+    clearCache(cache);
+  } finally {
+    releaseWriteLock(cache);
+  }
+}
+
 async function grabWriteLock(cache: Cache2) {
   while (cache.isWriteLocked) {
     await new Promise(res => setTimeout(res, 1));
@@ -266,17 +287,6 @@ async function grabWriteLock(cache: Cache2) {
 
 function releaseWriteLock(cache: Cache2) {
   cache.isWriteLocked = false;
-}
-
-async function refresh(ctx: Ctx, conn: ConnToken, streamName?: string): Promise<void> {
-  const { cache2: cache } = conn;
-  try {
-    // Make sure we're the only thread-of-execution that updates the cache:
-    await grabWriteLock(cache);
-    await updateCache(ctx, conn, streamName);
-  } finally {
-    releaseWriteLock(cache);
-  }
 }
 
 async function findStartIndex(
@@ -483,9 +493,11 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
   for (const workflowitem of workflowitems) {
     cache.cachedWorkflowItems.set(workflowitem.id, workflowitem);
     const lookUp = cache.cachedWorkflowitemLookup.get(workflowitem.subprojectId);
-    lookUp === undefined
-      ? cache.cachedWorkflowitemLookup.set(workflowitem.subprojectId, new Set([workflowitem.id]))
-      : lookUp.add(workflowitem.id);
+    if (lookUp === undefined) {
+      cache.cachedWorkflowitemLookup.set(workflowitem.subprojectId, new Set([workflowitem.id]));
+    } else {
+      lookUp.add(workflowitem.id);
+    }
   }
 }
 

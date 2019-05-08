@@ -1,42 +1,42 @@
 let projects = undefined;
 
-// describe("Open Notifications", function() {
+// describe("open notifications", function() {
 //   before(() => {
 //     cy.login("mstein")
 //       .then(() =>
-//         cy.createProject("notification.test", "e2e-test for notifications", [
+//         cy.createproject("notification.test", "e2e-test for notifications", [
 //           {
-//             organization: "Test",
+//             organization: "test",
 //             value: "50",
-//             currencyCode: "EUR"
+//             currencycode: "eur"
 //           }
 //         ])
 //       )
 //       .then(created => expect(created).to.be.true)
-//       .then(() => cy.fetchProjects().then(p => (projects = p)))
+//       .then(() => cy.fetchprojects().then(p => (projects = p)))
 //       .then(() => {
-//         const projectId = projects[projects.length - 1].data.id;
+//         const projectid = projects[projects.length - 1].data.id;
 //         const assignee = "jxavier";
-//         cy.updateProjectAssignee(projectId, assignee);
-//         cy.updateProjectPermissions(projectId, "project.viewSummary", assignee);
-//         cy.updateProjectPermissions(projectId, "project.viewDetails", assignee);
+//         cy.updateprojectassignee(projectid, assignee);
+//         cy.updateprojectpermissions(projectid, "project.viewsummary", assignee);
+//         cy.updateprojectpermissions(projectid, "project.viewdetails", assignee);
 //       })
 //       .then(() => cy.login("jxavier"))
 //       .then(() => cy.visit("/notifications"));
 //   });
 
-//   it("Show first unread notification", function() {
+//   it("show first unread notification", function() {
 //     cy.location("pathname").should("eq", `/notifications`);
 //     cy.get("[data-test=notification-unread-0-message]")
 //       .should("be.visible")
-//       .should("have.text", "Project  notification.test  was assigned to you ");
+//       .should("have.text", "project  notification.test  was assigned to you ");
 //   });
 
-//   it("Read all notifications on page", function() {
+//   it("read all notifications on page", function() {
 //     cy.get("[data-test=read-multiple-notifications]").click();
 //   });
 
-//   it("Expect that all notifications on the page are read", function() {
+//   it("expect that all notifications on the page are read", function() {
 //     cy.get("[data-test=notification-unread-0").not("be.visible");
 //   });
 // });

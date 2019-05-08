@@ -29,7 +29,10 @@ import * as ProjectPermissionsListAPI from "./project_permissions_list";
 import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
+import * as ProjectViewHistoryAPIv2 from "./project_view_history_v2";
 import * as Multichain from "./service";
+import * as Cache from "./service/cache2";
+import * as DocumentValidationService from "./service/document_validation";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
 import * as GlobalPermissionsGetService from "./service/global_permissions_get";
@@ -50,6 +53,7 @@ import * as ProjectPermissionRevokeService from "./service/project_permission_re
 import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
+import * as ProjectTraceEventsService from "./service/project_trace_events";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
 import * as SubprojectAssignService from "./service/subproject_assign";
@@ -62,6 +66,7 @@ import * as SubprojectPermissionRevokeService from "./service/subproject_permiss
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
+import * as SubprojectTraceEventsService from "./service/subproject_trace_events";
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
@@ -74,6 +79,7 @@ import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
+import * as WorkflowitemTraceEventsService from "./service/workflowitem_trace_events";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as SubprojectAssignAPI from "./subproject_assign";
@@ -88,6 +94,7 @@ import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
 import * as SubprojectUpdateAPI from "./subproject_update";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as SubprojectViewHistoryAPI from "./subproject_view_history";
+import * as SubprojectViewHistoryAPIv2 from "./subproject_view_history_v2";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
@@ -99,6 +106,8 @@ import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
+import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
+import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
 
 const URL_PREFIX = "/api";
@@ -197,7 +206,9 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort);
+registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, () =>
+  Cache.invalidateCache(db),
+);
 
 /*
  * APIs related to Global Permissions
@@ -366,6 +377,11 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
     SubprojectListService.listSubprojects(db, ctx, user, projectId),
 });
 
+ProjectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
+  getProjectTraceEvents: (ctx, user, projectId) =>
+    ProjectTraceEventsService.getTraceEvents(db, ctx, user, projectId),
+});
+
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, orga, amount, currencyCode) =>
     ProjectProjectedBudgetUpdateService.updateProjectedBudget(
@@ -428,6 +444,11 @@ SubprojectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
     SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
   getWorkflowitems: (ctx, user, projectId, subprojectId) =>
     WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+SubprojectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
+  getSubprojectTraceEvents: (ctx, user, projectId, subprojectId) =>
+    SubprojectTraceEventsService.getTraceEvents(db, ctx, user, projectId, subprojectId),
 });
 
 SubprojectPermissionListAPI.addHttpHandler(server, URL_PREFIX, {
@@ -493,6 +514,7 @@ SubprojectProjectedBudgetDeleteAPI.addHttpHandler(server, URL_PREFIX, {
       currencyCode,
     ),
 });
+
 WorkflowitemsReorderAPI.addHttpHandler(server, URL_PREFIX, {
   setWorkflowitemOrdering: (ctx, user, projectId, subprojectId, ordering) =>
     WorkflowitemsReorderService.setWorkflowitemOrdering(
@@ -517,6 +539,18 @@ SubprojectUpdateAPI.addHttpHandler(server, URL_PREFIX, {
 WorkflowitemListAPI.addHttpHandler(server, URL_PREFIX, {
   listWorkflowitems: (ctx, user, projectId, subprojectId) =>
     WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+WorkflowitemViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
+  getWorkflowitemTraceEvents: (ctx, user, projectId, subprojectId, workflowitemId) =>
+    WorkflowitemTraceEventsService.getTraceEvents(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+    ),
 });
 
 WorkflowitemPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
@@ -616,6 +650,11 @@ WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
       workflowitemId,
       data,
     ),
+});
+
+WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
+  matches: (documentBase64: string, expectedSHA256: string) =>
+    DocumentValidationService.isSameDocument(documentBase64, expectedSHA256),
 });
 
 /*

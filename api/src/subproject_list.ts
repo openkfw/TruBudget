@@ -70,7 +70,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                               },
                             },
                           },
-                          additionalData: { type: "object" },
+                          additionalData: { type: "object", additionalProperties: true },
                         },
                       },
                       log: {
@@ -79,7 +79,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           type: "object",
                           required: ["entityId", "entityType", "businessEvent", "snapshot"],
                           properties: {
-                            entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                            entityId: {
+                              type: "string",
+                              example: "d0e8c69eg298c87e3899119e025eff1f",
+                            },
                             entityType: { type: "string", example: "subproject" },
                             businessEvent: {
                               type: "object",

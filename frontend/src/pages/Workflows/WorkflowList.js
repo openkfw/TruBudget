@@ -1,6 +1,62 @@
 import React from "react";
 import { SortableContainer } from "react-sortable-hoc";
+import { canReorderWorkflowItems } from "../../permissions.js";
+import DoneIcon from "@material-ui/icons/Check";
+import EditIcon from "@material-ui/icons/Edit";
+
 import { WorkflowItem, RedactedWorkflowItem } from "./WorkflowItem";
+
+import _isEmpty from "lodash/isEmpty";
+import Fab from "@material-ui/core/Fab";
+
+const styles = {
+  editButtonContainer: {
+    position: "absolute",
+    top: "72px",
+    left: "7px"
+  },
+  editButton: {
+    position: "relative",
+    zIndex: 2
+  }
+};
+
+const renderSortButton = props => (
+  <Fab
+    size="small"
+    disabled={
+      !canReorderWorkflowItems(props.allowedIntents) || props.status === "closed" || _isEmpty(props.workflowItems)
+    }
+    onClick={() => handleEnableWorkflowEdit(props)}
+    style={styles.editButton}
+  >
+    <EditIcon />
+  </Fab>
+);
+
+const handleEnableWorkflowEdit = props => {
+  const workflowItemIds = [];
+  props.workflowItems.map(item => workflowItemIds.push(item.data.id));
+  props.saveWorkflowItemsBeforeSort(workflowItemIds);
+  props.enableWorkflowEdit();
+};
+
+const renderSubmitSortButton = props => (
+  <Fab size="small" onClick={() => handleSubmitEdit(props)} style={styles.editButton}>
+    <DoneIcon />
+  </Fab>
+);
+
+const handleSubmitEdit = props => {
+  const currentWorkflowItemIds = [];
+  props.workflowItems.map(item => currentWorkflowItemIds.push(item.data.id));
+  const hasChanged =
+    currentWorkflowItemIds.find((id, index) => props.workflowItemsBeforeSort[index] !== id) !== undefined;
+  if (hasChanged) {
+    props.reorderWorkflowItems(props.projectId, props.subProjectId, props.workflowItems);
+  }
+  props.disableWorkflowEdit();
+};
 
 const getSortableItems = ({ workflowItems, ...props }) => {
   let nextWorkflowNotSelectable = false;
@@ -51,6 +107,9 @@ const WorkflowList = SortableContainer(props => {
         borderRadius: 3
       }}
     >
+      <div style={styles.editButtonContainer}>
+        {!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}
+      </div>
       {sortableItems}
     </div>
   );

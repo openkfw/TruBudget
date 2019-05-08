@@ -4,6 +4,7 @@ const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
 
+// eslint-disable-next-line no-console
 console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`);
 
 class Api {
@@ -97,6 +98,7 @@ class Api {
       address
     });
   listProjects = () => instance.get(`/project.list`);
+  listSubprojects = projectId => instance.get(`/subproject.list?projectId=${projectId}`);
 
   createProject = (displayName, description, thumbnail, projectedBudgets) =>
     instance.post(`/global.createProject`, {
@@ -116,7 +118,7 @@ class Api {
 
   viewProjectDetails = projectId => instance.get(`/project.viewDetails?projectId=${projectId}`);
   viewProjectHistory = (projectId, offset, limit) =>
-    instance.get(`/project.viewHistory?projectId=${projectId}&offset=${offset}&limit=${limit}`);
+    instance.get(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
 
   listProjectIntents = projectId => instance.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
@@ -157,7 +159,12 @@ class Api {
 
   viewSubProjectHistory = (projectId, subprojectId, offset, limit) =>
     instance.get(
-      `/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
+      `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
+    );
+
+  viewWorkflowitemHistory = (projectId, subprojectId, workflowitemId, offset, limit) =>
+    instance.get(
+      `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`
     );
 
   updateProjectBudgetProjected = (projectId, organization, currencyCode, value) =>
@@ -171,6 +178,23 @@ class Api {
   deleteProjectBudgetProjected = (projectId, organization, currencyCode) =>
     instance.post(`/project.budget.deleteProjected`, {
       projectId,
+      organization,
+      currencyCode
+    });
+
+  updateSubprojectBudgetProjected = (projectId, subprojectId, organization, currencyCode, value) =>
+    instance.post(`/subproject.budget.updateProjected`, {
+      projectId,
+      subprojectId,
+      organization,
+      currencyCode,
+      value: value.toString()
+    });
+
+  deleteSubprojectBudgetProjected = (projectId, subprojectId, organization, currencyCode) =>
+    instance.post(`/subproject.budget.deleteProjected`, {
+      projectId,
+      subprojectId,
       organization,
       currencyCode
     });
@@ -327,6 +351,10 @@ class Api {
       headers: { "Content-Type": "application/gzip" }
     });
     return response;
+  };
+  export = () => {
+    const path = devMode ? "http://localhost:8888/test" : "/export/xlsx/";
+    return instance.get(path, { responseType: "blob" });
   };
 }
 

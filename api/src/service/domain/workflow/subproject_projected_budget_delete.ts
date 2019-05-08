@@ -1,4 +1,5 @@
-import { produce } from "immer";
+import { isEqual } from "lodash";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -9,6 +10,7 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import { ProjectedBudget } from "./projected_budget";
 import * as Subproject from "./subproject";
+import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as SubprojectProjectedBudgetDeleted from "./subproject_projected_budget_deleted";
 
 interface Repository {
@@ -51,15 +53,18 @@ export async function deleteProjectedBudget(
   }
 
   // Check that the new event is indeed valid:
-  const result = produce(subproject, draft =>
-    SubprojectProjectedBudgetDeleted.apply(ctx, budgetDeleted, draft),
-  );
+  const result = SubprojectEventSourcing.newSubprojectFromEvent(ctx, subproject, budgetDeleted);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, budgetDeleted, [result]);
   }
 
-  return {
-    newEvents: [budgetDeleted],
-    projectedBudgets: result.projectedBudgets,
-  };
+  // Only emit the event if it causes any changes:
+  if (isEqual(subproject.projectedBudgets, result.projectedBudgets)) {
+    return { newEvents: [], projectedBudgets: result.projectedBudgets };
+  } else {
+    return {
+      newEvents: [budgetDeleted],
+      projectedBudgets: result.projectedBudgets,
+    };
+  }
 }

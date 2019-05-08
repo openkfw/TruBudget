@@ -48,7 +48,5 @@ export async function createGroup(
     users: groups[0].members,
   };
 
-  console.log(`Group: ${JSON.stringify(groups)}`);
-
   return newGroup;
 }

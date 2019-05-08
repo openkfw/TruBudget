@@ -1,6 +1,6 @@
 import React from "react";
 import { Iterable } from "immutable";
-import moment from "moment";
+import dayjs from "dayjs";
 
 import OpenIcon from "@material-ui/icons/Remove";
 import DoneIcon from "@material-ui/icons/Check";
@@ -43,7 +43,6 @@ const getCurrencyFormat = currency => ({
   ...currencies[currency]
 });
 
-// TODO: come up with a better solution for the amount not requiring to parse every time
 export const compareObjects = (items, itemToAdd) => {
   if (!_isEmpty(items)) {
     const itemToAddClone = _cloneDeep(itemToAdd);
@@ -78,11 +77,9 @@ export const formatAmountString = (amount, currency) => {
   }
   return amount;
 };
-export const getCurrencies = parentCurrency => {
+export const getCurrencies = () => {
   return Object.keys(currencies).map(currency => {
-    const disabled = !_isEmpty(parentCurrency) && !(parentCurrency === currency);
     return {
-      disabled,
       primaryText: currency,
       value: currency
     };
@@ -101,12 +98,12 @@ export const toAmountString = (amount, currency) => {
 };
 
 export const tsToString = ts => {
-  let dateString = moment(ts, "x").format("MMM D, YYYY");
+  let dateString = dayjs.unix(ts).format("MMM D, YYYY");
   return dateString;
 };
 
 export const unixTsToString = ts => {
-  let dateString = moment(new Date(ts * 1000)).format("MMM D, YYYY");
+  let dateString = dayjs.unix(ts).format("MMM D, YYYY");
   return dateString;
 };
 
@@ -145,7 +142,7 @@ export const roleMapper = {
   assignee: strings.common.assignee
 };
 
-const createDoughnutData = (labels, data, colors = statusColors) => ({
+export const createDoughnutData = (labels, data, colors = statusColors) => ({
   labels,
   datasets: [
     {
@@ -186,8 +183,7 @@ export const getCompletionString = subprojects => {
 };
 
 export const formatString = (text, ...args) => {
-  const x = strings.formatString(text, ...args).join(" ");
-  return x;
+  return strings.formatString(text, ...args);
 };
 export const formatUpdateString = (identifier, createdBy, data) => {
   let string = strings.formatString(strings.history.changed_by, identifier, createdBy);
@@ -197,10 +193,6 @@ export const formatUpdateString = (identifier, createdBy, data) => {
   return string.concat(changes);
 };
 
-export const getAllocationRatio = (spentAmount, projectAmount) => {
-  const allocationRatio = spentAmount / projectAmount * 100;
-  return allocationRatio > 0 ? allocationRatio : 0;
-};
 export const calculateWorkflowBudget = workflows => {
   return workflows.reduce(
     (acc, workflow) => {

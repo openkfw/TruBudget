@@ -13,34 +13,11 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 
-interface RequestBodyV1 {
-  apiVersion: "1.0";
-  data: {
-    projectId: Project.Id;
-    subprojectId: Subproject.Id;
-  };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: Project.idSchema.required(),
-    subprojectId: Subproject.idSchema.required(),
-  }),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-function validateRequestBody(body: any): Result.Type<RequestBody> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
-  return !error ? value : error;
-}
-
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     beforeHandler: [(server as any).authenticate],
     schema: {
+      deprecated: true,
       description:
         "View the history of a given project (filtered by what the user is allowed to see).",
       tags: ["subproject"],
@@ -57,7 +34,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
           limit: {
             type: "string",
             description: "Limit to the number of events to return.",
-            example: "10",
           },
           offset: {
             type: "string",
@@ -66,7 +42,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
               "have happened after that first event. The `offset` may also " +
               "be negative. For example, an `offset` of `-10` with limit `10` requests " +
               "the 10 most recent events.",
-            example: "0",
           },
         },
       },
@@ -180,7 +155,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       const subprojectId = request.query.subprojectId;
-      if (!isNonemptyString(projectId)) {
+      if (!isNonemptyString(subprojectId)) {
         reply.status(404).send({
           apiVersion: "1.0",
           error: {

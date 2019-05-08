@@ -36,6 +36,10 @@ const styles = {
       cursor: "-webkit-grab"
     }
   },
+  assigneeTypography: {
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  },
   disabled: {}
 };
 
@@ -125,18 +129,21 @@ class AssigneeSelection extends Component {
     };
 
     return (
-      <FormControl data-test="assignee-container" disabled={disabled} className={classes.formControl}>
+      <FormControl
+        data-test={"assignee-container" + (disabled ? ".disabled" : "")}
+        disabled={disabled}
+        className={classes.formControl}
+      >
         <Select
-          data-test="assignee-selection"
+          data-test={"assignee-selection" + (disabled ? ".disabled" : "")}
           classes={{
-            selectMenu: classes.selectMenu,
             ...getSortClasses()
           }}
           value={this.renderTitle(assignee)}
           renderValue={s => (
             <div style={{ ...styles.selectValue }}>
               <Checkbox style={{ ...styles.checkbox }} disabled={disabled} checked={true} />
-              <Typography disabled={disabled} variant="body1">
+              <Typography disabled={disabled} variant="body1" style={styles.assigneeTypography}>
                 {s}
               </Typography>
             </div>

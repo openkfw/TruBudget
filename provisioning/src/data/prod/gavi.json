@@ -152,7 +152,7 @@
           "amount": 1000000,
           "currency": "EUR",
           "amountType": "allocated",
-          "exchangeRate": "1,0"
+          "exchangeRate": "1.0"
         },
         {
           "displayName": "Novartis to DHL: Packaging",
@@ -189,7 +189,7 @@
           "amount": 200000,
           "currency": "EUR",
           "amountType": "disbursed",
-          "exchangeRate":"1.0"
+          "exchangeRate": "1.0"
         },
         {
           "displayName": "DHL to Customs Senegal: Shipping",
@@ -226,7 +226,7 @@
           "amount": 200000,
           "currency": "EUR",
           "amountType": "disbursed",
-          "exchangeRate":"1.0"
+          "exchangeRate": "1.0"
         },
         {
           "displayName": "Customs Senegal to UPS: Customs Clearing",
@@ -327,7 +327,7 @@
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed",
-          "exchangeRate":"1.0"
+          "exchangeRate": "1.0"
         },
         {
           "displayName": "UPS to Health Center Kaya 2",
@@ -363,7 +363,7 @@
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed",
-          "exchangeRate":"1.0"
+          "exchangeRate": "1.0"
         },
         {
           "displayName": "UPS to Health Center Kaya 3",
@@ -399,7 +399,7 @@
           "amount": 100000,
           "currency": "EUR",
           "amountType": "disbursed",
-          "exchangeRate":"1.0"
+          "exchangeRate": "1.0"
         }
       ]
     },
@@ -503,7 +503,7 @@
           "amount": 1000000,
           "currency": "EUR",
           "amountType": "allocated",
-          "exchangeRate": "1,0"
+          "exchangeRate": "1.0"
         },
         {
           "displayName": "Novartis to DHL: Packaging",
@@ -540,7 +540,7 @@
           "amount": 200000,
           "currency": "EUR",
           "amountType": "disbursed",
-          "exchangeRate":"1.0"
+          "exchangeRate": "1.0"
         },
         {
           "displayName": "DHL to Customs Senegal: Shipping",
@@ -577,7 +577,7 @@
           "amount": 200000,
           "currency": "EUR",
           "amountType": "disbursed",
-          "exchangeRate":"1.0"
+          "exchangeRate": "1.0"
         },
         {
           "displayName": "Customs Senegal to UPS: Customs Clearing",

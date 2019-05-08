@@ -65,6 +65,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           currency: { type: "string", example: "EUR" },
                           billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           exchangeRate: { type: "string", example: "1.0" },
+                          additionalData: { type: "object", additionalProperties: true },
                           documents: {
                             type: "array",
                             items: {

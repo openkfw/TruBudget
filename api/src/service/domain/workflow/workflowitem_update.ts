@@ -1,4 +1,3 @@
-import { produce } from "immer";
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
 
@@ -15,6 +14,7 @@ import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
 
 export type RequestData = WorkflowitemUpdated.Modification;
@@ -60,13 +60,13 @@ export async function updateWorkflowitem(
   }
 
   // Check that the new event is indeed valid:
-  const result = produce(workflowitem, draft => WorkflowitemUpdated.apply(ctx, newEvent, draft));
+  const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(ctx, workflowitem, newEvent);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, newEvent, [result]);
   }
 
-  // Ignore the update if it doesn't change anything:
-  if (isEqual(workflowitem, result)) {
+  // Only emit the event if it causes any changes:
+  if (isEqualIgnoringLog(workflowitem, result)) {
     return { newEvents: [], workflowitem };
   }
 
@@ -90,4 +90,13 @@ export async function updateWorkflowitem(
     );
 
   return { newEvents: [newEvent, ...notifications], workflowitem: result };
+}
+
+function isEqualIgnoringLog(
+  workflowitemA: Workflowitem.Workflowitem,
+  workflowitemB: Workflowitem.Workflowitem,
+): boolean {
+  const { log: logA, ...a } = workflowitemA;
+  const { log: logB, ...b } = workflowitemB;
+  return isEqual(a, b);
 }

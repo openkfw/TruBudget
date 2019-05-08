@@ -1,4 +1,4 @@
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import Fab from "@material-ui/core/Fab";
 import ListItem from "@material-ui/core/ListItem";
@@ -7,7 +7,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Unread from "@material-ui/icons/Email";
 import Read from "@material-ui/icons/MailOutline";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
-import moment from "moment";
+import dayjs from "dayjs";
 import React from "react";
 
 import { intentMapping, parseURI, isAllowedToSee } from "./helper";
@@ -53,7 +53,7 @@ const NotificationListItems = ({
   return notifications.map((notification, index) => {
     const message = intentMapping(notification);
     const { businessEvent, id, isRead, metadata } = notification;
-    const createdAt = moment(businessEvent.time).fromNow();
+    const createdAt = dayjs(businessEvent.time).fromNow();
     const redirectUri = parseURI({
       projectId: metadata.project ? metadata.project.id : undefined,
       subprojectId: metadata.subproject ? metadata.subproject.id : undefined

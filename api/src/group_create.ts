@@ -74,7 +74,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   additionalProperties: false,
                   id: { type: "string", example: "Manager" },
                   displayName: { type: "string", example: "All Manager Group" },
-                  users: { type: "array", items: { type: "string" } },
+                  users: {
+                    type: "array",
+                    items: { type: "string", example: "aSmith" },
+                  },
                 },
               },
             },

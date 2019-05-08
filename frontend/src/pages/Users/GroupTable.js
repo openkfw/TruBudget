@@ -11,7 +11,7 @@ import PermissionIcon from "@material-ui/icons/LockOpen";
 import _sortBy from "lodash/sortBy";
 import EditIcon from "@material-ui/icons/Edit";
 import strings from "../../localizeStrings";
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   icon: {

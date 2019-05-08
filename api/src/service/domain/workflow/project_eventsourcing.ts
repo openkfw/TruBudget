@@ -1,5 +1,7 @@
-import { produce } from "immer";
+import { VError } from "verror";
+
 import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -19,61 +21,27 @@ export function sourceProjects(
   events: BusinessEvent[],
   origin?: Map<Project.Id, Project.Project>,
 ): { projects: Project.Project[]; errors: Error[] } {
-  const projectsMap =
+  const projects =
     origin === undefined
       ? new Map<Project.Id, Project.Project>()
       : new Map<Project.Id, Project.Project>(origin);
   const errors: Error[] = [];
+
   for (const event of events) {
     if (!event.type.startsWith("project_")) {
       continue;
     }
 
-    const result = applyProjectEvent(ctx, projectsMap, event);
-    if (Result.isErr(result)) {
-      errors.push(result);
+    const project = sourceEvent(ctx, event, projects);
+    if (Result.isErr(project)) {
+      errors.push(project);
     } else {
-      result.log.push(newTraceEvent(result, event));
-      projectsMap.set(result.id, result);
+      project.log.push(newTraceEvent(project, event));
+      projects.set(project.id, project);
     }
   }
-  const projects = [...projectsMap.values()];
-  return { projects, errors };
-}
 
-function applyProjectEvent(
-  ctx: Ctx,
-  projects: Map<Project.Id, Project.Project>,
-  event: BusinessEvent,
-): Result.Type<Project.Project> {
-  switch (event.type) {
-    case "project_created":
-      return ProjectCreated.createFrom(ctx, event);
-
-    case "project_updated":
-      return apply(ctx, event, projects, event.projectId, ProjectUpdated);
-
-    case "project_assigned":
-      return apply(ctx, event, projects, event.projectId, ProjectAssigned);
-
-    case "project_closed":
-      return apply(ctx, event, projects, event.projectId, ProjectClosed);
-
-    case "project_permission_granted":
-      return apply(ctx, event, projects, event.projectId, ProjectPermissionGranted);
-
-    case "project_permission_revoked":
-      return apply(ctx, event, projects, event.projectId, ProjectPermissionRevoked);
-
-    case "project_projected_budget_updated":
-      return apply(ctx, event, projects, event.projectId, ProjectProjectedBudgetUpdated);
-
-    case "project_projected_budget_deleted":
-      return apply(ctx, event, projects, event.projectId, ProjectProjectedBudgetDeleted);
-
-    default:
-      throw Error(`not implemented: ${event.type}`);
-  }
+  return { projects: [...projects.values()], errors };
 }
 
 function newTraceEvent(project: Project.Project, event: BusinessEvent): ProjectTraceEvent {
@@ -87,32 +55,141 @@ function newTraceEvent(project: Project.Project, event: BusinessEvent): ProjectT
   };
 }
 
-type ApplyFn = (
-  ctx: Ctx,
-  event: BusinessEvent,
-  project: Project.Project,
-) => Result.Type<Project.Project>;
-function apply(
+function sourceEvent(
   ctx: Ctx,
   event: BusinessEvent,
   projects: Map<Project.Id, Project.Project>,
-  projectId: string,
-  eventModule: { apply: ApplyFn },
-) {
-  const project = projects.get(projectId);
-  if (project === undefined) {
-    return new EventSourcingError({ ctx, event, target: { projectId } }, "not found");
+): Result.Type<Project.Project> {
+  const projectId = getProjectId(event);
+  let project: Result.Type<Project.Project>;
+  if (Result.isOk(projectId)) {
+    // The event refers to an existing project, so
+    // the project should have been initialized already.
+
+    project = get(projects, projectId);
+    if (Result.isErr(project)) {
+      return new VError(`project ID ${projectId} found in event ${event.type} is invalid`);
+    }
+
+    project = newProjectFromEvent(ctx, project, event);
+    if (Result.isErr(project)) {
+      return project; // <- event-sourcing error
+    }
+  } else {
+    // The event does not refer to a project ID, so it must be a creation event:
+    if (event.type !== "project_created") {
+      return new VError(
+        `event ${event.type} is not of type "project_created" but also ` +
+        "does not include a project ID",
+      );
+    }
+
+    project = ProjectCreated.createFrom(ctx, event);
+    if (Result.isErr(project)) {
+      return new VError(project, "could not create project from event");
+    }
   }
 
-  try {
-    return produce(project, draft => {
-      const result = eventModule.apply(ctx, event, draft);
-      if (Result.isErr(result)) {
-        throw result;
-      }
-      return result;
-    });
-  } catch (err) {
-    return err;
+  return project;
+}
+
+function get(
+  projects: Map<Project.Id, Project.Project>,
+  projectId: Project.Id,
+): Result.Type<Project.Project> {
+  const project = projects.get(projectId);
+  if (project === undefined) {
+    return new VError(`project ${projectId} not yet initialized`);
   }
+  return project;
+}
+
+function getProjectId(event: BusinessEvent): Result.Type<Project.Id> {
+  switch (event.type) {
+    case "project_updated":
+    case "project_assigned":
+    case "project_closed":
+    case "project_permission_granted":
+    case "project_permission_revoked":
+    case "project_projected_budget_updated":
+    case "project_projected_budget_deleted":
+      return event.projectId;
+
+    default:
+      return new VError(`cannot find project ID in event of type ${event.type}`);
+  }
+}
+
+/** Returns a new project with the given event applied, or an error. */
+export function newProjectFromEvent(
+  ctx: Ctx,
+  project: Project.Project,
+  event: BusinessEvent,
+): Result.Type<Project.Project> {
+  const eventModule = getEventModule(event);
+
+  // Ensure that we never modify project or event in-place by passing copies. When
+  // copying the project, its event log is omitted for performance reasons.
+  const eventCopy = deepcopy(event);
+  const projectCopy = copyProjectExceptLog(project);
+
+  try {
+    // Apply the event to the copied project:
+    const mutation = eventModule.mutate(projectCopy, eventCopy);
+    if (Result.isErr(mutation)) {
+      throw mutation;
+    }
+
+    // Validate the modified project:
+    const validation = Project.validate(projectCopy);
+    if (Result.isErr(validation)) {
+      throw validation;
+    }
+
+    // Restore the event log:
+    projectCopy.log = project.log;
+
+    // Return the modified (and validated) project:
+    return projectCopy;
+  } catch (error) {
+    return new EventSourcingError({ ctx, event, target: project }, error);
+  }
+}
+
+type EventModule = {
+  mutate: (project: Project.Project, event: BusinessEvent) => Result.Type<void>;
+};
+function getEventModule(event: BusinessEvent): EventModule {
+  switch (event.type) {
+    case "project_updated":
+      return ProjectUpdated;
+
+    case "project_assigned":
+      return ProjectAssigned;
+
+    case "project_closed":
+      return ProjectClosed;
+
+    case "project_permission_granted":
+      return ProjectPermissionGranted;
+
+    case "project_permission_revoked":
+      return ProjectPermissionRevoked;
+
+    case "project_projected_budget_updated":
+      return ProjectProjectedBudgetUpdated;
+
+    case "project_projected_budget_deleted":
+      return ProjectProjectedBudgetDeleted;
+
+    default:
+      throw new VError(`unknown project event ${event.type}`);
+  }
+}
+
+function copyProjectExceptLog(project: Project.Project): Project.Project {
+  const { log, ...tmp } = project;
+  const copy = deepcopy(tmp);
+  (copy as any).log = [];
+  return copy as Project.Project;
 }

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { isEmpty } from "lodash";
+import isEmpty from "lodash/isEmpty";
 
-import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup, fetchVersions } from "./actions";
+import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup, fetchVersions, exportData } from "./actions";
 import { logout } from "../Login/actions";
 
 import FlyInNotifications from "../Notifications/FlyInNotifications";
@@ -12,7 +12,7 @@ import { toJS } from "../../helper";
 
 class NavbarContainer extends Component {
   componentDidMount() {
-    this.props.getPeers();
+    this.props.fetchActivePeers();
     this.props.fetchVersions();
   }
 
@@ -31,15 +31,14 @@ class NavbarContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onToggleSidebar: () => dispatch(toggleSidebar()),
-    logout: () => dispatch(logout()),
-    getPeers: () => dispatch(fetchActivePeers()),
-    createBackup: () => dispatch(createBackup()),
-    restoreBackup: file => dispatch(restoreBackup(file)),
-    fetchVersions: () => dispatch(fetchVersions())
-  };
+const mapDispatchToProps = {
+  toggleSidebar,
+  logout,
+  fetchActivePeers,
+  createBackup,
+  restoreBackup,
+  fetchVersions,
+  exportData
 };
 
 const mapStateToProps = state => {

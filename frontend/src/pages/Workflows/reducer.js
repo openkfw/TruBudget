@@ -1,56 +1,58 @@
 import { fromJS } from "immutable";
 
-import {
-  WORKFLOW_NAME,
-  WORKFLOW_AMOUNT,
-  WORKFLOW_AMOUNT_TYPE,
-  WORKFLOW_DOCUMENT,
-  WORKFLOW_PURPOSE,
-  WORKFLOW_CURRENCY,
-  CREATE_WORKFLOW_SUCCESS,
-  EDIT_WORKFLOW_ITEM_SUCCESS,
-  SHOW_WORKFLOW_DETAILS,
-  ENABLE_BUDGET_EDIT,
-  SUBPROJECT_AMOUNT,
-  WORKFLOW_CREATION_STEP,
-  FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
-  WORKFLOW_STATUS,
-  SHOW_WORKFLOWITEM_PERMISSIONS,
-  HIDE_WORKFLOWITEM_PERMISSIONS,
-  FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
-  SHOW_SUBPROJECT_ASSIGNEES,
-  HIDE_SUBPROJECT_ASSIGNEES,
-  FETCH_SUBPROJECT_HISTORY,
-  FETCH_SUBPROJECT_HISTORY_SUCCESS,
-  HIDE_WORKFLOW_DIALOG,
-  SHOW_WORKFLOW_EDIT,
-  SHOW_WORKFLOW_CREATE,
-  HIDE_WORKFLOW_DETAILS,
-  SAVE_WORKFLOW_ITEM_BEFORE_SORT,
-  SET_HISTORY_OFFSET,
-  SHOW_WORKFLOW_PREVIEW,
-  HIDE_WORKFLOW_PREVIEW,
-  WORKFLOWITEMS_SELECTED,
-  SET_WORKFLOW_DRAWER_PERMISSIONS,
-  ASSIGN_WORKFLOWITEM_SUCCESS,
-  STORE_WORKFLOW_ASSIGNEE,
-  GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
-  RESET_SUCCEEDED_WORKFLOWITEMS,
-  ENABLE_WORKFLOW_EDIT,
-  DISABLE_WORKFLOW_EDIT,
-  UPDATE_WORKFLOW_ORDER,
-  STORE_WORKFLOWACTIONS,
-  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
-  SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
-  REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
-  SUBMIT_BATCH_FOR_WORKFLOW,
-  WORKFLOW_EXCHANGERATE,
-  DEFAULT_WORKFLOW_EXCHANGERATE
-} from "./actions";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
-import { fromAmountString } from "../../helper";
 import { HIDE_HISTORY } from "../Notifications/actions";
+import {
+  ASSIGN_WORKFLOWITEM_SUCCESS,
+  CREATE_WORKFLOW_SUCCESS,
+  DEFAULT_WORKFLOW_EXCHANGERATE,
+  DISABLE_WORKFLOW_EDIT,
+  EDIT_WORKFLOW_ITEM_SUCCESS,
+  ENABLE_BUDGET_EDIT,
+  ENABLE_WORKFLOW_EDIT,
+  FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
+  FETCH_SUBPROJECT_HISTORY,
+  FETCH_SUBPROJECT_HISTORY_SUCCESS,
+  FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
+  GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+  HIDE_SUBPROJECT_ASSIGNEES,
+  HIDE_WORKFLOW_DETAILS,
+  HIDE_WORKFLOW_DIALOG,
+  HIDE_WORKFLOW_PREVIEW,
+  HIDE_WORKFLOWITEM_PERMISSIONS,
+  HIDE_WORKFLOWITEM_ADDITIONAL_DATA,
+  RESET_SUCCEEDED_WORKFLOWITEMS,
+  REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+  SAVE_WORKFLOW_ITEM_BEFORE_SORT,
+  SET_WORKFLOW_DRAWER_PERMISSIONS,
+  SHOW_SUBPROJECT_ASSIGNEES,
+  SHOW_WORKFLOW_CREATE,
+  SHOW_WORKFLOW_DETAILS,
+  SHOW_WORKFLOW_EDIT,
+  SHOW_WORKFLOW_PREVIEW,
+  SHOW_WORKFLOWITEM_PERMISSIONS,
+  SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
+  STORE_WORKFLOW_ASSIGNEE,
+  STORE_WORKFLOWACTIONS,
+  SUBMIT_BATCH_FOR_WORKFLOW,
+  SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
+  UPDATE_WORKFLOW_ORDER,
+  WORKFLOW_AMOUNT,
+  WORKFLOW_AMOUNT_TYPE,
+  WORKFLOW_CREATION_STEP,
+  WORKFLOW_CURRENCY,
+  WORKFLOW_DOCUMENT,
+  WORKFLOW_EXCHANGERATE,
+  WORKFLOW_NAME,
+  WORKFLOW_PURPOSE,
+  WORKFLOW_STATUS,
+  WORKFLOWITEMS_SELECTED,
+  OPEN_HISTORY
+} from "./actions";
+
+const initialLimit = 50;
 
 const defaultState = fromJS({
   id: "",
@@ -83,8 +85,9 @@ const defaultState = fromJS({
   showDetails: false,
   showDetailsItemId: "",
   showHistory: false,
-  offset: 0,
-  limit: 30,
+  hasMoreHistory: true,
+  offset: -initialLimit,
+  limit: initialLimit,
   currentStep: 0,
   workflowSortEnabled: false,
   workflowType: "workflow",
@@ -105,7 +108,9 @@ const defaultState = fromJS({
   submittedWorkflowItems: [],
   failedWorkflowItem: {},
   submitDone: false,
-  submitInProgress: false
+  submitInProgress: false,
+  idForInfo: "",
+  isWorkflowitemAdditionalDataShown: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -118,7 +123,6 @@ export default function detailviewReducer(state = defaultState, action) {
         displayName: subproject.data.displayName,
         description: subproject.data.description,
         status: subproject.data.status,
-        amount: fromAmountString(subproject.data.amount),
         currency: subproject.data.currency,
         allowedIntents: fromJS(subproject.allowedIntents),
         assignee: fromJS(subproject.data.assignee),
@@ -133,7 +137,7 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("id", action.id)
           .set("displayName", action.displayName)
           .set("amount", action.amount)
-          .set("exchangeRate", action.exchangeRate)
+          .set("exchangeRate", action.exchangeRate || state.getIn(["workflowToAdd", "exchangeRate"]))
           .set("amountType", action.amountType)
           .set("description", action.description)
           .set("currency", action.currency)
@@ -183,6 +187,14 @@ export default function detailviewReducer(state = defaultState, action) {
         showWorkflowPermissions: false
       });
 
+    case SHOW_WORKFLOWITEM_ADDITIONAL_DATA:
+      return state.merge({
+        idForInfo: fromJS(action.wId),
+        isWorkflowitemAdditionalDataShown: true
+      });
+    case HIDE_WORKFLOWITEM_ADDITIONAL_DATA:
+      return state.set("isWorkflowitemAdditionalDataShown", false);
+
     case FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS:
       return state.set("permissions", fromJS(action.permissions));
     case WORKFLOW_CREATION_STEP:
@@ -212,8 +224,6 @@ export default function detailviewReducer(state = defaultState, action) {
         ...documents,
         { id: action.id, base64: action.base64 }
       ]);
-    case SUBPROJECT_AMOUNT:
-      return state.set("subProjectAmount", action.amount);
     case CREATE_WORKFLOW_SUCCESS:
     case EDIT_WORKFLOW_ITEM_SUCCESS:
       return state.merge({
@@ -281,21 +291,21 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", false);
-    case SET_HISTORY_OFFSET:
-      return state.set("offset", action.offset);
     case FETCH_SUBPROJECT_HISTORY:
       return state.set("isHistoryLoading", true);
     case FETCH_SUBPROJECT_HISTORY_SUCCESS:
       return state.merge({
-        historyItems: fromJS(action.events).concat(state.get("historyItems")),
+        historyItems: state.get("historyItems").concat(fromJS(action.events).reverse()),
         historyItemsCount: action.historyItemsCount,
         isHistoryLoading: false,
         offset: action.offset,
-        limit: action.limit
+        limit: action.limit,
+        hasMoreHistory: action.hasMore
       });
     case HIDE_HISTORY:
       return state.merge({
         historyItems: fromJS([]),
+        showHistory: false,
         offset: defaultState.get("offset"),
         limit: defaultState.get("limit")
       });
@@ -310,6 +320,8 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case LOGOUT:
       return defaultState;
+    case OPEN_HISTORY:
+      return state.set("showHistory", true);
     default:
       return state;
   }

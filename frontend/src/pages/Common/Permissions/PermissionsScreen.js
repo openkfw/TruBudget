@@ -24,7 +24,7 @@ import _isEmpty from "lodash/isEmpty";
 import strings from "../../../localizeStrings";
 
 const PermissionsScreen = props => (
-  <Dialog data-test="permission-container" open={props.show} onClose={props.onClose}>
+  <Dialog disableRestoreFocus data-test="permission-container" open={props.show} onClose={props.onClose}>
     <DialogTitle>{props.title}</DialogTitle>
     <DialogContent>
       <PermissionsTable {...props} disabled={props.disabled} />

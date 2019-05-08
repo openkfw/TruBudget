@@ -68,8 +68,25 @@ services:
       PROD_API_PORT: ${API_PORT}
       TEST_API_HOST: testapi
       TEST_API_PORT: ${API_PORT}
+      EXPORT_HOST: export
+      EXPORT_PORT: 8888
+    depends_on:
+      - api
+      - testapi
+      - export
+    ports:
+      - "80:80"
+  export:
+    build:
+      context: ../../excel-export
+    environment:
+      PROD_API_HOST: api
+      PROD_API_PORT: ${API_PORT}
+      TEST_API_HOST: testapi
+      TEST_API_PORT: ${API_PORT}
+      PORT: 8888
     links:
       - api
       - testapi
     ports:
-      - "80:80"
+      - "8888:8888"

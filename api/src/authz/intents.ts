@@ -13,14 +13,14 @@ type Intent =
   | "project.intent.listPermissions"
   | "project.intent.grantPermission"
   | "project.intent.revokePermission"
-  | "project.viewSummary" // IDs + meta data + allowed intents
-  | "project.viewDetails" // ID + meta data + allowed intents + history
+  | "project.viewSummary"
+  | "project.viewDetails"
+  | "project.viewHistory"
   | "project.assign"
   | "project.update"
   | "project.close"
   | "project.archive"
   | "project.createSubproject"
-  | "project.viewHistory"
   | "project.budget.updateProjected"
   | "project.budget.deleteProjected"
   | "subproject.intent.listPermissions"
@@ -29,19 +29,20 @@ type Intent =
   // TODO: rename to subproject.list
   | "subproject.viewSummary"
   | "subproject.viewDetails"
+  | "subproject.viewHistory"
   | "subproject.assign"
   | "subproject.update"
   | "subproject.close"
   | "subproject.archive"
   | "subproject.createWorkflowitem"
   | "subproject.reorderWorkflowitems"
-  | "subproject.viewHistory"
   | "subproject.budget.updateProjected"
   | "subproject.budget.deleteProjected"
   | "workflowitem.intent.listPermissions"
   | "workflowitem.intent.grantPermission"
   | "workflowitem.intent.revokePermission"
   | "workflowitem.view"
+  | "workflowitem.viewHistory"
   | "workflowitem.assign"
   | "workflowitem.update"
   | "workflowitem.close"
@@ -110,12 +111,12 @@ export const projectIntents: Intent[] = [
   "project.intent.revokePermission",
   "project.viewSummary",
   "project.viewDetails",
+  "project.viewHistory",
   "project.assign",
   "project.update",
   "project.close",
   "project.archive",
   "project.createSubproject",
-  "project.viewHistory",
   "project.budget.updateProjected",
   "project.budget.deleteProjected",
 ];
@@ -126,13 +127,13 @@ export const subprojectIntents: Intent[] = [
   "subproject.intent.revokePermission",
   "subproject.viewSummary",
   "subproject.viewDetails",
+  "subproject.viewHistory",
   "subproject.assign",
   "subproject.update",
   "subproject.close",
   "subproject.archive",
   "subproject.createWorkflowitem",
   "subproject.reorderWorkflowitems",
-  "subproject.viewHistory",
   "subproject.budget.updateProjected",
   "subproject.budget.deleteProjected",
 ];
@@ -142,6 +143,7 @@ export const workflowitemIntents: Intent[] = [
   "workflowitem.intent.grantPermission",
   "workflowitem.intent.revokePermission",
   "workflowitem.view",
+  "workflowitem.viewHistory",
   "workflowitem.assign",
   "workflowitem.update",
   "workflowitem.close",
@@ -165,12 +167,12 @@ export const allIntents: Intent[] = [
   "project.intent.revokePermission",
   "project.viewSummary",
   "project.viewDetails",
+  "project.viewHistory",
   "project.assign",
   "project.update",
   "project.close",
   "project.archive",
   "project.createSubproject",
-  "project.viewHistory",
   "project.budget.updateProjected",
   "project.budget.deleteProjected",
   "subproject.intent.listPermissions",
@@ -178,19 +180,20 @@ export const allIntents: Intent[] = [
   "subproject.intent.revokePermission",
   "subproject.viewSummary",
   "subproject.viewDetails",
+  "subproject.viewHistory",
   "subproject.assign",
   "subproject.update",
   "subproject.close",
   "subproject.archive",
   "subproject.createWorkflowitem",
   "subproject.reorderWorkflowitems",
-  "subproject.viewHistory",
   "subproject.budget.updateProjected",
   "subproject.budget.deleteProjected",
   "workflowitem.intent.listPermissions",
   "workflowitem.intent.grantPermission",
   "workflowitem.intent.revokePermission",
   "workflowitem.view",
+  "workflowitem.viewHistory",
   "workflowitem.assign",
   "workflowitem.update",
   "workflowitem.close",

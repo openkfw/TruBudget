@@ -1,8 +1,8 @@
 import { fromJS } from "immutable";
-import moment from "moment";
-import "moment/locale/de";
-import "moment/locale/fr";
-import "moment/locale/pt";
+import dayjs from "dayjs";
+import "dayjs/locale/de";
+import "dayjs/locale/fr";
+import "dayjs/locale/pt";
 import strings from "../../localizeStrings";
 
 import {
@@ -42,9 +42,22 @@ export const defaultState = fromJS({
   userDisplayNameMap: {}
 });
 
+const setTimeLocale = language => {
+  switch (language) {
+    // daysjs excpects en instead of en-gb.
+    // Changing the language preset would break existing clients because it it saved in the clients local storage
+    case "en-gb":
+      dayjs.locale("en");
+      break;
+    default:
+      dayjs.locale(language);
+      break;
+  }
+};
+
 export const changeLanguage = state => {
   const language = state.get("language");
-  moment.locale(language);
+  setTimeLocale(language);
   strings.setLanguage(language);
 };
 

@@ -89,6 +89,8 @@ import {
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE
 } from "./pages/Workflows/actions";
 
+import { FETCH_WORKFLOWITEM_HISTORY, FETCH_WORKFLOWITEM_HISTORY_SUCCESS } from "./pages/WorkflowitemDetails/actions";
+
 import {
   LOGIN,
   LOGIN_SUCCESS,
@@ -140,8 +142,23 @@ import {
   CREATE_BACKUP_SUCCESS,
   CREATE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
-  RESTORE_BACKUP
+  RESTORE_BACKUP,
+  EXPORT_DATA,
+  EXPORT_DATA_SUCCESS,
+  EXPORT_DATA_FAILED
 } from "./pages/Navbar/actions.js";
+import {
+  GET_SUBPROJECT_KPIS,
+  GET_SUBPROJECT_KPIS_SUCCESS,
+  GET_PROJECT_KPIS,
+  GET_PROJECT_KPIS_SUCCESS,
+  GET_EXCHANGE_RATES,
+  GET_EXCHANGE_RATES_SUCCESS,
+  GET_SUBPROJECT_KPIS_FAIL,
+  GET_PROJECT_KPIS_FAIL
+} from "./pages/Analytics/actions.js";
+import { fromAmountString } from "./helper.js";
+import { getExchangeRates } from "./getExchangeRates";
 
 const api = new Api();
 
@@ -153,6 +170,7 @@ function* execute(fn, showLoading = false, errorCallback = undefined) {
     if (typeof errorCallback === "function") {
       yield errorCallback(error);
     } else {
+      // eslint-disable-next-line no-console
       console.error(error);
       yield handleError(error);
     }
@@ -170,11 +188,11 @@ function* showSnackbarSuccess() {
 }
 
 function* handleError(error) {
-  console.error("API-Error: ", error.response || "unknown");
-  console.error(error);
+  // eslint-disable-next-line no-console
+  console.error("API-Error: ", error.response || "No response from API");
 
-  // which status should we use?
-  if (error.response.status === 401) {
+  if (error.respone && (error.response.status === 401 || error.response.status === 400)) {
+    // which status should we use?
     yield call(logoutSaga);
   } else if (error.response && error.response.data) {
     yield put({
@@ -189,7 +207,7 @@ function* handleError(error) {
   } else {
     yield put({
       type: SNACKBAR_MESSAGE,
-      message: "Disconnected!"
+      message: strings.common.disconnected
     });
     yield put({
       type: SHOW_SNACKBAR,
@@ -338,20 +356,14 @@ export function* createProjectSaga(action) {
 
 export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets = [] }) {
   yield execute(function*() {
+    // TODO: Change call format
+    // const { deletedProjectedBudgets = [], projectedBudgets = [], ...rest } = changes;
     const { projectedBudgets = [], ...rest } = changes;
-
-    // const thingsToChange = Object.keys(rest)
-    //   .filter(k => rest[k] !== undefined)
-    //   .reduce((acc, next) => {
-    //     acc[next] = rest[next];
-    //     return acc;
-    //   }, {});
 
     if (Object.values(rest).some(value => value !== undefined)) {
       yield callApi(api.editProject, projectId, rest);
     }
 
-    // if(projectedBudgets !== undefined){
     for (const budget of projectedBudgets) {
       yield callApi(
         api.updateProjectBudgetProjected,
@@ -390,9 +402,35 @@ export function* createSubProjectSaga({ projectId, name, description, currency, 
   }, showLoading);
 }
 
-export function* editSubProjectSaga({ projectId, subprojectId, changes }) {
+export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedProjectedBudgets = [] }) {
   yield execute(function*() {
-    yield callApi(api.editSubProject, projectId, subprojectId, changes);
+    const { projectedBudgets = [], ...rest } = changes;
+
+    if (Object.values(rest).some(value => value !== undefined)) {
+      yield callApi(api.editSubProject, projectId, subprojectId, rest);
+    }
+
+    for (const budget of projectedBudgets) {
+      yield callApi(
+        api.updateSubprojectBudgetProjected,
+        projectId,
+        subprojectId,
+        budget.organization,
+        budget.currencyCode,
+        budget.value
+      );
+    }
+
+    for (const budget of deletedProjectedBudgets) {
+      yield callApi(
+        api.deleteSubprojectBudgetProjected,
+        projectId,
+        subprojectId,
+        budget.organization,
+        budget.currencyCode
+      );
+    }
+
     yield showSnackbarSuccess();
     yield put({
       type: EDIT_SUBPROJECT_SUCCESS
@@ -752,14 +790,16 @@ export function* fetchProjectHistorySaga({ projectId, offset, limit, showLoading
     if (limit <= 0) {
       return;
     }
-    const { data } = yield callApi(api.viewProjectHistory, projectId, offset - limit, limit);
-    const newOffset = offset === 0 ? data.historyItemsCount - limit : offset - limit;
-    const newLimit = newOffset > 0 ? Math.min(newOffset, limit) : 0;
+    const { historyItemsCount, events } = yield callApi(api.viewProjectHistory, projectId, offset, limit);
+    offset -= limit;
+    const hasMore = offset + limit > -historyItemsCount;
     yield put({
       type: FETCH_PROJECT_HISTORY_SUCCESS,
-      offset: newOffset,
-      limit: newLimit,
-      ...data
+      offset,
+      limit,
+      historyItemsCount,
+      events,
+      hasMore
     });
   }, showLoading);
 }
@@ -779,14 +819,48 @@ export function* fetchSubprojectHistorySaga({ projectId, subprojectId, offset, l
     if (limit <= 0) {
       return;
     }
-    const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId, offset - limit, limit);
-    const newOffset = offset === 0 ? data.historyItemsCount - limit : offset - limit;
-    const newLimit = newOffset > 0 ? Math.min(newOffset, limit) : 0;
+    const { historyItemsCount, events } = yield callApi(
+      api.viewSubProjectHistory,
+      projectId,
+      subprojectId,
+      offset,
+      limit
+    );
+    offset -= limit;
+    const hasMore = offset + limit > -historyItemsCount;
     yield put({
       type: FETCH_SUBPROJECT_HISTORY_SUCCESS,
-      offset: newOffset,
-      limit: newLimit,
-      ...data
+      offset,
+      limit,
+      historyItemsCount,
+      events,
+      hasMore
+    });
+  }, showLoading);
+}
+
+export function* fetchWorkflowitemHistorySaga({ projectId, subprojectId, workflowitemId, offset, limit, showLoading }) {
+  yield execute(function*() {
+    if (limit <= 0) {
+      return;
+    }
+    const { historyItemsCount, events } = yield callApi(
+      api.viewWorkflowitemHistory,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      offset,
+      limit
+    );
+    offset -= limit;
+    const hasMore = offset + limit > -historyItemsCount;
+    yield put({
+      type: FETCH_WORKFLOWITEM_HISTORY_SUCCESS,
+      offset,
+      limit,
+      historyItemsCount,
+      events,
+      hasMore
     });
   }, showLoading);
 }
@@ -1201,6 +1275,208 @@ export function* liveUpdateNotificationsSaga({ showLoading, offset }) {
   }, showLoading);
 }
 
+export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
+  yield execute(function*() {
+    const {
+      data: {
+        project: {
+          data: { projectedBudgets }
+        },
+        subprojects
+      }
+    } = yield callApi(api.viewProjectDetails, projectId);
+
+    try {
+      const subprojectBudgets = (yield all(
+        subprojects.map(subproject => callApi(api.viewSubProjectDetails, projectId, subproject.data.id))
+      )).map(subprojectDetails => {
+        const currency = subprojectDetails.data.subproject.data.currency;
+        const projected = subprojectDetails.data.subproject.data.projectedBudgets;
+        const workflowBudgets = subprojectDetails.data.workflowitems.reduce(
+          (acc, next) => {
+            if (!next.data.amountType) {
+              const error = new Error("redacted");
+              error.name = "redacted";
+              throw error;
+            }
+            const { amountType, status, amount, exchangeRate } = next.data;
+            if (amountType === "allocated" && status === "closed" && amount) {
+              return {
+                ...acc,
+                allocated: acc.allocated + fromAmountString(amount) * (exchangeRate || 1)
+              };
+            }
+
+            if (amountType === "disbursed" && status === "closed" && amount) {
+              return {
+                ...acc,
+                disbursed: acc.disbursed + fromAmountString(amount) * (exchangeRate || 1)
+              };
+            }
+
+            return acc;
+          },
+          {
+            allocated: 0,
+            disbursed: 0
+          }
+        );
+        return {
+          projected,
+          currency,
+          disbursed: workflowBudgets.disbursed,
+          allocated: workflowBudgets.allocated
+        };
+      });
+      const projectBudgets = subprojectBudgets.reduce(
+        (acc, next) => {
+          if (next.disbursed !== 0) {
+            acc.disbursed.push({ budget: next.disbursed, currency: next.currency });
+          }
+          if (next.allocated !== 0) {
+            acc.allocated.push({ budget: next.allocated, currency: next.currency });
+          }
+          if (next.projected.length !== 0) {
+            acc.projectedOfSubprojects.push(next.projected);
+          }
+          return {
+            disbursed: acc.disbursed,
+            allocated: acc.allocated,
+            projectedOfSubprojects: acc.projectedOfSubprojects
+          };
+        },
+        { disbursed: [], allocated: [], projectedOfSubprojects: [] }
+      );
+
+      yield put({
+        type: GET_EXCHANGE_RATES,
+        baseCurrency: projectedBudgets[0] ? projectedBudgets[0].currencyCode : "EUR"
+      });
+
+      yield put({
+        type: GET_PROJECT_KPIS_SUCCESS,
+        assignedBudget: projectBudgets.allocated,
+        disbursedBudget: projectBudgets.disbursed,
+        projectedBudget: projectBudgets.projectedOfSubprojects,
+        totalBudget: projectedBudgets,
+        displayCurrency: projectedBudgets[0] ? projectedBudgets[0].currencyCode : "EUR"
+      });
+    } catch (error) {
+      if (error.name === "redacted") {
+        yield put({
+          type: GET_PROJECT_KPIS_FAIL,
+          reason: "redacted"
+        });
+      } else {
+        throw error;
+      }
+    }
+  }, showLoading);
+}
+
+export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true }) {
+  yield execute(function*() {
+    const {
+      data: {
+        workflowitems = [],
+        subproject: {
+          data: { projectedBudgets = [], currency = "EUR" }
+        }
+      }
+    } = yield callApi(api.viewSubProjectDetails, projectId, subProjectId);
+    yield put({
+      type: GET_EXCHANGE_RATES,
+      baseCurrency: currency
+    });
+    try {
+      const workflowBudgets = workflowitems.reduce(
+        (acc, next) => {
+          if (!next.data.amountType) {
+            const error = new Error("redacted");
+            error.name = "redacted";
+            throw error;
+          }
+          const { amountType, status, amount, exchangeRate } = next.data;
+          if (amountType === "allocated" && status === "closed" && amount) {
+            return {
+              ...acc,
+              assignedBudget: acc.assignedBudget + fromAmountString(amount) * exchangeRate
+            };
+          }
+
+          if (amountType === "disbursed" && status === "closed" && amount) {
+            return {
+              ...acc,
+              disbursedBudget: acc.disbursedBudget + fromAmountString(amount) * exchangeRate
+            };
+          }
+
+          return acc;
+        },
+        { assignedBudget: 0, disbursedBudget: 0 }
+      );
+
+      const response = {
+        subProjectCurrency: currency,
+        projectedBudgets: projectedBudgets,
+        assignedBudget: workflowBudgets.assignedBudget,
+        disbursedBudget: workflowBudgets.disbursedBudget
+      };
+      yield put({
+        type: GET_SUBPROJECT_KPIS_SUCCESS,
+        ...response
+      });
+    } catch (error) {
+      if (error.name === "redacted") {
+        yield put({
+          type: GET_SUBPROJECT_KPIS_FAIL,
+          reason: "redacted"
+        });
+      } else {
+        throw error;
+      }
+    }
+  }, showLoading);
+}
+
+export function* getExchangeRatesSaga({ baseCurrency, showLoading = true }) {
+  yield execute(function*() {
+    const exchangeRates = yield getExchangeRates(baseCurrency);
+    yield put({
+      type: GET_EXCHANGE_RATES_SUCCESS,
+      exchangeRates
+    });
+  }, showLoading);
+}
+
+function* exportDataSaga() {
+  yield execute(
+    function*() {
+      const data = yield callApi(api.export);
+      saveAs(data, "TruBudget_Export.xlsx");
+      yield put({
+        type: EXPORT_DATA_SUCCESS
+      });
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: EXPORT_DATA_FAILED,
+        error
+      });
+      yield put({
+        type: SNACKBAR_MESSAGE,
+        message: "Exporting data failed!"
+      });
+      yield put({
+        type: SHOW_SNACKBAR,
+        show: true,
+        isError: true
+      });
+    }
+  );
+}
+
 export default function* rootSaga() {
   try {
     yield all([
@@ -1264,6 +1540,7 @@ export default function* rootSaga() {
       yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga),
       yield takeEvery(SHOW_WORKFLOW_PREVIEW, fetchWorkflowActionsSaga),
       yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
+      yield takeEvery(FETCH_WORKFLOWITEM_HISTORY, fetchWorkflowitemHistorySaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),
@@ -1277,9 +1554,18 @@ export default function* rootSaga() {
       // System
       yield takeLatest(CREATE_BACKUP, createBackupSaga),
       yield takeLatest(RESTORE_BACKUP, restoreBackupSaga),
-      yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga)
+      yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga),
+
+      // Analytics
+      yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),
+      yield takeLeading(GET_PROJECT_KPIS, getProjectKPIsSaga),
+      yield takeLeading(GET_EXCHANGE_RATES, getExchangeRatesSaga),
+      yield takeLeading(EXPORT_DATA, exportDataSaga)
     ]);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
+
+    yield rootSaga();
   }
 }

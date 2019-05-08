@@ -1,7 +1,7 @@
 import Joi = require("joi");
 import isEqual = require("lodash.isequal");
-import { produce } from "immer";
 import { VError } from "verror";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -14,6 +14,7 @@ import * as UserRecord from "../organization/user_record";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
+import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as SubprojectUpdated from "./subproject_updated";
 
 export type RequestData = SubprojectUpdated.UpdatedData;
@@ -40,7 +41,7 @@ export async function updateSubproject(
   data: RequestData,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
-  let subproject = await repository.getSubproject(subprojectId, subprojectId);
+  const subproject = await repository.getSubproject(subprojectId, subprojectId);
 
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
@@ -67,14 +68,13 @@ export async function updateSubproject(
   }
 
   // Check that the new event is indeed valid:
-  const result = produce(subproject, draft =>
-    SubprojectUpdated.apply(ctx, subprojectUpdated, draft),
-  );
+  const result = SubprojectEventSourcing.newSubprojectFromEvent(ctx, subproject, subprojectUpdated);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, subprojectUpdated, [result]);
   }
 
-  if (isEqual(subproject, result)) {
+  // Only emit the event if it causes any changes:
+  if (isEqualIgnoringLog(subproject, result)) {
     return { newEvents: [] };
   }
 
@@ -97,4 +97,13 @@ export async function updateSubproject(
     );
 
   return { newEvents: [subprojectUpdated, ...notifications] };
+}
+
+function isEqualIgnoringLog(
+  subprojectA: Subproject.Subproject,
+  subprojectB: Subproject.Subproject,
+): boolean {
+  const { log: logA, ...a } = subprojectA;
+  const { log: logB, ...b } = subprojectB;
+  return isEqual(a, b);
 }

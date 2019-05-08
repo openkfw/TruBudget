@@ -1,9 +1,7 @@
-import { produce } from "immer";
 import isEqual = require("lodash.isequal");
 
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
-import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -13,6 +11,7 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
+import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as SubprojectPermissionGranted from "./subproject_permission_granted";
 
 interface Repository {
@@ -56,8 +55,10 @@ export async function grantSubprojectPermission(
   }
 
   // Check that the new event is indeed valid:
-  const updatedSubproject = produce(subproject, draft =>
-    SubprojectPermissionGranted.apply(ctx, permissionGranted, draft),
+  const updatedSubproject = SubprojectEventSourcing.newSubprojectFromEvent(
+    ctx,
+    subproject,
+    permissionGranted,
   );
   if (Result.isErr(updatedSubproject)) {
     return new InvalidCommand(ctx, permissionGranted, [updatedSubproject]);

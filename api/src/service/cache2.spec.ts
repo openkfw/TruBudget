@@ -3,18 +3,16 @@ import * as isEmpty from "lodash.isempty";
 
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import { Cache2, initCache, updateAggregates, getCacheInstance } from "./cache2";
-import * as ProjectCreated from "../service/domain/workflow/project_created";
-import * as ProjectClosed from "../service/domain/workflow/project_closed";
 import * as ProjectAssigned from "../service/domain/workflow/project_assigned";
-import * as SubprojectCreated from "../service/domain/workflow/subproject_created";
+import * as ProjectClosed from "../service/domain/workflow/project_closed";
+import * as ProjectCreated from "../service/domain/workflow/project_created";
 import * as SubprojectAssigned from "../service/domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "../service/domain/workflow/subproject_closed";
-import * as WorkflowitemCreated from "../service/domain/workflow/workflowitem_created";
+import * as SubprojectCreated from "../service/domain/workflow/subproject_created";
 import * as WorkflowitemAssigned from "../service/domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "../service/domain/workflow/workflowitem_closed";
-
-import { BusinessEvent } from "./domain/business_event";
+import * as WorkflowitemCreated from "../service/domain/workflow/workflowitem_created";
+import { Cache2, getCacheInstance, initCache, updateAggregates } from "./cache2";
 import { NotFound } from "./domain/errors/not_found";
 
 describe("The cache updates", () => {
@@ -138,19 +136,22 @@ describe("The cache updates", () => {
 
       // Check if lookup for the first project is correct
       const lookUpForFirstProject = lookUp.get("p-id0");
-      if (!lookUpForFirstProject)
+      if (!lookUpForFirstProject) {
         return assert.fail(undefined, undefined, "Lookup for first project not found");
+      }
       assert.isFalse(isEmpty(lookUpForFirstProject));
       assert.hasAllKeys(lookUpForFirstProject, ["s-id0", "s-id2", "s-id4"]);
 
       // Check if lookup for the second project is correct
       const lookUpForSecondProject = lookUp.get("p-id1");
-      if (!lookUpForSecondProject)
+      if (!lookUpForSecondProject) {
         return assert.fail(undefined, undefined, "Lookup for second project not found");
+      }
       assert.isFalse(isEmpty(lookUpForSecondProject));
       assert.hasAllKeys(lookUpForSecondProject, ["s-id1", "s-id3"]);
     });
   });
+
   context("workflowitem aggregates", async () => {
     const defaultCtx: Ctx = {
       requestId: "",
@@ -181,7 +182,7 @@ describe("The cache updates", () => {
 
       // Apply events to existing cache
       const testAssignee = "shiba";
-      const wfAssginedEvent = WorkflowitemAssigned.createEvent(
+      const wfAssignedEvent = WorkflowitemAssigned.createEvent(
         "http",
         "test",
         projectId,
@@ -189,7 +190,7 @@ describe("The cache updates", () => {
         workflowitemId,
         testAssignee,
       );
-      if (Result.isErr(wfAssginedEvent)) {
+      if (Result.isErr(wfAssignedEvent)) {
         return assert.fail(undefined, undefined, "Workflowitem assigned event failed");
       }
       const wfCloseEvent = WorkflowitemClosed.createEvent(
@@ -202,7 +203,7 @@ describe("The cache updates", () => {
       if (Result.isErr(wfCloseEvent)) {
         return assert.fail(undefined, undefined, "Workflowitem closed event failed");
       }
-      updateAggregates(defaultCtx, cache, [wfAssginedEvent, wfCloseEvent]);
+      updateAggregates(defaultCtx, cache, [wfAssignedEvent, wfCloseEvent]);
 
       // Test if events have been reflected on the aggregate
       const wfUnderTest = cache.cachedWorkflowItems.get(workflowitemId);
@@ -237,15 +238,17 @@ describe("The cache updates", () => {
 
       // Check if lookup for the first subproject is correct
       const lookUpForFirstSubproject = lookUp.get("s-id0");
-      if (!lookUpForFirstSubproject)
+      if (!lookUpForFirstSubproject) {
         return assert.fail(undefined, undefined, "Lookup for first Subproject not found");
+      }
       assert.isFalse(isEmpty(lookUpForFirstSubproject));
       assert.hasAllKeys(lookUpForFirstSubproject, ["w-id0", "w-id2", "w-id4"]);
 
       // Check if lookup for the second subproject is correct
       const lookUpForSecondSubproject = lookUp.get("s-id1");
-      if (!lookUpForSecondSubproject)
+      if (!lookUpForSecondSubproject) {
         return assert.fail(undefined, undefined, "Lookup for second Subproject not found");
+      }
       assert.isFalse(isEmpty(lookUpForSecondSubproject));
       assert.hasAllKeys(lookUpForSecondSubproject, ["w-id1", "w-id3"]);
     });

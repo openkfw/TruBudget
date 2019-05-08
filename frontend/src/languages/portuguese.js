@@ -4,6 +4,8 @@ const pt = {
     actions: "Ações",
     add: "adicionar",
     added: "Adicionado",
+    additional_data: "Dados Adicionais",
+    amount: "montante",
     approver: "Aprovador",
     assign: "Portuguese: assign",
     assigned: "Atribuído",
@@ -25,6 +27,7 @@ const pt = {
     created: "Criado",
     disbursed_budget: "Desembolsado",
     disbursement: "Projetado",
+    disconnected: "Desligada",
     done: "Finalizado",
     edit: "Portuguese: Edit",
     edited: "Portuguese: Edited",
@@ -38,13 +41,16 @@ const pt = {
     incorrect_username: "Usuário incorreto",
     name: "Nome",
     next: "Próximo",
+    no_resources: "Nenhum campo foi adicionado a este recurso",
     not_assigned: "Não atribuído",
     not_assigned_budget: "Orçamento não atribuído",
+    not_projected: "Não projetado",
+    not_disbursed: "Não desembolsado",
     not_ok: "Não OK",
     open: "Abrir",
     password: "Senha",
     project: "Portuguese: Project",
-    projectedBudget: "Portuguese: Projected Budget",
+    projected_budget: "Portuguese: Projected Budget",
     revoke: "Portuguese: revoke",
     search: "Portuguese: Search",
     show_permissions: "Portuguese: Show Permissions",
@@ -53,11 +59,14 @@ const pt = {
     subproject: "Subprojeto",
     subprojects: "Subprojetos",
     task_status: "Status da tarefa",
+    total_budget: "orçamento total",
     thumbnail: "Portuguese: Thumbnail",
     update: "Portuguese: Update",
     username: "Usuário",
     view: "Portuguese: View",
-    workflowItem: "Portuguese: WorkflowItem"
+    workflowItem: "Portuguese: WorkflowItem",
+    history_end: "Portuguese: Last event reached",
+    no_history: "Portuguese: No events"
   },
 
   users: {
@@ -185,7 +194,11 @@ const pt = {
     workflow_type: "Categoria",
     workflow_type_transaction: "Transação",
     workflow_type_workflow: "Workflow",
-    workflow_upload_document: "Autenticar"
+    workflow_upload_document: "Autenticar",
+    workflowitem_details: "PORTUGUESE: Workflowitem item details",
+    workflowitem_details_documents: "PORTUGUESE: Documents",
+    workflowitem_details_history: "PORTUGUESE: History",
+    workflowitem_details_overview: "PORTUGUESE: Overview"
   },
 
   preview: {
@@ -198,6 +211,18 @@ const pt = {
     actions_done: "Portuguese: {0} from {1} actions done"
   },
 
+  analytics: {
+    assigned_budget_ratio: "Rácio do Orçamento Atribuído",
+    available_unspent_budget: "Orçamento Disponível",
+    converted_amount: "quantidade convertida",
+    disbursed_budget_ratio: "Rácio do Orçamento Desembolsado",
+    project_analytics: "Project Analytics",
+    projected_budget_ratio: "Rácio do Orçamento Projetado",
+    subproject_analytics: "Subproject Analytics",
+    total: "Total:",
+    total_budget_distribution: "Distribuição Orçamental Total"
+  },
+
   navigation: {
     admin_permission: "Admin",
     connected_peers: "Pares conectados",
@@ -208,6 +233,7 @@ const pt = {
     menu_item_notifications: "Notificações",
     menu_item_projects: "Projetos",
     menu_item_users: "Portuguese: Users",
+    menu_item_export: "Exportar",
     no_peers: "Desconectado",
     options: "Opções",
     other_trustees: "Outros administradores",

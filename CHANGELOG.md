@@ -7,11 +7,93 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Security -->
+
+## [1.0.0] - 2019-05-08
+
+### Added
+
+- Projected budget ratio on project analytics screen [#242](https://github.com/openkfw/TruBudget/pull/242)
+- New endpoint `/workflowitem.viewHistory` that returns all changes that have been applied to a particular workflowitem in chronological order. [#252](https://github.com/openkfw/TruBudget/issues/252)
+- Each workflowitem's history can now be displayed individually in the frontend. [#252](https://github.com/openkfw/TruBudget/issues/252)
+
+### Changed
+
+- When adding subprojects, projected budgets are not mandatory anymore [#229](https://github.com/openkfw/TruBudget/issues/229)
+- Added groups to provisioning [#57](https://github.com/openkfw/TruBudget/issues/57)
+- In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/openkfw/TruBudget/issues/176)
+- The `additional data` button is now available on all levels and is only displayed if additional data is available [#91](https://github.com/openkfw/TruBudget/issues/91)
+- The frontend no longer displays workflowitem history events in a subproject's history; similarly, a project's history no longer contains the historic events of its subprojects. [#252](https://github.com/openkfw/TruBudget/issues/252)
+
+### Deprecated
+
+- `/project.viewHistory` deprecated in favor of `/project.viewHistory.v2`. [#252](https://github.com/openkfw/TruBudget/issues/252)
+- `/subproject.viewHistory` deprecated in favor of `/subproject.viewHistory.v2`. [#252](https://github.com/openkfw/TruBudget/issues/252)
+
+<!-- ### Removed -->
+
+### Fixed
+
+- Fixed line of YAML file for master deployments via docker-compose, so that image of excel export service is pulled correctly [#223](https://github.com/openkfw/TruBudget/issues/223)
+- Backup/restore works again. [#237](https://github.com/openkfw/TruBudget/issues/237)
+- Budgets on project analytics do not contain open workflow items [#230](https://github.com/openkfw/TruBudget/issues/230)
+- Fixed a bug where on smaller screens the action buttons (create & cancel) are hidden and no item could be created [#240](https://github.com/openkfw/TruBudget/issues/240)
+- Increase frontend stability [#263](https://github.com/openkfw/TruBudget/pull/263)
+
+<!-- ### Security -->
+
+## [1.0.0-beta.9] - 2019-04-23
+
+### Added
+
+- Export all visible data for a certain user into an excel sheet [#67](https://github.com/openkfw/TruBudget/issues/67)
+- Analytics dashboard on project/subproject level [#202](https://github.com/openkfw/TruBudget/pull/202)
+
+### Changed
+
+- Only allow the point character as the decimal sign for a workflowitems' amount and exchangeRate fields. While we generally try to avoid interpreting amounts, this change is important to ensure that values on the chain can be read without knowing the author's locale settings. [#216](https://github.com/openkfw/TruBudget/issues/216)
+
+### Fixed
+
+- `subproject.list` did not return `additionalData` [#214](https://github.com/openkfw/TruBudget/issues/214)
+
+## [1.0.0-beta.8] - 2019-04-11
+
+### Added
+
+- Digit grouping when typing amount of projected budgets [#159](https://github.com/openkfw/TruBudget/issue/159)
+- Edit projected budgets of projects and subprojects [#129](https://github.com/openkfw/TruBudget/issue/129)
+- External Webhook [#158](https://github.com/openkfw/TruBudget/pull/158)
+
+### Changed
+
+- Reject workflowitem update when document would be overwritten [#205](https://github.com/openkfw/TruBudget/pull/205)
+
+### Fixed
+
+- Schema for workflowitem_update [#212](https://github.com/openkfw/TruBudget/pull/212)
+- Sorting of Swagger documentation [#207](https://github.com/openkfw/TruBudget/issues/207)
+- Editing of workflowitem when amount type is changed to allocated/disbursed [#171](https://github.com/openkfw/TruBudget/issues/171)
+- Alignment of columns in workflowitem table [#141](https://github.com/openkfw/TruBudget/issues/141)
+- Display of error snackbar after failed login [#170](https://github.com/openkfw/TruBudget/issues/170)
+- Increased the stability of the event sourcing code by replacing the "immer" dependency with a custom implementation. [#196](https://github.com/openkfw/TruBudget/pull/196)
+- Provisioning error related to readiness of blockchain/api [#193](https://github.com/openkfw/TruBudget/issue/193)
+
 ## [1.0.0-beta.7] - 2019-04-03
 
 ### Added
 
-- [Code of conduct](./CODE_OF_CONDUCT.md) and [contributing guidelines](./CONTRIBUTING.md) [#156](https://github.com/openkfw/TruBudget/issues/174)
+- [Code of conduct](./CODE_OF_CONDUCT.md) and [contributing guidelines](./CONTRIBUTING.md) [#156](https://github.com/openkfw/TruBudget/issues/156)
 - Refined [getting-started guide](./README.md) [#185](https://github.com/openkfw/TruBudget/pull/185) and installation guides [#180](https://github.com/openkfw/TruBudget/pull/180)
 
 ### Changed
@@ -175,7 +257,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.0...master
+[1.0.0]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.9...v1.0.0
+[1.0.0-beta.9]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.8...v1.0.0-beta.9
+[1.0.0-beta.8]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...v1.0.0-beta.8
 [1.0.0-beta.7]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.6...v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.5...v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.4...v1.0.0-beta.5
