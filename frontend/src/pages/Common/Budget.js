@@ -93,7 +93,7 @@ export default class Budget extends React.Component {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>{strings.common.organization}</TableCell>
+              <TableCell>{strings.users.organization}</TableCell>
               <TableCell align="right">{strings.common.projected_budget}</TableCell>
               <TableCell align="right">{strings.common.actions}</TableCell>
             </TableRow>

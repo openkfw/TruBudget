@@ -50,7 +50,7 @@ const fr = {
     open: "Ouvert",
     password: "Mot de passe",
     project: "Projet",
-    projected_budget: "Budget estimé",
+    projected_budget: "Budget prévu",
     revoke: "Revoquer",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",
@@ -90,7 +90,7 @@ const fr = {
     project_budget_authority_role_description: "L'autorité a permis de modifier la ligne budgétaire du projet",
     project_close_info: "Au moins une composante n'est pas encore terminée",
     project_comment: "Commentaire du projet",
-    project_currency: "Devise du projet",
+    project_currency: "Devise",
     project_details: "Description",
     project_disbursement_authority_role: "Sélectionnez le rôle d'autorité de décaissement",
     project_disbursement_authority_role_description:
@@ -213,7 +213,7 @@ const fr = {
   },
 
   analytics: {
-    assigned_budget_ratio: "Taux d’allocation budgétaire(alloué/estimé)",
+    assigned_budget_ratio: "Taux d’allocation budgétaire(alloué/prévu)",
     available_unspent_budget: "Budget non dépensé disponible",
     converted_amount: "Montant converti",
     disbursed_budget_ratio: "Taux de décaissement(décaissé/alloué)",
@@ -234,7 +234,7 @@ const fr = {
     menu_item_notifications: "Notifications",
     menu_item_projects: "Projets",
     menu_item_users: "Utilisateurs",
-    menu_item_export: "Exporté",
+    menu_item_export: "Exporter",
     no_peers: "Pas de pairs",
     options: "Options",
     other_trustees: "Autres fiduciaires",
