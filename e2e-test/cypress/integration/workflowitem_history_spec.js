@@ -1,7 +1,7 @@
-let projectId;
-let subprojectId;
-
 describe("Workflowitem's history", function() {
+  let projectId;
+  let subprojectId;
+
   before(() => {
     cy.login();
 
@@ -29,6 +29,9 @@ describe("Workflowitem's history", function() {
     cy.get("#workflowitem-history-tab").click();
 
     // Count history items => should be one
+    cy.get("#history-list li.history-item")
+      .first()
+      .should("be.visible");
     cy.get("#history-list")
       .find("li.history-item")
       .should("have.length", 1);
@@ -55,6 +58,9 @@ describe("Workflowitem's history", function() {
     cy.get("#workflowitem-history-tab").click();
 
     // Count history items => should be two
+    cy.get("#history-list li.history-item")
+      .first()
+      .should("be.visible");
     cy.get("#history-list")
       .find("li.history-item")
       .should("have.length", 2);

@@ -1,7 +1,7 @@
-let projectId;
-let subprojectId;
-
 describe("Subproject's history", function() {
+  let projectId;
+  let subprojectId;
+
   before(() => {
     cy.login();
 
@@ -25,6 +25,9 @@ describe("Subproject's history", function() {
     cy.get("#subproject-history-button").click();
 
     // Count history items => should be one
+    cy.get("#history-list li.history-item")
+      .first()
+      .should("be.visible");
     cy.get("#history-list")
       .find("li.history-item")
       .should("have.length", 1);
@@ -38,7 +41,7 @@ describe("Subproject's history", function() {
 
   it("The history is sorted from new to old", function() {
     // Change assignee to create new history event
-    cy.get("[data-test=assignee-selection]")
+    cy.get("[data-test=assignee-selection] [role=button]")
       .first()
       .click();
     cy.get("[role=listbox]")
@@ -49,6 +52,9 @@ describe("Subproject's history", function() {
     cy.get("#subproject-history-button").click();
 
     // Count history items => should be two
+    cy.get("#history-list li.history-item")
+      .first()
+      .should("be.visible");
     cy.get("#history-list")
       .find("li.history-item")
       .should("have.length", 2);
@@ -57,12 +63,12 @@ describe("Subproject's history", function() {
     cy.get("#history-list")
       .find("li.history-item")
       .last()
-      .should("contain", "created project");
+      .should("contain", "created subproject");
 
     // Make sure the newest entry is the assign event
     cy.get("#history-list")
       .find("li.history-item")
       .first()
-      .should("contain", "assigned project");
+      .should("contain", "assigned subproject");
   });
 });

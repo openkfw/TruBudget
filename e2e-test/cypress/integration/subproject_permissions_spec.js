@@ -27,8 +27,7 @@ describe("Subproject Permissions", function() {
     cy.get("[data-test=spp-button-0]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test='permission-select-subproject.intent.grantPermission']").click();
-    cy
-      .get("[data-test='permission-list']")
+    cy.get("[data-test='permission-list']")
       .should("be.visible")
       .then($list => {
         const checkedItems = $list.find("input:checked");
@@ -41,13 +40,11 @@ describe("Subproject Permissions", function() {
       .then($list => {
         const firstUnchecked = $list.find("input:not(:checked)").first();
         // Use timeout to wait for animation to finish
-        const options = { timeout: 60000 };
-        cy
-          .wrap(firstUnchecked, options)
+        const options = { timeout: 60000, force: true };
+        cy.wrap(firstUnchecked, options)
           .click(options)
           .should("be.checked");
-        cy
-          .wrap(firstUnchecked, options)
+        cy.wrap(firstUnchecked, options)
           .click(options)
           .should("not.be.checked");
       });

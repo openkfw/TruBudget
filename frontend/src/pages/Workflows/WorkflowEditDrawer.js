@@ -77,8 +77,13 @@ const WorkflowEditDrawer = props => {
     storePermissions(permissions);
   };
 
+  const isOpen = !_isEmpty(selectedWorkflowItems);
+
+  // Only render the drawer if there are elements selected
+  if (!isOpen) return null;
+
   return (
-    <Drawer open={!_isEmpty(selectedWorkflowItems)} variant="persistent" anchor="right">
+    <Drawer open={isOpen} variant="persistent" anchor="right">
       <div>
         <Button
           variant="contained"

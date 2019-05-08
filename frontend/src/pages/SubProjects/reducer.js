@@ -153,17 +153,19 @@ export default function detailviewReducer(state = defaultState, action) {
         showHistory: false
       });
     case SHOW_SUBPROJECT_EDIT: {
-      return state.merge({
-        subprojectToAdd: state
-          .getIn(["subprojectToAdd"])
-          .set("id", action.id)
-          .set("displayName", action.name)
-          .set("description", action.description)
-          .set("currency", action.currency)
-          .set("projectedBudgets", fromJS(action.projectedBudgets)),
-        editDialogShown: true,
-        dialogTitle: strings.subproject.subproject_edit_title
-      });
+      return state
+        .updateIn(["subprojectToAdd"], subproject =>
+          subproject
+            .set("id", action.id)
+            .set("displayName", action.name)
+            .set("description", action.description)
+            .set("currency", action.currency)
+            .set("projectedBudgets", fromJS(action.projectedBudgets))
+        )
+        .merge({
+          editDialogShown: true,
+          dialogTitle: strings.subproject.subproject_edit_title
+        });
     }
     case HIDE_SUBPROJECT_DIALOG: {
       return state.merge({

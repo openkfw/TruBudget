@@ -1,9 +1,8 @@
-let projectId;
-
 describe("Project's history", function() {
+  let projectId;
+
   before(() => {
     cy.login();
-
     cy.createProject("project history test project", "project history test", []).then(({ id }) => {
       projectId = id;
       return cy.createSubproject(projectId, "project history test");
@@ -19,6 +18,9 @@ describe("Project's history", function() {
     cy.get("#project-history-button").click();
 
     // Count history items => should be one
+    cy.get("#history-list li.history-item")
+      .first()
+      .should("be.visible");
     cy.get("#history-list")
       .find("li.history-item")
       .should("have.length", 1);
@@ -32,7 +34,7 @@ describe("Project's history", function() {
 
   it("The history is sorted from new to old", function() {
     // Change assignee to create new history event
-    cy.get("[data-test=assignee-selection]").click();
+    cy.get("[data-test=assignee-selection] [role=button]").click();
     cy.get("[role=listbox]")
       .find("[value=jdoe]")
       .click()
@@ -41,6 +43,9 @@ describe("Project's history", function() {
     cy.get("#project-history-button").click();
 
     // Count history items => should be two
+    cy.get("#history-list li.history-item")
+      .first()
+      .should("be.visible");
     cy.get("#history-list")
       .find("li.history-item")
       .should("have.length", 2);

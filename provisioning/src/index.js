@@ -366,21 +366,34 @@ async function testWorkflowitemUpdate(folder) {
     );
   }
 
-  // Setting the amountType to N/A and passing a currency should cause an error
-  // response:
+  // Setting the amountType to N/A and passing a currency should only cause an error when the workflow item gets closed
+  await axios.post("/workflowitem.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    workflowitemId: workflowitem.data.id,
+    amountType: "N/A",
+    amount: amount + 1,
+    currency
+  });
   try {
-    await axios.post("/workflowitem.update", {
+    await axios.post("/workflowitem.close", {
       projectId: project.data.id,
       subprojectId: subproject.data.id,
-      workflowitemId: workflowitem.data.id,
-      amountType: "N/A",
-      amount: amount + 1,
-      currency
+      workflowitemId: workflowitem.data.id
     });
     throw Error("This should not happen");
   } catch (error) {
     // ignoring
   }
+  // Worked as expected, resetting the workflow item
+  await axios.post("/workflowitem.update", {
+    projectId: project.data.id,
+    subprojectId: subproject.data.id,
+    workflowitemId: workflowitem.data.id,
+    amountType,
+    amount,
+    currency
+  });
 
   const updatedWorkflowitem = await findWorkflowitem(
     axios,
@@ -389,11 +402,12 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
 
-  // workflowitem should not have been updated
+  // make sure the workflow item has been reset and is still open
   if (
     updatedWorkflowitem.data.amountType !== amountType ||
     updatedWorkflowitem.data.amount !== amount ||
-    updatedWorkflowitem.data.currency !== currency
+    updatedWorkflowitem.data.currency !== currency ||
+    updatedWorkflowitem.data.status !== "open"
   ) {
     throw Error(
       "The update should not have had any effect on the workflowitem"
