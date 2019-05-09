@@ -100,7 +100,7 @@ const NotificationsList = props => {
               markPageAsRead(markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage)
             }
             color="primary"
-            className={classes.button}
+            className={classes.button + " mark-all-notifications-as-read"}
             data-test="read-multiple-notifications"
             disabled={!allNotificationsRead}
           >

@@ -7,6 +7,7 @@ import { CurrencyCode } from "./domain/workflow/money";
 import * as Project from "./domain/workflow/project";
 import * as ProjectProjectedBudgetDelete from "./domain/workflow/project_projected_budget_delete";
 import { ProjectedBudget } from "./domain/workflow/projected_budget";
+import * as GroupQuery from "./group_query";
 import { store } from "./store";
 
 export async function deleteProjectedBudget(
@@ -27,6 +28,9 @@ export async function deleteProjectedBudget(
       {
         getProject: async pId => {
           return cache.getProject(pId);
+        },
+        getUsersForIdentity: async identity => {
+          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
       },
     ),

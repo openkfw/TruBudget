@@ -58,7 +58,7 @@ const NotificationListItems = ({
       projectId: metadata.project ? metadata.project.id : undefined,
       subprojectId: metadata.subproject ? metadata.subproject.id : undefined
     });
-    const testLabel = `notification-${isRead ? "read" : "unread"}-${index}`;
+    const testLabel = `notification-${isRead ? "read" : "unread"}`;
     return (
       <div key={index}>
         <Divider />
@@ -76,7 +76,7 @@ const NotificationListItems = ({
           <ListItemText className={classes.projectMetadata} component="div" primary={""} secondary={""} />
 
           <ListItemText
-            data-test={`${testLabel}-message`}
+            data-test={`${testLabel}-${index}`}
             className={classes.title}
             component="div"
             primary={message}
@@ -90,7 +90,7 @@ const NotificationListItems = ({
           <div className={classes.button}>
             <Fab
               size="small"
-              disabled={isAllowedToSee(notification)}
+              disabled={!isAllowedToSee(notification)}
               color="primary"
               onClick={() => history.push(redirectUri)}
             >

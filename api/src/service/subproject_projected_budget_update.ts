@@ -8,6 +8,7 @@ import * as Project from "./domain/workflow/project";
 import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectProjectedBudgetUpdate from "./domain/workflow/subproject_projected_budget_update";
+import * as GroupQuery from "./group_query";
 import { store } from "./store";
 
 export async function updateProjectedBudget(
@@ -32,6 +33,9 @@ export async function updateProjectedBudget(
       {
         getSubproject: async (pId, spId) => {
           return cache.getSubproject(pId, spId);
+        },
+        getUsersForIdentity: async identity => {
+          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
       },
     ),

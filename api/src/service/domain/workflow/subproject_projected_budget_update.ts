@@ -6,7 +6,10 @@ import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
+import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
+import * as UserRecord from "../organization/user_record";
+import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import { ProjectedBudget } from "./projected_budget";
 import * as Subproject from "./subproject";
@@ -18,6 +21,7 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Subproject.Subproject>>;
+  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
 }
 
 export async function updateProjectedBudget(
@@ -63,8 +67,25 @@ export async function updateProjectedBudget(
   if (isEqual(subproject.projectedBudgets, result.projectedBudgets)) {
     return { newEvents: [], projectedBudgets: result.projectedBudgets };
   } else {
+    // Create notification events:
+    const recipients = subproject.assignee
+      ? await repository.getUsersForIdentity(subproject.assignee)
+      : [];
+    const notifications = recipients
+      // The issuer doesn't receive a notification:
+      .filter(userId => userId !== issuer.id)
+      .map(recipient =>
+        NotificationCreated.createEvent(
+          ctx.source,
+          issuer.id,
+          recipient,
+          budgetUpdated,
+          projectId,
+          subprojectId,
+        ),
+      );
     return {
-      newEvents: [budgetUpdated],
+      newEvents: [budgetUpdated, ...notifications],
       projectedBudgets: result.projectedBudgets,
     };
   }

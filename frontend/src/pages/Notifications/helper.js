@@ -15,7 +15,7 @@ export function getDisplayName(notification) {
       return metadata.project.displayName;
     }
   }
-  return "cannot fond displayname";
+  return "";
 }
 
 export const intentMapping = notification => {

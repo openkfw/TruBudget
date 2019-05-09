@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Correct number of display items is displayed when history drawer/list is opened [#275](https://github.com/openkfw/TruBudget/pull/275)
 - Display formatted string when user edits or deletes projected budget [#279](https://github.com/openkfw/TruBudget/pull/279)
 - Previously added documents stay visible after addition of a new document [#268](https://github.com/openkfw/TruBudget/issues/268)
+- Navigation on notifications page now works as expected [#272](https://github.com/openkfw/TruBudget/pull/272)
+- The link to the project/subproject is now active when the user has permissions to see it [#284](https://github.com/openkfw/TruBudget/pull/284)
+- The link to the project/subproject in fly-in notifications correctly redirects the user [#285](https://github.com/openkfw/TruBudget/pull/285)
+- When a workflow item is assigned, the new assignee gets notified [#272](https://github.com/openkfw/TruBudget/pull/272)
 
 <!-- ### Security -->
 
@@ -32,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Projected budget ratio on project analytics screen [#242](https://github.com/openkfw/TruBudget/pull/242)
 - New endpoint `/workflowitem.viewHistory` that returns all changes that have been applied to a particular workflowitem in chronological order. [#252](https://github.com/openkfw/TruBudget/issues/252)
 - Each workflowitem's history can now be displayed individually in the frontend. [#252](https://github.com/openkfw/TruBudget/issues/252)
+- User gets notified when the projected budget of a project/subproject he/she is assigned to is updated or deleted [#283](https://github.com/openkfw/TruBudget/issues/283)
 
 ### Changed
 

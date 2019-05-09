@@ -188,3 +188,21 @@ Cypress.Commands.add("updateProjectPermissions", (projectId, intent, identity) =
     .its("body")
     .then(body => Promise.resolve(body.data));
 });
+
+Cypress.Commands.add("closeProject", projectId => {
+  cy.request({
+    url: `${baseUrl}/api/project.close`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});

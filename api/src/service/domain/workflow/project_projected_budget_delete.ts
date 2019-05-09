@@ -6,7 +6,10 @@ import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
+import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
+import * as UserRecord from "../organization/user_record";
+import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectProjectedBudgetDeleted from "./project_projected_budget_deleted";
@@ -14,6 +17,7 @@ import { ProjectedBudget } from "./projected_budget";
 
 interface Repository {
   getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
+  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
 }
 
 type State = ProjectedBudget[];
@@ -59,8 +63,18 @@ export async function deleteProjectedBudget(
   if (isEqual(project.projectedBudgets, result.projectedBudgets)) {
     return { newEvents: [], projectedBudgets: result.projectedBudgets };
   } else {
+    // Create notification events:
+    const recipients = project.assignee
+      ? await repository.getUsersForIdentity(project.assignee)
+      : [];
+    const notifications = recipients
+      // The issuer doesn't receive a notification:
+      .filter(userId => userId !== issuer.id)
+      .map(recipient =>
+        NotificationCreated.createEvent(ctx.source, issuer.id, recipient, budgetDeleted, projectId),
+      );
     return {
-      newEvents: [budgetDeleted],
+      newEvents: [budgetDeleted, ...notifications],
       projectedBudgets: result.projectedBudgets,
     };
   }

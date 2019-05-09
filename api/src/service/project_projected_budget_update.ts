@@ -7,6 +7,7 @@ import { CurrencyCode, MoneyAmount } from "./domain/workflow/money";
 import * as Project from "./domain/workflow/project";
 import * as ProjectProjectedBudgetUpdate from "./domain/workflow/project_projected_budget_update";
 import { ProjectedBudget } from "./domain/workflow/projected_budget";
+import * as GroupQuery from "./group_query";
 import { store } from "./store";
 
 export async function updateProjectedBudget(
@@ -29,6 +30,9 @@ export async function updateProjectedBudget(
       {
         getProject: async pId => {
           return cache.getProject(pId);
+        },
+        getUsersForIdentity: async identity => {
+          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
       },
     ),
