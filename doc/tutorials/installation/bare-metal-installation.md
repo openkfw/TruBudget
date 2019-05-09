@@ -27,11 +27,11 @@ Debian/Ubuntu:
 sudo su
 apt-get update
 
-apt-get install -y wget git nginx curl && curl -sL https://deb.nodesource.com/setup_9.x | bash - && apt-get install -y nodejs \
+apt-get install -y wget git nginx curl && curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs \
     && cd /tmp \
-    && wget --no-check-certificate https://www.multichain.com/download/multichain-2.0-alpha-6.tar.gz\
-    && tar -xvzf multichain-2.0-alpha-6.tar.gz \
-    && cd multichain-2.0-alpha-6 \
+    && wget --no-check-certificate https://www.multichain.com/download/multichain-2.0.1.tar.gz \
+    && tar -xvzf multichain-2.0.1.tar.gz \
+    && cd multichain-2.0.1 \
     && mv multichaind multichain-cli multichain-util /usr/bin \
     && cd /tmp \
     && rm -Rf multichain* \
@@ -42,11 +42,11 @@ apt-get install -y wget git nginx curl && curl -sL https://deb.nodesource.com/se
 Fedora:
 
 ```bash
-yum install -y wget git nginx curl && curl --silent --location https://rpm.nodesource.com/setup_8.x | bash - && yum install -y nodejs \
+yum install -y wget git nginx curl && curl --silent --location https://rpm.nodesource.com/setup_10.x | bash - && yum install -y nodejs \
     && cd /tmp \
-    && wget --no-check-certificate https://www.multichain.com/download/multichain-2.0-alpha-6.tar.gz\
-    && tar -xvzf multichain-2.0-alpha-6.tar.gz \
-    && cd multichain-2.0-alpha-6 \
+    && wget --no-check-certificate https://www.multichain.com/download/multichain-2.0.1.tar.gz \
+    && tar -xvzf multichain-2.0.1.tar.gz \
+    && cd multichain-2.0.1.tar.gz \
     && mv multichaind multichain-cli multichain-util /usr/bin \
     && cd /tmp \
     && rm -Rf multichain* \
