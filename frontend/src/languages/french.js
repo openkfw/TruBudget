@@ -331,6 +331,8 @@ const fr = {
     project_createSubproject: "{0} a crée la composante {1}",
     project_grantPermission: "{0} a accordé l'autorisation {1} à {2}",
     project_grantPermission_details: "{0} a modifié l'autorisation {1} à {2} de {3}",
+    project_projected_budget_updated: "{0} a mis à jour le budget prévu de {1}",
+    project_projected_budget_deleted: "{0} a supprimé le budget prévu de {1}",
     project_revokePermission: "{0} a révoquer l'autorisation {1} de {2}",
     project_revokePermission_details: "{0} a revoqué l'autorisation  {1} à {2} de {3}",
     project_update: "{0} a modifié le projet {1} ",

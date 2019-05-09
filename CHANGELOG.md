@@ -15,7 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+- Correct number of display items is displayed when history drawer/list is opened [#275](https://github.com/openkfw/TruBudget/pull/275)
+- Display formatted string when user edits or deletes projected budget [#279](https://github.com/openkfw/TruBudget/pull/279)
+
 
 <!-- ### Security -->
 

@@ -26,8 +26,9 @@ import {
   FETCH_ALL_PROJECT_DETAILS,
   ASSIGN_PROJECT_SUCCESS,
   ASSIGN_PROJECT,
-  FETCH_PROJECT_HISTORY_SUCCESS,
-  FETCH_PROJECT_HISTORY,
+  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
+  FETCH_NEXT_PROJECT_HISTORY_PAGE,
+  FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
   EDIT_SUBPROJECT_SUCCESS,
   EDIT_SUBPROJECT,
   CLOSE_PROJECT,
@@ -70,8 +71,9 @@ import {
   ASSIGN_WORKFLOWITEM,
   ASSIGN_SUBPROJECT_SUCCESS,
   ASSIGN_SUBPROJECT,
-  FETCH_SUBPROJECT_HISTORY,
-  FETCH_SUBPROJECT_HISTORY_SUCCESS,
+  SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   REVOKE_WORKFLOWITEM_PERMISSION,
   EDIT_WORKFLOW_ITEM_SUCCESS,
@@ -89,7 +91,11 @@ import {
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE
 } from "./pages/Workflows/actions";
 
-import { FETCH_WORKFLOWITEM_HISTORY, FETCH_WORKFLOWITEM_HISTORY_SUCCESS } from "./pages/WorkflowitemDetails/actions";
+import {
+  SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT,
+  FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
+  FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS
+} from "./pages/WorkflowitemDetails/actions";
 
 import {
   LOGIN,
@@ -162,6 +168,40 @@ import { getExchangeRates } from "./getExchangeRates";
 
 const api = new Api();
 
+// SELECTORS
+const getSelfId = state => {
+  return state.getIn(["login", "id"]);
+};
+const getJwt = state => state.toJS().login.jwt;
+const getEnvironment = state => {
+  const env = state.getIn(["login", "environment"]);
+  if (env) {
+    return env;
+  }
+  return "Test";
+};
+const getProjectHistoryState = state => {
+  return {
+    currentHistoryPage: state.getIn(["detailview", "currentHistoryPage"]),
+    historyPageSize: state.getIn(["detailview", "historyPageSize"]),
+    totalHistoryItemCount: state.getIn(["detailview", "totalHistoryItemCount"])
+  };
+};
+const getSubprojectHistoryState = state => {
+  return {
+    currentHistoryPage: state.getIn(["workflow", "currentHistoryPage"]),
+    historyPageSize: state.getIn(["workflow", "historyPageSize"]),
+    totalHistoryItemCount: state.getIn(["workflow", "totalHistoryItemCount"])
+  };
+};
+const getWorkflowitemHistoryState = state => {
+  return {
+    currentHistoryPage: state.getIn(["workflowitemDetails", "currentHistoryPage"]),
+    historyPageSize: state.getIn(["workflowitemDetails", "historyPageSize"]),
+    totalHistoryItemCount: state.getIn(["workflowitemDetails", "totalHistoryItemCount"])
+  };
+};
+
 function* execute(fn, showLoading = false, errorCallback = undefined) {
   const done = yield handleLoading(showLoading);
   try {
@@ -216,17 +256,6 @@ function* handleError(error) {
     });
   }
 }
-const getSelfId = state => {
-  return state.getIn(["login", "id"]);
-};
-const getJwt = state => state.toJS().login.jwt;
-const getEnvironment = state => {
-  const env = state.getIn(["login", "environment"]);
-  if (env) {
-    return env;
-  }
-  return "Test";
-};
 
 function* callApi(func, ...args) {
   const token = yield select(getJwt);
@@ -785,21 +814,141 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
   }, showLoading);
 }
 
-export function* fetchProjectHistorySaga({ projectId, offset, limit, showLoading }) {
+export function* fetchNextProjectHistoryPageSaga({ projectId, showLoading }) {
   yield execute(function*() {
-    if (limit <= 0) {
-      return;
+    const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getProjectHistoryState);
+
+    let offset = 0;
+    if (totalHistoryItemCount === 0) {
+      // Before the first call, we don't know how many history items there are
+      // so we fetch a fixed number of the latest items
+      offset = -historyPageSize;
+    } else {
+      // After the first call we just fetch each page
+      // If the offset is below 0, we have reached the last page
+      // and can fetch the first events
+      offset = Math.max(0, totalHistoryItemCount - (currentHistoryPage + 1) * historyPageSize);
     }
+
+    // If the offset is 0, we are on the last page and only need to fetch the remaining items
+    const isLastPage = offset === 0;
+    const remainingItems = totalHistoryItemCount - currentHistoryPage * historyPageSize;
+    // If the remaining items are 0, it means that the total number of history items
+    // is a multiple of the page size and we need to fetch a whole page
+    const limit = isLastPage && remainingItems !== 0 ? remainingItems : historyPageSize;
+
     const { historyItemsCount, events } = yield callApi(api.viewProjectHistory, projectId, offset, limit);
-    offset -= limit;
-    const hasMore = offset + limit > -historyItemsCount;
+    const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
+    const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
+    if (isFirstPage) {
+      yield put({
+        type: SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
+        totalHistoryItemsCount: historyItemsCount,
+        lastHistoryPage
+      });
+    }
+
     yield put({
-      type: FETCH_PROJECT_HISTORY_SUCCESS,
-      offset,
-      limit,
-      historyItemsCount,
+      type: FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
       events,
-      hasMore
+      currentHistoryPage: currentHistoryPage + 1
+    });
+  }, showLoading);
+}
+
+export function* fetchNextSubprojectHistoryPageSaga({ projectId, subprojectId, showLoading }) {
+  yield execute(function*() {
+    const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getSubprojectHistoryState);
+
+    let offset = 0;
+    if (totalHistoryItemCount === 0) {
+      // Before the first call, we don't know how many history items there are
+      // so we fetch a fixed number of the latest items
+      offset = -historyPageSize;
+    } else {
+      // After the first call we just fetch each page
+      // If the offset is below 0, we have reached the last page
+      // and can fetch the first events
+      offset = Math.max(0, totalHistoryItemCount - (currentHistoryPage + 1) * historyPageSize);
+    }
+
+    // If the offset is 0, we are on the last page and only need to fetch the remaining items
+    const isLastPage = offset === 0;
+    const remainingItems = totalHistoryItemCount - currentHistoryPage * historyPageSize;
+    // If the remaining items are 0, it means that the total number of history items
+    // is a multiple of the page size and we need to fetch a whole page
+    const limit = isLastPage && remainingItems !== 0 ? remainingItems : historyPageSize;
+
+    const { historyItemsCount, events } = yield callApi(
+      api.viewSubProjectHistory,
+      projectId,
+      subprojectId,
+      offset,
+      limit
+    );
+    const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
+    const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
+    if (isFirstPage) {
+      yield put({
+        type: SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
+        totalHistoryItemsCount: historyItemsCount,
+        lastHistoryPage
+      });
+    }
+
+    yield put({
+      type: FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+      events,
+      currentHistoryPage: currentHistoryPage + 1
+    });
+  }, showLoading);
+}
+
+export function* fetchNextWorkflowitemHistoryPageSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
+  yield execute(function*() {
+    const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getWorkflowitemHistoryState);
+
+    let offset = 0;
+    if (totalHistoryItemCount === 0) {
+      // Before the first call, we don't know how many history items there are
+      // so we fetch a fixed number of the latest items
+      offset = -historyPageSize;
+    } else {
+      // After the first call we just fetch each page
+      // If the offset is below 0, we have reached the last page
+      // and can fetch the first events
+      offset = Math.max(0, totalHistoryItemCount - (currentHistoryPage + 1) * historyPageSize);
+    }
+
+    // If the offset is 0, we are on the last page and only need to fetch the remaining items
+    const isLastPage = offset === 0;
+    const remainingItems = totalHistoryItemCount - currentHistoryPage * historyPageSize;
+    // If the remaining items are 0, it means that the total number of history items
+    // is a multiple of the page size and we need to fetch a whole page
+    const limit = isLastPage && remainingItems !== 0 ? remainingItems : historyPageSize;
+
+    const { historyItemsCount, events } = yield callApi(
+      api.viewWorkflowitemHistory,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      offset,
+      limit
+    );
+    const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
+    const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
+    if (isFirstPage) {
+      yield put({
+        type: SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT,
+        totalHistoryItemsCount: historyItemsCount,
+        lastHistoryPage
+      });
+    }
+
+    yield put({
+      type: FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
+      events,
+      currentHistoryPage: currentHistoryPage + 1
     });
   }, showLoading);
 }
@@ -810,57 +959,6 @@ export function* fetchAllSubprojectDetailsSaga({ projectId, subprojectId, showLo
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
       ...data
-    });
-  }, showLoading);
-}
-
-export function* fetchSubprojectHistorySaga({ projectId, subprojectId, offset, limit, showLoading }) {
-  yield execute(function*() {
-    if (limit <= 0) {
-      return;
-    }
-    const { historyItemsCount, events } = yield callApi(
-      api.viewSubProjectHistory,
-      projectId,
-      subprojectId,
-      offset,
-      limit
-    );
-    offset -= limit;
-    const hasMore = offset + limit > -historyItemsCount;
-    yield put({
-      type: FETCH_SUBPROJECT_HISTORY_SUCCESS,
-      offset,
-      limit,
-      historyItemsCount,
-      events,
-      hasMore
-    });
-  }, showLoading);
-}
-
-export function* fetchWorkflowitemHistorySaga({ projectId, subprojectId, workflowitemId, offset, limit, showLoading }) {
-  yield execute(function*() {
-    if (limit <= 0) {
-      return;
-    }
-    const { historyItemsCount, events } = yield callApi(
-      api.viewWorkflowitemHistory,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      offset,
-      limit
-    );
-    offset -= limit;
-    const hasMore = offset + limit > -historyItemsCount;
-    yield put({
-      type: FETCH_WORKFLOWITEM_HISTORY_SUCCESS,
-      offset,
-      limit,
-      historyItemsCount,
-      events,
-      hasMore
     });
   }, showLoading);
 }
@@ -1512,17 +1610,17 @@ export default function* rootSaga() {
       yield takeEvery(GRANT_PERMISSION, grantPermissionsSaga),
       yield takeEvery(REVOKE_PERMISSION, revokePermissionsSaga),
       yield takeEvery(ASSIGN_PROJECT, assignProjectSaga),
-      yield takeEvery(FETCH_PROJECT_HISTORY, fetchProjectHistorySaga),
+      yield takeEvery(FETCH_NEXT_PROJECT_HISTORY_PAGE, fetchNextProjectHistoryPageSaga),
       yield takeEvery(CLOSE_PROJECT, closeProjectSaga),
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga),
 
       // Subproject
       yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga),
-      yield takeEvery(FETCH_SUBPROJECT_HISTORY, fetchSubprojectHistorySaga),
       yield takeEvery(CREATE_SUBPROJECT, createSubProjectSaga),
       yield takeEvery(EDIT_SUBPROJECT, editSubProjectSaga),
       yield takeLatest(FETCH_SUBPROJECT_PERMISSIONS, fetchSubProjectPermissionsSaga),
       yield takeEvery(GRANT_SUBPROJECT_PERMISSION, grantSubProjectPermissionsSaga),
+      yield takeEvery(FETCH_NEXT_SUBPROJECT_HISTORY_PAGE, fetchNextSubprojectHistoryPageSaga),
       yield takeEvery(REVOKE_SUBPROJECT_PERMISSION, revokeSubProjectPermissionsSaga),
       yield takeEvery(CLOSE_SUBPROJECT, closeSubprojectSaga),
       yield takeEvery(ASSIGN_SUBPROJECT, assignSubprojectSaga),
@@ -1540,7 +1638,7 @@ export default function* rootSaga() {
       yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga),
       yield takeEvery(SHOW_WORKFLOW_PREVIEW, fetchWorkflowActionsSaga),
       yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
-      yield takeEvery(FETCH_WORKFLOWITEM_HISTORY, fetchWorkflowitemHistorySaga),
+      yield takeEvery(FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE, fetchNextWorkflowitemHistoryPageSaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),

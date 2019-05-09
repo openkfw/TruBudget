@@ -11,17 +11,16 @@ import { addDocument } from "../Documents/actions";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
-import { showHistory } from "../Notifications/actions";
+import { openHistory } from "../Notifications/actions";
 import SubprojectHistoryDrawer from "../SubProjects/SubprojectHistoryDrawer";
 import {
-  cleanupWorkflowitemDetailsState,
+  closeWorkflowitemDetailsDialog,
   closeSubproject,
   closeWorkflowItem,
   disableWorkflowEdit,
   enableSubProjectBudgetEdit,
   enableWorkflowEdit,
   fetchAllSubprojectDetails,
-  fetchSubprojectHistory,
   fetchWorkflowItems,
   hideWorkflowDetails,
   hideWorkflowDialog,
@@ -134,13 +133,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showCreateDialog: () => dispatch(showCreateDialog()),
     updateSubProject: (pId, sId) => dispatch(liveUpdateSubproject(pId, sId)),
     showSubProjectAssignee: () => dispatch(showSubProjectAssignee()),
-    openHistory: (projectId, subprojectId, offset, limit) => {
-      dispatch(fetchSubprojectHistory(projectId, subprojectId, offset, limit, true));
-      dispatch(showHistory());
+    openHistory: () => {
+      dispatch(openHistory());
     },
     openWorkflowDetails: id => dispatch(showWorkflowDetails(id)),
     hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
-    cleanupWorkflowitemDetailsState: () => dispatch(cleanupWorkflowitemDetailsState()),
+    closeWorkflowitemDetailsDialog: () => dispatch(closeWorkflowitemDetailsDialog()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
 
@@ -195,13 +193,10 @@ const mapStateToProps = state => {
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
     users: state.getIn(["login", "user"]),
-    offset: state.getIn(["workflow", "offset"]),
-    limit: state.getIn(["workflow", "limit"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
     idForInfo: state.getIn(["workflow", "idForInfo"]),
     isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"]),
-    historyItemsCount: state.getIn(["workflow", "historyItemsCount"]),
     isLoading: state.getIn(["workflow", "isHistoryLoading"])
   };
 };

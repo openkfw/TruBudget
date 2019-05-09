@@ -330,6 +330,8 @@ const pt = {
     project_createSubproject: "Portuguese: {0} created subproject {1}",
     project_grantPermission: "Portuguese: {0} granted permission {1} to {2}",
     project_grantPermission_details: "Portuguese: {0} granted permission {1} to {2} on {3}",
+    project_projected_budget_updated: "PORTUGUESE: {0} updated the projected budget of {1}",
+    project_projected_budget_deleted: "PORTUGUESE: {0} deleted the projected budget of {1}",
     project_revokePermission: "Portuguese: {0} revoked permission {1} from {2}",
     project_revokePermission_details: "Portuguese: {0} revoked permission {1} of {3} from {2}",
     project_update: "{0} modificou o projeto {1} ",

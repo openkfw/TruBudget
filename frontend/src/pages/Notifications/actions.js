@@ -85,7 +85,7 @@ export function markNotificationAsRead(notificationId, offset, limit) {
   };
 }
 
-export function showHistory() {
+export function openHistory() {
   return {
     type: OPEN_HISTORY
   };

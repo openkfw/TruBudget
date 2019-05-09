@@ -12,21 +12,15 @@ const styles = {
   }
 };
 
-export default function ScrollingHistory({
-  nEventsTotal,
-  events,
-  fetchNext,
-  hasMore,
-  isLoading,
-  getUserDisplayname,
-  initialLoad = false
-}) {
+export default function ScrollingHistory({ nEventsTotal, events, fetchNext, hasMore, isLoading, getUserDisplayname }) {
   return (
     <InfiniteScroll
       pageStart={0}
-      initialLoad={initialLoad}
+      initialLoad={true}
       useWindow={false}
-      loadMore={_ => isLoading || fetchNext()}
+      loadMore={_ => {
+        if (!isLoading && hasMore) fetchNext();
+      }}
       hasMore={hasMore}
       loader={
         <div className="loader" key={0} style={styles.loader}>

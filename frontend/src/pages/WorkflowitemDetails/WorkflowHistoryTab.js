@@ -1,30 +1,30 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { toJS } from "../../helper";
 import ScrollingHistory from "../Common/History/ScrollingHistory";
-import { fetchWorkflowitemHistory } from "../WorkflowitemDetails/actions";
+import { fetchNextWorkflowitemHistoryPage } from "../WorkflowitemDetails/actions";
 
 function WorkflowitemHistoryTab({
   projectId,
   subprojectId,
   workflowitemId,
-  offset,
-  limit,
   events,
   nEventsTotal,
-  hasMore,
   isLoading,
   getUserDisplayname,
-  fetchWorkflowitemHistory
+  fetchNextWorkflowitemHistoryPage,
+  currentHistoryPage,
+  lastHistoryPage
 }) {
   return (
     <ScrollingHistory
       events={events}
       nEventsTotal={nEventsTotal}
-      hasMore={hasMore}
+      hasMore={currentHistoryPage < lastHistoryPage}
       isLoading={isLoading}
       getUserDisplayname={getUserDisplayname}
-      fetchNext={() => fetchWorkflowitemHistory(projectId, subprojectId, workflowitemId, offset, limit)}
+      fetchNext={() => fetchNextWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId)}
       initialLoad={true}
     />
   );
@@ -32,18 +32,17 @@ function WorkflowitemHistoryTab({
 
 function mapStateToProps(state) {
   return {
-    offset: state.getIn(["workflowitemDetails", "offset"]),
-    limit: state.getIn(["workflowitemDetails", "limit"]),
     events: state.getIn(["workflowitemDetails", "events"]),
-    nEventsTotal: state.getIn(["workflowitemDetails", "nEventsTotal"]),
-    hasMore: state.getIn(["workflowitemDetails", "hasMore"]),
-    isLoading: state.getIn(["workflowitemDetails", "isLoading"]),
+    nEventsTotal: state.getIn(["workflowitemDetails", "totalHistoryItemCount"]),
+    isLoading: state.getIn(["workflowitemDetails", "isHistoryLoading"]),
+    currentHistoryPage: state.getIn(["workflowitemDetails", "currentHistoryPage"]),
+    lastHistoryPage: state.getIn(["workflowitemDetails", "lastHistoryPage"]),
     getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
   };
 }
 
 const mapDispatchToProps = {
-  fetchWorkflowitemHistory
+  fetchNextWorkflowitemHistoryPage
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkflowitemHistoryTab);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(WorkflowitemHistoryTab));

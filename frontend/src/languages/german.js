@@ -329,6 +329,8 @@ const de = {
     project_createSubproject: "German: {0} created subproject {1}",
     project_grantPermission: "German: {0} granted permission {1} to {2}",
     project_grantPermission_details: "{0} gab Rechte {1} an {2} für {3}",
+    project_projected_budget_updated: "{0} veränderte das geplante Budget von {1}",
+    project_projected_budget_deleted: "{0} löschte das geplante Budget von {1}",
     project_revokePermission: "German: {0} revoked permission {1} from {2}",
     project_revokePermission_details: "{0} entzog Rechte {1} von {2} für {3}",
     project_update: "{0} veränderte Projekt {1} ",
