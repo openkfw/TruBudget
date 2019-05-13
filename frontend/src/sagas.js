@@ -191,7 +191,7 @@ function* handleError(error) {
   // eslint-disable-next-line no-console
   console.error("API-Error: ", error.response || "No response from API");
 
-  if (error.respone && (error.response.status === 401 || error.response.status === 400)) {
+  if (error.response && (error.response.status === 401 || error.response.status === 400)) {
     // which status should we use?
     yield call(logoutSaga);
   } else if (error.response && error.response.data) {
