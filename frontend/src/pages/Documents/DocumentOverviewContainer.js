@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import DocumentOverview from "./DocumentOverview";
 import { validateDocument } from "./actions";
+import { toJS } from "../../helper";
 
 class DocumentOverviewContainer extends Component {
   render() {
@@ -18,8 +19,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
   return {
-    validatedDocuments: state.getIn(["documents", "validatedDocuments"]).toJS()
+    validatedDocuments: state.getIn(["documents", "validatedDocuments"])
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentOverviewContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(DocumentOverviewContainer));
