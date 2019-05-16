@@ -65,6 +65,7 @@ class WorkflowDialogContainer extends Component {
 
 const mapStateToProps = state => {
   return {
+    documents: state.getIn(["workflow", "workflowToAdd", "documents"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
     creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
     editDialogShown: state.getIn(["workflow", "editDialogShown"]),
@@ -121,5 +122,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withInitialLoading(toJS(withStyles(styles)(WorkflowDialogContainer)))
+  withInitialLoading(withStyles(styles)(toJS(WorkflowDialogContainer)))
 );

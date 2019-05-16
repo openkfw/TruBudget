@@ -1,4 +1,5 @@
-import { fromJS } from "immutable";
+// since Immutable can not be tree-shaked, we can simply import it in total to prevent nameclashes (e.g. map)
+import Immutable, { fromJS } from "immutable";
 
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
@@ -222,10 +223,9 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);
     case WORKFLOW_DOCUMENT:
-      return state.updateIn(["workflowToAdd", "documents"], documents => [
-        ...documents,
-        { id: action.id, base64: action.base64 }
-      ]);
+      return state.updateIn(["workflowToAdd", "documents"], documents =>
+        Immutable.List([...documents, Immutable.Map({ id: action.id, base64: action.base64 })])
+      );
     case CREATE_WORKFLOW_SUCCESS:
     case EDIT_WORKFLOW_ITEM_SUCCESS:
       return state.merge({
