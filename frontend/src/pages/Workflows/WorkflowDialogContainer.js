@@ -65,7 +65,6 @@ class WorkflowDialogContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    documents: state.getIn(["workflow", "workflowToAdd", "documents"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
     creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
     editDialogShown: state.getIn(["workflow", "editDialogShown"]),
