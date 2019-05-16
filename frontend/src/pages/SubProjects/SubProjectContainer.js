@@ -10,11 +10,10 @@ import AdditionalInfo from "../Common/AdditionalInfo";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
-import { hideHistory, showHistory } from "../Notifications/actions";
+import { hideHistory, openHistory } from "../Notifications/actions";
 import {
   closeProject,
   fetchAllProjectDetails,
-  fetchProjectHistory,
   hideSubProjectAdditionalData,
   liveUpdateProject,
   showEditDialog,
@@ -95,9 +94,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     liveUpdate: projectId => dispatch(liveUpdateProject(projectId)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
 
-    openHistory: (projectId, offset, limit) => {
-      dispatch(fetchProjectHistory(projectId, offset, limit, true));
-      dispatch(showHistory());
+    openHistory: () => {
+      dispatch(openHistory());
     },
     hideHistory: () => dispatch(hideHistory()),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
@@ -131,8 +129,6 @@ const mapStateToProps = state => {
     user: state.getIn(["login", "user"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     thumbnail: state.getIn(["detailview", "thumbnail"]),
-    offset: state.getIn(["detailview", "offset"]),
-    limit: state.getIn(["detailview", "limit"]),
     projectedBudgets: state.getIn(["detailview", "projectedBudgets"]),
     isSubProjectAdditionalDataShown: state.getIn(["detailview", "isSubProjectAdditionalDataShown"]),
     idForInfo: state.getIn(["detailview", "idForInfo"])

@@ -329,6 +329,8 @@ const en = {
     project_createSubproject: "{0} created subproject {1}",
     project_grantPermission: "{0} granted permission {1} to {2}",
     project_grantPermission_details: "{0} granted permission {1} to {2} on {3}",
+    project_projected_budget_updated: "{0} updated the projected budget of {1}",
+    project_projected_budget_deleted: "{0} deleted the projected budget of {1}",
     project_revokePermission: "{0} revoked permission {1} from {2}",
     project_revokePermission_details: "{0} revoked permission {1} from {2} on {3}",
     project_update: "{0} changed project {1} ",

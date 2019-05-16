@@ -42,7 +42,7 @@ export const EDIT_WORKFLOW_ITEM_SUCCESS = "EDIT_WORKFLOW_ITEM_SUCCESS";
 export const WORKFLOW_EDIT = "WORKFLOW_EDIT";
 export const SHOW_WORKFLOW_DETAILS = "SHOW_WORKFLOW_DETAILS";
 export const HIDE_WORKFLOW_DETAILS = "HIDE_WORKFLOW_DETAILS";
-export const WORKFLOWITEM_DETAILS_CLEANUP_STATE = "WORKFLOWITEM_DETAILS_CLEANUP_STATE";
+export const CLOSE_WORKFLOWITEM_DETAILS = "CLOSE_WORKFLOWITEM_DETAILS";
 
 export const ENABLE_WORKFLOW_EDIT = "ENABLE_WORKFLOW_EDIT";
 export const DISABLE_WORKFLOW_EDIT = "DISABLE_WORKFLOW_EDIT";
@@ -59,8 +59,9 @@ export const OPEN_HISTORY = "OPEN_HISTORY";
 export const HIDE_HISTORY = "HIDE_HISTORY";
 export const OPEN_HISTORY_SUCCESS = "OPEN_HISTORY_SUCCESS";
 
-export const FETCH_SUBPROJECT_HISTORY = "FETCH_SUBPROJECT_HISTORY";
-export const FETCH_SUBPROJECT_HISTORY_SUCCESS = "FETCH_SUBPROJECT_HISTORY_SUCCESS";
+export const SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT = "SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT";
+export const FETCH_NEXT_SUBPROJECT_HISTORY_PAGE = "FETCH_NEXT_SUBPROJECT_HISTORY_PAGE";
+export const FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS = "FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS";
 
 export const ENABLE_BUDGET_EDIT = "ENABLE_BUDGET_EDIT";
 export const POST_SUBPROJECT_EDIT = "POST_SUBPROJECT_EDIT";
@@ -130,13 +131,18 @@ export function resetSucceededWorkflowitems() {
   };
 }
 
-export function fetchSubprojectHistory(projectId, subprojectId, offset, limit, showLoading = false) {
+export function setTotalHistoryItemCount(count) {
   return {
-    type: FETCH_SUBPROJECT_HISTORY,
+    type: SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
+    count
+  };
+}
+
+export function fetchNextSubprojectHistoryPage(projectId, subprojectId, showLoading = false) {
+  return {
+    type: FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
     projectId,
     subprojectId,
-    offset,
-    limit,
     showLoading
   };
 }
@@ -184,9 +190,9 @@ export function hideWorkflowDetails() {
   };
 }
 
-export function cleanupWorkflowitemDetailsState() {
+export function closeWorkflowitemDetailsDialog() {
   return {
-    type: WORKFLOWITEM_DETAILS_CLEANUP_STATE
+    type: CLOSE_WORKFLOWITEM_DETAILS
   };
 }
 

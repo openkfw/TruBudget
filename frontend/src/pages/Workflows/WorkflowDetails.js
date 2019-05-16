@@ -128,7 +128,7 @@ function WorkflowDetails({
   showWorkflowDetails,
   showDetailsItemId,
   hideWorkflowDetails,
-  cleanupWorkflowitemDetailsState,
+  closeWorkflowitemDetailsDialog,
   users,
   validateDocument,
   validatedDocuments,
@@ -165,7 +165,7 @@ function WorkflowDetails({
   }
 
   return (
-    <Dialog open={showWorkflowDetails} style={styles.dialog} onExited={cleanupWorkflowitemDetailsState}>
+    <Dialog open={showWorkflowDetails} style={styles.dialog} onExited={closeWorkflowitemDetailsDialog}>
       <DialogTitle data-test="workflowInfoDialog">{strings.workflow.workflowitem_details}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
         <Tabs value={tabIndex} onChange={(_, index) => setTabIndex(index)}>

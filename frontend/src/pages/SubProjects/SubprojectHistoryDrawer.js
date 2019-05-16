@@ -1,22 +1,23 @@
 import React from "react";
 import { connect } from "react-redux";
+
+import { toJS } from "../../helper";
 import HistoryDrawer from "../Common/History/HistoryDrawer";
 import { hideHistory } from "../Notifications/actions";
-import { fetchSubprojectHistory } from "../Workflows/actions";
+import { fetchNextSubprojectHistoryPage } from "../Workflows/actions";
 
 function SubprojectHistoryDrawer({
   projectId,
   subprojectId,
-  offset,
-  limit,
   doShow,
   events,
   nEventsTotal,
-  hasMore,
   isLoading,
   getUserDisplayname,
   hideHistory,
-  fetchSubprojectHistory
+  fetchNextSubprojectHistoryPage,
+  currentHistoryPage,
+  lastHistoryPage
 }) {
   return (
     <HistoryDrawer
@@ -24,8 +25,8 @@ function SubprojectHistoryDrawer({
       onClose={hideHistory}
       events={events}
       nEventsTotal={nEventsTotal}
-      fetchNext={() => fetchSubprojectHistory(projectId, subprojectId, offset, limit)}
-      hasMore={hasMore}
+      fetchNext={() => fetchNextSubprojectHistoryPage(projectId, subprojectId)}
+      hasMore={currentHistoryPage < lastHistoryPage}
       isLoading={isLoading}
       getUserDisplayname={getUserDisplayname}
     />
@@ -34,20 +35,19 @@ function SubprojectHistoryDrawer({
 
 function mapStateToProps(state) {
   return {
-    offset: state.getIn(["workflow", "offset"]),
-    limit: state.getIn(["workflow", "limit"]),
     doShow: state.getIn(["workflow", "showHistory"]),
     events: state.getIn(["workflow", "historyItems"]),
     nEventsTotal: state.getIn(["workflow", "historyItemsCount"]),
-    hasMore: state.getIn(["workflow", "hasMoreHistory"]),
     isLoading: state.getIn(["workflow", "isHistoryLoading"]),
+    currentHistoryPage: state.getIn(["workflow", "currentHistoryPage"]),
+    lastHistoryPage: state.getIn(["workflow", "lastHistoryPage"]),
     getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
   };
 }
 
 const mapDispatchToProps = {
   hideHistory,
-  fetchSubprojectHistory
+  fetchNextSubprojectHistoryPage
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubprojectHistoryDrawer);
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubprojectHistoryDrawer));

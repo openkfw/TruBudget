@@ -1,34 +1,42 @@
 import { fromJS } from "immutable";
 
-import { FETCH_WORKFLOWITEM_HISTORY, FETCH_WORKFLOWITEM_HISTORY_SUCCESS } from "./actions";
-import { WORKFLOWITEM_DETAILS_CLEANUP_STATE } from "../Workflows/actions";
+import {
+  SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT,
+  FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
+  FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS
+} from "./actions";
+import { CLOSE_WORKFLOWITEM_DETAILS } from "../Workflows/actions";
 
-const initialLimit = 30;
+const historyPageSize = 30;
 
 const initialState = fromJS({
-  offset: -initialLimit,
-  limit: initialLimit,
   events: [],
-  nEventsTotal: 0,
-  hasMore: true,
-  isLoading: false
+  totalHistoryItemCount: 0,
+  historyPageSize: historyPageSize,
+  currentHistoryPage: 0,
+  lastHistoryPage: 1,
+  isHistoryLoading: false
 });
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case FETCH_WORKFLOWITEM_HISTORY:
-      return state.set("isLoading", true);
+    case FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE:
+      return state.set("isHistoryLoading", true);
 
-    case FETCH_WORKFLOWITEM_HISTORY_SUCCESS:
-      return state
-        .set("offset", action.offset)
-        .set("limit", action.limit)
-        .updateIn(["events"], events => events.push(...action.events.map(event => fromJS(event)).reverse()))
-        .set("nEventsTotal", action.historyItemsCount)
-        .set("hasMore", action.hasMore)
-        .set("isLoading", false);
+    case SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT:
+      return state.merge({
+        totalHistoryItemCount: action.totalHistoryItemsCount,
+        lastHistoryPage: action.lastHistoryPage
+      });
 
-    case WORKFLOWITEM_DETAILS_CLEANUP_STATE:
+    case FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS:
+      return state.merge({
+        events: state.get("events").concat(fromJS(action.events).reverse()),
+        currentHistoryPage: action.currentHistoryPage,
+        isHistoryLoading: false
+      });
+
+    case CLOSE_WORKFLOWITEM_DETAILS:
       return initialState;
 
     default:

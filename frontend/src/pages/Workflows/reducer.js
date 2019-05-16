@@ -11,9 +11,10 @@ import {
   EDIT_WORKFLOW_ITEM_SUCCESS,
   ENABLE_BUDGET_EDIT,
   ENABLE_WORKFLOW_EDIT,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+  SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
-  FETCH_SUBPROJECT_HISTORY,
-  FETCH_SUBPROJECT_HISTORY_SUCCESS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
   HIDE_SUBPROJECT_ASSIGNEES,
@@ -52,7 +53,7 @@ import {
   OPEN_HISTORY
 } from "./actions";
 
-const initialLimit = 50;
+const historyPageSize = 50;
 
 const defaultState = fromJS({
   id: "",
@@ -85,9 +86,6 @@ const defaultState = fromJS({
   showDetails: false,
   showDetailsItemId: "",
   showHistory: false,
-  hasMoreHistory: true,
-  offset: -initialLimit,
-  limit: initialLimit,
   currentStep: 0,
   workflowSortEnabled: false,
   workflowType: "workflow",
@@ -96,6 +94,10 @@ const defaultState = fromJS({
   roles: [],
   historyItems: [],
   isHistoryLoading: false,
+  totalHistoryItemCount: 0,
+  historyPageSize: historyPageSize,
+  currentHistoryPage: 0,
+  lastHistoryPage: 1,
   showWorkflowAssignee: false,
   showSubProjectAssignee: false,
   editDialogShown: false,
@@ -291,23 +293,26 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", false);
-    case FETCH_SUBPROJECT_HISTORY:
+    case FETCH_NEXT_SUBPROJECT_HISTORY_PAGE:
       return state.set("isHistoryLoading", true);
-    case FETCH_SUBPROJECT_HISTORY_SUCCESS:
+    case FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS:
       return state.merge({
         historyItems: state.get("historyItems").concat(fromJS(action.events).reverse()),
-        historyItemsCount: action.historyItemsCount,
-        isHistoryLoading: false,
-        offset: action.offset,
-        limit: action.limit,
-        hasMoreHistory: action.hasMore
+        currentHistoryPage: action.currentHistoryPage,
+        isHistoryLoading: false
+      });
+    case SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT:
+      return state.merge({
+        totalHistoryItemCount: action.totalHistoryItemsCount,
+        lastHistoryPage: action.lastHistoryPage
       });
     case HIDE_HISTORY:
       return state.merge({
         historyItems: fromJS([]),
         showHistory: false,
-        offset: defaultState.get("offset"),
-        limit: defaultState.get("limit")
+        lastHistoryPage: defaultState.get("lastHistoryPage"),
+        currentHistoryPage: defaultState.get("currentHistoryPage"),
+        totalHistoryItemCount: defaultState.get("totalHistoryItemCount")
       });
     case STORE_WORKFLOWACTIONS:
       return state.set("workflowActions", fromJS(action.actions));
