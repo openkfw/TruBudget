@@ -27,7 +27,9 @@ const styles = {
 export default class FlyInNotification extends Component {
   getMessages = history => {
     return this.props.notifications.map(notification => {
-      const { id, businessEvent, projectId, subprojectId } = notification;
+      const { id, businessEvent, metadata } = notification;
+      const projectId = metadata.project ? metadata.project.id : undefined;
+      const subprojectId = metadata.subproject ? metadata.subproject.id : undefined;
       const { publisher } = businessEvent;
       const message = intentMapping(notification);
       return (

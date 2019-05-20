@@ -32,10 +32,7 @@ export async function assignWorkflowitem(
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; workflowitem: Workflowitem.Workflowitem }>> {
   const workflowitem = await repository.getWorkflowitem(workflowitemId);
   if (Result.isErr(workflowitem)) {
-    return new VError(
-      new NotFound(ctx, "workflowitem", workflowitemId),
-      `Couldn't assign ${assignee} to workflowitem ${workflowitemId}. Workflowitem not found!`,
-    );
+    return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
   if (assignee === workflowitem.assignee) {
@@ -70,9 +67,7 @@ export async function assignWorkflowitem(
   }
 
   // Create notification events:
-  const recipients = workflowitem.assignee
-    ? await repository.getUsersForIdentity(workflowitem.assignee)
-    : [];
+  const recipients = assignee ? await repository.getUsersForIdentity(assignee) : [];
   const notifications = recipients
     // The publisher doesn't receive a notification:
     .filter(userId => userId !== publisher.id)

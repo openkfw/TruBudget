@@ -36,8 +36,7 @@ export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_NOTIFICATIONS_SUCCESS:
       return state.merge({
-        notifications: fromJS(action.notifications),
-        notificationCount: action.notifications.length
+        notifications: fromJS(action.notifications)
       });
 
     case ENABLE_LIVE_UPDATES: {
