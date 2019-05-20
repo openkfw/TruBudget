@@ -48,10 +48,10 @@ import {
   MARK_NOTIFICATION_AS_READ,
   FETCH_ALL_NOTIFICATIONS,
   FETCH_ALL_NOTIFICATIONS_SUCCESS,
-  MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS,
-  MARK_MULTIPLE_NOTIFICATION_AS_READ,
-  FETCH_NOTIFICATION_COUNTS_SUCCESS,
-  FETCH_NOTIFICATION_COUNTS,
+  MARK_MULTIPLE_NOTIFICATIONS_AS_READ_SUCCESS,
+  MARK_MULTIPLE_NOTIFICATIONS_AS_READ,
+  FETCH_NOTIFICATION_COUNT_SUCCESS,
+  FETCH_NOTIFICATION_COUNT,
   LIVE_UPDATE_NOTIFICATIONS,
   LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
   TIME_OUT_FLY_IN
@@ -256,6 +256,14 @@ function* handleError(error) {
     });
   }
 }
+
+const getNotificationState = state => {
+  return {
+    currentNotificationPage: state.getIn(["notifications", "currentNotificationPage"]),
+    numberOfNotificationPages: state.getIn(["notifications", "numberOfNotificationPages"]),
+    notificationPageSize: state.getIn(["notifications", "notificationPageSize"])
+  };
+};
 
 function* callApi(func, ...args) {
   const token = yield select(getJwt);
@@ -549,17 +557,27 @@ export function* getEnvironmentSaga() {
   });
 }
 
-export function* fetchNotificationsSaga({ showLoading, offset, limit }) {
-  yield commonfetchNotifications(showLoading, offset, limit, FETCH_ALL_NOTIFICATIONS_SUCCESS);
-}
-
-export function* commonfetchNotifications(showLoading, offset, limit, type) {
+export function* fetchNotificationsSaga({ showLoading, notificationPage }) {
   yield execute(function*() {
-    // Get most recent items with negative offset
-    const { data } = yield callApi(api.fetchNotifications, 0 - offset - limit, limit);
+    const { data: notificationCountData } = yield callApi(api.fetchNotificationCounts);
+    const { notificationPageSize } = yield select(getNotificationState);
+
+    const totalNotificationCount = notificationCountData.total;
+
+    const numberOfNotificationPages =
+      notificationPageSize !== 0 ? Math.ceil(totalNotificationCount / notificationPageSize) : 1;
+
+    const isLastNotificationPage = notificationPage + 1 === numberOfNotificationPages;
+    const offset = 0 - (notificationPage + 1) * notificationPageSize;
+    const itemsToFetch = isLastNotificationPage
+      ? totalNotificationCount - notificationPage * notificationPageSize
+      : notificationPageSize;
+    const { data } = yield callApi(api.fetchNotifications, offset, itemsToFetch);
     yield put({
-      type,
-      notifications: data.notifications
+      type: FETCH_ALL_NOTIFICATIONS_SUCCESS,
+      notifications: data.notifications,
+      currentNotificationPage: notificationPage,
+      totalNotificationCount: totalNotificationCount
     });
   }, showLoading);
 }
@@ -568,14 +586,14 @@ export function* fetchNotificationCountsSaga({ showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.fetchNotificationCounts);
     yield put({
-      type: FETCH_NOTIFICATION_COUNTS_SUCCESS,
+      type: FETCH_NOTIFICATION_COUNT_SUCCESS,
       unreadNotificationCount: data.unread,
       notificationCount: data.total
     });
   }, showLoading);
 }
 
-export function* markNotificationAsReadSaga({ notificationId, offset, limit }) {
+export function* markNotificationAsReadSaga({ notificationId, notificationPage }) {
   yield execute(function*() {
     yield callApi(api.markNotificationAsRead, notificationId);
     yield put({
@@ -584,29 +602,27 @@ export function* markNotificationAsReadSaga({ notificationId, offset, limit }) {
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
       showLoading: true,
-      offset,
-      limit
+      notificationPage
     });
     yield put({
-      type: FETCH_NOTIFICATION_COUNTS
+      type: FETCH_NOTIFICATION_COUNT
     });
   }, true);
 }
 
-export function* markMultipleNotificationsAsReadSaga({ notificationIds, offset, limit }) {
+export function* markMultipleNotificationsAsReadSaga({ notificationIds, notificationPage }) {
   yield execute(function*() {
     yield callApi(api.markMultipleNotificationsAsRead, notificationIds);
     yield put({
-      type: MARK_MULTIPLE_NOTIFICATION_AS_READ_SUCCESS
+      type: MARK_MULTIPLE_NOTIFICATIONS_AS_READ_SUCCESS
     });
     yield put({
       type: FETCH_ALL_NOTIFICATIONS,
       showLoading: true,
-      offset,
-      limit
+      notificationPage
     });
     yield put({
-      type: FETCH_NOTIFICATION_COUNTS
+      type: FETCH_NOTIFICATION_COUNT
     });
   }, true);
 }
@@ -1642,9 +1658,9 @@ export default function* rootSaga() {
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),
-      yield takeEvery(FETCH_NOTIFICATION_COUNTS, fetchNotificationCountsSaga),
+      yield takeEvery(FETCH_NOTIFICATION_COUNT, fetchNotificationCountsSaga),
       yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga),
-      yield takeEvery(MARK_MULTIPLE_NOTIFICATION_AS_READ, markMultipleNotificationsAsReadSaga),
+      yield takeEvery(MARK_MULTIPLE_NOTIFICATIONS_AS_READ, markMultipleNotificationsAsReadSaga),
 
       // Peers
       yield takeLatest(FETCH_ACTIVE_PEERS, fetchActivePeersSaga),

@@ -13,6 +13,7 @@ describe("open notifications", function() {
         .then(() => cy.closeProject(projectId, "project.close", assignee))
         .then(() => cy.login("jxavier"))
         .then(() => cy.visit("/notifications"))
+        .then(() => cy.get("[data-test=notification-unread-0]").should("be.visible"))
     );
   });
 

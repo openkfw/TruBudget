@@ -12,7 +12,7 @@ const NotificationPage = ({
   fetchNotifications,
   notificationCount,
   notificationOffset,
-  setNotificationOffset
+  currentPage
 }) => {
   return (
     <div>
@@ -25,8 +25,8 @@ const NotificationPage = ({
         notificationsPerPage={notificationsPerPage}
         fetchNotifications={fetchNotifications}
         notificationCount={notificationCount}
-        setNotificationOffset={setNotificationOffset}
         notificationOffset={notificationOffset}
+        currentPage={currentPage}
       />
     </div>
   );

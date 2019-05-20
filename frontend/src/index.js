@@ -10,6 +10,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 import red from "@material-ui/core/colors/deepOrange";
 import blue from "@material-ui/core/colors/indigo";
+import grey from "@material-ui/core/colors/grey";
 
 import Main from "./pages/Main/Main";
 import LoginPageContainer from "./pages/Login/LoginPageContainer";
@@ -31,7 +32,10 @@ const store = configureStore(initialState, history);
 const muiTheme = createMuiTheme({
   palette: {
     primary: blue,
-    secondary: red
+    secondary: red,
+    grey: {
+      main: grey[100]
+    }
   },
   typography: {
     useNextVariants: true

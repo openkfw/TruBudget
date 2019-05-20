@@ -1,30 +1,75 @@
 import strings from "../../localizeStrings";
 import { formatString } from "../../helper";
 
-// get hierarchic deepest displayName
-export function getDisplayName(notification) {
+const ACCESSMAP = {
+  PROJECT: "project",
+  SUBPROJECT: "subproject",
+  WORKFLOWITEM: "workflowitem"
+};
+
+export function getParentData(notification) {
+  const redacted = "Redacted";
   const metadata = notification.metadata;
+  let projectDisplayName = "";
+  let subprojectDisplayName = "";
+
   if (metadata !== undefined) {
-    if (metadata.workflowitem !== undefined && metadata.workflowitem.hasViewPermissions === true) {
-      return metadata.workflowitem.displayName;
-    }
-    if (metadata.subproject !== undefined && metadata.subproject.hasViewPermissions === true) {
-      return metadata.subproject.displayName;
-    }
-    if (metadata.project !== undefined && metadata.project.hasViewPermissions === true) {
-      return metadata.project.displayName;
+    if (metadata.project) {
+      const {
+        displayName: projectName = "",
+        hasViewPermissions: hasProjectViewPermissions = false
+      } = getDataFromNotification(metadata, ACCESSMAP.PROJECT);
+      projectDisplayName = hasProjectViewPermissions ? projectName : redacted;
+      if (metadata.subproject) {
+        const {
+          displayName: subprojectName = "",
+          hasViewPermissions: hasSubprojectViewPermissions = false
+        } = getDataFromNotification(metadata, ACCESSMAP.SUBPROJECT);
+        subprojectDisplayName = hasSubprojectViewPermissions ? subprojectName : redacted;
+      }
     }
   }
-  return "";
+
+  return {
+    projectDisplayName,
+    subprojectDisplayName
+  };
 }
+
+export const isAllowedToSee = notification => {
+  const metadata = notification.metadata;
+  if (metadata !== undefined) {
+    const { hasViewPermissions = false } = getDataFromNotification(metadata);
+    return hasViewPermissions;
+  }
+  return false;
+};
 
 export const intentMapping = notification => {
   const businessEvent = notification.businessEvent;
+  if (!businessEvent) {
+    console.warn("Notification has no business event");
+    return "";
+  }
   const translation = strings.notification[businessEvent.type];
-  const displayName = getDisplayName(notification);
-  const text = formatString(translation, displayName);
-  return `${text} ${isAllowedToSee(notification) ? "" : strings.notification.no_permissions}`;
+
+  const notificationMetaData = notification.metadata;
+  if (!notificationMetaData) {
+    console.warn("Notification has no metadata");
+    return "";
+  }
+
+  const { displayName = "", hasViewPermissions = false } = getDataFromNotification(notificationMetaData);
+
+  return hasViewPermissions
+    ? formatString(translation, displayName)
+    : formatString(translation, "") + " " + strings.notification.no_permissions;
 };
+
+const getDataFromNotification = (metadata, type) =>
+  type
+    ? metadata[type]
+    : metadata[ACCESSMAP.WORKFLOWITEM] || metadata[ACCESSMAP.SUBPROJECT] || metadata[ACCESSMAP.PROJECT];
 
 export const parseURI = ({ projectId, subprojectId }) => {
   if (projectId && !subprojectId) {
@@ -34,20 +79,4 @@ export const parseURI = ({ projectId, subprojectId }) => {
   } else {
     throw new Error("not implemented");
   }
-};
-
-export const isAllowedToSee = notification => {
-  const metadata = notification.metadata;
-  if (metadata !== undefined) {
-    if (metadata.workflowitem !== undefined) {
-      return metadata.workflowitem.hasViewPermissions;
-    }
-    if (metadata.subproject !== undefined) {
-      return metadata.subproject.hasViewPermissions;
-    }
-    if (metadata.project !== undefined) {
-      return metadata.project.hasViewPermissions;
-    }
-  }
-  return false;
 };
