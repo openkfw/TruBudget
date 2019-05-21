@@ -41,7 +41,7 @@ export default function HistoryList({ events, nEventsTotal, hasMore, isLoading, 
       subheader={<ListSubheader disableSticky>{strings.common.history}</ListSubheader>}
       style={styles.list}
     >
-      {nEventsTotal === 0 ? (
+      {!isLoading && nEventsTotal === 0 ? (
         <ListItem key="no-element">
           <Avatar alt={""} src="" />
           <ListItemText primary="" secondary={strings.common.no_history} />
