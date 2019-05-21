@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Security -->
+## [1.0.1] - 2019-05-21
 
 <!-- ### Added -->
 
@@ -19,13 +31,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Correct number of display items is displayed when history drawer/list is opened [#275](https://github.com/openkfw/TruBudget/pull/275)
-- Display formatted string when user edits or deletes projected budget [#279](https://github.com/openkfw/TruBudget/pull/279)
+- Correct number of history items is displayed when history drawer/list is opened [#275](https://github.com/openkfw/TruBudget/issues/275)
+- Display formatted string when user edits or deletes projected budget [#279](https://github.com/openkfw/TruBudget/issues/279)
 - Previously added documents stay visible after addition of a new document [#268](https://github.com/openkfw/TruBudget/issues/268)
-- Navigation on notifications page now works as expected [#272](https://github.com/openkfw/TruBudget/pull/272)
-- The link to the project/subproject is now active when the user has permissions to see it [#284](https://github.com/openkfw/TruBudget/pull/284)
-- The link to the project/subproject in fly-in notifications correctly redirects the user [#285](https://github.com/openkfw/TruBudget/pull/285)
-- When a workflow item is assigned, the new assignee gets notified [#272](https://github.com/openkfw/TruBudget/pull/272)
+- Navigation on notifications page now works as expected [#287](https://github.com/openkfw/TruBudget/pull/287)
+- The link to the project/subproject is now active when the user has permissions to see it [#284](https://github.com/openkfw/TruBudget/issues/284)
+- The link to the project/subproject in fly-in notifications correctly redirects the user [#285](https://github.com/openkfw/TruBudget/issues/285)
+- When a workflow item is assigned, the new assignee gets notified [#272](https://github.com/openkfw/TruBudget/issues/272)
 
 <!-- ### Security -->
 
@@ -268,7 +280,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.1...master
+[1.0.1]: https://github.com/openkfw/TruBudget/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.9...v1.0.0
 [1.0.0-beta.9]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.8...v1.0.0-beta.9
 [1.0.0-beta.8]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...v1.0.0-beta.8
