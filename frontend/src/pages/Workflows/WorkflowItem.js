@@ -253,25 +253,29 @@ const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, st
 };
 
 const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurrency) => {
-  let amountToShow = toAmountString(amount * exchangeRate, targetCurrency);
+  const amountToShow = toAmountString(amount * exchangeRate, targetCurrency);
 
-  const amountExplTitle = toAmountString(amount, sourceCurrency) + " x " + exchangeRate;
+  const amountExplanationTitle = toAmountString(amount, sourceCurrency) + " x " + exchangeRate;
   const amountExplaination = (
-    <Tooltip title={amountExplTitle}>
+    <Tooltip title={amountExplanationTitle}>
       <SwapIcon />
     </Tooltip>
   );
   return (
-    <div style={styles.chipDiv}>
-      <div>{amountToShow}</div>
-      <div
-        style={{
-          paddingTop: "4px",
-          paddingLeft: "4px"
-        }}
-      >
-        {fromAmountString(exchangeRate) !== 1 ? amountExplaination : null}
-      </div>
+    <div>
+      {amount && exchangeRate ? (
+        <div style={styles.chipDiv}>
+          <div>{amountToShow}</div>
+          <div
+            style={{
+              paddingTop: "4px",
+              paddingLeft: "4px"
+            }}
+          >
+            {fromAmountString(exchangeRate) !== 1 ? amountExplaination : null}
+          </div>
+        </div>
+      ) : null}
       <div>
         <Chip style={styles.amountChip} label={amountTypes(type)} />
       </div>
