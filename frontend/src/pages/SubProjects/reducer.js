@@ -146,7 +146,8 @@ export default function detailviewReducer(state = defaultState, action) {
         isHistoryLoading: false
       });
     case OPEN_HISTORY:
-      return state.set("showHistory", true);
+      return state.set("showHistory", true).set("isHistoryLoading", true);
+
     case HIDE_HISTORY:
       return state.merge({
         historyItems: fromJS([]),
