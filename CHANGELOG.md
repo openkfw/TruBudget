@@ -14,7 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Empty history displayed after API call is finished [#294](https://github.com/openkfw/TruBudget/issues/294)
 
 <!-- ### Security -->
 ## [1.0.1] - 2019-05-21

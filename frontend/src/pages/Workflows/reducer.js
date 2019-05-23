@@ -326,7 +326,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case LOGOUT:
       return defaultState;
     case OPEN_HISTORY:
-      return state.set("showHistory", true);
+      return state.set("showHistory", true).set("isHistoryLoading", true);
     default:
       return state;
   }
