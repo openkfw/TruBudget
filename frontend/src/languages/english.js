@@ -48,6 +48,7 @@ const en = {
     not_disbursed: "Not disbursed",
     not_ok: "Not OK",
     open: "Open",
+    organization: "Organization",
     password: "Password",
     project: "Project",
     projected_budget: "Projected Budget",
@@ -72,7 +73,6 @@ const en = {
   users: {
     full_name: "Full Name",
     new_user: "New User",
-    organization: "Organization",
     user_created: "User successfully created",
     users: "Users",
     add_user: "Add User",

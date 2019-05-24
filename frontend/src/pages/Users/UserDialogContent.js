@@ -58,7 +58,7 @@ const UserDialogContent = ({
         />
         <TextInputWithIcon
           className={classes.textInput}
-          label={strings.users.organization}
+          label={strings.common.organization}
           value={organization}
           id="organization"
           disabled={true}

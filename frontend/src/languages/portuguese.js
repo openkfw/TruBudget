@@ -48,6 +48,7 @@ const pt = {
     not_disbursed: "Não desembolsado",
     not_ok: "Não OK",
     open: "Abrir",
+    organization: "Organização",
     password: "Senha",
     project: "Portuguese: Project",
     projected_budget: "Portuguese: Projected Budget",
@@ -72,7 +73,6 @@ const pt = {
   users: {
     full_name: "Nome completo",
     new_user: "Novo usuário",
-    organization: "Organização",
     user_created: "Portuguese: User successfully created",
     users: "Usuários",
     add_user: "Portuguese: Add Users",
