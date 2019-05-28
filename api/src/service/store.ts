@@ -58,6 +58,13 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
         event,
       });
 
+    case "user_password_changed":
+      return writeTo(conn, ctx, {
+        stream: "users",
+        keys: [event.user.id],
+        event,
+      });
+
     case "workflowitems_reordered":
       return writeTo(conn, ctx, {
         stream: event.projectId,

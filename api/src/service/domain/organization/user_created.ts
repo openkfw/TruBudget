@@ -1,8 +1,10 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as UserRecord from "../organization/user_record";
 import { Permissions, permissionsSchema } from "../permissions";
 import { Identity } from "./identity";
@@ -76,4 +78,26 @@ export function createEvent(
 export function validate(input: any): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function createFrom(ctx: Ctx, event: Event): Result.Type<UserRecord.UserRecord> {
+  const initialData = event.user;
+
+  const user: UserRecord.UserRecord = {
+    id: initialData.id,
+    createdAt: event.time,
+    displayName: initialData.displayName,
+    organization: initialData.organization,
+    passwordHash: initialData.passwordHash,
+    address: initialData.address,
+    encryptedPrivKey: initialData.encryptedPrivKey,
+    permissions: initialData.permissions,
+    log: [],
+    additionalData: initialData.additionalData,
+  };
+
+  return Result.mapErr(
+    UserRecord.validate(user),
+    error => new EventSourcingError({ ctx, event, target: user }, error),
+  );
 }

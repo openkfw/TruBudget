@@ -17,8 +17,8 @@ export async function updateProject(
 ): Promise<void> {
   const result = await Cache.withCache(conn, ctx, async cache =>
     ProjectUpdate.updateProject(ctx, serviceUser, projectId, requestData, {
-      getProject: async projectId => {
-        return cache.getProject(projectId);
+      getProject: async pId => {
+        return cache.getProject(pId);
       },
       getUsersForIdentity: async identity => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
