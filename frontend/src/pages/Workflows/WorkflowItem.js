@@ -261,9 +261,10 @@ const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurren
       <SwapIcon />
     </Tooltip>
   );
+  const isAmountDisplayed = amount !== undefined && exchangeRate !== undefined;
   return (
     <div>
-      {amount && exchangeRate ? (
+      {isAmountDisplayed ? (
         <div style={styles.chipDiv}>
           <div>{amountToShow}</div>
           <div
