@@ -77,12 +77,10 @@ class DocumentOverview extends Component {
         onChange={event => {
           if (event.target.files[0]) {
             const file = event.target.files[0];
-            console.log("File: ", file);
             const reader = new FileReader();
             reader.onloadend = e => {
               if (e.target.result !== undefined) {
                 const dataUrl = e.target.result.split(";base64,")[1];
-                console.log("dataUrl: ", dataUrl);
                 this.props.validateDocument(hash, dataUrl, id);
               }
             };

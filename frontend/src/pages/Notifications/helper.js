@@ -48,6 +48,7 @@ export const isAllowedToSee = notification => {
 export const intentMapping = notification => {
   const businessEvent = notification.businessEvent;
   if (!businessEvent) {
+    // eslint-disable-next-line no-console
     console.warn("Notification has no business event");
     return "";
   }
@@ -55,6 +56,7 @@ export const intentMapping = notification => {
 
   const notificationMetaData = notification.metadata;
   if (!notificationMetaData) {
+    // eslint-disable-next-line no-console
     console.warn("Notification has no metadata");
     return "";
   }
