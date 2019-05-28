@@ -19,6 +19,16 @@ const frontendChanges =
   frontendPageSources.edited ||
   frontendLanguageSources.edited;
 
+function deepFlat(inputArray) {
+  return inputArray.reduce(
+    (accumulator, value) =>
+      Array.isArray(value)
+        ? accumulator.concat(deepFlat(value))
+        : accumulator.concat(value),
+    []
+  );
+}
+
 async function getChanges(filepath) {
   const files = danger.git.fileMatch(filepath);
   const { edited } = files.getKeyedPaths(paths => paths);
@@ -30,8 +40,8 @@ async function getChanges(filepath) {
       return changes;
     })
   );
-  const chunks = chunksArray.map(chunk => chunk.chunks).flat();
-  const changes = chunks.map(chunk => chunk.changes).flat();
+  const chunks = deepFlat(chunksArray.map(chunk => chunk.chunks));
+  const changes = deepFlat(chunks.map(chunk => chunk.changes));
   return changes;
 }
 

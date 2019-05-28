@@ -13,15 +13,9 @@ stages:
     - "10"
   cache: npm
 
-.node-env-11: &node-env-11
-  language: node_js
-  node_js:
-    - "11"
-  cache: npm
-
 .dangerjs: &dangerjs
   stage: test
-  <<: *node-env-11
+  <<: *node-env
   script:
     - npm run danger ci
 
