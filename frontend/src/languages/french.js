@@ -48,6 +48,7 @@ const fr = {
     not_disbursed: "Non décaissé",
     not_ok: "Pas OK",
     open: "Ouvert",
+    organization: "Organisation",
     password: "Mot de passe",
     project: "Projet",
     projected_budget: "Budget prévu",
@@ -179,7 +180,6 @@ const fr = {
   users: {
     full_name: "Nom complet",
     new_user: "Nouvel utilisateur",
-    organization: "Organisation",
     user_created: "Utilisateur créé avec succès",
     users: "Utilisateurs",
     add_user: "Ajouter des utilisateurs",

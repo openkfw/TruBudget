@@ -103,7 +103,7 @@ class ProjectAnalytics extends React.Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>{strings.users.organization}</TableCell>
+                    <TableCell>{strings.common.organization}</TableCell>
                     <TableCell align="right">{strings.amount}</TableCell>
                     <TableCell align="right">{strings.common.currency}</TableCell>
                     <TableCell align="right">{strings.workflow.exchange_rate}</TableCell>

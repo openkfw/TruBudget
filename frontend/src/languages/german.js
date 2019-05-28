@@ -46,6 +46,7 @@ const de = {
     not_disbursed: "Nicht ausgezahlt",
     not_ok: "NOK",
     open: "Open",
+    organization: "German: Organization",
     password: "Passwort",
     project: "German: Project",
     projected_budget: "German: Projected Budget",
@@ -177,7 +178,6 @@ const de = {
   users: {
     full_name: "German: Full Name",
     new_user: "German: New User",
-    organization: "German: Organization",
     user_created: "German: User successfully created",
     users: "German: Users",
     new_group: "German: New user group",
