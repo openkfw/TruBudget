@@ -20,7 +20,9 @@ const styles = {
 export default function HistoryList({ events, nEventsTotal, hasMore, isLoading, getUserDisplayname }) {
   const eventItems = events.map((event, index) => {
     if (!(event.businessEvent && event.snapshot)) {
+      // eslint-disable-next-line no-console
       console.warn("The event does not have a business event or snapshot and will not be displayed", event);
+
       return null;
     }
     const eventTime = event.businessEvent.time;
@@ -167,6 +169,7 @@ function stringifyHistoryEvent(businessEvent, snapshot, getUserDisplayname) {
         displayName
       );
     default:
+      // eslint-disable-next-line no-console
       console.log(`WARN: no handler for event type ${eventType}`);
       return eventType;
   }

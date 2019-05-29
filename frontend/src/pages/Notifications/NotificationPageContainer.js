@@ -5,7 +5,6 @@ import {
   markNotificationAsRead,
   fetchNotifications,
   setNotifcationsPerPage,
-  setNotificationOffset,
   markMultipleNotificationsAsRead,
   enableLiveUpdates,
   fetchNotificationCounts,
@@ -18,7 +17,7 @@ import { toJS } from "../../helper";
 
 class NotificationPageContainer extends Component {
   componentWillMount() {
-    this.props.fetchNotifications(this.props.notificationOffset, this.props.notificationsPerPage);
+    this.props.fetchNotifications(this.props.currentPage);
     this.props.disableLiveUpdates();
   }
 
@@ -38,13 +37,11 @@ class NotificationPageContainer extends Component {
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    fetchNotifications: (offset, limit) => dispatch(fetchNotifications(true, offset, limit)),
-    markNotificationAsRead: (notificationId, offset, limit) =>
-      dispatch(markNotificationAsRead(notificationId, offset, limit)),
-    markMultipleNotificationsAsRead: (notificationIds, offset, limit) =>
-      dispatch(markMultipleNotificationsAsRead(notificationIds, offset, limit)),
-    setNotifcationsPerPage: limit => dispatch(setNotifcationsPerPage(limit)),
-    setNotificationOffset: offset => dispatch(setNotificationOffset(offset)),
+    fetchNotifications: page => dispatch(fetchNotifications(true, page)),
+    markNotificationAsRead: (notificationId, page) => dispatch(markNotificationAsRead(notificationId, page)),
+    markMultipleNotificationsAsRead: (notificationIds, page) =>
+      dispatch(markMultipleNotificationsAsRead(notificationIds, page)),
+    setNotifcationsPerPage: notificationPageSize => dispatch(setNotifcationsPerPage(notificationPageSize)),
     enableLiveUpdates: () => dispatch(enableLiveUpdates()),
     disableLiveUpdates: () => dispatch(disableLiveUpdates()),
     fetchNotificationCounts: () => dispatch(fetchNotificationCounts())
@@ -54,10 +51,10 @@ const mapDispatchToProps = (dispatch, props) => {
 const mapStateToProps = state => {
   return {
     notifications: state.getIn(["notifications", "notifications"]),
-    notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
+    notificationsPerPage: state.getIn(["notifications", "notificationPageSize"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
-    notificationCount: state.getIn(["notifications", "notificationCount"]),
-    notificationOffset: state.getIn(["notifications", "notificationOffset"])
+    notificationCount: state.getIn(["notifications", "totalNotificationCount"]),
+    currentPage: state.getIn(["notifications", "currentNotificationPage"])
   };
 };
 

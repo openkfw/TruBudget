@@ -45,7 +45,7 @@ describe("Workflowitem's history", function() {
 
   it("The history is sorted from new to old", function() {
     // Change assignee to create new history event
-    cy.get(".workflowitem-assignee").click();
+    cy.get("[data-test=workflowitem-assignee]").click();
     cy.get("[role=listbox]")
       .find("[value=jdoe]")
       .click()

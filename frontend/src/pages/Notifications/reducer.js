@@ -7,10 +7,9 @@ import {
   HIDE_HISTORY,
   FETCH_ALL_NOTIFICATIONS_SUCCESS,
   HIDE_SNACKBAR,
-  FETCH_NOTIFICATION_COUNTS_SUCCESS,
+  FETCH_NOTIFICATION_COUNT_SUCCESS,
   SET_NOTIFICATIONS_PER_PAGE,
   LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
-  SET_NOTIFICATION_OFFSET,
   TIME_OUT_FLY_IN,
   ENABLE_LIVE_UPDATES,
   DISABLE_LIVE_UPDATES
@@ -26,17 +25,21 @@ const defaultState = fromJS({
   snackbarError: false,
   historyItems: [],
   unreadNotificationCount: 0,
-  notificationCount: 0,
   notificationsPerPage: 20,
   notificationOffset: 0,
-  isLiveUpdatesEnabled: true
+  isLiveUpdatesEnabled: true,
+  totalNotificationCount: 0,
+  currentNotificationPage: 1,
+  notificationPageSize: 20
 });
 
 export default function navbarReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_NOTIFICATIONS_SUCCESS:
       return state.merge({
-        notifications: fromJS(action.notifications)
+        notifications: fromJS(action.notifications),
+        currentNotificationPage: action.currentNotificationPage,
+        totalNotificationCount: action.totalNotificationCount
       });
 
     case ENABLE_LIVE_UPDATES: {
@@ -62,7 +65,7 @@ export default function navbarReducer(state = defaultState, action) {
     case TIME_OUT_FLY_IN: {
       return state.set("newNotifications", defaultState.get("newNotifications"));
     }
-    case FETCH_NOTIFICATION_COUNTS_SUCCESS:
+    case FETCH_NOTIFICATION_COUNT_SUCCESS:
       return state.merge({
         unreadNotificationCount: action.unreadNotificationCount,
         notificationCount: action.notificationCount
@@ -83,9 +86,7 @@ export default function navbarReducer(state = defaultState, action) {
     case HIDE_HISTORY:
       return state.set("showHistory", false);
     case SET_NOTIFICATIONS_PER_PAGE:
-      return state.set("notificationsPerPage", action.limit);
-    case SET_NOTIFICATION_OFFSET:
-      return state.set("notificationOffset", action.offset);
+      return state.set("notificationPageSize", action.notificationPageSize);
     case LOGOUT:
       return defaultState;
     default:

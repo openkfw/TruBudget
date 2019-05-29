@@ -6,9 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-<!-- ### Added -->
 
-<!-- ### Changed -->
+### Added
+- Different background color for unread notifications [#300](https://github.com/openkfw/TruBudget/issues/300)
+
+### Changed
+- Notification displays name of parent project and subproject [#298](https://github.com/openkfw/TruBudget/issues/298)
+- Move 'Read All' button to the left side [#301](https://github.com/openkfw/TruBudget/issues/301)
+- Don't display view button if user is not allowed to see project/subproject [#302](https://github.com/openkfw/TruBudget/issues/302)
 
 <!-- ### Deprecated -->
 
@@ -17,6 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Empty history displayed after API call is finished [#294](https://github.com/openkfw/TruBudget/issues/294)
+- Last page of notifications displays correct number of items [#288](https://github.com/openkfw/TruBudget/issues/288)
+- Prevent assignee selection from overflowing [#299](https://github.com/openkfw/TruBudget/issues/299)
+- Display correct name in notifications [#292](https://github.com/openkfw/TruBudget/issues/292)
 - Workflowitem amount is only displayed if amount and exchange rate are available [#297](https://github.com/openkfw/TruBudget/issues/297)
 
 <!-- ### Security -->
