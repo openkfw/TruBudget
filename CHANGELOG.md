@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### Added
 - Different background color for unread notifications [#300](https://github.com/openkfw/TruBudget/issues/300)
 
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Last page of notifications displays correct number of items [#288](https://github.com/openkfw/TruBudget/issues/288)
 - Prevent assignee selection from overflowing [#299](https://github.com/openkfw/TruBudget/issues/299)
 - Display correct name in notifications [#292](https://github.com/openkfw/TruBudget/issues/292)
+- Workflowitem amount is only displayed if amount and exchange rate are available [#297](https://github.com/openkfw/TruBudget/issues/297)
 
 <!-- ### Security -->
 ## [1.0.1] - 2019-05-21

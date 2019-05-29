@@ -93,7 +93,7 @@ export default class Budget extends React.Component {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>{strings.users.organization}</TableCell>
+              <TableCell>{strings.common.organization}</TableCell>
               <TableCell align="right">{strings.common.projected_budget}</TableCell>
               <TableCell align="right">{strings.common.actions}</TableCell>
             </TableRow>
@@ -145,7 +145,7 @@ export default class Budget extends React.Component {
             <TableRow key={`pb-row-add`}>
               <TableCell>
                 <TextField
-                  label={strings.users.organization}
+                  label={strings.common.organization}
                   value={this.state.organization}
                   onChange={e => this.setOrganization(e.target.value)}
                   type="text"
