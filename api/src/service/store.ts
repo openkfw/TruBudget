@@ -65,6 +65,14 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
         event,
       });
 
+    case "user_permission_granted":
+    case "user_permission_revoked":
+      return writeTo(conn, ctx, {
+        stream: "users",
+        keys: [event.userId],
+        event,
+      });
+
     case "workflowitems_reordered":
       return writeTo(conn, ctx, {
         stream: event.projectId,

@@ -71,6 +71,9 @@ import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserPasswordChangeService from "./service/user_password_change";
+import * as UserPermissionGrantService from "./service/user_permission_grant";
+import * as UserPermissionRevokeService from "./service/user_permission_revoke";
+import * as UserPermissionsListService from "./service/user_permissions_list";
 import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
@@ -100,6 +103,9 @@ import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserListAPI from "./user_list";
 import * as UserPasswordChangeAPI from "./user_password_change";
+import * as UserPermissionGrantAPI from "./user_permission_grant";
+import * as UserPermissionRevokeAPI from "./user_permission_revoke";
+import * as UserPermissionsListAPI from "./user_permissions_list";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
@@ -275,6 +281,21 @@ UserListAPI.addHttpHandler(server, URL_PREFIX, {
 UserPasswordChangeAPI.addHttpHandler(server, URL_PREFIX, {
   changeUserPassword: (ctx, issuer, reqData) =>
     UserPasswordChangeService.changeUserPassword(db, ctx, issuer, reqData),
+});
+
+UserPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
+  grantUserPermission: (ctx, granter, userId, grantee, intent) =>
+    UserPermissionGrantService.grantUserPermission(db, ctx, granter, userId, grantee, intent),
+});
+
+UserPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
+  revokeUserPermission: (ctx, revoker, userId, revokee, intent) =>
+    UserPermissionRevokeService.revokeUserPermission(db, ctx, revoker, userId, revokee, intent),
+});
+
+UserPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
+  getUserPermissions: (ctx, user, userId) =>
+    UserPermissionsListService.getUserPermissions(db, ctx, user, userId),
 });
 
 /*

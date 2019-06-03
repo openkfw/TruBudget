@@ -21,8 +21,8 @@ export async function revokeProjectPermission(
 ): Promise<void> {
   const result = await Cache.withCache(conn, ctx, async cache =>
     ProjectPermissionRevoke.revokeProjectPermission(ctx, serviceUser, projectId, revokee, intent, {
-      getProject: async projectId => {
-        return cache.getProject(projectId);
+      getProject: async id => {
+        return cache.getProject(id);
       },
     }),
   );
