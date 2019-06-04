@@ -16,6 +16,10 @@ import {
   createUser,
   grantGlobalPermission,
   revokeGlobalPermission,
+  storeNewPassword,
+  storeNewPasswordConfirmation,
+  storeNewPasswordsMatch,
+  storeUserPassword
 } from "./actions";
 
 import Dialog from "./Dialog";
@@ -40,7 +44,12 @@ const mapStateToProps = state => {
     editDialogShown: state.getIn(["users", "editDialogShown"]),
     globalPermissions: state.getIn(["users", "globalPermissions"]),
     permissionsExpanded: state.getIn(["users", "permissionsExpanded"]),
-    allowedIntents: state.getIn(["login", "allowedIntents"])
+    allowedIntents: state.getIn(["login", "allowedIntents"]),
+    wrongPasswordGiven: state.getIn(["users", "wrongPasswordGiven"]),
+    userPassword: state.getIn(["users", "userPassword"]),
+    newPassword: state.getIn(["users", "newPassword"]),
+    newPasswordConfirmation: state.getIn(["users", "newPasswordConfirmation"]),
+    newPasswordsMatch: state.getIn(["users", "newPasswordsMatch"])
   };
 };
 
@@ -61,6 +70,10 @@ const mapDispatchToProps = dispatch => {
     hideDashboardDialog: () => dispatch(hideDashboardDialog()),
     grantGlobalPermission: (identity, intent) => dispatch(grantGlobalPermission(identity, intent)),
     revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent)),
+    storeUserPassword: password => dispatch(storeUserPassword(password)),
+    storeNewPassword: password => dispatch(storeNewPassword(password)),
+    storeNewPasswordConfirmation: password => dispatch(storeNewPasswordConfirmation(password)),
+    storeNewPasswordsMatch: newPasswordsMatch => dispatch(storeNewPasswordsMatch(newPasswordsMatch))
   };
 };
 

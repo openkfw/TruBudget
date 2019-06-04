@@ -1,12 +1,12 @@
+import _isEmpty from "lodash/isEmpty";
 import React from "react";
 
-import _isEmpty from "lodash/isEmpty";
-
-import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
-import UserDialogContent from "./UserDialogContent";
-import GroupDialogContent from "./GroupDialogContent";
+import CreationDialog from "../Common/CreationDialog";
 import GlobalPermissions from "./GlobalPermissions";
+import GroupDialogContent from "./GroupDialogContent";
+import UserDialogContent from "./UserDialogContent";
+import UserPasswordChangeDialogContent from "./UserPasswordChangeDialogContent";
 
 const Dialog = props => {
   const {
@@ -29,9 +29,20 @@ const Dialog = props => {
     permissionsExpanded,
     allowedIntents,
     grantGlobalPermission,
-    revokeGlobalPermission
+    revokeGlobalPermission,
+    wrongPasswordGiven,
+    userPassword,
+    newPassword,
+    newPasswordsMatch,
+    storeUserPassword,
+    storeNewPasswordsMatch,
+    newPasswordConfirmation,
+    storeNewPassword,
+    storeNewPasswordConfirmation,
+    checkAndChangeUserPassword
   } = props;
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
+  let title = "";
 
   const { groupId, name: groupName, groupUsers } = groupToAdd;
   let steps, handleSubmitFunc;
@@ -40,7 +51,7 @@ const Dialog = props => {
       steps = [
         {
           title: strings.users.add_user,
-          content: <UserDialogContent {...props} />,
+          content: <UserDialogContent {...props} user={userToAdd} />,
           nextDisabled: _isEmpty(username) || _isEmpty(password) || _isEmpty(displayName)
         }
       ];
@@ -69,21 +80,48 @@ const Dialog = props => {
         showSnackbar();
       };
       break;
-    case "editUser":
-      const user = users.find(user => user.id === editId);
-      const userToEdit = {
-        username: user.id,
-        organization: user.organization,
-        displayName: user.displayName
+    case "editUserPassword":
+      title = strings.users.change_password_for + ` ${editId}`;
+      handleSubmitFunc = () => {
+        storeSnackbarMessage(strings.users.password_change_success);
+        if (newPassword === newPasswordConfirmation) {
+          storeNewPasswordsMatch(true);
+          checkAndChangeUserPassword(props.userId, editId, userPassword, newPassword);
+        } else {
+          storeNewPasswordsMatch(false);
+        }
       };
       steps = [
         {
-          title: `${strings.users.edit_permissions_for} ${userToEdit.displayName}`,
+          content: (
+            <UserPasswordChangeDialogContent
+              actingUser={props.userId}
+              userId={editId}
+              userPassword={userPassword}
+              newPassword={newPassword}
+              newPasswordConfirmation={newPasswordConfirmation}
+              storeUserPassword={storeUserPassword}
+              storeNewPassword={storeNewPassword}
+              storeNewPasswordConfirmation={storeNewPasswordConfirmation}
+              newPasswordsMatch={newPasswordsMatch}
+              wrongPasswordGiven={wrongPasswordGiven}
+              handleSubmit={handleSubmitFunc}
+            />
+          ),
+          nextDisabled: newPassword === "" || newPasswordConfirmation === ""
+        }
+      ];
+      break;
+    case "editUserPermissions":
+      const userToEditPermissions = users.find(user => user.id === editId);
+      steps = [
+        {
+          title: `${strings.users.edit_permissions_for} ${userToEditPermissions.displayName}`,
           content: (
             <GlobalPermissions
               grantGlobalPermission={grantGlobalPermission}
               revokeGlobalPermission={revokeGlobalPermission}
-              resourceId={userToEdit.username}
+              resourceId={userToEditPermissions.id}
               globalPermissions={globalPermissions}
               permissionsExpanded={permissionsExpanded}
               allowedIntents={allowedIntents}
@@ -103,20 +141,15 @@ const Dialog = props => {
     case "editGroupPermissions":
       {
         const group = groups.find(group => group.groupId === editId);
-        const groupToEdit = {
-          groupId: group.groupId,
-          displayName: group.displayName,
-          groupUsers: group.users
-        };
         steps = [
           {
-            title: `${strings.users.edit_permissions_for} ${groupToEdit.displayName}`,
+            title: `${strings.users.edit_permissions_for} ${group.displayName}`,
             content: (
               <div>
                 <GlobalPermissions
                   grantGlobalPermission={grantGlobalPermission}
                   revokeGlobalPermission={revokeGlobalPermission}
-                  resourceId={groupToEdit.groupId}
+                  resourceId={group.groupId}
                   globalPermissions={globalPermissions}
                   allowedIntents={allowedIntents}
                   permissionsExpanded={permissionsExpanded}
@@ -172,7 +205,7 @@ const Dialog = props => {
   return (
     <CreationDialog
       steps={steps}
-      title={steps[0].title}
+      title={title !== "" ? title : steps[0].title}
       numberOfSteps={steps.length}
       onDialogCancel={props.hideDashboardDialog}
       dialogShown={dashboardDialogShown}

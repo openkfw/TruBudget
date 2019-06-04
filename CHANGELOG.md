@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - New API endpoint to change a user's password [#79](https://github.com/openkfw/TruBudget/issues/79)
 - New API endpoints to grant, revoke and list permissions [#310](https://github.com/openkfw/TruBudget/issues/310)
 - Different background color for unread notifications [#300](https://github.com/openkfw/TruBudget/issues/300)
+- UI feature to change a user's password [#325](https://github.com/openkfw/TruBudget/issues/325)
+
 
 ### Changed
 

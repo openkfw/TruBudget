@@ -2,7 +2,6 @@ import { fromJS } from "immutable";
 
 import {
   SET_USERNAME,
-  SET_PASSWORD,
   SET_ORGANIZATION,
   SET_DISPLAYNAME,
   RESET_USER,
@@ -16,10 +15,17 @@ import {
   REMOVE_INITIAL_USER,
   CREATE_GROUP_SUCCESS,
   LIST_GLOBAL_PERMISSIONS_SUCCESS,
+  CHECK_USER_PASSWORD_SUCCESS,
+  CHECK_USER_PASSWORD_ERROR,
+  NEW_USER_PASSWORD,
+  NEW_USER_PASSWORD_CONFIRMATION,
+  CHANGE_USER_PASSWORD_SUCCESS,
+  STORE_NEW_PASSWORDS_MATCH,
+  USER_PASSWORD,
+  SET_PASSWORD
 } from "./actions";
 
 const defaultState = fromJS({
-  nodes: [],
   tabIndex: 0,
   dashboardDialogShown: false,
   userToAdd: {
@@ -38,6 +44,10 @@ const defaultState = fromJS({
     name: "",
     groupUsers: []
   },
+  userPassword: "",
+  newPassword: "",
+  newPasswordConfirmation: "",
+  newPasswordsMatch: true
 });
 
 export default function userDashboardReducer(state = defaultState, action) {
@@ -79,10 +89,37 @@ export default function userDashboardReducer(state = defaultState, action) {
     case HIDE_DASHBOARD_DIALOG:
       return state.merge({
         dashboardDialogShown: false,
-        userToAdd: defaultState.get("userToAdd")
+        userToAdd: defaultState.get("userToAdd"),
+        wrongPasswordGiven: undefined,
+        userPassword: "",
+        newPassword: "",
+        newPasswordConfirmation: "",
+        newPasswordsMatch: true
       });
     case LIST_GLOBAL_PERMISSIONS_SUCCESS:
       return state.set("globalPermissions", action.data);
+    case USER_PASSWORD:
+      return state.set("userPassword", action.password);
+    case NEW_USER_PASSWORD:
+      return state.set("newPassword", action.password);
+    case NEW_USER_PASSWORD_CONFIRMATION:
+      return state.set("newPasswordConfirmation", action.password);
+    case CHECK_USER_PASSWORD_SUCCESS:
+      return state.set("wrongPasswordGiven", false);
+    case CHECK_USER_PASSWORD_ERROR:
+      return state.set("wrongPasswordGiven", true);
+    case CHANGE_USER_PASSWORD_SUCCESS:
+      return state.merge({
+        dashboardDialogShown: false,
+        userToAdd: defaultState.get("userToAdd"),
+        wrongPasswordGiven: undefined,
+        userPassword: "",
+        newPassword: "",
+        newPasswordConfirmation: "",
+        newPasswordsMatch: true
+      });
+    case STORE_NEW_PASSWORDS_MATCH:
+      return state.set("newPasswordsMatch", action.newPasswordsMatch);
     default:
       return state;
   }

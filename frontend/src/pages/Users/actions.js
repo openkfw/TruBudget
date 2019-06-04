@@ -35,14 +35,27 @@ export const REMOVE_USER_SUCCESS = "REMOVE_USER_SUCCESS";
 export const GRANT_ALL_USER_PERMISSIONS = "GRANT_ALL_USER_PERMISSIONS";
 export const GRANT_ALL_USER_PERMISSIONS_SUCCESS = "GRANT_ALL_USER_PERMISSIONS_SUCCESS";
 
-export const GRANT_GLOBAL_PERMISSION= "GRANT_GLOBAL_PERMISSION";
-export const GRANT_GLOBAL_PERMISSION_SUCCESS= "GRANT_GLOBAL_PERMISSION_SUCCESS";
+export const GRANT_GLOBAL_PERMISSION = "GRANT_GLOBAL_PERMISSION";
+export const GRANT_GLOBAL_PERMISSION_SUCCESS = "GRANT_GLOBAL_PERMISSION_SUCCESS";
 
-export const REVOKE_GLOBAL_PERMISSION= "REVOKE_GLOBAL_PERMISSION";
-export const REVOKE_GLOBAL_PERMISSION_SUCCESS= "REVOKE_GLOBAL_PERMISSION_SUCCESS";
+export const REVOKE_GLOBAL_PERMISSION = "REVOKE_GLOBAL_PERMISSION";
+export const REVOKE_GLOBAL_PERMISSION_SUCCESS = "REVOKE_GLOBAL_PERMISSION_SUCCESS";
 
-export const LIST_GLOBAL_PERMISSIONS = "LIST_GLOBAL_PERMISSIONS"
-export const LIST_GLOBAL_PERMISSIONS_SUCCESS = "LIST_GLOBAL_PERMISSIONS_SUCCESS"
+export const LIST_GLOBAL_PERMISSIONS = "LIST_GLOBAL_PERMISSIONS";
+export const LIST_GLOBAL_PERMISSIONS_SUCCESS = "LIST_GLOBAL_PERMISSIONS_SUCCESS";
+
+export const CHECK_AND_CHANGE_USER_PASSWORD = "CHECK_AND_CHANGE_USER_PASSWORD";
+export const CHECK_USER_PASSWORD_SUCCESS = "CHECK_USER_PASSWORD_SUCCESS";
+export const CHECK_USER_PASSWORD_ERROR = "CHECK_USER_PASSWORD_ERROR";
+
+export const CHANGE_USER_PASSWORD = "CHANGE_USER_PASSWORD";
+export const CHANGE_USER_PASSWORD_SUCCESS = "CHANGE_USER_PASSWORD_SUCCESS";
+
+export const USER_PASSWORD = "USER_PASSWORD";
+export const NEW_USER_PASSWORD = "NEW_USER_PASSWORD";
+export const NEW_USER_PASSWORD_CONFIRMATION = "NEW_USER_PASSWORD_CONFIRMATION";
+
+export const STORE_NEW_PASSWORDS_MATCH = "STORE_NEW_PASSWORDS_MATCH";
 
 export function fetchGroups(showLoading = false) {
   return {
@@ -182,24 +195,62 @@ export function hideDashboardDialog() {
   };
 }
 
-export function grantGlobalPermission(identity, intent){
+export function grantGlobalPermission(identity, intent) {
   return {
     type: GRANT_GLOBAL_PERMISSION,
     identity,
     intent
-  }
+  };
 }
 
-export function revokeGlobalPermission(identity, intent){
+export function revokeGlobalPermission(identity, intent) {
   return {
     type: REVOKE_GLOBAL_PERMISSION,
     identity,
     intent
-  }
+  };
 }
 
-export function listPermissions(){
+export function listPermissions() {
   return {
     type: LIST_GLOBAL_PERMISSIONS
-  }
+  };
+}
+
+export function checkAndChangeUserPassword(actingUser, username, currentPassword, newPassword) {
+  return {
+    type: CHECK_AND_CHANGE_USER_PASSWORD,
+    actingUser,
+    username,
+    currentPassword,
+    newPassword
+  };
+}
+
+export function storeUserPassword(password) {
+  return {
+    type: USER_PASSWORD,
+    password
+  };
+}
+
+export function storeNewPassword(password) {
+  return {
+    type: NEW_USER_PASSWORD,
+    password
+  };
+}
+
+export function storeNewPasswordConfirmation(password) {
+  return {
+    type: NEW_USER_PASSWORD_CONFIRMATION,
+    password
+  };
+}
+
+export function storeNewPasswordsMatch(newPasswordsMatch) {
+  return {
+    type: STORE_NEW_PASSWORDS_MATCH,
+    newPasswordsMatch
+  };
 }

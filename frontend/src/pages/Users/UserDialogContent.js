@@ -36,14 +36,15 @@ const styles = {
 
 const UserDialogContent = ({
   classes,
-  userToAdd,
+  user,
   setDisplayName,
   setOrganization,
   setUsername,
   setPassword,
   organization
 }) => {
-  const { displayName, password, username } = userToAdd;
+  const { displayName, password, username } = user;
+
   return (
     <div className={classes.container}>
       <div className={classes.textInputContainer}>

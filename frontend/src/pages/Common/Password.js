@@ -30,6 +30,7 @@ const Password = ({ password, storePassword, failed, nextBestAction, id, ...prop
     <div style={styles.container}>
       <PasswordIcon style={styles.icon} />
       <TextField
+        data-test="password-textfield"
         style={{ width: "50%" }}
         label={strings.common.password}
         value={password}

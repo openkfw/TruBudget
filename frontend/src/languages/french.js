@@ -188,7 +188,15 @@ const fr = {
     new_group: "Nouveau groupe d'utilisateurs",
     add_group: "Ajouter un groupe",
     edit_group: "Éditer und groupe",
-    edit_permissions_for: "Éditer les autorisations pour"
+    edit_permissions_for: "Éditer les autorisations pour",
+    current_user_password: "FRENCH: Your password",
+    new_user_password: "FRENCH: New password",
+    new_user_password_confirmation: "FRENCH: Confirm new password",
+    no_password_match: "FRENCH: Passwords don't match",
+    change_password_for: "FRENCH: Change password for",
+    password_change_success: "FRENCH: Password successfully changed",
+    type_current_password: "FRENCH: Type in current password for {0}",
+    type_new_password: "FRENCH: Type in new password for {0}"
   },
 
   nodesDashboard: {

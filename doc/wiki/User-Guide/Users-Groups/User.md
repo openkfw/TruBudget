@@ -49,3 +49,26 @@ Create a new User.
 5. Click the "Submit"-button to create and save the new user.
 
 Once a user is created you can grant and revoke administrator permissions for the user, more details can be found at [admin-permissions](../Permissions.md#admin-permissions).
+
+## Change a user's password
+
+**Description:**
+A user's password can be changed by anyone who has the permission `user.changePassword` for a given user. Starting with version `v1.1.0` every user is granted the permission to change his/her own password upon creation . If another user should be able to change a user's password (like an administrator), this permission needs to be granted via the `/users.intent.grantPermission` endpoint. The `root` user can always change passwords and grant the necessary permissions.
+
+Examples: 
+- User `mstein` wants to change his own password, but does not have the permission to do so. The `root` user needs to grant `mstein` the permission `user.changePassword`. Once this is done, `mstein` can change his own password. 
+- User `mstein` is an administrator and should be able to change the password of `dviolin`. The `root` user needs to grant the `user.changePassword` permission to `mstein` for `dviolin`. After that, `mstein` is able to change the password of `dviolin`. 
+
+**Notes:**
+- To change a user's password, you must type in _your_ password first
+
+**Instructions:**
+1. Click the button in the upper left corner (hamburger menu) to open the side-navigation-bar
+2. Click "Users" Selection
+3. Click the "Edit" button (looks like a pen) next to the user you want to change the password for
+4. Type in _your_ password
+5. Type in the new password for the selected user
+6. Re-type the new password to confirm it
+7. Click "Submit" to save the new password
+
+

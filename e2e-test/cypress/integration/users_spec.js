@@ -6,7 +6,7 @@ describe("Users/Groups Dashboard", function() {
 
   it("Show user dashboard", function() {
     cy.location("pathname").should("eq", "/users");
-    cy.get("#userdashboard").should("be.visible");
+    cy.get("[data-test=userdashboard]").should("be.visible");
   });
 
   it("Create new user", function() {

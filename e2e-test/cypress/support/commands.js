@@ -189,6 +189,46 @@ Cypress.Commands.add("updateProjectPermissions", (projectId, intent, identity) =
     .then(body => Promise.resolve(body.data));
 });
 
+Cypress.Commands.add("grantUserPermissions", (userId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/user.intent.grantPermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        userId: userId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("revokeUserPermissions", (userId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/user.intent.revokePermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        userId: userId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
+
 Cypress.Commands.add("closeProject", projectId => {
   cy.request({
     url: `${baseUrl}/api/project.close`,
