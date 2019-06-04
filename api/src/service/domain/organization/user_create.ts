@@ -1,6 +1,6 @@
 import Joi = require("joi");
 
-import Intent, { userDefaultIntents } from "../../../authz/intents";
+import Intent, { userDefaultIntents, userIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
@@ -8,15 +8,13 @@ import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
-import { Permissions } from "../permissions";
+import * as GlobalPermissionGranted from "../workflow/global_permission_granted";
 import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_permissions";
 import { canAssumeIdentity } from "./auth_token";
 import { KeyPair } from "./key_pair";
 import { ServiceUser } from "./service_user";
 import * as UserCreated from "./user_created";
-import { sourceUserRecords } from "./user_eventsourcing";
 import * as UserRecord from "./user_record";
-import * as GlobalPermissionGranted from "../workflow/global_permission_granted";
 
 export interface RequestData {
   userId: string;
@@ -52,7 +50,7 @@ export async function createUser(
   creatingUser: ServiceUser,
   data: RequestData,
   repository: Repository,
-): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const source = ctx.source;
   const publisher = creatingUser.id;
   const eventTemplate = {
@@ -62,17 +60,15 @@ export async function createUser(
     passwordHash: "...",
     address: "...",
     encryptedPrivKey: "...",
-    // TODO user permissions are currently managed in global-permissions:
-    permissions: {},
+    permissions: userIntents.reduce((acc, intent) => {
+      return { ...acc, [intent]: [data.userId] };
+    }, {}),
     additionalData: data.additionalData || {},
   };
 
   if (await repository.userExists(data.userId)) {
     const unfinishedBusinessEvent = UserCreated.createEvent(source, publisher, eventTemplate);
-    return {
-      newEvents: [],
-      errors: [new PreconditionError(ctx, unfinishedBusinessEvent, "user already exists")],
-    };
+    return new PreconditionError(ctx, unfinishedBusinessEvent, "user already exists");
   }
 
   // Check authorization (if not root):
@@ -83,10 +79,7 @@ export async function createUser(
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {
-      return {
-        newEvents: [],
-        errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent })],
-      };
+      return new NotAuthorized({ ctx, userId: creatingUser.id, intent });
     }
   }
 
@@ -100,9 +93,9 @@ export async function createUser(
   const createEvent = UserCreated.createEvent(source, publisher, eventTemplate);
 
   // Check that the event is valid by trying to "apply" it:
-  const { errors } = sourceUserRecords(ctx, [createEvent]);
-  if (errors.length > 0) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, errors)] };
+  const result = UserCreated.createFrom(ctx, createEvent);
+  if (Result.isErr(result)) {
+    return new InvalidCommand(ctx, createEvent, [result]);
   }
 
   // Create events that'll grant default permissions to the user:
@@ -110,5 +103,5 @@ export async function createUser(
     GlobalPermissionGranted.createEvent(ctx.source, publisher, intent, createEvent.user.id),
   );
 
-  return { newEvents: [createEvent, ...defaultPermissionGrantedEvents], errors: [] };
+  return [createEvent, ...defaultPermissionGrantedEvents];
 }

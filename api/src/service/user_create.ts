@@ -2,6 +2,7 @@ import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { encrypt } from "../lib/symmetricCrypto";
 import { getOrganizationAddress } from "../organization/organization";
+import * as Result from "../result";
 import { ConnToken } from "./conn";
 import { createkeypairs } from "./createkeypairs";
 import * as AuthToken from "./domain/organization/auth_token";
@@ -21,25 +22,25 @@ export async function createUser(
   serviceUser: ServiceUser,
   requestData: UserCreate.RequestData,
 ): Promise<AuthToken.AuthToken> {
-  const { newEvents, errors } = await UserCreate.createUser(ctx, serviceUser, requestData, {
+  const result = await UserCreate.createUser(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
     userExists: async userId => userExists(conn, ctx, serviceUser, userId),
     createKeyPair: async () => createkeypairs(conn.multichainClient),
     hash: async plaintext => hashPassword(plaintext),
     encrypt: async plaintext => encrypt(organizationSecret, plaintext),
   });
-  if (errors.length > 0) return Promise.reject(errors);
-  if (!newEvents.length) {
+  if (Result.isErr(result)) return Promise.reject(result);
+  if (!result.length) {
     const msg = "failed to create user";
     logger.error({ ctx, serviceUser, requestData }, msg);
     throw new Error(msg);
   }
 
-  for (const event of newEvents) {
+  for (const event of result) {
     await store(conn, ctx, event);
   }
 
-  const { users } = sourceUserRecords(ctx, newEvents);
+  const { users } = sourceUserRecords(ctx, result);
   if (users.length !== 1) {
     throw new Error(`Expected new events to yield exactly one user, got: ${JSON.stringify(users)}`);
   }

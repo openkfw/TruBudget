@@ -7,6 +7,7 @@ type Intent =
   | "global.createUser"
   | "global.createGroup"
   | "user.authenticate"
+  | "user.changePassword"
   | "user.view"
   | "group.addUser"
   | "group.removeUser"
@@ -66,6 +67,7 @@ export const globalIntents: Intent[] = [
   "global.createUser",
   "global.createGroup",
   "user.authenticate",
+  "user.changePassword",
   "network.registerNode",
   "network.list",
   "network.listActive",
@@ -94,6 +96,7 @@ export const userAssignableIntents: Intent[] = [
   "network.voteForPermission",
   "network.approveNewOrganization",
   "network.approveNewNodeForExistingOrganization",
+  "user.changePassword",
 ];
 
 export const userDefaultIntents: Intent[] = [
@@ -102,7 +105,7 @@ export const userDefaultIntents: Intent[] = [
   "network.listActive",
 ];
 
-export const userIntents: Intent[] = ["user.view", "user.authenticate"];
+export const userIntents: Intent[] = ["user.view", "user.authenticate", "user.changePassword"];
 export const groupIntents: Intent[] = ["group.addUser", "group.removeUser"];
 
 export const projectIntents: Intent[] = [
@@ -159,6 +162,7 @@ export const allIntents: Intent[] = [
   "global.createUser",
   "global.createGroup",
   "user.authenticate",
+  "user.changePassword",
   "user.view",
   "group.addUser",
   "group.removeUser",

@@ -6,6 +6,7 @@ import * as GroupMemberRemoved from "./organization/group_member_removed";
 import * as GroupPermissionGranted from "./organization/group_permissions_granted";
 import * as GroupPermissionRevoked from "./organization/group_permissions_revoked";
 import * as UserCreated from "./organization/user_created";
+import * as UserPasswordChanged from "./organization/user_password_changed";
 import * as GlobalPermissionsGranted from "./workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./workflow/global_permission_revoked";
 import * as NotificationCreated from "./workflow/notification_created";
@@ -21,7 +22,6 @@ import * as ProjectUpdated from "./workflow/project_updated";
 import * as SubprojectAssigned from "./workflow/subproject_assigned";
 import * as SubprojectClosed from "./workflow/subproject_closed";
 import * as SubprojectCreated from "./workflow/subproject_created";
-import * as WorkflowitemsReordered from "./workflow/workflowitems_reordered";
 import * as SubprojectPermissionGranted from "./workflow/subproject_permission_granted";
 import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_revoked";
 import * as SubprojectProjectedBudgetDeleted from "./workflow/subproject_projected_budget_deleted";
@@ -33,6 +33,7 @@ import * as WorkflowitemCreated from "./workflow/workflowitem_created";
 import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./workflow/workflowitem_updated";
+import * as WorkflowitemsReordered from "./workflow/workflowitems_reordered";
 
 export type BusinessEvent =
   | GlobalPermissionsGranted.Event
@@ -62,6 +63,7 @@ export type BusinessEvent =
   | SubprojectProjectedBudgetUpdated.Event
   | SubprojectUpdated.Event
   | UserCreated.Event
+  | UserPasswordChanged.Event
   | WorkflowitemAssigned.Event
   | WorkflowitemClosed.Event
   | WorkflowitemCreated.Event

@@ -8,9 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
+
+- New API endpoint to change a user's password [#79](https://github.com/openkfw/TruBudget/issues/79)
 - Different background color for unread notifications [#300](https://github.com/openkfw/TruBudget/issues/300)
 
 ### Changed
+
 - Notification displays name of parent project and subproject [#298](https://github.com/openkfw/TruBudget/issues/298)
 - Move 'Read All' button to the left side [#301](https://github.com/openkfw/TruBudget/issues/301)
 - Don't display view button if user is not allowed to see project/subproject [#302](https://github.com/openkfw/TruBudget/issues/302)
@@ -28,17 +31,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Workflowitem amount is only displayed if amount and exchange rate are available [#297](https://github.com/openkfw/TruBudget/issues/297)
 
 <!-- ### Security -->
-## [1.0.1] - 2019-05-21
 
-<!-- ### Added -->
+## [1.0.1] - 2019-05-21
 
 ### Changed
 
 - Increased Multichain Version to 2.0.1 [#273](https://github.com/openkfw/TruBudget/issues/273)
-
-<!-- ### Deprecated -->
-
-<!-- ### Removed -->
 
 ### Fixed
 
@@ -49,8 +47,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The link to the project/subproject is now active when the user has permissions to see it [#284](https://github.com/openkfw/TruBudget/issues/284)
 - The link to the project/subproject in fly-in notifications correctly redirects the user [#285](https://github.com/openkfw/TruBudget/issues/285)
 - When a workflow item is assigned, the new assignee gets notified [#272](https://github.com/openkfw/TruBudget/issues/272)
-
-<!-- ### Security -->
 
 ## [1.0.0] - 2019-05-08
 
