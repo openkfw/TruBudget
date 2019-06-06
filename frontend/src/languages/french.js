@@ -66,7 +66,7 @@ const fr = {
     username: "Nom d'utilisateur",
     view: "Vue",
     workflowItem: "Élement de workflow",
-    history_end: "French: Last event reached",
+    history_end: "Dernier évènement atteint",
     no_history: "French: No events"
   },
 
