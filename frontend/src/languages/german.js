@@ -214,6 +214,7 @@ const de = {
     assigned_budget_ratio: "Zugewiesene Budgetquote",
     available_unspent_budget: "Verfügbares Budget",
     converted_amount: "Umgerechneter Betrag",
+    projected_budgets_distribution: "Verteilung des geplanten Budgets",
     disbursed_budget_ratio: "Ausgezahlte Budgetquote",
     project_analytics: "Projekt Analyse",
     projected_budget_ratio: "Projezierte Budgetquote",

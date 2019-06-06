@@ -66,8 +66,8 @@ const fr = {
     username: "Nom d'utilisateur",
     view: "Vue",
     workflowItem: "Élement de workflow",
-    history_end: "French: Last event reached",
-    no_history: "Aucun évenement"
+    no_history: "Aucun évenement",
+    history_end: "Dernier évènement atteint"
   },
 
   login: {
@@ -117,7 +117,7 @@ const fr = {
     subproject_close_not_allowed: "Vous n'êtes pas autorisé à fermer la composante",
     subproject_comment: "Commentaire de la composante",
     subproject_completion_string: "{0} cal {1} van",
-    subproject_currency: "Devise",
+    subproject_currency: "Devise la composante",
     subproject_edit_title: "Modifier la composante",
     subproject_permissions_title: "Définir les autorisations pour la composante",
     subproject_preview: "Aperçu de la composante",
@@ -171,10 +171,10 @@ const fr = {
     workflow_type_transaction: "Transaction",
     workflow_type_workflow: "Workflow",
     workflow_upload_document: "Télécharger",
-    workflowitem_details: "FRENCH: Workflowitem item details",
-    workflowitem_details_documents: "FRENCH: Documents",
-    workflowitem_details_history: "FRENCH: History",
-    workflowitem_details_overview: "FRENCH: Overview"
+    workflowitem_details: "Détails du workflow item",
+    workflowitem_details_documents: "Documents",
+    workflowitem_details_history: "Historique",
+    workflowitem_details_overview: "Sommaire"
   },
 
   users: {
@@ -218,6 +218,7 @@ const fr = {
     converted_amount: "Montant converti",
     disbursed_budget_ratio: "Taux de décaissement(décaissé/alloué)",
     project_analytics: "Analyse de projet",
+    projected_budgets_distribution: "Répartition du budget total",
     projected_budget_ratio: "Taux d’estimation du budget(estimé/total)",
     subproject_analytics: "Analyse de la composante",
     total: "Total:",
@@ -295,7 +296,7 @@ const fr = {
     subproject_assigned: "Composante {0} vous a été assignée",
     subproject_close: "Composante {0} a été fermée",
     subproject_closed: "Composante {0} a été fermée",
-    subproject_createWorkflowitem: "Un nouveau élément du workflow a été crée pour le ous-projet {0}",
+    subproject_createWorkflowitem: "Un nouveau élément du workflow a été crée pour la composante {0}",
     subproject_intent_grantPermission: "Les autorisations pour la composante {0} ont changé",
     subproject_intent_revokePermission: "Les autorisations pour la composante {0} ont changé",
     subproject_projected_budget_deleted: "Le budget prévu du la composante {0} a été supprimé",
@@ -341,9 +342,9 @@ const fr = {
     project_revokePermission_details: "{0} a revoqué l'autorisation  {1} à {2} de {3}",
     project_update: "{0} a modifié le projet {1} ",
     sort: "Déplacé {0} après {1}",
-    subproject_assign: "{0} a assigné le projet {1} à {2}",
+    subproject_assign: "{0} a assigné la composante {1} à {2}",
     subproject_close: "{0} a terminé la composante {1}",
-    subproject_create: "{0} a créé un projet {1}",
+    subproject_create: "{0} a créé une composante {1}",
     subproject_createWorkflowitem: "{0} a crée l'élément de workflow {1}",
     subproject_grantPermission: "{0} a modifié l'autorisation {1} à {2}",
     subproject_grantPermission_details: "{0} a modifié l'autorisation {1} à {2} de {3}",

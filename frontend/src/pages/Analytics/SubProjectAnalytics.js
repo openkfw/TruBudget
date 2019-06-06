@@ -201,7 +201,7 @@ const Dashboard = ({ indicatedCurrency, projectedBudgets, projectedBudget, assig
   return (
     <div style={dashboardStyles.container}>
       <Chart
-        title="Projected Budgets Distribution"
+        title={strings.analytics.projected_budgets_distribution}
         chart={
           <Doughnut
             data={{

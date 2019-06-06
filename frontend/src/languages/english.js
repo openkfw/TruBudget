@@ -217,6 +217,7 @@ const en = {
     disbursed_budget_ratio: "Disbursed Budget Ratio",
     project_analytics: "Project Analytics",
     projected_budget_ratio: "Projected Budget Ratio",
+    projected_budgets_distribution: "Projected Budgets Distribution",
     subproject_analytics: "Subproject Analytics",
     total: "Total:",
     total_budget_distribution: "Total Budget Distribution"
