@@ -67,7 +67,7 @@ const fr = {
     view: "Vue",
     workflowItem: "Élement de workflow",
     history_end: "French: Last event reached",
-    no_history: "French: No events"
+    no_history: "Aucun évenement"
   },
 
   login: {
