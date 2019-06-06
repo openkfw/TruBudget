@@ -215,6 +215,7 @@ const pt = {
     assigned_budget_ratio: "Rácio do Orçamento Atribuído",
     available_unspent_budget: "Orçamento Disponível",
     converted_amount: "quantidade convertida",
+    projected_budgets_distribution: "PORTUGUESE: Projected Budgets Distribution",
     disbursed_budget_ratio: "Rácio do Orçamento Desembolsado",
     project_analytics: "Project Analytics",
     projected_budget_ratio: "Rácio do Orçamento Projetado",
