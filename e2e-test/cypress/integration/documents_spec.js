@@ -51,7 +51,7 @@ describe("Attaching a document to a workflowitem.", function() {
     cy.get(".workflowitem-info-button").click();
 
     // go to the documents tab:
-    cy.get("#workflowitem-documents-tab").click();
+    cy.get("[data-test=workflowitem-documents-tab]").click();
 
     // upload the same file, for validation:
     cy.fixture(fileName).then(fileContent => {
