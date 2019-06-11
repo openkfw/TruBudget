@@ -4,12 +4,12 @@ const { includes } = require("lodash");
 const apiSources = danger.git.fileMatch("api/src/**/*.ts");
 const blockchainSources = danger.git.fileMatch("blockchain/src/*");
 const frontendRootSources = danger.git.fileMatch("frontend/src/*.*");
-const frontendPageSources = danger.git.fileMatch("frontend/src/pages/*");
+const frontendPageSources = danger.git.fileMatch("frontend/src/pages/**/*.js");
 const frontendLanguageSources = danger.git.fileMatch(
   "frontend/src/languages/*"
 );
-const provisioningSources = danger.git.fileMatch("provisioning/src/*");
-const e2eTestSources = danger.git.fileMatch("e2e-test/cypress/*");
+const provisioningSources = danger.git.fileMatch("provisioning/src/**/*");
+const e2eTestSources = danger.git.fileMatch("e2e-test/cypress/**/*");
 
 const title = danger.github.pr.title.toLowerCase();
 const trivialPR = title.includes("refactor");
