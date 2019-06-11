@@ -7,6 +7,8 @@ import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as UserCreated from "./user_created";
 import * as UserPasswordChanged from "./user_password_changed";
+import * as UserPermissionGranted from "./user_permission_granted";
+import * as UserPermissionRevoked from "./user_permission_revoked";
 import * as UserRecord from "./user_record";
 import { UserTraceEvent } from "./user_trace_event";
 
@@ -27,6 +29,7 @@ export function sourceUserRecords(
     }
 
     const user = sourceEvent(ctx, event, users);
+
     if (Result.isErr(user)) {
       errors.push(user);
     } else {
@@ -102,9 +105,28 @@ function getUserId(event: BusinessEvent): Result.Type<UserRecord.Id> {
   switch (event.type) {
     case "user_password_changed":
       return event.user.id;
+    case "user_permission_granted":
+    case "user_permission_revoked":
+      return event.userId;
 
     default:
       return new VError(`cannot find user ID in event of type ${event.type}`);
+  }
+}
+
+type EventModule = {
+  mutate: (user: UserRecord.UserRecord, event: BusinessEvent) => Result.Type<void>;
+};
+function getEventModule(event: BusinessEvent): EventModule {
+  switch (event.type) {
+    case "user_password_changed":
+      return UserPasswordChanged;
+    case "user_permission_granted":
+      return UserPermissionGranted;
+    case "user_permission_revoked":
+      return UserPermissionRevoked;
+    default:
+      throw new VError(`unknown user event ${event.type}`);
   }
 }
 
@@ -141,19 +163,6 @@ export function newUserFromEvent(
     return userCopy;
   } catch (error) {
     return new EventSourcingError({ ctx, event, target: user }, error);
-  }
-}
-
-type EventModule = {
-  mutate: (user: UserRecord.UserRecord, event: BusinessEvent) => Result.Type<void>;
-};
-function getEventModule(event: BusinessEvent): EventModule {
-  switch (event.type) {
-    case "user_password_changed":
-      return UserPasswordChanged;
-
-    default:
-      throw new VError(`unknown user event ${event.type}`);
   }
 }
 

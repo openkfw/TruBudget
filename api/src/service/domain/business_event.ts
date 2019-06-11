@@ -7,6 +7,8 @@ import * as GroupPermissionGranted from "./organization/group_permissions_grante
 import * as GroupPermissionRevoked from "./organization/group_permissions_revoked";
 import * as UserCreated from "./organization/user_created";
 import * as UserPasswordChanged from "./organization/user_password_changed";
+import * as UserPermissionGranted from "./organization/user_permission_granted";
+import * as UserPermissionRevoked from "./organization/user_permission_revoked";
 import * as GlobalPermissionsGranted from "./workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./workflow/global_permission_revoked";
 import * as NotificationCreated from "./workflow/notification_created";
@@ -64,6 +66,8 @@ export type BusinessEvent =
   | SubprojectUpdated.Event
   | UserCreated.Event
   | UserPasswordChanged.Event
+  | UserPermissionGranted.Event
+  | UserPermissionRevoked.Event
   | WorkflowitemAssigned.Event
   | WorkflowitemClosed.Event
   | WorkflowitemCreated.Event
