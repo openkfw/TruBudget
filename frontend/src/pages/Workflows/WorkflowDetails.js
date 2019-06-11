@@ -17,7 +17,7 @@ import React, { useEffect, useState } from "react";
 import { statusIconMapping, statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
 import DocumentOverviewContainer from "../Documents/DocumentOverviewContainer";
-import WorkflowitemHistoryTab from "../WorkflowitemDetails/WorkflowHistoryTab";
+import WorkflowitemHistoryTab from "./WorkflowitemHistoryTab/WorkflowHistoryTab";
 
 const styles = {
   textfield: {
@@ -169,9 +169,9 @@ function WorkflowDetails({
       <DialogTitle data-test="workflowInfoDialog">{strings.workflow.workflowitem_details}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
         <Tabs value={tabIndex} onChange={(_, index) => setTabIndex(index)}>
-          <Tab id="workflowitem-overview-tab" label={strings.workflow.workflowitem_details_overview} />
-          <Tab id="workflowitem-documents-tab" label={strings.workflow.workflowitem_details_documents} />
-          <Tab id="workflowitem-history-tab" label={strings.workflow.workflowitem_details_history} />
+          <Tab data-test="workflowitem-overview-tab" label={strings.workflow.workflowitem_details_overview} />
+          <Tab data-test="workflowitem-documents-tab" label={strings.workflow.workflowitem_details_documents} />
+          <Tab data-test="workflowitem-history-tab" label={strings.workflow.workflowitem_details_history} />
         </Tabs>
         {content}
       </DialogContent>

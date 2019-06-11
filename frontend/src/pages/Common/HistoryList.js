@@ -39,7 +39,7 @@ export default function HistoryList({ events, nEventsTotal, hasMore, isLoading, 
 
   return (
     <List
-      id="history-list"
+      data-test="history-list"
       subheader={<ListSubheader disableSticky>{strings.common.history}</ListSubheader>}
       style={styles.list}
     >

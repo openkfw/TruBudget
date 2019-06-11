@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Prevent assignee selection from overflowing [#299](https://github.com/openkfw/TruBudget/issues/299)
 - Display correct name in notifications [#292](https://github.com/openkfw/TruBudget/issues/292)
 - Workflowitem amount is only displayed if amount and exchange rate are available [#297](https://github.com/openkfw/TruBudget/issues/297)
+- User is not logged out when viewing a workflow item's history [#317](https://github.com/openkfw/TruBudget/issues/317)
 
 <!-- ### Security -->
 

@@ -95,7 +95,7 @@ import {
   SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT,
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS
-} from "./pages/WorkflowitemDetails/actions";
+} from "./pages/Workflows/WorkflowitemHistoryTab/actions";
 
 import {
   LOGIN,
@@ -941,7 +941,7 @@ export function* fetchNextWorkflowitemHistoryPageSaga({ projectId, subprojectId,
     const remainingItems = totalHistoryItemCount - currentHistoryPage * historyPageSize;
     // If the remaining items are 0, it means that the total number of history items
     // is a multiple of the page size and we need to fetch a whole page
-    const limit = isLastPage && remainingItems !== 0 ? remainingItems : historyPageSize;
+    const limit = isLastPage && remainingItems > 0 ? remainingItems : historyPageSize;
 
     const { historyItemsCount, events } = yield callApi(
       api.viewWorkflowitemHistory,

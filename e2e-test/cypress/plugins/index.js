@@ -14,31 +14,37 @@
 const axios = require("axios");
 
 function reportsReadiness(baseUrl) {
-  return axios.get(`${baseUrl}/api/readiness`).then(() => {
-    console.log("API reports readiness!");
-    return true;
-  }).catch(err => {
-    console.log(`API is not ready yet: ${err}`);
-    return false;
-  });
+  return axios
+    .get(`${baseUrl}/api/readiness`)
+    .then(() => {
+      console.log("API reports readiness!");
+      return true;
+    })
+    .catch(err => {
+      console.log(`API is not ready yet: ${err}`);
+      return false;
+    });
 }
 
 function hasLoginReady(baseUrl) {
-  return axios.post(`${baseUrl}/api/user.authenticate`, {
-    apiVersion: "1.0",
-    data: {
-      user: {
-        id: "mstein",
-        password: "test"
+  return axios
+    .post(`${baseUrl}/api/user.authenticate`, {
+      apiVersion: "1.0",
+      data: {
+        user: {
+          id: "mstein",
+          password: "test"
+        }
       }
-    }
-  }).then(() => {
-    console.log("Login successful!");
-    return true;
-  }).catch(err => {
-    console.log(`Authentication failed - likely provisioning is still ongoing; err: ${err}`);
-    return false;
-  });
+    })
+    .then(() => {
+      console.log("Login successful!");
+      return true;
+    })
+    .catch(err => {
+      console.log(`Authentication failed - likely provisioning is still ongoing; err: ${err}`);
+      return false;
+    });
 }
 
 const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
@@ -63,6 +69,6 @@ async function awaitApiReady(baseUrl) {
 
 module.exports = (on, _config) => {
   on("task", {
-    awaitApiReady: awaitApiReady,
+    awaitApiReady: awaitApiReady
   });
 };
