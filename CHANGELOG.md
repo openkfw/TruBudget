@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+<!-- ### Added-->
+
+<!-- ### Changed-->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed-->
+
+<!-- ### Security -->
+
+## [1.1.0] - 2019-06-12
+
 ### Added
 
 - New API endpoint to change a user's password [#79](https://github.com/openkfw/TruBudget/issues/79)
@@ -19,10 +33,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Move 'Read All' button to the left side [#301](https://github.com/openkfw/TruBudget/issues/301)
 - Don't display view button if user is not allowed to see project/subproject [#302](https://github.com/openkfw/TruBudget/issues/302)
 
-<!-- ### Deprecated -->
-
-<!-- ### Removed -->
-
 ### Fixed
 
 - Empty history displayed after API call is finished [#294](https://github.com/openkfw/TruBudget/issues/294)
@@ -31,8 +41,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Display correct name in notifications [#292](https://github.com/openkfw/TruBudget/issues/292)
 - Workflowitem amount is only displayed if amount and exchange rate are available [#297](https://github.com/openkfw/TruBudget/issues/297)
 - User is not logged out when viewing a workflow item's history [#317](https://github.com/openkfw/TruBudget/issues/317)
-
-<!-- ### Security -->
 
 ## [1.0.1] - 2019-05-21
 
@@ -289,7 +297,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.1...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.1.0...master
+[1.1.0]: https://github.com/openkfw/TruBudget/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/openkfw/TruBudget/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.9...v1.0.0
 [1.0.0-beta.9]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.8...v1.0.0-beta.9
