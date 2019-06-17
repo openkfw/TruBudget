@@ -13,7 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Deprecated -->
 
-<!-- ### Removed -->
+### Removed
+
+- Permissions related to notifications [#316](https://github.com/openkfw/TruBudget/issues/316)
 
 <!-- ### Fixed-->
 
