@@ -82,14 +82,14 @@ const pt = {
     add_group: "Criar novo grupo",
     edit_group: "Editar grupo",
     edit_permissions_for: "Editar permissões para",
-    current_user_password: "Portuguese: Your password",
-    new_user_password: "Portuguese: New password",
-    new_user_password_confirmation: "Portuguese: Confirm new password",
-    no_password_match: "Portuguese: Passwords don't match",
-    change_password_for: "Portuguese: Change password for",
-    password_change_success: "Portuguese: Password successfully changed",
-    type_current_password: "Portuguese: Type in current password for {0}",
-    type_new_password: "Portuguese: Type in new password for {0}"
+    current_user_password: "Sua Senha",
+    new_user_password: "Nova Senha",
+    new_user_password_confirmation: "Confirme a Nova Senha",
+    no_password_match: "Senhas não combinam",
+    change_password_for: "Mudar senha para {0}",
+    password_change_success: "Senha mudada com sucesso",
+    type_current_password: "Digite a senha atual para o {0}",
+    type_new_password: "Digite a nova senha para o {0}"
   },
 
   nodesDashboard: {

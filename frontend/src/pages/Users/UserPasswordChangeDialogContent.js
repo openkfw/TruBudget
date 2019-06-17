@@ -1,11 +1,11 @@
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
-import TextField from "@material-ui/core/TextField";
-import React from "react";
+import React, { useState } from "react";
 import { formatString } from "../../helper";
 
 import strings from "../../localizeStrings";
+import Password from "../Common/Password";
 
 const styles = {
   container: {
@@ -20,18 +20,9 @@ const styles = {
   }
 };
 
-const handleEnter = (e, action = () => {}) => {
-  if (e.charCode === 13) {
-    action();
-  }
-};
-
 function UserPasswordChange({
   actingUser,
   userId,
-  userPassword,
-  newPassword,
-  newPasswordConfirmation,
   storeUserPassword,
   storeNewPassword,
   storeNewPasswordConfirmation,
@@ -39,58 +30,54 @@ function UserPasswordChange({
   wrongPasswordGiven,
   handleSubmit
 }) {
+  const [userPassword, setUserPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirmation, setNewPasswordConfirmation] = useState("");
+
   return (
     <div>
       <Card style={styles.card}>
         <CardHeader subheader={formatString(strings.users.type_current_password, actingUser)} />
         <CardContent>
-          <div style={styles.container}>
-            <TextField
-              data-test="user-password-textfield"
-              style={{ width: "50%" }}
-              label={strings.users.current_user_password}
-              value={userPassword}
-              margin="normal"
-              error={wrongPasswordGiven}
-              id="userPassword"
-              onChange={event => storeUserPassword(event.target.value)}
-              type="password"
-              helperText={wrongPasswordGiven ? strings.common.incorrect_password : null}
-            />
-          </div>
+          <Password
+            iconDisplayed={false}
+            data-test="user-password-textfield"
+            label={strings.users.current_user_password}
+            password={userPassword}
+            storePassword={storeUserPassword}
+            setPassword={setUserPassword}
+            failed={wrongPasswordGiven}
+            id="userPassword"
+            failedText={strings.common.incorrect_password}
+          />
         </CardContent>
       </Card>
       <Card style={styles.card}>
         <CardHeader subheader={formatString(strings.users.type_new_password, userId)} />
         <CardContent>
-          <div style={styles.container}>
-            <TextField
-              data-test="new-password-textfield"
-              style={{ width: "50%" }}
-              label={strings.users.new_user_password}
-              value={newPassword}
-              margin="normal"
-              error={!newPasswordsMatch}
-              id="newPassword"
-              onChange={event => storeNewPassword(event.target.value)}
-              type="password"
-            />
-          </div>
-          <div style={styles.container}>
-            <TextField
-              data-test="new-password-confirmation-textfield"
-              style={{ width: "50%" }}
-              label={strings.users.new_user_password_confirmation}
-              value={newPasswordConfirmation}
-              margin="normal"
-              error={!newPasswordsMatch}
-              id="newPasswordConfirmation"
-              onChange={event => storeNewPasswordConfirmation(event.target.value)}
-              type="password"
-              helperText={!newPasswordsMatch ? strings.users.no_password_match : null}
-              onKeyPress={e => handleEnter(e, handleSubmit)}
-            />
-          </div>
+          <Password
+            iconDisplayed={false}
+            data-test="new-password-textfield"
+            label={strings.users.new_user_password}
+            password={newPassword}
+            failed={!newPasswordsMatch}
+            id="newPassword"
+            onChange={event => setNewPassword(event.target.value)}
+            onBlur={event => storeNewPassword(event.target.value)}
+            type="password"
+          />
+          <Password
+            iconDisplayed={false}
+            data-test="new-password-confirmation-textfield"
+            label={strings.users.new_user_password_confirmation}
+            password={newPasswordConfirmation}
+            failed={!newPasswordsMatch}
+            id="newPasswordConfirmation"
+            onChange={event => setNewPasswordConfirmation(event.target.value)}
+            onBlur={event => storeNewPasswordConfirmation(event.target.value)}
+            type="password"
+            failedText={!newPasswordsMatch ? strings.users.no_password_match : null}
+          />
         </CardContent>
       </Card>
     </div>

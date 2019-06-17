@@ -6,10 +6,10 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import EditIcon from "@material-ui/icons/Edit";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import _sortBy from "lodash/sortBy";
 import React from "react";
-import EditIcon from "@material-ui/icons/Edit";
 
 import strings from "../../localizeStrings";
 
@@ -22,15 +22,8 @@ const sortUsers = users => {
   return _sortBy(users, user => user.organization && user.id);
 };
 
-const UsersTable = ({
-  classes,
-  users,
-  permissionIconDisplayed,
-  showDashboardDialog,
-  showChangeUserPasswordDialog,
-  userId
-}) => {
-  const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true)); //&& u.id !== userId));
+const UsersTable = ({ classes, users, permissionIconDisplayed, showDashboardDialog, userId }) => {
+  const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true));
 
   return (
     <Paper>

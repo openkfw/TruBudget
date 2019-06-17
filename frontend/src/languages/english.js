@@ -86,7 +86,7 @@ const en = {
     new_user_password: "New password",
     new_user_password_confirmation: "Confirm new password",
     no_password_match: "Passwords don't match",
-    change_password_for: "Change password for",
+    change_password_for: "Change password for {0}",
     password_change_success: "Password successfully changed",
     type_current_password: "Type in current password for {0}",
     type_new_password: "Type in new password for {0}"

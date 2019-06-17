@@ -10,7 +10,7 @@ describe("Users/Groups Dashboard", function() {
 
   it("If a user is granted permission to edit another user's password, the edit button appears next to the user", function() {
     // Log in as root and grant the permission
-    cy.login("root", "asdf");
+    cy.login("root", "root-secret");
     cy.grantUserPermissions("dviolin", "user.changePassword", "mstein");
 
     // Log in as mstein again and refresh the page
@@ -21,7 +21,7 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test=edit-user-dviolin]").should("be.visible");
 
     // Revoke the permission agian to make the test re-runnable
-    cy.login("root", "asdf");
+    cy.login("root", "root-secret");
     cy.revokeUserPermissions("dviolin", "user.changePassword", "mstein");
     cy.login();
   });

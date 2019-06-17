@@ -7,6 +7,7 @@ import { Ctx } from "./lib/ctx";
 import * as Group from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
+import { Permissions } from "./service/domain/permissions";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -63,7 +64,7 @@ interface ExposedIdentity {
   displayName: string;
   organization?: string;
   isGroup: boolean;
-  permissions: object;
+  permissions: Permissions;
 }
 
 interface Service {

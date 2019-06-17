@@ -191,7 +191,7 @@ const de = {
     new_user_password: "Neues Passwort",
     new_user_password_confirmation: "Bestätigen Sie das neue Password",
     no_password_match: "Passwörter stimmen nicht überein",
-    change_password_for: "Passwortänderung für",
+    change_password_for: "Passwortänderung für {0}",
     password_change_success: "Passwort wurde erfolgreich geändert",
     type_current_password: "Geben Sie das Passwort für {0} ein",
     type_new_password: "Geben Sie das neue Passwort für {0} ein"

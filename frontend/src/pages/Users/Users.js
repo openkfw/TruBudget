@@ -42,7 +42,7 @@ const Users = props => {
   const onClick = () => (tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup"));
   const permissionIconDisplayed = allowedIntents.includes("global.listPermissions");
   return (
-    <div id="userdashboard" data-test="userdashboard" style={styles.container}>
+    <div data-test="userdashboard" style={styles.container}>
       <div style={styles.customWidth}>
         <AppBar position="static" color="default">
           <Tabs

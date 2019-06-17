@@ -189,14 +189,14 @@ const fr = {
     add_group: "Ajouter un groupe",
     edit_group: "Éditer und groupe",
     edit_permissions_for: "Éditer les autorisations pour",
-    current_user_password: "FRENCH: Your password",
-    new_user_password: "FRENCH: New password",
-    new_user_password_confirmation: "FRENCH: Confirm new password",
-    no_password_match: "FRENCH: Passwords don't match",
-    change_password_for: "FRENCH: Change password for",
-    password_change_success: "FRENCH: Password successfully changed",
-    type_current_password: "FRENCH: Type in current password for {0}",
-    type_new_password: "FRENCH: Type in new password for {0}"
+    current_user_password: "Votre mot de passe",
+    new_user_password: "Nouveau mot de passe",
+    new_user_password_confirmation: "Confirmer le nouveau mot de passe",
+    no_password_match: "Les mots de passe ne correspondent pas",
+    change_password_for: "Changer le mot de passe pour {0}",
+    password_change_success: "Mot de passe changé avec succès",
+    type_current_password: "Tapez le mot de passe actuel pour {0}",
+    type_new_password: "Tapez le nouveau mot de passe pour {0}"
   },
 
   nodesDashboard: {

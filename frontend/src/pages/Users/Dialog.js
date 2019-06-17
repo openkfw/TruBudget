@@ -7,6 +7,7 @@ import GlobalPermissions from "./GlobalPermissions";
 import GroupDialogContent from "./GroupDialogContent";
 import UserDialogContent from "./UserDialogContent";
 import UserPasswordChangeDialogContent from "./UserPasswordChangeDialogContent";
+import { formatString } from "../../helper";
 
 const Dialog = props => {
   const {
@@ -81,7 +82,7 @@ const Dialog = props => {
       };
       break;
     case "editUserPassword":
-      title = strings.users.change_password_for + ` ${editId}`;
+      title = formatString(strings.users.change_password_for, editId);
       handleSubmitFunc = () => {
         storeSnackbarMessage(strings.users.password_change_success);
         if (newPassword === newPasswordConfirmation) {
@@ -108,7 +109,7 @@ const Dialog = props => {
               handleSubmit={handleSubmitFunc}
             />
           ),
-          nextDisabled: newPassword === "" || newPasswordConfirmation === ""
+          nextDisabled: newPassword === "" && newPasswordConfirmation === ""
         }
       ];
       break;

@@ -72,8 +72,12 @@ const LoginPage = ({
         <Username username={username} storeUsername={storeUsername} id="username" />
         <Password
           password={password}
+          iconDisplayed={true}
           storePassword={storePassword}
+          setPassword={storePassword}
           failed={loginUnsuccessful}
+          failedText={strings.common.incorrect_password}
+          label={strings.common.password}
           nextBestAction={() => loginWithCredentials(username, password)}
           id="password"
         />
