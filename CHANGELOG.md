@@ -7,17 +7,56 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-<!-- ### Added -->
+<!-- ### Added-->
 
-<!-- ### Changed -->
+<!-- ### Changed-->
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+<!-- ### Fixed-->
 
 <!-- ### Security -->
+
+## [1.1.0] - 2019-06-12
+
+### Added
+
+- New API endpoint to change a user's password [#79](https://github.com/openkfw/TruBudget/issues/79)
+- New API endpoints to grant, revoke and list permissions [#310](https://github.com/openkfw/TruBudget/issues/310)
+- Different background color for unread notifications [#300](https://github.com/openkfw/TruBudget/issues/300)
+
+### Changed
+
+- Notification displays name of parent project and subproject [#298](https://github.com/openkfw/TruBudget/issues/298)
+- Move 'Read All' button to the left side [#301](https://github.com/openkfw/TruBudget/issues/301)
+- Don't display view button if user is not allowed to see project/subproject [#302](https://github.com/openkfw/TruBudget/issues/302)
+
+### Fixed
+
+- Empty history displayed after API call is finished [#294](https://github.com/openkfw/TruBudget/issues/294)
+- Last page of notifications displays correct number of items [#288](https://github.com/openkfw/TruBudget/issues/288)
+- Prevent assignee selection from overflowing [#299](https://github.com/openkfw/TruBudget/issues/299)
+- Display correct name in notifications [#292](https://github.com/openkfw/TruBudget/issues/292)
+- Workflowitem amount is only displayed if amount and exchange rate are available [#297](https://github.com/openkfw/TruBudget/issues/297)
+- User is not logged out when viewing a workflow item's history [#317](https://github.com/openkfw/TruBudget/issues/317)
+
+## [1.0.1] - 2019-05-21
+
+### Changed
+
+- Increased Multichain Version to 2.0.1 [#273](https://github.com/openkfw/TruBudget/issues/273)
+
+### Fixed
+
+- Correct number of history items is displayed when history drawer/list is opened [#275](https://github.com/openkfw/TruBudget/issues/275)
+- Display formatted string when user edits or deletes projected budget [#279](https://github.com/openkfw/TruBudget/issues/279)
+- Previously added documents stay visible after addition of a new document [#268](https://github.com/openkfw/TruBudget/issues/268)
+- Navigation on notifications page now works as expected [#287](https://github.com/openkfw/TruBudget/pull/287)
+- The link to the project/subproject is now active when the user has permissions to see it [#284](https://github.com/openkfw/TruBudget/issues/284)
+- The link to the project/subproject in fly-in notifications correctly redirects the user [#285](https://github.com/openkfw/TruBudget/issues/285)
+- When a workflow item is assigned, the new assignee gets notified [#272](https://github.com/openkfw/TruBudget/issues/272)
 
 ## [1.0.0] - 2019-05-08
 
@@ -26,6 +65,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Projected budget ratio on project analytics screen [#242](https://github.com/openkfw/TruBudget/pull/242)
 - New endpoint `/workflowitem.viewHistory` that returns all changes that have been applied to a particular workflowitem in chronological order. [#252](https://github.com/openkfw/TruBudget/issues/252)
 - Each workflowitem's history can now be displayed individually in the frontend. [#252](https://github.com/openkfw/TruBudget/issues/252)
+- User gets notified when the projected budget of a project/subproject he/she is assigned to is updated or deleted [#283](https://github.com/openkfw/TruBudget/issues/283)
 
 ### Changed
 
@@ -257,7 +297,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.0.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.1.0...master
+[1.1.0]: https://github.com/openkfw/TruBudget/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/openkfw/TruBudget/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.9...v1.0.0
 [1.0.0-beta.9]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.8...v1.0.0-beta.9
 [1.0.0-beta.8]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...v1.0.0-beta.8

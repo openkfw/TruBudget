@@ -39,7 +39,7 @@ These instructions will help you deploy your own TruBudget platform having two n
 ## Starting the first TruBudget node
 
 The recommended option to get started with TruBudget is to use the latest stable docker images via docker-compose.
-For more detailed information about the installation and the environment variables or alternative ways to setup TruBudget check out the [Installation Guide](./doc/wiki/Installation-Guide/Installation-Guide.md).
+For more detailed information about the installation and the environment variables or alternative ways to setup TruBudget check out the [Installation Guide](./doc/tutorials/installation/bare-metal-installation.md).
 
 The required environment variables are set in the `.env` file. If you want to use the standard setup, simply copy the `.env_example` file, otherwise explore the posible configuration options in it:
 
@@ -58,7 +58,7 @@ sh scripts/master/start-master-node.sh
 
 > In case you want to start with a set of example data, you can also start TruBudget with the following script `sh scripts/master/start-and-provision-master-node.sh`. The process of provisioning may take several minutes (depending on your CPU) and can slow down your computer during the execution of the script. After provisioning you have acces to a set of users (e.g. `mstein` which share the password `test`)
 
-This command will bootstrap a prod and test instance of TruBudget (blockchain, api, frontend) for you. Use `docker ps` to check on the running containers. You should see the following output (you can find more details about the runtime architecture in the [Infrastructure-Guide](./doc/wiki/Infrastructure-Guide/Infrastructure-Guide.md)):
+This command will bootstrap a prod and test instance of TruBudget (blockchain, api, frontend) for you. Use `docker ps` to check on the running containers. You should see the following output:
 
 ```bash
 ➜ docker ps
@@ -176,7 +176,7 @@ Obviously this is just a short introduction on how to start and use the platform
 
 # Build and Develop from Local Sources
 
-Checkout the [Contributor Guide](./doc/wiki/Contributor-Guide/Contributor-Guide.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
+Checkout the [Contributor Guide](./doc/tutorials/contribute/Contributor-Guide.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
 
 <!-- # Troubleshooting
 TBD -->

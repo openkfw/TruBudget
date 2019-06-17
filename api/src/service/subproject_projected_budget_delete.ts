@@ -8,6 +8,7 @@ import * as Project from "./domain/workflow/project";
 import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectProjectedBudgetDelete from "./domain/workflow/subproject_projected_budget_delete";
+import * as GroupQuery from "./group_query";
 import { store } from "./store";
 
 export async function deleteProjectedBudget(
@@ -30,6 +31,9 @@ export async function deleteProjectedBudget(
       {
         getSubproject: async (pId, spId) => {
           return cache.getSubproject(pId, spId);
+        },
+        getUsersForIdentity: async identity => {
+          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
       },
     ),

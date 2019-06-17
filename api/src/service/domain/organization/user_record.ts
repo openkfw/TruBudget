@@ -1,8 +1,12 @@
 import Joi = require("joi");
 
+import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Permissions, permissionsSchema } from "../permissions";
+import { canAssumeIdentity } from "./auth_token";
+import { Identity } from "./identity";
+import { ServiceUser } from "./service_user";
 import { UserTraceEvent, userTraceEventSchema } from "./user_trace_event";
 
 export type Id = string;
@@ -38,7 +42,18 @@ const schema = Joi.object({
   additionalData: AdditionalData.schema.required(),
 });
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input: any): Result.Type<UserRecord> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
+}
+
+export function permits(user: UserRecord, actingUser: ServiceUser, intents: Intent[]): boolean {
+  const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
+    const eligibles = user.permissions[intent] || [];
+    return acc.concat(eligibles);
+  }, []);
+  const hasPermission = eligibleIdentities.some(identity =>
+    canAssumeIdentity(actingUser, identity),
+  );
+  return hasPermission;
 }

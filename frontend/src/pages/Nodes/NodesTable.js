@@ -52,7 +52,7 @@ const NodesTable = ({ nodes, classes }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>{strings.users.organization}</TableCell>
+            <TableCell>{strings.common.organization}</TableCell>
             <TableCell>{strings.nodesDashboard.nodes}</TableCell>
             <TableCell>{strings.nodesDashboard.access}</TableCell>
           </TableRow>

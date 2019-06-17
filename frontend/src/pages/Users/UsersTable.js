@@ -30,7 +30,7 @@ const UsersTable = ({ classes, users, permissionIconDisplayed, showDashboardDial
           <TableRow>
             <TableCell>{strings.common.id}</TableCell>
             <TableCell>{strings.common.name}</TableCell>
-            <TableCell>{strings.users.organization}</TableCell>
+            <TableCell>{strings.common.organization}</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>

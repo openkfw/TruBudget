@@ -90,7 +90,7 @@ const ProjectDetails = props => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>{strings.users.organization}</TableCell>
+                <TableCell>{strings.common.organization}</TableCell>
                 <TableCell align="right">{strings.common.amount}</TableCell>
                 <TableCell align="right">{strings.common.currency}</TableCell>
               </TableRow>

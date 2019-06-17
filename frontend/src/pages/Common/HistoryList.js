@@ -5,6 +5,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import dayjs from "dayjs";
 import React from "react";
+import _isEmpty from "lodash/isEmpty";
 
 import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
@@ -18,12 +19,18 @@ const styles = {
 
 export default function HistoryList({ events, nEventsTotal, hasMore, isLoading, getUserDisplayname }) {
   const eventItems = events.map((event, index) => {
-    const eventTime = event.getIn(["businessEvent", "time"]);
+    if (!(event.businessEvent && event.snapshot)) {
+      // eslint-disable-next-line no-console
+      console.warn("The event does not have a business event or snapshot and will not be displayed", event);
+
+      return null;
+    }
+    const eventTime = event.businessEvent.time;
     return (
       <ListItem key={`${index}-${eventTime}`} className="history-item">
         <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
         <ListItemText
-          primary={stringifyHistoryEvent(event, getUserDisplayname)}
+          primary={stringifyHistoryEvent(event.businessEvent, event.snapshot, getUserDisplayname)}
           secondary={dayjs(eventTime).fromNow()}
         />
       </ListItem>
@@ -32,11 +39,11 @@ export default function HistoryList({ events, nEventsTotal, hasMore, isLoading, 
 
   return (
     <List
-      id="history-list"
+      data-test="history-list"
       subheader={<ListSubheader disableSticky>{strings.common.history}</ListSubheader>}
       style={styles.list}
     >
-      {nEventsTotal === 0 ? (
+      {!isLoading && nEventsTotal === 0 ? (
         <ListItem key="no-element">
           <Avatar alt={""} src="" />
           <ListItemText primary="" secondary={strings.common.no_history} />
@@ -56,11 +63,12 @@ export default function HistoryList({ events, nEventsTotal, hasMore, isLoading, 
   );
 }
 
-function stringifyHistoryEvent(event, getUserDisplayname) {
-  const businessEvent = event.get("businessEvent");
-  const createdBy = getUserDisplayname(businessEvent.get("publisher"));
-  const eventType = businessEvent.get("type");
-  const displayName = event.getIn(["snapshot", "displayName"]) || "";
+const formatPermission = data => `"${strings.permissions[data.replace(/[.]/g, "_")]}"` || `"${data.intent}"`;
+
+function stringifyHistoryEvent(businessEvent, snapshot, getUserDisplayname) {
+  const createdBy = getUserDisplayname(businessEvent.publisher);
+  const eventType = businessEvent.type;
+  const displayName = snapshot.displayName || "";
 
   switch (eventType) {
     case "project_created":
@@ -72,7 +80,7 @@ function stringifyHistoryEvent(event, getUserDisplayname) {
         strings.history.project_assign,
         createdBy,
         displayName,
-        getUserDisplayname(businessEvent.get("assignee"))
+        getUserDisplayname(businessEvent.assignee)
       );
     case "project_closed":
       return formatString(strings.history.project_close, createdBy, displayName);
@@ -80,19 +88,22 @@ function stringifyHistoryEvent(event, getUserDisplayname) {
       return formatString(
         strings.history.project_grantPermission_details,
         createdBy,
-        strings.permissions[eventType],
-        getUserDisplayname(businessEvent.get("grantee")),
+        formatPermission(businessEvent.permission),
+        getUserDisplayname(businessEvent.grantee),
         displayName
       );
     case "project_permission_revoked":
       return formatString(
         strings.history.project_revokePermission_details,
         createdBy,
-        strings.permissions[eventType],
-        getUserDisplayname(businessEvent.get("revokee")),
+        formatPermission(businessEvent.permission),
+        getUserDisplayname(businessEvent.revokee),
         displayName
       );
-
+    case "project_projected_budget_updated":
+      return formatString(strings.history.project_projected_budget_updated, createdBy, businessEvent.organization);
+    case "project_projected_budget_deleted":
+      return formatString(strings.history.project_projected_budget_deleted, createdBy, businessEvent.organization);
     case "subproject_created":
       return formatString(strings.history.subproject_create, createdBy, displayName);
     case "subproject_assigned":
@@ -100,7 +111,7 @@ function stringifyHistoryEvent(event, getUserDisplayname) {
         strings.history.subproject_assign,
         createdBy,
         displayName,
-        getUserDisplayname(businessEvent.get("assignee"))
+        getUserDisplayname(businessEvent.assignee)
       );
     case "subproject_updated":
       return formatString(strings.history.subproject_update, createdBy, displayName);
@@ -110,16 +121,16 @@ function stringifyHistoryEvent(event, getUserDisplayname) {
       return formatString(
         strings.history.subproject_grantPermission_details,
         createdBy,
-        strings.permissions[eventType],
-        getUserDisplayname(businessEvent.get("grantee")),
+        formatPermission(businessEvent.permission),
+        getUserDisplayname(businessEvent.grantee),
         displayName
       );
     case "subproject_permission_revoked":
       return formatString(
         strings.history.subproject_revokePermission_details,
         createdBy,
-        strings.permissions[eventType],
-        getUserDisplayname(businessEvent.get("revokee")),
+        formatPermission(businessEvent.permission),
+        getUserDisplayname(businessEvent.revokee),
         displayName
       );
     case "workflowitems_reordered":
@@ -128,8 +139,8 @@ function stringifyHistoryEvent(event, getUserDisplayname) {
     case "workflowitem_created":
       return formatString(strings.history.subproject_createWorkflowitem, createdBy, displayName);
     case "workflowitem_updated":
-      const update = businessEvent.get("update");
-      return update.has("documents") && !update.get("documents").isEmpty()
+      const update = businessEvent.update;
+      return update.documents && !_isEmpty(update.documents)
         ? formatString(strings.history.workflowitem_update_docs, createdBy, displayName)
         : formatString(strings.history.workflowitem_update, createdBy, displayName);
     case "workflowitem_assigned":
@@ -137,7 +148,7 @@ function stringifyHistoryEvent(event, getUserDisplayname) {
         strings.history.workflowitem_assign,
         createdBy,
         displayName,
-        getUserDisplayname(businessEvent.get("assignee"))
+        getUserDisplayname(businessEvent.assignee)
       );
     case "workflowitem_closed":
       return formatString(strings.history.workflowitem_close, createdBy, displayName);
@@ -145,19 +156,20 @@ function stringifyHistoryEvent(event, getUserDisplayname) {
       return formatString(
         strings.history.workflowitem_grantPermission_details,
         createdBy,
-        strings.permissions[eventType],
-        getUserDisplayname(businessEvent.get("grantee")),
+        formatPermission(businessEvent.permission),
+        getUserDisplayname(businessEvent.grantee),
         displayName
       );
     case "workflowitem_permission_revoked":
       return formatString(
         strings.history.workflowitem_revokePermission_details,
         createdBy,
-        strings.permissions[eventType],
-        getUserDisplayname(businessEvent.get("revokee")),
+        formatPermission(businessEvent.permission),
+        getUserDisplayname(businessEvent.revokee),
         displayName
       );
     default:
+      // eslint-disable-next-line no-console
       console.log(`WARN: no handler for event type ${eventType}`);
       return eventType;
   }

@@ -6,14 +6,14 @@ import { HIDE_HISTORY } from "../Notifications/actions";
 import {
   CREATE_SUBPROJECT_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
-  FETCH_PROJECT_HISTORY,
-  FETCH_PROJECT_HISTORY_SUCCESS,
+  FETCH_NEXT_PROJECT_HISTORY_PAGE,
+  FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
+  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   HIDE_PROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_ADDITIONAL_DATA,
   HIDE_SUBPROJECT_DIALOG,
   HIDE_SUBPROJECT_PERMISSIONS,
-  SET_HISTORY_OFFSET,
   SHOW_PROJECT_ASSIGNEES,
   SHOW_SUBPROJECT_ADDITIONAL_DATA,
   SHOW_SUBPROJECT_CREATE,
@@ -27,7 +27,7 @@ import {
   OPEN_HISTORY
 } from "./actions";
 
-const initialLimit = 50;
+const historyPageSize = 50;
 
 const defaultState = fromJS({
   id: "",
@@ -52,9 +52,10 @@ const defaultState = fromJS({
   logs: [],
   historyItems: [],
   isHistoryLoading: false,
-  historyItemsCount: 0,
-  offset: -initialLimit,
-  limit: initialLimit,
+  totalHistoryItemCount: 0,
+  historyPageSize: historyPageSize,
+  currentHistoryPage: 0,
+  lastHistoryPage: 1,
   allowedIntents: [],
   showSubProjectPermissions: false,
   isSubProjectAdditionalDataShown: false,
@@ -130,27 +131,30 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("showProjectAssignees", false);
     case HIDE_SUBPROJECT_ADDITIONAL_DATA:
       return state.set("isSubProjectAdditionalDataShown", false);
-    case SET_HISTORY_OFFSET:
-      return state.set("offset", action.offset);
-    case FETCH_PROJECT_HISTORY:
+    case FETCH_NEXT_PROJECT_HISTORY_PAGE:
       return state.set("isHistoryLoading", true);
-    case FETCH_PROJECT_HISTORY_SUCCESS:
+    case SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT:
+      return state.merge({
+        totalHistoryItemCount: action.totalHistoryItemsCount,
+        lastHistoryPage: action.lastHistoryPage
+      });
+
+    case FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS:
       return state.merge({
         historyItems: state.get("historyItems").concat(fromJS(action.events).reverse()),
-        historyItemsCount: action.historyItemsCount,
-        isHistoryLoading: false,
-        offset: action.offset,
-        limit: action.limit,
-        hasMoreHistory: action.hasMore
+        currentHistoryPage: action.currentHistoryPage,
+        isHistoryLoading: false
       });
     case OPEN_HISTORY:
-      return state.set("showHistory", true);
+      return state.set("showHistory", true).set("isHistoryLoading", true);
+
     case HIDE_HISTORY:
       return state.merge({
         historyItems: fromJS([]),
-        offset: defaultState.get("offset"),
-        limit: defaultState.get("limit"),
-        showHistory: false
+        showHistory: false,
+        lastHistoryPage: defaultState.get("lastHistoryPage"),
+        currentHistoryPage: defaultState.get("currentHistoryPage"),
+        totalHistoryItemCount: defaultState.get("totalHistoryItemCount")
       });
     case SHOW_SUBPROJECT_EDIT: {
       return state

@@ -9,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
 import Typography from "@material-ui/core/Typography";
 
-import { intentMapping, getDisplayName, parseURI, isAllowedToSee } from "./helper";
+import { intentMapping, parseURI, isAllowedToSee, getParentData } from "./helper";
 
 const styles = {
   notification: {
@@ -27,9 +27,12 @@ const styles = {
 export default class FlyInNotification extends Component {
   getMessages = history => {
     return this.props.notifications.map(notification => {
-      const { id, businessEvent, projectId, subprojectId } = notification;
+      const { id, businessEvent, metadata } = notification;
+      const projectId = metadata.project ? metadata.project.id : undefined;
+      const subprojectId = metadata.subproject ? metadata.subproject.id : undefined;
       const { publisher } = businessEvent;
       const message = intentMapping(notification);
+      const { projectDisplayName, subprojectDisplayName } = getParentData(notification);
       return (
         <Card
           key={id + "flyin"}
@@ -41,15 +44,17 @@ export default class FlyInNotification extends Component {
           <CardHeader
             avatar={<Avatar>{publisher ? publisher[0].toString().toUpperCase() : "?"}</Avatar>}
             action={
-              <IconButton
-                disabled={!isAllowedToSee(notification)}
-                color="primary"
-                onClick={() => history.push(parseURI({ projectId, subprojectId }))}
-              >
-                <LaunchIcon />
-              </IconButton>
+              isAllowedToSee(notification) ? (
+                <IconButton
+                  disabled={!isAllowedToSee(notification)}
+                  color="primary"
+                  onClick={() => history.push(parseURI({ projectId, subprojectId }))}
+                >
+                  <LaunchIcon />
+                </IconButton>
+              ) : null
             }
-            title={getDisplayName(notification)}
+            title={projectDisplayName + " " + subprojectDisplayName}
           />
           <CardContent>
             <Typography component="p">{message}</Typography>

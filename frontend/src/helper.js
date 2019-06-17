@@ -1,28 +1,23 @@
-import React from "react";
-import { Iterable } from "immutable";
-import dayjs from "dayjs";
-
-import OpenIcon from "@material-ui/icons/Remove";
 import DoneIcon from "@material-ui/icons/Check";
-
-import indigo from "@material-ui/core/colors/indigo";
-
+import OpenIcon from "@material-ui/icons/Remove";
+import accounting from "accounting";
+import dayjs from "dayjs";
+import { Iterable } from "immutable";
+import _cloneDeep from "lodash/cloneDeep";
 import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
-import _cloneDeep from "lodash/cloneDeep";
-import _isUndefined from "lodash/isUndefined";
 import _isString from "lodash/isString";
+import _isUndefined from "lodash/isUndefined";
+import React from "react";
 
-import accounting from "accounting";
-import strings from "./localizeStrings";
 import currencies from "./currency";
+import strings from "./localizeStrings";
+
 const numberFormat = {
   decimal: ".",
   thousand: ",",
   precision: 2
 };
-
-const statusColors = [indigo[100], indigo[300]];
 
 export const toJS = WrappedComponent => wrappedComponentProps => {
   const KEY = 0;
@@ -71,12 +66,6 @@ export const fromAmountString = (amount, currency) => {
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 };
 
-export const formatAmountString = (amount, currency) => {
-  if (_isString(amount) && amount.trim().length <= 0) {
-    return "";
-  }
-  return amount;
-};
 export const getCurrencies = () => {
   return Object.keys(currencies).map(currency => {
     return {
@@ -95,11 +84,6 @@ export const toAmountString = (amount, currency) => {
   }
 
   return accounting.formatMoney(amount, getCurrencyFormat(currency));
-};
-
-export const tsToString = ts => {
-  let dateString = dayjs.unix(ts).format("MMM D, YYYY");
-  return dateString;
 };
 
 export const unixTsToString = ts => {
@@ -136,112 +120,11 @@ export const statusIconMapping = {
   open: <OpenIcon />
 };
 
-export const roleMapper = {
-  approver: strings.common.approver,
-  bank: strings.common.bank,
-  assignee: strings.common.assignee
-};
-
-export const createDoughnutData = (labels, data, colors = statusColors) => ({
-  labels,
-  datasets: [
-    {
-      data: data,
-      backgroundColor: colors,
-      hoverBackgroundColor: colors
-    }
-  ]
-});
-
-export const calculateUnspentAmount = items => {
-  const amount = items.reduce((acc, item) => {
-    return acc + parseFloat(item.data.amount, 10);
-  }, 0);
-  return amount;
-};
-
-export const getCompletionRatio = subprojects => {
-  const completedSubprojects = getCompletedSubprojects(subprojects);
-  const percentageCompleted = completedSubprojects.length / subprojects.length * 100;
-  return percentageCompleted > 0 ? percentageCompleted : 0;
-};
-
-const getCompletedSubprojects = subprojects => {
-  const completedSubprojects = subprojects.filter(subproject => {
-    return subproject.data.status === "closed";
-  });
-  return completedSubprojects;
-};
-
-export const getCompletionString = subprojects => {
-  const completedSubprojects = getCompletedSubprojects(subprojects);
-  return strings.formatString(
-    strings.subproject.subproject_completion_string,
-    completedSubprojects.length,
-    subprojects.length
-  );
-};
-
 export const formatString = (text, ...args) => {
   return strings.formatString(text, ...args);
-};
-export const formatUpdateString = (identifier, createdBy, data) => {
-  let string = strings.formatString(strings.history.changed_by, identifier, createdBy);
-  const changes = Object.keys(data)
-    .map(key => formatString(strings.history.to, key, data[key]))
-    .join(", ");
-  return string.concat(changes);
-};
-
-export const calculateWorkflowBudget = workflows => {
-  return workflows.reduce(
-    (acc, workflow) => {
-      const { amount, amountType, status } = workflow.data;
-      const parsedAmount = parseFloat(amount, 10);
-      const next = {
-        assigned: amountType === "allocated" ? acc.assigned + parsedAmount : acc.assigned,
-        disbursed: amountType === "disbursed" ? acc.disbursed + parsedAmount : acc.disbursed,
-        currentDisbursement:
-          amountType === "disbursed" && status === "closed"
-            ? acc.currentDisbursement + parsedAmount
-            : acc.currentDisbursement
-      };
-      return next;
-    },
-    {
-      assigned: 0,
-      disbursed: 0,
-      currentDisbursement: 0
-    }
-  );
-};
-
-export const getNotAssignedBudget = (amount, assignedBudget, disbursedBudget) => {
-  const notAssigned = amount - assignedBudget - disbursedBudget;
-  return notAssigned >= 0 ? notAssigned : 0;
-};
-
-export const getProgressInformation = items => {
-  let startValue = {
-    open: 0,
-    closed: 0
-  };
-  const projectStatus = items.reduce((acc, item) => {
-    const status = item.data.status;
-    return {
-      open: status === "open" ? acc.open + 1 : acc.open,
-      closed: status === "closed" ? acc.closed + 1 : acc.closed
-    };
-  }, startValue);
-  return projectStatus;
 };
 
 export const preselectCurrency = (parentCurrency, setCurrency) => {
   const preSelectedCurrency = _isUndefined(parentCurrency) ? "EUR" : parentCurrency;
   setCurrency(preSelectedCurrency);
-};
-
-export const createTaskData = (items, type) => {
-  const projectStatus = getProgressInformation(items);
-  return createDoughnutData([strings.common.open, strings.common.closed], [projectStatus.open, projectStatus.closed]);
 };

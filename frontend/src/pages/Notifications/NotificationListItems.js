@@ -1,6 +1,7 @@
 import { withStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 import Divider from "@material-ui/core/Divider";
-import Fab from "@material-ui/core/Fab";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -9,9 +10,10 @@ import Read from "@material-ui/icons/MailOutline";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
 import dayjs from "dayjs";
 import React from "react";
+import classNames from "classnames";
 
-import { intentMapping, parseURI, isAllowedToSee } from "./helper";
-
+import { intentMapping, parseURI, getParentData, isAllowedToSee } from "./helper";
+import strings from "../../localizeStrings";
 const styles = theme => ({
   row: {
     display: "flex",
@@ -38,6 +40,9 @@ const styles = theme => ({
   unread: {
     flex: 1,
     opacity: 1
+  },
+  unreadMessage: {
+    backgroundColor: theme.palette.grey.main
   }
 });
 
@@ -58,13 +63,14 @@ const NotificationListItems = ({
       projectId: metadata.project ? metadata.project.id : undefined,
       subprojectId: metadata.subproject ? metadata.subproject.id : undefined
     });
-    const testLabel = `notification-${isRead ? "read" : "unread"}-${index}`;
+    const testLabel = `notification-${isRead ? "read" : "unread"}`;
+    const { projectDisplayName, subprojectDisplayName } = getParentData(notification);
     return (
       <div key={index}>
         <Divider />
         <ListItem
           component="div"
-          className={classes.row}
+          className={classNames(classes.row, !isRead ? classes.unreadMessage : false)}
           key={index}
           button={isRead ? false : true}
           data-test={testLabel}
@@ -73,10 +79,14 @@ const NotificationListItems = ({
           <div className={isRead ? classes.read : classes.unread}>
             <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
           </div>
-          <ListItemText className={classes.projectMetadata} component="div" primary={""} secondary={""} />
-
           <ListItemText
-            data-test={`${testLabel}-message`}
+            className={classes.projectMetadata}
+            component="div"
+            primary={projectDisplayName}
+            secondary={subprojectDisplayName}
+          />
+          <ListItemText
+            data-test={`${testLabel}-${index}`}
             className={classes.title}
             component="div"
             primary={message}
@@ -88,14 +98,15 @@ const NotificationListItems = ({
             secondary={createdAt}
           />
           <div className={classes.button}>
-            <Fab
-              size="small"
-              disabled={isAllowedToSee(notification)}
-              color="primary"
-              onClick={() => history.push(redirectUri)}
-            >
-              <LaunchIcon />
-            </Fab>
+            {isAllowedToSee(notification) ? (
+              <Tooltip id="tooltip-inspect" title={strings.common.view}>
+                <div>
+                  <IconButton onClick={() => history.push(redirectUri)}>
+                    <LaunchIcon />
+                  </IconButton>
+                </div>
+              </Tooltip>
+            ) : null}
           </div>
         </ListItem>
       </div>

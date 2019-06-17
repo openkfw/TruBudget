@@ -25,15 +25,15 @@ describe("Subproject's history", function() {
     cy.get("#subproject-history-button").click();
 
     // Count history items => should be one
-    cy.get("#history-list li.history-item")
+    cy.get("[data-test=history-list] li.history-item")
       .first()
       .should("be.visible");
-    cy.get("#history-list")
+    cy.get("[data-test=history-list]")
       .find("li.history-item")
       .should("have.length", 1);
 
     // Make sure it's a creation event
-    cy.get("#history-list")
+    cy.get("[data-test=history-list]")
       .find("li.history-item")
       .first()
       .should("contain", "created subproject");
@@ -52,21 +52,21 @@ describe("Subproject's history", function() {
     cy.get("#subproject-history-button").click();
 
     // Count history items => should be two
-    cy.get("#history-list li.history-item")
+    cy.get("[data-test=history-list] li.history-item")
       .first()
       .should("be.visible");
-    cy.get("#history-list")
+    cy.get("[data-test=history-list]")
       .find("li.history-item")
       .should("have.length", 2);
 
     // Make sure the oldest entry is the create event
-    cy.get("#history-list")
+    cy.get("[data-test=history-list]")
       .find("li.history-item")
       .last()
       .should("contain", "created subproject");
 
     // Make sure the newest entry is the assign event
-    cy.get("#history-list")
+    cy.get("[data-test=history-list]")
       .find("li.history-item")
       .first()
       .should("contain", "assigned subproject");

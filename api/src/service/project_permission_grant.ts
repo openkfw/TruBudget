@@ -22,8 +22,8 @@ export async function grantProjectPermission(
 ): Promise<void> {
   const result = await Cache.withCache(conn, ctx, async cache =>
     ProjectPermissionGrant.grantProjectPermission(ctx, serviceUser, projectId, grantee, intent, {
-      getProject: async projectId => {
-        return cache.getProject(projectId);
+      getProject: async id => {
+        return cache.getProject(id);
       },
     }),
   );

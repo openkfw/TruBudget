@@ -22,54 +22,21 @@ const styles = {
   }
 };
 
-const markPageAsRead = (markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage) => {
+const markPageAsRead = (markMultipleNotificationsAsRead, notifications, notificationPage) => {
   const notificationIds = notifications.map(notification => notification.id);
-  markMultipleNotificationsAsRead(notificationIds, notificationOffset, notificationsPerPage);
+  markMultipleNotificationsAsRead(notificationIds, notificationPage);
 };
 
 const onChangeRowsPerPage = (
-  event,
+  newNotificationsPerPage,
   setNotifcationsPerPage,
-  notificationOffset,
   fetchNotifications,
-  setNotificationOffset
-) => {
-  let offset = notificationOffset;
-  if (offset < event.target.value) {
-    offset = 0;
-  } else if (offset % event.target.value > 0) {
-    offset = offset - offset % event.target.value;
-  }
-  setNotifcationsPerPage(event.target.value);
-  fetchNotifications(offset, event.target.value);
-  setNotificationOffset(offset);
-};
-
-const onChangePage = (
-  nextPage,
   currentPage,
-  notificationOffset,
-  notificationsPerPage,
-  fetchNotifications,
-  setNotificationOffset
+  notificationsPerPage
 ) => {
-  if (nextPage > currentPage) {
-    //Moving forward
-    let offset = 0;
-    if (nextPage > 0) {
-      offset = notificationOffset + notificationsPerPage;
-    }
-    fetchNotifications(offset, notificationsPerPage);
-    setNotificationOffset(offset);
-  } else {
-    //moving backward
-    let offset = 0;
-    if (nextPage > 0) {
-      offset = notificationOffset - notificationsPerPage;
-    }
-    fetchNotifications(offset, notificationsPerPage);
-    setNotificationOffset(offset);
-  }
+  setNotifcationsPerPage(newNotificationsPerPage);
+  //Fetch first page again
+  fetchNotifications(0);
 };
 
 const NotificationsList = props => {
@@ -82,37 +49,33 @@ const NotificationsList = props => {
     fetchNotifications,
     notificationCount,
     notificationOffset,
-    setNotificationOffset,
     history,
-    markNotificationAsRead
+    markNotificationAsRead,
+    currentPage
   } = props;
   const allNotificationsRead = notifications.some(notification => notification.isRead === false);
   const rowsPerPageOptions = [5, 10, 20, 50];
-  const currentPage = Math.floor(notificationOffset / notificationsPerPage);
   return (
     <Card>
-      <CardHeader
-        title="Notifications"
-        action={
-          <Button
-            variant="outlined"
-            onClick={() =>
-              markPageAsRead(markMultipleNotificationsAsRead, notifications, notificationOffset, notificationsPerPage)
-            }
-            color="primary"
-            className={classes.button}
-            data-test="read-multiple-notifications"
-            disabled={!allNotificationsRead}
-          >
-            {strings.notification.read_all}
-          </Button>
-        }
-      />
+      <CardHeader title="Notifications" action={null} />
+      <div style={{ display: "flex", verticalAlign: "middle", padding: "11px 16px" }}>
+        <Button
+          variant="outlined"
+          onClick={() => markPageAsRead(markMultipleNotificationsAsRead, notifications, currentPage)}
+          className={classes.button + " mark-all-notifications-as-read"}
+          data-test="read-multiple-notifications"
+          disabled={!allNotificationsRead}
+          style={{ margin: "0px" }}
+        >
+          {strings.notification.read_all}
+        </Button>
+      </div>
+
       <List component="div" data-test="notification-list">
         <NotificationListItems
           notifications={notifications}
           history={history}
-          markNotificationAsRead={markNotificationAsRead}
+          markNotificationAsRead={notificationId => markNotificationAsRead(notificationId, currentPage)}
           notificationsPerPage={notificationsPerPage}
           notificationOffset={notificationOffset}
         />
@@ -124,25 +87,16 @@ const NotificationsList = props => {
           rowsPerPage={notificationsPerPage}
           onChangeRowsPerPage={event =>
             onChangeRowsPerPage(
-              event,
+              event.target.value,
               setNotifcationsPerPage,
-              notificationOffset,
               fetchNotifications,
-              setNotificationOffset
+              currentPage,
+              notificationsPerPage
             )
           }
           count={notificationCount}
           page={currentPage}
-          onChangePage={(_, nextPage) =>
-            onChangePage(
-              nextPage,
-              currentPage,
-              notificationOffset,
-              notificationsPerPage,
-              fetchNotifications,
-              setNotificationOffset
-            )
-          }
+          onChangePage={(_, nextPage) => fetchNotifications(nextPage)}
         />
       </div>
     </Card>

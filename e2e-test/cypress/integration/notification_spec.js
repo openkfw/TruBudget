@@ -1,42 +1,34 @@
-let projects = undefined;
+describe("open notifications", function() {
+  let projectId;
+  const assignee = "jxavier";
+  before(() => {
+    cy.login("mstein").then(() =>
+      cy
+        .createProject("notification.test", "notifications test", [])
+        .then(created => (projectId = created.id))
+        .then(() => cy.updateProjectAssignee(projectId, assignee))
+        .then(() => cy.updateProjectPermissions(projectId, "project.viewSummary", assignee))
+        .then(() => cy.updateProjectPermissions(projectId, "project.viewDetails", assignee))
+        .then(() => cy.updateProjectPermissions(projectId, "project.close", assignee))
+        .then(() => cy.closeProject(projectId, "project.close", assignee))
+        .then(() => cy.login("jxavier"))
+        .then(() => cy.visit("/notifications"))
+        .then(() => cy.get("[data-test=notification-unread-0]").should("be.visible"))
+    );
+  });
 
-// describe("open notifications", function() {
-//   before(() => {
-//     cy.login("mstein")
-//       .then(() =>
-//         cy.createproject("notification.test", "e2e-test for notifications", [
-//           {
-//             organization: "test",
-//             value: "50",
-//             currencycode: "eur"
-//           }
-//         ])
-//       )
-//       .then(created => expect(created).to.be.true)
-//       .then(() => cy.fetchprojects().then(p => (projects = p)))
-//       .then(() => {
-//         const projectid = projects[projects.length - 1].data.id;
-//         const assignee = "jxavier";
-//         cy.updateprojectassignee(projectid, assignee);
-//         cy.updateprojectpermissions(projectid, "project.viewsummary", assignee);
-//         cy.updateprojectpermissions(projectid, "project.viewdetails", assignee);
-//       })
-//       .then(() => cy.login("jxavier"))
-//       .then(() => cy.visit("/notifications"));
-//   });
+  it("First unread notification should contain close event", function() {
+    cy.get("[data-test=notification-unread]")
+      .first()
+      .should("contain", "was closed");
+  });
 
-//   it("show first unread notification", function() {
-//     cy.location("pathname").should("eq", `/notifications`);
-//     cy.get("[data-test=notification-unread-0-message]")
-//       .should("be.visible")
-//       .should("have.text", "project  notification.test  was assigned to you ");
-//   });
+  it("The user is notified when he/she is assigned to a project", function() {
+    cy.get("[data-test=notification-unread-1]").should("contain", "was assigned to you");
+  });
 
-//   it("read all notifications on page", function() {
-//     cy.get("[data-test=read-multiple-notifications]").click();
-//   });
-
-//   it("expect that all notifications on the page are read", function() {
-//     cy.get("[data-test=notification-unread-0").not("be.visible");
-//   });
-// });
+  it("When 'Read All' button is clicked, all notifications on the page are marked as read", function() {
+    cy.get("[data-test=read-multiple-notifications").click();
+    cy.get("[data-test=notification-unread]").should("have.length", 0);
+  });
+});

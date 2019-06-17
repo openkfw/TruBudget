@@ -51,7 +51,7 @@ const Workflow = props => {
           id="subproject-history-button"
           size="small"
           disabled={props.workflowSortEnabled}
-          onClick={() => props.openHistory(props.projectId, props.subProjectId, props.offset, props.limit)}
+          onClick={props.openHistory}
           color="default"
           style={{
             position: "relative",
