@@ -20,7 +20,9 @@ const TextInput = ({
   multiline = false,
   type = "text",
   disabled = false,
-  id
+  id,
+  // eslint-disable-next-line no-useless-computed-key
+  ["data-test"]: dataTest
 }) => (
   <TextField
     label={label}
@@ -34,6 +36,7 @@ const TextInput = ({
     onChange={event => onChange(event.target.value)}
     onBlur={onBlur}
     pattern={pattern}
+    data-test={dataTest}
   />
 );
 

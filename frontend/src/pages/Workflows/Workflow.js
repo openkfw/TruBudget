@@ -38,7 +38,7 @@ const Workflow = props => {
         {/* Button is disabled either if the user is not allowed to edit or the user is in "sort" mode */}
         <Fab
           disabled={createDisabled}
-          id="createWorkflowItem"
+          data-test="createWorkflowitem"
           color="primary"
           onClick={() => props.showCreateDialog()}
           style={{

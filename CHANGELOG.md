@@ -15,7 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed-->
+### Fixed
+
+- Display correct currency when editing workflow items [#281](https://github.com/openkfw/TruBudget/issues/281)
 
 <!-- ### Security -->
 
