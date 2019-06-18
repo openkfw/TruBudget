@@ -41,7 +41,7 @@ const SubProjects = props => {
           <ContentAdd />
         </Fab>
         <Fab
-          id="project-history-button"
+          data-test="project-history-button"
           size="small"
           onClick={props.openHistory}
           style={{

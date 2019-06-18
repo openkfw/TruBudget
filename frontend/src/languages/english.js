@@ -52,6 +52,7 @@ const en = {
     password: "Password",
     project: "Project",
     projected_budget: "Projected Budget",
+    projected_budget_exists: "Projected budget already exists",
     revoke: "revoke",
     search: "Search",
     show_permissions: "Show Permissions",

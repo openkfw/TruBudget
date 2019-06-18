@@ -15,6 +15,12 @@ import { fromAmountString, getCurrencies, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
 import DropDown from "./NewDropdown";
 
+const styles = {
+  dropdown: { minWidth: 200, marginRight: "16px" },
+  cell: { display: "flex" },
+  textfield: { width: "60" }
+};
+
 export default class Budget extends React.Component {
   state = {
     budgetAmount: "",
@@ -25,11 +31,31 @@ export default class Budget extends React.Component {
     editIndex: -1,
     isSaveable: true
   };
-  getMenuItems(currencies) {
+
+  getCurrencyMenuItems(currencies) {
     return currencies.map((currency, index) => {
       return (
-        <MenuItem key={index} value={currency.value}>
+        <MenuItem key={currency.primaryText} value={currency.value}>
           {currency.primaryText}
+        </MenuItem>
+      );
+    });
+  }
+
+  getOrganizationMenuItems(projectedBudgets) {
+    // Get only unique organizations, ES6 syntax
+    const distinctOrganizations = [
+      ...new Set(
+        projectedBudgets.map(budget => {
+          return budget.organization;
+        })
+      )
+    ];
+
+    return distinctOrganizations.map((organization, index) => {
+      return (
+        <MenuItem key={`budget-${organization}`} value={organization}>
+          {organization}
         </MenuItem>
       );
     });
@@ -86,7 +112,12 @@ export default class Budget extends React.Component {
 
   render() {
     this.updateSavable(this.state.organization, this.state.currency);
-    const { projectedBudgets = [], deletedProjectedBudgets = [], storeProjectedBudget } = this.props;
+    const {
+      projectProjectedBudgets,
+      projectedBudgets = [],
+      deletedProjectedBudgets = [],
+      storeProjectedBudget
+    } = this.props;
     const currencies = getCurrencies();
     return (
       <div>
@@ -98,11 +129,11 @@ export default class Budget extends React.Component {
               <TableCell align="right">{strings.common.actions}</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody data-test="projected-budget-list">
             {projectedBudgets.map((budget, i) => (
               <TableRow key={`pb-row-${budget.organization}-${budget.value}-${i}`}>
                 <TableCell>{budget.organization}</TableCell>
-                <TableCell align="right">
+                <TableCell align="right" data-test="saved-projected-budget-amount">
                   {this.state.edit && this.state.editIndex === i ? (
                     <TextField
                       label={strings.common.projected_budget}
@@ -111,6 +142,7 @@ export default class Budget extends React.Component {
                       type="text"
                       aria-label="projectedBudgetAmountEdit"
                       id="amountedit"
+                      data-test="edit-projected-budget-amount"
                     />
                   ) : (
                     toAmountString(budget.value, budget.currencyCode)
@@ -121,6 +153,7 @@ export default class Budget extends React.Component {
                     <Button
                       aria-label="Done"
                       onClick={() => this.editProjectedBudget(projectedBudgets, budget, this.state.budgetAmountEdit)}
+                      data-test="edit-projected-budget-amount-done"
                     >
                       <DoneIcon />
                     </Button>
@@ -129,6 +162,7 @@ export default class Budget extends React.Component {
                       aria-label="Edit"
                       onClick={() => this.setState({ editIndex: i, edit: true, budgetAmountEdit: budget.value })}
                       disabled={this.state.edit}
+                      data-test="edit-projected-budget"
                     >
                       <EditIcon />
                     </Button>
@@ -136,6 +170,7 @@ export default class Budget extends React.Component {
                   <Button
                     aria-label="Delete"
                     onClick={() => this.deleteBudgetFromList(projectedBudgets, deletedProjectedBudgets, budget)}
+                    data-test="delete-projected-budget"
                   >
                     <DeleteIcon />
                   </Button>
@@ -144,30 +179,54 @@ export default class Budget extends React.Component {
             ))}
             <TableRow key={`pb-row-add`}>
               <TableCell>
-                <TextField
-                  label={strings.common.organization}
-                  value={this.state.organization}
-                  onChange={e => this.setOrganization(e.target.value)}
-                  type="text"
-                  aria-label="organization"
-                  id="organizationinput"
-                  disabled={this.state.edit}
-                />
+                {projectProjectedBudgets !== undefined ? (
+                  <DropDown
+                    style={styles.dropdown}
+                    value={this.state.organization}
+                    floatingLabel={strings.common.organization}
+                    onChange={e => this.setOrganization(e)}
+                    id="organizations"
+                    disabled={this.state.edit || projectProjectedBudgets.length === 0}
+                  >
+                    {this.getOrganizationMenuItems(projectProjectedBudgets)}
+                  </DropDown>
+                ) : (
+                  <TextField
+                    label={strings.common.organization}
+                    value={this.state.organization}
+                    onChange={e => this.setOrganization(e.target.value)}
+                    type="text"
+                    aria-label="organization"
+                    id="organizationinput"
+                    inputProps={{
+                      "data-test": "organizationinput"
+                    }}
+                    disabled={this.state.edit}
+                  />
+                )}
               </TableCell>
               <TableCell align="right">
-                <div style={{ display: "flex" }}>
+                <div style={styles.cell}>
                   <DropDown
-                    style={{ minWidth: 200, marginRight: "16px" }}
+                    style={styles.dropdown}
                     value={this.state.currency}
                     floatingLabel={strings.project.project_currency}
                     onChange={e => this.setCurrency(e)}
                     id="currencies"
-                    disabled={this.state.edit}
+                    disabled={
+                      this.state.edit || (projectProjectedBudgets !== undefined && projectProjectedBudgets.length === 0)
+                    }
+                    error={!this.state.isSaveable}
+                    errorText={strings.common.projected_budget_exists}
                   >
-                    {this.getMenuItems(currencies)}
+                    {this.getCurrencyMenuItems(currencies)}
                   </DropDown>
                   <TextField
                     label={strings.common.projected_budget}
+                    data-test="projected-budget"
+                    disabled={
+                      this.state.edit || (projectProjectedBudgets !== undefined && projectProjectedBudgets.length === 0)
+                    }
                     value={this.state.budgetAmount}
                     onChange={v => {
                       if (/^[0-9,.-]*$/.test(v.target.value)) this.setState({ budgetAmount: v.target.value });
@@ -178,9 +237,7 @@ export default class Budget extends React.Component {
                     multiline={false}
                     aria-label="projectedbudget"
                     id="projectedbudgetinput"
-                    style={{
-                      width: "60%"
-                    }}
+                    style={styles.textfield}
                   />
                 </div>
               </TableCell>
@@ -189,6 +246,7 @@ export default class Budget extends React.Component {
                   <Button
                     variant="contained"
                     color="secondary"
+                    data-test="add-projected-budget"
                     disabled={
                       !this.state.budgetAmount ||
                       !this.state.currency ||

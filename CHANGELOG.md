@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added-->
 
-<!-- ### Changed -->
+### Changed
+
+- Organizations and currencies for projected budgets of subprojects can only be selected from values of the parent project [#228](https://github.com/openkfw/TruBudget/issues/228)
 
 <!-- ### Deprecated -->
 

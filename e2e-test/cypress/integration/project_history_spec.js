@@ -15,7 +15,7 @@ describe("Project's history", function() {
   });
 
   it("The history contains only the project creation event.", function() {
-    cy.get("#project-history-button").click();
+    cy.get("[data-test=project-history-button]").click();
 
     // Count history items => should be one
     cy.get("[data-test=history-list] li.history-item")
@@ -40,7 +40,7 @@ describe("Project's history", function() {
       .click()
       .type("{esc}");
 
-    cy.get("#project-history-button").click();
+    cy.get("[data-test=project-history-button]").click();
 
     // Count history items => should be two
     cy.get("[data-test=history-list] li.history-item")
