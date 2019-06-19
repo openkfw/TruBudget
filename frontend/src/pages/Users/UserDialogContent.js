@@ -36,14 +36,15 @@ const styles = {
 
 const UserDialogContent = ({
   classes,
-  userToAdd,
+  user,
   setDisplayName,
   setOrganization,
   setUsername,
   setPassword,
   organization
 }) => {
-  const { displayName, password, username } = userToAdd;
+  const { displayName, password, username } = user;
+
   return (
     <div className={classes.container}>
       <div className={classes.textInputContainer}>
@@ -69,7 +70,14 @@ const UserDialogContent = ({
       </div>
       <div className={classes.textInputContainer}>
         <Username username={username} storeUsername={setUsername} failed={false} id="username" />
-        <Password password={password} storePassword={setPassword} failed={false} id="password" />
+        <Password
+          password={password}
+          iconDisplayed={true}
+          setPassword={setPassword}
+          storePassword={setPassword}
+          failed={false}
+          id="password"
+        />
       </div>
     </div>
   );

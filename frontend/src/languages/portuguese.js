@@ -81,7 +81,15 @@ const pt = {
     new_group: "Novo grupo de usuários",
     add_group: "Criar novo grupo",
     edit_group: "Editar grupo",
-    edit_permissions_for: "Editar permissões para"
+    edit_permissions_for: "Editar permissões para",
+    current_user_password: "Sua Senha",
+    new_user_password: "Nova Senha",
+    new_user_password_confirmation: "Confirme a Nova Senha",
+    no_password_match: "Senhas não combinam",
+    change_password_for: "Mudar senha para {0}",
+    password_change_success: "Senha mudada com sucesso",
+    type_current_password: "Digite a senha atual para o {0}",
+    type_new_password: "Digite a nova senha para o {0}"
   },
 
   nodesDashboard: {

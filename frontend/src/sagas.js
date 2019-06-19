@@ -121,6 +121,7 @@ import {
   CREATE_GROUP,
   ADD_USER,
   ADD_USER_SUCCESS,
+  CHANGE_USER_PASSWORD_SUCCESS,
   REMOVE_USER_SUCCESS,
   REMOVE_USER,
   GRANT_ALL_USER_PERMISSIONS_SUCCESS,
@@ -130,7 +131,10 @@ import {
   REVOKE_GLOBAL_PERMISSION,
   REVOKE_GLOBAL_PERMISSION_SUCCESS,
   LIST_GLOBAL_PERMISSIONS_SUCCESS,
-  LIST_GLOBAL_PERMISSIONS
+  LIST_GLOBAL_PERMISSIONS,
+  CHECK_USER_PASSWORD_SUCCESS,
+  CHECK_USER_PASSWORD_ERROR,
+  CHECK_AND_CHANGE_USER_PASSWORD
 } from "./pages/Users/actions.js";
 import {
   FETCH_NODES_SUCCESS,
@@ -231,13 +235,23 @@ function* handleError(error) {
   // eslint-disable-next-line no-console
   console.error("API-Error: ", error.response || "No response from API");
 
-  if (error.response && (error.response.status === 401 || error.response.status === 400)) {
+  if (error.response && error.response.status === 401) {
     // which status should we use?
     yield call(logoutSaga);
-  } else if (error.response && error.response.data) {
+  } else if (error.response && error.response.data && error.response.data.error.message) {
     yield put({
       type: SNACKBAR_MESSAGE,
       message: error.response.data.error.message
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true
+    });
+  } else if (error.response && error.response.data && error.response.data.message) {
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: error.response.data.message
     });
     yield put({
       type: SHOW_SNACKBAR,
@@ -639,6 +653,11 @@ export function* loginSaga({ user }) {
       type: SHOW_LOGIN_ERROR,
       show: false
     });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: false,
+      isError: false
+    });
   }
   function* onLoginError(error) {
     yield put({
@@ -750,6 +769,43 @@ export function* addUserToGroupSaga({ groupId, userId }) {
       show: true
     });
   }, true);
+}
+
+export function* changeUserPasswordSaga({ username, newPassword }) {
+  yield execute(function*() {
+    yield callApi(api.changeUserPassword, username, newPassword);
+    yield put({
+      type: CHANGE_USER_PASSWORD_SUCCESS
+    });
+    yield showSnackbarSuccess();
+  }, true);
+}
+
+export function* checkUserPasswordSaga({ username, password }) {
+  function* checkPassword() {
+    yield callApi(api.login, username, password);
+    yield put({
+      type: CHECK_USER_PASSWORD_SUCCESS
+    });
+  }
+
+  function* onPasswordCheckError(error) {
+    yield put({
+      type: CHECK_USER_PASSWORD_ERROR
+    });
+
+    throw error;
+  }
+  yield execute(checkPassword, true, onPasswordCheckError);
+}
+
+export function* checkAndChangeUserPasswordSaga({ username, actingUser, currentPassword, newPassword }) {
+  try {
+    yield checkUserPasswordSaga({ username: actingUser, password: currentPassword });
+    yield changeUserPasswordSaga({ username, newPassword });
+  } catch (error) {
+    yield handleError(error);
+  }
 }
 
 export function* removeUserFromGroupSaga({ groupId, userId }) {
@@ -1612,6 +1668,9 @@ export default function* rootSaga() {
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
       yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),
       yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga),
+
+      // Users
+      yield takeEvery(CHECK_AND_CHANGE_USER_PASSWORD, checkAndChangeUserPasswordSaga),
 
       // LiveUpdates
       yield takeLeading(LIVE_UPDATE_PROJECT, liveUpdateProjectSaga),

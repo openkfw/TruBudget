@@ -7,7 +7,7 @@ describe("User/Groups Dashboard", function() {
   it("Show group table", function() {
     cy.location("pathname").should("eq", "/users");
     cy.get("[aria-label=groupsTab]").click();
-    cy.get("#userdashboard").should("be.visible");
+    cy.get("[data-test=userdashboard]").should("be.visible");
   });
 
   it("Create new group", function() {

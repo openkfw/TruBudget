@@ -68,6 +68,12 @@ class Api {
 
   listUser = () => instance.get(`/user.list`);
 
+  changeUserPassword = (userId, newPassword) =>
+    instance.post(`/user.changePassword`, {
+      userId,
+      newPassword
+    });
+
   createGroup = (groupId, displayName, users) =>
     instance.post(`/global.createGroup`, {
       group: {
