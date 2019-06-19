@@ -38,9 +38,8 @@ export async function markRead(
     notificationId,
     notification.recipient,
   );
-
-  // notification.markRead is in the global permissions, but currently there's no reason
-  // to check this (might change in the future)
+  // No permission checked since every user should be able
+  // to mark their own notifications as read
 
   // Check that the new event is indeed valid:
   const { errors } = sourceNotifications(ctx, notificationEvents.concat([markedRead]));

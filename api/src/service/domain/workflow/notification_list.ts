@@ -14,8 +14,8 @@ export async function getUserNotifications(
   user: ServiceUser,
   repository: Repository,
 ): Promise<Notification.Notification[]> {
-  // notification.list is in the global permissions, but currently there's no reason to
-  // check this (might change in the future)
+  // No permission checked since every user should be able
+  // to list their own notifications
 
   const notificationEvents = await repository.getUserNotificationEvents(user.id);
   const { notificationsById } = sourceNotifications(ctx, notificationEvents);
