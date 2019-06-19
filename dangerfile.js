@@ -80,7 +80,7 @@ if (
 // and PR is not marked as trivial, expect there to be E2E-test updates
 if (
   (frontendRootSources.edited || frontendPageSources.edited) &&
-  !e2eTestSources.modified &&
+  !e2eTestSources.edited &&
   !trivialPR
 ) {
   warn(
