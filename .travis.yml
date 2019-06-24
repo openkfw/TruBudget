@@ -3,9 +3,9 @@ stages:
     if: type IN (pull_request, cron)
   - test
   - name: dockerbuild
-    if: commit_message !~ /(skip-build|wip)/ AND type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
+    if: commit_message !~ /(skip-build|wip)/ AND fork = false AND type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
   - name: notification
-    if: commit_message !~ /(skip-build|wip)/ AND type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
+    if: commit_message !~ /(skip-build|wip)/ AND fork = false AND type != cron AND (branch = master OR tag IS present OR type IN (pull_request))
 
 .node-env: &node-env
   language: node_js
