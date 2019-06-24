@@ -18,6 +18,8 @@ const renderInput = inputProps => {
         classes: {
           root: classes.inputRoot
         },
+        // eslint-disable-next-line no-useless-computed-key
+        ["data-test"]: "autocomplete",
         ...InputProps
       }}
       {...other}
@@ -33,6 +35,7 @@ const renderSuggestion = ({ suggestion, index, itemProps, highlightedIndex, sele
       {...itemProps}
       key={suggestion.id}
       selected={isHighlighted}
+      data-test={`autocomplete-item-${index}`}
       component="div"
       style={{
         fontWeight: isSelected ? 500 : 400

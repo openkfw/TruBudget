@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added-->
 
-<!-- ### Changed-->
+### Changed
+
+- Every user can see the users and groups table [#333](https://github.com/openkfw/TruBudget/issues/333)
 
 <!-- ### Deprecated -->
 

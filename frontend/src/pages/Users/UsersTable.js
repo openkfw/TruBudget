@@ -46,7 +46,7 @@ const UsersTable = ({ classes, users, permissionIconDisplayed, showDashboardDial
               user.permissions["user.changePassword"].some(x => x === userId);
 
             return (
-              <TableRow id={`user-${user.id}`} key={user.id}>
+              <TableRow data-test={`user-${user.id}`} key={user.id}>
                 <TableCell component="th" scope="row">
                   {user.id}
                 </TableCell>
@@ -54,7 +54,10 @@ const UsersTable = ({ classes, users, permissionIconDisplayed, showDashboardDial
                 <TableCell>{user.organization}</TableCell>
                 <TableCell>
                   {permissionIconDisplayed ? (
-                    <IconButton onClick={() => showDashboardDialog("editUserPermissions", user.id)}>
+                    <IconButton
+                      data-test={`edit-permissions-${user.id}`}
+                      onClick={() => showDashboardDialog("editUserPermissions", user.id)}
+                    >
                       <PermissionIcon className={classes.iconColor} />
                     </IconButton>
                   ) : null}

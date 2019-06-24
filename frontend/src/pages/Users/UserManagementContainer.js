@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
-import { canViewUserDashboard } from "../../permissions";
-import NotAuthorized from "../Error/NotAuthorized";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
@@ -42,12 +40,7 @@ class UserManagementContainer extends Component {
     this.props.resetState();
   }
   render() {
-    const canView = canViewUserDashboard(this.props.allowedIntents);
-    if (canView) {
-      return <Users {...this.props} />;
-    } else {
-      return <NotAuthorized />;
-    }
+    return <Users {...this.props} />;
   }
 }
 

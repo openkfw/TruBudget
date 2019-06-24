@@ -55,18 +55,20 @@ const Users = props => {
             <Tab label={strings.users.groups} aria-label="groupsTab" />
           </Tabs>
         </AppBar>
-        <div style={styles.createButtonContainer}>
-          <Fab
-            disabled={isCreateButtonDisabled}
-            data-test="create"
-            onClick={onClick}
-            color="primary"
-            style={styles.createButton}
-            aria-label="Add"
-          >
-            <Add />
-          </Fab>
-        </div>
+        {!isCreateButtonDisabled ? (
+          <div style={styles.createButtonContainer}>
+            <Fab
+              disabled={isCreateButtonDisabled}
+              data-test="create"
+              onClick={onClick}
+              color="primary"
+              style={styles.createButton}
+              aria-label="Add"
+            >
+              <Add />
+            </Fab>
+          </div>
+        ) : null}
         {tabIndex === 0 && <UsersTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
         {tabIndex === 1 && <GroupTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
       </div>

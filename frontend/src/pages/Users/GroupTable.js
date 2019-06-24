@@ -37,10 +37,10 @@ const GroupsTable = ({ groups, permissionIconDisplayed, showDashboardDialog, cla
             <TableCell />
           </TableRow>
         </TableHead>
-        <TableBody id="grouptablebody">
+        <TableBody data-test="grouptablebody">
           {sortedGroups.map(group => {
             return (
-              <TableRow id={`group-${group.groupId}`} key={group.groupId}>
+              <TableRow data-test={`group-${group.groupId}`} key={group.groupId}>
                 <TableCell component="th" scope="row">
                   {group.groupId}
                 </TableCell>

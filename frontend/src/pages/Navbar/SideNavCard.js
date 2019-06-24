@@ -86,14 +86,12 @@ const SideNavCard = ({
         </ListItemIcon>
         <ListItemText primary={strings.navigation.menu_item_notifications} />
       </ListItem>
-      {userDashboardEnabled ? (
-        <ListItem button onClick={() => history.push("/users")}>
-          <ListItemIcon>
-            <UsersIcon />
-          </ListItemIcon>
-          <ListItemText primary={strings.navigation.menu_item_users} />
-        </ListItem>
-      ) : null}
+      <ListItem button onClick={() => history.push("/users")}>
+        <ListItemIcon>
+          <UsersIcon />
+        </ListItemIcon>
+        <ListItemText primary={strings.navigation.menu_item_users} />
+      </ListItem>
       {nodeDashboardEnabled ? (
         <ListItem button onClick={() => history.push("/nodes")}>
           <ListItemIcon>
