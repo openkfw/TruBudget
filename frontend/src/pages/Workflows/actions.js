@@ -1,6 +1,3 @@
-export const FETCH_WORKFLOW_ITEMS = "FETCH_WORKFLOW_ITEMS";
-export const FETCH_WORKFLOW_ITEMS_SUCCESS = "FETCH_WORKFLOW_ITEMS_SUCCESS";
-
 export const SHOW_WORKFLOW_CREATE = "SHOW_WORKFLOW_CREATE";
 export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 
@@ -341,13 +338,6 @@ export function updateWorkflowOrderOnState(workflowItems) {
   return {
     type: UPDATE_WORKFLOW_ORDER,
     workflowItems
-  };
-}
-
-export function fetchWorkflowItems(streamName) {
-  return {
-    type: FETCH_WORKFLOW_ITEMS,
-    streamName: streamName
   };
 }
 

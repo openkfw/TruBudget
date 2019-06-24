@@ -17,7 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Permissions related to notifications [#316](https://github.com/openkfw/TruBudget/issues/316)
 
-<!-- ### Fixed-->
+### Fixed
+
+- Display correct currency when editing workflow items [#281](https://github.com/openkfw/TruBudget/issues/281)
 
 <!-- ### Security -->
 

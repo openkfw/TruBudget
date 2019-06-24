@@ -21,7 +21,6 @@ import {
   enableSubProjectBudgetEdit,
   enableWorkflowEdit,
   fetchAllSubprojectDetails,
-  fetchWorkflowItems,
   hideWorkflowDetails,
   hideWorkflowDialog,
   hideWorkflowitemAdditionalData,
@@ -142,7 +141,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
 
-    fetchWorkflowItems: streamName => dispatch(fetchWorkflowItems(streamName)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
 
     showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
