@@ -3,7 +3,7 @@
 [![build status](https://travis-ci.com/openkfw/TruBudget.svg?branch=master)](https://travis-ci.com/openkfw/TruBudget)
 [![gitter chat](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/Tru-Community/community)
 
-Just a test 2
+Just a test 3
 
 # Table of Contents <!-- omit in TOC -->
 
