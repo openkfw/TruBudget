@@ -3,19 +3,21 @@
 [![build status](https://travis-ci.com/openkfw/TruBudget.svg?branch=master)](https://travis-ci.com/openkfw/TruBudget)
 [![gitter chat](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/Tru-Community/community)
 
+Just a test
+
 # Table of Contents <!-- omit in TOC -->
 
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Starting the first TruBudget node](#starting-the-first-trubudget-node)
-  - [Working with TruBudget](#working-with-trubudget)
-  - [Adding new nodes to the network](#adding-new-nodes-to-the-network)
-  - [Granting access for new nodes](#granting-access-for-new-nodes)
-  - [Using TruBudget programatically through its API](#using-trubudget-programatically-through-its-api)
-  - [Hints and Pitfalls](#hints-and-pitfalls)
-- [Build and Develop from Local Sources](#build-and-develop-from-local-sources)
-- [More Information](#more-information)
+- [Introduction](#Introduction)
+- [Getting Started](#Getting-Started)
+  - [Prerequisites](#Prerequisites)
+  - [Starting the first TruBudget node](#Starting-the-first-TruBudget-node)
+  - [Working with TruBudget](#Working-with-TruBudget)
+  - [Adding new nodes to the network](#Adding-new-nodes-to-the-network)
+  - [Granting access for new nodes](#Granting-access-for-new-nodes)
+  - [Using TruBudget programatically through its API](#Using-TruBudget-programatically-through-its-API)
+  - [Hints and Pitfalls](#Hints-and-Pitfalls)
+- [Build and Develop from Local Sources](#Build-and-Develop-from-Local-Sources)
+- [More Information](#More-Information)
 
 # Introduction
 
