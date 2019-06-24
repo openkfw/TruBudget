@@ -8,10 +8,11 @@ docker build --build-arg BUILDTIMESTAMP="$BUILDTIMESTAMP" --build-arg CI_COMMIT_
 
 if [[ "$TRAVIS_EVENT_TYPE" = "pull_request" ]];
 then
-  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  export TAG_BUILD_PRIVATE="/trubudget/$PROJECT_NAME:t_$TRAVIS_BUILD_ID"
+  echo "$PRIVATE_REGISTRY_PASSWORD" | docker login -u "$PRIVATE_REGISTRY_USERNAME" --password-stdin "$PRIVATE_REGISTRY"
+  export TAG_BUILD_PRIVATE="$PRIVATE_REGISTRY_BASE/trubudget/$PROJECT_NAME:t_$TRAVIS_BUILD_ID"
   docker tag "$TAG" "$TAG_BUILD_PRIVATE"
-  docker push "$TAG_BUILD_PRIVATE"
+  echo "Pushing [private]/trubudget/$PROJECT_NAME:$TRAVIS_BUILD_ID"
+  docker push "$TAG_BUILD_PRIVATE" >/dev/null 2>&1
 fi
 
 if [[ "$TRAVIS_BRANCH" = "master" ]] && [[ "$TRAVIS_EVENT_TYPE" = "push" ]];
