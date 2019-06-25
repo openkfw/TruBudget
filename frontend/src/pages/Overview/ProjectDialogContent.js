@@ -1,12 +1,13 @@
+import Divider from "@material-ui/core/Divider";
 import React from "react";
 
-import Divider from "@material-ui/core/Divider";
-
+import { toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
-import ImageSelector from "../Common/ImageSelector";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
-import { toAmountString } from "../../helper";
+import ImageSelector from "../Common/ImageSelector";
+
+import TagEditor from "../Common/TagEditor";
 
 const ProjectDialogContent = props => {
   return (
@@ -40,6 +41,13 @@ const ProjectDialogContent = props => {
           editDialogShown={props.editDialogShown}
           storeDeletedProjectedBudget={props.storeDeletedProjectedBudget}
           disabled={props.editDialogShown}
+        />
+      </div>
+      <div>
+        <TagEditor
+          addProjectTag={props.addProjectTag}
+          removeProjectTag={props.removeProjectTag}
+          projectTags={props.projectToAdd.tags}
         />
       </div>
     </div>

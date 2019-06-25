@@ -18,7 +18,9 @@ import {
   SHOW_EDIT_DIALOG,
   SHOW_PROJECT_PERMISSIONS,
   HIDE_PROJECT_ADDITIONAL_DATA,
-  SHOW_PROJECT_ADDITIONAL_DATA
+  SHOW_PROJECT_ADDITIONAL_DATA,
+  ADD_PROJECT_TAG,
+  REMOVE_PROJECT_TAG
 } from "./actions";
 
 const defaultState = fromJS({
@@ -31,7 +33,9 @@ const defaultState = fromJS({
     description: "",
     thumbnail: "/Thumbnail_0001.jpg",
     projectedBudgets: [],
-    deletedProjectedBudgets: []
+    deletedProjectedBudgets: [],
+    additionalData: {},
+    tags: []
   },
   idForPermissions: "",
   permissions: {},
@@ -61,7 +65,9 @@ export default function overviewReducer(state = defaultState, action) {
           .set("displayName", action.displayName)
           .set("description", action.description)
           .set("thumbnail", action.thumbnail)
-          .set("projectedBudgets", fromJS(action.projectedBudgets)),
+          .set("additionalData", action.additionalData)
+          .set("projectedBudgets", fromJS(action.projectedBudgets))
+          .set("tags", fromJS(action.tags)),
         currentStep: action.currentStep,
         editDialogShown: true
       });
@@ -113,6 +119,17 @@ export default function overviewReducer(state = defaultState, action) {
       return newState;
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
+    case ADD_PROJECT_TAG: {
+      const tags = state.getIn(["projectToAdd", "tags"]) || [];
+      if (!tags.some(tag => tag === action.tag)) {
+        return state.setIn(["projectToAdd", "tags"], [...tags, action.tag]);
+      }
+      return state;
+    }
+    case REMOVE_PROJECT_TAG: {
+      const tags = state.getIn(["projectToAdd", "tags"]);
+      return state.setIn(["projectToAdd", "tags"], tags.filter(tag => tag !== action.tag));
+    }
     case PROJECT_THUMBNAIL:
       return state.setIn(["projectToAdd", "thumbnail"], action.thumbnail);
     case CREATE_PROJECT_SUCCESS:

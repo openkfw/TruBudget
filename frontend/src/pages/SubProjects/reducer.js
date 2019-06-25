@@ -31,6 +31,8 @@ const historyPageSize = 50;
 
 const defaultState = fromJS({
   id: "",
+  projectAdditionalData: "",
+  projectTags: [],
   projectName: "",
   projectComment: "Default Comment",
   projectStatus: "open",
@@ -78,6 +80,8 @@ export default function detailviewReducer(state = defaultState, action) {
         projectTS: action.project.data.creationUnixTs,
         projectAssignee: action.project.data.assignee,
         projectProjectedBudgets: fromJS(action.project.data.projectedBudgets),
+        projectAdditionalData: fromJS(action.project.data.additionalData),
+        projectTags: fromJS(action.project.data.tags),
         allowedIntents: fromJS(action.project.allowedIntents),
         logs: fromJS(action.project.log),
         subProjects: fromJS(action.subprojects)

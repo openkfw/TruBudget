@@ -8,12 +8,13 @@ import ProjectDialogContent from "./ProjectDialogContent";
 
 const handleCreate = props => {
   const { createProject, onDialogCancel, projectToAdd, storeSnackbarMessage } = props;
-  const { displayName, description, thumbnail, projectedBudgets } = projectToAdd;
+  const { displayName, description, thumbnail, projectedBudgets, tags } = projectToAdd;
   createProject(
     displayName,
     description,
     thumbnail,
-    projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) }))
+    projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) })),
+    tags
   );
   onDialogCancel();
   storeSnackbarMessage(strings.common.added + " " + strings.common.project + " " + displayName);
@@ -32,7 +33,9 @@ const handleEdit = props => {
         displayName: changes.displayName,
         description: changes.description,
         thumbnail: changes.thumbnail,
-        projectedBudgets: changes.projectedBudgets
+        projectedBudgets: changes.projectedBudgets,
+        additionalData: changes.additionalData,
+        tags: changes.tags
       },
       changes.deletedProjectedBudgets
     );

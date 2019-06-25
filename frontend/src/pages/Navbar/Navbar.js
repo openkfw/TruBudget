@@ -24,7 +24,6 @@ const Navbar = ({
   history,
   route,
   logout,
-  streamNames,
   productionActive,
   displayName,
   organization,

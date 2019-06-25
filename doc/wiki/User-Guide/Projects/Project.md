@@ -1,15 +1,16 @@
 # Project
 
-- [Project](#project)
-  - [View projects](#view-projects)
-  - [View project details](#view-project-details)
-  - [Create a project](#create-a-project)
-  - [Update a project](#update-a-project)
-  - [Assign an User/Group to a project](#assign-an-usergroup-to-a-project)
-  - [Close project](#close-project)
-  - [View the history of a project](#view-the-history-of-a-project)
-  - [Permissions on project](#permissions-on-project)
-  - [Create a subproject](#create-a-subproject)
+- [Project](#Project)
+  - [View projects](#View-projects)
+  - [View project details](#View-project-details)
+  - [Create a project](#Create-a-project)
+  - [Update a project](#Update-a-project)
+  - [Assign an User/Group to a project](#Assign-an-UserGroup-to-a-project)
+  - [Close project](#Close-project)
+  - [View the history of a project](#View-the-history-of-a-project)
+  - [Project tags](#Project-tags)
+  - [Permissions on project](#Permissions-on-project)
+  - [Create a subproject](#Create-a-subproject)
 
 Projects are currently the highest layer of abstraction in TruBudget. They represent the overall intention of what you trying to achieve, like building a school in Malawi.
 
@@ -200,6 +201,26 @@ The history contains all activities done directly refer to the current project.
 4. Click the grey button below the '+' button on the right to open the right sidebar viewing the history of the current project.
 
 ![show project history](../../uploads/Screenshots/view_project_history.jpg)
+
+## Project tags
+
+**Notes:**
+- Starting with v1.3.0, projects can have tags to add additional data to them, group them and make them searchable. 
+- Tags can be added when creating or editing the project, either via the UI or the API. 
+- Tags should not contain whitespaces or any special characters except "_", "." or "-". 
+- Tags can contain alphanumeric characters and can be up to 15 characters. 
+- Tags cannot not start or end with the special characters listed above
+
+**Instructions:**
+
+
+1. Click the button to add a new or edit an existing project
+2. Type the tag name in the "Tag" field
+3. Hit the "Enter" key or click the "Add" button next to the input field
+4. The tag is now visible below the input field
+5. [OPTIONAL] Hover click the "X" symbol next to the tag name to remove the tag
+6. Click "Submit" to save the tags to the project
+7. The tags are now visible on the overview page on the corresponding project card or on the project details page
 
 ## [Permissions on project](../Permissions.md)
 
