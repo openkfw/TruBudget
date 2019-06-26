@@ -9,21 +9,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added-->
 
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Security -->
+
+## [1.2.0] - 2019-06-26
+
 ### Changed
 
 - Every user can see the users and groups table [#333](https://github.com/openkfw/TruBudget/issues/333)
 
-<!-- ### Deprecated -->
-
 ### Removed
 
-- Permissions related to notifications [#316](https://github.com/openkfw/TruBudget/issues/316)
+- Removed permissions related to notifications [#316](https://github.com/openkfw/TruBudget/issues/316)
 
 ### Fixed
 
 - Display correct currency when editing workflow items [#281](https://github.com/openkfw/TruBudget/issues/281)
-
-<!-- ### Security -->
 
 ## [1.1.0] - 2019-06-12
 
@@ -33,7 +41,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - New API endpoints to grant, revoke and list permissions [#310](https://github.com/openkfw/TruBudget/issues/310)
 - Different background color for unread notifications [#300](https://github.com/openkfw/TruBudget/issues/300)
 - UI feature to change a user's password [#325](https://github.com/openkfw/TruBudget/issues/325)
-
 
 ### Changed
 
@@ -88,8 +95,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `/project.viewHistory` deprecated in favor of `/project.viewHistory.v2`. [#252](https://github.com/openkfw/TruBudget/issues/252)
 - `/subproject.viewHistory` deprecated in favor of `/subproject.viewHistory.v2`. [#252](https://github.com/openkfw/TruBudget/issues/252)
 
-<!-- ### Removed -->
-
 ### Fixed
 
 - Fixed line of YAML file for master deployments via docker-compose, so that image of excel export service is pulled correctly [#223](https://github.com/openkfw/TruBudget/issues/223)
@@ -97,8 +102,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Budgets on project analytics do not contain open workflow items [#230](https://github.com/openkfw/TruBudget/issues/230)
 - Fixed a bug where on smaller screens the action buttons (create & cancel) are hidden and no item could be created [#240](https://github.com/openkfw/TruBudget/issues/240)
 - Increase frontend stability [#263](https://github.com/openkfw/TruBudget/pull/263)
-
-<!-- ### Security -->
 
 ## [1.0.0-beta.9] - 2019-04-23
 
@@ -305,7 +308,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.1.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.2.0...master
+[1.2.0]: https://github.com/openkfw/TruBudget/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/openkfw/TruBudget/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/openkfw/TruBudget/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.9...v1.0.0
