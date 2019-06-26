@@ -4,10 +4,6 @@ describe("Users/Groups Dashboard", function() {
     cy.visit("/users");
   });
 
-  it("User can edit his/her own user profile", function() {
-    cy.get("[data-test=edit-user-mstein]").should("be.visible");
-  });
-
   it("If a user is granted permission to edit another user's password, the edit button appears next to the user", function() {
     // Log in as root and grant the permission
     cy.login("root", "root-secret");

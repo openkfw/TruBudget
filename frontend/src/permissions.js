@@ -23,10 +23,6 @@ export const canCreateSubProject = i => can("project.createSubproject", i);
 export const canAssignProject = i => can("project.assign", i);
 export const canCloseProject = i => can("project.close", i);
 
-export const canViewUserDashboard = i => can("global.createUser", i) || can("global.createGroup", i) || can("global.listPermissions", i);
-
-
-
 export const globalIntentOrder = [
   {
     name: "admin",
